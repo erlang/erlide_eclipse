@@ -1,6 +1,5 @@
 package org.erlide.cover.core;
 
-import org.erlide.backend.IBackend;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.cover.views.model.TestTreeModel;
 import org.erlide.cover.views.model.TestTreeObject;
@@ -37,9 +36,9 @@ public class EUnitEventHandler extends ErlangEventHandler {
     private final CoverBackend coverBackend; // cover backend (if needed)
     private final TestTreeModel model;
 
-    public EUnitEventHandler(final IBackend backend, final TestTreeModel model,
-            final CoverBackend coverBackend) {
-        super(EVENT_NAME, backend);
+    public EUnitEventHandler(final String backendName,
+            final TestTreeModel model, final CoverBackend coverBackend) {
+        super(EVENT_NAME, backendName);
         this.coverBackend = coverBackend;
         this.model = model;
         log = Activator.getDefault();

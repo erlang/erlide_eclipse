@@ -82,8 +82,8 @@ public class TraceBackend {
 
     private class TraceEventHandler extends ErlangEventHandler {
 
-        public TraceEventHandler(final IBackend backend) {
-            super(EVENT_NAME, backend);
+        public TraceEventHandler(final String backendName) {
+            super(EVENT_NAME, backendName);
         }
 
         private final TraceDataHandler dataHandler = new TraceDataHandler();
@@ -150,7 +150,7 @@ public class TraceBackend {
                         tracing = true;
                         getBackend(true);
                         loadingFileInfo = true;
-                        handler = new TraceEventHandler(tracerBackend);
+                        handler = new TraceEventHandler(tracerBackend.getName());
                         handler.register();
 
                         // list of nodes being traced
@@ -328,7 +328,7 @@ public class TraceBackend {
                     try {
                         loading = true;
                         loadingFileInfo = true;
-                        handler = new TraceEventHandler(tracerBackend);
+                        handler = new TraceEventHandler(tracerBackend.getName());
                         getBackend(true);
                         handler.register();
                         tracerBackend.getRpcSite().call(
@@ -362,7 +362,7 @@ public class TraceBackend {
                         loading = true;
                         loadingFileInfo = false;
                         startIndex = theStartIndex;
-                        handler = new TraceEventHandler(tracerBackend);
+                        handler = new TraceEventHandler(tracerBackend.getName());
                         getBackend(true);
                         TraceCollections.getTracesList().clear();
                         handler.register();

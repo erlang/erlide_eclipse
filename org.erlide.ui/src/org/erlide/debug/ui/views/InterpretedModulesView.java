@@ -26,7 +26,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
-import org.erlide.backend.IBackend;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.debug.IErlangDebugNode;
@@ -220,13 +219,12 @@ public class InterpretedModulesView extends AbstractDebugView implements
         final IProject project = ModelUtils.getProject(module)
                 .getWorkspaceProject();
         final boolean interpret = checked;
-        final IBackend backend = erlangDebugTarget.getBackend();
 
         if (erlangDebugTarget.getInterpretedModules().contains(
                 moduleWoExtension) != interpret) {
             // FIXME this isn't correct!!!
-            backend.interpret(project, moduleWoExtension, distributed,
-                    interpret);
+            erlangDebugTarget.interpret(project, moduleWoExtension,
+                    distributed, interpret);
         }
         addRemove(module, checked);
     }

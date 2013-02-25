@@ -8,10 +8,10 @@
 
 %% doc for f
 f() -> 
-	X=[1,4,6], 
-	lists:reverse([]), 
+	X=[1,4,6,8], 
+	Z = lists:reverse(X), 
 	io:format(""),
-	X.
+	Z.
  
 g() -> 
 	'a\1b',

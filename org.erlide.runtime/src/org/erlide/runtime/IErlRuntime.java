@@ -17,6 +17,12 @@ import com.ericsson.otp.erlang.OtpMbox;
 
 public interface IErlRuntime {
 
+    String getName();
+
+    String getErlangVersion();
+
+    boolean isDistributed();
+
     RuntimeData getRuntimeData();
 
     RuntimeInfo getRuntimeInfo();
@@ -42,5 +48,9 @@ public interface IErlRuntime {
     OtpMbox getEventMbox();
 
     IRpcSite getRpcSite();
+
+    void restart();
+
+    void addListener(IRuntimeStateListener listener);
 
 }

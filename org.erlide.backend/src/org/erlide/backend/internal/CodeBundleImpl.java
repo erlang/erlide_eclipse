@@ -17,30 +17,29 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.xtext.xbase.lib.Pair;
-import org.erlide.backend.ICodeBundle;
+import org.erlide.runtime.ICodeBundle;
 import org.erlide.utils.ErlLogger;
-import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class CodeBundleImpl implements ICodeBundle {
 
-    private final Bundle bundle;
+    private final String bundleName;
     private final Map<String, CodeContext> paths;
     private final Collection<Pair<String, String>> inits;
 
-    public CodeBundleImpl(final Bundle b,
+    public CodeBundleImpl(final String bname,
             final Map<String, CodeContext> paths2,
             final Collection<Pair<String, String>> inits) {
-        bundle = b;
+        bundleName = bname;
         paths = Maps.newHashMap(paths2);
         this.inits = inits;
     }
 
     @Override
-    public Bundle getBundle() {
-        return bundle;
+    public String getBundleName() {
+        return bundleName;
     }
 
     @Override
@@ -48,7 +47,7 @@ public class CodeBundleImpl implements ICodeBundle {
         final List<String> result = Lists.newArrayList();
         for (final Entry<String, CodeContext> path : paths.entrySet()) {
             final Collection<String> myPath = BeamUtil.getPaths(path.getKey(),
-                    bundle);
+                    OsgiUtil.findOsgiBundle(bundleName));
             if (myPath != null) {
                 result.addAll(myPath);
             } else {

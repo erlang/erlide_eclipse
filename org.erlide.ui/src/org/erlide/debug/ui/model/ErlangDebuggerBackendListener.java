@@ -59,7 +59,8 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
                                                     .getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS)));
                     final boolean distributed = debugFlags
                             .contains(ErlDebugFlags.DISTRIBUTED_DEBUG);
-                    backend.interpret(project, moduleName, distributed, true);
+                    erlangDebugTarget.interpret(project, moduleName,
+                            distributed, true);
                 }
             }
         } catch (final CoreException e) {

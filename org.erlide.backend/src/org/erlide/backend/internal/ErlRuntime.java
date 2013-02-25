@@ -19,6 +19,7 @@ import org.erlide.backend.BackendException;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.IRuntimeStateListener;
 import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
@@ -37,6 +38,8 @@ import org.erlide.utils.SystemConfiguration;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
+import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
@@ -68,12 +71,14 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     private OtpNode localNode;
     private final Object localNodeLock = new Object();
     private boolean reported;
-    private final IProcess process;
+    private IProcess process;
     private final boolean connectOnce;
     private final IProvider<IProcess> processProvider;
     private final OtpNodeStatus statusWatcher;
     private OtpMbox eventBox;
     private boolean stopped;
+    private IRuntimeStateListener listener;
+    private String erlangVersion;
 
     public ErlRuntime(final String name, final String cookie,
             final IProvider<IProcess> processProvider,
@@ -116,6 +121,11 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     public void start() {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public String getName() {
+        return getNodeName();
     }
 
     public void startLocalNode() {
@@ -278,6 +288,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             case CONNECTED:
                 break;
             case DOWN:
+                listener.runtimeDown(this);
                 try {
                     if (process != null) {
                         process.terminate();
@@ -285,8 +296,6 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
                 } catch (final DebugException e) {
                     ErlLogger.info(e);
                 }
-                // TODO restart it??
-                // process =
                 if (!stopped) {
                     final String msg = reportRuntimeDown(data.getNodeName());
                     throw new RpcException(msg);
@@ -585,4 +594,48 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     public RuntimeInfo getRuntimeInfo() {
         return data.getRuntimeInfo();
     }
+
+    @Override
+    public void restart() {
+        if (stopped) {
+            return;
+        }
+        System.out.println("RESTART " + this);
+        state = State.DISCONNECTED;
+        process = processProvider.get();
+    }
+
+    @Override
+    public void addListener(final IRuntimeStateListener aListener) {
+        listener = aListener;
+    }
+
+    private String getScriptId() throws RpcException {
+        OtpErlangObject r;
+        r = getRpcSite().call("init", "script_id", "");
+        if (r instanceof OtpErlangTuple) {
+            final OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
+            if (rr instanceof OtpErlangString) {
+                return ((OtpErlangString) rr).stringValue();
+            }
+        }
+        return "";
+    }
+
+    @Override
+    public String getErlangVersion() {
+        if (erlangVersion == null) {
+            try {
+                erlangVersion = getScriptId();
+            } catch (final Exception e) {
+            }
+        }
+        return erlangVersion;
+    }
+
+    @Override
+    public boolean isDistributed() {
+        return !Strings.isNullOrEmpty(getNodeName());
+    }
+
 }

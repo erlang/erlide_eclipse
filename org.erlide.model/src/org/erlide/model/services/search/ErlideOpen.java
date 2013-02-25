@@ -159,6 +159,8 @@ public class ErlideOpen {
     public static List<ExternalTreeEntry> getExternalModuleTree(
             final IRpcSite backend, final String externalModules,
             final OtpErlangList pathVars) {
+        System.out.println("open:external_module_tree > " + externalModules);
+        final long time = System.currentTimeMillis();
         try {
             final OtpErlangObject res = backend.call("erlide_open",
                     "get_external_module_tree", "x",
@@ -180,6 +182,8 @@ public class ErlideOpen {
                     result.add(new ExternalTreeEntry(parentPath, path,// name,
                             isModuleA.atomValue().equals("module")));
                 }
+                System.out.println("open:external_module_tree < "
+                        + (System.currentTimeMillis() - time));
                 return result;
             }
         } catch (final RpcException e) {
