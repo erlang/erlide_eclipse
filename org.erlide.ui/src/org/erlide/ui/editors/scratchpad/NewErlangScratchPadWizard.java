@@ -30,125 +30,124 @@ import org.eclipse.ui.ide.IDE;
 
 public class NewErlangScratchPadWizard extends Wizard implements INewWizard {
 
-	private IStructuredSelection fSelection;
-	private NewErlangScratchPadWizardPage fPage;
+    private IStructuredSelection fSelection;
+    private NewErlangScratchPadWizardPage fPage;
 
-	NewErlangScratchPadWizard() {
-		super();
-		setNeedsProgressMonitor(true);
-	}
+    @Override
+    public void addPages() {
+        fPage = new NewErlangScratchPadWizardPage(fSelection);
+        addPage(fPage);
+    }
 
-	@Override
-	public void addPages() {
-		fPage = new NewErlangScratchPadWizardPage(fSelection);
-		addPage(fPage);
-	}
+    // FIXME copied a lot from ErlangFileWizard, we should refactor to common
+    // base class...
 
-	// FIXME copied a lot from ErlangFileWizard, we should refactor to common
-	// base class...
+    @Override
+    public boolean performFinish() {
+        final IPath containerFullPath = fPage.getContainerFullPath();
+        final String fileName = fPage.getFileName();
+        final IRunnableWithProgress op = new IRunnableWithProgress() {
 
-	@Override
-	public boolean performFinish() {
-		final IPath containerFullPath = fPage.getContainerFullPath();
-		final String fileName = fPage.getFileName();
-		final IRunnableWithProgress op = new IRunnableWithProgress() {
+            @Override
+            public void run(final IProgressMonitor monitor)
+                    throws InvocationTargetException {
+                try {
+                    doFinish(containerFullPath, fileName, monitor);
+                } catch (final CoreException e) {
+                    throw new InvocationTargetException(e);
+                } finally {
+                    monitor.done();
+                }
+            }
+        };
+        try {
+            getContainer().run(true, false, op);
+        } catch (final InterruptedException e) {
+            return false;
+        } catch (final InvocationTargetException e) {
+            final Throwable realException = e.getTargetException();
+            MessageDialog.openError(getShell(), "Error",
+                    realException.getMessage());
+            return false;
+        }
+        return true;
+    }
 
-			public void run(final IProgressMonitor monitor)
-					throws InvocationTargetException {
-				try {
-					doFinish(containerFullPath, fileName, monitor);
-				} catch (final CoreException e) {
-					throw new InvocationTargetException(e);
-				} finally {
-					monitor.done();
-				}
-			}
-		};
-		try {
-			getContainer().run(true, false, op);
-		} catch (final InterruptedException e) {
-			return false;
-		} catch (final InvocationTargetException e) {
-			final Throwable realException = e.getTargetException();
-			MessageDialog.openError(getShell(), "Error", realException
-					.getMessage());
-			return false;
-		}
-		return true;
-	}
+    /**
+     * The worker method. It will find the container, create the file if missing
+     * or just replace its contents, and open the editor on the newly created
+     * file.
+     */
+    public void doFinish(final IPath containerFullPath, final String fileName,
+            final IProgressMonitor monitor) throws CoreException {
 
-	/**
-	 * The worker method. It will find the container, create the file if missing
-	 * or just replace its contents, and open the editor on the newly created
-	 * file.
-	 */
-	public void doFinish(final IPath containerFullPath, final String fileName,
-			final IProgressMonitor monitor) throws CoreException {
+        // ErlLogger.debug("Generating a file with skeleton: "+skeleton);
 
-		// ErlLogger.debug("Generating a file with skeleton: "+skeleton);
+        // create a sample file
+        monitor.beginTask("Creating " + fileName, 2);
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        final IResource resource = root.findMember(containerFullPath);
+        if (!resource.exists() || !(resource instanceof IContainer)) {
+            throwCoreException("Container \"" + containerFullPath
+                    + "\" does not exist.");
+        }
+        final IContainer container = (IContainer) resource;
+        IPath path = new Path(fileName);
+        final String ext = path.getFileExtension();
+        if (!"erlScratchPad".equals(ext)) {
+            path = path.addFileExtension("erlScratchPad");
+        }
+        final IFile file = container.getFile(path);
+        try {
+            final InputStream stream = openContentStream();
+            if (file.exists()) {
+                file.setContents(stream, true, true, monitor);
+            } else {
+                file.create(stream, true, monitor);
+            }
+            stream.close();
+        } catch (final IOException e) {
+        }
+        monitor.worked(1);
 
-		// create a sample file
-		monitor.beginTask("Creating " + fileName, 2);
-		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		final IResource resource = root.findMember(containerFullPath);
-		if (!resource.exists() || !(resource instanceof IContainer)) {
-			throwCoreException("Container \"" + containerFullPath
-					+ "\" does not exist.");
-		}
-		final IContainer container = (IContainer) resource;
-		IPath path = new Path(fileName);
-		final String ext = path.getFileExtension();
-		if (!"erlScratchPad".equals(ext)) {
-			path = path.addFileExtension("erlScratchPad");
-		}
-		final IFile file = container.getFile(path);
-		try {
-			final InputStream stream = openContentStream();
-			if (file.exists()) {
-				file.setContents(stream, true, true, monitor);
-			} else {
-				file.create(stream, true, monitor);
-			}
-			stream.close();
-		} catch (final IOException e) {
-		}
-		monitor.worked(1);
+        // ErlangCore.getModelManager().create(file, null);
 
-		// ErlangCore.getModelManager().create(file, null);
+        monitor.setTaskName("Opening file for editing...");
+        getShell().getDisplay().asyncExec(new Runnable() {
 
-		monitor.setTaskName("Opening file for editing...");
-		getShell().getDisplay().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                final IWorkbenchPage page = PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow().getActivePage();
+                try {
+                    IDE.openEditor(page, file, true);
+                } catch (final PartInitException e) {
+                }
+            }
+        });
+        monitor.worked(1);
+    }
 
-			public void run() {
-				final IWorkbenchPage page = PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow().getActivePage();
-				try {
-					IDE.openEditor(page, file, true);
-				} catch (final PartInitException e) {
-				}
-			}
-		});
-		monitor.worked(1);
-	}
+    /**
+     * We will initialize file contents with a sample text.
+     */
 
-	/**
-	 * We will initialize file contents with a sample text.
-	 */
+    private InputStream openContentStream() {
+        final String s = "%% This is a scratch pad for running erlang code\n%% Everything is saved";
+        return new ByteArrayInputStream(s.getBytes(Charset.forName("UTF8")));
+    }
 
-	private InputStream openContentStream() {
-		String s = "%% This is a scratch pad for running erlang code on a node\n%% Everything is saved";
-		return new ByteArrayInputStream(s.getBytes(Charset.forName("UTF8")));
-	}
+    private void throwCoreException(final String message) throws CoreException {
+        final IStatus status = new Status(IStatus.ERROR, "Erlang_Wizard",
+                IStatus.OK, message, null);
+        throw new CoreException(status);
+    }
 
-	private void throwCoreException(final String message) throws CoreException {
-		final IStatus status = new Status(IStatus.ERROR, "Erlang_Wizard",
-				IStatus.OK, message, null);
-		throw new CoreException(status);
-	}
-
-	public void init(final IWorkbench workbench,
-			final IStructuredSelection selection) {
-		fSelection = selection;
-	}
+    @Override
+    public void init(final IWorkbench workbench,
+            final IStructuredSelection selection) {
+        fSelection = selection;
+        setNeedsProgressMonitor(true);
+    }
 
 }
