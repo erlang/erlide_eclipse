@@ -33,11 +33,6 @@ public class NewErlangScratchPadWizard extends Wizard implements INewWizard {
     private IStructuredSelection fSelection;
     private NewErlangScratchPadWizardPage fPage;
 
-    NewErlangScratchPadWizard() {
-        super();
-        setNeedsProgressMonitor(true);
-    }
-
     @Override
     public void addPages() {
         fPage = new NewErlangScratchPadWizardPage(fSelection);
@@ -138,7 +133,7 @@ public class NewErlangScratchPadWizard extends Wizard implements INewWizard {
      */
 
     private InputStream openContentStream() {
-        final String s = "%% This is a scratch pad for running erlang code on a node\n%% Everything is saved";
+        final String s = "%% This is a scratch pad for running erlang code\n%% Everything is saved";
         return new ByteArrayInputStream(s.getBytes(Charset.forName("UTF8")));
     }
 
@@ -152,6 +147,7 @@ public class NewErlangScratchPadWizard extends Wizard implements INewWizard {
     public void init(final IWorkbench workbench,
             final IStructuredSelection selection) {
         fSelection = selection;
+        setNeedsProgressMonitor(true);
     }
 
 }
