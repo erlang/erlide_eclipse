@@ -27,7 +27,7 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.text.ErlideIndent;
 import org.erlide.model.services.text.IndentResult;
 import org.erlide.runtime.IRpcSite;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 import org.erlide.utils.ErlLogger;
@@ -41,11 +41,11 @@ import org.erlide.utils.ErlLogger;
 public class AutoIndentStrategy implements IAutoEditStrategy {
     // extends DefaultIndentLineAutoEditStrategy {
 
-    private final ErlangEditor fEditor;
+    private final AbstractErlangEditor editor;
 
-    public AutoIndentStrategy(final ErlangEditor editor) {
+    public AutoIndentStrategy(final AbstractErlangEditor editor) {
         super();
-        fEditor = editor;
+        this.editor = editor;
     }
 
     private void autoIndentAfterNewLine(final IDocument d,
@@ -61,10 +61,9 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
             throws BadLocationException {
         final int offset = c.offset;
         String txt = null;
-        if (fEditor != null) {
-            fEditor.reconcileNow();
-        }
-        final IErlMember member = getMemberNearOffset(offset);
+        editor.reconcileNow();
+        final IErlElement element = editor.getElementAt(offset, false);
+        final IErlMember member = (IErlMember) element;
         if (member != null) {
             final int start = member.getSourceRange().getOffset();
             if (offset >= start) {
@@ -101,12 +100,9 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
     }
 
     private IErlMember getMemberNearOffset(final int offset) {
-        if (fEditor == null) {
-            return null;
-        }
-        final IErlElement element = fEditor.getElementAt(offset, false);
+        final IErlElement element = editor.getElementAt(offset, false);
         IErlMember member = (IErlMember) element;
-        final IErlModule module = fEditor.getModule();
+        final IErlModule module = editor.getModule();
         try {
             if (member == null) {
                 member = (IErlMember) module.getChildren().get(

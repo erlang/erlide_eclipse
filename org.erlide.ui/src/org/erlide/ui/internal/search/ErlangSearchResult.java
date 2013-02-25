@@ -19,6 +19,7 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.services.search.LimitTo;
 import org.erlide.model.util.ResourceUtil;
 import org.erlide.ui.ErlideImage;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 public class ErlangSearchResult extends AbstractTextSearchResult implements
@@ -153,7 +154,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
         final IFile file = ResourceUtil
                 .getFileFromLocation(ese.getModuleName());
         if (editor instanceof ErlangEditor) {
-            final ErlangEditor erlangEditor = (ErlangEditor) editor;
+            final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) editor;
             final IErlModule module = erlangEditor.getModule();
             if (module != null) {
                 if (file != null) {

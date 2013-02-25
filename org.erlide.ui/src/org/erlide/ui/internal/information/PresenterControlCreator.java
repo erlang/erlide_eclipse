@@ -25,9 +25,14 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
+import org.erlide.backend.BackendCore;
+import org.erlide.model.root.IErlElement;
+import org.erlide.model.services.search.OpenResult;
 import org.erlide.ui.ErlideImage;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.actions.OpenAction;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.SimpleSelectionProvider;
+import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
@@ -157,9 +162,57 @@ public final class PresenterControlCreator extends
         }
     }
 
-    final ErlangEditor editor;
+    /**
+     * Action that opens the current hover input element.
+     * 
+     * @since 3.4
+     */
+    private static final class OpenDeclarationAction extends Action {
+        private final BrowserInformationControl fInfoControl;
+        private final AbstractErlangEditor editor;
 
-    public PresenterControlCreator(final ErlangEditor editor) {
+        public OpenDeclarationAction(
+                final BrowserInformationControl infoControl,
+                final AbstractErlangEditor editor) {
+            fInfoControl = infoControl;
+            this.editor = editor;
+            setText("Open declaration");
+            ErlideImage.setLocalImageDescriptors(this, "goto_input.gif");
+        }
+
+        /*
+         * @see org.eclipse.jface.action.Action#run()
+         */
+        @Override
+        public void run() {
+            final BrowserInformationControlInput infoInput = fInfoControl
+                    .getInput();
+            fInfoControl.notifyDelayedInputChange(null);
+            fInfoControl.dispose();
+            // TODO: add hover location to editor navigation history?
+            try {
+                final Object element = infoInput.getInputElement();
+                if (element instanceof IErlElement) {
+                    EditorUtility.openElementInEditor(element, true);
+                } else if (element instanceof OpenResult) {
+                    final OpenResult or = (OpenResult) element;
+                    try {
+                        OpenAction.openOpenResult(editor, editor.getModule(),
+                                BackendCore.getBackendManager().getIdeBackend()
+                                        .getRpcSite(), -1, null, or, null);
+                    } catch (final Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (final PartInitException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private final AbstractErlangEditor editor;
+
+    public PresenterControlCreator(final AbstractErlangEditor editor) {
         this.editor = editor;
     }
 

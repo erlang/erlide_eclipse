@@ -16,7 +16,7 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.search.ErlSearchScope;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 
 /**
  * Finds references of the selected element in working sets. The action is
@@ -68,7 +68,7 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
      * @param editor
      *            the Erlang editor
      */
-    public FindReferencesInWorkingSetAction(final ErlangEditor editor) {
+    public FindReferencesInWorkingSetAction(final AbstractErlangEditor editor) {
         this(editor, null);
     }
 
@@ -81,7 +81,7 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
      * @param workingSets
      *            the working sets to be used in the search
      */
-    public FindReferencesInWorkingSetAction(final ErlangEditor editor,
+    public FindReferencesInWorkingSetAction(final AbstractErlangEditor editor,
             final IWorkingSet[] workingSets) {
         super(editor);
         fWorkingSets = workingSets;

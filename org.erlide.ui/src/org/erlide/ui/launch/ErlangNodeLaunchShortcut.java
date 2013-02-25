@@ -41,7 +41,7 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.ListsUtils;
 import org.erlide.utils.StringUtils;
@@ -112,21 +112,18 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
     @Override
     public void launch(final IEditorPart editor, final String mode) {
         ErlLogger.debug("** Launch :: " + editor.getTitle());
-        if (editor instanceof ErlangEditor) {
-            final ErlangEditor erlangEditor = (ErlangEditor) editor;
-            final IErlModule module = erlangEditor.getModule();
-            if (module != null) {
-                final IErlProject project = ModelUtils.getProject(module);
-                if (project != null) {
-                    try {
-                        doLaunch(mode, Lists.newArrayList(project));
-                    } catch (final CoreException e) {
-                        final IWorkbench workbench = PlatformUI.getWorkbench();
-                        final Shell shell = workbench
-                                .getActiveWorkbenchWindow().getShell();
-                        MessageDialog.openError(shell, "Error", e.getStatus()
-                                .getMessage());
-                    }
+        if (editor instanceof AbstractErlangEditor) {
+            final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) editor;
+            final IErlProject project = erlangEditor.getProject();
+            if (project != null) {
+                try {
+                    doLaunch(mode, Lists.newArrayList(project));
+                } catch (final CoreException e) {
+                    final IWorkbench workbench = PlatformUI.getWorkbench();
+                    final Shell shell = workbench.getActiveWorkbenchWindow()
+                            .getShell();
+                    MessageDialog.openError(shell, "Error", e.getStatus()
+                            .getMessage());
                 }
             }
         }

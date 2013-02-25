@@ -13,7 +13,7 @@ package org.erlide.ui.internal.search;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.model.services.search.ErlSearchScope;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 
 /**
  * Finds references to the selected element in the enclosing project of the
@@ -47,7 +47,7 @@ public class FindImplementorsInProjectAction extends FindImplementorsAction {
      * @param editor
      *            the Erlang editor
      */
-    public FindImplementorsInProjectAction(final ErlangEditor editor) {
+    public FindImplementorsInProjectAction(final AbstractErlangEditor editor) {
         super(editor);
     }
 

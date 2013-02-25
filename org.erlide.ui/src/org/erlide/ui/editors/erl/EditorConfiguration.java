@@ -34,6 +34,8 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.IErlProject;
+import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
 import org.erlide.ui.editors.erl.completion.ErlStringContentAssistProcessor;
@@ -54,7 +56,7 @@ import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
  */
 public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 
-    final ErlangEditor editor;
+    final AbstractErlangEditor editor;
     private ITextDoubleClickStrategy doubleClickStrategy;
     private ErlReconciler reconciler;
     private ErlContentAssistProcessor contentAssistProcessor;
@@ -72,7 +74,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
      *            the color manager
      */
     public EditorConfiguration(final IPreferenceStore store,
-            final ErlangEditor editor, final IColorManager colorManager) {
+            final AbstractErlangEditor editor, final IColorManager colorManager) {
         super(store, colorManager);
         this.editor = editor;
     }
@@ -125,7 +127,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
                 editor);
         final IErlModule module = editor != null ? editor.getModule() : null;
         final String path = module != null ? module.getFilePath() : null;
-        final boolean logging = module != null ? module.getLogging() : true;
+        final boolean logging = module != null ? module.getLogging() : false;
         reconciler = new ErlReconciler(strategy, true, true, path, module,
                 logging, getEditor());
         reconciler.setProgressMonitor(new NullProgressMonitor());
@@ -142,11 +144,12 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
             contentAssistant
                     .setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 
-            final IErlModule module = editor.getModule();
+            final IErlModule module = getModule();
+            final IErlProject project = getProject();
             contentAssistProcessor = new ErlContentAssistProcessor(
-                    sourceViewer, module, contentAssistant);
+                    sourceViewer, module, project, contentAssistant);
             contentAssistProcessorForStrings = new ErlStringContentAssistProcessor(
-                    sourceViewer, module, contentAssistant);
+                    sourceViewer, module, project, contentAssistant);
 
             contentAssistProcessor.setToPrefs();
             contentAssistant.setContentAssistProcessor(contentAssistProcessor,
@@ -169,6 +172,14 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
             return contentAssistant;
         }
         return null;
+    }
+
+    protected IErlProject getProject() {
+        return ModelUtils.getProject(getModule());
+    }
+
+    protected IErlModule getModule() {
+        return editor.getModule();
     }
 
     /*

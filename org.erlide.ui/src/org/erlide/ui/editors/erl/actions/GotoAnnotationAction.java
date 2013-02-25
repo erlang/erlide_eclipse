@@ -13,6 +13,7 @@ package org.erlide.ui.editors.erl.actions;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditorMessages;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
@@ -41,7 +42,7 @@ public class GotoAnnotationAction extends TextEditorAction {
 
     @Override
     public void run() {
-        final ErlangEditor e = (ErlangEditor) getTextEditor();
+        final AbstractErlangEditor e = (AbstractErlangEditor) getTextEditor();
         e.gotoAnnotation(fForward);
     }
 

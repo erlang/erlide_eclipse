@@ -78,7 +78,6 @@ public class ErlideScanner {
             r1 = ModelPlugin.getDefault().getIdeBackend()
                     .call(ERLIDE_SCANNER, "get_token_at", "ai", module, offset);
         } catch (final Exception e) {
-            // e.printStackTrace();
             return null;
         }
         // ErlLogger.debug("getTokenAt -> " + r1);

@@ -8,7 +8,7 @@ import org.erlide.model.erlang.IErlModule;
 public final class ErlangWordFinder {
 
     public static IRegion findWord(final IErlModule module,
-            final ErlangEditor editor, final int offset) {
+            final AbstractErlangEditor editor, final int offset) {
         if (module == null) {
             return null;
         }

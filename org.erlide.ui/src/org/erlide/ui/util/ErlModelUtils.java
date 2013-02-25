@@ -35,7 +35,7 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.editors.util.ErlangExternalEditorInput;
 import org.erlide.utils.Util;
@@ -89,7 +89,7 @@ public class ErlModelUtils {
     public static boolean openFunctionInEditor(
             final ErlangFunction erlangFunction, final IEditorPart editor)
             throws CoreException {
-        final ErlangEditor erlangEditor = (ErlangEditor) editor;
+        final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) editor;
         final IErlModule module = erlangEditor.getModule();
         if (module == null) {
             return false;
@@ -105,7 +105,7 @@ public class ErlModelUtils {
 
     public static boolean openTypeInEditor(final String typeName,
             final IEditorPart editor) throws CoreException, BackendException {
-        final ErlangEditor erlangEditor = (ErlangEditor) editor;
+        final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) editor;
         final IErlModule module = erlangEditor.getModule();
         if (module == null) {
             return false;

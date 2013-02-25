@@ -22,7 +22,7 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.IRpcSite;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.util.MessageReporter;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -40,8 +40,8 @@ public class CompileAction extends Action {
 
     @Override
     public void run() {
-        final ErlangEditor editor = (ErlangEditor) getSite().getPage()
-                .getActiveEditor();
+        final AbstractErlangEditor editor = (AbstractErlangEditor) getSite()
+                .getPage().getActiveEditor();
         final IErlModule module = editor.getModule();
         if (module == null) {
             return;
@@ -55,8 +55,8 @@ public class CompileAction extends Action {
         final CompilerOptions prefs = new CompilerOptions(project);
         try {
             prefs.load();
-        } catch (final BackingStoreException e1) {
-            e1.printStackTrace();
+        } catch (final BackingStoreException e) {
+            e.printStackTrace();
         }
         final OtpErlangList compilerOptions = prefs.export();
         final IErlProject erlProject = ErlModelManager.getErlangModel()

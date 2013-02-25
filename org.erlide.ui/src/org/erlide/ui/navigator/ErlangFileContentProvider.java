@@ -11,10 +11,14 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.navigator.SaveablesProvider;
+import org.eclipse.ui.progress.UIJob;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
@@ -122,6 +126,8 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
             final Object newInput) {
         if (theViewer instanceof StructuredViewer) {
             viewer = (StructuredViewer) theViewer;
+        } else {
+            viewer = null;
         }
     }
 
@@ -161,17 +167,21 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
         // Commented out because it may cause problems with too many updates.
         // TODO Investigate further!
 
-        // final String title = "Update Erlang Model in CommonViewer: "
-        // + file.getName();
-        // new UIJob(title) {
-        // @Override
-        // public IStatus runInUIThread(final IProgressMonitor monitor) {
-        // if (viewer != null && !viewer.getControl().isDisposed()) {
-        // viewer.update(file, null);
-        // }
-        // return Status.OK_STATUS;
-        // }
-        // }.schedule();
+        final String title = "Update Erlang Model in CommonViewer: "
+                + file.getName();
+        if (viewer == null) {
+            return;
+        }
+        new UIJob(title) {
+            @Override
+            public IStatus runInUIThread(final IProgressMonitor monitor) {
+                if (viewer != null && !viewer.getControl().isDisposed()) {
+                    viewer.refresh(file);
+                    // viewer.update(file, null);
+                }
+                return Status.OK_STATUS;
+            }
+        }.schedule();
     }
 
     @Override

@@ -105,7 +105,7 @@ public class MarkOccurencesHandler {
             try {
                 final int offset = aSelection.getOffset();
                 final OpenResult res = ErlideOpen.open(ideBackend.getRpcSite(),
-                        theModule, offset,
+                        theModule.getScannerName(), offset,
                         ModelUtils.getImportsAsList(theModule), "",
                         ErlModelManager.getErlangModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil

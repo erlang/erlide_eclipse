@@ -56,6 +56,7 @@ import org.erlide.model.services.search.SearchPatternFactory;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -612,7 +613,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
     public SearchPatternData tryErlangTextSelection(SearchPatternData initData,
             final IEditorPart activePart) throws ErlModelException {
-        final ErlangEditor erlangEditor = (ErlangEditor) activePart;
+        final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) activePart;
         final IErlModule module = erlangEditor.getModule();
         if (module != null) {
             final IRpcSite backend = BackendCore.getBackendManager()
@@ -623,7 +624,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             final int offset = textSel.getOffset();
             OpenResult res;
             try {
-                res = ErlideOpen.open(backend, module, offset,
+                res = ErlideOpen.open(backend, module.getScannerName(), offset,
                         ModelUtils.getImportsAsList(module), "",
                         ErlModelManager.getErlangModel().getPathVars());
             } catch (final RpcException e) {

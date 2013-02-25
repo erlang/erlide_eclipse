@@ -18,6 +18,18 @@
             symbolicFontName="org.eclipse.jface.textfont">
          <contentTypeBinding contentTypeId="org.erlide.core.content.erlang"/>
       </editor>
+      <editor
+            class="org.erlide.ui.editors.scratchpad.ErlangScratchPad"
+            default="true"
+            extensions="erlScratchPad"
+            icon="icons/full/obj16/erlang_srcFile.png"
+            id="org.erlide.ui.editors.scratchpad.erlangScratchPad"
+            name="Erlang Scratch Pad"
+            symbolicFontName="org.eclipse.jface.textfont">
+         <contentTypeBinding
+               contentTypeId="org.erlide.core.content.erlang">
+         </contentTypeBinding>
+      </editor>
    </extension>
    <extension
          point="org.eclipse.ui.editorActions">
@@ -1494,6 +1506,55 @@
       </wizard>
    </extension>
    <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="org.erlide.ui.navigatorObjectContribution"
+            objectClass="org.eclipse.core.resources.IResource">
+         <action
+               class="org.erlide.ui.actions.NewErlangModuleAction"
+               icon="icons/full/obj16/erlang_NewModule.png"
+               id="org.erlide.ui.menuModuleAction"
+               label="New Module"
+               menubarPath="erlideMenu2">
+         </action>
+         <action
+               class="org.erlide.ui.editors.scratchpad.NewErlangScratchPadAction"
+               icon="icons/full/obj16/erlang_NewModule.png"
+               id="org.erlide.ui.menuNewScratchPadAction"
+               label="New Scratch Pad"
+               menubarPath="erlideMenu2">
+         </action>
+
+      </objectContribution>
+      <viewerContribution
+            id="org.erlide.ui.navigatorViewerContribution"
+            targetID="org.erlide.ui.views.navigator.view#PopupMenu">
+         <action
+               class="org.erlide.ui.actions.NewErlangProjectAction"
+               icon="icons/full/obj16/newproject.png"
+               id="org.erlide.ui.menuProjectAction"
+               label="New Erlang Project"
+               menubarPath="erlidemenu1">
+         </action>
+      </viewerContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.linkHelper">
+      <linkHelper
+            class="org.erlide.ui.actions.ErlangLinkHelperAction"
+            id="org.erlide.ui.navigator.linkHelper">
+         <selectionEnablement>
+            <or>
+               <adapt
+                     type="org.eclipse.core.resources.IFile">
+               </adapt>
+            </or></selectionEnablement>
+            <editorInputEnablement>
+				<instanceof value="org.eclipse.ui.IFileEditorInput"/>
+			</editorInputEnablement>
+      </linkHelper>
+   </extension>
+   <extension
          point="org.eclipse.ui.decorators">
       <decorator
             adaptable="true"
@@ -1946,5 +2007,12 @@
             class="org.erlide.ui.editors.erl.ErlangDocumentSetupParticipant"
             contentTypeId="org.erlide.core.content.erlang">
       </participant>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <file-association
+            content-type="org.erlide.core.content.erlang"
+            file-extensions="erlScratchPad">
+      </file-association>
    </extension>
 </plugin>

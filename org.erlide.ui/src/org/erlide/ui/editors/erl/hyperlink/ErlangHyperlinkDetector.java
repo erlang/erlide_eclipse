@@ -9,9 +9,8 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.AbstractHyperlinkDetector;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.erlide.model.erlang.ErlToken;
-import org.erlide.model.erlang.IErlModule;
 import org.erlide.ui.actions.OpenAction;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.IErlangEditorActionDefinitionIds;
 
 public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
@@ -33,12 +32,8 @@ public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
     }
 
     private IHyperlink[] detectHyperlinks(final IDocument doc, final int offset) {
-        final ErlangEditor editor = (ErlangEditor) getAdapter(ErlangEditor.class);
+        final AbstractErlangEditor editor = (AbstractErlangEditor) getAdapter(AbstractErlangEditor.class);
         if (editor == null) {
-            return null;
-        }
-        final IErlModule module = editor.getModule();
-        if (module == null) {
             return null;
         }
         final ErlToken token = editor.getScanner().getTokenAt(offset);
@@ -84,10 +79,10 @@ public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
     }
 
     private static class ErlangHyperlink implements IHyperlink {
-        private final ErlangEditor editor;
+        private final AbstractErlangEditor editor;
         private final ErlRegion region;
 
-        public ErlangHyperlink(final ErlangEditor editor,
+        public ErlangHyperlink(final AbstractErlangEditor editor,
                 final ErlRegion partion) {
             this.editor = editor;
             region = partion;
