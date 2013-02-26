@@ -24,8 +24,6 @@ public interface IErlElementLocator {
 
     IErlModule findModule(String name) throws ErlModelException;
 
-    IErlModule findModuleIgnoreCase(String name) throws ErlModelException;
-
     IErlModule findModule(String moduleName, String modulePath)
             throws ErlModelException;
 
@@ -53,7 +51,7 @@ public interface IErlElementLocator {
             final IErlElementLocator.Scope scope) throws ErlModelException;
 
     IErlModule findModuleFromProject(IErlProject erlProject, String name,
-            String object, boolean b, boolean c,
-            IErlElementLocator.Scope projectOnly) throws ErlModelException;
+            String object, boolean c, IErlElementLocator.Scope projectOnly)
+            throws ErlModelException;
 
 }

@@ -15,9 +15,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.model.erlang.FunctionRef;
-import org.erlide.model.erlang.IErlFunction;
-import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
@@ -160,15 +157,6 @@ public class IErlModelTest extends ErlModelTestBase {
         assertNull(findModule4);
         assertNull(findModule5);
         assertNull(findModule6);
-    }
-
-    // IErlModule findModuleIgnoreCase(String name) throws ErlModelException;
-    @Test
-    public void findModuleIgnoreCase() throws Exception {
-        final IErlModule findModule = model.findModuleIgnoreCase("XX");
-        final IErlModule findModule2 = model.findModuleIgnoreCase("XX.ERL");
-        assertEquals(module, findModule);
-        assertEquals(module, findModule2);
     }
 
     // IErlModule findModule(String moduleName, String modulePath)

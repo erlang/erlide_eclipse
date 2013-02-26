@@ -616,8 +616,7 @@ public class ErlProject extends Openable implements IErlProject {
     public IErlModule getModule(final String name) {
         try {
             return ErlModelManager.getErlangModel().findModuleFromProject(this,
-                    name, null, false, false,
-                    IErlElementLocator.Scope.PROJECT_ONLY);
+                    name, null, false, IErlElementLocator.Scope.PROJECT_ONLY);
         } catch (final ErlModelException e) {
             // final boolean hasExtension = ListsUtils.hasExtension(name);
             return null;

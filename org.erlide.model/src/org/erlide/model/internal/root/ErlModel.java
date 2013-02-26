@@ -64,6 +64,7 @@ import org.erlide.model.util.IElementChangedListener;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.model.util.NatureUtil;
 import org.erlide.model.util.PluginUtils;
+import org.erlide.model.util.ResourceUtil;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 
@@ -359,14 +360,7 @@ public class ErlModel extends Openable implements IErlModel {
 
     @Override
     public IErlModule findModule(final String name) throws ErlModelException {
-        return findModuleFromProject(null, name, null, false, false,
-                IErlElementLocator.Scope.ALL_PROJECTS);
-    }
-
-    @Override
-    public IErlModule findModuleIgnoreCase(final String name)
-            throws ErlModelException {
-        return findModuleFromProject(null, name, null, true, false,
+        return findModuleFromProject(null, name, null, false,
                 IErlElementLocator.Scope.ALL_PROJECTS);
     }
 
@@ -444,7 +438,7 @@ public class ErlModel extends Openable implements IErlModel {
     @Override
     public IErlModule findModule(final String moduleName,
             final String modulePath) throws ErlModelException {
-        return findModuleFromProject(null, moduleName, modulePath, false, true,
+        return findModuleFromProject(null, moduleName, modulePath, true,
                 IErlElementLocator.Scope.ALL_PROJECTS);
     }
 
@@ -452,7 +446,7 @@ public class ErlModel extends Openable implements IErlModel {
     public IErlModule findInclude(final String includeName,
             final String includePath) throws ErlModelException {
         return findIncludeFromProject(null, includeName, includePath, false,
-                false, IErlElementLocator.Scope.ALL_PROJECTS);
+                IErlElementLocator.Scope.ALL_PROJECTS);
     }
 
     /**
@@ -983,8 +977,8 @@ public class ErlModel extends Openable implements IErlModel {
 
     private IErlModule findIncludeFromProject(final IErlProject project,
             final String includeName, final String includePath,
-            final boolean ignoreCase, final boolean checkExternals,
-            final IErlElementLocator.Scope scope) throws ErlModelException {
+            final boolean checkExternals, final IErlElementLocator.Scope scope)
+            throws ErlModelException {
         if (project != null) {
             final IErlModule module = getModuleFromCacheByNameOrPath(
                     (ErlProject) project, includeName, includePath, scope);
@@ -1009,14 +1003,8 @@ public class ErlModel extends Openable implements IErlModel {
             for (final IErlModule module2 : includes) {
                 final String name = hasExtension ? module2.getName() : module2
                         .getModuleName();
-                if (ignoreCase) {
-                    if (includeName.equals(name)) {
-                        return module2;
-                    }
-                } else {
-                    if (includeName.equalsIgnoreCase(name)) {
-                        return module2;
-                    }
+                if (ResourceUtil.samePath(includeName, name)) {
+                    return module2;
                 }
             }
         }
@@ -1027,23 +1015,23 @@ public class ErlModel extends Openable implements IErlModel {
     public IErlModule findModuleFromProject(final IErlProject project,
             final String moduleName, final String modulePath,
             final IErlElementLocator.Scope scope) throws ErlModelException {
-        return findModuleFromProject(project, moduleName, modulePath, false,
-                true, scope);
+        return findModuleFromProject(project, moduleName, modulePath, true,
+                scope);
     }
 
     @Override
     public IErlModule findIncludeFromProject(final IErlProject project,
             final String moduleName, final String modulePath,
             final IErlElementLocator.Scope scope) throws ErlModelException {
-        return findIncludeFromProject(project, moduleName, modulePath, false,
-                true, scope);
+        return findIncludeFromProject(project, moduleName, modulePath, true,
+                scope);
     }
 
     @Override
     public IErlModule findModuleFromProject(final IErlProject project,
             final String moduleName, final String modulePath,
-            final boolean ignoreCase, final boolean checkExternals,
-            final IErlElementLocator.Scope scope) throws ErlModelException {
+            final boolean checkExternals, final IErlElementLocator.Scope scope)
+            throws ErlModelException {
         if (project != null) {
             final IErlModule module = getModuleFromCacheByNameOrPath(
                     (ErlProject) project, moduleName, modulePath, scope);
@@ -1062,7 +1050,7 @@ public class ErlModel extends Openable implements IErlModel {
                 if (project != null) {
                     final IErlModule module = tryFindModule(
                             Sets.newHashSet(project), moduleName, modulePath,
-                            ignoreCase, allModules, paths, externalModules);
+                            allModules, paths, externalModules);
                     if (module != null) {
                         return module;
                     }
@@ -1072,8 +1060,8 @@ public class ErlModel extends Openable implements IErlModel {
                     final Collection<IErlProject> projects = project
                             .getReferencedProjects();
                     final IErlModule module = tryFindModule(projects,
-                            moduleName, modulePath, ignoreCase, allModules,
-                            paths, externalModules);
+                            moduleName, modulePath, allModules, paths,
+                            externalModules);
                     if (module != null) {
                         return module;
                     }
@@ -1082,8 +1070,8 @@ public class ErlModel extends Openable implements IErlModel {
                 if (scope == Scope.ALL_PROJECTS) {
                     final Collection<IErlProject> projects = getErlangProjects();
                     final IErlModule module = tryFindModule(projects,
-                            moduleName, modulePath, ignoreCase, allModules,
-                            paths, externalModules);
+                            moduleName, modulePath, allModules, paths,
+                            externalModules);
                     if (module != null) {
                         return module;
                     }
@@ -1097,9 +1085,8 @@ public class ErlModel extends Openable implements IErlModel {
 
     private IErlModule tryFindModule(final Collection<IErlProject> projects,
             final String moduleName, final String modulePath,
-            final boolean ignoreCase, final List<IErlModule> allModules,
-            final Set<String> paths, final boolean externalModules)
-            throws ErlModelException {
+            final List<IErlModule> allModules, final Set<String> paths,
+            final boolean externalModules) throws ErlModelException {
         IErlModule module;
         for (final IErlProject project : projects) {
             final Collection<IErlModule> modules = Lists.newArrayList();
@@ -1107,7 +1094,7 @@ public class ErlModel extends Openable implements IErlModel {
                     .getExternalModules() : project.getModules();
             getAllModulesAux(modulesOrExternals, modules, paths);
             allModules.addAll(modules);
-            module = findModule(modules, moduleName, modulePath, ignoreCase);
+            module = findModule(modules, moduleName, modulePath);
             if (module != null) {
                 return module;
             }
@@ -1116,8 +1103,7 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     private IErlModule findModule(final Collection<IErlModule> modules,
-            final String moduleName, final String modulePath,
-            final boolean ignoreCase) {
+            final String moduleName, final String modulePath) {
         if (modulePath != null) {
             for (final IErlModule module2 : modules) {
                 final String path2 = module2.getFilePath();
@@ -1132,14 +1118,8 @@ public class ErlModel extends Openable implements IErlModel {
             for (final IErlModule module2 : modules) {
                 final String name = hasExtension ? module2.getName() : module2
                         .getModuleName();
-                if (ignoreCase) {
-                    if (moduleName.equalsIgnoreCase(name)) {
-                        return module2;
-                    }
-                } else {
-                    if (moduleName.equals(name)) {
-                        return module2;
-                    }
+                if (ResourceUtil.samePath(moduleName, name)) {
+                    return module2;
                 }
             }
         }
@@ -1161,7 +1141,7 @@ public class ErlModel extends Openable implements IErlModel {
             }
         }
         return findIncludeFromProject(ModelUtils.getProject(module),
-                includeName, includePath, false, true, scope);
+                includeName, includePath, true, scope);
     }
 
     private final Object fModelLock = new Object();
