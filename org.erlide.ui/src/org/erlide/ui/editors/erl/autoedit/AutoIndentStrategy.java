@@ -22,7 +22,6 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.erlide.backend.BackendCore;
 import org.erlide.model.erlang.IErlMember;
-import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.text.ErlideIndent;
 import org.erlide.model.services.text.IndentResult;
@@ -97,21 +96,6 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         } catch (final Exception e) {
             ErlLogger.warn(e);
         }
-    }
-
-    private IErlMember getMemberNearOffset(final int offset) {
-        final IErlElement element = editor.getElementAt(offset, false);
-        IErlMember member = (IErlMember) element;
-        final IErlModule module = editor.getModule();
-        try {
-            if (member == null) {
-                member = (IErlMember) module.getChildren().get(
-                        module.getChildCount() - 1);
-            }
-        } catch (final Exception e1) {
-            // ignore
-        }
-        return member;
     }
 
     /**

@@ -279,6 +279,7 @@ public class EdocView extends AbstractInfoView {
         super.createActions();
         openDeclarationAction = new OpenDeclarationAction(this);
         openDeclarationAction.setEnabled(false);
+        // fSelectAllAction = new SelectAllAction(this, selectionProvider);
     }
 
     @Override

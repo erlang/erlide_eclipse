@@ -45,8 +45,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.builder.CompilerOption;
-import org.erlide.core.builder.CompilerOptions;
 import org.erlide.core.builder.CompilerOption.PathsOption;
+import org.erlide.core.builder.CompilerOptions;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
@@ -379,14 +379,6 @@ public class CompilerPreferencePage extends PropertyPage implements
         return b;
     }
 
-    enum OptionStatus {
-        //@formatter:off
-        OK, 
-        ERROR, 
-        NO_RUNTIME
-        //@formatter:off
-    }
-
     @Override
     public boolean performOk() {
         try {
@@ -415,20 +407,22 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     private void updateUI() {
-        for(final Button b: optionButtons){
+        for (final Button b : optionButtons) {
             final CompilerOption key = (CompilerOption) b.getData();
             b.setSelection(prefs.getBooleanOption(key));
         }
-        final Iterable<String> paths = prefs.getPathsOption(CompilerOption.INCLUDE_DIRS);
-        if(paths!=null) {
+        final Iterable<String> paths = prefs
+                .getPathsOption(CompilerOption.INCLUDE_DIRS);
+        if (paths != null) {
             text.setText(PathsOption.toString(paths));
         }
-        final String parseTransform = prefs.getSimpleOption(CompilerOption.PARSE_TRANSFORM);
-        if(parseTransform!=null) {
+        final String parseTransform = prefs
+                .getSimpleOption(CompilerOption.PARSE_TRANSFORM);
+        if (parseTransform != null) {
             text_1.setText(parseTransform);
         }
         final String custom = prefs.getSimpleOption(CompilerOption.CUSTOM);
-        if(custom!=null) {
+        if (custom != null) {
             text_2.setText(custom);
         }
     }
@@ -445,10 +439,11 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     @SuppressWarnings("unused")
-    private static class MacrosTableContentProvider implements IStructuredContentProvider {
+    private static class MacrosTableContentProvider implements
+            IStructuredContentProvider {
         @Override
         public Object[] getElements(final Object inputElement) {
-            return new Object[]{"aaa", "vvv"};
+            return new Object[] { "aaa", "vvv" };
         }
 
         @Override
@@ -462,11 +457,13 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     @SuppressWarnings("unused")
-    private class MacrosTableLabelProvider extends LabelProvider implements ITableLabelProvider {
+    private class MacrosTableLabelProvider extends LabelProvider implements
+            ITableLabelProvider {
         @Override
         public Image getColumnImage(final Object element, final int columnIndex) {
             return null;
         }
+
         @Override
         public String getColumnText(final Object element, final int columnIndex) {
             return element.toString();
