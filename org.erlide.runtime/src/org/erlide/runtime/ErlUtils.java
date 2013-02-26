@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.erlide.runtime;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -269,9 +268,7 @@ public final class ErlUtils {
 
     public static boolean isAccessibleDir(final IRpcSite backend,
             final String localDir) {
-        File f = null;
         try {
-            f = new File(localDir);
             final OtpErlangObject r = backend.call("file", "read_file_info",
                     "s", localDir);
             if (Util.isOk(r)) {
@@ -283,15 +280,10 @@ public final class ErlUtils {
                 return ("read".equals(access) || "read_write".equals(access))
                         && (mode & 4) == 4;
             }
-    
         } catch (final OtpErlangRangeException e) {
             ErlLogger.error(e);
         } catch (final RpcException e) {
             ErlLogger.error(e);
-        } finally {
-            if (f != null) {
-                f.delete();
-            }
         }
         return false;
     }
