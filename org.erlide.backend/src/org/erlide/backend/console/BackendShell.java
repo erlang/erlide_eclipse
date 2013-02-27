@@ -15,8 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.backend.IBackend;
-import org.erlide.backend.console.IoRequest.IoRequestKind;
 import org.erlide.backend.events.ErlangEventHandler;
+import org.erlide.runtime.shell.BackendShellListener;
+import org.erlide.runtime.shell.IBackendShell;
+import org.erlide.runtime.shell.IoRequest;
+import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;

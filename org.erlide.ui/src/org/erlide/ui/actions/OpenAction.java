@@ -169,8 +169,6 @@ public class OpenAction extends SelectionDispatchAction {
                         project = model.findProject(p);
                     }
                 }
-                final int i = 0;
-                final int j = i * 2;
             }
             if (openResult != null) {
                 openOpenResult(textEditor, module, backend, offset, project,

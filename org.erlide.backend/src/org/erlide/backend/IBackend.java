@@ -2,7 +2,6 @@ package org.erlide.backend;
 
 import java.io.IOException;
 
-import org.erlide.backend.console.IBackendShell;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.ICodeBundle;
 import org.erlide.runtime.IErlRuntime;
@@ -19,8 +18,6 @@ public interface IBackend extends IDisposable, IErlRuntime,
     void registerCodeBundle(final ICodeBundle bundle);
 
     void unregisterCodeBundle(final ICodeBundle bundle);
-
-    IBackendShell getShell(final String id);
 
     void input(final String s) throws IOException;
 

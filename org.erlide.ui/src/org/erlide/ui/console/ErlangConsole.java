@@ -22,7 +22,7 @@ import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.part.IPageBookViewPage;
 import org.erlide.backend.IBackend;
-import org.erlide.backend.console.IBackendShell;
+import org.erlide.runtime.shell.IBackendShell;
 
 public class ErlangConsole extends TextConsole {
     private final IBackendShell shell;

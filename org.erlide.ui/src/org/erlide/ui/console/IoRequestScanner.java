@@ -14,8 +14,8 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.jface.text.rules.IToken;
-import org.erlide.backend.console.IBackendShell;
-import org.erlide.backend.console.IoRequest;
+import org.erlide.runtime.shell.IBackendShell;
+import org.erlide.runtime.shell.IoRequest;
 
 public class IoRequestScanner implements IPartitionTokenScanner {
 

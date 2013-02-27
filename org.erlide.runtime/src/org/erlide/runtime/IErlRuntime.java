@@ -11,6 +11,7 @@
 package org.erlide.runtime;
 
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.shell.IBackendShell;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
@@ -52,5 +53,7 @@ public interface IErlRuntime {
     void restart();
 
     void addListener(IRuntimeStateListener listener);
+
+    IBackendShell getShell(final String id);
 
 }

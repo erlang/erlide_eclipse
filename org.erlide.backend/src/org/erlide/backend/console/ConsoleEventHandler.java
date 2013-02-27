@@ -11,6 +11,7 @@
 package org.erlide.backend.console;
 
 import org.erlide.backend.events.ErlangEventHandler;
+import org.erlide.runtime.shell.IBackendShell;
 import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

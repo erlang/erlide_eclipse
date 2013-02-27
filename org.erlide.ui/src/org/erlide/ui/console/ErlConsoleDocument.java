@@ -16,9 +16,9 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
-import org.erlide.backend.console.BackendShellListener;
-import org.erlide.backend.console.IBackendShell;
-import org.erlide.backend.console.IoRequest.IoRequestKind;
+import org.erlide.runtime.shell.BackendShellListener;
+import org.erlide.runtime.shell.IBackendShell;
+import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.ui.util.DisplayUtils;
 
 public final class ErlConsoleDocument extends Document implements

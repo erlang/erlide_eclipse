@@ -71,10 +71,10 @@ import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.erlide.backend.console.IBackendShell;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.ParserException;
 import org.erlide.runtime.RuntimeHelper;
+import org.erlide.runtime.shell.IBackendShell;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
