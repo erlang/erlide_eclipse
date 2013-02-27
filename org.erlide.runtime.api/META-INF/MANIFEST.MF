@@ -14,4 +14,5 @@ Export-Package: com.ericsson.otp.erlang,
  org.erlide.runtime,
  org.erlide.runtime.api,
  org.erlide.runtime.rpc,
- org.erlide.runtime.runtimeinfo
+ org.erlide.runtime.runtimeinfo,
+ org.erlide.runtime.shell

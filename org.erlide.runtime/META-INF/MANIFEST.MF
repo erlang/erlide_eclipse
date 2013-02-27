@@ -11,5 +11,4 @@ Export-Package: org.erlide.runtime,
  org.erlide.runtime.epmd,
  org.erlide.runtime.internal;x-friends:="org.erlide.core",
  org.erlide.runtime.internal.rpc;x-internal:=true,
- org.erlide.runtime.runtimeinfo,
- org.erlide.runtime.shell
+ org.erlide.runtime.runtimeinfo
