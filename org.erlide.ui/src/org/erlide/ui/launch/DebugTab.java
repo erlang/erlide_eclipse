@@ -42,13 +42,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.erlide.backend.BackendData;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
 import org.erlide.debug.ui.views.InterpretedModuleListContentProvider;
-import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.ErlDebugFlags;
+import org.erlide.runtime.ErlRuntimeAttributes;
 import org.erlide.ui.dialogs.AddInterpretedModulesSelectionDialog;
 import org.erlide.ui.util.SWTUtil;
 
@@ -237,9 +237,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 
     @Override
     public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
-        config.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
+        config.setAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES,
                 new ArrayList<String>());
-        config.setAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
+        config.setAttribute(ErlRuntimeAttributes.DEBUG_FLAGS,
                 ErlDebugFlags.getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS));
     }
 
@@ -256,7 +256,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         EnumSet<ErlDebugFlags> debugFlags;
         try {
             final int attribute = config.getAttribute(
-                    ErlLaunchAttributes.DEBUG_FLAGS,
+                    ErlRuntimeAttributes.DEBUG_FLAGS,
                     ErlDebugFlags.getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS));
             debugFlags = ErlDebugFlags.makeSet(attribute);
         } catch (final CoreException e) {
@@ -267,7 +267,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 
     @Override
     public void performApply(final ILaunchConfigurationWorkingCopy config) {
-        config.setAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
+        config.setAttribute(ErlRuntimeAttributes.DEBUG_FLAGS,
                 ErlDebugFlags.getFlag(getFlagCheckboxes()));
         final List<String> r = new ArrayList<String>();
         for (final Object o : contentProvider.getElements(null)) {
@@ -275,7 +275,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             r.add(ModelUtils.getProject(module).getName() + ":"
                     + module.getName());
         }
-        config.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES, r);
+        config.setAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, r);
     }
 
     @Override

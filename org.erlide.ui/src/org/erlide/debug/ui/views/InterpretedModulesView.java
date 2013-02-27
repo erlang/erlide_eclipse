@@ -27,7 +27,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
-import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.debug.IErlangDebugNode;
 import org.erlide.launch.debug.model.ErlangDebugElement;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
@@ -35,6 +34,7 @@ import org.erlide.launch.debug.model.ErtsProcess;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.ErlDebugFlags;
+import org.erlide.runtime.ErlRuntimeAttributes;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.utils.ErlLogger;
 
@@ -96,7 +96,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
             try {
                 final EnumSet<ErlDebugFlags> debugFlags = ErlDebugFlags
                         .makeSet(launchConfiguration.getAttribute(
-                                ErlLaunchAttributes.DEBUG_FLAGS,
+                                ErlRuntimeAttributes.DEBUG_FLAGS,
                                 ErlDebugFlags
                                         .getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS)));
                 distributed = debugFlags

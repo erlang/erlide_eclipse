@@ -28,12 +28,13 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.erlide.launch.ErlLaunchAttributes;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.model.IBeamLocator;
 import org.erlide.model.erlang.ModuleKind;
 import org.erlide.runtime.ErlDebugFlags;
+import org.erlide.runtime.ErlRuntimeAttributes;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.RuntimeData;
@@ -58,46 +59,47 @@ public final class BackendData extends RuntimeData {
     }
 
     @SuppressWarnings("unchecked")
-    public BackendData(final RuntimeInfo runtime,
-            final ILaunchConfiguration config, final String mode) {
-        super(runtime, mode);
+    public BackendData(@NonNull final RuntimeInfo info,
+            @NonNull final ILaunchConfiguration config, final String mode) {
+        super(info, mode);
 
         projects = Lists.newArrayList();
 
+        Asserts.isNotNull(info);
         Asserts.isNotNull(config);
         try {
-            cookie = config.getAttribute(ErlLaunchAttributes.COOKIE, cookie);
-            managed = config.getAttribute(ErlLaunchAttributes.MANAGED, managed);
-            restartable = config.getAttribute(ErlLaunchAttributes.RESTARTABLE,
+            cookie = config.getAttribute(ErlRuntimeAttributes.COOKIE, cookie);
+            managed = config
+                    .getAttribute(ErlRuntimeAttributes.MANAGED, managed);
+            restartable = config.getAttribute(ErlRuntimeAttributes.RESTARTABLE,
                     restartable);
-            startShell = config.getAttribute(ErlLaunchAttributes.SHELL,
+            startShell = config.getAttribute(ErlRuntimeAttributes.SHELL,
                     startShell);
-            console = config.getAttribute(ErlLaunchAttributes.CONSOLE, console);
+            console = config
+                    .getAttribute(ErlRuntimeAttributes.CONSOLE, console);
 
-            runtimeName = config.getAttribute(ErlLaunchAttributes.RUNTIME_NAME,
-                    runtimeName);
-            nodeName = config.getAttribute(ErlLaunchAttributes.NODE_NAME,
+            nodeName = config.getAttribute(ErlRuntimeAttributes.NODE_NAME,
                     nodeName);
-            longName = config.getAttribute(ErlLaunchAttributes.USE_LONG_NAME,
+            longName = config.getAttribute(ErlRuntimeAttributes.USE_LONG_NAME,
                     longName);
-            extraArgs = config.getAttribute(ErlLaunchAttributes.EXTRA_ARGS,
+            extraArgs = config.getAttribute(ErlRuntimeAttributes.EXTRA_ARGS,
                     extraArgs);
-            workingDir = config.getAttribute(ErlLaunchAttributes.WORKING_DIR,
+            workingDir = config.getAttribute(ErlRuntimeAttributes.WORKING_DIR,
                     workingDir);
             env = config.getAttribute(
                     ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, env);
             initialCall = createInitialCall(config);
             debugFlags = ErlDebugFlags.makeSet(config.getAttribute(
-                    ErlLaunchAttributes.DEBUG_FLAGS,
+                    ErlRuntimeAttributes.DEBUG_FLAGS,
                     ErlDebugFlags.getFlag(debugFlags)));
             loadOnAllNodes = config.getAttribute(
-                    ErlLaunchAttributes.LOAD_ALL_NODES, loadOnAllNodes);
-            internal = config.getAttribute(ErlLaunchAttributes.INTERNAL,
+                    ErlRuntimeAttributes.LOAD_ALL_NODES, loadOnAllNodes);
+            internal = config.getAttribute(ErlRuntimeAttributes.INTERNAL,
                     internal);
 
             projects = getProjects(config);
             final List<String> intMods = config.getAttribute(
-                    ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
+                    ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES,
                     interpretedModules);
             interpretedModules = addBreakpointProjectsAndModules(getProjects(),
                     intMods);
@@ -106,16 +108,13 @@ public final class BackendData extends RuntimeData {
             e1.printStackTrace();
         }
 
-        if (runtime != null) {
-            runtimeInfo = runtime.setArgs(getExtraArgs());
-            runtimeName = runtime.getName();
-            try {
-                if (config.getAttribute(ErlLaunchAttributes.EXTRA_ARGS, "")
-                        .equals("")) {
-                    setExtraArgs(runtime.getArgs());
-                }
-            } catch (final CoreException e) {
+        runtimeInfo = info.setArgs(extraArgs);
+        try {
+            if (config.getAttribute(ErlRuntimeAttributes.EXTRA_ARGS, "")
+                    .equals("")) {
+                setExtraArgs(info.getArgs());
             }
+        } catch (final CoreException e) {
         }
         setManaged(shouldManageNode(getNodeName(), BackendCore.getEpmdWatcher()));
     }
@@ -191,17 +190,17 @@ public final class BackendData extends RuntimeData {
             workingCopy.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
                     "org.erlide.core.ertsProcessFactory");
 
-            workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME,
+            workingCopy.setAttribute(ErlRuntimeAttributes.NODE_NAME,
                     getNodeName());
-            workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
+            workingCopy.setAttribute(ErlRuntimeAttributes.RUNTIME_NAME,
                     info.getName());
-            workingCopy.setAttribute(ErlLaunchAttributes.COOKIE, getCookie());
+            workingCopy.setAttribute(ErlRuntimeAttributes.COOKIE, getCookie());
             // workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
             // !options.contains(BackendOptions.NO_CONSOLE));
-            workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
+            workingCopy.setAttribute(ErlRuntimeAttributes.USE_LONG_NAME,
                     hasLongName());
-            workingCopy
-                    .setAttribute(ErlLaunchAttributes.INTERNAL, isInternal());
+            workingCopy.setAttribute(ErlRuntimeAttributes.INTERNAL,
+                    isInternal());
 
             return workingCopy;
         } catch (final CoreException e) {
@@ -217,7 +216,7 @@ public final class BackendData extends RuntimeData {
     private Collection<IProject> getProjects(final ILaunchConfiguration config)
             throws CoreException {
         String prjs;
-        prjs = config.getAttribute(ErlLaunchAttributes.PROJECTS, "");
+        prjs = config.getAttribute(ErlRuntimeAttributes.PROJECTS, "");
         final String[] projectNames = prjs.length() == 0 ? new String[] {}
                 : prjs.split(PROJECT_NAME_SEPARATOR);
         return gatherProjects(projectNames);
@@ -242,11 +241,11 @@ public final class BackendData extends RuntimeData {
 
     private InitialCall createInitialCall(final ILaunchConfiguration config)
             throws CoreException {
-        final String module = config.getAttribute(ErlLaunchAttributes.MODULE,
+        final String module = config.getAttribute(ErlRuntimeAttributes.MODULE,
                 "");
         final String function = config.getAttribute(
-                ErlLaunchAttributes.FUNCTION, "");
-        final String args = config.getAttribute(ErlLaunchAttributes.ARGUMENTS,
+                ErlRuntimeAttributes.FUNCTION, "");
+        final String args = config.getAttribute(ErlRuntimeAttributes.ARGUMENTS,
                 "");
         return new InitialCall(module, function, args);
     }

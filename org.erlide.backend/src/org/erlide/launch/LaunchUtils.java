@@ -8,13 +8,14 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.erlide.runtime.ErlRuntimeAttributes;
 
 public class LaunchUtils {
 
     public static IProject[] getErlangLaunchConfigurationProjects(
             final ILaunchConfiguration configuration) throws CoreException {
         final String projectNamesString = configuration.getAttribute(
-                ErlLaunchAttributes.PROJECTS, "");
+                ErlRuntimeAttributes.PROJECTS, "");
         final String[] projectNames = projectNamesString.split(";");
         final List<IProject> projects = new ArrayList<IProject>();
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();

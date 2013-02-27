@@ -29,6 +29,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
 import org.erlide.model.BeamLocator;
+import org.erlide.runtime.ErlRuntimeAttributes;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
@@ -66,21 +67,25 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             final IProgressMonitor monitor) throws CoreException {
         RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoCatalog()
                 .getRuntime(
-                        config.getAttribute(ErlLaunchAttributes.RUNTIME_NAME,
+                        config.getAttribute(ErlRuntimeAttributes.RUNTIME_NAME,
                                 ""));
         if (runtimeInfo == null) {
             runtimeInfo = BackendCore.getRuntimeInfoCatalog()
                     .getDefaultRuntime();
         }
+        if (runtimeInfo == null) {
+            // TODO what to do here?
+            ErlLogger.error("Can't create backend without a runtime defined!");
+            return null;
+        }
         BackendData data = new BackendData(runtimeInfo, config, mode);
         final RuntimeInfo info = data.getRuntimeInfo();
         if (info == null) {
-            ErlLogger.error("Could not find runtime '%s'",
-                    data.getRuntimeName());
+            ErlLogger.error("Could not find runtime '%s'", data
+                    .getRuntimeInfo().getName());
             return null;
         }
-        ErlLogger.debug("doLaunch runtime %s (%s)", data.getRuntimeName(), data
-                .getRuntimeInfo().getName());
+        ErlLogger.debug("doLaunch runtime %s", data.getRuntimeInfo().getName());
         ErlLogger.debug("doLaunch cookie %s (%s)", data.getCookie(),
                 data.getCookie());
 
@@ -145,7 +150,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             final IProgressMonitor monitor) throws CoreException {
         final ILaunchConfigurationWorkingCopy wc = configuration
                 .getWorkingCopy();
-        wc.setAttribute(ErlLaunchAttributes.COOKIE, "erlide");
+        wc.setAttribute(ErlRuntimeAttributes.COOKIE, "erlide");
         launch(wc, mode, launch, monitor);
     }
 

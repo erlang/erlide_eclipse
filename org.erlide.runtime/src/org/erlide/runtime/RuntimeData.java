@@ -27,7 +27,6 @@ public class RuntimeData {
     protected boolean startShell;
     protected boolean console;
     protected List<String> interpretedModules;
-    protected String runtimeName;
     protected String nodeName;
     protected boolean longName;
     protected String extraArgs;
@@ -48,7 +47,6 @@ public class RuntimeData {
         startShell = true;
         console = true;
         interpretedModules = Lists.newArrayList();
-        runtimeName = "";
         nodeName = "";
         longName = true;
         extraArgs = "";
@@ -75,7 +73,6 @@ public class RuntimeData {
         Asserts.isNotNull(info, "Can't create backend with no runtime info");
 
         runtimeInfo = info;
-        setRuntimeName(info.getName());
         setCookie("erlide");
         setLongName(true);
 
@@ -140,14 +137,6 @@ public class RuntimeData {
 
     public void setInterpretedModules(final List<String> interpretedModules) {
         this.interpretedModules = interpretedModules;
-    }
-
-    public String getRuntimeName() {
-        return runtimeName;
-    }
-
-    public void setRuntimeName(final String name) {
-        runtimeName = name;
     }
 
     public String getNodeName() {

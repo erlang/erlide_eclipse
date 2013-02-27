@@ -8,17 +8,14 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.launch;
-
-import org.erlide.backend.BackendPlugin;
+package org.erlide.runtime;
 
 /**
  * @noextend This interface is not intended to be extended by clients.
  * @noimplement This interface is not intended to be implemented by clients.
  */
-public interface ErlLaunchAttributes {
+public interface ErlRuntimeAttributes {
 
-    final String NEW_PREFIX = BackendPlugin.PLUGIN_ID;
     final String PREFIX = "org.erlide.core";
 
     final String PROJECTS = PREFIX + ".projects";

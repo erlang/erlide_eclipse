@@ -17,10 +17,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendListener;
 import org.erlide.core.ErlangCore;
-import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.runtime.ErlDebugFlags;
+import org.erlide.runtime.ErlRuntimeAttributes;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.utils.ErlLogger;
@@ -54,7 +54,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
                     final EnumSet<ErlDebugFlags> debugFlags = ErlDebugFlags
                             .makeSet(launchConfiguration
                                     .getAttribute(
-                                            ErlLaunchAttributes.DEBUG_FLAGS,
+                                            ErlRuntimeAttributes.DEBUG_FLAGS,
                                             ErlDebugFlags
                                                     .getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS)));
                     final boolean distributed = debugFlags
