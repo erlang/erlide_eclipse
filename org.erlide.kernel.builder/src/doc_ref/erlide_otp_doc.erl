@@ -465,7 +465,7 @@ get_doc_from_fun_arity_list(Mod, List, StateDir) ->
         {D, _, _} ->
             D;
         _ ->
-            ""
+            error
     end.
 
 unappend(Flat, L) ->
