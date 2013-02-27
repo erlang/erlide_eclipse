@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.runtime;
 
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.shell.IBackendShell;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
@@ -25,8 +24,6 @@ public interface IErlRuntime {
     boolean isDistributed();
 
     RuntimeData getRuntimeData();
-
-    RuntimeInfo getRuntimeInfo();
 
     boolean isAvailable();
 

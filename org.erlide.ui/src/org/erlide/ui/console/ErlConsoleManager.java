@@ -44,7 +44,7 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
 
     @Override
     public void runtimeRemoved(final IBackend b) {
-        ErlLogger.debug("console REMOVED from " + b.getRuntimeInfo());
+        ErlLogger.debug("console REMOVED from " + b.getName());
         final IConsole console = consoles.get(b);
         if (console == null) {
             return;

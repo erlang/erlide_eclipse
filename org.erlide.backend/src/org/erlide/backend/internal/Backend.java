@@ -56,7 +56,6 @@ import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.IRuntimeStateListener;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.RuntimeData;
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.utils.Asserts;
@@ -92,7 +91,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         this.runtime = runtime;
         this.data = data;
         this.backendManager = backendManager;
-        codeManager = new CodeManager(this, getRuntimeInfo(), backendManager);
+        codeManager = new CodeManager(this, data.getRuntimeInfo(),
+                backendManager);
     }
 
     @Override
@@ -111,11 +111,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public String getErlangVersion() {
         return runtime.getErlangVersion();
-    }
-
-    @Override
-    public RuntimeInfo getRuntimeInfo() {
-        return data.getRuntimeInfo();
     }
 
     @Override
@@ -275,7 +270,7 @@ public abstract class Backend implements IStreamListener, IBackend {
             } else {
                 ErlLogger
                         .warn("Could not load module on backend %s, stream proxy is null",
-                                getRuntimeInfo());
+                                getName());
             }
         }
     }

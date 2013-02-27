@@ -27,7 +27,6 @@ import org.erlide.runtime.rpc.IRpcHelper;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcResult;
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.ExtensionUtils;
 import org.erlide.util.MessageReporter;
@@ -589,11 +588,6 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     @Override
     public RuntimeData getRuntimeData() {
         return data;
-    }
-
-    @Override
-    public RuntimeInfo getRuntimeInfo() {
-        return data.getRuntimeInfo();
     }
 
     @Override
