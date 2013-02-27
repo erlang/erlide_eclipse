@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -20,7 +21,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.erlide.utils.SystemConfiguration;
 
 /**
  * <p>
@@ -105,10 +105,10 @@ public class ResourceUtil {
     }
 
     public static boolean samePath(final String p1, final String p2) {
-        if (SystemConfiguration.getInstance().isOnWindows()) {
-            return p1.equalsIgnoreCase(p2);
-        } else {
+        if (EFS.getLocalFileSystem().isCaseSensitive()) {
             return p1.equals(p2);
+        } else {
+            return p1.equalsIgnoreCase(p2);
         }
     }
 
