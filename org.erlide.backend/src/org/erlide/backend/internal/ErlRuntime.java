@@ -38,8 +38,6 @@ import org.erlide.utils.SystemConfiguration;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
-import com.ericsson.otp.erlang.OtpErlangString;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
@@ -78,7 +76,6 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     private OtpMbox eventBox;
     private boolean stopped;
     private IRuntimeStateListener listener;
-    private String erlangVersion;
 
     public ErlRuntime(final String name, final String cookie,
             final IProvider<IProcess> processProvider,
@@ -603,29 +600,6 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     @Override
     public void addListener(final IRuntimeStateListener aListener) {
         listener = aListener;
-    }
-
-    private String getScriptId() throws RpcException {
-        OtpErlangObject r;
-        r = getRpcSite().call("init", "script_id", "");
-        if (r instanceof OtpErlangTuple) {
-            final OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
-            if (rr instanceof OtpErlangString) {
-                return ((OtpErlangString) rr).stringValue();
-            }
-        }
-        return "";
-    }
-
-    @Override
-    public String getErlangVersion() {
-        if (erlangVersion == null) {
-            try {
-                erlangVersion = getScriptId();
-            } catch (final Exception e) {
-            }
-        }
-        return erlangVersion;
     }
 
     @Override

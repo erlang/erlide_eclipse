@@ -19,8 +19,6 @@ public interface IErlRuntime {
 
     String getName();
 
-    String getErlangVersion();
-
     boolean isDistributed();
 
     RuntimeData getRuntimeData();

@@ -109,11 +109,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public String getErlangVersion() {
-        return runtime.getErlangVersion();
-    }
-
-    @Override
     public String getName() {
         return runtime.getName();
     }
@@ -496,16 +491,12 @@ public abstract class Backend implements IStreamListener, IBackend {
         // TODO: this code assumes that the debugged debugTarget and the
         // erlide-plugin uses the same Erlang version, how can we escape this?
 
-        final String ver = getErlangVersion();
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();
             final String name = c.getName();
             if (name.equals(bundle.getSymbolicName())) {
                 final String dir_path = el.getAttribute("path");
-                Enumeration<?> e = bundle.getEntryPaths(dir_path + "/" + ver);
-                if (e == null || !e.hasMoreElements()) {
-                    e = bundle.getEntryPaths(dir_path);
-                }
+                final Enumeration<?> e = bundle.getEntryPaths(dir_path);
                 if (e == null) {
                     ErlLogger.debug("* !!! error loading plugin "
                             + bundle.getSymbolicName());
