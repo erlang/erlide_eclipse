@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.Asserts;
 import org.erlide.utils.ErlLogger;
@@ -336,27 +335,6 @@ public class RuntimeData {
             cls = cls.getSuperclass();
         }
 
-        return result;
-    }
-
-    public static boolean shouldManageNode(final String name,
-            final EpmdWatcher epmdWatcher) {
-        final int atSignIndex = name.indexOf('@');
-        String shortName = name;
-        if (atSignIndex > 0) {
-            shortName = name.substring(0, atSignIndex);
-        }
-
-        boolean isLocal = atSignIndex < 0;
-        if (atSignIndex > 0) {
-            final String hostname = name.substring(atSignIndex + 1);
-            if (HostnameUtils.isThisHost(hostname)) {
-                isLocal = true;
-            }
-        }
-
-        final boolean isRunning = epmdWatcher.hasLocalNode(shortName);
-        final boolean result = isLocal && !isRunning;
         return result;
     }
 

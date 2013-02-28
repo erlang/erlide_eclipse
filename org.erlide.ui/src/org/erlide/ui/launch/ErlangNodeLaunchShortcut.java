@@ -33,7 +33,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.launch.ErlangLaunchDelegate;
+import org.erlide.launch.IErlangLaunchDelegateConstants;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
@@ -167,7 +167,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         }
         // try and make one
         final ILaunchConfigurationType launchConfigurationType = launchManager
-                .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE);
+                .getLaunchConfigurationType(IErlangLaunchDelegateConstants.CONFIGURATION_TYPE);
         ILaunchConfigurationWorkingCopy wc = null;
         wc = launchConfigurationType.newInstance(null, name);
         wc.setAttribute(ErlRuntimeAttributes.PROJECTS,

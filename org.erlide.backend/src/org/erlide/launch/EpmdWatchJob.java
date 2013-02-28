@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.runtime.epmd.EpmdWatcher;
+import org.erlide.runtime.epmd.IEpmdWatcher;
 
 /**
  * Periodically, query epmd to see if there are any new nodes that have been
@@ -25,10 +25,10 @@ public class EpmdWatchJob extends Job {
 
     private static final int defaultInterval = 1000;
     private int interval = defaultInterval;
-    private final EpmdWatcher watcher;
+    private final IEpmdWatcher watcher;
     private boolean isStopped;
 
-    public EpmdWatchJob(final EpmdWatcher aWatcher, final int anInterval) {
+    public EpmdWatchJob(final IEpmdWatcher aWatcher, final int anInterval) {
         super("Checking EPMD for new backends");
         assert aWatcher != null;
 
@@ -40,7 +40,7 @@ public class EpmdWatchJob extends Job {
         setPriority(SHORT);
     }
 
-    public EpmdWatchJob(final EpmdWatcher watcher) {
+    public EpmdWatchJob(final IEpmdWatcher watcher) {
         this(watcher, defaultInterval);
     }
 

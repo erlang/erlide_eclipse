@@ -8,6 +8,7 @@ import org.erlide.launch.EpmdWatchJob;
 import org.erlide.runtime.RuntimeCore;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.epmd.IEpmdListener;
+import org.erlide.runtime.epmd.IEpmdWatcher;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
@@ -15,7 +16,7 @@ public class BackendCore {
 
     private static IBackendManager backendManager;
     private static BackendFactory backendFactory;
-    private static EpmdWatcher epmdWatcher;
+    private static IEpmdWatcher epmdWatcher;
     private static EpmdWatchJob epmdWatcherJob;
 
     public static final IBackendManager getBackendManager() {
@@ -45,7 +46,7 @@ public class BackendCore {
         return manager.getIdeBackend();
     }
 
-    public static EpmdWatcher getEpmdWatcher() {
+    public static IEpmdWatcher getEpmdWatcher() {
         if (epmdWatcher == null) {
             // tryStartEpmdProcess();
             startEpmdWatcher();

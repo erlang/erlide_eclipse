@@ -30,6 +30,8 @@ import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
 import org.erlide.model.BeamLocator;
 import org.erlide.runtime.ErlRuntimeAttributes;
+import org.erlide.runtime.HostnameUtils;
+import org.erlide.runtime.epmd.IEpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
@@ -37,9 +39,6 @@ import org.erlide.utils.SystemConfiguration;
 import com.google.common.collect.Maps;
 
 public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
-
-    public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.launch.internal";
-    public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";
 
     @Override
     public void launch(final ILaunchConfiguration config, final String mode,
@@ -78,7 +77,10 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             ErlLogger.error("Can't create backend without a runtime defined!");
             return null;
         }
-        BackendData data = new BackendData(runtimeInfo, config, mode);
+        final String nodeName = config.getAttribute(
+                ErlRuntimeAttributes.NODE_NAME, "");
+        BackendData data = new BackendData(runtimeInfo, config, mode,
+                shouldManageNode(nodeName, BackendCore.getEpmdWatcher()));
         final RuntimeInfo info = data.getRuntimeInfo();
         if (info == null) {
             ErlLogger.error("Could not find runtime '%s'", data
@@ -214,8 +216,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             final ILaunchConfiguration cfg = aLaunch.getLaunchConfiguration();
             final ILaunchConfigurationType type = cfg.getType();
             final String id = type.getIdentifier();
-            return ErlangLaunchDelegate.CONFIGURATION_TYPE.equals(id)
-                    || ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL
+            return IErlangLaunchDelegateConstants.CONFIGURATION_TYPE.equals(id)
+                    || IErlangLaunchDelegateConstants.CONFIGURATION_TYPE_INTERNAL
                             .equals(id);
         } catch (final CoreException e) {
             ErlLogger.warn(e);
@@ -228,11 +230,33 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             final ILaunchConfiguration cfg = aLaunch.getLaunchConfiguration();
             final ILaunchConfigurationType type = cfg.getType();
             final String id = type.getIdentifier();
-            return ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL.equals(id);
+            return IErlangLaunchDelegateConstants.CONFIGURATION_TYPE_INTERNAL
+                    .equals(id);
         } catch (final CoreException e) {
             ErlLogger.warn(e);
             return false;
         }
+    }
+
+    public static boolean shouldManageNode(final String name,
+            final IEpmdWatcher epmdWatcher) {
+        final int atSignIndex = name.indexOf('@');
+        String shortName = name;
+        if (atSignIndex > 0) {
+            shortName = name.substring(0, atSignIndex);
+        }
+
+        boolean isLocal = atSignIndex < 0;
+        if (atSignIndex > 0) {
+            final String hostname = name.substring(atSignIndex + 1);
+            if (HostnameUtils.isThisHost(hostname)) {
+                isLocal = true;
+            }
+        }
+
+        final boolean isRunning = epmdWatcher.hasLocalNode(shortName);
+        final boolean result = isLocal && !isRunning;
+        return result;
     }
 
 }

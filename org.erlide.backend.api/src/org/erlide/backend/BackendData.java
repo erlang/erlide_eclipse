@@ -29,7 +29,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.jdt.annotation.NonNull;
-import org.erlide.launch.ErlangLaunchDelegate;
+import org.erlide.launch.IErlangLaunchDelegateConstants;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.model.IBeamLocator;
 import org.erlide.model.erlang.ModuleKind;
@@ -60,7 +60,8 @@ public final class BackendData extends RuntimeData {
 
     @SuppressWarnings("unchecked")
     public BackendData(@NonNull final RuntimeInfo info,
-            @NonNull final ILaunchConfiguration config, final String mode) {
+            @NonNull final ILaunchConfiguration config, final String mode,
+            final boolean toBeManaged) {
         super(info, mode);
 
         projects = Lists.newArrayList();
@@ -116,7 +117,7 @@ public final class BackendData extends RuntimeData {
             }
         } catch (final CoreException e) {
         }
-        setManaged(shouldManageNode(getNodeName(), BackendCore.getEpmdWatcher()));
+        setManaged(toBeManaged);
     }
 
     public BackendData(final RuntimeInfo info) {
@@ -179,7 +180,7 @@ public final class BackendData extends RuntimeData {
         final ILaunchManager manager = DebugPlugin.getDefault()
                 .getLaunchManager();
         final ILaunchConfigurationType type = manager
-                .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
+                .getLaunchConfigurationType(IErlangLaunchDelegateConstants.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
         try {
             final RuntimeInfo info = getRuntimeInfo();
