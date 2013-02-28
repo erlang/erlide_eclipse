@@ -24,9 +24,9 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ResourceUtil;
-import org.erlide.runtime.ErlUtils;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
+import org.erlide.util.erlang.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;

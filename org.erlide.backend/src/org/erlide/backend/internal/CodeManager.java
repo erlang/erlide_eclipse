@@ -23,9 +23,9 @@ import org.erlide.backend.BackendUtils;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
 import org.erlide.runtime.BeamLoader;
-import org.erlide.runtime.ErlUtils;
 import org.erlide.runtime.ICodeBundle;
 import org.erlide.runtime.ICodeManager;
+import org.erlide.runtime.RuntimeUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
@@ -195,7 +195,7 @@ public class CodeManager implements ICodeManager {
         final String externalPath = System.getProperty(p.getBundleName()
                 + ".ebin");
         if (externalPath != null) {
-            final boolean accessible = ErlUtils.isAccessibleDir(
+            final boolean accessible = RuntimeUtils.isAccessibleDir(
                     backend.getRpcSite(), externalPath);
             if (accessible) {
                 ErlLogger.debug("adding external %s to code path for %s:: %s",
@@ -212,7 +212,7 @@ public class CodeManager implements ICodeManager {
         if (ebinDirs != null) {
             for (final String ebinDir : ebinDirs) {
                 final String localDir = ebinDir.replaceAll("\\\\", "/");
-                final boolean accessible = ErlUtils.isAccessibleDir(
+                final boolean accessible = RuntimeUtils.isAccessibleDir(
                         backend.getRpcSite(), localDir);
                 final boolean embedded = ErlangCode.isEmbedded(backend
                         .getRpcSite());

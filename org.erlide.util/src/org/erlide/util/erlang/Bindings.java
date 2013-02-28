@@ -1,9 +1,8 @@
-package org.erlide.runtime;
+package org.erlide.util.erlang;
 
 import java.util.Collection;
 import java.util.Map;
 
-import org.erlide.util.erlang.SignatureException;
 
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangObject;

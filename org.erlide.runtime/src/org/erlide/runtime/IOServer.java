@@ -13,6 +13,8 @@ package org.erlide.runtime;
 import java.util.Collection;
 
 import org.erlide.util.ErlLogger;
+import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.TermParserException;
 

@@ -1,7 +1,7 @@
 package org.erlide.model.erlang;
 
-import org.erlide.runtime.Bindings;
-import org.erlide.runtime.ErlUtils;
+import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;

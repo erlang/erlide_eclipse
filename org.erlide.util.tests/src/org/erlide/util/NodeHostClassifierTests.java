@@ -1,4 +1,4 @@
-package org.erlide.runtime;
+package org.erlide.util;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;

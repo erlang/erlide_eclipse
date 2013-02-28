@@ -1,4 +1,4 @@
-package org.erlide.runtime.util;
+package org.erlide.util;
 
 import static org.junit.Assert.*;
 

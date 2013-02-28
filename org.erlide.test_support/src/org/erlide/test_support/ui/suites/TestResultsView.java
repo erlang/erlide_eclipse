@@ -18,13 +18,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.runtime.Bindings;
-import org.erlide.runtime.ErlUtils;
 import org.erlide.test_support.ui.suites.TestCaseData.FailReason;
 import org.erlide.test_support.ui.suites.TestCaseData.FailStackItem;
 import org.erlide.ui.util.DisplayUtils;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

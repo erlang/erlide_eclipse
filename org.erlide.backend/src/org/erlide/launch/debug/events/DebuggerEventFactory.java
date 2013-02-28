@@ -1,8 +1,8 @@
 package org.erlide.launch.debug.events;
 
-import org.erlide.runtime.Bindings;
-import org.erlide.runtime.ErlUtils;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

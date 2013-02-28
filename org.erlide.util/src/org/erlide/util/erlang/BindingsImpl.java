@@ -8,16 +8,13 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.internal;
+package org.erlide.util.erlang;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.erlide.runtime.Bindings;
-import org.erlide.util.erlang.SignatureException;
-import org.erlide.util.erlang.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;

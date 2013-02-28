@@ -48,7 +48,6 @@ import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.BeamLoader;
 import org.erlide.runtime.ErlDebugFlags;
-import org.erlide.runtime.ErlUtils;
 import org.erlide.runtime.ICodeBundle;
 import org.erlide.runtime.ICodeManager;
 import org.erlide.runtime.IErlRuntime;
@@ -56,6 +55,7 @@ import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.IRuntimeStateListener;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.RuntimeData;
+import org.erlide.runtime.RuntimeUtils;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.util.Asserts;
@@ -278,7 +278,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (outDir.length() > 0) {
             ErlLogger.debug("backend %s: add path %s", getName(), outDir);
             if (isDistributed()) {
-                final boolean accessible = ErlUtils.isAccessibleDir(
+                final boolean accessible = RuntimeUtils.isAccessibleDir(
                         getRpcSite(), outDir);
                 if (accessible) {
                     addPath(false/* prefs.getUsePathZ() */, outDir);
@@ -301,7 +301,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (outDir.length() > 0) {
             ErlLogger.debug("backend %s: remove path %s", getName(), outDir);
             if (isDistributed()) {
-                final boolean accessible = ErlUtils.isAccessibleDir(
+                final boolean accessible = RuntimeUtils.isAccessibleDir(
                         getRpcSite(), outDir);
                 if (accessible) {
                     removePath(outDir);

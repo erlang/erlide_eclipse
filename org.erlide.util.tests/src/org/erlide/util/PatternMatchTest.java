@@ -7,13 +7,13 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.java;
+package org.erlide.util;
 
 import junit.framework.Assert;
 
-import org.erlide.runtime.Bindings;
-import org.erlide.runtime.ErlUtils;
-import org.erlide.runtime.internal.BindingsImpl;
+import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.BindingsImpl;
+import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.TermParser;
 import org.erlide.util.erlang.TermParserException;
 import org.junit.Test;
