@@ -7,7 +7,10 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package com.ericsson.otp.erlang;
+package org.erlide.util.erlang;
+
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpOutputStream;
 
 /**
  * Provides a Java representation of Erlang variables.

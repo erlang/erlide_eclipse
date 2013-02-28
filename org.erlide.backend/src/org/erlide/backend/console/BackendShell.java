@@ -20,8 +20,8 @@ import org.erlide.runtime.shell.BackendShellListener;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
+import org.erlide.util.erlang.OtpErlang;
 
-import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;

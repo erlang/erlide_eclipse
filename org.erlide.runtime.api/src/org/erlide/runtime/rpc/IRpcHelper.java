@@ -1,10 +1,11 @@
 package org.erlide.runtime.rpc;
 
+import org.erlide.util.erlang.SignatureException;
+
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
-import com.ericsson.otp.erlang.SignatureException;
 
 public interface IRpcHelper {
 

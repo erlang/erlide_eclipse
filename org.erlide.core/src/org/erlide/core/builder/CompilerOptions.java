@@ -18,11 +18,11 @@ import org.erlide.core.builder.CompilerOption.PathsOption;
 import org.erlide.core.builder.CompilerOption.RawOption;
 import org.erlide.core.builder.CompilerOption.WarningOption;
 import org.erlide.model.internal.erlang.PreferencesHelper;
-import org.erlide.runtime.TermParserException;
+import org.erlide.util.erlang.OtpErlang;
+import org.erlide.util.erlang.TermParserException;
 import org.erlide.utils.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
-import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.base.Strings;

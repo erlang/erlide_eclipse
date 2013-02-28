@@ -36,12 +36,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.backend.BackendCore;
 import org.erlide.runtime.ErlRuntimeAttributes;
-import org.erlide.runtime.NodeHostClassifier;
-import org.erlide.runtime.NodeHostClassifier.HostnameType;
-import org.erlide.runtime.NodeHostClassifier.NodeType;
 import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.HostnameUtils;
+import org.erlide.util.NodeHostClassifier;
+import org.erlide.util.NodeHostClassifier.HostnameType;
+import org.erlide.util.NodeHostClassifier.NodeType;
 
 public class RuntimeTab extends AbstractLaunchConfigurationTab {
 

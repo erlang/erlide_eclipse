@@ -16,7 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.erlide.runtime.Bindings;
-import org.erlide.runtime.TypeConverter;
+import org.erlide.util.erlang.SignatureException;
+import org.erlide.util.erlang.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -26,7 +27,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.collect.Lists;
 
 public final class BindingsImpl implements Bindings {

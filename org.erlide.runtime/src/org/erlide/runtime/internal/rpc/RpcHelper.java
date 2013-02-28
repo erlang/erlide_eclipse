@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.runtime.internal.rpc;
 
-import org.erlide.runtime.TypeConverter;
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcHelper;
@@ -18,9 +17,12 @@ import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcMonitor;
 import org.erlide.runtime.rpc.RpcTimeoutException;
+import org.erlide.util.erlang.OtpErlang;
+import org.erlide.util.erlang.Signature;
+import org.erlide.util.erlang.SignatureException;
+import org.erlide.util.erlang.TypeConverter;
 import org.erlide.utils.ErlLogger;
 
-import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -31,8 +33,6 @@ import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
-import com.ericsson.otp.erlang.Signature;
-import com.ericsson.otp.erlang.SignatureException;
 
 public final class RpcHelper implements IRpcHelper {
     // use this for debugging

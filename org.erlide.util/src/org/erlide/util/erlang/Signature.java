@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package com.ericsson.otp.erlang;
+package org.erlide.util.erlang;
 
 import java.util.ArrayList;
 import java.util.HashMap;

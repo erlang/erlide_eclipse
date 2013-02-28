@@ -1,4 +1,4 @@
-package org.erlide.runtime;
+package org.erlide.util.erlang;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

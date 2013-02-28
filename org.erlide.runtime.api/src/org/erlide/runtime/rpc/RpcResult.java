@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.erlide.runtime.rpc;
 
-import com.ericsson.otp.erlang.OtpErlang;
+import org.erlide.util.erlang.OtpErlang;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;

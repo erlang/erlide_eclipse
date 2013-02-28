@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime;
+package org.erlide.util.erlang;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -21,7 +21,6 @@ import java.util.Set;
 
 import org.erlide.utils.ErlLogger;
 
-import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangByte;
@@ -37,8 +36,6 @@ import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpErlangShort;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-import com.ericsson.otp.erlang.Signature;
-import com.ericsson.otp.erlang.SignatureException;
 
 /**
  * Helps converting Java values to Erlang terms, and back. The type information

@@ -4,14 +4,14 @@ import static org.junit.Assert.*;
 
 import java.io.UnsupportedEncodingException;
 
-import org.erlide.runtime.TermParser;
-import org.erlide.runtime.TermParserException;
+import org.erlide.util.erlang.OtpErlang;
+import org.erlide.util.erlang.TermParser;
+import org.erlide.util.erlang.TermParserException;
 import org.erlide.utils.StringUtils;
 import org.erlide.utils.Util;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;

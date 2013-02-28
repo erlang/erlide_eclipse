@@ -1,6 +1,4 @@
-package org.erlide.runtime;
-
-import org.erlide.util.HostnameUtils;
+package org.erlide.util;
 
 public final class NodeHostClassifier {
     public final HostnameType host;
@@ -19,7 +17,7 @@ public final class NodeHostClassifier {
                 .getErlangHostName(true));
     }
 
-    NodeHostClassifier(final String name, final String shortThis,
+    public NodeHostClassifier(final String name, final String shortThis,
             final String longThis) {
         if (name.length() == 0) {
             host = HostnameType.NONE;

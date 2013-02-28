@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.xtext.xbase.lib.Pair;
-import org.erlide.runtime.TermParser;
-import org.erlide.runtime.TermParserException;
+import org.erlide.util.erlang.OtpErlang;
+import org.erlide.util.erlang.TermParser;
+import org.erlide.util.erlang.TermParserException;
 
-import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

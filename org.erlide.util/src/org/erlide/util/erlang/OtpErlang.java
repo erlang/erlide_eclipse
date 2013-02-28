@@ -1,9 +1,14 @@
-package com.ericsson.otp.erlang;
+package org.erlide.util.erlang;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.ericsson.otp.erlang.OtpOutputStream;
 import com.google.common.collect.Lists;
 
 public class OtpErlang {

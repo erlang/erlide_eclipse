@@ -11,7 +11,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import com.ericsson.otp.erlang.OtpErlang;
+import org.erlide.util.erlang.OtpErlang;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRef;

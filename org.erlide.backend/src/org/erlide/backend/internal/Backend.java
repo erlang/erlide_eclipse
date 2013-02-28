@@ -58,12 +58,12 @@ import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
+import org.erlide.util.erlang.OtpErlang;
 import org.erlide.utils.Asserts;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 import org.osgi.framework.Bundle;
 
-import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;

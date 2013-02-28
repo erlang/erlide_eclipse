@@ -3,8 +3,9 @@ package org.erlide.runtime;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import org.erlide.runtime.NodeHostClassifier.HostnameType;
-import org.erlide.runtime.NodeHostClassifier.NodeType;
+import org.erlide.util.NodeHostClassifier;
+import org.erlide.util.NodeHostClassifier.HostnameType;
+import org.erlide.util.NodeHostClassifier.NodeType;
 import org.junit.Test;
 
 public class NodeHostClassifierTests {

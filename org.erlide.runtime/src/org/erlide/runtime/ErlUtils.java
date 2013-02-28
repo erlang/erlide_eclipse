@@ -15,6 +15,13 @@ import java.util.List;
 
 import org.erlide.runtime.internal.BindingsImpl;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.util.erlang.OtpFormatPlaceholder;
+import org.erlide.util.erlang.OtpPatternVariable;
+import org.erlide.util.erlang.Signature;
+import org.erlide.util.erlang.SignatureException;
+import org.erlide.util.erlang.TermParser;
+import org.erlide.util.erlang.TermParserException;
+import org.erlide.util.erlang.TypeConverter;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.Util;
 
@@ -27,10 +34,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-import com.ericsson.otp.erlang.OtpFormatPlaceholder;
-import com.ericsson.otp.erlang.OtpPatternVariable;
-import com.ericsson.otp.erlang.Signature;
-import com.ericsson.otp.erlang.SignatureException;
 
 public final class ErlUtils {
 
@@ -55,7 +58,7 @@ public final class ErlUtils {
      * type signature of the argument, so that automatic conversion Java->Erlang
      * can be done. See TypeConverter.java2erlang for details.
      * 
-     * @see org.erlide.runtime.TypeConverter
+     * @see org.erlide.util.erlang.TypeConverter
      */
     public static OtpErlangObject format(final String fmt, final Object... args)
             throws TermParserException, SignatureException {

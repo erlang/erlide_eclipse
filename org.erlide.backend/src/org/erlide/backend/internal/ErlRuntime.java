@@ -31,6 +31,7 @@ import org.erlide.util.ExtensionUtils;
 import org.erlide.util.HostnameUtils;
 import org.erlide.util.MessageReporter;
 import org.erlide.util.MessageReporter.ReporterPosition;
+import org.erlide.util.erlang.SignatureException;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.IProvider;
 import org.erlide.utils.SystemConfiguration;
@@ -41,7 +42,6 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
-import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.base.Strings;
 
 public class ErlRuntime implements IErlRuntime, IRpcSite {

@@ -4,8 +4,10 @@ import java.io.IOException;
 
 import junit.framework.Assert;
 
-import org.erlide.runtime.TermParser;
-import org.erlide.runtime.TermParserException;
+import org.erlide.util.erlang.OtpFormatPlaceholder;
+import org.erlide.util.erlang.OtpPatternVariable;
+import org.erlide.util.erlang.TermParser;
+import org.erlide.util.erlang.TermParserException;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -13,9 +15,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
-import com.ericsson.otp.erlang.OtpFormatPlaceholder;
 import com.ericsson.otp.erlang.OtpOutputStream;
-import com.ericsson.otp.erlang.OtpPatternVariable;
 
 public class TermParserTest {
 

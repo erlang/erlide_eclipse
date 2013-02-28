@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package com.ericsson.otp.erlang;
+package org.erlide.util.erlang;
 
 public class SignatureException extends Exception {
 

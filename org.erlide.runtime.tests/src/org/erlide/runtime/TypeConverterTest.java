@@ -17,6 +17,10 @@ import java.util.Arrays;
 
 import junit.framework.Assert;
 
+import org.erlide.util.erlang.IConvertible;
+import org.erlide.util.erlang.Signature;
+import org.erlide.util.erlang.SignatureException;
+import org.erlide.util.erlang.TypeConverter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,8 +33,6 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
-import com.ericsson.otp.erlang.Signature;
-import com.ericsson.otp.erlang.SignatureException;
 
 public class TypeConverterTest {
 

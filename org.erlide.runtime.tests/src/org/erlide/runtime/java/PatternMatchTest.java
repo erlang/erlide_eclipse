@@ -13,9 +13,9 @@ import junit.framework.Assert;
 
 import org.erlide.runtime.Bindings;
 import org.erlide.runtime.ErlUtils;
-import org.erlide.runtime.TermParser;
-import org.erlide.runtime.TermParserException;
 import org.erlide.runtime.internal.BindingsImpl;
+import org.erlide.util.erlang.TermParser;
+import org.erlide.util.erlang.TermParserException;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

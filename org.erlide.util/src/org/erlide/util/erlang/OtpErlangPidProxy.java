@@ -1,4 +1,8 @@
-package com.ericsson.otp.erlang;
+package org.erlide.util.erlang;
+
+import com.ericsson.otp.erlang.OtpErlangDecodeException;
+import com.ericsson.otp.erlang.OtpErlangPid;
+import com.ericsson.otp.erlang.OtpInputStream;
 
 public class OtpErlangPidProxy extends OtpErlangPid {
 
