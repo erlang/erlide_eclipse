@@ -30,9 +30,9 @@ import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
 import org.erlide.model.BeamLocator;
 import org.erlide.runtime.ErlRuntimeAttributes;
-import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.epmd.IEpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.HostnameUtils;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 

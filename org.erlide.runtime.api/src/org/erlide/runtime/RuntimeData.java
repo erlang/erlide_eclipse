@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.HostnameUtils;
 import org.erlide.utils.Asserts;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;

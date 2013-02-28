@@ -35,10 +35,10 @@ import org.erlide.model.IBeamLocator;
 import org.erlide.model.erlang.ModuleKind;
 import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.runtime.ErlRuntimeAttributes;
-import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.HostnameUtils;
 import org.erlide.utils.Asserts;
 import org.erlide.utils.ErlLogger;
 

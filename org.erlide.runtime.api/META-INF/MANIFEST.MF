@@ -14,7 +14,6 @@ Export-Package: com.ericsson.otp.erlang,
  org.erlide.runtime,
  org.erlide.runtime.api,
  org.erlide.runtime.epmd,
- org.erlide.runtime.internal;x-internal:=true,
  org.erlide.runtime.rpc,
  org.erlide.runtime.runtimeinfo,
  org.erlide.runtime.shell

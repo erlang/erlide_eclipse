@@ -1,10 +1,8 @@
-package org.erlide.runtime;
+package org.erlide.util;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import org.erlide.runtime.internal.ErlangHostnameRetriever;
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.ErlLogger;
 
 public class HostnameUtils {
@@ -52,20 +50,18 @@ public class HostnameUtils {
      * Start erlang nodes and find out how they resolve the long/short host
      * names.
      */
-    public static void detectHostNames(final RuntimeInfo runtime) {
+    public static void detectHostNames(final String otpHome) {
         final ErlangHostnameRetriever retriever = new ErlangHostnameRetriever(
-                runtime);
-        if (runtime != null) {
-            erlangLongName = retriever.checkHostName(true);
-            if (erlangLongName == null) {
-                erlangLongName = retriever.checkHostName(true,
-                        getJavaLongHostName());
-            }
-            erlangShortName = retriever.checkHostName(false);
-            if (erlangShortName == null) {
-                erlangShortName = retriever.checkHostName(false,
-                        getJavaShortHostName());
-            }
+                otpHome);
+        erlangLongName = retriever.checkHostName(true);
+        if (erlangLongName == null) {
+            erlangLongName = retriever.checkHostName(true,
+                    getJavaLongHostName());
+        }
+        erlangShortName = retriever.checkHostName(false);
+        if (erlangShortName == null) {
+            erlangShortName = retriever.checkHostName(false,
+                    getJavaShortHostName());
         }
     }
 

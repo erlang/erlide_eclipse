@@ -1,5 +1,7 @@
 package org.erlide.runtime;
 
+import org.erlide.util.HostnameUtils;
+
 public final class NodeHostClassifier {
     public final HostnameType host;
     public final NodeType mode;

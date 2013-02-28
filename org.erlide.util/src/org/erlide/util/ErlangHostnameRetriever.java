@@ -1,11 +1,10 @@
-package org.erlide.runtime.internal;
+package org.erlide.util;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpNode;
@@ -13,18 +12,18 @@ import com.google.common.collect.Lists;
 
 public class ErlangHostnameRetriever {
 
-    private final RuntimeInfo runtime;
+    String otpHome;
     private String nodeName;
 
-    public ErlangHostnameRetriever(final RuntimeInfo runtime) {
-        this.runtime = runtime;
+    public ErlangHostnameRetriever(final String otpHome) {
+        this.otpHome = otpHome;
     }
 
     public String checkHostName(final boolean longHost, String hostName) {
         nodeName = "foo" + System.currentTimeMillis();
         final ProcessBuilder builder = new ProcessBuilder(Lists.newArrayList(
-                runtime.getOtpHome() + "/bin/erl", longHost ? "-name"
-                        : "-sname", nodeName, "-setcookie", "erlide"));
+                otpHome + "/bin/erl", longHost ? "-name" : "-sname", nodeName,
+                "-setcookie", "erlide"));
         String result = null;
         try {
             final Process process = builder.start();
