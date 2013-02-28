@@ -4,7 +4,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.erlide.backend.BackendPlugin;
-import org.erlide.utils.IDisposable;
+import org.erlide.util.IDisposable;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.EventConstants;

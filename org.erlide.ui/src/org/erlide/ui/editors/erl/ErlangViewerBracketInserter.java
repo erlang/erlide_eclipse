@@ -34,7 +34,7 @@ import org.erlide.model.internal.erlang.ErlideScanner;
 import org.erlide.model.internal.erlang.ScannerException;
 import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 class ErlangViewerBracketInserter implements VerifyKeyListener,
         ILinkedModeListener {

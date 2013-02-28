@@ -19,7 +19,7 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class DialyzerBuilder extends IncrementalProjectBuilder {
 

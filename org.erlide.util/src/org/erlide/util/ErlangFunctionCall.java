@@ -1,4 +1,4 @@
-package org.erlide.utils;
+package org.erlide.util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

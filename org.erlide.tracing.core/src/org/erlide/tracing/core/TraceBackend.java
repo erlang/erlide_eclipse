@@ -22,7 +22,7 @@ import org.erlide.tracing.core.mvc.model.treenodes.ITreeNode;
 import org.erlide.tracing.core.mvc.model.treenodes.TracingResultsNode;
 import org.erlide.tracing.core.preferences.PreferenceNames;
 import org.erlide.tracing.core.utils.TraceDataHandler;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

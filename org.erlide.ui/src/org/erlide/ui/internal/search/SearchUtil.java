@@ -66,8 +66,8 @@ import org.erlide.model.util.ModelUtils;
 import org.erlide.model.util.NatureUtil;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.utils.StringUtils;
-import org.erlide.utils.Util;
+import org.erlide.util.StringUtils;
+import org.erlide.util.Util;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

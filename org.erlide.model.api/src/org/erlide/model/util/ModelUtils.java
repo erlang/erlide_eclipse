@@ -25,8 +25,8 @@ import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlExternal;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.StringUtils;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.StringUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

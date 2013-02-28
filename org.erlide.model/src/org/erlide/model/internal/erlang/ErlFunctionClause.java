@@ -18,7 +18,7 @@ import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.internal.root.ErlMember;
 import org.erlide.model.root.IErlElement;
-import org.erlide.utils.Util;
+import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

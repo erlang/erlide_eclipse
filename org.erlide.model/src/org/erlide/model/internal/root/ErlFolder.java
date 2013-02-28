@@ -22,7 +22,7 @@ import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.SystemConfiguration;
 
 /**
  * Implementation of folder in erlang model

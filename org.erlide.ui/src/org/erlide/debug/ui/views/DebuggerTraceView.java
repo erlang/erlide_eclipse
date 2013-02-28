@@ -54,7 +54,7 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.DisplayUtils;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;

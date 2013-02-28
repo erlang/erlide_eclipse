@@ -13,7 +13,7 @@ import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
-import org.erlide.utils.Util;
+import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

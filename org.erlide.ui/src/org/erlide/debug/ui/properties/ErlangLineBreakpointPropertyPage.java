@@ -15,7 +15,7 @@ import org.erlide.debug.ui.utils.BreakpointUtils;
 import org.erlide.launch.debug.IErlangBreakpoint;
 import org.erlide.model.root.IErlElement;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class ErlangLineBreakpointPropertyPage extends
         ErlangBreakpointPropertyPage {

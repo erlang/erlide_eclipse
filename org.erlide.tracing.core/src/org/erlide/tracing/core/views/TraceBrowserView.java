@@ -32,7 +32,7 @@ import org.erlide.tracing.core.mvc.view.TreeLabelProvider;
 import org.erlide.tracing.core.preferences.PreferenceNames;
 import org.erlide.tracing.core.ui.dialogs.RunnableWithProgress;
 import org.erlide.tracing.core.utils.TracingStatusHandler;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 /**
  * Sequence diagram which shows tracing results.

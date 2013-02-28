@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 /**
  * @author Lukas Larsson

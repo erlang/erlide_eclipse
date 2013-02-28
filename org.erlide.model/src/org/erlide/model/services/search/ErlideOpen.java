@@ -7,9 +7,9 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.model.SourcePathUtils;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.Util;
 import org.erlide.util.erlang.OtpErlang;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

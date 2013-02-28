@@ -28,7 +28,7 @@ import org.erlide.model.internal.root.ProjectPreferencesConstants;
 import org.erlide.runtime.RuntimeCore;
 import org.erlide.runtime.RuntimeVersion;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.SystemConfiguration;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;

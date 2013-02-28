@@ -12,7 +12,7 @@ package org.erlide.model.internal.erlang;
 
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.erlang.IErlScanner;
-import org.erlide.utils.IDisposable;
+import org.erlide.util.IDisposable;
 
 /**
  * Erlang syntax scanner

@@ -1,4 +1,4 @@
-package org.erlide.utils;
+package org.erlide.util;
 
 public class SystemConfiguration {
 

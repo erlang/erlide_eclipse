@@ -22,8 +22,8 @@ import org.erlide.model.internal.root.ErlProjectInfo;
 import org.erlide.model.internal.root.PathEntry;
 import org.erlide.model.root.IErlangProjectProperties;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.PreferencesUtils;
-import org.erlide.utils.ErlLogger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

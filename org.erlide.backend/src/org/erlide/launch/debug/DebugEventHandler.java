@@ -6,7 +6,7 @@ import org.eclipse.debug.core.DebugException;
 import org.erlide.launch.debug.events.DebuggerEvent;
 import org.erlide.launch.debug.events.DebuggerEventFactory;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

@@ -4,7 +4,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.erlide.utils.StringUtils;
+import org.erlide.util.StringUtils;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;

@@ -3,7 +3,6 @@ package org.erlide.util;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import org.erlide.utils.ErlLogger;
 
 public class HostnameUtils {
 

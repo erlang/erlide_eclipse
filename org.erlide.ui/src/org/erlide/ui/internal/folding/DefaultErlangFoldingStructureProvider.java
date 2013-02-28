@@ -54,7 +54,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.PerformanceTuning;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class DefaultErlangFoldingStructureProvider implements
         IProjectionListener, IErlangFoldingStructureProvider,

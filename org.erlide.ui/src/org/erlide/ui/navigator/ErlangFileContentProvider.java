@@ -28,7 +28,7 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlModelChangeListener;
 import org.erlide.model.root.IErlProject;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class ErlangFileContentProvider implements ITreeContentProvider,
         IResourceChangeListener, IResourceDeltaVisitor,

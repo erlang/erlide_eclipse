@@ -11,7 +11,7 @@
 
 package org.erlide.model.erlang;
 
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;

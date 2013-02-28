@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.utils;
+package org.erlide.util;
 
 /**
  * <code>AssertionFailedException</code> is a runtime exception thrown by some

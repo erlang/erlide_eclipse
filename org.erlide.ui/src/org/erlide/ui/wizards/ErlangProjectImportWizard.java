@@ -50,7 +50,7 @@ import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.model.util.PluginUtils;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class ErlangProjectImportWizard extends Wizard implements IImportWizard {
     // {

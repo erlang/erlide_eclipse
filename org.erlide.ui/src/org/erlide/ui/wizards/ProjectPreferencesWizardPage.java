@@ -41,7 +41,7 @@ import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.runtime.RuntimeVersion;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.PreferencesUtils;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.SystemConfiguration;
 
 
 /**

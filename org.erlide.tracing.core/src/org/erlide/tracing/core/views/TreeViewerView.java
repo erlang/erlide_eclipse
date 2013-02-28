@@ -43,7 +43,7 @@ import org.erlide.tracing.core.preferences.PreferenceNames;
 import org.erlide.tracing.core.ui.dialogs.RunnableWithProgress;
 import org.erlide.tracing.core.utils.TracingStatusHandler;
 import org.erlide.ui.util.ErlModelUtils;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 

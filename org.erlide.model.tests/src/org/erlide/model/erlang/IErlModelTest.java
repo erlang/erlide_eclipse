@@ -23,7 +23,7 @@ import org.erlide.model.root.IErlModelChangeListener;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.test.support.ErlideTestUtils;
-import org.erlide.utils.Util;
+import org.erlide.util.Util;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

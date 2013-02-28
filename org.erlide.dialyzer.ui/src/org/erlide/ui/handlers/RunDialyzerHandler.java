@@ -35,7 +35,7 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;

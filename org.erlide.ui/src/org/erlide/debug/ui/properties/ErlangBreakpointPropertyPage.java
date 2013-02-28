@@ -31,7 +31,7 @@ import org.erlide.launch.debug.IErlangBreakpoint;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.PixelConverter;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class ErlangBreakpointPropertyPage extends PropertyPage {
 

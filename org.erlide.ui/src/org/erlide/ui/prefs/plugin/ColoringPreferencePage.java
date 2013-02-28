@@ -67,7 +67,7 @@ import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.internal.ErlangSourceViewerUpdater;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.ui.util.PixelConverter;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 /**
  * The color preferences.

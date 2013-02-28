@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.erlide.backend.BackendException;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.ErlideUIMessages;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 /**
  * The default exception handler shows an error dialog when one of its handle

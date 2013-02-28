@@ -17,11 +17,11 @@ import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcMonitor;
 import org.erlide.runtime.rpc.RpcTimeoutException;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.Signature;
 import org.erlide.util.erlang.SignatureException;
 import org.erlide.util.erlang.TypeConverter;
-import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;

@@ -32,7 +32,7 @@ import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.ErlUtils;
 import org.erlide.runtime.rpc.RpcResult;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.RefactoringState;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage.GenFunReturnParameterName;

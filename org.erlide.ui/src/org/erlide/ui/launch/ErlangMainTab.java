@@ -47,7 +47,7 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.runtime.ErlRuntimeAttributes;
 import org.erlide.ui.util.SWTUtil;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 

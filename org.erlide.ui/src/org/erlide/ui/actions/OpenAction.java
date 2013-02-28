@@ -49,7 +49,7 @@ import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
 import org.erlide.ui.util.ErlModelUtils;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;

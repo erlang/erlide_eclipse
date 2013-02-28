@@ -12,8 +12,8 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.ui.navigator.CommonDropAdapter;
 import org.eclipse.ui.navigator.CommonDropAdapterAssistant;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.ExtensionUtils;
-import org.erlide.utils.ErlLogger;
 
 public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
 

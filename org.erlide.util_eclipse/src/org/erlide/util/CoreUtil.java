@@ -18,7 +18,6 @@ import java.nio.charset.Charset;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.utils.Util;
 
 public final class CoreUtil {
     /**

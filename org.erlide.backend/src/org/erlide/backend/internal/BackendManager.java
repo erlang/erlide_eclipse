@@ -47,8 +47,8 @@ import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.RuntimeVersion;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.SystemConfiguration;
 import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
 

@@ -32,9 +32,9 @@ import org.erlide.model.BeamLocator;
 import org.erlide.runtime.ErlRuntimeAttributes;
 import org.erlide.runtime.epmd.IEpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.SystemConfiguration;
 
 import com.google.common.collect.Maps;
 

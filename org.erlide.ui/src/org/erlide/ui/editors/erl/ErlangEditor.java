@@ -132,9 +132,9 @@ import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.views.ErlangPropertySource;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.IDisposable;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.IDisposable;
+import org.erlide.util.SystemConfiguration;
 
 /**
  * The actual editor itself

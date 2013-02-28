@@ -38,7 +38,7 @@ import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.editors.util.ErlangExternalEditorInput;
-import org.erlide.utils.Util;
+import org.erlide.util.Util;
 
 public class ErlModelUtils {
 

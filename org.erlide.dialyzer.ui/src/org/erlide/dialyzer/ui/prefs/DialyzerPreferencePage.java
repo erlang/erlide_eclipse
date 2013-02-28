@@ -72,7 +72,7 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.prefs.ProjectSelectionDialog;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

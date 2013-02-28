@@ -43,7 +43,7 @@ import org.erlide.model.services.search.ErlangXref;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.editors.util.EditorUtility;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class CallHierarchyView extends ViewPart {
     Tree tree;

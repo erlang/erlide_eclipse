@@ -1,6 +1,6 @@
 package org.erlide.model.services.text;
 
-import org.erlide.utils.Util;
+import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;

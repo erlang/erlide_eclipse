@@ -29,7 +29,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.ide.IDE;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;

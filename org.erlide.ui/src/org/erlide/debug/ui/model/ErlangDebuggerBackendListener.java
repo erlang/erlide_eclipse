@@ -23,7 +23,7 @@ import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.runtime.ErlRuntimeAttributes;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
 

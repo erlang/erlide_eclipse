@@ -7,7 +7,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.SystemConfiguration;
 
 public class BeamLocator implements IBeamLocator {
 

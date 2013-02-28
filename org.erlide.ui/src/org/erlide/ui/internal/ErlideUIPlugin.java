@@ -72,8 +72,8 @@ import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 import org.erlide.ui.util.ProblemMarkerManager;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.SystemConfiguration;
 import org.osgi.framework.BundleContext;
 
 import com.google.common.collect.Lists;

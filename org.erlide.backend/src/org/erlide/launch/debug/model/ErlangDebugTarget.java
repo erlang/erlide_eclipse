@@ -42,8 +42,8 @@ import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.IErlangDebugNode;
 import org.erlide.model.ErlModelException;
 import org.erlide.runtime.ErlDebugFlags;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpErlang;
-import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangPid;

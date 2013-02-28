@@ -27,7 +27,7 @@ import org.erlide.runtime.ErlUtils;
 import org.erlide.runtime.ICodeBundle;
 import org.erlide.runtime.ICodeManager;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;

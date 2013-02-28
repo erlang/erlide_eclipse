@@ -10,7 +10,7 @@ import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.jface.text.templates.TemplateTranslator;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.actions.IndentAction;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class ErlangTemplateContext extends DocumentTemplateContext {
 

@@ -30,10 +30,10 @@ import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.IProvider;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.IProvider;
+import org.erlide.util.SystemConfiguration;
 
 public class BackendFactory implements IBackendFactory {
 

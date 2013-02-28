@@ -38,9 +38,9 @@ import org.erlide.runtime.ErlRuntimeAttributes;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.Asserts;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
-import org.erlide.utils.Asserts;
-import org.erlide.utils.ErlLogger;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;

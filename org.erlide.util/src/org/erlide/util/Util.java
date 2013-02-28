@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.utils;
+package org.erlide.util;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -54,7 +54,7 @@ public final class Util {
     /* Bundle containing messages */
     static ResourceBundle bundle;
 
-    private static final String BUNDLE_NAME = "org.erlide.utils.util"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.erlide.util.util"; //$NON-NLS-1$
 
     private static final char[] DOUBLE_QUOTES = "''".toCharArray(); //$NON-NLS-1$
 

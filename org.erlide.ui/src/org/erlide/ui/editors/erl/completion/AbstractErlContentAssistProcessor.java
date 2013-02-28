@@ -47,9 +47,9 @@ import org.erlide.ui.internal.information.HoverUtil;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
 import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.StringUtils;
-import org.erlide.utils.Util;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.StringUtils;
+import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;

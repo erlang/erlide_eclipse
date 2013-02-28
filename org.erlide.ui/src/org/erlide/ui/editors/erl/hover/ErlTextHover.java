@@ -62,8 +62,8 @@ import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.prefs.plugin.EditorPreferencePage;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.Util;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.Util;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

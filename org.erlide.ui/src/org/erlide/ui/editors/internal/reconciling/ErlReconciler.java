@@ -24,7 +24,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
 

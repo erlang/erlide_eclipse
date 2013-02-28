@@ -29,8 +29,8 @@ import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.Util;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

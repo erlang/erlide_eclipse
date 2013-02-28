@@ -8,8 +8,8 @@ import org.erlide.model.erlang.ErlToken;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.Util;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;

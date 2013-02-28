@@ -5,7 +5,6 @@ import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.erlide.utils.ErlLogger;
 
 public abstract class MessageReporter {
     public enum ReporterPosition {

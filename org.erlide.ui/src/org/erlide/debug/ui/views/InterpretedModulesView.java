@@ -36,7 +36,7 @@ import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.runtime.ErlRuntimeAttributes;
 import org.erlide.ui.editors.util.EditorUtility;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 /**
  * A view with a checkbox tree of interpreted modules checking/unchecking

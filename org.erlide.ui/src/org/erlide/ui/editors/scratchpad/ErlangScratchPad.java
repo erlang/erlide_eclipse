@@ -66,8 +66,8 @@ import org.erlide.ui.editors.erl.actions.ToggleCommentAction;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.Util;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.Util;
 
 public class ErlangScratchPad extends AbstractErlangEditor implements
         ISaveablePart2 {

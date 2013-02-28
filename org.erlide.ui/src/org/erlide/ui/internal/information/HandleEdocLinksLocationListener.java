@@ -16,8 +16,8 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
 import org.erlide.ui.views.EdocView;
-import org.erlide.utils.ErlangFunctionCall;
-import org.erlide.utils.Util;
+import org.erlide.util.ErlangFunctionCall;
+import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangTuple;
 

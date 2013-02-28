@@ -29,7 +29,7 @@ import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 /**
  * The erlang auto indent strategy

@@ -47,7 +47,7 @@ import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
 

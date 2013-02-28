@@ -49,7 +49,7 @@ import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.HandleEdocLinksLocationListener;
 import org.erlide.ui.internal.information.OpenDeclarationAction;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
 /**

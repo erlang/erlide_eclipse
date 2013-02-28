@@ -8,7 +8,7 @@ import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendListener;
 import org.erlide.runtime.IErlRuntime;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;

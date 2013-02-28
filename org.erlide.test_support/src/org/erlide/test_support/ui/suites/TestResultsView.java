@@ -24,8 +24,8 @@ import org.erlide.test_support.ui.suites.TestCaseData.FailReason;
 import org.erlide.test_support.ui.suites.TestCaseData.FailStackItem;
 import org.erlide.ui.util.DisplayUtils;
 import org.erlide.ui.util.ErlModelUtils;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.TermParserException;
-import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;

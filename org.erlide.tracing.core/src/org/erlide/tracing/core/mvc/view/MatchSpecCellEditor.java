@@ -11,7 +11,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.tracing.core.Constants;
 import org.erlide.tracing.core.mvc.model.MatchSpec;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IParent;
-import org.erlide.utils.IDisposable;
+import org.erlide.util.IDisposable;
 
 /**
  * Common protocol for all elements provided by the Erlang model. Erlang model

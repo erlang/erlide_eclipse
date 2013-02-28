@@ -36,7 +36,7 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 /**
  * Main panel of EUnit run configuration

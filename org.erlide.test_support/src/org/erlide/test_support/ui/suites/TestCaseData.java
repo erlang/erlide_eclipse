@@ -5,9 +5,9 @@ import java.util.Collection;
 
 import org.erlide.runtime.Bindings;
 import org.erlide.runtime.ErlUtils;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.TermParser;
 import org.erlide.util.erlang.TermParserException;
-import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangLong;

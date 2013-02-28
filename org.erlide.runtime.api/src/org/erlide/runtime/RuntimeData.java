@@ -11,10 +11,10 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.Asserts;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
-import org.erlide.utils.Asserts;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.SystemConfiguration;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;

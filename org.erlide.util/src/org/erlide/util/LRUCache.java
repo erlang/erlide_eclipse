@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.utils;
+package org.erlide.util;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;

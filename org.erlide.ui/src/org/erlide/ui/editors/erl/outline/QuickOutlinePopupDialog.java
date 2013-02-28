@@ -54,7 +54,7 @@ import org.erlide.ui.editors.erl.outline.filters.FilterDescriptor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.util.StringMatcher;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 /**
  * AbstractInfoPopupDialog

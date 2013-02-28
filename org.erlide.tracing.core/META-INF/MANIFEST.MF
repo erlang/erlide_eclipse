@@ -17,7 +17,8 @@ Require-Bundle: org.erlide.tracing.erlang;bundle-version="0.2.0",
  org.erlide.runtime,
  org.erlide.model;bundle-version="0.18.0",
  org.erlide.libs,
- org.erlide.runtime.api;bundle-version="0.19.0"
+ org.erlide.runtime.api;bundle-version="0.19.0",
+ org.erlide.util;bundle-version="0.19.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Localization: plugin

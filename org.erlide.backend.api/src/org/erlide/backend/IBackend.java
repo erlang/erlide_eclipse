@@ -6,7 +6,7 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.ICodeBundle;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRuntimeStateListener;
-import org.erlide.utils.IDisposable;
+import org.erlide.util.IDisposable;
 
 public interface IBackend extends IDisposable, IErlRuntime,
         IRuntimeStateListener {

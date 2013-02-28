@@ -16,7 +16,7 @@ import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackendManager;
 import org.erlide.runtime.ICodeBundle;
 import org.erlide.runtime.IErlRuntime;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class InternalBackend extends Backend {
 

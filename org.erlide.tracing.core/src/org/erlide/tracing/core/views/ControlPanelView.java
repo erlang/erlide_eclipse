@@ -70,7 +70,7 @@ import org.erlide.tracing.core.ui.dialogs.SelectConfigurationDialog;
 import org.erlide.tracing.core.utils.ConfigurationManager;
 import org.erlide.tracing.core.utils.TracingStatusHandler;
 import org.erlide.ui.util.DisplayUtils;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 /**
  * Control panel for tracing settings.

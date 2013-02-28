@@ -51,8 +51,8 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ErlangIncludeFile;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;

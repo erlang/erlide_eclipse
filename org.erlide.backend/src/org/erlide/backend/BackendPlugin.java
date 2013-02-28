@@ -1,7 +1,7 @@
 package org.erlide.backend;
 
 import org.eclipse.core.runtime.Plugin;
-import org.erlide.utils.DebugStream;
+import org.erlide.util.DebugStream;
 import org.osgi.framework.BundleContext;
 
 public class BackendPlugin extends Plugin {

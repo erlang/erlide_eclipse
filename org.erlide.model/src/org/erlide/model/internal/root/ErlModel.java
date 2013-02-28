@@ -65,8 +65,8 @@ import org.erlide.model.util.ModelUtils;
 import org.erlide.model.util.NatureUtil;
 import org.erlide.model.util.PluginUtils;
 import org.erlide.model.util.ResourceUtil;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

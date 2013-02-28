@@ -6,9 +6,9 @@ import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlMacroDef;
 import org.erlide.model.erlang.IErlRecordDef;
 import org.erlide.model.root.IErlElement;
-import org.erlide.utils.StringUtils;
-import org.erlide.utils.SystemConfiguration;
-import org.erlide.utils.Util;
+import org.erlide.util.StringUtils;
+import org.erlide.util.SystemConfiguration;
+import org.erlide.util.Util;
 
 public class SearchPatternFactory {
 

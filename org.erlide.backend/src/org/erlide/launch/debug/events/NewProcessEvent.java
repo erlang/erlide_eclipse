@@ -2,7 +2,7 @@ package org.erlide.launch.debug.events;
 
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.launch.debug.model.ErlangProcess;
-import org.erlide.utils.ErlangFunctionCall;
+import org.erlide.util.ErlangFunctionCall;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;

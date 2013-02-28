@@ -11,8 +11,8 @@ import org.erlide.model.erlang.IErlMember;
 import org.erlide.model.root.IErlElement;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.ErlangFunctionCall;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.ErlangFunctionCall;
 
 public class HoverUtil {
 

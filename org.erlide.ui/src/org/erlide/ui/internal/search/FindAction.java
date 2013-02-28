@@ -50,7 +50,7 @@ import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ExceptionHandler;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

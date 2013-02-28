@@ -5,7 +5,7 @@ import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.erlide.utils.IDisposable;
+import org.erlide.util.IDisposable;
 
 public class ErlangSourceViewer extends ProjectionViewer implements IDisposable {
 

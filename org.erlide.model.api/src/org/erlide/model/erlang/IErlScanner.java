@@ -1,6 +1,6 @@
 package org.erlide.model.erlang;
 
-import org.erlide.utils.IDisposable;
+import org.erlide.util.IDisposable;
 
 public interface IErlScanner extends IDisposable {
 

@@ -19,7 +19,7 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlScanner;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class ErlReconcilingStrategy implements IErlReconcilingStrategy,
         IReconcilingStrategyExtension {

@@ -15,6 +15,8 @@ import java.util.List;
 
 import org.erlide.runtime.internal.BindingsImpl;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.Util;
 import org.erlide.util.erlang.OtpFormatPlaceholder;
 import org.erlide.util.erlang.OtpPatternVariable;
 import org.erlide.util.erlang.Signature;
@@ -22,8 +24,6 @@ import org.erlide.util.erlang.SignatureException;
 import org.erlide.util.erlang.TermParser;
 import org.erlide.util.erlang.TermParserException;
 import org.erlide.util.erlang.TypeConverter;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;

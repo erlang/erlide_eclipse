@@ -28,7 +28,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.model.services.search.ErlideDoc;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 /**
  * Property page used to set the project's edoc location

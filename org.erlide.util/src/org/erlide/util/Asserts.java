@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.utils;
+package org.erlide.util;
 
 /**
  * <code>Assert</code> is useful for for embedding runtime sanity checks in

@@ -24,7 +24,7 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 /**
  * 

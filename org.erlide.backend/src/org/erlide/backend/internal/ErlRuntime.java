@@ -27,14 +27,14 @@ import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.runtime.shell.IBackendShell;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.ExtensionUtils;
 import org.erlide.util.HostnameUtils;
+import org.erlide.util.IProvider;
 import org.erlide.util.MessageReporter;
+import org.erlide.util.SystemConfiguration;
 import org.erlide.util.MessageReporter.ReporterPosition;
 import org.erlide.util.erlang.SignatureException;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.IProvider;
-import org.erlide.utils.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;

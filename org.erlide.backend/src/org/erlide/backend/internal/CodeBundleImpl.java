@@ -18,7 +18,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.runtime.ICodeBundle;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
