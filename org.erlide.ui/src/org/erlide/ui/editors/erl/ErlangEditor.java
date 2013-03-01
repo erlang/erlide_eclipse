@@ -149,7 +149,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
             new ActivationListener());
 
     private String stateDirCached;
-    private IErlScanner scanner;
 
     /**
      * Simple constructor
@@ -607,8 +606,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
             try {
                 fModule = ErlModelUtils.getModule(getEditorInput());
                 fModule.createScanner();
-                scanner = fModule.getScanner();
-                scanner.dispose();
+                final IErlScanner erlScanner = fModule.getScanner();
+                erlScanner.dispose();
             } catch (final CoreException e) {
             }
         }
@@ -1288,8 +1287,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         resetReconciler();
         try {
             module.createScanner();
-            scanner = module.getScanner();
-            scanner.dispose();
+            module.getScanner().dispose();
             module.resetAndCacheScannerAndParser(getDocument().get());
         } catch (final ErlModelException e) {
             ErlLogger.error(e);
@@ -1572,8 +1570,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
     }
 
     @Override
-    public IErlScanner getScanner() {
-        return scanner;
+    protected IErlScanner getNewScanner() {
+        return getModule().getScanner();
     }
 
     /**

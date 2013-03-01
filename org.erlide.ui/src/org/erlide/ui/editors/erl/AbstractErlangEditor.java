@@ -62,6 +62,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
     private IndentAction indentAction;
     private ToggleCommentAction toggleCommentAction;
     private InformationPresenter fInformationPresenter;
+    private IErlScanner erlScanner;
 
     public abstract void reconcileNow();
 
@@ -73,7 +74,14 @@ public abstract class AbstractErlangEditor extends TextEditor {
 
     public abstract IDocument getDocument();
 
-    public abstract IErlScanner getScanner();
+    public IErlScanner getScanner() {
+        if (erlScanner == null) {
+            erlScanner = getNewScanner();
+        }
+        return erlScanner;
+    }
+
+    protected abstract IErlScanner getNewScanner();
 
     @Override
     protected void configureSourceViewerDecorationSupport(
@@ -436,4 +444,5 @@ public abstract class AbstractErlangEditor extends TextEditor {
                 .setDocumentPartitioning(getSourceViewerConfiguration()
                         .getConfiguredDocumentPartitioning(getSourceViewer()));
     }
+
 }
