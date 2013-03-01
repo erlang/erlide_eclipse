@@ -1411,10 +1411,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
             if (forward && p.offset == offset || !forward
                     && p.offset + p.getLength() == offset + length) {
                 // || p.includes(offset))
-                if (containingAnnotation == null || forward
-                        && p.length >= containingAnnotationPosition.length
-                        || !forward
-                        && p.length < containingAnnotationPosition.length) {
+                if (containingAnnotation == null
+                        || (containingAnnotationPosition != null && ((forward && p.length >= containingAnnotationPosition.length) || (!forward && p.length < containingAnnotationPosition.length)))) {
                     containingAnnotation = a;
                     containingAnnotationPosition = p;
                     currentAnnotation = p.length == length;
@@ -1429,8 +1427,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
                     }
 
                     if (currentDistance < distance
-                            || currentDistance == distance
-                            && p.length < nextAnnotationPosition.length) {
+                            || (currentDistance == distance
+                                    && nextAnnotationPosition != null && p.length < nextAnnotationPosition.length)) {
                         distance = currentDistance;
                         nextAnnotation = a;
                         nextAnnotationPosition = p;
@@ -1443,8 +1441,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
                     }
 
                     if (currentDistance < distance
-                            || currentDistance == distance
-                            && p.length < nextAnnotationPosition.length) {
+                            || (currentDistance == distance
+                                    && nextAnnotationPosition != null && p.length < nextAnnotationPosition.length)) {
                         distance = currentDistance;
                         nextAnnotation = a;
                         nextAnnotationPosition = p;
