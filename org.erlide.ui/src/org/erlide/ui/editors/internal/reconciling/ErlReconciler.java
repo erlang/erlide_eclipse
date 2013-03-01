@@ -731,6 +731,7 @@ public class ErlReconciler implements IReconciler {
         if (fIsIncrementalReconciler) {
             synchronized (fDirtyRegionQueue) {
                 fDirtyRegionQueue.purgeQueue();
+                fDirtyRegionQueue.notifyAll();
             }
             fThread.reset();
             initialProcess();
