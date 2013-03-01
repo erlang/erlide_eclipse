@@ -12,37 +12,23 @@
 package org.erlide.ui.editors.erl;
 
 import java.util.Iterator;
-import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension4;
-import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ISynchronizable;
-import org.eclipse.jface.text.ITextHover;
-import org.eclipse.jface.text.ITextHoverExtension2;
 import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.ITextViewerExtension2;
-import org.eclipse.jface.text.ITextViewerExtension4;
 import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextSelection;
-import org.eclipse.jface.text.TextUtilities;
-import org.eclipse.jface.text.information.IInformationProvider;
-import org.eclipse.jface.text.information.IInformationProviderExtension;
-import org.eclipse.jface.text.information.IInformationProviderExtension2;
-import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
@@ -82,13 +68,8 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
-import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
-import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
-import org.eclipse.ui.texteditor.ResourceAction;
-import org.eclipse.ui.texteditor.TextEditorAction;
-import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.ErlangPlugin;
@@ -106,15 +87,11 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
-import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.actions.CallHierarchyAction;
 import org.erlide.ui.editors.erl.actions.CleanUpAction;
 import org.erlide.ui.editors.erl.actions.ClearCacheAction;
 import org.erlide.ui.editors.erl.actions.CompileAction;
-import org.erlide.ui.editors.erl.actions.IndentAction;
-import org.erlide.ui.editors.erl.actions.SendToConsoleAction;
 import org.erlide.ui.editors.erl.actions.ShowOutlineAction;
-import org.erlide.ui.editors.erl.actions.ToggleCommentAction;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension;
 import org.erlide.ui.editors.erl.hover.ErlangAnnotationIterator;
@@ -125,7 +102,6 @@ import org.erlide.ui.editors.erl.outline.ErlangOutlinePage;
 import org.erlide.ui.editors.erl.outline.IOutlineContentCreator;
 import org.erlide.ui.editors.erl.outline.IOutlineSelectionHandler;
 import org.erlide.ui.editors.erl.outline.ISortableContentOutlinePage;
-import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.editors.erl.test.TestAction;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
@@ -150,28 +126,22 @@ public class ErlangEditor extends AbstractErlangEditor implements
     private ColorManager colorManager;
     private ErlangOutlinePage myOutlinePage;
     private IPropertySource myPropertySource;
-    ProjectionSupport fProjectionSupport;
-    IErlangFoldingStructureProvider fProjectionModelUpdater;
-    private OpenAction openAction;
-    private IndentAction indentAction;
-    private ToggleCommentAction toggleCommentAction;
+    private ProjectionSupport fProjectionSupport;
+    private IErlangFoldingStructureProvider fProjectionModelUpdater;
     private TestAction testAction;
     /** The selection changed listeners */
     private EditorSelectionChangedListener fEditorSelectionChangedListener;
-    private InformationPresenter fInformationPresenter;
     private ShowOutlineAction fShowOutline;
     private Object fSelection;
     private final IPreferenceChangeListener fPreferenceChangeListener = new PreferenceChangeListener();
     private ActionGroup fActionGroups;
     private ActionGroup fContextMenuGroup;
     private final ErlangEditorErrorTickUpdater fErlangEditorErrorTickUpdater;
-    ToggleFoldingRunner fFoldingRunner;
+    private ToggleFoldingRunner fFoldingRunner;
     private CompileAction compileAction;
     private CleanUpAction cleanUpAction;
     private ClearCacheAction clearCacheAction;
     private CallHierarchyAction callhierarchy;
-    // private final boolean initFinished = false;
-    private SendToConsoleAction sendToConsole;
     private IErlModule fModule = null;
 
     final MarkOccurencesHandler markOccurencesHandler = new MarkOccurencesHandler(
@@ -303,59 +273,12 @@ public class ErlangEditor extends AbstractErlangEditor implements
     @Override
     protected void createActions() {
         super.createActions();
-        // ActionGroup oeg, ovg, jsg;
         ActionGroup esg;
-        fActionGroups = new CompositeActionGroup(new ActionGroup[] {
-        // oeg= new OpenEditorActionGroup(this),
-        // ovg= new OpenViewActionGroup(this),
-        esg = new ErlangSearchActionGroup(this) });
+        fActionGroups = new CompositeActionGroup(
+                new ActionGroup[] { esg = new ErlangSearchActionGroup(this) });
         fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
-        // openAction = new OpenAction(getSite(), getExternalModules(),
-        // getExternalIncludes());
-        openAction = new OpenAction(this);
-        openAction
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
-        setAction(IErlangEditorActionDefinitionIds.OPEN, openAction);
-
-        sendToConsole = new SendToConsoleAction(getSite(),
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "SendToConsole.", this);
-        sendToConsole
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE);
-        setAction("SendToConsole", sendToConsole);
-        markAsStateDependentAction("sendToConsole", true);
-        markAsSelectionDependentAction("sendToConsole", true);
-
-        final Action act = new ContentAssistAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "ContentAssistProposal.", this);
-        act.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
-        setAction("ContentAssistProposal", act);
-        markAsStateDependentAction("ContentAssistProposal", true);
-
-        ResourceAction resAction = new TextOperationAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "ShowEDoc.", this, ISourceViewer.INFORMATION, true); //$NON-NLS-1$
-        resAction = new InformationDispatchAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "ShowEDoc.", (TextOperationAction) resAction); //$NON-NLS-1$
-        resAction
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.SHOW_EDOC);
-        setAction("ShowEDoc", resAction); //$NON-NLS-1$
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(resAction, IErlangHelpContextIds.SHOW_EDOC_ACTION);
-
-        indentAction = new IndentAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "Indent.", this); //$NON-NLS-1$
-        indentAction
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.INDENT);
-        setAction("Indent", indentAction); //$NON-NLS-1$
-        markAsStateDependentAction("Indent", true); //$NON-NLS-1$
-        markAsSelectionDependentAction("Indent", true); //$NON-NLS-1$
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(indentAction, IErlangHelpContextIds.INDENT_ACTION);
+        createCommonActions();
 
         compileAction = new CompileAction(getSite());
         compileAction
@@ -387,27 +310,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
             // PlatformUI.getWorkbench().getHelpSystem().setHelp(indentAction,
             // IErlangHelpContextIds.INDENT_ACTION);
         }
-
-        final Action action = new IndentAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(), "Indent.",
-                this);
-        setAction("IndentOnTab", action);
-        markAsStateDependentAction("IndentOnTab", true);
-        markAsSelectionDependentAction("IndentOnTab", true);
-
-        toggleCommentAction = new ToggleCommentAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "ToggleComment.", this);
-        toggleCommentAction
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.TOGGLE_COMMENT);
-        setAction("ToggleComment", toggleCommentAction);
-        markAsStateDependentAction("ToggleComment", true);
-        markAsSelectionDependentAction("ToggleComment", true);
-        PlatformUI
-                .getWorkbench()
-                .getHelpSystem()
-                .setHelp(toggleCommentAction,
-                        IErlangHelpContextIds.TOGGLE_COMMENT_ACTION);
 
         fShowOutline = new ShowOutlineAction(
                 ErlangEditorMessages.getBundleForConstructedKeys(),
@@ -463,13 +365,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, callhierarchy);
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, compileAction);
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, fShowOutline);
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
-                toggleCommentAction);
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, indentAction);
-        // TODO disabled until erl_tidy doean't destroy formatting
-        // menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, cleanUpAction);
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, openAction);
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, sendToConsole);
+        addCommonActions(menu);
         final ActionContext context = new ActionContext(getSelectionProvider()
                 .getSelection());
         fContextMenuGroup.setContext(context);
@@ -1114,18 +1010,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
         node.addPreferenceChangeListener(fPreferenceChangeListener);
 
-        final IInformationControlCreator informationControlCreator = getSourceViewerConfiguration()
-                .getInformationControlCreator(getSourceViewer());
-
-        fInformationPresenter = new InformationPresenter(
-                informationControlCreator);
-        // sizes: see org.eclipse.jface.text.TextViewer.TEXT_HOVER_*_CHARS
-        fInformationPresenter.setSizeConstraints(100, 12, true, true);
-        fInformationPresenter.install(getSourceViewer());
-        fInformationPresenter
-                .setDocumentPartitioning(getSourceViewerConfiguration()
-                        .getConfiguredDocumentPartitioning(getSourceViewer()));
-
         PlatformUI.getWorkbench().addWindowListener(
                 markOccurencesHandler.fActivationListener);
 
@@ -1160,205 +1044,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
     protected boolean isActivePart() {
         final IWorkbenchPart part = getActivePart();
         return part != null && part.equals(this);
-    }
-
-    /**
-     * This action behaves in two different ways: If there is no current text
-     * hover, the javadoc is displayed using information presenter. If there is
-     * a current text hover, it is converted into a information presenter in
-     * order to make it sticky.
-     */
-    class InformationDispatchAction extends TextEditorAction {
-
-        /** The wrapped text operation action. */
-        private final TextOperationAction fTextOperationAction;
-
-        /**
-         * Creates a dispatch action.
-         * 
-         * @param resourceBundle
-         *            the resource bundle
-         * @param prefix
-         *            the prefix
-         * @param textOperationAction
-         *            the text operation action
-         */
-        public InformationDispatchAction(final ResourceBundle resourceBundle,
-                final String prefix,
-                final TextOperationAction textOperationAction) {
-            super(resourceBundle, prefix, ErlangEditor.this);
-            if (textOperationAction == null) {
-                throw new IllegalArgumentException();
-            }
-            fTextOperationAction = textOperationAction;
-        }
-
-        /*
-         * @see org.eclipse.jface.action.IAction#run()
-         */
-        @SuppressWarnings("synthetic-access")
-        @Override
-        public void run() {
-
-            /**
-             * Information provider used to present the information.
-             * 
-             * @since 3.0
-             */
-            class InformationProvider implements IInformationProvider,
-                    IInformationProviderExtension,
-                    IInformationProviderExtension2 {
-
-                private final IRegion fHoverRegion;
-
-                private final String fHoverInfo;
-
-                private final IInformationControlCreator fControlCreator;
-
-                InformationProvider(final IRegion hoverRegion,
-                        final String hoverInfo,
-                        final IInformationControlCreator controlCreator) {
-                    fHoverRegion = hoverRegion;
-                    fHoverInfo = hoverInfo;
-                    fControlCreator = controlCreator;
-                }
-
-                /*
-                 * @seeorg.eclipse.jface.text.information.IInformationProvider#
-                 * getSubject(org.eclipse.jface.text.ITextViewer, int)
-                 */
-                @Override
-                public IRegion getSubject(final ITextViewer textViewer,
-                        final int invocationOffset) {
-                    return fHoverRegion;
-                }
-
-                @Override
-                public Object getInformation2(final ITextViewer textViewer,
-                        final IRegion subject) {
-                    return fHoverInfo;
-                }
-
-                /*
-                 * @see
-                 * org.eclipse.jface.text.information.IInformationProviderExtension2
-                 * #getInformationPresenterControlCreator()
-                 * 
-                 * @since 3.0
-                 */
-                @Override
-                public IInformationControlCreator getInformationPresenterControlCreator() {
-                    return fControlCreator;
-                }
-
-                @Override
-                @Deprecated
-                public String getInformation(final ITextViewer textViewer,
-                        final IRegion subject) {
-                    return null;
-                }
-            }
-
-            final ISourceViewer sourceViewer = getSourceViewer();
-            if (sourceViewer == null) {
-                fTextOperationAction.run();
-                return;
-            }
-
-            if (sourceViewer instanceof ITextViewerExtension4) {
-                final ITextViewerExtension4 extension4 = (ITextViewerExtension4) sourceViewer;
-                if (extension4.moveFocusToWidgetToken()) {
-                    return;
-                }
-            }
-
-            if (!(sourceViewer instanceof ITextViewerExtension2)) {
-                fTextOperationAction.run();
-                return;
-            }
-
-            final ITextViewerExtension2 textViewerExtension2 = (ITextViewerExtension2) sourceViewer;
-
-            // does a text hover exist?
-            final ITextHover textHover = textViewerExtension2
-                    .getCurrentTextHover();
-            if (textHover == null) {
-                // TODO this crashes... why?
-                // fTextOperationAction.run();
-                return;
-            }
-
-            final Point hoverEventLocation = textViewerExtension2
-                    .getHoverEventLocation();
-            final int offset = computeOffsetAtLocation(sourceViewer,
-                    hoverEventLocation.x, hoverEventLocation.y);
-            if (offset == -1) {
-                fTextOperationAction.run();
-                return;
-            }
-
-            try {
-                // get the text hover content
-                final String contentType = TextUtilities.getContentType(
-                        sourceViewer.getDocument(),
-                        IErlangPartitions.ERLANG_PARTITIONING, offset, true);
-
-                final IRegion hoverRegion = textHover.getHoverRegion(
-                        sourceViewer, offset);
-                if (hoverRegion == null) {
-                    return;
-                }
-
-                final String hoverInfo = "";
-                if (textHover instanceof ITextHoverExtension2) {
-                    ((ITextHoverExtension2) textHover).getHoverInfo2(
-                            sourceViewer, hoverRegion);
-                }
-
-                IInformationControlCreator controlCreator = null;
-                if (textHover instanceof IInformationProviderExtension2) {
-                    controlCreator = ((IInformationProviderExtension2) textHover)
-                            .getInformationPresenterControlCreator();
-                }
-
-                final IInformationProvider informationProvider = new InformationProvider(
-                        hoverRegion, hoverInfo, controlCreator);
-
-                fInformationPresenter.setOffset(offset);
-                fInformationPresenter
-                        .setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
-                fInformationPresenter.setInformationProvider(
-                        informationProvider, contentType);
-                fInformationPresenter.showInformation();
-            } catch (final BadLocationException e) {
-            }
-        }
-
-        // modified version from TextViewer
-        private int computeOffsetAtLocation(final ITextViewer textViewer,
-                final int x, final int y) {
-
-            final StyledText styledText = textViewer.getTextWidget();
-            final IDocument document = textViewer.getDocument();
-
-            if (document == null) {
-                return -1;
-            }
-
-            try {
-                final int widgetLocation = styledText
-                        .getOffsetAtLocation(new Point(x, y));
-                if (textViewer instanceof ITextViewerExtension5) {
-                    final ITextViewerExtension5 extension = (ITextViewerExtension5) textViewer;
-                    return extension.widgetOffset2ModelOffset(widgetLocation);
-                }
-                final IRegion visibleRegion = textViewer.getVisibleRegion();
-                return widgetLocation + visibleRegion.getOffset();
-            } catch (final IllegalArgumentException e) {
-                return -1;
-            }
-
-        }
     }
 
     /**

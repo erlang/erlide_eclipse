@@ -6,7 +6,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
@@ -27,22 +26,17 @@ import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
-import org.eclipse.search.ui.IContextMenuConstants;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.ISaveablePart2;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
-import org.eclipse.ui.texteditor.ContentAssistAction;
-import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
-import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.erlide.model.erlang.ErlToken;
@@ -53,16 +47,9 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
-import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ColorManager;
-import org.erlide.ui.editors.erl.ErlangEditorMessages;
 import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
-import org.erlide.ui.editors.erl.IErlangEditorActionDefinitionIds;
-import org.erlide.ui.editors.erl.IErlangHelpContextIds;
-import org.erlide.ui.editors.erl.actions.IndentAction;
-import org.erlide.ui.editors.erl.actions.SendToConsoleAction;
-import org.erlide.ui.editors.erl.actions.ToggleCommentAction;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -77,10 +64,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
     private IErlangFoldingStructureProvider fProjectionModelUpdater;
     private CompositeActionGroup fActionGroups;
     private CompositeActionGroup fContextMenuGroup;
-    private OpenAction openAction;
-    private SendToConsoleAction sendToConsole;
-    private IndentAction indentAction;
-    private ToggleCommentAction toggleCommentAction;
     private IErlScanner erlScanner = null;
 
     /**
@@ -189,49 +172,7 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
         esg = new ErlangSearchActionGroup(this) });
         fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
-        openAction = new OpenAction(this);
-        openAction
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
-        setAction(IErlangEditorActionDefinitionIds.OPEN, openAction);
-
-        sendToConsole = new SendToConsoleAction(getSite(),
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "SendToConsole.", this);
-        sendToConsole
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE);
-        setAction("SendToConsole", sendToConsole);
-        markAsStateDependentAction("sendToConsole", true);
-        markAsSelectionDependentAction("sendToConsole", true);
-
-        final Action act = new ContentAssistAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "ContentAssistProposal.", this);
-        act.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
-        setAction("ContentAssistProposal", act);
-        markAsStateDependentAction("ContentAssistProposal", true);
-
-        ResourceAction resAction = new TextOperationAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "ShowEDoc.", this, ISourceViewer.INFORMATION, true); //$NON-NLS-1$
-        resAction = new InformationDispatchAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "ShowEDoc.", (TextOperationAction) resAction); //$NON-NLS-1$
-        resAction
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.SHOW_EDOC);
-        setAction("ShowEDoc", resAction); //$NON-NLS-1$
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(resAction, IErlangHelpContextIds.SHOW_EDOC_ACTION);
-
-        indentAction = new IndentAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "Indent.", this); //$NON-NLS-1$
-        indentAction
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.INDENT);
-        setAction("Indent", indentAction); //$NON-NLS-1$
-        markAsStateDependentAction("Indent", true); //$NON-NLS-1$
-        markAsSelectionDependentAction("Indent", true); //$NON-NLS-1$
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(indentAction, IErlangHelpContextIds.INDENT_ACTION);
+        createCommonActions();
 
         // if (ErlideUtil.isTest()) {
         // testAction = new TestAction(ErlangEditorMessages
@@ -245,26 +186,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
         // // IErlangHelpContextIds.INDENT_ACTION);
         // }
 
-        final Action action = new IndentAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(), "Indent.",
-                this);
-        setAction("IndentOnTab", action);
-        markAsStateDependentAction("IndentOnTab", true);
-        markAsSelectionDependentAction("IndentOnTab", true);
-
-        toggleCommentAction = new ToggleCommentAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "ToggleComment.", this);
-        toggleCommentAction
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.TOGGLE_COMMENT);
-        setAction("ToggleComment", toggleCommentAction);
-        markAsStateDependentAction("ToggleComment", true);
-        markAsSelectionDependentAction("ToggleComment", true);
-        PlatformUI
-                .getWorkbench()
-                .getHelpSystem()
-                .setHelp(toggleCommentAction,
-                        IErlangHelpContextIds.TOGGLE_COMMENT_ACTION);
     }
 
     // FIXME Copied from ErlangEditor
@@ -476,11 +397,7 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
         // if (ErlideUtil.isTest()) {
         // menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, testAction);
         // }
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
-                toggleCommentAction);
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, indentAction);
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, openAction);
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, sendToConsole);
+        addCommonActions(menu);
         final ActionContext context = new ActionContext(getSelectionProvider()
                 .getSelection());
         fContextMenuGroup.setContext(context);

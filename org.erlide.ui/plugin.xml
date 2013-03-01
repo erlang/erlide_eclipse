@@ -553,6 +553,11 @@
             name="Send to console">
       </command>
       <command
+            description="Send to console with result"
+            id="org.erlide.ui.actions.sendToConsoleWithResult"
+            name="Send to console">
+      </command>
+      <command
             categoryId="org.eclipse.search.ui.category.search"
             description="Definitions in Workspace"
             id="org.erlide.ui.search.implementors.in.workspace"
@@ -859,6 +864,11 @@
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+Enter"/>
+      <key
+            commandId="org.erlide.ui.actions.sendToConsoleWithResult"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+Enter"/>
       <key
             commandId="org.erlide.ui.actions.show.outline"
             contextId="org.erlide.ui.erlangEditorScope"
@@ -1516,22 +1526,6 @@
             Import an existing erlang project from the local file system into the workspace.
          </description>
       </wizard>
-   </extension>
-   <extension
-         point="org.eclipse.ui.navigator.linkHelper">
-      <linkHelper
-            class="org.erlide.ui.actions.ErlangLinkHelperAction"
-            id="org.erlide.ui.navigator.linkHelper">
-         <selectionEnablement>
-            <or>
-               <adapt
-                     type="org.eclipse.core.resources.IFile">
-               </adapt>
-            </or></selectionEnablement>
-            <editorInputEnablement>
-				<instanceof value="org.eclipse.ui.IFileEditorInput"/>
-			</editorInputEnablement>
-      </linkHelper>
    </extension>
    <extension
          point="org.eclipse.ui.decorators">

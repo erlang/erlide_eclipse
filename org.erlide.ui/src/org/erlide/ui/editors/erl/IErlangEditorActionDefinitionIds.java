@@ -33,6 +33,7 @@ public class IErlangEditorActionDefinitionIds {
     public static final String COMPILE = "org.erlide.ui.actions.compile";
     public static final String CALLHIERARCHY = "org.erlide.ui.actions.callhierarchy";
     public static final String SEND_TO_CONSOLE = "org.erlide.ui.actions.sendToConsole";
+    public static final String SEND_TO_CONSOLE_WITH_RESULT = "org.erlide.ui.actions.sendToConsoleWithResult";
     public static final String CLEAN_UP = "org.erlide.ui.actions.cleanUp";
 
 }

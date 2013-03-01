@@ -315,7 +315,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 consoleOutputViewer.revealRange(end, 0);
             }
         };
-        fDoc.addDocumentListener(documentListener);
+        addDocumentListener(documentListener);
 
         final String id = "#ContextMenu"; //$NON-NLS-1$
         // if (getConsole().getType() != null) {
@@ -523,5 +523,17 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         if (action instanceof IUpdate) {
             ((IUpdate) action).update();
         }
+    }
+
+    public void addDocumentListener(final IDocumentListener documentListener) {
+        fDoc.addDocumentListener(documentListener);
+    }
+
+    public void removeDocumentListener(final IDocumentListener documentListener) {
+        fDoc.removeDocumentListener(documentListener);
+    }
+
+    public IBackendShell getShell() {
+        return shell;
     }
 }
