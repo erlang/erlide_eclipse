@@ -27,6 +27,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Lists;
 
 public class BackendShell implements IBackendShell {
 
@@ -221,10 +222,12 @@ public class BackendShell implements IBackendShell {
     }
 
     private void notifyListeners() {
+        final List<BackendShellListener> listenersCopy;
         synchronized (listeners) {
-            for (final BackendShellListener listener : listeners) {
-                listener.changed(this);
-            }
+            listenersCopy = Lists.newArrayList(listeners);
+        }
+        for (final BackendShellListener listener : listenersCopy) {
+            listener.changed(this);
         }
     }
 
@@ -248,6 +251,19 @@ public class BackendShell implements IBackendShell {
             }
         }
         return res.toString();
+    }
+
+    @Override
+    public String[] getLastMessages(final int nMessages) {
+        final List<String> result = Lists.newArrayListWithCapacity(nMessages);
+        synchronized (requests) {
+            final int size = requests.size();
+            final int n = Math.min(nMessages, size);
+            for (int i = size - n; i < size; ++i) {
+                result.add(requests.get(i).getMessage());
+            }
+        }
+        return result.toArray(new String[nMessages]);
     }
 
 }

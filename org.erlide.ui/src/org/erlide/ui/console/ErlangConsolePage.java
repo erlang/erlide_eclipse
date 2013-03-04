@@ -75,13 +75,14 @@ import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.ParserException;
 import org.erlide.runtime.RuntimeHelper;
 import org.erlide.runtime.shell.IBackendShell;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 @SuppressWarnings("restriction")
 public class ErlangConsolePage extends Page implements IAdaptable,
-        IPropertyChangeListener {
+        IPropertyChangeListener, IErlangConsolePage {
     public static final String ID = "org.erlide.ui.views.console";
 
     Color bgColor_Ok;
@@ -141,6 +142,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
             bgColor_Err.dispose();
             bgColor_Ok.dispose();
         }
+        ErlideUIPlugin.getDefault().getErlConsoleManager().removePage(fConsole);
         super.dispose();
     }
 
@@ -167,6 +169,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         consoleInput.setText("");
     }
 
+    @Override
     public void input(final String data) {
         final String data2 = data.trim() + "\n";
         shell.input(data2);
@@ -315,7 +318,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 consoleOutputViewer.revealRange(end, 0);
             }
         };
-        fDoc.addDocumentListener(documentListener);
+        addDocumentListener(documentListener);
 
         final String id = "#ContextMenu"; //$NON-NLS-1$
         // if (getConsole().getType() != null) {
@@ -523,5 +526,17 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         if (action instanceof IUpdate) {
             ((IUpdate) action).update();
         }
+    }
+
+    public void addDocumentListener(final IDocumentListener documentListener) {
+        fDoc.addDocumentListener(documentListener);
+    }
+
+    public void removeDocumentListener(final IDocumentListener documentListener) {
+        fDoc.removeDocumentListener(documentListener);
+    }
+
+    public IBackendShell getShell() {
+        return shell;
     }
 }
