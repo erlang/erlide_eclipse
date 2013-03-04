@@ -1,3 +1,20 @@
+List of user visible changes between 0.19.0 and 0.20.0 (20130304)
+
+a47a10c fix another synchronization issue in reconciler
+b217b2e 1157: Erlang editor extremely slow entering <Enter>, ".", "," and ";" key presses
+a85f2de github 98: if ide backend has no docs, a crash prevents completions to show up
+a21e07c better fix for 1154
+0300463 1154: IErlElementLocator.findModule(String moduleName, String modulePath) cannot find module if modulePath starts with "c:" (on Windows)
+6609152 1153: ErlUtils.isAccessibleDir(IRpcSite backend, String localDir) deletes empty localDir
+39557cf project explorer: module model is not updated
+33e0adf Scratchpad working with latest pu
+17e9d08 github 97: renaming runtime can throw exception
+785679e Indent failed in catch with guards
+3310452 extract dialyzer plugins (note that dialyzer builder is now disabled)
+fdd6008 1145: editor can have two reconcilers running
+aac50b5 1143: Erlang application Run Configuration settings on Runtimes tab are blank after updating from 0.18 to 0.19
+461e67f 1142: builder: errors are shown for one file only when using "build automatically"
+
 List of user visible changes between 0.18.0 and 0.19.0 (20130208)
 
 f57ef2b remove "backend down" dialogs when stopping debugged runtime
