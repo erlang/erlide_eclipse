@@ -263,11 +263,12 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         consoleInput.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(final KeyEvent e) {
-                final boolean ctrlPressed = (e.stateMask & SWT.CTRL) == SWT.CTRL;
-                if (e.keyCode == 13 && ctrlPressed && isInputComplete()) {
+                final boolean ctrlOrCommandPressed = (e.stateMask & (SWT.CTRL | SWT.COMMAND)) != 0;
+                if (e.keyCode == 13 && ctrlOrCommandPressed
+                        && isInputComplete()) {
                     sendInput();
                     e.doit = true;
-                } else if (ctrlPressed && e.keyCode == SWT.ARROW_UP) {
+                } else if (ctrlOrCommandPressed && e.keyCode == SWT.ARROW_UP) {
                     history.prev();
                     final String s = history.get();
                     if (s != null) {
@@ -275,7 +276,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                         consoleInput.setSelection(consoleInput.getText()
                                 .length());
                     }
-                } else if (ctrlPressed && e.keyCode == SWT.ARROW_DOWN) {
+                } else if (ctrlOrCommandPressed && e.keyCode == SWT.ARROW_DOWN) {
                     history.next();
                     final String s = history.get();
                     if (s != null) {
