@@ -19,8 +19,8 @@ import com.google.common.collect.Lists;
 public class ErlideDialyze {
 
     private static final int LONG_TIMEOUT = 60000;
-    private static final int FILE_TIMEOUT = 20000;
-    private static final int INCLUDE_TIMEOUT = 40000;
+    // private static final int FILE_TIMEOUT = 20000;
+    // private static final int INCLUDE_TIMEOUT = 40000;
     private static final int UPDATE_TIMEOUT = LONG_TIMEOUT * 10;
 
     public static IRpcFuture dialyze(final IRpcSite backend,
@@ -32,7 +32,7 @@ public class ErlideDialyze {
             incs.add(p.toString());
         }
         return backend.async_call("erlide_dialyze", "dialyze", "lslslsoo",
-            		files, pltPaths, incs, fromSource, noCheckPLT);
+                files, pltPaths, incs, fromSource, noCheckPLT);
     }
 
     public static void startDialyzer(final IRpcSite backend,
@@ -49,20 +49,20 @@ public class ErlideDialyze {
         // ErlLogger.debug("result %s", result.toString());
     }
 
-	public static List<String> formatWarnings(
-			final IRpcSite backend, final OtpErlangList warnings) {
-		final List<String> result = Lists.newArrayList();
-		try {
-			final OtpErlangList l = (OtpErlangList) backend.call(
-					"erlide_dialyze", "format_warnings", "x", warnings);
-			for (final OtpErlangObject o : l) {
-				result.add(Util.stringValue(o));
-			}
-		} catch (final RpcException e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
+    public static List<String> formatWarnings(final IRpcSite backend,
+            final OtpErlangList warnings) {
+        final List<String> result = Lists.newArrayList();
+        try {
+            final OtpErlangList l = (OtpErlangList) backend.call(
+                    "erlide_dialyze", "format_warnings", "x", warnings);
+            for (final OtpErlangObject o : l) {
+                result.add(Util.stringValue(o));
+            }
+        } catch (final RpcException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
     public static OtpErlangObject checkPlt(final IRpcSite backend,
             final String plt, final List<String> ebinDirs) throws RpcException {
@@ -87,9 +87,10 @@ public class ErlideDialyze {
                 final List<String> result = Lists.newArrayListWithCapacity(l
                         .arity());
                 for (final OtpErlangObject i : l) {
-                	final String pltFilePath = Util.stringValue(i);
-                	if(new File(pltFilePath).exists())
-                		result.add(pltFilePath);
+                    final String pltFilePath = Util.stringValue(i);
+                    if (new File(pltFilePath).exists()) {
+                        result.add(pltFilePath);
+                    }
                 }
                 return result;
             }

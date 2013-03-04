@@ -57,81 +57,84 @@ public class DialyzerUtils {
         private static final long serialVersionUID = -6872359945128662063L;
     }
 
-	public static void doDialyze(final IProgressMonitor monitor,
-			final Set<IErlModule> modules, final Set<IErlProject> projects,
-			final IBackend backend) throws InvocationTargetException,
-			DialyzerErrorException {
-		try {
-			for (final IErlModule module : modules)
-				DialyzerMarkerUtils.removeDialyzerMarkersFor(module
-						.getResource());
+    public static void doDialyze(final IProgressMonitor monitor,
+            final Set<IErlModule> modules, final Set<IErlProject> projects,
+            final IBackend backend) throws InvocationTargetException,
+            DialyzerErrorException {
+        try {
+            for (final IErlModule module : modules) {
+                DialyzerMarkerUtils.removeDialyzerMarkersFor(module
+                        .getResource());
+            }
 
-			// TODO handle preferences from multiple projects
-			final DialyzerPreferences prefs = DialyzerPreferences.get(null);
-			final Collection<String> pltPaths = prefs.getPltPaths();
-			final boolean fromSource = false; // prefs.getFromSource();
-			final boolean noCheckPLT = true; // prefs.getNoCheckPLT();
+            // TODO handle preferences from multiple projects
+            final DialyzerPreferences prefs = DialyzerPreferences.get(null);
+            final Collection<String> pltPaths = prefs.getPltPaths();
+            final boolean fromSource = false; // prefs.getFromSource();
+            final boolean noCheckPLT = true; // prefs.getNoCheckPLT();
 
-			final List<String> files = Lists.newArrayList();
-			final List<IPath> includeDirs = Lists.newArrayList();
-			final List<String> names = Lists.newArrayList();
-			collectFilesAndIncludeDirs(modules, projects, files, names, includeDirs,
-					fromSource);
+            final List<String> files = Lists.newArrayList();
+            final List<IPath> includeDirs = Lists.newArrayList();
+            final List<String> names = Lists.newArrayList();
+            collectFilesAndIncludeDirs(modules, projects, files, names,
+                    includeDirs, fromSource);
 
-			monitor.subTask("Dialyzing " + getFileNames(names));
-			final IRpcSite b = backend.getRpcSite();
-			final IRpcFuture future = ErlideDialyze.dialyze(b, files, pltPaths,
-					includeDirs, fromSource, noCheckPLT);
+            monitor.subTask("Dialyzing " + getFileNames(names));
+            final IRpcSite b = backend.getRpcSite();
+            final IRpcFuture future = ErlideDialyze.dialyze(b, files, pltPaths,
+                    includeDirs, fromSource, noCheckPLT);
 
-			while (!future.isDone()) {
-				// check cancellation
-				if (monitor.isCanceled())
-					throw new OperationCanceledException();
-				// check backend down 
-				if(backend.isStopped())
-					throw new BackendException("Backend " + backend.getName() + " is down");
+            while (!future.isDone()) {
+                // check cancellation
+                if (monitor.isCanceled()) {
+                    throw new OperationCanceledException();
+                }
+                // check backend down
+                if (backend.isStopped()) {
+                    throw new BackendException("Backend " + backend.getName()
+                            + " is down");
+                }
 
-				OtpErlangObject r = null;
-				try {
-					r = future.get(500);
-				} catch (final RpcTimeoutException e) {
-					r = null;
-				}
-				if (r != null) {
-					processResult(b, r);
-				}
-			}
-		} catch (final RpcException e) {
-			throw new InvocationTargetException(e);
-		} catch (final CoreException e) {
-			throw new InvocationTargetException(e);
-		} catch (final BackendException e) {
-			throw new InvocationTargetException(e);
-		}
-	}
+                OtpErlangObject r = null;
+                try {
+                    r = future.get(500);
+                } catch (final RpcTimeoutException e) {
+                }
+                if (r != null) {
+                    processResult(b, r);
+                }
+            }
+        } catch (final RpcException e) {
+            throw new InvocationTargetException(e);
+        } catch (final CoreException e) {
+            throw new InvocationTargetException(e);
+        } catch (final BackendException e) {
+            throw new InvocationTargetException(e);
+        }
+    }
 
-	private static void processResult(final IRpcSite backend,
-			final OtpErlangObject o) throws DialyzerErrorException {
-		if (o instanceof OtpErlangTuple) {
-			final OtpErlangTuple t = (OtpErlangTuple) o;
-			final OtpErlangAtom whatA = (OtpErlangAtom) t.elementAt(0);
-			final String what = whatA.toString();
-			final OtpErlangObject result = t.elementAt(1);
+    private static void processResult(final IRpcSite backend,
+            final OtpErlangObject o) throws DialyzerErrorException {
+        if (o instanceof OtpErlangTuple) {
+            final OtpErlangTuple t = (OtpErlangTuple) o;
+            final OtpErlangAtom whatA = (OtpErlangAtom) t.elementAt(0);
+            final String what = whatA.toString();
+            final OtpErlangObject result = t.elementAt(1);
 
-			if (what.equals("warnings")) {
-				DialyzerMarkerUtils.addDialyzerWarningMarkersFromResultList(
-						backend, (OtpErlangList) result);
-			} else if (what.equals("dialyzer_error")) {
-				final String s = Util.ioListToString(result, MAX_MSG_LEN);
-				throw new DialyzerErrorException(s);
-			}
-		} else {
-			throw new DialyzerErrorException("Unknown Dialyzer message: "
-					+ Util.ioListToString(o, MAX_MSG_LEN));
-		}
-	}
-    
-	private static String getFileNames(final List<String> names) {
+            if (what.equals("warnings")) {
+                DialyzerMarkerUtils.addDialyzerWarningMarkersFromResultList(
+                        backend, (OtpErlangList) result);
+            } else if (what.equals("dialyzer_error")) {
+                final String s = Util.ioListToString(result, MAX_MSG_LEN);
+                throw new DialyzerErrorException(s);
+            }
+        } else {
+            throw new DialyzerErrorException("Unknown Dialyzer message: "
+                    + Util.ioListToString(o, MAX_MSG_LEN));
+        }
+    }
+
+    private static String getFileNames(final List<String> names) {
         if (names.size() == 0) {
             return "";
         }
@@ -147,37 +150,37 @@ public class DialyzerUtils {
         return sb.substring(0, sb.length() - 2);
     }
 
-	public static void collectFilesAndIncludeDirs(
-			final Set<IErlModule> modules, final Set<IErlProject> projects,
-			final Collection<String> files, final Collection<String> names,
-			final Collection<IPath> includeDirs, final boolean fromSource) {
-		for (final IErlModule m : modules) {
-			final String name = m.getName();
-			final IErlProject erlProject = ModelUtils.getProject(m);
-			final IProject project = erlProject.getWorkspaceProject();
-			final IFolder ebin = project.getFolder(erlProject
-					.getOutputLocation());
-			if (ModuleKind.hasErlExtension(name)) {
-				if (fromSource) {
-					final IResource resource = m.getResource();
-					files.add(resource.getLocation().toPortableString());
-				} else {
-					final String moduleName = SystemConfiguration
-							.withoutExtension(name);
-					final String beamName = moduleName + ".beam";
-					final IResource beam = ebin.findMember(beamName);
-					if (beam != null) {
-						files.add(beam.getLocation().toPortableString());
-						names.add(moduleName);
-					}
-				}
-			}
-		}
-		helper = new BuilderHelper();
-		for (final IErlProject p : projects) {
-			helper.getIncludeDirs(p.getWorkspaceProject(), includeDirs);
-		}
-	}
+    public static void collectFilesAndIncludeDirs(
+            final Set<IErlModule> modules, final Set<IErlProject> projects,
+            final Collection<String> files, final Collection<String> names,
+            final Collection<IPath> includeDirs, final boolean fromSource) {
+        for (final IErlModule m : modules) {
+            final String name = m.getName();
+            final IErlProject erlProject = ModelUtils.getProject(m);
+            final IProject project = erlProject.getWorkspaceProject();
+            final IFolder ebin = project.getFolder(erlProject
+                    .getOutputLocation());
+            if (ModuleKind.hasErlExtension(name)) {
+                if (fromSource) {
+                    final IResource resource = m.getResource();
+                    files.add(resource.getLocation().toPortableString());
+                } else {
+                    final String moduleName = SystemConfiguration
+                            .withoutExtension(name);
+                    final String beamName = moduleName + ".beam";
+                    final IResource beam = ebin.findMember(beamName);
+                    if (beam != null) {
+                        files.add(beam.getLocation().toPortableString());
+                        names.add(moduleName);
+                    }
+                }
+            }
+        }
+        helper = new BuilderHelper();
+        for (final IErlProject p : projects) {
+            helper.getIncludeDirs(p.getWorkspaceProject(), includeDirs);
+        }
+    }
 
     public static void checkDialyzeError(final OtpErlangObject result)
             throws DialyzerErrorException {
@@ -209,11 +212,11 @@ public class DialyzerUtils {
             throw new DialyzerErrorException(r);
         }
     }
-    
-    public static Set<IErlModule> collectModulesFromResource(final IErlElementLocator model,
-            final IResource resource)
+
+    public static Set<IErlModule> collectModulesFromResource(
+            final IErlElementLocator model, final IResource resource)
             throws ErlModelException {
-    	final Set<IErlModule> result = Sets.newHashSet();
+        final Set<IErlModule> result = Sets.newHashSet();
         final IErlElement element = model.findElement(resource, true);
         if (element == null) {
             return result;
@@ -226,13 +229,11 @@ public class DialyzerUtils {
             final IErlModule module = (IErlModule) element;
             result.add(module);
         } else if (element instanceof IErlProject) {
-        	final IErlProject project = (IErlProject) element;
+            final IErlProject project = (IErlProject) element;
             project.open(null);
             result.addAll(project.getModules());
         }
         return result;
     }
-    
-    
 
 }
