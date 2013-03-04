@@ -1831,10 +1831,6 @@
    <extension
          point="org.eclipse.ui.editors.annotationTypes">
       <type
-            markerType="org.erlide.core.dialyzewarningmarker"
-            name="org.erlide.ui.dialyzewarningmarkertype">
-      </type>
-      <type
             name="org.erlide.ui.occurrences">
       </type>
       <type

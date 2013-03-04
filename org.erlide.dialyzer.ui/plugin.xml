@@ -12,15 +12,6 @@
           commandId="org.erlide.ui.command.removeDialyzerWarnings">
     </handler>
 </extension>
-<extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            category="org.erlide.ui.preferences"
-            class="org.erlide.dialyzer.ui.prefs.DialyzerPreferencePage"
-            id="org.erlide.ui.preferences.dialyzer"
-            name="Dialyzer">
-      </page>
-</extension>
 
 <extension
        point="org.eclipse.ui.commands">
@@ -49,23 +40,6 @@
        </category>
 </extension>
 
-<extension
-         point="org.eclipse.ui.propertyPages">
-      <page
-            class="org.erlide.dialyzer.ui.prefs.DialyzerPreferencePage"
-            id="org.erlide.ui.properties.dialyzerPreferencePage"
-            name="Erlang dialyzer">
-         <enabledWhen>
-            <adapt
-                  type="org.eclipse.core.resources.IProject">
-               <test
-                     property="org.eclipse.core.resources.projectNature"
-                     value="org.erlide.core.erlnature">
-               </test>
-            </adapt>
-         </enabledWhen>
-      </page>
-</extension>
 
 <extension
        point="org.eclipse.ui.menus">
@@ -74,10 +48,28 @@
        <command
              commandId="org.erlide.ui.commands.runDialyzer"
              style="push">
+             <visibleWhen checkEnabled="false">
+	          <iterate
+                 ifEmpty="false"
+                 operator="or">
+	             <adapt
+	                   type="org.erlide.model.root.IErlElement">
+	             </adapt>
+	          </iterate>
+          	</visibleWhen>
        </command>
        <command
              commandId="org.erlide.ui.command.removeDialyzerWarnings"
              style="push">
+             <visibleWhen checkEnabled="false">
+	          <iterate
+                 ifEmpty="false"
+                 operator="or">
+	             <adapt
+	                   type="org.erlide.model.root.IErlElement">
+	             </adapt>
+	          </iterate>
+         	 </visibleWhen>
        </command>
     </menuContribution>
     <menuContribution
@@ -88,17 +80,44 @@
        <command
              commandId="org.erlide.ui.commands.runDialyzer"
              style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <iterate
+                   ifEmpty="false"
+                   operator="or">
+                <adapt
+                      type="org.erlide.model.root.IErlElement">
+                </adapt>
+             </iterate>
+          </visibleWhen>
        </command>
        <command
              commandId="org.erlide.ui.command.removeDialyzerWarnings"
              style="push">
+          <visibleWhen
+                checkEnabled="false">
+             <iterate
+                   ifEmpty="false"
+                   operator="or">
+                <adapt
+                      type="org.erlide.model.root.IErlElement">
+                </adapt>
+             </iterate>
+          </visibleWhen>
        </command>
     </menuContribution>
+</extension>
+<extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerType="org.erlide.dialyzer.core.dialyzewarningmarker"
+            name="org.erlide.dialyzer.ui.dialyzewarningmarkertype">
+      </type>
 </extension>
    <extension
          point="org.eclipse.ui.editors.markerAnnotationSpecification">
       <specification
-            annotationType="org.erlide.ui.dialyzewarningmarkertype"
+            annotationType="org.erlide.dialyzer.ui.dialyzewarningmarkertype"
             colorPreferenceKey="dialyzewarningmarkerColor"
             colorPreferenceValue="255,150,150"
             highlightPreferenceKey="dialyzewarningmarkerHighlighting"

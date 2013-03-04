@@ -1,15 +1,14 @@
 package org.erlide.core.builder;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.backend.IBackend;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.runtime.rpc.RpcTimeoutException;
-import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -24,30 +23,16 @@ public class ErlideDialyze {
     private static final int INCLUDE_TIMEOUT = 40000;
     private static final int UPDATE_TIMEOUT = LONG_TIMEOUT * 10;
 
-    public static OtpErlangObject dialyze(final IBackend backend,
+    public static IRpcFuture dialyze(final IRpcSite backend,
             final Collection<String> files, final Collection<String> pltPaths,
             final Collection<IPath> includeDirs, final boolean fromSource,
-            final Object noCheckPLT) {
+            final Object noCheckPLT) throws RpcException {
         final List<String> incs = Lists.newArrayList();
         for (final IPath p : includeDirs) {
             incs.add(p.toString());
         }
-        try {
-            final int timeout = files.size() * FILE_TIMEOUT
-                    + includeDirs.size() * INCLUDE_TIMEOUT + LONG_TIMEOUT;
-            final OtpErlangObject result = backend.getRpcSite().call(timeout,
-                    "erlide_dialyze", "dialyze", "lslslsoo", files, pltPaths,
-                    incs, fromSource, noCheckPLT);
-            // ErlLogger.debug("result %s", result.toString());
-            return result;
-        } catch (final RpcTimeoutException e) {
-            if (!backend.isStopped()) {
-                ErlLogger.warn(e);
-            }
-        } catch (final Exception e) {
-            ErlLogger.debug(e);
-        }
-        return null;
+        return backend.async_call("erlide_dialyze", "dialyze", "lslslsoo",
+            		files, pltPaths, incs, fromSource, noCheckPLT);
     }
 
     public static void startDialyzer(final IRpcSite backend,
@@ -64,17 +49,20 @@ public class ErlideDialyze {
         // ErlLogger.debug("result %s", result.toString());
     }
 
-    public static String formatWarning(final IRpcSite backend,
-            final OtpErlangObject warning) {
-        try {
-            final OtpErlangObject result = backend.call("erlide_dialyze",
-                    "format_warning", "x", warning);
-            return Util.stringValue(result);
-        } catch (final RpcException e) {
-            e.printStackTrace();
-        }
-        return warning.toString();
-    }
+	public static List<String> formatWarnings(
+			final IRpcSite backend, final OtpErlangList warnings) {
+		final List<String> result = Lists.newArrayList();
+		try {
+			final OtpErlangList l = (OtpErlangList) backend.call(
+					"erlide_dialyze", "format_warnings", "x", warnings);
+			for (final OtpErlangObject o : l) {
+				result.add(Util.stringValue(o));
+			}
+		} catch (final RpcException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 
     public static OtpErlangObject checkPlt(final IRpcSite backend,
             final String plt, final List<String> ebinDirs) throws RpcException {
@@ -99,7 +87,9 @@ public class ErlideDialyze {
                 final List<String> result = Lists.newArrayListWithCapacity(l
                         .arity());
                 for (final OtpErlangObject i : l) {
-                    result.add(Util.stringValue(i));
+                	final String pltFilePath = Util.stringValue(i);
+                	if(new File(pltFilePath).exists())
+                		result.add(pltFilePath);
                 }
                 return result;
             }
