@@ -1,9 +1,10 @@
 package org.erlide.core.builder;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.erlide.model.ErlModelException;
@@ -19,7 +20,6 @@ import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
-import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -36,8 +36,10 @@ public class DialyzerMarkerUtils {
         if (result == null) {
             return;
         }
-        for (final OtpErlangObject i : result) {
-            final OtpErlangTuple t = (OtpErlangTuple) i;
+        final List<String> warnings = ErlideDialyze.formatWarnings(backend,
+                result);
+        for (int i = 0; i < warnings.size(); i++) {
+            final OtpErlangTuple t = (OtpErlangTuple) result.elementAt(i);
             final OtpErlangTuple fileLine = (OtpErlangTuple) t.elementAt(1);
             final String filename = Util.stringValue(fileLine.elementAt(0));
             final OtpErlangLong lineL = (OtpErlangLong) fileLine.elementAt(1);
@@ -47,13 +49,13 @@ public class DialyzerMarkerUtils {
             } catch (final OtpErlangRangeException e) {
                 ErlLogger.error(e);
             }
-            String s = ErlideDialyze.formatWarning(backend, t).trim();
-            final int j = s.indexOf(": ");
+            String msg = warnings.get(i);
+            final int j = msg.indexOf(": ");
             if (j != -1) {
-                s = s.substring(j + 1);
+                msg = msg.substring(j + 1);
             }
             final IErlElementLocator model = ErlModelManager.getErlangModel();
-            addDialyzerWarningMarker(model, filename, line, s);
+            addDialyzerWarningMarker(model, filename, line, msg);
         }
     }
 
@@ -81,30 +83,30 @@ public class DialyzerMarkerUtils {
                 DIALYZE_WARNING_MARKER);
     }
 
-    public static IMarker addMarker(final IResource file,
-            final IProject project, final String path, final String message,
-            int lineNumber, final int severity, final String markerKind) {
+    public static void addMarker(final IResource file, final IProject project,
+            final String path, final String message, int lineNumber,
+            final int severity, final String markerKind) {
         try {
-            IResource resource;
+            IResource resource = null;
             if (file != null) {
                 resource = file;
             } else if (project != null) {
                 resource = project;
             } else {
-                resource = ResourcesPlugin.getWorkspace().getRoot();
+                return;
             }
-            final IMarker marker = resource.createMarker(markerKind);
-            marker.setAttribute(IMarker.MESSAGE, message);
-            marker.setAttribute(IMarker.SEVERITY, severity);
             if (lineNumber == -1) {
                 lineNumber = 1;
             }
+
+            final IMarker marker = resource.createMarker(markerKind);
+            marker.setAttribute(IMarker.MESSAGE, message);
+            marker.setAttribute(IMarker.SEVERITY, severity);
             marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
             marker.setAttribute(PATH_ATTRIBUTE, path);
-            return marker;
         } catch (final CoreException e) {
+            ErlLogger.debug(e);
         }
-        return null;
     }
 
     public static void removeDialyzerMarkersFor(final IResource resource) {

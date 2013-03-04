@@ -20,8 +20,8 @@ import java.io.PrintWriter;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.LogUtil;
 import org.erlide.util.MessageReporter;
-import org.erlide.util.SystemConfiguration;
 import org.erlide.util.MessageReporter.ReporterPosition;
+import org.erlide.util.SystemConfiguration;
 
 final public class ErtsWatcher implements Runnable {
     private final Process process;

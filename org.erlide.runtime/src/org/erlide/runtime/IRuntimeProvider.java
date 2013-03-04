@@ -1,6 +1,5 @@
 package org.erlide.runtime;
 
-
 public interface IRuntimeProvider {
 
     IRpcSite get();

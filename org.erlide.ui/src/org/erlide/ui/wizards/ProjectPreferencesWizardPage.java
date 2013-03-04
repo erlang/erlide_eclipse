@@ -43,7 +43,6 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.PreferencesUtils;
 import org.erlide.util.SystemConfiguration;
 
-
 /**
  * 
  * @author Eric Merritt [cyberlync at yahoo dot com]

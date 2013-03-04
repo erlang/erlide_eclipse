@@ -357,8 +357,8 @@ public abstract class Backend implements IStreamListener, IBackend {
             // debugTarget.getWaiter().doWait();
             launch.addDebugTarget(debugTarget);
             // interpret everything we can
-            final boolean distributed = (data.getDebugFlags()
-                    .contains(ErlDebugFlags.DISTRIBUTED_DEBUG));
+            final boolean distributed = data.getDebugFlags().contains(
+                    ErlDebugFlags.DISTRIBUTED_DEBUG);
             if (distributed) {
                 distributeDebuggerCode();
                 addNodesAsDebugTargets(launch, debugTarget);

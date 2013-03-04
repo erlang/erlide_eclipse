@@ -656,7 +656,7 @@ public class FilteredModulesSelectionDialog extends
             super(new MatchAnySearchPattern());
             filterContainer = container;
             filterTypeMask = typeMask;
-            this.allow_Hrl = allowHrl;
+            allow_Hrl = allowHrl;
         }
 
         // /**

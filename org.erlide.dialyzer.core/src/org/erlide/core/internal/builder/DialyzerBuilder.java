@@ -1,7 +1,6 @@
 package org.erlide.core.internal.builder;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,15 +10,21 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendException;
+import org.erlide.backend.IBackend;
 import org.erlide.core.builder.DialyzerMarkerUtils;
 import org.erlide.core.builder.DialyzerPreferences;
 import org.erlide.core.builder.DialyzerUtils;
+import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
+
+import com.google.common.collect.Sets;
 
 public class DialyzerBuilder extends IncrementalProjectBuilder {
 
@@ -32,7 +37,7 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
             @SuppressWarnings("rawtypes") final Map args,
             final IProgressMonitor monitor) throws CoreException {
         final IProject project = getProject();
-        DialyzerPreferences prefs;
+        DialyzerPreferences prefs = null;
         try {
             prefs = DialyzerPreferences.get(project);
         } catch (final RpcException e1) {
@@ -43,20 +48,29 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
             return null;
         }
         final IErlElementLocator model = ErlModelManager.getErlangModel();
-        final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
-        DialyzerUtils.addModulesFromResource(model, project, modules);
+        final Set<IErlModule> modules = DialyzerUtils
+                .collectModulesFromResource(model, project);
+        final Set<IErlProject> projects = Sets.newHashSet();
+        projects.add(model.findProject(project));
         if (modules.size() != 0) {
             try {
-                DialyzerUtils.doDialyze(monitor, modules);
+                final IBackend backend = BackendCore.getBackendManager()
+                        .getBuildBackend(project);
+                DialyzerUtils.doDialyze(monitor, modules, projects, backend);
+            } catch (final BackendException e) {
+                ErlLogger.error(e);
             } catch (final InvocationTargetException e) {
                 ErlLogger.error(e);
+            } catch (final DialyzerErrorException e) {
+                ErlLogger.error(e);
                 final String msg = NLS.bind(
-                        BuilderMessages.build_dialyzerProblem, e
-                                .getTargetException().getLocalizedMessage());
+                        BuilderMessages.build_dialyzerProblem,
+                        e.getLocalizedMessage());
                 DialyzerMarkerUtils.addProblemMarker(project, null, null, msg,
                         0, IMarker.SEVERITY_ERROR);
             }
         }
+        monitor.done();
         return null;
     }
 

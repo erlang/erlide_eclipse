@@ -8,7 +8,19 @@
       <builder>
          <run
                class="org.erlide.core.internal.builder.DialyzerBuilder">
-         </run></builder>
+         </run>
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.core.resources.markers"
+         id="org.erlide.dialyzer.core.dialyzewarningmarker"
+         name="Dialyzer Warning">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
    </extension>
 
 </plugin>

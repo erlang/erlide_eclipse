@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.erlide.runtime.RuntimeVersion;
 
-
 public class RuntimeInfo {
 
     private final String name;

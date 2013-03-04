@@ -5,7 +5,6 @@ import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.IRuntimeProvider;
 import org.erlide.runtime.RuntimeVersion;
 
-
 public class BackendProvider implements IRuntimeProvider {
 
     @Override

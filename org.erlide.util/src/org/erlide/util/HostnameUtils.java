@@ -3,7 +3,6 @@ package org.erlide.util;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-
 public class HostnameUtils {
 
     private static final String erlangLongNameFallback = "127.0.0.1";
