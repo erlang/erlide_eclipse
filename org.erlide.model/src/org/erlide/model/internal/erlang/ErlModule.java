@@ -96,7 +96,8 @@ public class ErlModule extends Openable implements IErlModule {
 
     public boolean internalBuildStructure(final IProgressMonitor pm) {
         final IErlParser parser = ErlModelManager.getErlangModel().getParser();
-        parsed = parser.parse(this, scannerName, !parsed, getFilePath(), true);
+        parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
+                initialText, true);
         return parsed;
     }
 

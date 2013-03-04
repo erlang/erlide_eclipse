@@ -67,6 +67,7 @@ import org.erlide.model.util.PluginUtils;
 import org.erlide.model.util.ResourceUtil;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
+import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -718,8 +719,19 @@ public class ErlModel extends Openable implements IErlModel {
         }
         final String name = file.getName();
         if (CommonUtils.isErlangFileContentFileName(name)) {
-            final IErlModule module = new ErlModule(parent, name, null, file,
-                    null);
+            String initialText = "";
+            String charset;
+            if (file.isAccessible() && file.isSynchronized(0)) {
+                try {
+                    charset = file.getCharset();
+                    initialText = Util.getInputStreamAsString(
+                            file.getContents(), charset);
+                } catch (final CoreException e) {
+                    ErlLogger.warn(e);
+                }
+            }
+            final IErlModule module = new ErlModule(parent, name, initialText,
+                    file, null);
             if (parent != null) {
                 parent.addChild(module);
             }
