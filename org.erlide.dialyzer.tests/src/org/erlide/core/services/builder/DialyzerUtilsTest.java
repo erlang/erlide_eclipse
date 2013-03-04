@@ -1,13 +1,13 @@
 package org.erlide.core.services.builder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IMarker;
@@ -16,8 +16,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.builder.DialyzerUtils;
 import org.erlide.core.builder.DialyzerMarkerUtils;
+import org.erlide.core.builder.DialyzerUtils;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
@@ -28,6 +28,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.google.common.collect.Sets;
 
 public class DialyzerUtilsTest {
 
@@ -209,18 +211,18 @@ public class DialyzerUtilsTest {
             ErlideTestUtils.invokeBuilderOn(erlProject);
             // when
             // collecting files to dialyze
-            final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
             final IResource selectedResource = selectResource(select,
                     erlProject, a);
-            DialyzerUtils
-                    .addModulesFromResource(ErlModelManager.getErlangModel(),
-                            selectedResource, modules);
+            final Set<IErlModule> modules = DialyzerUtils
+                    .collectModulesFromResource(ErlModelManager.getErlangModel(),
+                            selectedResource);
+            final Set<IErlProject> projects = Sets.newHashSet();
+            projects.add(erlProject);
             final List<String> names = new ArrayList<String>();
             final List<IPath> includeDirs = new ArrayList<IPath>();
             final List<String> files = new ArrayList<String>();
-            DialyzerUtils.collectFilesAndIncludeDirs(erlProject, modules,
-                    erlProject.getWorkspaceProject(), files, names,
-                    includeDirs, sources);
+            DialyzerUtils.collectFilesAndIncludeDirs(modules, projects,
+                    files, names, includeDirs, sources);
             // then
             // only selected files (or corresponding beam) should be collected
             if (select == SEL.MODULE) {
@@ -334,16 +336,15 @@ public class DialyzerUtilsTest {
             ErlideTestUtils.invokeBuilderOn(erlProject);
             // when
             // collecting files to dialyze
-            final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
-            DialyzerUtils.addModulesFromResource(
-                    ErlModelManager.getErlangModel(), erlProject.getResource(),
-                    modules);
+            final Set<IErlModule> modules = DialyzerUtils.collectModulesFromResource(
+                    ErlModelManager.getErlangModel(), erlProject.getResource());
+            final Set<IErlProject> projects = Sets.newHashSet();
+            projects.add(erlProject);
             final List<String> names = new ArrayList<String>();
             final List<IPath> includeDirs = new ArrayList<IPath>();
             final List<String> files = new ArrayList<String>();
-            DialyzerUtils.collectFilesAndIncludeDirs(erlProject, modules,
-                    erlProject.getWorkspaceProject(), files, names,
-                    includeDirs, false);
+            DialyzerUtils.collectFilesAndIncludeDirs(modules, projects,
+                   files, names, includeDirs, false);
             // then
             // it should only take the existing beam files
             assertEquals(1, files.size());

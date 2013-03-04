@@ -15,7 +15,7 @@
 %%
 %% Exported Functions
 %%
--export([dialyze/5, format_warning/1, check_plt/1, get_plt_files/1, update_plt_with_additional_paths/2,
+-export([dialyze/5, format_warnings/1, check_plt/1, get_plt_files/1, update_plt_with_additional_paths/2,
          start_dialyze/6, start_update_plt_with_additional_paths/3]).
 
 -compile({no_auto_import, [error/1, error/2]}).
@@ -29,27 +29,21 @@ dialyze(Files, PltFiles, Includes, FromSource, NoCheckPLT) ->
                true -> src_code;
                false -> byte_code
            end,
-    Plt = case PltFiles of
-              [] ->
-                  dialyzer_plt:new();
-              [Plt1] ->
-                  ?D(Plt1),
-                  dialyzer_plt:from_file(Plt1);
-              _ ->
-                  Plts = [dialyzer_plt:from_file(F) || F <- PltFiles],
-                  dialyzer_plt:merge_plts_or_report_conflicts(PltFiles, Plts)
-          end,
-    ?D(before),
-    R = (catch do_analysis(Files, none, Plt, none, succ_typings, Includes, NoCheckPLT, From, none)),
+    R = (catch dialyzer:run([{files, Files}, 
+                             {plts, PltFiles}, 
+                             {from, From},
+                             {include_dirs, Includes},
+							 {analysis_type,  'succ_typings'},
+                             {check_plt, not NoCheckPLT}])),
     case R of
-        {ErrorOrExit, E} when ErrorOrExit =:= 'EXIT'; ErrorOrExit =:= error ->
-            {error, flat(E)};
+        {ErrorOrExit, E} when ErrorOrExit =:= 'EXIT'; ErrorOrExit =:= dialyzer_error ->
+            {dialyzer_error, flat(E)};
         Result ->
-            Result
+            {warnings, Result}
     end.
 
 start_dialyze(JPid, Files, PltFiles, Includes, FromSource, NoCheckPLT) ->
-    From = case FromSource of
+	From = case FromSource of
                true -> src_code;
                false -> byte_code
            end,
@@ -71,6 +65,29 @@ start_dialyze(JPid, Files, PltFiles, Includes, FromSource, NoCheckPLT) ->
         Result ->
             Result
     end.
+
+%%     From = case FromSource of
+%%                true -> src_code;
+%%                false -> byte_code
+%%            end,
+%%     Plt = case PltFiles of
+%%               [] ->
+%%                   dialyzer_plt:new();
+%%               [Plt1] ->
+%%                   ?D(Plt1),
+%%                   dialyzer_plt:from_file(Plt1);
+%%               _ ->
+%%                   Plts = [dialyzer_plt:from_file(F) || F <- PltFiles],
+%%                   dialyzer_plt:merge_plts_or_report_conflicts(PltFiles, Plts)
+%%           end,
+%%     ?D(before),
+%%     R = (catch do_analysis(Files, none, Plt, none, succ_typings, Includes, NoCheckPLT, From, JPid)),
+%%     case R of
+%%         {ErrorOrExit, E} when ErrorOrExit =:= 'EXIT'; ErrorOrExit =:= error ->
+%%             {error, flat(E)};
+%%         Result ->
+%%             Result
+%%     end.
 
 
 dialyze(Files, Plts, Includes, FromSource, NoCheckPLT, x) ->
@@ -95,8 +112,11 @@ dialyze(Files, Plts, Includes, FromSource, NoCheckPLT, x) ->
             Result
     end.
 
-format_warning(Msg) ->
-    dialyzer:format_warning(Msg).
+%% format_warning(Msg) ->
+%%     dialyzer:format_warning(Msg).
+
+format_warnings(Warnings) ->
+    [ dialyzer:format_warning(W) || W <- Warnings].
 
 check_plt(Plt) ->
     dialyzer:run([{analysis_type, plt_check},
