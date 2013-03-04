@@ -2,7 +2,9 @@ package org.erlide.ui.editors.erl.actions;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.Set;
 
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension4;
@@ -11,10 +13,17 @@ import org.eclipse.jface.text.TextSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.IBackendManager;
+import org.erlide.model.root.IErlProject;
+import org.erlide.model.util.PluginUtils;
 import org.erlide.runtime.shell.BackendShellListener;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.ui.actions.SelectionDispatchAction;
-import org.erlide.ui.console.ErlangConsolePage;
+import org.erlide.ui.console.ErlConsoleManager;
+import org.erlide.ui.console.IErlangConsole;
+import org.erlide.ui.console.IErlangConsolePage;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.ErlLogger;
 
@@ -53,46 +62,61 @@ public class SendToConsoleAction extends SelectionDispatchAction {
         }
     }
 
-    private final ITextEditor fEditor;
+    private final ITextEditor editor;
     private final boolean getOutput;
     private final ConsoleBackendShellListener consoleBackendShellListener;
-    private ErlangConsolePage consolePage;
+    IErlProject project;
 
     @Override
     public void run(ITextSelection selection) {
-        final ErlangConsolePage consolePage = ErlideUIPlugin.getDefault()
-                .getConsolePage();
-        // make sure we have a console page to send it to
-        if (consolePage != null) {
-            if (this.consolePage != consolePage && this.consolePage != null) {
-                this.consolePage.getShell().removeListener(
-                        consoleBackendShellListener);
+        final IBackendManager backendManager = BackendCore.getBackendManager();
+        final Set<IBackend> executionBackends = backendManager
+                .getExecutionBackends(project.getWorkspaceProject());
+        IErlangConsole console = null;
+        final ErlConsoleManager erlConsoleManager = ErlideUIPlugin.getDefault()
+                .getErlConsoleManager();
+        for (final IBackend backend : executionBackends) {
+            console = erlConsoleManager.getConsole(backend);
+            if (console != null) {
+                break;
             }
-            // if selection is empty, grab the whole line
-            selection = getLineSelection(selection, false);
-            // try to make the text a full erlang expression, ending with dot
-            String text = selection.getText().trim();
-            if (text.endsWith(",") || text.endsWith(";")) { //$NON-NLS-1$ //$NON-NLS-2$
-                text = text.substring(0, text.length() - 1);
-            }
-            if (!text.endsWith(".")) { //$NON-NLS-1$
-                text += "."; //$NON-NLS-1$
-            }
-            text += "\n"; //$NON-NLS-1$
-            // send it off to the console
-            if (getOutput) {
-                consoleBackendShellListener.setup(getLineSelection(selection,
-                        true).getOffset());
-                consolePage.getShell().addListener(consoleBackendShellListener);
-            }
-            consolePage.input(text);
         }
+        if (console == null) {
+            final String message = "There is no runtime launched for this backend. Please start a runtime to send commands to.";
+            ErrorDialog
+                    .openError(getShell(), "No runtime", message, PluginUtils
+                            .makeStatus(new Exception("No runtime started")));
+
+            return;
+        }
+        // make sure we have a console page to send it to
+        final IErlangConsolePage consolePage = ErlideUIPlugin.getDefault()
+                .getErlConsoleManager().getPage(console);
+        console.getShell().removeListener(consoleBackendShellListener);
+        // if selection is empty, grab the whole line
+        selection = getLineSelection(selection, false);
+        // try to make the text a full erlang expression, ending with dot
+        String text = selection.getText().trim();
+        if (text.endsWith(",") || text.endsWith(";")) { //$NON-NLS-1$ //$NON-NLS-2$
+            text = text.substring(0, text.length() - 1);
+        }
+        if (!text.endsWith(".")) { //$NON-NLS-1$
+            text += "."; //$NON-NLS-1$
+        }
+        text += "\n"; //$NON-NLS-1$
+        // send it off to the console
+        if (getOutput) {
+            consoleBackendShellListener.setup(getLineSelection(selection, true)
+                    .getOffset());
+            console.getShell().addListener(consoleBackendShellListener);
+        }
+        consolePage.input(text);
         super.run(selection);
     }
 
     public void addMessage(final int offset, final String message) {
-        final IDocument document = fEditor.getDocumentProvider().getDocument(
-                fEditor.getEditorInput());
+        final IDocument document = editor.getDocumentProvider().getDocument(
+                editor.getEditorInput());
         try {
             final String delimiter = document.getLineDelimiter(document
                     .getLineOfOffset(offset - 1));
@@ -126,8 +150,8 @@ public class SendToConsoleAction extends SelectionDispatchAction {
 
     protected ITextSelection getLineSelection(ITextSelection selection,
             final boolean beginningOfNextLine) {
-        final IDocument document = fEditor.getDocumentProvider().getDocument(
-                fEditor.getEditorInput());
+        final IDocument document = editor.getDocumentProvider().getDocument(
+                editor.getEditorInput());
         if (selection.getLength() == 0) { // don't use isEmpty()!
             selection = ErlangTextEditorAction.extendSelectionToWholeLines(
                     document, selection);
@@ -148,13 +172,15 @@ public class SendToConsoleAction extends SelectionDispatchAction {
 
     public SendToConsoleAction(final IWorkbenchSite site,
             final ResourceBundle bundle, final String prefix,
-            final ITextEditor editor, final boolean getOutput) {
+            final ITextEditor editor, final boolean getOutput,
+            final IErlProject project) {
         super(site);
         this.getOutput = getOutput;
+        this.project = project;
         setText(getString(bundle, prefix + "label")); //$NON-NLS-1$
         setToolTipText(getString(bundle, prefix + "tooltip")); //$NON-NLS-1$
         setDescription(getString(bundle, prefix + "description")); //$NON-NLS-1$
-        fEditor = editor;
+        this.editor = editor;
         consoleBackendShellListener = new ConsoleBackendShellListener();
     }
 

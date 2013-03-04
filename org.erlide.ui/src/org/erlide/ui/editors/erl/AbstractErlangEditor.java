@@ -182,7 +182,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
 
         sendToConsole = new SendToConsoleAction(getSite(),
                 ErlangEditorMessages.getBundleForConstructedKeys(),
-                "SendToConsole.", this, false);
+                "SendToConsole.", this, false, getProject());
         sendToConsole
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE);
         setAction("SendToConsole", sendToConsole);
@@ -191,7 +191,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
 
         sendToConsoleWithResult = new SendToConsoleAction(getSite(),
                 ErlangEditorMessages.getBundleForConstructedKeys(),
-                "SendToConsoleWithResult.", this, true);
+                "SendToConsoleWithResult.", this, true, getProject());
         sendToConsoleWithResult
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE_WITH_RESULT);
         setAction("SendToConsoleWithResult", sendToConsoleWithResult);

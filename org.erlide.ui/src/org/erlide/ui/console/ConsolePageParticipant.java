@@ -50,7 +50,6 @@ import org.erlide.ui.console.actions.ConsoleRemoveLaunchAction;
 import org.erlide.ui.console.actions.ConsoleTerminateAction;
 import org.erlide.ui.console.actions.ShowStandardOutAction;
 import org.erlide.ui.console.actions.ShowWhenContentChangesAction;
-import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.DisplayUtils;
 
 /**
@@ -123,10 +122,6 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 
         // create handler and submissions for EOF
         fEOFHandler = new EOFHandler();
-
-        // set global ref, used by the SendToConsole action
-        // FIXME global is bad, use project's page (keyed by backend?)
-        ErlideUIPlugin.getDefault().setConsolePage((ErlangConsolePage) fPage);
     }
 
     @Override
@@ -152,9 +147,6 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
             fStdOut = null;
         }
         fConsole = null;
-        if (ErlideUIPlugin.getDefault().getConsolePage() == fPage) {
-            ErlideUIPlugin.getDefault().setConsolePage(null);
-        }
     }
 
     /**
@@ -246,7 +238,6 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         fActivatedContext = contextService.activateContext(fContextId);
         fActivatedHandler = handlerService.activateHandler(
                 "org.eclipse.debug.ui.commands.eof", fEOFHandler); //$NON-NLS-1$
-        ErlideUIPlugin.getDefault().setConsolePage((ErlangConsolePage) fPage);
     }
 
     @Override

@@ -351,6 +351,10 @@ public class ErlModel extends Openable implements IErlModel {
 
     @Override
     public IErlProject findProject(final IProject project) {
+        try {
+            open(null);
+        } catch (final ErlModelException e) {
+        }
         final IErlElement e = findElement(project);
         if (e == null) {
             return null;
