@@ -3,7 +3,6 @@ package org.erlide.runtime.epmd;
 import java.util.List;
 import java.util.Map;
 
-
 public interface IEpmdWatcher {
 
     public abstract void addHost(String host);

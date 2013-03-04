@@ -12,7 +12,6 @@ import org.erlide.core.builder.DialyzerMarkerUtils;
 
 public class RemoveDialyzerWarningsHandler extends AbstractHandler {
 
-	
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         final ISelection selection = HandlerUtil.getCurrentSelection(event);

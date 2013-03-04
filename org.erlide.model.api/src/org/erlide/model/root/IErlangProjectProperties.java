@@ -8,7 +8,6 @@ import org.erlide.runtime.RuntimeVersion;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.osgi.service.prefs.BackingStoreException;
 
-
 public interface IErlangProjectProperties {
 
     void store() throws BackingStoreException;

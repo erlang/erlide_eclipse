@@ -79,7 +79,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
     // private ViewerComparator fTreeViewerDefaultComparator;
 
     public QuickOutlinePopupDialog(final Shell parent, final int shellStyle,
-            final AbstractErlangEditor editor, final IOutlineContentCreator creator,
+            final AbstractErlangEditor editor,
+            final IOutlineContentCreator creator,
             final IOutlineSelectionHandler handler) {
         super(parent, shellStyle, true, true, true, true, true, null, null);
         // Set outline creator

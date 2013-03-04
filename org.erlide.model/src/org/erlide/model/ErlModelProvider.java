@@ -1,4 +1,5 @@
 package org.erlide.model;
+
 import org.erlide.model.erlang.ErlangToolkit;
 import org.erlide.model.erlang.ErlangToolkitFactory;
 import org.erlide.model.internal.root.ErlModel;

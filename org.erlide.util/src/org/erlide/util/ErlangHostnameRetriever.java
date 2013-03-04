@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import com.ericsson.otp.erlang.OtpNode;
 import com.google.common.collect.Lists;
 

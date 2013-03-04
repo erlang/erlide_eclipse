@@ -22,9 +22,9 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Sets;
-import org.erlide.util.ErlLogger;
 
 public class DialyzerBuilder extends IncrementalProjectBuilder {
 
@@ -48,21 +48,24 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
             return null;
         }
         final IErlElementLocator model = ErlModelManager.getErlangModel();
-        final Set<IErlModule> modules = DialyzerUtils.collectModulesFromResource(model, project);
+        final Set<IErlModule> modules = DialyzerUtils
+                .collectModulesFromResource(model, project);
         final Set<IErlProject> projects = Sets.newHashSet();
         projects.add(model.findProject(project));
         if (modules.size() != 0) {
             try {
-            	final IBackend backend = BackendCore.getBackendManager().getBuildBackend(project);
+                final IBackend backend = BackendCore.getBackendManager()
+                        .getBuildBackend(project);
                 DialyzerUtils.doDialyze(monitor, modules, projects, backend);
             } catch (final BackendException e) {
-            	ErlLogger.error(e);
+                ErlLogger.error(e);
             } catch (final InvocationTargetException e) {
                 ErlLogger.error(e);
             } catch (final DialyzerErrorException e) {
-            	ErlLogger.error(e);
-            	final String msg = NLS.bind(
-                        BuilderMessages.build_dialyzerProblem, e.getLocalizedMessage());
+                ErlLogger.error(e);
+                final String msg = NLS.bind(
+                        BuilderMessages.build_dialyzerProblem,
+                        e.getLocalizedMessage());
                 DialyzerMarkerUtils.addProblemMarker(project, null, null, msg,
                         0, IMarker.SEVERITY_ERROR);
             }

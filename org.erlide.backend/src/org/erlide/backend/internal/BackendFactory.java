@@ -40,7 +40,7 @@ public class BackendFactory implements IBackendFactory {
     final IRuntimeInfoCatalog runtimeInfoCatalog;
 
     public BackendFactory(final IRuntimeInfoCatalog runtimeInfoManager) {
-        this.runtimeInfoCatalog = runtimeInfoManager;
+        runtimeInfoCatalog = runtimeInfoManager;
     }
 
     @Override

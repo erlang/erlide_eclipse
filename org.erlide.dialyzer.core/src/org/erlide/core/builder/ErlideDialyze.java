@@ -56,7 +56,7 @@ public class ErlideDialyze {
             final OtpErlangList l = (OtpErlangList) backend.call(
                     "erlide_dialyze", "format_warnings", "x", warnings);
             for (final OtpErlangObject o : l) {
-				result.add(Util.stringValue(o).trim());
+                result.add(Util.stringValue(o).trim());
             }
         } catch (final RpcException e) {
             e.printStackTrace();

@@ -3,7 +3,6 @@ package org.erlide.util.erlang;
 import java.util.Collection;
 import java.util.Map;
 
-
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;

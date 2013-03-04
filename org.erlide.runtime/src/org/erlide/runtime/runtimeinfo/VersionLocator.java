@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.erlide.runtime.RuntimeVersion;
 
-
 public class VersionLocator {
     /**
      * Locate runtimes with this version or newer. If exact matches exists, they

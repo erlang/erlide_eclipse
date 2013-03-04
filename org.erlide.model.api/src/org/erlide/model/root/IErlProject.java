@@ -23,7 +23,6 @@ import org.erlide.runtime.RuntimeVersion;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.osgi.service.prefs.BackingStoreException;
 
-
 /**
  * An Erlang project represents a view of a project resource in terms of Erlang
  * elements such as applications, modules, attributes and functions. A project

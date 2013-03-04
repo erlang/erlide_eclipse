@@ -32,8 +32,8 @@ import org.erlide.util.ExtensionUtils;
 import org.erlide.util.HostnameUtils;
 import org.erlide.util.IProvider;
 import org.erlide.util.MessageReporter;
-import org.erlide.util.SystemConfiguration;
 import org.erlide.util.MessageReporter.ReporterPosition;
+import org.erlide.util.SystemConfiguration;
 import org.erlide.util.erlang.SignatureException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

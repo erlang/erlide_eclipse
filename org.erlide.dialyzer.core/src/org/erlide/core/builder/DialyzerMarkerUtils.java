@@ -31,33 +31,33 @@ public class DialyzerMarkerUtils {
     public static final String PROBLEM_MARKER = "org.erlide.dialyzer.core"
             + ".problemmarker";
 
-	public static void addDialyzerWarningMarkersFromResultList(
-			final IRpcSite backend, final OtpErlangList result) {
-		if (result == null) {
-			return;
-		}
-		final List<String> warnings = ErlideDialyze.formatWarnings(backend,
-				result);
-		for (int i = 0; i < warnings.size(); i++) {
-			final OtpErlangTuple t = (OtpErlangTuple) result.elementAt(i);
-			final OtpErlangTuple fileLine = (OtpErlangTuple) t.elementAt(1);
-			final String filename = Util.stringValue(fileLine.elementAt(0));
-			final OtpErlangLong lineL = (OtpErlangLong) fileLine.elementAt(1);
-			int line = 1;
-			try {
-				line = lineL.intValue();
-			} catch (final OtpErlangRangeException e) {
-				ErlLogger.error(e);
-			}
-			String msg = warnings.get(i);
-			final int j = msg.indexOf(": ");
-			if (j != -1) {
-				msg = msg.substring(j + 1);
-			}
-			final IErlElementLocator model = ErlModelManager.getErlangModel();
-			addDialyzerWarningMarker(model, filename, line, msg);
-		}
-	}
+    public static void addDialyzerWarningMarkersFromResultList(
+            final IRpcSite backend, final OtpErlangList result) {
+        if (result == null) {
+            return;
+        }
+        final List<String> warnings = ErlideDialyze.formatWarnings(backend,
+                result);
+        for (int i = 0; i < warnings.size(); i++) {
+            final OtpErlangTuple t = (OtpErlangTuple) result.elementAt(i);
+            final OtpErlangTuple fileLine = (OtpErlangTuple) t.elementAt(1);
+            final String filename = Util.stringValue(fileLine.elementAt(0));
+            final OtpErlangLong lineL = (OtpErlangLong) fileLine.elementAt(1);
+            int line = 1;
+            try {
+                line = lineL.intValue();
+            } catch (final OtpErlangRangeException e) {
+                ErlLogger.error(e);
+            }
+            String msg = warnings.get(i);
+            final int j = msg.indexOf(": ");
+            if (j != -1) {
+                msg = msg.substring(j + 1);
+            }
+            final IErlElementLocator model = ErlModelManager.getErlangModel();
+            addDialyzerWarningMarker(model, filename, line, msg);
+        }
+    }
 
     public static void addDialyzerWarningMarker(final IErlElementLocator model,
             final String path, final int line, final String message) {
@@ -83,9 +83,9 @@ public class DialyzerMarkerUtils {
                 DIALYZE_WARNING_MARKER);
     }
 
-    public static void addMarker(final IResource file,
-            final IProject project, final String path, final String message,
-            int lineNumber, final int severity, final String markerKind) {
+    public static void addMarker(final IResource file, final IProject project,
+            final String path, final String message, int lineNumber,
+            final int severity, final String markerKind) {
         try {
             IResource resource = null;
             if (file != null) {
@@ -93,19 +93,19 @@ public class DialyzerMarkerUtils {
             } else if (project != null) {
                 resource = project;
             } else {
-            	return;
+                return;
             }
             if (lineNumber == -1) {
-            	lineNumber = 1;
+                lineNumber = 1;
             }
-            
+
             final IMarker marker = resource.createMarker(markerKind);
             marker.setAttribute(IMarker.MESSAGE, message);
             marker.setAttribute(IMarker.SEVERITY, severity);
             marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
             marker.setAttribute(PATH_ATTRIBUTE, path);
         } catch (final CoreException e) {
-        	ErlLogger.debug(e);
+            ErlLogger.debug(e);
         }
     }
 

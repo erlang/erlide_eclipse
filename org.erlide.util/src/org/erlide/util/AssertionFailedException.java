@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.util;
 
+import org.eclipse.core.runtime.Assert;
+
 /**
  * <code>AssertionFailedException</code> is a runtime exception thrown by some
  * of the methods in <code>Assert</code>.

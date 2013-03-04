@@ -7,7 +7,6 @@ import org.erlide.runtime.RuntimeVersion;
 import org.erlide.util.ExtensionUtils;
 import org.osgi.framework.BundleContext;
 
-
 public class ModelPlugin extends Plugin {
 
     public static final String PLUGIN_ID = "org.erlide.model";
