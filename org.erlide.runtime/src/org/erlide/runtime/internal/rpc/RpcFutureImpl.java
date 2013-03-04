@@ -11,8 +11,8 @@
 package org.erlide.runtime.internal.rpc;
 
 import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.IRpcHelper;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.runtime.rpc.RpcHelper;
 import org.erlide.runtime.rpc.RpcMonitor;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -26,11 +26,11 @@ public class RpcFutureImpl implements IRpcFuture {
     private final String env;
     private final boolean logCalls;
 
-    private final RpcHelper helper;
+    private final IRpcHelper helper;
     private final OtpErlangRef ref;
 
     public RpcFutureImpl(final OtpErlangRef ref, final OtpMbox mbox,
-            final String env, final boolean logCalls, final RpcHelper helper) {
+            final String env, final boolean logCalls, final IRpcHelper helper) {
         this.ref = ref;
 
         this.mbox = mbox;
@@ -41,7 +41,7 @@ public class RpcFutureImpl implements IRpcFuture {
 
     @Override
     public OtpErlangObject get() throws RpcException {
-        return get(RpcHelper.INFINITY);
+        return get(IRpcHelper.INFINITY);
     }
 
     @Override

@@ -10,14 +10,14 @@ import org.erlide.model.services.search.ErlideDoc;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.IRpcSite;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
 import org.erlide.ui.views.EdocView;
-import org.erlide.utils.ErlangFunctionCall;
-import org.erlide.utils.Util;
+import org.erlide.util.ErlangFunctionCall;
+import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -51,7 +51,7 @@ public class HandleEdocLinksLocationListener implements LocationListener {
             input = edocView.getInput();
         }
         if (input != null) {
-            final ErlangEditor editor = input.getEditor();
+            final AbstractErlangEditor editor = input.getEditor();
             String moduleName = "";
             final Object inputElement = input.getInputElement();
             if (inputElement instanceof OpenResult) {

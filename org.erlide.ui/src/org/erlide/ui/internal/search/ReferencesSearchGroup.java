@@ -27,7 +27,7 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.actions.SelectionDispatchAction;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 
 /**
  * Action group that adds the search for references actions to a context menu
@@ -44,7 +44,7 @@ public class ReferencesSearchGroup extends ActionGroup {
     private static final String MENU_TEXT = "References";
 
     private final IWorkbenchSite fSite;
-    private ErlangEditor fEditor;
+    private AbstractErlangEditor fEditor;
     private IActionBars fActionBars;
 
     private final String fGroupId;
@@ -94,7 +94,7 @@ public class ReferencesSearchGroup extends ActionGroup {
      * @param editor
      *            the Erlang editor
      */
-    public ReferencesSearchGroup(final ErlangEditor editor) {
+    public ReferencesSearchGroup(final AbstractErlangEditor editor) {
         Assert.isNotNull(editor);
         fEditor = editor;
         fSite = fEditor.getSite();

@@ -39,7 +39,7 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.runtime.rpc.IRpcFuture;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -70,11 +70,6 @@ public class ErlideBuilder {
         try {
             initializeBuilder(monitor);
             MarkerUtils.removeProblemMarkersFor(currentProject);
-            final DialyzerPreferences prefs = DialyzerPreferences
-                    .get(currentProject);
-            if (prefs.getRemoveWarningsOnClean()) {
-                MarkerUtils.removeDialyzerMarkersFor(currentProject);
-            }
             final IErlProject erlProject = ErlModelManager.getErlangModel()
                     .getErlangProject(currentProject);
             final IFolder bf = currentProject.getFolder(erlProject

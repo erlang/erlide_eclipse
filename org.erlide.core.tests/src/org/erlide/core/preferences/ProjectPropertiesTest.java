@@ -7,6 +7,7 @@ import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.model.internal.root.ProjectPreferencesConstants;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.root.IErlangProjectProperties;
 import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.AfterClass;
@@ -42,7 +43,7 @@ public class ProjectPropertiesTest {
                 .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.OUTPUT_DIR, expected);
 
-        final OldErlangProjectProperties pp = new OldErlangProjectProperties(
+        final IErlangProjectProperties pp = new OldErlangProjectProperties(
                 project);
         final String actual = pp.getOutputDir().toPortableString();
 
@@ -58,7 +59,7 @@ public class ProjectPropertiesTest {
                 .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.INCLUDE_DIRS, expected);
 
-        final OldErlangProjectProperties pp = new OldErlangProjectProperties(
+        final IErlangProjectProperties pp = new OldErlangProjectProperties(
                 project);
         final String actual = pp.getIncludeDirs().toString();
 
@@ -79,7 +80,7 @@ public class ProjectPropertiesTest {
                 .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.SOURCE_DIRS, expected);
 
-        final OldErlangProjectProperties pp = new OldErlangProjectProperties(
+        final IErlangProjectProperties pp = new OldErlangProjectProperties(
                 project);
         final String actual = pp.getSourceDirs().toString();
 

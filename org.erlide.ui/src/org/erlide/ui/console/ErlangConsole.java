@@ -13,18 +13,15 @@ package org.erlide.ui.console;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.console.IConsoleDocumentPartitioner;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.part.IPageBookViewPage;
 import org.erlide.backend.IBackend;
-import org.erlide.backend.console.IBackendShell;
+import org.erlide.runtime.shell.IBackendShell;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
-public class ErlangConsole extends TextConsole {
+public class ErlangConsole extends TextConsole implements IErlangConsole {
     private final IBackendShell shell;
     protected ListenerList consoleListeners;
     protected ErlangConsolePartitioner partitioner;
@@ -45,13 +42,19 @@ public class ErlangConsole extends TextConsole {
 
     @Override
     public IPageBookViewPage createPage(final IConsoleView view) {
-        return new ErlangConsolePage(view, this, backend.getRpcSite());
+        final ErlangConsolePage erlangConsolePage = new ErlangConsolePage(view,
+                this, backend.getRpcSite());
+        ErlideUIPlugin.getDefault().getErlConsoleManager()
+                .addPage(this, erlangConsolePage);
+        return erlangConsolePage;
     }
 
+    @Override
     public IBackend getBackend() {
         return backend;
     }
 
+    @Override
     public IBackendShell getShell() {
         return shell;
     }
@@ -80,18 +83,18 @@ public class ErlangConsole extends TextConsole {
             final IPropertyChangeListener listener) {
     }
 
-    public void show() {
-        final IWorkbenchPage page = PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getActivePage();
-        final String id = IConsoleConstants.ID_CONSOLE_VIEW;
-        IConsoleView view;
-        try {
-            view = (IConsoleView) page.showView(id);
-            view.display(this);
-        } catch (final PartInitException e) {
-            e.printStackTrace();
-        }
-    }
+    // public void show() {
+    // final IWorkbenchPage page = PlatformUI.getWorkbench()
+    // .getActiveWorkbenchWindow().getActivePage();
+    // final String id = IConsoleConstants.ID_CONSOLE_VIEW;
+    // IConsoleView view;
+    // try {
+    // view = (IConsoleView) page.showView(id);
+    // view.display(this);
+    // } catch (final PartInitException e) {
+    // e.printStackTrace();
+    // }
+    // }
 
     @Override
     protected IConsoleDocumentPartitioner getPartitioner() {

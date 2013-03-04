@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.utils.ListsUtils;
-
 public final class PreferencesUtils {
 
     private static final String SEP = ";";

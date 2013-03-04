@@ -24,7 +24,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Display;
 import org.erlide.ui.util.UIStringUtils;
 import org.erlide.ui.util.eclipse.text.LineBreakingReader;
-import org.erlide.utils.StringUtils;
+import org.erlide.util.StringUtils;
 
 /**
  * Based on HTMLTextPresenter

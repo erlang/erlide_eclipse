@@ -2,13 +2,9 @@ package org.erlide.util;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.erlide.utils.ErlLogger;
-
-import com.google.common.collect.Lists;
 
 public abstract class MessageReporter {
     public enum ReporterPosition {
@@ -64,17 +60,9 @@ public abstract class MessageReporter {
     }
 
     private static List<MessageReporter> getAllImplementors() {
-        final List<MessageReporter> result = Lists.newArrayList();
-        final IConfigurationElement[] elements = getMessageReporterConfigurationElements();
-        for (final IConfigurationElement element : elements) {
-            try {
-                final MessageReporter provider = (MessageReporter) element
-                        .createExecutableExtension("class");
-                result.add(provider);
-            } catch (final CoreException e) {
-                e.printStackTrace();
-            }
-        }
+        final List<MessageReporter> result = ExtensionUtils.getExtensions(
+                "org.erlide.util_eclipse.messageReporter",
+                MessageReporter.class);
         return result;
     }
 

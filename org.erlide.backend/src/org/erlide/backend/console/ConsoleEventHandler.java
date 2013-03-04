@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.erlide.backend.console;
 
-import org.erlide.backend.IBackend;
 import org.erlide.backend.events.ErlangEventHandler;
+import org.erlide.runtime.shell.IBackendShell;
 import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -20,9 +20,9 @@ public class ConsoleEventHandler extends ErlangEventHandler {
 
     private final IBackendShell shell;
 
-    public ConsoleEventHandler(final IBackend backend,
+    public ConsoleEventHandler(final String backendName,
             final IBackendShell backendShell) {
-        super("io_server", backend);
+        super("io_server", backendName);
         shell = backendShell;
     }
 

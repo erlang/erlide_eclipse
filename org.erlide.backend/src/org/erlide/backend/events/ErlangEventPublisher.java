@@ -7,7 +7,8 @@ import org.eclipse.core.resources.IProject;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendListener;
-import org.erlide.utils.ErlLogger;
+import org.erlide.runtime.IErlRuntime;
+import org.erlide.util.ErlLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -23,7 +24,7 @@ import com.ericsson.otp.erlang.OtpMbox;
 
 public class ErlangEventPublisher {
 
-    private volatile IBackend backend;
+    private volatile IErlRuntime backend;
     volatile boolean stopped = false;
     private EventAdmin eventAdmin;
     private final IBackendListener backendListener;
@@ -31,7 +32,7 @@ public class ErlangEventPublisher {
     final static boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.event.daemon"));
 
-    public ErlangEventPublisher(final IBackend aBackend) {
+    public ErlangEventPublisher(final IErlRuntime aBackend) {
         backend = aBackend;
         backendListener = new IBackendListener() {
 
@@ -94,9 +95,9 @@ public class ErlangEventPublisher {
     }
 
     private final class HandlerJob implements Runnable {
-        private final IBackend myBackend;
+        private final IErlRuntime myBackend;
 
-        public HandlerJob(final IBackend backend) {
+        public HandlerJob(final IErlRuntime backend) {
             myBackend = backend;
         }
 
@@ -166,7 +167,7 @@ public class ErlangEventPublisher {
         }
     }
 
-    public void publishEvent(final IBackend b, final String topic,
+    public void publishEvent(final IErlRuntime b, final String topic,
             final OtpErlangObject event, final OtpErlangPid sender) {
 
         final Map<String, Object> properties = new HashMap<String, Object>();
@@ -174,13 +175,15 @@ public class ErlangEventPublisher {
         properties.put("DATA", event);
         properties.put("SENDER", sender);
 
-        final Event osgiEvent = new Event(getFullTopic(topic, b), properties);
+        final Event osgiEvent = new Event(getFullTopic(topic, b.getName()),
+                properties);
         eventAdmin.postEvent(osgiEvent);
     }
 
-    public static String getFullTopic(final String topic, final IBackend backend) {
+    public static String getFullTopic(final String topic,
+            final String backendName) {
         final String subtopic = "*".equals(topic) ? "" : "/"
-                + (backend == null ? "*" : backend.getName()
+                + (backendName == null ? "*" : backendName
                         .replaceAll("@", "__").replaceAll("\\.", "_"));
         return "erlideEvent/" + topic + subtopic;
     }

@@ -18,8 +18,8 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.internal.erlang.ErlideScanner;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.Util;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;

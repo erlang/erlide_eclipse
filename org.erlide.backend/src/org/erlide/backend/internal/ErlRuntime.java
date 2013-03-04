@@ -16,22 +16,25 @@ import java.net.Socket;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IProcess;
 import org.erlide.backend.BackendException;
-import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.IRuntimeStateListener;
 import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.IRpcHelper;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.runtime.rpc.RpcHelper;
 import org.erlide.runtime.rpc.RpcResult;
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.shell.IBackendShell;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.ExtensionUtils;
+import org.erlide.util.HostnameUtils;
+import org.erlide.util.IProvider;
 import org.erlide.util.MessageReporter;
 import org.erlide.util.MessageReporter.ReporterPosition;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.IProvider;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.SystemConfiguration;
+import org.erlide.util.erlang.SignatureException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -39,7 +42,6 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
-import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.base.Strings;
 
 public class ErlRuntime implements IErlRuntime, IRpcSite {
@@ -54,7 +56,9 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "400"));
     private static final Object connectLock = new Object();
-    private static final RpcHelper rpcHelper = RpcHelper.getInstance();
+    private static final IRpcHelper rpcHelper = ExtensionUtils
+            .getSingletonExtension("org.erlide.runtime.api.rpc_helper",
+                    IRpcHelper.class);
 
     public enum State {
         CONNECTED, DISCONNECTED, DOWN
@@ -65,12 +69,13 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     private OtpNode localNode;
     private final Object localNodeLock = new Object();
     private boolean reported;
-    private final IProcess process;
+    private IProcess process;
     private final boolean connectOnce;
     private final IProvider<IProcess> processProvider;
     private final OtpNodeStatus statusWatcher;
     private OtpMbox eventBox;
     private boolean stopped;
+    private IRuntimeStateListener listener;
 
     public ErlRuntime(final String name, final String cookie,
             final IProvider<IProcess> processProvider,
@@ -113,6 +118,11 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     public void start() {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public String getName() {
+        return getNodeName();
     }
 
     public void startLocalNode() {
@@ -275,6 +285,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             case CONNECTED:
                 break;
             case DOWN:
+                listener.runtimeDown(this);
                 try {
                     if (process != null) {
                         process.terminate();
@@ -282,8 +293,6 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
                 } catch (final DebugException e) {
                     ErlLogger.info(e);
                 }
-                // TODO restart it??
-                // process =
                 if (!stopped) {
                     final String msg = reportRuntimeDown(data.getNodeName());
                     throw new RpcException(msg);
@@ -548,7 +557,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     private static void setDefaultTimeout() {
         final String t = System.getProperty("erlide.rpc.timeout", "9000");
         if ("infinity".equals(t)) {
-            DEFAULT_TIMEOUT = RpcHelper.INFINITY;
+            DEFAULT_TIMEOUT = IRpcHelper.INFINITY;
         } else {
             try {
                 DEFAULT_TIMEOUT = Integer.parseInt(t);
@@ -579,7 +588,28 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public RuntimeInfo getRuntimeInfo() {
-        return data.getRuntimeInfo();
+    public void restart() {
+        if (stopped) {
+            return;
+        }
+        System.out.println("RESTART " + this);
+        state = State.DISCONNECTED;
+        process = processProvider.get();
+    }
+
+    @Override
+    public void addListener(final IRuntimeStateListener aListener) {
+        listener = aListener;
+    }
+
+    @Override
+    public boolean isDistributed() {
+        return !Strings.isNullOrEmpty(getNodeName());
+    }
+
+    @Override
+    public IBackendShell getShell(final String id) {
+        // TODO can we return something here?
+        return null;
     }
 }

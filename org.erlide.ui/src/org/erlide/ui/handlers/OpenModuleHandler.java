@@ -25,7 +25,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.erlide.ui.dialogs.OpenModuleDialog;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public final class OpenModuleHandler extends Action implements IHandler,
         IWorkbenchWindowActionDelegate {

@@ -3,7 +3,7 @@ package org.erlide.launch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;
 import org.erlide.launch.debug.model.ErlangStackFrame;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class ErlangSourceLookupParticipant extends
         AbstractSourceLookupParticipant {

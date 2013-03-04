@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.erlide.utils.ErlLogger;
-
 import com.google.common.collect.Lists;
 
 /**
@@ -46,7 +44,6 @@ public class ErlDirtyRegionQueue {
             return false;
         } else {
             fDirtyRegions.addLast(dr);
-            ErlLogger.debug("added %s (size %d)", dr, fDirtyRegions.size());
             return true;
         }
     }

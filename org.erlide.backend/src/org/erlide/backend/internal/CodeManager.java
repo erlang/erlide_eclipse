@@ -22,12 +22,12 @@ import org.eclipse.core.runtime.IContributor;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
-import org.erlide.backend.ICodeBundle;
-import org.erlide.backend.ICodeManager;
-import org.erlide.model.util.ErlideUtil;
 import org.erlide.runtime.BeamLoader;
+import org.erlide.runtime.ICodeBundle;
+import org.erlide.runtime.ICodeManager;
+import org.erlide.runtime.RuntimeUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -87,13 +87,12 @@ public class CodeManager implements ICodeManager {
     }
 
     @Override
-    public void unregister(final Bundle b) {
-        final ICodeBundle p = findBundle(b);
-        if (p == null) {
+    public void unregister(final ICodeBundle bundle) {
+        if (bundle == null) {
             return;
         }
-        registeredBundles.remove(p);
-        unloadPluginCode(p);
+        registeredBundles.remove(bundle);
+        unloadPluginCode(bundle);
     }
 
     /**
@@ -112,7 +111,7 @@ public class CodeManager implements ICodeManager {
 
     private void loadPluginCode(final ICodeBundle p) {
 
-        final Bundle b = p.getBundle();
+        final Bundle b = OsgiUtil.findOsgiBundle(p.getBundleName());
         ErlLogger.debug("loading plugin " + b.getSymbolicName() + " in "
                 + runtimeInfo.getName());
 
@@ -193,10 +192,10 @@ public class CodeManager implements ICodeManager {
     }
 
     private void registerBundle(final ICodeBundle p) {
-        final String externalPath = System.getProperty(p.getBundle()
-                .getSymbolicName() + ".ebin");
+        final String externalPath = System.getProperty(p.getBundleName()
+                + ".ebin");
         if (externalPath != null) {
-            final boolean accessible = ErlideUtil.isAccessibleDir(
+            final boolean accessible = RuntimeUtils.isAccessibleDir(
                     backend.getRpcSite(), externalPath);
             if (accessible) {
                 ErlLogger.debug("adding external %s to code path for %s:: %s",
@@ -213,7 +212,7 @@ public class CodeManager implements ICodeManager {
         if (ebinDirs != null) {
             for (final String ebinDir : ebinDirs) {
                 final String localDir = ebinDir.replaceAll("\\\\", "/");
-                final boolean accessible = ErlideUtil.isAccessibleDir(
+                final boolean accessible = RuntimeUtils.isAccessibleDir(
                         backend.getRpcSite(), localDir);
                 final boolean embedded = ErlangCode.isEmbedded(backend
                         .getRpcSite());
@@ -222,25 +221,16 @@ public class CodeManager implements ICodeManager {
                             localDir, backend.hashCode(), runtimeInfo);
                     ErlangCode.addPathA(backend.getRpcSite(), localDir);
                 } else {
-                    ErlLogger.debug("loading %s for %s", p.getBundle()
-                            .getSymbolicName(), runtimeInfo);
+                    ErlLogger.debug("loading %s for %s", p.getBundleName(),
+                            runtimeInfo);
                     loadPluginCode(p);
                 }
             }
         } else {
-            ErlLogger.warn("Could not find 'ebin' in bundle %s.", p.getBundle()
-                    .getSymbolicName());
+            ErlLogger.warn("Could not find 'ebin' in bundle %s.",
+                    p.getBundleName());
             loadPluginCode(p);
         }
-    }
-
-    private ICodeBundle findBundle(final Bundle b) {
-        for (final ICodeBundle p : registeredBundles) {
-            if (p.getBundle() == b) {
-                return p;
-            }
-        }
-        return null;
     }
 
     private PathItem findItem(final List<PathItem> l, final String p) {
@@ -255,7 +245,7 @@ public class CodeManager implements ICodeManager {
     }
 
     private void unloadPluginCode(final ICodeBundle p) {
-        final Bundle b = p.getBundle();
+        final Bundle b = OsgiUtil.findOsgiBundle(p.getBundleName());
         @SuppressWarnings("rawtypes")
         Enumeration e;
         ErlLogger.debug("*> really unloading plugin " + p.getClass().getName());

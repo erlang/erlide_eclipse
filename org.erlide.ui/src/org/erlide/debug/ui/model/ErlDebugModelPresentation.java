@@ -27,7 +27,7 @@ import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.ErlideUIDebugImages;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 /**
  * @author jakob

@@ -9,7 +9,7 @@ import org.erlide.core.builder.CompilerOption;
 import org.erlide.core.builder.CompilerOption.BooleanOption;
 import org.erlide.core.builder.CompilerOption.DefineOption;
 import org.erlide.core.builder.CompilerOption.WarningOption;
-import org.erlide.runtime.TermParserException;
+import org.erlide.util.erlang.TermParserException;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

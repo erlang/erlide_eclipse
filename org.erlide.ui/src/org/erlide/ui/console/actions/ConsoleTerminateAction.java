@@ -55,7 +55,7 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
     @Override
     public void update() {
         final IBackend backend = fConsole.getBackend();
-        setEnabled(backend.isManaged() && !backend.isStopped()
+        setEnabled(backend.getData().isManaged() && !backend.isStopped()
                 && backend != BackendCore.getBackendManager().getIdeBackend());
     }
 
@@ -63,14 +63,17 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
     public void run() {
         try {
             final IBackend backend = fConsole.getBackend();
-            final ILaunch launch = backend.getLaunch();
+            final ILaunch launch = backend.getData().getLaunch();
             if (launch != null) {
                 terminate(launch);
 
                 setEnabled(false);
                 fConsole.stop();
             }
-            BackendCore.getBackendManager().dispose(backend);
+            if (!backend
+                    .equals(BackendCore.getBackendManager().getIdeBackend())) {
+                backend.dispose();
+            }
         } catch (final DebugException e) {
             // TODO: report exception
         }

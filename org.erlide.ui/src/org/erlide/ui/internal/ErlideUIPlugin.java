@@ -60,7 +60,6 @@ import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.console.ErlConsoleManager;
-import org.erlide.ui.console.ErlangConsolePage;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.actions.ClearCacheAction;
 import org.erlide.ui.editors.erl.completion.ErlangContextType;
@@ -72,8 +71,8 @@ import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 import org.erlide.ui.util.ProblemMarkerManager;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.SystemConfiguration;
 import org.osgi.framework.BundleContext;
 
 import com.google.common.collect.Lists;
@@ -114,7 +113,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     private ProblemMarkerManager fProblemMarkerManager = null;
 
-    private ErlConsoleManager erlConMan;
+    private ErlConsoleManager erlConsoleManager;
 
     /** Key to store custom templates. */
     private static final String CUSTOM_TEMPLATES_KEY = "org.erlide.ui.editor.customtemplates"; //$NON-NLS-1$
@@ -153,13 +152,13 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
         ErlLogger.debug("Started UI");
 
-        erlConMan = new ErlConsoleManager();
+        erlConsoleManager = new ErlConsoleManager();
         if (SystemConfiguration.getInstance().isDeveloper()) {
             try {
                 final IBackend ideBackend = BackendCore.getBackendManager()
                         .getIdeBackend();
-                if (!ideBackend.hasConsole()) {
-                    erlConMan.runtimeAdded(ideBackend);
+                if (!ideBackend.getData().hasConsole()) {
+                    erlConsoleManager.runtimeAdded(ideBackend);
                 }
             } catch (final Exception e) {
                 ErlLogger.warn(e);
@@ -171,6 +170,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                 erlangDebuggerBackendListener);
 
         startPeriodicCacheCleaner();
+    }
+
+    public ErlConsoleManager getErlConsoleManager() {
+        return erlConsoleManager;
     }
 
     private void startPeriodicCacheCleaner() {
@@ -242,7 +245,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
      */
     @Override
     public void stop(final BundleContext context) throws Exception {
-        erlConMan.dispose();
+        erlConsoleManager.dispose();
         super.stop(context);
         BackendCore.getBackendManager().removeBackendListener(
                 erlangDebuggerBackendListener);
@@ -526,20 +529,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         return eclipsePreferences;
     }
 
-    private ErlangConsolePage fErlangConsolePage;
-
     private ContributionContextTypeRegistry fContextTypeRegistry;
     private ContributionTemplateStore fStore;
 
     private ErlangDebuggerBackendListener erlangDebuggerBackendListener;
-
-    public ErlangConsolePage getConsolePage() {
-        return fErlangConsolePage;
-    }
-
-    public void setConsolePage(final ErlangConsolePage erlangConsolePage) {
-        fErlangConsolePage = erlangConsolePage;
-    }
 
     public TemplateStore getTemplateStore() {
         // this is to avoid recursive call when fContextTypeRegistry is null

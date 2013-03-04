@@ -71,7 +71,7 @@ import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.plugin.ErlEditorMessages;
 import org.erlide.ui.util.ErlModelUtils;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

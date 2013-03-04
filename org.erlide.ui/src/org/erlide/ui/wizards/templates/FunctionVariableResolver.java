@@ -22,7 +22,7 @@ import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.jface.text.templates.TemplateVariable;
 import org.eclipse.jface.text.templates.TemplateVariableResolver;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class FunctionVariableResolver extends TemplateVariableResolver {
 

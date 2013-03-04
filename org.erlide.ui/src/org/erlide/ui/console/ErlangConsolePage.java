@@ -71,17 +71,18 @@ import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.erlide.backend.console.IBackendShell;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.ParserException;
 import org.erlide.runtime.RuntimeHelper;
+import org.erlide.runtime.shell.IBackendShell;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 @SuppressWarnings("restriction")
 public class ErlangConsolePage extends Page implements IAdaptable,
-        IPropertyChangeListener {
+        IPropertyChangeListener, IErlangConsolePage {
     public static final String ID = "org.erlide.ui.views.console";
 
     Color bgColor_Ok;
@@ -141,6 +142,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
             bgColor_Err.dispose();
             bgColor_Ok.dispose();
         }
+        ErlideUIPlugin.getDefault().getErlConsoleManager().removePage(fConsole);
         super.dispose();
     }
 
@@ -167,6 +169,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         consoleInput.setText("");
     }
 
+    @Override
     public void input(final String data) {
         final String data2 = data.trim() + "\n";
         shell.input(data2);
@@ -260,11 +263,12 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         consoleInput.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(final KeyEvent e) {
-                final boolean ctrlPressed = (e.stateMask & SWT.CTRL) == SWT.CTRL;
-                if (e.keyCode == 13 && ctrlPressed && isInputComplete()) {
+                final boolean ctrlOrCommandPressed = (e.stateMask & (SWT.CTRL | SWT.COMMAND)) != 0;
+                if (e.keyCode == 13 && ctrlOrCommandPressed
+                        && isInputComplete()) {
                     sendInput();
                     e.doit = true;
-                } else if (ctrlPressed && e.keyCode == SWT.ARROW_UP) {
+                } else if (ctrlOrCommandPressed && e.keyCode == SWT.ARROW_UP) {
                     history.prev();
                     final String s = history.get();
                     if (s != null) {
@@ -272,7 +276,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                         consoleInput.setSelection(consoleInput.getText()
                                 .length());
                     }
-                } else if (ctrlPressed && e.keyCode == SWT.ARROW_DOWN) {
+                } else if (ctrlOrCommandPressed && e.keyCode == SWT.ARROW_DOWN) {
                     history.next();
                     final String s = history.get();
                     if (s != null) {
@@ -315,7 +319,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 consoleOutputViewer.revealRange(end, 0);
             }
         };
-        fDoc.addDocumentListener(documentListener);
+        addDocumentListener(documentListener);
 
         final String id = "#ContextMenu"; //$NON-NLS-1$
         // if (getConsole().getType() != null) {
@@ -523,5 +527,17 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         if (action instanceof IUpdate) {
             ((IUpdate) action).update();
         }
+    }
+
+    public void addDocumentListener(final IDocumentListener documentListener) {
+        fDoc.addDocumentListener(documentListener);
+    }
+
+    public void removeDocumentListener(final IDocumentListener documentListener) {
+        fDoc.removeDocumentListener(documentListener);
+    }
+
+    public IBackendShell getShell() {
+        return shell;
     }
 }

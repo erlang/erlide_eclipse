@@ -6,11 +6,9 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.RegistryFactory;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.ExtensionUtils;
 
 import com.google.common.collect.Lists;
 
@@ -81,20 +79,10 @@ public class SourcePathUtils {
             return sourcePathProviders;
         }
         // TODO should be listening to plugin changes
-        sourcePathProviders = Lists.newArrayList();
-        final IConfigurationElement[] elements = getSourcepathConfigurationElements();
-        for (final IConfigurationElement element : elements) {
-            final SourcePathProvider provider = (SourcePathProvider) element
-                    .createExecutableExtension("class");
-            sourcePathProviders.add(provider);
-        }
+        sourcePathProviders = ExtensionUtils.getExtensions(
+                ModelPlugin.PLUGIN_ID + ".sourcePathProvider",
+                SourcePathProvider.class);
         return sourcePathProviders;
-    }
-
-    public static IConfigurationElement[] getSourcepathConfigurationElements() {
-        final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(ModelPlugin.PLUGIN_ID,
-                "sourcePathProvider");
     }
 
     private abstract static class SPPMethod {

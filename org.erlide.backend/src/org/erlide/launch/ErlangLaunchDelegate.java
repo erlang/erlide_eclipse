@@ -13,42 +13,32 @@ package org.erlide.launch;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.debug.core.model.IProcess;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
-import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.model.BeamLocator;
-import org.erlide.model.erlang.ModuleKind;
+import org.erlide.runtime.ErlRuntimeAttributes;
+import org.erlide.runtime.epmd.IEpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.HostnameUtils;
+import org.erlide.util.SystemConfiguration;
 
 import com.google.common.collect.Maps;
 
 public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
-
-    public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.launch.internal";
-    public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";
 
     @Override
     public void launch(final ILaunchConfiguration config, final String mode,
@@ -76,21 +66,28 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             final IProgressMonitor monitor) throws CoreException {
         RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoCatalog()
                 .getRuntime(
-                        config.getAttribute(ErlLaunchAttributes.RUNTIME_NAME,
+                        config.getAttribute(ErlRuntimeAttributes.RUNTIME_NAME,
                                 ""));
         if (runtimeInfo == null) {
             runtimeInfo = BackendCore.getRuntimeInfoCatalog()
                     .getDefaultRuntime();
         }
-        BackendData data = new BackendData(runtimeInfo, config, mode);
-        final RuntimeInfo info = data.getRuntimeInfo();
-        if (info == null) {
-            ErlLogger.error("Could not find runtime '%s'",
-                    data.getRuntimeName());
+        if (runtimeInfo == null) {
+            // TODO what to do here?
+            ErlLogger.error("Can't create backend without a runtime defined!");
             return null;
         }
-        ErlLogger.debug("doLaunch runtime %s (%s)", data.getRuntimeName(), data
-                .getRuntimeInfo().getName());
+        final String nodeName = config.getAttribute(
+                ErlRuntimeAttributes.NODE_NAME, "");
+        BackendData data = new BackendData(runtimeInfo, config, mode,
+                shouldManageNode(nodeName, BackendCore.getEpmdWatcher()));
+        final RuntimeInfo info = data.getRuntimeInfo();
+        if (info == null) {
+            ErlLogger.error("Could not find runtime '%s'", data
+                    .getRuntimeInfo().getName());
+            return null;
+        }
+        ErlLogger.debug("doLaunch runtime %s", data.getRuntimeInfo().getName());
         ErlLogger.debug("doLaunch cookie %s (%s)", data.getCookie(),
                 data.getCookie());
 
@@ -155,7 +152,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             final IProgressMonitor monitor) throws CoreException {
         final ILaunchConfigurationWorkingCopy wc = configuration
                 .getWorkingCopy();
-        wc.setAttribute(ErlLaunchAttributes.COOKIE, "erlide");
+        wc.setAttribute(ErlRuntimeAttributes.COOKIE, "erlide");
         launch(wc, mode, launch, monitor);
     }
 
@@ -219,8 +216,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             final ILaunchConfiguration cfg = aLaunch.getLaunchConfiguration();
             final ILaunchConfigurationType type = cfg.getType();
             final String id = type.getIdentifier();
-            return ErlangLaunchDelegate.CONFIGURATION_TYPE.equals(id)
-                    || ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL
+            return IErlangLaunchDelegateConstants.CONFIGURATION_TYPE.equals(id)
+                    || IErlangLaunchDelegateConstants.CONFIGURATION_TYPE_INTERNAL
                             .equals(id);
         } catch (final CoreException e) {
             ErlLogger.warn(e);
@@ -233,34 +230,32 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             final ILaunchConfiguration cfg = aLaunch.getLaunchConfiguration();
             final ILaunchConfigurationType type = cfg.getType();
             final String id = type.getIdentifier();
-            return ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL.equals(id);
+            return IErlangLaunchDelegateConstants.CONFIGURATION_TYPE_INTERNAL
+                    .equals(id);
         } catch (final CoreException e) {
             ErlLogger.warn(e);
             return false;
         }
     }
 
-    public static List<String> addBreakpointProjectsAndModules(
-            final Collection<IProject> projects,
-            final List<String> interpretedModules) {
-        final IBreakpointManager bpm = DebugPlugin.getDefault()
-                .getBreakpointManager();
-        final List<String> result = new ArrayList<String>(interpretedModules);
-        for (final IBreakpoint bp : bpm
-                .getBreakpoints(ErlDebugConstants.ID_ERLANG_DEBUG_MODEL)) {
-            final IMarker m = bp.getMarker();
-            final IResource r = m.getResource();
-            final String name = r.getName();
-            if (ModuleKind.hasErlExtension(name)) {
-                final IProject p = r.getProject();
-                if (projects == null || projects.contains(p)) {
-                    final String s = p.getName() + ":" + name;
-                    if (!result.contains(s)) {
-                        result.add(s);
-                    }
-                }
+    public static boolean shouldManageNode(final String name,
+            final IEpmdWatcher epmdWatcher) {
+        final int atSignIndex = name.indexOf('@');
+        String shortName = name;
+        if (atSignIndex > 0) {
+            shortName = name.substring(0, atSignIndex);
+        }
+
+        boolean isLocal = atSignIndex < 0;
+        if (atSignIndex > 0) {
+            final String hostname = name.substring(atSignIndex + 1);
+            if (HostnameUtils.isThisHost(hostname)) {
+                isLocal = true;
             }
         }
+
+        final boolean isRunning = epmdWatcher.hasLocalNode(shortName);
+        final boolean result = isLocal && !isRunning;
         return result;
     }
 

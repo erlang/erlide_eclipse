@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
 Bundle-SymbolicName: org.erlide.libs;singleton:=true
-Bundle-Version: 1.8.5.qualifier
+Bundle-Version: 1.8.6.qualifier
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: jinterface.jar,
@@ -22,7 +22,6 @@ Export-Package: com.ericsson.otp.erlang,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtext.xbase.lib.internal;x-internal:=true,
  org.eclipse.xtext.xbase.lib.util,
- org.erlide.utils,
  org.hamcrest,
  org.hamcrest.beans,
  org.hamcrest.collection,

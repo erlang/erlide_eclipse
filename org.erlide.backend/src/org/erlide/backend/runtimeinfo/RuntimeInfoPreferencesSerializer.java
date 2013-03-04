@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalogData;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer {

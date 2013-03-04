@@ -33,8 +33,8 @@ import org.erlide.model.internal.root.ErlMember;
 import org.erlide.model.root.IErlElement;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.RuntimeHelper;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.Util;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -86,8 +86,8 @@ public final class ErlParser implements IErlParser {
         OtpErlangTuple res = null;
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         if (initialParse) {
-            final String stateDir = ModelPlugin.getDefault()
-                    .getStateLocation().toString();
+            final String stateDir = ModelPlugin.getDefault().getStateLocation()
+                    .toString();
             res = ErlideNoparse.initialParse(backend, scannerName, path,
                     stateDir, updateSearchServer);
         } else {

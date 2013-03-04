@@ -2,7 +2,6 @@ package org.erlide.wrangler.refactoring.ui;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -110,7 +109,7 @@ public class AddRefacHandler extends AbstractHandler {
         try {
             final IErlModule module = ErlModelManager.getErlangModel()
                     .findModule(callbackModule);
-            IErlScanner scanner = module.getScanner();
+            final IErlScanner scanner = module.getScanner();
             try {
                 module.resetAndCacheScannerAndParser(null);
             } finally {
@@ -204,35 +203,32 @@ public class AddRefacHandler extends AbstractHandler {
             }
         }
 
-        InputStream in;
-        OutputStream out;
+        InputStream in = null;
+        OutputStream out = null;
         try {
             in = new FileInputStream(source);
-        } catch (final FileNotFoundException e) {
-            return false;
-        }
-        try {
             out = new FileOutputStream(dest);
-        } catch (final FileNotFoundException e) {
-            return false;
-        }
-
-        try {
             final byte[] buf = new byte[1024];
             int len;
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }
         } catch (final IOException e) {
+            return false;
+        } finally {
             try {
-                in.close();
-                out.close();
+                if (in != null) {
+                    in.close();
+                }
             } catch (final IOException ignore) {
             }
-
-            return false;
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (final IOException ignore) {
+            }
         }
-
         return true;
     }
 

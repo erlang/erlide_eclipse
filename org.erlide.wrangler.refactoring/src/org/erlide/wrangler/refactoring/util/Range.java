@@ -10,7 +10,8 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.util;
 
-import com.ericsson.otp.erlang.OtpErlang;
+import org.erlide.util.erlang.OtpErlang;
+
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangRangeException;

@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Control;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class ErlContentViewer extends Viewer {
 

@@ -31,7 +31,7 @@ import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 import org.erlide.ui.util.IColorManager;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.Preferences;
 
 public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener {

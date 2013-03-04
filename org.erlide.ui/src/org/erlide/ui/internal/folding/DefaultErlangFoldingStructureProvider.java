@@ -42,9 +42,9 @@ import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.internal.root.ErlElementDelta;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
+import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlElementDelta;
 import org.erlide.model.root.IErlModel;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.util.IElementChangedListener;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
@@ -54,7 +54,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.PerformanceTuning;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class DefaultErlangFoldingStructureProvider implements
         IProjectionListener, IErlangFoldingStructureProvider,

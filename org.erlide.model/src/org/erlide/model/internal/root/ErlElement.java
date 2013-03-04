@@ -30,8 +30,8 @@ import org.erlide.model.IParent;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementVisitor;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.StringUtils;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.StringUtils;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;

@@ -13,7 +13,7 @@ package org.erlide.ui.internal.search;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.model.services.search.ErlSearchScope;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 
 /**
  * Finds references to the selected element in the enclosing project of the
@@ -33,7 +33,7 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
      * requires that the selection provided by the site's selection provider is
      * of type <code>IStructuredSelection</code>.
      * 
-     * @param site
+     * @param fEditor
      *            the site providing context information for this action
      */
     public FindReferencesInProjectAction(final IWorkbenchSite site) {
@@ -47,7 +47,7 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
      * @param editor
      *            the Erlang editor
      */
-    public FindReferencesInProjectAction(final ErlangEditor editor) {
+    public FindReferencesInProjectAction(final AbstractErlangEditor editor) {
         super(editor);
     }
 

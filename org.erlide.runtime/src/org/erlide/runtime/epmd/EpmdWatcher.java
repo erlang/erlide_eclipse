@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpEpmd;
 
@@ -28,7 +28,7 @@ import com.ericsson.otp.erlang.OtpEpmd;
  * Query epmd to see if there are any new nodes that have been registered and
  * notify listeners.
  */
-public final class EpmdWatcher {
+public final class EpmdWatcher implements IEpmdWatcher {
 
     public EpmdWatcher() {
         try {
@@ -44,6 +44,7 @@ public final class EpmdWatcher {
     private final Map<String, List<IErlNodeMonitor>> monitors = new HashMap<String, List<IErlNodeMonitor>>();
     private boolean epmdStarted = false;
 
+    @Override
     synchronized public void addHost(final String host) {
         if (hosts.contains(host)) {
             return;
@@ -52,11 +53,13 @@ public final class EpmdWatcher {
         nodeMap.put(host, new ArrayList<String>());
     }
 
+    @Override
     synchronized public void removeHost(final String host) {
         hosts.remove(host);
         nodeMap.remove(host);
     }
 
+    @Override
     public synchronized void checkEpmd() {
         for (final Entry<String, List<String>> entry : nodeMap.entrySet()) {
             try {
@@ -113,6 +116,7 @@ public final class EpmdWatcher {
      * 
      * @param listener
      */
+    @Override
     public void addEpmdListener(final IEpmdListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
@@ -124,6 +128,7 @@ public final class EpmdWatcher {
      * 
      * @param listener
      */
+    @Override
     public void removeEpmdListener(final IEpmdListener listener) {
         listeners.remove(listener);
     }
@@ -154,6 +159,7 @@ public final class EpmdWatcher {
         return result;
     }
 
+    @Override
     public Map<String, List<String>> getData() {
         return nodeMap;
     }
@@ -164,6 +170,7 @@ public final class EpmdWatcher {
      * @param node
      * @param monitor
      */
+    @Override
     public void addNodeMonitor(final String node, final IErlNodeMonitor monitor) {
         List<IErlNodeMonitor> mons = monitors.get(node);
         if (mons == null) {
@@ -182,6 +189,7 @@ public final class EpmdWatcher {
      * @param node
      * @param monitor
      */
+    @Override
     public void removeNodeMonitor(final String node,
             final IErlNodeMonitor monitor) {
         final List<IErlNodeMonitor> mons = monitors.get(node);
@@ -194,6 +202,7 @@ public final class EpmdWatcher {
         }
     }
 
+    @Override
     public boolean hasLocalNode(final String nodeName) {
         try {
             final String[] names = OtpEpmd.lookupNames(InetAddress

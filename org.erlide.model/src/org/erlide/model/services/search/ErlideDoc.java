@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.ErlangFunctionCall;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.ErlangFunctionCall;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangInt;

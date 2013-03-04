@@ -64,7 +64,7 @@ public class ConsoleRemoveLaunchAction extends Action implements
         this();
         fConsole = console;
         final IBackend backend = console.getBackend();
-        fLaunch = backend.getLaunch();
+        fLaunch = backend.getData().getLaunch();
         update();
     }
 
@@ -151,7 +151,7 @@ public class ConsoleRemoveLaunchAction extends Action implements
         if (console instanceof ErlangConsole) {
             final ErlangConsole pconsole = (ErlangConsole) console;
             final IBackend backend = pconsole.getBackend();
-            return backend.getLaunch();
+            return backend.getData().getLaunch();
         }
         return null;
     }

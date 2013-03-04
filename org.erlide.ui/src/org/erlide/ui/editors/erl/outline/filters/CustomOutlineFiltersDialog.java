@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.erlide.ui.util.SWTUtil;
-import org.erlide.utils.ListsUtils;
+import org.erlide.util.ListsUtils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

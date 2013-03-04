@@ -26,7 +26,7 @@ public class BackendLabelProvider extends LabelProvider {
     public String getText(final Object element) {
         final IBackend b = (IBackend) element;
         final BackendData data = b.getData();
-        final String s = data.getRuntimeName();
+        final String s = data.getRuntimeInfo().getName();
         // if (s == null) {
         // return "<default>";
         // }

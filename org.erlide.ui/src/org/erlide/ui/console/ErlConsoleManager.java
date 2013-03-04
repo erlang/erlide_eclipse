@@ -1,6 +1,5 @@
 package org.erlide.ui.console;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
@@ -11,15 +10,19 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendListener;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.IDisposable;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.IDisposable;
+
+import com.google.common.collect.Maps;
 
 public class ErlConsoleManager implements IDisposable, IBackendListener {
-    private final Map<IBackend, IConsole> consoles;
+    private final Map<IBackend, IErlangConsole> consoles;
+    private final Map<IErlangConsole, IErlangConsolePage> pages;
     private final IConsoleManager conMan;
 
     public ErlConsoleManager() {
-        consoles = new HashMap<IBackend, IConsole>();
+        consoles = Maps.newHashMap();
+        pages = Maps.newHashMap();
 
         final ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
         conMan = consolePlugin.getConsoleManager();
@@ -44,12 +47,29 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
 
     @Override
     public void runtimeRemoved(final IBackend b) {
-        ErlLogger.debug("console REMOVED from " + b.getRuntimeInfo());
+        ErlLogger.debug("console REMOVED from " + b.getName());
         final IConsole console = consoles.get(b);
         if (console == null) {
             return;
         }
         conMan.removeConsoles(new IConsole[] { console });
+    }
+
+    public void addPage(final IErlangConsole console,
+            final IErlangConsolePage page) {
+        pages.put(console, page);
+    }
+
+    public void removePage(final IErlangConsole console) {
+        pages.remove(console);
+    }
+
+    public IErlangConsolePage getPage(final IErlangConsole console) {
+        return pages.get(console);
+    }
+
+    public IErlangConsole getConsole(final IBackend backend) {
+        return consoles.get(backend);
     }
 
     @Override

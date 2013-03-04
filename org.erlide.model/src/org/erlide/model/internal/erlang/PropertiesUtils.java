@@ -20,16 +20,16 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.model.internal.root.ErlProjectInfo;
 import org.erlide.model.internal.root.PathEntry;
-import org.erlide.model.root.OldErlangProjectProperties;
+import org.erlide.model.root.IErlangProjectProperties;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.PreferencesUtils;
-import org.erlide.utils.ErlLogger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public final class PropertiesUtils {
-    public static ErlProjectInfo convertOld(final OldErlangProjectProperties old)
+    public static ErlProjectInfo convertOld(final IErlangProjectProperties old)
             throws URISyntaxException {
         ErlProjectInfo result = new ErlProjectInfo();
         result = result.setRequiredRuntimeVersion(old

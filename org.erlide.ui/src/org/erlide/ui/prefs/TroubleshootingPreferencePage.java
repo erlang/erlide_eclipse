@@ -18,8 +18,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.backend.BackendCore;
-import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.HostnameUtils;
 
 public class TroubleshootingPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
@@ -129,7 +129,7 @@ public class TroubleshootingPreferencePage extends PreferencePage implements
 
                     final RuntimeInfo runtime = BackendCore
                             .getRuntimeInfoCatalog().getErlideRuntime();
-                    HostnameUtils.detectHostNames(runtime);
+                    HostnameUtils.detectHostNames(runtime.getOtpHome());
                     updateHostNames();
                 } finally {
                     parent.setCursor(null);

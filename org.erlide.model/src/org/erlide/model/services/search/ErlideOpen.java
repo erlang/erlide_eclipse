@@ -5,13 +5,12 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.model.SourcePathUtils;
-import org.erlide.model.erlang.IErlModule;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.Util;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.Util;
+import org.erlide.util.erlang.OtpErlang;
 
-import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -32,15 +31,22 @@ public class ErlideOpen {
 
     @SuppressWarnings("boxing")
     public static OpenResult open(final IRpcSite backend,
-            final IErlModule module, final int offset,
+            final String scannerName, final int offset,
             final List<OtpErlangObject> imports, final String externalModules,
             final OtpErlangList pathVars) throws RpcException {
         // ErlLogger.debug("open offset " + offset);
         final Collection<IPath> extra = SourcePathUtils.getExtraSourcePaths();
-        final String scanner = module.getScannerName();
         final OtpErlangObject res = backend.call("erlide_open", "open", "aix",
-                scanner, offset,
+                scannerName, offset,
                 mkContext(externalModules, null, pathVars, extra, imports));
+        return new OpenResult(res);
+    }
+
+    @SuppressWarnings("boxing")
+    public static OpenResult openText(final IRpcSite backend,
+            final String text, final int offset) throws RpcException {
+        final OtpErlangObject res = backend.call("erlide_open", "open_text",
+                "si", text, offset);
         return new OpenResult(res);
     }
 
@@ -159,6 +165,8 @@ public class ErlideOpen {
     public static List<ExternalTreeEntry> getExternalModuleTree(
             final IRpcSite backend, final String externalModules,
             final OtpErlangList pathVars) {
+        System.out.println("open:external_module_tree > " + externalModules);
+        final long time = System.currentTimeMillis();
         try {
             final OtpErlangObject res = backend.call("erlide_open",
                     "get_external_module_tree", "x",
@@ -180,6 +188,8 @@ public class ErlideOpen {
                     result.add(new ExternalTreeEntry(parentPath, path,// name,
                             isModuleA.atomValue().equals("module")));
                 }
+                System.out.println("open:external_module_tree < "
+                        + (System.currentTimeMillis() - time));
                 return result;
             }
         } catch (final RpcException e) {

@@ -23,8 +23,6 @@ import com.google.common.collect.Sets;
 public class FilterDescriptor implements Comparable<Object>,
         IPluginContribution {
 
-    //    private static String PATTERN_FILTER_ID_PREFIX = "_patternFilterId_"; //$NON-NLS-1$
-
     private static final String EXTENSION_POINT_NAME = "erlangElementFilters"; //$NON-NLS-1$
 
     private static final String FILTER_TAG = "filter"; //$NON-NLS-1$

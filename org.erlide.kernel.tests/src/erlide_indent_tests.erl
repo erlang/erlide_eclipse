@@ -221,6 +221,26 @@ indent_spec_with_when_test_() ->
             "    ok.\n",
     ?Test_indent(I, S).
 
+%% http://assembla.com/spaces/erlide/tickets/1151-indent--fails-for-catch-with-guards
+indent_catch_with_guards_test_() ->
+    S = "" ++
+            "f() ->\n"++
+            "try\n"++
+            "a\n"++
+            "catch\n"++
+            "A when is_tuple(A) ->\n"++
+            "A\n"++
+            "end.\n",
+    I = "" ++
+            "f() ->\n"++
+            "    try\n"++
+            "        a\n"++
+            "    catch\n"++
+            "        A when is_tuple(A) ->\n"++
+            "            A\n"++
+            "    end.\n",
+    ?Test_indent(I, S).
+
 %%
 %% Local Functions
 %%

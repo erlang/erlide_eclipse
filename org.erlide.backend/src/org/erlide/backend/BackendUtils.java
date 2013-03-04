@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.utils.Util;
+import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;

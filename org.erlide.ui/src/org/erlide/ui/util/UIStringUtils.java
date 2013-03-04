@@ -17,7 +17,7 @@ import javax.swing.text.Document;
 import javax.swing.text.EditorKit;
 import javax.swing.text.html.HTMLEditorKit;
 
-import org.erlide.utils.StringUtils;
+import org.erlide.util.StringUtils;
 
 public class UIStringUtils {
 

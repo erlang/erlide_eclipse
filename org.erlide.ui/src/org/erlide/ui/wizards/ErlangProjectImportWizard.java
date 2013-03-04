@@ -45,11 +45,12 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangCore;
+import org.erlide.model.root.IErlangProjectProperties;
 import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.model.util.PluginUtils;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class ErlangProjectImportWizard extends Wizard implements IImportWizard {
     // {
@@ -269,7 +270,7 @@ public class ErlangProjectImportWizard extends Wizard implements IImportWizard {
             // new SubProgressMonitor(monitor, 30));
             project.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(
                     monitor, 300));
-            final OldErlangProjectProperties erlangProjectProperties = new OldErlangProjectProperties(
+            final IErlangProjectProperties erlangProjectProperties = new OldErlangProjectProperties(
                     project);
             erlangProjectProperties.setIncludeDirs(includeDirs);
             erlangProjectProperties.setSourceDirs(sourceDirs);

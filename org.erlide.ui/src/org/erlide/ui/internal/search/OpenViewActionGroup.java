@@ -17,7 +17,7 @@ import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.part.Page;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 
 public class OpenViewActionGroup extends ActionGroup {
 
@@ -133,7 +133,7 @@ public class OpenViewActionGroup extends ActionGroup {
      * @noreference This constructor is not intended to be referenced by
      *              clients.
      */
-    public OpenViewActionGroup(final ErlangEditor part) {
+    public OpenViewActionGroup(final AbstractErlangEditor part) {
         fEditorIsOwner = true;
         fShowShowInMenu = false;
 

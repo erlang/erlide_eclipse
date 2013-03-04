@@ -8,8 +8,8 @@ import org.erlide.model.erlang.ErlToken;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.Util;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -77,11 +77,10 @@ public class ErlideScanner {
         try {
             r1 = ModelPlugin.getDefault().getIdeBackend()
                     .call(ERLIDE_SCANNER, "get_token_at", "ai", module, offset);
-            ErlLogger.debug("getTokenAt -> " + r1);
         } catch (final Exception e) {
-            // e.printStackTrace();
             return null;
         }
+        // ErlLogger.debug("getTokenAt -> " + r1);
         if (r1 == null || !(r1 instanceof OtpErlangTuple)) {
             return null;
         }

@@ -18,7 +18,7 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.part.Page;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.search.ImplementorsSearchGroup;
 import org.erlide.ui.internal.search.ReferencesSearchGroup;
 
@@ -34,7 +34,7 @@ import org.erlide.ui.internal.search.ReferencesSearchGroup;
  */
 public class ErlangSearchActionGroup extends ActionGroup {
 
-    private ErlangEditor fEditor;
+    private AbstractErlangEditor fEditor;
 
     private final ReferencesSearchGroup fReferencesGroup;
 
@@ -76,7 +76,7 @@ public class ErlangSearchActionGroup extends ActionGroup {
      * @param editor
      *            the Erlang editor
      */
-    public ErlangSearchActionGroup(final ErlangEditor editor) {
+    public ErlangSearchActionGroup(final AbstractErlangEditor editor) {
         Assert.isNotNull(editor);
         fEditor = editor;
 
@@ -187,4 +187,5 @@ public class ErlangSearchActionGroup extends ActionGroup {
 
         super.dispose();
     }
+
 }

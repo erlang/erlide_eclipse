@@ -49,12 +49,12 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.erlide.model.root.IErlElement;
 import org.erlide.ui.ErlideUIMessages;
 import org.erlide.ui.actions.SortAction;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.outline.filters.FilterDescriptor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.util.StringMatcher;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 /**
  * AbstractInfoPopupDialog
@@ -73,13 +73,14 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
     private SortAction fSortAction;
     private ITreeContentProvider fTreeContentProvider;
     private ILabelProvider fTreeLabelProvider;
-    private final ErlangEditor fEditor;
+    private final AbstractErlangEditor fEditor;
 
     // private ViewerComparator fTreeViewerComparator;
     // private ViewerComparator fTreeViewerDefaultComparator;
 
     public QuickOutlinePopupDialog(final Shell parent, final int shellStyle,
-            final ErlangEditor editor, final IOutlineContentCreator creator,
+            final AbstractErlangEditor editor,
+            final IOutlineContentCreator creator,
             final IOutlineSelectionHandler handler) {
         super(parent, shellStyle, true, true, true, true, true, null, null);
         // Set outline creator

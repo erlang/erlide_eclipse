@@ -17,7 +17,7 @@ import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlExternal;
 import org.erlide.ui.editors.util.EditorUtility;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Sets;
 

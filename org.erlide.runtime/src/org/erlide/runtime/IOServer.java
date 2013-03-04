@@ -12,9 +12,12 @@ package org.erlide.runtime;
 
 import java.util.Collection;
 
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpErlang;
+import org.erlide.util.erlang.TermParserException;
 
-import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangExit;

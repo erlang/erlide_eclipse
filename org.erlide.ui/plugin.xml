@@ -18,6 +18,18 @@
             symbolicFontName="org.eclipse.jface.textfont">
          <contentTypeBinding contentTypeId="org.erlide.core.content.erlang"/>
       </editor>
+      <editor
+            class="org.erlide.ui.editors.scratchpad.ErlangScratchPad"
+            default="true"
+            extensions="erlScratchPad"
+            icon="icons/full/obj16/erlang_srcFile.png"
+            id="org.erlide.ui.editors.scratchpad.erlangScratchPad"
+            name="Erlang Scratch Pad"
+            symbolicFontName="org.eclipse.jface.textfont">
+         <contentTypeBinding
+               contentTypeId="org.erlide.core.content.erlang">
+         </contentTypeBinding>
+      </editor>
    </extension>
    <extension
          point="org.eclipse.ui.editorActions">
@@ -64,6 +76,13 @@
             icon="icons/full/obj16/erlang_NewModule.png"
             id="org.erlide.ui.wizards.ErlangSourceFile"
             name="Module">
+      </wizard>
+      <wizard
+            category="org.erlide.ui.wizards.newWizards"
+            class="org.erlide.ui.editors.scratchpad.NewErlangScratchPadWizard"
+            icon="icons/full/obj16/newproject.png"
+            id="org.erlide.ui.wizards.ErlangScratchpad"
+            name="Erlang Scratchpad">
       </wizard>
    </extension>
    <extension
@@ -133,12 +152,6 @@
             class="org.erlide.ui.prefs.CompilerPreferencePage"
             id="org.erlide.ui.preferences.compiler"
             name="Compiler">
-      </page>
-      <page
-            category="org.erlide.ui.preferences"
-            class="org.erlide.ui.prefs.DialyzerPreferencePage"
-            id="org.erlide.ui.preferences.dialyzer"
-            name="Dialyzer">
       </page>
       <page
             category="org.erlide.ui.preferences"
@@ -296,20 +309,6 @@
               <test property="org.eclipse.core.resources.projectNature" value="org.erlide.core.erlnature"/>
          </adapt>
         </enabledWhen>
-      </page>
-      <page
-            class="org.erlide.ui.prefs.DialyzerPreferencePage"
-            id="org.erlide.ui.properties.dialyzerPreferencePage"
-            name="Erlang dialyzer">
-         <enabledWhen>
-            <adapt
-                  type="org.eclipse.core.resources.IProject">
-               <test
-                     property="org.eclipse.core.resources.projectNature"
-                     value="org.erlide.core.erlnature">
-               </test>
-            </adapt>
-         </enabledWhen>
       </page>
       <page
             class="org.erlide.ui.properties.EdocConfigurationPropertyPage"
@@ -554,6 +553,11 @@
             name="Send to console">
       </command>
       <command
+            description="Send to console with result"
+            id="org.erlide.ui.actions.sendToConsoleWithResult"
+            name="Send to console">
+      </command>
+      <command
             categoryId="org.eclipse.search.ui.category.search"
             description="Definitions in Workspace"
             id="org.erlide.ui.search.implementors.in.workspace"
@@ -618,29 +622,6 @@
                 id="org.eclipse.ui.commands.toggleState">
           </state>
        </command>
-       <command
-             categoryId="org.erlide.ui.commandCategories.dialyzer"
-             description="Run Dialyzer"
-             id="org.erlide.ui.commands.runDialyzer"
-             name="Run Dialyzer">
-       </command>
-       <command
-             categoryId="org.erlide.ui.commandCategories.dialyzer"
-             description="Remove Dialyzer Warnings"
-             id="org.erlide.ui.command.removeDialyzerWarnings"
-             name="Remove Dialyzer Warnings">
-       </command>
-       <command
-             categoryId="org.erlide.ui.commandCategories.dialyzer"
-             description="Check PLT"
-             id="org.erlide.ui.command.checkDialyzerPLTFile"
-             name="Check PLT">
-       </command>
-       <category
-             description="Dialyzer Commands"
-             id="org.erlide.ui.commandCategories.dialyzer"
-             name="Dialyzer Commands">
-       </category>
        <command
              description="Filter From Outline"
              id="org.erlide.ui.command.showOutlineFilterDialog"
@@ -767,31 +748,6 @@
        </toolbar>
     </menuContribution>
     <menuContribution
-          locationURI="popup:org.erlide.ui.views.navigator.view#PopupMenu?after=additions">
-       <command
-             commandId="org.erlide.ui.commands.runDialyzer"
-             style="push">
-       </command>
-       <command
-             commandId="org.erlide.ui.command.removeDialyzerWarnings"
-             style="push">
-       </command>
-    </menuContribution>
-    <menuContribution
-          locationURI="menu:project?after=additions">
-       <separator
-             name="org.erlide.ui.separator1">
-       </separator>
-       <command
-             commandId="org.erlide.ui.commands.runDialyzer"
-             style="push">
-       </command>
-       <command
-             commandId="org.erlide.ui.command.removeDialyzerWarnings"
-             style="push">
-       </command>
-    </menuContribution>
-    <menuContribution
           locationURI="menu:org.eclipse.ui.views.ContentOutline">
        <command
              commandId="org.erlide.ui.command.showOutlineFilterDialog"
@@ -909,6 +865,11 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+Enter"/>
       <key
+            commandId="org.erlide.ui.actions.sendToConsoleWithResult"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+Enter"/>
+      <key
             commandId="org.erlide.ui.actions.show.outline"
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
@@ -1003,14 +964,6 @@
              </instanceof>
           </with>
        </enabledWhen>
-    </handler>
-    <handler
-          class="org.erlide.ui.handlers.RunDialyzerHandler"
-          commandId="org.erlide.ui.commands.runDialyzer">
-    </handler>
-    <handler
-          class="org.erlide.ui.handlers.RemoveDialyzerWarningsHandler"
-          commandId="org.erlide.ui.command.removeDialyzerWarnings">
     </handler>
     <handler
           class="org.erlide.ui.editors.erl.outline.ShowCustomOutlineFiltersDialogHandler"
@@ -1520,6 +1473,11 @@
             </adapt>
          </enablement>
       </actionProvider>
+      <commonWizard
+            type="new"
+            wizardId="org.erlide.ui.wizards.ErlangScratchpad">
+         <enablement></enablement>
+      </commonWizard>
    </extension>
    <extension
          point="org.eclipse.ui.navigator.linkHelper">
@@ -1873,10 +1831,6 @@
    <extension
          point="org.eclipse.ui.editors.annotationTypes">
       <type
-            markerType="org.erlide.core.dialyzewarningmarker"
-            name="org.erlide.ui.dialyzewarningmarkertype">
-      </type>
-      <type
             name="org.erlide.ui.occurrences">
       </type>
       <type
@@ -1886,23 +1840,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.editors.markerAnnotationSpecification">
-      <specification
-            annotationType="org.erlide.ui.dialyzewarningmarkertype"
-            colorPreferenceKey="dialyzewarningmarkerColor"
-            colorPreferenceValue="255,150,150"
-            highlightPreferenceKey="dialyzewarningmarkerHighlighting"
-            highlightPreferenceValue="false"
-            icon="icons/full/obj16/dialyzer_warning.gif"
-            includeOnPreferencePage="true"
-            label="Dialyzer Warning"
-            overviewRulerPreferenceKey="dialyzewarningmarkerInOverviewRuler"
-            overviewRulerPreferenceValue="true"
-            presentationLayer="3"
-            textPreferenceKey="dialyzewarningmarker"
-            textPreferenceValue="true"
-            verticalRulerPreferenceKey="dialyzewarningmarkerInVerticalRuler"
-            verticalRulerPreferenceValue="true">
-      </specification>
       <specification
             annotationType="org.erlide.ui.occurrences"
             colorPreferenceKey="occurrenceIndicationColor"
@@ -2039,5 +1976,12 @@
             class="org.erlide.ui.editors.erl.ErlangDocumentSetupParticipant"
             contentTypeId="org.erlide.core.content.erlang">
       </participant>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <file-association
+            content-type="org.erlide.core.content.erlang"
+            file-extensions="erlScratchPad">
+      </file-association>
    </extension>
 </plugin>

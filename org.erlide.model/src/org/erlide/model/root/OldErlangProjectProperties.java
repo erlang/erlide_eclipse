@@ -26,15 +26,15 @@ import org.erlide.model.internal.root.ErlProjectInfoBuilder;
 import org.erlide.model.internal.root.PathSerializer;
 import org.erlide.model.internal.root.ProjectPreferencesConstants;
 import org.erlide.runtime.RuntimeCore;
+import org.erlide.runtime.RuntimeVersion;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.SystemConfiguration;
 import org.osgi.service.prefs.BackingStoreException;
 
-import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Lists;
 
 public final class OldErlangProjectProperties implements
-        IPreferenceChangeListener {
+        IPreferenceChangeListener, IErlangProjectProperties {
 
     private IProject project;
 
@@ -121,6 +121,7 @@ public final class OldErlangProjectProperties implements
                 ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN, false));
     }
 
+    @Override
     public void store() throws BackingStoreException {
         if (project == null) {
             return;
@@ -173,14 +174,17 @@ public final class OldErlangProjectProperties implements
         }
     }
 
+    @Override
     public Collection<IPath> getIncludeDirs() {
         return Collections.unmodifiableCollection(includeDirs);
     }
 
+    @Override
     public void setIncludeDirs(final Collection<IPath> includeDirs2) {
         includeDirs = Lists.newArrayList(includeDirs2);
     }
 
+    @Override
     @Deprecated
     public IPath getOutputDir() {
         try {
@@ -190,59 +194,70 @@ public final class OldErlangProjectProperties implements
         }
     }
 
+    @Override
     public Collection<IPath> getOutputDirs() {
         return outputDirs;
     }
 
+    @Override
     @Deprecated
     public void setOutputDir(final IPath dir) {
         setOutputDirs(Lists.newArrayList(dir));
     }
 
+    @Override
     public void setOutputDirs(final Collection<IPath> dirs) {
         outputDirs = Lists.newArrayList(dirs);
     }
 
+    @Override
     public Collection<IPath> getSourceDirs() {
         return Collections.unmodifiableCollection(sourceDirs);
     }
 
+    @Override
     public void setSourceDirs(final Collection<IPath> sourceDirs2) {
         sourceDirs = Lists.newArrayList(sourceDirs2);
     }
 
-    public void copyFrom(
-            final OldErlangProjectProperties erlangProjectProperties) {
-        final OldErlangProjectProperties bprefs = erlangProjectProperties;
-        includeDirs = bprefs.includeDirs;
-        sourceDirs = bprefs.sourceDirs;
-        outputDirs = bprefs.outputDirs;
-        runtimeName = bprefs.runtimeName;
-        runtimeVersion = bprefs.runtimeVersion;
+    @Override
+    public void copyFrom(final IErlangProjectProperties erlangProjectProperties) {
+        final IErlangProjectProperties bprefs = erlangProjectProperties;
+        includeDirs = bprefs.getIncludeDirs();
+        sourceDirs = bprefs.getSourceDirs();
+        outputDirs = bprefs.getOutputDirs();
+        runtimeName = bprefs.getRuntimeName();
+        runtimeVersion = bprefs.getRequiredRuntimeVersion();
     }
 
+    @Override
     public String getExternalIncludesFile() {
         return externalIncludesFile;
     }
 
+    @Override
     public void setExternalIncludesFile(final String file) {
         externalIncludesFile = file;
     }
 
+    @Override
     public void setExternalModulesFile(final String externalModules) {
         externalModulesFile = externalModules;
     }
 
+    @Override
     public String getExternalModulesFile() {
         return externalModulesFile;
     }
 
+    @Override
     public RuntimeInfo getRuntimeInfo() {
         final RuntimeInfo runtime = RuntimeCore.getRuntimeInfoCatalog()
                 .getRuntime(runtimeVersion, runtimeName);
         return runtime;
     }
 
+    @Override
     public RuntimeVersion getRuntimeVersion() {
         final RuntimeInfo runtimeInfo = getRuntimeInfo();
         return runtimeInfo != null ? runtimeInfo.getVersion() : runtimeVersion;
@@ -255,20 +270,29 @@ public final class OldErlangProjectProperties implements
         load(root);
     }
 
+    @Override
     public void setRuntimeVersion(final RuntimeVersion runtimeVersion) {
         this.runtimeVersion = runtimeVersion;
     }
 
+    @Override
     public boolean isNukeOutputOnClean() {
         return nukeOutputOnClean;
     }
 
+    @Override
     public void setNukeOutputOnClean(final boolean nukeOutputOnClean) {
         this.nukeOutputOnClean = nukeOutputOnClean;
     }
 
+    @Override
     public RuntimeVersion getRequiredRuntimeVersion() {
         return runtimeVersion;
+    }
+
+    @Override
+    public String getRuntimeName() {
+        return runtimeName;
     }
 
 }

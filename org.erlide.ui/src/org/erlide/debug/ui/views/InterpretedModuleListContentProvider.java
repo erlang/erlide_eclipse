@@ -8,14 +8,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.debug.ui.utils.ModuleListContentProvider;
-import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.CommonUtils;
-import org.erlide.utils.ErlLogger;
+import org.erlide.runtime.ErlRuntimeAttributes;
+import org.erlide.util.ErlLogger;
 
 public class InterpretedModuleListContentProvider extends
         ModuleListContentProvider {
@@ -30,7 +30,7 @@ public class InterpretedModuleListContentProvider extends
             try {
                 final List<String> interpret = launchConfiguration
                         .getAttribute(
-                                ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
+                                ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES,
                                 new ArrayList<String>());
                 addModules(interpret);
             } catch (final CoreException e) {

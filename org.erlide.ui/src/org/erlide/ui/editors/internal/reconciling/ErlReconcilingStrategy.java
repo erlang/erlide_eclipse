@@ -17,20 +17,22 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.utils.ErlLogger;
+import org.erlide.model.erlang.IErlScanner;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
+import org.erlide.util.ErlLogger;
 
 public class ErlReconcilingStrategy implements IErlReconcilingStrategy,
         IReconcilingStrategyExtension {
 
     private IErlModule fModule;
-    private final ErlangEditor fEditor;
+    private final AbstractErlangEditor fEditor;
     // private IDocument fDoc;
     private IProgressMonitor mon;
+    private IErlScanner fScanner;
 
     // private boolean initialInsert;
 
-    public ErlReconcilingStrategy(final ErlangEditor editor) {
+    public ErlReconcilingStrategy(final AbstractErlangEditor editor) {
         fEditor = editor;
     }
 
@@ -55,6 +57,7 @@ public class ErlReconcilingStrategy implements IErlReconcilingStrategy,
     @Override
     public void initialReconcile() {
         fModule = fEditor != null ? fEditor.getModule() : null;
+        fScanner = fEditor != null ? fEditor.getScanner() : null;
         ErlLogger.debug("## initial reconcile "
                 + (fModule != null ? fModule.getName() : ""));
         if (fModule != null) {
@@ -85,9 +88,10 @@ public class ErlReconcilingStrategy implements IErlReconcilingStrategy,
     @Override
     public void reconcile(final ErlDirtyRegion r) {
         if (fModule != null) {
-            ErlLogger.debug("## reconcile " + fModule.getName());
             fModule.reconcileText(r.getOffset(), r.getLength(), r.getText(),
                     mon);
+        } else if (fScanner != null) {
+            fScanner.replaceText(r.getOffset(), r.getLength(), r.getText());
         }
 
     }

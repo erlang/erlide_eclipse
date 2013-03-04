@@ -12,8 +12,8 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.erlide.ui.editors.erl.outline.ErlangOutlinePage;
 import org.erlide.ui.prefs.PreferenceConstants;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.ListsUtils;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.ListsUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;

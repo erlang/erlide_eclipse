@@ -36,22 +36,22 @@ import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendFactory;
 import org.erlide.backend.IBackendListener;
 import org.erlide.backend.IBackendManager;
-import org.erlide.backend.ICodeBundle;
-import org.erlide.backend.ICodeBundle.CodeContext;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.backend.events.ErlangEventPublisher;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
+import org.erlide.runtime.ICodeBundle;
+import org.erlide.runtime.ICodeBundle.CodeContext;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.RuntimeVersion;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.SystemConfiguration;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.SystemConfiguration;
 import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
 
-import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -90,7 +90,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
 
         launchListener = new BackendManagerLaunchListener(this, DebugPlugin
                 .getDefault().getLaunchManager());
-        registerGlobalEventhandlers();
+        registerGlobalEventHandlers();
     }
 
     @SuppressWarnings("unused")
@@ -114,7 +114,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         }
     }
 
-    private void registerGlobalEventhandlers() {
+    private void registerGlobalEventHandlers() {
         new ErlangEventHandler("*", null) {
             @Override
             public void handleEvent(final Event event) {
@@ -298,14 +298,15 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         addBundle(plugin, paths, inits);
     }
 
-    @Override
-    public void addBundle(final Bundle b, final Map<String, CodeContext> paths,
+    private void addBundle(final Bundle b,
+            final Map<String, CodeContext> paths,
             final Collection<Pair<String, String>> inits) {
         final ICodeBundle p = findBundle(b);
         if (p != null) {
             return;
         }
-        final CodeBundleImpl pp = new CodeBundleImpl(b, paths, inits);
+        final CodeBundleImpl pp = new CodeBundleImpl(b.getSymbolicName(),
+                paths, inits);
         getCodeBundles().put(b, pp);
         forEachBackend(new Procedure1<IBackend>() {
             @Override
@@ -421,13 +422,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public void dispose(final IBackend backend) {
-        if (backend != null && backend != ideBackend) {
-            backend.dispose();
-        }
-    }
-
-    @Override
     public void dispose() {
         for (final IBackend b : buildBackends.values()) {
             b.dispose();
@@ -444,7 +438,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     @Override
     public IBackend getBackendForLaunch(final ILaunch launch) {
         for (final IBackend backend : allBackends) {
-            if (backend.getLaunch() == launch) {
+            if (backend.getData().getLaunch() == launch) {
                 return backend;
             }
         }

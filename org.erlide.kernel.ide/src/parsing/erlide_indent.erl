@@ -878,24 +878,30 @@ i_catch_clause(R0, I0) ->
              var -> i_kind(var, R1, I0)
          end,
     ?D(R2),
-    R3 = i_kind(':', R2, I0),
-    ?D(R3),
-    {R4, _A} = i_expr(R3, I0, none),
-    ?D(R4),
-    I1 = i_with(before_arrow, R1, I0),
-    R5 = case i_sniff(R4) of
-             'when' ->
-                 R41 = i_kind('when', R4, I1),
-                 {R42, _A} = i_predicate_list(R41, I1),
-                 R42;
+    R3 = case i_sniff(R2) of
+             ':' ->
+                 R21 = i_kind(':', R2, I0),
+                 ?D(R21),
+                 {R22, _A} = i_expr(R21, I0, none),
+                 ?D(R22),
+                 R22;
              _ ->
-                 R4
+                 R2
          end,
+    I1 = i_with(before_arrow, R1, I0),
+    R4 = case i_sniff(R3) of
+             'when' ->
+                 R31 = i_kind('when', R3, I1),
+                 {R32, _A0} = i_predicate_list(R31, I1),
+                 R32;
+             _ ->
+                 R3
+         end,
+    ?D(R4),
+    R5 = i_kind('->', R4, I1),
     ?D(R5),
-    R6 = i_kind('->', R5, I1),
-    ?D(R6),
     I2 = i_with(clause, R1, I0),
-    R = i_expr_list(R6, I2),
+    R = i_expr_list(R5, I2),
     R.
 
 i_catch_clause_list(R, I) ->

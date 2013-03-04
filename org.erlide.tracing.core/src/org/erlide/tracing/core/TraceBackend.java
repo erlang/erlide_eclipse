@@ -22,7 +22,7 @@ import org.erlide.tracing.core.mvc.model.treenodes.ITreeNode;
 import org.erlide.tracing.core.mvc.model.treenodes.TracingResultsNode;
 import org.erlide.tracing.core.preferences.PreferenceNames;
 import org.erlide.tracing.core.utils.TraceDataHandler;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -82,8 +82,8 @@ public class TraceBackend {
 
     private class TraceEventHandler extends ErlangEventHandler {
 
-        public TraceEventHandler(final IBackend backend) {
-            super(EVENT_NAME, backend);
+        public TraceEventHandler(final String backendName) {
+            super(EVENT_NAME, backendName);
         }
 
         private final TraceDataHandler dataHandler = new TraceDataHandler();
@@ -150,7 +150,7 @@ public class TraceBackend {
                         tracing = true;
                         getBackend(true);
                         loadingFileInfo = true;
-                        handler = new TraceEventHandler(tracerBackend);
+                        handler = new TraceEventHandler(tracerBackend.getName());
                         handler.register();
 
                         // list of nodes being traced
@@ -328,7 +328,7 @@ public class TraceBackend {
                     try {
                         loading = true;
                         loadingFileInfo = true;
-                        handler = new TraceEventHandler(tracerBackend);
+                        handler = new TraceEventHandler(tracerBackend.getName());
                         getBackend(true);
                         handler.register();
                         tracerBackend.getRpcSite().call(
@@ -362,7 +362,7 @@ public class TraceBackend {
                         loading = true;
                         loadingFileInfo = false;
                         startIndex = theStartIndex;
-                        handler = new TraceEventHandler(tracerBackend);
+                        handler = new TraceEventHandler(tracerBackend.getName());
                         getBackend(true);
                         TraceCollections.getTracesList().clear();
                         handler.register();

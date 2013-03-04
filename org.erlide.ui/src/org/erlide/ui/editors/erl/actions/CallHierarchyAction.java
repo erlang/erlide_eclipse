@@ -32,7 +32,7 @@ import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.jinterface.AsyncCaller;
 import org.erlide.ui.views.CallHierarchyView;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 public class CallHierarchyAction extends Action {
 

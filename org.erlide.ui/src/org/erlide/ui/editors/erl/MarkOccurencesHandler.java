@@ -51,7 +51,7 @@ import org.erlide.ui.editors.erl.ErlangEditor.ActivationListener;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.search.ErlangSearchElement;
 import org.erlide.ui.internal.search.SearchUtil;
-import org.erlide.utils.ErlLogger;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
@@ -105,7 +105,7 @@ public class MarkOccurencesHandler {
             try {
                 final int offset = aSelection.getOffset();
                 final OpenResult res = ErlideOpen.open(ideBackend.getRpcSite(),
-                        theModule, offset,
+                        theModule.getScannerName(), offset,
                         ModelUtils.getImportsAsList(theModule), "",
                         ErlModelManager.getErlangModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil

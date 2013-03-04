@@ -3,8 +3,7 @@ package org.erlide.backend.internal;
 import org.erlide.backend.BackendCore;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.IRuntimeProvider;
-
-import com.ericsson.otp.erlang.RuntimeVersion;
+import org.erlide.runtime.RuntimeVersion;
 
 public class BackendProvider implements IRuntimeProvider {
 
