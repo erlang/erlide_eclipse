@@ -10,7 +10,7 @@ public class RuntimeCore {
 
     private static RuntimeInfoCatalog runtimeInfoCatalog;
 
-    public static final IRuntimeInfoCatalog getRuntimeInfoCatalog(
+    public static synchronized final IRuntimeInfoCatalog getRuntimeInfoCatalog(
             final IRuntimeInfoSerializer serializer) {
         if (runtimeInfoCatalog == null) {
             final RuntimeInfoCatalogData data = serializer.load();

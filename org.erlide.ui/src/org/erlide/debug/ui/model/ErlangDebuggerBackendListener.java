@@ -74,7 +74,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
         for (final IDebugTarget debugTarget : debugTargets) {
             if (debugTarget instanceof ErlangDebugTarget) {
                 final ErlangDebugTarget erlangDebugTarget = (ErlangDebugTarget) debugTarget;
-                if (erlangDebugTarget.getBackend().equals(backend)) {
+                if (erlangDebugTarget.getBackend().getRpcSite().equals(backend)) {
                     return erlangDebugTarget;
                 }
             }

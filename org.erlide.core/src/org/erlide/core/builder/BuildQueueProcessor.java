@@ -46,7 +46,7 @@ public class BuildQueueProcessor extends Job {
         return Status.OK_STATUS;
     }
 
-    public static BuildQueueProcessor getInstance() {
+    public static synchronized BuildQueueProcessor getInstance() {
         if (instance == null) {
             instance = new BuildQueueProcessor("tasks");
         }
