@@ -1,3 +1,5 @@
+%% coding: utf-8
+
 -module(main).
 
 -export([foo/0]).
