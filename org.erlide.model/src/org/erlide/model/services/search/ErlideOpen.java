@@ -165,7 +165,7 @@ public class ErlideOpen {
     public static List<ExternalTreeEntry> getExternalModuleTree(
             final IRpcSite backend, final String externalModules,
             final OtpErlangList pathVars) {
-        System.out.println("open:external_module_tree > " + externalModules);
+        ErlLogger.debug("open:external_module_tree -> " + externalModules);
         final long time = System.currentTimeMillis();
         try {
             final OtpErlangObject res = backend.call("erlide_open",
@@ -188,11 +188,18 @@ public class ErlideOpen {
                     result.add(new ExternalTreeEntry(parentPath, path,// name,
                             isModuleA.atomValue().equals("module")));
                 }
-                System.out.println("open:external_module_tree < "
-                        + (System.currentTimeMillis() - time));
+                final long timeTaken = System.currentTimeMillis() - time;
+                final String msg = "open:external_module_tree <- " + timeTaken;
+                if (timeTaken > 5000) {
+                    ErlLogger.warn("WARNING " + msg);
+                } else {
+                    ErlLogger.debug(msg);
+                }
                 return result;
             }
         } catch (final RpcException e) {
+            ErlLogger.warn("open:external_module_tree TIMEOUT <- "
+                    + (System.currentTimeMillis() - time));
             ErlLogger.warn(e);
         }
         return Lists.newArrayList();
