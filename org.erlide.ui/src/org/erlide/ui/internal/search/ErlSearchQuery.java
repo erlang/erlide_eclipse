@@ -37,6 +37,7 @@ public class ErlSearchQuery implements ISearchQuery {
 
     private String stateDirCached = null;
     private final String scopeDescription;
+    private boolean stopped = false;
 
     public ErlSearchQuery(final ErlangSearchPattern pattern,
             final ErlSearchScope scope, final String scopeDescription) {
@@ -107,6 +108,7 @@ public class ErlSearchQuery implements ISearchQuery {
             @Override
             public void stop(final OtpErlangObject msg) {
                 monitor.done();
+                stopped = true;
                 synchronized (locker) {
                     locker.notifyAll();
                 }
@@ -148,10 +150,12 @@ public class ErlSearchQuery implements ISearchQuery {
             return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
                     "Search error", e);
         }
-        synchronized (locker) {
-            try {
-                locker.wait();
-            } catch (final InterruptedException e) {
+        while (!stopped) {
+            synchronized (locker) {
+                try {
+                    locker.wait();
+                } catch (final InterruptedException e) {
+                }
             }
         }
         return Status.OK_STATUS;
