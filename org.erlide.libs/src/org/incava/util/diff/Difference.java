@@ -1,5 +1,7 @@
 package org.incava.util.diff;
 
+import com.google.common.base.Objects;
+
 /**
  * Represents a difference, as used in <code>Diff</code>. A difference consists
  * of two pairs of starting and ending points, each pair representing either the
@@ -107,6 +109,11 @@ public class Difference {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(delStart, delEnd, addStart, addEnd);
     }
 
     /**
