@@ -98,9 +98,9 @@ public abstract class AbstractConnection extends Thread {
     protected int traceLevel = 0;
 
     protected static int defaultLevel = 0;
-    protected static int sendThreshold = 1;
-    protected static int ctrlThreshold = 2;
-    protected static int handshakeThreshold = 3;
+    protected static final int sendThreshold = 1;
+    protected static final int ctrlThreshold = 2;
+    protected static final int handshakeThreshold = 3;
 
     protected static final Random random;
 
