@@ -13,10 +13,10 @@ import org.erlide.model.IParent;
  * 
  */
 public interface IErlExternalRoot extends IErlExternal, IErlElement, IParent,
-        IOpenable {
+		IOpenable {
 
-    List<IErlElement> internalGetChildren();
+	List<IErlElement> internalGetChildren();
 
-    void removeExternal();
+	void removeExternal();
 
 }
