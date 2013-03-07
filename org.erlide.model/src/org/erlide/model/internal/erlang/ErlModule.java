@@ -158,7 +158,7 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     @Override
-    protected synchronized boolean buildStructure(final IProgressMonitor pm)
+    public synchronized boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
         if (internalBuildStructure(pm)) {
             final IErlModel model = ErlModelManager.getErlangModel();

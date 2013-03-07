@@ -153,8 +153,8 @@ public interface IErlModel extends IErlElement, IOpenable, IParent,
 
 	void registerModelDelta(IErlElementDelta delta);
 
-	IErlModule getModuleFromFile(IParent parent, String name, String path,
-			String encoding, String key);
+	IErlModule getModuleFromFile(IParent parent, String name,
+			String initialText, String path, String key);
 
 	IErlModule getModuleFromText(IParent parent, String name,
 			String initialText, String key);
@@ -168,4 +168,10 @@ public interface IErlModel extends IErlElement, IOpenable, IParent,
 	ErlangToolkit getToolkit();
 
 	Object getModelLock();
+
+	IErlExternalRoot getExternal(final String key);
+
+	void addExternal(final String key, IErlExternalRoot external);
+
+	void removeExternal(final String key);
 }

@@ -39,7 +39,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     }
 
     @Override
-    protected boolean buildStructure(final IProgressMonitor pm)
+    public boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
         final IErlModel model = ErlModelManager.getErlangModel();
         final IContainer c = (IContainer) getResource();

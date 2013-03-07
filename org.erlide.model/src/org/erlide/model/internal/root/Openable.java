@@ -68,7 +68,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
      * 
      * @param dirtyRegion
      */
-    protected abstract boolean buildStructure(IProgressMonitor pm)
+    public abstract boolean buildStructure(IProgressMonitor pm)
             throws ErlModelException;
 
     /*
@@ -317,7 +317,13 @@ public abstract class Openable extends ErlElement implements IOpenable {
 
     @Override
     public void close() throws ErlModelException {
-        // /ErlModelManager.getErlangModelManager().removeInfoAndChildren(this);
+        for (final IErlElement child : getChildren()) {
+            if (child instanceof IOpenable) {
+                final IOpenable openable = (IOpenable) child;
+                if (openable.isOpen()) {
+                    openable.close();
+                }
+            }
+        }
     }
-
 }

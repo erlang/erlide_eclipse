@@ -39,7 +39,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
     }
 
     @Override
-    protected boolean buildStructure(final IProgressMonitor pm)
+    public boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
         if (prebuilt) {
             // already done
