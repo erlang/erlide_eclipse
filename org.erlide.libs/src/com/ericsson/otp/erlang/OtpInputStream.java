@@ -32,7 +32,7 @@ import java.util.Arrays;
  */
 public class OtpInputStream extends ByteArrayInputStream {
 
-    public static int DECODE_INT_LISTS_AS_STRINGS = 1;
+    public static final int DECODE_INT_LISTS_AS_STRINGS = 1;
 
     private final int flags;
 
