@@ -148,6 +148,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         final IErlProject erlProject = ErlModelManager.getErlangModel()
                 .getErlangProject(project);
         if (erlProject == null) {
+            ErlLogger.warn("Project %s is not an erlang project",
+                    project.getName());
             return null;
         }
         final RuntimeInfo info = erlProject.getRuntimeInfo();
@@ -360,16 +362,20 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public IRpcSite getByProject(final String name) {
+    public IRpcSite getByProject(final String projectName) {
         final IProject prj = ResourcesPlugin.getWorkspace().getRoot()
-                .getProject(name);
+                .getProject(projectName);
         return getByProject(prj);
     }
 
     @Override
     public IRpcSite getByProject(final IProject project) {
         try {
-            return getBuildBackend(project).getRpcSite();
+            final IBackend backend = getBuildBackend(project);
+            if (backend == null) {
+                return null;
+            }
+            return backend.getRpcSite();
         } catch (final BackendException e) {
             return null;
         }

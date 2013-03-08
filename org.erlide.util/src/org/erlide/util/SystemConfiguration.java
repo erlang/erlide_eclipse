@@ -28,7 +28,7 @@ public class SystemConfiguration {
         setWarnProcessSizeLimit(System.getProperty(
                 "erlide.process.heap.warn.limit", "10"));
         setKillProcessSizeLimit(System.getProperty(
-                "erlide.process.heap.kill.limit", "30"));
+                "erlide.process.heap.kill.limit", "50"));
     }
 
     public boolean isDeveloper() {

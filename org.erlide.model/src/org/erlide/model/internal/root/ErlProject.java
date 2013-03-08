@@ -121,6 +121,9 @@ public class ErlProject extends Openable implements IErlProject {
         final IResource r = getResource();
         // check whether the Erlang project can be opened
         if (r == null || !r.isAccessible() || !(r instanceof IContainer)) {
+            ErlLogger.warn("Project %s is borked: res:%s acc:%s cont:%s", r,
+                    (r != null) ? r.isAccessible() : "",
+                    r instanceof IContainer);
             throw newNotPresentException();
         }
         try {
