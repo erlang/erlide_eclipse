@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.erlide.sdk"
-      label="erlide SDK"
+      label="Erlang SDK"
       version="0.20.1.qualifier"
       provider-name="erlide.org">
 

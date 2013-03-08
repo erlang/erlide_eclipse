@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.erlide.headless"
-      label="Erlide core (headless)"
+      label="Erlang headless support"
       version="0.20.1.qualifier"
       provider-name="erlide.org"
       plugin="org.erlide.core">
