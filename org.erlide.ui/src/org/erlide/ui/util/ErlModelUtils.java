@@ -38,7 +38,6 @@ import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.editors.util.ErlangExternalEditorInput;
-import org.erlide.util.Util;
 
 public class ErlModelUtils {
 
@@ -130,8 +129,9 @@ public class ErlModelUtils {
                 return module;
             }
             final String path = file.getLocation().toPortableString();
-            module = model.getModuleFromFile(model, file.getName(), null, path,
-                    path);
+            // TODO shouldn't we use the resource directly below?
+            module = model.getModuleFromFile(model, file.getName(), path,
+                    file.getCharset(), path);
             module.setResource(file);
             return module;
         }
@@ -139,22 +139,20 @@ public class ErlModelUtils {
             final ErlangExternalEditorInput erlangExternalEditorInput = (ErlangExternalEditorInput) editorInput;
             return erlangExternalEditorInput.getModule();
         }
-        String path = null, initialText = null;
+        String path = null;
+        String encoding = null;
         if (editorInput instanceof IStorageEditorInput) {
             final IStorageEditorInput sei = (IStorageEditorInput) editorInput;
             try {
                 final IStorage storage = sei.getStorage();
                 final IPath p = storage.getFullPath();
                 path = p.toPortableString();
-                String encoding;
                 if (storage instanceof IEncodedStorage) {
                     final IEncodedStorage encodedStorage = (IEncodedStorage) storage;
                     encoding = encodedStorage.getCharset();
                 } else {
                     encoding = ResourcesPlugin.getEncoding();
                 }
-                initialText = Util.getInputStreamAsString(
-                        storage.getContents(), encoding);
             } catch (final CoreException e) {
             }
         }
@@ -171,7 +169,7 @@ public class ErlModelUtils {
             }
             final IPath p = new Path(path);
             return ErlModelManager.getErlangModel().getModuleFromFile(null,
-                    p.lastSegment(), initialText, path, path);
+                    p.lastSegment(), path, encoding, path);
         }
         return null;
     }

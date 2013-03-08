@@ -67,7 +67,6 @@ import org.erlide.model.util.PluginUtils;
 import org.erlide.model.util.ResourceUtil;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
-import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -526,12 +525,25 @@ public class ErlModel extends Openable implements IErlModel {
 
     @Override
     public IErlModule getModuleFromFile(final IParent parent,
-            final String name, final String initialText, final String path,
+            final String name, final String path, final String encoding,
             final String key) {
+        return getModuleWithoutResource(parent, name, path, encoding, null, key);
+    }
+
+    @Override
+    public IErlModule getModuleFromText(final IParent parent,
+            final String name, final String initialText, final String key) {
+        return getModuleWithoutResource(parent, name, null, null, initialText,
+                key);
+    }
+
+    private IErlModule getModuleWithoutResource(final IParent parent,
+            final String name, final String path, final String encoding,
+            final String initialText, final String key) {
         IErlModule m = moduleMap.get(key);
         if (m == null) {
             final IParent parent2 = parent == null ? this : parent;
-            m = new ErlModule(parent2, name, initialText, null, path);
+            m = new ErlModule(parent2, name, path, encoding, initialText);
             if (key != null) {
                 moduleMap.put(key, m);
                 mapModule.put(m, key);
@@ -548,12 +560,6 @@ public class ErlModel extends Openable implements IErlModel {
             moduleMap.remove(key);
         }
         ErlModel.getErlModelCache().removeModule(module);
-    }
-
-    @Override
-    public IErlModule getModuleFromText(final IParent parent,
-            final String name, final String initialText, final String key) {
-        return getModuleFromFile(parent, name, initialText, "", key);
     }
 
     @Override
@@ -693,7 +699,7 @@ public class ErlModel extends Openable implements IErlModel {
             }
         }
         if (CommonUtils.isErlangFileContentFileName(file.getName())) {
-            return createModuleFrom(file, parent);
+            return createModuleFromFile(file, parent);
         }
         return null;
     }
@@ -713,25 +719,14 @@ public class ErlModel extends Openable implements IErlModel {
         return f;
     }
 
-    public IErlModule createModuleFrom(final IFile file, final IParent parent) {
+    public IErlModule createModuleFromFile(final IFile file,
+            final IParent parent) {
         if (file == null) {
             return null;
         }
         final String name = file.getName();
         if (CommonUtils.isErlangFileContentFileName(name)) {
-            String initialText = "";
-            String charset;
-            if (file.isAccessible() && file.isSynchronized(0)) {
-                try {
-                    charset = file.getCharset();
-                    initialText = Util.getInputStreamAsString(
-                            file.getContents(), charset);
-                } catch (final CoreException e) {
-                    ErlLogger.warn(e);
-                }
-            }
-            final IErlModule module = new ErlModule(parent, name, initialText,
-                    file, null);
+            final IErlModule module = new ErlModule(parent, name, file);
             if (parent != null) {
                 parent.addChild(module);
             }
