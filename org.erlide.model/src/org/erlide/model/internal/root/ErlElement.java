@@ -23,14 +23,11 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.model.ErlModelException;
-import org.erlide.model.ErlModelStatus;
-import org.erlide.model.ErlModelStatusConstants;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementVisitor;
-import org.erlide.util.ErlLogger;
 import org.erlide.util.StringUtils;
 
 import com.google.common.base.Objects;
@@ -254,15 +251,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     @Override
     public boolean isReadOnly() {
         return false;
-    }
-
-    /**
-     * Creates and returns and not present exception for this element.
-     */
-    protected ErlModelException newNotPresentException() {
-        ErlLogger.debug("not found: " + fName);
-        return new ErlModelException(new ErlModelStatus(
-                ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
     }
 
     /**
