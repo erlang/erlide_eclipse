@@ -491,7 +491,7 @@ public final class BuilderHelper {
                     .toString();
             return BuilderHelper.compileYrl(backend, input, output);
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             return null;
         }
 

@@ -298,7 +298,6 @@ public class ErlModel extends Openable implements IErlModel {
                     try {
                         o.open(null);
                     } catch (final ErlModelException e) {
-                        e.printStackTrace();
                         return null;
                     }
                 }

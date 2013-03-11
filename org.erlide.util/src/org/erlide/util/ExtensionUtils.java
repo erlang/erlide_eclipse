@@ -51,7 +51,7 @@ public class ExtensionUtils {
                     return clazz.cast(object);
                 }
             } catch (final CoreException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
         return null;
@@ -99,7 +99,7 @@ public class ExtensionUtils {
                     result.add(clazz.cast(object));
                 }
             } catch (final CoreException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
         return result;
@@ -123,7 +123,7 @@ public class ExtensionUtils {
                         result.add(clazz.cast(object));
                     }
                 } catch (final CoreException e) {
-                    e.printStackTrace();
+                    ErlLogger.error(e);
                 }
             }
         }

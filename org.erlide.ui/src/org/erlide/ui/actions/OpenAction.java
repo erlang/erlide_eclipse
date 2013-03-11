@@ -174,24 +174,8 @@ public class OpenAction extends SelectionDispatchAction {
                 openOpenResult(textEditor, module, backend, offset, project,
                         openResult, element);
             }
-        } catch (final PartInitException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (final OtpErlangRangeException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (final CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (final BadLocationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (final RpcException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (final BackendException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (final Exception e) {
+            ErlLogger.error(e);
         }
     }
 

@@ -551,7 +551,7 @@ public abstract class Backend implements IStreamListener, IBackend {
             try {
                 postLaunch();
             } catch (final DebugException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
     }

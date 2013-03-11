@@ -85,7 +85,7 @@ public class TestAction extends TextEditorAction {
             deps = module.getAllDependentModules();
             ErlLogger.debug(deps.toString());
         } catch (final CoreException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
     }

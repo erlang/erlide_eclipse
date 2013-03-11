@@ -14,6 +14,7 @@ import static org.junit.Assert.*;
 
 import org.erlide.backend.BackendCore;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.util.ErlLogger;
 import org.junit.After;
 import org.junit.Before;
 
@@ -49,7 +50,7 @@ public abstract class AbstractErlangTest {
         try {
             return backend.call(m, f, null, (Object[]) args);
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             fail("RPC failed: " + e.getMessage());
         }
         return null;

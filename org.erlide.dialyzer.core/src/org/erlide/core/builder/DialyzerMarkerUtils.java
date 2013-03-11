@@ -121,7 +121,7 @@ public class DialyzerMarkerUtils {
                 return markers != null && markers.length > 0;
             }
         } catch (final CoreException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return false;
     }

@@ -181,7 +181,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
                         IErlElementLocator.Scope.ALL_PROJECTS);
                 return EditorUtility.getEditorInput(module);
             } catch (final CoreException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
         return null;

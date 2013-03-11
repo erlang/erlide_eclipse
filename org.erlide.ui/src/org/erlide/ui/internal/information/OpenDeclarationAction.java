@@ -12,6 +12,7 @@ import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 import org.erlide.ui.views.EdocView;
+import org.erlide.util.ErlLogger;
 
 /**
  * Action that opens the current hover input element.
@@ -64,7 +65,7 @@ public final class OpenDeclarationAction extends Action {
                                 BackendCore.getBackendManager().getIdeBackend()
                                         .getRpcSite(), -1, null, or, null);
                     } catch (final Exception e) {
-                        e.printStackTrace();
+                        ErlLogger.error(e);
                     }
                 }
             } catch (final PartInitException e) {
