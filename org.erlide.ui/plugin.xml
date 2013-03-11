@@ -1420,9 +1420,10 @@
             priority="normal">
          <triggerPoints>
             <or>
-               <instanceof
-                     value="org.eclipse.core.resources.IProject">
-               </instanceof>
+               <test
+                     property="org.eclipse.core.resources.projectNature"
+                     value="org.erlide.core.erlnature">
+               </test>
                <instanceof
                      value="org.erlide.model.root.IErlElement">
                </instanceof>
