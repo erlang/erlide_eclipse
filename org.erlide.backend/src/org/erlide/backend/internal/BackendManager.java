@@ -365,6 +365,9 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     public IRpcSite getByProject(final String projectName) {
         final IProject prj = ResourcesPlugin.getWorkspace().getRoot()
                 .getProject(projectName);
+        if (prj == null) {
+            ErlLogger.error("Can't find project %s", projectName);
+        }
         return getByProject(prj);
     }
 
@@ -373,6 +376,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         try {
             final IBackend backend = getBuildBackend(project);
             if (backend == null) {
+                ErlLogger.debug("Could not find backend for project %S",
+                        project);
                 return null;
             }
             return backend.getRpcSite();
