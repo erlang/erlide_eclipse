@@ -123,6 +123,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             final ILaunch launch) {
         data.setLaunch(launch);
         data.setBeamLocator(new BeamLocator());
+        data.setLongName(HostnameUtils.canUseLongNames());
         return data;
     }
 
