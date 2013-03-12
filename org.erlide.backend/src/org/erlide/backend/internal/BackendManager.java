@@ -180,6 +180,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             synchronized (ideBackendLock) {
                 if (ideBackend == null) {
                     ideBackend = factory.createIdeBackend();
+                    addBackend(ideBackend);
                     notifyBackendChange(ideBackend, BackendEvent.ADDED, null,
                             null);
                 }
@@ -354,7 +355,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         }
         final Collection<IBackend> list = getAllBackends();
         for (final IBackend b : list) {
-            if (b.getName().equals(info.getName())) {
+            if (b.getRuntimeData().getRuntimeInfo().getVersion()
+                    .equals(version)) {
                 return b.getRpcSite();
             }
         }
