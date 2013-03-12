@@ -1,3 +1,8 @@
+List of user visible changes between 0.20.1 and 0.20.2 (20130311)
+
+50b6fa5 1165 - crash when starting and no runtime is found
+f4dd89b 1166: launching can fail, using wrong kind of node name
+
 List of user visible changes between 0.20.0 and 0.20.1 (20130307)
 
 34c8e45 1158: crash in ErlFolder.isOnPaths
