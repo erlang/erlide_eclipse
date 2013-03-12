@@ -22,8 +22,10 @@ import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.ErlideOpen.ExternalTreeEntry;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Maps;
 
 public class ErlExternalReferenceEntryList extends Openable implements
@@ -55,6 +57,9 @@ public class ErlExternalReferenceEntryList extends Openable implements
         // TODO some code duplication within this function
         // ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
         // externalName);
+
+        final Stopwatch stopwatch = new Stopwatch().start();
+
         final IErlProject project = ModelUtils.getProject(this);
         final ErlModelCache cache = ErlModel.getErlModelCache();
         List<ExternalTreeEntry> externalModuleTree = cache
@@ -97,6 +102,9 @@ public class ErlExternalReferenceEntryList extends Openable implements
                         externalIncludeTree);
             }
         }
+
+        ErlLogger.debug("ExtRefList build took: " + stopwatch);
+
         return true;
     }
 
