@@ -89,7 +89,7 @@ get_lib_dirs() ->
     CodeLibs = [D || D <- code:get_path(), D =/= "."],
     LibDir = code:lib_dir(),
     Libs = lists:filter(fun(N) -> lists:prefix(LibDir, N) end, CodeLibs),
-    {ok, Libs}.
+    {ok, [get_lib_dir(Lib) || Lib<-Libs]}.
 
 get_lib_src_include(Dir) ->
     Dirs = ["src", "include"],
