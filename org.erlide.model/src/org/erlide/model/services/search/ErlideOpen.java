@@ -2,6 +2,7 @@ package org.erlide.model.services.search;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.model.SourcePathUtils;
@@ -190,7 +191,7 @@ public class ErlideOpen {
                             isModuleA.atomValue().equals("module")));
                 }
                 final String msg = "open:external_module_tree <- " + stopwatch;
-                if (stopwatch.elapsedMillis() > 5000) {
+                if (stopwatch.elapsed(TimeUnit.SECONDS) > 5) {
                     ErlLogger.warn("WARNING " + msg);
                 } else {
                     ErlLogger.debug(msg);
