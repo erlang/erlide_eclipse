@@ -126,36 +126,35 @@ public class ErlModule extends Openable implements IErlModule {
 
     private String getInitialText() {
         String charset;
-        if (initialText != null) {
-            return initialText;
-        } else if (file != null) {
-            if (file.isAccessible() && file.isSynchronized(0)) {
+        if (initialText == null) {
+            if (file != null) {
+                if (file.isAccessible() && file.isSynchronized(0)) {
+                    try {
+                        charset = file.getCharset();
+                        initialText = Util.getInputStreamAsString(
+                                file.getContents(), charset);
+                    } catch (final CoreException e) {
+                        ErlLogger.warn(e);
+                    }
+                }
+            } else if (path != null) {
                 try {
-                    charset = file.getCharset();
-                    final String initialText = Util.getInputStreamAsString(
-                            file.getContents(), charset);
-                    return initialText;
+                    if (encoding != null) {
+                        charset = encoding;
+                    } else {
+                        charset = ModelUtils.getProject(this)
+                                .getWorkspaceProject().getDefaultCharset();
+                    }
+                    initialText = Util.getInputStreamAsString(
+                            new FileInputStream(new File(path)), charset);
                 } catch (final CoreException e) {
+                    ErlLogger.warn(e);
+                } catch (final FileNotFoundException e) {
                     ErlLogger.warn(e);
                 }
             }
-        } else if (path != null) {
-            try {
-                if (encoding != null) {
-                    charset = encoding;
-                } else {
-                    charset = ModelUtils.getProject(this).getWorkspaceProject()
-                            .getDefaultCharset();
-                }
-                Util.getInputStreamAsString(
-                        new FileInputStream(new File(path)), charset);
-            } catch (final CoreException e) {
-                ErlLogger.warn(e);
-            } catch (final FileNotFoundException e) {
-                ErlLogger.warn(e);
-            }
         }
-        return null;
+        return initialText;
     }
 
     @Override
@@ -534,7 +533,7 @@ public class ErlModule extends Openable implements IErlModule {
         if (filePath == null) {
             return null;
         }
-        final String text = initialText == null ? "" : initialText;
+        final String text = getInitialText();
         return ErlModelManager.getErlangModel().getToolkit()
                 .createScanner(scannerName, text, filePath, logging);
     }
