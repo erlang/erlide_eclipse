@@ -59,7 +59,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         if (ideRuntime == null) {
             ideRuntime = defaultRuntimeName;
         }
-        final boolean shouldInit = erlideRuntime == null;
+        final boolean shouldInit = erlideRuntime != null;
         erlideRuntime = runtimes.get(ideRuntime);
         if (shouldInit) {
             HostnameUtils.detectHostNames(erlideRuntime.getOtpHome());
