@@ -119,7 +119,7 @@ public final class RpcHelper implements IRpcHelper {
     @Override
     public OtpErlangObject rpcCall(final OtpNode node, final String peer,
             final boolean logCalls, final OtpErlangObject gleader,
-            final String module, final String fun, final int timeout,
+            final String module, final String fun, final long timeout,
             final String signature, final Object... args0) throws RpcException,
             SignatureException {
         final IRpcFuture future = sendRpcCall(node, peer, logCalls, gleader,
@@ -373,7 +373,7 @@ public final class RpcHelper implements IRpcHelper {
 
     @Override
     public void makeAsyncCbCall(final OtpNode node, final String peer,
-            final IRpcCallback cb, final int timeout,
+            final IRpcCallback cb, final long timeout,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args)
             throws SignatureException {

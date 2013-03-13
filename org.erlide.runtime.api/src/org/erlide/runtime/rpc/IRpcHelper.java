@@ -9,7 +9,7 @@ import com.ericsson.otp.erlang.OtpNode;
 
 public interface IRpcHelper {
 
-    public static final int INFINITY = -1;
+    public static final long INFINITY = Long.MAX_VALUE;
 
     /**
      * Convenience method to send a remote message.
@@ -50,7 +50,7 @@ public interface IRpcHelper {
     public abstract OtpErlangObject rpcCall(final OtpNode node,
             final String peer, final boolean logCalls,
             final OtpErlangObject gleader, final String module,
-            final String fun, final int timeout, final String signature,
+            final String fun, final long timeout, final String signature,
             final Object... args0) throws RpcException, SignatureException;
 
     public abstract boolean isBadRpc(final OtpErlangObject result);
@@ -127,7 +127,7 @@ public interface IRpcHelper {
             final Object... args0);
 
     public abstract void makeAsyncCbCall(final OtpNode node, final String peer,
-            final IRpcCallback cb, final int timeout,
+            final IRpcCallback cb, final long timeout,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args)
             throws SignatureException;
