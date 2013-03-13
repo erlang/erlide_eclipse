@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -18,13 +18,15 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class RpcResult {
 
-    private OtpErlangObject fValue;
+    private static final OtpErlangAtom UNDEFINED = new OtpErlangAtom(
+            "undefined");
 
+    private OtpErlangObject fValue;
     private boolean fOk = true;
 
     private RpcResult(final boolean ok) {
         fOk = ok;
-        fValue = new OtpErlangAtom("undefined");
+        fValue = UNDEFINED;
     }
 
     public RpcResult(final OtpErlangObject res) {
