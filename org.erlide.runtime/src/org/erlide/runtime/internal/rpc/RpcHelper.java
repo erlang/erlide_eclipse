@@ -37,21 +37,16 @@ import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public final class RpcHelper implements IRpcHelper {
     // use this for debugging
     private static final boolean CHECK_RPC = Boolean
             .getBoolean("erlide.checkrpc");
 
-    private final ThreadFactory threadFactory = new ThreadFactory() {
-        @Override
-        public Thread newThread(final Runnable r) {
-            final Thread thread = new Thread(r);
-            thread.setDaemon(true);
-            return thread;
-        }
-    };
-    private final ExecutorService threadPool = Executors
+    private static final ThreadFactory threadFactory = new ThreadFactoryBuilder()
+            .setDaemon(true).setNameFormat("rpc-%d").build();
+    private static final ExecutorService threadPool = Executors
             .newCachedThreadPool(threadFactory);
 
     /**
