@@ -28,7 +28,7 @@
 
 do_scan(ScannerName, InitialText) ->
     ?D(do_scan),
-    Lines = split_lines_w_lengths(InitialText),
+    Lines = erlide_scan_util:split_lines_w_lengths(InitialText),
     LineTokens = [scan_line(L) || L <- Lines],
     ?D([ScannerName]), % , InitialText, LineTokens]),
     #module{name=ScannerName, lines=Lines, tokens=LineTokens}.
@@ -56,7 +56,7 @@ get_token_window(Module, Offset, Before, After) ->
     {A, B}.
 
 get_token_at(Module, Offset) ->
-    case find_line_w_offset(Offset, Module#module.tokens) of
+    case erlide_scan_util:find_line_w_offset(Offset, Module#module.tokens) of
         {N, Pos, _Length, Tokens, false} ->
             case get_token_at_aux(Tokens, Offset - Pos) of
                 token_not_found ->
@@ -76,58 +76,15 @@ get_text(#module{lines=Lines}) ->
 %% Local Functions
 %%
 
+replace_between(_From, _Length, With, []) ->
+    %% allow for special case when replacing empty set
+    %% (the Length may be 1 from replace_between_lines)
+    With;
 replace_between(From, Length, With, In) ->
+    ?D({From, Length, With, In}),
     {A, B} = lists:split(From, In),
     {_, C} = lists:split(Length, B),
     A++With++C.
-
-%% [{Length, TextIncNL}...]
-split_lines_w_lengths(Text) ->
-    split_lines_w_lengths(Text, 0, [], []).
-
-split_lines_w_lengths("", _Length, [], Acc) ->
-    lists:reverse(Acc);
-split_lines_w_lengths("", Length, LineAcc, Acc) ->
-    lists:reverse(Acc, [{Length, lists:reverse(LineAcc)}]);
-split_lines_w_lengths("\r\n" ++ Text, Length, LineAcc, Acc) ->
-    split_lines_w_lengths(Text, 0, [],
-                          [{Length+2, lists:reverse(LineAcc, "\r\n")} | Acc]);
-split_lines_w_lengths("\n" ++ Text, Length, LineAcc, Acc) ->
-    split_lines_w_lengths(Text, 0, [],
-                          [{Length+1, lists:reverse(LineAcc, "\n")} | Acc]);
-split_lines_w_lengths("\r" ++ Text, Length, LineAcc, Acc) ->
-    split_lines_w_lengths(Text, 0, [],
-                          [{Length+1, lists:reverse(LineAcc, "\r")} | Acc]);
-split_lines_w_lengths([C | Text], Length, LineAcc, Acc) ->
-    split_lines_w_lengths(Text, Length+1, [C | LineAcc], Acc).
-
-%% Find a line from [{Length, Line
-
-find_line_w_offset(Offset, Lines) ->
-    find_line_w_offset(Offset, 0, 0, Lines).
-
-find_line_w_offset(0, _Pos, _N, []) ->
-    {0, 0, 0, "", on_eof};
-find_line_w_offset(_Offset, _Pos, _N, []) ->
-    not_found;
-find_line_w_offset(Offset, Pos, N, [{Length, _Line} | Lines]) when Offset >= Pos+Length, Lines =/= [] ->
-    find_line_w_offset(Offset, Pos+Length, N+1, Lines);
-find_line_w_offset(Offset, Pos, N, [{Length, Line} |_]) when Pos =< Offset, Offset < Pos + Length ->
-    {N, Pos, Length, Line, false};
-find_line_w_offset(Offset, Pos, N, [{Length, Line}]) ->
-    case ends_with_newline(Line) orelse Offset > Pos + Length of
-        true ->
-            {N+1, Pos+Length, 0, "", beyond_eof};
-        false ->
-            {N, Pos+Length, Length, Line, on_eof}
-    end.
-
-ends_with_newline("") -> false;
-ends_with_newline("\n") -> true;
-ends_with_newline("\r") -> true;
-ends_with_newline("\r\n") -> true;
-ends_with_newline([_C | R]) ->
-    ends_with_newline(R).
 
 %%
 %% Nicer version of string:substring/2 accepting out-of-bounds parameters
@@ -154,7 +111,7 @@ substr(Text, Start, Length) ->
     string:substr(Text, Start, Length).
 
 replace_between_lines(From, Length, With, Lines) ->
-    {LineNo1, Pos1, _Length1, Line1, Beyond1} = find_line_w_offset(From, Lines),
+    {LineNo1, Pos1, _Length1, Line1, Beyond1} = erlide_scan_util:find_line_w_offset(From, Lines),
     ?D({LineNo1, Pos1, _Length1, Line1, Beyond1}),
     FirstPiece = substr(Line1, 1, From-Pos1),
     {LineNo2, Pos2, _Length2, Line2, Beyond2} = 
@@ -162,7 +119,7 @@ replace_between_lines(From, Length, With, Lines) ->
             0 ->
                 {LineNo1, Pos1, unused, Line1, Beyond1};
             _ ->
-                find_line_w_offset(From+Length, Lines)
+                erlide_scan_util:find_line_w_offset(From+Length, Lines)
         end,
     ?D({LineNo2, Pos2, _Length2, Line2, Beyond2}),
     LastPiece = substr(Line2, From+Length-Pos2+1),
@@ -178,7 +135,7 @@ replace_between_lines(From, Length, With, Lines) ->
             _ ->
                 {FirstPiece++With++LastPiece, LineNo2-LineNo1+1}
         end,
-    WLines = split_lines_w_lengths(NewText),
+    WLines = erlide_scan_util:split_lines_w_lengths(NewText),
     ?D(WLines),
     {LineNo1, NOldLines, WLines,
      replace_between(LineNo1, NOldLines, WLines, Lines)}.
@@ -269,7 +226,7 @@ get_tokens_at(Module, Offset, N) ->
 get_tokens_at(_Module, _Offset, 0, Acc) ->
     lists:reverse(Acc);
 get_tokens_at(Module, Offset, N, Acc0) ->
-    case find_line_w_offset(Offset, Module#module.tokens) of
+    case erlide_scan_util:find_line_w_offset(Offset, Module#module.tokens) of
         {LineNo, Pos, Length, Tokens, false} ->
             {M, Ts} = get_tokens_at_aux(Tokens, Offset - Pos, N),
             Acc1 =

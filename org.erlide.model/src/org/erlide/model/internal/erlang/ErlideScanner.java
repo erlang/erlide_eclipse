@@ -100,11 +100,6 @@ public class ErlideScanner {
             final int removeLength, String newText) {
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
-            // ErlLogger.debug("replaceText %s %d %d <length %d>", module,
-            // offset,
-            // removeLength, newTextLen);
-            // ErlLogger.debug("replaceText %s %d %d \"%s\"", module, offset,
-            // removeLength, newText);
             if (newText == null) {
                 newText = "";
             }
