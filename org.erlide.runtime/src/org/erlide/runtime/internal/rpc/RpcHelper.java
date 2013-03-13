@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.erlide.runtime.internal.rpc;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcHelper;
@@ -38,6 +42,17 @@ public final class RpcHelper implements IRpcHelper {
     // use this for debugging
     private static final boolean CHECK_RPC = Boolean
             .getBoolean("erlide.checkrpc");
+
+    private final ThreadFactory threadFactory = new ThreadFactory() {
+        @Override
+        public Thread newThread(final Runnable r) {
+            final Thread thread = new Thread(r);
+            thread.setDaemon(true);
+            return thread;
+        }
+    };
+    private final ExecutorService threadPool = Executors
+            .newCachedThreadPool(threadFactory);
 
     /**
      * Convenience method to send a remote message.
@@ -380,10 +395,7 @@ public final class RpcHelper implements IRpcHelper {
             }
         };
         // We can't use jobs here, it's an Eclipse dependency
-        final Thread thread = new Thread(target);
-        thread.setDaemon(true);
-        thread.setName("async " + module + ":" + fun);
-        thread.start();
+        threadPool.execute(target);
     }
 
     public RpcHelper() {
