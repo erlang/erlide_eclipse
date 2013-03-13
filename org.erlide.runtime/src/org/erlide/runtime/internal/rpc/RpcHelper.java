@@ -110,7 +110,7 @@ public final class RpcHelper implements IRpcHelper {
         final IRpcFuture future = sendRpcCall(node, peer, logCalls, gleader,
                 module, fun, signature, args0);
         OtpErlangObject result;
-        result = future.get(timeout);
+        result = future.checkedGet(timeout);
         if (CHECK_RPC) {
             debug("RPC result:: " + result);
         }
@@ -369,12 +369,13 @@ public final class RpcHelper implements IRpcHelper {
             public void run() {
                 OtpErlangObject result;
                 try {
-                    result = future.get(timeout);
-                    cb.run(result);
+                    result = future.checkedGet(timeout);
+                    cb.onSuccess(result);
                 } catch (final RpcException e) {
                     // TODO do we want to treat a timeout differently?
                     ErlLogger.error("Could not execute RPC " + module + ":"
                             + fun + " : " + e.getMessage());
+                    cb.onFailure(e);
                 }
             }
         };

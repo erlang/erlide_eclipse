@@ -1,13 +1,13 @@
 package org.erlide.runtime.rpc;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.google.common.util.concurrent.CheckedFuture;
 
-public interface IRpcFuture {
+public interface IRpcFuture extends
+        CheckedFuture<OtpErlangObject, RpcException> {
 
-    public abstract OtpErlangObject get() throws RpcException;
+    OtpErlangObject get(long timeout);
 
-    public abstract OtpErlangObject get(final long timeout) throws RpcException;
-
-    public abstract boolean isDone();
+    OtpErlangObject checkedGet(long timeout) throws RpcException;
 
 }

@@ -518,7 +518,7 @@ public final class BuilderHelper {
             return;
         }
         try {
-            final OtpErlangObject result = res.get();
+            final OtpErlangObject result = res.checkedGet();
             completeCompile(project, resource.getResource(), result, b,
                     compilerOptions);
         } catch (final RpcException e) {
@@ -537,8 +537,8 @@ public final class BuilderHelper {
             return;
         }
         try {
-            completeCompile(project, resource.getResource(), res.get(), b,
-                    compilerOptions);
+            completeCompile(project, resource.getResource(), res.checkedGet(),
+                    b, compilerOptions);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }

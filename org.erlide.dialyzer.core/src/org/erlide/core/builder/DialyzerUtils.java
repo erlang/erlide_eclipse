@@ -100,7 +100,7 @@ public class DialyzerUtils {
 
                 OtpErlangObject r = null;
                 try {
-                    r = future.get(500);
+                    r = future.checkedGet(500);
                 } catch (final RpcTimeoutException e) {
                 }
                 if (r != null) {
