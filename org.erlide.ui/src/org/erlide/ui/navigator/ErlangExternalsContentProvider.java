@@ -10,6 +10,8 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.internal.erlang.ErlExternalReferenceEntryList;
+import org.erlide.model.internal.erlang.ErlOtpExternalReferenceEntryList;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElement.Kind;
@@ -110,6 +112,11 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             return erlangFileContentProvider.hasChildren(element);
         }
         if (element instanceof IParent) {
+            if (element instanceof ErlOtpExternalReferenceEntryList
+                    || element instanceof ErlExternalReferenceEntryList) {
+                // we know these have children
+                return true;
+            }
             if (element instanceof IOpenable) {
                 final IOpenable openable = (IOpenable) element;
                 try {
