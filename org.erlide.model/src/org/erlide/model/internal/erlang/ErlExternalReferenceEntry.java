@@ -52,8 +52,8 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
             final List<IErlModule> children = Lists
                     .newArrayListWithCapacity(files.size());
             for (final String file : files) {
-                children.add(new ErlModule(this, getName(file), null, null,
-                        file));
+                children.add(new ErlModule(this, getName(file), file, null,
+                        null));
             }
             setChildren(children);
             return true;

@@ -77,7 +77,7 @@ public final class ErlParser implements IErlParser {
     @Override
     public boolean parse(final IErlModule module, final String scannerName,
             final boolean initialParse, final String path,
-            final boolean updateSearchServer) {
+            final String initialText, final boolean updateSearchServer) {
         if (module == null) {
             return false;
         }
@@ -88,8 +88,9 @@ public final class ErlParser implements IErlParser {
         if (initialParse) {
             final String stateDir = ModelPlugin.getDefault().getStateLocation()
                     .toString();
-            res = ErlideNoparse.initialParse(backend, scannerName, path,
-                    stateDir, updateSearchServer);
+            final String pathNotNull = path == null ? "" : path;
+            res = ErlideNoparse.initialParse(backend, scannerName, pathNotNull,
+                    initialText, stateDir, updateSearchServer);
         } else {
             res = ErlideNoparse.reparse(backend, scannerName,
                     updateSearchServer);
@@ -129,6 +130,10 @@ public final class ErlParser implements IErlParser {
             module.setComments(moduleComments);
         }
         fixFunctionComments(module);
+        final String cached = res.arity() > 2 ? ((OtpErlangAtom) res
+                .elementAt(2)).atomValue() : "reparsed";
+        ErlLogger.debug("Parsed %d forms and %d comments (%s)", forms.arity(),
+                comments.arity(), cached);
         return forms != null && comments != null;
     }
 

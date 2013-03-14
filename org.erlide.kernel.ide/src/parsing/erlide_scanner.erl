@@ -26,7 +26,7 @@
 %% API Functions
 %%
 
--define(CACHE_VERSION, 22).
+-define(CACHE_VERSION, 24).
 
 light_scan_string(B, latin1) ->
     S = binary_to_list(B),
@@ -42,13 +42,14 @@ scan_string(L) when is_list(L) ->
     erlide_scan_model:get_all_tokens(M).
 
 initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache) ->
-    Text = case InitialText of
-               "" ->
-                   {ok, B} = file:read_file(ModuleFileName),
-                   binary_to_list(B);
-               _ ->
-                   InitialText
-           end,
+%%     Text = case InitialText of
+%%                "" ->
+%%                    {ok, B} = file:read_file(ModuleFileName),
+%%                    binary_to_list(B);
+%%                _ ->
+%%                    InitialText
+%%            end,
+    Text = InitialText,
     CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
     RenewFun = fun(_F) -> erlide_scan_model:do_scan(ScannerName, Text) end,
     {erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UseCache), Text}.

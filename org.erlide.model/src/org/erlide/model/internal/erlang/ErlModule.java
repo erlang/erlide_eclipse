@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.erlide.model.internal.erlang;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -53,6 +56,7 @@ import org.erlide.model.util.ErlangIncludeFile;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
+import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -67,7 +71,7 @@ public class ErlModule extends Openable implements IErlModule {
             "export_all");
     private static final boolean logging = false;
     private long timestamp = IResource.NULL_STAMP;
-    private IFile fFile;
+    private IFile file;
     private final ModuleKind moduleKind;
     protected String path;
     private String initialText;
@@ -75,14 +79,26 @@ public class ErlModule extends Openable implements IErlModule {
     private final String scannerName;
     private final Collection<IErlComment> comments;
     private IErlScanner scanner;
+    private final String encoding;
+
+    public ErlModule(final IParent parent, final String name, final IFile file) {
+        this(parent, name, file, null, null, null);
+    }
 
     public ErlModule(final IParent parent, final String name,
-            final String initialText, final IFile file, final String path) {
+            final String path, final String encoding, final String initialText) {
+        this(parent, name, null, path, encoding, initialText);
+    }
+
+    private ErlModule(final IParent parent, final String name,
+            final IFile file, final String path, final String encoding,
+            final String initialText) {
         super(parent, name);
-        fFile = file;
-        moduleKind = ModuleKind.nameToModuleKind(name);
+        this.file = file;
         this.path = path;
+        this.encoding = encoding;
         this.initialText = initialText;
+        moduleKind = ModuleKind.nameToModuleKind(name);
         parsed = false;
         scannerName = createScannerName();
         comments = Lists.newArrayList();
@@ -95,9 +111,50 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public boolean internalBuildStructure(final IProgressMonitor pm) {
-        final IErlParser parser = ErlModelManager.getErlangModel().getParser();
-        parsed = parser.parse(this, scannerName, !parsed, getFilePath(), true);
-        return parsed;
+        final String text = getInitialText();
+        if (text != null) {
+            final IErlParser parser = ErlModelManager.getErlangModel()
+                    .getParser();
+            parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
+                    text, true);
+            return parsed;
+        } else {
+            setChildren(null);
+            return true;
+        }
+    }
+
+    private String getInitialText() {
+        String charset;
+        if (initialText == null) {
+            if (file != null) {
+                if (file.isAccessible() && file.isSynchronized(0)) {
+                    try {
+                        charset = file.getCharset();
+                        initialText = Util.getInputStreamAsString(
+                                file.getContents(), charset);
+                    } catch (final CoreException e) {
+                        ErlLogger.warn(e);
+                    }
+                }
+            } else if (path != null) {
+                try {
+                    if (encoding != null) {
+                        charset = encoding;
+                    } else {
+                        charset = ModelUtils.getProject(this)
+                                .getWorkspaceProject().getDefaultCharset();
+                    }
+                    initialText = Util.getInputStreamAsString(
+                            new FileInputStream(new File(path)), charset);
+                } catch (final CoreException e) {
+                    ErlLogger.warn(e);
+                } catch (final FileNotFoundException e) {
+                    ErlLogger.warn(e);
+                }
+            }
+        }
+        return initialText;
     }
 
     @Override
@@ -121,8 +178,8 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public String getFilePath() {
-        if (fFile != null) {
-            final IPath location = fFile.getLocation();
+        if (file != null) {
+            final IPath location = file.getLocation();
             if (location != null) {
                 return location.toString();
             }
@@ -180,7 +237,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public IResource getCorrespondingResource() {
-        return fFile;
+        return file;
     }
 
     public ISourceRange getSourceRange() throws ErlModelException {
@@ -445,7 +502,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public void setResource(final IFile file) {
-        fFile = file;
+        this.file = file;
     }
 
     @Override
@@ -473,14 +530,9 @@ public class ErlModule extends Openable implements IErlModule {
 
     private IErlScanner getNewScanner() {
         final String filePath = getFilePath();
-        if (filePath == null) {
-            return null;
-        }
-        if (initialText == null) {
-            initialText = "";
-        }
+        final String text = getInitialText();
         return ErlModelManager.getErlangModel().getToolkit()
-                .createScanner(scannerName, initialText, filePath, logging);
+                .createScanner(scannerName, text, filePath, logging);
     }
 
     @Override
@@ -674,6 +726,8 @@ public class ErlModule extends Openable implements IErlModule {
             return createScannerNameFromResource(res);
         } else if (getFilePath() != null) {
             return "mod" + getFilePath().hashCode() + "__" + getName();
+        } else if (getName() != null) {
+            return "mod" + hashCode() + "_" + getName();
         }
         // This is not used more than temporarily, so it's OK to have
         // a name that's temporary, as long as it's unique
