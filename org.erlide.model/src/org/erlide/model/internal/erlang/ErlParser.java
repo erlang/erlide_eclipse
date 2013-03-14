@@ -132,8 +132,9 @@ public final class ErlParser implements IErlParser {
         fixFunctionComments(module);
         final String cached = res.arity() > 2 ? ((OtpErlangAtom) res
                 .elementAt(2)).atomValue() : "reparsed";
-        ErlLogger.debug("Parsed %d forms and %d comments (%s)", forms.arity(),
-                comments.arity(), cached);
+        ErlLogger.debug("Parsed %d forms and %d comments (%s)",
+                forms != null ? forms.arity() : 0,
+                comments != null ? comments.arity() : 0, cached);
         return forms != null && comments != null;
     }
 
