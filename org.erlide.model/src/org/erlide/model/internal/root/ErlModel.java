@@ -1115,21 +1115,21 @@ public class ErlModel extends Openable implements IErlModel {
     private IErlModule findModule(final Collection<IErlModule> modules,
             final String moduleName, final String modulePath) {
         if (modulePath != null) {
-            for (final IErlModule module2 : modules) {
-                final String path2 = module2.getFilePath();
-                if (path2 != null && modulePath.equals(path2)) {
-                    return module2;
+            for (final IErlModule module : modules) {
+                final String path = module.getFilePath();
+                if (path != null && ResourceUtil.samePath(modulePath, path)) {
+                    return module;
                 }
             }
         }
         if (moduleName != null) {
             final boolean hasExtension = SystemConfiguration
                     .hasExtension(moduleName);
-            for (final IErlModule module2 : modules) {
-                final String name = hasExtension ? module2.getName() : module2
+            for (final IErlModule module : modules) {
+                final String name = hasExtension ? module.getName() : module
                         .getModuleName();
-                if (ResourceUtil.samePath(moduleName, name)) {
-                    return module2;
+                if (moduleName.equals(name)) {
+                    return module;
                 }
             }
         }
