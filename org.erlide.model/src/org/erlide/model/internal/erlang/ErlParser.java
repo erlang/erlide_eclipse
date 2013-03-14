@@ -88,7 +88,8 @@ public final class ErlParser implements IErlParser {
         if (initialParse) {
             final String stateDir = ModelPlugin.getDefault().getStateLocation()
                     .toString();
-            res = ErlideNoparse.initialParse(backend, scannerName, path,
+            final String pathNotNull = path == null ? "" : path;
+            res = ErlideNoparse.initialParse(backend, scannerName, pathNotNull,
                     initialText, stateDir, updateSearchServer);
         } else {
             res = ErlideNoparse.reparse(backend, scannerName,

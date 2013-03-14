@@ -530,9 +530,6 @@ public class ErlModule extends Openable implements IErlModule {
 
     private IErlScanner getNewScanner() {
         final String filePath = getFilePath();
-        if (filePath == null) {
-            return null;
-        }
         final String text = getInitialText();
         return ErlModelManager.getErlangModel().getToolkit()
                 .createScanner(scannerName, text, filePath, logging);
@@ -729,6 +726,8 @@ public class ErlModule extends Openable implements IErlModule {
             return createScannerNameFromResource(res);
         } else if (getFilePath() != null) {
             return "mod" + getFilePath().hashCode() + "__" + getName();
+        } else if (getName() != null) {
+            return "mod" + hashCode() + "_" + getName();
         }
         // This is not used more than temporarily, so it's OK to have
         // a name that's temporary, as long as it's unique
