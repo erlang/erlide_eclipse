@@ -92,7 +92,9 @@ public class ErlangHostnameRetriever {
                 int chr;
                 while ((chr = stream.read()) != -1) {
                     if (chr == 10 || chr == 13) {
-                        ErlLogger.debug("?> " + line);
+                        if (line.length() > 0) {
+                            ErlLogger.debug("?> " + line);
+                        }
                         line.setLength(0);
                     } else {
                         line.append((char) chr);
@@ -107,7 +109,9 @@ public class ErlangHostnameRetriever {
             } catch (final IOException e) {
                 ErlLogger.error(e);
             }
-            ErlLogger.debug("?> " + line);
+            if (line.length() > 0) {
+                ErlLogger.debug("?> " + line);
+            }
         }
 
         public String getResult() {
