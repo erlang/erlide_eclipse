@@ -2,31 +2,28 @@ package org.erlide.ui.editors.erl.scanner;
 
 import java.util.List;
 
-import org.eclipse.jface.text.rules.BufferedRuleBasedScanner;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WordRule;
-import org.eclipse.swt.graphics.RGB;
 import org.erlide.ui.editors.erl.ErlTokenScanner;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.util.IColorManager;
 
 import com.google.common.collect.Lists;
 
-public class ErlCommentScanner extends BufferedRuleBasedScanner implements
-        ErlTokenScanner {
+public class ErlCommentScanner extends ErlTokenScanner {
 
     public ErlCommentScanner(final IColorManager colorManager) {
-        super();
-        final Token defaultToken = ErlCodeScanner
+        super(colorManager);
+        final Token defaultToken = ErlTokenScanner
                 .getToken(TokenHighlight.COMMENT.getName());
         setDefaultReturnToken(defaultToken);
 
-        final Token edocTag = ErlCodeScanner.getToken(TokenHighlight.EDOC_TAG
+        final Token edocTag = ErlTokenScanner.getToken(TokenHighlight.EDOC_TAG
                 .getName());
-        final Token htmlTag = ErlCodeScanner.getToken(TokenHighlight.HTML_TAG
+        final Token htmlTag = ErlTokenScanner.getToken(TokenHighlight.HTML_TAG
                 .getName());
 
         final List<IRule> rulesList = Lists.newArrayList();
@@ -64,13 +61,6 @@ public class ErlCommentScanner extends BufferedRuleBasedScanner implements
         public boolean isWordPart(final char c) {
             return Character.isLowerCase(c);
         }
-    }
-
-    @Override
-    public void handleColorChange(final String id, final RGB newValue,
-            final int style) {
-        // TODO Auto-generated method stub
-
     }
 
 }

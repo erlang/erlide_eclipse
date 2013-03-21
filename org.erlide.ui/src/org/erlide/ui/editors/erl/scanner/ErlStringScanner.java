@@ -2,7 +2,6 @@ package org.erlide.ui.editors.erl.scanner;
 
 import java.util.List;
 
-import org.eclipse.jface.text.rules.BufferedRuleBasedScanner;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.swt.graphics.RGB;
@@ -13,18 +12,17 @@ import org.erlide.ui.util.text.RegexpRule;
 
 import com.google.common.collect.Lists;
 
-public class ErlStringScanner extends BufferedRuleBasedScanner implements
-        ErlTokenScanner {
+public class ErlStringScanner extends ErlTokenScanner {
 
     public ErlStringScanner(final IColorManager colorManager) {
-        super();
-        final Token defaultToken = ErlCodeScanner
+        super(colorManager);
+        final Token defaultToken = ErlTokenScanner
                 .getToken(TokenHighlight.STRING.getName());
         setDefaultReturnToken(defaultToken);
 
-        final Token tildeTag = ErlCodeScanner.getToken(TokenHighlight.TILDE_TAG
-                .getName());
-        final Token escapeTag = ErlCodeScanner
+        final Token tildeTag = ErlTokenScanner
+                .getToken(TokenHighlight.TILDE_TAG.getName());
+        final Token escapeTag = ErlTokenScanner
                 .getToken(TokenHighlight.ESCAPE_TAG.getName());
 
         final List<IRule> rulesList = Lists.newArrayList();
