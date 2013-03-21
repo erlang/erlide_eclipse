@@ -8,7 +8,8 @@
 %%
 
 -include_lib("eunit/include/eunit.hrl").
--include("erlide_noparse.hrl"). 
+-include("erlide_noparse.hrl").
+-include("erlide_token.hrl").
 
 %%
 %% Exported Functions
@@ -100,6 +101,37 @@ function_comments_only_toplevel_test_() ->
                     []},
                    test_parse(S))].
 
+
+reparse_test_() ->
+    S = "" ++
+            "f() ->\n"++
+            "    ok.\n",
+    Value = test_reparse(S), % , 15, 0, NewText),
+    Expected = #model{forms=[#function{pos = {{0,1,0},15},
+                                       name = f, arity = 0, args = [], head = [],
+                                       clauses = [],
+                                       name_pos = {{0,0},1},
+                                       exported = false}],
+                      comments=[]},
+    [?_assertEqual(Expected, Value)].
+
+replace_and_reparse_test_() ->
+    S = "" ++
+            "f() ->\n"++
+            "    ok.\n"++
+            "%% renamed\n",
+    Value = test_replace_and_reparse(S, 0, 1, "g"),
+    Expected = #model{forms=[#function{pos={{0,1,0},15},
+                                       name=g, arity=0, args=[], head=[],
+                                       clauses=[],
+                                       name_pos={{0, 0}, 1},
+                                       exported=false}],
+                      comments=[#token{kind=comment, 
+                                       line=2, offset=15, length=10,
+                                       value= <<"%% renamed">>,
+                                       text=u, last_line=u}]},
+    [?_assertEqual(Expected, Value)].
+
 %%
 %% Local Functions
 %%
@@ -109,6 +141,23 @@ test_parse(S) ->
     Tokens = erlide_scan_model:convert_tokens(erlide_scan:filter_ws(RawTokens)),
     {Forms, Comments, _Refs} = erlide_np:parse(Tokens),
     {Forms, Comments}.
+
+test_reparse(S) ->
+    erlide_scanner:create(testing),
+    erlide_scanner:initial_scan(testing, "/tmp/should_not_be_used.erl", S,
+                                "/not_used_either", false, off),
+    {ok, Model} = erlide_noparse:reparse(testing, false),
+    erlide_scanner:dispose(testing),
+    Model.
+
+test_replace_and_reparse(S, Offset, RemoveLength, NewText) ->
+    erlide_scanner:create(testing),
+    erlide_scanner:initial_scan(testing, "/tmp/should_not_be_used.erl", S,
+                                "/not_used_either", false, off),
+    erlide_scanner:replace_text(testing, Offset, RemoveLength, NewText),
+    {ok, Model} = erlide_noparse:reparse(testing, false),
+    erlide_scanner:dispose(testing),
+    Model.
 
 %% t() ->
 %%     erlide_noparse:initial_parse(testing, ModuleFileName, StateDir, UpdateCaches, UpdateSearchServer),
