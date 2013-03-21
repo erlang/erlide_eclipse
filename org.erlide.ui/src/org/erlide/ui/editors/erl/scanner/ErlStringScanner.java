@@ -5,13 +5,16 @@ import java.util.List;
 import org.eclipse.jface.text.rules.BufferedRuleBasedScanner;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.Token;
+import org.eclipse.swt.graphics.RGB;
+import org.erlide.ui.editors.erl.ErlTokenScanner;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.ui.util.text.RegexpRule;
 
 import com.google.common.collect.Lists;
 
-public class ErlStringScanner extends BufferedRuleBasedScanner {
+public class ErlStringScanner extends BufferedRuleBasedScanner implements
+        ErlTokenScanner {
 
     public ErlStringScanner(final IColorManager colorManager) {
         super();
@@ -32,5 +35,12 @@ public class ErlStringScanner extends BufferedRuleBasedScanner {
         final IRule[] rules = new IRule[rulesList.size()];
         rulesList.toArray(rules);
         setRules(rules);
+    }
+
+    @Override
+    public void handleColorChange(final String id, final RGB newValue,
+            final int style) {
+        // TODO Auto-generated method stub
+
     }
 }

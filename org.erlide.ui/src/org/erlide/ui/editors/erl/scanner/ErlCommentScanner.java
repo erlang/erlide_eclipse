@@ -8,12 +8,15 @@ import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WordRule;
+import org.eclipse.swt.graphics.RGB;
+import org.erlide.ui.editors.erl.ErlTokenScanner;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.util.IColorManager;
 
 import com.google.common.collect.Lists;
 
-public class ErlCommentScanner extends BufferedRuleBasedScanner {
+public class ErlCommentScanner extends BufferedRuleBasedScanner implements
+        ErlTokenScanner {
 
     public ErlCommentScanner(final IColorManager colorManager) {
         super();
@@ -61,6 +64,13 @@ public class ErlCommentScanner extends BufferedRuleBasedScanner {
         public boolean isWordPart(final char c) {
             return Character.isLowerCase(c);
         }
+    }
+
+    @Override
+    public void handleColorChange(final String id, final RGB newValue,
+            final int style) {
+        // TODO Auto-generated method stub
+
     }
 
 }

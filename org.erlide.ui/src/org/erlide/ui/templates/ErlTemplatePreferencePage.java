@@ -10,8 +10,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.texteditor.templates.TemplatePreferencePage;
+import org.erlide.ui.editors.erl.ErlangSourceViewer;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 
 public class ErlTemplatePreferencePage extends TemplatePreferencePage {
 
@@ -83,8 +83,8 @@ public class ErlTemplatePreferencePage extends TemplatePreferencePage {
 
     @Override
     protected SourceViewer createViewer(final Composite parent) {
-        final SourceViewer viewer = ColoringPreferencePage
-                .createErlangPreviewer(parent, null, null, "");
+        final SourceViewer viewer = ErlangSourceViewer.createErlangPreviewer(
+                parent, null, null, null, "");
         // new SourceViewer(parent, null, null, false, SWT.BORDER | SWT.V_SCROLL
         // | SWT.H_SCROLL);
         // final SourceViewerConfiguration configuration= new

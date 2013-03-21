@@ -12,29 +12,25 @@ package org.erlide.ui.editors.erl.scanner;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
-import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.resource.StringConverter;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.rules.IToken;
-import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.internal.erlang.ErlideScanner;
 import org.erlide.model.internal.erlang.ScannerException;
+import org.erlide.ui.editors.erl.ErlTokenScanner;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.TokenHighlight;
-import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.util.ErlLogger;
-import org.osgi.service.prefs.Preferences;
 
-public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener {
+public class ErlCodeScanner implements ErlTokenScanner {
 
     private static Token t_default;
     private static Token t_atom;
@@ -85,14 +81,12 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
     }
 
     protected TextAttribute getTextAttribute(final TokenHighlight th) {
-        final String qualifier = ColoringPreferencePage.COLORS_QUALIFIER
-                + th.getName();
-        final HighlightStyle data = new HighlightStyle();
-        data.load(qualifier, th.getDefaultData());
-        new InstanceScope().getNode(qualifier)
-                .addPreferenceChangeListener(this);
+        final IPreferenceStore store = ErlideUIPlugin.getDefault()
+                .getPreferenceStore();
+        final HighlightStyle data = th.getStyle(store);
+        // load from prefsstore
         return new TextAttribute(fColorManager.getColor(data.getColor()), null,
-                data.getStyle());
+                data.getStyles());
     }
 
     // private static final List<String> RESERVED = Arrays.asList(new String[] {
@@ -132,6 +126,7 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
         }
     }
 
+    @Override
     public void handleColorChange(final String id, final RGB newValue,
             final int style) {
         final Token token = getToken(id);
@@ -171,11 +166,14 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
         return t_default;
     }
 
-    private void fixTokenData(final Token token, final RGB newValue,
+    private void fixTokenData(final Token token, final RGB color,
             final int style) {
         final TextAttribute attr = (TextAttribute) token.getData();
-        token.setData(new TextAttribute(fColorManager.getColor(newValue), attr
-                .getBackground(), style));
+        final int newStyle = style == -1 ? attr.getStyle() : style;
+        final Color newColor = color == null ? attr.getForeground()
+                : fColorManager.getColor(color);
+        token.setData(new TextAttribute(newColor, attr.getBackground(),
+                newStyle));
     }
 
     @Override
@@ -266,32 +264,4 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
         }
         return fTokens.get(fCrtToken);
     }
-
-    @Override
-    public void preferenceChange(final PreferenceChangeEvent event) {
-        final String key = event.getKey();
-        final Preferences node = event.getNode();
-        final String newValue = (String) event.getNewValue();
-        final Token tk = getToken(node.name());
-        TextAttribute attr = (TextAttribute) tk.getData();
-        if (HighlightStyle.COLOR_KEY.equals(key)) {
-            if (newValue == null) {
-                // color = dflt.color;
-            } else {
-                final Color color = fColorManager.getColor(StringConverter
-                        .asRGB(newValue));
-                attr = new TextAttribute(color, attr.getBackground(),
-                        attr.getStyle());
-            }
-        } else if (HighlightStyle.STYLE_KEY.equals(key)) {
-            if (newValue == null) {
-                // style = dflt.style;
-            } else {
-                attr = new TextAttribute(attr.getForeground(),
-                        attr.getBackground(), Integer.parseInt(newValue));
-            }
-        }
-        tk.setData(attr);
-    }
-
 }

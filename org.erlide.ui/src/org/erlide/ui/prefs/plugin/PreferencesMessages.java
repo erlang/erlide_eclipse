@@ -32,6 +32,7 @@ public final class PreferencesMessages extends NLS {
     public static String FoldingConfigurationBlock_combo_caption;
     public static String FoldingConfigurationBlock_info_no_preferences;
     public static String FoldingConfigurationBlock_error_not_exist;
+    public static String ColoringPreferencePage_btnNewButton_text;
 
     private PreferencesMessages() {
         // Do not instantiate

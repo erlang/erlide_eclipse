@@ -10,20 +10,24 @@
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
 
+import com.google.common.base.Objects;
+
 public class HighlightStyle {
-    public static final String STYLE_KEY = "style";
-    public static final String COLOR_KEY = "color";
 
     private RGB color;
-    private int style;
+    private int styles;
 
-    // private HighlightStyle dflt;
+    public HighlightStyle(final RGB color, final int style) {
+        this.color = color;
+        this.styles = style;
+    }
+
+    public HighlightStyle(final HighlightStyle def) {
+        color = def.color;
+        styles = def.styles;
+    }
 
     public RGB getColor() {
         return color;
@@ -33,56 +37,33 @@ public class HighlightStyle {
         this.color = color;
     }
 
-    public int getStyle() {
-        return style;
+    public int getStyles() {
+        return styles;
     }
 
-    public void setStyle(final int style) {
-        this.style = style;
-    }
-
-    public HighlightStyle(final RGB color, final int style) {
-        this.color = color;
-        this.style = style;
-    }
-
-    public HighlightStyle() {
-    }
-
-    public void store(final IEclipsePreferences node) {
-        if (node != null) {
-            node.put(COLOR_KEY, StringConverter.asString(getColor()));
-            node.putInt(STYLE_KEY, style);
-        }
-    }
-
-    public void load(final IEclipsePreferences node, final HighlightStyle def) {
-        // dflt = def;
-        if (node != null) {
-            color = StringConverter.asRGB(node.get(COLOR_KEY,
-                    StringConverter.asString(def.getColor())));
-            style = node.getInt(STYLE_KEY, def.getStyle());
-        }
-    }
-
-    public void load(final String qualifier, final HighlightStyle def) {
-        final IPreferencesService service = Platform.getPreferencesService();
-        // dflt = def;
-        color = StringConverter.asRGB(service.getString(qualifier, COLOR_KEY,
-                StringConverter.asString(def.getColor()), null));
-        style = service.getInt(qualifier, STYLE_KEY, def.getStyle(), null);
+    public void setStyles(final int styles) {
+        this.styles = styles;
     }
 
     public boolean hasStyle(final int flag) {
-        return (style & flag) == flag;
+        return (styles & flag) == flag;
     }
 
     public void setStyle(final int flag, final boolean b) {
         if (b) {
-            style |= flag;
+            styles |= flag;
         } else {
-            style &= ~flag;
+            styles &= ~flag;
         }
     }
 
+    @Override
+    public boolean equals(final Object obj) {
+        return Objects.equal(this, obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(color, styles);
+    }
 }

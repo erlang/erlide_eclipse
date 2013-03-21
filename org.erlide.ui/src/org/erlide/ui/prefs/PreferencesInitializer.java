@@ -32,7 +32,9 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
         for (final TokenHighlight ht : TokenHighlight.values()) {
             final IEclipsePreferences node = new DefaultScope()
                     .getNode(qualifier + ht.getName());
-            ht.getDefaultData().store(node);
+            final IPreferenceStore store = ErlideUIPlugin.getDefault()
+                    .getPreferenceStore();
+            // ht.getDefaultStyle().store(store);
         }
 
         final IPreferenceStore store = ErlideUIPlugin.getDefault()
