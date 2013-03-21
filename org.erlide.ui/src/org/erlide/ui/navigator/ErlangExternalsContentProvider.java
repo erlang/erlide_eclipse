@@ -1,6 +1,7 @@
 package org.erlide.ui.navigator;
 
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -15,6 +16,9 @@ import org.erlide.model.internal.erlang.ErlOtpExternalReferenceEntryList;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElement.Kind;
+import org.erlide.util.ErlLogger;
+
+import com.google.common.base.Stopwatch;
 
 public class ErlangExternalsContentProvider implements ITreeContentProvider {
     // ITreePathContentProvider
@@ -117,6 +121,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
                 // we know these have children
                 return true;
             }
+            final Stopwatch clock = new Stopwatch().start();
             if (element instanceof IOpenable) {
                 final IOpenable openable = (IOpenable) element;
                 try {
@@ -125,8 +130,13 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
                 }
             }
             final IParent parent = (IParent) element;
-            return parent.hasChildrenOfKind(Kind.EXTERNAL)
+            final boolean result = parent.hasChildrenOfKind(Kind.EXTERNAL)
                     || parent.hasChildrenOfKind(Kind.MODULE);
+            if (clock.elapsed(TimeUnit.MILLISECONDS) > 100) {
+                ErlLogger.debug("TIME open " + element + "  "
+                        + clock.elapsed(TimeUnit.MILLISECONDS) + " ms");
+            }
+            return result;
         }
         return false;
     }
