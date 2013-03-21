@@ -30,7 +30,8 @@ public class ErlideScanner {
         try {
             final String loggingOnOff = logging ? "on" : "off";
             backend.call(ERLIDE_SCANNER, "initial_scan", "asssoa", module,
-                    path, initialText, stateDir, true, loggingOnOff);
+                    path, initialText == null ? "" : initialText, stateDir,
+                    true, loggingOnOff);
         } catch (final RpcTimeoutException e) {
             ErlLogger.debug(e);
         } catch (final Exception e) {
