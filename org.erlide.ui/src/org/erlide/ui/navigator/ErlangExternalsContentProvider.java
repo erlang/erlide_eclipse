@@ -12,6 +12,7 @@ import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.internal.erlang.ErlExternalReferenceEntryList;
+import org.erlide.model.internal.erlang.ErlExternalReferenceEntryListProxy;
 import org.erlide.model.internal.erlang.ErlOtpExternalReferenceEntryList;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
@@ -117,7 +118,8 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         }
         if (element instanceof IParent) {
             if (element instanceof ErlOtpExternalReferenceEntryList
-                    || element instanceof ErlExternalReferenceEntryList) {
+                    || element instanceof ErlExternalReferenceEntryList
+                    || element instanceof ErlExternalReferenceEntryListProxy) {
                 // we know these have children
                 return true;
             }
@@ -133,8 +135,9 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             final boolean result = parent.hasChildrenOfKind(Kind.EXTERNAL)
                     || parent.hasChildrenOfKind(Kind.MODULE);
             if (clock.elapsed(TimeUnit.MILLISECONDS) > 100) {
-                ErlLogger.debug("TIME open " + element + "  "
-                        + clock.elapsed(TimeUnit.MILLISECONDS) + " ms");
+                ErlLogger.debug("TIME open " + element.getClass() + " "
+                        + element + "  " + clock.elapsed(TimeUnit.MILLISECONDS)
+                        + " ms");
             }
             return result;
         }
