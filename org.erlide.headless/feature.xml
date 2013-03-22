@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.headless"
       label="Erlang headless support"
-      version="0.20.3.qualifier"
+      version="0.21.0.qualifier"
       provider-name="erlide.org"
       plugin="org.erlide.core">
 
