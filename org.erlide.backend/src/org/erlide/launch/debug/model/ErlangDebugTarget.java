@@ -369,7 +369,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
                     }
                 }
             } catch (final DebugException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
         final ErlangProcess p = new ErlangProcess(this, getBackend(), pid);

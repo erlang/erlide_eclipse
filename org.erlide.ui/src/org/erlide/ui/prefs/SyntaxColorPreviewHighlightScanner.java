@@ -1,7 +1,6 @@
 package org.erlide.ui.prefs;
 
-import java.util.Map;
-
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.swt.graphics.Color;
 import org.erlide.ui.editors.erl.scanner.ErlCodeScanner;
@@ -10,7 +9,7 @@ import org.erlide.ui.util.IColorManager;
 public class SyntaxColorPreviewHighlightScanner extends ErlCodeScanner {
     // implements IPropertyChangeListener {
 
-    final Map<TokenHighlight, HighlightStyle> styles;
+    private final IPreferenceStore store;
 
     public class PreviewTextAttribute extends TextAttribute {
         final TokenHighlight th;
@@ -22,20 +21,20 @@ public class SyntaxColorPreviewHighlightScanner extends ErlCodeScanner {
 
         @Override
         public Color getForeground() {
-            return fColorManager.getColor(styles.get(th).getColor());
+            return fColorManager.getColor(th.getStyle(store).getColor());
         }
 
         @Override
         public int getStyle() {
-            return styles.get(th).getStyle();
+            return th.getStyle(store).getStyles();
         }
 
     }
 
     public SyntaxColorPreviewHighlightScanner(final IColorManager lmanager,
-            final Map<TokenHighlight, HighlightStyle> styles) {
+            final IPreferenceStore store) {
         super(lmanager);
-        this.styles = styles;
+        this.store = store;
     }
 
     @Override

@@ -10,9 +10,8 @@
 package org.erlide.runtime.rpc;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.google.common.util.concurrent.FutureCallback;
 
-public interface IRpcCallback {
-
-    void run(OtpErlangObject value);
+public interface IRpcCallback extends FutureCallback<OtpErlangObject> {
 
 }

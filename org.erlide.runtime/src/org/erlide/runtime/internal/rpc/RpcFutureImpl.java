@@ -10,10 +10,15 @@
  *******************************************************************************/
 package org.erlide.runtime.internal.rpc;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcHelper;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcMonitor;
+import org.erlide.runtime.rpc.RpcTimeoutException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRef;
@@ -40,12 +45,57 @@ public class RpcFutureImpl implements IRpcFuture {
     }
 
     @Override
-    public OtpErlangObject get() throws RpcException {
-        return get(IRpcHelper.INFINITY);
+    public OtpErlangObject get() {
+        try {
+            return checkedGet();
+        } catch (final RpcException e) {
+            return null;
+        }
     }
 
     @Override
-    public OtpErlangObject get(final long timeout) throws RpcException {
+    public OtpErlangObject get(final long timeout, final TimeUnit unit) {
+        try {
+            return checkedGet(timeout, unit);
+        } catch (final TimeoutException e) {
+            return null;
+        } catch (final RpcException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean isDone() {
+        return result != null;
+    }
+
+    @Override
+    public void addListener(final Runnable listener, final Executor executor) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public boolean cancel(final boolean mayInterruptIfRunning) {
+        return false;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return false;
+    }
+
+    @Override
+    public OtpErlangObject checkedGet() throws RpcException {
+        try {
+            return checkedGet(IRpcHelper.INFINITY, TimeUnit.MILLISECONDS);
+        } catch (final TimeoutException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public OtpErlangObject checkedGet(final long timeout, final TimeUnit unit)
+            throws TimeoutException, RpcException {
         if (isDone()) {
             if (logCalls) {
                 helper.debugLogCallArgs("call <- %s", result);
@@ -63,8 +113,17 @@ public class RpcFutureImpl implements IRpcFuture {
     }
 
     @Override
-    public boolean isDone() {
-        return result != null;
+    public OtpErlangObject get(final long timeout) {
+        return get(timeout, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public OtpErlangObject checkedGet(final long timeout) throws RpcException {
+        try {
+            return checkedGet(timeout, TimeUnit.MILLISECONDS);
+        } catch (final TimeoutException e) {
+            throw new RpcTimeoutException(e.getMessage());
+        }
     }
 
 }

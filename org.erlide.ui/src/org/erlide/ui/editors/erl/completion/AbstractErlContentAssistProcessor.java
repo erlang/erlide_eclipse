@@ -390,7 +390,7 @@ public abstract class AbstractErlContentAssistProcessor {
         try {
             return module.getElementAt(offset);
         } catch (final ErlModelException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return null;
     }
@@ -577,7 +577,7 @@ public abstract class AbstractErlContentAssistProcessor {
                 }
             }
         } catch (final ErlModelException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return result;
     }

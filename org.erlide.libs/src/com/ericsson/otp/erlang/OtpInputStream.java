@@ -1,19 +1,19 @@
 /*
  * %CopyrightBegin%
- * 
- * Copyright Ericsson AB 2000-2009. All Rights Reserved.
- * 
+ *
+ * Copyright Ericsson AB 2000-2013. All Rights Reserved.
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
@@ -21,6 +21,7 @@ package com.ericsson.otp.erlang;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 /**
  * Provides a stream for decoding Erlang terms from external format.
@@ -31,7 +32,7 @@ import java.math.BigDecimal;
  */
 public class OtpInputStream extends ByteArrayInputStream {
 
-    public static int DECODE_INT_LISTS_AS_STRINGS = 1;
+    public static final int DECODE_INT_LISTS_AS_STRINGS = 1;
 
     private final int flags;
 
@@ -818,7 +819,7 @@ public class OtpInputStream extends ByteArrayInputStream {
             if (unsigned) {
                 if (c < 0) {
                     throw new OtpErlangDecodeException("Value not unsigned: "
-                            + b);
+                            + Arrays.toString(b));
                 }
                 while (b[i] == 0) {
                     i++; // Skip leading zero sign bytes
@@ -843,7 +844,7 @@ public class OtpInputStream extends ByteArrayInputStream {
             if (b.length - i > 8) {
                 // More than 64 bits of value
                 throw new OtpErlangDecodeException(
-                        "Value does not fit in long: " + b);
+                        "Value does not fit in long: " + Arrays.toString(b));
             }
             // Convert the necessary bytes
             for (v = c < 0 ? -1 : 0; i < b.length; i++) {
@@ -1152,14 +1153,18 @@ public class OtpInputStream extends ByteArrayInputStream {
                 this, new java.util.zip.Inflater(), size);
         int curPos = 0;
         try {
-            int curRead;
-            while (curPos < size
-                    && (curRead = is.read(buf, curPos, size - curPos)) != -1) {
-                curPos += curRead;
-            }
-            if (curPos != size) {
-                throw new OtpErlangDecodeException("Decompression gave "
-                        + curPos + " bytes, not " + size);
+            try {
+                int curRead;
+                while (curPos < size
+                        && (curRead = is.read(buf, curPos, size - curPos)) != -1) {
+                    curPos += curRead;
+                }
+                if (curPos != size) {
+                    throw new OtpErlangDecodeException("Decompression gave "
+                            + curPos + " bytes, not " + size);
+                }
+            } finally {
+                is.close();
             }
         } catch (final IOException e) {
             throw new OtpErlangDecodeException("Cannot read from input stream");

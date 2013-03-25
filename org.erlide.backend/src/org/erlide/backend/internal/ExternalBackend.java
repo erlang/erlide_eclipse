@@ -18,6 +18,7 @@ import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackendManager;
 import org.erlide.runtime.IErlRuntime;
+import org.erlide.util.ErlLogger;
 
 public class ExternalBackend extends Backend {
 
@@ -33,7 +34,7 @@ public class ExternalBackend extends Backend {
         try {
             getData().getLaunch().terminate();
         } catch (final DebugException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
         super.dispose();

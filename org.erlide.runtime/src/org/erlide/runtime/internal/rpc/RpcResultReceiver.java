@@ -11,6 +11,7 @@
 package org.erlide.runtime.internal.rpc;
 
 import org.erlide.runtime.rpc.IRpcResultCallback;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -65,7 +66,7 @@ public class RpcResultReceiver implements Runnable {
                     }
                 }
             } catch (final Exception e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         } while (!done || Thread.interrupted());
     }

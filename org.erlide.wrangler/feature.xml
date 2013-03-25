@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.erlide.wrangler"
-      label="Wrangler Feature"
+      label="Erlide Wrangler support"
       version="0.10.3.qualifier"
       provider-name="UKC">
 

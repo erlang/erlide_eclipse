@@ -28,15 +28,10 @@ public class OverlayPreferenceStore implements IPreferenceStore {
     public static final class TypeDescriptor {
 
         public static final TypeDescriptor BOOLEAN = new TypeDescriptor();
-
         public static final TypeDescriptor DOUBLE = new TypeDescriptor();
-
         public static final TypeDescriptor FLOAT = new TypeDescriptor();
-
         public static final TypeDescriptor INT = new TypeDescriptor();
-
         public static final TypeDescriptor LONG = new TypeDescriptor();
-
         public static final TypeDescriptor STRING = new TypeDescriptor();
 
         private TypeDescriptor() {

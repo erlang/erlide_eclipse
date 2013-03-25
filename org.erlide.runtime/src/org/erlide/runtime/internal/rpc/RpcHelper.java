@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.erlide.runtime.internal.rpc;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcHelper;
@@ -33,11 +37,17 @@ import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public final class RpcHelper implements IRpcHelper {
     // use this for debugging
     private static final boolean CHECK_RPC = Boolean
             .getBoolean("erlide.checkrpc");
+
+    private static final ThreadFactory threadFactory = new ThreadFactoryBuilder()
+            .setDaemon(true).setNameFormat("rpc-%d").build();
+    private static final ExecutorService threadPool = Executors
+            .newCachedThreadPool(threadFactory);
 
     /**
      * Convenience method to send a remote message.
@@ -104,13 +114,13 @@ public final class RpcHelper implements IRpcHelper {
     @Override
     public OtpErlangObject rpcCall(final OtpNode node, final String peer,
             final boolean logCalls, final OtpErlangObject gleader,
-            final String module, final String fun, final int timeout,
+            final String module, final String fun, final long timeout,
             final String signature, final Object... args0) throws RpcException,
             SignatureException {
         final IRpcFuture future = sendRpcCall(node, peer, logCalls, gleader,
                 module, fun, signature, args0);
         OtpErlangObject result;
-        result = future.get(timeout);
+        result = future.checkedGet(timeout);
         if (CHECK_RPC) {
             debug("RPC result:: " + result);
         }
@@ -358,7 +368,7 @@ public final class RpcHelper implements IRpcHelper {
 
     @Override
     public void makeAsyncCbCall(final OtpNode node, final String peer,
-            final IRpcCallback cb, final int timeout,
+            final IRpcCallback cb, final long timeout,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args)
             throws SignatureException {
@@ -369,20 +379,18 @@ public final class RpcHelper implements IRpcHelper {
             public void run() {
                 OtpErlangObject result;
                 try {
-                    result = future.get(timeout);
-                    cb.run(result);
+                    result = future.checkedGet(timeout);
+                    cb.onSuccess(result);
                 } catch (final RpcException e) {
                     // TODO do we want to treat a timeout differently?
                     ErlLogger.error("Could not execute RPC " + module + ":"
                             + fun + " : " + e.getMessage());
+                    cb.onFailure(e);
                 }
             }
         };
         // We can't use jobs here, it's an Eclipse dependency
-        final Thread thread = new Thread(target);
-        thread.setDaemon(true);
-        thread.setName("async " + module + ":" + fun);
-        thread.start();
+        threadPool.execute(target);
     }
 
     public RpcHelper() {

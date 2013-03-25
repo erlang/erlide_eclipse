@@ -35,6 +35,7 @@ import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IPostSelectionProvider;
@@ -134,6 +135,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
     private ShowOutlineAction fShowOutline;
     private Object fSelection;
     private final IPreferenceChangeListener fPreferenceChangeListener = new PreferenceChangeListener();
+    private final IPropertyChangeListener propertyChangeListener = new PropertyChangeListener();
     private ActionGroup fActionGroups;
     private ActionGroup fContextMenuGroup;
     private final ErlangEditorErrorTickUpdater fErlangEditorErrorTickUpdater;
@@ -178,6 +180,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
 
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
         node.removePreferenceChangeListener(fPreferenceChangeListener);
+        ErlideUIPlugin.getDefault().getPreferenceStore()
+                .removePropertyChangeListener(propertyChangeListener);
         if (fActionGroups != null) {
             fActionGroups.dispose();
             fActionGroups = null;
@@ -254,6 +258,20 @@ public class ErlangEditor extends AbstractErlangEditor implements
                     } else {
                         markOccurencesHandler.installOccurrencesFinder(true);
                     }
+                }
+            }
+        }
+    }
+
+    class PropertyChangeListener implements IPropertyChangeListener {
+        @Override
+        public void propertyChange(final PropertyChangeEvent event) {
+            if (getSourceViewerConfiguration() instanceof ErlangSourceViewerConfiguration) {
+
+                final ErlangSourceViewerConfiguration configuration = (ErlangSourceViewerConfiguration) getSourceViewerConfiguration();
+                if (configuration.affectsTextPresentation(event)) {
+                    configuration.handlePropertyChangeEvent(event);
+                    getSourceViewer().invalidateTextPresentation();
                 }
             }
         }
@@ -1008,6 +1026,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
 
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
         node.addPreferenceChangeListener(fPreferenceChangeListener);
+        ErlideUIPlugin.getDefault().getPreferenceStore()
+                .addPropertyChangeListener(propertyChangeListener);
 
         PlatformUI.getWorkbench().addWindowListener(
                 markOccurencesHandler.fActivationListener);

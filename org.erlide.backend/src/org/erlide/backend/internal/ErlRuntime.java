@@ -47,7 +47,7 @@ import com.google.common.base.Strings;
 public class ErlRuntime implements IErlRuntime, IRpcSite {
     private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
     private static final int EPMD_PORT = 4369;
-    public static int DEFAULT_TIMEOUT;
+    public static long DEFAULT_TIMEOUT;
     {
         setDefaultTimeout();
     }
@@ -202,7 +202,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public void async_call_cb(final IRpcCallback cb, final int timeout,
+    public void async_call_cb(final IRpcCallback cb, final long timeout,
             final String module, final String fun, final String signature,
             final Object... args) throws RpcException {
         async_call_cb(cb, timeout, new OtpErlangAtom("user"), module, fun,
@@ -210,7 +210,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public void async_call_cb(final IRpcCallback cb, final int timeout,
+    public void async_call_cb(final IRpcCallback cb, final long timeout,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args)
             throws RpcException {
@@ -224,7 +224,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public OtpErlangObject call(final int timeout,
+    public OtpErlangObject call(final long timeout,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
             throws RpcException {
@@ -243,7 +243,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public OtpErlangObject call(final int timeout, final String module,
+    public OtpErlangObject call(final long timeout, final String module,
             final String fun, final String signature, final Object... args0)
             throws RpcException {
         return call(timeout, new OtpErlangAtom("user"), module, fun, signature,
@@ -422,7 +422,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public RpcResult call_noexception(final int timeout, final String m,
+    public RpcResult call_noexception(final long timeout, final String m,
             final String f, final String signature, final Object... args) {
         try {
             final OtpErlangObject result = call(timeout, m, f, signature, args);

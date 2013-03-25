@@ -164,7 +164,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
             r1 = callErlang(selection.getOffset() - getSelection.getOffset(),
                     selection.getLength(), text);
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         final String newText = Util.stringValue(r1);
         if (newText == null) {

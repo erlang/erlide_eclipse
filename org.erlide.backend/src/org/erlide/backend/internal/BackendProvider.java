@@ -18,7 +18,7 @@ public class BackendProvider implements IRuntimeProvider {
     }
 
     @Override
-    public IRpcSite get(final String name) {
-        return BackendCore.getBackendManager().getByProject(name);
+    public IRpcSite get(final String project) {
+        return BackendCore.getBackendManager().getByProject(project);
     }
 }

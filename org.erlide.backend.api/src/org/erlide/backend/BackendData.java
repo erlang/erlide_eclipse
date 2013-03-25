@@ -106,7 +106,7 @@ public final class BackendData extends RuntimeData {
                     intMods);
         } catch (final CoreException e1) {
             // TODO Auto-generated catch block
-            e1.printStackTrace();
+            ErlLogger.warn(e1);
         }
 
         runtimeInfo = info.setArgs(extraArgs);
@@ -205,7 +205,7 @@ public final class BackendData extends RuntimeData {
 
             return workingCopy;
         } catch (final CoreException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             return null;
         }
     }

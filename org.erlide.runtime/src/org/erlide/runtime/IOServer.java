@@ -68,7 +68,7 @@ public class IOServer implements Runnable {
             } catch (final OtpErlangExit e) {
                 done = true;
             } catch (final Exception e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         } while (!stopped || !done || !Thread.interrupted());
         if (stopped) {

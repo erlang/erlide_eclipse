@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.erlide"
-      label="Erlang IDE"
-      version="0.20.3.qualifier"
+      label="Erlang language tools IDE"
+      version="0.21.0.qualifier"
       provider-name="erlide.org"
       image="erlang-64.gif">
    <install-handler/>

@@ -1,6 +1,7 @@
 package org.erlide.core.builder;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -79,6 +80,8 @@ public class DialyzerUtils {
             collectFilesAndIncludeDirs(modules, projects, files, names,
                     includeDirs, fromSource);
 
+            ErlLogger.debug("Dialyzing %s %s", names.size(),
+                    Arrays.toString(names.toArray()));
             monitor.subTask("Dialyzing " + getFileNames(names));
             final IRpcSite b = backend.getRpcSite();
             final IRpcFuture future = ErlideDialyze.dialyze(b, files, pltPaths,
@@ -97,7 +100,7 @@ public class DialyzerUtils {
 
                 OtpErlangObject r = null;
                 try {
-                    r = future.get(500);
+                    r = future.checkedGet(500);
                 } catch (final RpcTimeoutException e) {
                 }
                 if (r != null) {

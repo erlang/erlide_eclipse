@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2013. All Rights Reserved.
  *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
@@ -127,7 +127,8 @@ public class AbstractNode {
             final File dotCookieFile = new File(dotCookieFilename);
 
             br = new BufferedReader(new FileReader(dotCookieFile));
-            defaultCookie = br.readLine().trim();
+            final String line = br.readLine();
+            defaultCookie = line != null ? line.trim() : "";
         } catch (final IOException e) {
             defaultCookie = "";
         } finally {
@@ -254,14 +255,13 @@ public class AbstractNode {
     }
 
     private static String getHomeDir() {
-        final String u = System.getProperty("user.home");
+        final String home = System.getProperty("user.home");
         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            final String d = System.getenv("HOMEDRIVE");
-            final String p = System.getenv("HOMEPATH");
-            return (d != null && p != null) ? d + p : u;
+            final String drive = System.getenv("HOMEDRIVE");
+            final String path = System.getenv("HOMEPATH");
+            return drive != null && path != null ? drive + path : home;
         } else {
-            return u;
+            return home;
         }
     }
-
 }

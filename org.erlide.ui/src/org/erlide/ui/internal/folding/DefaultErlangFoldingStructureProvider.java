@@ -549,7 +549,7 @@ public class DefaultErlangFoldingStructureProvider implements
                 try {
                     fModule.open(null);
                 } catch (final ErlModelException e) {
-                    e.printStackTrace();
+                    ErlLogger.error(e);
                 }
             }
         }

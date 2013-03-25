@@ -1,6 +1,7 @@
 package org.erlide.runtime;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -306,6 +307,9 @@ public class RuntimeData {
     public void debugPrint() {
         ErlLogger.info("Data:: " + getClass().getName());
         for (final Field field : getAllPrivateFields(getClass())) {
+            if (Modifier.isStatic(field.getModifiers())) {
+                continue;
+            }
             try {
                 final boolean access = field.isAccessible();
                 field.setAccessible(true);

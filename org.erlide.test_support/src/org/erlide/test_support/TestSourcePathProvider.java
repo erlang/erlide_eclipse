@@ -126,7 +126,7 @@ public class TestSourcePathProvider implements SourcePathProvider,
                         + (System.currentTimeMillis() - time));
             }
         } catch (final CoreException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 

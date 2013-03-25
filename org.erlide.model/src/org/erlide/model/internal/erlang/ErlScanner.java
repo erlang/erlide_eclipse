@@ -28,7 +28,8 @@ public class ErlScanner implements IDisposable, IErlScanner {
     @Override
     public void initialScan(final String initialText, final String path,
             final boolean logging) {
-        ErlideScanner.initialScan(name, path, initialText, logging);
+        final String pathNotNull = path == null ? "" : path;
+        ErlideScanner.initialScan(name, pathNotNull, initialText, logging);
     }
 
     @Override

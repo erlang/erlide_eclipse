@@ -1365,6 +1365,10 @@ public final class Util {
             }
         } catch (final IOException e) {
         }
+        try {
+            is.close();
+        } catch (final IOException e) {
+        }
         return out.toString();
     }
 

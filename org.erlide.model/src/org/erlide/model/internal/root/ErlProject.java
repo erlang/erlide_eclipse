@@ -37,6 +37,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.model.ErlModelException;
+import org.erlide.model.ErlModelStatus;
+import org.erlide.model.ErlModelStatusConstants;
 import org.erlide.model.IOpenable;
 import org.erlide.model.ModelPlugin;
 import org.erlide.model.SourcePathUtils;
@@ -118,10 +120,15 @@ public class ErlProject extends Openable implements IErlProject {
     @Override
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        final IResource r = getResource();
+        final IResource r = getCorrespondingResource();
         // check whether the Erlang project can be opened
         if (r == null || !r.isAccessible() || !(r instanceof IContainer)) {
-            throw newNotPresentException();
+            ErlLogger.warn(
+                    "Project %s has no resources: res:%s acc:%s cont:%s", r,
+                    (r != null) ? r.isAccessible() : "?",
+                    r instanceof IContainer);
+            throw new ErlModelException(new ErlModelStatus(
+                    ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
         }
         try {
             final IContainer c = (IContainer) r;
@@ -153,7 +160,7 @@ public class ErlProject extends Openable implements IErlProject {
             setChildren(children);
 
         } catch (final CoreException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             setChildren(new ArrayList<IErlModule>());
             return false;
         }

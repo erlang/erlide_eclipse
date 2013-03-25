@@ -33,6 +33,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendPlugin;
@@ -483,6 +484,11 @@ public abstract class Backend implements IStreamListener, IBackend {
     private OtpErlangBinary getDebuggerBeam(final String module) {
         final String beamname = module + ".beam";
         final Bundle bundle = Platform.getBundle("org.erlide.kernel.debugger");
+        if (bundle == null) {
+            ErlLogger.error("* !!! error bundle not found "
+                    + "org.erlide.kernel.debugger");
+            return null;
+        }
 
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] els = reg.getConfigurationElementsFor(
@@ -498,7 +504,7 @@ public abstract class Backend implements IStreamListener, IBackend {
                 final String dir_path = el.getAttribute("path");
                 final Enumeration<?> e = bundle.getEntryPaths(dir_path);
                 if (e == null) {
-                    ErlLogger.debug("* !!! error loading plugin "
+                    ErlLogger.error("* !!! error loading plugin "
                             + bundle.getSymbolicName());
                     return null;
                 }
@@ -514,7 +520,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         return null;
     }
 
-    private OtpErlangBinary getBeamFromBundlePath(final Bundle bundle,
+    private OtpErlangBinary getBeamFromBundlePath(@NonNull final Bundle bundle,
             final String s, final Path path) {
         final String m = path.removeFileExtension().lastSegment();
         try {
@@ -545,7 +551,7 @@ public abstract class Backend implements IStreamListener, IBackend {
             try {
                 postLaunch();
             } catch (final DebugException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
     }

@@ -2,6 +2,7 @@ package org.erlide.model.services.search;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.model.SourcePathUtils;
@@ -16,6 +17,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
 public class ErlideOpen {
@@ -166,7 +168,7 @@ public class ErlideOpen {
             final IRpcSite backend, final String externalModules,
             final OtpErlangList pathVars) {
         ErlLogger.debug("open:external_module_tree -> " + externalModules);
-        final long time = System.currentTimeMillis();
+        final Stopwatch stopwatch = new Stopwatch().start();
         try {
             final OtpErlangObject res = backend.call("erlide_open",
                     "get_external_module_tree", "x",
@@ -188,9 +190,8 @@ public class ErlideOpen {
                     result.add(new ExternalTreeEntry(parentPath, path,// name,
                             isModuleA.atomValue().equals("module")));
                 }
-                final long timeTaken = System.currentTimeMillis() - time;
-                final String msg = "open:external_module_tree <- " + timeTaken;
-                if (timeTaken > 5000) {
+                final String msg = "open:external_module_tree <- " + stopwatch;
+                if (stopwatch.elapsed(TimeUnit.SECONDS) > 5) {
                     ErlLogger.warn("WARNING " + msg);
                 } else {
                     ErlLogger.debug(msg);
@@ -198,8 +199,7 @@ public class ErlideOpen {
                 return result;
             }
         } catch (final RpcException e) {
-            ErlLogger.warn("open:external_module_tree TIMEOUT <- "
-                    + (System.currentTimeMillis() - time));
+            ErlLogger.warn("open:external_module_tree TIMEOUT <- " + stopwatch);
             ErlLogger.warn(e);
         }
         return Lists.newArrayList();

@@ -99,15 +99,16 @@ public class DebuggerEventFactory {
     private static DebuggerEvent buildIntEvent(final Bindings b) {
         try {
             final OtpErlangObject[] cmds = b.getTuple("Cmd");
-            if (cmds[0].equals("new_break")) {
+            final String cmd = ((OtpErlangAtom) cmds[0]).atomValue();
+            if (cmd.equals("new_break")) {
                 return new NewBreakEvent(cmds);
-            } else if (cmds[0].toString().equals("new_status")) {
+            } else if (cmd.toString().equals("new_status")) {
                 return new NewStatusEvent(cmds);
-            } else if (cmds[0].toString().equals("new_process")) {
+            } else if (cmd.toString().equals("new_process")) {
                 return new NewProcessEvent(cmds);
-            } else if (cmds[0].toString().equals("interpret")) {
+            } else if (cmd.toString().equals("interpret")) {
                 return new InterpretEvent(cmds);
-            } else if (cmds[0].toString().equals("no_interpret")) {
+            } else if (cmd.toString().equals("no_interpret")) {
                 return new NoInterpretEvent(cmds);
             } else {
                 return new IntEvent(cmds);

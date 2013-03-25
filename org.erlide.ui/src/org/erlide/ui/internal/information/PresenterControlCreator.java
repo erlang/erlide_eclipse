@@ -201,7 +201,7 @@ public final class PresenterControlCreator extends
                                 BackendCore.getBackendManager().getIdeBackend()
                                         .getRpcSite(), -1, null, or, null);
                     } catch (final Exception e) {
-                        e.printStackTrace();
+                        ErlLogger.error(e);
                     }
                 }
             } catch (final PartInitException e) {

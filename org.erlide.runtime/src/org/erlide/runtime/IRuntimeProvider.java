@@ -6,6 +6,6 @@ public interface IRuntimeProvider {
 
     IRpcSite get(RuntimeVersion version);
 
-    IRpcSite get(String name);
+    IRpcSite get(String project);
 
 }

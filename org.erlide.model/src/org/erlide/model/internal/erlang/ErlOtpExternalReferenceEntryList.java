@@ -11,6 +11,8 @@ import org.erlide.model.IParent;
 import org.erlide.model.ModelPlugin;
 import org.erlide.model.internal.root.Openable;
 import org.erlide.model.root.IErlExternal;
+import org.erlide.model.root.IErlProject;
+import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.IRpcSite;
@@ -31,8 +33,11 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     @Override
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
+        final IErlProject erlProject = ModelUtils.getProject(this);
+        final OldErlangProjectProperties properties = new OldErlangProjectProperties(
+                erlProject.getWorkspaceProject());
         final IRpcSite backend = ModelPlugin.getDefault().getBackend(
-                ModelUtils.getProject(this).getName());
+                properties.getRuntimeVersion());
         if (backend != null) {
             final List<String> libList = ErlideOpen.getLibDirs(backend);
             addExternalEntries(pm, libList, backend);

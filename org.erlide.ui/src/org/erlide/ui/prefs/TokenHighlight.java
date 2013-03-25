@@ -1,8 +1,11 @@
 package org.erlide.ui.prefs;
 
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.erlide.ui.prefs.PreferenceConstants.Color;
+import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 
 public enum TokenHighlight {
     //@formatter:off
@@ -15,35 +18,89 @@ public enum TokenHighlight {
     VARIABLE(new RGB(0xB8, 0x86, 0x0B), SWT.NORMAL),
     INTEGER(new RGB(90, 90, 180), SWT.NORMAL),
     FLOAT(Color.NAVY.getColor(), SWT.NORMAL),
+
     COMMENT(new RGB(0xB2, 0x22, 0x22), SWT.NORMAL),
     EDOC_TAG(new RGB(0x82, 0x22, 0x22), SWT.BOLD, "EDoc tag (in comments)"),
     HTML_TAG(new RGB(0xB3, 0x6A, 0x6A), SWT.NORMAL, "HTML tag (in comments)"),
+
     STRING(new RGB(0xBC, 0x8f, 0x8F), SWT.NORMAL),
     ESCAPE_TAG(new RGB(0xBC, 0x8f, 0x8F), SWT.BOLD, "Escaped chars (in strings)"),
     TILDE_TAG(new RGB(0xBC, 0x8f, 0x8F), SWT.BOLD, "Format specifiers (in strings)");
     //@formatter:on
 
-    private final HighlightStyle defaultData;
-    private String displayName;
+    private final HighlightStyle defaultStyle;
+    private final String displayName;
 
-    private TokenHighlight(final RGB color, final int style) {
-        this(color, style, null);
+    private TokenHighlight(final RGB color, final int styles) {
+        this(color, styles, null);
     }
 
-    private TokenHighlight(final RGB color, final int style,
+    private TokenHighlight(final RGB color, final int styles,
             final String displayName) {
-        defaultData = new HighlightStyle(color, style);
+        defaultStyle = new HighlightStyle(color, styles);
         this.displayName = displayName;
     }
 
-    public HighlightStyle getDefaultData() {
-        return defaultData;
+    public HighlightStyle getDefaultStyle() {
+        return defaultStyle;
     }
 
     public String getName() {
+        return toString().toLowerCase();
+    }
+
+    public String getDisplayName() {
         if (displayName == null) {
-            return toString().toLowerCase().replaceAll("_", " ");
+            return getName().replaceAll("_", " ");
         }
         return displayName;
+    }
+
+    public String getStylesKey() {
+        return ColoringPreferencePage.COLORS_QUALIFIER + getName() + "_"
+                + ColoringPreferencePage.STYLE_KEY;
+    }
+
+    public String getColorKey() {
+        return ColoringPreferencePage.COLORS_QUALIFIER + getName() + "_"
+                + ColoringPreferencePage.COLOR_KEY;
+    }
+
+    public HighlightStyle getStyle(final IPreferenceStore store) {
+        final String colorString = store.getString(getColorKey());
+        final RGB color = StringConverter.asRGB(colorString);
+        final int styles = store.getInt(getStylesKey());
+        return new HighlightStyle(color, styles);
+    }
+
+    public static boolean isColorKey(final String key) {
+        if (!key.startsWith(ColoringPreferencePage.COLORS_QUALIFIER)) {
+            return false;
+        }
+        return key.endsWith(ColoringPreferencePage.COLOR_KEY);
+    }
+
+    public static boolean isStylesKey(final String key) {
+        if (!key.startsWith(ColoringPreferencePage.COLORS_QUALIFIER)) {
+            return false;
+        }
+        return key.endsWith(ColoringPreferencePage.STYLE_KEY);
+    }
+
+    public static String getKeyName(final String key) {
+        if (!key.startsWith(ColoringPreferencePage.COLORS_QUALIFIER)) {
+            return null;
+        }
+        if (key.endsWith(ColoringPreferencePage.COLOR_KEY)) {
+            return key.substring(
+                    ColoringPreferencePage.COLORS_QUALIFIER.length(),
+                    key.length() - ColoringPreferencePage.COLOR_KEY.length()
+                            - 1);
+        } else {
+            return key.substring(
+                    ColoringPreferencePage.COLORS_QUALIFIER.length(),
+                    key.length() - ColoringPreferencePage.STYLE_KEY.length()
+                            - 1);
+        }
     }
 }

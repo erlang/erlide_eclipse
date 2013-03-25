@@ -23,7 +23,7 @@ public interface IRpcSite {
      * 
      * @throws ConversionException
      */
-    RpcResult call_noexception(final int timeout, final String m,
+    RpcResult call_noexception(final long timeout, final String m,
             final String f, final String signature, final Object... args);
 
     IRpcFuture async_call(final String m, final String f,
@@ -36,11 +36,11 @@ public interface IRpcSite {
     void async_call_cb(final IRpcCallback cb, final String m, final String f,
             final String signature, final Object... args) throws RpcException;
 
-    void async_call_cb(final IRpcCallback cb, final int timeout,
+    void async_call_cb(final IRpcCallback cb, final long timeout,
             final String m, final String f, final String signature,
             final Object... args) throws RpcException;
 
-    void async_call_cb(final IRpcCallback cb, final int timeout,
+    void async_call_cb(final IRpcCallback cb, final long timeout,
             final OtpErlangObject gleader, final String m, final String f,
             final String signature, final Object... args) throws RpcException;
 
@@ -53,10 +53,10 @@ public interface IRpcSite {
     OtpErlangObject call(final String m, final String f,
             final String signature, final Object... a) throws RpcException;
 
-    OtpErlangObject call(final int timeout, final String m, final String f,
+    OtpErlangObject call(final long timeout, final String m, final String f,
             final String signature, final Object... a) throws RpcException;
 
-    OtpErlangObject call(final int timeout, final OtpErlangObject gleader,
+    OtpErlangObject call(final long timeout, final OtpErlangObject gleader,
             final String m, final String f, final String signature,
             final Object... a) throws RpcException;
 

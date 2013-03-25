@@ -49,7 +49,7 @@ public abstract class AsyncCaller<T> implements Runnable {
                 @Override
                 public IStatus runInUIThread(final IProgressMonitor monitor) {
                     try {
-                        if (result.get(1) == null) {
+                        if (result.checkedGet(1) == null) {
                             schedule(interval);
                         }
                     } catch (final RpcException e) {

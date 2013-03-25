@@ -86,7 +86,7 @@ public class ErtsProcess extends RuntimeProcess {
         try {
             getLaunch().terminate();
         } catch (final DebugException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 

@@ -190,7 +190,7 @@ public class CallHierarchyView extends ViewPart {
                             EditorUtility.openElementInEditor(el,
                                     activateOnOpen);
                         } catch (final PartInitException e1) {
-                            e1.printStackTrace();
+                            ErlLogger.error(e1);
                         }
                     }
                 });

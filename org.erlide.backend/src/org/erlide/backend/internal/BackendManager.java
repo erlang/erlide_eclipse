@@ -148,6 +148,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         final IErlProject erlProject = ErlModelManager.getErlangModel()
                 .getErlangProject(project);
         if (erlProject == null) {
+            ErlLogger.warn("Project %s is not an erlang project",
+                    project.getName());
             return null;
         }
         final RuntimeInfo info = erlProject.getRuntimeInfo();
@@ -178,6 +180,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             synchronized (ideBackendLock) {
                 if (ideBackend == null) {
                     ideBackend = factory.createIdeBackend();
+                    addBackend(ideBackend);
                     notifyBackendChange(ideBackend, BackendEvent.ADDED, null,
                             null);
                 }
@@ -352,7 +355,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         }
         final Collection<IBackend> list = getAllBackends();
         for (final IBackend b : list) {
-            if (b.getName().equals(info.getName())) {
+            if (b.getRuntimeData().getRuntimeInfo().getVersion()
+                    .equals(version)) {
                 return b.getRpcSite();
             }
         }
@@ -360,16 +364,25 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public IRpcSite getByProject(final String name) {
+    public IRpcSite getByProject(final String projectName) {
         final IProject prj = ResourcesPlugin.getWorkspace().getRoot()
-                .getProject(name);
+                .getProject(projectName);
+        if (prj == null) {
+            ErlLogger.error("Can't find project %s", projectName);
+        }
         return getByProject(prj);
     }
 
     @Override
     public IRpcSite getByProject(final IProject project) {
         try {
-            return getBuildBackend(project).getRpcSite();
+            final IBackend backend = getBuildBackend(project);
+            if (backend == null) {
+                ErlLogger.debug("Could not find backend for project %S",
+                        project);
+                return null;
+            }
+            return backend.getRpcSite();
         } catch (final BackendException e) {
             return null;
         }
