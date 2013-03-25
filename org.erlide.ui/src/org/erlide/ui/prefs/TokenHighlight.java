@@ -1,5 +1,7 @@
 package org.erlide.ui.prefs;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.SWT;
@@ -67,6 +69,28 @@ public enum TokenHighlight {
     }
 
     public HighlightStyle getStyle(final IPreferenceStore store) {
+        final IEclipsePreferences node = new InstanceScope()
+                .getNode(ColoringPreferencePage.OLD_COLORS_QUALIFIER + "/"
+                        + getName());
+        if (node != null) {
+            try {
+                final String colorString = node.get(
+                        ColoringPreferencePage.COLOR_KEY,
+                        store.getDefaultString(getColorKey()));
+                final RGB color = StringConverter.asRGB(colorString);
+                final int styles = node.getInt(
+                        ColoringPreferencePage.STYLE_KEY,
+                        store.getDefaultInt(getStylesKey()));
+
+                store.setValue(getColorKey(), colorString);
+                store.setValue(getStylesKey(), styles);
+                node.removeNode();
+                return new HighlightStyle(color, styles);
+            } catch (final Exception e) {
+                // ignore
+            }
+        }
+
         final String colorString = store.getString(getColorKey());
         final RGB color = StringConverter.asRGB(colorString);
         final int styles = store.getInt(getStylesKey());
