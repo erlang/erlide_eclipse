@@ -1,3 +1,16 @@
+List of user visible changes between 0.20.3 and 0.21.2 (20130322)
+
+6bd8763 add debug printout when opening stuff in navigator takes long time
+7fc2e0f 1006 - Syntax Coloring doesn't update open editors
+c4567f0 Make parsing and scanning works even for modules without path (e.g. tests and compare)
+45cb3b0 1168 - use ide backend for OTP libraries, if same version
+76fe5b0 813 - "externals" and "otp" folders on non-erlang projects
+a02c967 debug problems in 1163 1164
+57f9a11 update jinterface to R16
+e4840da fix issues reported by FindBugs
+31ebf65 update 3rd party libraries
+a933e59 Refresh gives double outline http://assembla.com/spaces/erlide/tickets/598-refresh-gives-double-outline
+
 List of user visible changes between 0.20.1 and 0.20.2 (20130311)
 
 50b6fa5 1165 - crash when starting and no runtime is found
