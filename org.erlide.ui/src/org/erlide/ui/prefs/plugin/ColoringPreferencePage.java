@@ -74,7 +74,7 @@ public class ColoringPreferencePage extends PreferencePage implements
     public static final String COLORS_QUALIFIER = "editor_colors_";
     public static final String STYLE_KEY = "style";
     public static final String COLOR_KEY = "color";
-    private static final String OLD_COLORS_QUALIFIER = "org.erlide.ui/editor/colors";
+    public static final String OLD_COLORS_QUALIFIER = "org.erlide.ui/editor/colors";
 
     final String fErlangCategory = PreferencesMessages.ErlEditorPreferencePage_coloring_category_erlang;
 

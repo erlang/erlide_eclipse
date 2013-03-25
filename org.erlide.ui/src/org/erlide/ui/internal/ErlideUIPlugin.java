@@ -154,13 +154,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             BackendManagerPopup.init();
         }
 
-        final IPreferenceStore rootStore = getPreferenceStore();
-        for (final TokenHighlight th : TokenHighlight.values()) {
-            final HighlightStyle data = th.getDefaultStyle();
-            rootStore.setDefault(th.getColorKey(),
-                    StringConverter.asString(data.getColor()));
-            rootStore.setDefault(th.getStylesKey(), data.getStyles());
-        }
+        loadDefaultEditorColors();
 
         ErlLogger.debug("Started UI");
 
@@ -182,6 +176,17 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                 erlangDebuggerBackendListener);
 
         startPeriodicCacheCleaner();
+    }
+
+    private void loadDefaultEditorColors() {
+        final IPreferenceStore rootStore = getPreferenceStore();
+
+        for (final TokenHighlight th : TokenHighlight.values()) {
+            final HighlightStyle data = th.getDefaultStyle();
+            rootStore.setDefault(th.getColorKey(),
+                    StringConverter.asString(data.getColor()));
+            rootStore.setDefault(th.getStylesKey(), data.getStyles());
+        }
     }
 
     public ErlConsoleManager getErlConsoleManager() {
