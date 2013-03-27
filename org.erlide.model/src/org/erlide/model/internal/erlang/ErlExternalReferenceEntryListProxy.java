@@ -50,4 +50,9 @@ public class ErlExternalReferenceEntryListProxy extends Openable implements
             throws ErlModelException {
         return ((Openable) original).buildStructure(pm);
     }
+
+    @Override
+    public void removeExternal() {
+        original.removeExternal();
+    }
 }

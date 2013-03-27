@@ -215,7 +215,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
         super.close();
     }
 
-    protected void removeExternal() {
+    @Override
+    public void removeExternal() {
         ErlModelManager.getErlangModel().removeExternal(
                 externalIncludes + "|" + externalModules + "|"
                         + projectIncludes);

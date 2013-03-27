@@ -130,8 +130,14 @@ public final class ErlParser implements IErlParser {
             module.setComments(moduleComments);
         }
         fixFunctionComments(module);
-        final String cached = res.arity() > 2 ? ((OtpErlangAtom) res
-                .elementAt(2)).atomValue() : "reparsed";
+        String cached = "reparsed";
+        if (res.arity() > 2) {
+            final OtpErlangObject res2 = res.elementAt(2);
+            if (res2 instanceof OtpErlangAtom) {
+                final OtpErlangAtom atom = (OtpErlangAtom) res2;
+                cached = atom.atomValue();
+            }
+        }
         ErlLogger.debug("Parsed %d forms and %d comments (%s)",
                 forms != null ? forms.arity() : 0,
                 comments != null ? comments.arity() : 0, cached);

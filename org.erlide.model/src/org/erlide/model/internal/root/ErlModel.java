@@ -1178,8 +1178,13 @@ public class ErlModel extends Openable implements IErlModel {
     @Override
     public void removeExternal(final String key) {
         final Integer integer = externalRefCounts.get(key);
-        if (integer == null || integer.intValue() == 0) {
-            externals.remove(key).dispose();
+        if (integer != null) {
+            if (integer.intValue() == 1) {
+                externals.remove(key);
+                externalRefCounts.remove(key);
+            } else {
+                externalRefCounts.put(key, integer - 1);
+            }
         }
     }
 

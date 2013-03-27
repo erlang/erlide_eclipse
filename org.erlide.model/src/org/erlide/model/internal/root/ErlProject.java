@@ -755,6 +755,7 @@ public class ErlProject extends Openable implements IErlProject {
     public void setSourceDirs(final Collection<IPath> sourceDirs)
             throws BackingStoreException {
         getModelCache().removeProject(this);
+        removeExternals();
         final IErlangProjectProperties properties = getProperties();
         properties.setSourceDirs(sourceDirs);
         properties.store();
@@ -765,6 +766,7 @@ public class ErlProject extends Openable implements IErlProject {
     public void setExternalModulesFile(final String absolutePath)
             throws BackingStoreException {
         getModelCache().removeProject(this);
+        removeExternals();
         final IErlangProjectProperties properties = getProperties();
         properties.setExternalModulesFile(absolutePath);
         properties.store();
@@ -775,6 +777,7 @@ public class ErlProject extends Openable implements IErlProject {
     public void setExternalIncludesFile(final String absolutePath)
             throws BackingStoreException {
         getModelCache().removeProject(this);
+        removeExternals();
         final IErlangProjectProperties properties = getProperties();
         properties.setExternalIncludesFile(absolutePath);
         properties.store();
@@ -952,6 +955,28 @@ public class ErlProject extends Openable implements IErlProject {
                 }
             }, EnumSet.of(AcceptFlags.CHILDREN_FIRST, AcceptFlags.LEAFS_ONLY),
                     Kind.MODULE);
+        } catch (final ErlModelException e) {
+        }
+        removeExternals();
+        super.dispose();
+    }
+
+    public void removeExternals() {
+        try {
+            accept(new IErlElementVisitor() {
+
+                @Override
+                public boolean visit(final IErlElement element)
+                        throws ErlModelException {
+                    if (element instanceof IErlExternalRoot) {
+                        final IErlExternalRoot externalRoot = (IErlExternalRoot) element;
+                        externalRoot.removeExternal();
+                    }
+                    element.dispose();
+                    return false;
+                }
+            }, EnumSet.of(AcceptFlags.CHILDREN_FIRST, AcceptFlags.LEAFS_ONLY),
+                    Kind.EXTERNAL);
         } catch (final ErlModelException e) {
         }
         super.dispose();
