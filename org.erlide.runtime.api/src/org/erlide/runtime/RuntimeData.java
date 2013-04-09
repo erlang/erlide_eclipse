@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 import org.erlide.util.SystemConfiguration;
@@ -71,17 +70,17 @@ public class RuntimeData {
     public RuntimeData(final RuntimeInfo info, final String mode,
             final String defaultWorkingDir) {
         this(info, mode);
-        Asserts.isNotNull(info, "Can't create backend with no runtime info");
-
-        runtimeInfo = info;
         setCookie("erlide");
         setLongName(true);
 
         setWorkingDir(defaultWorkingDir);
-        setExtraArgs(info.getArgs());
 
         setConsole(true);
         setLoadAllNodes(false);
+
+        if (info != null) {
+            setExtraArgs(info.getArgs());
+        }
     }
 
     public String getCookie() {

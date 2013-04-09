@@ -99,10 +99,10 @@ public class BackendFactory implements IBackendFactory {
                             .getProcesses()[0];
                 }
             };
-            final IErlRuntime runtime = new ErlRuntime(nodeName,
-                    data.getCookie(), erlProcessProvider,
-                    !data.isReportErrors(), data.hasLongName(),
-                    data.isInternal());
+            final IErlRuntime runtime = data.getRuntimeInfo() == null ? new NullErlRuntime()
+                    : new ErlRuntime(nodeName, data.getCookie(),
+                            erlProcessProvider, !data.isReportErrors(),
+                            data.hasLongName(), data.isInternal());
             final IBackendManager backendManager = BackendCore
                     .getBackendManager();
             b = data.isInternal() ? new InternalBackend(data, runtime,

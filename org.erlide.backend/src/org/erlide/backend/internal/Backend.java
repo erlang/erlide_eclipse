@@ -87,7 +87,6 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public Backend(final BackendData data, final IErlRuntime runtime,
             final IBackendManager backendManager) throws BackendException {
-        Asserts.isNotNull(data.getRuntimeInfo());
         Asserts.isNotNull(runtime);
         this.runtime = runtime;
         this.data = data;
