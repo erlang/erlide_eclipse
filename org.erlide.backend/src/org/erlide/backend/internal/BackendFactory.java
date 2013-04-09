@@ -52,6 +52,9 @@ public class BackendFactory implements IBackendFactory {
     }
 
     private void setWorkDirForCoreDumps(final IRpcSite backend) {
+        if (backend == null) {
+            return;
+        }
         // set work dir to gather core dumps
         final String dir = "/proj/uz/erlide/dumps";
         if (new File(dir).exists()) {

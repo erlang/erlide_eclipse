@@ -131,7 +131,7 @@ public final class ErlParser implements IErlParser {
         }
         fixFunctionComments(module);
         String cached = "reparsed";
-        if (res.arity() > 2) {
+        if (res != null && res.arity() > 2) {
             final OtpErlangObject res2 = res.elementAt(2);
             if (res2 instanceof OtpErlangAtom) {
                 final OtpErlangAtom atom = (OtpErlangAtom) res2;
