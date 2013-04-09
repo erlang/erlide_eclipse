@@ -386,7 +386,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
     public static IEclipsePreferences getPrefsNode() {
         final String qualifier = ErlideUIPlugin.PLUGIN_ID;
-        final IScopeContext context = new InstanceScope();
+        final IScopeContext context = InstanceScope.INSTANCE;
         final IEclipsePreferences eclipsePreferences = context
                 .getNode(qualifier);
         return eclipsePreferences;

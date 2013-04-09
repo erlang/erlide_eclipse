@@ -23,7 +23,7 @@ public class CodeAssistPreferences {
     private String eDocTriggers;
 
     public static IEclipsePreferences getNode() {
-        final IScopeContext context = new InstanceScope();
+        final IScopeContext context = InstanceScope.INSTANCE;
         final IEclipsePreferences eclipsePreferences = context
                 .getNode(QUALIFIER);
         return eclipsePreferences;

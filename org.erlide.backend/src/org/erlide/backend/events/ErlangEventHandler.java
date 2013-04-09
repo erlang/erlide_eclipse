@@ -13,13 +13,14 @@ import org.osgi.service.event.EventHandler;
 public abstract class ErlangEventHandler implements EventHandler, IDisposable {
     private final String backendName;
     private final String topic;
-    private ServiceRegistration registration;
+    private ServiceRegistration<EventHandler> registration;
 
     public ErlangEventHandler(final String topic, final String backendName) {
         this.topic = topic;
         this.backendName = backendName;
     }
 
+    @SuppressWarnings("unchecked")
     public void register() {
         final String fullTopic = ErlangEventPublisher.getFullTopic(topic,
                 backendName);
@@ -29,8 +30,9 @@ public abstract class ErlangEventHandler implements EventHandler, IDisposable {
         if (registration == null) {
             final Dictionary<String, String> properties = new Hashtable<String, String>();
             properties.put(EventConstants.EVENT_TOPIC, fullTopic);
-            registration = context.registerService(
-                    EventHandler.class.getName(), this, properties);
+            registration = (ServiceRegistration<EventHandler>) context
+                    .registerService(EventHandler.class.getName(), this,
+                            properties);
         }
     }
 

@@ -227,7 +227,7 @@ public class ColoringPreferencePage extends PreferencePage implements
     // TODO Remove this after a while, when all users have new versions
     // (suggested: september 2013)
     private void removeOldPreferenceNode(final TokenHighlight th) {
-        final IEclipsePreferences node = new InstanceScope()
+        final IEclipsePreferences node = InstanceScope.INSTANCE
                 .getNode(OLD_COLORS_QUALIFIER + th.getDisplayName());
         try {
             node.removeNode();
