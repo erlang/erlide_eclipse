@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.erlide.licenses"
+      label="Licenses"
+      version="1.0.0.qualifier"
+      provider-name="erlide.org project">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright>
+     Copyright (c) 2004-2010 Vlad Dumitrescu, Jakob Cederlund, and
+others.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License
+v1.0 which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      Eclipse Public License - v 1.0
+is available from http://www.eclipse.org/legal/epl-v10.html
+   </license>
+
+</feature>

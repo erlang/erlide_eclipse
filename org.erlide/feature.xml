@@ -4,12 +4,16 @@
       label="Erlang language tools IDE"
       version="0.21.0.qualifier"
       provider-name="erlide.org"
-      image="erlang-64.gif">
+      image="erlang-64.gif"
+      license-feature="org.erlide.licenses"
+      license-feature-version="1.0.0.qualifier">
    <install-handler/>
 
    <description>
       This feature provides Erlang IDE support for Eclipse.
-For bug reports and feature requests, please use the trackers at
+
+For bug reports and feature requests, please use the trackers
+at
 https://www.assembla.com/spaces/erlide/support/tickets
 or at
 https://github.com/erlide/erlide/issues.
@@ -20,10 +24,8 @@ You can also mail to erlide-devel@lists.sourceforge.net.
       Copyright (c) 2004-2013 Vlad Dumitrescu, Jakob Cederlund, the
 Wrangler team and others.
 All rights reserved. Unless otherwise specified, this program
-and
-the accompanying materials are made available under the terms
-of
-the Eclipse Public License v1.0 which accompanies this distribution,
+and the accompanying materials are made available under the terms
+of the Eclipse Public License v1.0 which accompanies this distribution,
 and is available at http://www.eclipse.org/legal/epl-v10.html
    </copyright>
 

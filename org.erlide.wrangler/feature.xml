@@ -7,7 +7,7 @@
 
    <description>
       This feature provides the integration of the Wrangler refactoring
-tool.
+tool in Erlide.
    </description>
 
    <copyright>
@@ -25,7 +25,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
    </license>
 
    <url>
-      <discovery label="Graphviz update site" url="http://abstratt.com/update"/>
+      <discovery label="Graphviz update site" url="jar:http://repository-textuml.forge.cloudbees.com/snapshot/com/abstratt/mdd/com.abstratt.mdd.oss.repository/1.0/com.abstratt.mdd.oss.repository-1.0.zip!/"/>
    </url>
 
    <requires>
