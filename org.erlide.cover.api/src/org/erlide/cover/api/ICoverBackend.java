@@ -11,13 +11,13 @@ public interface ICoverBackend {
     /**
      * Starts cover node. Should be used before running coverage analisys.
      */
-    public void startBackend();
+    void startBackend();
 
     /**
      * Performs coverage analysis implemented by runner.
      * 
      * @param runner
      */
-    public void runCoverageAnalysis(AbstractCoverRunner runner);
+    void runCoverageAnalysis(AbstractCoverRunner runner);
 
 }

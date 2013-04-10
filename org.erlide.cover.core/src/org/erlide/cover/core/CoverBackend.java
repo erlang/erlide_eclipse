@@ -3,9 +3,6 @@ package org.erlide.cover.core;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendData;
-import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
 import org.erlide.cover.api.AbstractCoverRunner;
 import org.erlide.cover.api.CoverException;
@@ -13,7 +10,6 @@ import org.erlide.cover.api.ICoverBackend;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.CoverLaunchSettings;
 import org.erlide.cover.views.model.TestTreeModel;
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 /**
  * Core backend for Cover-plugin
@@ -52,29 +48,25 @@ public class CoverBackend implements ICoverBackend {
 
     @Override
     public void startBackend() {
-        if (backend != null && !backend.isStopped()) {
+        if (getBackend() != null && !getBackend().isStopped()) {
             log.info("is started");
             return;
-        } else if (backend != null) {
-            backend.stop();
+        } else if (getBackend() != null) {
+            getBackend().stop();
         }
 
-        try {
-            backend = createBackend();
-            handler = new CoverEventHandler(backend.getName(), this);
-            handler.register();
-            testHandler = new EUnitEventHandler(backend.getName(),
-                    TestTreeModel.getInstance(), this);
-            testHandler.register();
-        } catch (final BackendException e) {
-            handleError("Could not create backend " + e);
-        }
+        handler = new CoverEventHandler(getBackend().getName(), this);
+        handler.register();
+        testHandler = new EUnitEventHandler(getBackend().getName(),
+                TestTreeModel.getInstance(), this);
+        testHandler.register();
     }
 
     /**
      * Initializes cover backend from launch configuration
      * 
      * @param coverData
+     * @param backend2
      * @throws CoverException
      */
     public void initialize(/* final ErlLaunchData data, */
@@ -196,42 +188,8 @@ public class CoverBackend implements ICoverBackend {
         return settings;
     }
 
-    // creates erlang backend
-    private IBackend createBackend() throws BackendException {
-        final RuntimeInfo info = RuntimeInfo.copy(BackendCore
-                .getRuntimeInfoCatalog().getErlideRuntime());
-
-        if (info == null) {
-            log.error(String.format("Could not find runtime %s", BackendCore
-                    .getRuntimeInfoCatalog().getErlideRuntime().getVersion()));
-            handleError("Could not find runtime");
-        }
-
-        log.info("create backend");
-
-        if (info != null) {
-            try {
-                final BackendData data = getBackendData(info);
-                data.setNodeName(NODE_NAME);
-                data.setUseStartShell(true);
-                final IBackend b = BackendCore.getBackendManager()
-                        .createExecutionBackend(data);
-                return b;
-            } catch (final Exception e) {
-                log.error(e);
-                e.printStackTrace();
-                throw new BackendException(e);
-            }
-        }
-        throw new BackendException();
-    }
-
-    private BackendData getBackendData(final RuntimeInfo rinfo) {
-        final BackendData backendData = new BackendData(rinfo);
-        backendData.setConsole(true);
-        backendData.setLongName(false);
-        backendData.setReportErrors(true);
-        return backendData;
+    public void setBackend(final IBackend backend) {
+        this.backend = backend;
     }
 
 }
