@@ -14,7 +14,7 @@
          get_external_module/2,
          get_external_module_tree/1,
          get_external_include/2,
-     get_external_1/3,
+		 get_external_1/3,
          get_lib_dirs/0,
          get_lib_src_include/1,
          get_lib_files/1
@@ -91,9 +91,11 @@ get_lib_dirs() ->
     Libs = lists:filter(fun(N) -> lists:prefix(LibDir, N) end, CodeLibs),
     {ok, [get_lib_dir(Lib) || Lib<-Libs]}.
 
-get_lib_src_include(Dir) ->
-    Dirs = ["src", "include"],
-    R = get_dirs(Dirs, get_lib_dir(Dir), []),
+get_lib_src_include(Dirs) ->
+	R = lists:map(fun(Dir) ->
+						  SubDirs = ["src", "include"],
+						  get_dirs(SubDirs, get_lib_dir(Dir), [])
+				  end, Dirs),
     {ok, R}.
 
 get_dirs([], _, Acc) ->

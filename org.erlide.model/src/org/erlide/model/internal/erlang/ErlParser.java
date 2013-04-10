@@ -86,8 +86,7 @@ public final class ErlParser implements IErlParser {
         OtpErlangTuple res = null;
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         if (initialParse) {
-            final String stateDir = ModelPlugin.getDefault().getStateLocation()
-                    .toString();
+            final String stateDir = ModelPlugin.getStateDir();
             final String pathNotNull = path == null ? "" : path;
             res = ErlideNoparse.initialParse(backend, scannerName, pathNotNull,
                     initialText, stateDir, updateSearchServer);

@@ -35,6 +35,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.model.ErlModelException;
+import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.services.search.ErlSearchScope;
@@ -111,6 +112,7 @@ public class MarkOccurencesHandler {
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(theModule,
                                 offset, res, LimitTo.ALL_OCCURRENCES, false);
+                ErlLogger.debug("open %s", res);
                 if (fCanceled) {
                     return;
                 }
@@ -123,11 +125,12 @@ public class MarkOccurencesHandler {
                     // seconds
                     final OtpErlangObject refs = ErlideSearchServer.findRefs(
                             ideBackend.getRpcSite(), pattern, scope,
-                            erlangEditor.getStateDir(), true);
+                            ModelPlugin.getStateDir(), true);
                     if (refs != null) {
                         SearchUtil.addSearchResult(findRefs, refs);
                         fRefs = erlangEditor.markOccurencesHandler
                                 .getErlangRefs(theModule, findRefs);
+                        ErlLogger.debug("refs %s", refs);
                     }
                 }
             } catch (final RpcTimeoutException e) {

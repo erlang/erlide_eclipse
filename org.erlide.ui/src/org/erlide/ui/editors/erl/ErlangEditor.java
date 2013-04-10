@@ -73,7 +73,6 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.erlang.IErlAttribute;
@@ -1582,14 +1581,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
             }
         }
         return annotationModel;
-    }
-
-    String getStateDir() {
-        if (stateDirCached == null) {
-            stateDirCached = ErlangPlugin.getDefault().getStateLocation()
-                    .toString();
-        }
-        return stateDirCached;
     }
 
     @Override

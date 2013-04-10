@@ -1,5 +1,6 @@
 package org.erlide.model.internal.erlang;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
@@ -49,9 +50,11 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
 
     private void addExternalEntries(final IProgressMonitor pm,
             final List<String> libList, final IRpcSite backend) {
-        for (final String libDir : libList) {
-            final List<String> srcInclude = ErlideOpen.getLibSrcInclude(
-                    backend, libDir);
+        final List<List<String>> srcIncludes = ErlideOpen.getLibSrcInclude(
+                backend, libList);
+        Iterator<String> iterator = libList.iterator();
+        for (List<String> srcInclude : srcIncludes) {
+            String libDir = iterator.next();
             boolean hasHeaders = false;
             for (final String path : srcInclude) {
                 if (includePath(path)) {

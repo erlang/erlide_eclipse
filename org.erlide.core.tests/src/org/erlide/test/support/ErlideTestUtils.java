@@ -199,7 +199,7 @@ public class ErlideTestUtils {
 		if (file != null) {
 			file.delete(true, null);
 		}
-		final IPath stateDir = ModelPlugin.getDefault().getStateLocation();
+		final IPath stateDir = new Path(ModelPlugin.getStateDir());
 		// FIXME this code should not know about caches!
 		final String cacheExts[] = { ".noparse", ".refs", ".scan" };
 		for (final String ext : cacheExts) {

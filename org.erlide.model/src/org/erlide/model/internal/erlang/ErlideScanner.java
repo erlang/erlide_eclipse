@@ -24,8 +24,7 @@ public class ErlideScanner {
 
     public static void initialScan(final String module, final String path,
             final String initialText, final boolean logging) {
-        final String stateDir = ModelPlugin.getDefault().getStateLocation()
-                .toString();
+        final String stateDir = ModelPlugin.getStateDir();
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
             final String loggingOnOff = logging ? "on" : "off";
