@@ -17,33 +17,34 @@ import org.osgi.service.prefs.BackingStoreException;
 public class PreferencesHelperTest {
 
     private static final IScopeContext[] ALL_SCOPE_CONTEXTS = new IScopeContext[] {
-            new InstanceScope(), new ConfigurationScope(), new DefaultScope() };
+            InstanceScope.INSTANCE, ConfigurationScope.INSTANCE,
+            DefaultScope.INSTANCE };
     private static final String QUALIFIER = "org.erlide.testing";
     private static final String KEY = "key";
 
     @Before
     public void setUp() throws BackingStoreException {
-        new InstanceScope().getNode(QUALIFIER).removeNode();
-        new ConfigurationScope().getNode(QUALIFIER).removeNode();
-        new DefaultScope().getNode(QUALIFIER).removeNode();
+        InstanceScope.INSTANCE.getNode(QUALIFIER).removeNode();
+        ConfigurationScope.INSTANCE.getNode(QUALIFIER).removeNode();
+        DefaultScope.INSTANCE.getNode(QUALIFIER).removeNode();
         Platform.getPreferencesService().getRootNode().flush();
     }
 
     @Test
     public void nextContexts_1() {
         final IScopeContext[] list = ALL_SCOPE_CONTEXTS;
-        final IScopeContext item = new ConfigurationScope();
+        final IScopeContext item = ConfigurationScope.INSTANCE;
         final IScopeContext[] val = PreferencesHelper.getNextContexts(list,
                 item);
         Assert.assertNotNull(val);
         Assert.assertEquals(1, val.length);
-        Assert.assertEquals(new DefaultScope(), val[0]);
+        Assert.assertEquals(DefaultScope.INSTANCE, val[0]);
     }
 
     @Test
     public void nextContexts_2() {
         final IScopeContext[] list = ALL_SCOPE_CONTEXTS;
-        final IScopeContext item = new DefaultScope();
+        final IScopeContext item = DefaultScope.INSTANCE;
         final IScopeContext[] val = PreferencesHelper.getNextContexts(list,
                 item);
         Assert.assertNotNull(val);
@@ -53,13 +54,13 @@ public class PreferencesHelperTest {
     @Test
     public void nextContexts_3() {
         final IScopeContext[] list = ALL_SCOPE_CONTEXTS;
-        final IScopeContext item = new InstanceScope();
+        final IScopeContext item = InstanceScope.INSTANCE;
         final IScopeContext[] val = PreferencesHelper.getNextContexts(list,
                 item);
         Assert.assertNotNull(val);
         Assert.assertEquals(2, val.length);
-        Assert.assertEquals(new ConfigurationScope(), val[0]);
-        Assert.assertEquals(new DefaultScope(), val[1]);
+        Assert.assertEquals(ConfigurationScope.INSTANCE, val[0]);
+        Assert.assertEquals(DefaultScope.INSTANCE, val[1]);
     }
 
     @Test
@@ -74,50 +75,50 @@ public class PreferencesHelperTest {
     public void default_0() {
         final PreferencesHelper helper = PreferencesHelper.getHelper(QUALIFIER);
         helper.putString(KEY, "balm");
-        String res = new InstanceScope().getNode(QUALIFIER).get(KEY, null);
+        String res = InstanceScope.INSTANCE.getNode(QUALIFIER).get(KEY, null);
         Assert.assertNotNull(res);
-        res = new ConfigurationScope().getNode(QUALIFIER).get(KEY, null);
+        res = ConfigurationScope.INSTANCE.getNode(QUALIFIER).get(KEY, null);
         Assert.assertNull(res);
-        res = new DefaultScope().getNode(QUALIFIER).get(KEY, null);
+        res = DefaultScope.INSTANCE.getNode(QUALIFIER).get(KEY, null);
         Assert.assertNull(res);
     }
 
     @Test
     public void default_1() {
         final PreferencesHelper helper = PreferencesHelper.getHelper(QUALIFIER);
-        new DefaultScope().getNode(QUALIFIER).put(KEY, "balm");
+        DefaultScope.INSTANCE.getNode(QUALIFIER).put(KEY, "balm");
         helper.putString(KEY, "balm");
-        String res = new InstanceScope().getNode(QUALIFIER).get(KEY, null);
+        String res = InstanceScope.INSTANCE.getNode(QUALIFIER).get(KEY, null);
         Assert.assertNull(res);
-        res = new ConfigurationScope().getNode(QUALIFIER).get(KEY, null);
+        res = ConfigurationScope.INSTANCE.getNode(QUALIFIER).get(KEY, null);
         Assert.assertNull(res);
-        res = new DefaultScope().getNode(QUALIFIER).get(KEY, null);
+        res = DefaultScope.INSTANCE.getNode(QUALIFIER).get(KEY, null);
         Assert.assertNotNull(res);
     }
 
     @Test
     public void default_2() {
         final PreferencesHelper helper = PreferencesHelper.getHelper(QUALIFIER);
-        new ConfigurationScope().getNode(QUALIFIER).put(KEY, "balm");
+        ConfigurationScope.INSTANCE.getNode(QUALIFIER).put(KEY, "balm");
         helper.putString(KEY, "balm");
-        String res = new InstanceScope().getNode(QUALIFIER).get(KEY, null);
+        String res = InstanceScope.INSTANCE.getNode(QUALIFIER).get(KEY, null);
         Assert.assertNull(res);
-        res = new ConfigurationScope().getNode(QUALIFIER).get(KEY, null);
+        res = ConfigurationScope.INSTANCE.getNode(QUALIFIER).get(KEY, null);
         Assert.assertNotNull(res);
-        res = new DefaultScope().getNode(QUALIFIER).get(KEY, null);
+        res = DefaultScope.INSTANCE.getNode(QUALIFIER).get(KEY, null);
         Assert.assertNull(res);
     }
 
     @Test
     public void default_3() {
         final PreferencesHelper helper = PreferencesHelper.getHelper(QUALIFIER);
-        new ConfigurationScope().getNode(QUALIFIER).put(KEY, "balm");
+        ConfigurationScope.INSTANCE.getNode(QUALIFIER).put(KEY, "balm");
         helper.putString(KEY, "smurf");
-        String res = new InstanceScope().getNode(QUALIFIER).get(KEY, null);
+        String res = InstanceScope.INSTANCE.getNode(QUALIFIER).get(KEY, null);
         Assert.assertNotNull(res);
-        res = new ConfigurationScope().getNode(QUALIFIER).get(KEY, null);
+        res = ConfigurationScope.INSTANCE.getNode(QUALIFIER).get(KEY, null);
         Assert.assertNotNull(res);
-        res = new DefaultScope().getNode(QUALIFIER).get(KEY, null);
+        res = DefaultScope.INSTANCE.getNode(QUALIFIER).get(KEY, null);
         Assert.assertNull(res);
     }
 

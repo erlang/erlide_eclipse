@@ -139,7 +139,7 @@ public final class ErlangCore {
                 public void saving(final ISaveContext context1)
                         throws CoreException {
                     try {
-                        new InstanceScope().getNode(
+                        InstanceScope.INSTANCE.getNode(
                                 plugin.getBundle().getSymbolicName()).flush();
                     } catch (final BackingStoreException e) {
                         // ignore

@@ -69,7 +69,7 @@ public enum TokenHighlight {
     }
 
     public HighlightStyle getStyle(final IPreferenceStore store) {
-        final IEclipsePreferences node = new InstanceScope()
+        final IEclipsePreferences node = InstanceScope.INSTANCE
                 .getNode(ColoringPreferencePage.OLD_COLORS_QUALIFIER + "/"
                         + getName());
         if (node != null) {
