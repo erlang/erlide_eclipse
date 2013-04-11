@@ -1,9 +1,8 @@
-#Mon Nov 26 13:45:12 CET 2012
 backend_version=R15B
 eclipse.preferences.version=1
 external_includes=
 external_modules=
 include_dirs=include
 output_dir=ebin
-source_dirs=src/syntax;src/pprint;src/parsing;src
+source_dirs=src
 use_pathz=false

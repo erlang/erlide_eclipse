@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.erlide.core.builder;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -92,6 +96,12 @@ public class ErlideBuilder {
                                 }
                                 notifier.updateProgressDelta(delta);
                             }
+                            if ("app".equals(element.getFileExtension())) {
+                                final IResource source = findCorrespondingSource(element);
+                                if (source != null) {
+                                    element.delete(true, monitor);
+                                }
+                            }
                         }
                     }
                 }
@@ -132,6 +142,8 @@ public class ErlideBuilder {
         try {
             initializeBuilder(monitor);
 
+            // TODO validate source and include directories
+
             final IPath out = erlProject.getOutputLocation();
             final IResource outr = project.findMember(out);
             if (outr != null) {
@@ -142,6 +154,9 @@ public class ErlideBuilder {
                     // ignore it
                 }
             }
+
+            handleAppFile(erlProject.getSourceDirs(), getProject()
+                    .getLocation().toPortableString() + "/" + out);
 
             final OtpErlangList compilerOptions = CompilerOptions.get(project);
             ErlLogger.debug(">>> compiler options ::: " + compilerOptions);
@@ -253,6 +268,40 @@ public class ErlideBuilder {
             // }
         }
         return null;
+    }
+
+    private void handleAppFile(final Collection<IPath> sources,
+            final String string) {
+        for (final IPath src : sources) {
+            final IFolder dir = (IFolder) getProject().findMember(src);
+            if (dir == null) {
+                continue;
+            }
+            try {
+                for (final IResource file : dir.members()) {
+                    final String name = file.getName();
+                    if (name.endsWith(".app.src")) {
+                        final File from = new File(file.getLocation()
+                                .toPortableString());
+                        final File to = new File(string + "/"
+                                + name.substring(0, name.lastIndexOf('.')));
+                        fillAppFileDetails(from, to);
+                    }
+                }
+            } catch (final CoreException e) {
+                ErlLogger.error(e);
+            } catch (final IOException e) {
+                ErlLogger.error(e);
+            }
+        }
+
+    }
+
+    private void fillAppFileDetails(final File from, final File to)
+            throws IOException {
+        // TODO update module list
+        // TODO more such stuff
+        FileUtils.copyFile(from, to);
     }
 
     private void initializeBuilder(final IProgressMonitor monitor) {
