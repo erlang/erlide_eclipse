@@ -38,6 +38,8 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CaretEvent;
+import org.eclipse.swt.custom.CaretListener;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
@@ -76,6 +78,7 @@ import org.erlide.runtime.ParserException;
 import org.erlide.runtime.RuntimeHelper;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.util.StringUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -86,6 +89,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     public static final String ID = "org.erlide.ui.views.console";
 
     Color bgColor_Ok;
+    Color bgColor_AlmostOk;
     Color bgColor_Err;
 
     StyledText consoleText;
@@ -141,6 +145,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         if (disposeColors) {
             bgColor_Err.dispose();
             bgColor_Ok.dispose();
+            bgColor_AlmostOk.dispose();
         }
         ErlideUIPlugin.getDefault().getErlConsoleManager().removePage(fConsole);
         super.dispose();
@@ -208,7 +213,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 if (fConsole.isStopped()) {
                     return;
                 }
-                final boolean isHistoryCommand = (e.stateMask & SWT.CTRL) == SWT.CTRL
+                final boolean isHistoryCommand = ((e.stateMask & SWT.MOD1) == SWT.MOD1)
                         && (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN);
                 if (e.character != (char) 0 || isHistoryCommand) {
                     e.doit = false;
@@ -260,12 +265,39 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 .setText("Press Ctrl-Enter to send the input to the console. Press Esc to clear input.");
         helpLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
+        final ModifyListener modifyListener = new ModifyListener() {
+            @Override
+            public void modifyText(final ModifyEvent e) {
+                final boolean atEndOfInput = consoleInput.getCaretOffset() >= StringUtils
+                        .rightTrim(consoleInput.getText(), ' ').length();
+                final boolean inputComplete = isInputComplete();
+
+                if (atEndOfInput && inputComplete) {
+                    consoleInput.setBackground(bgColor_Ok);
+                } else if (inputComplete) {
+                    consoleInput.setBackground(bgColor_AlmostOk);
+                } else {
+                    consoleInput.setBackground(bgColor_Err);
+                }
+            }
+        };
+        consoleInput.addModifyListener(modifyListener);
+        consoleInput.addCaretListener(new CaretListener() {
+            @Override
+            public void caretMoved(final CaretEvent event) {
+                modifyListener.modifyText(null);
+            }
+        });
         consoleInput.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(final KeyEvent e) {
-                final boolean ctrlOrCommandPressed = (e.stateMask & (SWT.CTRL | SWT.COMMAND)) != 0;
-                if (e.keyCode == 13 && ctrlOrCommandPressed
-                        && isInputComplete()) {
+                final boolean ctrlOrCommandPressed = (e.stateMask & SWT.MOD1) == SWT.MOD1;
+                final boolean atEndOfInput = consoleInput.getCaretOffset() >= StringUtils
+                        .rightTrim(consoleInput.getText(), ' ').length();
+                final boolean inputComplete = isInputComplete();
+
+                if (e.keyCode == 13 && (ctrlOrCommandPressed || atEndOfInput)
+                        && inputComplete) {
                     sendInput();
                     e.doit = true;
                 } else if (ctrlOrCommandPressed && e.keyCode == SWT.ARROW_UP) {
@@ -286,17 +318,6 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                     }
                 } else if (e.keyCode == SWT.ESC) {
                     consoleInput.setText("");
-                }
-            }
-        });
-        consoleInput.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                if (isInputComplete()) {
-                    consoleInput.setBackground(bgColor_Ok);
-                } else {
-                    final Color bgColorErr = bgColor_Err;
-                    consoleInput.setBackground(bgColorErr);
                 }
             }
         });
@@ -356,6 +377,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
         if (hsbvals[1] >= 0.01) {
             bgColor_Ok = color;
+            bgColor_AlmostOk = color;
             bgColor_Err = color;
             disposeColors = false;
         } else {
@@ -368,10 +390,16 @@ public class ErlangConsolePage extends Page implements IAdaptable,
             bgColor_Err = new Color(Display.getCurrent(), new RGB(cx.getRed(),
                     cx.getGreen(), cx.getBlue()));
 
-            rgb = java.awt.Color.HSBtoRGB(green, deltaSaturation, hsbvals[2]);
+            rgb = java.awt.Color.HSBtoRGB(green, 2 * deltaSaturation,
+                    hsbvals[2]);
             cx = new java.awt.Color(rgb);
             bgColor_Ok = new Color(Display.getCurrent(), new RGB(cx.getRed(),
                     cx.getGreen(), cx.getBlue()));
+
+            rgb = java.awt.Color.HSBtoRGB(green, deltaSaturation, hsbvals[2]);
+            cx = new java.awt.Color(rgb);
+            bgColor_AlmostOk = new Color(Display.getCurrent(), new RGB(
+                    cx.getRed(), cx.getGreen(), cx.getBlue()));
             disposeColors = true;
         }
     }
