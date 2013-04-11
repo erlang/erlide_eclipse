@@ -38,18 +38,23 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.erlide.runtime"/>
-      <import plugin="org.erlide.core"/>
-      <import plugin="org.erlide.ui"/>
       <import plugin="org.eclipse.ui.navigator" version="3.3.102" match="greaterOrEqual"/>
       <import plugin="org.erlide.wrangler.core" version="0.8.5" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.filesystem" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.debug.core" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.erlide.ui"/>
+      <import plugin="org.erlide.core"/>
+      <import plugin="org.erlide.runtime"/>
       <import plugin="org.erlide.libs" version="1.2.3" match="greaterOrEqual"/>
       <import plugin="org.erlide.wrangler.refactoring" version="0.9.0" match="greaterOrEqual"/>
       <import plugin="com.abstratt.graphviz.ui"/>
+      <import plugin="org.erlide.backend"/>
+      <import plugin="org.erlide.model" version="0.18.0" match="greaterOrEqual"/>
+      <import plugin="org.erlide.runtime.api" version="0.19.0" match="greaterOrEqual"/>
+      <import plugin="org.erlide.util"/>
+      <import plugin="com.abstratt.graphviz"/>
    </requires>
 
    <plugin
