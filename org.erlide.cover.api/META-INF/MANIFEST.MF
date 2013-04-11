@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.backend;bundle-version="0.11.9",
  org.erlide.model;bundle-version="0.18.0",
  org.erlide.util;bundle-version="0.18.0",
- org.erlide.libs;bundle-version="1.8.5"
+ org.erlide.libs;bundle-version="1.10.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.erlide.cover.api

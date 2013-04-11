@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.debug.core;bundle-version="3.6.0",
  org.erlide.runtime.api;bundle-version="0.19.0",
  org.erlide.util;bundle-version="0.19.0",
- org.erlide.libs;bundle-version="1.8.5"
+ org.erlide.libs;bundle-version="1.10.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.backend,
