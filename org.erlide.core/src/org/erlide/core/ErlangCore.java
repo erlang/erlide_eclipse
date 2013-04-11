@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.builder.BuildQueueProcessor;
 import org.erlide.launch.debug.ErlangDebugOptionsManager;
-import org.erlide.model.SourcePathUtils;
 import org.erlide.runtime.rpc.RpcMonitor;
 import org.erlide.util.EncodingUtils;
 import org.erlide.util.ErlLogger;
@@ -61,14 +60,6 @@ public final class ErlangCore {
         this.erlangDebugOptionsManager = erlangDebugOptionsManager;
         featureVersion = "?";
         logger = new ErlangCoreLogger(plugin, logDir);
-
-        // TODO can we remove this from here?
-        try {
-            // ignore result, just setup cache
-            SourcePathUtils.getSourcePathProviders();
-        } catch (final CoreException e) {
-            // ignore
-        }
     }
 
     public void start() throws CoreException {

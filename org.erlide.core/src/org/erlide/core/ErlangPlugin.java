@@ -74,13 +74,13 @@ public class ErlangPlugin extends Plugin {
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IExtensionRegistry extensionRegistry = Platform
                 .getExtensionRegistry();
-        final String portableString = workspace.getRoot().getLocation()
+        final String logDir = workspace.getRoot().getLocation()
                 .toPortableString();
         final ErlangDebugOptionsManager erlangDebugOptionsManager = ErlangDebugOptionsManager
                 .getDefault();
 
-        core = new ErlangCore(this, workspace, extensionRegistry,
-                portableString, erlangDebugOptionsManager);
+        core = new ErlangCore(this, workspace, extensionRegistry, logDir,
+                erlangDebugOptionsManager);
         core.start();
     }
 
