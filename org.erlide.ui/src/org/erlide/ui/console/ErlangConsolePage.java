@@ -213,7 +213,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 if (fConsole.isStopped()) {
                     return;
                 }
-                final boolean isHistoryCommand = ((e.stateMask & SWT.MOD1) == SWT.MOD1)
+                final boolean isHistoryCommand = (e.stateMask & SWT.MOD1) == SWT.MOD1
                         && (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN);
                 if (e.character != (char) 0 || isHistoryCommand) {
                     e.doit = false;

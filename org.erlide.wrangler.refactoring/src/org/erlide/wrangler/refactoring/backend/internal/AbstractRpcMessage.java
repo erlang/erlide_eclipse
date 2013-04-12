@@ -39,8 +39,8 @@ public abstract class AbstractRpcMessage implements IRpcMessage {
     public void parse(final RpcResult result) {
         try {
             if (!result.isOk()) {
-                org.erlide.util.ErlLogger.error(
-                        "Erlide communication error: ", result);
+                org.erlide.util.ErlLogger.error("Erlide communication error: ",
+                        result);
                 setUnsuccessful("Communication error occured, please try again!");
                 ErlLogger.error(result.toString());
                 return;

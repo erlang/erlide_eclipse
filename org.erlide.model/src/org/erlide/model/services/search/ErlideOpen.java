@@ -259,16 +259,18 @@ public class ErlideOpen {
         }
     }
 
-    private static List<List<String>> getStringListListTuple(OtpErlangObject res) {
+    private static List<List<String>> getStringListListTuple(
+            final OtpErlangObject res) {
         if (Util.isOk(res)) {
             final OtpErlangTuple t = (OtpErlangTuple) res;
             final OtpErlangList lol = (OtpErlangList) t.elementAt(1);
-            final List<List<String>> result = Lists.newArrayListWithCapacity(lol
-                    .arity());
+            final List<List<String>> result = Lists
+                    .newArrayListWithCapacity(lol.arity());
             for (final OtpErlangObject o : lol) {
-                OtpErlangList l = (OtpErlangList) o;
-                List<String> subResult = Lists.newArrayListWithCapacity(l.arity());
-                for (OtpErlangObject o2 : l) {
+                final OtpErlangList l = (OtpErlangList) o;
+                final List<String> subResult = Lists.newArrayListWithCapacity(l
+                        .arity());
+                for (final OtpErlangObject o2 : l) {
                     subResult.add(Util.stringValue(o2));
                 }
                 result.add(subResult);

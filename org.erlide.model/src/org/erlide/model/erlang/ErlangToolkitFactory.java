@@ -1,6 +1,5 @@
 package org.erlide.model.erlang;
 
-
 public class ErlangToolkitFactory {
 
     private static volatile ErlangToolkit instance;

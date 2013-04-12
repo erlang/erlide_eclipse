@@ -52,9 +52,9 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
             final List<String> libList, final IRpcSite backend) {
         final List<List<String>> srcIncludes = ErlideOpen.getLibSrcInclude(
                 backend, libList);
-        Iterator<String> iterator = libList.iterator();
-        for (List<String> srcInclude : srcIncludes) {
-            String libDir = iterator.next();
+        final Iterator<String> iterator = libList.iterator();
+        for (final List<String> srcInclude : srcIncludes) {
+            final String libDir = iterator.next();
             boolean hasHeaders = false;
             for (final String path : srcInclude) {
                 if (includePath(path)) {

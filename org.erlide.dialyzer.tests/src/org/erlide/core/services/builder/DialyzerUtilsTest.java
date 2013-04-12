@@ -1,8 +1,6 @@
 package org.erlide.core.services.builder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -108,8 +106,9 @@ public class DialyzerUtilsTest {
             final int lineNumber = 3;
             final String message = "test message";
             final IErlElementLocator model = ErlModelManager.getErlangModel();
-            DialyzerMarkerUtils.addDialyzerWarningMarker(model, erlModule.getResource()
-                    .getLocation().toPortableString(), lineNumber, message);
+            DialyzerMarkerUtils.addDialyzerWarningMarker(model, erlModule
+                    .getResource().getLocation().toPortableString(),
+                    lineNumber, message);
             // then
             // there should be a marker with proper file name and the proper
             // line number
@@ -214,15 +213,15 @@ public class DialyzerUtilsTest {
             final IResource selectedResource = selectResource(select,
                     erlProject, a);
             final Set<IErlModule> modules = DialyzerUtils
-                    .collectModulesFromResource(ErlModelManager.getErlangModel(),
-                            selectedResource);
+                    .collectModulesFromResource(
+                            ErlModelManager.getErlangModel(), selectedResource);
             final Set<IErlProject> projects = Sets.newHashSet();
             projects.add(erlProject);
             final List<String> names = new ArrayList<String>();
             final List<IPath> includeDirs = new ArrayList<IPath>();
             final List<String> files = new ArrayList<String>();
-            DialyzerUtils.collectFilesAndIncludeDirs(modules, projects,
-                    files, names, includeDirs, sources);
+            DialyzerUtils.collectFilesAndIncludeDirs(modules, projects, files,
+                    names, includeDirs, sources);
             // then
             // only selected files (or corresponding beam) should be collected
             if (select == SEL.MODULE) {
@@ -336,15 +335,17 @@ public class DialyzerUtilsTest {
             ErlideTestUtils.invokeBuilderOn(erlProject);
             // when
             // collecting files to dialyze
-            final Set<IErlModule> modules = DialyzerUtils.collectModulesFromResource(
-                    ErlModelManager.getErlangModel(), erlProject.getResource());
+            final Set<IErlModule> modules = DialyzerUtils
+                    .collectModulesFromResource(
+                            ErlModelManager.getErlangModel(),
+                            erlProject.getResource());
             final Set<IErlProject> projects = Sets.newHashSet();
             projects.add(erlProject);
             final List<String> names = new ArrayList<String>();
             final List<IPath> includeDirs = new ArrayList<IPath>();
             final List<String> files = new ArrayList<String>();
-            DialyzerUtils.collectFilesAndIncludeDirs(modules, projects,
-                   files, names, includeDirs, false);
+            DialyzerUtils.collectFilesAndIncludeDirs(modules, projects, files,
+                    names, includeDirs, false);
             // then
             // it should only take the existing beam files
             assertEquals(1, files.size());

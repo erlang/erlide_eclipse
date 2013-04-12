@@ -21,7 +21,7 @@ public class HighlightStyle {
 
     public HighlightStyle(final RGB color, final int style) {
         this.color = color;
-        this.styles = style;
+        styles = style;
     }
 
     public HighlightStyle(final HighlightStyle def) {

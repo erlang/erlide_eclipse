@@ -35,7 +35,7 @@ public class ErlSearchQuery implements ISearchQuery {
     private final Map<String, IErlModule> pathToModuleMap;
     private ErlangSearchResult fSearchResult;
 
-    private String stateDirCached = null;
+    private final String stateDirCached = null;
     private final String scopeDescription;
     private boolean stopped = false;
 

@@ -208,7 +208,7 @@ public class SWTImageCanvas extends Canvas {
         }
 
         final ScrollBar horizontal = getHorizontalBar();
-        horizontal.setIncrement((getClientArea().width / 100));
+        horizontal.setIncrement(getClientArea().width / 100);
         horizontal.setPageIncrement(getClientArea().width);
         final Rectangle imageBound = sourceImage.getBounds();
         final int cw = getClientArea().width, ch = getClientArea().height;
@@ -226,7 +226,7 @@ public class SWTImageCanvas extends Canvas {
         horizontal.setThumb(getClientArea().width);
 
         final ScrollBar vertical = getVerticalBar();
-        vertical.setIncrement((getClientArea().height / 100));
+        vertical.setIncrement(getClientArea().height / 100);
         vertical.setPageIncrement(getClientArea().height);
         if (imageBound.height * sy > ch) { /* image is higher than client area */
             vertical.setMaximum((int) (imageBound.height * sy));

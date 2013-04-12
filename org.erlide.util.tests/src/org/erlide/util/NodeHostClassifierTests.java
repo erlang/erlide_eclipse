@@ -3,7 +3,6 @@ package org.erlide.util;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import org.erlide.util.NodeHostClassifier;
 import org.erlide.util.NodeHostClassifier.HostnameType;
 import org.erlide.util.NodeHostClassifier.NodeType;
 import org.junit.Test;

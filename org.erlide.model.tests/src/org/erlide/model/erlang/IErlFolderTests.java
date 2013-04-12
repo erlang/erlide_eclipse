@@ -8,7 +8,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
