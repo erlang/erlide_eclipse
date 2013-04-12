@@ -31,12 +31,12 @@ echo "buckminster.temp.root=${WORKSPACE}/buckminster.temp" >> ${SITE_PRJ_PATH}/_
 LAUNCHER=`find -L ${BUCKMINSTER}/plugins/ -name "org.eclipse.equinox.launcher_*.jar" -type f | head -n 1`
 
 # configure junit-workspace with erlang runtimes
-${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE}/junit-workspace --loglevel info importpreferences -F ${WORKSPACE}/${SITE_PRJ}/_erl.epf -S instance
+${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE}/junit-workspace --loglevel DEBUG importpreferences -F ${WORKSPACE}/${SITE_PRJ}/_erl.epf -S instance
 # import test projects in junit-workspace
 cp -R ${WORKSPACE}/org.erlide.ui.tests/projects/* ${WORKSPACE}/junit-workspace
-${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE}/junit-workspace --loglevel info import ${WORKSPACE}/${SITE_PRJ}/junit.cquery
+${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE}/junit-workspace --loglevel DEBUG import ${WORKSPACE}/${SITE_PRJ}/junit.cquery
 
-${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel info -S ${SITE_PRJ_PATH}/_bucky_test -Derlide.runtime=${erlang_R14}
+${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel DEBUG -S ${SITE_PRJ_PATH}/_bucky_test -Derlide.runtime=${erlang_R14}
 
 ## now run eunit tests
 cd ${WORKSPACE}
