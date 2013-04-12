@@ -313,6 +313,7 @@ public class ErlideBuilder {
     private void cleanup() {
         notifier.done();
         notifier = null;
+        BuildQueueProcessor.getInstance().stop();
     }
 
     private Set<BuildResource> getResourcesToBuild(final int kind,

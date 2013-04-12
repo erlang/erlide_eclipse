@@ -202,7 +202,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     private void startPeriodicCacheCleaner() {
-        final Job job = new Job("erlide periodic cache cleaner") {
+        final Job cacheCleanerJob = new Job("erlide periodic cache cleaner") {
 
             @Override
             protected IStatus run(final IProgressMonitor monitor) {
@@ -243,9 +243,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             }
 
         };
-        job.setPriority(Job.SHORT);
-        job.setSystem(true);
-        job.schedule(getTimeToMidnight());
+        cacheCleanerJob.setPriority(Job.SHORT);
+        cacheCleanerJob.setSystem(true);
+        cacheCleanerJob.schedule(getTimeToMidnight());
     }
 
     private long getTimeToMidnight() {

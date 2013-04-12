@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.core.builder.BuildQueueProcessor;
 import org.erlide.launch.debug.ErlangDebugOptionsManager;
 import org.erlide.runtime.rpc.RpcMonitor;
 import org.erlide.util.EncodingUtils;
@@ -86,7 +85,6 @@ public final class ErlangCore {
     }
 
     public void stop() {
-        BuildQueueProcessor.getInstance().stop();
         ErlangDebugOptionsManager.getDefault().shutdown();
         final String location = ResourcesPlugin.getWorkspace().getRoot()
                 .getLocation().toPortableString();
