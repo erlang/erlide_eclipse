@@ -76,8 +76,6 @@ public class SystemConfiguration {
         return name.substring(0, i);
     }
 
-    // only to be used internally
-    @Deprecated
     public static boolean hasFeatureEnabled(final String feature) {
         return Boolean.parseBoolean(System.getProperty(feature));
     }
