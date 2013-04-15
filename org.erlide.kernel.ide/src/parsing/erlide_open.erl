@@ -14,10 +14,11 @@
          get_external_module/2,
          get_external_module_tree/1,
          get_external_include/2,
-		 get_external_1/3,
+     get_external_1/3,
          get_lib_dirs/0,
          get_lib_src_include/1,
-         get_lib_files/1
+         get_lib_files/1,
+         get_includes_in_dir/1
         ]).
 
 %% TODO (JC) there are some code duplication in external modules (and includes) handling
@@ -31,8 +32,6 @@
 
 -include("erlide.hrl").
 -include("erlide_token.hrl").
-
--compile(export_all).
 
 -record(open_context, {externalModules,
                        externalIncludes,
@@ -92,10 +91,10 @@ get_lib_dirs() ->
     {ok, [get_lib_dir(Lib) || Lib<-Libs]}.
 
 get_lib_src_include(Dirs) ->
-	R = lists:map(fun(Dir) ->
-						  SubDirs = ["src", "include"],
-						  get_dirs(SubDirs, get_lib_dir(Dir), [])
-				  end, Dirs),
+  R = lists:map(fun(Dir) ->
+              SubDirs = ["src", "include"],
+              get_dirs(SubDirs, get_lib_dir(Dir), [])
+          end, Dirs),
     {ok, R}.
 
 get_dirs([], _, Acc) ->

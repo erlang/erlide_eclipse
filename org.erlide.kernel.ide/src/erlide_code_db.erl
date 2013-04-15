@@ -1,6 +1,6 @@
 -module(erlide_code_db).
 
--compile(export_all).
+-export([init_db/0, new_module/2]).
 
 -include("erlide_code_db.hrl").
 

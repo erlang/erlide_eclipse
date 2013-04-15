@@ -1,6 +1,6 @@
 -module(erlide_syntax_tree).
 
--compile(export_all).
+-export([rewrite/1]).
 
 rewrite(List) when is_list(List) ->
     [rewrite(X) || X <-List];
@@ -11,9 +11,9 @@ rewrite(List) when is_list(List) ->
                                 Ann = erlide_syntax:get_attrs(Tree),
                                 Value = erlide_syntax:data(),
                                 {Type, Ann, Value};
-                            false ->        
+                            false ->
                                 Type = erlide_syntax:type(Tree),
                                 Ann = erlide_syntax:get_attrs(Tree),
                                 Children = rewrite(erlide_syntax:subtrees(Tree)),
                                 {Type, Ann, Children}
-                        end. 
+                        end.

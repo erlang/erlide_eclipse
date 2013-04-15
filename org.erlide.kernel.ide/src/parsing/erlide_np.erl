@@ -6,8 +6,6 @@
 
 -export([parse/1]).
 
--compile(export_all).
-
 -include("erlide.hrl").
 -include("erlide_token.hrl").
 -include("erlide_noparse.hrl").
