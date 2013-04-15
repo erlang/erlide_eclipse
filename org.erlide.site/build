@@ -28,5 +28,5 @@ echo "buckminster.temp.root=${WORKSPACE}/buckminster.temp" >> ${SITE_PRJ_PATH}/_
 
 LAUNCHER=`find -L ${BUCKMINSTER}/plugins/ -name "org.eclipse.equinox.launcher_*.jar" -type f | head -n 1`
 
-${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel DEBUG -S ${SITE_PRJ_PATH}/_bucky_build -Derlide.runtime=${erlang_R14}
+${JAVA_HOME}/bin/java -Xms128m -Xmx512m -server -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel DEBUG -S ${SITE_PRJ_PATH}/_bucky_build -Derlide.runtime=${erlang_R14}
 

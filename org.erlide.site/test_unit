@@ -36,7 +36,7 @@ ${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclips
 cp -R ${WORKSPACE}/org.erlide.ui.tests/projects/* ${WORKSPACE}/junit-workspace
 ${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE}/junit-workspace --loglevel DEBUG import ${WORKSPACE}/${SITE_PRJ}/junit.cquery
 
-${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel DEBUG -S ${SITE_PRJ_PATH}/_bucky_test -Derlide.runtime=${erlang_R14}
+${JAVA_HOME}/bin/java -Xms128m -Xmx512m -server -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel DEBUG -S ${SITE_PRJ_PATH}/_bucky_test -Derlide.runtime=${erlang_R14}
 
 ## now run eunit tests
 cd ${WORKSPACE}
