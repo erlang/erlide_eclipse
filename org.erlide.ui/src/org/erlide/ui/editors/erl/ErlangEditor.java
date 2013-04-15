@@ -149,8 +149,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
             this, null, IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP,
             new ActivationListener());
 
-    private String stateDirCached;
-
     /**
      * Simple constructor
      * 
