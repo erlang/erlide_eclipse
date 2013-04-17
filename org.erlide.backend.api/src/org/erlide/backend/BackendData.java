@@ -105,7 +105,6 @@ public final class BackendData extends RuntimeData {
             interpretedModules = addBreakpointProjectsAndModules(getProjects(),
                     intMods);
         } catch (final CoreException e1) {
-            // TODO Auto-generated catch block
             ErlLogger.warn(e1);
         }
 

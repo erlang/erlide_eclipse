@@ -77,8 +77,6 @@ public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler
                     oldUserDefinedPatterns, oldEnabledFilterIDs,
                     userDefinedPatterns, enabledFilterIDs, patternFilter);
         }
-
-        // TODO Auto-generated method stub
         return null;
     }
 }

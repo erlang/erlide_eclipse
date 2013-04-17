@@ -56,7 +56,6 @@ public class FunctionStats extends StatsTreeObject {
 
             lineStart = f.getLineStart();
         } catch (final ErlModelException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
