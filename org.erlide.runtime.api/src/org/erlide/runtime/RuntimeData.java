@@ -146,7 +146,7 @@ public class RuntimeData {
     public void setNodeName(String nodeName) {
         if (!validateNodeName(nodeName)) {
             // TODO this still can create a name that isn't valid
-            nodeName = nodeName.replaceAll("[^a-zA-Z0-9_-]", "");
+            nodeName = nodeName.replaceAll("[^a-zA-Z0-9_@.-]", "");
         }
         this.nodeName = nodeName;
     }

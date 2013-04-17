@@ -123,12 +123,6 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             final ILaunch launch) {
         data.setLaunch(launch);
         data.setBeamLocator(new BeamLocator());
-        data.setLongName(HostnameUtils.canUseLongNames());
-        final String nodeName = data.getNodeName();
-        if (nodeName.contains("@")) {
-            // match the actual node's long/short name
-            data.setLongName(nodeName.lastIndexOf('.') > nodeName.indexOf('@'));
-        }
         return data;
     }
 
