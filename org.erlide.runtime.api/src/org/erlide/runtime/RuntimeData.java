@@ -143,10 +143,10 @@ public class RuntimeData {
         return nodeName;
     }
 
-    public void setNodeName(String nodeName) {
+    public void setNodeName(final String nodeName) {
         if (!validateNodeName(nodeName)) {
-            // TODO this still can create a name that isn't valid
-            nodeName = nodeName.replaceAll("[^a-zA-Z0-9_@.-]", "");
+            throw new IllegalStateException("Erlang node can't be called "
+                    + nodeName);
         }
         this.nodeName = nodeName;
     }
