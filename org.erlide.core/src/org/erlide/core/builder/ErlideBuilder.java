@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -49,6 +48,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.io.Files;
 
 public class ErlideBuilder {
 
@@ -301,7 +301,7 @@ public class ErlideBuilder {
             throws IOException {
         // TODO update module list
         // TODO more such stuff
-        FileUtils.copyFile(from, to);
+        Files.copy(from, to);
     }
 
     private void initializeBuilder(final IProgressMonitor monitor) {
