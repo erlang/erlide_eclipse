@@ -136,7 +136,9 @@ public class BackendFactory implements IBackendFactory {
         result.setDebug(false);
         result.setConsole(false);
         result.setRestartable(true);
-        result.setLongName(HostnameUtils.canUseLongNames());
+        result.setLongName(SystemConfiguration
+                .hasFeatureEnabled("erlide.shortname") ? false : HostnameUtils
+                .canUseLongNames());
         if (SystemConfiguration.getInstance().isDeveloper()) {
             result.setConsole(true);
         }
