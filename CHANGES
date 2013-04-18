@@ -1,3 +1,24 @@
+List of user visible changes between 0.21.0 and 0.22.0 (20130418)
+
+72b096b throw exception if setting an illegal node name (instead of changing it quietly)
+28f5603 better fix for choosing long/short name: launch config decides
+d7dd23e remove unused libs
+458f282 gh44: fix problem with syntax highlight dialog
+a209fb7 allow running ide backend with short hostname (use -Derlide.shortname)
+61b8b9d add more debug printouts when memory gets low
+08611c4 dialyzer: fixes in DialyzerMarkerUtils
+f7eea44 mark occurences - sometimes wrong Was actually the cache directory that was different, sometimes core, sometimes model
+19b7af3 Reuse structure of externals and OTP using proxies in the model tree
+4b158fb 600 - Support .app file for project
+51fd126 console sends input with Enter only if at end of input. Otherwise Ctrl/Option-Enter works as before
+da20e23 improved startup time a bit
+5a8b6ac upgrade eclipse target to 3.7
+581af25 1180 - Error on running Cover run configuration.
+27affc3 move guava libs to libs project; upgrade xtend libs to 2.4.0
+09f9c87 1177: open runtime preferences dialog if no runtime is configured
+e87895a 1178 Sometimes cannot cancel http://assembla.com/spaces/erlide/tickets/1178-search---sometimes-cannot-cancel Tricky bug when setting up parameters to search
+d10848c Reuse structure of externals and OTP using proxies in the model tree
+
 List of user visible changes between 0.20.3 and 0.21.2 (20130322)
 
 6bd8763 add debug printout when opening stuff in navigator takes long time
