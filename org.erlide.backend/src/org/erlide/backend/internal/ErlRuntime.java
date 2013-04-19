@@ -337,8 +337,9 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             reported = true;
         }
 
-        ErlLogger.error("Last system status was:\n %s", getSystemStatus()
-                .prettyPrint());
+        final ErlSystemStatus status = getSystemStatus();
+        ErlLogger.error("Last system status was:\n %s",
+                status != null ? status.prettyPrint() : "null");
 
         return msg;
     }
