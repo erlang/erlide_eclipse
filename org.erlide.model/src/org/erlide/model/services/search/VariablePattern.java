@@ -1,5 +1,7 @@
 package org.erlide.model.services.search;
 
+import org.erlide.model.erlang.IErlModule;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -12,14 +14,17 @@ public class VariablePattern extends ErlangSearchPattern {
     private final int arity;
     private final String head;
     private final String name;
+    private IErlModule module;
 
     public VariablePattern(final String functionName, final int arity,
-            final String head, final String name, final LimitTo limitTo) {
+            final String head, final String name, final LimitTo limitTo,
+            IErlModule module) {
         super(limitTo);
         this.functionName = functionName;
         this.arity = arity;
         this.head = head;
         this.name = name;
+        this.module = module;
     }
 
     @Override
@@ -33,7 +38,7 @@ public class VariablePattern extends ErlangSearchPattern {
 
     @Override
     public String patternString() {
-        return "<variable>";
+        return name;
     }
 
     @Override
@@ -46,4 +51,11 @@ public class VariablePattern extends ErlangSearchPattern {
         return name;
     }
 
+    @Override
+    public ErlSearchScope reduceScope(ErlSearchScope scope) {
+        if (scope.getModules().contains(module)) {
+            return new ErlSearchScope(module);
+        }
+        return scope;
+    }
 }

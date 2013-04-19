@@ -180,10 +180,6 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return getName();
     }
 
-    public boolean hasModuleWithPath(final String path) {
-        return false;
-    }
-
     public IRpcSite getBackend() {
         return null;
     }

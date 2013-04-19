@@ -3,12 +3,24 @@
 
 -module(erlide_search).
 
+%%
+%% Include files
+%%
+
+%% -define(DEBUG, 1).
+
+-include("erlide.hrl").
+
 -include("erlide_search.hrl").
+
+%%
+%% Exported Functions
+%%
 
 -export([find_data/4]).
 
 %%
-%% Exported Functions
+%% API Functions
 %%
 
 find_data(Refs, Pattern, ModuleAtom, ModuleName) ->
@@ -67,11 +79,18 @@ check_function_ref(X, [_|Tail]) ->
     
 
 check_var_pattern([], _, _, _, _) ->
-        false;
+    false;
 check_var_pattern([#var_pattern{vardefref=VL, function=F, arity=A, clause=C} | Rest], V, F, A, C) ->
-        case lists:member(V, VL) of
-                true -> true;
-                false -> check_var_pattern(Rest, V, F, A, C)
-        end;
+    ?D({VL, F, A, C}),
+    case lists:member(V, VL) of
+        true -> true;
+        false -> check_var_pattern(Rest, V, F, A, C)
+    end;
+check_var_pattern([#var_pattern{vardefref=VL, function='', arity=-1, clause=""} | Rest], V, F, A, C) ->
+    ?D({VL, F, A, C}),
+    case lists:member(V, VL) of
+        true -> true;
+        false -> check_var_pattern(Rest, V, F, A, C)
+    end;
 check_var_pattern([_ | Rest], V, F, A, C) ->
-        check_var_pattern(Rest, V, F, A, C).
+    check_var_pattern(Rest, V, F, A, C).

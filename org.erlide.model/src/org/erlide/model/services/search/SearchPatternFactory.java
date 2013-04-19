@@ -4,8 +4,10 @@ import org.erlide.model.erlang.IErlAttribute;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlMacroDef;
+import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlRecordDef;
 import org.erlide.model.root.IErlElement;
+import org.erlide.model.util.ModelUtils;
 import org.erlide.util.StringUtils;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.Util;
@@ -13,11 +15,13 @@ import org.erlide.util.Util;
 public class SearchPatternFactory {
 
     public static ErlangSearchPattern getSearchPattern(
-            final SearchFor searchFor, final String module, final String name,
-            final int arity, final LimitTo limitTo) {
+            final SearchFor searchFor, final String moduleName,
+            final String name, final int arity, final LimitTo limitTo,
+            IErlModule module) {
         switch (searchFor) {
         case FUNCTION:
-            return new FunctionPattern(module, name, arity, limitTo, true);
+            return new FunctionPattern(moduleName, name, arity, limitTo, true,
+                    null, false);
         case INCLUDE:
             return new IncludePattern(name, limitTo);
         case MACRO:
@@ -25,11 +29,11 @@ public class SearchPatternFactory {
         case RECORD:
             return new RecordPattern(name, limitTo);
         case TYPE:
-            return new TypeRefPattern(module, name, limitTo);
+            return new TypeRefPattern(moduleName, name, limitTo);
         case RECORD_FIELD:
-            return new RecordFieldPattern(module, name, limitTo);
+            return new RecordFieldPattern(moduleName, name, limitTo);
         case VARIABLE:
-            return null; // FIXME
+            return new VariablePattern("", -1, "", name, limitTo, module);
         }
         return null;
     }
@@ -42,7 +46,8 @@ public class SearchPatternFactory {
                     .withoutExtension(function.getModuleName());
             return new FunctionPattern(withoutExtension,
                     function.getFunctionName(), function.getArity(), limitTo,
-                    true);
+                    true, ModelUtils.getModule(function),
+                    !function.isExported());
         } else if (element instanceof IErlMacroDef) {
             final IErlMacroDef m = (IErlMacroDef) element;
             final String unquoted = StringUtils.unquote(m.getDefinedName());

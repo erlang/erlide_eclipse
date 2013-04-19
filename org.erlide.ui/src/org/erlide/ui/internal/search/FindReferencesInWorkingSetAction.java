@@ -11,10 +11,8 @@
 package org.erlide.ui.internal.search;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
-import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 
@@ -104,44 +102,4 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
             return SearchUtil.getWorkspaceScope(false, false);
         }
     }
-
-    @Override
-    public void run(final IErlElement element) {
-        try {
-            super.performNewSearch(element, getWorkingSetsScope(fWorkingSets));
-        } catch (final InterruptedException e) {
-        } catch (final CoreException e) {
-            handleException(e);
-        }
-    }
-
-    @Override
-    public void run(final ITextSelection selection) {
-        try {
-            performNewSearch(selection, getWorkingSetsScope(fWorkingSets));
-        } catch (final InterruptedException e) {
-        } catch (final Exception e) {
-            handleException(e);
-        }
-    }
-
-    // QuerySpecification createQuery(IErlElement element)
-    // throws JavaModelException, InterruptedException {
-    // JavaSearchScopeFactory factory = JavaSearchScopeFactory.getInstance();
-    //
-    // IWorkingSet[] workingSets = fWorkingSets;
-    // if (fWorkingSets == null) {
-    // workingSets = factory.queryWorkingSets();
-    // if (workingSets == null) {
-    // return super.createQuery(element); // in workspace
-    // }
-    // }
-    // SearchUtil.updateLRUWorkingSets(workingSets);
-    // IJavaSearchScope scope = factory.createJavaSearchScope(workingSets,
-    // true);
-    // final String description = factory.getWorkingSetScopeDescription(
-    // workingSets, true);
-    // return new ElementQuerySpecification(element, getLimitTo(), scope,
-    // description);
-    // }
 }

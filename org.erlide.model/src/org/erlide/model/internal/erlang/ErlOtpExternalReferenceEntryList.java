@@ -109,10 +109,6 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
         return getName();
     }
 
-    public boolean hasModuleWithPath(final String path) {
-        return false;
-    }
-
     @Override
     public boolean isOTP() {
         return true;
