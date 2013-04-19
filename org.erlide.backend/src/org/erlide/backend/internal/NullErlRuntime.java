@@ -1,5 +1,6 @@
 package org.erlide.backend.internal;
 
+import org.erlide.runtime.ErlSystemStatus;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.IRuntimeStateListener;
@@ -246,4 +247,12 @@ public class NullErlRuntime implements IErlRuntime, IRpcSite {
         return null;
     }
 
+    @Override
+    public ErlSystemStatus getSystemStatus() {
+        return null;
+    }
+
+    @Override
+    public void setSystemStatus(final ErlSystemStatus msg) {
+    }
 }

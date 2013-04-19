@@ -16,7 +16,7 @@
 -export([
      start/2,
      stop/0,
-     print_info/0
+     send_info/0
     ]).
 
 %% gen_server callbacks
@@ -28,6 +28,7 @@
          }).
 
 -define(GC_TIME_KILL_LIMIT, 5000).
+-define(INTERVAL, 20000).
 
 %% ====================================================================
 %% External functions
@@ -57,6 +58,7 @@ init([HeapWarnLimit, HeapKillLimit]) ->
         killLimit = HeapKillLimit*1000000
          },
   erlide_log:log({"Start monitor process: ", State#state.warnLimit, State#state.killLimit}),
+  erlang:send_after(?INTERVAL, self(), notify),
   {ok, State}.
 
 %% --------------------------------------------------------------------
@@ -107,16 +109,20 @@ handle_info({monitor, GcPid, large_heap, Info}, #state{warnLimit=WarnLimit, kill
     {heap_size, Size} when Size > KillLimit ->
       erlide_log:log(warn, {heap_killing, GcPid, process_info(GcPid, registered_name), process_info(GcPid, heap_size)}),
 %%       erlang:kill(GcPid),
-      print_info(),
+      send_info(),
       ok;
     {heap_size, Size} when Size > WarnLimit ->
       erlide_log:log(warn, {heap_warning, GcPid, process_info(GcPid, registered_name), process_info(GcPid, heap_size)}),
-      print_info(),
+      send_info(),
       ok;
     _ ->
       ok
   end,
   {noreply, State};
+handle_info(notify, State) ->
+    send_info(),
+    erlang:send_after(?INTERVAL, self(), notify),
+    {noreply, State};
 handle_info(Info, State) ->
   erlide_log:logp("monitor:: unrecognized message: ~p", [Info]),
   {noreply, State}.
@@ -145,17 +151,20 @@ all_processes_info() ->
           erlang:process_info(P, heap_size),
           erlang:process_info(P, stack_size),
           erlang:process_info(P, total_heap_size),
-          {binary_nr, length(element(2, erlang:process_info(P, binary)))},
-          erlang:process_info(P, registered_name),
+          erlang:process_info(P, binary),
+          {name, erlang:process_info(P, registered_name)},
           erlang:process_info(P, current_stacktrace),
-          P
+          {pid, P}
          }
          || P<-processes()
         ],
     lists:sublist(lists:reverse(lists:sort(L)),
                   20).
 
-print_info() ->
-    erlide_log:logp({"PROCESSES---------------", all_processes_info()}),
-    erlide_log:logp({"SYSTEM------------------", erlang:memory()}),
+send_info() ->
+    PInfo =  all_processes_info(),
+    MInfo = erlang:memory(),
+    erlide_jrpc:event(system_status, {PInfo, MInfo}),
+    %% erlide_log:logp({"PROCESSES---------------", PInfo}),
+    %% erlide_log:logp({"SYSTEM------------------", MInfo}),
     ok.

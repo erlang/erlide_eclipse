@@ -40,4 +40,8 @@ public abstract class ErlangEventHandler implements EventHandler, IDisposable {
     public void dispose() {
         registration.unregister();
     }
+
+    public String getBackendName() {
+        return this.backendName;
+    }
 }

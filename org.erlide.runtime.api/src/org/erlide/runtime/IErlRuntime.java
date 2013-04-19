@@ -51,4 +51,7 @@ public interface IErlRuntime {
 
     IBackendShell getShell(final String id);
 
+    ErlSystemStatus getSystemStatus();
+
+    void setSystemStatus(ErlSystemStatus msg);
 }

@@ -117,7 +117,6 @@ public class ErlangEventPublisher {
                         if (!isEventMessage(msg)) {
                             throw new BackendException("Bad event data " + msg);
                         }
-
                         topic = getEventTopic(msg);
                         data = getEventData(msg);
                         sender = getEventSender(msg);
