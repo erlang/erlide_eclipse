@@ -164,7 +164,7 @@ all_processes_info() ->
 send_info() ->
     PInfo =  all_processes_info(),
     MInfo = erlang:memory(),
-    erlide_jrpc:event(system_status, {PInfo, MInfo}),
+    erlide_jrpc:event(system_status, {PInfo, MInfo, erlang:registered()}),
     %% erlide_log:logp({"PROCESSES---------------", PInfo}),
     %% erlide_log:logp({"SYSTEM------------------", MInfo}),
     ok.

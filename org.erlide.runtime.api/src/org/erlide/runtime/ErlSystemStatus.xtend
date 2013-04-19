@@ -13,21 +13,26 @@ import org.erlide.util.erlang.TermParserException
 
 class ErlSystemStatus {
 
-  val MemoryStatus memory;
-  val List<ProcessStatus> processes;
+  val MemoryStatus memory
+  val List<ProcessStatus> processes
+  val List<String> names
 
   new(OtpErlangTuple tuple) {
-    val OtpErlangObject[] pps = (tuple.elementAt(0)as OtpErlangList).elements();
-    processes = newArrayList();
+    val OtpErlangObject[] pps = (tuple.elementAt(0)as OtpErlangList).elements()
+    processes = newArrayList()
     for (item : pps) {
-      processes.add(new ProcessStatus(item as OtpErlangTuple));
+      processes.add(new ProcessStatus(item as OtpErlangTuple))
     }
-    memory = new MemoryStatus(tuple.elementAt(1)  as OtpErlangList);
+    memory = new MemoryStatus(tuple.elementAt(1)  as OtpErlangList)
+    names = ((tuple.elementAt(2)) as OtpErlangList).elements.map[(it as OtpErlangAtom).atomValue]
   }
 
   def String prettyPrint() '''
     Memory:
     «memory.prettyPrint»
+    ----------
+    Registered processes:
+    «names»
     ----------
     «FOR status : processes»
       «status.prettyPrint»
