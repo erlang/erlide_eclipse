@@ -2,6 +2,7 @@ package org.erlide.core.builder;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -17,6 +18,7 @@ import org.erlide.util.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class DialyzerPreferences {
 
@@ -143,7 +145,7 @@ public class DialyzerPreferences {
     }
 
     public Collection<String> getPltPaths() {
-        final List<String> result = Lists.newArrayList();
+        final Set<String> result = Sets.newHashSet();
         result.addAll(PreferencesUtils.unpackList(pltPaths));
         if (pltPathsFromPrefs != null) {
             result.addAll(pltPathsFromPrefs);
