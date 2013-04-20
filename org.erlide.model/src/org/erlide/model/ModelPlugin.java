@@ -16,6 +16,7 @@ public class ModelPlugin extends Plugin {
 
     private static BundleContext context;
     static ModelPlugin plugin;
+    private static String stateDirCached = null;
 
     public ModelPlugin() {
         super();
@@ -63,6 +64,13 @@ public class ModelPlugin extends Plugin {
     public IRpcSite getBackend(final String name) {
         final IRuntimeProvider provider = getRuntimeProvider();
         return provider.get(name);
+    }
+
+    public static String getStateDir() {
+        if (stateDirCached == null) {
+            stateDirCached = getDefault().getStateLocation().toString();
+        }
+        return stateDirCached;
     }
 
 }

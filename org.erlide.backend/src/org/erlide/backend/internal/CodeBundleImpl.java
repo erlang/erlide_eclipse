@@ -17,8 +17,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.xtext.xbase.lib.Pair;
+import org.erlide.backend.BackendPlugin;
 import org.erlide.runtime.ICodeBundle;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.OsgiUtil;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -47,7 +49,8 @@ public class CodeBundleImpl implements ICodeBundle {
         final List<String> result = Lists.newArrayList();
         for (final Entry<String, CodeContext> path : paths.entrySet()) {
             final Collection<String> myPath = BeamUtil.getPaths(path.getKey(),
-                    OsgiUtil.findOsgiBundle(bundleName));
+                    OsgiUtil.findOsgiBundle(BackendPlugin.getDefault()
+                            .getBundle(), bundleName));
             if (myPath != null) {
                 result.addAll(myPath);
             } else {

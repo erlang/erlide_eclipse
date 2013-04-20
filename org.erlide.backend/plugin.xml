@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="codepath" name="codepath" schema="schema/codepath.exsd"/>
+   <extension-point id="no_runtime_handler" name="no_runtime_handler" schema="schema/no_runtime_handler.exsd"/>
    <extension
          point="org.erlide.runtime.backend">
       <provider

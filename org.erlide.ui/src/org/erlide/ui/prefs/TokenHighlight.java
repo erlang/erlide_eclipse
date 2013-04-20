@@ -8,6 +8,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.erlide.ui.prefs.PreferenceConstants.Color;
 import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
+import org.osgi.service.prefs.Preferences;
 
 public enum TokenHighlight {
     //@formatter:off
@@ -69,23 +70,24 @@ public enum TokenHighlight {
     }
 
     public HighlightStyle getStyle(final IPreferenceStore store) {
-        final IEclipsePreferences node = new InstanceScope()
+        final IEclipsePreferences node = InstanceScope.INSTANCE
                 .getNode(ColoringPreferencePage.OLD_COLORS_QUALIFIER + "/"
                         + getName());
         if (node != null) {
-            try {
-                final String colorString = node.get(
-                        ColoringPreferencePage.COLOR_KEY,
-                        store.getDefaultString(getColorKey()));
-                final RGB color = StringConverter.asRGB(colorString);
-                final int styles = node.getInt(
-                        ColoringPreferencePage.STYLE_KEY,
-                        store.getDefaultInt(getStylesKey()));
-
+            final String colorString = node.get(
+                    ColoringPreferencePage.COLOR_KEY, null);
+            if (colorString != null) {
                 store.setValue(getColorKey(), colorString);
+            }
+            final int styles = node
+                    .getInt(ColoringPreferencePage.STYLE_KEY, -1);
+            if (styles != -1) {
                 store.setValue(getStylesKey(), styles);
+            }
+            try {
+                final Preferences parent = node.parent();
                 node.removeNode();
-                return new HighlightStyle(color, styles);
+                parent.sync();
             } catch (final Exception e) {
                 // ignore
             }

@@ -17,11 +17,11 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
     private static String rootKey = "org.erlide.core" + "/runtimes";
 
     public static IEclipsePreferences getInstanceRootNode() {
-        return new InstanceScope().getNode(rootKey);
+        return InstanceScope.INSTANCE.getNode(rootKey);
     }
 
     public static IEclipsePreferences getDefaultRootNode() {
-        return new DefaultScope().getNode(rootKey);
+        return DefaultScope.INSTANCE.getNode(rootKey);
     }
 
     private final IEclipsePreferences defaultRootNode;

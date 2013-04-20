@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.erlide.model.erlang.IErlExport;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElement.Kind;
 import org.junit.Test;

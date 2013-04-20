@@ -41,6 +41,7 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
+import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlPreprocessorDef;
@@ -276,8 +277,7 @@ public class ErlTextHover implements ITextHover,
         if (debuggerVar.length() > 0) {
             result.append(debuggerVar);
         }
-        final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
-                .toString();
+        final String stateDir = ModelPlugin.getStateDir();
 
         final IErlProject erlProject = editor.getProject();
 

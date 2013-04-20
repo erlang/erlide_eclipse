@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.RegistryFactory;
 
 public abstract class MessageReporter {
     public enum ReporterPosition {
-        CENTER, CORNER, MODAL
+        CENTER, CORNER
     }
 
     public enum MessageType {

@@ -65,12 +65,13 @@ public class ErlangEventPublisher {
     public void setEventAdmin() {
         final BundleContext ctx = FrameworkUtil.getBundle(
                 ErlangEventPublisher.class).getBundleContext();
-        final ServiceReference ref = ctx.getServiceReference(EventAdmin.class
-                .getName());
+        @SuppressWarnings("unchecked")
+        final ServiceReference<EventAdmin> ref = (ServiceReference<EventAdmin>) ctx
+                .getServiceReference(EventAdmin.class.getName());
         if (ref == null) {
             ErlLogger.error("No event admin ???");
         } else {
-            eventAdmin = (EventAdmin) ctx.getService(ref);
+            eventAdmin = ctx.getService(ref);
         }
     }
 
@@ -85,8 +86,9 @@ public class ErlangEventPublisher {
         if (ctx == null) {
             return;
         }
-        final ServiceReference ref = ctx.getServiceReference(EventAdmin.class
-                .getName());
+        @SuppressWarnings("unchecked")
+        final ServiceReference<EventAdmin> ref = (ServiceReference<EventAdmin>) ctx
+                .getServiceReference(EventAdmin.class.getName());
         if (ref == null) {
             ErlLogger.error("No event admin ???");
         } else {
@@ -115,7 +117,6 @@ public class ErlangEventPublisher {
                         if (!isEventMessage(msg)) {
                             throw new BackendException("Bad event data " + msg);
                         }
-
                         topic = getEventTopic(msg);
                         data = getEventData(msg);
                         sender = getEventSender(msg);

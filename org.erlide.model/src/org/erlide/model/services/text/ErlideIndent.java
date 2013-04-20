@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -44,7 +45,7 @@ public class ErlideIndent {
             final int tabw, final boolean useTabs,
             final Map<String, String> prefs) throws RpcException,
             OtpErlangRangeException {
-        // ErlLogger.debug("indentLine '%s'", txt);
+        ErlLogger.debug("indentLine '%s'", txt);
         final OtpErlangObject o = b.call("erlide_indent", "indent_line",
                 "sssiox", txt, oldLine, insertedText, tabw, useTabs,
                 fixIndentPrefs(prefs));

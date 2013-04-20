@@ -9,16 +9,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.erlide.model.erlang.ErlToken;
-import org.erlide.model.erlang.IErlAttribute;
-import org.erlide.model.erlang.IErlComment;
-import org.erlide.model.erlang.IErlFunction;
-import org.erlide.model.erlang.IErlImport;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlPreprocessorDef;
-import org.erlide.model.erlang.IErlScanner;
-import org.erlide.model.erlang.IErlTypespec;
-import org.erlide.model.erlang.ModuleKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.util.ErlangFunction;

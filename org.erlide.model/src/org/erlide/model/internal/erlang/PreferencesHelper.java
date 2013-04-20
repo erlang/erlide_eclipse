@@ -25,16 +25,16 @@ public final class PreferencesHelper {
     public static PreferencesHelper getHelper(final String qualifier,
             final IProject project) {
         return new PreferencesHelper(qualifier, new IScopeContext[] {
-                new ProjectScope(project), new InstanceScope(),
-                new ConfigurationScope(), new DefaultScope() },
+                new ProjectScope(project), InstanceScope.INSTANCE,
+                ConfigurationScope.INSTANCE, DefaultScope.INSTANCE },
                 new ProjectScope(project));
     }
 
     public static PreferencesHelper getHelper(final String qualifier) {
-        final InstanceScope instanceScope = new InstanceScope();
+        final IScopeContext instanceScope = InstanceScope.INSTANCE;
         return new PreferencesHelper(qualifier, new IScopeContext[] {
-                instanceScope, new ConfigurationScope(), new DefaultScope() },
-                instanceScope);
+                instanceScope, ConfigurationScope.INSTANCE,
+                DefaultScope.INSTANCE }, instanceScope);
     }
 
     private PreferencesHelper(final String qualifier,

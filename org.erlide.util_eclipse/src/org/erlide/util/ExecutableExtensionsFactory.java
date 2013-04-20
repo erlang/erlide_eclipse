@@ -43,14 +43,13 @@ public class ExecutableExtensionsFactory implements
 
     @Override
     public Object create() throws CoreException {
-        // Class<?> class1;
         try {
             bundle.loadClass(className);
             return null; // ErlangPlugin.getDefault().getInjector().getInstance(class1);
         } catch (final ClassNotFoundException e) {
             throw new CoreException(new Status(IStatus.ERROR,
-            // FIXME
-                    "org.erlide.core", "Could not load class " + className));
+                    bundle.getSymbolicName(), "Could not load class "
+                            + className));
         }
     }
 

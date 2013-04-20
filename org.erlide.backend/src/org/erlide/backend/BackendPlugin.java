@@ -31,6 +31,7 @@ public class BackendPlugin extends Plugin {
 
     @Override
     public void stop(final BundleContext context) throws Exception {
+        BackendCore.stop();
         super.stop(context);
     }
 

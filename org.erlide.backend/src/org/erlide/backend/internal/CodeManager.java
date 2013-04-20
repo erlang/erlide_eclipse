@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
+import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
@@ -28,6 +29,7 @@ import org.erlide.runtime.ICodeManager;
 import org.erlide.runtime.RuntimeUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.OsgiUtil;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -111,7 +113,8 @@ public class CodeManager implements ICodeManager {
 
     private void loadPluginCode(final ICodeBundle p) {
 
-        final Bundle b = OsgiUtil.findOsgiBundle(p.getBundleName());
+        final Bundle b = OsgiUtil.findOsgiBundle(BackendPlugin.getDefault()
+                .getBundle(), p.getBundleName());
         ErlLogger.debug("loading plugin " + b.getSymbolicName() + " in "
                 + runtimeInfo.getName());
 
@@ -245,7 +248,8 @@ public class CodeManager implements ICodeManager {
     }
 
     private void unloadPluginCode(final ICodeBundle p) {
-        final Bundle b = OsgiUtil.findOsgiBundle(p.getBundleName());
+        final Bundle b = OsgiUtil.findOsgiBundle(BackendPlugin.getDefault()
+                .getBundle(), p.getBundleName());
         @SuppressWarnings("rawtypes")
         Enumeration e;
         ErlLogger.debug("*> really unloading plugin " + p.getClass().getName());

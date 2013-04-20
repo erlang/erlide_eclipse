@@ -3,17 +3,14 @@ package org.erlide.core.builder;
 import java.util.List;
 
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ModuleKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
-import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.model.util.ResourceUtil;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
@@ -43,26 +40,32 @@ public class DialyzerMarkerUtils {
             final OtpErlangTuple fileLine = (OtpErlangTuple) t.elementAt(1);
             final String filename = Util.stringValue(fileLine.elementAt(0));
             final OtpErlangLong lineL = (OtpErlangLong) fileLine.elementAt(1);
-            int line = 1;
-            try {
-                line = lineL.intValue();
-            } catch (final OtpErlangRangeException e) {
-                ErlLogger.error(e);
+            if (!filename.isEmpty()) {
+                int line = 1;
+                try {
+                    line = lineL.intValue();
+                } catch (final OtpErlangRangeException e) {
+                    ErlLogger.error(e);
+                }
+                if (line <= 0) {
+                    line = 1;
+                }
+
+                String msg = warnings.get(i);
+                final int j = msg.indexOf(": ");
+                if (j != -1) {
+                    msg = msg.substring(j + 1);
+                }
+                final IErlElementLocator model = ErlModelManager
+                        .getErlangModel();
+                addDialyzerWarningMarker(model, filename, line, msg);
             }
-            String msg = warnings.get(i);
-            final int j = msg.indexOf(": ");
-            if (j != -1) {
-                msg = msg.substring(j + 1);
-            }
-            final IErlElementLocator model = ErlModelManager.getErlangModel();
-            addDialyzerWarningMarker(model, filename, line, msg);
         }
     }
 
     public static void addDialyzerWarningMarker(final IErlElementLocator model,
             final String path, final int line, final String message) {
-        IResource file = null;
-        IProject project = null;
+        IResource resource = null;
         IErlModule module = null;
         try {
             if (ModuleKind.hasHrlExtension(path)) {
@@ -70,35 +73,26 @@ public class DialyzerMarkerUtils {
             } else {
                 module = model.findModule(null, path);
             }
-        } catch (final ErlModelException e) {
-        }
-        if (module != null) {
-            file = module.getResource();
-            final IErlProject erlProject = ModelUtils.getProject(module);
-            if (erlProject != null) {
-                project = erlProject.getWorkspaceProject();
+            if (module != null) {
+                resource = module.getResource();
             }
+        } catch (final Exception e) {
+            ErlLogger.error(e);
         }
-        addMarker(file, project, path, message, line, IMarker.SEVERITY_WARNING,
-                DIALYZE_WARNING_MARKER);
+
+        if (resource == null) {
+            resource = ResourceUtil.getFileFromLocation(path);
+        }
+        if (resource != null) {
+            addMarker(resource, path, message, line, IMarker.SEVERITY_WARNING,
+                    DIALYZE_WARNING_MARKER);
+        }
     }
 
-    public static void addMarker(final IResource file, final IProject project,
-            final String path, final String message, int lineNumber,
-            final int severity, final String markerKind) {
+    public static void addMarker(final IResource resource, final String path,
+            final String message, final int lineNumber, final int severity,
+            final String markerKind) {
         try {
-            IResource resource = null;
-            if (file != null) {
-                resource = file;
-            } else if (project != null) {
-                resource = project;
-            } else {
-                return;
-            }
-            if (lineNumber == -1) {
-                lineNumber = 1;
-            }
-
             final IMarker marker = resource.createMarker(markerKind);
             marker.setAttribute(IMarker.MESSAGE, message);
             marker.setAttribute(IMarker.SEVERITY, severity);

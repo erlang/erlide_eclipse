@@ -8,11 +8,9 @@
 %%
 
 -export([modules/0, dump_module/1, create/3, destroy/1,
-	 all/0, stop/0, find/3, xdump/0]).
+   all/0, stop/0, find/3, xdump/0]).
 
--compile(export_all).
-
-%% internal exports 
+%% internal exports
 -export([loop/1]).
 -export([main_loop/1]).
 
@@ -94,7 +92,7 @@ spawn_server() ->
         undefined ->
             Pid = spawn(fun() ->
                                 ?SAVE_CALLS,
-                                main_loop([]) 
+                                main_loop([])
                         end),
             erlang:register(?SERVER, Pid);
         _ ->

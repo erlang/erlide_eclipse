@@ -53,6 +53,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.progress.UIJob;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
@@ -156,26 +157,33 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
         loadDefaultEditorColors();
 
-        ErlLogger.debug("Started UI");
-
-        erlConsoleManager = new ErlConsoleManager();
-        if (SystemConfiguration.getInstance().isDeveloper()) {
-            try {
-                final IBackend ideBackend = BackendCore.getBackendManager()
-                        .getIdeBackend();
-                if (!ideBackend.getData().hasConsole()) {
-                    erlConsoleManager.runtimeAdded(ideBackend);
+        new UIJob("erlide ui startup") {
+            @Override
+            public IStatus runInUIThread(final IProgressMonitor monitor) {
+                erlConsoleManager = new ErlConsoleManager();
+                if (SystemConfiguration.getInstance().isDeveloper()) {
+                    try {
+                        final IBackend ideBackend = BackendCore
+                                .getBackendManager().getIdeBackend();
+                        if (!ideBackend.getData().hasConsole()) {
+                            erlConsoleManager.runtimeAdded(ideBackend);
+                        }
+                    } catch (final Exception e) {
+                        ErlLogger.warn(e);
+                    }
                 }
-            } catch (final Exception e) {
-                ErlLogger.warn(e);
-            }
-        }
 
-        erlangDebuggerBackendListener = new ErlangDebuggerBackendListener();
-        BackendCore.getBackendManager().addBackendListener(
-                erlangDebuggerBackendListener);
+                erlangDebuggerBackendListener = new ErlangDebuggerBackendListener();
+                BackendCore.getBackendManager().addBackendListener(
+                        erlangDebuggerBackendListener);
+
+                return Status.OK_STATUS;
+            }
+        }.schedule();
 
         startPeriodicCacheCleaner();
+
+        ErlLogger.debug("Started UI");
     }
 
     private void loadDefaultEditorColors() {
@@ -194,7 +202,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     private void startPeriodicCacheCleaner() {
-        final Job job = new Job("erlide periodic cache cleaner") {
+        final Job cacheCleanerJob = new Job("erlide periodic cache cleaner") {
 
             @Override
             protected IStatus run(final IProgressMonitor monitor) {
@@ -235,9 +243,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             }
 
         };
-        job.setPriority(Job.SHORT);
-        job.setSystem(true);
-        job.schedule(getTimeToMidnight());
+        cacheCleanerJob.setPriority(Job.SHORT);
+        cacheCleanerJob.setSystem(true);
+        cacheCleanerJob.schedule(getTimeToMidnight());
     }
 
     private long getTimeToMidnight() {
@@ -540,7 +548,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     public static IEclipsePreferences getPrefsNode() {
         final String qualifier = ErlideUIPlugin.PLUGIN_ID;
-        final IScopeContext context = new InstanceScope();
+        final IScopeContext context = InstanceScope.INSTANCE;
         final IEclipsePreferences eclipsePreferences = context
                 .getNode(qualifier);
         return eclipsePreferences;

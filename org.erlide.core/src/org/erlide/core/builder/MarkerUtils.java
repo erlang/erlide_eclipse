@@ -365,7 +365,6 @@ public final class MarkerUtils {
         return null;
     }
 
-    @SuppressWarnings("deprecation")
     public static void createTaskMarkers(final IResource resource) {
         if (SystemConfiguration.hasFeatureEnabled("erlide.skip.tasks")) {
             return;

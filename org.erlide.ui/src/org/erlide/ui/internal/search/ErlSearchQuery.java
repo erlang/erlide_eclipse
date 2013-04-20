@@ -11,7 +11,7 @@ import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
 import org.erlide.backend.BackendCore;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.services.search.ErlangSearchPattern;
@@ -35,7 +35,6 @@ public class ErlSearchQuery implements ISearchQuery {
     private final Map<String, IErlModule> pathToModuleMap;
     private ErlangSearchResult fSearchResult;
 
-    private String stateDirCached = null;
     private final String scopeDescription;
     private boolean stopped = false;
 
@@ -145,7 +144,7 @@ public class ErlSearchQuery implements ISearchQuery {
         try {
             ErlideSearchServer.startFindRefs(BackendCore.getBackendManager()
                     .getIdeBackend().getRpcSite(), pattern, scope,
-                    getStateDir(), callback, false);
+                    ModelPlugin.getStateDir(), callback, false);
         } catch (final RpcException e) {
             return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
                     "Search error", e);
@@ -175,14 +174,6 @@ public class ErlSearchQuery implements ISearchQuery {
         result.addAll(resultAdded);
         fSearchResult.setResult(result);
         fSearchResult.addMatches(l.toArray(new Match[l.size()]));
-    }
-
-    private String getStateDir() {
-        if (stateDirCached == null) {
-            stateDirCached = ErlangPlugin.getDefault().getStateLocation()
-                    .toString();
-        }
-        return stateDirCached;
     }
 
     public ErlangSearchPattern getPattern() {

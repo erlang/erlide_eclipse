@@ -105,7 +105,7 @@ public class ProcessListView extends ViewPart {
             }
 
             final OtpErlangList r = ErlideProclist.getProcessList(backend);
-            if (r.arity() == 0) {
+            if (r == null || r.arity() == 0) {
                 return new OtpErlangObject[] {};
             }
             final OtpErlangObject[] ss = new OtpErlangObject[r.elements().length];

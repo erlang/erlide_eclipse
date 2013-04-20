@@ -12,12 +12,12 @@
 %% - update project information
 %% - update CHANGES
 %% commit:
-%% - commit 
+%% - commit
 
 
 %-mode(compile).
 -module(update_versions).
--compile([export_all]).
+-export([main/1, check/0, info/0, check/2, commit/2, info/2, update_CHANGES/2]).
 
 -define(DBG(X), io:format("~p~n", [X])).
 
@@ -25,13 +25,13 @@ check() ->
     main(["check"]).
 info() ->
     main(["info"]).
-   
+
 
 main([]) ->
     usage();
 main([CmdStr]) ->
     try
-    	Cmd = list_to_atom(CmdStr),
+      Cmd = list_to_atom(CmdStr),
         io:format("Please ignore any \"fatal:...\" messages below~n"),
         Base = get_latest_tag(),
         ?MODULE:Cmd(Base, projects_info(Base)),
@@ -48,36 +48,36 @@ usage() ->
      "    cmd = check    : check which plugins need version updates\n"
      "          modify   : modify the plugins versions where needed, do not commit\n"
      "          commit   : as above and commit changes\n"
-     "          info     : print info about current projects and features/plugins\n", 
+     "          info     : print info about current projects and features/plugins\n",
      [script_name()]).
 
 script_name() ->
     try
         escript:script_name()
-    catch 
-        _:_ -> 
+    catch
+        _:_ ->
             "update_versions"
     end.
 
--record(version, {major=0, 
-                  minor=0, 
-                  micro=0, 
+-record(version, {major=0,
+                  minor=0,
+                  micro=0,
                   q=""
                  }).
--record(plugin, {name, 
-                 crt_version=#version{}, 
-                 old_version=#version{}, 
-                 new_version=#version{}, 
-                 changed=nothing, 
+-record(plugin, {name,
+                 crt_version=#version{},
+                 old_version=#version{},
+                 new_version=#version{},
+                 changed=nothing,
                  code_changed=false
                 }).
--record(feature, {name, 
-                  crt_version=#version{}, 
-                  old_version=#version{}, 
-                  new_version=#version{}, 
-                  features=[], 
-                  plugins=[], 
-                  changed=nothing, 
+-record(feature, {name,
+                  crt_version=#version{},
+                  old_version=#version{},
+                  new_version=#version{},
+                  features=[],
+                  plugins=[],
+                  changed=nothing,
                   children_changed=nothing
                  }).
 
@@ -85,7 +85,7 @@ info(_Base, {Features, _Plugins} ) ->
     S = summary(Features),
     io:format("~p~n", [S]),
     ok.
-    
+
 check(_Base, {Features, Plugins} ) ->
     %% io:format("FEATURES ~p~nPLUGINS ~p~n", [Features, Plugins]),
 
@@ -110,7 +110,7 @@ check(_Base, {Features, Plugins} ) ->
                   (max_change(C, CC) == CC) and (CC=/=nothing)
           end,
     ChangedFeatures = lists:filter(Fun, Features),
-    
+
     Fun2 = fun(#feature{name=Id, crt_version=OldV, children_changed=CC}) ->
                    Old = version_string(OldV),
                    NewV = inc_version(OldV, CC),
@@ -152,11 +152,11 @@ modify(Base, Projects) ->
                    ok
            end,
     lists:foreach(Fun3, CPs),
-    
+
     %% TODO print version numbers and date
-    %% TODO check if already has this set of changes 
+    %% TODO check if already has this set of changes
     %% update_CHANGES(Base, crt_branch()),
-    
+
     ok.
 
 commit(Base, Projects) ->
@@ -184,12 +184,12 @@ changed_projects(Base, Crt) ->
     Projects = lists:usort(string:tokens(os:cmd("git log --name-only "++Base++".."++Crt++" --oneline"), "\n")),
     Names = [ hd(string:tokens(X, " ")) || X <- Projects],
     Erlide = lists:filter(fun("org.erlide"++_) ->
-                                  true; 
+                                  true;
                              (_) ->
-                                  false 
+                                  false
                           end, Names),
     lists:usort([ hd(string:tokens(X, "/")) || X <- Erlide]).
-    
+
 parse_project(Name, Base, Changed) ->
     case get_feature_project(Name, Base) of
         [] ->
@@ -228,7 +228,7 @@ changed_children(F, Ps) ->
                   case lists:member(P#plugin.name, Fx#feature.plugins) andalso P#plugin.code_changed of
                       true ->
                           Fx#feature{children_changed = max_change(Fx#feature.children_changed, P#plugin.changed)};
-                      _ ->                 
+                      _ ->
                           Fx
                   end
           end,
@@ -253,21 +253,21 @@ get_feature_content(Name, Base) ->
                 version(element(9, hd(xmerl_xpath:string("/feature/attribute::version", OldXml))))
     end,
 
-    #feature{name=list_to_atom(Name), 
-             crt_version=Version, 
-             old_version=Old, 
-             features=Includes, 
-             plugins=Plugins, 
+    #feature{name=list_to_atom(Name),
+             crt_version=Version,
+             old_version=Old,
+             features=Includes,
+             plugins=Plugins,
              changed=what_changed(Old, Version)}.
 
 get_plugin_content(Name, Base, Changed) ->
     FN = Name++"/META-INF/MANIFEST.MF",
     Version = get_plugin_version(string:tokens(read_file(FN), "\n")),
     Old = get_plugin_version(read_old_file(FN, Base)),
-    #plugin{name=list_to_atom(Name), 
-            crt_version=Version, 
-            old_version=Old, 
-            changed=what_changed(Old, Version), 
+    #plugin{name=list_to_atom(Name),
+            crt_version=Version,
+            old_version=Old,
+            changed=what_changed(Old, Version),
             code_changed=lists:member(Name, Changed)}.
 
 read_file(Name) ->

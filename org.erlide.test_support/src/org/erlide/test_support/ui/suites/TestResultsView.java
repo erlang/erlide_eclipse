@@ -129,7 +129,6 @@ public class TestResultsView extends ViewPart {
                 } catch (final TermParserException e) {
                     e.printStackTrace();
                 } catch (final OtpErlangException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }

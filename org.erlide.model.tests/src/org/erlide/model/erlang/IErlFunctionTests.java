@@ -5,8 +5,6 @@ import static org.junit.Assert.*;
 import java.util.Collection;
 import java.util.List;
 
-import org.erlide.model.erlang.IErlFunctionClause;
-import org.erlide.model.erlang.IErlMember;
 import org.erlide.model.util.ErlangFunction;
 import org.junit.Test;
 

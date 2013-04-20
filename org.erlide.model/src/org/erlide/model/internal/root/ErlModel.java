@@ -53,6 +53,7 @@ import org.erlide.model.internal.erlang.ErlModule;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementDelta;
 import org.erlide.model.root.IErlElementLocator;
+import org.erlide.model.root.IErlExternalRoot;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlModelChangeListener;
@@ -1165,4 +1166,36 @@ public class ErlModel extends Openable implements IErlModel {
     public ErlangToolkit getToolkit() {
         return toolkit;
     }
+
+    private final Map<String, IErlExternalRoot> externals = Maps.newHashMap();
+    private final Map<String, Integer> externalRefCounts = Maps.newHashMap();
+
+    @Override
+    public IErlExternalRoot getExternal(final String key) {
+        return externals.get(key);
+    }
+
+    @Override
+    public void removeExternal(final String key) {
+        final Integer integer = externalRefCounts.get(key);
+        if (integer != null) {
+            if (integer.intValue() == 1) {
+                externals.remove(key);
+                externalRefCounts.remove(key);
+            } else {
+                externalRefCounts.put(key, integer - 1);
+            }
+        }
+    }
+
+    @Override
+    public void addExternal(final String key, final IErlExternalRoot external) {
+        if (externals.containsKey(key)) {
+            externalRefCounts.put(key, externalRefCounts.get(key) + 1);
+        } else {
+            externals.put(key, external);
+            externalRefCounts.put(key, 1);
+        }
+    }
+
 }

@@ -16,6 +16,7 @@ import java.net.Socket;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IProcess;
 import org.erlide.backend.BackendException;
+import org.erlide.runtime.ErlSystemStatus;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.IRuntimeStateListener;
@@ -76,6 +77,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     private OtpMbox eventBox;
     private boolean stopped;
     private IRuntimeStateListener listener;
+    private ErlSystemStatus lastSystemMessage;
 
     public ErlRuntime(final String name, final String cookie,
             final IProvider<IProcess> processProvider,
@@ -334,6 +336,11 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             MessageReporter.showError(bigMsg, ReporterPosition.CORNER);
             reported = true;
         }
+
+        final ErlSystemStatus status = getSystemStatus();
+        ErlLogger.error("Last system status was:\n %s",
+                status != null ? status.prettyPrint() : "null");
+
         return msg;
     }
 
@@ -611,5 +618,16 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     public IBackendShell getShell(final String id) {
         // TODO can we return something here?
         return null;
+    }
+
+    @Override
+    public ErlSystemStatus getSystemStatus() {
+        return lastSystemMessage;
+    }
+
+    @Override
+    public void setSystemStatus(final ErlSystemStatus msg) {
+        // System.out.println(msg.prettyPrint());
+        lastSystemMessage = msg;
     }
 }

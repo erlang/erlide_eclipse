@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.erlide.model.erlang.IErlFunctionClause;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;

@@ -284,7 +284,6 @@ public class EdocView extends AbstractInfoView {
 
     @Override
     public void menuAboutToShow(final IMenuManager menu) {
-        // TODO Auto-generated method stub
         super.menuAboutToShow(menu);
         menu.appendToGroup(IContextMenuConstants.GROUP_OPEN,
                 openDeclarationAction);

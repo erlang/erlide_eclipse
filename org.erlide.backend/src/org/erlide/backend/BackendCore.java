@@ -62,4 +62,8 @@ public class BackendCore {
         epmdWatcherJob.schedule(1000);
     }
 
+    public static void stop() {
+        epmdWatcherJob.stop();
+    }
+
 }

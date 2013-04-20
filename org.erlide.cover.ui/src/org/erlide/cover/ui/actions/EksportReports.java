@@ -86,7 +86,6 @@ public class EksportReports extends Action {
                 obj.setHtmlPath(pathOut);
 
             } catch (final IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 

@@ -1990,4 +1990,10 @@
             file-extensions="erlScratchPad">
       </file-association>
    </extension>
+   <extension
+         point="org.erlide.backend.no_runtime_handler">
+      <runnable
+            class="org.erlide.ui.util.NoRuntimeHandler">
+      </runnable>
+   </extension>
 </plugin>

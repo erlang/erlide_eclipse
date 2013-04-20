@@ -3,7 +3,6 @@ package org.erlide.model.services.codeassist;
 import java.util.Collection;
 
 import org.erlide.model.ModelPlugin;
-import org.erlide.model.services.codeassist.ErlideContextAssist;
 import org.erlide.runtime.IRpcSite;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

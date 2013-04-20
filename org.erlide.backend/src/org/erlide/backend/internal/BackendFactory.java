@@ -52,6 +52,9 @@ public class BackendFactory implements IBackendFactory {
     }
 
     private void setWorkDirForCoreDumps(final IRpcSite backend) {
+        if (backend == null) {
+            return;
+        }
         // set work dir to gather core dumps
         final String dir = "/proj/uz/erlide/dumps";
         if (new File(dir).exists()) {
@@ -96,10 +99,10 @@ public class BackendFactory implements IBackendFactory {
                             .getProcesses()[0];
                 }
             };
-            final IErlRuntime runtime = new ErlRuntime(nodeName,
-                    data.getCookie(), erlProcessProvider,
-                    !data.isReportErrors(), data.hasLongName(),
-                    data.isInternal());
+            final IErlRuntime runtime = data.getRuntimeInfo() == null ? new NullErlRuntime()
+                    : new ErlRuntime(nodeName, data.getCookie(),
+                            erlProcessProvider, !data.isReportErrors(),
+                            data.hasLongName(), data.isInternal());
             final IBackendManager backendManager = BackendCore
                     .getBackendManager();
             b = data.isInternal() ? new InternalBackend(data, runtime,
@@ -133,7 +136,9 @@ public class BackendFactory implements IBackendFactory {
         result.setDebug(false);
         result.setConsole(false);
         result.setRestartable(true);
-        result.setLongName(HostnameUtils.canUseLongNames());
+        result.setLongName(SystemConfiguration
+                .hasFeatureEnabled("erlide.shortname") ? false : HostnameUtils
+                .canUseLongNames());
         if (SystemConfiguration.getInstance().isDeveloper()) {
             result.setConsole(true);
         }

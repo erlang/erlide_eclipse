@@ -1,0 +1,8 @@
+{application, x,
+ [{description, "Channel allocator"}, 
+  {vsn, "1"},
+  {modules, [x, new_file]},
+  {registered, []},
+  {applications, [kernel, stdlib]}
+ ]}.
+  

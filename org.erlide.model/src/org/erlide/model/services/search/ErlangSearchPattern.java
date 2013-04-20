@@ -124,9 +124,9 @@ public abstract class ErlangSearchPattern {
         if (limitTo == LimitTo.ALL_OCCURRENCES) {
             return new OtpErlangList(new OtpErlangObject[] { refs, defs });
         } else if (limitTo == LimitTo.REFERENCES) {
-            return refs;
+            return new OtpErlangList(new OtpErlangObject[] { refs });
         } else {
-            return defs;
+            return new OtpErlangList(new OtpErlangObject[] { defs });
         }
     }
 

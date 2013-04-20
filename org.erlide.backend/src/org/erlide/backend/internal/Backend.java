@@ -49,6 +49,7 @@ import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.BeamLoader;
 import org.erlide.runtime.ErlDebugFlags;
+import org.erlide.runtime.ErlSystemStatus;
 import org.erlide.runtime.ICodeBundle;
 import org.erlide.runtime.ICodeManager;
 import org.erlide.runtime.IErlRuntime;
@@ -87,7 +88,6 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public Backend(final BackendData data, final IErlRuntime runtime,
             final IBackendManager backendManager) throws BackendException {
-        Asserts.isNotNull(data.getRuntimeInfo());
         Asserts.isNotNull(runtime);
         this.runtime = runtime;
         this.data = data;
@@ -187,6 +187,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         eventDaemon.start();
         new LogEventHandler(getName()).register();
         new ErlangLogEventHandler(getName()).register();
+        new SytemMonitorHandler(getName()).register();
 
         backendManager.addBackendListener(eventDaemon.getBackendListener());
     }
@@ -609,4 +610,13 @@ public abstract class Backend implements IStreamListener, IBackend {
         runtime.restart();
     }
 
+    @Override
+    public ErlSystemStatus getSystemStatus() {
+        return runtime.getSystemStatus();
+    }
+
+    @Override
+    public void setSystemStatus(final ErlSystemStatus msg) {
+        runtime.setSystemStatus(msg);
+    }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.Token;
-import org.eclipse.swt.graphics.RGB;
 import org.erlide.ui.editors.erl.ErlTokenScanner;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.util.IColorManager;
@@ -35,10 +34,4 @@ public class ErlStringScanner extends ErlTokenScanner {
         setRules(rules);
     }
 
-    @Override
-    public void handleColorChange(final String id, final RGB newValue,
-            final int style) {
-        // TODO Auto-generated method stub
-
-    }
 }
