@@ -9,5 +9,5 @@ import org.erlide.annotations.ImmutableProcessor;
 @Active(ImmutableProcessor.class)
 @Documented
 @Target(ElementType.TYPE)
-public @interface Visitable {
+public @interface Immutable {
 }
