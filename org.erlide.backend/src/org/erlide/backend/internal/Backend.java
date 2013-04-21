@@ -303,13 +303,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (outDir.length() > 0) {
             ErlLogger.debug("backend %s: remove path %s", getName(), outDir);
             if (isDistributed()) {
-                final boolean accessible = RuntimeUtils.isAccessibleDir(
-                        getRpcSite(), outDir);
-                if (accessible) {
-                    removePath(outDir);
-                } else {
-                    // FIXME unloadBeamsFromDir(outDir);
-                }
+                removePath(outDir);
+                // TODO unloadBeamsFromDir(outDir); ?
             }
         }
     }

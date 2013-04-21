@@ -50,8 +50,8 @@ final public class ErlangConsoleSourceViewerConfiguration extends
 
         final ContentAssistant contentAssistant = new ContentAssistant();
 
-        // TODO vi vill ha in en punkt hï¿½r, men den fï¿½r return till
-        // styledtext o skickar allt fï¿½r tidigt...
+        // TODO vi vill ha in en punkt här, men den får return till
+        // styledtext o skickar allt för tidigt...
         final ErlContentAssistProcessor contentAssistProcessor = new ErlContentAssistProcessor(
                 sourceViewer, null, null, contentAssistant);
         contentAssistant.setContentAssistProcessor(contentAssistProcessor,
