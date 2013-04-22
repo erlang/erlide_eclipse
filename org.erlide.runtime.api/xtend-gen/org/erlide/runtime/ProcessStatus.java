@@ -8,6 +8,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.base.Objects;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.ErlUtils;
 
@@ -97,7 +98,8 @@ public class ProcessStatus {
       } catch (final Throwable _t) {
         if (_t instanceof Exception) {
           final Exception e = (Exception)_t;
-          e.printStackTrace();
+          String _plus = (">>>>>>> bad term in system status: " + input);
+          ErlLogger.error(_plus);
         } else {
           throw Exceptions.sneakyThrow(_t);
         }

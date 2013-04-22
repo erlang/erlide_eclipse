@@ -10,6 +10,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple
 import java.util.List
 import org.erlide.util.erlang.ErlUtils
 import org.erlide.util.erlang.TermParserException
+import org.erlide.util.ErlLogger
 
 class ErlSystemStatus {
 
@@ -102,10 +103,10 @@ class MemoryStatus {
             system: «String::format("%,10d", system)»
               atom: «String::format("%,10d", atom)»
          atom_used: «String::format("%,10d", atom_used)»
-            binary: «String::format("%,10d", binary)»
-              code: «String::format("%,10d", code)»
-               ets: «String::format("%,10d", ets)»
-               low: «String::format("%,10d", low)»
+       binary: «String::format("%,10d", binary)»
+         code: «String::format("%,10d", code)»
+          ets: «String::format("%,10d", ets)»
+          low: «String::format("%,10d", low)»
            maximum: «String::format("%,10d", maximum)»
   '''
 
@@ -152,7 +153,7 @@ class ProcessStatus {
             pid = value as OtpErlangPid
         }
       } catch (Exception e) {
-        e.printStackTrace();
+        ErlLogger::error(">>>>>>> bad term in system status: " + input);
       }
     }
   }

@@ -26,7 +26,7 @@ public class ErtsProcess extends RuntimeProcess {
         super(launch, process, nodeName, null);
         ErlLogger.debug("# create ErtsProcess: " + nodeName);
 
-        startWatcher(nodeName, workingDir, process);
+        startWatcher(nodeName, workingDir, process, this);
     }
 
     /**
@@ -104,8 +104,9 @@ public class ErtsProcess extends RuntimeProcess {
     }
 
     private void startWatcher(final String nodeName, final String workingDir,
-            final Process process) {
-        final Runnable watcher = new ErtsWatcher(nodeName, workingDir, process);
+            final Process process, final ErtsProcess ertsProcess) {
+        final Runnable watcher = new ErtsWatcher(nodeName, workingDir, process,
+                ertsProcess);
         final Thread thread = new Thread(null, watcher, "ErtsProcess watcher");
         thread.setDaemon(true);
         thread.setPriority(Thread.MIN_PRIORITY);

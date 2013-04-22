@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.backend.internal;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamsProxy;
@@ -25,7 +24,6 @@ public class ExternalBackend extends Backend {
     public ExternalBackend(final BackendData data, final IErlRuntime runtime,
             final IBackendManager backendManager) throws BackendException {
         super(data, runtime, backendManager);
-        Assert.isNotNull(getData().getLaunch());
         assignStreamProxyListeners();
     }
 

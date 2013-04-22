@@ -17,6 +17,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import org.erlide.backend.BackendCore;
+import org.erlide.launch.debug.model.ErtsProcess;
+import org.erlide.runtime.ErlSystemStatus;
+import org.erlide.runtime.IErlRuntime;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.LogUtil;
 import org.erlide.util.MessageReporter;
@@ -34,17 +38,23 @@ final public class ErtsWatcher implements Runnable {
             return name.matches("^core.[0-9]+$");
         }
     };
+    private final ErtsProcess ertsProcess;
 
     public ErtsWatcher(final String nodeName, final String workingDir,
-            final Process process) {
+            final Process process, final ErtsProcess ertsProcess) {
         this.nodeName = nodeName;
         this.workingDir = workingDir;
         this.process = process;
+        this.ertsProcess = ertsProcess;
     }
 
     @Override
     @SuppressWarnings("boxing")
     public void run() {
+        IErlRuntime runtime = null;
+        do {
+            runtime = BackendCore.getBackendManager().getByProcess(ertsProcess);
+        } while (runtime == null);
         do {
             try {
                 final int v = process.waitFor();
@@ -55,6 +65,11 @@ final public class ErtsWatcher implements Runnable {
                 String report = null;
                 if (shouldCreateReport(v)) {
                     ErlLogger.error(msg);
+
+                    final ErlSystemStatus status = runtime.getSystemStatus();
+                    ErlLogger.error("Last system status was:\n %s",
+                            status != null ? status.prettyPrint() : "null");
+
                     report = createReport(v, msg);
                     final String reportMsg = report != null ? "\n\n"
                             + "An error log has been created at "
@@ -69,6 +84,7 @@ final public class ErtsWatcher implements Runnable {
                             + "This error is not recoverable, please restart your Eclipse instance."
                             + reportMsg;
                     MessageReporter.showError(bigMsg, ReporterPosition.CENTER);
+
                 } else {
                     ErlLogger.info(msg);
                 }
