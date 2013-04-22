@@ -14,7 +14,7 @@
 %%
 
 -define(Test_indent(SIndent, S),
-        ?_assertEqual(SIndent, 
+        ?_assertEqual(SIndent,
                       erlide_indent:indent_lines(S, 0, length(S), 8, false, []))).
 
 simple_function_test_() ->
@@ -36,7 +36,7 @@ try_catch_test_() ->
             "NewMods;\nNewMods ->\nreply(Cmd, From, ok),\nNewMods\nend\ncatch\n"++
             "exit:Error ->\nreply(Cmd, From, {exit, Error}),\nModules;\n"++
             "error:Error ->\nreply(Cmd, From, {error, Error}),\nModules\nend.",
-    SIndent = 
+    SIndent =
         ""++
             "cmd(Cmd, From, Args, Modules) ->\n"++
             "    try\n"++
@@ -136,14 +136,14 @@ export_test_() ->
     ?Test_indent(SIndent, S).
 
 
-%% binary comprensions
+%% binary comprehensions
 %% http://www.assembla.com/spaces/erlide/tickets/729-indent--can-t-handle-binary-compehensions
 binary_3_test_() ->
     S = ""++
             "foo(BS) ->\n"++
             "S = [A || <<A>> <= BS],\n"++
             "ok.",
-    SIndent = ""++ 
+    SIndent = ""++
                   "foo(BS) ->\n"++
                   "    S = [A || <<A>> <= BS],\n"++
                   "    ok.",
@@ -239,6 +239,19 @@ indent_catch_with_guards_test_() ->
             "        A when is_tuple(A) ->\n"++
             "            A\n"++
             "    end.\n",
+    ?Test_indent(I, S).
+
+indent_newline_char_test_() ->
+    S = "" ++
+            "a()->\n"++
+            "foo(x, $\n, y),\n"++
+            "boo(),\n" ++
+            "ok.\n",
+    I = "" ++
+            "a()->\n"++
+            "    foo(x, $\n, y),\n"++
+            "    boo(),\n" ++
+            "    ok.\n",
     ?Test_indent(I, S).
 
 %%
