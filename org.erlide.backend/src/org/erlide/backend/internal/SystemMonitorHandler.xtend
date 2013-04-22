@@ -6,7 +6,7 @@ import org.erlide.backend.events.ErlangEventHandler
 import org.osgi.service.event.Event
 import org.erlide.runtime.ErlSystemStatus
 
-class SytemMonitorHandler extends ErlangEventHandler {
+class SystemMonitorHandler extends ErlangEventHandler {
 
   new(String backendName) {
     super("system_status", backendName);

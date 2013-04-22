@@ -13,8 +13,8 @@ import org.erlide.runtime.ErlSystemStatus;
 import org.osgi.service.event.Event;
 
 @SuppressWarnings("all")
-public class SytemMonitorHandler extends ErlangEventHandler {
-  public SytemMonitorHandler(final String backendName) {
+public class SystemMonitorHandler extends ErlangEventHandler {
+  public SystemMonitorHandler(final String backendName) {
     super("system_status", backendName);
   }
   
@@ -26,7 +26,7 @@ public class SytemMonitorHandler extends ErlangEventHandler {
     final Function1<IBackend,Boolean> _function = new Function1<IBackend,Boolean>() {
         public Boolean apply(final IBackend it) {
           String _name = it.getName();
-          String _backendName = SytemMonitorHandler.this.getBackendName();
+          String _backendName = SystemMonitorHandler.this.getBackendName();
           boolean _equals = Objects.equal(_name, _backendName);
           return Boolean.valueOf(_equals);
         }
