@@ -94,6 +94,7 @@ public class BackendFactory implements IBackendFactory {
                     ILaunch launch = data.getLaunch();
                     if (launch == null) {
                         launch = launchPeer(data);
+                        data.setLaunch(launch);
                     }
                     return launch.getProcesses().length == 0 ? null : launch
                             .getProcesses()[0];

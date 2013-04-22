@@ -47,11 +47,10 @@ public class LogUtil {
                     new InputStreamReader(new FileInputStream(log), "UTF-8"));
             try {
                 for (;;) {
-                    String line = reader.readLine();
+                    final String line = reader.readLine();
                     if (line == null) {
                         break;
                     }
-                    line = line.trim();
                     if (line.length() == 0) {
                         continue;
                     }

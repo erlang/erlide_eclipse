@@ -153,10 +153,10 @@ all_processes_info() ->
           erlang:process_info(P, total_heap_size),
           erlang:process_info(P, binary),
           {name, erlang:process_info(P, registered_name)},
-          erlang:process_info(P, current_stacktrace),
+          catch erlang:process_info(P, current_stacktrace),
           {pid, P}
          }
-         || P<-processes()
+         || P <- processes()
         ],
     lists:sublist(lists:reverse(lists:sort(L)),
                   20).

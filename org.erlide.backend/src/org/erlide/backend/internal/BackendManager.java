@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
@@ -43,6 +44,7 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.ICodeBundle;
 import org.erlide.runtime.ICodeBundle.CodeContext;
+import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.RuntimeVersion;
 import org.erlide.runtime.epmd.IEpmdListener;
@@ -470,4 +472,20 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     public void removeBackendsForLaunch(final ILaunch launch) {
     }
 
+    @Override
+    public IErlRuntime getByProcess(final IProcess process) {
+        synchronized (allBackends) {
+            for (final IBackend backend : allBackends) {
+                final ILaunch launch = backend.getData().getLaunch();
+                if (launch == null) {
+                    continue;
+                }
+                final IProcess[] processes = launch.getProcesses();
+                if (processes.length > 0 && processes[0].equals(process)) {
+                    return backend;
+                }
+            }
+            return null;
+        }
+    }
 }

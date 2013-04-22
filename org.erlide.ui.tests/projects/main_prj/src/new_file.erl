@@ -5,4 +5,11 @@
 
 ok() ->   
 	ok.
-    
+
+foo() ->
+	Z=[],
+	[X || X<-Z, 
+		  begin true 
+		  end],
+	"ok".
+
