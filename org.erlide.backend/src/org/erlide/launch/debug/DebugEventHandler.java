@@ -31,9 +31,9 @@ class DebugEventHandler {
 
     private void handleMessage(final OtpErlangObject message)
             throws DebugException {
-        ErlLogger.debug("DEBUGGER @@@ >> " + message);
+        // ErlLogger.debug("DEBUGGER @@@ >> " + message);
         final DebuggerEvent event = DebuggerEventFactory.parse(message);
-        ErlLogger.debug("DEBUGGER @@@ :: " + event);
+        // ErlLogger.debug("DEBUGGER @@@ :: " + event);
         event.execute(debugTarget);
     }
 }
