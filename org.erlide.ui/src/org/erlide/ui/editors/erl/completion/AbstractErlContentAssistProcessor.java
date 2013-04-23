@@ -161,7 +161,8 @@ public abstract class AbstractErlContentAssistProcessor {
         try {
             final IDocument doc = viewer.getDocument();
             String before = getBefore(viewer, doc, offset);
-            ErlLogger.debug("computeCompletionProposals before %s", before);
+            // ErlLogger.debug("computeCompletionProposals before = %s",
+            // before);
             final int commaPos = before.lastIndexOf(',');
             final int colonPos = before.lastIndexOf(':');
             final int hashMarkPos = before.lastIndexOf('#');
