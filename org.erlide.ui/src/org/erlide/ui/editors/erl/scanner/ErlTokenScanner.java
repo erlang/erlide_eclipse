@@ -1,4 +1,4 @@
-package org.erlide.ui.editors.erl;
+package org.erlide.ui.editors.erl.scanner;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.TextAttribute;

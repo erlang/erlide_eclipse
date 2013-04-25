@@ -15,6 +15,7 @@ import org.erlide.ui.editors.erl.scanner.ErlCodeScanner;
 import org.erlide.ui.editors.erl.scanner.ErlCommentScanner;
 import org.erlide.ui.editors.erl.scanner.ErlDamagerRepairer;
 import org.erlide.ui.editors.erl.scanner.ErlStringScanner;
+import org.erlide.ui.editors.erl.scanner.ErlTokenScanner;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.editors.erl.scanner.SingleTokenScanner;
 import org.erlide.ui.prefs.TokenHighlight;
