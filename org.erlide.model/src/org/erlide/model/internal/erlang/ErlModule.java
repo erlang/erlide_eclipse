@@ -721,10 +721,7 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public String createScannerName() {
-        final IResource res = getResource();
-        if (res != null) {
-            return createScannerNameFromResource(res);
-        } else if (getFilePath() != null) {
+        if (getFilePath() != null) {
             return "mod" + getFilePath().hashCode() + "__" + getName();
         } else if (getName() != null) {
             return "mod" + hashCode() + "_" + getName();
@@ -732,13 +729,6 @@ public class ErlModule extends Openable implements IErlModule {
         // This is not used more than temporarily, so it's OK to have
         // a name that's temporary, as long as it's unique
         return "mod" + hashCode() + "_";
-    }
-
-    private String createScannerNameFromResource(final IResource res) {
-        String resName;
-        resName = "mod" + res.getFullPath().toPortableString().hashCode() + "_"
-                + res.getName();
-        return resName;
     }
 
     @Override
