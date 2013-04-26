@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.core.builder;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
@@ -46,9 +45,10 @@ import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.common.io.Files;
 
 public class ErlideBuilder {
 
@@ -155,8 +155,8 @@ public class ErlideBuilder {
                 }
             }
 
-            handleAppFile(erlProject.getSourceDirs(), getProject()
-                    .getLocation().toPortableString() + "/" + out);
+            handleAppFile(getProject().getLocation().toPortableString() + "/"
+                    + out, erlProject.getSourceDirs());
 
             final OtpErlangList compilerOptions = CompilerOptions.get(project);
             ErlLogger.debug(">>> compiler options ::: " + compilerOptions);
@@ -270,8 +270,18 @@ public class ErlideBuilder {
         return null;
     }
 
-    private void handleAppFile(final Collection<IPath> sources,
-            final String string) {
+    private void handleAppFile(final String outPath,
+            final Collection<IPath> sources) {
+
+        final Collection<String> srcPaths = Collections2.transform(sources,
+                new Function<IPath, String>() {
+                    @Override
+                    public String apply(final IPath input) {
+                        final IFolder dir = (IFolder) getProject().findMember(
+                                input);
+                        return dir.getLocation().toPortableString();
+                    }
+                });
         for (final IPath src : sources) {
             final IFolder dir = (IFolder) getProject().findMember(src);
             if (dir == null) {
@@ -281,11 +291,11 @@ public class ErlideBuilder {
                 for (final IResource file : dir.members()) {
                     final String name = file.getName();
                     if (name.endsWith(".app.src")) {
-                        final File from = new File(file.getLocation()
-                                .toPortableString());
-                        final File to = new File(string + "/"
-                                + name.substring(0, name.lastIndexOf('.')));
-                        fillAppFileDetails(from, to);
+                        final String srcPath = file.getLocation()
+                                .toPortableString();
+                        final String destPath = outPath + "/"
+                                + name.substring(0, name.lastIndexOf('.'));
+                        fillAppFileDetails(srcPath, destPath, srcPaths);
                     }
                 }
             } catch (final CoreException e) {
@@ -297,11 +307,18 @@ public class ErlideBuilder {
 
     }
 
-    private void fillAppFileDetails(final File from, final File to)
+    private void fillAppFileDetails(final String srcPath,
+            final String destPath, final Collection<String> sources)
             throws IOException {
-        // TODO update module list
-        // TODO more such stuff
-        Files.copy(from, to);
+        try {
+            final IBackend backend = BackendCore.getBackendManager()
+                    .getBuildBackend(getProject());
+            backend.getRpcSite().call("erlide_builder", "compile_app_src",
+                    "ssls", srcPath, destPath, sources);
+        } catch (final Exception e) {
+            ErlLogger.error(e);
+        }
+
     }
 
     private void initializeBuilder(final IProgressMonitor monitor) {
