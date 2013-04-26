@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.ResourceBundle;
 
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
@@ -21,8 +21,9 @@ public class ClearCacheAction extends TextEditorAction {
     private final ErlangEditor erlangEditor;
     private static final String NOPARSE_CACHE_SUFFIX = ".noparse";
     private static final String SCANNER_CACHE_SUFFIX = ".scan";
+    private static final String REFS_CACHE_SUFFIX = ".refs";
     private static final String suffixes[] = { NOPARSE_CACHE_SUFFIX,
-            SCANNER_CACHE_SUFFIX };
+            SCANNER_CACHE_SUFFIX, REFS_CACHE_SUFFIX };
 
     public ClearCacheAction(final ResourceBundle bundle, final String prefix,
             final ErlangEditor erlangEditor) {
@@ -41,7 +42,7 @@ public class ClearCacheAction extends TextEditorAction {
             return;
         }
         for (final String suffix : suffixes) {
-            final String cacheFileOSPath = ErlangPlugin.getDefault()
+            final String cacheFileOSPath = ModelPlugin.getDefault()
                     .getStateLocation()
                     .append(module.getScannerName() + suffix).toOSString();
             final File cacheFile = new File(cacheFileOSPath);
