@@ -19,4 +19,6 @@ public interface IErlAttribute extends IErlMember {
 
     public OtpErlangObject getValue();
 
+    public String getExtra();
+
 }
