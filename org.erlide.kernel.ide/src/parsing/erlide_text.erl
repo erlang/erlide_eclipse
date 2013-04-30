@@ -114,6 +114,9 @@ split_lines(S) ->
 
 split_lines("", _Pos, _LinePos, "", Acc) ->
     Acc;
+split_lines([$$, C | Rest], Pos, LinePos, LineAcc, Acc) 
+  when C =:=$\n; C =:= $\r ->   % fix for 1193
+    split_lines(Rest, Pos+2, LinePos, [C, $$ | LineAcc], Acc);
 split_lines("", _Pos, LinePos, LineAcc, Acc) ->
     [{LinePos, lists:reverse(LineAcc)} | Acc];
 split_lines("\r\n" ++ Rest, Pos, LinePos, LineAcc, Acc) ->
