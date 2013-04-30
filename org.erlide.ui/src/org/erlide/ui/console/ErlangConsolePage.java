@@ -262,7 +262,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
         final Label helpLabel = new Label(composite, SWT.NONE);
         helpLabel
-                .setText("Press Ctrl-Enter to send the input to the console. Press Esc to clear input.");
+                .setText("To send the input to the console: press Enter at the end of an expression"
+                        + " or Ctrl/Cmd-Enter. Press Esc to clear input.");
         helpLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         final ModifyListener modifyListener = new ModifyListener() {
