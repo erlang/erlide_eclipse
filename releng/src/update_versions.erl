@@ -423,11 +423,11 @@ summary(Features) ->
 get_latest_tag() ->
     string:strip(os:cmd("git describe --abbrev=0"), both, $\n).
 
-tag_as_string({A,B,C}) ->
-    lists:flatten(io_lib:format("v~p.~p.~p", [A,B,C])).
+%% tag_as_string({A,B,C}) ->
+%%     lists:flatten(io_lib:format("v~p.~p.~p", [A,B,C])).
 
-parse_tag("v"++Tag) ->
-    list_to_tuple([list_to_integer(T) || T<-string:tokens(Tag, ".")]);
-parse_tag(_) ->
-    {0, 0, 0}.
+%% parse_tag("v"++Tag) ->
+%%     list_to_tuple([list_to_integer(T) || T<-string:tokens(Tag, ".")]);
+%% parse_tag(_) ->
+%%     {0, 0, 0}.
 
