@@ -257,4 +257,11 @@ public class NullErlRuntime implements IErlRuntime, IRpcSite {
     @Override
     public void tryConnect() {
     }
+
+    @Override
+    public OtpErlangObject getRpcResult(final OtpMbox mbox, final long timeout,
+            final String env) throws RpcException {
+        reportNoBackend();
+        return null;
+    }
 }
