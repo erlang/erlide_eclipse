@@ -8,10 +8,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-import org.erlide.runtime.ICodeBundle;
-import org.erlide.runtime.IErlRuntime;
-import org.erlide.runtime.IRpcSite;
-import org.erlide.runtime.RuntimeVersion;
+import org.erlide.runtime.api.ICodeBundle;
+import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.RuntimeVersion;
 import org.osgi.framework.Bundle;
 
 public interface IBackendManager {

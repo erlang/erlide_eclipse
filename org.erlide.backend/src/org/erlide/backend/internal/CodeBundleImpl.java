@@ -18,7 +18,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.backend.BackendPlugin;
-import org.erlide.runtime.ICodeBundle;
+import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.OsgiUtil;
 

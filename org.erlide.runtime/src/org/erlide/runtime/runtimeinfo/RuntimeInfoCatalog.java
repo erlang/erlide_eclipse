@@ -17,7 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import org.erlide.runtime.RuntimeVersion;
+import org.erlide.runtime.api.RuntimeVersion;
 import org.erlide.util.HostnameUtils;
 
 import com.google.common.collect.Lists;

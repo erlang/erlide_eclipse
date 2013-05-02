@@ -41,7 +41,7 @@ import org.erlide.launch.debug.ErlangLineBreakpoint;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.IErlangDebugNode;
 import org.erlide.model.ErlModelException;
-import org.erlide.runtime.ErlDebugFlags;
+import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpErlang;
 

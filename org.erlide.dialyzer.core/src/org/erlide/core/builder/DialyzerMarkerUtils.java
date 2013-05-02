@@ -11,7 +11,7 @@ import org.erlide.model.erlang.ModuleKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.util.ResourceUtil;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 

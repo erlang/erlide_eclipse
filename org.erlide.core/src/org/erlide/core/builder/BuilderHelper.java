@@ -44,7 +44,7 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ErlangIncludeFile;
 import org.erlide.model.util.PluginUtils;
 import org.erlide.model.util.ResourceUtil;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;

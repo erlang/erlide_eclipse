@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.erlide.runtime.RuntimeVersion;
+import org.erlide.runtime.api.RuntimeVersion;
 
 public class RuntimeInfo {
 

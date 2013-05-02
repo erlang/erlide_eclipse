@@ -29,7 +29,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
 import org.erlide.model.BeamLocator;
-import org.erlide.runtime.ErlRuntimeAttributes;
+import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.runtime.epmd.IEpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;

@@ -47,8 +47,8 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.ErlDebugFlags;
-import org.erlide.runtime.ErlRuntimeAttributes;
+import org.erlide.runtime.api.ErlDebugFlags;
+import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.ui.dialogs.AddInterpretedModulesSelectionDialog;
 import org.erlide.ui.util.SWTUtil;
 

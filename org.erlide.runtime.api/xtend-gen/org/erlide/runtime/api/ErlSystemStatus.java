@@ -1,4 +1,4 @@
-package org.erlide.runtime;
+package org.erlide.runtime.api;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -11,8 +11,8 @@ import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
-import org.erlide.runtime.MemoryStatus;
-import org.erlide.runtime.ProcessStatus;
+import org.erlide.runtime.api.MemoryStatus;
+import org.erlide.runtime.api.ProcessStatus;
 
 @SuppressWarnings("all")
 public class ErlSystemStatus {

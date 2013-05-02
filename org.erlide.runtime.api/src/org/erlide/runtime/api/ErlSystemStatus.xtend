@@ -1,4 +1,4 @@
-package org.erlide.runtime
+package org.erlide.runtime.api
 
 import com.ericsson.otp.erlang.OtpErlangAtom
 import com.ericsson.otp.erlang.OtpErlangException

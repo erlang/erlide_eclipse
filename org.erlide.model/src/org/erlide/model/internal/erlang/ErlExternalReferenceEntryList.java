@@ -22,7 +22,7 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.ErlideOpen.ExternalTreeEntry;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;

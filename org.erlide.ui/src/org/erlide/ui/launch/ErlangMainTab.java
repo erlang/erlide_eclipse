@@ -44,8 +44,8 @@ import org.erlide.core.ErlangCore;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
-import org.erlide.runtime.ErlDebugFlags;
-import org.erlide.runtime.ErlRuntimeAttributes;
+import org.erlide.runtime.api.ErlDebugFlags;
+import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.ui.util.SWTUtil;
 import org.erlide.util.ErlLogger;
 

@@ -12,7 +12,7 @@ package org.erlide.model.services.cleanup;
 
 import org.eclipse.core.resources.IResource;
 import org.erlide.model.ModelPlugin;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 
 /**

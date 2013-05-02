@@ -1,5 +1,8 @@
 package org.erlide.runtime;
 
+import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.RuntimeVersion;
+
 public interface IRuntimeProvider {
 
     IRpcSite get();

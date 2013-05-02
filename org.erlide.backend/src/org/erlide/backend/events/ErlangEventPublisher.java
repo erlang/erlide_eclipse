@@ -7,7 +7,7 @@ import org.eclipse.core.resources.IProject;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendListener;
-import org.erlide.runtime.IErlRuntime;
+import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;

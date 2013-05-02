@@ -42,7 +42,7 @@ import org.erlide.model.services.codeassist.ErlideContextAssist.RecordCompletion
 import org.erlide.model.services.search.ErlideDoc;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.HoverUtil;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;

@@ -1,6 +1,6 @@
 package org.erlide.backend.internal;
 
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.Bindings;

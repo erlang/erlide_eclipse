@@ -1,10 +1,10 @@
 package org.erlide.backend.internal;
 
-import org.erlide.runtime.ErlSystemStatus;
-import org.erlide.runtime.IErlRuntime;
-import org.erlide.runtime.IRpcSite;
-import org.erlide.runtime.IRuntimeStateListener;
-import org.erlide.runtime.RuntimeData;
+import org.erlide.runtime.api.ErlSystemStatus;
+import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IRuntimeStateListener;
+import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;

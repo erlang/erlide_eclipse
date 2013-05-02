@@ -4,7 +4,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple
 import org.erlide.backend.BackendCore
 import org.erlide.backend.events.ErlangEventHandler
 import org.osgi.service.event.Event
-import org.erlide.runtime.ErlSystemStatus
+import org.erlide.runtime.api.ErlSystemStatus
 
 class SystemMonitorHandler extends ErlangEventHandler {
 

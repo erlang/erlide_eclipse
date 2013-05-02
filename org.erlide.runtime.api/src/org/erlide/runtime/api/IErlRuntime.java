@@ -8,7 +8,7 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.runtime;
+package org.erlide.runtime.api;
 
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.shell.IBackendShell;

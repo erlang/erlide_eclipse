@@ -18,7 +18,7 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.util.FilePathUtils;
 import org.junit.After;

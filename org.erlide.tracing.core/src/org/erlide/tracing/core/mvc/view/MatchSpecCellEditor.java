@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.backend.BackendCore;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.tracing.core.Constants;
 import org.erlide.tracing.core.mvc.model.MatchSpec;
 import org.erlide.util.ErlLogger;

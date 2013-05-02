@@ -4,7 +4,7 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElement;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;

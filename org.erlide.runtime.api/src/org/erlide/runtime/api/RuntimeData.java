@@ -1,4 +1,4 @@
-package org.erlide.runtime;
+package org.erlide.runtime.api;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

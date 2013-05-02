@@ -1,4 +1,4 @@
-package org.erlide.runtime.api;
+package org.erlide.runtime.api.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

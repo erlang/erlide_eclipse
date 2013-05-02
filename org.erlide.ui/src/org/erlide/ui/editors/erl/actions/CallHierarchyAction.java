@@ -27,7 +27,7 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.search.ErlangXref;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.jinterface.AsyncCaller;

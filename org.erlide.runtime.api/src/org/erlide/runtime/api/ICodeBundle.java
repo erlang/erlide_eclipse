@@ -8,7 +8,7 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.runtime;
+package org.erlide.runtime.api;
 
 import java.util.Collection;
 import java.util.Map;

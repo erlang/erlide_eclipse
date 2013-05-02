@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;

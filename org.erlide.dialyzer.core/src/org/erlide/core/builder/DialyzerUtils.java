@@ -23,7 +23,7 @@ import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.runtime;
 
+import org.erlide.runtime.api.ICodeBundle;
+
 public interface ICodeManager {
 
     void addPath(final boolean usePathZ, final String path);
