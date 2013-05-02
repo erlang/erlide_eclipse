@@ -12,11 +12,6 @@ package org.erlide.backend.internal;
 
 import java.io.File;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
@@ -87,19 +82,8 @@ public class BackendFactory implements IBackendFactory {
         final IBackend b;
         try {
             final String nodeName = data.getQualifiedNodeName();
-            final IProvider<IProcess> erlProcessProvider = new IProvider<IProcess>() {
-
-                @Override
-                public IProcess get() {
-                    ILaunch launch = data.getLaunch();
-                    if (launch == null) {
-                        launch = launchPeer(data);
-                        data.setLaunch(launch);
-                    }
-                    return launch.getProcesses().length == 0 ? null : launch
-                            .getProcesses()[0];
-                }
-            };
+            final IProvider<IProcess> erlProcessProvider = new LaunchBeamProcessProvider(
+                    data);
             final IErlRuntime runtime = data.getRuntimeInfo() == null ? new NullErlRuntime()
                     : new ErlRuntime(nodeName, data.getCookie(),
                             erlProcessProvider, !data.isReportErrors(),
@@ -115,19 +99,6 @@ public class BackendFactory implements IBackendFactory {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private ILaunch launchPeer(final BackendData data) {
-        final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
-        try {
-            final boolean registerForDebug = data.getLaunch() != null
-                    || SystemConfiguration.getInstance().isDeveloper();
-            return launchConfig.launch(ILaunchManager.RUN_MODE,
-                    new NullProgressMonitor(), false, registerForDebug);
-        } catch (final CoreException e) {
-            ErlLogger.error(e);
-            return null;
-        }
     }
 
     private BackendData getIdeBackendData() {
