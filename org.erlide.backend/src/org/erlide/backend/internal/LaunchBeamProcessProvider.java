@@ -23,14 +23,14 @@ class LaunchBeamProcessProvider implements IProvider<IProcess> {
     public IProcess get() {
         ILaunch launch = this.data.getLaunch();
         if (launch == null) {
-            launch = launchPeer(this.data);
+            launch = launchPeer();
             this.data.setLaunch(launch);
         }
         return launch.getProcesses().length == 0 ? null
                 : launch.getProcesses()[0];
     }
 
-    private ILaunch launchPeer(final BackendData data) {
+    private ILaunch launchPeer() {
         final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
         try {
             final boolean registerForDebug = data.getLaunch() != null
