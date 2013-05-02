@@ -38,8 +38,6 @@ public interface IErlRuntime extends IBeamProcess, IDisposable {
 
     OtpMbox getEventMbox();
 
-    IRpcSite getRpcSite();
-
     void addListener(IRuntimeStateListener listener);
 
     IBackendShell getShell(final String id);

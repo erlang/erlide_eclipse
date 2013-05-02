@@ -224,12 +224,6 @@ public class NullErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public IRpcSite getRpcSite() {
-        reportNoBackend();
-        return this;
-    }
-
-    @Override
     public void restart() {
         reportNoBackend();
 

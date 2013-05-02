@@ -62,6 +62,7 @@ import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.ExtensionHelper;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.erlang.OtpErlang;
 import org.osgi.framework.Bundle;
@@ -581,7 +582,11 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public IRpcSite getRpcSite() {
-        return runtime.getRpcSite();
+        if (runtime instanceof IRpcSite) {
+            return (IRpcSite) runtime;
+        }
+        reportNoBackend();
+        return null;
     }
 
     @Override
@@ -613,5 +618,13 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public void setSystemStatus(final ErlSystemStatus msg) {
         runtime.setSystemStatus(msg);
+    }
+
+    private void reportNoBackend() {
+        final Runnable handler = (Runnable) ExtensionHelper
+                .getParticipant("org.erlide.backend.no_runtime_handler");
+        if (handler != null) {
+            handler.run();
+        }
     }
 }

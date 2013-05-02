@@ -585,11 +585,6 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public IRpcSite getRpcSite() {
-        return this;
-    }
-
-    @Override
     public RuntimeData getRuntimeData() {
         return data;
     }
