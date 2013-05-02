@@ -106,7 +106,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (eventDaemon != null) {
             eventDaemon.stop();
         }
-        runtime.stop();
+        runtime.dispose();
     }
 
     @Override

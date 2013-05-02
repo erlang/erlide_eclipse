@@ -630,4 +630,10 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
         // System.out.println(msg.prettyPrint());
         lastSystemMessage = msg;
     }
+
+    @Override
+    public void dispose() {
+        stop();
+        listener = null;
+    }
 }

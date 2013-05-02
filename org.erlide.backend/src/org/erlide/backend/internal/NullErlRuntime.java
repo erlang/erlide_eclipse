@@ -255,4 +255,8 @@ public class NullErlRuntime implements IErlRuntime, IRpcSite {
     @Override
     public void setSystemStatus(final ErlSystemStatus msg) {
     }
+
+    @Override
+    public void dispose() {
+    }
 }

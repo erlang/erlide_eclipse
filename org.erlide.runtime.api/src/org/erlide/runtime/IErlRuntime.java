@@ -11,11 +11,12 @@
 package org.erlide.runtime;
 
 import org.erlide.runtime.shell.IBackendShell;
+import org.erlide.util.IDisposable;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
-public interface IErlRuntime {
+public interface IErlRuntime extends IBeamProcess, IDisposable {
 
     String getName();
 
@@ -25,13 +26,7 @@ public interface IErlRuntime {
 
     boolean isAvailable();
 
-    boolean isStopped();
-
     String getNodeName();
-
-    void start();
-
-    void stop();
 
     void connect();
 
@@ -44,8 +39,6 @@ public interface IErlRuntime {
     OtpMbox getEventMbox();
 
     IRpcSite getRpcSite();
-
-    void restart();
 
     void addListener(IRuntimeStateListener listener);
 
