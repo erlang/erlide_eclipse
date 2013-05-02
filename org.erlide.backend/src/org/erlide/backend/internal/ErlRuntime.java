@@ -605,11 +605,6 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public boolean isDistributed() {
-        return !Strings.isNullOrEmpty(getNodeName());
-    }
-
-    @Override
     public IBackendShell getShell(final String id) {
         // TODO can we return something here?
         return null;

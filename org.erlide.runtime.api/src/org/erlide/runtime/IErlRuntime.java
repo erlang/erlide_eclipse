@@ -20,8 +20,6 @@ public interface IErlRuntime extends IBeamProcess, IDisposable {
 
     String getName();
 
-    boolean isDistributed();
-
     RuntimeData getRuntimeData();
 
     boolean isAvailable();

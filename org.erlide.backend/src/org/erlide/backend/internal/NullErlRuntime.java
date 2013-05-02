@@ -152,12 +152,6 @@ public class NullErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public boolean isDistributed() {
-        reportNoBackend();
-        return false;
-    }
-
-    @Override
     public RuntimeData getRuntimeData() {
         reportNoBackend();
         return null;
