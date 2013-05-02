@@ -247,4 +247,14 @@ public class NullErlRuntime implements IErlRuntime, IRpcSite {
     @Override
     public void dispose() {
     }
+
+    @Override
+    public IRpcSite getRpcSite() {
+        reportNoBackend();
+        return null;
+    }
+
+    @Override
+    public void tryConnect() {
+    }
 }

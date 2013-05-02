@@ -58,6 +58,7 @@ import org.erlide.runtime.IRuntimeStateListener;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.RuntimeUtils;
+import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.util.Asserts;
@@ -567,11 +568,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public IRpcSite getRpcSite() {
-        if (runtime instanceof IRpcSite) {
-            return (IRpcSite) runtime;
-        }
-        reportNoBackend();
-        return null;
+        return runtime.getRpcSite();
     }
 
     @Override
@@ -611,5 +608,10 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (handler != null) {
             handler.run();
         }
+    }
+
+    @Override
+    public void tryConnect() throws RpcException {
+        runtime.tryConnect();
     }
 }

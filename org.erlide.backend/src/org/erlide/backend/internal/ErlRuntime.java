@@ -20,24 +20,17 @@ import org.erlide.runtime.ErlSystemStatus;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.IRuntimeStateListener;
+import org.erlide.runtime.RpcSite;
 import org.erlide.runtime.RuntimeData;
-import org.erlide.runtime.rpc.IRpcCallback;
-import org.erlide.runtime.rpc.IRpcFuture;
-import org.erlide.runtime.rpc.IRpcHelper;
-import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.ExtensionUtils;
 import org.erlide.util.HostnameUtils;
 import org.erlide.util.IProvider;
 import org.erlide.util.MessageReporter;
 import org.erlide.util.MessageReporter.ReporterPosition;
 import org.erlide.util.SystemConfiguration;
-import org.erlide.util.erlang.SignatureException;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
@@ -45,21 +38,14 @@ import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.google.common.base.Strings;
 
-public class ErlRuntime implements IErlRuntime, IRpcSite {
+public class ErlRuntime implements IErlRuntime {
     private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
     private static final int EPMD_PORT = 4369;
-    public static long DEFAULT_TIMEOUT;
-    {
-        setDefaultTimeout();
-    }
 
     private static final int MAX_RETRIES = 15;
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "400"));
     private static final Object connectLock = new Object();
-    private static final IRpcHelper rpcHelper = ExtensionUtils
-            .getSingletonExtension("org.erlide.runtime.api.rpc_helper",
-                    IRpcHelper.class);
 
     public enum State {
         CONNECTED, DISCONNECTED, DOWN
@@ -78,6 +64,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     private boolean stopped;
     private IRuntimeStateListener listener;
     private ErlSystemStatus lastSystemMessage;
+    private final IRpcSite rpcSite;
 
     public ErlRuntime(final String name, final String cookie,
             final IProvider<IProcess> processProvider,
@@ -114,6 +101,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
         // if (epmdWatcher.isRunningNode(name)) {
         // connect();
         // }
+        rpcSite = new RpcSite(this, localNode, data.getNodeName());
     }
 
     @Override
@@ -171,107 +159,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public void async_call_result(final IRpcResultCallback cb, final String m,
-            final String f, final String signature, final Object... args)
-            throws RpcException {
-        final OtpErlangAtom gleader = new OtpErlangAtom("user");
-        try {
-            rpcHelper.rpcCastWithProgress(cb, localNode, data.getNodeName(),
-                    false, gleader, m, f, signature, args);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
-    }
-
-    @Override
-    public IRpcFuture async_call(final OtpErlangObject gleader,
-            final String module, final String fun, final String signature,
-            final Object... args0) throws RpcException {
-        tryConnect();
-        try {
-            return rpcHelper.sendRpcCall(localNode, data.getNodeName(), false,
-                    gleader, module, fun, signature, args0);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
-    }
-
-    @Override
-    public IRpcFuture async_call(final String module, final String fun,
-            final String signature, final Object... args0) throws RpcException {
-        return async_call(new OtpErlangAtom("user"), module, fun, signature,
-                args0);
-    }
-
-    @Override
-    public void async_call_cb(final IRpcCallback cb, final long timeout,
-            final String module, final String fun, final String signature,
-            final Object... args) throws RpcException {
-        async_call_cb(cb, timeout, new OtpErlangAtom("user"), module, fun,
-                signature, args);
-    }
-
-    @Override
-    public void async_call_cb(final IRpcCallback cb, final long timeout,
-            final OtpErlangObject gleader, final String module,
-            final String fun, final String signature, final Object... args)
-            throws RpcException {
-        tryConnect();
-        try {
-            rpcHelper.makeAsyncCbCall(localNode, data.getNodeName(), cb,
-                    timeout, gleader, module, fun, signature, args);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
-    }
-
-    @Override
-    public OtpErlangObject call(final long timeout,
-            final OtpErlangObject gleader, final String module,
-            final String fun, final String signature, final Object... args0)
-            throws RpcException {
-        if (stopped) {
-            return null;
-        }
-        tryConnect();
-        OtpErlangObject result;
-        try {
-            result = rpcHelper.rpcCall(localNode, data.getNodeName(), false,
-                    gleader, module, fun, timeout, signature, args0);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
-        return result;
-    }
-
-    @Override
-    public OtpErlangObject call(final long timeout, final String module,
-            final String fun, final String signature, final Object... args0)
-            throws RpcException {
-        return call(timeout, new OtpErlangAtom("user"), module, fun, signature,
-                args0);
-    }
-
-    @Override
-    public void cast(final OtpErlangObject gleader, final String module,
-            final String fun, final String signature, final Object... args0)
-            throws RpcException {
-        tryConnect();
-        try {
-            rpcHelper.rpcCast(localNode, data.getNodeName(), false, gleader,
-                    module, fun, signature, args0);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
-    }
-
-    @Override
-    public void cast(final String module, final String fun,
-            final String signature, final Object... args0) throws RpcException {
-        cast(new OtpErlangAtom("user"), module, fun, signature, args0);
-    }
-
-    private void tryConnect() throws RpcException {
+    public void tryConnect() throws RpcException {
         synchronized (connectLock) {
             switch (state) {
             case DISCONNECTED:
@@ -287,7 +175,9 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             case CONNECTED:
                 break;
             case DOWN:
-                listener.runtimeDown(this);
+                if (listener != null) {
+                    listener.runtimeDown(this);
+                }
                 try {
                     if (process != null) {
                         process.terminate();
@@ -385,27 +275,6 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public void send(final OtpErlangPid pid, final Object msg) {
-        try {
-            tryConnect();
-            rpcHelper.send(localNode, pid, msg);
-        } catch (final SignatureException e) {
-        } catch (final RpcException e) {
-        }
-    }
-
-    @Override
-    public void send(final String fullNodeName, final String name,
-            final Object msg) {
-        try {
-            tryConnect();
-            rpcHelper.send(localNode, fullNodeName, name, msg);
-        } catch (final SignatureException e) {
-        } catch (final RpcException e) {
-        }
-    }
-
-    @Override
     public OtpMbox createMbox(final String name) {
         return localNode.createMbox(name);
     }
@@ -420,46 +289,6 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
         // close peer too?
         stopped = true;
         localNode.close();
-    }
-
-    @Override
-    public RpcResult call_noexception(final String m, final String f,
-            final String signature, final Object... args) {
-        return call_noexception(DEFAULT_TIMEOUT, m, f, signature, args);
-    }
-
-    @Override
-    public RpcResult call_noexception(final long timeout, final String m,
-            final String f, final String signature, final Object... args) {
-        try {
-            final OtpErlangObject result = call(timeout, m, f, signature, args);
-            return new RpcResult(result);
-        } catch (final RpcException e) {
-            return RpcResult.error(e.getMessage());
-        }
-    }
-
-    @Override
-    public void async_call_cb(final IRpcCallback cb, final String m,
-            final String f, final String signature, final Object... args)
-            throws RpcException {
-        async_call_cb(cb, DEFAULT_TIMEOUT, m, f, signature, args);
-    }
-
-    @Override
-    public OtpErlangObject call(final String m, final String f,
-            final String signature, final Object... a) throws RpcException {
-        return call(DEFAULT_TIMEOUT, m, f, signature, a);
-    }
-
-    @Override
-    public void send(final String name, final Object msg) {
-        try {
-            tryConnect();
-            rpcHelper.send(localNode, data.getNodeName(), name, msg);
-        } catch (final SignatureException e) {
-        } catch (final RpcException e) {
-        }
     }
 
     @Override
@@ -537,7 +366,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             int i = 30;
             boolean gotIt = false;
             do {
-                r = call("erlang", "whereis", "a", "code_server");
+                r = rpcSite.call("erlang", "whereis", "a", "code_server");
                 gotIt = !(r instanceof OtpErlangPid);
                 if (!gotIt) {
                     try {
@@ -558,19 +387,6 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             ErlLogger.error("error starting code server for %s: %s",
                     getNodeName(), e.getMessage());
             return false;
-        }
-    }
-
-    private static void setDefaultTimeout() {
-        final String t = System.getProperty("erlide.rpc.timeout", "9000");
-        if ("infinity".equals(t)) {
-            DEFAULT_TIMEOUT = IRpcHelper.INFINITY;
-        } else {
-            try {
-                DEFAULT_TIMEOUT = Integer.parseInt(t);
-            } catch (final Exception e) {
-                DEFAULT_TIMEOUT = 9000;
-            }
         }
     }
 
@@ -625,5 +441,10 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     public void dispose() {
         stop();
         listener = null;
+    }
+
+    @Override
+    public IRpcSite getRpcSite() {
+        return rpcSite;
     }
 }

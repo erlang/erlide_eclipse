@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.runtime;
 
+import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.IDisposable;
 
@@ -19,6 +20,8 @@ import com.ericsson.otp.erlang.OtpMbox;
 public interface IErlRuntime extends IBeamProcess, IDisposable {
 
     String getName();
+
+    IRpcSite getRpcSite();
 
     RuntimeData getRuntimeData();
 
@@ -43,4 +46,6 @@ public interface IErlRuntime extends IBeamProcess, IDisposable {
     ErlSystemStatus getSystemStatus();
 
     void setSystemStatus(ErlSystemStatus msg);
+
+    void tryConnect() throws RpcException;
 }
