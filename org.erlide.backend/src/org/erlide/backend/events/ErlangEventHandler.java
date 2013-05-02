@@ -42,6 +42,6 @@ public abstract class ErlangEventHandler implements EventHandler, IDisposable {
     }
 
     public String getBackendName() {
-        return this.backendName;
+        return backendName;
     }
 }

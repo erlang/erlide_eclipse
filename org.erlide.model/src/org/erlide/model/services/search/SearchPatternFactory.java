@@ -17,7 +17,7 @@ public class SearchPatternFactory {
     public static ErlangSearchPattern getSearchPattern(
             final SearchFor searchFor, final String moduleName,
             final String name, final int arity, final LimitTo limitTo,
-            IErlModule module) {
+            final IErlModule module) {
         switch (searchFor) {
         case FUNCTION:
             return new FunctionPattern(moduleName, name, arity, limitTo, true,

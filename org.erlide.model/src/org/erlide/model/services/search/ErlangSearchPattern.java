@@ -178,7 +178,7 @@ public abstract class ErlangSearchPattern {
 
     public abstract String labelString();
 
-    public ErlSearchScope reduceScope(ErlSearchScope scope) {
+    public ErlSearchScope reduceScope(final ErlSearchScope scope) {
         return scope;
     }
 
