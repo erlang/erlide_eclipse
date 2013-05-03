@@ -207,7 +207,7 @@ build_one_file(F, OutputDir, IncludeDirs, Options) ->
     ".erl" ->
       compile(F, OutputDir, IncludeDirs, Options);
     ".yrl" ->
-      %% FIXME to be handled in http://www.assembla.com/spaces/erlide/tickets/679
+      %% to be handled in http://www.assembla.com/spaces/erlide/tickets/679
       ErlF = filename:join(filename:dirname(F),
                  filename:basename(F, "yrl")++"erl"),
       erlide_log:logp("YRL ->  ~p ", [{F, ErlF}]),

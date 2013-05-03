@@ -42,6 +42,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
     protected IErlRecordDef record; // set if this value is a record
     protected OtpErlangList list; // set if this value is a string-coded list
 
+    // TODO not for regular lists too?
+
     public IndexedErlangValue(final IDebugTarget target, final String varName,
             final OtpErlangObject value, final ErlangProcess process,
             final String moduleName) {

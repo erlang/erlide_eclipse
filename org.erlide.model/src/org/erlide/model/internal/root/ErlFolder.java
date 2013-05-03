@@ -44,8 +44,7 @@ public class ErlFolder extends Openable implements IErlFolder {
         final IErlModel model = ErlModelManager.getErlangModel();
         final IContainer c = (IContainer) getResource();
         try {
-            // FIXME this is general stuff, should we put it in model or
-            // model manager?
+            // FIXME this is general stuff -> model or model manager?
             final IResource[] members = c.members();
             for (final IResource resource : members) {
                 model.create(resource);

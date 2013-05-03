@@ -592,7 +592,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     @Override
     public void dispose() {
-        // XXX FIXME TODO
         // if (!LOCAL_CHILDREN) {
         // getModel().setChildrenOf(this, null);
         // }
