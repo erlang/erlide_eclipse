@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.erlide.wrangler.refactoring.duplicatedcode.ui.elements;
 
@@ -54,7 +54,7 @@ public abstract class AbstractResultTreeObject implements IAdaptable {
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class adapter) {
+    public Object getAdapter(final Class adapter) {
         return null;
     }
 

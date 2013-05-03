@@ -66,7 +66,7 @@ public class ErlangSourceContextTypeComment extends TemplateContextType {
      */
     public static ErlangSourceContextTypeComment getDefault() {
         if (fInstance == null) {
-            new ErlangSourceContextTypeComment();
+            fInstance = new ErlangSourceContextTypeComment();
         }
         return fInstance;
     }

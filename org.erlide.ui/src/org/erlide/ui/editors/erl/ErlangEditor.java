@@ -388,7 +388,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
+    public Object getAdapter(final Class required) {
         if (IContentOutlinePage.class.equals(required)) {
             if (myOutlinePage == null) {
                 myOutlinePage = createOutlinePage();

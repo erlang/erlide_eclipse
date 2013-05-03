@@ -420,7 +420,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
+    public Object getAdapter(final Class required) {
         if (IFindReplaceTarget.class.equals(required)) {
             return consoleOutputViewer.getFindReplaceTarget();
         }

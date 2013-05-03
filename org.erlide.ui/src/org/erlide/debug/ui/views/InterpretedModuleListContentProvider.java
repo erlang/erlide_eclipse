@@ -20,7 +20,6 @@ import org.erlide.util.ErlLogger;
 public class InterpretedModuleListContentProvider extends
         ModuleListContentProvider {
 
-    @SuppressWarnings("unchecked")
     @Override
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {

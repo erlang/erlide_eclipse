@@ -350,7 +350,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
         try {
             top = getTopStackFrame();
         } catch (final DebugException e1) {
-            ; // can never happen
+            // can never happen
         }
         if (top instanceof ErlangStackFrame) {
             final ErlangStackFrame topFrame = (ErlangStackFrame) top;

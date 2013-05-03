@@ -64,7 +64,6 @@ public class ErlangEventPublisher {
     public void setEventAdmin() {
         final BundleContext ctx = FrameworkUtil.getBundle(
                 ErlangEventPublisher.class).getBundleContext();
-        @SuppressWarnings("unchecked")
         final ServiceReference<EventAdmin> ref = (ServiceReference<EventAdmin>) ctx
                 .getServiceReference(EventAdmin.class.getName());
         if (ref == null) {
@@ -85,7 +84,6 @@ public class ErlangEventPublisher {
         if (ctx == null) {
             return;
         }
-        @SuppressWarnings("unchecked")
         final ServiceReference<EventAdmin> ref = (ServiceReference<EventAdmin>) ctx
                 .getServiceReference(EventAdmin.class.getName());
         if (ref == null) {

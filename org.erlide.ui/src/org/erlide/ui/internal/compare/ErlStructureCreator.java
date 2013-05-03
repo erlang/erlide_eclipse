@@ -282,7 +282,14 @@ public class ErlStructureCreator extends StructureCreator {
             try {
                 final InputStream contents = ((IStreamContentAccessor) element)
                         .getContents();
-                s = readString(contents);
+                try {
+                    s = readString(contents);
+                } finally {
+                    try {
+                        contents.close();
+                    } catch (final IOException e) {
+                    }
+                }
                 document = new Document(s);
             } catch (final CoreException ex) {
             }

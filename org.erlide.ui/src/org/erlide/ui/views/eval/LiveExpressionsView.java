@@ -574,7 +574,6 @@ public class LiveExpressionsView extends ViewPart implements
     public void delExpr() {
         final IStructuredSelection sel = (IStructuredSelection) viewer
                 .getSelection();
-        @SuppressWarnings("unchecked")
         final Iterator<LiveExpr> iter = sel.iterator();
         while (iter.hasNext()) {
             exprs.remove(iter.next());

@@ -6,7 +6,6 @@ import org.eclipse.debug.ui.actions.ILaunchable;
 public class ErlElementAdapterFactory implements IAdapterFactory {
 
     @Override
-    @SuppressWarnings("rawtypes")
     public Object getAdapter(final Object adaptableObject,
             final Class adapterType) {
         // we don't use this, just need it for menu enablement
@@ -14,7 +13,6 @@ public class ErlElementAdapterFactory implements IAdapterFactory {
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
     public Class[] getAdapterList() {
         return new Class[] { ILaunchable.class };
     }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 Lukas Larsson and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Lukas Larsson
  *******************************************************************************/
@@ -58,7 +58,7 @@ public class ErlangSourceContextTypeModule extends TemplateContextType {
 
     public static ErlangSourceContextTypeModule getDefault() {
         if (fInstance == null) {
-            new ErlangSourceContextTypeModule();
+            fInstance = new ErlangSourceContextTypeModule();
         }
         return fInstance;
     }

@@ -20,7 +20,6 @@ public abstract class ErlangEventHandler implements EventHandler, IDisposable {
         this.backendName = backendName;
     }
 
-    @SuppressWarnings("unchecked")
     public void register() {
         final String fullTopic = ErlangEventPublisher.getFullTopic(topic,
                 backendName);

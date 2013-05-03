@@ -52,7 +52,6 @@ public final class BackendData extends RuntimeData {
     protected ILaunch launch;
     private Collection<IProject> projects;
 
-    @SuppressWarnings("unchecked")
     public BackendData(@NonNull final RuntimeInfo info,
             @NonNull final ILaunchConfiguration config, final String mode,
             final boolean toBeManaged) {
