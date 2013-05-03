@@ -112,7 +112,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public String getName() {
-        return runtime.getName();
+        return runtime.getNodeName();
     }
 
     protected boolean startErlangApps(final OtpErlangPid jRex,

@@ -110,11 +110,6 @@ public class ErlRuntime implements IErlRuntime {
 
     }
 
-    @Override
-    public String getName() {
-        return getNodeName();
-    }
-
     public void startLocalNode() {
         boolean nodeCreated = false;
         synchronized (localNodeLock) {

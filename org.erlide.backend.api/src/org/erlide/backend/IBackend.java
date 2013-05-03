@@ -11,6 +11,8 @@ import org.erlide.util.IDisposable;
 public interface IBackend extends IDisposable, IErlRuntime,
         IRuntimeStateListener {
 
+    String getName();
+
     void initialize();
 
     BackendData getData();

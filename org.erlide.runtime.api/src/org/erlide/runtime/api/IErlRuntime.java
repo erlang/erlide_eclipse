@@ -19,8 +19,6 @@ import com.ericsson.otp.erlang.OtpMbox;
 
 public interface IErlRuntime extends IBeamProcess, IDisposable {
 
-    String getName();
-
     IRpcSite getRpcSite();
 
     RuntimeData getRuntimeData();
