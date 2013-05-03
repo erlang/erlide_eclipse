@@ -9,7 +9,6 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.runtime.api.ICodeBundle;
-import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeVersion;
 import org.osgi.framework.Bundle;
@@ -59,6 +58,6 @@ public interface IBackendManager {
     void moduleLoaded(final IBackend backend, final IProject project,
             final String moduleName);
 
-    IErlRuntime getByProcess(IProcess ertsProcess);
+    IBackend getByProcess(IProcess ertsProcess);
 
 }

@@ -18,9 +18,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.IBackend;
 import org.erlide.launch.debug.model.ErtsProcess;
 import org.erlide.runtime.api.ErlSystemStatus;
-import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.LogUtil;
 import org.erlide.util.MessageReporter;
@@ -51,7 +51,7 @@ final public class ErtsWatcher implements Runnable {
     @Override
     @SuppressWarnings("boxing")
     public void run() {
-        IErlRuntime runtime = null;
+        IBackend runtime = null;
         do {
             runtime = BackendCore.getBackendManager().getByProcess(ertsProcess);
         } while (runtime == null);
