@@ -14,6 +14,8 @@ class SystemMonitorHandler extends ErlangEventHandler {
 
   override void handleEvent(Event event) {
     val OtpErlangTuple t = event.getProperty("DATA") as OtpErlangTuple
+
+    // TODO publish as osgi event instead
     val b = BackendCore::backendManager.allBackends.findFirst[name==backendName]
     b.systemStatus = new ErlSystemStatus(t)
   }

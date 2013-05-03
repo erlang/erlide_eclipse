@@ -19,15 +19,19 @@ import com.ericsson.otp.erlang.OtpMbox;
 
 public interface IErlRuntime extends IBeamProcess, IDisposable {
 
+    String getNodeName();
+
     IRpcSite getRpcSite();
 
     RuntimeData getRuntimeData();
 
     boolean isAvailable();
 
-    String getNodeName();
-
+    // TODO naming
     void connect();
+
+    // TODO naming
+    void tryConnect() throws RpcException;
 
     OtpMbox createMbox(String string);
 
@@ -37,13 +41,11 @@ public interface IErlRuntime extends IBeamProcess, IDisposable {
 
     OtpMbox getEventMbox();
 
-    void addListener(IRuntimeStateListener listener);
-
     IBackendShell getShell(final String id);
+
+    void addListener(IRuntimeStateListener listener);
 
     ErlSystemStatus getSystemStatus();
 
     void setSystemStatus(ErlSystemStatus msg);
-
-    void tryConnect() throws RpcException;
 }
