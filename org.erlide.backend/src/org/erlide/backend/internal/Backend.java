@@ -349,7 +349,8 @@ public abstract class Backend implements IStreamListener, IBackend {
                 distributeDebuggerCode();
                 addNodesAsDebugTargets(launch, debugTarget);
             }
-            debugTarget.interpretModules(data, distributed);
+            debugTarget.interpretModules(data.getInitialInterpretedModules(),
+                    distributed);
             registerStartupFunctionStarter(data);
             debugTarget.sendStarted();
         } else {

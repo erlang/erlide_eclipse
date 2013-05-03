@@ -26,7 +26,7 @@ public class RuntimeData {
     protected boolean restartable;
     protected boolean startShell;
     protected boolean console;
-    protected List<String> interpretedModules;
+    protected List<String> initialInterpretedModules;
     protected String nodeName;
     protected boolean longName;
     protected String extraArgs;
@@ -46,7 +46,7 @@ public class RuntimeData {
         restartable = false;
         startShell = true;
         console = true;
-        interpretedModules = Lists.newArrayList();
+        initialInterpretedModules = Lists.newArrayList();
         nodeName = "";
         longName = true;
         extraArgs = "";
@@ -56,7 +56,7 @@ public class RuntimeData {
         debugFlags = ErlDebugFlags.DEFAULT_DEBUG_FLAGS;
         loadOnAllNodes = false;
         internal = false;
-        interpretedModules = Lists.newArrayList();
+        initialInterpretedModules = Lists.newArrayList();
         runtimeInfo = null;
         debug = false;
     }
@@ -131,12 +131,8 @@ public class RuntimeData {
         this.debug = debug;
     }
 
-    public List<String> getInterpretedModules() {
-        return interpretedModules;
-    }
-
-    public void setInterpretedModules(final List<String> interpretedModules) {
-        this.interpretedModules = interpretedModules;
+    public List<String> getInitialInterpretedModules() {
+        return initialInterpretedModules;
     }
 
     public String getNodeName() {
