@@ -3,6 +3,8 @@ package org.erlide.runtime.rpc;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
@@ -114,9 +116,10 @@ public class RpcSite implements IRpcSite {
                 public void run() {
                     OtpErlangObject result;
                     try {
-                        result = future.checkedGet(timeout);
+                        result = future.checkedGet(timeout,
+                                TimeUnit.MILLISECONDS);
                         cb.onSuccess(result);
-                    } catch (final RpcException e) {
+                    } catch (final Exception e) {
                         // TODO do we want to treat a timeout differently?
                         ErlLogger.error("Could not execute RPC " + module + ":"
                                 + fun + " : " + e.getMessage());
@@ -142,7 +145,7 @@ public class RpcSite implements IRpcSite {
             final IRpcFuture future = sendRpcCall(localNode, nodeName, false,
                     gleader, module, fun, signature, args0);
             OtpErlangObject result1;
-            result1 = future.checkedGet(timeout);
+            result1 = future.checkedGet(timeout, TimeUnit.MILLISECONDS);
             if (CHECK_RPC) {
                 ErlLogger.debug("RPC result:: " + result1);
             }
@@ -152,6 +155,8 @@ public class RpcSite implements IRpcSite {
             result = result1;
         } catch (final SignatureException e) {
             throw new RpcException(e);
+        } catch (final TimeoutException e) {
+            throw new RpcTimeoutException(e.getMessage());
         }
         return result;
     }

@@ -19,7 +19,6 @@ import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcMonitor;
 import org.erlide.runtime.rpc.RpcSite;
-import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -114,20 +113,6 @@ public class RpcFutureImpl implements IRpcFuture {
             }
         }
         return result;
-    }
-
-    @Override
-    public OtpErlangObject get(final long timeout) {
-        return get(timeout, TimeUnit.MILLISECONDS);
-    }
-
-    @Override
-    public OtpErlangObject checkedGet(final long timeout) throws RpcException {
-        try {
-            return checkedGet(timeout, TimeUnit.MILLISECONDS);
-        } catch (final TimeoutException e) {
-            throw new RpcTimeoutException(e.getMessage());
-        }
     }
 
 }
