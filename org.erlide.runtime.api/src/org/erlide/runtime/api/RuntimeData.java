@@ -64,7 +64,7 @@ public class RuntimeData {
     public RuntimeData(final RuntimeInfo runtime, final String mode) {
         this();
         runtimeInfo = runtime;
-        debug = mode.equals("debug");
+        debug = "debug".equals(mode);
     }
 
     public RuntimeData(final RuntimeInfo info, final String mode,
