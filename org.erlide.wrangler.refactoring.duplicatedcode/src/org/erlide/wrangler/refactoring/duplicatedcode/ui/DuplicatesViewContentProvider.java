@@ -1,11 +1,10 @@
 /**
- * 
+ *
  */
 package org.erlide.wrangler.refactoring.duplicatedcode.ui;
 
 import java.util.List;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.wrangler.refactoring.duplicatedcode.DuplicatesUIManager;
@@ -20,8 +19,7 @@ import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.ResultTreeRoot
  * @author Gyorgy Orosz
  * 
  */
-public class DuplicatesViewContentProvider implements
-        IStructuredContentProvider, ITreeContentProvider,
+public class DuplicatesViewContentProvider implements ITreeContentProvider,
         IDuplicatedCodeResultDisplayer {
 
     private final DuplicatesView duplicatedCodeView;

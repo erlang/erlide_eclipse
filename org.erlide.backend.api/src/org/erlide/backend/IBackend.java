@@ -6,10 +6,8 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRuntimeStateListener;
-import org.erlide.util.IDisposable;
 
-public interface IBackend extends IDisposable, IErlRuntime,
-        IRuntimeStateListener {
+public interface IBackend extends IErlRuntime, IRuntimeStateListener {
 
     String getName();
 

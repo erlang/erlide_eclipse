@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -50,8 +49,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * @author Gyorgy Orosz
  * 
  */
-public class SimpleCodeInspectionHandler extends AbstractHandler implements
-        IHandler {
+public class SimpleCodeInspectionHandler extends AbstractHandler {
     protected final class IntegerInputValidator implements IInputValidator {
         @Override
         public String isValid(final String newText) {
