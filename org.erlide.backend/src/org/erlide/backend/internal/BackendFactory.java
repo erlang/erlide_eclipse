@@ -13,6 +13,7 @@ package org.erlide.backend.internal;
 import java.io.File;
 
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
@@ -119,8 +120,8 @@ public class BackendFactory implements IBackendFactory {
         return result;
     }
 
-    private BackendData getBuildBackendData(final RuntimeInfo info) {
-        final RuntimeInfo myinfo = RuntimeInfo.copy(info);
+    private BackendData getBuildBackendData(final @NonNull RuntimeInfo info) {
+        final RuntimeInfo myinfo = new RuntimeInfo(info);
 
         final BackendData result = new BackendData(myinfo);
         result.setNodeName(info.getVersion().asMajor().toString() + "_"
@@ -135,8 +136,8 @@ public class BackendFactory implements IBackendFactory {
     }
 
     private RuntimeInfo getIdeRuntimeInfo() {
-        final RuntimeInfo info = RuntimeInfo.copy(runtimeInfoCatalog
-                .getErlideRuntime());
+        final RuntimeInfo info = new RuntimeInfo(
+                runtimeInfoCatalog.getErlideRuntime());
         return info;
     }
 

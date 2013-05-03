@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.runtime.api.RuntimeVersion;
 
 public class RuntimeInfo {
@@ -26,6 +27,8 @@ public class RuntimeInfo {
     private final Collection<String> codePath;
 
     private RuntimeVersion version_cached = null;
+
+    public static final RuntimeInfo NO_RUNTIME_INFO = new RuntimeInfo("");
 
     public RuntimeInfo(final String name) {
         this(name, ".", "", new ArrayList<String>());
@@ -39,13 +42,8 @@ public class RuntimeInfo {
         this.codePath = Collections.unmodifiableCollection(codePath);
     }
 
-    public static RuntimeInfo copy(final RuntimeInfo o) {
-        if (o == null) {
-            return null;
-        }
-        final RuntimeInfo rt = new RuntimeInfo(o.name, o.homeDir, o.args,
-                o.codePath);
-        return rt;
+    public RuntimeInfo(@NonNull final RuntimeInfo o) {
+        this(o.name, o.homeDir, o.args, o.codePath);
     }
 
     public String getArgs() {

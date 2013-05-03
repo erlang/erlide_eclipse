@@ -8,6 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
@@ -601,7 +602,7 @@ public class TraceBackend {
     }
 
     private IBackend createBackend() {
-        final RuntimeInfo info = RuntimeInfo.copy(BackendCore
+        final RuntimeInfo info = new RuntimeInfo(BackendCore
                 .getRuntimeInfoCatalog().getErlideRuntime());
         try {
             final BackendData data = getBackendData(info);
@@ -615,7 +616,7 @@ public class TraceBackend {
         return null;
     }
 
-    private BackendData getBackendData(final RuntimeInfo rinfo) {
+    private BackendData getBackendData(final @NonNull RuntimeInfo rinfo) {
         final BackendData backendData = new BackendData(rinfo);
         final String nodeName = Activator.getDefault().getPreferenceStore()
                 .getString(PreferenceNames.NODE_NAME);

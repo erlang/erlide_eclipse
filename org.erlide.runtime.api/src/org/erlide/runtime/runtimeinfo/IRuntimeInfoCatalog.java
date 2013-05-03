@@ -3,6 +3,7 @@ package org.erlide.runtime.runtimeinfo;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.runtime.api.RuntimeVersion;
 
 public interface IRuntimeInfoCatalog {
@@ -29,7 +30,8 @@ public interface IRuntimeInfoCatalog {
 
     public abstract void setDefaultRuntime(final String name);
 
-    public abstract RuntimeInfo getErlideRuntime();
+    public abstract @NonNull
+    RuntimeInfo getErlideRuntime();
 
     public abstract RuntimeInfo getDefaultRuntime();
 
