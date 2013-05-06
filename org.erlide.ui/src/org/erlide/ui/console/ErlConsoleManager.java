@@ -35,11 +35,11 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
         if (b == null) {
             return;
         }
-        final BackendData info = b.getData();
-        if (!info.hasConsole()) {
+        final BackendData data = b.getData();
+        if (!data.hasConsole()) {
             return;
         }
-        ErlLogger.debug("console ADDED to " + info);
+        ErlLogger.debug("console ADDED to " + data);
         final ErlangConsole console = new ErlangConsole(b);
         conMan.addConsoles(new IConsole[] { console });
         consoles.put(b, console);

@@ -21,23 +21,27 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class RuntimeData {
-    protected String cookie;
+    protected boolean internal;
     protected boolean managed;
     protected boolean restartable;
     protected boolean startShell;
     protected boolean console;
-    protected List<String> initialInterpretedModules;
+
+    protected RuntimeInfo runtimeInfo;
+    protected String cookie;
     protected String nodeName;
     protected boolean longName;
     protected String extraArgs;
     protected String workingDir;
     protected Map<String, String> env;
+
     protected InitialCall initialCall;
-    protected EnumSet<ErlDebugFlags> debugFlags;
+
     protected boolean loadOnAllNodes;
-    protected boolean internal;
-    protected RuntimeInfo runtimeInfo;
     protected boolean debug;
+    protected EnumSet<ErlDebugFlags> debugFlags;
+    protected List<String> initialInterpretedModules;
+
     protected boolean reportErrors = false;
 
     public RuntimeData() {
