@@ -41,7 +41,7 @@ import org.erlide.model.services.search.LimitTo;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.services.search.SearchPatternFactory;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ExceptionHandler;

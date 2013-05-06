@@ -1,7 +1,7 @@
 package org.erlide.model.services.search;
 
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;

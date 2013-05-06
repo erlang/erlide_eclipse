@@ -8,32 +8,30 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.runtime;
+package org.erlide.runtime.api;
 
+import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.shell.IBackendShell;
+import org.erlide.util.IDisposable;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
-public interface IErlRuntime {
+public interface IErlRuntime extends IBeamProcess, IDisposable {
 
-    String getName();
+    String getNodeName();
 
-    boolean isDistributed();
+    IRpcSite getRpcSite();
 
     RuntimeData getRuntimeData();
 
     boolean isAvailable();
 
-    boolean isStopped();
-
-    String getNodeName();
-
-    void start();
-
-    void stop();
-
+    // TODO naming
     void connect();
+
+    // TODO naming
+    void tryConnect() throws RpcException;
 
     OtpMbox createMbox(String string);
 
@@ -43,13 +41,9 @@ public interface IErlRuntime {
 
     OtpMbox getEventMbox();
 
-    IRpcSite getRpcSite();
-
-    void restart();
+    IBackendShell getShell(final String id);
 
     void addListener(IRuntimeStateListener listener);
-
-    IBackendShell getShell(final String id);
 
     ErlSystemStatus getSystemStatus();
 

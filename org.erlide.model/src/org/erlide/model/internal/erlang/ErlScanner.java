@@ -12,12 +12,11 @@ package org.erlide.model.internal.erlang;
 
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.erlang.IErlScanner;
-import org.erlide.util.IDisposable;
 
 /**
  * Erlang syntax scanner
  */
-public class ErlScanner implements IDisposable, IErlScanner {
+public class ErlScanner implements IErlScanner {
     private final String name;
 
     public ErlScanner(final String name) {

@@ -21,7 +21,7 @@ import org.erlide.core.builder.CompilerOptions;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.util.MessageReporter;
 import org.osgi.service.prefs.BackingStoreException;

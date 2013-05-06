@@ -1,10 +1,10 @@
 package org.erlide.backend.internal;
 
-import org.erlide.runtime.ErlSystemStatus;
-import org.erlide.runtime.IErlRuntime;
-import org.erlide.runtime.IRpcSite;
-import org.erlide.runtime.IRuntimeStateListener;
-import org.erlide.runtime.RuntimeData;
+import org.erlide.runtime.api.ErlSystemStatus;
+import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IRuntimeStateListener;
+import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;
@@ -146,18 +146,6 @@ public class NullErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public String getName() {
-        reportNoBackend();
-        return "<none>";
-    }
-
-    @Override
-    public boolean isDistributed() {
-        reportNoBackend();
-        return false;
-    }
-
-    @Override
     public RuntimeData getRuntimeData() {
         reportNoBackend();
         return null;
@@ -224,12 +212,6 @@ public class NullErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public IRpcSite getRpcSite() {
-        reportNoBackend();
-        return this;
-    }
-
-    @Override
     public void restart() {
         reportNoBackend();
 
@@ -254,5 +236,26 @@ public class NullErlRuntime implements IErlRuntime, IRpcSite {
 
     @Override
     public void setSystemStatus(final ErlSystemStatus msg) {
+    }
+
+    @Override
+    public void dispose() {
+    }
+
+    @Override
+    public IRpcSite getRpcSite() {
+        reportNoBackend();
+        return null;
+    }
+
+    @Override
+    public void tryConnect() {
+    }
+
+    @Override
+    public OtpErlangObject getRpcResult(final OtpMbox mbox, final long timeout,
+            final String env) throws RpcException {
+        reportNoBackend();
+        return null;
     }
 }

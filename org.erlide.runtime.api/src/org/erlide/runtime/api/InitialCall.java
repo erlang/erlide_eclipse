@@ -1,4 +1,4 @@
-package org.erlide.runtime;
+package org.erlide.runtime.api;
 
 import org.erlide.util.ErlLogger;
 

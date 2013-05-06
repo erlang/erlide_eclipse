@@ -19,9 +19,9 @@ import org.erlide.backend.IBackendListener;
 import org.erlide.core.ErlangCore;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
-import org.erlide.runtime.ErlDebugFlags;
-import org.erlide.runtime.ErlRuntimeAttributes;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.ErlDebugFlags;
+import org.erlide.runtime.api.ErlRuntimeAttributes;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.ErlLogger;
 

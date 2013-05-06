@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -221,7 +222,7 @@ public class ErlideBuilder {
                         notifier.checkCancel();
                         OtpErlangObject r;
                         try {
-                            r = result.getKey().get(100);
+                            r = result.getKey().get(100, TimeUnit.MILLISECONDS);
                         } catch (final Exception e) {
                             r = null;
                         }

@@ -4,7 +4,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple
 import org.erlide.backend.BackendCore
 import org.erlide.backend.events.ErlangEventHandler
 import org.osgi.service.event.Event
-import org.erlide.runtime.ErlSystemStatus
+import org.erlide.runtime.api.ErlSystemStatus
 
 class SystemMonitorHandler extends ErlangEventHandler {
 
@@ -14,6 +14,8 @@ class SystemMonitorHandler extends ErlangEventHandler {
 
   override void handleEvent(Event event) {
     val OtpErlangTuple t = event.getProperty("DATA") as OtpErlangTuple
+
+    // TODO publish as osgi event instead
     val b = BackendCore::backendManager.allBackends.findFirst[name==backendName]
     b.systemStatus = new ErlSystemStatus(t)
   }

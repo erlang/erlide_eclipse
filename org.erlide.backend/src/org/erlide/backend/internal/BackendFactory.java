@@ -12,12 +12,8 @@ package org.erlide.backend.internal;
 
 import java.io.File;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
@@ -25,8 +21,8 @@ import org.erlide.backend.BackendUtils;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendFactory;
 import org.erlide.backend.IBackendManager;
-import org.erlide.runtime.IErlRuntime;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -87,19 +83,8 @@ public class BackendFactory implements IBackendFactory {
         final IBackend b;
         try {
             final String nodeName = data.getQualifiedNodeName();
-            final IProvider<IProcess> erlProcessProvider = new IProvider<IProcess>() {
-
-                @Override
-                public IProcess get() {
-                    ILaunch launch = data.getLaunch();
-                    if (launch == null) {
-                        launch = launchPeer(data);
-                        data.setLaunch(launch);
-                    }
-                    return launch.getProcesses().length == 0 ? null : launch
-                            .getProcesses()[0];
-                }
-            };
+            final IProvider<IProcess> erlProcessProvider = new LaunchBeamProcessProvider(
+                    data);
             final IErlRuntime runtime = data.getRuntimeInfo() == null ? new NullErlRuntime()
                     : new ErlRuntime(nodeName, data.getCookie(),
                             erlProcessProvider, !data.isReportErrors(),
@@ -115,19 +100,6 @@ public class BackendFactory implements IBackendFactory {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private ILaunch launchPeer(final BackendData data) {
-        final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
-        try {
-            final boolean registerForDebug = data.getLaunch() != null
-                    || SystemConfiguration.getInstance().isDeveloper();
-            return launchConfig.launch(ILaunchManager.RUN_MODE,
-                    new NullProgressMonitor(), false, registerForDebug);
-        } catch (final CoreException e) {
-            ErlLogger.error(e);
-            return null;
-        }
     }
 
     private BackendData getIdeBackendData() {
@@ -148,8 +120,8 @@ public class BackendFactory implements IBackendFactory {
         return result;
     }
 
-    private BackendData getBuildBackendData(final RuntimeInfo info) {
-        final RuntimeInfo myinfo = RuntimeInfo.copy(info);
+    private BackendData getBuildBackendData(final @NonNull RuntimeInfo info) {
+        final RuntimeInfo myinfo = new RuntimeInfo(info);
 
         final BackendData result = new BackendData(myinfo);
         result.setNodeName(info.getVersion().asMajor().toString() + "_"
@@ -164,8 +136,8 @@ public class BackendFactory implements IBackendFactory {
     }
 
     private RuntimeInfo getIdeRuntimeInfo() {
-        final RuntimeInfo info = RuntimeInfo.copy(runtimeInfoCatalog
-                .getErlideRuntime());
+        final RuntimeInfo info = new RuntimeInfo(
+                runtimeInfoCatalog.getErlideRuntime());
         return info;
     }
 

@@ -29,9 +29,10 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
 import org.erlide.model.BeamLocator;
-import org.erlide.runtime.ErlRuntimeAttributes;
+import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.runtime.epmd.IEpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 import org.erlide.util.SystemConfiguration;
@@ -44,6 +45,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     public void launch(final ILaunchConfiguration config, final String mode,
             final ILaunch launch, final IProgressMonitor monitor)
             throws CoreException {
+        Asserts.isNotNull(config);
+
         final boolean doContinue = preLaunch(config, mode, launch, monitor);
         if (!doContinue) {
             return;

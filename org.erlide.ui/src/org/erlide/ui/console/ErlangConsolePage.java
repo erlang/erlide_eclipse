@@ -73,9 +73,9 @@ import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.ParserException;
 import org.erlide.runtime.RuntimeHelper;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.StringUtils;
@@ -420,7 +420,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
+    public Object getAdapter(final Class required) {
         if (IFindReplaceTarget.class.equals(required)) {
             return consoleOutputViewer.getFindReplaceTarget();
         }

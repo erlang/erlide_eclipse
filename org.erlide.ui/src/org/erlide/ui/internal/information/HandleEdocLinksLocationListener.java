@@ -9,7 +9,7 @@ import org.erlide.backend.IBackendManager;
 import org.erlide.model.services.search.ErlideDoc;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;

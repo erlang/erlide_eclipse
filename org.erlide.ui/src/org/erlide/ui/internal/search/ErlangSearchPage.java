@@ -54,7 +54,7 @@ import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.services.search.SearchFor;
 import org.erlide.model.services.search.SearchPatternFactory;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;

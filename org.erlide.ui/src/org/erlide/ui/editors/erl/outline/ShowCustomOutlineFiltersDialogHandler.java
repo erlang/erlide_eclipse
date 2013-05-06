@@ -6,7 +6,6 @@ import java.util.Set;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
@@ -20,8 +19,7 @@ import org.erlide.ui.editors.erl.outline.filters.PatternFilter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler
-        implements IHandler {
+public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler {
 
     public ShowCustomOutlineFiltersDialogHandler() {
         super();

@@ -42,11 +42,10 @@ import org.erlide.backend.events.ErlangEventPublisher;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.runtime.ICodeBundle;
-import org.erlide.runtime.ICodeBundle.CodeContext;
-import org.erlide.runtime.IErlRuntime;
-import org.erlide.runtime.IRpcSite;
-import org.erlide.runtime.RuntimeVersion;
+import org.erlide.runtime.api.ICodeBundle;
+import org.erlide.runtime.api.ICodeBundle.CodeContext;
+import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.RuntimeVersion;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
@@ -473,7 +472,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public IErlRuntime getByProcess(final IProcess process) {
+    public IBackend getByProcess(final IProcess process) {
         synchronized (allBackends) {
             for (final IBackend backend : allBackends) {
                 final ILaunch launch = backend.getData().getLaunch();

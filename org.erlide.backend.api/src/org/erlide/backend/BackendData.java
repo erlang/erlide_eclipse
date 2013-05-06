@@ -33,12 +33,11 @@ import org.erlide.launch.IErlangLaunchDelegateConstants;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.model.IBeamLocator;
 import org.erlide.model.erlang.ModuleKind;
-import org.erlide.runtime.ErlDebugFlags;
-import org.erlide.runtime.ErlRuntimeAttributes;
-import org.erlide.runtime.InitialCall;
-import org.erlide.runtime.RuntimeData;
+import org.erlide.runtime.api.ErlDebugFlags;
+import org.erlide.runtime.api.ErlRuntimeAttributes;
+import org.erlide.runtime.api.InitialCall;
+import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 
@@ -53,21 +52,11 @@ public final class BackendData extends RuntimeData {
     protected ILaunch launch;
     private Collection<IProject> projects;
 
-    public BackendData() {
-        super();
-        projects = Lists.newArrayList();
-    }
-
-    @SuppressWarnings("unchecked")
     public BackendData(@NonNull final RuntimeInfo info,
             @NonNull final ILaunchConfiguration config, final String mode,
             final boolean toBeManaged) {
         super(info, mode);
-
         projects = Lists.newArrayList();
-
-        Asserts.isNotNull(info);
-        Asserts.isNotNull(config);
         try {
             cookie = config.getAttribute(ErlRuntimeAttributes.COOKIE, cookie);
             managed = config
@@ -101,9 +90,9 @@ public final class BackendData extends RuntimeData {
             projects = getProjects(config);
             final List<String> intMods = config.getAttribute(
                     ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES,
-                    interpretedModules);
-            interpretedModules = addBreakpointProjectsAndModules(getProjects(),
-                    intMods);
+                    initialInterpretedModules);
+            initialInterpretedModules = addBreakpointProjectsAndModules(
+                    getProjects(), intMods);
         } catch (final CoreException e1) {
             ErlLogger.warn(e1);
         }

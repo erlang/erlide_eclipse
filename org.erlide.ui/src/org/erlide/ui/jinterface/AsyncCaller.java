@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.jinterface;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -49,10 +52,12 @@ public abstract class AsyncCaller<T> implements Runnable {
                 @Override
                 public IStatus runInUIThread(final IProgressMonitor monitor) {
                     try {
-                        if (result.checkedGet(1) == null) {
+                        if (result.checkedGet(1, TimeUnit.MILLISECONDS) == null) {
                             schedule(interval);
                         }
                     } catch (final RpcException e) {
+                        e.printStackTrace();
+                    } catch (final TimeoutException e) {
                         e.printStackTrace();
                     }
                     handleResult(context, result);

@@ -16,7 +16,7 @@ import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackendManager;
-import org.erlide.runtime.IErlRuntime;
+import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.util.ErlLogger;
 
 public class ExternalBackend extends Backend {

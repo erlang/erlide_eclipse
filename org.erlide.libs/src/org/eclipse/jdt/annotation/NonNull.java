@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Stephan Herrmann - initial API and implementation 
+ *     Stephan Herrmann - initial API and implementation
  *******************************************************************************/
 package org.eclipse.jdt.annotation;
 

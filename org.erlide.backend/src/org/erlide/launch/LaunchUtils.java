@@ -8,7 +8,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.erlide.runtime.ErlRuntimeAttributes;
+import org.erlide.runtime.api.ErlRuntimeAttributes;
 
 public class LaunchUtils {
 

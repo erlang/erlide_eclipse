@@ -119,7 +119,6 @@ public class ErlInformationPresenter implements
         return str;
     }
 
-    @SuppressWarnings("unchecked")
     protected void adaptTextPresentation(final TextPresentation presentation,
             final int offset, final int insertLength) {
 

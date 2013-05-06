@@ -59,7 +59,6 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
             return 2;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public int compare(final Viewer viewer, final Object e1, final Object e2) {
             final int cat1 = category(e1);

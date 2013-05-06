@@ -11,7 +11,6 @@ public class ElementAdapterFactory implements IAdapterFactory {
     private static final Class[] ADAPTER_LIST = new Class[] { IErlElement.class };
 
     @Override
-    @SuppressWarnings("rawtypes")
     public Object getAdapter(final Object adaptableObject,
             final Class adapterType) {
         if (adapterType == IErlElement.class
@@ -23,7 +22,6 @@ public class ElementAdapterFactory implements IAdapterFactory {
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
     public Class[] getAdapterList() {
         return ADAPTER_LIST;
     }

@@ -43,8 +43,7 @@ public class ToolbarFilterHandler extends AbstractHandler implements
     }
 
     @Override
-    public void updateElement(final UIElement element,
-            @SuppressWarnings("rawtypes") final Map parameters) {
+    public void updateElement(final UIElement element, final Map parameters) {
         final IEclipsePreferences prefsNode = ErlangOutlinePage.getPrefsNode();
         final String filterId = (String) parameters
                 .get("org.erlide.ui.filterId");

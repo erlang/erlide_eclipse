@@ -9,6 +9,7 @@ import org.eclipse.xtend.lib.macro.Active
 import java.lang.annotation.Documented
 import java.lang.annotation.Target
 import java.lang.annotation.ElementType
+import org.eclipse.xtend.lib.macro.declaration.TypeReference
 
 @Active(typeof(ImmutableProcessor))
 @Documented
@@ -83,7 +84,9 @@ class ImmutableProcessor extends AbstractClassProcessor {
         ''']
     ]
     cls.dataFields.forEach [ field |
-      cls.addMethod("get" + field.simpleName.toFirstUpper) [
+      val fieldType = field.type
+      val prefix = if(fieldType == primitiveBoolean || fieldType.type == typeof(Boolean)) "is" else "get"
+      cls.addMethod(prefix + field.simpleName.toFirstUpper) [
         returnType = field.type
         body = [
           '''

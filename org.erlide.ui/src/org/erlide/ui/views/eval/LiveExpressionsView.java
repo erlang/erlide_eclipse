@@ -61,7 +61,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.backend.BackendCore;
 import org.erlide.launch.debug.BackendEvalResult;
 import org.erlide.launch.debug.DebugHelper;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
@@ -574,7 +574,6 @@ public class LiveExpressionsView extends ViewPart implements
     public void delExpr() {
         final IStructuredSelection sel = (IStructuredSelection) viewer
                 .getSelection();
-        @SuppressWarnings("unchecked")
         final Iterator<LiveExpr> iter = sel.iterator();
         while (iter.hasNext()) {
             exprs.remove(iter.next());

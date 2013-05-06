@@ -14,11 +14,12 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
-import org.erlide.runtime.rpc.IRpcHelper;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcMonitor;
-import org.erlide.runtime.rpc.RpcTimeoutException;
+import org.erlide.runtime.rpc.RpcSite;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRef;
@@ -31,17 +32,17 @@ public class RpcFutureImpl implements IRpcFuture {
     private final String env;
     private final boolean logCalls;
 
-    private final IRpcHelper helper;
+    private final IRpcSite rpcSite;
     private final OtpErlangRef ref;
 
     public RpcFutureImpl(final OtpErlangRef ref, final OtpMbox mbox,
-            final String env, final boolean logCalls, final IRpcHelper helper) {
+            final String env, final boolean logCalls, final IRpcSite rpcSite) {
         this.ref = ref;
 
         this.mbox = mbox;
         this.env = env;
         this.logCalls = logCalls;
-        this.helper = helper;
+        this.rpcSite = rpcSite;
     }
 
     @Override
@@ -87,7 +88,7 @@ public class RpcFutureImpl implements IRpcFuture {
     @Override
     public OtpErlangObject checkedGet() throws RpcException {
         try {
-            return checkedGet(IRpcHelper.INFINITY, TimeUnit.MILLISECONDS);
+            return checkedGet(RpcSite.INFINITY, TimeUnit.MILLISECONDS);
         } catch (final TimeoutException e) {
             return null;
         }
@@ -98,32 +99,20 @@ public class RpcFutureImpl implements IRpcFuture {
             throws TimeoutException, RpcException {
         if (isDone()) {
             if (logCalls) {
-                helper.debugLogCallArgs("call <- %s", result);
+                final Object[] args0 = { result };
+                ErlLogger.debug("call <- %s", args0);
             }
             return result;
         }
-        result = helper.getRpcResult(mbox, timeout, env);
+        result = rpcSite.getRpcResult(mbox, timeout, env);
         if (isDone()) {
             RpcMonitor.recordResponse(ref, result);
             if (logCalls) {
-                helper.debugLogCallArgs("call <- %s", result);
+                final Object[] args0 = { result };
+                ErlLogger.debug("call <- %s", args0);
             }
         }
         return result;
-    }
-
-    @Override
-    public OtpErlangObject get(final long timeout) {
-        return get(timeout, TimeUnit.MILLISECONDS);
-    }
-
-    @Override
-    public OtpErlangObject checkedGet(final long timeout) throws RpcException {
-        try {
-            return checkedGet(timeout, TimeUnit.MILLISECONDS);
-        } catch (final TimeoutException e) {
-            throw new RpcTimeoutException(e.getMessage());
-        }
     }
 
 }

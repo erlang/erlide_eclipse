@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -23,10 +25,9 @@ import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.Util;
@@ -100,8 +101,8 @@ public class DialyzerUtils {
 
                 OtpErlangObject r = null;
                 try {
-                    r = future.checkedGet(500);
-                } catch (final RpcTimeoutException e) {
+                    r = future.checkedGet(500, TimeUnit.MILLISECONDS);
+                } catch (final TimeoutException e) {
                 }
                 if (r != null) {
                     processResult(b, r);

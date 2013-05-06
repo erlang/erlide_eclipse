@@ -14,11 +14,11 @@ public class VariablePattern extends ErlangSearchPattern {
     private final int arity;
     private final String head;
     private final String name;
-    private IErlModule module;
+    private final IErlModule module;
 
     public VariablePattern(final String functionName, final int arity,
             final String head, final String name, final LimitTo limitTo,
-            IErlModule module) {
+            final IErlModule module) {
         super(limitTo);
         this.functionName = functionName;
         this.arity = arity;
@@ -52,7 +52,7 @@ public class VariablePattern extends ErlangSearchPattern {
     }
 
     @Override
-    public ErlSearchScope reduceScope(ErlSearchScope scope) {
+    public ErlSearchScope reduceScope(final ErlSearchScope scope) {
         if (scope.getModules().contains(module)) {
             return new ErlSearchScope(module);
         }

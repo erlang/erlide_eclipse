@@ -131,7 +131,6 @@ public final class MarkerUtils {
                             res = resource;
                         } else {
                             res = includeFile.getResource();
-                            // FIXME is this right?
                         }
                     } else {
                         res = resource;

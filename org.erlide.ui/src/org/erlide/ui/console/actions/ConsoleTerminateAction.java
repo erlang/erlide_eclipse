@@ -23,6 +23,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.ui.console.ConsoleMessages;
 import org.erlide.ui.console.ErlangConsole;
+import org.erlide.util.ErlLogger;
 
 /**
  * ConsoleTerminateAction
@@ -75,7 +76,7 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
                 backend.dispose();
             }
         } catch (final DebugException e) {
-            // TODO: report exception
+            ErlLogger.error(e);
         }
     }
 

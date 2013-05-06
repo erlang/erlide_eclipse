@@ -9,7 +9,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
 import org.erlide.backend.events.ErlangEventHandler;
-import org.erlide.runtime.ErlSystemStatus;
+import org.erlide.runtime.api.ErlSystemStatus;
 import org.osgi.service.event.Event;
 
 @SuppressWarnings("all")

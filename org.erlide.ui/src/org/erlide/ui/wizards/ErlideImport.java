@@ -5,7 +5,7 @@ package org.erlide.ui.wizards;
 
 import java.util.List;
 
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 

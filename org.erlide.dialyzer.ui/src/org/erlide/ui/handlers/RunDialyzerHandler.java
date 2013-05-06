@@ -6,7 +6,6 @@ import java.util.Set;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -42,7 +41,7 @@ import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Sets;
 
-public class RunDialyzerHandler extends AbstractHandler implements IHandler {
+public class RunDialyzerHandler extends AbstractHandler {
 
     private final class DialyzeOperation extends Job {
         private final Set<IErlModule> modules;
@@ -88,7 +87,7 @@ public class RunDialyzerHandler extends AbstractHandler implements IHandler {
         }
 
         private IBackend createBackend() {
-            final RuntimeInfo info = RuntimeInfo.copy(BackendCore
+            final RuntimeInfo info = new RuntimeInfo(BackendCore
                     .getRuntimeInfoCatalog().getErlideRuntime());
             final BackendData data = new BackendData(info);
             final String nodeName = BackendUtils.getErlideNodeNameTag()

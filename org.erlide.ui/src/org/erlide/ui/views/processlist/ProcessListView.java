@@ -46,7 +46,7 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.events.ErlangEventHandler;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.util.DisplayUtils;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;

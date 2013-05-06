@@ -14,13 +14,12 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.CommonUtils;
-import org.erlide.runtime.ErlRuntimeAttributes;
+import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.util.ErlLogger;
 
 public class InterpretedModuleListContentProvider extends
         ModuleListContentProvider {
 
-    @SuppressWarnings("unchecked")
     @Override
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {

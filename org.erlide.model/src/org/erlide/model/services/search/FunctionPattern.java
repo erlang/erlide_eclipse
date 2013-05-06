@@ -16,8 +16,8 @@ public class FunctionPattern extends ErlangSearchPattern {
 
     public FunctionPattern(final String moduleName, final String name,
             final int arity, final LimitTo limitTo,
-            final boolean matchAnyFunctionDefinition, IErlModule module,
-            boolean local) {
+            final boolean matchAnyFunctionDefinition, final IErlModule module,
+            final boolean local) {
         super(limitTo);
         this.moduleName = moduleName;
         this.name = name;
@@ -66,7 +66,7 @@ public class FunctionPattern extends ErlangSearchPattern {
     }
 
     @Override
-    public ErlSearchScope reduceScope(ErlSearchScope scope) {
+    public ErlSearchScope reduceScope(final ErlSearchScope scope) {
         if (local && scope.getModules().contains(module)) {
             return new ErlSearchScope(module);
         }

@@ -7,7 +7,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
 public class DocumentCharacterIterator implements CharacterIterator,
-        CharSequence, Cloneable {
+        CharSequence {
 
     private int fIndex = -1;
 

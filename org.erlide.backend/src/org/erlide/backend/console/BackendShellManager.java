@@ -39,12 +39,10 @@ public class BackendShellManager implements IDisposable {
         BackendShell shell = getShell(id);
         if (shell == null) {
             OtpErlangPid server = null;
-            if (backend.isDistributed()) {
-                try {
-                    server = ErlideReshd.start(backend);
-                } catch (final Exception e) {
-                    ErlLogger.warn(e);
-                }
+            try {
+                server = ErlideReshd.start(backend);
+            } catch (final Exception e) {
+                ErlLogger.warn(e);
             }
             shell = new BackendShell(backend, id, server);
             fShells.put(id, shell);

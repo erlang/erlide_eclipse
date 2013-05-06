@@ -48,16 +48,17 @@ import org.erlide.launch.debug.model.ErlangDebugNode;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.BeamLoader;
-import org.erlide.runtime.ErlDebugFlags;
-import org.erlide.runtime.ErlSystemStatus;
-import org.erlide.runtime.ICodeBundle;
 import org.erlide.runtime.ICodeManager;
-import org.erlide.runtime.IErlRuntime;
-import org.erlide.runtime.IRpcSite;
-import org.erlide.runtime.IRuntimeStateListener;
-import org.erlide.runtime.InitialCall;
-import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.RuntimeUtils;
+import org.erlide.runtime.api.ErlDebugFlags;
+import org.erlide.runtime.api.ErlSystemStatus;
+import org.erlide.runtime.api.ICodeBundle;
+import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IRuntimeStateListener;
+import org.erlide.runtime.api.InitialCall;
+import org.erlide.runtime.api.RuntimeData;
+import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.util.Asserts;
@@ -106,12 +107,12 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (eventDaemon != null) {
             eventDaemon.stop();
         }
-        runtime.stop();
+        runtime.dispose();
     }
 
     @Override
     public String getName() {
-        return runtime.getName();
+        return runtime.getNodeName();
     }
 
     protected boolean startErlangApps(final OtpErlangPid jRex,
@@ -254,11 +255,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public boolean isDistributed() {
-        return runtime.isDistributed();
-    }
-
-    @Override
     public void input(final String s) throws IOException {
         if (!isStopped()) {
             final IStreamsProxy proxy = getStreamsProxy();
@@ -279,14 +275,12 @@ public abstract class Backend implements IStreamListener, IBackend {
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
             ErlLogger.debug("backend %s: add path %s", getName(), outDir);
-            if (isDistributed()) {
-                final boolean accessible = RuntimeUtils.isAccessibleDir(
-                        getRpcSite(), outDir);
-                if (accessible) {
-                    addPath(false/* prefs.getUsePathZ() */, outDir);
-                } else {
-                    loadBeamsFromDir(outDir);
-                }
+            final boolean accessible = RuntimeUtils.isAccessibleDir(
+                    getRpcSite(), outDir);
+            if (accessible) {
+                addPath(false/* prefs.getUsePathZ() */, outDir);
+            } else {
+                loadBeamsFromDir(outDir);
             }
         }
     }
@@ -302,10 +296,8 @@ public abstract class Backend implements IStreamListener, IBackend {
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
             ErlLogger.debug("backend %s: remove path %s", getName(), outDir);
-            if (isDistributed()) {
-                removePath(outDir);
-                // TODO unloadBeamsFromDir(outDir); ?
-            }
+            removePath(outDir);
+            // TODO unloadBeamsFromDir(outDir); ?
         }
     }
 
@@ -343,9 +335,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         final Collection<IProject> projects = Lists.newArrayList(data
                 .getProjects());
         registerProjectsWithExecutionBackend(projects);
-        if (!isDistributed()) {
-            return;
-        }
         if (data.isDebug()) {
             // add debug debugTarget
             final ILaunch launch = getData().getLaunch();
@@ -360,7 +349,8 @@ public abstract class Backend implements IStreamListener, IBackend {
                 distributeDebuggerCode();
                 addNodesAsDebugTargets(launch, debugTarget);
             }
-            debugTarget.interpretModules(data, distributed);
+            debugTarget.interpretModules(data.getInitialInterpretedModules(),
+                    distributed);
             registerStartupFunctionStarter(data);
             debugTarget.sendStarted();
         } else {
@@ -536,19 +526,16 @@ public abstract class Backend implements IStreamListener, IBackend {
     public void initialize() {
         runtime.addListener(this);
         shellManager = new BackendShellManager(this);
-        if (isDistributed()) {
-            connect();
-            for (final ICodeBundle bb : backendManager.getCodeBundles()
-                    .values()) {
-                registerCodeBundle(bb);
-            }
-            initErlang(data.isManaged());
+        connect();
+        for (final ICodeBundle bb : backendManager.getCodeBundles().values()) {
+            registerCodeBundle(bb);
+        }
+        initErlang(data.isManaged());
 
-            try {
-                postLaunch();
-            } catch (final DebugException e) {
-                ErlLogger.error(e);
-            }
+        try {
+            postLaunch();
+        } catch (final DebugException e) {
+            ErlLogger.error(e);
         }
     }
 
@@ -613,5 +600,10 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public void setSystemStatus(final ErlSystemStatus msg) {
         runtime.setSystemStatus(msg);
+    }
+
+    @Override
+    public void tryConnect() throws RpcException {
+        runtime.tryConnect();
     }
 }

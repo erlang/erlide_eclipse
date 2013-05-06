@@ -142,7 +142,7 @@ public class ErlSearchQuery implements ISearchQuery {
 
         };
         try {
-            ErlSearchScope reducedScope = pattern.reduceScope(scope);
+            final ErlSearchScope reducedScope = pattern.reduceScope(scope);
             ErlideSearchServer.startFindRefs(BackendCore.getBackendManager()
                     .getIdeBackend().getRpcSite(), pattern, reducedScope,
                     ModelPlugin.getStateDir(), callback, false);

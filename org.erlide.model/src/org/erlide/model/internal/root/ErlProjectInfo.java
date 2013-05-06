@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import org.erlide.runtime.RuntimeVersion;
+import org.erlide.runtime.api.RuntimeVersion;
 
 import com.google.common.collect.Sets;
 

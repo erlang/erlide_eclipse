@@ -14,8 +14,7 @@ import org.eclipse.debug.core.sourcelookup.ISourceContainerType;
 import org.eclipse.debug.core.sourcelookup.containers.CompositeSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
 
-public class ErlangOtpSourceContainer extends CompositeSourceContainer
-        implements ISourceContainer {
+public class ErlangOtpSourceContainer extends CompositeSourceContainer {
 
     private final IPath otpHome;
 
