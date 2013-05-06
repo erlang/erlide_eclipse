@@ -63,7 +63,9 @@ public class BackendCore {
     }
 
     public static void stop() {
-        epmdWatcherJob.stop();
+        if (epmdWatcherJob != null) {
+            epmdWatcherJob.stop();
+        }
     }
 
 }
