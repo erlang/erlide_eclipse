@@ -24,16 +24,22 @@ public class InternalBackend extends Backend {
         super(data, runtime, backendManager);
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void runtimeDown(final IErlRuntime runtime) {
-        runtime.restart();
-        ErlLogger.debug("restart %s", getName());
+        getData().setLaunch(null);
+        // TODO fix this
+        if (false && getData().isRestartable()) {
+            ErlLogger.debug("restart %s", getName());
+            runtime.restart();
 
-        // TODO remove code duplication here
-        connect();
-        for (final ICodeBundle bb : backendManager.getCodeBundles().values()) {
-            registerCodeBundle(bb);
+            // TODO remove code duplication here
+            connect();
+            for (final ICodeBundle bb : backendManager.getCodeBundles()
+                    .values()) {
+                registerCodeBundle(bb);
+            }
+            startErlangApps(getEventPid(), true);
         }
-        startErlangApps(getEventPid(), true);
     }
 }

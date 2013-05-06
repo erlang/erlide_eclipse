@@ -70,11 +70,7 @@ public class ErlRuntime implements IErlRuntime {
             final IProvider<IProcess> processProvider) {
         this.data = data;
         this.processProvider = processProvider;
-        process = processProvider.get();
-        state = State.DISCONNECTED;
         connectOnce = data.isInternal();
-        stopped = false;
-
         statusWatcher = new OtpNodeStatus() {
             @Override
             public void remoteStatus(final String node, final boolean up,
@@ -91,17 +87,20 @@ public class ErlRuntime implements IErlRuntime {
                 }
             }
         };
-        startLocalNode();
-        // if (epmdWatcher.isRunningNode(name)) {
-        // connect();
-        // }
+        start();
         rpcSite = new RpcSite(this, localNode, getNodeName());
     }
 
     @Override
     public void start() {
-        // TODO Auto-generated method stub
+        process = processProvider.get();
+        state = State.DISCONNECTED;
+        stopped = false;
 
+        startLocalNode();
+        // if (epmdWatcher.isRunningNode(name)) {
+        // connect();
+        // }
     }
 
     public void startLocalNode() {
@@ -170,6 +169,7 @@ public class ErlRuntime implements IErlRuntime {
                 try {
                     if (process != null) {
                         process.terminate();
+                        process = null;
                     }
                 } catch (final DebugException e) {
                     ErlLogger.info(e);
@@ -279,6 +279,9 @@ public class ErlRuntime implements IErlRuntime {
     @Override
     public void stop() {
         // close peer too?
+        if (stopped) {
+            return;
+        }
         stopped = true;
         localNode.close();
     }
@@ -399,12 +402,17 @@ public class ErlRuntime implements IErlRuntime {
 
     @Override
     public void restart() {
-        if (stopped) {
+        if (!data.isRestartable()) {
             return;
         }
+        if (!stopped) {
+            stop();
+        }
         System.out.println("RESTART " + this);
-        state = State.DISCONNECTED;
-        process = processProvider.get();
+        start();
+        // state = State.DISCONNECTED;
+        // stopped = false;
+        // process = processProvider.get();
     }
 
     @Override
@@ -432,6 +440,7 @@ public class ErlRuntime implements IErlRuntime {
     @Override
     public void dispose() {
         stop();
+        process = null;
         listener = null;
     }
 

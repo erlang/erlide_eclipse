@@ -102,10 +102,12 @@ public abstract class Backend implements IStreamListener, IBackend {
         ErlLogger.debug("disposing backend " + getName());
         if (shellManager != null) {
             shellManager.dispose();
+            shellManager = null;
         }
 
         if (eventDaemon != null) {
             eventDaemon.stop();
+            eventDaemon = null;
         }
         runtime.dispose();
     }
@@ -148,6 +150,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void start() {
+        ErlLogger.debug("starting backend " + getName());
         runtime.start();
     }
 
