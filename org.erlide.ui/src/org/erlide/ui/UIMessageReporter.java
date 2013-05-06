@@ -29,10 +29,10 @@ public class UIMessageReporter extends MessageReporter {
                 }
                 switch (style) {
                 case CENTER:
-                    PopupDialog.showDialog("Erlide " + type, message, icon);
+                    PopupDialog.showDialog("erlide " + type, message, icon);
                     break;
                 case CORNER:
-                    PopupDialog.showBalloon("Erlide " + type, message, icon);
+                    PopupDialog.showBalloon("erlide " + type, message, icon);
                     break;
                 default:
                     break;

@@ -186,8 +186,7 @@ public class ErlRuntime implements IErlRuntime {
         final String fmt = "Backend '%s' is down";
         final String msg = String.format(fmt, peer);
         // TODO when to report errors?
-        final boolean shouldReport = true || data.isInternal()
-                || data.isReportErrors();
+        final boolean shouldReport = data.isInternal() || data.isReportErrors();
         if (shouldReport && !reported) {
             final String user = System.getProperty("user.name");
 
