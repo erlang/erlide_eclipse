@@ -78,7 +78,7 @@ public class RpcSite implements IRpcSite {
     public IRpcFuture async_call(final OtpErlangObject gleader,
             final String module, final String fun, final String signature,
             final Object... args0) throws RpcException {
-        runtime.tryConnect();
+        tryConnect();
         try {
             return sendRpcCall(localNode, nodeName, false, gleader, module,
                     fun, signature, args0);
@@ -107,7 +107,7 @@ public class RpcSite implements IRpcSite {
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args)
             throws RpcException {
-        runtime.tryConnect();
+        tryConnect();
         try {
             final IRpcFuture future = sendRpcCall(localNode, nodeName, false,
                     gleader, module, fun, signature, args);
@@ -139,7 +139,7 @@ public class RpcSite implements IRpcSite {
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
             throws RpcException {
-        runtime.tryConnect();
+        tryConnect();
         OtpErlangObject result;
         try {
             final IRpcFuture future = sendRpcCall(localNode, nodeName, false,
@@ -173,7 +173,7 @@ public class RpcSite implements IRpcSite {
     public void cast(final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
             throws RpcException {
-        runtime.tryConnect();
+        tryConnect();
         try {
             rpcCast(localNode, nodeName, false, gleader, module, fun,
                     signature, args0);
@@ -191,7 +191,7 @@ public class RpcSite implements IRpcSite {
     @Override
     public void send(final OtpErlangPid pid, final Object msg) {
         try {
-            runtime.tryConnect();
+            tryConnect();
             final OtpMbox mbox = localNode.createMbox();
             try {
                 if (mbox != null) {
@@ -211,7 +211,7 @@ public class RpcSite implements IRpcSite {
     public void send(final String fullNodeName, final String name,
             final Object msg) {
         try {
-            runtime.tryConnect();
+            tryConnect();
             send(localNode, fullNodeName, name, msg);
         } catch (final Exception e) {
         }
@@ -250,9 +250,17 @@ public class RpcSite implements IRpcSite {
     @Override
     public void send(final String name, final Object msg) {
         try {
-            runtime.tryConnect();
+            tryConnect();
             send(localNode, nodeName, name, msg);
         } catch (final Exception e) {
+        }
+    }
+
+    private void tryConnect() throws RpcException {
+        runtime.tryConnect();
+        if (!runtime.isAvailable()) {
+            throw new RpcException(String.format("backend %s down",
+                    runtime.getNodeName()));
         }
     }
 
