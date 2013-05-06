@@ -82,13 +82,10 @@ public class BackendFactory implements IBackendFactory {
 
         final IBackend b;
         try {
-            final String nodeName = data.getQualifiedNodeName();
             final IProvider<IProcess> erlProcessProvider = new LaunchBeamProcessProvider(
                     data);
             final IErlRuntime runtime = data.getRuntimeInfo() == null ? new NullErlRuntime()
-                    : new ErlRuntime(nodeName, data.getCookie(),
-                            erlProcessProvider, !data.isReportErrors(),
-                            data.hasLongName(), data.isInternal());
+                    : new ErlRuntime(data, erlProcessProvider);
             final IBackendManager backendManager = BackendCore
                     .getBackendManager();
             b = data.isInternal() ? new InternalBackend(data, runtime,

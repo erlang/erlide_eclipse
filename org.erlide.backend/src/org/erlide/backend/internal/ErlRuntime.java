@@ -66,32 +66,26 @@ public class ErlRuntime implements IErlRuntime {
     private ErlSystemStatus lastSystemMessage;
     private final IRpcSite rpcSite;
 
-    public ErlRuntime(final String name, final String cookie,
-            final IProvider<IProcess> processProvider,
-            final boolean reportWhenDown, final boolean longName,
-            final boolean connectOnce) {
-        state = State.DISCONNECTED;
+    public ErlRuntime(final RuntimeData data,
+            final IProvider<IProcess> processProvider) {
+        this.data = data;
         this.processProvider = processProvider;
         process = processProvider.get();
-        this.connectOnce = connectOnce;
+        state = State.DISCONNECTED;
+        connectOnce = data.isInternal();
         stopped = false;
-        data = new RuntimeData();
-        data.setLongName(longName);
-        data.setCookie(cookie);
-        data.setNodeName(name);
-        data.setReportErrors(reportWhenDown);
 
         statusWatcher = new OtpNodeStatus() {
             @Override
             public void remoteStatus(final String node, final boolean up,
                     final Object info) {
-                if (node.equals(data.getNodeName())) {
+                if (node.equals(getNodeName())) {
                     if (up) {
-                        ErlLogger.debug("Node %s is up", data.getNodeName());
+                        ErlLogger.debug("Node %s is up", getNodeName());
                         connectRetry();
                     } else {
-                        ErlLogger.debug("Node %s is down: %s",
-                                data.getNodeName(), info);
+                        ErlLogger.debug("Node %s is down: %s", getNodeName(),
+                                info);
                         state = State.DOWN;
                     }
                 }
@@ -101,7 +95,7 @@ public class ErlRuntime implements IErlRuntime {
         // if (epmdWatcher.isRunningNode(name)) {
         // connect();
         // }
-        rpcSite = new RpcSite(this, localNode, data.getNodeName());
+        rpcSite = new RpcSite(this, localNode, getNodeName());
     }
 
     @Override
@@ -137,7 +131,7 @@ public class ErlRuntime implements IErlRuntime {
 
     @Override
     public String getNodeName() {
-        return data.getNodeName();
+        return data.getQualifiedNodeName();
     }
 
     private boolean connectRetry() {
@@ -181,7 +175,7 @@ public class ErlRuntime implements IErlRuntime {
                     ErlLogger.info(e);
                 }
                 if (!stopped) {
-                    final String msg = reportRuntimeDown(data.getNodeName());
+                    final String msg = reportRuntimeDown(getNodeName());
                     throw new RpcException(msg);
                 }
             }
@@ -191,7 +185,10 @@ public class ErlRuntime implements IErlRuntime {
     private String reportRuntimeDown(final String peer) {
         final String fmt = "Backend '%s' is down";
         final String msg = String.format(fmt, peer);
-        if (data.getReportErrors() && !reported) {
+        // TODO when to report errors?
+        final boolean shouldReport = true || data.isInternal()
+                || data.isReportErrors();
+        if (shouldReport && !reported) {
             final String user = System.getProperty("user.name");
 
             String msg1;

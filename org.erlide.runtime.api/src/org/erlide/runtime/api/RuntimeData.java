@@ -342,8 +342,4 @@ public class RuntimeData {
         return result;
     }
 
-    public boolean getReportErrors() {
-        return reportErrors;
-    }
-
 }
