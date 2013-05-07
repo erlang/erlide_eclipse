@@ -46,7 +46,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
             return true;
         }
         final IRpcSite backend = ModelPlugin.getDefault().getBackend(
-                ModelUtils.getProject(this).getName());
+                ModelUtils.getProject(this).getWorkspaceProject());
         if (backend != null) {
             final List<String> files = ErlideOpen.getLibFiles(backend, entry);
             final List<IErlModule> children = Lists

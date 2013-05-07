@@ -1,5 +1,6 @@
 package org.erlide.model;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.backend.api.IBackendProvider;
 import org.erlide.runtime.api.IRpcSite;
@@ -61,9 +62,9 @@ public class ModelPlugin extends Plugin {
         return provider.get(version);
     }
 
-    public IRpcSite getBackend(final String name) {
+    public IRpcSite getBackend(final IProject project) {
         final IBackendProvider provider = getRuntimeProvider();
-        return provider.get(name);
+        return provider.get(project);
     }
 
     public static String getStateDir() {

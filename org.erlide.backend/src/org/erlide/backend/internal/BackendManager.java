@@ -19,7 +19,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -362,16 +361,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             }
         }
         return null;
-    }
-
-    @Override
-    public IRpcSite getByProject(final String projectName) {
-        final IProject prj = ResourcesPlugin.getWorkspace().getRoot()
-                .getProject(projectName);
-        if (prj == null) {
-            ErlLogger.error("Can't find project %s", projectName);
-        }
-        return getByProject(prj);
     }
 
     @Override

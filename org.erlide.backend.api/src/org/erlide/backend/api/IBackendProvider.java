@@ -1,5 +1,6 @@
 package org.erlide.backend.api;
 
+import org.eclipse.core.resources.IProject;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeVersion;
 
@@ -9,6 +10,6 @@ public interface IBackendProvider {
 
     IRpcSite get(RuntimeVersion version);
 
-    IRpcSite get(String project);
+    IRpcSite get(IProject project);
 
 }
