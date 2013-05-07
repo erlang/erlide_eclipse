@@ -1,6 +1,9 @@
 package org.erlide.backend;
 
 import org.eclipse.core.resources.IProject;
+import org.erlide.backend.api.BackendException;
+import org.erlide.backend.api.IBackend;
+import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.internal.BackendFactory;
 import org.erlide.backend.internal.BackendManager;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;

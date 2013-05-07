@@ -15,7 +15,7 @@ import java.net.Socket;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IProcess;
-import org.erlide.backend.BackendException;
+import org.erlide.backend.api.BackendException;
 import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;

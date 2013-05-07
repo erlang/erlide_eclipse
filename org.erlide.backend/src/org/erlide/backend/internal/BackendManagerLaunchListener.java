@@ -13,7 +13,7 @@ package org.erlide.backend.internal;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.ILaunchesListener2;
-import org.erlide.backend.IBackendManager;
+import org.erlide.backend.api.IBackendManager;
 
 public class BackendManagerLaunchListener implements ILaunchesListener2 {
 

@@ -6,7 +6,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
-import org.erlide.backend.BackendData;
+import org.erlide.backend.api.BackendData;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.IProvider;
 import org.erlide.util.SystemConfiguration;

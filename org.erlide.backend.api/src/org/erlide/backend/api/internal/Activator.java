@@ -1,4 +1,4 @@
-package org.erlide.backend.api;
+package org.erlide.backend.api.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

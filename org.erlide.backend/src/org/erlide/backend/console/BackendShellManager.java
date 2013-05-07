@@ -13,7 +13,7 @@ package org.erlide.backend.console;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.erlide.backend.IBackend;
+import org.erlide.backend.api.IBackend;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.IDisposable;

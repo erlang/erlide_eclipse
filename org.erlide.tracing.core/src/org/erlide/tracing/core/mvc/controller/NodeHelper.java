@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
-import org.erlide.backend.IBackendManager;
+import org.erlide.backend.api.IBackend;
+import org.erlide.backend.api.IBackendManager;
 import org.erlide.tracing.core.TraceBackend;
 
 /**

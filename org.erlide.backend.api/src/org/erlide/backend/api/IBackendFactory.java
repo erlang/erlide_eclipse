@@ -1,4 +1,4 @@
-package org.erlide.backend;
+package org.erlide.backend.api;
 
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 

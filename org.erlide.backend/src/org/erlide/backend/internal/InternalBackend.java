@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.erlide.backend.internal;
 
-import org.erlide.backend.BackendData;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.IBackendManager;
+import org.erlide.backend.api.BackendData;
+import org.erlide.backend.api.BackendException;
+import org.erlide.backend.api.IBackendManager;
 import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.util.ErlLogger;

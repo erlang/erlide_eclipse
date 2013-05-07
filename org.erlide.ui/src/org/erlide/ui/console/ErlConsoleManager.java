@@ -7,9 +7,9 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendData;
-import org.erlide.backend.IBackend;
-import org.erlide.backend.IBackendListener;
+import org.erlide.backend.api.BackendData;
+import org.erlide.backend.api.IBackend;
+import org.erlide.backend.api.IBackendListener;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.IDisposable;
 

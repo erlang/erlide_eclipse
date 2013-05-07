@@ -1,4 +1,4 @@
-package org.erlide.backend;
+package org.erlide.backend.api;
 
 import java.io.IOException;
 

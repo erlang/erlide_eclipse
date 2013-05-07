@@ -3,7 +3,7 @@ package org.erlide.cover.core;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.erlide.backend.IBackend;
+import org.erlide.backend.api.IBackend;
 import org.erlide.cover.api.AbstractCoverRunner;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.api.ICoverBackend;

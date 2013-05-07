@@ -22,7 +22,8 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.3.0",
  org.erlide.model.api;bundle-version="0.20.2",
  org.erlide.libs;bundle-version="1.10.0",
  org.erlide.util,
- org.erlide.runtime;bundle-version="0.20.3"
+ org.erlide.runtime;bundle-version="0.20.3",
+ org.erlide.backend.api
 Bundle-ActivationPolicy: lazy
 Export-Package: 
  org.erlide.wrangler.refactoring;x-internal:=true;uses:="org.osgi.framework,org.eclipse.ui.plugin",

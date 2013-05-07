@@ -7,7 +7,7 @@
  * Contributors:
  *     Eric Merritt
  *******************************************************************************/
-package org.erlide.backend;
+package org.erlide.backend.api;
 
 /**
  * Simple top level exception

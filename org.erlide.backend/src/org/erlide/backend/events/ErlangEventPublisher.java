@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.IBackend;
-import org.erlide.backend.IBackendListener;
+import org.erlide.backend.api.BackendException;
+import org.erlide.backend.api.IBackend;
+import org.erlide.backend.api.IBackendListener;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;

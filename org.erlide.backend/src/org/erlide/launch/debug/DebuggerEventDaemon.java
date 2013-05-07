@@ -3,8 +3,8 @@ package org.erlide.launch.debug;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.backend.IBackend;
-import org.erlide.backend.IBackendListener;
+import org.erlide.backend.api.IBackend;
+import org.erlide.backend.api.IBackendListener;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.util.ErlLogger;
 

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: backend Api
 Bundle-SymbolicName: org.erlide.backend.api;singleton:=true
 Bundle-Version: 0.20.2.qualifier
-Bundle-Activator: org.erlide.backend.api.Activator
+Bundle-Activator: org.erlide.backend.api.internal.Activator
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.6.1",
@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.runtime;bundle-version="0.20.3"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.erlide.backend,
- org.erlide.backend.api,
+Export-Package: org.erlide.backend.api,
+ org.erlide.backend.api.internal;x-internal:=true,
  org.erlide.launch,
  org.erlide.launch.debug

@@ -18,7 +18,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
+import org.erlide.backend.api.IBackend;
 import org.erlide.launch.debug.model.ErtsProcess;
 import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.util.ErlLogger;
