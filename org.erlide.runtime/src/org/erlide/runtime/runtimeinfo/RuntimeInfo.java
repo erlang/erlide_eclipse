@@ -57,22 +57,22 @@ public final class RuntimeInfo {
         }
 
         public Builder withName(final String aName) {
-            this.name = aName;
+            name = aName;
             return this;
         }
 
         public Builder withHomeDir(final String aHomeDir) {
-            this.homeDir = aHomeDir;
+            homeDir = aHomeDir;
             return this;
         }
 
         public Builder withArgs(final String someArgs) {
-            this.args = someArgs;
+            args = someArgs;
             return this;
         }
 
         public Builder withCodePath(final Collection<String> aCodePath) {
-            this.codePath = aCodePath;
+            codePath = aCodePath;
             return this;
         }
     }

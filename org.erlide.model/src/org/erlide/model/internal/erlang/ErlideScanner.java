@@ -3,6 +3,7 @@ package org.erlide.model.internal.erlang;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.erlide.backend.api.BackendException;
 import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.runtime.api.IRpcSite;
