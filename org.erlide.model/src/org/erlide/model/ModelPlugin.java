@@ -1,8 +1,8 @@
 package org.erlide.model;
 
 import org.eclipse.core.runtime.Plugin;
-import org.erlide.runtime.IRuntimeProvider;
 import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IRuntimeProvider;
 import org.erlide.runtime.api.RuntimeVersion;
 import org.erlide.util.ExtensionUtils;
 import org.osgi.framework.BundleContext;

@@ -8,7 +8,7 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.runtime;
+package org.erlide.runtime.internal;
 
 import java.util.Collection;
 

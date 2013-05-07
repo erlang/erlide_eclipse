@@ -1,4 +1,4 @@
-package org.erlide.runtime;
+package org.erlide.runtime.api;
 
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoSerializer;

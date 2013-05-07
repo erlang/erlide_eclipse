@@ -31,8 +31,8 @@ import org.erlide.model.erlang.IErlTypespec;
 import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.internal.root.ErlMember;
 import org.erlide.model.root.IErlElement;
-import org.erlide.runtime.RuntimeHelper;
 import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.RuntimeHelper;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 

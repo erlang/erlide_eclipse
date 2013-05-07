@@ -1,6 +1,6 @@
-package org.erlide.runtime;
+package org.erlide.runtime.api;
 
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.internal.ParserException;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;

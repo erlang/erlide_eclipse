@@ -25,7 +25,7 @@ import org.erlide.model.internal.root.ErlProjectInfo;
 import org.erlide.model.internal.root.ErlProjectInfoBuilder;
 import org.erlide.model.internal.root.PathSerializer;
 import org.erlide.model.internal.root.ProjectPreferencesConstants;
-import org.erlide.runtime.RuntimeCore;
+import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.api.RuntimeVersion;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.SystemConfiguration;

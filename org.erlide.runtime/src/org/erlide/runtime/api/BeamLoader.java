@@ -1,9 +1,8 @@
-package org.erlide.runtime;
+package org.erlide.runtime.api;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

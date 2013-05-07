@@ -1,4 +1,4 @@
-package org.erlide.runtime;
+package org.erlide.runtime.internal;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

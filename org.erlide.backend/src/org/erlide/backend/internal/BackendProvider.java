@@ -1,8 +1,8 @@
 package org.erlide.backend.internal;
 
 import org.erlide.backend.BackendCore;
-import org.erlide.runtime.IRuntimeProvider;
 import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IRuntimeProvider;
 import org.erlide.runtime.api.RuntimeVersion;
 
 public class BackendProvider implements IRuntimeProvider {
