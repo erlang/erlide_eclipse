@@ -201,6 +201,9 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlElement element) throws CoreException, ErlModelException,
             PartInitException, BadLocationException, OtpErlangRangeException,
             BackendException, RpcException {
+        if (editor == null) {
+            return;
+        }
         final Object found = findOpenResult(editor, module, backend,
                 erlProject, openResult, element);
         if (found instanceof IErlElement) {

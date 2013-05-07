@@ -25,6 +25,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentEvent;
@@ -77,7 +78,9 @@ import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeHelper;
 import org.erlide.runtime.internal.ParserException;
 import org.erlide.runtime.shell.IBackendShell;
+import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.ui.util.IColorManager;
 import org.erlide.util.StringUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -207,20 +210,6 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         final Color bgcolor = DebugUIPlugin
                 .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
         consoleText.setBackground(bgcolor);
-        consoleText.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(final KeyEvent e) {
-                if (fConsole.isStopped()) {
-                    return;
-                }
-                final boolean isHistoryCommand = (e.stateMask & SWT.MOD1) == SWT.MOD1
-                        && (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN);
-                if (e.character != (char) 0 || isHistoryCommand) {
-                    e.doit = false;
-                }
-            }
-
-        });
         consoleText.addFocusListener(new FocusListener() {
             @Override
             public void focusLost(final FocusEvent e) {
@@ -246,24 +235,29 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                     }
                 });
 
+        final IPreferenceStore store = ErlideUIPlugin.getDefault()
+                .getPreferenceStore();
+        final IColorManager colorManager = new ColorManager();
+
         consoleOutputViewer.setDocument(fDoc);
         consoleOutputViewer
-                .configure(new ErlangConsoleSourceViewerConfiguration());
+                .configure(new ErlangConsoleSourceViewerConfiguration(store,
+                        colorManager));
 
         consoleInputViewer = new SourceViewer(sashForm, null, SWT.MULTI
                 | SWT.WRAP | SWT.V_SCROLL);
         consoleInputViewer.setDocument(new Document());
         consoleInputViewer
-                .configure(new ErlangConsoleSourceViewerConfiguration());
+                .configure(new ErlangConsoleSourceViewerConfiguration(store,
+                        colorManager));
         consoleInput = (StyledText) consoleInputViewer.getControl();
-        consoleInput.setBackground(bgcolor);
 
         sashForm.setWeights(new int[] { 2, 1 });
 
         final Label helpLabel = new Label(composite, SWT.NONE);
         helpLabel
-                .setText("To send the input to the console: press Enter at the end of an expression"
-                        + " or Ctrl/Cmd-Enter. Press Esc to clear input.");
+                .setText("To send the input to the console: press Enter at the end of an expression."
+                        + "Ctrl/Cmd-arrows navigate the input history.");
         helpLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         final ModifyListener modifyListener = new ModifyListener() {
@@ -296,12 +290,13 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 final boolean atEndOfInput = consoleInput.getCaretOffset() >= StringUtils
                         .rightTrim(consoleInput.getText(), ' ').length();
                 final boolean inputComplete = isInputComplete();
+                e.doit = true;
 
                 if (e.keyCode == 13 && (ctrlOrCommandPressed || atEndOfInput)
                         && inputComplete) {
                     sendInput();
-                    e.doit = true;
                 } else if (ctrlOrCommandPressed && e.keyCode == SWT.ARROW_UP) {
+                    e.doit = false;
                     history.prev();
                     final String s = history.get();
                     if (s != null) {
@@ -310,6 +305,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                                 .length());
                     }
                 } else if (ctrlOrCommandPressed && e.keyCode == SWT.ARROW_DOWN) {
+                    e.doit = false;
                     history.next();
                     final String s = history.get();
                     if (s != null) {
@@ -317,8 +313,6 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                         consoleInput.setSelection(consoleInput.getText()
                                 .length());
                     }
-                } else if (e.keyCode == SWT.ESC) {
-                    consoleInput.setText("");
                 }
             }
         });

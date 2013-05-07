@@ -15,11 +15,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
-import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
-import org.eclipse.jface.text.contentassist.IContextInformation;
-import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.services.IDisposable;
 import org.erlide.model.erlang.IErlModule;
@@ -28,8 +24,7 @@ import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlContentAssistProcessor extends
-        AbstractErlContentAssistProcessor implements IContentAssistProcessor,
-        IDisposable {
+        AbstractErlContentAssistProcessor implements IDisposable {
 
     protected char[] fCompletionProposalAutoActivationCharacters;
     protected final IPreferenceChangeListener fPreferenceChangeListener;
@@ -41,27 +36,6 @@ public class ErlContentAssistProcessor extends
         fPreferenceChangeListener = new PreferenceChangeListener();
         final IEclipsePreferences node = CodeAssistPreferences.getNode();
         node.addPreferenceChangeListener(fPreferenceChangeListener);
-    }
-
-    @Override
-    public IContextInformation[] computeContextInformation(
-            final ITextViewer viewer, final int offset) {
-        return null;
-    }
-
-    @Override
-    public char[] getContextInformationAutoActivationCharacters() {
-        return null;
-    }
-
-    @Override
-    public String getErrorMessage() {
-        return null;
-    }
-
-    @Override
-    public IContextInformationValidator getContextInformationValidator() {
-        return null;
     }
 
     @Override

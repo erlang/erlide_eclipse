@@ -20,7 +20,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.erlide.runtime.shell.IoRequest;
-import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.util.IColorManager;
 
 public class ConsoleOutputScanner implements ITokenScanner {
@@ -30,7 +29,7 @@ public class ConsoleOutputScanner implements ITokenScanner {
     private String text;
     private int offset;
 
-    public ConsoleOutputScanner(final ColorManager colorManager) {
+    public ConsoleOutputScanner(final IColorManager colorManager) {
         fColorManager = colorManager;
     }
 

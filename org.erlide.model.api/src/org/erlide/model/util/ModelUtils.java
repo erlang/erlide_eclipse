@@ -392,6 +392,9 @@ public class ModelUtils {
     }
 
     public static IErlProject getProject(final IErlElement element) {
+        if (element == null) {
+            return null;
+        }
         final IErlElement ancestor = element.getAncestorOfKind(Kind.PROJECT);
         if (ancestor instanceof IErlProject) {
             return (IErlProject) ancestor;

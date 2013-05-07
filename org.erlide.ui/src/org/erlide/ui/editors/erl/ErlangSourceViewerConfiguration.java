@@ -1,16 +1,40 @@
 package org.erlide.ui.editors.erl;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.StringConverter;
+import org.eclipse.jface.text.DefaultInformationControl;
+import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IInformationControl;
+import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.ITextDoubleClickStrategy;
+import org.eclipse.jface.text.ITextHover;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
+import org.eclipse.jface.text.quickassist.QuickAssistAssistant;
+import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
+import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.IErlProject;
+import org.erlide.runtime.shell.IoRequest.IoRequestKind;
+import org.erlide.ui.console.ConsoleOutputScanner;
+import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
+import org.erlide.ui.editors.erl.completion.ErlStringContentAssistProcessor;
+import org.erlide.ui.editors.erl.correction.ErlangQuickAssistProcessor;
+import org.erlide.ui.editors.erl.hover.ErlTextHover;
 import org.erlide.ui.editors.erl.scanner.ErlCodeScanner;
 import org.erlide.ui.editors.erl.scanner.ErlCommentScanner;
 import org.erlide.ui.editors.erl.scanner.ErlDamagerRepairer;
@@ -18,6 +42,9 @@ import org.erlide.ui.editors.erl.scanner.ErlStringScanner;
 import org.erlide.ui.editors.erl.scanner.ErlTokenScanner;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.editors.erl.scanner.SingleTokenScanner;
+import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
+import org.erlide.ui.editors.internal.reconciling.ErlReconcilingStrategy;
+import org.erlide.ui.internal.information.ErlInformationPresenter;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 import org.erlide.ui.util.IColorManager;
@@ -32,6 +59,9 @@ public class ErlangSourceViewerConfiguration extends
     protected final ErlTokenScanner stringScanner;
     protected final ErlTokenScanner qatomScanner;
     private ICharacterPairMatcher fBracketMatcher;
+    private ITextDoubleClickStrategy doubleClickStrategy;
+    private ErlContentAssistProcessor contentAssistProcessor;
+    private ErlStringContentAssistProcessor contentAssistProcessorForStrings;
 
     public ErlangSourceViewerConfiguration(final IPreferenceStore store,
             final IColorManager colorManager) {
@@ -61,24 +91,36 @@ public class ErlangSourceViewerConfiguration extends
     @Override
     public IPresentationReconciler getPresentationReconciler(
             final ISourceViewer sourceViewer) {
-        final PresentationReconciler reconciler = new ErlangPresentationReconciler();
-        reconciler
-                .setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
-        DefaultDamagerRepairer dr = new ErlDamagerRepairer(codeScanner);
+        final PresentationReconciler reconciler = new PresentationReconciler();
+        DefaultDamagerRepairer dr;
+
+        final ITokenScanner scan = new ErlCodeScanner(colorManager);
+        dr = new ErlDamagerRepairer(scan);
+        reconciler.setDamager(dr, IoRequestKind.INPUT.name());
+        reconciler.setRepairer(dr, IoRequestKind.INPUT.name());
+
+        final ITokenScanner scan3 = new ConsoleOutputScanner(colorManager);
+        dr = new ErlDamagerRepairer(scan3);
+        reconciler.setDamager(dr, IoRequestKind.OUTPUT.name());
+        reconciler.setRepairer(dr, IoRequestKind.OUTPUT.name());
+
+        reconciler.setDamager(dr, IoRequestKind.PROMPT.name());
+        reconciler.setRepairer(dr, IoRequestKind.PROMPT.name());
+
+        reconciler.setDamager(dr, IoRequestKind.STDOUT.name());
+        reconciler.setRepairer(dr, IoRequestKind.STDOUT.name());
+
+        reconciler.setDamager(dr, IoRequestKind.STDERR.name());
+        reconciler.setRepairer(dr, IoRequestKind.STDERR.name());
+
+        reconciler.setDamager(dr, IoRequestKind.HEADER.name());
+        reconciler.setRepairer(dr, IoRequestKind.HEADER.name());
+
+        // this is for the input field
+        final ITokenScanner scan2 = new ErlCodeScanner(colorManager);
+        dr = new ErlDamagerRepairer(scan2);
         reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
         reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
-        dr = new ErlDamagerRepairer(commentScanner);
-        reconciler.setDamager(dr, IErlangPartitions.ERLANG_COMMENT);
-        reconciler.setRepairer(dr, IErlangPartitions.ERLANG_COMMENT);
-        dr = new ErlDamagerRepairer(stringScanner);
-        reconciler.setDamager(dr, IErlangPartitions.ERLANG_STRING);
-        reconciler.setRepairer(dr, IErlangPartitions.ERLANG_STRING);
-        dr = new ErlDamagerRepairer(qatomScanner);
-        reconciler.setDamager(dr, IErlangPartitions.ERLANG_QATOM);
-        reconciler.setRepairer(dr, IErlangPartitions.ERLANG_QATOM);
-        dr = new ErlDamagerRepairer(charScanner);
-        reconciler.setDamager(dr, IErlangPartitions.ERLANG_CHARACTER);
-        reconciler.setRepairer(dr, IErlangPartitions.ERLANG_CHARACTER);
 
         return reconciler;
     }
@@ -133,4 +175,160 @@ public class ErlangSourceViewerConfiguration extends
             qatomScanner.handleColorChange(id, color, style);
         }
     }
+
+    /**
+     * The double click strategy
+     * 
+     * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getDoubleClickStrategy(org.eclipse.jface.text.source.ISourceViewer,
+     *      java.lang.String)
+     */
+    @Override
+    public ITextDoubleClickStrategy getDoubleClickStrategy(
+            final ISourceViewer sourceViewer, final String contentType) {
+        if (doubleClickStrategy == null) {
+            // doubleClickStrategy = new
+            // ErlDoubleClickSelector(getBracketMatcher());
+            doubleClickStrategy = new DoubleClickStrategy(getBracketMatcher());
+        }
+        return doubleClickStrategy;
+    }
+
+    /*
+     * @see
+     * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
+     * 
+     * @since 2.0
+     */
+    @Override
+    public IInformationControlCreator getInformationControlCreator(
+            final ISourceViewer sourceViewer) {
+        return new IInformationControlCreator() {
+
+            @Override
+            public IInformationControl createInformationControl(
+                    final Shell parent) {
+                return new DefaultInformationControl(parent,
+                        EditorsUI.getTooltipAffordanceString(),
+                        new ErlInformationPresenter(true));
+            }
+        };
+    }
+
+    @Override
+    public IQuickAssistAssistant getQuickAssistAssistant(
+            final ISourceViewer sourceViewer) {
+        final IQuickAssistAssistant assistant = new QuickAssistAssistant();
+        assistant.setQuickAssistProcessor(new ErlangQuickAssistProcessor());
+        assistant
+                .setInformationControlCreator(getQuickAssistAssistantInformationControlCreator());
+        return assistant;
+    }
+
+    /**
+     * Returns the information control creator for the quick assist assistant.
+     * 
+     * @return the information control creator
+     * @since 3.3
+     */
+    private IInformationControlCreator getQuickAssistAssistantInformationControlCreator() {
+        return new IInformationControlCreator() {
+            @Override
+            public IInformationControl createInformationControl(
+                    final Shell parent) {
+                final String affordance = getAdditionalInfoAffordanceString();
+                return new DefaultInformationControl(parent, affordance);
+            }
+        };
+    }
+
+    static final String getAdditionalInfoAffordanceString() {
+        if (!EditorsUI
+                .getPreferenceStore()
+                .getBoolean(
+                        AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SHOW_TEXT_HOVER_AFFORDANCE)) {
+            return null;
+        }
+
+        return "Press 'Tab' from proposal table or click for focus";
+    }
+
+    protected IErlProject getProject() {
+        return null;
+    }
+
+    protected IErlModule getModule() {
+        return null;
+    }
+
+    @Override
+    public IContentAssistant getContentAssistant(
+            final ISourceViewer sourceViewer) {
+        final ContentAssistant contentAssistant = new ContentAssistant();
+        contentAssistant
+                .setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
+
+        final IErlModule module = getModule();
+        final IErlProject project = getProject();
+        contentAssistProcessor = new ErlContentAssistProcessor(sourceViewer,
+                module, project, contentAssistant);
+        contentAssistProcessorForStrings = new ErlStringContentAssistProcessor(
+                sourceViewer, module, project, contentAssistant);
+
+        contentAssistProcessor.setToPrefs();
+        contentAssistant.setContentAssistProcessor(contentAssistProcessor,
+                IDocument.DEFAULT_CONTENT_TYPE);
+        contentAssistant.setContentAssistProcessor(
+                contentAssistProcessorForStrings,
+                IErlangPartitions.ERLANG_STRING);
+        contentAssistant.enableAutoInsert(true);
+        contentAssistant.enablePrefixCompletion(false);
+        contentAssistant
+                .setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
+
+        contentAssistant
+                .setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+        contentAssistant
+                .setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
+        contentAssistant
+                .setInformationControlCreator(getInformationControlCreator(sourceViewer));
+
+        return contentAssistant;
+    }
+
+    public void disposeContentAssistProcessors() {
+        if (contentAssistProcessor != null) {
+            contentAssistProcessor.dispose();
+            contentAssistProcessor = null;
+            contentAssistProcessorForStrings = null;
+        }
+    }
+
+    @Override
+    public ITextHover getTextHover(final ISourceViewer sourceViewer,
+            final String contentType) {
+        return new ErlTextHover(null);
+    }
+
+    protected final static IAutoEditStrategy[] NO_AUTOEDIT = new IAutoEditStrategy[] {};
+
+    @Override
+    public IAutoEditStrategy[] getAutoEditStrategies(
+            final ISourceViewer sourceViewer, final String contentType) {
+        return NO_AUTOEDIT;
+    }
+
+    @Override
+    public IReconciler getReconciler(final ISourceViewer sourceViewer) {
+        final ErlReconcilingStrategy strategy = new ErlReconcilingStrategy(null);
+        final IErlModule module = null;
+        final String path = null;
+        final boolean logging = false;
+        final ErlReconciler reconciler = new ErlReconciler(strategy, true,
+                true, path, module, logging, null);
+        reconciler.setProgressMonitor(new NullProgressMonitor());
+        reconciler.setIsAllowedToModifyDocument(false);
+        reconciler.setDelay(500);
+        return reconciler;
+    }
+
 }
