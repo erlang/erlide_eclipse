@@ -408,7 +408,8 @@ public class RuntimePreferencePage extends PreferencePage implements
         if (vm == null) {
             return;
         }
-        final RuntimeInfo vm1 = vm.setName(vm.getName() + "_copy");
+        final RuntimeInfo vm1 = new RuntimeInfo.Builder(vm).withName(
+                vm.getName() + "_copy").build();
         final AddRuntimeDialog dialog = new AddRuntimeDialog(this, getShell(),
                 vm1);
         dialog.setTitle(RuntimePreferenceMessages.edit_title);

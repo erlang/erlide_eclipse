@@ -97,7 +97,10 @@ public final class BackendData extends RuntimeData {
             ErlLogger.warn(e1);
         }
 
-        runtimeInfo = info.setArgs(extraArgs);
+        if (extraArgs != null) {
+            runtimeInfo = new RuntimeInfo.Builder(info).withArgs(extraArgs)
+                    .build();
+        }
         try {
             if (config.getAttribute(ErlRuntimeAttributes.EXTRA_ARGS, "")
                     .equals("")) {
