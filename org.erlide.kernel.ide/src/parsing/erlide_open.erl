@@ -31,14 +31,8 @@
 %%-define(IO_FORMAT_DEBUG, 1).
 
 -include("erlide.hrl").
+-include("erlide_open.hrl").
 -include("erlide_token.hrl").
-
--record(open_context, {externalModules,
-                       externalIncludes,
-                       pathVars,
-                       extraSourcePaths,
-                       imports}).
-
 
 %%
 %% API Functions
