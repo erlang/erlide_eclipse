@@ -1,8 +1,8 @@
 package org.erlide.model;
 
 import org.eclipse.core.runtime.Plugin;
+import org.erlide.backend.api.IBackendProvider;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.IRuntimeProvider;
 import org.erlide.runtime.api.RuntimeVersion;
 import org.erlide.util.ExtensionUtils;
 import org.osgi.framework.BundleContext;
@@ -46,23 +46,23 @@ public class ModelPlugin extends Plugin {
         super.stop(bundleContext);
     }
 
-    private IRuntimeProvider getRuntimeProvider() {
+    private IBackendProvider getRuntimeProvider() {
         return ExtensionUtils.getSingletonExtension(
-                "org.erlide.runtime.backend", IRuntimeProvider.class);
+                "org.erlide.backend.api.backend", IBackendProvider.class);
     }
 
     public IRpcSite getIdeBackend() {
-        final IRuntimeProvider provider = getRuntimeProvider();
+        final IBackendProvider provider = getRuntimeProvider();
         return provider.get();
     }
 
     public IRpcSite getBackend(final RuntimeVersion version) {
-        final IRuntimeProvider provider = getRuntimeProvider();
+        final IBackendProvider provider = getRuntimeProvider();
         return provider.get(version);
     }
 
     public IRpcSite getBackend(final String name) {
-        final IRuntimeProvider provider = getRuntimeProvider();
+        final IBackendProvider provider = getRuntimeProvider();
         return provider.get(name);
     }
 

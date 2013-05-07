@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: backend Api
-Bundle-SymbolicName: org.erlide.backend.api
+Bundle-SymbolicName: org.erlide.backend.api;singleton:=true
 Bundle-Version: 0.20.2.qualifier
 Bundle-Activator: org.erlide.backend.api.Activator
 Bundle-Vendor: erlide.org

@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.erlide.runtime" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.erlide.backend.api" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.erlide.runtime" id="backend" name="backend"/>
+         <meta.schema plugin="org.erlide.backend.api" id="backend" name="backend"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.erlide.runtime.IRuntimeProvider"/>
+                  <meta.attribute kind="java" basedOn=":org.erlide.backend.api.IBackendProvider"/>
                </appinfo>
             </annotation>
          </attribute>
