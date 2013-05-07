@@ -7,12 +7,10 @@ Bundle-Activator: org.erlide.core.api.Activator
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.6.1",
- org.erlide.runtime;bundle-version="0.19.0",
  org.erlide.backend.api;bundle-version="0.19.0",
  org.erlide.model.api;bundle-version="0.19.0",
  org.erlide.util;bundle-version="0.19.0",
  org.erlide.util_eclipse;bundle-version="0.19.0",
- org.erlide.runtime;bundle-version="0.19.0",
  org.erlide.backend;bundle-version="0.19.0",
  org.erlide.model;bundle-version="0.19.0",
  org.erlide.libs;bundle-version="1.10.0"
