@@ -17,6 +17,9 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
+import org.eclipse.jface.text.contentassist.IContextInformation;
+import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.backend.BackendCore;
@@ -61,7 +64,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public abstract class AbstractErlContentAssistProcessor {
+public abstract class AbstractErlContentAssistProcessor implements
+        IContentAssistProcessor {
 
     public static class CompletionNameComparer implements
             Comparator<ICompletionProposal> {
@@ -156,6 +160,7 @@ public abstract class AbstractErlContentAssistProcessor {
 
     protected abstract String quoted(String string, Kinds kind);
 
+    @Override
     public ICompletionProposal[] computeCompletionProposals(
             final ITextViewer viewer, final int offset) {
         try {
@@ -256,6 +261,8 @@ public abstract class AbstractErlContentAssistProcessor {
                     default:
                         break;
                     }
+                } else {
+                    flags = EnumSet.of(Kinds.MODULES);
                 }
             }
             flags = filterFlags(flags);
@@ -772,4 +779,26 @@ public abstract class AbstractErlContentAssistProcessor {
             }
         }
     }
+
+    @Override
+    public IContextInformation[] computeContextInformation(
+            final ITextViewer viewer, final int offset) {
+        return null;
+    }
+
+    @Override
+    public char[] getContextInformationAutoActivationCharacters() {
+        return null;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return null;
+    }
+
+    @Override
+    public IContextInformationValidator getContextInformationValidator() {
+        return null;
+    }
+
 }

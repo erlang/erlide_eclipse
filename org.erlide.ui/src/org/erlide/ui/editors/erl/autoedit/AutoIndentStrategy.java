@@ -58,6 +58,9 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 
     protected void indentAfterNewLine(final IDocument d, final DocumentCommand c)
             throws BadLocationException {
+        if (editor == null) {
+            return;
+        }
         final int offset = c.offset;
         String txt = null;
         editor.reconcileNow();

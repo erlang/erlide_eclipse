@@ -44,7 +44,6 @@ public final class ErlangCode {
             }
             backend.call("code", "del_path", "s", path);
         } catch (final Exception e) {
-            ErlLogger.debug(e);
         }
     }
 
