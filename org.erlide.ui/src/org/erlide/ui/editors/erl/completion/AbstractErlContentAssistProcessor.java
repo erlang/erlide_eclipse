@@ -261,6 +261,8 @@ public abstract class AbstractErlContentAssistProcessor implements
                     default:
                         break;
                     }
+                } else {
+                    flags = EnumSet.of(Kinds.MODULES);
                 }
             }
             flags = filterFlags(flags);

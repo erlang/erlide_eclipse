@@ -33,6 +33,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.IFindReplaceTarget;
 import org.eclipse.jface.text.ITextOperationTarget;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -74,7 +75,7 @@ import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.backend.api.IBackend;
 import org.erlide.runtime.api.RuntimeHelper;
 import org.erlide.runtime.internal.ParserException;
 import org.erlide.runtime.shell.IBackendShell;
@@ -110,7 +111,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     private MenuManager fMenuManager;
     private Composite composite;
     private boolean disposeColors;
-    private final IRpcSite backend;
+    private final IBackend backend;
 
     private final ISelectionChangedListener selectionChangedListener = new ISelectionChangedListener() {
         @Override
@@ -120,7 +121,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     };
 
     public ErlangConsolePage(final IConsoleView view,
-            final ErlangConsole console, final IRpcSite backend) {
+            final ErlangConsole console, final IBackend backend) {
         super();
         fConsole = console;
         fConsoleView = view;
@@ -157,7 +158,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     boolean isInputComplete() {
         try {
             final String str = consoleInput.getText() + " ";
-            final RuntimeHelper helper = new RuntimeHelper(backend);
+            final RuntimeHelper helper = new RuntimeHelper(backend.getRpcSite());
             final OtpErlangObject o = helper.parseConsoleInput(str);
             if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
                 return false;
@@ -210,16 +211,6 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         final Color bgcolor = DebugUIPlugin
                 .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
         consoleText.setBackground(bgcolor);
-        consoleText.addFocusListener(new FocusListener() {
-            @Override
-            public void focusLost(final FocusEvent e) {
-            }
-
-            @Override
-            public void focusGained(final FocusEvent e) {
-                consoleInput.setFocus();
-            }
-        });
         DebugUIPlugin.getDefault().getPreferenceStore()
                 .addPropertyChangeListener(new IPropertyChangeListener() {
                     @Override
@@ -242,14 +233,14 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         consoleOutputViewer.setDocument(fDoc);
         consoleOutputViewer
                 .configure(new ErlangConsoleSourceViewerConfiguration(store,
-                        colorManager));
+                        colorManager, backend));
 
         consoleInputViewer = new SourceViewer(sashForm, null, SWT.MULTI
                 | SWT.WRAP | SWT.V_SCROLL);
         consoleInputViewer.setDocument(new Document());
         consoleInputViewer
                 .configure(new ErlangConsoleSourceViewerConfiguration(store,
-                        colorManager));
+                        colorManager, backend));
         consoleInput = (StyledText) consoleInputViewer.getControl();
 
         sashForm.setWeights(new int[] { 2, 1 });
@@ -295,6 +286,9 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 if (e.keyCode == 13 && (ctrlOrCommandPressed || atEndOfInput)
                         && inputComplete) {
                     sendInput();
+                } else if (ctrlOrCommandPressed && e.keyCode == SWT.SPACE) {
+                    consoleInputViewer
+                            .doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
                 } else if (ctrlOrCommandPressed && e.keyCode == SWT.ARROW_UP) {
                     e.doit = false;
                     history.prev();
@@ -321,6 +315,16 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         consoleInput.setWordWrap(true);
         consoleInput.setFocus();
 
+        consoleText.addFocusListener(new FocusListener() {
+            @Override
+            public void focusLost(final FocusEvent e) {
+            }
+
+            @Override
+            public void focusGained(final FocusEvent e) {
+                consoleInput.setFocus();
+            }
+        });
         // end layout
 
         final IDocumentListener documentListener = new IDocumentListener() {

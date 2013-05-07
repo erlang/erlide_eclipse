@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.console;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
@@ -17,6 +18,9 @@ import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.erlide.backend.api.IBackend;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.ui.editors.erl.EditorConfiguration;
 import org.erlide.ui.editors.erl.scanner.ErlCodeScanner;
@@ -26,9 +30,12 @@ import org.erlide.ui.util.IColorManager;
 final public class ErlangConsoleSourceViewerConfiguration extends
         EditorConfiguration {
 
+    private final IBackend backend;
+
     public ErlangConsoleSourceViewerConfiguration(final IPreferenceStore store,
-            final IColorManager colorManager) {
+            final IColorManager colorManager, final IBackend backend) {
         super(store, null, colorManager);
+        this.backend = backend;
     }
 
     /**
@@ -71,5 +78,11 @@ final public class ErlangConsoleSourceViewerConfiguration extends
         reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
         return reconciler;
+    }
+
+    @Override
+    protected IErlProject getProject() {
+        final IProject prj = backend.getData().getProjects().iterator().next();
+        return ErlModelManager.getErlangModel().findProject(prj);
     }
 }
