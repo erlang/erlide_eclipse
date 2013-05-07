@@ -209,7 +209,7 @@ consider_local([#token{kind=':'} | _]) ->
 consider_local(_) ->
     true.
 
-consider_macro_def([#token{kind=atom, value=define}, #token{kind='-'} | _]) ->
+consider_macro_def([#token{kind=atom, value=define}, #token{kind='-'} | _]) ->
     true;
 consider_macro_def([#token{kind='('} | Rest]) ->
     consider_macro_def(Rest);
@@ -308,9 +308,12 @@ upto_offset([#token{offset=O, length=L}=T | Rest], Offset) when Offset>=O+L ->
     [T | upto_offset(Rest, Offset)];
 upto_offset([], _) ->
     [];
-upto_offset([T | _], _) ->
+upto_offset([T | _], _) ->
     [T].
 
+o_record_def([#token{kind='('}, #token{value=Value, offset=O, length=L}, #token{kind=','} | _Tokens], Offset)
+  when Offset=<O+L ->
+    throw({open, {record, Value}});
 o_record_def([#token{kind='('}, #token{value=Value}, #token{kind=','} | Tokens], Offset) ->
     Between = erlide_np_util:get_between_outer_pars(Tokens, '{', '}'),
     o_record_def_aux(Between, Offset, Value, want_field).
