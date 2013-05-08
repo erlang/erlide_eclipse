@@ -10,19 +10,24 @@
  *******************************************************************************/
 package org.erlide.ui.console;
 
+import java.util.Collection;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.erlide.backend.api.IBackend;
+import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.ui.editors.erl.EditorConfiguration;
+import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
 import org.erlide.ui.editors.erl.scanner.ErlCodeScanner;
 import org.erlide.ui.editors.erl.scanner.ErlDamagerRepairer;
 import org.erlide.ui.util.IColorManager;
@@ -82,7 +87,11 @@ final public class ErlangConsoleSourceViewerConfiguration extends
 
     @Override
     protected IErlProject getProject() {
-        final IProject prj = backend.getData().getProjects().iterator().next();
+        final Collection<IProject> projects = backend.getData().getProjects();
+        if (projects.isEmpty()) {
+            return null;
+        }
+        final IProject prj = projects.iterator().next();
         return ErlModelManager.getErlangModel().findProject(prj);
     }
 }
