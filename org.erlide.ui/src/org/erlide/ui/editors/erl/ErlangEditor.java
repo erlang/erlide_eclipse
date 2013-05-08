@@ -1050,7 +1050,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         }
         if (filterIt) {
             return new IllegalArgumentException(
-                    "UTF-8 encoded source files are only supported if encoding for erlang content type is set to UTF-8",
+                    "The file's actual encoding doesn't match the declared one",
                     e);
         } else {
             return e;
