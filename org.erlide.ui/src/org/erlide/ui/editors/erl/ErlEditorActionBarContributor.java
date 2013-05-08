@@ -11,6 +11,9 @@
 
 package org.erlide.ui.editors.erl;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
@@ -19,6 +22,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.progress.UIJob;
 import org.eclipse.ui.texteditor.BasicTextEditorActionContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
@@ -109,6 +113,18 @@ public class ErlEditorActionBarContributor extends
         bars.setGlobalActionHandler(ActionFactory.NEXT.getId(), fNextAnnotation);
         bars.setGlobalActionHandler(ActionFactory.PREVIOUS.getId(),
                 fPreviousAnnotation);
+    }
+
+    public void displayMessage(final String message) {
+        getActionBars().getStatusLineManager().setMessage(message);
+        new UIJob("message clear") {
+
+            @Override
+            public IStatus runInUIThread(final IProgressMonitor monitor) {
+                getActionBars().getStatusLineManager().setMessage(null);
+                return Status.OK_STATUS;
+            }
+        }.schedule(2000);
     }
 
 }

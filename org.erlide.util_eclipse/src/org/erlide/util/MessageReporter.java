@@ -4,59 +4,45 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.RegistryFactory;
 
 public abstract class MessageReporter {
-    public enum ReporterPosition {
-        CENTER, CORNER
-    }
 
-    public enum MessageType {
-        ERROR, WARNING, INFO;
-
-        @Override
-        public String toString() {
-            return name().toLowerCase();
-        }
-    }
-
-    abstract public void displayMessage(MessageType type, String message,
-            ReporterPosition style);
+    abstract public void displayMessage(int severity, String message,
+            String details);
 
     public static void showError(final String message) {
-        show(MessageType.ERROR, message, ReporterPosition.CORNER);
+        show(IStatus.ERROR, message, null);
     }
 
     public static void showWarning(final String message) {
-        show(MessageType.WARNING, message, ReporterPosition.CORNER);
+        show(IStatus.WARNING, message, null);
     }
 
     public static void showInfo(final String message) {
-        show(MessageType.INFO, message, ReporterPosition.CORNER);
+        show(IStatus.INFO, message, null);
     }
 
-    public static void showError(final String message,
-            final ReporterPosition style) {
-        show(MessageType.ERROR, message, style);
+    public static void showError(final String message, final String details) {
+        show(IStatus.ERROR, message, details);
     }
 
-    public static void showWarning(final String message,
-            final ReporterPosition style) {
-        show(MessageType.WARNING, message, style);
+    public static void showWarning(final String message, final String details) {
+        show(IStatus.WARNING, message, details);
     }
 
-    public static void showInfo(final String message,
-            final ReporterPosition style) {
-        show(MessageType.INFO, message, style);
+    public static void showInfo(final String message, final String details) {
+        show(IStatus.INFO, message, details);
     }
 
-    public static void show(final MessageType type, final String message,
-            final ReporterPosition style) {
+    public static void show(final int type, final String message,
+            final String details) {
         final List<MessageReporter> reporters = getAllImplementors();
         for (final MessageReporter reporter : reporters) {
-            reporter.displayMessage(type, message, style);
+            reporter.displayMessage(type, message, details);
         }
-        ErlLogger.info(type + "::: " + message);
+        ErlLogger.info(type + "::: " + message + "\n" + details + "\n------");
     }
 
     private static List<MessageReporter> getAllImplementors() {

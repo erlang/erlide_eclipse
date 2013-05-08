@@ -28,7 +28,6 @@ import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 import org.erlide.util.IProvider;
 import org.erlide.util.MessageReporter;
-import org.erlide.util.MessageReporter.ReporterPosition;
 import org.erlide.util.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -192,29 +191,24 @@ public class ErlRuntime implements IErlRuntime {
 
             String msg1;
             if (connectOnce) {
-                msg1 = "It is likely that your network is misconfigured or uses 'strange' host names.\n"
+                msg1 = "It is likely that your network is misconfigured or uses 'strange' host names.\n\n"
                         + "Please check the "
-                        + "Window->preferences->erlang->network page for hints about that."
-                        + "\n\n"
-                        + "Also, check if you can create and connect two erlang nodes on your machine\n"
+                        + "Window->preferences->erlang->network page for hints about that. \n\n"
+                        + "Also, check if you can create and connect two erlang nodes on your machine "
                         + "using \"erl -name foo1\" and \"erl -name foo2\".";
             } else {
                 msg1 = "If you didn't shut it down on purpose, it is an "
                         + "unrecoverable error, please restart Eclipse. ";
             }
 
-            final String bigMsg = msg
-                    + "\n\n"
-                    + msg1
-                    + "\n\n"
-                    + "If an error report named '"
+            final String details = "If an error report named '"
                     + user
-                    + "_<timestamp>.txt' has been created in your home directory,\n "
+                    + "_<timestamp>.txt' has been created in your home directory, "
                     + "please consider reporting the problem. \n"
                     + (SystemConfiguration
                             .hasFeatureEnabled("erlide.ericsson.user") ? ""
                             : "http://www.assembla.com/spaces/erlide/support/tickets");
-            MessageReporter.showError(bigMsg, ReporterPosition.CORNER);
+            MessageReporter.showError(msg, msg1 + "\n\n" + details);
             reported = true;
         }
 
