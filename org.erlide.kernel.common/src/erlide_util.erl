@@ -49,7 +49,7 @@ check_cached(SourceFileName, CacheFileName, Version) ->
         _ ->
             {no_cache, SourceModDate}
     end.
-    
+
 same_date_and_version({{Date, {H, M, S1}}, V}, {{Date, {H, M, S2}}, V}) ->
     S1 div 2 =:= S2 div 2;
 same_date_and_version(_, _) ->
@@ -66,41 +66,41 @@ renew_cached(SourceFileName, CacheFileName, Version, Term) ->
                             {{1900, 1, 1}, {0, 0, 0}}
                     end,
     ?D(SourceFileName),
-    renew_cache(SourceModDate, Version, CacheFileName, Term).                    
+    renew_cache(SourceModDate, Version, CacheFileName, Term).
 
-check_and_renew_cached(SourceFileName, CacheFileName, Version, 
-		       RenewFun, UseCache) ->
+check_and_renew_cached(SourceFileName, CacheFileName, Version,
+           RenewFun, UseCache) ->
     check_and_renew_cached(SourceFileName, CacheFileName, Version,
-			   RenewFun, fun(D) -> D end, UseCache).
+         RenewFun, fun(D) -> D end, UseCache).
 
 check_and_renew_cached(SourceFileName, _CacheFileName, _Version,
                        RenewFun, _CachedFun, false) ->
     Term = RenewFun(SourceFileName),
     {dont_use_cache, Term};
-check_and_renew_cached(SourceFileName, CacheFileName, 
-		       Version, RenewFun, CachedFun, 
+check_and_renew_cached(SourceFileName, CacheFileName,
+           Version, RenewFun, CachedFun,
                        true) ->
     ?D(check_and_renew_cached),
     case check_cached(SourceFileName, CacheFileName, Version) of
         {cache, Cached} ->
             ?D({from_cache, CacheFileName}),
             R = {cached, CachedFun(Cached)},
-	    ?D(got_cached),
-	    R;
+      ?D(got_cached),
+      R;
         {no_cache, SourceModDate} ->
-	    ?D(SourceModDate),
+      ?D(SourceModDate),
             Term = RenewFun(SourceFileName),
             ?D({renewing, CacheFileName, UpdateCache}),
-		    renew_cache(SourceModDate, Version, CacheFileName, Term),
+        renew_cache(SourceModDate, Version, CacheFileName, Term),
             {renewed, Term}
     end.
 
 get_from_str(Text, Start) ->
     case string:str(Text, Start) of
-	0 ->
-	    Text;
-	N ->
-	    string:substr(Text, N + length(Start))
+  0 ->
+      Text;
+  N ->
+      string:substr(Text, N + length(Start))
     end.
 
 get_between_strs(Text, Start, End) ->
@@ -109,26 +109,26 @@ get_between_strs(Text, Start, End) ->
 get_all_between_strs(Text, Start, End) ->
     {One, Next} = split_at(get_from_str(Text, Start), End),
     case Next of
-	"" ->
-	    [One];
-	_ ->
-	    [One | get_all_between_strs(Next, Start, End)]
+  "" ->
+      [One];
+  _ ->
+      [One | get_all_between_strs(Next, Start, End)]
     end.
 
 get_upto_str(Text, End) ->
     case string:rstr(Text, End) of
-	0 ->
-	    Text;
-	N ->
-	    string:substr(Text, 1, N-1)
+  0 ->
+      Text;
+  N ->
+      string:substr(Text, 1, N-1)
     end.
 
 split_at(Text, End) ->
     case string:str(Text, End) of
-	0 ->
-	    {Text, ""};
-	N ->
-	    {string:substr(Text, 1, N-1), string:substr(Text, N+length(End))}
+  0 ->
+      {Text, ""};
+  N ->
+      {string:substr(Text, 1, N-1), string:substr(Text, N+length(End))}
     end.
 
 split_lines(<<B/binary>>) ->
@@ -141,13 +141,13 @@ split_lines([], [], Acc) ->
 split_lines([], LineAcc, Acc) ->
     split_lines([], [], [lists:reverse(LineAcc) | Acc]);
 split_lines([$\n, $\r | Rest], LineAcc, Acc) ->
-	split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
+  split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
 split_lines([$\n | Rest], LineAcc, Acc) ->
-	split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
+  split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
 split_lines([$\r | Rest], LineAcc, Acc) ->
-	split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
+  split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
 split_lines([C | Rest], LineAcc, Acc) ->
-	split_lines(Rest, [C | LineAcc], Acc).
+  split_lines(Rest, [C | LineAcc], Acc).
 
 join([], Sep) when is_list(Sep) ->
     [];
@@ -178,9 +178,23 @@ renew_cache(SourceFileModDate, Version, CacheFileName, Term) ->
     BinDate = date_to_bin(SourceFileModDate),
     B = term_to_binary(Term, [compressed]),
     _Delete = file:delete(CacheFileName),
+    touch_path(CacheFileName),
     _Write = file:write_file(CacheFileName, <<BinDate/binary, Version:16/integer-big, B/binary>>),
     ?D(_Write),
     ?D(CacheFileName).
+
+touch_path(Path) ->
+    touch_path(filename:split(Path), []).
+
+touch_path([], _) ->
+    ok;
+touch_path([_], _) ->
+    ok;
+touch_path([H|T], Acc) ->
+    Crt = filename:join(Acc, H),
+    _Err = file:make_dir(Crt),
+    touch_path(T, Crt).
+
 
 bin_to_date(<<Y:15/integer-big, Mo:4, D:5, H:5, M:6, S:5>>) ->
     {{Y, Mo, D}, {H, M, S*2}}.

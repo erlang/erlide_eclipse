@@ -495,7 +495,7 @@ public class ErlModule extends Openable implements IErlModule {
         initialText = newText;
         parsed = false;
         setStructureKnown(false);
-        scanner.initialScan(newText, "", logging);
+        scanner.initialScan(newText, getFilePath(), logging);
         final boolean built = buildStructure(null);
         setStructureKnown(built);
     }
@@ -721,14 +721,13 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public String createScannerName() {
-        if (getFilePath() != null) {
-            return "mod" + getFilePath().hashCode() + "__" + getName();
-        } else if (getName() != null) {
-            return "mod" + hashCode() + "_" + getName();
+        if (getCorrespondingResource() != null) {
+            return getCorrespondingResource().getFullPath().toPortableString()
+                    .substring(1);
         }
-        // This is not used more than temporarily, so it's OK to have
-        // a name that's temporary, as long as it's unique
-        return "mod" + hashCode() + "_";
+        final int hash = hashCode();
+        final String name = getName() != null ? getName() : "";
+        return String.format("%s_%08x", name, hash);
     }
 
     @Override
