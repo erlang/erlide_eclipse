@@ -115,7 +115,7 @@ check_all(ScannerName, Text, GetTokens)
 %%
 
 do_light_scan(S) ->
-    case erlide_scan:string(S, {0, 0}) of
+    case erlide_scan:string(S, {0, 1}, [return]) of
         {ok, T, _} ->
             {ok, fixup_tokens(T, [])};
         {error, _, _} ->
@@ -136,6 +136,7 @@ do_light_scan(S) ->
 -define(TOK_KEYWORD, 11).
 
 kind_small(ws) -> ?TOK_WS;
+kind_small(white_space) -> ?TOK_WS;
 kind_small(string) -> ?TOK_STR;
 kind_small(atom) -> ?TOK_ATOM;
 kind_small(var) -> ?TOK_VAR;
@@ -158,28 +159,22 @@ kind_small(Kind) when is_atom(Kind) ->
     end.
 
 fixup_macro(L, O, G) ->
-    ?D({macro, L, O, G}),
-    <<?TOK_MACRO, L:24, O:24, (G+1):24>>.
+    <<?TOK_MACRO, L:24, (O-1):24, (G+1):24>>.
 
 fixup_tokens([], Acc) ->
     erlang:iolist_to_binary(Acc);
-fixup_tokens([{'?', {{L, _}, _}}=T1, {'?', {{L, _}, _}}=T2, T3 | Rest], Acc) ->
-    fixup_tokens(Rest, [Acc | [fixup_tokens([T1], []), fixup_tokens([T2], []),
+fixup_tokens([#token{kind='?', line=L}=T1, #token{kind='?', line=L}=T2, T3 | Rest], Acc) ->
+    fixup_tokens(Rest, [Acc | [fixup_tokens([T1], []),
+                               fixup_tokens([T2], []),
                                fixup_tokens([T3], [])]]);
-fixup_tokens([{'?', {{L, O}, _}}, {var, {{L, O1}, G}, _V} | Rest], Acc) when O1=:=O+1->
-    T = fixup_macro(L, O, G),
+fixup_tokens([#token{kind='?', line=L, offset=O}, #token{kind=var, line=L, offset=O1, text=Txt} | Rest], Acc) when O1=:=O+1->
+    T = fixup_macro(L, O, length(Txt)),
     fixup_tokens(Rest, [Acc | T]);
-fixup_tokens([{'?', {{L, O}, _}}, {atom, {{L, O1}, G}, _V, _Txt} | Rest], Acc) when O1=:=O+1->
-    T = fixup_macro(L, O, G),
+fixup_tokens([#token{kind='?', line=L, offset=O}, #token{kind=atom, line=L, offset=O1, text=Txt} | Rest], Acc) when O1=:=O+1->
+    T = fixup_macro(L, O, length(Txt)),
     fixup_tokens(Rest, [Acc | T]);
-fixup_tokens([{'?', {{L, O}, _}}, {atom, {{L, O1}, G}, _V} | Rest], Acc) when O1=:=O+1->
-    T = fixup_macro(L, O, G),
-    fixup_tokens(Rest, [Acc | T]);
-fixup_tokens([{Kind, {{L, O}, G}} | Rest], Acc) ->
-    fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]);
-fixup_tokens([{Kind, {{L, O}, G}, _A} | Rest], Acc) ->
-    fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]);
-fixup_tokens([{Kind, {{L, O}, G}, _A, _B} | Rest], Acc) ->
+fixup_tokens([#token{kind=Kind, line=L, offset=O, text=Txt} | Rest], Acc) ->
+    G = length(Txt),
     fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]).
 
 

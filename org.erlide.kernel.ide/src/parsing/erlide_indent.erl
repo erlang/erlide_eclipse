@@ -53,7 +53,7 @@ indent_line(St, OldLine, CommandText, N, Tablength, UseTabs, Prefs) ->
             case scan(S ++ StrippedCommandText) of
                 {ok, T} ->
                     LineOffsets = erlide_text:get_line_offsets(S),
-                    Tr = erlide_scan_model:convert_tokens(T) ++
+                    Tr = T ++
                              [#token{kind=eof, line=size(LineOffsets)+1}],
                     LineN = case N of
                                 -1 ->
@@ -734,8 +734,8 @@ i_declaration(R0, I) ->
     i_check(R0, I),
     R1 = i_kind('-', R0, I),
     case skip_comments(R1) of
-        [#token{kind='spec'} | _] ->
-            R2 = i_kind('spec', R1, I),
+        [#token{kind=atom, value='spec'} | _] ->
+            R2 = i_kind(atom, R1, I),
             i_spec(R2, I);
         [#token{kind=atom, value='type'} | _] ->
             R2 = i_kind(atom, R1, I),
@@ -934,9 +934,11 @@ i_sniff(L) ->
     end.
 
 scan(S) ->
-    case erlide_scan:string(S, {0, 0}) of
+    case erlide_scan:string(S, {0, 1}, [return_comments]) of
         {ok, T, _} ->
-            {ok, erlide_scan:filter_ws(T)};
+            io:format("~p~n", [S]),
+            io:format("~p~n", [T]),
+            {ok, T};
         Error ->
             Error
     end.

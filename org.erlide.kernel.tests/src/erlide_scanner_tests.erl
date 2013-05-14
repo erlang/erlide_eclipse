@@ -60,9 +60,12 @@ scanner_light_scan_string_test_() ->
      ?_assertEqual({ok,
                     <<?TOK_CHAR, 0:24, 0:24, 5:24>>},
                    erlide_scanner:light_scan_string(<<"$\\122">>, latin1)),
-%%      ?_assertEqual({ok,
-%%                     <<?TOK_CHAR, 0:24, 0:24, 5:24>>},
-%%                    erlide_scanner:light_scan_string(<<"$\\x{faca}">>, latin1)),
+      ?_assertEqual({ok,
+                     <<?TOK_INTEGER, 0:24, 0:24, 9:24>>},
+                    erlide_scanner:light_scan_string(<<"$\\x{faca}">>, latin1)),
+      ?_assertEqual({ok,
+                     <<?TOK_CHAR, 0:24, 0:24, 5:24>>},
+                    erlide_scanner:light_scan_string(<<"$\\xff">>, latin1)),
      ?_assertEqual({ok,
                     <<?TOK_INTEGER, 0:24, 0:24, 1:24>>},
                    erlide_scanner:light_scan_string(<<"1">>, latin1)),
@@ -83,8 +86,10 @@ scanner_light_scan_string_test_() ->
                       ?TOK_OTHER, 0:24, 1:24, 1:24>>},
                    erlide_scanner:light_scan_string(<<"a.">>, latin1)),
      ?_assertEqual({ok,
-                    <<?TOK_WS, 0:24, 0:24, 3:24>>},
-                   erlide_scanner:light_scan_string(<<" \t ">>, latin1)),
+                    <<?TOK_WS, 0:24, 0:24, 2:24,
+                      ?TOK_WS, 0:24, 2:24, 1:24,
+                      ?TOK_WS, 0:24, 3:24, 1:24>>},
+                   erlide_scanner:light_scan_string(<<"  \t ">>, latin1)),
      ?_assertEqual({ok,
                     <<?TOK_ARROW, 0:24, 0:24, 2:24>>},
                    erlide_scanner:light_scan_string(<<"->">>, latin1)),
@@ -110,18 +115,20 @@ scanner_light_scan_string_test_() ->
                     <<?TOK_WS, 0:24, 0:24, 1:24>>},
                    erlide_scanner:light_scan_string(<<"\n">>, latin1)),
      ?_assertEqual({ok,
-                    <<?TOK_WS, 0:24, 0:24, 1:24,
-                      ?TOK_WS, 1:24, 1:24, 1:24>>},
+                    <<?TOK_WS, 0:24, 0:24, 2:24>>},
                    erlide_scanner:light_scan_string(<<"\n ">>, latin1)),
      ?_assertEqual({ok,
-                    <<?TOK_WS, 0:24, 0:24, 1:24,
-                      ?TOK_WS, 1:24, 1:24, 1:24,
+                    <<?TOK_WS, 0:24, 0:24, 2:24,
                       ?TOK_WS, 1:24, 2:24, 1:24>>},
                    erlide_scanner:light_scan_string(<<"\n \n">>, latin1)),
      ?_assertEqual({ok,
                     <<?TOK_WS, 0:24, 0:24, 1:24,
                       ?TOK_ATOM, 1:24, 1:24, 1:24>>},
                    erlide_scanner:light_scan_string(<<"\nc">>, latin1)),
+     ?_assertEqual({ok,
+                    <<?TOK_WS, 0:24, 0:24, 3:24,
+                      ?TOK_ATOM, 1:24, 3:24, 1:24>>}, %% ???
+                   erlide_scanner:light_scan_string(<<"\n  c">>, latin1)),
      ?_assertEqual({ok,
                     <<?TOK_ATOM, 0:24, 0:24, 1:24,
                       $(, 0:24, 1:24, 1:24,
@@ -131,50 +138,60 @@ scanner_light_scan_string_test_() ->
                       ?TOK_WS, 0:24, 6:24, 1:24,
                       ?TOK_ATOM, 0:24, 7:24, 1:24,
                       ?TOK_OTHER, 0:24, 8:24, 1:24>>},
-                   erlide_scanner:light_scan_string(<<"a() -> b.">>, latin1))
+                   erlide_scanner:light_scan_string(<<"a() -> b.">>, latin1)),
+     ?_assertEqual({ok,
+                    <<?TOK_ATOM, 0:24, 0:24, 1:24,
+                      $(, 0:24, 1:24, 1:24,
+                      $), 0:24, 2:24, 1:24,
+                      ?TOK_WS, 0:24, 3:24, 1:24,
+                      ?TOK_ARROW, 0:24, 4:24, 2:24,
+                      ?TOK_WS, 0:24, 6:24, 2:24,
+                      ?TOK_ATOM, 1:24, 8:24, 1:24,
+                      ?TOK_OTHER, 1:24, 9:24, 1:24>>},
+                   erlide_scanner:light_scan_string(<<"a() ->\n b.">>, latin1))
      ].
 
 scanner_test_() ->
-    [?_assertEqual([#token{kind = atom, line = 0, offset = 0,length = 1, value = a},
-                    #token{kind = '(', line = 0, offset = 1, length = 1},
-                    #token{kind = ')', line = 0, offset = 2, length = 1},
-                    #token{kind = '->', line = 0, offset = 4, length = 2},
-                    #token{kind = atom, line = 0, offset = 7, length = 1, value = b},
+    [?_assertEqual([#token{kind = atom, line = 0, offset = 0,length = 1, value = a, text="a"},
+                    #token{kind = '(', line = 0, offset = 1, length = 1, text="("},
+                    #token{kind = ')', line = 0, offset = 2, length = 1, text=")"},
+                    #token{kind = '->', line = 0, offset = 4, length = 2, text="->"},
+                    #token{kind = atom, line = 0, offset = 7, length = 1, value = b, text="b"},
                     #token{kind = dot, line = 0, offset = 8, length = 1, text = "."}],
                    test_scan("a() -> b.")),
-     ?_assertEqual({[#token{kind = atom, line = 0, offset = 0,length = 1, value = a},
-                     #token{kind = '(', line = 0, offset = 1, length = 1},
-                     #token{kind = ')', line = 0, offset = 2, length = 1},
-                     #token{kind = '->', line = 0, offset = 4, length = 2},
-                     #token{kind = atom, line = 0, offset = 7, length = 1, value = b},
+     ?_assertEqual({[#token{kind = atom, line = 0, offset = 0,length = 1, value = a, text="a"},
+                     #token{kind = '(', line = 0, offset = 1, length = 1, text="("},
+                     #token{kind = ')', line = 0, offset = 2, length = 1, text=")"},
+                     #token{kind = '->', line = 0, offset = 4, length = 2, text="->"},
+                     #token{kind = atom, line = 0, offset = 7, length = 1, value = b, text="b"},
                      #token{kind = dot, line = 0, offset = 8, length = 1, text = "."}],
-                    [#token{kind = atom, line = 0, offset = 0,length = 4, value = test},
-                     #token{kind = '(', line = 0, offset = 4, length = 1},
-                     #token{kind = ')', line = 0, offset = 5, length = 1},
-                     #token{kind = '->', line = 0, offset = 7, length = 2},
-                     #token{kind = atom, line = 0, offset = 10, length = 1, value = b},
+                    [#token{kind = atom, line = 0, offset = 0,length = 4, value = test, text="test"},
+                     #token{kind = '(', line = 0, offset = 4, length = 1, text="("},
+                     #token{kind = ')', line = 0, offset = 5, length = 1, text=")"},
+                     #token{kind = '->', line = 0, offset = 7, length = 2, text="->"},
+                     #token{kind = atom, line = 0, offset = 10, length = 1, value = b, text="b"},
                      #token{kind = dot, line = 0, offset = 11, length = 1, text = "."}]},
                    test_replace("a() -> b.", 0, 1, "test"))
     ].
 
 replace_at_eof_test_() ->
-    [?_assertEqual({[#token{kind = atom, line = 0, offset = 0, length = 2, value = ab}],
-                    [#token{kind = atom, line = 0, offset = 0, length = 3, value = abc}]},
+    [?_assertEqual({[#token{kind = atom, line = 0, offset = 0, length = 2, value = ab, text="ab"}],
+                    [#token{kind = atom, line = 0, offset = 0, length = 3, value = abc, text="abc"}]},
                    test_replace("ab", 2, 0, "c"))
      ].
 
 newline_char_test_() ->
-    [?_assertEqual([#token{kind = '[', line = 0, offset = 0, length = 1},
+    [?_assertEqual([#token{kind = '[', line = 0, offset = 0, length = 1, text="["},
                     #token{kind = char, line = 0, offset = 1, length = 3, value=$\n, text = "$\\n"},
-                    #token{kind = ']', line = 0, offset = 4, length = 1}],
+                    #token{kind = ']', line = 0, offset = 4, length = 1, text="]"}],
                    test_scan("[$\\n]"))
      ].
 
 newline_char_simple_test_() ->
-    [?_assertEqual({ok, [{'[', {{1,1},1}},
-                         {char, {{1,2},3}, 10, "$\\n"},
-                         {']',{{1,5}, 1}}
-                         ], {1,6}},
+    [?_assertEqual({ok, [#token{kind='[', line=0, offset=0, length=1, text="["},
+                         #token{kind=char, line=0, offset=1, length=3, text="$\\n", value=10},
+                         #token{kind=']', line=0, offset=4, length=1, text="]"}
+                         ], {0,6}},
                    erlide_scan:string("[$\\n]"))
      ].
 

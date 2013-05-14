@@ -30,7 +30,14 @@ parse_directive_test_() ->
                    test_parse("-compile([inline,{hipe,[{regalloc,linear_scan}]}])."))].
 
 parse_small_functions_test_() ->
-    [?_assertEqual({[#function{pos = {{0,1,0},14},
+    [?_assertEqual({[#function{pos = {{0,0,0},9},
+                               name = f, arity = 0,
+                               args = [], head = "", clauses = [],
+                               name_pos = {{0, 0}, 1},
+                               exported = false}],
+                    []},
+                   test_parse("f() -> a.")),
+    ?_assertEqual({[#function{pos = {{0,1,0},14},
                                name = f, arity = 0,
                                args = [], head = "", clauses = [],
                                name_pos = {{0, 0}, 1},
@@ -107,7 +114,7 @@ reparse_test_() ->
             "f() ->\n"++
             "    ok.\n",
     Value = test_reparse(S), % , 15, 0, NewText),
-    Expected = #model{forms=[#function{pos = {{0,1,0},15},
+    Expected = #model{forms=[#function{pos = {{0,1,0},16},
                                        name = f, arity = 0, args = [], head = [],
                                        clauses = [],
                                        name_pos = {{0,0},1},
@@ -121,12 +128,12 @@ replace_and_reparse_test_() ->
             "    ok.\n"++
             "%% renamed\n",
     Value = test_replace_and_reparse(S, 0, 1, "g"),
-    Expected = #model{forms=[#function{pos={{0,1,0},15},
+    Expected = #model{forms=[#function{pos={{0,1,0},16},
                                        name=g, arity=0, args=[], head=[],
                                        clauses=[],
                                        name_pos={{0, 0}, 1},
                                        exported=false}],
-                      comments=[#token{kind=comment, 
+                      comments=[#token{kind=comment,
                                        line=2, offset=15, length=10,
                                        value= <<"%% renamed">>,
                                        text=u, last_line=u}]},
@@ -137,8 +144,8 @@ replace_and_reparse_test_() ->
 %%
 
 test_parse(S) ->
-    {ok, RawTokens, _EndPos} = erlide_scan:string(S, {0, 0}),
-    Tokens = erlide_scan_model:convert_tokens(erlide_scan:filter_ws(RawTokens)),
+    {ok, Tokens, _EndPos} = erlide_scan:string(S, {0, 1}, [return_comments]),
+    io:format("~n~p~n", [Tokens]),
     {Forms, Comments, _Refs} = erlide_np:parse(Tokens),
     {Forms, Comments}.
 
