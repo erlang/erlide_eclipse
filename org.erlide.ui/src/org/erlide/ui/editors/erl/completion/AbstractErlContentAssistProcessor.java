@@ -115,7 +115,8 @@ public abstract class AbstractErlContentAssistProcessor implements
         ARITY_ONLY,
         UNEXPORTED_ONLY,
         INCLUDES,
-        INCLUDE_LIBS
+        INCLUDE_LIBS,
+        TYPES
         //@formatter:on
     }
 
@@ -170,6 +171,8 @@ public abstract class AbstractErlContentAssistProcessor implements
             // before);
             final int commaPos = before.lastIndexOf(',');
             final int colonPos = before.lastIndexOf(':');
+            final boolean doubleColon = colonPos >= 0
+                    && before.charAt(colonPos - 1) == ':';
             final int hashMarkPos = before.lastIndexOf('#');
             final int dotPos = before.lastIndexOf('.');
             final int parenPos = before.lastIndexOf('(');
@@ -212,11 +215,17 @@ public abstract class AbstractErlContentAssistProcessor implements
                 moduleOrRecord = rc.getName();
                 fieldsSoFar = rc.getFields();
             } else if (colonPos > commaPos && colonPos > parenPos) {
-                moduleOrRecord = StringUtils.unquote(getPrefix(before
-                        .substring(0, colonPos)));
-                flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS);
-                pos = colonPos;
-                before = before.substring(colonPos + 1);
+                if (doubleColon) {
+                    flags = EnumSet.of(Kinds.TYPES);
+                    pos = colonPos;
+                    before = before.substring(colonPos + 1);
+                } else {
+                    moduleOrRecord = StringUtils.unquote(getPrefix(before
+                            .substring(0, colonPos)));
+                    flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS);
+                    pos = colonPos;
+                    before = before.substring(colonPos + 1);
+                }
             } else if (interrogationMarkPos > hashMarkPos
                     && interrogationMarkPos > commaPos
                     && interrogationMarkPos > colonPos
@@ -262,7 +271,11 @@ public abstract class AbstractErlContentAssistProcessor implements
                         break;
                     }
                 } else {
-                    flags = EnumSet.of(Kinds.MODULES);
+                    if (doubleColon) {
+                        flags = EnumSet.of(Kinds.TYPES);
+                    } else {
+                        flags = EnumSet.of(Kinds.MODULES);
+                    }
                 }
             }
             flags = filterFlags(flags);
@@ -352,6 +365,11 @@ public abstract class AbstractErlContentAssistProcessor implements
                     getExternalCallCompletions(backend, moduleOrRecord, offset,
                             prefix, flags.contains(Kinds.ARITY_ONLY)));
         }
+        if (flags.contains(Kinds.TYPES)) {
+            addSorted(result,
+                    getTypeCompletions(backend, moduleOrRecord, offset, prefix));
+        }
+
         return result;
     }
 
@@ -564,6 +582,31 @@ public abstract class AbstractErlContentAssistProcessor implements
                     imp.getImportModule(), prefix, stateDir);
             addFunctionProposalsWithDoc(offset, prefix, result, res, imp, false);
         }
+        return result;
+    }
+
+    List<ICompletionProposal> getTypeCompletions(final IRpcSite backend,
+            final String moduleOrRecord, final int offset, final String prefix) {
+        final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
+        for (final String builtin : getBuiltinTypeCompletions()) {
+            if (builtin.startsWith(prefix.trim())) {
+                result.add(new CompletionProposal(builtin, offset
+                        - prefix.length(), prefix.length(), builtin.length()));
+            }
+        }
+        // TODO provide types completions from workspace
+        return result;
+    }
+
+    List<String> getBuiltinTypeCompletions() {
+        final List<String> result = Lists.newArrayList("any()", "binary()",
+                "bitstring()", "boolean()", "byte()", "char()", "float()",
+                "fun()", "integer()", "iolist()", "list()",
+                "maybe_improper_list()", "mfa()", "module()", "neg_integer()",
+                "no_return()", "node()", "non_neg_integer()", "none()",
+                "nonempty_list()", "number()", "pid()", "port()",
+                "pos_integer()", "reference()", "term()", "timeout()",
+                "tuple()");
         return result;
     }
 
