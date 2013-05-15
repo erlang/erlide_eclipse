@@ -52,9 +52,10 @@
 	          <iterate
                  ifEmpty="false"
                  operator="or">
-	             <adapt
-	                   type="org.erlide.model.root.IErlElement">
-	             </adapt>
+	              <test
+	                    property="org.eclipse.core.resources.projectNature"
+	                    value="org.erlide.core.erlnature">
+	              </test>
 	          </iterate>
           	</visibleWhen>
        </command>
@@ -65,9 +66,10 @@
 	          <iterate
                  ifEmpty="false"
                  operator="or">
-	             <adapt
-	                   type="org.erlide.model.root.IErlElement">
-	             </adapt>
+	             	<test
+	                    property="org.eclipse.core.resources.projectNature"
+	                    value="org.erlide.core.erlnature">
+	              	</test>
 	          </iterate>
          	 </visibleWhen>
        </command>
@@ -85,9 +87,10 @@
              <iterate
                    ifEmpty="false"
                    operator="or">
-                <adapt
-                      type="org.erlide.model.root.IErlElement">
-                </adapt>
+                	<test
+	                    property="org.eclipse.core.resources.projectNature"
+	                    value="org.erlide.core.erlnature">
+	              	</test>
              </iterate>
           </visibleWhen>
        </command>
@@ -99,9 +102,10 @@
              <iterate
                    ifEmpty="false"
                    operator="or">
-                <adapt
-                      type="org.erlide.model.root.IErlElement">
-                </adapt>
+                	<test
+	                    property="org.eclipse.core.resources.projectNature"
+	                    value="org.erlide.core.erlnature">
+	              	</test>
              </iterate>
           </visibleWhen>
        </command>
