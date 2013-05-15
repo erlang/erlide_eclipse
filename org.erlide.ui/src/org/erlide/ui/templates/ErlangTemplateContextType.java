@@ -1,10 +1,9 @@
-package org.erlide.ui.editors.erl.completion;
+package org.erlide.ui.templates;
 
 import org.eclipse.jface.text.templates.GlobalTemplateVariables;
 import org.eclipse.jface.text.templates.TemplateContextType;
-import org.erlide.ui.templates.ModuleVariableResolver;
 
-public class ErlangContextType extends TemplateContextType {
+public class ErlangTemplateContextType extends TemplateContextType {
 
     /** This context's id */
     public static final String ERLANG_CONTEXT_TYPE_ID = "org.erlide.ui.editor.erlang"; //$NON-NLS-1$
@@ -12,7 +11,7 @@ public class ErlangContextType extends TemplateContextType {
     /**
      * Creates a new XML context type.
      */
-    public ErlangContextType() {
+    public ErlangTemplateContextType() {
         addGlobalResolvers();
         addModuleResolver();
     }

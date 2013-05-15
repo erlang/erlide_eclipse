@@ -64,12 +64,12 @@ import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.actions.ClearCacheAction;
-import org.erlide.ui.editors.erl.completion.ErlangContextType;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
 import org.erlide.ui.templates.ErlangSourceContextTypeModuleElement;
+import org.erlide.ui.templates.ErlangTemplateContextType;
 import org.erlide.ui.templates.ErlideContributionTemplateStore;
 import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
@@ -572,7 +572,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             // create an configure the contexts available in the template editor
             fContextTypeRegistry = new ContributionContextTypeRegistry();
             fContextTypeRegistry
-                    .addContextType(ErlangContextType.ERLANG_CONTEXT_TYPE_ID);
+                    .addContextType(ErlangTemplateContextType.ERLANG_CONTEXT_TYPE_ID);
             fContextTypeRegistry
                     .addContextType(ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
             fContextTypeRegistry

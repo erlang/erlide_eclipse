@@ -15,7 +15,6 @@ import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
-import org.erlide.ui.editors.erl.completion.ErlangContextType;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.views.SourceViewerInformationControl;
@@ -38,7 +37,7 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
     protected TemplateContextType getContextType(final ITextViewer viewer,
             final IRegion region) {
         return ErlideUIPlugin.getDefault().getContextTypeRegistry()
-                .getContextType(ErlangContextType.ERLANG_CONTEXT_TYPE_ID);
+                .getContextType(ErlangTemplateContextType.ERLANG_CONTEXT_TYPE_ID);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
                 .getTemplateStore().getTemplates();
         final TemplateContextType type = ErlideUIPlugin.getDefault()
                 .getContextTypeRegistry().getContextType(contextTypeId);
-        if (type instanceof ErlangContextType) {
+        if (type instanceof ErlangTemplateContextType) {
             final List<Template> result = new ArrayList<Template>(
                     templates.length);
             final ErlangTemplateContext etc = new ErlangTemplateContext(type,
@@ -89,7 +88,7 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
     protected TemplateContext createContext(final ITextViewer viewer,
             final IRegion region) {
         final TemplateContextType contextType = getContextType(viewer, region);
-        if (contextType instanceof ErlangContextType) {
+        if (contextType instanceof ErlangTemplateContextType) {
             final IDocument document = viewer.getDocument();
             return new ErlangTemplateContext(contextType, document,
                     region.getOffset(), region.getLength());
