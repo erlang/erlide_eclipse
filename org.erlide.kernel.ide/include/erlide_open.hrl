@@ -1,6 +1,6 @@
 
--record(open_context, {externalModules,
-                       externalIncludes,
-                       pathVars,
-                       extraSourcePaths,
-                       imports}).
+-record(open_context, {externalModules=[],
+                       externalIncludes=[],
+                       pathVars=[],
+                       extraSourcePaths=[],
+                       imports=[]}).
