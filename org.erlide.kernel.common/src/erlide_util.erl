@@ -32,6 +32,10 @@ unpack(F) ->
 pack(L) ->
     join(L, ?SEP).
 
+check_cached(none, CacheFileName, Version) ->
+    ?D(CacheFileName),
+    SourceModDate = {{1900, 1, 1}, {0, 0, 0}},
+    check_cached_aux(SourceModDate, CacheFileName, Version);
 check_cached(SourceFileName, CacheFileName, Version) ->
     ?D({SourceFileName, CacheFileName}),
     SourceModDate = case file:read_file_info(SourceFileName) of
@@ -41,6 +45,9 @@ check_cached(SourceFileName, CacheFileName, Version) ->
                             {{1900, 1, 1}, {0, 0, 0}}
                     end,
     ?D(SourceModDate),
+    check_cached_aux(SourceModDate, CacheFileName, Version).
+
+check_cached_aux(SourceModDate, CacheFileName, Version) ->
     SV = read_cache_date_and_version(CacheFileName),
     ?D(SV),
     case same_date_and_version(SV, {SourceModDate, Version}) of
@@ -77,21 +84,21 @@ check_and_renew_cached(SourceFileName, _CacheFileName, _Version,
                        RenewFun, _CachedFun, false) ->
     Term = RenewFun(SourceFileName),
     {dont_use_cache, Term};
-check_and_renew_cached(SourceFileName, CacheFileName,
-           Version, RenewFun, CachedFun,
+check_and_renew_cached(SourceFileName, CacheFileName, 
+                       Version, RenewFun, CachedFun, 
                        true) ->
     ?D(check_and_renew_cached),
     case check_cached(SourceFileName, CacheFileName, Version) of
         {cache, Cached} ->
             ?D({from_cache, CacheFileName}),
             R = {cached, CachedFun(Cached)},
-      ?D(got_cached),
-      R;
+            ?D(got_cached),
+            R;
         {no_cache, SourceModDate} ->
-      ?D(SourceModDate),
+            ?D(SourceModDate),
             Term = RenewFun(SourceFileName),
-            ?D({renewing, CacheFileName, UpdateCache}),
-        renew_cache(SourceModDate, Version, CacheFileName, Term),
+            ?D({renewing, CacheFileName}),
+            renew_cache(SourceModDate, Version, CacheFileName, Term),
             {renewed, Term}
     end.
 

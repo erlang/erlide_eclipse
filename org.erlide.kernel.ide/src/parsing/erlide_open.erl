@@ -15,8 +15,7 @@
          get_external_module_tree/1,
          get_external_include/2,
          get_external_1/3,
-         get_lib_dirs/0,
-         get_lib_src_include/1,
+         get_otp_lib_src_includes/1,
          get_lib_files/1,
          get_includes_in_dir/1
         ]).
@@ -33,6 +32,8 @@
 -include("erlide.hrl").
 -include("erlide_open.hrl").
 -include("erlide_token.hrl").
+
+-define(CACHE_VERSION, 1).
 
 %%
 %% API Functions
@@ -78,17 +79,24 @@ get_external_include(FilePath, #open_context{externalIncludes=ExternalIncludes,
     ExtIncPaths = get_external_modules_files(ExternalIncludes, PathVars),
     get_ext_inc(ExtIncPaths, FilePath).
 
-get_lib_dirs() ->
-    CodeLibs = [D || D <- code:get_path(), D =/= "."],
-    LibDir = code:lib_dir(),
-    Libs = lists:filter(fun(N) -> lists:prefix(LibDir, N) end, CodeLibs),
-    {ok, [get_lib_dir(Lib) || Lib<-Libs]}.
-
-get_lib_src_include(Dirs) ->
-  R = lists:map(fun(Dir) ->
-              SubDirs = ["src", "include"],
-              get_dirs(SubDirs, get_lib_dir(Dir), [])
-          end, Dirs),
+get_otp_lib_src_includes(StateDir) ->
+    RenewFun = fun(_) ->
+                       CodeLibs = [D || D <- code:get_path(), D =/= "."],
+                       LibDir = code:lib_dir(),
+                       Libs = lists:filter(fun(N) -> lists:prefix(LibDir, N) end, CodeLibs),
+                       LibDirs = [get_lib_dir(Lib) || Lib<-Libs],
+                       R = lists:map(fun(Dir) ->
+                                             SubDirs = ["src", "include"],
+                                             {Dir, get_dirs(SubDirs, get_lib_dir(Dir), [])}
+                                     end, LibDirs),
+                       ?D(R),
+                       R
+               end,
+    VersionFileName = filename:join([code:root_dir(), "releases", "start_erl.data"]),
+    CacheName = filename:join(StateDir, "otp.dirs"),
+    {_Cached, R} =
+        erlide_util:check_and_renew_cached(VersionFileName, CacheName,
+                                           ?CACHE_VERSION, RenewFun, true),
     {ok, R}.
 
 get_dirs([], _, Acc) ->

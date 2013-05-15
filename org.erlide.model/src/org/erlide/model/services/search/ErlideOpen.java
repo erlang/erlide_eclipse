@@ -2,6 +2,7 @@ package org.erlide.model.services.search;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.runtime.IPath;
@@ -19,6 +20,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class ErlideOpen implements OpenService {
 
@@ -98,52 +100,9 @@ public class ErlideOpen implements OpenService {
         return null;
     }
 
-    // public static List<String> getExternalModules(final Backend backend,
-    // final String prefix, final String externalModules,
-    // final OtpErlangList pathVars) {
-    // try {
-    // final OtpErlangObject res = backend.call("erlide_open",
-    // "get_external_modules", "sx", prefix,
-    // mkContext(externalModules, null, pathVars, null, null));
-    // if (Util.isOk(res)) {
-    // final OtpErlangTuple t = (OtpErlangTuple) res;
-    // final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-    // final List<String> result = new ArrayList<String>(l.arity());
-    // for (final OtpErlangObject i : l.elements()) {
-    // result.add(Util.stringValue(i));
-    // }
-    // return result;
-    // }
-    // } catch (final BackendException e) {
-    // ErlLogger.warn(e);
-    // }
-    // return new ArrayList<String>();
-    // }
-
-    // public static List<String> getExternal1(final Backend backend,
-    // final String externalModules, final OtpErlangList pathVars,
-    // final boolean isRoot) {
-    // try {
-    // final OtpErlangObject res = backend.call("erlide_open",
-    // "get_external_1", "sxo", externalModules, pathVars, isRoot);
-    // if (Util.isOk(res)) {
-    // final OtpErlangTuple t = (OtpErlangTuple) res;
-    // final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-    // final List<String> result = new ArrayList<String>(l.arity());
-    // for (final OtpErlangObject i : l.elements()) {
-    // result.add(Util.stringValue(i));
-    // }
-    // return result;
-    // }
-    // } catch (final BackendException e) {
-    // ErlLogger.warn(e);
-    // }
-    // return new ArrayList<String>();
-    // }
-
-    @Override
-    public List<ExternalTreeEntry> getExternalModuleTree(
-            final String externalModules, final OtpErlangList pathVars) {
+    public static List<ExternalTreeEntry> getExternalModuleTree(
+            final IRpcSite backend, final String externalModules,
+            final OtpErlangList pathVars) {
         ErlLogger.debug("open:external_module_tree -> " + externalModules);
         final Stopwatch stopwatch = new Stopwatch().start();
         try {
@@ -199,16 +158,32 @@ public class ErlideOpen implements OpenService {
         return null;
     }
 
-    @Override
-    public List<String> getLibDirs() {
+    public static Map<String, List<String>> getOtpLibSrcIncludes(
+            final IRpcSite backend, String stateDir) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
-                    "get_lib_dirs", "");
-            return getStringListTuple(res);
+                    "get_otp_lib_src_includes", "s", stateDir);
+            if (Util.isOk(res)) {
+                OtpErlangTuple tres = (OtpErlangTuple) res;
+                final OtpErlangList lot = (OtpErlangList) tres.elementAt(1);
+                Map<String, List<String>> result = Maps.newHashMap();
+                for (final OtpErlangObject o : lot) {
+                    final OtpErlangTuple t = (OtpErlangTuple) o;
+                    OtpErlangString s = (OtpErlangString) t.elementAt(0);
+                    OtpErlangList l = (OtpErlangList) t.elementAt(1);
+                    final List<String> subResult = Lists
+                            .newArrayListWithCapacity(l.arity());
+                    for (final OtpErlangObject o2 : l) {
+                        subResult.add(Util.stringValue(o2));
+                    }
+                    result.put(s.stringValue(), subResult);
+                }
+                return result;
+            }
         } catch (final RpcException e) {
             ErlLogger.error(e);
-            return Lists.newArrayList();
         }
+        return null;
     }
 
     @Override
@@ -216,57 +191,20 @@ public class ErlideOpen implements OpenService {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
                     "get_lib_files", "s", entry);
-            return getStringListTuple(res);
-        } catch (final RpcException e) {
-            ErlLogger.error(e);
-            return Lists.newArrayList();
-        }
-    }
-
-    @Override
-    public List<List<String>> getLibSrcInclude(final List<String> libList) {
-        try {
-            final OtpErlangObject res = backend.call(ERLIDE_OPEN,
-                    "get_lib_src_include", "ls", libList);
-            return getStringListListTuple(res);
-        } catch (final RpcException e) {
-            ErlLogger.error(e);
-            return Lists.newArrayList();
-        }
-    }
-
-    private List<List<String>> getStringListListTuple(final OtpErlangObject res) {
-        if (Util.isOk(res)) {
-            final OtpErlangTuple t = (OtpErlangTuple) res;
-            final OtpErlangList lol = (OtpErlangList) t.elementAt(1);
-            final List<List<String>> result = Lists
-                    .newArrayListWithCapacity(lol.arity());
-            for (final OtpErlangObject o : lol) {
-                final OtpErlangList l = (OtpErlangList) o;
-                final List<String> subResult = Lists.newArrayListWithCapacity(l
+            if (Util.isOk(res)) {
+                final OtpErlangTuple t = (OtpErlangTuple) res;
+                final OtpErlangList l = (OtpErlangList) t.elementAt(1);
+                final List<String> result = Lists.newArrayListWithCapacity(l
                         .arity());
-                for (final OtpErlangObject o2 : l) {
-                    subResult.add(Util.stringValue(o2));
+                for (final OtpErlangObject o : l) {
+                    result.add(Util.stringValue(o));
                 }
-                result.add(subResult);
+                return result;
             }
-            return result;
+        } catch (final RpcException e) {
+            ErlLogger.error(e);
         }
-        return Lists.newArrayList();
-    }
-
-    private List<String> getStringListTuple(final OtpErlangObject res) {
-        if (Util.isOk(res)) {
-            final OtpErlangTuple t = (OtpErlangTuple) res;
-            final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-            final List<String> result = Lists.newArrayListWithCapacity(l
-                    .arity());
-            for (final OtpErlangObject o : l) {
-                result.add(Util.stringValue(o));
-            }
-            return result;
-        }
-        return Lists.newArrayList();
+        return null;
     }
 
     @Override
