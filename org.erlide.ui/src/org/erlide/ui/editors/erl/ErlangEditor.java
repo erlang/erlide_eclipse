@@ -386,6 +386,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         fContextMenuGroup.setContext(null);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(final Class required) {
         if (IContentOutlinePage.class.equals(required)) {
@@ -402,7 +403,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
             return myPropertySource;
         }
 
-        if (required == IErlangFoldingStructureProvider.class) {
+        if (IErlangFoldingStructureProvider.class.equals(required)) {
             return fProjectionModelUpdater;
         }
 
@@ -415,6 +416,10 @@ public class ErlangEditor extends AbstractErlangEditor implements
         }
 
         return super.getAdapter(required);
+    }
+
+    public IDocument getDocument() {
+        return getSourceViewer().getDocument();
     }
 
     /**
@@ -1216,15 +1221,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
 
     public final ISourceViewer getViewer() {
         return getSourceViewer();
-    }
-
-    @Override
-    public final IDocument getDocument() {
-        final ISourceViewer v = getViewer();
-        if (v == null) {
-            return null;
-        }
-        return v.getDocument();
     }
 
     @Override

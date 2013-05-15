@@ -6,7 +6,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
@@ -187,11 +186,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
     @Override
     public IErlModule getModule() {
         return null;
-    }
-
-    @Override
-    public IDocument getDocument() {
-        return getDocumentProvider().getDocument(this);
     }
 
     private IFile getFile() {

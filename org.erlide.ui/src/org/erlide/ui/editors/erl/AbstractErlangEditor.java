@@ -69,8 +69,6 @@ public abstract class AbstractErlangEditor extends TextEditor {
 
     public abstract IErlModule getModule();
 
-    public abstract IDocument getDocument();
-
     public IErlScanner getScanner() {
         if (erlScanner == null) {
             erlScanner = getNewScanner();
