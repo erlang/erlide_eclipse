@@ -9,6 +9,7 @@ import org.erlide.model.erlang.ErlToken;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
+import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
@@ -95,12 +96,10 @@ public class ErlideScanner {
 
     @SuppressWarnings("boxing")
     public static void replaceText(final String module, final int offset,
-            final int removeLength, String newText) {
+            final int removeLength, final String newText) {
+        Asserts.isNotNull(newText);
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
-            if (newText == null) {
-                newText = "";
-            }
             final OtpErlangObject r = backend.call(ERLIDE_SCANNER,
                     "replace_text", "aiis", module, offset, removeLength,
                     newText);
