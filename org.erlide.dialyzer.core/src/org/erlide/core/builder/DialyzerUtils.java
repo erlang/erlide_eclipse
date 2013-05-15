@@ -1,7 +1,6 @@
 package org.erlide.core.builder;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +27,7 @@ import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.Util;
@@ -105,6 +105,7 @@ public class DialyzerUtils {
                 try {
                     r = future.checkedGet(500, TimeUnit.MILLISECONDS);
                 } catch (final TimeoutException e) {
+                } catch (final RpcTimeoutException e){
                 }
                 if (r != null) {
                     processResult(b, r);
