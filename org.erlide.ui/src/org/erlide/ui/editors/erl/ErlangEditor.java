@@ -74,7 +74,6 @@ import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.erlang.IErlAttribute;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlMember;
@@ -1610,11 +1609,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
      */
     public Object getReconcilerLock() {
         return fReconcilerLock;
-    }
-
-    @Override
-    public ErlToken getTokenAt(final int offset) {
-        return getScanner().getTokenAt(offset);
     }
 
     @Override

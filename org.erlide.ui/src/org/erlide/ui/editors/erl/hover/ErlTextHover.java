@@ -95,7 +95,7 @@ public class ErlTextHover implements ITextHover,
             return null;
         }
         editor.reconcileNow();
-        final ErlToken token = editor.getTokenAt(offset);
+        final ErlToken token = editor.getScanner().getTokenAt(offset);
         if (token == null) {
             return null;
         }
