@@ -61,6 +61,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -123,6 +124,9 @@ public abstract class AbstractErlContentAssistProcessor implements
     protected static final List<ICompletionProposal> EMPTY_COMPLETIONS = new ArrayList<ICompletionProposal>();
     protected final CompletionNameComparer completionNameComparer = new CompletionNameComparer();
     protected final ContentAssistant contentAssistant;
+    private IDocument oldDoc;
+    private String oldBefore;
+    private int oldSuggestions = -1;
 
     public AbstractErlContentAssistProcessor(final ISourceViewer sourceViewer,
             final IErlModule module, final IErlProject project,
@@ -167,8 +171,16 @@ public abstract class AbstractErlContentAssistProcessor implements
         try {
             final IDocument doc = viewer.getDocument();
             String before = getBefore(viewer, doc, offset);
-            // ErlLogger.debug("computeCompletionProposals before = %s",
-            // before);
+            // ErlLogger.debug("computeCompletionProposals before = %s %d %s",
+            // before, oldSuggestions, oldDoc);
+
+            if (Objects.equal(oldDoc, doc) && oldBefore != null
+                    && before.startsWith(oldBefore) && oldSuggestions == 0) {
+                return getNoCompletion(offset);
+            }
+            oldDoc = doc;
+            oldBefore = before;
+
             final int commaPos = before.lastIndexOf(',');
             final int colonPos = before.lastIndexOf(':');
             final boolean doubleColon = colonPos >= 0
@@ -285,6 +297,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                     doc, offset - before.length(), before.length());
             result.addAll(Arrays.asList(t.computeCompletionProposals(viewer,
                     offset)));
+            oldSuggestions = result.size();
             if (result.size() == 0) {
                 ErlLogger.debug("no results");
                 return getNoCompletion(offset);
