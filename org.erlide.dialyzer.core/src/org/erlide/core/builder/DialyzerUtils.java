@@ -80,10 +80,12 @@ public class DialyzerUtils {
             final List<String> names = Lists.newArrayList();
             collectFilesAndIncludeDirs(modules, projects, files, names,
                     includeDirs, fromSource);
-
-            ErlLogger.debug("Dialyzing %s %s", names.size(),
-                    Arrays.toString(names.toArray()));
-            monitor.subTask("Dialyzing " + getFileNames(names));
+            
+			String fileNames = names.size() + " modules ["
+					+ getFileNames(names) + "]";
+			monitor.subTask(fileNames);
+			ErlLogger.debug("Dialyzing %s", fileNames);
+			
             final IRpcSite b = backend.getRpcSite();
             final IRpcFuture future = ErlideDialyze.dialyze(b, files, pltPaths,
                     includeDirs, fromSource, noCheckPLT);
