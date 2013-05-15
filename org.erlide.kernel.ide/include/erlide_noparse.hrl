@@ -1,7 +1,9 @@
 
 -record(model, {forms, comments}).
 
--record(function, {pos, name, arity, args, head, clauses, name_pos, exported}).
--record(clause, {pos, name, args, head, name_pos}).
--record(attribute, {pos, name, args, extra, arity}).
--record(other, {pos, name, tokens}).
+-type pos() :: {{Line::integer(), LastLine::integer(), Offset::integer()}, PosLength::integer()}.
+
+-record(function, {pos::pos(), name::atom(), arity::integer(), args, head, clauses, name_pos, exported}).
+-record(clause, {pos::pos(), name::atom(), args, head, name_pos}).
+-record(attribute, {pos::pos(), name::atom(), args, extra, arity}).
+-record(other, {pos::pos(), name::atom(), tokens}).
