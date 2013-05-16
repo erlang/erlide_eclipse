@@ -1,3 +1,20 @@
+List of user visible changes between 0.22.0 and 0.23.0 (20130516)
+
+e93f508 1208 - completion: optimize search for suggestions
+64be647 1210 - completion: propose builtin types
+68d56cf 1196 - distribute cache files in multiple directories: use same directory structure as in workspace
+b6d6e7c 1131 - long delay at startup; not sure this is enough
+961713a 1204 - use eclipse status dialog instead of custom one
+9f353d6 gh107: templates invalid
+abd2767 fix ctrl-space completion in console
+5ede309 console: fix completion docs and remove esc command
+0b577ec 1200 - searching - selecting record name in declaration searches for record field 
+9e065a0 rpcs fail faster now if backend is down (no timeout, just throw exception directly)
+95e40a8 1193 - indentation: fails after $\n 
+641811d 1183 - update .app files with current info from the project
+405534a 1187 - search references: skip searching outside the module if the function is not exported 
+        1192 - search: the search window (ctrl-h) doesn't work for variables 
+
 List of user visible changes between 0.21.0 and 0.22.0 (20130418)
 
 72b096b throw exception if setting an illegal node name (instead of changing it quietly)
