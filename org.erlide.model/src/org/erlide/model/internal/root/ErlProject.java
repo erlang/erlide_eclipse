@@ -890,7 +890,7 @@ public class ErlProject extends Openable implements IErlProject {
                 }
             }
         } catch (final CoreException e) {
-            throw new ErlModelException(e);
+            // throw new ErlModelException(e);
         }
         return result;
     }
