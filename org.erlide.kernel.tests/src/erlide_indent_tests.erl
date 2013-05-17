@@ -409,6 +409,19 @@ indent_map_arg_test_() ->
             "        )",
     ?Test_indent(I, S).
 
+indent_newline_char_2_test_() ->
+    S = "" ++
+            "a()->\n"++
+            "foo(x, $\\n, y),\n"++
+            "boo(),\n" ++
+            "ok.\n",
+    I = "" ++
+            "a()->\n"++
+            "    foo(x, $\\n, y),\n"++
+            "    boo(),\n" ++
+            "    ok.\n",
+    ?Test_indent(I, S).
+
 %%
 %% Local Functions
 %%
