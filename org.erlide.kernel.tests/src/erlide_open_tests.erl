@@ -34,7 +34,7 @@ open_test_() ->
      ?_assertEqual({include, "foo"},
                    open_test("-include(\"fo§o\").")),
      ?_assertEqual({include_lib,"file.hrl",
-                   code:lib_dir()++"/stdlib/file.hrl"},
+                   code:lib_dir(stdlib)++"/file.hrl"},
                    open_test("-includ§e_lib(\"stdlib/file.hrl\").")),
      ?_assertEqual({external,a,b,0,not_found},
                    open_test("foo()-> a§:b().")),
