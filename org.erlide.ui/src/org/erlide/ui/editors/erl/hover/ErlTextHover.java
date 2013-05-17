@@ -288,8 +288,12 @@ public class ErlTextHover implements ITextHover,
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getWorkspaceProject();
-            final IRpcSite backend = erlProject == null ? ide.getRpcSite()
-                    : backendManager.getBuildBackend(project).getRpcSite();
+            final IBackend backend0 = erlProject == null ? ide : backendManager
+                    .getBuildBackend(project);
+            if (backend0 == null) {
+                return null;
+            }
+            final IRpcSite backend = backend0.getRpcSite();
 
             final IErlModel model = ErlModelManager.getErlangModel();
             final String externalModulesString = erlProject != null ? erlProject
