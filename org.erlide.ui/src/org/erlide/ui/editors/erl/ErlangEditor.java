@@ -74,7 +74,6 @@ import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.erlang.IErlAttribute;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlMember;
@@ -387,6 +386,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         fContextMenuGroup.setContext(null);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(final Class required) {
         if (IContentOutlinePage.class.equals(required)) {
@@ -403,7 +403,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
             return myPropertySource;
         }
 
-        if (required == IErlangFoldingStructureProvider.class) {
+        if (IErlangFoldingStructureProvider.class.equals(required)) {
             return fProjectionModelUpdater;
         }
 
@@ -416,6 +416,10 @@ public class ErlangEditor extends AbstractErlangEditor implements
         }
 
         return super.getAdapter(required);
+    }
+
+    public IDocument getDocument() {
+        return getSourceViewer().getDocument();
     }
 
     /**
@@ -1220,15 +1224,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
     }
 
     @Override
-    public final IDocument getDocument() {
-        final ISourceViewer v = getViewer();
-        if (v == null) {
-            return null;
-        }
-        return v.getDocument();
-    }
-
-    @Override
     public ViewerComparator createDefaultOutlineComparator() {
         return null;
     }
@@ -1610,11 +1605,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
      */
     public Object getReconcilerLock() {
         return fReconcilerLock;
-    }
-
-    @Override
-    public ErlToken getTokenAt(final int offset) {
-        return getScanner().getTokenAt(offset);
     }
 
     @Override

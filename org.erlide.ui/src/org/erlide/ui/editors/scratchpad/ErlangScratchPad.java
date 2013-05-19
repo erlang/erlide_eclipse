@@ -6,7 +6,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
@@ -18,7 +17,6 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
-import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.root.ErlModelManager;
@@ -188,16 +186,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
     @Override
     public IErlModule getModule() {
         return null;
-    }
-
-    @Override
-    public IDocument getDocument() {
-        return getDocumentProvider().getDocument(this);
-    }
-
-    @Override
-    public ErlToken getTokenAt(final int offset) {
-        return getScanner().getTokenAt(offset);
     }
 
     private IFile getFile() {
