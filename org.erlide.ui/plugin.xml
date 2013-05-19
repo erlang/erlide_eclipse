@@ -1620,12 +1620,6 @@
      <actionSet
                id="org.eclipse.debug.ui.breakpointActionSet">
          </actionSet>
-         <actionSet
-               id="org.eclipse.jdt.debug.ui.JDTDebugActionSet">
-         </actionSet>
-         <actionSet
-               id="com.rational.clearcase.ActionSet">
-         </actionSet>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="org.eclipse.debug.ui.DebugPerspective">
