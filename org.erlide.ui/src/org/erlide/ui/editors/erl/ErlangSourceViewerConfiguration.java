@@ -29,8 +29,6 @@ import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlProject;
-import org.erlide.runtime.shell.IoRequest.IoRequestKind;
-import org.erlide.ui.console.ConsoleOutputScanner;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
 import org.erlide.ui.editors.erl.completion.ErlStringContentAssistProcessor;
 import org.erlide.ui.editors.erl.correction.ErlangQuickAssistProcessor;
@@ -91,36 +89,28 @@ public class ErlangSourceViewerConfiguration extends
     @Override
     public IPresentationReconciler getPresentationReconciler(
             final ISourceViewer sourceViewer) {
-        final PresentationReconciler reconciler = new PresentationReconciler();
-        DefaultDamagerRepairer dr;
+        final PresentationReconciler reconciler = new ErlangPresentationReconciler();
+        reconciler
+                .setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
+        DefaultDamagerRepairer dr = new ErlDamagerRepairer(codeScanner);
 
-        final ITokenScanner scan = new ErlCodeScanner(colorManager);
-        dr = new ErlDamagerRepairer(scan);
-        reconciler.setDamager(dr, IoRequestKind.INPUT.name());
-        reconciler.setRepairer(dr, IoRequestKind.INPUT.name());
-
-        final ITokenScanner scan3 = new ConsoleOutputScanner(colorManager);
-        dr = new ErlDamagerRepairer(scan3);
-        reconciler.setDamager(dr, IoRequestKind.OUTPUT.name());
-        reconciler.setRepairer(dr, IoRequestKind.OUTPUT.name());
-
-        reconciler.setDamager(dr, IoRequestKind.PROMPT.name());
-        reconciler.setRepairer(dr, IoRequestKind.PROMPT.name());
-
-        reconciler.setDamager(dr, IoRequestKind.STDOUT.name());
-        reconciler.setRepairer(dr, IoRequestKind.STDOUT.name());
-
-        reconciler.setDamager(dr, IoRequestKind.STDERR.name());
-        reconciler.setRepairer(dr, IoRequestKind.STDERR.name());
-
-        reconciler.setDamager(dr, IoRequestKind.HEADER.name());
-        reconciler.setRepairer(dr, IoRequestKind.HEADER.name());
-
-        // this is for the input field
         final ITokenScanner scan2 = new ErlCodeScanner(colorManager);
         dr = new ErlDamagerRepairer(scan2);
         reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
         reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+
+        dr = new ErlDamagerRepairer(commentScanner);
+        reconciler.setDamager(dr, IErlangPartitions.ERLANG_COMMENT);
+        reconciler.setRepairer(dr, IErlangPartitions.ERLANG_COMMENT);
+        dr = new ErlDamagerRepairer(stringScanner);
+        reconciler.setDamager(dr, IErlangPartitions.ERLANG_STRING);
+        reconciler.setRepairer(dr, IErlangPartitions.ERLANG_STRING);
+        dr = new ErlDamagerRepairer(qatomScanner);
+        reconciler.setDamager(dr, IErlangPartitions.ERLANG_QATOM);
+        reconciler.setRepairer(dr, IErlangPartitions.ERLANG_QATOM);
+        dr = new ErlDamagerRepairer(charScanner);
+        reconciler.setDamager(dr, IErlangPartitions.ERLANG_CHARACTER);
+        reconciler.setRepairer(dr, IErlangPartitions.ERLANG_CHARACTER);
 
         return reconciler;
     }
