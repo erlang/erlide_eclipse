@@ -10,7 +10,6 @@ abd2767 fix ctrl-space completion in console
 5ede309 console: fix completion docs and remove esc command
 0b577ec 1200 - searching - selecting record name in declaration searches for record field 
 9e065a0 rpcs fail faster now if backend is down (no timeout, just throw exception directly)
-95e40a8 1193 - indentation: fails after $\n 
 641811d 1183 - update .app files with current info from the project
 405534a 1187 - search references: skip searching outside the module if the function is not exported 
         1192 - search: the search window (ctrl-h) doesn't work for variables 
