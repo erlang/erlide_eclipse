@@ -495,7 +495,7 @@ public class ErlModule extends Openable implements IErlModule {
         initialText = newText;
         parsed = false;
         setStructureKnown(false);
-        scanner.initialScan(newText, getFilePath(), logging);
+        scanner.initialScan(newText, "", logging);
         final boolean built = buildStructure(null);
         setStructureKnown(built);
     }
