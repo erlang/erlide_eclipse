@@ -98,7 +98,7 @@ public class HoverUtil {
         for (final IErlMember member : comments) {
             try {
                 final String source = member.getSource();
-                stringBuilder.append(source);
+                stringBuilder.append(source.replaceAll("%% ", ""));
                 if (!source.endsWith("\n")) {
                     stringBuilder.append('\n');
                 }

@@ -5,8 +5,11 @@
 
 -define(myrec, #'REC'{}).
     
-
+%% 
+%%    hello
 %% doc for f
+-spec f() ->
+          any().
 f() -> 
 	X=[1,4,6,8], 
 	Z = lists:reverse(X), 
