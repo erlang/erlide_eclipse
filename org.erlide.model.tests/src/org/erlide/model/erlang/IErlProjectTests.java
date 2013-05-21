@@ -11,10 +11,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.model.ErlModelException;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.root.OldErlangProjectProperties;
-import org.erlide.runtime.RuntimeVersion;
+import org.erlide.runtime.api.RuntimeVersion;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
@@ -431,7 +430,6 @@ public class IErlProjectTests extends ErlModelTestBase {
         }
     }
 
-    @Test(expected = ErlModelException.class)
     public void getProjectReferences_closedProject() throws Exception {
         final IErlProject erlProject = projects[0];
         final IProject aProject = erlProject.getWorkspaceProject();

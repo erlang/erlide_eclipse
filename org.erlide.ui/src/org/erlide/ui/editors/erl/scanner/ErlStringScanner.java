@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.Token;
-import org.erlide.ui.editors.erl.ErlTokenScanner;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.ui.util.text.RegexpRule;

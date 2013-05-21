@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.erlide.model.services.cleanup;
 
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.core.resources.IResource;
 import org.erlide.model.ModelPlugin;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 
 /**
@@ -65,7 +67,7 @@ class ErlTidyCleanupProvider implements CleanUpProvider {
                 "s", absolutePathToErlangModule);
 
         // wait as long as reasonable for erl_tidy to finish
-        erlTidyFuture.get(PATIENCE_LIMIT);
+        erlTidyFuture.get(PATIENCE_LIMIT, TimeUnit.MILLISECONDS);
 
         // refresh the resource so it reflects the altered state on disk
         resource.refreshLocal(IResource.DEPTH_ZERO, null);

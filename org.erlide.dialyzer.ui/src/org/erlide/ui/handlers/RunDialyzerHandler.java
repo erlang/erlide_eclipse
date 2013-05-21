@@ -6,7 +6,6 @@ import java.util.Set;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -25,9 +24,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendUtils;
-import org.erlide.backend.IBackend;
+import org.erlide.backend.api.BackendData;
+import org.erlide.backend.api.IBackend;
 import org.erlide.core.builder.DialyzerUtils;
 import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.dialyzer.ui.Activator;
@@ -42,7 +41,7 @@ import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Sets;
 
-public class RunDialyzerHandler extends AbstractHandler implements IHandler {
+public class RunDialyzerHandler extends AbstractHandler {
 
     private final class DialyzeOperation extends Job {
         private final Set<IErlModule> modules;
@@ -59,7 +58,7 @@ public class RunDialyzerHandler extends AbstractHandler implements IHandler {
         protected IStatus run(final IProgressMonitor monitor) {
             if (modules.size() > 0) {
                 IBackend backend = null;
-                monitor.beginTask("Dialyzing " + modules.size() + " modules",
+                monitor.beginTask("Dialyzing",
                         IProgressMonitor.UNKNOWN);
 
                 try {
@@ -88,7 +87,7 @@ public class RunDialyzerHandler extends AbstractHandler implements IHandler {
         }
 
         private IBackend createBackend() {
-            final RuntimeInfo info = RuntimeInfo.copy(BackendCore
+            final RuntimeInfo info = new RuntimeInfo(BackendCore
                     .getRuntimeInfoCatalog().getErlideRuntime());
             final BackendData data = new BackendData(info);
             final String nodeName = BackendUtils.getErlideNodeNameTag()

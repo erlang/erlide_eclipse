@@ -1,11 +1,14 @@
 package org.erlide.backend;
 
 import org.eclipse.core.resources.IProject;
+import org.erlide.backend.api.BackendException;
+import org.erlide.backend.api.IBackend;
+import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.internal.BackendFactory;
 import org.erlide.backend.internal.BackendManager;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.launch.EpmdWatchJob;
-import org.erlide.runtime.RuntimeCore;
+import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.epmd.IEpmdWatcher;
@@ -63,7 +66,9 @@ public class BackendCore {
     }
 
     public static void stop() {
-        epmdWatcherJob.stop();
+        if (epmdWatcherJob != null) {
+            epmdWatcherJob.stop();
+        }
     }
 
 }

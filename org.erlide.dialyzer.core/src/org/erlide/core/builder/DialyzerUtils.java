@@ -1,10 +1,11 @@
 package org.erlide.core.builder;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -13,8 +14,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.IBackend;
+import org.erlide.backend.api.BackendException;
+import org.erlide.backend.api.IBackend;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ModuleKind;
@@ -23,7 +24,7 @@ import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
@@ -79,10 +80,12 @@ public class DialyzerUtils {
             final List<String> names = Lists.newArrayList();
             collectFilesAndIncludeDirs(modules, projects, files, names,
                     includeDirs, fromSource);
-
-            ErlLogger.debug("Dialyzing %s %s", names.size(),
-                    Arrays.toString(names.toArray()));
-            monitor.subTask("Dialyzing " + getFileNames(names));
+            
+			String fileNames = names.size() + " modules ["
+					+ getFileNames(names) + "]";
+			monitor.subTask(fileNames);
+			ErlLogger.debug("Dialyzing %s", fileNames);
+			
             final IRpcSite b = backend.getRpcSite();
             final IRpcFuture future = ErlideDialyze.dialyze(b, files, pltPaths,
                     includeDirs, fromSource, noCheckPLT);
@@ -100,8 +103,9 @@ public class DialyzerUtils {
 
                 OtpErlangObject r = null;
                 try {
-                    r = future.checkedGet(500);
-                } catch (final RpcTimeoutException e) {
+                    r = future.checkedGet(500, TimeUnit.MILLISECONDS);
+                } catch (final TimeoutException e) {
+                } catch (final RpcTimeoutException e){
                 }
                 if (r != null) {
                     processResult(b, r);

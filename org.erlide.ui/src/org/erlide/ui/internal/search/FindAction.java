@@ -18,7 +18,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
@@ -26,10 +25,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchSite;
-import org.eclipse.ui.IWorkingSet;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.progress.IProgressService;
 import org.erlide.backend.BackendCore;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlAttribute;
@@ -45,8 +41,7 @@ import org.erlide.model.services.search.LimitTo;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.services.search.SearchPatternFactory;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
-import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ExceptionHandler;
@@ -212,35 +207,28 @@ public abstract class FindAction extends SelectionDispatchAction {
     @Override
     public void run(final ITextSelection selection) {
         try {
-            performNewSearch(selection, getScope());
+            final IErlModule module = fEditor.getModule();
+            if (module == null) {
+                return;
+            }
+            final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                    .getRpcSite();
+            final ISelection sel = getSelection();
+            final ITextSelection textSel = (ITextSelection) sel;
+            final int offset = textSel.getOffset();
+            final OpenResult res = ErlideOpen.open(b, module.getScannerName(),
+                    offset, ModelUtils.getImportsAsList(module), "",
+                    ErlModelManager.getErlangModel().getPathVars());
+            ErlLogger.debug("find " + res);
+            final ErlangSearchPattern ref = SearchUtil
+                    .getSearchPatternFromOpenResultAndLimitTo(module, offset,
+                            res, getLimitTo(), true);
+            if (ref != null) {
+                SearchUtil.runQuery(ref, getScope(), getScopeDescription(),
+                        getShell());
+            }
         } catch (final Exception e) {
             handleException(e);
-        }
-    }
-
-    protected void performNewSearch(final ITextSelection selection,
-            final ErlSearchScope scope) throws RpcException, CoreException {
-        // if (!ActionUtil.isProcessable(fEditor)) {
-        // return;
-        // }
-        final IErlModule module = fEditor.getModule();
-        if (module == null) {
-            return;
-        }
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
-                .getRpcSite();
-        final ISelection sel = getSelection();
-        final ITextSelection textSel = (ITextSelection) sel;
-        final int offset = textSel.getOffset();
-        final OpenResult res = ErlideOpen.open(b, module.getScannerName(),
-                offset, ModelUtils.getImportsAsList(module), "",
-                ErlModelManager.getErlangModel().getPathVars());
-        ErlLogger.debug("find " + res);
-        final ErlangSearchPattern ref = SearchUtil
-                .getSearchPatternFromOpenResultAndLimitTo(module, offset, res,
-                        getLimitTo(), true);
-        if (ref != null) {
-            performNewSearch(ref, scope);
         }
     }
 
@@ -276,7 +264,11 @@ public abstract class FindAction extends SelectionDispatchAction {
      */
     public void run(final IErlElement element) {
         try {
-            performNewSearch(element, getScope());
+            final ErlangSearchPattern pattern = SearchPatternFactory
+                    .getSearchPatternFromErlElementAndLimitTo(element,
+                            getLimitTo());
+            SearchUtil.runQuery(pattern, getScope(), getScopeDescription(),
+                    getShell());
         } catch (final CoreException e) {
             handleException(e);
         }
@@ -286,44 +278,6 @@ public abstract class FindAction extends SelectionDispatchAction {
         ExceptionHandler.handle(new InvocationTargetException(e), getShell(),
                 "Search", "Problems occurred while searching. "
                         + "The affected files will be skipped.");
-    }
-
-    protected void performNewSearch(final IErlElement element,
-            final ErlSearchScope scope) {
-        final ErlangSearchPattern pattern = SearchPatternFactory
-                .getSearchPatternFromErlElementAndLimitTo(element, getLimitTo());
-        SearchUtil.runQuery(pattern, scope, getScopeDescription(), getShell());
-    }
-
-    private void performNewSearch(final ErlangSearchPattern ref,
-            final ErlSearchScope scope) throws CoreException {
-        final ErlSearchQuery query = new ErlSearchQuery(ref, scope,
-                getScopeDescription());
-        if (query.canRunInBackground()) {
-            /*
-             * This indirection with Object as parameter is needed to prevent
-             * the loading of the Search plug-in: the VM verifies the method
-             * call and hence loads the types used in the method signature,
-             * eventually triggering the loading of a plug-in (in this case
-             * ISearchQuery results in Search plug-in being loaded).
-             */
-            SearchUtil.runQueryInBackground(query);
-        } else {
-            final IProgressService progressService = PlatformUI.getWorkbench()
-                    .getProgressService();
-            /*
-             * This indirection with Object as parameter is needed to prevent
-             * the loading of the Search plug-in: the VM verifies the method
-             * call and hence loads the types used in the method signature,
-             * eventually triggering the loading of a plug-in (in this case it
-             * would be ISearchQuery).
-             */
-            final IStatus status = SearchUtil.runQueryInForeground(
-                    progressService, query);
-            if (status.matches(IStatus.ERROR | IStatus.INFO | IStatus.WARNING)) {
-                throw new CoreException(status);
-            }
-        }
     }
 
     /**
@@ -368,20 +322,6 @@ public abstract class FindAction extends SelectionDispatchAction {
 
     protected ErlSearchScope getProjectScope() throws CoreException {
         return SearchUtil.getProjectsScope(getProjects(), false, false);
-    }
-
-    protected ErlSearchScope getWorkingSetsScope(final IWorkingSet[] workingSets)
-            throws InterruptedException, CoreException {
-        IWorkingSet[] ws = workingSets;
-        if (ws == null) {
-            ws = SearchUtil.queryWorkingSets();
-        }
-        if (ws != null) {
-            SearchUtil.updateLRUWorkingSets(ws);
-            return SearchUtil.getWorkingSetsScope(ws, false, false);
-        } else {
-            return SearchUtil.getWorkspaceScope(false, false);
-        }
     }
 
 }

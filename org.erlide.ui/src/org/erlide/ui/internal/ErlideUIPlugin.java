@@ -53,11 +53,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.progress.UIJob;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
+import org.erlide.backend.api.IBackend;
 import org.erlide.core.ErlangStatus;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.ui.ErlideImage;
@@ -65,12 +64,12 @@ import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.actions.ClearCacheAction;
-import org.erlide.ui.editors.erl.completion.ErlangContextType;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
 import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
 import org.erlide.ui.templates.ErlangSourceContextTypeModuleElement;
+import org.erlide.ui.templates.ErlangTemplateContextType;
 import org.erlide.ui.templates.ErlideContributionTemplateStore;
 import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
@@ -157,33 +156,24 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
         loadDefaultEditorColors();
 
-        new UIJob("erlide ui startup") {
-            @Override
-            public IStatus runInUIThread(final IProgressMonitor monitor) {
-                erlConsoleManager = new ErlConsoleManager();
-                if (SystemConfiguration.getInstance().isDeveloper()) {
-                    try {
-                        final IBackend ideBackend = BackendCore
-                                .getBackendManager().getIdeBackend();
-                        if (!ideBackend.getData().hasConsole()) {
-                            erlConsoleManager.runtimeAdded(ideBackend);
-                        }
-                    } catch (final Exception e) {
-                        ErlLogger.warn(e);
-                    }
-                }
+        ErlLogger.debug("Started UI");
 
-                erlangDebuggerBackendListener = new ErlangDebuggerBackendListener();
-                BackendCore.getBackendManager().addBackendListener(
-                        erlangDebuggerBackendListener);
-
-                return Status.OK_STATUS;
+        erlConsoleManager = new ErlConsoleManager();
+        if (SystemConfiguration.getInstance().isDeveloper()) {
+            try {
+                final IBackend ideBackend = BackendCore.getBackendManager()
+                        .getIdeBackend();
+                erlConsoleManager.runtimeAdded(ideBackend);
+            } catch (final Exception e) {
+                ErlLogger.warn(e);
             }
-        }.schedule();
+        }
+
+        erlangDebuggerBackendListener = new ErlangDebuggerBackendListener();
+        BackendCore.getBackendManager().addBackendListener(
+                erlangDebuggerBackendListener);
 
         startPeriodicCacheCleaner();
-
-        ErlLogger.debug("Started UI");
     }
 
     private void loadDefaultEditorColors() {
@@ -582,7 +572,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             // create an configure the contexts available in the template editor
             fContextTypeRegistry = new ContributionContextTypeRegistry();
             fContextTypeRegistry
-                    .addContextType(ErlangContextType.ERLANG_CONTEXT_TYPE_ID);
+                    .addContextType(ErlangTemplateContextType.ERLANG_CONTEXT_TYPE_ID);
             fContextTypeRegistry
                     .addContextType(ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
             fContextTypeRegistry

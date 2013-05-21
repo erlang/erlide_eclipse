@@ -34,14 +34,13 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
-import org.erlide.backend.BackendData;
-import org.erlide.backend.IBackend;
+import org.erlide.backend.api.IBackend;
 import org.erlide.launch.debug.DebuggerEventDaemon;
 import org.erlide.launch.debug.ErlangLineBreakpoint;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.IErlangDebugNode;
 import org.erlide.model.ErlModelException;
-import org.erlide.runtime.ErlDebugFlags;
+import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpErlang;
 
@@ -442,9 +441,9 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         return debuggerDaemon.getMBox();
     }
 
-    public void interpretModules(final BackendData data,
+    public void interpretModules(final Collection<String> modules,
             final boolean distributed) {
-        for (final String pm : data.getInterpretedModules()) {
+        for (final String pm : modules) {
             final String[] pms = pm.split(":");
             final IProject project = ResourcesPlugin.getWorkspace().getRoot()
                     .getProject(pms[0]);

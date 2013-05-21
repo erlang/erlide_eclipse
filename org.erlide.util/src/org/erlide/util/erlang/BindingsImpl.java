@@ -122,7 +122,6 @@ public final class BindingsImpl implements Bindings {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> T getAs(final String name, final Class<T> cls)
             throws SignatureException {
         final OtpErlangObject v = get(name);

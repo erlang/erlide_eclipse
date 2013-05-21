@@ -79,6 +79,7 @@ spawn_server(ScannerName) ->
         undefined ->
             Pid = spawn(fun() ->
                                 ?SAVE_CALLS,
+                                erlang:process_flag(min_heap_size, 64*1024),
                                 loop(#module{name=ScannerName}, 0)
                         end),
             erlang:register(ScannerName, Pid);

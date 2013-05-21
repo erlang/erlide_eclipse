@@ -29,7 +29,7 @@ import com.google.common.collect.Lists;
  * 
  * @author Vlad Dumitrescu
  */
-public class ErlFunction extends ErlMember implements IErlFunction, IParent {
+public class ErlFunction extends ErlMember implements IErlFunction {
 
     private static final Collection<IErlMember> NO_COMMENTS = Lists
             .newArrayList();

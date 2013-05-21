@@ -138,7 +138,6 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
     @Override
     public Match[] computeContainedMatches(
             final AbstractTextSearchResult aResult, final IEditorPart editor) {
-        // TODO: copied from JavaSearchResult:
         final IEditorInput editorInput = editor.getEditorInput();
         if (editorInput instanceof IFileEditorInput) {
             final IFileEditorInput fileEditorInput = (IFileEditorInput) editorInput;

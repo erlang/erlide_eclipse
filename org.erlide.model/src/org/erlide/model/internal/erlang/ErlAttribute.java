@@ -59,4 +59,9 @@ public class ErlAttribute extends ErlMember implements IErlAttribute {
         }
         return getName() + sval;
     }
+
+    @Override
+    public String getExtra() {
+        return fExtra;
+    }
 }

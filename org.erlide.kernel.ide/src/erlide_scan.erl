@@ -75,7 +75,6 @@ format_error(Other) -> io_lib:write(Other).
 string_thing($') -> "atom";
 string_thing(_) -> "string".
 
-
 %% string(CharList, StartPos)
 %%  Takes a list of characters and tries to tokenise them.
 %%
@@ -126,7 +125,6 @@ tokens_ws({Cs,Stack,Toks,Pos,_State,Errors,Fun}, eof, _) ->
 tokens_ws({Cs,Stack,Toks,Pos,State,Errors,Fun}, Chars, _) ->
     Fun(Cs++Chars, Stack, Toks, Pos, State, Errors).
 
-
 %% Scan loop.
 %%
 %% The scan_*/6 and sub_scan_*/6 functions does tail recursive calls
@@ -196,7 +194,6 @@ done(Cs, Errors, _Toks, Pos, eof) ->
     {Error,ErrorPos} = lists:last(Errors),
     {done,{error,{ErrorPos,?MODULE,Error},Pos},Cs}.
 
-
 %% The actual scan loop
 %% Stack is assumed to be [].
 
@@ -304,8 +301,6 @@ scan([], Stack, Toks, Pos, State, Errors) ->
 scan(Eof, _Stack, Toks, Pos, State, Errors) ->
     done(Eof, Errors, Toks, Pos, State).
 
-
-
 scan_atom(Cs, Name, Toks, Pos, State, Errors) ->
     case catch list_to_atom(Name) of
     Atom when is_atom(Atom) ->
@@ -342,18 +337,18 @@ scan_variable(Cs, Name, Toks, Pos, State, Errors) ->
 %% Returns the scanned name on the stack, unreversed.
 %%
 sub_scan_name([C|Cs]=Css, Stack, Toks, Pos, State, Errors) ->
-	case name_char(C) of
-		true ->
-			sub_scan_name(Cs, [C|Stack], Toks, Pos, State, Errors);
-		false ->
-			[Fun|Name] = reverse(Stack),
-			Fun(Css, Name, Toks, Pos, State, Errors)
-	end;
+  case name_char(C) of
+    true ->
+      sub_scan_name(Cs, [C|Stack], Toks, Pos, State, Errors);
+    false ->
+      [Fun|Name] = reverse(Stack),
+      Fun(Css, Name, Toks, Pos, State, Errors)
+  end;
 sub_scan_name([], Stack, Toks, Pos, State, Errors) ->
-	more([], Stack, Toks, Pos, State, Errors, fun sub_scan_name/6);
+  more([], Stack, Toks, Pos, State, Errors, fun sub_scan_name/6);
 sub_scan_name(Eof, Stack, Toks, Pos, State, Errors) ->
-	[Fun|Name] = reverse(Stack),
-	Fun(Eof, Name, Toks, Pos, State, Errors).
+  [Fun|Name] = reverse(Stack),
+  Fun(Eof, Name, Toks, Pos, State, Errors).
 
 name_char(C) when C >= $a, C =< $z -> true;
 name_char(C) when C >= $ß, C =< $ÿ, C =/= $÷ -> true;
@@ -364,7 +359,6 @@ name_char($_) -> true;
 name_char($@) -> true;
 name_char(_) -> false.
 
-
 scan_char([$\\|Cs], Stack, Toks, Pos, State, Errors) ->
     case sub_scan_escape(Cs, Pos) of
     {Rest, Val, StrVal, NewPos} ->
@@ -549,7 +543,6 @@ unstack(L) ->
     {VL, SL} = lists:foldl(Fun, {[], []}, L),
     {lists:reverse(VL), lists:flatten(lists:reverse(SL))}.
 
-
 scan_number([$.,C|Cs], Stack, Toks, Pos, State, Errors) when C >= $0, C =< $9 ->
     scan_fraction(Cs, [C,$.|Stack], Toks, Pos, State, Errors);
 scan_number([$.]=Cs, Stack, Toks, Pos, State, Errors) ->
@@ -591,7 +584,8 @@ scan_based_int(Cs, [B|Stack], Toks, Pos, State, Errors) ->
         scan(Cs, [], [{integer,{Pos, Len},N,integer_to_list(B)++[$#]++reverse(Stack)}|Toks],
          inc(Pos,Len), State, Errors);
     _ ->
-        scan(Cs, [], Toks, Pos, State, [{{illegal,integer},Pos}|Errors])
+        Len = 1+length(integer_to_list(B)),
+        scan(Cs, [], [{error,{Pos,Len},integer_to_list(B)++[$#],integer_to_list(B)++[$#]}|Toks], inc(Pos, Len), State, Errors)
     end.
 
 scan_fraction([C|Cs], Stack, Toks, Pos, State, Errors) when C >= $0, C =< $9 ->

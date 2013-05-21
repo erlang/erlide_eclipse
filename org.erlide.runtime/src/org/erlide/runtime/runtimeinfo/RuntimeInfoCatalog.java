@@ -17,7 +17,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import org.erlide.runtime.RuntimeVersion;
+import org.eclipse.jdt.annotation.NonNull;
+import org.erlide.runtime.api.RuntimeVersion;
 import org.erlide.util.HostnameUtils;
 
 import com.google.common.collect.Lists;
@@ -31,7 +32,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
 
     public RuntimeInfoCatalog() {
         runtimes = Maps.newHashMap();
-        erlideRuntime = null;
+        erlideRuntime = RuntimeInfo.NO_RUNTIME_INFO;
         defaultRuntimeName = null;
     }
 
@@ -86,10 +87,15 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         return runtimes.containsKey(name);
     }
 
+    @SuppressWarnings("null")
     @Override
-    public RuntimeInfo getRuntime(final String name) {
+    public @NonNull
+    RuntimeInfo getRuntime(final String name) {
         final RuntimeInfo rt = runtimes.get(name);
-        return rt;
+        if (rt != null) {
+            return rt;
+        }
+        return RuntimeInfo.NO_RUNTIME_INFO;
     }
 
     @Override
@@ -103,7 +109,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
                 defaultRuntimeName = runtimes.keySet().iterator().next();
             }
         } else {
-            erlideRuntime = null;
+            erlideRuntime = RuntimeInfo.NO_RUNTIME_INFO;
             defaultRuntimeName = null;
         }
     }
@@ -118,7 +124,8 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         defaultRuntimeName = name;
     }
 
-    private synchronized void setErlideRuntime(final RuntimeInfo runtime) {
+    private synchronized void setErlideRuntime(
+            final @NonNull RuntimeInfo runtime) {
         final RuntimeInfo old = erlideRuntime;
         if (old == null || !old.equals(runtime)) {
             erlideRuntime = runtime;
@@ -128,13 +135,16 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         }
     }
 
+    @SuppressWarnings("null")
     @Override
-    public synchronized RuntimeInfo getErlideRuntime() {
+    public synchronized @NonNull
+    RuntimeInfo getErlideRuntime() {
         return erlideRuntime;
     }
 
     @Override
-    public synchronized RuntimeInfo getDefaultRuntime() {
+    public synchronized @NonNull
+    RuntimeInfo getDefaultRuntime() {
         return getRuntime(getDefaultRuntimeName());
     }
 

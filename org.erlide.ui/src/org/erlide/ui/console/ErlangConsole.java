@@ -17,7 +17,7 @@ import org.eclipse.ui.console.IConsoleDocumentPartitioner;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.part.IPageBookViewPage;
-import org.erlide.backend.IBackend;
+import org.erlide.backend.api.IBackend;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
@@ -43,7 +43,7 @@ public class ErlangConsole extends TextConsole implements IErlangConsole {
     @Override
     public IPageBookViewPage createPage(final IConsoleView view) {
         final ErlangConsolePage erlangConsolePage = new ErlangConsolePage(view,
-                this, backend.getRpcSite());
+                this, backend);
         ErlideUIPlugin.getDefault().getErlConsoleManager()
                 .addPage(this, erlangConsolePage);
         return erlangConsolePage;

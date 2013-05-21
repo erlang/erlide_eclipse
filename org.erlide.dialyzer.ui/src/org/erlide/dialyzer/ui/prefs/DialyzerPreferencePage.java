@@ -69,7 +69,7 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.prefs.ProjectSelectionDialog;
 import org.erlide.util.ErlLogger;
@@ -551,10 +551,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
     private void loadPrefs() {
         try {
             prefs = DialyzerPreferences.get(fProject);
-        } catch (final CoreException e) {
-            // FIXME apply to status line or setErrorMessage
-            ErlLogger.error(e);
-        } catch (final RpcException e) {
+        } catch (final Exception e) {
             // FIXME apply to status line or setErrorMessage
             ErlLogger.error(e);
         }

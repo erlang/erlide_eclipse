@@ -21,9 +21,9 @@ import org.erlide.core.builder.CompilerOptions;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
-import org.erlide.util.MessageReporter;
+import org.erlide.ui.editors.erl.ErlEditorActionBarContributor;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -69,7 +69,9 @@ public class CompileAction extends Action {
         if ("yrl".equals(resource.getFileExtension())) {
             helper.compileYrl(project, bres, b, compilerOptions);
         }
-        MessageReporter.showInfo(String.format("File '%s' was compiled.",
+        final ErlEditorActionBarContributor status = (ErlEditorActionBarContributor) editor
+                .getEditorSite().getActionBarContributor();
+        status.displayMessage(String.format("File '%s' was compiled.",
                 resource.getName()));
     }
 

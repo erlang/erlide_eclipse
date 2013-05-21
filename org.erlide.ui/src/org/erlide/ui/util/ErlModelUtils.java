@@ -23,7 +23,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.PartInitException;
-import org.erlide.backend.BackendException;
+import org.erlide.backend.api.BackendException;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlTypespec;

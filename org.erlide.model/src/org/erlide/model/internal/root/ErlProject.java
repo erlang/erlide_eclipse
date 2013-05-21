@@ -64,8 +64,8 @@ import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.util.CommonUtils;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.model.util.NatureUtil;
-import org.erlide.runtime.IRpcSite;
-import org.erlide.runtime.RuntimeVersion;
+import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.RuntimeVersion;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.PreferencesUtils;
@@ -890,7 +890,7 @@ public class ErlProject extends Openable implements IErlProject {
                 }
             }
         } catch (final CoreException e) {
-            throw new ErlModelException(e);
+            // throw new ErlModelException(e);
         }
         return result;
     }

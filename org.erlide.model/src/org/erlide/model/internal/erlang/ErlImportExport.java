@@ -15,7 +15,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
-public abstract class ErlImportExport extends ErlMember implements IParent,
+public abstract class ErlImportExport extends ErlMember implements
         IErlImportExport {
 
     protected List<ErlangFunction> fFunctions;

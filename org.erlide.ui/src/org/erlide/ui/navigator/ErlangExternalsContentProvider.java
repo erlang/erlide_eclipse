@@ -17,6 +17,7 @@ import org.erlide.model.internal.erlang.ErlOtpExternalReferenceEntryList;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElement.Kind;
+import org.erlide.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.base.Stopwatch;
@@ -119,7 +120,8 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         if (element instanceof IParent) {
             if (element instanceof ErlOtpExternalReferenceEntryList
                     || element instanceof ErlExternalReferenceEntryList
-                    || element instanceof ErlExternalReferenceEntryListProxy) {
+                    || element instanceof ErlExternalReferenceEntryListProxy
+                    || element instanceof IErlProject) {
                 // we know these have children
                 return true;
             }

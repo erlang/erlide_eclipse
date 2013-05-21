@@ -160,7 +160,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
+    public Object getAdapter(final Class required) {
         if (IShowInSource.class.equals(required)) {
             return this;
         }

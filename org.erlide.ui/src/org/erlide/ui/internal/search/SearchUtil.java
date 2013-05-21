@@ -313,58 +313,60 @@ public class SearchUtil {
             return null;
         }
         if (res.isLocalCall()) {
-            String name;
+            String moduleName;
             if (module != null) {
-                name = module.getModuleName();
+                moduleName = module.getModuleName();
                 if (offset != -1) {
                     final IErlElement e = module.getElementAt(offset);
                     if (OpenAction.isTypeDefOrRecordDef(e, res)) {
-                        return new TypeRefPattern(name, res.getFun(), limitTo);
+                        return new TypeRefPattern(moduleName, res.getFun(),
+                                limitTo);
                     }
                 }
             } else {
-                name = res.getName();
+                moduleName = res.getName();
             }
-            return new FunctionPattern(name, res.getFun(), res.getArity(),
-                    limitTo, matchAnyFunctionDefinition);
+            return new FunctionPattern(moduleName, res.getFun(),
+                    res.getArity(), limitTo, matchAnyFunctionDefinition,
+                    module, true);
         }
-        String name = res.getName();
-        if (name == null) {
+        String moduleName = res.getName();
+        if (moduleName == null) {
             return null;
         }
-        final String unquoted = StringUtils.unquote(name);
+        final String unquoted = StringUtils.unquote(moduleName);
         if (res.isExternalCall()) {
             if (module != null && offset != -1) {
                 final IErlElement e = module.getElementAt(offset);
                 if (e != null
                         && (e.getKind() == Kind.TYPESPEC || e.getKind() == Kind.RECORD_DEF)) {
-                    return new TypeRefPattern(name, res.getFun(), limitTo);
+                    return new TypeRefPattern(moduleName, res.getFun(), limitTo);
                 }
             }
             String oldName;
-            name = unquoted;
+            moduleName = unquoted;
             do {
-                oldName = name;
-                name = ModelUtils.resolveMacroValue(name, module);
-            } while (!name.equals(oldName));
-            return new FunctionPattern(name, res.getFun(), res.getArity(),
-                    limitTo, matchAnyFunctionDefinition);
+                oldName = moduleName;
+                moduleName = ModelUtils.resolveMacroValue(moduleName, module);
+            } while (!moduleName.equals(oldName));
+            return new FunctionPattern(moduleName, res.getFun(),
+                    res.getArity(), limitTo, matchAnyFunctionDefinition,
+                    module, false);
         } else if (res.isMacro()) {
             return new MacroPattern(unquoted, limitTo);
         } else if (res.isRecord()) {
             return new RecordPattern(unquoted, limitTo);
         } else if (res.isInclude()) {
-            return new IncludePattern(name, limitTo);
+            return new IncludePattern(moduleName, limitTo);
         } else if (res.isVariable()) {
             if (module != null) {
-                name = module.getModuleName();
                 if (offset != -1) {
                     final IErlElement e = module.getElementAt(offset);
                     if (e instanceof IErlFunctionClause) {
                         final IErlFunctionClause c = (IErlFunctionClause) e;
                         return new VariablePattern(c.getFunctionName(),
                                 c.getArity(), c.getHead(), res.getName(),
-                                limitTo);
+                                limitTo, module);
                     }
                 }
             }
@@ -391,13 +393,13 @@ public class SearchUtil {
             name = name.substring(0, p);
         }
         return SearchPatternFactory.getSearchPattern(searchFor, moduleName,
-                name, arity, limitTo);
+                name, arity, limitTo, module);
     }
 
-    public static void runQuery(final ErlangSearchPattern ref,
+    public static void runQuery(final ErlangSearchPattern pattern,
             final ErlSearchScope scope, final String scopeDescription,
             final Shell shell) {
-        final ErlSearchQuery query = new ErlSearchQuery(ref, scope,
+        final ErlSearchQuery query = new ErlSearchQuery(pattern, scope,
                 scopeDescription);
         if (query.canRunInBackground()) {
             /*

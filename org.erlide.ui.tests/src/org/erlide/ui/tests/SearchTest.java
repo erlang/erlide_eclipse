@@ -87,9 +87,8 @@ public class SearchTest {
         // when
         // searching for the call to a:f
         final ErlangSearchPattern ref = SearchPatternFactory.getSearchPattern(
-                SearchFor.FUNCTION, "a", "f", 0, limitTo);
-        final ErlSearchScope scope = new ErlSearchScope();
-        scope.addModule(moduleA);
+                SearchFor.FUNCTION, "a", "f", 0, limitTo, moduleA);
+        final ErlSearchScope scope = new ErlSearchScope(moduleA);
         scope.addModule(moduleB);
         final ErlSearchQuery query = new ErlSearchQuery(ref, scope, "");
         query.run(new NullProgressMonitor());
@@ -124,9 +123,8 @@ public class SearchTest {
         // when
         // searching for the call to a:f
         final ErlangSearchPattern ref = SearchPatternFactory.getSearchPattern(
-                SearchFor.FUNCTION, "a", "f", 0, LimitTo.REFERENCES);
-        final ErlSearchScope scope = new ErlSearchScope();
-        scope.addModule(moduleA);
+                SearchFor.FUNCTION, "a", "f", 0, LimitTo.REFERENCES, moduleA);
+        final ErlSearchScope scope = new ErlSearchScope(moduleA);
         scope.addModule(moduleB);
         final ErlSearchQuery query = new ErlSearchQuery(ref, scope, "");
         query.run(new NullProgressMonitor());
@@ -138,6 +136,38 @@ public class SearchTest {
         final List<ErlangSearchElement> result = searchResult.getResult();
         assertTrue(hasModule(moduleB, result));
         assertFalse(hasModule(moduleA, result));
+    }
+
+    @Test
+    public void findVariableRef() throws Exception {
+        // given
+        // a module a with an exported function f
+        // and a module b which calls a:f()
+        final IErlModule moduleA = ErlideTestUtils.createModule(projects[0],
+                "a.erl", "-module(a).\n-export([f/1]).\nf(A) ->\n    {A}.\n");
+        final IErlModule moduleB = ErlideTestUtils.createModule(projects[0],
+                "b.erl", "-module(b).\n-export([f/0]).\nf(A) ->\n    [A].\n");
+        moduleA.open(null);
+        moduleB.open(null);
+        // when
+        // searching for the variable A from module a
+        final ErlangSearchPattern pattern = SearchPatternFactory
+                .getSearchPattern(SearchFor.VARIABLE, null, "A", 0,
+                        LimitTo.ALL_OCCURRENCES, moduleA);
+        final ErlSearchScope scope = new ErlSearchScope(moduleA);
+        scope.addModule(moduleB);
+        final ErlSearchScope reducedScope = pattern.reduceScope(scope);
+        final ErlSearchQuery query = new ErlSearchQuery(pattern, reducedScope,
+                "");
+        query.run(new NullProgressMonitor());
+        // then
+        // it should be found in module a
+        final ErlangSearchResult searchResult = (ErlangSearchResult) query
+                .getSearchResult();
+        assertEquals(2, searchResult.getMatchCount());
+        final List<ErlangSearchElement> result = searchResult.getResult();
+        assertTrue(hasModule(moduleA, result));
+        assertFalse(hasModule(moduleB, result));
     }
 
     private boolean hasModule(final IErlModule module,

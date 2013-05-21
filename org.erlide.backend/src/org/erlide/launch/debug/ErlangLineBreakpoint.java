@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
-import org.erlide.backend.IBackend;
+import org.erlide.backend.api.IBackend;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlFunctionClause;

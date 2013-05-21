@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -25,8 +24,7 @@ public class EpmdView extends ViewPart implements IEpmdListener {
 
     TreeViewer treeViewer;
 
-    class TreeContentProvider implements IStructuredContentProvider,
-            ITreeContentProvider {
+    class TreeContentProvider implements ITreeContentProvider {
 
         @Override
         public void inputChanged(final Viewer viewer, final Object oldInput,

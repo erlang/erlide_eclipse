@@ -18,7 +18,6 @@ import org.eclipse.jface.text.rules.IToken;
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.internal.erlang.ErlideScanner;
 import org.erlide.model.internal.erlang.ScannerException;
-import org.erlide.ui.editors.erl.ErlTokenScanner;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.util.ErlLogger;
 

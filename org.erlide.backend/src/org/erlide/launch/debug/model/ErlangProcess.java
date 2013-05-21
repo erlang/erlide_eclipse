@@ -24,7 +24,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.backend.BackendPlugin;
-import org.erlide.backend.IBackend;
+import org.erlide.backend.api.IBackend;
 import org.erlide.launch.debug.ErlangLineBreakpoint;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.model.util.ErlangFunction;
@@ -350,7 +350,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
         try {
             top = getTopStackFrame();
         } catch (final DebugException e1) {
-            ; // can never happen
+            // can never happen
         }
         if (top instanceof ErlangStackFrame) {
             final ErlangStackFrame topFrame = (ErlangStackFrame) top;

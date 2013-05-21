@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendException;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.backend.api.BackendException;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.erlang.TypeConverter;
 

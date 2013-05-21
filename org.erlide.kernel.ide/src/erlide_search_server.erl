@@ -20,7 +20,7 @@
 
 
 %% called from Java
--export([start/0, 
+-export([start/0,
          stop/0,
          find_refs/4,
          start_find_refs/5,
@@ -49,7 +49,7 @@
 -define(N_MODULES_KEPT, 5).
 
 -record(module, {scanner_name :: atom(),
-		 sequence_number :: integer(),
+                 sequence_number :: integer(),
                  module_name :: string(),
                  refs :: list()}).
 -record(state, {modules=[] :: list(#module{}),
@@ -72,18 +72,18 @@ modules() ->
     server_cmd(modules).
 
 %% modules is {ScannerName, ModulePath}
-find_refs(Pattern, Modules, StateDir, UpdateSearchServer) 
+find_refs(Pattern, Modules, StateDir, UpdateSearchServer)
   when is_tuple(Pattern), is_list(Modules), is_list(StateDir) ->
     find_refs([Pattern], Modules, StateDir, UpdateSearchServer);
-find_refs(Pattern, Modules, StateDir, UpdateSearchServer) 
+find_refs(Pattern, Modules, StateDir, UpdateSearchServer)
   when is_list(Pattern), is_list(Modules), is_list(StateDir) ->
     R = server_cmd(find_refs, {Pattern, Modules, StateDir, UpdateSearchServer}),
     R.
 
-%% 
+%%
 start_find_refs(JPid, Pattern, Modules, StateDir, UpdateSearchServer)
   when is_tuple(Pattern), is_list(Modules), is_list(StateDir) ->
-    start_find_refs(JPid, [Pattern], Modules, StateDir, UpdateSearchServer); 
+    start_find_refs(JPid, [Pattern], Modules, StateDir, UpdateSearchServer);
 start_find_refs(JPid, Pattern, Modules, StateDir, UpdateSearchServer)
   when is_list(Pattern), is_list(Modules), is_list(StateDir) ->
     ?D({JPid, Pattern}),
@@ -108,6 +108,7 @@ start(undefined) ->
     Self = self(),
     spawn(fun() ->
                   ?SAVE_CALLS,
+                  erlang:process_flag(min_heap_size, 64*1024),
                   erlang:yield(),
                   erlang:register(?SERVER, self()),
                   Self ! started,
@@ -116,7 +117,7 @@ start(undefined) ->
     receive
         started ->
             ok
-        after 10000 ->
+    after 10000 ->
             {error, timeout_waiting_for_search_server}
     end;
 start(_) ->
@@ -135,7 +136,7 @@ server_cmd(Command, Args) ->
         end
     catch
         _:Exception ->
-              {error, Exception, erlang:get_stacktrace()}
+            {error, Exception, erlang:get_stacktrace()}
     end.
 
 
@@ -209,18 +210,18 @@ do_start_find_refs(Pattern, Modules, JPid, StateDir, UpdateSearchServer, State) 
 
 do_background_find_refs([], _Pattern, _JPid, _StateDir, _UpdateSearchServer, _State) ->
     ok;
-do_background_find_refs([Chunk | Rest], Pattern, JPid, StateDir, 
-			UpdateSearchServer, State) ->
-    {R, _State} = do_find_refs(Chunk, Pattern, StateDir, State, 
-			       UpdateSearchServer, []),
+do_background_find_refs([Chunk | Rest], Pattern, JPid, StateDir,
+                        UpdateSearchServer, State) ->
+    {R, _State} = do_find_refs(Chunk, Pattern, StateDir, State,
+                               UpdateSearchServer, []),
     ?D({1, R}),
     JPid ! {progress, {self(), 1, R}},
     receive
-        cancel -> 
+        cancel ->
             ok
     after 0 ->
-            do_background_find_refs(Rest, Pattern, JPid, StateDir, 
-				    UpdateSearchServer, State)
+            do_background_find_refs(Rest, Pattern, JPid, StateDir,
+                                    UpdateSearchServer, State)
     end.
 
 chunkify(List, N) ->
@@ -241,10 +242,10 @@ chunkify_aux([H | T], N, Acc) ->
 
 do_find_refs([], _, _, State, _, Acc) ->
     {{ok, Acc}, State};
-do_find_refs([{ScannerName, ModulePath} | Rest], Pattern, StateDir, 
+do_find_refs([{ScannerName, ModulePath} | Rest], Pattern, StateDir,
              #state{modules=Modules} = State, UpdateSearchServer, Acc0) ->
     Refs = get_module_refs(ScannerName, ModulePath, StateDir, Modules,
-			   UpdateSearchServer),
+                           UpdateSearchServer),
     Mod = get_module_name(ModulePath),
     Acc1 = Acc0 ++ erlide_search:find_data(Refs, Pattern, Mod, ModulePath),
     do_find_refs(Rest, Pattern, StateDir, State, UpdateSearchServer, Acc1).
@@ -265,7 +266,7 @@ get_module_refs(ScannerName, ModulePath, StateDir, Modules, UpdateSearchServer) 
 get_module_refs(ScannerName, ModulePath, StateDir, UpdateSearchServer) ->
     ?D({get_module_refs, ScannerName, ModulePath}),
     R = erlide_noparse:get_module_refs(ScannerName, ModulePath, StateDir,
-				       UpdateSearchServer),
+                                       UpdateSearchServer),
     ?D(R),
     R.
 

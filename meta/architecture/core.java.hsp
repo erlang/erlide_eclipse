@@ -12,15 +12,17 @@
     <classpathentry kind="lib" path="..\..\org.erlide.backend\bin" />
     <classpathentry kind="lib" path="..\..\org.erlide.model\bin" />
     <classpathentry kind="lib" path="..\..\org.erlide.runtime\bin" />
-    <classpathentry kind="lib" path="..\..\org.erlide.model_api\bin" />
+    <classpathentry kind="lib" path="..\..\org.erlide.backend.api\bin" />
+    <classpathentry kind="lib" path="..\..\org.erlide.core.api\bin" />
+    <classpathentry kind="lib" path="..\..\org.erlide.model.api\bin" />
+    <classpathentry kind="lib" path="..\..\org.erlide.runtime.api\bin" />
   </classpath>
   <pom-root-files />
   <transformations>
-    <transformation in="org.erlide.core.*" out="*" />
-    <transformation in="*" out="{jar}.*" />
+    <transformation in="org.erlide.*" out="*" />
   </transformations>
   <restructuring>
-    <set version="1" name="Sandbox 1" hiview="Codemap" active="true" todo="false">
+    <set version="1" name="Sandbox 1" hiview="Codemap" active="false" todo="false">
       <action type="move" active="true" description="Move org_erlide_core.internal.builder.InternalErlideBuilder to org_erlide_core.builder">
         <params>
           <source-fqn fqn="org_erlide_core.internal.builder.InternalErlideBuilder" type="class" path="org.erlide.core.internal.builder.InternalErlideBuilder">
@@ -36,7 +38,7 @@
         </params>
       </action>
     </set>
-    <set version="1" name="Flattened to classes" hiview="Codemap" active="false" todo="false">
+    <set version="1" name="Flattened to classes" hiview="Codemap" active="true" todo="false">
       <action type="flatten" active="true" description="Flatten root">
         <params flattenLeafFolders="true">
           <container-fqn fqn="root" type="root" path="" isroot="true" />
@@ -53,9 +55,6 @@
       </action>
     </set>
   </restructuring>
-  <sourcepaths>
-    <pathentry type="file" path="C:\Apps\erlide\org.erlide.core\src" />
-  </sourcepaths>
   <grid-set sep="." version="2.0.4164">
     <grid name="Diagram 1" enforce="true" strict="false">
       <row>

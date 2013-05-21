@@ -1620,12 +1620,6 @@
      <actionSet
                id="org.eclipse.debug.ui.breakpointActionSet">
          </actionSet>
-         <actionSet
-               id="org.eclipse.jdt.debug.ui.JDTDebugActionSet">
-         </actionSet>
-         <actionSet
-               id="com.rational.clearcase.ActionSet">
-         </actionSet>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="org.eclipse.debug.ui.DebugPerspective">
@@ -1772,7 +1766,7 @@
           file="erlang_templates/module_element_templates.xml">
       </include>
       <contextType
-            class="org.erlide.ui.editors.erl.completion.ErlangContextType"
+            class="org.erlide.ui.templates.ErlangTemplateContextType"
             id="org.erlide.ui.editor.erlang"
             name="Erlang Code">
       </contextType>

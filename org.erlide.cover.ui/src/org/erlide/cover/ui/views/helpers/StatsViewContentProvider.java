@@ -1,6 +1,5 @@
 package org.erlide.cover.ui.views.helpers;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.IViewSite;
@@ -13,8 +12,7 @@ import org.erlide.cover.views.model.StatsTreeModel;
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  * 
  */
-public class StatsViewContentProvider implements IStructuredContentProvider,
-        ITreeContentProvider {
+public class StatsViewContentProvider implements ITreeContentProvider {
 
     private final IViewSite viewSite;
     private StatsTreeModel model;

@@ -76,20 +76,6 @@ public class ErlReconciler implements IReconciler {
             ErlModelManager.getErlangModel().putEdited(path, module);
         }
         // https://bugs.eclipse.org/bugs/show_bug.cgi?id=63898
-        // when re-using editors, a new reconciler is set up by the source
-        // viewer
-        // and the old one uninstalled. However, the old reconciler may still be
-        // running.
-        // To avoid having to reconcilers calling
-        // Editor.reconciled,
-        // we synchronized on a lock object provided by the editor.
-        // The critical section is really the entire run() method of the
-        // reconciler
-        // thread, but synchronizing process() only will keep
-        // the ReconcilingStrategy
-        // from running concurrently on the same editor.
-        // TODO remove once we have ensured that there is only one reconciler
-        // per editor.
         if (editor instanceof ErlangEditor) {
             fMutex = ((ErlangEditor) editor).getReconcilerLock();
         } else {

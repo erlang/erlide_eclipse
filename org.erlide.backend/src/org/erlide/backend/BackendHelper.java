@@ -1,6 +1,6 @@
 package org.erlide.backend;
 
-import org.erlide.runtime.RuntimeHelper;
+import org.erlide.runtime.api.RuntimeHelper;
 
 public class BackendHelper extends RuntimeHelper {
 

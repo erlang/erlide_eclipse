@@ -10,7 +10,6 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.progress.UIJob;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.MessageReporter;
-import org.erlide.util.MessageReporter.ReporterPosition;
 
 public class NoRuntimeHandler implements Runnable {
 
@@ -27,16 +26,14 @@ public class NoRuntimeHandler implements Runnable {
                 }
                 running = true;
                 if (reported) {
-                    MessageReporter.showError(
-                            "Erlang support requires an Erlang installation. "
-                                    + "Did you configure it?",
-                            ReporterPosition.CORNER);
+                    MessageReporter
+                            .showError("Erlang support requires an Erlang installation. "
+                                    + "Did you configure it?");
                 } else {
-                    MessageReporter.showError(
-                            "Erlang support requires an Erlang installation. "
+                    MessageReporter
+                            .showError("Erlang support requires an Erlang installation. "
                                     + "Please configure it. "
-                                    + "Eclipse will restart afterwards.",
-                            ReporterPosition.CORNER);
+                                    + "Eclipse will restart afterwards.");
                 }
                 reported = true;
 

@@ -33,7 +33,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
+import org.erlide.backend.api.IBackend;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.IErlModule;

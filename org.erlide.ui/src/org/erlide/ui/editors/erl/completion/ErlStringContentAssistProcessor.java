@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -13,7 +12,7 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlProject;
 
 public class ErlStringContentAssistProcessor extends
-        AbstractErlContentAssistProcessor implements IContentAssistProcessor {
+        AbstractErlContentAssistProcessor {
 
     private static final char[] NONE = new char[] {};
 

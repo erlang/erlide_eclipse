@@ -39,7 +39,6 @@ ${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclips
 ${JAVA_HOME}/bin/java -Xms128m -Xmx512m -server -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel DEBUG -S ${SITE_PRJ_PATH}/_bucky_test -Derlide.runtime=${erlang_R14}
 
 ## now run eunit tests
-cd ${WORKSPACE}
-${erlang_R13}/bin/erl -pa ${WORKSPACE}/org.erlide.kernel.builder/ebin -pa ${WORKSPACE}/org.erlide.kernel.debugger/ebin -pa ${WORKSPACE}/org.erlide.kernel.ide/ebin -pa ${WORKSPACE}/org.erlide.kernel.tests/ebin -pa ${WORKSPACE}/org.erlide.kernel.common/ebin -eval 'eunit:test(kernel_tests, [{report,{eunit_surefire,[{dir,"output"}]}}]),init:stop().' -noshell
-
+chmod u+x $SITE_PRJ_PATH/run_eunit
+bash -c "$SITE_PRJ_PATH/run_eunit $WORKSPACE $erlang_R13 output"
 

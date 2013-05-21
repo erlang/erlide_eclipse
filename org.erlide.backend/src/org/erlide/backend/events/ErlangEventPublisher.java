@@ -4,10 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.IBackend;
-import org.erlide.backend.IBackendListener;
-import org.erlide.runtime.IErlRuntime;
+import org.erlide.backend.api.BackendException;
+import org.erlide.backend.api.IBackend;
+import org.erlide.backend.api.IBackendListener;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -24,7 +23,7 @@ import com.ericsson.otp.erlang.OtpMbox;
 
 public class ErlangEventPublisher {
 
-    private volatile IErlRuntime backend;
+    private volatile IBackend backend;
     volatile boolean stopped = false;
     private EventAdmin eventAdmin;
     private final IBackendListener backendListener;
@@ -32,7 +31,7 @@ public class ErlangEventPublisher {
     final static boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.event.daemon"));
 
-    public ErlangEventPublisher(final IErlRuntime aBackend) {
+    public ErlangEventPublisher(final IBackend aBackend) {
         backend = aBackend;
         backendListener = new IBackendListener() {
 
@@ -65,7 +64,6 @@ public class ErlangEventPublisher {
     public void setEventAdmin() {
         final BundleContext ctx = FrameworkUtil.getBundle(
                 ErlangEventPublisher.class).getBundleContext();
-        @SuppressWarnings("unchecked")
         final ServiceReference<EventAdmin> ref = (ServiceReference<EventAdmin>) ctx
                 .getServiceReference(EventAdmin.class.getName());
         if (ref == null) {
@@ -86,7 +84,6 @@ public class ErlangEventPublisher {
         if (ctx == null) {
             return;
         }
-        @SuppressWarnings("unchecked")
         final ServiceReference<EventAdmin> ref = (ServiceReference<EventAdmin>) ctx
                 .getServiceReference(EventAdmin.class.getName());
         if (ref == null) {
@@ -97,9 +94,9 @@ public class ErlangEventPublisher {
     }
 
     private final class HandlerJob implements Runnable {
-        private final IErlRuntime myBackend;
+        private final IBackend myBackend;
 
-        public HandlerJob(final IErlRuntime backend) {
+        public HandlerJob(final IBackend backend) {
             myBackend = backend;
         }
 
@@ -168,7 +165,7 @@ public class ErlangEventPublisher {
         }
     }
 
-    public void publishEvent(final IErlRuntime b, final String topic,
+    public void publishEvent(final IBackend b, final String topic,
             final OtpErlangObject event, final OtpErlangPid sender) {
 
         final Map<String, Object> properties = new HashMap<String, Object>();

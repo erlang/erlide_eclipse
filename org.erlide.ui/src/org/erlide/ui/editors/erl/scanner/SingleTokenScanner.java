@@ -1,7 +1,6 @@
 package org.erlide.ui.editors.erl.scanner;
 
 import org.eclipse.jface.text.rules.IToken;
-import org.erlide.ui.editors.erl.ErlTokenScanner;
 import org.erlide.ui.util.IColorManager;
 
 public class SingleTokenScanner extends ErlTokenScanner {

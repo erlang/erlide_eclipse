@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2010-2010 Jakob and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Jakob
  *******************************************************************************/
@@ -22,7 +22,7 @@ public class ErlangSourceContextTypeModuleElement extends TemplateContextType {
 
     public static ErlangSourceContextTypeModuleElement getDefault() {
         if (fInstance == null) {
-            new ErlangSourceContextTypeModuleElement();
+            fInstance = new ErlangSourceContextTypeModuleElement();
         }
         return fInstance;
     }

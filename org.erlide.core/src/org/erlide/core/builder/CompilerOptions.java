@@ -259,7 +259,6 @@ public class CompilerOptions {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public Iterable<String> getPathsOption(final PathsOption option) {
         return (Iterable<String>) options.get(option);
     }

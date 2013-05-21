@@ -3,10 +3,6 @@
 -module(int).
 -author('jakobce@gmail.com').
 
-%% TODO Since the error_handler (in R12 and earlier) hard-codes the int
-%% module, we replace it to call erlide_int
-%% this should be improved in R13
-
 %%
 %% Include files
 %%

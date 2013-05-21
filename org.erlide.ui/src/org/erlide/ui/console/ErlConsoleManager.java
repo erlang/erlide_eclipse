@@ -7,9 +7,9 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendData;
-import org.erlide.backend.IBackend;
-import org.erlide.backend.IBackendListener;
+import org.erlide.backend.api.BackendData;
+import org.erlide.backend.api.IBackend;
+import org.erlide.backend.api.IBackendListener;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.IDisposable;
 
@@ -35,11 +35,11 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
         if (b == null) {
             return;
         }
-        final BackendData info = b.getData();
-        if (!info.hasConsole()) {
+        final BackendData data = b.getData();
+        if (!data.hasConsole()) {
             return;
         }
-        ErlLogger.debug("console ADDED to " + info);
+        ErlLogger.debug("console ADDED to " + data);
         final ErlangConsole console = new ErlangConsole(b);
         conMan.addConsoles(new IConsole[] { console });
         consoles.put(b, console);

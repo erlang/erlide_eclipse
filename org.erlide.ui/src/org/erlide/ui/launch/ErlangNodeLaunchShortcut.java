@@ -40,7 +40,7 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.ErlRuntimeAttributes;
+import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ListsUtils;

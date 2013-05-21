@@ -44,9 +44,10 @@ public abstract class ErlangSearchPattern {
     protected static final OtpErlangAtom RECORD_FIELD_REF_ATOM = new OtpErlangAtom(
             "record_field_ref");
 
-    public EnumSet<SearchFor> allSearchFor = EnumSet.allOf(SearchFor.class);
+    public static EnumSet<SearchFor> allSearchFor = EnumSet
+            .allOf(SearchFor.class);
 
-    public EnumSet<LimitTo> allLimitTo = EnumSet.allOf(LimitTo.class);
+    public static EnumSet<LimitTo> allLimitTo = EnumSet.allOf(LimitTo.class);
 
     protected final LimitTo limitTo;
 
@@ -176,5 +177,9 @@ public abstract class ErlangSearchPattern {
     public abstract SearchFor getSearchFor();
 
     public abstract String labelString();
+
+    public ErlSearchScope reduceScope(final ErlSearchScope scope) {
+        return scope;
+    }
 
 }

@@ -31,7 +31,6 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
     @Override
     public void resolve(final TemplateVariable variable,
             final TemplateContext context) {
-        @SuppressWarnings("unchecked")
         final Iterator<TemplateVariableResolver> it = ErlangSourceContextTypeLayout
                 .getDefault().resolvers();
         FunctionNameVariableResolver name_var = null;

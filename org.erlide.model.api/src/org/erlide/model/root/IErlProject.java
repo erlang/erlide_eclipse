@@ -19,7 +19,7 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.runtime.RuntimeVersion;
+import org.erlide.runtime.api.RuntimeVersion;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.osgi.service.prefs.BackingStoreException;
 

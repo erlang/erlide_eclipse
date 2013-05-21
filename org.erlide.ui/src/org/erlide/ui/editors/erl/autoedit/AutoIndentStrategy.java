@@ -25,7 +25,7 @@ import org.erlide.model.erlang.IErlMember;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.text.ErlideIndent;
 import org.erlide.model.services.text.IndentResult;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
@@ -58,6 +58,9 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
 
     protected void indentAfterNewLine(final IDocument d, final DocumentCommand c)
             throws BadLocationException {
+        if (editor == null) {
+            return;
+        }
         final int offset = c.offset;
         String txt = null;
         editor.reconcileNow();

@@ -1,45 +1,52 @@
 package org.erlide.model.services.search;
 
+import org.erlide.model.erlang.IErlModule;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class FunctionPattern extends ErlangSearchPattern {
 
-    private final String module;
+    private final String moduleName;
     private final String name;
     private final int arity;
     private final boolean matchAnyFunctionDefinition;
+    private final boolean local;
+    private final IErlModule module;
 
-    public FunctionPattern(final String module, final String name,
+    public FunctionPattern(final String moduleName, final String name,
             final int arity, final LimitTo limitTo,
-            final boolean matchAnyFunctionDefinition) {
+            final boolean matchAnyFunctionDefinition, final IErlModule module,
+            final boolean local) {
         super(limitTo);
-        this.module = module;
+        this.moduleName = moduleName;
         this.name = name;
         this.arity = arity;
         this.matchAnyFunctionDefinition = matchAnyFunctionDefinition;
+        this.module = module;
+        this.local = local;
     }
 
     @Override
     public OtpErlangObject getSearchObject() {
-        if (module == null || module.length() == 0) {
+        if (moduleName == null || moduleName.length() == 0) {
             return makeFAPatternObject(FUNCTION_DEF_ATOM, FUNCTION_CALL_ATOM,
                     name, arity);
         } else {
             final OtpErlangAtom defA = matchAnyFunctionDefinition ? FUNCTION_DEF_ATOM
                     : FUNCTION_DEF_MOD_ATOM;
-            return makeMFAPatternObject(defA, EXTERNAL_CALL_ATOM, module, name,
-                    arity, matchAnyFunctionDefinition);
+            return makeMFAPatternObject(defA, EXTERNAL_CALL_ATOM, moduleName,
+                    name, arity, matchAnyFunctionDefinition);
         }
     }
 
     @Override
     public String patternString() {
         final String s = name + "/" + arity;
-        if (module == null || limitTo != LimitTo.REFERENCES) {
+        if (moduleName == null || limitTo != LimitTo.REFERENCES) {
             return s;
         } else {
-            return module + ":" + s;
+            return moduleName + ":" + s;
         }
     }
 
@@ -51,11 +58,19 @@ public class FunctionPattern extends ErlangSearchPattern {
     @Override
     public String labelString() {
         final String s = name + "/" + arity;
-        if (module == null || limitTo != LimitTo.REFERENCES) {
+        if (moduleName == null || limitTo != LimitTo.REFERENCES) {
             return s;
         } else {
-            return module + ":" + s;
+            return moduleName + ":" + s;
         }
+    }
+
+    @Override
+    public ErlSearchScope reduceScope(final ErlSearchScope scope) {
+        if (local && scope.getModules().contains(module)) {
+            return new ErlSearchScope(module);
+        }
+        return scope;
     }
 
 }

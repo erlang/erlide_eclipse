@@ -25,7 +25,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendException;
+import org.erlide.backend.api.BackendException;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlImport;
@@ -44,7 +44,7 @@ import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
@@ -201,6 +201,9 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlElement element) throws CoreException, ErlModelException,
             PartInitException, BadLocationException, OtpErlangRangeException,
             BackendException, RpcException {
+        if (editor == null) {
+            return;
+        }
         final Object found = findOpenResult(editor, module, backend,
                 erlProject, openResult, element);
         if (found instanceof IErlElement) {

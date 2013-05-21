@@ -52,7 +52,6 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <import plugin="com.abstratt.graphviz.ui"/>
       <import plugin="org.erlide.backend"/>
       <import plugin="org.erlide.model" version="0.18.0" match="greaterOrEqual"/>
-      <import plugin="org.erlide.runtime.api" version="0.19.0" match="greaterOrEqual"/>
       <import plugin="org.erlide.util"/>
       <import plugin="com.abstratt.graphviz"/>
    </requires>

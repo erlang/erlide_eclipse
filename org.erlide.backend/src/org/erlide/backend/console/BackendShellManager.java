@@ -13,7 +13,7 @@ package org.erlide.backend.console;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.erlide.backend.IBackend;
+import org.erlide.backend.api.IBackend;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.IDisposable;
@@ -39,12 +39,10 @@ public class BackendShellManager implements IDisposable {
         BackendShell shell = getShell(id);
         if (shell == null) {
             OtpErlangPid server = null;
-            if (backend.isDistributed()) {
-                try {
-                    server = ErlideReshd.start(backend);
-                } catch (final Exception e) {
-                    ErlLogger.warn(e);
-                }
+            try {
+                server = ErlideReshd.start(backend);
+            } catch (final Exception e) {
+                ErlLogger.warn(e);
             }
             shell = new BackendShell(backend, id, server);
             fShells.put(id, shell);

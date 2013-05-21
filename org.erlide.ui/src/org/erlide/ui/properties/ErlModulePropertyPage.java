@@ -8,7 +8,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
@@ -16,13 +15,12 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.erlang.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public class ErlModulePropertyPage extends PropertyPage implements
-        IWorkbenchPropertyPage {
+public class ErlModulePropertyPage extends PropertyPage {
 
     private Text text;
 

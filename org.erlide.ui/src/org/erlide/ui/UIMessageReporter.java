@@ -2,10 +2,10 @@ package org.erlide.ui;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.swt.SWT;
 import org.eclipse.ui.progress.UIJob;
-import org.erlide.ui.util.PopupDialog;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.util.MessageReporter;
 
 public class UIMessageReporter extends MessageReporter {
@@ -14,29 +14,18 @@ public class UIMessageReporter extends MessageReporter {
     }
 
     @Override
-    public void displayMessage(final MessageType type, final String message,
-            final ReporterPosition style) {
+    public void displayMessage(final int severity, final String message,
+            final String details) {
         new UIJob("erlide message") {
             @Override
             public IStatus runInUIThread(final IProgressMonitor monitor) {
-                int icon = SWT.NONE;
-                if (type == MessageType.ERROR) {
-                    icon = SWT.ICON_ERROR;
-                } else if (type == MessageType.WARNING) {
-                    icon = SWT.ICON_WARNING;
-                } else {
-                    icon = SWT.ICON_INFORMATION;
+                final MultiStatus msg = new MultiStatus("org.erlide.ui", 0,
+                        message, null);
+                if (details != null) {
+                    msg.add(new Status(severity, "org.erlide.ui", details));
                 }
-                switch (style) {
-                case CENTER:
-                    PopupDialog.showDialog("Erlide " + type, message, icon);
-                    break;
-                case CORNER:
-                    PopupDialog.showBalloon("Erlide " + type, message, icon);
-                    break;
-                default:
-                    break;
-                }
+                StatusManager.getManager().handle(msg, StatusManager.BLOCK);
+
                 return Status.OK_STATUS;
             }
         }.schedule();

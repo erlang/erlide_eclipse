@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.erlide.backend.internal;
 
-import org.erlide.backend.BackendData;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.IBackendManager;
-import org.erlide.runtime.ICodeBundle;
-import org.erlide.runtime.IErlRuntime;
+import org.erlide.backend.api.BackendData;
+import org.erlide.backend.api.BackendException;
+import org.erlide.backend.api.IBackendManager;
+import org.erlide.runtime.api.ICodeBundle;
+import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.util.ErlLogger;
 
 public class InternalBackend extends Backend {
@@ -24,16 +24,22 @@ public class InternalBackend extends Backend {
         super(data, runtime, backendManager);
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void runtimeDown(final IErlRuntime runtime) {
-        runtime.restart();
-        ErlLogger.debug("restart %s", getName());
+        getData().setLaunch(null);
+        // TODO fix this
+        if (false && getData().isRestartable()) {
+            ErlLogger.debug("restart %s", getName());
+            runtime.restart();
 
-        // TODO remove code duplication here
-        connect();
-        for (final ICodeBundle bb : backendManager.getCodeBundles().values()) {
-            registerCodeBundle(bb);
+            // TODO remove code duplication here
+            connect();
+            for (final ICodeBundle bb : backendManager.getCodeBundles()
+                    .values()) {
+                registerCodeBundle(bb);
+            }
+            startErlangApps(getEventPid(), true);
         }
-        startErlangApps(getEventPid(), true);
     }
 }

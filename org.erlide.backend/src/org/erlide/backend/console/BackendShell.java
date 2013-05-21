@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.backend.IBackend;
+import org.erlide.backend.api.IBackend;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.runtime.shell.BackendShellListener;
 import org.erlide.runtime.shell.IBackendShell;
@@ -112,8 +112,7 @@ public class BackendShell implements IBackendShell {
 
     @Override
     public void add(final String text, final IoRequestKind kind) {
-        if (backend.isDistributed()
-                && IoRequest.RE_PROMPT.matcher(text).matches()) {
+        if (IoRequest.RE_PROMPT.matcher(text).matches()) {
             return;
         }
         final IoRequest req = new IoRequest(text, kind);

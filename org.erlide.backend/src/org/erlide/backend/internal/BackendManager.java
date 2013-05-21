@@ -19,7 +19,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -30,23 +29,22 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendData;
-import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendUtils;
-import org.erlide.backend.IBackend;
-import org.erlide.backend.IBackendFactory;
-import org.erlide.backend.IBackendListener;
-import org.erlide.backend.IBackendManager;
+import org.erlide.backend.api.BackendData;
+import org.erlide.backend.api.BackendException;
+import org.erlide.backend.api.IBackend;
+import org.erlide.backend.api.IBackendFactory;
+import org.erlide.backend.api.IBackendListener;
+import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.backend.events.ErlangEventPublisher;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.runtime.ICodeBundle;
-import org.erlide.runtime.ICodeBundle.CodeContext;
-import org.erlide.runtime.IErlRuntime;
-import org.erlide.runtime.IRpcSite;
-import org.erlide.runtime.RuntimeVersion;
+import org.erlide.runtime.api.ICodeBundle;
+import org.erlide.runtime.api.ICodeBundle.CodeContext;
+import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.RuntimeVersion;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
@@ -366,16 +364,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public IRpcSite getByProject(final String projectName) {
-        final IProject prj = ResourcesPlugin.getWorkspace().getRoot()
-                .getProject(projectName);
-        if (prj == null) {
-            ErlLogger.error("Can't find project %s", projectName);
-        }
-        return getByProject(prj);
-    }
-
-    @Override
     public IRpcSite getByProject(final IProject project) {
         try {
             final IBackend backend = getBuildBackend(project);
@@ -473,7 +461,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public IErlRuntime getByProcess(final IProcess process) {
+    public IBackend getByProcess(final IProcess process) {
         synchronized (allBackends) {
             for (final IBackend backend : allBackends) {
                 final ILaunch launch = backend.getData().getLaunch();

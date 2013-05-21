@@ -82,12 +82,12 @@ public class ErtsProcess extends RuntimeProcess {
     @Override
     protected void terminated() {
         ErlLogger.debug("ErtsProcess terminated: %s", getLabel());
-        super.terminated();
         try {
             getLaunch().terminate();
         } catch (final DebugException e) {
             ErlLogger.error(e);
         }
+        super.terminated();
     }
 
     @Override

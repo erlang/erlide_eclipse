@@ -17,6 +17,9 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
+import org.eclipse.jface.text.contentassist.IContextInformation;
+import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.backend.BackendCore;
@@ -42,7 +45,7 @@ import org.erlide.model.services.codeassist.ErlideContextAssist.RecordCompletion
 import org.erlide.model.services.search.ErlideDoc;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.HoverUtil;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
@@ -58,10 +61,12 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public abstract class AbstractErlContentAssistProcessor {
+public abstract class AbstractErlContentAssistProcessor implements
+        IContentAssistProcessor {
 
     public static class CompletionNameComparer implements
             Comparator<ICompletionProposal> {
@@ -111,13 +116,17 @@ public abstract class AbstractErlContentAssistProcessor {
         ARITY_ONLY,
         UNEXPORTED_ONLY,
         INCLUDES,
-        INCLUDE_LIBS
+        INCLUDE_LIBS,
+        TYPES
         //@formatter:on
     }
 
     protected static final List<ICompletionProposal> EMPTY_COMPLETIONS = new ArrayList<ICompletionProposal>();
     protected final CompletionNameComparer completionNameComparer = new CompletionNameComparer();
     protected final ContentAssistant contentAssistant;
+    private IDocument oldDoc;
+    private String oldBefore;
+    private int oldSuggestions = -1;
 
     public AbstractErlContentAssistProcessor(final ISourceViewer sourceViewer,
             final IErlModule module, final IErlProject project,
@@ -156,15 +165,26 @@ public abstract class AbstractErlContentAssistProcessor {
 
     protected abstract String quoted(String string, Kinds kind);
 
+    @Override
     public ICompletionProposal[] computeCompletionProposals(
             final ITextViewer viewer, final int offset) {
         try {
             final IDocument doc = viewer.getDocument();
             String before = getBefore(viewer, doc, offset);
-            // ErlLogger.debug("computeCompletionProposals before = %s",
-            // before);
+            // ErlLogger.debug("computeCompletionProposals before = %s %d %s",
+            // before, oldSuggestions, oldDoc);
+
+            if (Objects.equal(oldDoc, doc) && oldBefore != null
+                    && before.startsWith(oldBefore) && oldSuggestions == 0) {
+                return getNoCompletion(offset);
+            }
+            oldDoc = doc;
+            oldBefore = before;
+
             final int commaPos = before.lastIndexOf(',');
             final int colonPos = before.lastIndexOf(':');
+            final boolean doubleColon = colonPos >= 0
+                    && before.charAt(colonPos - 1) == ':';
             final int hashMarkPos = before.lastIndexOf('#');
             final int dotPos = before.lastIndexOf('.');
             final int parenPos = before.lastIndexOf('(');
@@ -207,11 +227,17 @@ public abstract class AbstractErlContentAssistProcessor {
                 moduleOrRecord = rc.getName();
                 fieldsSoFar = rc.getFields();
             } else if (colonPos > commaPos && colonPos > parenPos) {
-                moduleOrRecord = StringUtils.unquote(getPrefix(before
-                        .substring(0, colonPos)));
-                flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS);
-                pos = colonPos;
-                before = before.substring(colonPos + 1);
+                if (doubleColon) {
+                    flags = EnumSet.of(Kinds.TYPES);
+                    pos = colonPos;
+                    before = before.substring(colonPos + 1);
+                } else {
+                    moduleOrRecord = StringUtils.unquote(getPrefix(before
+                            .substring(0, colonPos)));
+                    flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS);
+                    pos = colonPos;
+                    before = before.substring(colonPos + 1);
+                }
             } else if (interrogationMarkPos > hashMarkPos
                     && interrogationMarkPos > commaPos
                     && interrogationMarkPos > colonPos
@@ -256,6 +282,12 @@ public abstract class AbstractErlContentAssistProcessor {
                     default:
                         break;
                     }
+                } else {
+                    if (doubleColon) {
+                        flags = EnumSet.of(Kinds.TYPES);
+                    } else {
+                        flags = EnumSet.of(Kinds.MODULES);
+                    }
                 }
             }
             flags = filterFlags(flags);
@@ -265,6 +297,7 @@ public abstract class AbstractErlContentAssistProcessor {
                     doc, offset - before.length(), before.length());
             result.addAll(Arrays.asList(t.computeCompletionProposals(viewer,
                     offset)));
+            oldSuggestions = result.size();
             if (result.size() == 0) {
                 ErlLogger.debug("no results");
                 return getNoCompletion(offset);
@@ -345,6 +378,11 @@ public abstract class AbstractErlContentAssistProcessor {
                     getExternalCallCompletions(backend, moduleOrRecord, offset,
                             prefix, flags.contains(Kinds.ARITY_ONLY)));
         }
+        if (flags.contains(Kinds.TYPES)) {
+            addSorted(result,
+                    getTypeCompletions(backend, moduleOrRecord, offset, prefix));
+        }
+
         return result;
     }
 
@@ -560,6 +598,31 @@ public abstract class AbstractErlContentAssistProcessor {
         return result;
     }
 
+    List<ICompletionProposal> getTypeCompletions(final IRpcSite backend,
+            final String moduleOrRecord, final int offset, final String prefix) {
+        final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
+        for (final String builtin : getBuiltinTypeCompletions()) {
+            if (builtin.startsWith(prefix.trim())) {
+                result.add(new CompletionProposal(builtin, offset
+                        - prefix.length(), prefix.length(), builtin.length()));
+            }
+        }
+        // TODO provide types completions from workspace
+        return result;
+    }
+
+    List<String> getBuiltinTypeCompletions() {
+        final List<String> result = Lists.newArrayList("any()", "binary()",
+                "bitstring()", "boolean()", "byte()", "char()", "float()",
+                "fun()", "integer()", "iolist()", "list()",
+                "maybe_improper_list()", "mfa()", "module()", "neg_integer()",
+                "no_return()", "node()", "non_neg_integer()", "none()",
+                "nonempty_list()", "number()", "pid()", "port()",
+                "pos_integer()", "reference()", "term()", "timeout()",
+                "tuple()");
+        return result;
+    }
+
     boolean addFunctionsFromModule(final int offset, final String prefix,
             final boolean arityOnly, final List<ICompletionProposal> proposals,
             final IErlModule m) {
@@ -772,4 +835,26 @@ public abstract class AbstractErlContentAssistProcessor {
             }
         }
     }
+
+    @Override
+    public IContextInformation[] computeContextInformation(
+            final ITextViewer viewer, final int offset) {
+        return null;
+    }
+
+    @Override
+    public char[] getContextInformationAutoActivationCharacters() {
+        return null;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return null;
+    }
+
+    @Override
+    public IContextInformationValidator getContextInformationValidator() {
+        return null;
+    }
+
 }

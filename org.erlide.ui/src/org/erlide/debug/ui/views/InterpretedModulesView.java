@@ -33,8 +33,8 @@ import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.launch.debug.model.ErtsProcess;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.ErlDebugFlags;
-import org.erlide.runtime.ErlRuntimeAttributes;
+import org.erlide.runtime.api.ErlDebugFlags;
+import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.util.ErlLogger;
 

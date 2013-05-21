@@ -3,17 +3,17 @@ package org.erlide.model.internal.erlang;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.erlide.backend.api.BackendException;
 import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.ErlToken;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
+import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
-import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -80,7 +80,6 @@ public class ErlideScanner {
         } catch (final Exception e) {
             return null;
         }
-        // ErlLogger.debug("getTokenAt -> " + r1);
         if (r1 == null || !(r1 instanceof OtpErlangTuple)) {
             return null;
         }
@@ -97,12 +96,10 @@ public class ErlideScanner {
 
     @SuppressWarnings("boxing")
     public static void replaceText(final String module, final int offset,
-            final int removeLength, String newText) {
+            final int removeLength, final String newText) {
+        Asserts.isNotNull(newText);
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
-            if (newText == null) {
-                newText = "";
-            }
             final OtpErlangObject r = backend.call(ERLIDE_SCANNER,
                     "replace_text", "aiis", module, offset, removeLength,
                     newText);
@@ -144,24 +141,8 @@ public class ErlideScanner {
         final OtpErlangTuple t1 = (OtpErlangTuple) r1;
 
         List<ErlToken> toks = null;
-        if (!(t1.elementAt(0) instanceof OtpErlangAtom)) {
-            throw new ScannerException("Could not parse string \"" + string
-                    + "\": funny return value" + t1);
-        }
         if (Util.isOk(t1)) {
-            if (t1.elementAt(1) instanceof OtpErlangList) {
-                final OtpErlangList l = (OtpErlangList) t1.elementAt(1);
-                if (l != null) {
-                    toks = new ArrayList<ErlToken>(l.arity() + 1);
-                    for (final OtpErlangObject o : l) {
-                        final OtpErlangTuple t = (OtpErlangTuple) o;
-                        final ErlToken tk = new ErlToken(t);
-                        tk.fixOffset(offset);
-                        toks.add(tk);
-                    }
-                    return toks;
-                }
-            } else if (t1.elementAt(1) instanceof OtpErlangBinary) {
+            if (t1.elementAt(1) instanceof OtpErlangBinary) {
                 final OtpErlangBinary b = (OtpErlangBinary) t1.elementAt(1);
                 final byte[] bytes = b.binaryValue();
                 toks = new ArrayList<ErlToken>(bytes.length / 10);
@@ -171,10 +152,12 @@ public class ErlideScanner {
                     toks.add(tk);
                 }
                 return toks;
+            } else {
+                throw new ScannerException("unexpected token format");
             }
         }
         throw new ScannerException("Could not parse string \"" + string
-                + "\": " + t1.elementAt(1).toString());
+                + "\": " + t1.toString());
     }
 
     public static OtpErlangObject checkAll(final String module,

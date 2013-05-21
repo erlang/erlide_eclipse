@@ -92,6 +92,7 @@ spawn_server() ->
         undefined ->
             Pid = spawn(fun() ->
                                 ?SAVE_CALLS,
+                                erlang:process_flag(min_heap_size, 64*1024),
                                 main_loop([])
                         end),
             erlang:register(?SERVER, Pid);

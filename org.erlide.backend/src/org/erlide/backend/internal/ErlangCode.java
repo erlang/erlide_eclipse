@@ -1,6 +1,6 @@
 package org.erlide.backend.internal;
 
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.Bindings;
@@ -44,7 +44,6 @@ public final class ErlangCode {
             }
             backend.call("code", "del_path", "s", path);
         } catch (final Exception e) {
-            ErlLogger.debug(e);
         }
     }
 

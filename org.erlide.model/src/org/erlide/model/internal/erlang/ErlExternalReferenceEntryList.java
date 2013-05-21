@@ -22,7 +22,7 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.ErlideOpen.ExternalTreeEntry;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -66,7 +66,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
                 .getExternalTree(externalIncludes);
         if (externalModuleTree == null || externalIncludeTree == null) {
             final IRpcSite backend = ModelPlugin.getDefault().getBackend(
-                    project.getName());
+                    project.getWorkspaceProject());
             final OtpErlangList pathVars = ErlModelManager.getErlangModel()
                     .getPathVars();
             if (externalModuleTree == null && externalModules.length() > 0) {
@@ -178,10 +178,6 @@ public class ErlExternalReferenceEntryList extends Openable implements
     @Override
     public String getLabelString() {
         return getName();
-    }
-
-    public boolean hasModuleWithPath(final String path) {
-        return false;
     }
 
     public IRpcSite getBackend() {
