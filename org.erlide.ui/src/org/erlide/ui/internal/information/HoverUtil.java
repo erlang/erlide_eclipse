@@ -102,11 +102,11 @@ public class HoverUtil {
                 if (!source.endsWith("\n")) {
                     stringBuilder.append('\n');
                 }
+                stringBuilder.append('\n');
             } catch (final ErlModelException e) {
                 ErlLogger.warn(e);
             }
         }
         return stringBuilder.toString().replace("\n", "<br/>");
     }
-
 }
