@@ -52,7 +52,8 @@ initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache) ->
     Text = InitialText,
     CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
     RenewFun = fun(_F) -> erlide_scan_model:do_scan(ScannerName, Text) end,
-    {erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UseCache), Text}.
+    Result = erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UseCache),
+    {Result, Text}.
 
 get_token_at(ScannerName, Offset) when is_atom(ScannerName), is_integer(Offset) ->
     erlide_scanner_server:server_cmd(ScannerName, get_token_at, Offset).
@@ -96,7 +97,7 @@ replace_text(ScannerName, Offset, RemoveLength, NewText)
   when is_atom(ScannerName), is_integer(Offset), is_integer(RemoveLength), is_list(NewText) ->
     erlide_scanner_server:server_cmd(ScannerName, replace_text, {Offset, RemoveLength, NewText}).
 
-check_all(ScannerName, Text, GetTokens) 
+check_all(ScannerName, Text, GetTokens)
   when is_atom(ScannerName), is_list(Text), is_boolean(GetTokens) ->
     MatchTest = erlide_scanner_server:match_test(ScannerName, Text),
     ScanTest = erlide_scanner_server:scan_test(ScannerName, GetTokens),
