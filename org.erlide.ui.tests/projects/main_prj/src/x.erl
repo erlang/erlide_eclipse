@@ -5,7 +5,6 @@
 
 -define(myrec, #'REC'{}).
     
-%% 
 %%    hello
 %% doc for f
 -spec f() ->
