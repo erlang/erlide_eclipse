@@ -343,7 +343,8 @@ public class ModelUtils {
             if (external && includes) {
                 moduleName = getIncludeLibPath(module);
             }
-            if (moduleName.startsWith(prefix)) {
+            if (moduleName.startsWith(prefix)
+                    && (includes || !module.getName().endsWith(".hrl"))) {
                 if (!names.contains(moduleName)) {
                     result.add(moduleName);
                     names.add(moduleName);
