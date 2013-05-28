@@ -44,28 +44,23 @@ public class ErlCodeScanner extends ErlTokenScanner {
             rangeLength = length;
 
             // ErlLogger.debug("setRange %s %d:%d (%d:%d)", document,
-            // rangeOffset,
-            // rangeLength, offset, length);
-
+            // rangeOffset, rangeLength, offset, length);
             final String str = document.get(rangeOffset, rangeLength);
-            setText(str);
+            // ErlLogger.debug("setRange == %s", str);
+            handleText(str);
         } catch (final BadLocationException e) {
             ErlLogger.warn(e);
         }
 
     }
 
-    private void setText(final String text) {
+    private void handleText(final String text) {
         if (text == null) {
             return;
         }
-
         try {
             fCrtToken = -1;
-
-            final String str = text;
-            fTokens = ErlideScanner.lightScanString(str, rangeOffset);
-
+            fTokens = ErlideScanner.lightScanString(text, rangeOffset);
         } catch (final ScannerException e) {
             // e.printStackTrace();
         }
