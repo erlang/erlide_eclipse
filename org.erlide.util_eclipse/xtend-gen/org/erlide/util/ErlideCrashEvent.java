@@ -1,5 +1,6 @@
 package org.erlide.util;
 
+import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
 import org.erlide.util.ErlideEvent;
 
@@ -15,5 +16,15 @@ public class ErlideCrashEvent extends ErlideEvent {
       }
     }.apply());
     this.backend = myBackend;
+  }
+  
+  public String print() {
+    StringConcatenation _builder = new StringConcatenation();
+    long _timestamp = this.getTimestamp();
+    _builder.append(_timestamp, "");
+    _builder.append(" CRASH ");
+    _builder.append(this.backend, "");
+    _builder.newLineIfNotEmpty();
+    return _builder.toString();
   }
 }
