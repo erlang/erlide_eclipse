@@ -24,6 +24,11 @@ public class ExtensionUtils {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] elements = reg
                 .getConfigurationElementsFor(id);
+        if (elements.length > 1) {
+            ErlLogger
+                    .warn("There are multiple implementors of extension %s! Picking one of them...",
+                            id);
+        }
         for (final IConfigurationElement element : elements) {
             try {
                 final Object object = element
