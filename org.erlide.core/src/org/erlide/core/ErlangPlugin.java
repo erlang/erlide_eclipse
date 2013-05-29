@@ -16,7 +16,10 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.launch.debug.ErlangDebugOptionsManager;
+import org.erlide.util.ErlideEventTracer;
+import org.erlide.util.ExtensionUtils;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.event.EventHandler;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -46,6 +49,8 @@ public class ErlangPlugin extends Plugin {
     @Override
     public void stop(final BundleContext context) throws Exception {
         try {
+            ErlideEventTracer.doStop(context);
+
             ResourcesPlugin.getWorkspace().removeSaveParticipant(
                     getBundle().getSymbolicName());
             if (core != null) {
@@ -63,13 +68,7 @@ public class ErlangPlugin extends Plugin {
     public void start(final BundleContext context) throws Exception {
         super.start(context);
 
-        // final Bundle b = Platform.getBundle("org.eclipse.equinox.event");
-        // if (b != null && b.getState() == Bundle.RESOLVED) {
-        // try {
-        // b.start();
-        // } catch (final BundleException e) {
-        // }
-        // }
+        startEventTracer(context);
 
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IExtensionRegistry extensionRegistry = Platform
@@ -82,6 +81,16 @@ public class ErlangPlugin extends Plugin {
         core = new ErlangCore(this, workspace, extensionRegistry, logDir,
                 erlangDebugOptionsManager);
         core.start();
+    }
+
+    private void startEventTracer(final BundleContext context) {
+        final EventHandler handler = ExtensionUtils.getSingletonExtension(
+                "org.erlide.tracingHandler", EventHandler.class);
+        if (handler != null) {
+            ErlideEventTracer.registerHandler(handler, context);
+            ErlideEventTracer.doStart(context);
+        }
+        ErlideEventTracer.traceSession();
     }
 
     public ErlangCore getCore() {
