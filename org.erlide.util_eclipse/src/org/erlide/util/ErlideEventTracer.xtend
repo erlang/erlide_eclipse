@@ -10,7 +10,7 @@ import org.osgi.service.event.EventConstants
 import org.osgi.service.event.EventHandler
 import org.osgi.util.tracker.ServiceTracker
 
-class ErlideEventTracer implements BundleActivator {
+class ErlideEventTracer implements BundleActivator, IErlideEventTracer {
 
     val static public String ERLIDE_EVENT_TOPIC = "org/erlide/erlide_event"
 
@@ -18,7 +18,7 @@ class ErlideEventTracer implements BundleActivator {
     val static instance = new ErlideEventTracer
     static boolean hasHandlers = false
 
-    override start(BundleContext context) throws Exception {
+    override start(BundleContext context) {
         tracker = new ServiceTracker(context, typeof(EventAdmin).name, null)
         tracker.open
     }
@@ -27,32 +27,24 @@ class ErlideEventTracer implements BundleActivator {
         if(tracker !== null) tracker.close
     }
 
-    def static doStart(BundleContext context) {
-        instance.start(context)
+    override traceSession() {
+        trace(new ErlideSessionEvent())
     }
 
-    def static doStop(BundleContext context) {
-        instance.stop(context)
+    override traceReset() {
+        trace(new ErlideResetEvent())
     }
 
-    def static traceSession() {
-        instance.trace(new ErlideSessionEvent())
+    override traceCrash(String backend) {
+        trace(new ErlideCrashEvent(backend))
     }
 
-    def static traceReset() {
-        instance.trace(new ErlideResetEvent())
+    override traceStatus(Object status) {
+        trace(new ErlideStatusEvent(status))
     }
 
-    def static traceCrash(String backend) {
-        instance.trace(new ErlideCrashEvent(backend))
-    }
-
-    def static traceStatus(Object status) {
-        instance.trace(new ErlideStatusEvent(status))
-    }
-
-    def static traceOperation(String operation, long duration) {
-        instance.trace(new ErlideOperationEvent(operation, duration))
+    override traceOperation(String operation, long duration) {
+        trace(new ErlideOperationEvent(operation, duration))
     }
 
     def private void trace(ErlideEvent event) {
@@ -66,12 +58,16 @@ class ErlideEventTracer implements BundleActivator {
         }
     }
 
-    def static registerHandler(EventHandler handler, BundleContext context) {
+    def static void registerHandler(EventHandler handler, BundleContext context) {
+        if(hasHandlers) return
         val Dictionary<String, Object> ht = new Hashtable()
         val String[] topics = #[ErlideEventTracer::ERLIDE_EVENT_TOPIC]
         ht.put(EventConstants::EVENT_TOPIC, topics)
         context.registerService(typeof(EventHandler).name, handler, ht)
         hasHandlers = true;
     }
-}
 
+    def static getInstance() {
+        instance
+    }
+}

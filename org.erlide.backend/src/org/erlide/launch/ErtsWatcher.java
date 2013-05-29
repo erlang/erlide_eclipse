@@ -65,7 +65,8 @@ final public class ErtsWatcher implements Runnable {
                 String report = null;
                 if (shouldCreateReport(v)) {
                     ErlLogger.error(msg);
-                    ErlideEventTracer.traceCrash(runtime.getName());
+                    ErlideEventTracer.getInstance().traceCrash(
+                            runtime.getName());
 
                     final ErlSystemStatus status = runtime.getSystemStatus();
                     ErlLogger.error("Last system status was:\n %s",

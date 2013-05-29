@@ -49,7 +49,7 @@ public class ErlangPlugin extends Plugin {
     @Override
     public void stop(final BundleContext context) throws Exception {
         try {
-            ErlideEventTracer.doStop(context);
+            ErlideEventTracer.getInstance().stop(context);
             handler.dispose();
 
             ResourcesPlugin.getWorkspace().removeSaveParticipant(
@@ -70,7 +70,7 @@ public class ErlangPlugin extends Plugin {
         super.start(context);
 
         startEventTracer(context);
-        ErlideEventTracer.traceSession();
+        ErlideEventTracer.getInstance().traceSession();
 
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IExtensionRegistry extensionRegistry = Platform
@@ -92,7 +92,7 @@ public class ErlangPlugin extends Plugin {
         }
         handler = new FileEventTracer(tracerPath);
         ErlideEventTracer.registerHandler(handler, context);
-        ErlideEventTracer.doStart(context);
+        ErlideEventTracer.getInstance().start(context);
     }
 
     public ErlangCore getCore() {

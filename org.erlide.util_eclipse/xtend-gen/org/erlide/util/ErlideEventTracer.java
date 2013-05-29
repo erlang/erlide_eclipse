@@ -4,7 +4,6 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
-import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.util.ErlideCrashEvent;
@@ -13,6 +12,7 @@ import org.erlide.util.ErlideOperationEvent;
 import org.erlide.util.ErlideResetEvent;
 import org.erlide.util.ErlideSessionEvent;
 import org.erlide.util.ErlideStatusEvent;
+import org.erlide.util.IErlideEventTracer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.event.Event;
@@ -22,7 +22,7 @@ import org.osgi.service.event.EventHandler;
 import org.osgi.util.tracker.ServiceTracker;
 
 @SuppressWarnings("all")
-public class ErlideEventTracer implements BundleActivator {
+public class ErlideEventTracer implements BundleActivator, IErlideEventTracer {
   public final static String ERLIDE_EVENT_TOPIC = "org/erlide/erlide_event";
   
   private ServiceTracker<Object,Object> tracker;
@@ -36,7 +36,7 @@ public class ErlideEventTracer implements BundleActivator {
   
   private static boolean hasHandlers = false;
   
-  public void start(final BundleContext context) throws Exception {
+  public void start(final BundleContext context) {
     String _name = EventAdmin.class.getName();
     ServiceTracker<Object,Object> _serviceTracker = new ServiceTracker<Object,Object>(context, _name, null);
     this.tracker = _serviceTracker;
@@ -50,45 +50,29 @@ public class ErlideEventTracer implements BundleActivator {
     }
   }
   
-  public static void doStart(final BundleContext context) {
-    try {
-      ErlideEventTracer.instance.start(context);
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-  
-  public static void doStop(final BundleContext context) {
-    try {
-      ErlideEventTracer.instance.stop(context);
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-  
-  public static void traceSession() {
+  public void traceSession() {
     ErlideSessionEvent _erlideSessionEvent = new ErlideSessionEvent();
-    ErlideEventTracer.instance.trace(_erlideSessionEvent);
+    this.trace(_erlideSessionEvent);
   }
   
-  public static void traceReset() {
+  public void traceReset() {
     ErlideResetEvent _erlideResetEvent = new ErlideResetEvent();
-    ErlideEventTracer.instance.trace(_erlideResetEvent);
+    this.trace(_erlideResetEvent);
   }
   
-  public static void traceCrash(final String backend) {
+  public void traceCrash(final String backend) {
     ErlideCrashEvent _erlideCrashEvent = new ErlideCrashEvent(backend);
-    ErlideEventTracer.instance.trace(_erlideCrashEvent);
+    this.trace(_erlideCrashEvent);
   }
   
-  public static void traceStatus(final Object status) {
+  public void traceStatus(final Object status) {
     ErlideStatusEvent _erlideStatusEvent = new ErlideStatusEvent(status);
-    ErlideEventTracer.instance.trace(_erlideStatusEvent);
+    this.trace(_erlideStatusEvent);
   }
   
-  public static void traceOperation(final String operation, final long duration) {
+  public void traceOperation(final String operation, final long duration) {
     ErlideOperationEvent _erlideOperationEvent = new ErlideOperationEvent(operation, duration);
-    ErlideEventTracer.instance.trace(_erlideOperationEvent);
+    this.trace(_erlideOperationEvent);
   }
   
   private void trace(final ErlideEvent event) {
@@ -115,18 +99,20 @@ public class ErlideEventTracer implements BundleActivator {
     }
   }
   
-  public static boolean registerHandler(final EventHandler handler, final BundleContext context) {
-    boolean _xblockexpression = false;
-    {
-      Hashtable<String,Object> _hashtable = new Hashtable<String,Object>();
-      final Dictionary<String,Object> ht = _hashtable;
-      final String[] topics = { ErlideEventTracer.ERLIDE_EVENT_TOPIC };
-      ht.put(EventConstants.EVENT_TOPIC, topics);
-      String _name = EventHandler.class.getName();
-      context.registerService(_name, handler, ht);
-      boolean _hasHandlers = ErlideEventTracer.hasHandlers = true;
-      _xblockexpression = (_hasHandlers);
+  public static void registerHandler(final EventHandler handler, final BundleContext context) {
+    if (ErlideEventTracer.hasHandlers) {
+      return;
     }
-    return _xblockexpression;
+    Hashtable<String,Object> _hashtable = new Hashtable<String,Object>();
+    final Dictionary<String,Object> ht = _hashtable;
+    final String[] topics = { ErlideEventTracer.ERLIDE_EVENT_TOPIC };
+    ht.put(EventConstants.EVENT_TOPIC, topics);
+    String _name = EventHandler.class.getName();
+    context.registerService(_name, handler, ht);
+    ErlideEventTracer.hasHandlers = true;
+  }
+  
+  public static ErlideEventTracer getInstance() {
+    return ErlideEventTracer.instance;
   }
 }
