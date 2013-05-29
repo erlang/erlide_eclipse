@@ -63,7 +63,7 @@ class ErlideOperationEvent extends ErlideEvent {
     }
 
     override String print() '''
-        «timestamp» OPERATION «operation» «duration»
+        «timestamp» OP «duration» «operation»
         '''
 }
 

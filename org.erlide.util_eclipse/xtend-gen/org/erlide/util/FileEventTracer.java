@@ -19,8 +19,6 @@ import org.erlide.util.ErlideSessionEvent;
 
 @SuppressWarnings("all")
 public class FileEventTracer extends ErlideEventTracerHandler {
-  private long sessionStartTime;
-  
   private final IPath storagePath;
   
   private PrintWriter file;
@@ -47,8 +45,7 @@ public class FileEventTracer extends ErlideEventTracerHandler {
   
   protected void _handle(final ErlideSessionEvent event) {
     long _timestamp = event.getTimestamp();
-    this.sessionStartTime = _timestamp;
-    Date _date = new Date(this.sessionStartTime);
+    Date _date = new Date(_timestamp);
     final Date date = _date;
     final String sdate = this.formatter.format(date);
     String _plus = (sdate + ".log");

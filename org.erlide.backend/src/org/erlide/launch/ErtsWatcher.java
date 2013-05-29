@@ -22,6 +22,7 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.launch.debug.model.ErtsProcess;
 import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.ErlideEventTracer;
 import org.erlide.util.LogUtil;
 import org.erlide.util.MessageReporter;
 import org.erlide.util.SystemConfiguration;
@@ -64,6 +65,7 @@ final public class ErtsWatcher implements Runnable {
                 String report = null;
                 if (shouldCreateReport(v)) {
                     ErlLogger.error(msg);
+                    ErlideEventTracer.traceCrash(runtime.getName());
 
                     final ErlSystemStatus status = runtime.getSystemStatus();
                     ErlLogger.error("Last system status was:\n %s",

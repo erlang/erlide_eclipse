@@ -11,7 +11,6 @@ import org.eclipse.core.runtime.Path
 import java.io.File
 
 class FileEventTracer extends ErlideEventTracerHandler {
-    long sessionStartTime
     val IPath storagePath
     PrintWriter file
     val SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS")
@@ -22,8 +21,7 @@ class FileEventTracer extends ErlideEventTracerHandler {
     }
 
     def dispatch handle(ErlideSessionEvent event) {
-        sessionStartTime = event.timestamp
-        val Date date = new Date(sessionStartTime)
+        val Date date = new Date(event.timestamp)
         val String sdate = formatter.format(date)
         val String name = storagePath.append(sdate + ".log").toPortableString
         try {

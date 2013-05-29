@@ -70,6 +70,7 @@ public class ErlangPlugin extends Plugin {
         super.start(context);
 
         startEventTracer(context);
+        ErlideEventTracer.traceSession();
 
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IExtensionRegistry extensionRegistry = Platform
@@ -78,9 +79,6 @@ public class ErlangPlugin extends Plugin {
                 .toPortableString();
         final ErlangDebugOptionsManager erlangDebugOptionsManager = ErlangDebugOptionsManager
                 .getDefault();
-
-        ErlideEventTracer.traceSession();
-        ErlideEventTracer.traceCrash("hello");
 
         core = new ErlangCore(this, workspace, extensionRegistry, logDir,
                 erlangDebugOptionsManager);

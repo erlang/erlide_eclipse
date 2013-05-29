@@ -25,10 +25,10 @@ public class ErlideOperationEvent extends ErlideEvent {
     StringConcatenation _builder = new StringConcatenation();
     long _timestamp = this.getTimestamp();
     _builder.append(_timestamp, "");
-    _builder.append(" OPERATION ");
-    _builder.append(this.operation, "");
-    _builder.append(" ");
+    _builder.append(" OP ");
     _builder.append(this.duration, "");
+    _builder.append(" ");
+    _builder.append(this.operation, "");
     _builder.newLineIfNotEmpty();
     return _builder.toString();
   }
