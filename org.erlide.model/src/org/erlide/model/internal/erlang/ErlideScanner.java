@@ -104,7 +104,8 @@ public class ErlideScanner {
                     "replace_text", "aiis", module, offset, removeLength,
                     newText);
             if (r instanceof OtpErlangTuple) {
-                ErlLogger.error("GOT::" + r.toString());
+                ErlLogger.error("replace_text %s @ %d GOT:: %s", module,
+                        offset, r.toString());
             }
         } catch (final RpcTimeoutException e) {
             ErlLogger.debug(e);
