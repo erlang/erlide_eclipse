@@ -12,7 +12,7 @@ class ErlideEventTracer implements IDisposable {
         if (tracerPath === null) {
             handler = new NullEventHandler
         } else {
-            handler = new FileEventTracer(tracerPath)
+            handler = new ErlideEventTracerHandler(tracerPath)
         }
     }
 
@@ -63,6 +63,10 @@ class ErlideEventTracer implements IDisposable {
 }
 
 class NullEventHandler extends ErlideEventTracerHandler {
+
+    new() {
+        super(null)
+    }
 
     override handle(ErlideEvent event) {
     }

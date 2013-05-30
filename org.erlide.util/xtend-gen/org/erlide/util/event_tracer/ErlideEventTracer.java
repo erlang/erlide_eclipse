@@ -10,7 +10,6 @@ import org.erlide.util.event_tracer.ErlideOperationStartEvent;
 import org.erlide.util.event_tracer.ErlideResetEvent;
 import org.erlide.util.event_tracer.ErlideSessionEvent;
 import org.erlide.util.event_tracer.ErlideStatusEvent;
-import org.erlide.util.event_tracer.FileEventTracer;
 import org.erlide.util.event_tracer.NullEventHandler;
 
 @SuppressWarnings("all")
@@ -31,8 +30,8 @@ public class ErlideEventTracer implements IDisposable {
       NullEventHandler _nullEventHandler = new NullEventHandler();
       this.handler = _nullEventHandler;
     } else {
-      FileEventTracer _fileEventTracer = new FileEventTracer(tracerPath);
-      this.handler = _fileEventTracer;
+      ErlideEventTracerHandler _erlideEventTracerHandler = new ErlideEventTracerHandler(tracerPath);
+      this.handler = _erlideEventTracerHandler;
     }
   }
   
