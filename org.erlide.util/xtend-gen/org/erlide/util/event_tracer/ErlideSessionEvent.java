@@ -1,10 +1,10 @@
-package org.erlide.util;
+package org.erlide.util.event_tracer;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
-import org.erlide.util.ErlideEvent;
+import org.erlide.util.event_tracer.ErlideEvent;
 
 @SuppressWarnings("all")
 public class ErlideSessionEvent extends ErlideEvent {
@@ -15,13 +15,17 @@ public class ErlideSessionEvent extends ErlideEvent {
     }
   }.apply();
   
-  public ErlideSessionEvent() {
+  public final int workspace;
+  
+  public ErlideSessionEvent(final String aWorkspace) {
     super(new Function0<Long>() {
       public Long apply() {
         long _currentTimeMillis = System.currentTimeMillis();
         return _currentTimeMillis;
       }
     }.apply());
+    int _hashCode = aWorkspace.hashCode();
+    this.workspace = _hashCode;
   }
   
   public String print() {

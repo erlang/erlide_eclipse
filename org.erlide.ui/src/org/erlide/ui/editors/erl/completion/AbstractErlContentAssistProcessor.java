@@ -53,9 +53,9 @@ import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
 import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.ErlideEventTracer;
 import org.erlide.util.StringUtils;
 import org.erlide.util.Util;
+import org.erlide.util.event_tracer.ErlideEventTracer;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;

@@ -16,8 +16,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.launch.debug.ErlangDebugOptionsManager;
-import org.erlide.util.ErlideEventTracer;
-import org.erlide.util.FileEventTracer;
+import org.erlide.util.event_tracer.ErlideEventTracer;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -32,7 +31,6 @@ import org.osgi.framework.BundleContext;
 public class ErlangPlugin extends Plugin {
     private static ErlangPlugin plugin;
     private ErlangCore core;
-    private FileEventTracer handler;
 
     public ErlangPlugin() {
         super();
@@ -49,8 +47,7 @@ public class ErlangPlugin extends Plugin {
     @Override
     public void stop(final BundleContext context) throws Exception {
         try {
-            ErlideEventTracer.getInstance().stop(context);
-            handler.dispose();
+            ErlideEventTracer.getInstance().dispose();
 
             ResourcesPlugin.getWorkspace().removeSaveParticipant(
                     getBundle().getSymbolicName());
@@ -69,8 +66,9 @@ public class ErlangPlugin extends Plugin {
     public void start(final BundleContext context) throws Exception {
         super.start(context);
 
-        startEventTracer(context);
-        ErlideEventTracer.getInstance().traceSession();
+        ErlideEventTracer.getInstance().traceSession(
+                ResourcesPlugin.getWorkspace().getRoot().getLocation()
+                        .toPortableString());
 
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IExtensionRegistry extensionRegistry = Platform
@@ -83,16 +81,6 @@ public class ErlangPlugin extends Plugin {
         core = new ErlangCore(this, workspace, extensionRegistry, logDir,
                 erlangDebugOptionsManager);
         core.start();
-    }
-
-    private void startEventTracer(final BundleContext context) {
-        final String tracerPath = System.getProperty("erlide.event_tracer");
-        if (tracerPath == null) {
-            return;
-        }
-        handler = new FileEventTracer(tracerPath);
-        ErlideEventTracer.registerHandler(handler, context);
-        ErlideEventTracer.getInstance().start(context);
     }
 
     public ErlangCore getCore() {

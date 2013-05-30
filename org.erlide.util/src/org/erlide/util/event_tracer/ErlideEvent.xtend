@@ -1,4 +1,4 @@
-package org.erlide.util
+package org.erlide.util.event_tracer
 
 import java.io.PrintWriter
 import java.text.SimpleDateFormat
@@ -18,9 +18,11 @@ abstract class ErlideEvent {
 
 class ErlideSessionEvent extends ErlideEvent {
     val static SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS")
+    val public int workspace
 
-    new() {
+    new(String aWorkspace) {
         super(System::currentTimeMillis)
+        workspace = aWorkspace.hashCode
     }
 
     override String print() '''

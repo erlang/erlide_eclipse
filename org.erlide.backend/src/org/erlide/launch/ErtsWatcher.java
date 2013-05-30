@@ -22,10 +22,10 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.launch.debug.model.ErtsProcess;
 import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.ErlideEventTracer;
 import org.erlide.util.LogUtil;
 import org.erlide.util.MessageReporter;
 import org.erlide.util.SystemConfiguration;
+import org.erlide.util.event_tracer.ErlideEventTracer;
 
 final public class ErtsWatcher implements Runnable {
     private final Process process;

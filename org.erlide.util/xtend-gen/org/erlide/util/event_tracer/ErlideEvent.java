@@ -1,4 +1,4 @@
-package org.erlide.util;
+package org.erlide.util.event_tracer;
 
 import java.io.PrintWriter;
 import org.eclipse.xtend.lib.Data;

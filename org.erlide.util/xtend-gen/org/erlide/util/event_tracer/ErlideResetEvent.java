@@ -1,8 +1,8 @@
-package org.erlide.util;
+package org.erlide.util.event_tracer;
 
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
-import org.erlide.util.ErlideEvent;
+import org.erlide.util.event_tracer.ErlideEvent;
 
 @SuppressWarnings("all")
 public class ErlideResetEvent extends ErlideEvent {

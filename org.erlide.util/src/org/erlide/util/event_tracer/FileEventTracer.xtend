@@ -1,4 +1,4 @@
-package org.erlide.util
+package org.erlide.util.event_tracer
 
 import java.io.BufferedWriter
 import java.io.FileWriter
@@ -9,6 +9,7 @@ import java.util.Date
 import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.Path
 import java.io.File
+import org.erlide.util.ErlLogger
 
 class FileEventTracer extends ErlideEventTracerHandler {
     val IPath storagePath
@@ -16,14 +17,14 @@ class FileEventTracer extends ErlideEventTracerHandler {
     val SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS")
 
     new(String path) {
-        storagePath = new Path(path).append(machine).append(user).append(Integer::toHexString(workspace.hashCode))
+        storagePath = new Path(path).append(machine).append(user)
         new File(storagePath.toPortableString).mkdirs
     }
 
     def dispatch handle(ErlideSessionEvent event) {
         val Date date = new Date(event.timestamp)
         val String sdate = formatter.format(date)
-        val String name = storagePath.append(sdate + ".log").toPortableString
+        val String name = storagePath.append(Integer::toHexString(event.workspace)).append(sdate + ".log").toPortableString
         try {
             file = new PrintWriter(new BufferedWriter(new FileWriter(name, false)))
         } catch (IOException e) {
@@ -45,7 +46,6 @@ class FileEventTracer extends ErlideEventTracerHandler {
                 file.close
             } catch (IOException e) {
                 e.printStackTrace
-
                 // nothing to do
                 }
             }
