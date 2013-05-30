@@ -66,7 +66,7 @@ public class CodeAssistPreferences {
         autoActivate = helper.getBoolean(
                 CodeAssistPreferencesConstants.AUTO_ACTIVATE, true);
         delayInMS = helper.getInt(CodeAssistPreferencesConstants.DELAY_IN_MS,
-                100);
+                50);
         erlangTriggers = helper.getString(
                 CodeAssistPreferencesConstants.ERLANG_TRIGGERS, ":#?");
         eDocTriggers = helper.getString(
