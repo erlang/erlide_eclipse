@@ -31,6 +31,7 @@ import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
+import org.erlide.util.event_tracer.ErlideEventTracer;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -140,7 +141,6 @@ public class ErlangTextEditorAction extends TextEditorAction {
 
     @Override
     public void run() {
-        super.run();
         final ISelection sel = getSelection();
         if (sel == null || sel.isEmpty() || !(sel instanceof ITextSelection)) {
             return;
@@ -148,77 +148,86 @@ public class ErlangTextEditorAction extends TextEditorAction {
         if (!validateEditorInputState()) {
             return;
         }
-        final ITextEditor textEditor = getTextEditor();
-        final IDocument document = textEditor.getDocumentProvider()
-                .getDocument(textEditor.getEditorInput());
-        final ITextSelection selection = extendSelectionToWholeLines(document,
-                (ITextSelection) sel);
-        final ITextSelection getSelection = getTextSelection(document,
-                selection);
-        String text;
-        OtpErlangObject r1 = null;
+        ErlideEventTracer.getInstance().traceOperationStart(
+                this.getClass().getName(), this);
         try {
-            text = document.get(getSelection.getOffset(),
-                    getSelection.getLength());
-            // call erlang, with selection within text
-            r1 = callErlang(selection.getOffset() - getSelection.getOffset(),
-                    selection.getLength(), text);
-        } catch (final Exception e) {
-            ErlLogger.error(e);
-        }
-        final String newText = Util.stringValue(r1);
-        if (newText == null) {
-            final Status status = new Status(IStatus.ERROR,
-                    ErlangCore.PLUGIN_ID,
-                    ErlangStatus.INTERNAL_ERROR.getValue(),
-                    "operation returned " + r1 + " instead of a string", null);
-            ErlLogger.error("INTERNAL ERROR: operation returned " + r1
-                    + " instead of a string");
-
-            ErrorDialog.openError(textEditor.getSite().getShell(),
-                    ActionMessages.IndentAction_error_message,
-                    String.valueOf(r1), status);
-            return;
-        }
-        final int startLine = selection.getStartLine();
-        final int endLine = selection.getEndLine();
-        final int nLines = endLine - startLine + 1;
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                final IRewriteTarget target = (IRewriteTarget) textEditor
-                        .getAdapter(IRewriteTarget.class);
-                if (target != null) {
-                    target.beginCompoundChange();
-                    if (nLines > 1) {
-                        target.setRedraw(false);
-                    }
-                }
-                try {
-                    // ErlLogger.debug("'"+newText+"'");
-                    if (!document.get(selection.getOffset(),
-                            selection.getLength()).equals(newText)) {
-                        document.replace(selection.getOffset(),
-                                selection.getLength(), newText);
-                    }
-                    selectAndReveal(selection.getOffset(), newText.length());
-                } catch (final BadLocationException e) {
-                    ErlLogger.warn(e);
-                }
-                if (target != null) {
-                    target.endCompoundChange();
-                    if (nLines > 1) {
-                        target.setRedraw(true);
-                    }
-                }
+            final ITextEditor textEditor = getTextEditor();
+            final IDocument document = textEditor.getDocumentProvider()
+                    .getDocument(textEditor.getEditorInput());
+            final ITextSelection selection = extendSelectionToWholeLines(
+                    document, (ITextSelection) sel);
+            final ITextSelection getSelection = getTextSelection(document,
+                    selection);
+            String text;
+            OtpErlangObject r1 = null;
+            try {
+                text = document.get(getSelection.getOffset(),
+                        getSelection.getLength());
+                // call erlang, with selection within text
+                r1 = callErlang(
+                        selection.getOffset() - getSelection.getOffset(),
+                        selection.getLength(), text);
+            } catch (final Exception e) {
+                ErlLogger.error(e);
             }
-        };
-        if (nLines > 50) {
-            final Display display = textEditor.getEditorSite()
-                    .getWorkbenchWindow().getShell().getDisplay();
-            BusyIndicator.showWhile(display, runnable);
-        } else {
-            runnable.run();
+            final String newText = Util.stringValue(r1);
+            if (newText == null) {
+                final Status status = new Status(IStatus.ERROR,
+                        ErlangCore.PLUGIN_ID,
+                        ErlangStatus.INTERNAL_ERROR.getValue(),
+                        "operation returned " + r1 + " instead of a string",
+                        null);
+                ErlLogger.error("INTERNAL ERROR: operation returned " + r1
+                        + " instead of a string");
+
+                ErrorDialog.openError(textEditor.getSite().getShell(),
+                        ActionMessages.IndentAction_error_message,
+                        String.valueOf(r1), status);
+                return;
+            }
+            final int startLine = selection.getStartLine();
+            final int endLine = selection.getEndLine();
+            final int nLines = endLine - startLine + 1;
+            final Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    final IRewriteTarget target = (IRewriteTarget) textEditor
+                            .getAdapter(IRewriteTarget.class);
+                    if (target != null) {
+                        target.beginCompoundChange();
+                        if (nLines > 1) {
+                            target.setRedraw(false);
+                        }
+                    }
+                    try {
+                        // ErlLogger.debug("'"+newText+"'");
+                        if (!document.get(selection.getOffset(),
+                                selection.getLength()).equals(newText)) {
+                            document.replace(selection.getOffset(),
+                                    selection.getLength(), newText);
+                        }
+                        selectAndReveal(selection.getOffset(), newText.length());
+                    } catch (final BadLocationException e) {
+                        ErlLogger.warn(e);
+                    }
+                    if (target != null) {
+                        target.endCompoundChange();
+                        if (nLines > 1) {
+                            target.setRedraw(true);
+                        }
+                    }
+                }
+            };
+            if (nLines > 50) {
+                final Display display = textEditor.getEditorSite()
+                        .getWorkbenchWindow().getShell().getDisplay();
+                BusyIndicator.showWhile(display, runnable);
+            } else {
+                runnable.run();
+            }
+        } finally {
+            ErlideEventTracer.getInstance().traceOperationEnd(
+                    this.getClass().getName(), this);
         }
     }
 

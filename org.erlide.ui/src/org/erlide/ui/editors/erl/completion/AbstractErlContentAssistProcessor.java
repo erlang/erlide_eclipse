@@ -8,7 +8,6 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -64,7 +63,6 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.base.Objects;
-import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -171,9 +169,10 @@ public abstract class AbstractErlContentAssistProcessor implements
     @Override
     public ICompletionProposal[] computeCompletionProposals(
             final ITextViewer viewer, final int offset) {
-        final Stopwatch watch = new Stopwatch();
-        watch.start();
+        final String id = Integer.toHexString(viewer.hashCode()) + "@" + offset;
         try {
+            ErlideEventTracer.getInstance().traceOperationStart("completion",
+                    id);
             try {
 
                 final IDocument doc = viewer.getDocument();
@@ -319,8 +318,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                 return null;
             }
         } finally {
-            ErlideEventTracer.getInstance().traceOperation("completion",
-                    watch.elapsed(TimeUnit.MILLISECONDS));
+            ErlideEventTracer.getInstance().traceOperationEnd("completion", id);
         }
     }
 
