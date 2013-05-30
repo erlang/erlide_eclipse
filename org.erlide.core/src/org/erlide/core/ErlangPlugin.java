@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.launch.debug.ErlangDebugOptionsManager;
+import org.erlide.util.event_tracer.ErlideEventTracer;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -46,6 +47,8 @@ public class ErlangPlugin extends Plugin {
     @Override
     public void stop(final BundleContext context) throws Exception {
         try {
+            ErlideEventTracer.getInstance().dispose();
+
             ResourcesPlugin.getWorkspace().removeSaveParticipant(
                     getBundle().getSymbolicName());
             if (core != null) {
@@ -63,13 +66,9 @@ public class ErlangPlugin extends Plugin {
     public void start(final BundleContext context) throws Exception {
         super.start(context);
 
-        // final Bundle b = Platform.getBundle("org.eclipse.equinox.event");
-        // if (b != null && b.getState() == Bundle.RESOLVED) {
-        // try {
-        // b.start();
-        // } catch (final BundleException e) {
-        // }
-        // }
+        ErlideEventTracer.getInstance().traceSession(
+                ResourcesPlugin.getWorkspace().getRoot().getLocation()
+                        .toPortableString());
 
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IExtensionRegistry extensionRegistry = Platform
