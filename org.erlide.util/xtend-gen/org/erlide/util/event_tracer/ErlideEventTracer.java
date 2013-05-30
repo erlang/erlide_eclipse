@@ -5,7 +5,8 @@ import org.erlide.util.IDisposable;
 import org.erlide.util.event_tracer.ErlideCrashEvent;
 import org.erlide.util.event_tracer.ErlideEvent;
 import org.erlide.util.event_tracer.ErlideEventTracerHandler;
-import org.erlide.util.event_tracer.ErlideOperationEvent;
+import org.erlide.util.event_tracer.ErlideOperationEndEvent;
+import org.erlide.util.event_tracer.ErlideOperationStartEvent;
 import org.erlide.util.event_tracer.ErlideResetEvent;
 import org.erlide.util.event_tracer.ErlideSessionEvent;
 import org.erlide.util.event_tracer.ErlideStatusEvent;
@@ -55,9 +56,18 @@ public class ErlideEventTracer implements IDisposable {
     this.trace(_erlideStatusEvent);
   }
   
-  public void traceOperation(final String operation, final long duration) {
-    ErlideOperationEvent _erlideOperationEvent = new ErlideOperationEvent(operation, duration);
-    this.trace(_erlideOperationEvent);
+  public void traceOperationStart(final String operation, final Object id) {
+    int _identityHashCode = System.identityHashCode(id);
+    String _hexString = Integer.toHexString(_identityHashCode);
+    ErlideOperationStartEvent _erlideOperationStartEvent = new ErlideOperationStartEvent(operation, _hexString);
+    this.trace(_erlideOperationStartEvent);
+  }
+  
+  public void traceOperationEnd(final String operation, final Object id) {
+    int _identityHashCode = System.identityHashCode(id);
+    String _hexString = Integer.toHexString(_identityHashCode);
+    ErlideOperationEndEvent _erlideOperationEndEvent = new ErlideOperationEndEvent(operation, _hexString);
+    this.trace(_erlideOperationEndEvent);
   }
   
   private void trace(final ErlideEvent event) {

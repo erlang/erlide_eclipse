@@ -1,12 +1,5 @@
 package org.erlide.util.event_tracer
 
-import org.erlide.util.event_tracer.ErlideCrashEvent
-import org.erlide.util.event_tracer.ErlideEvent
-import org.erlide.util.event_tracer.ErlideOperationEvent
-import org.erlide.util.event_tracer.ErlideResetEvent
-import org.erlide.util.event_tracer.ErlideSessionEvent
-import org.erlide.util.event_tracer.ErlideStatusEvent
-import org.erlide.util.event_tracer.ErlideEventTracerHandler
 import org.erlide.util.IDisposable
 
 class ErlideEventTracer implements IDisposable {
@@ -39,8 +32,12 @@ class ErlideEventTracer implements IDisposable {
         trace(new ErlideStatusEvent(status))
     }
 
-    def traceOperation(String operation, long duration) {
-        trace(new ErlideOperationEvent(operation, duration))
+    def traceOperationStart(String operation, Object id) {
+        trace(new ErlideOperationStartEvent(operation, Integer::toHexString(System::identityHashCode(id))))
+    }
+
+    def traceOperationEnd(String operation, Object id) {
+        trace(new ErlideOperationEndEvent(operation, Integer::toHexString(System::identityHashCode(id))))
     }
 
     def private void trace(ErlideEvent event) {

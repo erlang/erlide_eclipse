@@ -54,18 +54,36 @@ class ErlideCrashEvent extends ErlideEvent {
         '''
 }
 
-class ErlideOperationEvent extends ErlideEvent {
-    val String operation
-    val long duration
+abstract class ErlideOperationEvent extends ErlideEvent {
+    val protected String operation
+    val protected String id
 
-    new(String myOperation, long myDuration) {
+    new(String myOperation, String myId) {
         super(System::currentTimeMillis)
         operation = myOperation
-        duration = myDuration
+        id = myId
+    }
+}
+
+class ErlideOperationStartEvent extends ErlideOperationEvent {
+
+    new(String myOperation, String myId) {
+        super(myOperation, myId)
     }
 
     override String print() '''
-        «timestamp» OP «duration» «operation»
+        «timestamp» OP> «id» «operation»
+        '''
+}
+
+class ErlideOperationEndEvent extends ErlideOperationEvent {
+
+    new(String myOperation, String myId) {
+        super(myOperation, myId)
+    }
+
+    override String print() '''
+        «timestamp» OP< «id» «operation»
         '''
 }
 
