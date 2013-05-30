@@ -40,6 +40,14 @@ class ErlideEventTracer implements IDisposable {
         trace(new ErlideOperationEndEvent(operation, Integer::toHexString(System::identityHashCode(id))))
     }
 
+    def traceOperationStart(Object id) {
+        traceOperationStart(id.class.simpleName, id)
+    }
+
+    def traceOperationEnd(Object id) {
+        traceOperationEnd(id.class.simpleName, id)
+    }
+
     def private void trace(ErlideEvent event) {
         handler.handle(event)
     }

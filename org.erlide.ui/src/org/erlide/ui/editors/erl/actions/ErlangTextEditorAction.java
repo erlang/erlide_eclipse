@@ -148,8 +148,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
         if (!validateEditorInputState()) {
             return;
         }
-        ErlideEventTracer.getInstance().traceOperationStart(
-                this.getClass().getName(), this);
+        ErlideEventTracer.getInstance().traceOperationStart(this);
         try {
             final ITextEditor textEditor = getTextEditor();
             final IDocument document = textEditor.getDocumentProvider()
@@ -226,8 +225,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
                 runnable.run();
             }
         } finally {
-            ErlideEventTracer.getInstance().traceOperationEnd(
-                    this.getClass().getName(), this);
+            ErlideEventTracer.getInstance().traceOperationEnd(this);
         }
     }
 
