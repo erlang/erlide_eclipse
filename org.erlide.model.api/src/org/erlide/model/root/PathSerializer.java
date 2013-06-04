@@ -1,4 +1,4 @@
-package org.erlide.model.internal.root;
+package org.erlide.model.root;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

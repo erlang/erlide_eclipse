@@ -19,7 +19,6 @@ Export-Package: org.erlide.model;x-friends:="org.erlide.core,org.erlide.model.ap
  org.erlide.model.erlang;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.internal.erlang;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.internal.root;x-friends:="org.erlide.core,org.erlide.model.api",
- org.erlide.model.root;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.services.cleanup;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.services.codeassist;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.services.search;x-friends:="org.erlide.core,org.erlide.model.api",

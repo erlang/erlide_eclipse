@@ -1,4 +1,4 @@
-package org.erlide.model.internal.root;
+package org.erlide.model.root;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.osgi.service.prefs.BackingStoreException;
