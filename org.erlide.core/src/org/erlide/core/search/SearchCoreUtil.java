@@ -9,6 +9,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.model.ErlModelException;
@@ -25,6 +27,8 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.util.NatureUtil;
+
+import com.google.common.collect.Sets;
 
 public class SearchCoreUtil {
 
@@ -130,6 +134,41 @@ public class SearchCoreUtil {
             final IFolder folder = (IFolder) r;
             addFolderToScope(folder, result);
         }
+    }
+
+    public static ErlSearchScope getWorkspaceScope(final boolean addExternals,
+            final boolean addOtp) throws ErlModelException {
+        final ErlSearchScope result = new ErlSearchScope();
+        final Collection<IErlProject> erlangProjects = ErlModelManager
+                .getErlangModel().getErlangProjects();
+        for (final IErlProject i : erlangProjects) {
+            final Collection<IErlModule> modules = i.getModulesAndIncludes();
+            for (final IErlModule j : modules) {
+                result.addModule(j);
+            }
+            // addProjectEbin(i, result);
+        }
+        final Set<String> externalModulePaths = new HashSet<String>();
+        for (final IErlProject project : erlangProjects) {
+            addExternalModules(project, result, externalModulePaths,
+                    addExternals, addOtp);
+        }
+        return result;
+    }
+
+    public static Collection<IProject> getProjects(final String[] projectNames) {
+        final Collection<IProject> result = Sets
+                .newHashSetWithExpectedSize(projectNames.length);
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        for (final String i : projectNames) {
+            final IProject project = root.getProject(i);
+            result.add(project);
+        }
+        return result;
+    }
+
+    public static boolean isLineDelimiterChar(final char ch) {
+        return ch == '\n' || ch == '\r';
     }
 
 }
