@@ -9,6 +9,7 @@ Export-Package: org.erlide.engine,
  org.erlide.model,
  org.erlide.model.erlang,
  org.erlide.model.root,
+ org.erlide.model.services.search,
  org.erlide.model.util
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.core.resources;bundle-version="3.6.1",
