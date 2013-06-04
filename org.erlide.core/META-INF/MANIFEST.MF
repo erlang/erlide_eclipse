@@ -9,7 +9,8 @@ Bundle-Localization: plugin
 Export-Package: org.erlide.core,
  org.erlide.core.builder,
  org.erlide.core.content,
- org.erlide.core.internal.builder
+ org.erlide.core.internal.builder,
+ org.erlide.core.search
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.core.filesystem,

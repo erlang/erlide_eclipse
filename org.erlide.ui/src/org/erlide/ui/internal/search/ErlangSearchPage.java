@@ -42,6 +42,7 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.BackendCore;
+import org.erlide.core.search.SearchCoreUtil;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
@@ -237,7 +238,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             final String[] projectNames = getContainer()
                     .getSelectedProjectNames();
             if (searchSources) {
-                scope = SearchUtil.getProjectsScope(
+                scope = SearchCoreUtil.getProjectsScope(
                         SearchUtil.getProjects(projectNames), searchExternals,
                         searchOtp);
             }
