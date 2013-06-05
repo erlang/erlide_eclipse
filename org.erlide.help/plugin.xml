@@ -6,12 +6,12 @@
          file="erlideContext.xml">
     </contexts>
 </extension>
-<extension
+<!--extension
       point="org.eclipse.ui.cheatsheets.cheatSheetContent">
    <category
          id="org.erlide.help.cheatsheet.erlang"
          name="Erlang cheatsheets">
    </category>
-</extension>
+</extension-->
 </plugin>
 
