@@ -423,7 +423,7 @@ sub_scan_escape([$\n|Cs], Pos) ->
 sub_scan_escape([$n=C|Cs], Pos) ->
     Val = escape_char(C),
     StrVal = [C],
-    {Cs, Val, StrVal, incrow(Pos)};
+    {Cs, Val, StrVal, inc(Pos, 1)};
 sub_scan_escape([C|Cs], Pos) ->
     Val = escape_char(C),
     StrVal = [C],
