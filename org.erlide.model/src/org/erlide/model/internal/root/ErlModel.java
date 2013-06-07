@@ -64,7 +64,6 @@ import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.IElementChangedListener;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.model.util.NatureUtil;
-import org.erlide.model.util.PluginUtils;
 import org.erlide.model.util.ResourceUtil;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
@@ -421,8 +420,7 @@ public class ErlModel extends Openable implements IErlModel {
         final OtpErlangObject[] objects = new OtpErlangObject[names.length];
         for (int i = 0; i < names.length; i++) {
             final String name = names[i];
-            final String value = PluginUtils.getPVMValue(pvm, name)
-                    .toOSString();
+            final String value = pvm.getValue(name).toOSString();
             objects[i] = new OtpErlangTuple(new OtpErlangObject[] {
                     new OtpErlangString(name), new OtpErlangString(value) });
         }
