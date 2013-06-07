@@ -49,7 +49,7 @@ public class ModelPlugin extends Plugin {
 
     private IBackendProvider getRuntimeProvider() {
         return ExtensionUtils.getSingletonExtension(
-                "org.erlide.backend.api.backend", IBackendProvider.class);
+                "org.erlide.backend.backend", IBackendProvider.class);
     }
 
     public IRpcSite getIdeBackend() {
