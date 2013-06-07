@@ -174,4 +174,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent,
     void addExternal(final String key, IErlExternalRoot external);
 
     void removeExternal(final String key);
+
+    IErlElementDelta createElementDelta(int kind, int flags, IErlElement element);
 }

@@ -1196,4 +1196,10 @@ public class ErlModel extends Openable implements IErlModel {
         }
     }
 
+    @Override
+    public IErlElementDelta createElementDelta(final int kind, final int flags,
+            final IErlElement element) {
+        return new ErlElementDelta(kind, flags, element);
+    }
+
 }
