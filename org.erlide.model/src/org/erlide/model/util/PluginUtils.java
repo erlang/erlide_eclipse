@@ -11,9 +11,6 @@ package org.erlide.model.util;
 
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.erlide.model.ModelPlugin;
 
 /**
  * Simple utility functions
@@ -22,18 +19,6 @@ import org.erlide.model.ModelPlugin;
  * @author Eric Merritt [cyberlync at yahoo dot com] Vlad Jakob C
  */
 public class PluginUtils {
-    /**
-     * Displays an error that occured during the project creation. *
-     * 
-     * @param x
-     *            details on the error
-     * @return IStatus
-     */
-    public static IStatus makeStatus(final Exception x) {
-        return new Status(IStatus.ERROR, ModelPlugin.PLUGIN_ID, 0,
-                x.getMessage(), x);
-    }
-
     @SuppressWarnings("deprecation")
     public static IPath resolvePVMPath(final IPathVariableManager pvm,
             final IPath path) {
