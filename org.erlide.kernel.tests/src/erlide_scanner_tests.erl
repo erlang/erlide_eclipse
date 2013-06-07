@@ -163,6 +163,21 @@ replace_at_eof_test_() ->
                    test_replace("ab", 2, 0, "c"))
      ].
 
+newline_char_test_() ->
+    [?_assertEqual([#token{kind = '[', line = 0, offset = 0, length = 1},
+                    #token{kind = char, line = 0, offset = 1, length = 3, value=$\n, text = "$\\n"},
+                    #token{kind = ']', line = 0, offset = 4, length = 1}],
+                   test_scan("[$\\n]"))
+     ].
+
+newline_char_simple_test_() ->
+    [?_assertEqual({ok, [{'[', {{1,1},1}},
+                         {char, {{1,2},3}, 10, "$\\n"},
+                         {']',{{1,5}, 1}}
+                         ], {1,6}},
+                   erlide_scan:string("[$\\n]"))
+     ].
+
 %%
 %% Local Functions
 %%
