@@ -27,6 +27,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.erlide.backend.BackendCore;
+import org.erlide.core.search.SearchCoreUtil;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlAttribute;
 import org.erlide.model.erlang.IErlFunctionClause;
@@ -321,7 +322,7 @@ public abstract class FindAction extends SelectionDispatchAction {
     }
 
     protected ErlSearchScope getProjectScope() throws CoreException {
-        return SearchUtil.getProjectsScope(getProjects(), false, false);
+        return SearchCoreUtil.getProjectsScope(getProjects(), false, false);
     }
 
 }

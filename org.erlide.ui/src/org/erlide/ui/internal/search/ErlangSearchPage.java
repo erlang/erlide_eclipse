@@ -42,6 +42,7 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.BackendCore;
+import org.erlide.core.search.SearchCoreUtil;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
@@ -228,7 +229,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         switch (selectedScope) {
         case ISearchPageContainer.WORKSPACE_SCOPE:
             if (searchSources) {
-                scope = SearchUtil
+                scope = SearchCoreUtil
                         .getWorkspaceScope(searchExternals, searchOtp);
             }
             scopeDescription = SearchUtil.getWorkspaceScopeDescription();
@@ -237,11 +238,11 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             final String[] projectNames = getContainer()
                     .getSelectedProjectNames();
             if (searchSources) {
-                scope = SearchUtil.getProjectsScope(
-                        SearchUtil.getProjects(projectNames), searchExternals,
+                scope = SearchCoreUtil.getProjectsScope(
+                        SearchCoreUtil.getProjects(projectNames), searchExternals,
                         searchOtp);
             }
-            scopeDescription = SearchUtil.getProjectScopeDescription(SearchUtil
+            scopeDescription = SearchUtil.getProjectScopeDescription(SearchCoreUtil
                     .getProjects(projectNames));
             break;
         case ISearchPageContainer.SELECTION_SCOPE:
@@ -720,7 +721,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         if (selectedText != null && selectedText.length() > 0) {
             int i = 0;
             while (i < selectedText.length()
-                    && !SearchUtil.isLineDelimiterChar(selectedText.charAt(i))) {
+                    && !SearchCoreUtil.isLineDelimiterChar(selectedText.charAt(i))) {
                 i++;
             }
             if (i > 0) {

@@ -4,6 +4,8 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -17,7 +19,6 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.PluginUtils;
 import org.erlide.runtime.shell.BackendShellListener;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.ui.actions.SelectionDispatchAction;
@@ -83,9 +84,13 @@ public class SendToConsoleAction extends SelectionDispatchAction {
         }
         if (console == null) {
             final String message = "There is no runtime launched for this backend. Please start a runtime to send commands to.";
-            ErrorDialog
-                    .openError(getShell(), "No runtime", message, PluginUtils
-                            .makeStatus(new Exception("No runtime started")));
+            final Exception x = new Exception("No runtime started");
+            ErrorDialog.openError(
+                    getShell(),
+                    "No runtime",
+                    message,
+                    new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, 0, x
+                            .getMessage(), x));
 
             return;
         }

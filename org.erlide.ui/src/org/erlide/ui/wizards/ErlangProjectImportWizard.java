@@ -24,8 +24,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -47,7 +49,6 @@ import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangCore;
 import org.erlide.model.root.IErlangProjectProperties;
 import org.erlide.model.root.OldErlangProjectProperties;
-import org.erlide.model.util.PluginUtils;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 import org.erlide.util.ErlLogger;
@@ -232,11 +233,14 @@ public class ErlangProjectImportWizard extends Wizard implements IImportWizard {
      */
     private void reportError(final Exception e) {
         ErlLogger.error(e);
-        ErrorDialog.openError(getShell(), ErlideUIPlugin
-                .getResourceString("wizards.errors.projecterrordesc"),
+        ErrorDialog.openError(
+                getShell(),
+                ErlideUIPlugin
+                        .getResourceString("wizards.errors.projecterrordesc"),
                 ErlideUIPlugin
                         .getResourceString("wizards.errors.projecterrortitle"),
-                PluginUtils.makeStatus(e));
+                new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, 0, e
+                        .getMessage(), e));
     }
 
     protected boolean createProject(final IProgressMonitor monitor,

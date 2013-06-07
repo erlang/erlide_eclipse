@@ -9,7 +9,7 @@
  *     Vlad Dumitrescu
  *     Mickael Remond
  *******************************************************************************/
-package org.erlide.model.internal.root;
+package org.erlide.model.root;
 
 /**
  * Constants used in project and plugin preferences

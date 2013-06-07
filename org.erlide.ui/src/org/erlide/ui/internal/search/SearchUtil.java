@@ -4,21 +4,15 @@ import java.text.Collator;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -35,19 +29,14 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.progress.IProgressService;
+import org.erlide.core.search.SearchCoreUtil;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.ModuleKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.AcceptFlags;
 import org.erlide.model.root.IErlElement.Kind;
-import org.erlide.model.root.IErlElementVisitor;
-import org.erlide.model.root.IErlExternal;
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.services.search.ErlangSearchPattern;
 import org.erlide.model.services.search.FunctionPattern;
@@ -63,7 +52,6 @@ import org.erlide.model.services.search.SearchPatternFactory;
 import org.erlide.model.services.search.TypeRefPattern;
 import org.erlide.model.services.search.VariablePattern;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.model.util.NatureUtil;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.StringUtils;
@@ -76,7 +64,6 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-import com.google.common.collect.Sets;
 
 public class SearchUtil {
 
@@ -101,128 +88,6 @@ public class SearchUtil {
         }
     }
 
-    static public ErlSearchScope getProjectsScope(
-            final Collection<IProject> projects, final boolean addExternals,
-            final boolean addOtp) throws CoreException {
-        final ErlSearchScope result = new ErlSearchScope();
-        final Set<String> externalModulePaths = new HashSet<String>();
-        final IErlModel model = ErlModelManager.getErlangModel();
-        for (final IProject project : projects) {
-            addProjectToScope(project, result);
-            if (NatureUtil.hasErlangNature(project)) {
-                final IErlProject erlProject = model.getErlangProject(project);
-                addExternalModules(erlProject, result, externalModulePaths,
-                        addExternals, addOtp);
-            }
-        }
-        return result;
-    }
-
-    private static void addProjectToScope(final IProject project,
-            final ErlSearchScope result) throws CoreException {
-        if (project == null) {
-            return;
-        }
-        final IErlProject erlProject = ErlModelManager.getErlangModel()
-                .getErlangProject(project);
-        if (erlProject != null) {
-            final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
-            for (final IPath path : sourcePaths) {
-                final IFolder folder = project.getFolder(path);
-                addFolderToScope(folder, result);
-            }
-        }
-    }
-
-    private static void addFolderToScope(final IFolder folder,
-            final ErlSearchScope result) throws CoreException {
-        if (folder != null) {
-            for (final IResource r : folder.members()) {
-                if (r instanceof IFile) {
-                    final IFile f = (IFile) r;
-                    addFileToScope(f, result);
-                }
-            }
-        }
-    }
-
-    private static void addFileToScope(final IFile file,
-            final ErlSearchScope result) {
-        if (ModuleKind.hasModuleExtension(file.getName())) {
-            final IErlModule module = ErlModelManager.getErlangModel()
-                    .findModule(file);
-            result.addModule(module);
-        }
-    }
-
-    public static ErlSearchScope getWorkspaceScope(final boolean addExternals,
-            final boolean addOtp) throws ErlModelException {
-        final ErlSearchScope result = new ErlSearchScope();
-        final Collection<IErlProject> erlangProjects = ErlModelManager
-                .getErlangModel().getErlangProjects();
-        for (final IErlProject i : erlangProjects) {
-            final Collection<IErlModule> modules = i.getModulesAndIncludes();
-            for (final IErlModule j : modules) {
-                result.addModule(j);
-            }
-            // addProjectEbin(i, result);
-        }
-        final Set<String> externalModulePaths = new HashSet<String>();
-        for (final IErlProject project : erlangProjects) {
-            addExternalModules(project, result, externalModulePaths,
-                    addExternals, addOtp);
-        }
-        return result;
-    }
-
-    private static void addExternalModules(final IParent element,
-            final ErlSearchScope result, final Set<String> externalModulePaths,
-            final boolean addExternals, final boolean addOtp)
-            throws ErlModelException {
-        final Collection<IErlElement> externals = element
-                .getChildrenOfKind(Kind.EXTERNAL);
-        for (final IErlElement external : externals) {
-            external.accept(new IErlElementVisitor() {
-
-                @Override
-                public boolean visit(final IErlElement theElement)
-                        throws ErlModelException {
-                    if (theElement instanceof IErlExternal) {
-                        final IErlExternal theExternal = (IErlExternal) theElement;
-                        if (theExternal.isOTP()) {
-                            if (!addOtp) {
-                                return false;
-                            }
-                        } else {
-                            if (!addExternals) {
-                                return false;
-                            }
-                        }
-                        theExternal.open(null);
-                    }
-                    if (theElement instanceof IErlModule) {
-                        final IErlModule module = (IErlModule) theElement;
-                        if (externalModulePaths.add(module.getFilePath())) {
-                            result.addModule(module);
-                        }
-                    }
-                    return true;
-                }
-            }, EnumSet.noneOf(AcceptFlags.class), Kind.MODULE);
-        }
-    }
-
-    public static Collection<IProject> getProjects(final String[] projectNames) {
-        final Collection<IProject> result = Sets
-                .newHashSetWithExpectedSize(projectNames.length);
-        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        for (final String i : projectNames) {
-            final IProject project = root.getProject(i);
-            result.add(project);
-        }
-        return result;
-    }
-
     public static ErlSearchScope getSelectionScope(final ISelection selection,
             final boolean addExternals, final boolean addOtp)
             throws CoreException {
@@ -233,13 +98,13 @@ public class SearchUtil {
             for (final Object i : ss.toList()) {
                 if (i instanceof IResource) {
                     final IResource r = (IResource) i;
-                    addResourceToScope(result, r);
+                    SearchCoreUtil.addResourceToScope(result, r);
                 } else if (i instanceof IErlModule) {
                     final IErlModule module = (IErlModule) i;
                     result.addModule(module);
                 } else if (i instanceof IParent) {
                     final IParent parent = (IParent) i;
-                    addExternalModules(parent, result, externalModulePaths,
+                    SearchCoreUtil.addExternalModules(parent, result, externalModulePaths,
                             addExternals, addOtp);
                 }
             }
@@ -255,10 +120,6 @@ public class SearchUtil {
             final IProgressService progressService, final Object query) {
         return NewSearchUI.runQueryInForeground(progressService,
                 (ISearchQuery) query);
-    }
-
-    public static boolean isLineDelimiterChar(final char ch) {
-        return ch == '\n' || ch == '\r';
     }
 
     public static Match createMatch(final ModuleLineFunctionArityRef ref,
@@ -475,7 +336,7 @@ public class SearchUtil {
             final IAdaptable[] elements = ws.getElements();
             for (final IAdaptable a : elements) {
                 final IResource r = (IResource) a.getAdapter(IResource.class);
-                addResourceToScope(result, r);
+                SearchCoreUtil.addResourceToScope(result, r);
                 IParent parent = null;
                 Object o = a.getAdapter(IErlElement.class);
                 if (o instanceof IParent) {
@@ -492,26 +353,12 @@ public class SearchUtil {
                     }
                 }
                 if (parent != null) {
-                    addExternalModules(parent, result, externalModulePaths,
+                    SearchCoreUtil.addExternalModules(parent, result, externalModulePaths,
                             addExternals, addOTP);
                 }
             }
         }
         return result;
-    }
-
-    private static void addResourceToScope(final ErlSearchScope result,
-            final IResource r) throws CoreException {
-        if (r instanceof IProject) {
-            final IProject project = (IProject) r;
-            addProjectToScope(project, result);
-        } else if (r instanceof IFile) {
-            final IFile file = (IFile) r;
-            addFileToScope(file, result);
-        } else if (r instanceof IFolder) {
-            final IFolder folder = (IFolder) r;
-            addFolderToScope(folder, result);
-        }
     }
 
     public static String getProjectScopeDescription(

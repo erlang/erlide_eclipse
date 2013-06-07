@@ -1,4 +1,4 @@
-package org.erlide.model.internal.root;
+package org.erlide.model.root;
 
 import java.util.Collection;
 import java.util.Collections;

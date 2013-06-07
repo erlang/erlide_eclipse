@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.model.internal.root;
+package org.erlide.model.root;
 
 import org.eclipse.core.runtime.IPath;
 
