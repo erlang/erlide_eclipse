@@ -10,12 +10,13 @@ import org.erlide.model.TextChange;
  * implement it in Erlang or to let it be used by Xtext.
  * </p>
  */
-public class ErlangEngine implements IEngineInput {
+public class ErlangEngine implements IEngineInput, IResourceChangeListener {
 
     @Override
     public void handleChangedInput(final String id, final TextChange change) {
     }
 
+    @Override
     public void handleChangedResources(final ResourceChange delta) {
 
     }

@@ -1,5 +1,6 @@
 package org.erlide.core.engine;
 
+import org.eclipse.core.resources.IResourceDelta;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.ResourceChange;
 import org.erlide.model.TextChange;
@@ -16,11 +17,22 @@ import org.erlide.model.TextChange;
  */
 public class CoreEngine {
 
-    public void handleChangedInput(final String id, final TextChange change) {
+    private final ErlangEngine engine;
+
+    public CoreEngine(final ErlangEngine engine) {
+        this.engine = engine;
     }
 
-    public void handleChangedResources(final ResourceChange delta) {
+    public void handleChangedInput(final String id, final TextChange change) {
+        engine.handleChangedInput(id, change);
+    }
 
+    public void handleChangedResources(final IResourceDelta delta) {
+        engine.handleChangedResources(createResourceChange(delta));
+    }
+
+    private ResourceChange createResourceChange(final IResourceDelta delta) {
+        return null;
     }
 
 }
