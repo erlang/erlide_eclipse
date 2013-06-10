@@ -12,7 +12,7 @@ Export-Package: org.erlide.core,
  org.erlide.core.preferences,
  org.erlide.test.support,
  org.erlide.testing.erlang;x-internal:=true
-Require-Bundle: org.junit4,
- org.erlide.testing.libs
+Require-Bundle: org.erlide.testing.libs,
+ org.junit;bundle-version="4.8.1"
 Eclipse-ExtensibleAPI: true 
 Import-Package: org.apache.commons.io
