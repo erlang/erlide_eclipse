@@ -31,3 +31,9 @@ Bundle-ClassPath: lib/commons-io-2.0.1.jar,
  lib/velocity-tools-2.0.jar,
  lib/commons-collections-3.2.1.jar,
  lib/velocity-1.7-dep.jar
+Export-Package: org.apache.commons.io,
+ org.apache.commons.io.comparator,
+ org.apache.commons.io.filefilter,
+ org.apache.commons.io.input,
+ org.apache.commons.io.monitor,
+ org.apache.commons.io.output

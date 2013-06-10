@@ -10,6 +10,7 @@ Export-Package: org.erlide.core,
  org.erlide.core.builder,
  org.erlide.core.erlang,
  org.erlide.core.preferences,
+ org.erlide.core.services.builder,
  org.erlide.test.support,
  org.erlide.testing.erlang;x-internal:=true
 Require-Bundle: org.erlide.testing.libs,

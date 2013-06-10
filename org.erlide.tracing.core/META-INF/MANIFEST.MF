@@ -22,3 +22,14 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Localization: plugin
 Bundle-Vendor: Erlang Solutions
+Export-Package: org.erlide.tracing.core;x-internal:=true,
+ org.erlide.tracing.core.mvc.controller;x-internal:=true,
+ org.erlide.tracing.core.mvc.model;x-internal:=true,
+ org.erlide.tracing.core.mvc.model.treenodes;x-internal:=true,
+ org.erlide.tracing.core.mvc.view;x-internal:=true,
+ org.erlide.tracing.core.perspectives;x-internal:=true,
+ org.erlide.tracing.core.preferences;x-internal:=true,
+ org.erlide.tracing.core.ui.dialogs;x-internal:=true,
+ org.erlide.tracing.core.ui.menu;x-internal:=true,
+ org.erlide.tracing.core.utils;x-internal:=true,
+ org.erlide.tracing.core.views;x-internal:=true

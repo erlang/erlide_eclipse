@@ -8,3 +8,4 @@ Fragment-Host: org.erlide.util;bundle-version="0.19.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit;bundle-version="4.8.1",
  org.erlide.testing.libs;bundle-version="1.1.1"
+Export-Package: org.erlide.util

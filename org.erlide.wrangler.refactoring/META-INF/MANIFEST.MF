@@ -41,7 +41,10 @@ Export-Package:
  org.erlide.wrangler.refactoring.selection,
  org.erlide.wrangler.refactoring.selection.internal;x-internal:=true,
  org.erlide.wrangler.refactoring.ui,
+ org.erlide.wrangler.refactoring.ui.dnd,
+ org.erlide.wrangler.refactoring.ui.menu,
  org.erlide.wrangler.refactoring.ui.validator,
+ org.erlide.wrangler.refactoring.ui.warning,
  org.erlide.wrangler.refactoring.ui.wizard,
  org.erlide.wrangler.refactoring.ui.wizardpages;x-internal:=true,
  org.erlide.wrangler.refactoring.util

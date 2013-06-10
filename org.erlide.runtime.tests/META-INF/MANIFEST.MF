@@ -9,3 +9,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.erlide.testing.libs;bundle-version="1.1.1",
  org.junit
 Eclipse-ExtensibleAPI: true 
+Export-Package: com.ericson.erlang,
+ org.erlide.runtime
