@@ -234,6 +234,7 @@ public class ErlTextHover implements ITextHover,
         return null;
     }
 
+    @Deprecated
     @Override
     public String getHoverInfo(final ITextViewer textViewer,
             final IRegion hoverRegion) {

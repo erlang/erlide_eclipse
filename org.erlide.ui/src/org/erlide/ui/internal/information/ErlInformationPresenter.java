@@ -171,10 +171,7 @@ public class ErlInformationPresenter implements
         return (i == length ? line : line.substring(0, i)) + " "; //$NON-NLS-1$
     }
 
-    /*
-     * @see IHoverInformationPresenter#updatePresentation(Display display,
-     * String, TextPresentation, int, int)
-     */
+    @Deprecated
     @Override
     public String updatePresentation(final Display display,
             final String hoverInfo, final TextPresentation presentation,
