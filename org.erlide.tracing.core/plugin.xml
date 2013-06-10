@@ -75,6 +75,12 @@
                   id="org.erlide.tracing.core.removetracepatternwithnoarity"
                   style="push">
             </command>
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="org.erlide.oneFunctionSelected">
+               </reference>
+            </visibleWhen>
          </menu>
       </menuContribution>
    </extension>
@@ -138,5 +144,25 @@
       <initializer
             class="org.erlide.tracing.core.preferences.PreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="org.erlide.oneFunctionSelected">
+         <with
+               variable="selection">
+            <and>
+               <count
+                     value="1">
+               </count>
+               <iterate
+                     operator="and">
+                  <instanceof
+                        value="org.erlide.model.erlang.IErlFunction">
+                  </instanceof>
+               </iterate>
+            </and>
+         </with>
+      </definition>
    </extension>
 </plugin>
