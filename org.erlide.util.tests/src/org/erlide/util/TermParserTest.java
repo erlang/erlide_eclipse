@@ -2,7 +2,7 @@ package org.erlide.util;
 
 import java.io.IOException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.erlide.util.erlang.OtpFormatPlaceholder;
 import org.erlide.util.erlang.OtpPatternVariable;

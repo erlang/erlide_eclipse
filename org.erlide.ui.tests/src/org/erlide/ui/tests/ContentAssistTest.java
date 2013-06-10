@@ -1,6 +1,6 @@
 package org.erlide.ui.tests;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IAutoIndentStrategy;

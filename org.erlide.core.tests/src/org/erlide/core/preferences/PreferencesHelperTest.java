@@ -2,14 +2,13 @@ package org.erlide.core.preferences;
 
 import java.util.Arrays;
 
-import junit.framework.Assert;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.model.util.PreferencesHelper;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.service.prefs.BackingStoreException;

@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.erlide.util;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.BindingsImpl;

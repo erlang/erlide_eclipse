@@ -2,7 +2,7 @@ package org.erlide.core.services.builder;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.core.builder.CompilerOption;

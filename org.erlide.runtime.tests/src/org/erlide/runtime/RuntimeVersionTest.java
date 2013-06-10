@@ -1,6 +1,6 @@
 package org.erlide.runtime;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.erlide.runtime.api.RuntimeVersion;
 import org.junit.Test;
