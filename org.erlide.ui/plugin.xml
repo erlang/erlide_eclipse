@@ -1441,10 +1441,6 @@
                </instanceof>
             </or>
          </possibleChildren>
-               <actionProvider
-               class="org.erlide.ui.navigator.actions.ErlangFileActionProvider"
-               id="org.erlide.ui.navigator.actions.erlang.actions.OpenProvider">
-         </actionProvider>
          <commonSorter
                class="org.erlide.ui.navigator.ErlElementPositionSorter"
                id="org.erlide.ui.navigator.ErlElementPositionSorterId">
