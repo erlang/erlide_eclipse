@@ -30,6 +30,7 @@ import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
 import org.erlide.model.BeamLocator;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
+import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.epmd.IEpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.Asserts;
@@ -41,32 +42,14 @@ import com.google.common.collect.Maps;
 
 public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
+    protected IBackend backend;
+
     @Override
     public void launch(final ILaunchConfiguration config, final String mode,
             final ILaunch launch, final IProgressMonitor monitor)
             throws CoreException {
         Asserts.isNotNull(config);
 
-        final boolean doContinue = preLaunch(config, mode, launch, monitor);
-        if (!doContinue) {
-            return;
-        }
-        final IBackend backend = doLaunch(config, mode, launch, monitor);
-        if (backend == null) {
-            return;
-        }
-        postLaunch(mode, backend, monitor);
-    }
-
-    protected boolean preLaunch(final ILaunchConfiguration config,
-            final String mode, final ILaunch launch,
-            final IProgressMonitor monitor) throws CoreException {
-        return true;
-    }
-
-    protected IBackend doLaunch(final ILaunchConfiguration config,
-            final String mode, final ILaunch launch,
-            final IProgressMonitor monitor) throws CoreException {
         RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoCatalog()
                 .getRuntime(
                         config.getAttribute(ErlRuntimeAttributes.RUNTIME_NAME,
@@ -78,7 +61,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         if (runtimeInfo == null) {
             // TODO what to do here?
             ErlLogger.error("Can't create backend without a runtime defined!");
-            return null;
+            return;
         }
         final String nodeName = config.getAttribute(
                 ErlRuntimeAttributes.NODE_NAME, "");
@@ -88,7 +71,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         if (info == null) {
             ErlLogger.error("Could not find runtime '%s'", data
                     .getRuntimeInfo().getName());
-            return null;
+            return;
         }
         ErlLogger.debug("doLaunch runtime %s", data.getRuntimeInfo().getName());
         ErlLogger.debug("doLaunch cookie %s (%s)", data.getCookie(),
@@ -108,14 +91,9 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         }
 
         if (!isErlangInternalLaunch(launch)) {
-            return BackendCore.getBackendManager().createExecutionBackend(data);
+            backend = BackendCore.getBackendManager().createExecutionBackend(
+                    data);
         }
-        // The backend was already created
-        return null;
-    }
-
-    protected void postLaunch(final String mode, final IBackend b,
-            final IProgressMonitor monitor) throws CoreException {
     }
 
     /*
@@ -159,7 +137,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         launch(wc, mode, launch, monitor);
     }
 
-    private Process startRuntimeProcess(final BackendData data) {
+    private Process startRuntimeProcess(final RuntimeData data) {
         final String[] cmds = data.getCmdLine();
         final File workingDirectory = new File(data.getWorkingDir());
 
@@ -193,7 +171,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         }
     }
 
-    private void setEnvironment(final BackendData data,
+    private void setEnvironment(final RuntimeData data,
             final ProcessBuilder builder) {
         final Map<String, String> env = builder.environment();
         if (!SystemConfiguration.getInstance().isOnWindows()

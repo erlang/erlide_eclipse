@@ -74,15 +74,15 @@ public class ErlRuntime implements IErlRuntime {
             @Override
             public void remoteStatus(final String node, final boolean up,
                     final Object info) {
-                if (node.equals(getNodeName())) {
-                    if (up) {
-                        ErlLogger.debug("Node %s is up", getNodeName());
-                        connectRetry();
-                    } else {
-                        ErlLogger.debug("Node %s is down: %s", getNodeName(),
-                                info);
-                        state = State.DOWN;
-                    }
+                if (!node.equals(getNodeName())) {
+                    return;
+                }
+                if (up) {
+                    ErlLogger.debug("Node %s is up", getNodeName());
+                    connectRetry();
+                } else {
+                    ErlLogger.debug("Node %s is down: %s", getNodeName(), info);
+                    state = State.DOWN;
                 }
             }
         };
@@ -150,34 +150,42 @@ public class ErlRuntime implements IErlRuntime {
         synchronized (connectLock) {
             switch (state) {
             case DISCONNECTED:
-                reported = false;
-                if (connectRetry()) {
-                    state = State.CONNECTED;
-                } else if (connectOnce) {
-                    state = State.DOWN;
-                } else {
-                    state = State.DISCONNECTED;
-                }
+                handleStateDisconnected();
                 break;
             case CONNECTED:
                 break;
             case DOWN:
-                if (listener != null) {
-                    listener.runtimeDown(this);
-                }
-                try {
-                    if (process != null) {
-                        process.terminate();
-                        process = null;
-                    }
-                } catch (final DebugException e) {
-                    ErlLogger.info(e);
-                }
-                if (!stopped) {
-                    final String msg = reportRuntimeDown(getNodeName());
-                    throw new RpcException(msg);
-                }
+                handleStateDown();
             }
+        }
+    }
+
+    protected void handleStateDisconnected() {
+        reported = false;
+        if (connectRetry()) {
+            state = State.CONNECTED;
+        } else if (connectOnce) {
+            state = State.DOWN;
+        } else {
+            state = State.DISCONNECTED;
+        }
+    }
+
+    protected void handleStateDown() throws RpcException {
+        if (listener != null) {
+            listener.runtimeDown(this);
+        }
+        try {
+            if (process != null) {
+                process.terminate();
+                process = null;
+            }
+        } catch (final DebugException e) {
+            ErlLogger.info(e);
+        }
+        if (!stopped) {
+            final String msg = reportRuntimeDown(getNodeName());
+            throw new RpcException(msg);
         }
     }
 
