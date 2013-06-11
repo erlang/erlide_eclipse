@@ -1,5 +1,7 @@
 package org.erlide.model;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.backend.api.IBackendProvider;
@@ -39,6 +41,18 @@ public class ModelPlugin extends Plugin {
     public void start(final BundleContext bundleContext) throws Exception {
         super.start(bundleContext);
         ModelPlugin.context = bundleContext;
+
+        cleanupStateDir();
+    }
+
+    private void cleanupStateDir() {
+        final String ndir = getStateDir();
+        final File fdir = new File(ndir);
+        for (final File f : fdir.listFiles()) {
+            if (f.isFile()) {
+                f.delete();
+            }
+        }
     }
 
     @Override
