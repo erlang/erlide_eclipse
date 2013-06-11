@@ -167,8 +167,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             ErlLogger.debug("START node :> " + Arrays.toString(cmds) + " *** "
                     + workingDirectory.getCanonicalPath());
         } catch (final IOException e1) {
-            ErlLogger.debug("START node :> " + Arrays.toString(cmds) + " *** "
-                    + workingDirectory);
+            ErlLogger.error("START node :> " + e1.getMessage());
         }
 
         final ProcessBuilder builder = new ProcessBuilder(cmds);
