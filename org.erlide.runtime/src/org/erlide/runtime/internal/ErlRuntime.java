@@ -8,14 +8,14 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.backend.internal;
+package org.erlide.runtime.internal;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Map;
 
-import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.model.IProcess;
-import org.erlide.backend.api.BackendException;
 import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
@@ -26,8 +26,6 @@ import org.erlide.runtime.rpc.RpcSite;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
-import org.erlide.util.IProvider;
-import org.erlide.util.MessageReporter;
 import org.erlide.util.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -38,7 +36,7 @@ import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.google.common.base.Strings;
 
 public class ErlRuntime implements IErlRuntime {
-    private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
+    private static final String COULD_NOT_CONNECT = "Could not connect to backend! Please check runtime settings.";
     private static final int EPMD_PORT = 4369;
 
     private static final int MAX_RETRIES = 15;
@@ -55,9 +53,8 @@ public class ErlRuntime implements IErlRuntime {
     private OtpNode localNode;
     private final Object localNodeLock = new Object();
     private boolean reported;
-    private IProcess process;
+    private Process process;
     private final boolean connectOnce;
-    private final IProvider<IProcess> processProvider;
     private final OtpNodeStatus statusWatcher;
     private OtpMbox eventBox;
     private boolean stopped;
@@ -65,10 +62,8 @@ public class ErlRuntime implements IErlRuntime {
     private ErlSystemStatus lastSystemMessage;
     private final IRpcSite rpcSite;
 
-    public ErlRuntime(final RuntimeData data,
-            final IProvider<IProcess> processProvider) {
+    public ErlRuntime(final RuntimeData data) {
         this.data = data;
-        this.processProvider = processProvider;
         connectOnce = data.isInternal();
         statusWatcher = new OtpNodeStatus() {
             @Override
@@ -92,7 +87,7 @@ public class ErlRuntime implements IErlRuntime {
 
     @Override
     public void start() {
-        process = processProvider.get();
+        process = startRuntimeProcess(data);
         state = State.DISCONNECTED;
         stopped = false;
 
@@ -115,8 +110,8 @@ public class ErlRuntime implements IErlRuntime {
                     nodeCreated = true;
                 } catch (final IOException e) {
                     ErlLogger
-                            .error("ErlRuntime could not be created (%s), retrying %d",
-                                    e.getMessage(), i);
+                    .error("ErlRuntime could not be created (%s), retrying %d",
+                            e.getMessage(), i);
                     try {
                         localNodeLock.wait(300);
                     } catch (final InterruptedException e1) {
@@ -175,13 +170,9 @@ public class ErlRuntime implements IErlRuntime {
         if (listener != null) {
             listener.runtimeDown(this);
         }
-        try {
-            if (process != null) {
-                process.terminate();
-                process = null;
-            }
-        } catch (final DebugException e) {
-            ErlLogger.info(e);
+        if (process != null) {
+            process.destroy();
+            process = null;
         }
         if (!stopped) {
             final String msg = reportRuntimeDown(getNodeName());
@@ -200,8 +191,8 @@ public class ErlRuntime implements IErlRuntime {
             String msg1;
             if (connectOnce) {
                 msg1 = "It is likely that your network is misconfigured or uses 'strange' host names.\n\n"
-                        + "Please check the "
-                        + "Window->preferences->erlang->network page for hints about that. \n\n"
+                        + "Please check the page"
+                        + "Window->preferences->erlang->network for hints about that. \n\n"
                         + "Also, check if you can create and connect two erlang nodes on your machine "
                         + "using \"erl -name foo1\" and \"erl -name foo2\".";
             } else {
@@ -215,8 +206,8 @@ public class ErlRuntime implements IErlRuntime {
                     + "please consider reporting the problem. \n"
                     + (SystemConfiguration
                             .hasFeatureEnabled("erlide.ericsson.user") ? ""
-                            : "http://www.assembla.com/spaces/erlide/support/tickets");
-            MessageReporter.showError(msg, msg1 + "\n\n" + details);
+                                    : "http://www.assembla.com/spaces/erlide/support/tickets");
+            // FIXME MessageReporter.showError(msg, msg1 + "\n\n" + details);
             reported = true;
         }
 
@@ -298,15 +289,11 @@ public class ErlRuntime implements IErlRuntime {
             if (waitForCodeServer()) {
                 ErlLogger.debug("connected!");
             } else {
-                ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
+                ErlLogger.error(COULD_NOT_CONNECT);
             }
-
-        } catch (final BackendException e) {
-            ErlLogger.error(e);
-            ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
         } catch (final Exception e) {
             ErlLogger.error(e);
-            ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
+            ErlLogger.error(COULD_NOT_CONNECT);
         }
     }
 
@@ -323,11 +310,11 @@ public class ErlRuntime implements IErlRuntime {
         return theEventBox.self();
     }
 
-    private void wait_for_epmd() throws BackendException {
+    private void wait_for_epmd() throws Exception {
         wait_for_epmd("localhost");
     }
 
-    private void wait_for_epmd(final String host) throws BackendException {
+    private void wait_for_epmd(final String host) throws Exception {
         // If anyone has a better solution for waiting for epmd to be up, please
         // let me know
         int tries = 50;
@@ -349,10 +336,10 @@ public class ErlRuntime implements IErlRuntime {
         } while (!ok && tries > 0);
         if (!ok) {
             final String msg = "Couldn't contact epmd - erlang backend is probably not working\n"
-                    + "  Possibly your host's entry in /etc/hosts is wrong ("
+                    + "Your host's entry in /etc/hosts is probably wrong ("
                     + host + ").";
             ErlLogger.error(msg);
-            throw new BackendException(msg);
+            throw new Exception(msg);
         }
     }
 
@@ -448,5 +435,55 @@ public class ErlRuntime implements IErlRuntime {
     @Override
     public IRpcSite getRpcSite() {
         return rpcSite;
+    }
+
+    private Process startRuntimeProcess(final RuntimeData rtData) {
+        final String[] cmds = rtData.getCmdLine();
+        final File workingDirectory = new File(rtData.getWorkingDir());
+
+        try {
+            ErlLogger.debug("START node :> " + Arrays.toString(cmds) + " *** "
+                    + workingDirectory.getCanonicalPath());
+        } catch (final IOException e1) {
+            ErlLogger.error("START node :> " + e1.getMessage());
+        }
+
+        final ProcessBuilder builder = new ProcessBuilder(cmds);
+        builder.directory(workingDirectory);
+        setEnvironment(rtData, builder);
+        try {
+            Process aProcess = builder.start();
+            try {
+                final int code = aProcess.exitValue();
+                ErlLogger.error(
+                        "Could not create runtime (exit code = %d): %s", code,
+                        Arrays.toString(cmds));
+                aProcess = null;
+            } catch (final IllegalThreadStateException e) {
+                ErlLogger.debug("process is running");
+            }
+            return aProcess;
+        } catch (final IOException e) {
+            ErlLogger.error("Could not create runtime: %s",
+                    Arrays.toString(cmds));
+            ErlLogger.error(e);
+            return null;
+        }
+    }
+
+    private void setEnvironment(final RuntimeData data,
+            final ProcessBuilder builder) {
+        final Map<String, String> env = builder.environment();
+        if (!SystemConfiguration.getInstance().isOnWindows()
+                && SystemConfiguration.getInstance().hasSpecialTclLib()) {
+            env.put("TCL_LIBRARY", "/usr/share/tcl/tcl8.4/");
+        }
+        if (data.getEnv() != null) {
+            env.putAll(data.getEnv());
+        }
+    }
+
+    public Process getProcess() {
+        return process;
     }
 }
