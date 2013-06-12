@@ -22,9 +22,8 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
@@ -40,7 +39,7 @@ import org.erlide.util.SystemConfiguration;
 
 import com.google.common.collect.Maps;
 
-public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
+public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
 
     protected IBackend backend;
 
@@ -123,18 +122,6 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
         ErlLogger.debug("Started erts: %s >> %s", erts.getLabel(),
                 data.getNodeName());
-    }
-
-    /**
-     * used by selfhost plugin
-     */
-    public void launchInternal(final ILaunchConfiguration configuration,
-            final String mode, final ILaunch launch,
-            final IProgressMonitor monitor) throws CoreException {
-        final ILaunchConfigurationWorkingCopy wc = configuration
-                .getWorkingCopy();
-        wc.setAttribute(ErlRuntimeAttributes.COOKIE, "erlide");
-        launch(wc, mode, launch, monitor);
     }
 
     private Process startRuntimeProcess(final RuntimeData data) {
