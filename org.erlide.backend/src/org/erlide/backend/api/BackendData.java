@@ -180,7 +180,7 @@ public final class BackendData extends RuntimeData {
             workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
                     Charsets.ISO_8859_1.name());
             workingCopy.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
-                    "org.erlide.core.ertsProcessFactory");
+                    "org.erlide.backend.ertsProcessFactory");
 
             workingCopy.setAttribute(ErlRuntimeAttributes.NODE_NAME,
                     getNodeName());
