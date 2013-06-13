@@ -170,9 +170,9 @@ public class NullErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public void start() {
+    public Process start() {
         reportNoBackend();
-
+        return null;
     }
 
     @Override

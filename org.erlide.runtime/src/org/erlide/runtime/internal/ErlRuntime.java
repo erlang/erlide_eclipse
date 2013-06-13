@@ -86,7 +86,7 @@ public class ErlRuntime implements IErlRuntime {
     }
 
     @Override
-    public void start() {
+    public Process start() {
         process = startRuntimeProcess(data);
         state = State.DISCONNECTED;
         stopped = false;
@@ -95,6 +95,7 @@ public class ErlRuntime implements IErlRuntime {
         // if (epmdWatcher.isRunningNode(name)) {
         // connect();
         // }
+        return process;
     }
 
     public void startLocalNode() {
@@ -110,8 +111,8 @@ public class ErlRuntime implements IErlRuntime {
                     nodeCreated = true;
                 } catch (final IOException e) {
                     ErlLogger
-                    .error("ErlRuntime could not be created (%s), retrying %d",
-                            e.getMessage(), i);
+                            .error("ErlRuntime could not be created (%s), retrying %d",
+                                    e.getMessage(), i);
                     try {
                         localNodeLock.wait(300);
                     } catch (final InterruptedException e1) {
@@ -206,7 +207,7 @@ public class ErlRuntime implements IErlRuntime {
                     + "please consider reporting the problem. \n"
                     + (SystemConfiguration
                             .hasFeatureEnabled("erlide.ericsson.user") ? ""
-                                    : "http://www.assembla.com/spaces/erlide/support/tickets");
+                            : "http://www.assembla.com/spaces/erlide/support/tickets");
             // FIXME MessageReporter.showError(msg, msg1 + "\n\n" + details);
             reported = true;
         }

@@ -4,7 +4,7 @@ public interface IBeamProcess {
 
     // TODO should take cmdline?
     // TODO should have a factory instead?
-    void start();
+    Process start();
 
     void stop();
 

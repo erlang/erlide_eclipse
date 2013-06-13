@@ -153,9 +153,9 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void start() {
+    public Process start() {
         ErlLogger.debug("starting backend " + getName());
-        runtime.start();
+        return runtime.start();
     }
 
     @Override
