@@ -28,4 +28,11 @@ public class ErlEvent {
         return topic;
     }
 
+    public IErlRuntime getRuntime() {
+        return runtime;
+    }
+
+    public OtpErlangPid getSender() {
+        return sender;
+    }
 }
