@@ -39,7 +39,8 @@ import com.google.common.base.Strings;
 
 public class ErlRuntime implements IErlRuntime {
     private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
-    private static final int EPMD_PORT = 4369;
+    private static final int EPMD_PORT = Integer.parseInt(System.getProperty(
+            "erlide.epmd.port", "4369"));
 
     private static final int MAX_RETRIES = 15;
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
