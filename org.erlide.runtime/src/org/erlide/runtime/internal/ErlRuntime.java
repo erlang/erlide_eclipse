@@ -21,6 +21,9 @@ import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.IRuntimeStateListener;
 import org.erlide.runtime.api.RuntimeData;
+import org.erlide.runtime.events.ErlangEventPublisher;
+import org.erlide.runtime.events.ErlangLogEventHandler;
+import org.erlide.runtime.events.LogEventHandler;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcSite;
 import org.erlide.runtime.shell.IBackendShell;
@@ -61,28 +64,35 @@ public class ErlRuntime implements IErlRuntime {
     private IRuntimeStateListener listener;
     private ErlSystemStatus lastSystemMessage;
     private final IRpcSite rpcSite;
+    protected ErlangEventPublisher eventDaemon;
 
     public ErlRuntime(final RuntimeData data) {
         this.data = data;
         connectOnce = data.isInternal();
+        final String nodeName = getNodeName();
         statusWatcher = new OtpNodeStatus() {
             @Override
             public void remoteStatus(final String node, final boolean up,
                     final Object info) {
-                if (!node.equals(getNodeName())) {
+                if (!node.equals(nodeName)) {
                     return;
                 }
                 if (up) {
-                    ErlLogger.debug("Node %s is up", getNodeName());
+                    ErlLogger.debug("Node %s is up", nodeName);
                     connectRetry();
                 } else {
-                    ErlLogger.debug("Node %s is down: %s", getNodeName(), info);
+                    ErlLogger.debug("Node %s is down: %s", nodeName, info);
                     state = State.DOWN;
                 }
             }
         };
         start();
-        rpcSite = new RpcSite(this, localNode, getNodeName());
+        rpcSite = new RpcSite(this, localNode, nodeName);
+        eventDaemon = new ErlangEventPublisher(this);
+
+        eventDaemon.start();
+        eventDaemon.register(new LogEventHandler(nodeName));
+        eventDaemon.register(new ErlangLogEventHandler(nodeName));
     }
 
     @Override
@@ -429,6 +439,10 @@ public class ErlRuntime implements IErlRuntime {
     @Override
     public void dispose() {
         stop();
+        if (eventDaemon != null) {
+            eventDaemon.stop();
+            eventDaemon = null;
+        }
         process = null;
         listener = null;
     }
@@ -486,5 +500,10 @@ public class ErlRuntime implements IErlRuntime {
 
     public Process getProcess() {
         return process;
+    }
+
+    @Override
+    public void registerEventHandler(final Object handler) {
+        eventDaemon.register(handler);
     }
 }

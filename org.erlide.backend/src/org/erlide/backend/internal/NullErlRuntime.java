@@ -258,4 +258,8 @@ public class NullErlRuntime implements IErlRuntime, IRpcSite {
         reportNoBackend();
         return null;
     }
+
+    @Override
+    public void registerEventHandler(final Object handler) {
+    }
 }

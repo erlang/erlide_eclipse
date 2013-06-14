@@ -48,4 +48,6 @@ public interface IErlRuntime extends IBeamProcess, IDisposable {
     ErlSystemStatus getSystemStatus();
 
     void setSystemStatus(ErlSystemStatus msg);
+
+    void registerEventHandler(Object handler);
 }

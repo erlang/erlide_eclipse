@@ -1,9 +1,9 @@
 package org.erlide.test_support.ui.suites;
 
-import org.erlide.backend.events.ErlangEventHandler;
-import org.osgi.service.event.Event;
+import org.erlide.runtime.events.ErlEvent;
+import org.erlide.runtime.events.ErlangEventHandler;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
+import com.google.common.eventbus.Subscribe;
 
 public class TestEventHandler extends ErlangEventHandler {
 
@@ -14,10 +14,13 @@ public class TestEventHandler extends ErlangEventHandler {
         this.view = view;
     }
 
-    @Override
-    public void handleEvent(final Event event) {
+    @Subscribe
+    public void handleEvent(final ErlEvent event) {
+        if (!event.getTopic().equals(getTopic())) {
+            return;
+        }
         if (view != null) {
-            view.notifyEvent((OtpErlangObject) event.getProperty("DATA"));
+            view.notifyEvent(event.getEvent());
         }
     }
 }

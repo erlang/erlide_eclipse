@@ -40,9 +40,6 @@ import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.console.BackendShellManager;
-import org.erlide.backend.events.ErlangEventPublisher;
-import org.erlide.backend.events.ErlangLogEventHandler;
-import org.erlide.backend.events.LogEventHandler;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.model.ErlangDebugNode;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
@@ -81,7 +78,6 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     private final IErlRuntime runtime;
     private BackendShellManager shellManager;
-    private ErlangEventPublisher eventDaemon;
     private final ICodeManager codeManager;
 
     private boolean reported;
@@ -109,10 +105,6 @@ public abstract class Backend implements IStreamListener, IBackend {
             shellManager = null;
         }
 
-        if (eventDaemon != null) {
-            eventDaemon.stop();
-            eventDaemon = null;
-        }
         runtime.dispose();
     }
 
@@ -187,17 +179,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     public synchronized void initErlang(final boolean watch) {
         ErlLogger.debug("initialize %s: %s", getName(), watch);
         startErlangApps(getEventPid(), watch);
-
-        // TODO when restarting, don't need these...
-        if (eventDaemon == null) {
-            eventDaemon = new ErlangEventPublisher(this);
-        }
-        eventDaemon.start();
-        new LogEventHandler(getName()).register();
-        new ErlangLogEventHandler(getName()).register();
-        new SystemMonitorHandler(getName()).register();
-
-        backendManager.addBackendListener(eventDaemon.getBackendListener());
+        runtime.registerEventHandler(new SystemMonitorHandler(getName()));
     }
 
     @Override
@@ -650,5 +632,10 @@ public abstract class Backend implements IStreamListener, IBackend {
                 status != null ? status.prettyPrint() : "null");
 
         return msg;
+    }
+
+    @Override
+    public void registerEventHandler(final Object handler) {
+        runtime.registerEventHandler(handler);
     }
 }

@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.erlide.backend.console;
 
-import org.erlide.backend.events.ErlangEventHandler;
+import org.erlide.runtime.events.ErlEvent;
+import org.erlide.runtime.events.ErlangEventHandler;
 import org.erlide.runtime.shell.IBackendShell;
-import org.osgi.service.event.Event;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
+import com.google.common.eventbus.Subscribe;
 
 public class ConsoleEventHandler extends ErlangEventHandler {
 
@@ -26,8 +26,12 @@ public class ConsoleEventHandler extends ErlangEventHandler {
         shell = backendShell;
     }
 
-    @Override
-    public void handleEvent(final Event event) {
-        shell.add((OtpErlangObject) event.getProperty("DATA"));
+    @Subscribe
+    public void handleEvent(final ErlEvent event) {
+        if (!event.getTopic().equals(getTopic())) {
+            return;
+        }
+
+        shell.add(event.getEvent());
     }
 }

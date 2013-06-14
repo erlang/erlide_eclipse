@@ -45,18 +45,19 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
-import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.events.ErlEvent;
+import org.erlide.runtime.events.ErlangEventHandler;
 import org.erlide.ui.util.DisplayUtils;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;
-import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.eventbus.Subscribe;
 
 /**
  * 
@@ -85,7 +86,7 @@ public class ProcessListView extends ViewPart {
                 getBackend().getName());
 
         public ViewContentProvider() {
-            handler.register();
+            getBackend().registerEventHandler(handler);
         }
 
         @Override
@@ -124,8 +125,11 @@ public class ProcessListView extends ViewPart {
                 super("processlist", backendName);
             }
 
-            @Override
-            public void handleEvent(final Event event) {
+            @Subscribe
+            public void handleEvent(final ErlEvent event) {
+                if (!event.getTopic().equals(getTopic())) {
+                    return;
+                }
                 DisplayUtils.asyncExec(new Runnable() {
                     @Override
                     public void run() {

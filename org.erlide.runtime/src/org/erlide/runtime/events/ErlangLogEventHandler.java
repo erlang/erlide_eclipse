@@ -1,13 +1,13 @@
-package org.erlide.backend.events;
+package org.erlide.runtime.events;
 
 import org.erlide.util.ErlLogger;
-import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.eventbus.Subscribe;
 
 public class ErlangLogEventHandler extends ErlangEventHandler {
 
@@ -15,9 +15,12 @@ public class ErlangLogEventHandler extends ErlangEventHandler {
         super("erlang_log", backendName);
     }
 
-    @Override
-    public void handleEvent(final Event event) {
-        final OtpErlangTuple t = (OtpErlangTuple) event.getProperty("DATA");
+    @Subscribe
+    public void handleEvent(final ErlEvent event) {
+        if (!event.getTopic().equals(getTopic())) {
+            return;
+        }
+        final OtpErlangTuple t = (OtpErlangTuple) event.getEvent();
         final OtpErlangAtom module = (OtpErlangAtom) t.elementAt(0);
         final OtpErlangLong line = (OtpErlangLong) t.elementAt(1);
         final OtpErlangAtom level = (OtpErlangAtom) t.elementAt(2);

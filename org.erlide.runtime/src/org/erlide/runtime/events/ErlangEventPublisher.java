@@ -1,19 +1,7 @@
-package org.erlide.backend.events;
+package org.erlide.runtime.events;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.core.resources.IProject;
-import org.erlide.backend.api.BackendException;
-import org.erlide.backend.api.IBackend;
-import org.erlide.backend.api.IBackendListener;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.util.ErlLogger;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -21,77 +9,32 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
+import com.google.common.eventbus.DeadEvent;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 
 public class ErlangEventPublisher {
 
-    private volatile IErlRuntime backend;
+    private volatile IErlRuntime runtime;
     volatile boolean stopped = false;
-    private EventAdmin eventAdmin;
-    private final IBackendListener backendListener;
+    private final EventBus eventBus;
 
     final static boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.event.daemon"));
 
-    public ErlangEventPublisher(final IErlRuntime aBackend) {
-        backend = aBackend;
-        backendListener = new IBackendListener() {
-
-            @Override
-            public void runtimeAdded(final IBackend b) {
-            }
-
-            @Override
-            public void runtimeRemoved(final IBackend b) {
-                if (b == aBackend) {
-                    stop();
-                    backend = null;
-                }
-            }
-
-            @Override
-            public void moduleLoaded(final IBackend b, final IProject project,
-                    final String moduleName) {
-            }
-
-        };
+    public ErlangEventPublisher(final IErlRuntime runtime) {
+        eventBus = new EventBus(runtime.getNodeName());
+        this.runtime = runtime;
+        eventBus.register(this);
     }
 
     public synchronized void start() {
         stopped = false;
-        setEventAdmin();
-        new Thread(new HandlerJob(backend)).start();
-    }
-
-    public void setEventAdmin() {
-        final BundleContext ctx = FrameworkUtil.getBundle(
-                ErlangEventPublisher.class).getBundleContext();
-        final ServiceReference<EventAdmin> ref = (ServiceReference<EventAdmin>) ctx
-                .getServiceReference(EventAdmin.class.getName());
-        if (ref == null) {
-            ErlLogger.error("No event admin ???");
-        } else {
-            eventAdmin = ctx.getService(ref);
-        }
+        new Thread(new HandlerJob(runtime)).start();
     }
 
     public synchronized void stop() {
         stopped = true;
-        unsetEventAdmin();
-    }
-
-    public void unsetEventAdmin() {
-        final BundleContext ctx = FrameworkUtil.getBundle(
-                ErlangEventPublisher.class).getBundleContext();
-        if (ctx == null) {
-            return;
-        }
-        final ServiceReference<EventAdmin> ref = (ServiceReference<EventAdmin>) ctx
-                .getServiceReference(EventAdmin.class.getName());
-        if (ref == null) {
-            ErlLogger.error("No event admin ???");
-        } else {
-            ctx.ungetService(ref);
-        }
     }
 
     private final class HandlerJob implements Runnable {
@@ -113,7 +56,8 @@ public class ErlangEventPublisher {
                     OtpErlangPid sender = null;
                     if (msg != null) {
                         if (!isEventMessage(msg)) {
-                            throw new BackendException("Bad event data " + msg);
+                            // throw new Exception("Bad event data " + msg);
+                            continue;
                         }
                         topic = getEventTopic(msg);
                         data = getEventData(msg);
@@ -168,35 +112,17 @@ public class ErlangEventPublisher {
 
     public void publishEvent(final IErlRuntime b, final String topic,
             final OtpErlangObject event, final OtpErlangPid sender) {
-
-        final Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("BACKEND", b);
-        properties.put("DATA", event);
-        properties.put("SENDER", sender);
-
-        final Event osgiEvent = new Event(getFullTopic(topic, b.getNodeName()),
-                properties);
-        eventAdmin.postEvent(osgiEvent);
+        final ErlEvent busEvent = new ErlEvent(topic, b, event, sender);
+        eventBus.post(busEvent);
     }
 
-    public static String getFullTopic(final String topic,
-            final String backendName) {
-        final String subtopic = "*".equals(topic) ? "" : "/"
-                + (backendName == null ? "*" : backendName
-                        .replaceAll("@", "__").replaceAll("\\.", "_"));
-        return "erlideEvent/" + topic + subtopic;
+    public void register(final Object handler) {
+        eventBus.register(handler);
     }
 
-    public static String dumpEvent(final Event event) {
-        String result = "";
-        for (final String key : event.getPropertyNames()) {
-            result += key + ":" + event.getProperty(key) + ", ";
-        }
-        return result;
-    }
-
-    public IBackendListener getBackendListener() {
-        return backendListener;
+    @Subscribe
+    public void deadEventHandler(final DeadEvent dead) {
+        ErlLogger.warn("Dead event: " + dead + " in " + runtime.getNodeName());
     }
 
 }
