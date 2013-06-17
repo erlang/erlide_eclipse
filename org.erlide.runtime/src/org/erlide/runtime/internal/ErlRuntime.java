@@ -278,7 +278,9 @@ public class ErlRuntime implements IErlRuntime {
         ErlLogger.debug(label + ": waiting connection to peer...");
         try {
             wait_for_epmd();
-            eventBox = createMbox("rex");
+            if (eventBox == null) {
+                eventBox = createMbox("rex");
+            }
             rpcSite.setConnected(true);
 
             if (waitForCodeServer()) {
