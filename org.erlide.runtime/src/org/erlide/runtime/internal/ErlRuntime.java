@@ -100,6 +100,7 @@ public class ErlRuntime implements IErlRuntime {
         stopped = false;
 
         startLocalNode();
+
         // if (epmdWatcher.isRunningNode(name)) {
         // connect();
         // }

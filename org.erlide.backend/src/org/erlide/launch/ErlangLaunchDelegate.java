@@ -26,7 +26,7 @@ import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
 import org.erlide.model.BeamLocator;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
-import org.erlide.runtime.epmd.IEpmdWatcher;
+import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.internal.ErlRuntime;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.Asserts;
@@ -154,7 +154,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
     }
 
     public static boolean shouldManageNode(final String name,
-            final IEpmdWatcher epmdWatcher) {
+            final EpmdWatcher epmdWatcher) {
         final int atSignIndex = name.indexOf('@');
         String shortName = name;
         if (atSignIndex > 0) {
