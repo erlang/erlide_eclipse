@@ -125,10 +125,6 @@ public class NullErlRuntime implements IErlRuntime {
     }
 
     @Override
-    public void tryConnect() {
-    }
-
-    @Override
     public void registerEventHandler(final Object handler) {
     }
 }

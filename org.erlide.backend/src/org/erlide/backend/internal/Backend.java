@@ -55,7 +55,6 @@ import org.erlide.runtime.api.IRuntimeStateListener;
 import org.erlide.runtime.api.InitialCall;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.api.RuntimeUtils;
-import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.util.Asserts;
@@ -589,11 +588,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public void setSystemStatus(final ErlSystemStatus msg) {
         runtime.setSystemStatus(msg);
-    }
-
-    @Override
-    public void tryConnect() throws RpcException {
-        runtime.tryConnect();
     }
 
     private String reportRuntimeDown(final String peer) {

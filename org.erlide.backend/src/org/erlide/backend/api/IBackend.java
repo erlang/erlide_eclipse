@@ -25,6 +25,4 @@ public interface IBackend extends IErlRuntime, IRuntimeStateListener {
 
     void removeProjectPath(final IErlProject project);
 
-    void registerEventHandler(Object handler);
-
 }

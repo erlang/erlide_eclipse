@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.runtime.api;
 
-import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.IDisposable;
 
@@ -29,9 +28,6 @@ public interface IErlRuntime extends IBeamProcess, IDisposable {
 
     // TODO naming
     void connect();
-
-    // TODO naming
-    void tryConnect() throws RpcException;
 
     OtpMbox createMbox(String string);
 

@@ -91,6 +91,7 @@ public class ErlRuntime implements IErlRuntime {
         eventDaemon.start();
         eventDaemon.register(new LogEventHandler(nodeName));
         eventDaemon.register(new ErlangLogEventHandler(nodeName));
+        connect();
     }
 
     @Override
@@ -100,10 +101,6 @@ public class ErlRuntime implements IErlRuntime {
         stopped = false;
 
         startLocalNode();
-
-        // if (epmdWatcher.isRunningNode(name)) {
-        // connect();
-        // }
         return process;
     }
 
@@ -150,27 +147,14 @@ public class ErlRuntime implements IErlRuntime {
         return ok;
     }
 
-    @Override
-    public void tryConnect() throws RpcException {
-        synchronized (connectLock) {
-            switch (state) {
-            case DISCONNECTED:
-                handleStateDisconnected();
-                break;
-            case CONNECTED:
-                break;
-            case DOWN:
-                handleStateDown();
-            }
-        }
-    }
-
     protected void handleStateDisconnected() {
         reported = false;
         if (connectRetry()) {
             state = State.CONNECTED;
+            rpcSite.setConnected(true);
         } else {
             state = State.DOWN;
+            rpcSite.setConnected(false);
         }
     }
 
@@ -178,6 +162,7 @@ public class ErlRuntime implements IErlRuntime {
         if (listener != null) {
             listener.runtimeDown(this);
         }
+        rpcSite.setConnected(false);
         if (process != null) {
             process.destroy();
             process = null;
@@ -293,11 +278,23 @@ public class ErlRuntime implements IErlRuntime {
         try {
             wait_for_epmd();
             eventBox = createMbox("rex");
+            rpcSite.setConnected(true);
 
             if (waitForCodeServer()) {
                 ErlLogger.debug("connected!");
             } else {
                 ErlLogger.error(COULD_NOT_CONNECT);
+            }
+            synchronized (connectLock) {
+                switch (state) {
+                case DISCONNECTED:
+                    handleStateDisconnected();
+                    break;
+                case CONNECTED:
+                    break;
+                case DOWN:
+                    handleStateDown();
+                }
             }
         } catch (final Exception e) {
             ErlLogger.error(e);
