@@ -177,7 +177,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public synchronized void initErlang(final boolean watch) {
         ErlLogger.debug("initialize %s: %s", getName(), watch);
-        startErlangApps(getEventPid(), watch);
+        startErlangApps(getEventMbox().self(), watch);
         runtime.registerEventHandler(new SystemMonitorHandler(getName()));
     }
 
@@ -537,11 +537,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public String getNodeName() {
         return runtime.getNodeName();
-    }
-
-    @Override
-    public OtpErlangPid getEventPid() {
-        return runtime.getEventPid();
     }
 
     @Override

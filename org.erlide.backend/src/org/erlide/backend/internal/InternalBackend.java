@@ -39,7 +39,7 @@ public class InternalBackend extends Backend {
                     .values()) {
                 registerCodeBundle(bb);
             }
-            startErlangApps(getEventPid(), true);
+            startErlangApps(getEventMbox().self(), true);
         }
     }
 }

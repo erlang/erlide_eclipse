@@ -59,7 +59,7 @@ public class ErlRuntime implements IErlRuntime {
     private boolean reported;
     private Process process;
     private final OtpNodeStatus statusWatcher;
-    private OtpMbox eventBox;
+    private OtpMbox eventMBox;
     private boolean stopped;
     private IRuntimeStateListener listener;
     private ErlSystemStatus lastSystemMessage;
@@ -278,8 +278,8 @@ public class ErlRuntime implements IErlRuntime {
         ErlLogger.debug(label + ": waiting connection to peer...");
         try {
             wait_for_epmd();
-            if (eventBox == null) {
-                eventBox = createMbox("rex");
+            if (eventMBox == null) {
+                eventMBox = createMbox("rex");
             }
             rpcSite.setConnected(true);
 
@@ -303,19 +303,6 @@ public class ErlRuntime implements IErlRuntime {
             ErlLogger.error(e);
             ErlLogger.error(COULD_NOT_CONNECT);
         }
-    }
-
-    private OtpMbox getEventBox() {
-        return eventBox;
-    }
-
-    @Override
-    public OtpErlangPid getEventPid() {
-        final OtpMbox theEventBox = getEventBox();
-        if (theEventBox == null) {
-            return null;
-        }
-        return theEventBox.self();
     }
 
     private void wait_for_epmd() throws Exception {
@@ -388,7 +375,7 @@ public class ErlRuntime implements IErlRuntime {
 
     @Override
     public OtpMbox getEventMbox() {
-        return eventBox;
+        return eventMBox;
     }
 
     @Override

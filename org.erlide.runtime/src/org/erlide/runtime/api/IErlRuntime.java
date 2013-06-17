@@ -13,7 +13,6 @@ package org.erlide.runtime.api;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.IDisposable;
 
-import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
 public interface IErlRuntime extends IRuntimeProcess, IDisposable {
@@ -32,8 +31,6 @@ public interface IErlRuntime extends IRuntimeProcess, IDisposable {
     OtpMbox createMbox(String string);
 
     OtpMbox createMbox();
-
-    OtpErlangPid getEventPid();
 
     OtpMbox getEventMbox();
 
