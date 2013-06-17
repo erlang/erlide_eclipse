@@ -386,7 +386,7 @@ public class ErlModel extends Openable implements IErlModel {
             if (!project.isOpen()) {
                 project.open(null);
             }
-            return makeErlangProject(project);
+            return findProject(project);
         } catch (final CoreException e) {
             throw new ErlModelException(e);
         }
@@ -820,7 +820,8 @@ public class ErlModel extends Openable implements IErlModel {
             final Map<IResource, IResourceDelta> changedDelta = Maps
                     .newHashMap();
             final IResourceDeltaVisitor visitor;
-            if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
+            switch (event.getType()) {
+            case IResourceChangeEvent.POST_CHANGE:
                 visitor = new IResourceDeltaVisitor() {
                     @Override
                     public boolean visit(final IResourceDelta delta) {
@@ -833,9 +834,7 @@ public class ErlModel extends Openable implements IErlModel {
                                 && CommonUtils
                                         .isErlangFileContentFileName(resource
                                                 .getName());
-                        final boolean erlangProject = resource.getType() == IResource.PROJECT
-                                && NatureUtil
-                                        .hasErlangNature((IProject) resource);
+                        final boolean erlangProject = resource.getType() == IResource.PROJECT;
                         final boolean erlangFolder = resource.getType() == IResource.FOLDER;
                         // &&
                         // ErlideUtil.isOnSourcePathOrParentToFolderOnSourcePath((
@@ -856,7 +855,8 @@ public class ErlModel extends Openable implements IErlModel {
                         return !erlangFile;
                     }
                 };
-            } else if (event.getType() == IResourceChangeEvent.PRE_CLOSE) {
+                break;
+            case IResourceChangeEvent.PRE_CLOSE:
                 visitor = new IResourceDeltaVisitor() {
 
                     @Override
@@ -878,7 +878,8 @@ public class ErlModel extends Openable implements IErlModel {
                 if (erlangProject) {
                     removed.add(resource);
                 }
-            } else {
+                break;
+            default:
                 visitor = new IResourceDeltaVisitor() {
 
                     @Override
@@ -1202,4 +1203,15 @@ public class ErlModel extends Openable implements IErlModel {
         return new ErlElementDelta(kind, flags, element);
     }
 
+    @Override
+    public void addChild(IErlElement child) {
+        ErlLogger.debug("model addChild %s", child.getName());
+        super.addChild(child);
+    }
+
+    @Override
+    public void removeChild(IErlElement child) {
+        ErlLogger.debug("model removeChild %s", child.getName());
+        super.removeChild(child);
+    }
 }
