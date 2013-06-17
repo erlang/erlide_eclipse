@@ -48,7 +48,7 @@ public class CoverBackend implements ICoverBackend {
 
     @Override
     public void startBackend() {
-        if (getBackend() != null && !getBackend().isStopped()) {
+        if (getBackend() != null && getBackend().isRunning()) {
             log.info("is started");
             return;
         } else if (getBackend() != null) {

@@ -71,7 +71,7 @@ public class ErlangEventPublisher {
                         publishEvent(myBackend, topic, data, sender);
                     }
                 } catch (final OtpErlangExit e) {
-                    if (!myBackend.isStopped()) {
+                    if (myBackend.isRunning()) {
                         // backend crashed -- restart?
                         ErlLogger.warn(e);
                     }

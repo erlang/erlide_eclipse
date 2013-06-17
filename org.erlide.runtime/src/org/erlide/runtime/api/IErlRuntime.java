@@ -16,7 +16,7 @@ import org.erlide.util.IDisposable;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
-public interface IErlRuntime extends IBeamProcess, IDisposable {
+public interface IErlRuntime extends IRuntimeProcess, IDisposable {
 
     String getNodeName();
 

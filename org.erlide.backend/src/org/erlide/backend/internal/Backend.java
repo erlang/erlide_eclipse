@@ -139,8 +139,8 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public boolean isStopped() {
-        return runtime.isStopped();
+    public boolean isRunning() {
+        return runtime.isRunning();
     }
 
     @Override
@@ -244,7 +244,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void input(final String s) throws IOException {
-        if (!isStopped()) {
+        if (isRunning()) {
             final IStreamsProxy proxy = getStreamsProxy();
             if (proxy != null) {
                 proxy.write(s);
@@ -575,9 +575,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         // terminate process
     }
 
-    @Override
     public void restart() {
-        runtime.restart();
+        // TODO
     }
 
     @Override

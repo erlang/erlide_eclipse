@@ -1,6 +1,6 @@
 package org.erlide.runtime.api;
 
-public interface IBeamProcess {
+public interface IRuntimeProcess {
 
     // TODO should take cmdline?
     // TODO should have a factory instead?
@@ -8,9 +8,7 @@ public interface IBeamProcess {
 
     void stop();
 
-    void restart();
-
-    boolean isStopped();
+    boolean isRunning();
 
     // TODO boolean isCrashed();
 

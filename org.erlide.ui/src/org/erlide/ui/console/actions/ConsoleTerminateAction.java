@@ -56,7 +56,7 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
     @Override
     public void update() {
         final IBackend backend = fConsole.getBackend();
-        setEnabled(backend.getData().isManaged() && !backend.isStopped()
+        setEnabled(backend.getData().isManaged() && backend.isRunning()
                 && backend != BackendCore.getBackendManager().getIdeBackend());
     }
 

@@ -34,7 +34,7 @@ public class NullErlRuntime implements IErlRuntime {
     }
 
     @Override
-    public boolean isStopped() {
+    public boolean isRunning() {
         reportNoBackend();
         return false;
     }
@@ -85,12 +85,6 @@ public class NullErlRuntime implements IErlRuntime {
     public OtpMbox getEventMbox() {
         reportNoBackend();
         return null;
-    }
-
-    @Override
-    public void restart() {
-        reportNoBackend();
-
     }
 
     @Override

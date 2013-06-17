@@ -380,8 +380,8 @@ public class ErlRuntime implements IErlRuntime {
     }
 
     @Override
-    public boolean isStopped() {
-        return stopped || !isAvailable();
+    public boolean isRunning() {
+        return !stopped && isAvailable();
     }
 
     @Override
@@ -392,21 +392,6 @@ public class ErlRuntime implements IErlRuntime {
     @Override
     public RuntimeData getRuntimeData() {
         return data;
-    }
-
-    @Override
-    public void restart() {
-        if (!data.isRestartable()) {
-            return;
-        }
-        if (!stopped) {
-            stop();
-        }
-        System.out.println("RESTART " + this);
-        start();
-        // state = State.DISCONNECTED;
-        // stopped = false;
-        // process = processProvider.get();
     }
 
     @Override
