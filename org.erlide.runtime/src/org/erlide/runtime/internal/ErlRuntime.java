@@ -48,7 +48,7 @@ public class ErlRuntime implements IErlRuntime {
     private static final Object connectLock = new Object();
 
     public enum State {
-        CONNECTED, DISCONNECTED, DOWN
+        DISCONNECTED, CONNECTED, DOWN
     }
 
     private State state;
@@ -57,7 +57,6 @@ public class ErlRuntime implements IErlRuntime {
     private final Object localNodeLock = new Object();
     private boolean reported;
     private Process process;
-    private final boolean connectOnce;
     private final OtpNodeStatus statusWatcher;
     private OtpMbox eventBox;
     private boolean stopped;
@@ -68,7 +67,6 @@ public class ErlRuntime implements IErlRuntime {
 
     public ErlRuntime(final RuntimeData data) {
         this.data = data;
-        connectOnce = data.isInternal();
         final String nodeName = getNodeName();
         statusWatcher = new OtpNodeStatus() {
             @Override
@@ -170,10 +168,8 @@ public class ErlRuntime implements IErlRuntime {
         reported = false;
         if (connectRetry()) {
             state = State.CONNECTED;
-        } else if (connectOnce) {
-            state = State.DOWN;
         } else {
-            state = State.DISCONNECTED;
+            state = State.DOWN;
         }
     }
 
@@ -200,7 +196,7 @@ public class ErlRuntime implements IErlRuntime {
             final String user = System.getProperty("user.name");
 
             String msg1;
-            if (connectOnce) {
+            if (data.isInternal()) {
                 msg1 = "It is likely that your network is misconfigured or uses 'strange' host names.\n\n"
                         + "Please check the page"
                         + "Window->preferences->erlang->network for hints about that. \n\n"
