@@ -1,4 +1,4 @@
-package org.erlide.runtime.internal;
+package org.erlide.util.services;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.util.Provider;
 
-public class ErlideServiceLocator {
+public class ServiceLocator {
     private final static Map<Pair<Class<?>, Object>, Object> services = new ConcurrentHashMap<Pair<Class<?>, Object>, Object>();
     private final static Map<Pair<Class<?>, Object>, Provider<?>> providers = new ConcurrentHashMap<Pair<Class<?>, Object>, Provider<?>>();
 
