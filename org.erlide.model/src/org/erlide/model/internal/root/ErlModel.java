@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -53,7 +54,6 @@ import org.erlide.model.internal.erlang.ErlModule;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementDelta;
 import org.erlide.model.root.IErlElementLocator;
-import org.erlide.model.root.IErlExternalRoot;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlModelChangeListener;
@@ -420,7 +420,8 @@ public class ErlModel extends Openable implements IErlModel {
         final OtpErlangObject[] objects = new OtpErlangObject[names.length];
         for (int i = 0; i < names.length; i++) {
             final String name = names[i];
-            final String value = pvm.getValue(name).toOSString();
+            final String value = URIUtil.toPath(pvm.getURIValue(name))
+                    .toPortableString();
             objects[i] = new OtpErlangTuple(new OtpErlangObject[] {
                     new OtpErlangString(name), new OtpErlangString(value) });
         }
@@ -1166,52 +1167,10 @@ public class ErlModel extends Openable implements IErlModel {
         return toolkit;
     }
 
-    private final Map<String, IErlExternalRoot> externals = Maps.newHashMap();
-    private final Map<String, Integer> externalRefCounts = Maps.newHashMap();
-
-    @Override
-    public IErlExternalRoot getExternal(final String key) {
-        return externals.get(key);
-    }
-
-    @Override
-    public void removeExternal(final String key) {
-        final Integer integer = externalRefCounts.get(key);
-        if (integer != null) {
-            if (integer.intValue() == 1) {
-                externals.remove(key);
-                externalRefCounts.remove(key);
-            } else {
-                externalRefCounts.put(key, integer - 1);
-            }
-        }
-    }
-
-    @Override
-    public void addExternal(final String key, final IErlExternalRoot external) {
-        if (externals.containsKey(key)) {
-            externalRefCounts.put(key, externalRefCounts.get(key) + 1);
-        } else {
-            externals.put(key, external);
-            externalRefCounts.put(key, 1);
-        }
-    }
-
     @Override
     public IErlElementDelta createElementDelta(final int kind, final int flags,
             final IErlElement element) {
         return new ErlElementDelta(kind, flags, element);
     }
 
-    @Override
-    public void addChild(IErlElement child) {
-        ErlLogger.debug("model addChild %s", child.getName());
-        super.addChild(child);
-    }
-
-    @Override
-    public void removeChild(IErlElement child) {
-        ErlLogger.debug("model removeChild %s", child.getName());
-        super.removeChild(child);
-    }
 }

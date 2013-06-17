@@ -45,7 +45,6 @@ import org.erlide.model.SourcePathUtils;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ModuleKind;
 import org.erlide.model.internal.erlang.ErlExternalReferenceEntryList;
-import org.erlide.model.internal.erlang.ErlExternalReferenceEntryListProxy;
 import org.erlide.model.internal.erlang.ErlOtpExternalReferenceEntryList;
 import org.erlide.model.internal.root.ErlModel.External;
 import org.erlide.model.root.ErlModelManager;
@@ -172,14 +171,9 @@ public class ErlProject extends Openable implements IErlProject {
     private void addOtpExternals(final List<IErlElement> children) {
         final String name = "OTP "
                 + getProperties().getRuntimeVersion().toString();
-        final IErlModel model = ErlModelManager.getErlangModel();
-        IErlExternalRoot external = model.getExternal(name);
-        if (external == null) {
-            external = new ErlOtpExternalReferenceEntryList(this, name);
-        }
-        model.addExternal(name, external);
-        children.add(new ErlExternalReferenceEntryListProxy(this, name,
-                external));
+        IErlExternalRoot external = new ErlOtpExternalReferenceEntryList(this,
+                name);
+        children.add(external);
     }
 
     private void addExternals(final List<IErlElement> children) {
@@ -203,17 +197,10 @@ public class ErlProject extends Openable implements IErlProject {
         }
         if (externalIncludes.length() != 0 || externalModules.length() != 0
                 || !projectIncludes.isEmpty()) {
-            final String key = externalIncludes + "|" + externalModules + "|"
-                    + projectIncludes;
-            final IErlModel model = ErlModelManager.getErlangModel();
-            IErlExternalRoot external = model.getExternal(key);
-            if (external == null) {
-                external = new ErlExternalReferenceEntryList(this, "Externals",
-                        externalIncludes, projectIncludes, externalModules);
-            }
-            model.addExternal(key, external);
-            children.add(new ErlExternalReferenceEntryListProxy(this,
-                    "Externals", external));
+            IErlExternalRoot external = new ErlExternalReferenceEntryList(this,
+                    "Externals", externalIncludes, projectIncludes,
+                    externalModules);
+            children.add(external);
         }
     }
 
@@ -755,7 +742,6 @@ public class ErlProject extends Openable implements IErlProject {
     public void setSourceDirs(final Collection<IPath> sourceDirs)
             throws BackingStoreException {
         getModelCache().removeProject(this);
-        removeExternals();
         final IErlangProjectProperties properties = getProperties();
         properties.setSourceDirs(sourceDirs);
         properties.store();
@@ -766,7 +752,6 @@ public class ErlProject extends Openable implements IErlProject {
     public void setExternalModulesFile(final String absolutePath)
             throws BackingStoreException {
         getModelCache().removeProject(this);
-        removeExternals();
         final IErlangProjectProperties properties = getProperties();
         properties.setExternalModulesFile(absolutePath);
         properties.store();
@@ -777,7 +762,6 @@ public class ErlProject extends Openable implements IErlProject {
     public void setExternalIncludesFile(final String absolutePath)
             throws BackingStoreException {
         getModelCache().removeProject(this);
-        removeExternals();
         final IErlangProjectProperties properties = getProperties();
         properties.setExternalIncludesFile(absolutePath);
         properties.store();
@@ -955,28 +939,6 @@ public class ErlProject extends Openable implements IErlProject {
                 }
             }, EnumSet.of(AcceptFlags.CHILDREN_FIRST, AcceptFlags.LEAFS_ONLY),
                     Kind.MODULE);
-        } catch (final ErlModelException e) {
-        }
-        removeExternals();
-        super.dispose();
-    }
-
-    public void removeExternals() {
-        try {
-            accept(new IErlElementVisitor() {
-
-                @Override
-                public boolean visit(final IErlElement element)
-                        throws ErlModelException {
-                    if (element instanceof IErlExternalRoot) {
-                        final IErlExternalRoot externalRoot = (IErlExternalRoot) element;
-                        externalRoot.removeExternal();
-                    }
-                    element.dispose();
-                    return false;
-                }
-            }, EnumSet.of(AcceptFlags.CHILDREN_FIRST, AcceptFlags.LEAFS_ONLY),
-                    Kind.EXTERNAL);
         } catch (final ErlModelException e) {
         }
         super.dispose();
