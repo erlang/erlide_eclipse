@@ -231,7 +231,7 @@ public class ErlideOpen {
             return getStringListTuple(res);
         } catch (final RpcException e) {
             ErlLogger.error(e);
-            return null;
+            return Lists.newArrayList();
         }
     }
 
@@ -243,7 +243,7 @@ public class ErlideOpen {
             return getStringListTuple(res);
         } catch (final RpcException e) {
             ErlLogger.error(e);
-            return null;
+            return Lists.newArrayList();
         }
     }
 
@@ -255,7 +255,7 @@ public class ErlideOpen {
             return getStringListListTuple(res);
         } catch (final RpcException e) {
             ErlLogger.error(e);
-            return null;
+            return Lists.newArrayList();
         }
     }
 
@@ -277,7 +277,7 @@ public class ErlideOpen {
             }
             return result;
         }
-        return null;
+        return Lists.newArrayList();
     }
 
     private static List<String> getStringListTuple(final OtpErlangObject res) {
@@ -291,7 +291,7 @@ public class ErlideOpen {
             }
             return result;
         }
-        return null;
+        return Lists.newArrayList();
     }
 
     public static Collection<String> getIncludesInDir(final IRpcSite backend,
