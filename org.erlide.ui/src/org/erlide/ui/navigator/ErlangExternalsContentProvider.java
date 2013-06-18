@@ -11,12 +11,11 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.internal.erlang.ErlExternalReferenceEntryList;
-import org.erlide.model.internal.erlang.ErlExternalReferenceEntryListProxy;
-import org.erlide.model.internal.erlang.ErlOtpExternalReferenceEntryList;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElement.Kind;
+import org.erlide.model.root.IErlExternalRoot;
+import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
 
@@ -118,10 +117,9 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             return erlangFileContentProvider.hasChildren(element);
         }
         if (element instanceof IParent) {
-            if (element instanceof ErlOtpExternalReferenceEntryList
-                    || element instanceof ErlExternalReferenceEntryList
-                    || element instanceof ErlExternalReferenceEntryListProxy
-                    || element instanceof IErlProject) {
+            if (element instanceof IErlExternalRoot
+                    || element instanceof IErlProject
+                    || element instanceof IErlModel) {
                 // we know these have children
                 return true;
             }

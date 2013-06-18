@@ -322,7 +322,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
     // ---------- result handling ----------
 
     @Override
-    protected void setResult(final List newResult) {
+    protected void setResult(@SuppressWarnings("rawtypes") final List newResult) {
         super.setResult(newResult);
         if (fUserDefinedPatterns.getText().length() > 0) {
             fEnablePatterns = fEnableUserDefinedPatterns.getSelection();

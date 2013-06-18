@@ -11,8 +11,6 @@ import java.util.List;
  */
 public interface IErlExternalRoot extends IErlExternal {
 
-    List<IErlElement> internalGetChildren();
-
-    void removeExternal();
+	List<IErlElement> internalGetChildren();
 
 }
