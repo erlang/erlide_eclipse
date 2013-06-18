@@ -46,19 +46,17 @@ public class ErlRuntime implements IErlRuntime {
     private static final int MAX_RETRIES = 15;
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "400"));
-    private static final Object connectLock = new Object();
 
     public enum State {
         DISCONNECTED, CONNECTED, DOWN
     }
 
-    private State state;
+    private volatile State state;
     private final RuntimeData data;
     private OtpNode localNode;
     private final Object localNodeLock = new Object();
     private boolean reported;
     private Process process;
-    private final OtpNodeStatus statusWatcher;
     private OtpMbox eventMBox;
     private boolean stopped;
     private IRuntimeStateListener listener;
@@ -69,39 +67,25 @@ public class ErlRuntime implements IErlRuntime {
     public ErlRuntime(final RuntimeData data) {
         this.data = data;
         final String nodeName = getNodeName();
-        statusWatcher = new OtpNodeStatus() {
-            @Override
-            public void remoteStatus(final String node, final boolean up,
-                    final Object info) {
-                if (!node.equals(nodeName)) {
-                    return;
-                }
-                if (up) {
-                    ErlLogger.debug("Node %s is up", nodeName);
-                    connectRetry();
-                } else {
-                    ErlLogger.debug("Node %s is down: %s", nodeName, info);
-                    state = State.DOWN;
-                }
-            }
-        };
         start();
         rpcSite = new RpcSite(this, localNode, nodeName);
-        eventDaemon = new ErlangEventPublisher(this);
 
+        eventDaemon = new ErlangEventPublisher(this);
         eventDaemon.start();
         eventDaemon.register(new LogEventHandler(nodeName));
         eventDaemon.register(new ErlangLogEventHandler(nodeName));
+
+        connectRetry();
         connect();
     }
 
     @Override
     public Process start() {
-        process = startRuntimeProcess(data);
+        startLocalNode();
         state = State.DISCONNECTED;
         stopped = false;
 
-        startLocalNode();
+        process = startRuntimeProcess(data);
         return process;
     }
 
@@ -114,7 +98,9 @@ public class ErlRuntime implements IErlRuntime {
                     i++;
                     localNode = ErlRuntime.createOtpNode(data.getCookie(),
                             data.hasLongName());
+                    final OtpNodeStatus statusWatcher = new ErlideNodeStatus();
                     localNode.registerStatusHandler(statusWatcher);
+                    eventMBox = createMbox("rex");
                     nodeCreated = true;
                 } catch (final IOException e) {
                     ErlLogger
@@ -148,18 +134,25 @@ public class ErlRuntime implements IErlRuntime {
         return ok;
     }
 
-    protected void handleStateDisconnected() {
+    private void handleStateDisconnected() {
         reported = false;
         if (connectRetry()) {
             state = State.CONNECTED;
             rpcSite.setConnected(true);
+
+            if (waitForCodeServer()) {
+                ErlLogger.debug("connected!");
+            } else {
+                ErlLogger.error(COULD_NOT_CONNECT);
+            }
+
         } else {
             state = State.DOWN;
             rpcSite.setConnected(false);
         }
     }
 
-    protected void handleStateDown() throws RpcException {
+    private void handleStateDown() throws RpcException {
         if (listener != null) {
             listener.runtimeDown(this);
         }
@@ -278,25 +271,12 @@ public class ErlRuntime implements IErlRuntime {
         ErlLogger.debug(label + ": waiting connection to peer...");
         try {
             wait_for_epmd();
-            if (eventMBox == null) {
-                eventMBox = createMbox("rex");
-            }
-            rpcSite.setConnected(true);
-
-            if (waitForCodeServer()) {
-                ErlLogger.debug("connected!");
-            } else {
-                ErlLogger.error(COULD_NOT_CONNECT);
-            }
-            synchronized (connectLock) {
-                switch (state) {
-                case DISCONNECTED:
-                    handleStateDisconnected();
-                    break;
-                case CONNECTED:
-                    break;
-                case DOWN:
-                    handleStateDown();
+            System.out.println("wait for it");
+            while (state == State.DISCONNECTED) {
+                System.out.println("##### " + state);
+                try {
+                    Thread.sleep(200);
+                } catch (final InterruptedException e) {
                 }
             }
         } catch (final Exception e) {
@@ -306,7 +286,7 @@ public class ErlRuntime implements IErlRuntime {
     }
 
     private void wait_for_epmd() throws Exception {
-        wait_for_epmd("localhost");
+        wait_for_epmd(null);
     }
 
     private void wait_for_epmd(final String host) throws Exception {
@@ -323,8 +303,8 @@ public class ErlRuntime implements IErlRuntime {
             } catch (final IOException e) {
             }
             try {
-                Thread.sleep(100);
                 // ErlLogger.debug("sleep............");
+                Thread.sleep(100);
             } catch (final InterruptedException e1) {
             }
             tries--;
@@ -345,6 +325,7 @@ public class ErlRuntime implements IErlRuntime {
             boolean gotIt = false;
             do {
                 r = rpcSite.call("erlang", "whereis", "a", "code_server");
+                System.out.println(r);
                 gotIt = !(r instanceof OtpErlangPid);
                 if (!gotIt) {
                     try {
@@ -474,5 +455,45 @@ public class ErlRuntime implements IErlRuntime {
     @Override
     public void registerEventHandler(final Object handler) {
         eventDaemon.register(handler);
+    }
+
+    private class ErlideNodeStatus extends OtpNodeStatus {
+        @Override
+        public void remoteStatus(final String node, final boolean up,
+                final Object info) {
+
+            ErlLogger.debug("@@@remote " + node + " " + (up ? "up" : "down")
+                    + " " + info);
+
+            if (!node.equals(getNodeName())) {
+                return;
+            }
+            if (up) {
+                ErlLogger.debug("Node %s is up", getNodeName());
+                handleStateDisconnected();
+            } else {
+                ErlLogger.debug("Node %s is down: %s", getNodeName(), info);
+                state = State.DOWN;
+                try {
+                    handleStateDown();
+                } catch (final RpcException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        public void localStatus(final String node, final boolean up,
+                final Object info) {
+            ErlLogger.debug("@@@local " + node + " " + (up ? "up" : "down")
+                    + " " + info);
+        }
+
+        @Override
+        public void connAttempt(final String node, final boolean incoming,
+                final Object info) {
+            ErlLogger.debug("@@@conn " + node + " " + (incoming ? "in" : "out")
+                    + " " + info);
+        }
     }
 }

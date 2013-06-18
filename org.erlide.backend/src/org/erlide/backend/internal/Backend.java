@@ -514,7 +514,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     public void initialize() {
         runtime.addListener(this);
         shellManager = new BackendShellManager(this);
-        connect();
+        // connect();
         for (final ICodeBundle bb : backendManager.getCodeBundles().values()) {
             registerCodeBundle(bb);
         }
