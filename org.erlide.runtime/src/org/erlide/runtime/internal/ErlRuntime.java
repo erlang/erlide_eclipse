@@ -74,9 +74,6 @@ public class ErlRuntime implements IErlRuntime {
         eventDaemon.start();
         eventDaemon.register(new LogEventHandler(nodeName));
         eventDaemon.register(new ErlangLogEventHandler(nodeName));
-
-        // connectRetry();
-        // connect();
     }
 
     @Override
@@ -272,6 +269,7 @@ public class ErlRuntime implements IErlRuntime {
         try {
             wait_for_epmd();
             System.out.println("wait for it");
+            connectRetry();
             int i = 0;
             while (state == State.DISCONNECTED && i++ < 10) {
                 System.out.println("##### " + state);

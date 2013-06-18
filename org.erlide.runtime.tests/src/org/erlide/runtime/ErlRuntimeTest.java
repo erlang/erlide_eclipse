@@ -15,8 +15,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlRuntimeTest {
 
-    private static final String OTP_HOME = "c:/apps/erl5.9.3/";
-
     @Test
     public void runtimeProcessStartsAndIsAvailableForRpc() {
         final RuntimeInfoCatalog cat = new RuntimeInfoCatalog();
