@@ -626,4 +626,9 @@ public abstract class Backend implements IStreamListener, IBackend {
     public void registerEventHandler(final Object handler) {
         runtime.registerEventHandler(handler);
     }
+
+    @Override
+    public Process getProcess() {
+        return runtime.getProcess();
+    }
 }

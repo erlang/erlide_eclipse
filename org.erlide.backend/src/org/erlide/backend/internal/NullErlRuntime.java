@@ -114,4 +114,9 @@ public class NullErlRuntime implements IErlRuntime {
     @Override
     public void registerEventHandler(final Object handler) {
     }
+
+    @Override
+    public Process getProcess() {
+        return null;
+    }
 }

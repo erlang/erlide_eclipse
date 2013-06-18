@@ -75,8 +75,8 @@ public class ErlRuntime implements IErlRuntime {
         eventDaemon.register(new LogEventHandler(nodeName));
         eventDaemon.register(new ErlangLogEventHandler(nodeName));
 
-        connectRetry();
-        connect();
+        // connectRetry();
+        // connect();
     }
 
     @Override
@@ -121,7 +121,7 @@ public class ErlRuntime implements IErlRuntime {
         return data.getQualifiedNodeName();
     }
 
-    private boolean connectRetry() {
+    public boolean connectRetry() {
         int tries = MAX_RETRIES;
         boolean ok = false;
         while (!ok && tries > 0) {
@@ -163,7 +163,7 @@ public class ErlRuntime implements IErlRuntime {
         }
         if (!stopped) {
             final String msg = reportRuntimeDown(getNodeName());
-            throw new RpcException(msg);
+            // throw new RpcException(msg);
         }
     }
 
@@ -272,7 +272,8 @@ public class ErlRuntime implements IErlRuntime {
         try {
             wait_for_epmd();
             System.out.println("wait for it");
-            while (state == State.DISCONNECTED) {
+            int i = 0;
+            while (state == State.DISCONNECTED && i++ < 10) {
                 System.out.println("##### " + state);
                 try {
                     Thread.sleep(200);
@@ -351,7 +352,7 @@ public class ErlRuntime implements IErlRuntime {
 
     @Override
     public boolean isRunning() {
-        return !stopped && isAvailable();
+        return !stopped;
     }
 
     @Override
@@ -448,6 +449,7 @@ public class ErlRuntime implements IErlRuntime {
         }
     }
 
+    @Override
     public Process getProcess() {
         return process;
     }

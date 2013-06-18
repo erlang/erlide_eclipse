@@ -43,4 +43,6 @@ public interface IErlRuntime extends IRuntimeProcess, IDisposable {
     void setSystemStatus(ErlSystemStatus msg);
 
     void registerEventHandler(Object handler);
+
+    Process getProcess();
 }
