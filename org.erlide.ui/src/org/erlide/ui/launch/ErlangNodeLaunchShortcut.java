@@ -43,6 +43,7 @@ import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.HostnameUtils;
 import org.erlide.util.ListsUtils;
 import org.erlide.util.StringUtils;
 
@@ -175,6 +176,8 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         wc.setAttribute(ErlRuntimeAttributes.RUNTIME_NAME, projects.iterator()
                 .next().getRuntimeInfo().getName());
         wc.setAttribute(ErlRuntimeAttributes.NODE_NAME, name);
+        wc.setAttribute(ErlRuntimeAttributes.USE_LONG_NAME,
+                !HostnameUtils.canUseShortNames()); // prefer short names
         wc.setAttribute(ErlRuntimeAttributes.CONSOLE, true);
         wc.setAttribute(ErlRuntimeAttributes.INTERNAL, false);
         wc.setAttribute(ErlRuntimeAttributes.LOAD_ALL_NODES, false);
