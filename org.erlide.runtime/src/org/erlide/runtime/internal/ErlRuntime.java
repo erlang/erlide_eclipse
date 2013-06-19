@@ -55,7 +55,7 @@ public class ErlRuntime implements IErlRuntime {
     private final RuntimeData data;
     private OtpNode localNode;
     private final Object localNodeLock = new Object();
-    private boolean reported;
+    private final ErlRuntimeReporter reporter;
     private Process process;
     private OtpMbox eventMBox;
     private boolean stopped;
@@ -66,6 +66,7 @@ public class ErlRuntime implements IErlRuntime {
 
     public ErlRuntime(final RuntimeData data) {
         this.data = data;
+        reporter = new ErlRuntimeReporter(data.isInternal());
         final String nodeName = getNodeName();
         start();
         rpcSite = new RpcSite(this, localNode, nodeName);
@@ -132,7 +133,6 @@ public class ErlRuntime implements IErlRuntime {
     }
 
     private void handleStateDisconnected() {
-        reported = false;
         if (connectRetry()) {
             state = State.CONNECTED;
             rpcSite.setConnected(true);
@@ -158,48 +158,11 @@ public class ErlRuntime implements IErlRuntime {
             process.destroy();
             process = null;
         }
-        if (!stopped) {
-            final String msg = reportRuntimeDown(getNodeName());
+        if (!stopped && data.isReportErrors()) {
+            final String msg = reporter.reportRuntimeDown(getNodeName(),
+                    getSystemStatus());
             // throw new RpcException(msg);
         }
-    }
-
-    private String reportRuntimeDown(final String peer) {
-        final String fmt = "Backend '%s' is down";
-        final String msg = String.format(fmt, peer);
-        // TODO when to report errors?
-        final boolean shouldReport = data.isInternal() || data.isReportErrors();
-        if (shouldReport && !reported) {
-            final String user = System.getProperty("user.name");
-
-            String msg1;
-            if (data.isInternal()) {
-                msg1 = "It is likely that your network is misconfigured or uses 'strange' host names.\n\n"
-                        + "Please check the page"
-                        + "Window->preferences->erlang->network for hints about that. \n\n"
-                        + "Also, check if you can create and connect two erlang nodes on your machine "
-                        + "using \"erl -name foo1\" and \"erl -name foo2\".";
-            } else {
-                msg1 = "If you didn't shut it down on purpose, it is an "
-                        + "unrecoverable error, please restart Eclipse. ";
-            }
-
-            final String details = "If an error report named '"
-                    + user
-                    + "_<timestamp>.txt' has been created in your home directory, "
-                    + "please consider reporting the problem. \n"
-                    + (SystemConfiguration
-                            .hasFeatureEnabled("erlide.ericsson.user") ? ""
-                            : "http://www.assembla.com/spaces/erlide/support/tickets");
-            // FIXME MessageReporter.showError(msg, msg1 + "\n\n" + details);
-            reported = true;
-        }
-
-        final ErlSystemStatus status = getSystemStatus();
-        ErlLogger.error("Last system status was:\n %s",
-                status != null ? status.prettyPrint() : "null");
-
-        return msg;
     }
 
     @Override
