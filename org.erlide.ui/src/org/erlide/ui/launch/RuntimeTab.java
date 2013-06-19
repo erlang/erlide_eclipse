@@ -38,6 +38,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 import org.erlide.util.NodeHostClassifier;
 import org.erlide.util.NodeHostClassifier.HostnameType;
@@ -381,17 +382,32 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                 .getText().trim());
 
         longNameButton.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE)
-                && state.host == HostnameType.NONE);
+                && state.host == HostnameType.NONE
+                && HostnameUtils.canUseLongNames());
         shortNameButton.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE)
-                && state.host == HostnameType.NONE);
+                && state.host == HostnameType.NONE
+                && HostnameUtils.canUseShortNames());
+        ErlLogger.debug("state.mode=%s, state.host=%s", state.mode, state.host);
 
-        if (state.host == HostnameType.LONG) {
+        switch (state.host) {
+        case LONG:
             longNameButton.setSelection(true);
             shortNameButton.setSelection(false);
-        }
-        if (state.host == HostnameType.SHORT) {
+            break;
+        case SHORT:
             longNameButton.setSelection(false);
             shortNameButton.setSelection(true);
+            break;
+        case NONE:
+            if (!HostnameUtils.canUseShortNames()) {
+                longNameButton.setSelection(true);
+                shortNameButton.setSelection(false);
+            }
+            if (!HostnameUtils.canUseLongNames()) {
+                longNameButton.setSelection(false);
+                shortNameButton.setSelection(true);
+            }
+            break;
         }
 
         final boolean isLong = longNameButton.getSelection();
