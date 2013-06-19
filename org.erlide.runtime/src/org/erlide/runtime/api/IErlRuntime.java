@@ -10,14 +10,17 @@
  *******************************************************************************/
 package org.erlide.runtime.api;
 
-import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.IDisposable;
 
-import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
+import com.google.common.util.concurrent.Service;
 
-public interface IErlRuntime extends IBeamProcess, IDisposable {
+public interface IErlRuntime extends IDisposable {
+
+    Service.State startAndWait();
+
+    boolean isRunning();
 
     String getNodeName();
 
@@ -25,19 +28,9 @@ public interface IErlRuntime extends IBeamProcess, IDisposable {
 
     RuntimeData getRuntimeData();
 
-    boolean isAvailable();
-
-    // TODO naming
-    void connect();
-
-    // TODO naming
-    void tryConnect() throws RpcException;
-
     OtpMbox createMbox(String string);
 
     OtpMbox createMbox();
-
-    OtpErlangPid getEventPid();
 
     OtpMbox getEventMbox();
 
@@ -48,4 +41,8 @@ public interface IErlRuntime extends IBeamProcess, IDisposable {
     ErlSystemStatus getSystemStatus();
 
     void setSystemStatus(ErlSystemStatus msg);
+
+    void registerEventListener(Object handler);
+
+    Process getProcess();
 }

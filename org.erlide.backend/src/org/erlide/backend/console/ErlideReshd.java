@@ -12,7 +12,7 @@ public class ErlideReshd {
     public static OtpErlangPid start(final IBackend runtime) {
         try {
             final OtpErlangObject r = runtime.getRpcSite().call("erlide_shell",
-                    "start", "p", runtime.getEventPid());
+                    "start", "p", runtime.getEventMbox().self());
             final OtpErlangPid server = (OtpErlangPid) BackendUtils.ok(r);
             return server;
         } catch (final RpcException e) {

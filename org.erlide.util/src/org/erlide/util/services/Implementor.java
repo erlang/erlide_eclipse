@@ -1,4 +1,4 @@
-package org.erlide.runtime.internal;
+package org.erlide.util.services;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

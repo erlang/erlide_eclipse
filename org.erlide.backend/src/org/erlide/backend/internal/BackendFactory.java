@@ -12,7 +12,6 @@ package org.erlide.backend.internal;
 
 import java.io.File;
 
-import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendUtils;
@@ -23,12 +22,12 @@ import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.internal.ErlRuntime;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
-import org.erlide.util.IProvider;
 import org.erlide.util.SystemConfiguration;
 
 public class BackendFactory implements IBackendFactory {
@@ -82,10 +81,9 @@ public class BackendFactory implements IBackendFactory {
 
         final IBackend b;
         try {
-            final IProvider<IProcess> erlProcessProvider = new LaunchBeamProcessProvider(
-                    data);
             final IErlRuntime runtime = data.getRuntimeInfo() == null ? new NullErlRuntime()
-                    : new ErlRuntime(data, erlProcessProvider);
+                    : new ErlRuntime(data);
+            runtime.startAndWait();
             final IBackendManager backendManager = BackendCore
                     .getBackendManager();
             b = data.isInternal() ? new InternalBackend(data, runtime,

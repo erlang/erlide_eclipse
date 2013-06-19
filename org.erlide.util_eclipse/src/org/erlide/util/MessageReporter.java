@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.erlide.util.services.ExtensionUtils;
 
 public abstract class MessageReporter {
 

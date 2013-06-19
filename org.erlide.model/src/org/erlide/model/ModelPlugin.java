@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.erlide.backend.api.IBackendProvider;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeVersion;
-import org.erlide.util.ExtensionUtils;
+import org.erlide.util.services.ExtensionUtils;
 import org.osgi.framework.BundleContext;
 
 public class ModelPlugin extends Plugin {

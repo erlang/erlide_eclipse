@@ -31,15 +31,15 @@ public class InternalBackend extends Backend {
         // TODO fix this
         if (false && getData().isRestartable()) {
             ErlLogger.debug("restart %s", getName());
-            runtime.restart();
+            restart();
 
             // TODO remove code duplication here
-            connect();
+            // connect();
             for (final ICodeBundle bb : backendManager.getCodeBundles()
                     .values()) {
                 registerCodeBundle(bb);
             }
-            startErlangApps(getEventPid(), true);
+            startErlangApps(getEventMbox().self(), true);
         }
     }
 }

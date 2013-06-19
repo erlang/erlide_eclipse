@@ -10,4 +10,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.util,
  org.erlide.util.erlang,
- org.erlide.util.event_tracer
+ org.erlide.util.event_tracer,
+ org.erlide.util.services

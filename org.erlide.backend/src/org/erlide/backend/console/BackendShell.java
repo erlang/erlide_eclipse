@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.backend.api.IBackend;
-import org.erlide.backend.events.ErlangEventHandler;
+import org.erlide.runtime.events.ErlangEventHandler;
 import org.erlide.runtime.shell.BackendShellListener;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest;
@@ -45,7 +45,7 @@ public class BackendShell implements IBackendShell {
 
         final ErlangEventHandler handler = new ConsoleEventHandler(
                 backend.getName(), this);
-        handler.register();
+        backend.registerEventListener(handler);
     }
 
     @Override

@@ -2,7 +2,7 @@ package org.erlide.model.root;
 
 import org.erlide.model.ErlModelException;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.ExtensionUtils;
+import org.erlide.util.services.ExtensionUtils;
 
 public class ErlModelManager {
     private static volatile IErlModel erlangModel;

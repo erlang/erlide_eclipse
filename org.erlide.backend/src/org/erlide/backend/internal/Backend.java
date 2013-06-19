@@ -40,9 +40,6 @@ import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.console.BackendShellManager;
-import org.erlide.backend.events.ErlangEventPublisher;
-import org.erlide.backend.events.ErlangLogEventHandler;
-import org.erlide.backend.events.LogEventHandler;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.model.ErlangDebugNode;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
@@ -58,11 +55,11 @@ import org.erlide.runtime.api.IRuntimeStateListener;
 import org.erlide.runtime.api.InitialCall;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.api.RuntimeUtils;
-import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.MessageReporter;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.erlang.OtpErlang;
 import org.osgi.framework.Bundle;
@@ -75,13 +72,16 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.Service.State;
 
 public abstract class Backend implements IStreamListener, IBackend {
 
     private final IErlRuntime runtime;
     private BackendShellManager shellManager;
-    private ErlangEventPublisher eventDaemon;
     private final ICodeManager codeManager;
+
+    private boolean reported;
+    private boolean connectOnce;
 
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
@@ -100,14 +100,12 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public void dispose() {
         ErlLogger.debug("disposing backend " + getName());
+        if (data.isDebug()) {
+            unloadDebuggerCode();
+        }
         if (shellManager != null) {
             shellManager.dispose();
             shellManager = null;
-        }
-
-        if (eventDaemon != null) {
-            eventDaemon.stop();
-            eventDaemon = null;
         }
         runtime.dispose();
     }
@@ -144,22 +142,8 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public boolean isStopped() {
-        return runtime.isStopped();
-    }
-
-    @Override
-    public void start() {
-        ErlLogger.debug("starting backend " + getName());
-        runtime.start();
-    }
-
-    @Override
-    public void stop() {
-        if (data.isDebug()) {
-            unloadDebuggerCode();
-        }
-        runtime.stop();
+    public boolean isRunning() {
+        return runtime.isRunning();
     }
 
     @Override
@@ -182,18 +166,8 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public synchronized void initErlang(final boolean watch) {
         ErlLogger.debug("initialize %s: %s", getName(), watch);
-        startErlangApps(getEventPid(), watch);
-
-        // TODO when restarting, don't need these...
-        if (eventDaemon == null) {
-            eventDaemon = new ErlangEventPublisher(this);
-        }
-        eventDaemon.start();
-        new LogEventHandler(getName()).register();
-        new ErlangLogEventHandler(getName()).register();
-        new SystemMonitorHandler(getName()).register();
-
-        backendManager.addBackendListener(eventDaemon.getBackendListener());
+        startErlangApps(getEventMbox().self(), watch);
+        registerEventListener(new SystemMonitorHandler(getName()));
     }
 
     @Override
@@ -259,7 +233,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void input(final String s) throws IOException {
-        if (!isStopped()) {
+        if (isRunning()) {
             final IStreamsProxy proxy = getStreamsProxy();
             if (proxy != null) {
                 proxy.write(s);
@@ -529,7 +503,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     public void initialize() {
         runtime.addListener(this);
         shellManager = new BackendShellManager(this);
-        connect();
         for (final ICodeBundle bb : backendManager.getCodeBundles().values()) {
             registerCodeBundle(bb);
         }
@@ -545,23 +518,8 @@ public abstract class Backend implements IStreamListener, IBackend {
     // /////
 
     @Override
-    public boolean isAvailable() {
-        return runtime.isAvailable();
-    }
-
-    @Override
     public String getNodeName() {
         return runtime.getNodeName();
-    }
-
-    @Override
-    public OtpErlangPid getEventPid() {
-        return runtime.getEventPid();
-    }
-
-    @Override
-    public void connect() {
-        runtime.connect();
     }
 
     @Override
@@ -590,9 +548,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         // terminate process
     }
 
-    @Override
     public void restart() {
-        runtime.restart();
+        // TODO
     }
 
     @Override
@@ -605,8 +562,56 @@ public abstract class Backend implements IStreamListener, IBackend {
         runtime.setSystemStatus(msg);
     }
 
+    private String reportRuntimeDown(final String peer) {
+        final String fmt = "Backend '%s' is down";
+        final String msg = String.format(fmt, peer);
+        // TODO when to report errors?
+        final boolean shouldReport = data.isInternal() || data.isReportErrors();
+        if (shouldReport && !reported) {
+            final String user = System.getProperty("user.name");
+
+            String msg1;
+            if (connectOnce) {
+                msg1 = "It is likely that your network is misconfigured or uses 'strange' host names.\n\n"
+                        + "Please check the page"
+                        + "Window->preferences->erlang->network for hints about that. \n\n"
+                        + "Also, check if you can create and connect two erlang nodes on your machine "
+                        + "using \"erl -name foo1\" and \"erl -name foo2\".";
+            } else {
+                msg1 = "If you didn't shut it down on purpose, it is an "
+                        + "unrecoverable error, please restart Eclipse. ";
+            }
+
+            final String details = "If an error report named '"
+                    + user
+                    + "_<timestamp>.txt' has been created in your home directory, "
+                    + "please consider reporting the problem. \n"
+                    + (SystemConfiguration
+                            .hasFeatureEnabled("erlide.ericsson.user") ? ""
+                            : "http://www.assembla.com/spaces/erlide/support/tickets");
+            MessageReporter.showError(msg, msg1 + "\n\n" + details);
+            reported = true;
+        }
+
+        final ErlSystemStatus status = getSystemStatus();
+        ErlLogger.error("Last system status was:\n %s",
+                status != null ? status.prettyPrint() : "null");
+
+        return msg;
+    }
+
     @Override
-    public void tryConnect() throws RpcException {
-        runtime.tryConnect();
+    public void registerEventListener(final Object handler) {
+        runtime.registerEventListener(handler);
+    }
+
+    @Override
+    public Process getProcess() {
+        return runtime.getProcess();
+    }
+
+    @Override
+    public State startAndWait() {
+        return runtime.startAndWait();
     }
 }

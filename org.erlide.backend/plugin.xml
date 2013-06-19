@@ -10,4 +10,57 @@
             class="org.erlide.backend.internal.BackendProvider">
       </provider>
    </extension>
+   <extension
+         point="org.eclipse.debug.core.processFactories">
+      <processFactory
+            class="org.erlide.launch.ErtsProcessFactory"
+            id="org.erlide.backend.ertsProcessFactory">
+      </processFactory>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.erlide.launch.ErlangLaunchDelegate"
+            delegateName="Erlang application"
+            id="org.erlide.backend.erlangProcess"
+            modes="run, debug"
+            name="Erlang application"
+            public="true"
+            sourceLocatorId="org.erlide.backend.erlangLocatorDirector"
+            sourcePathComputerId="org.erlide.backend.sourcepathcomputer">
+      </launchConfigurationType>
+      <launchConfigurationType
+            delegate="org.erlide.launch.ErlangLaunchDelegate"
+            id="org.erlide.backend.internalProcess"
+            modes="run"
+            name="internal Erlang node"
+            public="false"
+            sourceLocatorId="org.erlide.backend.erlangLocatorDirector"
+            sourcePathComputerId="org.erlide.backend.sourcepathcomputer">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourcePathComputers">
+      <sourcePathComputer
+            class="org.erlide.launch.ErlangSourcePathComputerDelegate"
+            id="org.erlide.backend.sourcepathcomputer">
+      </sourcePathComputer>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+            class="org.erlide.launch.ErlangSourceLookupDirector"
+            id="org.erlide.backend.erlangLocatorDirector"
+            name="Erlang source locator">
+      </sourceLocator>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+            class="org.erlide.launch.debug.ErlangLineBreakpoint"
+            id="erlang.lineBreakpoint"
+            markerType="org.erlide.core.erlang.lineBreakpoint.marker"
+            name="%erlangLineBreakpoint.name">
+      </breakpoint>
+   </extension>
 </plugin>

@@ -9,7 +9,6 @@ Bundle-Localization: plugin
 Export-Package: org.erlide.backend,
  org.erlide.backend.api,
  org.erlide.backend.console,
- org.erlide.backend.events,
  org.erlide.backend.internal;x-internal:=true,
  org.erlide.backend.runtimeinfo,
  org.erlide.launch,

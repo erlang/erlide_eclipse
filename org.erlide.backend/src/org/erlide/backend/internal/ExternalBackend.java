@@ -40,13 +40,11 @@ public class ExternalBackend extends Backend {
 
     @Override
     protected IStreamsProxy getStreamsProxy() {
-        {
-            final IProcess p = getErtsProcess();
-            if (p == null) {
-                return null;
-            }
-            return p.getStreamsProxy();
+        final IProcess p = getErtsProcess();
+        if (p == null) {
+            return null;
         }
+        return p.getStreamsProxy();
     }
 
     private IProcess getErtsProcess() {

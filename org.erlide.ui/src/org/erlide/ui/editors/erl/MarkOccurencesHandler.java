@@ -134,7 +134,7 @@ public class MarkOccurencesHandler {
                     }
                 }
             } catch (final RpcTimeoutException e) {
-                if (!ideBackend.isStopped()) {
+                if (ideBackend.isRunning()) {
                     ErlLogger.warn(e);
                 }
             } catch (final RpcException e) {

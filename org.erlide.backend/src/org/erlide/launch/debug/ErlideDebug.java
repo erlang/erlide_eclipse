@@ -159,7 +159,7 @@ public class ErlideDebug {
             backend.getRpcSite().call("erlide_debug", "line_breakpoint", "sia",
                     module, line, a);
         } catch (final RpcTimeoutException e) {
-            if (!backend.isStopped()) {
+            if (backend.isRunning()) {
                 ErlLogger.warn(e);
             }
         } catch (final RpcException e) {
@@ -173,7 +173,7 @@ public class ErlideDebug {
             backend.getRpcSite()
                     .call("erlide_debug", "send_started", "x", meta);
         } catch (final RpcTimeoutException e) {
-            if (!backend.isStopped()) {
+            if (backend.isRunning()) {
                 ErlLogger.warn(e);
             }
         } catch (final RpcException e) {
@@ -185,7 +185,7 @@ public class ErlideDebug {
         try {
             backend.getRpcSite().call("erlide_debug", "resume", "x", meta);
         } catch (final RpcTimeoutException e) {
-            if (!backend.isStopped()) {
+            if (backend.isRunning()) {
                 ErlLogger.warn(e);
             }
         } catch (final RpcException e) {
@@ -197,7 +197,7 @@ public class ErlideDebug {
         try {
             backend.getRpcSite().call("erlide_debug", "suspend", "x", meta);
         } catch (final RpcTimeoutException e) {
-            if (!backend.isStopped()) {
+            if (backend.isRunning()) {
                 ErlLogger.warn(e);
             }
         } catch (final RpcException e) {
@@ -212,7 +212,7 @@ public class ErlideDebug {
                     "erlide_debug", "bindings", "x", meta);
             return (OtpErlangList) res;
         } catch (final RpcTimeoutException e) {
-            if (!backend.isStopped()) {
+            if (backend.isRunning()) {
                 ErlLogger.warn(e);
             }
         } catch (final RpcException e) {
@@ -225,7 +225,7 @@ public class ErlideDebug {
         try {
             backend.getRpcSite().call("erlide_debug", "step_over", "x", meta);
         } catch (final RpcTimeoutException e) {
-            if (!backend.isStopped()) {
+            if (backend.isRunning()) {
                 ErlLogger.warn(e);
             }
         } catch (final RpcException e) {
@@ -238,7 +238,7 @@ public class ErlideDebug {
         try {
             backend.getRpcSite().call("erlide_debug", "step_return", "x", meta);
         } catch (final RpcTimeoutException e) {
-            if (!backend.isStopped()) {
+            if (backend.isRunning()) {
                 ErlLogger.warn(e);
             }
         } catch (final RpcException e) {
@@ -250,7 +250,7 @@ public class ErlideDebug {
         try {
             backend.getRpcSite().call("erlide_debug", "step_into", "x", meta);
         } catch (final RpcTimeoutException e) {
-            if (!backend.isStopped()) {
+            if (backend.isRunning()) {
                 ErlLogger.warn(e);
             }
         } catch (final RpcException e) {

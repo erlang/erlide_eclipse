@@ -1,4 +1,4 @@
-package org.erlide.util;
+package org.erlide.util.services;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
 

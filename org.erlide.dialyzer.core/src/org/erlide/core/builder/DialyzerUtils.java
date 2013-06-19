@@ -96,7 +96,7 @@ public class DialyzerUtils {
                     throw new OperationCanceledException();
                 }
                 // check backend down
-                if (backend.isStopped()) {
+                if (!backend.isRunning()) {
                     throw new BackendException("Backend " + backend.getName()
                             + " is down");
                 }

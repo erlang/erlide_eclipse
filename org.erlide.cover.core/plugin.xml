@@ -10,8 +10,8 @@
             modes="run, debug"
             name="Erlang Cover"
             public="true"
-            sourceLocatorId="org.erlide.core.erlangLocatorDirector"
-            sourcePathComputerId="org.erlide.core.sourcepathcomputer">
+            sourceLocatorId="org.erlide.backend.erlangLocatorDirector"
+            sourcePathComputerId="org.erlide.backend.sourcepathcomputer">
       </launchConfigurationType>
    </extension>
    <extension

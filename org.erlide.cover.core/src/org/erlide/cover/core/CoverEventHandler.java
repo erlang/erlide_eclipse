@@ -3,7 +3,6 @@ package org.erlide.cover.core;
 import java.io.File;
 import java.util.Iterator;
 
-import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ICoverageObject;
@@ -15,12 +14,14 @@ import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.cover.views.model.StatsTreeObject;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.util.ModelUtils;
-import org.osgi.service.event.Event;
+import org.erlide.runtime.events.ErlEvent;
+import org.erlide.runtime.events.ErlangEventHandler;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.eventbus.Subscribe;
 
 /**
  * Handler for coverage events
@@ -45,12 +46,14 @@ public class CoverEventHandler extends ErlangEventHandler {
         log = Activator.getDefault();
     }
 
-    @Override
-    public void handleEvent(final Event event) {
+    @Subscribe
+    public void handleEvent(final ErlEvent event) {
+        if (!event.getTopic().equals(getTopic())) {
+            return;
+        }
         OtpErlangTuple tuple = null;
 
-        final OtpErlangObject data = (OtpErlangObject) event
-                .getProperty("DATA");
+        final OtpErlangObject data = event.getEvent();
         if (gotResults(data)) {
             for (final ICoverObserver obs : coverBackend.getListeners()) {
                 obs.eventOccured(new CoverEvent(CoverStatus.UPDATE));

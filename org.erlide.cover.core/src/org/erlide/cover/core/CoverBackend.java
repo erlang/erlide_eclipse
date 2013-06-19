@@ -48,18 +48,16 @@ public class CoverBackend implements ICoverBackend {
 
     @Override
     public void startBackend() {
-        if (getBackend() != null && !getBackend().isStopped()) {
+        if (getBackend() != null && getBackend().isRunning()) {
             log.info("is started");
             return;
-        } else if (getBackend() != null) {
-            getBackend().stop();
         }
 
         handler = new CoverEventHandler(getBackend().getName(), this);
-        handler.register();
+        getBackend().registerEventListener(handler);
         testHandler = new EUnitEventHandler(getBackend().getName(),
                 TestTreeModel.getInstance(), this);
-        testHandler.register();
+        getBackend().registerEventListener(testHandler);
     }
 
     /**
