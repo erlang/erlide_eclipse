@@ -6,12 +6,10 @@ import org.erlide.util.SystemConfiguration;
 
 public class ErlRuntimeReporter {
 
-    private boolean reported;
     private final boolean internal;
 
     public ErlRuntimeReporter(final boolean internal) {
         this.internal = internal;
-        reported = false;
     }
 
     public String reportRuntimeDown(final String peer,
@@ -20,7 +18,7 @@ public class ErlRuntimeReporter {
         final String msg = String.format(fmt, peer);
         // TODO when to report errors?
         final boolean shouldReport = internal;
-        if (shouldReport && !reported) {
+        if (shouldReport) {
             final String user = System.getProperty("user.name");
 
             String msg1;
@@ -44,12 +42,9 @@ public class ErlRuntimeReporter {
                             : "http://www.assembla.com/spaces/erlide/support/tickets");
             // FIXME MessageReporter.showError(msg, msg1 + "\n\n" + details);
             System.out.println(msg + "\n\n" + msg1 + "\n\n" + details);
-            reported = true;
         }
         ErlLogger.error("Last system status was:\n %s",
                 status != null ? status.prettyPrint() : "null");
-
         return msg;
     }
-
 }
