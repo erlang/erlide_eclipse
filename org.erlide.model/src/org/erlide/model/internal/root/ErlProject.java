@@ -171,8 +171,8 @@ public class ErlProject extends Openable implements IErlProject {
     private void addOtpExternals(final List<IErlElement> children) {
         final String name = "OTP "
                 + getProperties().getRuntimeVersion().toString();
-        IErlExternalRoot external = new ErlOtpExternalReferenceEntryList(this,
-                name);
+        final IErlExternalRoot external = new ErlOtpExternalReferenceEntryList(
+                this, name);
         children.add(external);
     }
 
@@ -197,8 +197,8 @@ public class ErlProject extends Openable implements IErlProject {
         }
         if (externalIncludes.length() != 0 || externalModules.length() != 0
                 || !projectIncludes.isEmpty()) {
-            IErlExternalRoot external = new ErlExternalReferenceEntryList(this,
-                    "Externals", externalIncludes, projectIncludes,
+            final IErlExternalRoot external = new ErlExternalReferenceEntryList(
+                    this, "Externals", externalIncludes, projectIncludes,
                     externalModules);
             children.add(external);
         }

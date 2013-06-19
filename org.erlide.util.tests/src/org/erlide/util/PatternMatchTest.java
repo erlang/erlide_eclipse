@@ -9,13 +9,12 @@
  *******************************************************************************/
 package org.erlide.util;
 
-import org.junit.Assert;
-
 import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.BindingsImpl;
 import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.TermParser;
 import org.erlide.util.erlang.TermParserException;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

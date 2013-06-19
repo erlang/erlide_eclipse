@@ -1,8 +1,7 @@
 package org.erlide.runtime;
 
-import org.junit.Assert;
-
 import org.erlide.runtime.api.RuntimeVersion;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class RuntimeVersionTest {

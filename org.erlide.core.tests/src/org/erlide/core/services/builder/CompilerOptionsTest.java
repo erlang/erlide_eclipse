@@ -1,10 +1,9 @@
 package org.erlide.core.services.builder;
 
-import org.junit.Assert;
-
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.core.builder.CompilerOption;
 import org.erlide.core.builder.CompilerOptions;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.google.common.base.Splitter;

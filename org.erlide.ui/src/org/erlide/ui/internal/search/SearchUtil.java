@@ -104,8 +104,8 @@ public class SearchUtil {
                     result.addModule(module);
                 } else if (i instanceof IParent) {
                     final IParent parent = (IParent) i;
-                    SearchCoreUtil.addExternalModules(parent, result, externalModulePaths,
-                            addExternals, addOtp);
+                    SearchCoreUtil.addExternalModules(parent, result,
+                            externalModulePaths, addExternals, addOtp);
                 }
             }
         }
@@ -353,8 +353,8 @@ public class SearchUtil {
                     }
                 }
                 if (parent != null) {
-                    SearchCoreUtil.addExternalModules(parent, result, externalModulePaths,
-                            addExternals, addOTP);
+                    SearchCoreUtil.addExternalModules(parent, result,
+                            externalModulePaths, addExternals, addOTP);
                 }
             }
         }

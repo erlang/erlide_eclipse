@@ -1,7 +1,6 @@
 package org.erlide.util;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
 public class Base64Test {

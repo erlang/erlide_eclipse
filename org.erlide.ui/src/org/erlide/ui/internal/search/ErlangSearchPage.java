@@ -229,8 +229,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         switch (selectedScope) {
         case ISearchPageContainer.WORKSPACE_SCOPE:
             if (searchSources) {
-                scope = SearchCoreUtil
-                        .getWorkspaceScope(searchExternals, searchOtp);
+                scope = SearchCoreUtil.getWorkspaceScope(searchExternals,
+                        searchOtp);
             }
             scopeDescription = SearchUtil.getWorkspaceScopeDescription();
             break;
@@ -239,11 +239,12 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                     .getSelectedProjectNames();
             if (searchSources) {
                 scope = SearchCoreUtil.getProjectsScope(
-                        SearchCoreUtil.getProjects(projectNames), searchExternals,
-                        searchOtp);
+                        SearchCoreUtil.getProjects(projectNames),
+                        searchExternals, searchOtp);
             }
-            scopeDescription = SearchUtil.getProjectScopeDescription(SearchCoreUtil
-                    .getProjects(projectNames));
+            scopeDescription = SearchUtil
+                    .getProjectScopeDescription(SearchCoreUtil
+                            .getProjects(projectNames));
             break;
         case ISearchPageContainer.SELECTION_SCOPE:
             if (searchSources) {
@@ -721,7 +722,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         if (selectedText != null && selectedText.length() > 0) {
             int i = 0;
             while (i < selectedText.length()
-                    && !SearchCoreUtil.isLineDelimiterChar(selectedText.charAt(i))) {
+                    && !SearchCoreUtil.isLineDelimiterChar(selectedText
+                            .charAt(i))) {
                 i++;
             }
             if (i > 0) {

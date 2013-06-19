@@ -2,14 +2,13 @@ package org.erlide.core.services.builder;
 
 import java.util.List;
 
-import org.junit.Assert;
-
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.core.builder.CompilerOption;
 import org.erlide.core.builder.CompilerOption.BooleanOption;
 import org.erlide.core.builder.CompilerOption.DefineOption;
 import org.erlide.core.builder.CompilerOption.WarningOption;
 import org.erlide.util.erlang.TermParserException;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
