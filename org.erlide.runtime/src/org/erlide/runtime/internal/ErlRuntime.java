@@ -81,6 +81,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     }
 
     private void startLocalNode() throws IOException {
+        wait_for_epmd();
         synchronized (localNodeLock) {
             localNode = ErlRuntime.createOtpNode(data.getCookie(),
                     data.hasLongName());
@@ -157,7 +158,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         final String label = getNodeName();
         ErlLogger.debug(label + ": waiting connection to peer...");
         try {
-            wait_for_epmd();
             pingPeer();
             int i = 0;
             while (state() == State.NEW && i++ < 20) {
@@ -173,14 +173,14 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         }
     }
 
-    private void wait_for_epmd() throws Exception {
+    private void wait_for_epmd() {
         wait_for_epmd(null);
     }
 
-    private void wait_for_epmd(final String host) throws Exception {
+    private void wait_for_epmd(final String host) {
         // If anyone has a better solution for waiting for epmd to be up, please
         // let me know
-        int tries = 50;
+        int tries = 30;
         boolean ok = false;
         do {
             Socket s;
@@ -191,8 +191,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
             } catch (final IOException e) {
             }
             try {
-                // ErlLogger.debug("sleep............");
-                Thread.sleep(100);
+                Thread.sleep(POLL_INTERVAL);
             } catch (final InterruptedException e1) {
             }
             tries--;
@@ -202,7 +201,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
                     + "Your host's entry in /etc/hosts is probably wrong ("
                     + host + ").";
             ErlLogger.error(msg);
-            throw new Exception(msg);
+            throw new RuntimeException(msg);
         }
     }
 
@@ -350,9 +349,9 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
 
     @Override
     protected void startUp() throws Exception {
-        startLocalNode();
         exitCode = -1;
         process = startRuntimeProcess(data);
+        startLocalNode();
         rpcSite = new RpcSite(this, localNode, getNodeName());
 
         connect();
