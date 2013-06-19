@@ -43,6 +43,7 @@ public class ErlRuntimeReporter {
                             .hasFeatureEnabled("erlide.ericsson.user") ? ""
                             : "http://www.assembla.com/spaces/erlide/support/tickets");
             // FIXME MessageReporter.showError(msg, msg1 + "\n\n" + details);
+            System.out.println(msg + "\n\n" + msg1 + "\n\n" + details);
             reported = true;
         }
         ErlLogger.error("Last system status was:\n %s",

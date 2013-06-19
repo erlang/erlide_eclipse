@@ -59,7 +59,6 @@ import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.MessageReporter;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.erlang.OtpErlang;
 import org.osgi.framework.Bundle;
@@ -79,9 +78,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     private final IErlRuntime runtime;
     private BackendShellManager shellManager;
     private final ICodeManager codeManager;
-
-    private boolean reported;
-    private boolean connectOnce;
 
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
@@ -560,44 +556,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public void setSystemStatus(final ErlSystemStatus msg) {
         runtime.setSystemStatus(msg);
-    }
-
-    private String reportRuntimeDown(final String peer) {
-        final String fmt = "Backend '%s' is down";
-        final String msg = String.format(fmt, peer);
-        // TODO when to report errors?
-        final boolean shouldReport = data.isInternal() || data.isReportErrors();
-        if (shouldReport && !reported) {
-            final String user = System.getProperty("user.name");
-
-            String msg1;
-            if (connectOnce) {
-                msg1 = "It is likely that your network is misconfigured or uses 'strange' host names.\n\n"
-                        + "Please check the page"
-                        + "Window->preferences->erlang->network for hints about that. \n\n"
-                        + "Also, check if you can create and connect two erlang nodes on your machine "
-                        + "using \"erl -name foo1\" and \"erl -name foo2\".";
-            } else {
-                msg1 = "If you didn't shut it down on purpose, it is an "
-                        + "unrecoverable error, please restart Eclipse. ";
-            }
-
-            final String details = "If an error report named '"
-                    + user
-                    + "_<timestamp>.txt' has been created in your home directory, "
-                    + "please consider reporting the problem. \n"
-                    + (SystemConfiguration
-                            .hasFeatureEnabled("erlide.ericsson.user") ? ""
-                            : "http://www.assembla.com/spaces/erlide/support/tickets");
-            MessageReporter.showError(msg, msg1 + "\n\n" + details);
-            reported = true;
-        }
-
-        final ErlSystemStatus status = getSystemStatus();
-        ErlLogger.error("Last system status was:\n %s",
-                status != null ? status.prettyPrint() : "null");
-
-        return msg;
     }
 
     @Override
