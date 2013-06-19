@@ -45,12 +45,6 @@ public class NullErlRuntime implements IErlRuntime {
     }
 
     @Override
-    public Process start() {
-        reportNoBackend();
-        return null;
-    }
-
-    @Override
     public void stop() {
         reportNoBackend();
 

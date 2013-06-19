@@ -1,7 +1,5 @@
 package org.erlide.runtime;
 
-import java.util.Arrays;
-
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.internal.ErlRuntime;
@@ -30,7 +28,6 @@ public class ErlRuntimeTest {
         data.setCookie("c");
 
         final ErlRuntime runtime = new ErlRuntime(data);
-        System.out.println(Arrays.toString(data.getCmdLine()));
         final Process process = runtime.getProcess();
         Asserts.isNotNull(process);
         try {
@@ -42,7 +39,6 @@ public class ErlRuntimeTest {
             }
             Asserts.isTrue(val == -1, "process exited " + val);
             Asserts.isTrue(runtime.isRunning(), "not running");
-            runtime.connectRetry();
             runtime.connect();
             Asserts.isTrue(runtime.isAvailable(), "not available");
             final IRpcSite site = runtime.getRpcSite();
@@ -52,7 +48,7 @@ public class ErlRuntimeTest {
             } catch (final RpcException e) {
                 r = null;
             }
-            Asserts.isNotNull(r);
+            Asserts.isNotNull(r, "rpc not working");
 
         } finally {
             process.destroy();

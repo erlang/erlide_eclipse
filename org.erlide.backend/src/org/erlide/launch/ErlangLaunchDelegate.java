@@ -103,7 +103,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
     }
 
     private void startErtsProcess(final ILaunch launch, final BackendData data) {
-        final Process process = new ErlRuntime(data).start();
+        final Process process = new ErlRuntime(data).getProcess();
         if (process == null) {
             ErlLogger.debug("Error starting process");
             data.setManaged(false);

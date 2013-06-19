@@ -4,7 +4,6 @@ public interface IRuntimeProcess {
 
     // TODO should take cmdline?
     // TODO should have a factory instead?
-    Process start();
 
     void stop();
 

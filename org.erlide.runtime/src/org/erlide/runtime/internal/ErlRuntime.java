@@ -24,7 +24,6 @@ import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.events.ErlangEventPublisher;
 import org.erlide.runtime.events.ErlangLogEventHandler;
 import org.erlide.runtime.events.LogEventHandler;
-import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcSite;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.ErlLogger;
@@ -77,40 +76,28 @@ public class ErlRuntime implements IErlRuntime {
         eventDaemon.register(new ErlangLogEventHandler(nodeName));
     }
 
-    @Override
     public Process start() {
-        startLocalNode();
-        state = State.DISCONNECTED;
-        stopped = false;
+        try {
+            startLocalNode();
+            state = State.DISCONNECTED;
+            stopped = false;
 
-        process = startRuntimeProcess(data);
-        return process;
+            process = startRuntimeProcess(data);
+            return process;
+        } catch (final IOException e) {
+            state = State.DOWN;
+            ErlLogger.error("Could not start local OtpNode");
+        }
+        return null;
     }
 
-    public void startLocalNode() {
-        boolean nodeCreated = false;
+    public void startLocalNode() throws IOException {
         synchronized (localNodeLock) {
-            int i = 0;
-            do {
-                try {
-                    i++;
-                    localNode = ErlRuntime.createOtpNode(data.getCookie(),
-                            data.hasLongName());
-                    final OtpNodeStatus statusWatcher = new ErlideNodeStatus();
-                    localNode.registerStatusHandler(statusWatcher);
-                    eventMBox = createMbox("rex");
-                    nodeCreated = true;
-                } catch (final IOException e) {
-                    ErlLogger
-                            .error("ErlRuntime could not be created (%s), retrying %d",
-                                    e.getMessage(), i);
-                    try {
-                        localNodeLock.wait(300);
-                    } catch (final InterruptedException e1) {
-                    }
-                }
-            } while (!nodeCreated && i < 10);
-
+            localNode = ErlRuntime.createOtpNode(data.getCookie(),
+                    data.hasLongName());
+            final OtpNodeStatus statusWatcher = new ErlideNodeStatus();
+            localNode.registerStatusHandler(statusWatcher);
+            eventMBox = createMbox("rex");
         }
     }
 
@@ -119,7 +106,7 @@ public class ErlRuntime implements IErlRuntime {
         return data.getQualifiedNodeName();
     }
 
-    public boolean connectRetry() {
+    public boolean pingPeer() {
         int tries = MAX_RETRIES;
         boolean ok = false;
         while (!ok && tries > 0) {
@@ -130,39 +117,6 @@ public class ErlRuntime implements IErlRuntime {
             tries--;
         }
         return ok;
-    }
-
-    private void handleStateDisconnected() {
-        if (connectRetry()) {
-            state = State.CONNECTED;
-            rpcSite.setConnected(true);
-
-            if (waitForCodeServer()) {
-                ErlLogger.debug("connected!");
-            } else {
-                ErlLogger.error(COULD_NOT_CONNECT);
-            }
-
-        } else {
-            state = State.DOWN;
-            rpcSite.setConnected(false);
-        }
-    }
-
-    private void handleStateDown() throws RpcException {
-        if (listener != null) {
-            listener.runtimeDown(this);
-        }
-        rpcSite.setConnected(false);
-        if (process != null) {
-            process.destroy();
-            process = null;
-        }
-        if (!stopped && data.isReportErrors()) {
-            final String msg = reporter.reportRuntimeDown(getNodeName(),
-                    getSystemStatus());
-            // throw new RpcException(msg);
-        }
     }
 
     @Override
@@ -231,11 +185,9 @@ public class ErlRuntime implements IErlRuntime {
         ErlLogger.debug(label + ": waiting connection to peer...");
         try {
             wait_for_epmd();
-            System.out.println("wait for it");
-            connectRetry();
+            pingPeer();
             int i = 0;
-            while (state == State.DISCONNECTED && i++ < 10) {
-                System.out.println("##### " + state);
+            while (state == State.DISCONNECTED && i++ < 20) {
                 try {
                     Thread.sleep(200);
                 } catch (final InterruptedException e) {
@@ -287,7 +239,6 @@ public class ErlRuntime implements IErlRuntime {
             boolean gotIt = false;
             do {
                 r = rpcSite.call("erlang", "whereis", "a", "code_server");
-                System.out.println(r);
                 gotIt = !(r instanceof OtpErlangPid);
                 if (!gotIt) {
                     try {
@@ -433,14 +384,32 @@ public class ErlRuntime implements IErlRuntime {
             }
             if (up) {
                 ErlLogger.debug("Node %s is up", getNodeName());
-                handleStateDisconnected();
+                if (state == State.DISCONNECTED) {
+                    state = State.CONNECTED;
+                    rpcSite.setConnected(true);
+
+                    if (waitForCodeServer()) {
+                        ErlLogger.debug("connected!");
+                    } else {
+                        state = State.DOWN;
+                        ErlLogger.error(COULD_NOT_CONNECT);
+                    }
+                }
             } else {
                 ErlLogger.debug("Node %s is down: %s", getNodeName(), info);
                 state = State.DOWN;
-                try {
-                    handleStateDown();
-                } catch (final RpcException e) {
-                    e.printStackTrace();
+                if (listener != null) {
+                    listener.runtimeDown(ErlRuntime.this);
+                }
+                rpcSite.setConnected(false);
+                if (process != null) {
+                    process.destroy();
+                    process = null;
+                }
+                if (!stopped && data.isReportErrors()) {
+                    final String msg = reporter.reportRuntimeDown(
+                            getNodeName(), getSystemStatus());
+                    ErlLogger.error(msg);
                 }
             }
         }
