@@ -293,8 +293,12 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             final RuntimeVersion rv = new RuntimeVersion(
                     runtimeVersion.getText());
             prefs.setRuntimeVersion(rv);
-            prefs.setExternalModulesFile(externalModules.getText());
-            prefs.setExternalIncludesFile(externalIncludes.getText());
+            if (externalModules != null) {
+                prefs.setExternalModulesFile(externalModules.getText());
+            }
+            if (externalIncludes != null) {
+                prefs.setExternalIncludesFile(externalIncludes.getText());
+            }
 
             setPageComplete(testPageComplete());
         }
