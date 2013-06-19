@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.runtime.api.RuntimeVersion;
-import org.erlide.util.HostnameUtils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -62,9 +61,6 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         }
         final boolean shouldInit = erlideRuntime != null;
         erlideRuntime = runtimes.get(ideRuntime);
-        if (shouldInit && erlideRuntime != null) {
-            HostnameUtils.detectHostNames(erlideRuntime.getOtpHome());
-        }
 
         // Asserts.isNotNull(erlideRuntime);
     }
@@ -129,7 +125,6 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         final RuntimeInfo old = erlideRuntime;
         if (old == null || !old.equals(runtime)) {
             erlideRuntime = runtime;
-            HostnameUtils.detectHostNames(erlideRuntime.getOtpHome());
             // this creates infinite recursion!
             // BackendManagerImpl.getDefault().getIdeBackend().stop();
         }

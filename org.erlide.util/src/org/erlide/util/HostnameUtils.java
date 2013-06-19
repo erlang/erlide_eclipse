@@ -61,6 +61,8 @@ public class HostnameUtils {
             erlangShortName = retriever.checkHostName(false,
                     getJavaShortHostName());
         }
+
+        ErlLogger.debug("Detected:: %s && %s", erlangShortName, erlangLongName);
     }
 
     public static String getErlangLongHostName() {
