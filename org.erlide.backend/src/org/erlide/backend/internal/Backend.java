@@ -99,11 +99,13 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public void dispose() {
         ErlLogger.debug("disposing backend " + getName());
+        if (data.isDebug()) {
+            unloadDebuggerCode();
+        }
         if (shellManager != null) {
             shellManager.dispose();
             shellManager = null;
         }
-
         runtime.dispose();
     }
 
@@ -141,14 +143,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public boolean isRunning() {
         return runtime.isRunning();
-    }
-
-    @Override
-    public void stop() {
-        if (data.isDebug()) {
-            unloadDebuggerCode();
-        }
-        runtime.stop();
     }
 
     @Override
@@ -521,11 +515,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     // /////
-
-    @Override
-    public boolean isAvailable() {
-        return runtime.isAvailable();
-    }
 
     @Override
     public String getNodeName() {

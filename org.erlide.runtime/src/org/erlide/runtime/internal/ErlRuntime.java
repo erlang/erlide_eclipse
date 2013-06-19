@@ -47,7 +47,7 @@ public class ErlRuntime implements IErlRuntime {
             "erlide.connect.delay", "400"));
 
     public enum State {
-        DISCONNECTED, CONNECTED, DOWN
+        DISCONNECTED, CONNECTED, DOWN, CRASHED
     }
 
     private volatile State state;
@@ -57,7 +57,6 @@ public class ErlRuntime implements IErlRuntime {
     private final ErlRuntimeReporter reporter;
     private Process process;
     private OtpMbox eventMBox;
-    private boolean stopped;
     private IRuntimeStateListener listener;
     private ErlSystemStatus lastSystemMessage;
     private final IRpcSite rpcSite;
@@ -67,7 +66,7 @@ public class ErlRuntime implements IErlRuntime {
         this.data = data;
         reporter = new ErlRuntimeReporter(data.isInternal());
         final String nodeName = getNodeName();
-        start();
+        startBeamProcess();
         rpcSite = new RpcSite(this, localNode, nodeName);
 
         eventDaemon = new ErlangEventPublisher(this);
@@ -76,16 +75,15 @@ public class ErlRuntime implements IErlRuntime {
         eventDaemon.register(new ErlangLogEventHandler(nodeName));
     }
 
-    public Process start() {
+    private Process startBeamProcess() {
         try {
             startLocalNode();
             state = State.DISCONNECTED;
-            stopped = false;
 
             process = startRuntimeProcess(data);
             return process;
         } catch (final IOException e) {
-            state = State.DOWN;
+            state = State.CRASHED;
             ErlLogger.error("Could not start local OtpNode");
         }
         return null;
@@ -117,11 +115,6 @@ public class ErlRuntime implements IErlRuntime {
             tries--;
         }
         return ok;
-    }
-
-    @Override
-    public boolean isAvailable() {
-        return state == State.CONNECTED;
     }
 
     public static String createJavaNodeName() {
@@ -167,16 +160,6 @@ public class ErlRuntime implements IErlRuntime {
     @Override
     public OtpMbox createMbox() {
         return localNode.createMbox();
-    }
-
-    @Override
-    public void stop() {
-        // close peer too?
-        if (stopped) {
-            return;
-        }
-        stopped = true;
-        localNode.close();
     }
 
     @Override
@@ -264,7 +247,7 @@ public class ErlRuntime implements IErlRuntime {
 
     @Override
     public boolean isRunning() {
-        return !stopped;
+        return state == State.CONNECTED;
     }
 
     @Override
@@ -301,11 +284,15 @@ public class ErlRuntime implements IErlRuntime {
 
     @Override
     public void dispose() {
-        stop();
+        if (process == null) {
+            return;
+        }
+        localNode.close();
         if (eventDaemon != null) {
             eventDaemon.stop();
             eventDaemon = null;
         }
+        process.destroy();
         process = null;
         listener = null;
     }
@@ -406,7 +393,7 @@ public class ErlRuntime implements IErlRuntime {
                     process.destroy();
                     process = null;
                 }
-                if (!stopped && data.isReportErrors()) {
+                if (isRunning() && data.isReportErrors()) {
                     final String msg = reporter.reportRuntimeDown(
                             getNodeName(), getSystemStatus());
                     ErlLogger.error(msg);

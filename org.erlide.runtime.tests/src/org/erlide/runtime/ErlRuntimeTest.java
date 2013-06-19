@@ -38,9 +38,8 @@ public class ErlRuntimeTest {
                 val = -1;
             }
             Asserts.isTrue(val == -1, "process exited " + val);
-            Asserts.isTrue(runtime.isRunning(), "not running");
             runtime.connect();
-            Asserts.isTrue(runtime.isAvailable(), "not available");
+            Asserts.isTrue(runtime.isRunning(), "not running");
             final IRpcSite site = runtime.getRpcSite();
             OtpErlangObject r;
             try {

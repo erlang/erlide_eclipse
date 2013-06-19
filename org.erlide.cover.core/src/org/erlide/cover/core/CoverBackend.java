@@ -51,8 +51,6 @@ public class CoverBackend implements ICoverBackend {
         if (getBackend() != null && getBackend().isRunning()) {
             log.info("is started");
             return;
-        } else if (getBackend() != null) {
-            getBackend().stop();
         }
 
         handler = new CoverEventHandler(getBackend().getName(), this);

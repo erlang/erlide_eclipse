@@ -27,12 +27,6 @@ public class NullErlRuntime implements IErlRuntime {
     }
 
     @Override
-    public boolean isAvailable() {
-        reportNoBackend();
-        return false;
-    }
-
-    @Override
     public boolean isRunning() {
         reportNoBackend();
         return false;
@@ -42,12 +36,6 @@ public class NullErlRuntime implements IErlRuntime {
     public String getNodeName() {
         reportNoBackend();
         return null;
-    }
-
-    @Override
-    public void stop() {
-        reportNoBackend();
-
     }
 
     @Override

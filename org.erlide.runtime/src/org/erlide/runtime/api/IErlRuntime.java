@@ -15,7 +15,7 @@ import org.erlide.util.IDisposable;
 
 import com.ericsson.otp.erlang.OtpMbox;
 
-public interface IErlRuntime extends IRuntimeProcess, IDisposable {
+public interface IErlRuntime extends IDisposable {
 
     String getNodeName();
 
@@ -23,7 +23,7 @@ public interface IErlRuntime extends IRuntimeProcess, IDisposable {
 
     RuntimeData getRuntimeData();
 
-    boolean isAvailable();
+    boolean isRunning();
 
     // TODO naming
     void connect();
