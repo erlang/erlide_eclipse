@@ -9,6 +9,7 @@ import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.ExtensionHelper;
 
 import com.ericsson.otp.erlang.OtpMbox;
+import com.google.common.util.concurrent.Service.State;
 
 public class NullErlRuntime implements IErlRuntime {
 
@@ -36,12 +37,6 @@ public class NullErlRuntime implements IErlRuntime {
     public String getNodeName() {
         reportNoBackend();
         return null;
-    }
-
-    @Override
-    public void connect() {
-        reportNoBackend();
-
     }
 
     @Override
@@ -94,11 +89,16 @@ public class NullErlRuntime implements IErlRuntime {
     }
 
     @Override
-    public void registerEventHandler(final Object handler) {
+    public void registerEventListener(final Object handler) {
     }
 
     @Override
     public Process getProcess() {
         return null;
+    }
+
+    @Override
+    public State startAndWait() {
+        return State.RUNNING;
     }
 }

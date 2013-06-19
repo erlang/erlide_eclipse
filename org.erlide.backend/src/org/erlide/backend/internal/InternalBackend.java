@@ -34,7 +34,7 @@ public class InternalBackend extends Backend {
             restart();
 
             // TODO remove code duplication here
-            connect();
+            // connect();
             for (final ICodeBundle bb : backendManager.getCodeBundles()
                     .values()) {
                 registerCodeBundle(bb);

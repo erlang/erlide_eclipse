@@ -83,7 +83,7 @@ public class BackendFactory implements IBackendFactory {
         try {
             final IErlRuntime runtime = data.getRuntimeInfo() == null ? new NullErlRuntime()
                     : new ErlRuntime(data);
-            runtime.connect();
+            runtime.startAndWait();
             final IBackendManager backendManager = BackendCore
                     .getBackendManager();
             b = data.isInternal() ? new InternalBackend(data, runtime,

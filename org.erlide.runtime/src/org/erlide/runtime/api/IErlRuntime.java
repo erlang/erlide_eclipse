@@ -14,19 +14,19 @@ import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.IDisposable;
 
 import com.ericsson.otp.erlang.OtpMbox;
+import com.google.common.util.concurrent.Service;
 
 public interface IErlRuntime extends IDisposable {
+
+    Service.State startAndWait();
+
+    boolean isRunning();
 
     String getNodeName();
 
     IRpcSite getRpcSite();
 
     RuntimeData getRuntimeData();
-
-    boolean isRunning();
-
-    // TODO naming
-    void connect();
 
     OtpMbox createMbox(String string);
 
@@ -42,7 +42,7 @@ public interface IErlRuntime extends IDisposable {
 
     void setSystemStatus(ErlSystemStatus msg);
 
-    void registerEventHandler(Object handler);
+    void registerEventListener(Object handler);
 
     Process getProcess();
 }

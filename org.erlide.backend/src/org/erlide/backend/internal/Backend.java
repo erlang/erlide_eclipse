@@ -72,6 +72,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.Service.State;
 
 public abstract class Backend implements IStreamListener, IBackend {
 
@@ -166,7 +167,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     public synchronized void initErlang(final boolean watch) {
         ErlLogger.debug("initialize %s: %s", getName(), watch);
         startErlangApps(getEventMbox().self(), watch);
-        runtime.registerEventHandler(new SystemMonitorHandler(getName()));
+        registerEventListener(new SystemMonitorHandler(getName()));
     }
 
     @Override
@@ -522,11 +523,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void connect() {
-        runtime.connect();
-    }
-
-    @Override
     public OtpMbox getEventMbox() {
         return runtime.getEventMbox();
     }
@@ -605,12 +601,17 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void registerEventHandler(final Object handler) {
-        runtime.registerEventHandler(handler);
+    public void registerEventListener(final Object handler) {
+        runtime.registerEventListener(handler);
     }
 
     @Override
     public Process getProcess() {
         return runtime.getProcess();
+    }
+
+    @Override
+    public State startAndWait() {
+        return runtime.startAndWait();
     }
 }

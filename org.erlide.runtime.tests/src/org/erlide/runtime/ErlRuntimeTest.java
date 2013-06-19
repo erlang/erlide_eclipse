@@ -10,6 +10,7 @@ import org.erlide.util.Asserts;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.google.common.util.concurrent.Service.State;
 
 public class ErlRuntimeTest {
 
@@ -28,8 +29,9 @@ public class ErlRuntimeTest {
         data.setCookie("c");
 
         final ErlRuntime runtime = new ErlRuntime(data);
+        runtime.startAndWait();
         final Process process = runtime.getProcess();
-        Asserts.isNotNull(process);
+        Asserts.isNotNull(process, "beam process");
         try {
             int val;
             try {
@@ -38,7 +40,6 @@ public class ErlRuntimeTest {
                 val = -1;
             }
             Asserts.isTrue(val == -1, "process exited " + val);
-            runtime.connect();
             Asserts.isTrue(runtime.isRunning(), "not running");
             final IRpcSite site = runtime.getRpcSite();
             OtpErlangObject r;
@@ -48,6 +49,8 @@ public class ErlRuntimeTest {
                 r = null;
             }
             Asserts.isNotNull(r, "rpc not working");
+            runtime.stopAndWait();
+            Asserts.isTrue(runtime.state() == State.TERMINATED);
 
         } finally {
             process.destroy();

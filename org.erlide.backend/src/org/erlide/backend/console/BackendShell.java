@@ -45,7 +45,7 @@ public class BackendShell implements IBackendShell {
 
         final ErlangEventHandler handler = new ConsoleEventHandler(
                 backend.getName(), this);
-        backend.registerEventHandler(handler);
+        backend.registerEventListener(handler);
     }
 
     @Override
