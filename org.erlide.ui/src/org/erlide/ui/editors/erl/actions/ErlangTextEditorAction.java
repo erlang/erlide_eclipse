@@ -157,46 +157,43 @@ public class ErlangTextEditorAction extends TextEditorAction {
                     document, (ITextSelection) sel);
             final ITextSelection getSelection = getTextSelection(document,
                     selection);
-            String text;
-            OtpErlangObject r1 = null;
-            try {
-                text = document.get(getSelection.getOffset(),
-                        getSelection.getLength());
-                // call erlang, with selection within text
-                r1 = callErlang(
-                        selection.getOffset() - getSelection.getOffset(),
-                        selection.getLength(), text);
-            } catch (final Exception e) {
-                ErlLogger.error(e);
-            }
-            final String newText = Util.stringValue(r1);
-            if (newText == null) {
-                final Status status = new Status(IStatus.ERROR,
-                        ErlangCore.PLUGIN_ID,
-                        ErlangStatus.INTERNAL_ERROR.getValue(),
-                        "operation returned " + r1 + " instead of a string",
-                        null);
-                ErlLogger.error("INTERNAL ERROR: operation returned " + r1
-                        + " instead of a string");
-
-                ErrorDialog.openError(textEditor.getSite().getShell(),
-                        ActionMessages.IndentAction_error_message,
-                        String.valueOf(r1), status);
-                return;
-            }
-            final int startLine = selection.getStartLine();
-            final int endLine = selection.getEndLine();
-            final int nLines = endLine - startLine + 1;
             final Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
+                    String text;
+                    OtpErlangObject r1 = null;
+                    try {
+                        text = document.get(getSelection.getOffset(),
+                                getSelection.getLength());
+                        // call erlang, with selection within text
+                        r1 = callErlang(
+                                selection.getOffset()
+                                        - getSelection.getOffset(),
+                                selection.getLength(), text);
+                    } catch (final Exception e) {
+                        ErlLogger.error(e);
+                    }
+                    final String newText = Util.stringValue(r1);
+                    if (newText == null) {
+                        final String msg = "call to "
+                                + getClass().getSimpleName()
+                                + " timed out; try a smaller selection.";
+                        final Status status = new Status(IStatus.ERROR,
+                                ErlangCore.PLUGIN_ID,
+                                ErlangStatus.INTERNAL_ERROR.getValue(), msg,
+                                null);
+                        ErlLogger.error("INTERNAL ERROR: " + msg);
+
+                        ErrorDialog.openError(textEditor.getSite().getShell(),
+                                ActionMessages.IndentAction_error_message,
+                                "Internal error", status);
+                        return;
+                    }
                     final IRewriteTarget target = (IRewriteTarget) textEditor
                             .getAdapter(IRewriteTarget.class);
                     if (target != null) {
                         target.beginCompoundChange();
-                        if (nLines > 1) {
-                            target.setRedraw(false);
-                        }
+                        target.setRedraw(false);
                     }
                     try {
                         // ErlLogger.debug("'"+newText+"'");
@@ -211,19 +208,13 @@ public class ErlangTextEditorAction extends TextEditorAction {
                     }
                     if (target != null) {
                         target.endCompoundChange();
-                        if (nLines > 1) {
-                            target.setRedraw(true);
-                        }
+                        target.setRedraw(true);
                     }
                 }
             };
-            if (nLines > 50) {
-                final Display display = textEditor.getEditorSite()
-                        .getWorkbenchWindow().getShell().getDisplay();
-                BusyIndicator.showWhile(display, runnable);
-            } else {
-                runnable.run();
-            }
+            final Display display = textEditor.getEditorSite()
+                    .getWorkbenchWindow().getShell().getDisplay();
+            BusyIndicator.showWhile(display, runnable);
         } finally {
             ErlideEventTracer.getInstance().traceOperationEnd(this);
         }
