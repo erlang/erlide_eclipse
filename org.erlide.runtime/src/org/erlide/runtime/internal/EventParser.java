@@ -1,11 +1,27 @@
 package org.erlide.runtime.internal;
 
+import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.events.ErlEvent;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class EventHelper {
+public class EventParser {
+
+    public ErlEvent parse(final OtpErlangObject msg, final IErlRuntime runtime) {
+        if (msg == null) {
+            return null;
+        }
+        final String topic = getEventTopic(msg);
+        if (topic == null) {
+            return null;
+        }
+        final OtpErlangObject event = getEventData(msg);
+        final OtpErlangPid sender = getEventSender(msg);
+        return new ErlEvent(topic, runtime, event, sender);
+    }
 
     public boolean isEventMessage(final OtpErlangObject msg) {
         try {
@@ -18,17 +34,17 @@ public class EventHelper {
         }
     }
 
-    public OtpErlangPid getEventSender(final OtpErlangObject msg) {
+    private OtpErlangPid getEventSender(final OtpErlangObject msg) {
         final OtpErlangTuple tmsg = (OtpErlangTuple) msg;
         return (OtpErlangPid) tmsg.elementAt(3);
     }
 
-    public OtpErlangObject getEventData(final OtpErlangObject msg) {
+    private OtpErlangObject getEventData(final OtpErlangObject msg) {
         final OtpErlangTuple tmsg = (OtpErlangTuple) msg;
         return tmsg.elementAt(2);
     }
 
-    public String getEventTopic(final OtpErlangObject msg) {
+    private String getEventTopic(final OtpErlangObject msg) {
         final OtpErlangTuple tmsg = (OtpErlangTuple) msg;
         final Object el0 = tmsg.elementAt(1);
         final OtpErlangAtom a = (OtpErlangAtom) el0;

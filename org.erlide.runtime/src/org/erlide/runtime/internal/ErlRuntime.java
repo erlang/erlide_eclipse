@@ -53,7 +53,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
 
     private final RuntimeData data;
     private OtpNode localNode;
-    private final Object localNodeLock = new Object();
     private final ErlRuntimeReporter reporter;
     private Process process;
     private OtpMbox eventMBox;
@@ -62,8 +61,8 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     private IRpcSite rpcSite;
     private final EventBus eventBus;
     private volatile boolean stopped;
-    public volatile int exitCode;
-    private EventHelper eventHelper;
+    private volatile int exitCode;
+    private EventParser eventHelper;
 
     final static boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.event.daemon"));
@@ -84,7 +83,8 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     protected void startUp() throws Exception {
         exitCode = -1;
         process = startRuntimeProcess(data);
-        startLocalNode();
+        localNode = startLocalNode();
+        eventMBox = createMbox("rex");
         rpcSite = new RpcSite(this, localNode, getNodeName());
 
         connect();
@@ -128,28 +128,20 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     @Override
     protected void run() throws Exception {
         OtpErlangObject msg = null;
-        eventHelper = new EventHelper();
+        eventHelper = new EventParser();
+        final OtpMbox eventBox = getEventMbox();
         do {
-            final OtpMbox eventBox = getEventMbox();
-            msg = eventBox != null ? eventBox.receive(POLL_INTERVAL) : null;
-            String topic = null;
-            OtpErlangObject event = null;
-            OtpErlangPid sender = null;
-            if (msg != null) {
-                if (!eventHelper.isEventMessage(msg)) {
-                    // throw new Exception("Bad event data " + msg);
-                    continue;
-                }
-                topic = eventHelper.getEventTopic(msg);
-                event = eventHelper.getEventData(msg);
-                sender = eventHelper.getEventSender(msg);
-            }
-            if (topic != null) {
+            msg = eventBox.receive(POLL_INTERVAL);
+            final ErlEvent busEvent = eventHelper.parse(msg, this);
+            if (busEvent != null) {
                 if (DEBUG) {
-                    ErlLogger.debug("MSG: %s", "[" + sender + "::" + topic
-                            + ": " + event + "]");
+                    ErlLogger.debug(
+                            "MSG: %s",
+                            "[" + busEvent.getSender() + "::"
+                                    + busEvent.getTopic() + ": "
+                                    + busEvent.getEvent() + "]");
                 }
-                publishEvent(this, topic, event, sender);
+                eventBus.post(busEvent);
             }
             if (exitCode > 0) {
                 throw new RuntimeException("runtime crashed with code "
@@ -230,14 +222,13 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         return getClass().getSimpleName() + " " + getNodeName();
     }
 
-    private void startLocalNode() throws IOException {
+    private OtpNode startLocalNode() throws IOException {
         wait_for_epmd();
-        synchronized (localNodeLock) {
-            localNode = createOtpNode(data.getCookie(), data.hasLongName());
-            final OtpNodeStatus statusWatcher = new ErlideNodeStatus();
-            localNode.registerStatusHandler(statusWatcher);
-            eventMBox = createMbox("rex");
-        }
+        final OtpNode lNode = createOtpNode(data.getCookie(),
+                data.hasLongName());
+        final OtpNodeStatus statusWatcher = new ErlideNodeStatus();
+        lNode.registerStatusHandler(statusWatcher);
+        return lNode;
     }
 
     private boolean pingPeer() {
@@ -432,12 +423,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
                 triggerShutdown();
             }
         }
-    }
-
-    private void publishEvent(final IErlRuntime b, final String topic,
-            final OtpErlangObject event, final OtpErlangPid sender) {
-        final ErlEvent busEvent = new ErlEvent(topic, b, event, sender);
-        eventBus.post(busEvent);
     }
 
     @Subscribe
