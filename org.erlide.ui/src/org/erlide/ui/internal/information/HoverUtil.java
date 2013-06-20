@@ -97,8 +97,13 @@ public class HoverUtil {
         final StringBuilder stringBuilder = new StringBuilder();
         for (final IErlMember member : comments) {
             try {
-                final String source = member.getSource();
-                stringBuilder.append(source.replaceAll("%% ", ""));
+                final String source = "\n" + member.getSource();
+                stringBuilder.append(source.replaceAll("\n%%%", "\n")
+                        .replaceAll("\n%%", "\n").replaceAll("\n%", "\n")
+                        .substring(1)
+                        .replaceAll("\n( *([-=] *)+\n)+", "\n<hr/>\n")
+                        .replaceAll("^ *([-=] *)+\n", "\n")
+                        .replaceAll("\n *([-=] *)+$", "\n"));
                 if (!source.endsWith("\n")) {
                     stringBuilder.append('\n');
                 }
