@@ -264,13 +264,19 @@ public abstract class Backend implements IStreamListener, IBackend {
             // can happen if project was removed
             return;
         }
-        final IProject project = eproject.getWorkspaceProject();
-        final String outDir = project.getLocation()
-                .append(eproject.getOutputLocation()).toOSString();
-        if (outDir.length() > 0) {
-            ErlLogger.debug("backend %s: remove path %s", getName(), outDir);
-            removePath(outDir);
-            // TODO unloadBeamsFromDir(outDir); ?
+        try {
+            final IProject project = eproject.getWorkspaceProject();
+            final String outDir = project.getLocation()
+                    .append(eproject.getOutputLocation()).toOSString();
+            if (outDir.length() > 0) {
+                ErlLogger
+                        .debug("backend %s: remove path %s", getName(), outDir);
+                removePath(outDir);
+                // TODO unloadBeamsFromDir(outDir); ?
+            }
+        } catch (final Exception e) {
+            // can happen when shutting down
+            ErlLogger.warn(e);
         }
     }
 
