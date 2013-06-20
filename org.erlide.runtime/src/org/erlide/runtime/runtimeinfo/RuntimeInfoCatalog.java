@@ -59,9 +59,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         if (ideRuntime == null) {
             ideRuntime = defaultRuntimeName;
         }
-        final boolean shouldInit = erlideRuntime != null;
         erlideRuntime = runtimes.get(ideRuntime);
-
         // Asserts.isNotNull(erlideRuntime);
     }
 
