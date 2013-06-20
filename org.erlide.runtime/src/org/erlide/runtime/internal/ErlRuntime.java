@@ -80,20 +80,164 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         registerEventListener(new ErlangLogEventHandler(nodeName));
     }
 
-    private void startLocalNode() throws IOException {
-        wait_for_epmd();
-        synchronized (localNodeLock) {
-            localNode = ErlRuntime.createOtpNode(data.getCookie(),
-                    data.hasLongName());
-            final OtpNodeStatus statusWatcher = new ErlideNodeStatus();
-            localNode.registerStatusHandler(statusWatcher);
-            eventMBox = createMbox("rex");
+    @Override
+    protected void startUp() throws Exception {
+        exitCode = -1;
+        process = startRuntimeProcess(data);
+        startLocalNode();
+        rpcSite = new RpcSite(this, localNode, getNodeName());
+
+        connect();
+        ErlLogger.debug("Node %s is up", getNodeName());
+        rpcSite.setConnected(true);
+
+        if (waitForCodeServer()) {
+            ErlLogger.debug("connected!");
+        } else {
+            triggerShutdown();
+            ErlLogger.error(COULD_NOT_CONNECT);
         }
+
+    }
+
+    @Override
+    protected void shutDown() throws Exception {
+        localNode.close();
+
+        process.destroy();
+        process = null;
+
+        if (listener != null) {
+            listener.runtimeDown(ErlRuntime.this);
+        }
+        listener = null;
+
+        rpcSite.setConnected(false);
+        if (isRunning() && data.isReportErrors()) {
+            final String msg = reporter.reportRuntimeDown(getNodeName(),
+                    getSystemStatus());
+            ErlLogger.error(msg);
+        }
+    }
+
+    @Override
+    protected void triggerShutdown() {
+        stopped = true;
+    }
+
+    @Override
+    protected void run() throws Exception {
+        OtpErlangObject msg = null;
+        eventHelper = new EventHelper();
+        do {
+            final OtpMbox eventBox = getEventMbox();
+            msg = eventBox != null ? eventBox.receive(POLL_INTERVAL) : null;
+            String topic = null;
+            OtpErlangObject event = null;
+            OtpErlangPid sender = null;
+            if (msg != null) {
+                if (!eventHelper.isEventMessage(msg)) {
+                    // throw new Exception("Bad event data " + msg);
+                    continue;
+                }
+                topic = eventHelper.getEventTopic(msg);
+                event = eventHelper.getEventData(msg);
+                sender = eventHelper.getEventSender(msg);
+            }
+            if (topic != null) {
+                if (DEBUG) {
+                    ErlLogger.debug("MSG: %s", "[" + sender + "::" + topic
+                            + ": " + event + "]");
+                }
+                publishEvent(this, topic, event, sender);
+            }
+            if (exitCode > 0) {
+                throw new RuntimeException("runtime crashed with code "
+                        + exitCode);
+            }
+        } while (!stopped && exitCode < 0);
     }
 
     @Override
     public String getNodeName() {
         return data.getQualifiedNodeName();
+    }
+
+    @Override
+    public OtpMbox createMbox(final String name) {
+        return localNode.createMbox(name);
+    }
+
+    @Override
+    public OtpMbox createMbox() {
+        return localNode.createMbox();
+    }
+
+    @Override
+    public OtpMbox getEventMbox() {
+        return eventMBox;
+    }
+
+    @Override
+    public RuntimeData getRuntimeData() {
+        return data;
+    }
+
+    @Override
+    public void addListener(final IRuntimeStateListener aListener) {
+        listener = aListener;
+    }
+
+    @Override
+    public IBackendShell getShell(final String id) {
+        // TODO can we return something here?
+        return null;
+    }
+
+    @Override
+    public ErlSystemStatus getSystemStatus() {
+        return lastSystemMessage;
+    }
+
+    @Override
+    public void setSystemStatus(final ErlSystemStatus msg) {
+        // System.out.println(msg.prettyPrint());
+        lastSystemMessage = msg;
+    }
+
+    @Override
+    public void dispose() {
+        triggerShutdown();
+    }
+
+    @Override
+    public IRpcSite getRpcSite() {
+        return rpcSite;
+    }
+
+    @Override
+    public Process getProcess() {
+        return process;
+    }
+
+    @Override
+    public void registerEventListener(final Object handler) {
+        eventBus.register(handler);
+    }
+
+    @Override
+    protected String serviceName() {
+        return getClass().getSimpleName() + " " + getNodeName();
+    }
+
+    private void startLocalNode() throws IOException {
+        wait_for_epmd();
+        synchronized (localNodeLock) {
+            localNode = createOtpNode(data.getCookie(), data.hasLongName());
+            final OtpNodeStatus statusWatcher = new ErlideNodeStatus();
+            localNode.registerStatusHandler(statusWatcher);
+            eventMBox = createMbox("rex");
+        }
     }
 
     private boolean pingPeer() {
@@ -109,23 +253,23 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         return ok;
     }
 
-    public static String createJavaNodeName() {
-        final String fUniqueId = ErlRuntime.getTimeSuffix();
+    private String createJavaNodeName() {
+        final String fUniqueId = getTimeSuffix();
         return "jerlide_" + fUniqueId;
     }
 
-    public static String createJavaNodeName(final String hostName) {
+    private String createJavaNodeName(final String hostName) {
         return createJavaNodeName() + "@" + hostName;
     }
 
-    static String getTimeSuffix() {
+    private String getTimeSuffix() {
         String fUniqueId;
         fUniqueId = Long.toHexString(System.currentTimeMillis() & 0xFFFFFFF);
         return fUniqueId;
     }
 
-    public static OtpNode createOtpNode(final String cookie,
-            final boolean longName) throws IOException {
+    private OtpNode createOtpNode(final String cookie, final boolean longName)
+            throws IOException {
         OtpNode node;
         final String hostName = HostnameUtils.getErlangHostName(longName);
         if (Strings.isNullOrEmpty(cookie)) {
@@ -142,16 +286,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         final String trimmed = len > 7 ? cookie.substring(0, 7) : cookie;
         ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed, len,
                 cookie);
-    }
-
-    @Override
-    public OtpMbox createMbox(final String name) {
-        return localNode.createMbox(name);
-    }
-
-    @Override
-    public OtpMbox createMbox() {
-        return localNode.createMbox();
     }
 
     private void connect() {
@@ -235,48 +369,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         }
     }
 
-    @Override
-    public OtpMbox getEventMbox() {
-        return eventMBox;
-    }
-
-    @Override
-    public RuntimeData getRuntimeData() {
-        return data;
-    }
-
-    @Override
-    public void addListener(final IRuntimeStateListener aListener) {
-        listener = aListener;
-    }
-
-    @Override
-    public IBackendShell getShell(final String id) {
-        // TODO can we return something here?
-        return null;
-    }
-
-    @Override
-    public ErlSystemStatus getSystemStatus() {
-        return lastSystemMessage;
-    }
-
-    @Override
-    public void setSystemStatus(final ErlSystemStatus msg) {
-        // System.out.println(msg.prettyPrint());
-        lastSystemMessage = msg;
-    }
-
-    @Override
-    public void dispose() {
-        triggerShutdown();
-    }
-
-    @Override
-    public IRpcSite getRpcSite() {
-        return rpcSite;
-    }
-
     private Process startRuntimeProcess(final RuntimeData rtData) {
         final String[] cmds = rtData.getCmdLine();
         final File workingDirectory = new File(rtData.getWorkingDir());
@@ -323,11 +415,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         }
     }
 
-    @Override
-    public Process getProcess() {
-        return process;
-    }
-
     private class ErlideNodeStatus extends OtpNodeStatus {
         @Override
         public void remoteStatus(final String node, final boolean up,
@@ -347,93 +434,10 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         }
     }
 
-    @Override
-    protected void startUp() throws Exception {
-        exitCode = -1;
-        process = startRuntimeProcess(data);
-        startLocalNode();
-        rpcSite = new RpcSite(this, localNode, getNodeName());
-
-        connect();
-        ErlLogger.debug("Node %s is up", getNodeName());
-        rpcSite.setConnected(true);
-
-        if (waitForCodeServer()) {
-            ErlLogger.debug("connected!");
-        } else {
-            triggerShutdown();
-            ErlLogger.error(COULD_NOT_CONNECT);
-        }
-
-    }
-
-    @Override
-    protected void shutDown() throws Exception {
-        localNode.close();
-
-        process.destroy();
-        process = null;
-
-        if (listener != null) {
-            listener.runtimeDown(ErlRuntime.this);
-        }
-        listener = null;
-
-        rpcSite.setConnected(false);
-        if (isRunning() && data.isReportErrors()) {
-            final String msg = reporter.reportRuntimeDown(getNodeName(),
-                    getSystemStatus());
-            ErlLogger.error(msg);
-        }
-    }
-
-    @Override
-    protected void triggerShutdown() {
-        stopped = true;
-    }
-
-    @Override
-    protected void run() throws Exception {
-        OtpErlangObject msg = null;
-        eventHelper = new EventHelper();
-        do {
-            final OtpMbox eventBox = getEventMbox();
-            msg = eventBox != null ? eventBox.receive(POLL_INTERVAL) : null;
-            String topic = null;
-            OtpErlangObject event = null;
-            OtpErlangPid sender = null;
-            if (msg != null) {
-                if (!eventHelper.isEventMessage(msg)) {
-                    // throw new Exception("Bad event data " + msg);
-                    continue;
-                }
-                topic = eventHelper.getEventTopic(msg);
-                event = eventHelper.getEventData(msg);
-                sender = eventHelper.getEventSender(msg);
-            }
-            if (topic != null) {
-                if (DEBUG) {
-                    ErlLogger.debug("MSG: %s", "[" + sender + "::" + topic
-                            + ": " + event + "]");
-                }
-                publishEvent(this, topic, event, sender);
-            }
-            if (exitCode > 0) {
-                throw new RuntimeException("runtime crashed with code "
-                        + exitCode);
-            }
-        } while (!stopped && exitCode < 0);
-    }
-
     private void publishEvent(final IErlRuntime b, final String topic,
             final OtpErlangObject event, final OtpErlangPid sender) {
         final ErlEvent busEvent = new ErlEvent(topic, b, event, sender);
         eventBus.post(busEvent);
-    }
-
-    @Override
-    public void registerEventListener(final Object handler) {
-        eventBus.register(handler);
     }
 
     @Subscribe
@@ -441,8 +445,4 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         ErlLogger.warn("Dead event: " + dead + " in " + getNodeName());
     }
 
-    @Override
-    protected String serviceName() {
-        return getClass().getSimpleName() + " " + getNodeName();
-    }
 }
