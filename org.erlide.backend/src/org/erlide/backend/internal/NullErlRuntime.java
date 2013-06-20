@@ -59,16 +59,17 @@ public class NullErlRuntime implements IErlRuntime {
     @Override
     public void addListener(final IRuntimeStateListener listener) {
         reportNoBackend();
-
     }
 
     @Override
     public ErlSystemStatus getSystemStatus() {
+        reportNoBackend();
         return null;
     }
 
     @Override
     public void setSystemStatus(final ErlSystemStatus msg) {
+        reportNoBackend();
     }
 
     @Override
@@ -83,15 +84,18 @@ public class NullErlRuntime implements IErlRuntime {
 
     @Override
     public void registerEventListener(final Object handler) {
+        reportNoBackend();
     }
 
     @Override
     public Process getProcess() {
+        reportNoBackend();
         return null;
     }
 
     @Override
     public State startAndWait() {
+        reportNoBackend();
         return State.RUNNING;
     }
 }
