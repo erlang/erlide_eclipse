@@ -85,7 +85,7 @@ public class DebuggerEventDaemon implements IBackendListener {
 
     public synchronized void start() {
         stopped = false;
-        mbox = backend.createMbox();
+        mbox = backend.getRuntime().createMbox();
         new Thread(new HandlerJob(backend)).start();
     }
 

@@ -5,15 +5,21 @@ import java.io.IOException;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.IRuntimeStateListener;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.shell.IBackendShell;
+import org.erlide.util.IDisposable;
 
-public interface IBackend extends IErlRuntime, IRuntimeStateListener {
+public interface IBackend extends IRuntimeStateListener, IDisposable {
 
     String getName();
 
     void initialize();
 
     BackendData getData();
+
+    IRpcSite getRpcSite();
 
     void registerCodeBundle(final ICodeBundle bundle);
 
@@ -25,4 +31,11 @@ public interface IBackend extends IErlRuntime, IRuntimeStateListener {
 
     void removeProjectPath(final IErlProject project);
 
+    RuntimeInfo getRuntimeInfo();
+
+    boolean isRunning();
+
+    IErlRuntime getRuntime();
+
+    IBackendShell getShell(String string);
 }

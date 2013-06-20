@@ -84,7 +84,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
             final EnumSet<ErlDebugFlags> debugFlags) throws DebugException {
         super(null);
         fBackend = b;
-        fNodeName = b.getNodeName();
+        fNodeName = b.getName();
         fLaunch = launch;
         fTerminated = false;
         this.projects = projects;

@@ -5,7 +5,6 @@ import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.IRuntimeStateListener;
 import org.erlide.runtime.api.RuntimeData;
-import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.ExtensionHelper;
 
 import com.ericsson.otp.erlang.OtpMbox;
@@ -61,12 +60,6 @@ public class NullErlRuntime implements IErlRuntime {
     public void addListener(final IRuntimeStateListener listener) {
         reportNoBackend();
 
-    }
-
-    @Override
-    public IBackendShell getShell(final String id) {
-        reportNoBackend();
-        return null;
     }
 
     @Override

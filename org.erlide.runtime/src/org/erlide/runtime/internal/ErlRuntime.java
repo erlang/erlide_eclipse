@@ -25,7 +25,6 @@ import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangLogEventHandler;
 import org.erlide.runtime.events.LogEventHandler;
 import org.erlide.runtime.rpc.RpcSite;
-import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 import org.erlide.util.SystemConfiguration;
@@ -178,12 +177,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     @Override
     public void addListener(final IRuntimeStateListener aListener) {
         listener = aListener;
-    }
-
-    @Override
-    public IBackendShell getShell(final String id) {
-        // TODO can we return something here?
-        return null;
     }
 
     @Override

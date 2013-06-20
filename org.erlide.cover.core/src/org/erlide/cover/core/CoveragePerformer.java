@@ -75,9 +75,8 @@ public class CoveragePerformer implements ICoveragePerformer {
         if (coverNodes.isEmpty() || different) {
 
             coverNodes = nodes;
-            log.info(CoverBackend.getInstance().getBackend().getNodeName());
-            coverNodes.add(CoverBackend.getInstance().getBackend()
-                    .getNodeName());
+            log.info(CoverBackend.getInstance().getBackend().getName());
+            coverNodes.add(CoverBackend.getInstance().getBackend().getName());
 
             // TODO restarting
 

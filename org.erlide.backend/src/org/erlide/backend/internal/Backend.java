@@ -46,15 +46,13 @@ import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.ErlDebugFlags;
-import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.runtime.api.ICodeManager;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.IRuntimeStateListener;
 import org.erlide.runtime.api.InitialCall;
-import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.api.RuntimeUtils;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.util.Asserts;
@@ -69,9 +67,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-import com.ericsson.otp.erlang.OtpMbox;
 import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.Service.State;
 
 public abstract class Backend implements IStreamListener, IBackend {
 
@@ -142,16 +138,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         return runtime.isRunning();
     }
 
-    @Override
-    public OtpMbox createMbox() {
-        return runtime.createMbox();
-    }
-
-    @Override
-    public OtpMbox createMbox(final String name) {
-        return runtime.createMbox(name);
-    }
-
     public void removePath(final String path) {
         codeManager.removePath(path);
     }
@@ -162,8 +148,8 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public synchronized void initErlang(final boolean watch) {
         ErlLogger.debug("initialize %s: %s", getName(), watch);
-        startErlangApps(getEventMbox().self(), watch);
-        registerEventListener(new SystemMonitorHandler(getName()));
+        startErlangApps(getRuntime().getEventMbox().self(), watch);
+        getRuntime().registerEventListener(new SystemMonitorHandler(getName()));
     }
 
     @Override
@@ -520,62 +506,21 @@ public abstract class Backend implements IStreamListener, IBackend {
     // /////
 
     @Override
-    public String getNodeName() {
-        return runtime.getNodeName();
-    }
-
-    @Override
-    public OtpMbox getEventMbox() {
-        return runtime.getEventMbox();
-    }
-
-    @Override
     public IRpcSite getRpcSite() {
         return runtime.getRpcSite();
     }
 
     @Override
-    public RuntimeData getRuntimeData() {
-        return data;
+    public RuntimeInfo getRuntimeInfo() {
+        return runtime.getRuntimeData().getRuntimeInfo();
     }
 
     @Override
-    public void addListener(final IRuntimeStateListener listener) {
-        // TODO not needed
-        runtime.addListener(this);
+    public IErlRuntime getRuntime() {
+        return runtime;
     }
 
     @Override
     public void runtimeDown(final IErlRuntime aRuntime) {
-        // terminate process
-    }
-
-    public void restart() {
-        // TODO
-    }
-
-    @Override
-    public ErlSystemStatus getSystemStatus() {
-        return runtime.getSystemStatus();
-    }
-
-    @Override
-    public void setSystemStatus(final ErlSystemStatus msg) {
-        runtime.setSystemStatus(msg);
-    }
-
-    @Override
-    public void registerEventListener(final Object handler) {
-        runtime.registerEventListener(handler);
-    }
-
-    @Override
-    public Process getProcess() {
-        return runtime.getProcess();
-    }
-
-    @Override
-    public State startAndWait() {
-        return runtime.startAndWait();
     }
 }

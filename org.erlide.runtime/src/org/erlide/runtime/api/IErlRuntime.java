@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.runtime.api;
 
-import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.IDisposable;
 
 import com.ericsson.otp.erlang.OtpMbox;
@@ -33,8 +32,6 @@ public interface IErlRuntime extends IDisposable {
     OtpMbox createMbox();
 
     OtpMbox getEventMbox();
-
-    IBackendShell getShell(final String id);
 
     void addListener(IRuntimeStateListener listener);
 
