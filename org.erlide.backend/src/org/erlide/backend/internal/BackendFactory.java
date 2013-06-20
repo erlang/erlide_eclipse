@@ -20,9 +20,9 @@ import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendManager;
+import org.erlide.runtime.api.ErlRuntimeFactory;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.internal.ErlRuntime;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -81,8 +81,7 @@ public class BackendFactory implements IBackendFactory {
 
         final IBackend b;
         try {
-            final IErlRuntime runtime = data.getRuntimeInfo() == null ? new NullErlRuntime()
-                    : new ErlRuntime(data);
+            final IErlRuntime runtime = ErlRuntimeFactory.createRuntime(data);
             runtime.startAndWait();
             final IBackendManager backendManager = BackendCore
                     .getBackendManager();

@@ -1896,12 +1896,6 @@
       </target>
    </extension>
    <extension
-         point="org.erlide.util_eclipse.messageReporter">
-      <messageReporter
-            class="org.erlide.ui.UIMessageReporter">
-      </messageReporter>
-   </extension>
-   <extension
          point="org.eclipse.ui.elementFactories">
       <factory
             class="org.erlide.ui.editors.util.ErlangExternalEditorInputFactory"
@@ -1975,11 +1969,5 @@
             content-type="org.erlide.core.content.erlang"
             file-extensions="erlScratchPad">
       </file-association>
-   </extension>
-   <extension
-         point="org.erlide.backend.no_runtime_handler">
-      <runnable
-            class="org.erlide.ui.util.NoRuntimeHandler">
-      </runnable>
    </extension>
 </plugin>

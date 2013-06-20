@@ -6,23 +6,22 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.ui.statushandlers.StatusManager;
-import org.erlide.util.MessageReporter;
+import org.erlide.util.ErlideMessage;
 
-public class UIMessageReporter extends MessageReporter {
+import com.google.common.eventbus.Subscribe;
 
-    public UIMessageReporter() {
-    }
+public class UIMessageReporter {
 
-    @Override
-    public void displayMessage(final int severity, final String message,
-            final String details) {
+    @Subscribe
+    public void displayMessage(final ErlideMessage emsg) {
         new UIJob("erlide message") {
             @Override
             public IStatus runInUIThread(final IProgressMonitor monitor) {
                 final MultiStatus msg = new MultiStatus("org.erlide.ui", 0,
-                        message, null);
-                if (details != null) {
-                    msg.add(new Status(severity, "org.erlide.ui", details));
+                        emsg.getMessage(), null);
+                if (emsg.getDetails() != null) {
+                    msg.add(new Status(emsg.getSeverity(), "org.erlide.ui",
+                            emsg.getDetails()));
                 }
                 StatusManager.getManager().handle(msg, StatusManager.BLOCK);
 

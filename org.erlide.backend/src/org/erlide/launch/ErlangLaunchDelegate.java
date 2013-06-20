@@ -26,8 +26,9 @@ import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
 import org.erlide.model.BeamLocator;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
+import org.erlide.runtime.api.ErlRuntimeFactory;
+import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.epmd.EpmdWatcher;
-import org.erlide.runtime.internal.ErlRuntime;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
@@ -103,7 +104,8 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
     }
 
     private void startErtsProcess(final ILaunch launch, final BackendData data) {
-        final Process process = new ErlRuntime(data).getProcess();
+        final IErlRuntime runtime = ErlRuntimeFactory.createRuntime(data);
+        final Process process = runtime.getProcess();
         if (process == null) {
             ErlLogger.debug("Error starting process");
             data.setManaged(false);
