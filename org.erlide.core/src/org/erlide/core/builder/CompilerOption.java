@@ -83,10 +83,10 @@ public abstract class CompilerOption {
         public OtpErlangObject toTerm(final Iterable<String> value) {
             final List<OtpErlangObject> result = Lists.newArrayList();
             for (final String path : value) {
-                result.add(new OtpErlangString(path));
+                result.add(OtpErlang.mkTuple(new OtpErlangAtom(getName()),
+                        new OtpErlangString(path)));
             }
-            return OtpErlang.mkTuple(new OtpErlangAtom(getName()),
-                    OtpErlang.mkList(result));
+            return OtpErlang.mkList(result);
         }
 
         public static String toString(final Iterable<String> value) {

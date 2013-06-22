@@ -159,9 +159,11 @@ public class CompilerOptions {
                     }
                 } else if (option instanceof PathsOption) {
                     final Iterable<String> value = (Iterable<String>) optionValue;
-                    final OtpErlangObject val = ((PathsOption) option)
+                    final OtpErlangList val = (OtpErlangList) ((PathsOption) option)
                             .toTerm(value);
-                    result.add(val);
+                    for (final OtpErlangObject inc : val.elements()) {
+                        result.add(inc);
+                    }
                 } else if (option instanceof ModuleOption) {
                     final String value = (String) optionValue;
                     final OtpErlangObject val = ((ModuleOption) option)

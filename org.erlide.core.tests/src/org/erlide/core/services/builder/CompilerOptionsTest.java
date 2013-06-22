@@ -126,7 +126,7 @@ public class CompilerOptionsTest {
         prefs.setPathOption(CompilerOption.INCLUDE_DIRS,
                 parseIncludes("/tmp/x"));
         final String actual = prefs.export().toString();
-        final String expect = "[{i,[\"/tmp/x\"]}," + DEF_VALUES + "]";
+        final String expect = "[{i,\"/tmp/x\"}," + DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
 
@@ -136,7 +136,7 @@ public class CompilerOptionsTest {
         prefs.setPathOption(CompilerOption.INCLUDE_DIRS,
                 parseIncludes("/tmp/x,/tmp/y"));
         final String actual = prefs.export().toString();
-        final String expect = "[{i,[\"/tmp/x\",\"/tmp/y\"]}," + DEF_VALUES
+        final String expect = "[{i,\"/tmp/x\"},{i,\"/tmp/y\"}," + DEF_VALUES
                 + "]";
         Assert.assertEquals(expect, actual);
     }
