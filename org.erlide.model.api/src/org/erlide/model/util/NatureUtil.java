@@ -2,7 +2,6 @@ package org.erlide.model.util;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.model.ModelPlugin;
 
 public class NatureUtil {
 
@@ -17,7 +16,7 @@ public class NatureUtil {
     public static boolean hasErlangNature(final IProject project) {
         if (project != null) {
             try {
-                return project.hasNature(ModelPlugin.NATURE_ID);
+                return project.hasNature("org.erlide.core.erlnature");
             } catch (final CoreException e) {
                 // project does not exist or is not open
             }
