@@ -113,24 +113,47 @@ public class ErlRuntimeTest {
         Asserts.isTrue(runtime.isRunning(), "not running");
 
         process.destroy();
-        val = -1;
-        while (val < 0) {
+        while (runtime.isRunning()) {
             try {
-                val = process.exitValue();
-            } catch (final IllegalThreadStateException e) {
-                val = -1;
+                Thread.sleep(ErlRuntime.POLL_INTERVAL);
+            } catch (final InterruptedException e) {
             }
-        }
-        try {
-            Thread.sleep(ErlRuntime.POLL_INTERVAL);
-        } catch (final InterruptedException e) {
         }
         try {
             val = process.exitValue();
         } catch (final IllegalThreadStateException e) {
             val = -1;
         }
-        Asserts.isTrue(val > 0, "process didn't crash");
+        Asserts.isTrue(val == 1, "process crashed strangely " + val);
+        Asserts.isTrue(runtime.state() == State.FAILED,
+                "state: " + runtime.state() + " " + val);
+
+    }
+
+    @Test
+    public void haltIsDetected() throws RpcException {
+        int val;
+        try {
+            val = process.exitValue();
+        } catch (final IllegalThreadStateException e) {
+            val = -1;
+        }
+        Asserts.isTrue(val == -1, "process exited " + val);
+        Asserts.isTrue(runtime.isRunning(), "not running");
+
+        runtime.getRpcSite().cast("erlang", "halt", "i", 136);
+        while (runtime.isRunning()) {
+            try {
+                Thread.sleep(ErlRuntime.POLL_INTERVAL);
+            } catch (final InterruptedException e) {
+            }
+        }
+        try {
+            val = process.exitValue();
+        } catch (final IllegalThreadStateException e) {
+            val = -1;
+        }
+        Asserts.isTrue(val == 136, "process crashed strangely: " + val);
         Asserts.isTrue(runtime.state() == State.FAILED,
                 "state: " + runtime.state() + " " + val);
 
