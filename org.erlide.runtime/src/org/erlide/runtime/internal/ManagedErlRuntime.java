@@ -110,7 +110,15 @@ public class ManagedErlRuntime extends ErlRuntime {
         @Override
         public void failed(final State from, final Throwable failure) {
             super.failed(from, failure);
-            ErlLogger.warn("Crashed with code %d", getNodeName(), exitCode);
+            ErlLogger.warn("Crashed with code %d", exitCode);
+        }
+
+        @Override
+        public void terminated(final State from) {
+            super.terminated(from);
+            if (exitCode != 0) {
+                ErlLogger.warn("Crashed with code %d", exitCode);
+            }
         }
     }
 
