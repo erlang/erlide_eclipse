@@ -41,7 +41,7 @@ public class BackendFactory implements IBackendFactory {
     @Override
     public IBackend createIdeBackend() {
         ErlLogger.debug("Create ide backend");
-        final IBackend backend = createBackend(getIdeBackendData());
+        final IBackend backend = createBackend(getIdeBackendData(), true);
         setWorkDirForCoreDumps(backend.getRpcSite());
         return backend;
     }
@@ -66,14 +66,16 @@ public class BackendFactory implements IBackendFactory {
     public synchronized IBackend createBuildBackend(final RuntimeInfo info) {
         ErlLogger.debug("Create build backend "
                 + info.getVersion().asMajor().toString());
-        final IBackend backend = createBackend(getBuildBackendData(info));
+        final IBackend backend = createBackend(getBuildBackendData(info), true);
         setWorkDirForCoreDumps(backend.getRpcSite());
         return backend;
     }
 
     @Override
-    public synchronized IBackend createBackend(final BackendData data) {
-        ErlLogger.debug("Create backend " + data.getNodeName());
+    public synchronized IBackend createBackend(final BackendData data,
+            final boolean start) {
+        ErlLogger.debug("Create backend " + data.getNodeName() + " start:"
+                + start);
         if (!data.isManaged()) {
             ErlLogger.info("Not creating backend for %s", data.getNodeName());
             // return null;
@@ -82,7 +84,9 @@ public class BackendFactory implements IBackendFactory {
         final IBackend b;
         try {
             final IErlRuntime runtime = ErlRuntimeFactory.createRuntime(data);
-            runtime.startAndWait();
+            if (start) {
+                runtime.startAndWait();
+            }
             final IBackendManager backendManager = BackendCore
                     .getBackendManager();
             b = data.isInternal() ? new InternalBackend(data, runtime,
@@ -101,14 +105,12 @@ public class BackendFactory implements IBackendFactory {
         final BackendData result = new BackendData(info);
         result.setNodeName(getIdeNodeName());
         result.setDebug(false);
-        result.setConsole(false);
+        result.setConsole(SystemConfiguration.getInstance().isDeveloper());
+        result.setManaged(true);
         result.setRestartable(true);
         result.setLongName(SystemConfiguration
                 .hasFeatureEnabled("erlide.shortname") ? false : HostnameUtils
                 .canUseLongNames());
-        if (SystemConfiguration.getInstance().isDeveloper()) {
-            result.setConsole(true);
-        }
         result.setInternal(true);
         result.setReportErrors(true);
         result.debugPrint();
@@ -124,6 +126,7 @@ public class BackendFactory implements IBackendFactory {
         result.setCookie("erlide");
         result.setRestartable(true);
         result.setDebug(false);
+        result.setManaged(true);
         result.setConsole(false);
         result.setLongName(HostnameUtils.canUseLongNames());
         result.setInternal(true);

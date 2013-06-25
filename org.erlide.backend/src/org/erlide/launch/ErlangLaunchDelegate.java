@@ -81,14 +81,12 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
 
         if (data.isManaged()) {
             setCaptureOutput(launch);
-            startErtsProcess(launch, data);
-        } else {
-            ErlLogger.info("Node %s exists already.", data.getNodeName());
         }
-
         if (!isErlangInternalLaunch(launch)) {
             backend = BackendCore.getBackendManager().createExecutionBackend(
                     data);
+        } else {
+            startErtsProcess(launch, data);
         }
     }
 
@@ -105,12 +103,14 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
 
     private void startErtsProcess(final ILaunch launch, final BackendData data) {
         final IErlRuntime runtime = ErlRuntimeFactory.createRuntime(data);
+        runtime.startAndWait();
         final Process process = runtime.getProcess();
         if (process == null) {
             ErlLogger.debug("Error starting process");
             data.setManaged(false);
             return;
         }
+        data.setLaunch(launch);
         final Map<String, String> map = Maps.newHashMap();
         map.put("NodeName", data.getNodeName());
         map.put("workingDir", data.getWorkingDir());
@@ -125,6 +125,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
         // important, we don't want the "normal" console for the erlide backend
         final String captureOutput = System.getProperty(
                 "erlide.console.stdout", "false");
+        System.out.println("capture====" + captureOutput);
         launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, captureOutput);
     }
 

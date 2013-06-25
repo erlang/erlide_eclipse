@@ -284,8 +284,8 @@ public class ErlReconciler implements IReconciler {
          */
         @Override
         public void documentChanged(final DocumentEvent e) {
-            ErlLogger.debug("documentChanged %d %d %d", e.getOffset(),
-                    e.getLength(), e.getText().length());
+            // ErlLogger.debug("documentChanged %d %d %d", e.getOffset(),
+            // e.getLength(), e.getText().length());
             if (!fThread.isDirty() && fThread.isAlive()) {
                 if (!fIsAllowedToModifyDocument
                         && Thread.currentThread() == fThread) {

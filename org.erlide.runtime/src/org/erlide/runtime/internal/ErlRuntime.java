@@ -98,14 +98,17 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
 
             @Override
             public void starting() {
+                ErlLogger.debug("Runtime %s starting", getNodeName());
             }
 
             @Override
             public void running() {
+                ErlLogger.debug("Runtime %s running", getNodeName());
             }
 
             @Override
             public void stopping(final State from) {
+                ErlLogger.debug("Runtime %s stopping", getNodeName());
             }
         }, executor());
     }
@@ -405,23 +408,14 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
             ErlLogger.debug("START node :> " + Arrays.toString(cmds) + " *** "
                     + workingDirectory.getCanonicalPath());
         } catch (final IOException e1) {
-            ErlLogger.error("START node :> " + e1.getMessage());
+            ErlLogger.error("START ERROR node :> " + e1.getMessage());
         }
 
         final ProcessBuilder builder = new ProcessBuilder(cmds);
         builder.directory(workingDirectory);
         setEnvironment(rtData, builder);
         try {
-            Process aProcess = builder.start();
-            try {
-                final int code = aProcess.exitValue();
-                ErlLogger.error(
-                        "Could not create runtime (exit code = %d): %s", code,
-                        Arrays.toString(cmds));
-                aProcess = null;
-            } catch (final IllegalThreadStateException e) {
-                ErlLogger.debug("process is running");
-            }
+            final Process aProcess = builder.start();
             return aProcess;
         } catch (final IOException e) {
             ErlLogger.error("Could not create runtime: %s",

@@ -221,7 +221,7 @@ public abstract class Backend implements IStreamListener, IBackend {
                 proxy.write(s);
             } else {
                 ErlLogger
-                        .warn("Could not load module on backend %s, stream proxy is null",
+                        .warn("Could not send input to backend %s, stream proxy is null",
                                 getName());
             }
         }

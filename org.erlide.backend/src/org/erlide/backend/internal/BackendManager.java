@@ -112,7 +112,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     @Override
     public IBackend createExecutionBackend(final BackendData data) {
         ErlLogger.debug("create execution backend " + data.getNodeName());
-        final IBackend b = factory.createBackend(data);
+        final IBackend b = factory.createBackend(data, true);
         addBackend(b);
         notifyBackendChange(b, BackendEvent.ADDED, null, null);
         return b;
