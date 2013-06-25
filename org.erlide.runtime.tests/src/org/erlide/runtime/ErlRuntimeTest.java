@@ -3,6 +3,7 @@ package org.erlide.runtime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.internal.ErlRuntime;
+import org.erlide.runtime.internal.ManagedErlRuntime;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
@@ -17,7 +18,7 @@ import com.google.common.util.concurrent.Service.State;
 public class ErlRuntimeTest {
 
     private Process process;
-    private ErlRuntime runtime;
+    private ManagedErlRuntime runtime;
 
     @Before
     public void prepareRuntime() {
@@ -33,7 +34,7 @@ public class ErlRuntimeTest {
         data.setLongName(false);
         data.setCookie("c");
 
-        runtime = new ErlRuntime(data);
+        runtime = new ManagedErlRuntime(data);
         runtime.startAndWait();
         process = runtime.getProcess();
         Asserts.isNotNull(process, "beam process");

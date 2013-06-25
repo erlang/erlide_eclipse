@@ -74,15 +74,14 @@ public class BackendFactory implements IBackendFactory {
     @Override
     public synchronized IBackend createBackend(final BackendData data) {
         ErlLogger.debug("Create backend " + data.getNodeName());
-        if (!data.isManaged()) {
-            ErlLogger.info("Not creating backend %s", data.getNodeName());
-            return null;
-        }
 
         final IBackend b;
         try {
+            ErlLogger.info("Creating runtime for %s", data.getNodeName());
             final IErlRuntime runtime = ErlRuntimeFactory.createRuntime(data);
-            runtime.startAndWait();
+            if (data.isManaged()) {
+                runtime.startAndWait();
+            }
             final IBackendManager backendManager = BackendCore
                     .getBackendManager();
             b = data.isInternal() ? new InternalBackend(data, runtime,

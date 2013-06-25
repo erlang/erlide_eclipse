@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.erlide.runtime.internal;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Map;
 
 import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.runtime.api.IErlRuntime;
@@ -27,7 +24,6 @@ import org.erlide.runtime.events.LogEventHandler;
 import org.erlide.runtime.rpc.RpcSite;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
-import org.erlide.util.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -52,17 +48,15 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "400"));
 
-    private final RuntimeData data;
+    protected final RuntimeData data;
     private OtpNode localNode;
-    private final ErlRuntimeReporter reporter;
-    private Process process;
+    final ErlRuntimeReporter reporter;
     private OtpMbox eventMBox;
     private IRuntimeStateListener listener;
     private ErlSystemStatus lastSystemMessage;
     private IRpcSite rpcSite;
     private final EventBus eventBus;
-    private volatile boolean stopped;
-    private volatile int exitCode;
+    protected volatile boolean stopped;
     private EventParser eventHelper;
 
     final static boolean DEBUG = Boolean.parseBoolean(System
@@ -83,18 +77,11 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
             @Override
             public void terminated(final State from) {
                 ErlLogger.debug("Runtime %s terminated", getNodeName());
-                if (exitCode > 0) {
-                    // throw new ErlRuntimeException(String.format(
-                    // "Runtime %s crashed with code %d", getNodeName(),
-                    // exitCode));
-                    System.out.println("CRASH_______ " + exitCode);
-                }
             }
 
             @Override
             public void failed(final State from, final Throwable failure) {
-                ErlLogger.warn("Runtime %s crashed with code %d",
-                        getNodeName(), exitCode);
+                ErlLogger.warn("Runtime %s crashed", getNodeName());
                 if (data.isReportErrors()) {
                     final String msg = reporter.reportRuntimeDown(
                             getNodeName(), getSystemStatus());
@@ -121,8 +108,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
 
     @Override
     protected void startUp() throws Exception {
-        exitCode = -1;
-        process = startRuntimeProcess(data);
         localNode = startLocalNode();
         eventMBox = createMbox("rex");
         rpcSite = new RpcSite(this, localNode, getNodeName());
@@ -147,9 +132,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         listener = null;
 
         rpcSite.setConnected(false);
-
-        process.destroy();
-        process = null;
     }
 
     @Override
@@ -182,22 +164,12 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
             } catch (final OtpErlangDecodeException e) {
                 ErlLogger.error(e);
             }
-            Thread.yield();
-
-            try {
-                exitCode = process.exitValue();
-            } catch (final IllegalThreadStateException e) {
-                exitCode = -1;
-            }
-            if (exitCode > 0) {
-                System.out.println("CRASH!");
-                throw new ErlRuntimeException(String.format(
-                        "Runtime %s crashed with code %d", getNodeName(),
-                        exitCode));
-            } else if (exitCode == 0) {
-                break;
-            }
+            checkNodeStatus();
         } while (!stopped);
+    }
+
+    // set stopped to true or throw an exception if anything failed
+    protected void checkNodeStatus() throws Exception {
     }
 
     @Override
@@ -248,12 +220,13 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
 
     @Override
     public IRpcSite getRpcSite() {
+        startAndWait();
         return rpcSite;
     }
 
     @Override
     public Process getProcess() {
-        return process;
+        return null;
     }
 
     @Override
@@ -400,43 +373,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
             ErlLogger.error("error starting code server for %s: %s",
                     getNodeName(), e.getMessage());
             return false;
-        }
-    }
-
-    private Process startRuntimeProcess(final RuntimeData rtData) {
-        final String[] cmds = rtData.getCmdLine();
-        final File workingDirectory = new File(rtData.getWorkingDir());
-
-        try {
-            ErlLogger.debug("START node :> " + Arrays.toString(cmds) + " *** "
-                    + workingDirectory.getCanonicalPath());
-        } catch (final IOException e1) {
-            ErlLogger.error("START ERROR node :> " + e1.getMessage());
-        }
-
-        final ProcessBuilder builder = new ProcessBuilder(cmds);
-        builder.directory(workingDirectory);
-        setEnvironment(rtData, builder);
-        try {
-            final Process aProcess = builder.start();
-            return aProcess;
-        } catch (final IOException e) {
-            ErlLogger.error("Could not create runtime: %s",
-                    Arrays.toString(cmds));
-            ErlLogger.error(e);
-            return null;
-        }
-    }
-
-    private void setEnvironment(final RuntimeData data,
-            final ProcessBuilder builder) {
-        final Map<String, String> env = builder.environment();
-        if (!SystemConfiguration.getInstance().isOnWindows()
-                && SystemConfiguration.getInstance().hasSpecialTclLib()) {
-            env.put("TCL_LIBRARY", "/usr/share/tcl/tcl8.4/");
-        }
-        if (data.getEnv() != null) {
-            env.putAll(data.getEnv());
         }
     }
 
