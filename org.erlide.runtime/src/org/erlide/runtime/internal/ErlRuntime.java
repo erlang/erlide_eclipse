@@ -73,37 +73,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         registerEventListener(new LogEventHandler(nodeName));
         registerEventListener(new ErlangLogEventHandler(nodeName));
 
-        addListener(new Listener() {
-            @Override
-            public void terminated(final State from) {
-                ErlLogger.debug("Runtime %s terminated", getNodeName());
-            }
-
-            @Override
-            public void failed(final State from, final Throwable failure) {
-                ErlLogger.warn("Runtime %s crashed", getNodeName());
-                if (data.isReportErrors()) {
-                    final String msg = reporter.reportRuntimeDown(
-                            getNodeName(), getSystemStatus());
-                    ErlLogger.error(msg);
-                }
-            }
-
-            @Override
-            public void starting() {
-                ErlLogger.debug("Runtime %s starting", getNodeName());
-            }
-
-            @Override
-            public void running() {
-                ErlLogger.debug("Runtime %s running", getNodeName());
-            }
-
-            @Override
-            public void stopping(final State from) {
-                ErlLogger.debug("Runtime %s stopping", getNodeName());
-            }
-        }, executor());
+        addListener(new MyListener(), executor());
     }
 
     @Override
@@ -393,6 +363,38 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     @Subscribe
     public void deadEventHandler(final DeadEvent dead) {
         ErlLogger.warn("Dead event: " + dead + " in " + getNodeName());
+    }
+
+    protected class MyListener implements Listener {
+        @Override
+        public void terminated(final State from) {
+            ErlLogger.debug("Runtime %s terminated", getNodeName());
+        }
+
+        @Override
+        public void failed(final State from, final Throwable failure) {
+            ErlLogger.warn("Runtime %s crashed", getNodeName());
+            if (data.isReportErrors()) {
+                final String msg = reporter.reportRuntimeDown(getNodeName(),
+                        getSystemStatus());
+                ErlLogger.error(msg);
+            }
+        }
+
+        @Override
+        public void starting() {
+            ErlLogger.debug("Runtime %s starting", getNodeName());
+        }
+
+        @Override
+        public void running() {
+            ErlLogger.debug("Runtime %s running", getNodeName());
+        }
+
+        @Override
+        public void stopping(final State from) {
+            ErlLogger.debug("Runtime %s stopping", getNodeName());
+        }
     }
 
 }

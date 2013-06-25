@@ -27,44 +27,7 @@ public class ManagedErlRuntime extends ErlRuntime {
     public ManagedErlRuntime(final RuntimeData data) {
         super(data);
 
-        addListener(new Listener() {
-            @Override
-            public void terminated(final State from) {
-                ErlLogger.debug("Runtime %s terminated", getNodeName());
-                if (exitCode > 0) {
-                    // throw new ErlRuntimeException(String.format(
-                    // "Runtime %s crashed with code %d", getNodeName(),
-                    // exitCode));
-                    System.out.println("CRASH_______ " + exitCode);
-                }
-            }
-
-            @Override
-            public void failed(final State from, final Throwable failure) {
-                ErlLogger.warn("Runtime %s crashed with code %d",
-                        getNodeName(), exitCode);
-                if (data.isReportErrors()) {
-                    final String msg = reporter.reportRuntimeDown(
-                            getNodeName(), getSystemStatus());
-                    ErlLogger.error(msg);
-                }
-            }
-
-            @Override
-            public void starting() {
-                ErlLogger.debug("Runtime %s starting", getNodeName());
-            }
-
-            @Override
-            public void running() {
-                ErlLogger.debug("Runtime %s running", getNodeName());
-            }
-
-            @Override
-            public void stopping(final State from) {
-                ErlLogger.debug("Runtime %s stopping", getNodeName());
-            }
-        }, executor());
+        addListener(new MyManagedListener(), executor());
     }
 
     @Override
@@ -90,7 +53,6 @@ public class ManagedErlRuntime extends ErlRuntime {
             exitCode = -1;
         }
         if (exitCode > 0) {
-            System.out.println("CRASH!");
             throw new ErlRuntimeException(String.format(
                     "Runtime %s crashed with code %d", getNodeName(), exitCode));
         } else if (exitCode == 0) {
@@ -138,6 +100,14 @@ public class ManagedErlRuntime extends ErlRuntime {
         }
         if (data.getEnv() != null) {
             env.putAll(data.getEnv());
+        }
+    }
+
+    protected class MyManagedListener extends MyListener {
+        @Override
+        public void failed(final State from, final Throwable failure) {
+            super.failed(from, failure);
+            ErlLogger.warn("Crashed with code %d", getNodeName(), exitCode);
         }
     }
 
