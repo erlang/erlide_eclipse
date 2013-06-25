@@ -69,7 +69,7 @@ public class ErlRuntimeTest {
         } catch (final Throwable t) {
             System.out.println("EXCEPTION:::: " + t);
         }
-        expect(-1, State.TERMINATED);
+        expect(runtime, process, -1, State.TERMINATED);
     }
 
     @Test
@@ -79,36 +79,71 @@ public class ErlRuntimeTest {
             site.cast("erlang", "halt", "i", 0);
         } catch (final RpcException e1) {
         }
-        expect(0, State.TERMINATED);
+        expect(runtime, process, 0, State.TERMINATED);
     }
 
     @Test
     public void crashIsDetected() {
         process.destroy();
-        expect(143, State.FAILED);
+        expect(runtime, process, 143, State.FAILED);
     }
 
     @Test
     public void haltIsDetected() throws RpcException {
         runtime.getRpcSite().cast("erlang", "halt", "i", 136);
-        expect(136, State.FAILED);
+        expect(runtime, process, 136, State.FAILED);
     }
 
-    private void expect(final int code, final State state) {
-        while (runtime.isRunning()) {
+    private void expect(final ErlRuntime aRuntime, final Process aProcess,
+            final int code, final State state) {
+        while (aRuntime.isRunning()) {
             try {
                 Thread.sleep(ErlRuntime.POLL_INTERVAL);
             } catch (final InterruptedException e) {
             }
         }
-        int val;
-        try {
-            val = process.exitValue();
-        } catch (final IllegalThreadStateException e) {
-            val = -1;
+        Asserts.isTrue(aRuntime.state() == state, "state: " + aRuntime.state());
+        if (aProcess != null) {
+            int val;
+            try {
+                val = aProcess.exitValue();
+            } catch (final IllegalThreadStateException e) {
+                val = -1;
+            }
+            Asserts.isTrue(val == code, "process exited with code " + val);
         }
-        Asserts.isTrue(val == code, "process exited with code " + val);
-        Asserts.isTrue(runtime.state() == state, "state: " + runtime.state());
     }
 
+    @Test
+    public void nonManagedRuntimeWorks() {
+        final RuntimeInfo info = runtime.getRuntimeData().getRuntimeInfo();
+        final RuntimeData data = new RuntimeData(info, "run");
+        data.setNodeName("etest");
+        data.setLongName(false);
+        data.setCookie("c");
+        data.setManaged(false);
+
+        final ErlRuntime runtime2 = new ErlRuntime(data);
+        runtime2.startAndWait();
+        final Process process2 = runtime2.getProcess();
+        Asserts.isTrue(process2 == null, "beam process " + process2);
+        Asserts.isTrue(runtime2.isRunning(), "not running");
+
+        final IRpcSite site = runtime2.getRpcSite();
+        OtpErlangObject r;
+        try {
+            r = site.call("erlang", "now", "");
+        } catch (final RpcException e) {
+            r = null;
+        }
+        Asserts.isNotNull(r, "rpc not working");
+        try {
+            runtime2.stopAndWait();
+        } catch (final Throwable t) {
+            System.out.println("EXCEPTION:::: " + t);
+        }
+        expect(runtime2, process2, -1, State.TERMINATED);
+        Asserts.isTrue(runtime.state() == State.RUNNING,
+                "state: " + runtime.state());
+    }
 }

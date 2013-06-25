@@ -40,7 +40,7 @@ import com.google.common.util.concurrent.AbstractExecutionThreadService;
 
 public class ErlRuntime extends AbstractExecutionThreadService implements
         IErlRuntime {
-    private static final String COULD_NOT_CONNECT = "Could not connect to backend! Please check runtime settings.";
+    private static final String COULD_NOT_CONNECT = "Could not connect to %s! Please check runtime settings.";
     private static final int EPMD_PORT = Integer.parseInt(System.getProperty(
             "erlide.epmd.port", "4369"));
 
@@ -111,13 +111,12 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         localNode = startLocalNode();
         eventMBox = createMbox("rex");
         rpcSite = new RpcSite(this, localNode, getNodeName());
-
         connect();
         rpcSite.setConnected(true);
 
         if (!waitForCodeServer()) {
             triggerShutdown();
-            ErlLogger.error(COULD_NOT_CONNECT);
+            ErlLogger.error(COULD_NOT_CONNECT, getNodeName());
         }
 
     }
@@ -141,31 +140,36 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
 
     @Override
     protected void run() throws Exception {
-        OtpErlangObject msg = null;
-        eventHelper = new EventParser();
         final OtpMbox eventBox = getEventMbox();
         do {
-            try {
-                msg = eventBox.receive(POLL_INTERVAL);
-                final ErlEvent busEvent = eventHelper.parse(msg, this);
-                if (busEvent != null) {
-                    if (DEBUG) {
-                        ErlLogger.debug(
-                                "MSG: %s",
-                                "[" + busEvent.getSender() + "::"
-                                        + busEvent.getTopic() + ": "
-                                        + busEvent.getEvent() + "]");
-                    }
-                    eventBus.post(busEvent);
-                }
-            } catch (final OtpErlangExit e) {
-                ErlLogger.error(e);
-                throw e;
-            } catch (final OtpErlangDecodeException e) {
-                ErlLogger.error(e);
-            }
+            receiveEventMessage(eventBox);
             checkNodeStatus();
         } while (!stopped);
+    }
+
+    private void receiveEventMessage(final OtpMbox eventBox)
+            throws OtpErlangExit {
+        OtpErlangObject msg = null;
+        eventHelper = new EventParser();
+        try {
+            msg = eventBox.receive(POLL_INTERVAL);
+            final ErlEvent busEvent = eventHelper.parse(msg, this);
+            if (busEvent != null) {
+                if (DEBUG) {
+                    ErlLogger.debug(
+                            "MSG: %s",
+                            "[" + busEvent.getSender() + "::"
+                                    + busEvent.getTopic() + ": "
+                                    + busEvent.getEvent() + "]");
+                }
+                eventBus.post(busEvent);
+            }
+        } catch (final OtpErlangExit e) {
+            ErlLogger.error(e);
+            throw e;
+        } catch (final OtpErlangDecodeException e) {
+            ErlLogger.error(e);
+        }
     }
 
     // set stopped to true or throw an exception if anything failed
@@ -296,7 +300,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
                 cookie);
     }
 
-    private void connect() {
+    private void connect() throws Exception {
         final String label = getNodeName();
         ErlLogger.debug(label + ": waiting connection to peer...");
         try {
@@ -309,8 +313,8 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
                 }
             }
         } catch (final Exception e) {
-            ErlLogger.error(e);
-            ErlLogger.error(COULD_NOT_CONNECT);
+            ErlLogger.error(COULD_NOT_CONNECT, getNodeName());
+            throw e;
         }
     }
 
