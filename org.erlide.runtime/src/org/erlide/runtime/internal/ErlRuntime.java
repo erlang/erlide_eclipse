@@ -359,6 +359,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         public void remoteStatus(final String node, final boolean up,
                 final Object info) {
             if (node.equals(getNodeName()) && !up) {
+                crashed();
                 triggerShutdown();
             }
         }
@@ -367,6 +368,9 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     @Subscribe
     public void deadEventHandler(final DeadEvent dead) {
         ErlLogger.warn("Dead event: " + dead + " in " + getNodeName());
+    }
+
+    protected void crashed() {
     }
 
     protected class MyListener implements Listener {

@@ -43,18 +43,23 @@ public class ManagedErlRuntime extends ErlRuntime {
     @Override
     protected void shutDown() throws Exception {
         super.shutDown();
+        checkExitCode();
         process.destroy();
         process = null;
     }
 
-    @Override
-    protected void checkNodeStatus() throws Exception {
-        super.checkNodeStatus();
+    private void checkExitCode() {
         try {
             exitCode = process.exitValue();
         } catch (final IllegalThreadStateException e) {
             exitCode = -1;
         }
+    }
+
+    @Override
+    protected void checkNodeStatus() throws Exception {
+        super.checkNodeStatus();
+        checkExitCode();
         if (exitCode > 0) {
             throw new ErlRuntimeException(String.format(
                     "Runtime %s crashed with code %d", getNodeName(), exitCode));
@@ -67,6 +72,21 @@ public class ManagedErlRuntime extends ErlRuntime {
     public Process getProcess() {
         startAndWait();
         return process;
+    }
+
+    @Override
+    protected void crashed() {
+        Thread.yield();
+        if (process != null) {
+            try {
+                exitCode = process.waitFor();
+            } catch (final InterruptedException e) {
+                exitCode = -1;
+            }
+            if (getNodeName().contains("dialyzer")) {
+                System.out.println(">>> EXIT:: " + exitCode);
+            }
+        }
     }
 
     private Process startRuntimeProcess(final RuntimeData rtData) {
