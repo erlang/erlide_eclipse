@@ -49,7 +49,7 @@ public class RpcSite implements IRpcSite {
     private final IErlRuntime runtime;
     private final String nodeName;
     private final OtpNode localNode;
-    private boolean connected;
+    private volatile boolean connected;
 
     public RpcSite(final IErlRuntime runtime, final OtpNode localNode,
             final String nodeName) {

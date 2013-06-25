@@ -110,6 +110,7 @@ public class BackendFactory implements IBackendFactory {
             result.setConsole(true);
         }
         result.setInternal(true);
+        result.setReportErrors(true);
         result.debugPrint();
         return result;
     }
@@ -126,6 +127,7 @@ public class BackendFactory implements IBackendFactory {
         result.setConsole(false);
         result.setLongName(HostnameUtils.canUseLongNames());
         result.setInternal(true);
+        result.setReportErrors(true);
         return result;
     }
 

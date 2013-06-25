@@ -42,4 +42,5 @@ public interface IErlRuntime extends IDisposable {
     void registerEventListener(Object handler);
 
     Process getProcess();
+
 }

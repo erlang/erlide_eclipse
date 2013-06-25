@@ -97,8 +97,8 @@ public class DialyzerUtils {
                 }
                 // check backend down
                 if (!backend.isRunning()) {
-                    throw new BackendException("Backend " + backend.getName()
-                            + " is down");
+                    throw new BackendException("Dialyzer: backend "
+                            + backend.getName() + " is down");
                 }
 
                 OtpErlangObject r = null;

@@ -29,6 +29,8 @@ import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 import org.erlide.util.SystemConfiguration;
 
+import com.ericsson.otp.erlang.OtpErlangDecodeException;
+import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
@@ -76,6 +78,36 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         eventBus.register(this);
         registerEventListener(new LogEventHandler(nodeName));
         registerEventListener(new ErlangLogEventHandler(nodeName));
+
+        addListener(new Listener() {
+            @Override
+            public void terminated(final State from) {
+                ErlLogger.debug("Runtime %s terminated", getNodeName());
+            }
+
+            @Override
+            public void failed(final State from, final Throwable failure) {
+                ErlLogger.warn("Runtime %s crashed with code %d",
+                        getNodeName(), exitCode);
+                if (data.isReportErrors()) {
+                    final String msg = reporter.reportRuntimeDown(
+                            getNodeName(), getSystemStatus());
+                    ErlLogger.error(msg);
+                }
+            }
+
+            @Override
+            public void starting() {
+            }
+
+            @Override
+            public void running() {
+            }
+
+            @Override
+            public void stopping(final State from) {
+            }
+        }, executor());
     }
 
     @Override
@@ -103,20 +135,15 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     protected void shutDown() throws Exception {
         localNode.close();
 
-        process.destroy();
-        process = null;
-
         if (listener != null) {
             listener.runtimeDown(ErlRuntime.this);
         }
         listener = null;
 
         rpcSite.setConnected(false);
-        if (isRunning() && data.isReportErrors()) {
-            final String msg = reporter.reportRuntimeDown(getNodeName(),
-                    getSystemStatus());
-            ErlLogger.error(msg);
-        }
+
+        process.destroy();
+        process = null;
     }
 
     @Override
@@ -130,23 +157,41 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         eventHelper = new EventParser();
         final OtpMbox eventBox = getEventMbox();
         do {
-            msg = eventBox.receive(POLL_INTERVAL);
-            final ErlEvent busEvent = eventHelper.parse(msg, this);
-            if (busEvent != null) {
-                if (DEBUG) {
-                    ErlLogger.debug(
-                            "MSG: %s",
-                            "[" + busEvent.getSender() + "::"
-                                    + busEvent.getTopic() + ": "
-                                    + busEvent.getEvent() + "]");
+            try {
+                msg = eventBox.receive(POLL_INTERVAL);
+                final ErlEvent busEvent = eventHelper.parse(msg, this);
+                if (busEvent != null) {
+                    if (DEBUG) {
+                        ErlLogger.debug(
+                                "MSG: %s",
+                                "[" + busEvent.getSender() + "::"
+                                        + busEvent.getTopic() + ": "
+                                        + busEvent.getEvent() + "]");
+                    }
+                    eventBus.post(busEvent);
                 }
-                eventBus.post(busEvent);
+            } catch (final OtpErlangExit e) {
+                ErlLogger.error(e);
+                throw e;
+            } catch (final OtpErlangDecodeException e) {
+                ErlLogger.error(e);
+            }
+            Thread.yield();
+
+            try {
+                exitCode = process.exitValue();
+            } catch (final IllegalThreadStateException e) {
+                exitCode = -1;
             }
             if (exitCode > 0) {
-                throw new RuntimeException("runtime crashed with code "
-                        + exitCode);
+                throw new ErlRuntimeException(String.format(
+                        "Runtime %s crashed with code %d", getNodeName(),
+                        exitCode));
+            } else if (exitCode == 0) {
+                break;
             }
-        } while (!stopped && exitCode < 0);
+        } while (!stopped);
+
     }
 
     @Override
@@ -279,7 +324,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
             pingPeer();
             int i = 0;
             while (state() == State.NEW && i++ < 20) {
-                System.out.println("STATE=" + state());
                 try {
                     Thread.sleep(POLL_INTERVAL);
                 } catch (final InterruptedException e) {
@@ -403,16 +447,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         @Override
         public void remoteStatus(final String node, final boolean up,
                 final Object info) {
-            if (!node.equals(getNodeName())) {
-                return;
-            }
-            if (!up) {
-                ErlLogger.debug("Node %s is down: %s", getNodeName(), info);
-                try {
-                    exitCode = process.exitValue();
-                } catch (final IllegalThreadStateException e) {
-                    exitCode = -1;
-                }
+            if (node.equals(getNodeName()) && !up) {
                 triggerShutdown();
             }
         }
