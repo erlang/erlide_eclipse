@@ -26,8 +26,11 @@ public class ManagedErlRuntime extends ErlRuntime {
 
     public ManagedErlRuntime(final RuntimeData data) {
         super(data);
+    }
 
-        addListener(new MyManagedListener(), executor());
+    @Override
+    protected Listener getListener() {
+        return new MyManagedListener();
     }
 
     @Override

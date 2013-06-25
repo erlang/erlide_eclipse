@@ -73,7 +73,11 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         registerEventListener(new LogEventHandler(nodeName));
         registerEventListener(new ErlangLogEventHandler(nodeName));
 
-        addListener(new MyListener(), executor());
+        addListener(getListener(), executor());
+    }
+
+    protected Listener getListener() {
+        return new MyListener();
     }
 
     @Override
