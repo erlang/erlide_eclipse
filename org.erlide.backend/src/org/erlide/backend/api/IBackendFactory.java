@@ -8,6 +8,6 @@ public interface IBackendFactory {
 
     IBackend createBuildBackend(final RuntimeInfo info);
 
-    IBackend createBackend(final BackendData data, boolean start);
+    IBackend createBackend(final BackendData data);
 
 }

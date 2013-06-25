@@ -82,12 +82,16 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
         if (data.isManaged()) {
             setCaptureOutput(launch);
         }
+        IErlRuntime runtime;
         if (!isErlangInternalLaunch(launch)) {
             backend = BackendCore.getBackendManager().createExecutionBackend(
                     data);
+            runtime = backend.getRuntime();
         } else {
-            startErtsProcess(launch, data);
+            runtime = ErlRuntimeFactory.createRuntime(data);
+            runtime.startAndWait();
         }
+        startErtsProcess(launch, data, runtime);
     }
 
     /*
@@ -101,9 +105,8 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
         return data;
     }
 
-    private void startErtsProcess(final ILaunch launch, final BackendData data) {
-        final IErlRuntime runtime = ErlRuntimeFactory.createRuntime(data);
-        runtime.startAndWait();
+    private void startErtsProcess(final ILaunch launch, final BackendData data,
+            final IErlRuntime runtime) {
         final Process process = runtime.getProcess();
         if (process == null) {
             ErlLogger.debug("Error starting process");
@@ -125,7 +128,6 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
         // important, we don't want the "normal" console for the erlide backend
         final String captureOutput = System.getProperty(
                 "erlide.console.stdout", "false");
-        System.out.println("capture====" + captureOutput);
         launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, captureOutput);
     }
 

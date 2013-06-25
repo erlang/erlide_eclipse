@@ -83,6 +83,12 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
             @Override
             public void terminated(final State from) {
                 ErlLogger.debug("Runtime %s terminated", getNodeName());
+                if (exitCode > 0) {
+                    // throw new ErlRuntimeException(String.format(
+                    // "Runtime %s crashed with code %d", getNodeName(),
+                    // exitCode));
+                    System.out.println("CRASH_______ " + exitCode);
+                }
             }
 
             @Override
@@ -122,12 +128,9 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         rpcSite = new RpcSite(this, localNode, getNodeName());
 
         connect();
-        ErlLogger.debug("Node %s is up", getNodeName());
         rpcSite.setConnected(true);
 
-        if (waitForCodeServer()) {
-            ErlLogger.debug("connected!");
-        } else {
+        if (!waitForCodeServer()) {
             triggerShutdown();
             ErlLogger.error(COULD_NOT_CONNECT);
         }
@@ -187,6 +190,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
                 exitCode = -1;
             }
             if (exitCode > 0) {
+                System.out.println("CRASH!");
                 throw new ErlRuntimeException(String.format(
                         "Runtime %s crashed with code %d", getNodeName(),
                         exitCode));
@@ -194,7 +198,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
                 break;
             }
         } while (!stopped);
-
     }
 
     @Override

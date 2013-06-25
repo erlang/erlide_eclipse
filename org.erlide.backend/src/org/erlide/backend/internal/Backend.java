@@ -91,7 +91,6 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void dispose() {
-        ErlLogger.debug("disposing backend " + getName());
         if (data.isDebug()) {
             unloadDebuggerCode();
         }

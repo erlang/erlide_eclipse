@@ -41,7 +41,7 @@ public class BackendFactory implements IBackendFactory {
     @Override
     public IBackend createIdeBackend() {
         ErlLogger.debug("Create ide backend");
-        final IBackend backend = createBackend(getIdeBackendData(), true);
+        final IBackend backend = createBackend(getIdeBackendData());
         setWorkDirForCoreDumps(backend.getRpcSite());
         return backend;
     }
@@ -66,27 +66,23 @@ public class BackendFactory implements IBackendFactory {
     public synchronized IBackend createBuildBackend(final RuntimeInfo info) {
         ErlLogger.debug("Create build backend "
                 + info.getVersion().asMajor().toString());
-        final IBackend backend = createBackend(getBuildBackendData(info), true);
+        final IBackend backend = createBackend(getBuildBackendData(info));
         setWorkDirForCoreDumps(backend.getRpcSite());
         return backend;
     }
 
     @Override
-    public synchronized IBackend createBackend(final BackendData data,
-            final boolean start) {
-        ErlLogger.debug("Create backend " + data.getNodeName() + " start:"
-                + start);
+    public synchronized IBackend createBackend(final BackendData data) {
+        ErlLogger.debug("Create backend " + data.getNodeName());
         if (!data.isManaged()) {
-            ErlLogger.info("Not creating backend for %s", data.getNodeName());
-            // return null;
+            ErlLogger.info("Not creating backend %s", data.getNodeName());
+            return null;
         }
 
         final IBackend b;
         try {
             final IErlRuntime runtime = ErlRuntimeFactory.createRuntime(data);
-            if (start) {
-                runtime.startAndWait();
-            }
+            runtime.startAndWait();
             final IBackendManager backendManager = BackendCore
                     .getBackendManager();
             b = data.isInternal() ? new InternalBackend(data, runtime,
