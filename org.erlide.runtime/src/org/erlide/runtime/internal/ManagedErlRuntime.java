@@ -116,12 +116,7 @@ public class ManagedErlRuntime extends ErlRuntime {
     }
 
     @Override
-    protected String getCrashSlogan() {
-        return super.getCrashSlogan() + ", exit code: " + exitCode;
-    }
-
-    @Override
-    protected String getTerminationSlogan() {
-        return super.getTerminationSlogan() + ", exit code: " + exitCode;
+    public int getExitCode() {
+        return exitCode;
     }
 }

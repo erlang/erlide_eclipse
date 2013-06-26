@@ -16,7 +16,6 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.core.model.RuntimeProcess;
-import org.erlide.launch.ErtsWatcher;
 import org.erlide.util.ErlLogger;
 
 public class ErtsProcess extends RuntimeProcess {
@@ -25,8 +24,6 @@ public class ErtsProcess extends RuntimeProcess {
             final String nodeName, final String workingDir) {
         super(launch, process, nodeName, null);
         ErlLogger.debug("# create ErtsProcess: " + nodeName);
-
-        startWatcher(nodeName, workingDir, process, this);
     }
 
     /**
@@ -102,15 +99,4 @@ public class ErtsProcess extends RuntimeProcess {
             }
         }
     }
-
-    private void startWatcher(final String nodeName, final String workingDir,
-            final Process process, final ErtsProcess ertsProcess) {
-        final Runnable watcher = new ErtsWatcher(nodeName, workingDir, process,
-                ertsProcess);
-        final Thread thread = new Thread(null, watcher, "ErtsProcess watcher");
-        thread.setDaemon(true);
-        thread.setPriority(Thread.MIN_PRIORITY);
-        thread.start();
-    }
-
 }
