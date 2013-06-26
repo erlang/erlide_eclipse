@@ -176,20 +176,17 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         if (dbgPlugin != null) {
             dbgPlugin.getBreakpointManager().removeBreakpointListener(this);
         }
-        fTerminated = true;
+        if (debuggerDaemon != null) {
+            debuggerDaemon.stop();
+        }
+        fBackend.dispose();
 
         final ILaunch launch = getLaunch();
         if (launch != null) {
             launch.terminate();
         }
-        fBackend.dispose();
-        final IProcess process = getProcess();
-        if (process != null) {
-            process.terminate();
-        }
-        if (debuggerDaemon != null) {
-            debuggerDaemon.stop();
-        }
+
+        fTerminated = true;
         fireTerminateEvent();
     }
 

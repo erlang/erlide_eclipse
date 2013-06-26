@@ -29,11 +29,6 @@ public class ManagedErlRuntime extends ErlRuntime {
     }
 
     @Override
-    protected Listener getListener() {
-        return new MyManagedListener();
-    }
-
-    @Override
     protected void startUp() throws Exception {
         exitCode = -1;
         process = startRuntimeProcess(data);
@@ -43,50 +38,14 @@ public class ManagedErlRuntime extends ErlRuntime {
     @Override
     protected void shutDown() throws Exception {
         super.shutDown();
-        checkExitCode();
         process.destroy();
         process = null;
-    }
-
-    private void checkExitCode() {
-        try {
-            exitCode = process.exitValue();
-        } catch (final IllegalThreadStateException e) {
-            exitCode = -1;
-        }
-    }
-
-    @Override
-    protected void checkNodeStatus() throws Exception {
-        super.checkNodeStatus();
-        checkExitCode();
-        if (exitCode > 0) {
-            throw new ErlRuntimeException(String.format(
-                    "Runtime %s crashed with code %d", getNodeName(), exitCode));
-        } else if (exitCode == 0) {
-            stopped = true;
-        }
     }
 
     @Override
     public Process getProcess() {
         startAndWait();
         return process;
-    }
-
-    @Override
-    protected void crashed() {
-        Thread.yield();
-        if (process != null) {
-            try {
-                exitCode = process.waitFor();
-            } catch (final InterruptedException e) {
-                exitCode = -1;
-            }
-            if (getNodeName().contains("dialyzer")) {
-                System.out.println(">>> EXIT:: " + exitCode);
-            }
-        }
     }
 
     private Process startRuntimeProcess(final RuntimeData rtData) {
@@ -126,20 +85,43 @@ public class ManagedErlRuntime extends ErlRuntime {
         }
     }
 
-    protected class MyManagedListener extends MyListener {
-        @Override
-        public void failed(final State from, final Throwable failure) {
-            super.failed(from, failure);
-            ErlLogger.warn("Crashed with code %d", exitCode);
-        }
-
-        @Override
-        public void terminated(final State from) {
-            super.terminated(from);
-            if (exitCode != 0) {
-                ErlLogger.warn("Crashed with code %d", exitCode);
+    @Override
+    protected void waitForExit() throws ErlRuntimeException {
+        if (process != null) {
+            int i = 500;
+            // may have to wait for crash dump to be written
+            while (i-- > 0 && exitCode < 0) {
+                exitCode = -1;
+                try {
+                    Thread.sleep(POLL_INTERVAL * 2);
+                    exitCode = process.exitValue();
+                } catch (final IllegalThreadStateException e) {
+                } catch (final InterruptedException e) {
+                }
+                if (exitCode > 0) {
+                    throw new ErlRuntimeException(String.format(
+                            "Runtime %s died with exit code %d", getNodeName(),
+                            exitCode));
+                }
+            }
+            if (exitCode < 0) {
+                ErlLogger
+                        .warn("Runtime %s died, but process is still running; killing it",
+                                getNodeName());
+                throw new ErlRuntimeException(
+                        String.format("Runtime %s died with exit code unknown",
+                                getNodeName()));
             }
         }
     }
 
+    @Override
+    protected String getCrashSlogan() {
+        return super.getCrashSlogan() + ", exit code: " + exitCode;
+    }
+
+    @Override
+    protected String getTerminationSlogan() {
+        return super.getTerminationSlogan() + ", exit code: " + exitCode;
+    }
 }

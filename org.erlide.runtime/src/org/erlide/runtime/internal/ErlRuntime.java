@@ -58,6 +58,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     private final EventBus eventBus;
     protected volatile boolean stopped;
     private EventParser eventHelper;
+    boolean crashed;
 
     final static boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.event.daemon"));
@@ -73,11 +74,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         registerEventListener(new LogEventHandler(nodeName));
         registerEventListener(new ErlangLogEventHandler(nodeName));
 
-        addListener(getListener(), executor());
-    }
-
-    protected Listener getListener() {
-        return new MyListener();
+        addListener(new ErlRuntimeListener(), executor());
     }
 
     @Override
@@ -92,7 +89,8 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
             triggerShutdown();
             ErlLogger.error(COULD_NOT_CONNECT, getNodeName());
         }
-
+        stopped = false;
+        crashed = false;
     }
 
     @Override
@@ -103,7 +101,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
             listener.runtimeDown(ErlRuntime.this);
         }
         listener = null;
-
         rpcSite.setConnected(false);
     }
 
@@ -117,8 +114,10 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         final OtpMbox eventBox = getEventMbox();
         do {
             receiveEventMessage(eventBox);
-            checkNodeStatus();
-        } while (!stopped);
+        } while (!stopped && !crashed);
+        if (crashed && !stopped) {
+            waitForExit();
+        }
     }
 
     private void receiveEventMessage(final OtpMbox eventBox)
@@ -144,10 +143,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         } catch (final OtpErlangDecodeException e) {
             ErlLogger.error(e);
         }
-    }
-
-    // set stopped to true or throw an exception if anything failed
-    protected void checkNodeStatus() throws Exception {
     }
 
     @Override
@@ -194,6 +189,9 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     @Override
     public void dispose() {
         triggerShutdown();
+    }
+
+    protected void waitForExit() throws ErlRuntimeException {
     }
 
     @Override
@@ -359,29 +357,33 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         public void remoteStatus(final String node, final boolean up,
                 final Object info) {
             if (node.equals(getNodeName()) && !up) {
-                crashed();
-                triggerShutdown();
+                triggerCrashed();
             }
         }
     }
 
     @Subscribe
     public void deadEventHandler(final DeadEvent dead) {
-        ErlLogger.warn("Dead event: " + dead + " in " + getNodeName());
+        ErlLogger.warn("Dead event: " + dead + " in runtime " + getNodeName());
     }
 
-    protected void crashed() {
+    protected void triggerCrashed() {
+        rpcSite.setConnected(false);
+        crashed = true;
     }
 
-    protected class MyListener implements Listener {
+    private class ErlRuntimeListener implements Listener {
         @Override
         public void terminated(final State from) {
-            ErlLogger.debug("Runtime %s terminated", getNodeName());
+            ErlLogger.debug(getTerminationSlogan());
+            if (data.isReportErrors()) {
+                reporter.reportRuntimeDown(getNodeName(), getSystemStatus());
+            }
         }
 
         @Override
         public void failed(final State from, final Throwable failure) {
-            ErlLogger.warn("Runtime %s crashed", getNodeName());
+            ErlLogger.warn(getCrashSlogan());
             if (data.isReportErrors()) {
                 final String msg = reporter.reportRuntimeDown(getNodeName(),
                         getSystemStatus());
@@ -403,6 +405,14 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         public void stopping(final State from) {
             ErlLogger.debug("Runtime %s stopping", getNodeName());
         }
+    }
+
+    protected String getCrashSlogan() {
+        return String.format("Runtime %s crashed", getNodeName());
+    }
+
+    protected String getTerminationSlogan() {
+        return String.format("Runtime %s terminated", getNodeName());
     }
 
 }
