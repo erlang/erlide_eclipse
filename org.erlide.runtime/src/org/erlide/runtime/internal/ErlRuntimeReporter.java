@@ -99,7 +99,6 @@ public class ErlRuntimeReporter {
         } else {
             ErlLogger.info(msg);
         }
-        // FIXME backend.setExitStatus(v);
     }
 
     private boolean shouldCreateReport(final int v) {

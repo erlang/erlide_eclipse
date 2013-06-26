@@ -386,11 +386,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         public void failed(final State from, final Throwable failure) {
             ErlLogger.warn(String.format("Runtime %s crashed, exit code: ",
                     getNodeName(), getExitCode()));
-            if (data.isReportErrors()) {
-                final String msg = reporter.reportRuntimeDown(getNodeName(),
-                        getSystemStatus());
-                ErlLogger.error(msg);
-            }
             reporter.createFileReport(getNodeName(), getExitCode(),
                     getRuntimeData().getWorkingDir(), getSystemStatus());
         }
