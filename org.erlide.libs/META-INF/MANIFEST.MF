@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
 Bundle-SymbolicName: org.erlide.libs
-Bundle-Version: 1.10.1.qualifier
+Bundle-Version: 1.10.2.qualifier
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: jinterface.jar,

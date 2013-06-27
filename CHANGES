@@ -1,3 +1,25 @@
+List of user visible changes between 0.23.0 and 0.23.1 (20130620)
+
+72a1373 better looking local documentation in hover
+db5ffd7 add ErlideEventBus to allow communication between plugins.
+df1999c handle NPE when shutting down
+879d6f1 1240: run as erlang application can choose wrong node name type
+bcc630f improve RuntimeTab behaviour when not both long/short names can be used
+c260781 fix NPEs in ProjectPreferencesWizardPage
+2d55d21 Removed ErlExternalReferenceEntryListProxy, it complicates things and does not give a significant performance increase
+8d9a71d Make sure ErlProject is removed when Project is deleted
+399f480 update xtend libs to 2.4.1
+ce19e2e remove conflicting key binding C-A-S-M
+d80cd4c remove double 'open' and 'search' menu items
+0c5a598 remove backend.api project, is not needed
+7ecd995 fix for scanning $\n, was incrementing the row too
+5751955 update requirement for eclipse.help.ui plugin that has been upgraded to 4.0 in Kepler
+e071ad4 change default time for code assist activation to 50ms (from 100ms)
+8a5105e 1214 - completion: external includes are proposed as modules
+14b2e7b 1220 - hover: format internal docs and specs
+c823e72 improve documentation presentation (remove leading %%); part of 1220
+8fe7fe6 1215 - e4: refs to inexistent actions makes eclipse unusable
+
 List of user visible changes between 0.22.0 and 0.23.0 (20130516)
 
 e93f508 1208 - completion: optimize search for suggestions
