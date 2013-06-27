@@ -36,7 +36,6 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.model.util.NatureUtil;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.editors.util.ErlangExternalEditorInput;
@@ -127,9 +126,6 @@ public class ErlModelUtils {
             final IFile file = input.getFile();
             final IErlModel model = ErlModelManager.getErlangModel();
             final IProject project = file.getProject();
-            if (!NatureUtil.hasErlangNature(project)) {
-                return null;
-            }
             IErlModule module = model.findModule(file);
             if (module != null) {
                 return module;
