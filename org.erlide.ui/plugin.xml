@@ -470,7 +470,7 @@
  <extension
        point="org.eclipse.debug.ui.launchConfigurationTypeImages">
     <launchConfigurationTypeImage
-          configTypeID="org.erlide.core.launch.erlangProcess"
+          configTypeID="org.erlide.backend.erlangProcess"
           icon="icons/erl/erlang-notext016.gif"
           id="org.erlide.ui.launch.launchConfigurationTypeImage.erlangNode"/>
  </extension>
@@ -937,10 +937,6 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M3+H">
       </key>
-      <key
-            commandId="org.erlide.ui.open.module"
-            sequence="M1+M2+M3+M"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
       <key
             commandId="org.erlide.ui.open.module"
             sequence="M1+M2+M"
@@ -1441,10 +1437,6 @@
                </instanceof>
             </or>
          </possibleChildren>
-               <actionProvider
-               class="org.erlide.ui.navigator.actions.ErlangFileActionProvider"
-               id="org.erlide.ui.navigator.actions.erlang.actions.OpenProvider">
-         </actionProvider>
          <commonSorter
                class="org.erlide.ui.navigator.ErlElementPositionSorter"
                id="org.erlide.ui.navigator.ErlElementPositionSorterId">
@@ -1661,7 +1653,7 @@
     <launchConfigurationTabGroup
           class="org.erlide.ui.launch.ErlangNodeTabGroup"
           id="org.erlide.ui.launch.launchConfigurationTabGroup.erlangNode"
-          type="org.erlide.core.launch.erlangProcess"/>
+          type="org.erlide.backend.erlangProcess"/>
  </extension>
  <extension
        point="org.eclipse.debug.ui.launchShortcuts">
@@ -1686,7 +1678,7 @@
             </enablement>
          </contextualLaunch>
         <configurationType
-              id="org.erlide.core.launch.erlangProcess">
+              id="org.erlide.backend.erlangProcess">
         </configurationType>
     </shortcut>
  </extension>
@@ -1904,12 +1896,6 @@
       </target>
    </extension>
    <extension
-         point="org.erlide.util_eclipse.messageReporter">
-      <messageReporter
-            class="org.erlide.ui.UIMessageReporter">
-      </messageReporter>
-   </extension>
-   <extension
          point="org.eclipse.ui.elementFactories">
       <factory
             class="org.erlide.ui.editors.util.ErlangExternalEditorInputFactory"
@@ -1983,11 +1969,5 @@
             content-type="org.erlide.core.content.erlang"
             file-extensions="erlScratchPad">
       </file-association>
-   </extension>
-   <extension
-         point="org.erlide.backend.no_runtime_handler">
-      <runnable
-            class="org.erlide.ui.util.NoRuntimeHandler">
-      </runnable>
    </extension>
 </plugin>

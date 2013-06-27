@@ -8,8 +8,11 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.progress.UIJob;
+import org.erlide.runtime.api.NoRuntimeEvent;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.MessageReporter;
+
+import com.google.common.eventbus.Subscribe;
 
 public class NoRuntimeHandler implements Runnable {
 
@@ -55,4 +58,10 @@ public class NoRuntimeHandler implements Runnable {
         };
         job.schedule();
     }
+
+    @Subscribe
+    public void handle(final NoRuntimeEvent event) {
+        run();
+    }
+
 }

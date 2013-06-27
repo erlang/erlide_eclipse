@@ -54,6 +54,7 @@ import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.StringUtils;
 import org.erlide.util.Util;
+import org.erlide.util.event_tracer.ErlideEventTracer;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -168,146 +169,156 @@ public abstract class AbstractErlContentAssistProcessor implements
     @Override
     public ICompletionProposal[] computeCompletionProposals(
             final ITextViewer viewer, final int offset) {
+        final String id = Integer.toHexString(viewer.hashCode()) + "@" + offset;
         try {
-            final IDocument doc = viewer.getDocument();
-            String before = getBefore(viewer, doc, offset);
-            // ErlLogger.debug("computeCompletionProposals before = %s %d %s",
-            // before, oldSuggestions, oldDoc);
+            ErlideEventTracer.getInstance().traceOperationStart("completion",
+                    id);
+            try {
 
-            if (Objects.equal(oldDoc, doc) && oldBefore != null
-                    && before.startsWith(oldBefore) && oldSuggestions == 0) {
-                return getNoCompletion(offset);
-            }
-            oldDoc = doc;
-            oldBefore = before;
+                final IDocument doc = viewer.getDocument();
+                String before = getBefore(viewer, doc, offset);
+                // ErlLogger.debug("computeCompletionProposals before = %s %d %s",
+                // before, oldSuggestions, oldDoc);
 
-            final int commaPos = before.lastIndexOf(',');
-            final int colonPos = before.lastIndexOf(':');
-            final boolean doubleColon = colonPos >= 0
-                    && before.charAt(colonPos - 1) == ':';
-            final int hashMarkPos = before.lastIndexOf('#');
-            final int dotPos = before.lastIndexOf('.');
-            final int parenPos = before.lastIndexOf('(');
-            final int leftBracketPos = before.lastIndexOf('{');
-            final int interrogationMarkPos = before.lastIndexOf('?');
-            final int arrowPos = before.lastIndexOf("->");
-            final String prefix = getPrefix(before);
-            List<String> fieldsSoFar = null;
-            List<ICompletionProposal> result;
-            Set<Kinds> flags = EnumSet.noneOf(Kinds.class);
-            int pos;
-            String moduleOrRecord = null;
-            IErlElement element = getElementAt(offset);
-            for (int i = 1; element == null && i <= 15; ++i) {
-                element = getElementAt(offset - i);
-            }
-            RecordCompletion rc = null;
-            if (hashMarkPos >= 0) {
-                final IProject workspaceProject = project != null ? project
-                        .getWorkspaceProject() : null;
-                rc = ErlideContextAssist.checkRecordCompletion(BackendCore
-                        .getBuildOrIdeBackend(workspaceProject).getRpcSite(),
-                        before);
-            }
-            if (rc != null && rc.isNameWanted()) {
-                flags = EnumSet.of(Kinds.RECORD_DEFS);
-                pos = hashMarkPos;
-                before = rc.getPrefix();
-            } else if (rc != null && rc.isFieldWanted()) {
-                flags = EnumSet.of(Kinds.RECORD_FIELDS);
-                pos = hashMarkPos;
-                if (dotPos > hashMarkPos) {
-                    pos = dotPos;
-                } else if (leftBracketPos > hashMarkPos) {
-                    pos = leftBracketPos;
-                } else {
-                    assert false;
+                if (Objects.equal(oldDoc, doc) && oldBefore != null
+                        && before.startsWith(oldBefore) && oldSuggestions == 0) {
+                    return getNoCompletion(offset);
                 }
-                before = rc.getPrefix();
-                moduleOrRecord = rc.getName();
-                fieldsSoFar = rc.getFields();
-            } else if (colonPos > commaPos && colonPos > parenPos) {
-                if (doubleColon) {
-                    flags = EnumSet.of(Kinds.TYPES);
-                    pos = colonPos;
-                    before = before.substring(colonPos + 1);
-                } else {
-                    moduleOrRecord = StringUtils.unquote(getPrefix(before
-                            .substring(0, colonPos)));
-                    flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS);
-                    pos = colonPos;
-                    before = before.substring(colonPos + 1);
-                }
-            } else if (interrogationMarkPos > hashMarkPos
-                    && interrogationMarkPos > commaPos
-                    && interrogationMarkPos > colonPos
-                    && interrogationMarkPos > arrowPos) {
-                flags = EnumSet.of(Kinds.MACRO_DEFS);
-                pos = interrogationMarkPos;
-                before = before.substring(interrogationMarkPos + 1);
-            } else {
-                pos = colonPos;
-                before = prefix;
-                ErlLogger.debug("element %s", element);
-                if (element != null) {
-                    switch (element.getKind()) {
-                    case EXPORT:
-                        flags = EnumSet.of(Kinds.DECLARED_FUNCTIONS,
-                                Kinds.ARITY_ONLY, Kinds.UNEXPORTED_ONLY);
-                        break;
-                    case IMPORT:
-                        final IErlImport i = (IErlImport) element;
-                        moduleOrRecord = i.getImportModule();
-                        flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS,
-                                Kinds.ARITY_ONLY);
-                        break;
-                    case FUNCTION:
-                    case CLAUSE:
-                        flags = EnumSet.of(Kinds.MODULES);
-                        if (module != null) {
-                            flags = Sets.union(flags, EnumSet.of(
-                                    Kinds.VARIABLES, Kinds.DECLARED_FUNCTIONS,
-                                    Kinds.IMPORTED_FUNCTIONS,
-                                    Kinds.AUTO_IMPORTED_FUNCTIONS));
+                oldDoc = doc;
+                oldBefore = before;
 
-                        }
-                        break;
-                    case ATTRIBUTE:
-                        if (element.getName().equals("include")) {
-                            flags = EnumSet.of(Kinds.INCLUDES);
-                        } else if (element.getName().equals("include_lib")) {
-                            flags = EnumSet.of(Kinds.INCLUDE_LIBS);
-                        }
-                        break;
-                    default:
-                        break;
+                final int commaPos = before.lastIndexOf(',');
+                final int colonPos = before.lastIndexOf(':');
+                final boolean doubleColon = colonPos >= 0
+                        && before.charAt(colonPos - 1) == ':';
+                final int hashMarkPos = before.lastIndexOf('#');
+                final int dotPos = before.lastIndexOf('.');
+                final int parenPos = before.lastIndexOf('(');
+                final int leftBracketPos = before.lastIndexOf('{');
+                final int interrogationMarkPos = before.lastIndexOf('?');
+                final int arrowPos = before.lastIndexOf("->");
+                final String prefix = getPrefix(before);
+                List<String> fieldsSoFar = null;
+                List<ICompletionProposal> result;
+                Set<Kinds> flags = EnumSet.noneOf(Kinds.class);
+                int pos;
+                String moduleOrRecord = null;
+                IErlElement element = getElementAt(offset);
+                for (int i = 1; element == null && i <= 15; ++i) {
+                    element = getElementAt(offset - i);
+                }
+                RecordCompletion rc = null;
+                if (hashMarkPos >= 0) {
+                    final IProject workspaceProject = project != null ? project
+                            .getWorkspaceProject() : null;
+                    rc = ErlideContextAssist.checkRecordCompletion(BackendCore
+                            .getBuildOrIdeBackend(workspaceProject)
+                            .getRpcSite(), before);
+                }
+                if (rc != null && rc.isNameWanted()) {
+                    flags = EnumSet.of(Kinds.RECORD_DEFS);
+                    pos = hashMarkPos;
+                    before = rc.getPrefix();
+                } else if (rc != null && rc.isFieldWanted()) {
+                    flags = EnumSet.of(Kinds.RECORD_FIELDS);
+                    pos = hashMarkPos;
+                    if (dotPos > hashMarkPos) {
+                        pos = dotPos;
+                    } else if (leftBracketPos > hashMarkPos) {
+                        pos = leftBracketPos;
+                    } else {
+                        assert false;
                     }
-                } else {
+                    before = rc.getPrefix();
+                    moduleOrRecord = rc.getName();
+                    fieldsSoFar = rc.getFields();
+                } else if (colonPos > commaPos && colonPos > parenPos) {
                     if (doubleColon) {
                         flags = EnumSet.of(Kinds.TYPES);
+                        pos = colonPos;
+                        before = before.substring(colonPos + 1);
                     } else {
-                        flags = EnumSet.of(Kinds.MODULES);
+                        moduleOrRecord = StringUtils.unquote(getPrefix(before
+                                .substring(0, colonPos)));
+                        flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS);
+                        pos = colonPos;
+                        before = before.substring(colonPos + 1);
+                    }
+                } else if (interrogationMarkPos > hashMarkPos
+                        && interrogationMarkPos > commaPos
+                        && interrogationMarkPos > colonPos
+                        && interrogationMarkPos > arrowPos) {
+                    flags = EnumSet.of(Kinds.MACRO_DEFS);
+                    pos = interrogationMarkPos;
+                    before = before.substring(interrogationMarkPos + 1);
+                } else {
+                    pos = colonPos;
+                    before = prefix;
+                    ErlLogger.debug("element %s", element);
+                    if (element != null) {
+                        switch (element.getKind()) {
+                        case EXPORT:
+                            flags = EnumSet.of(Kinds.DECLARED_FUNCTIONS,
+                                    Kinds.ARITY_ONLY, Kinds.UNEXPORTED_ONLY);
+                            break;
+                        case IMPORT:
+                            final IErlImport i = (IErlImport) element;
+                            moduleOrRecord = i.getImportModule();
+                            flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS,
+                                    Kinds.ARITY_ONLY);
+                            break;
+                        case FUNCTION:
+                        case CLAUSE:
+                            flags = EnumSet.of(Kinds.MODULES);
+                            if (module != null) {
+                                flags = Sets.union(flags, EnumSet.of(
+                                        Kinds.VARIABLES,
+                                        Kinds.DECLARED_FUNCTIONS,
+                                        Kinds.IMPORTED_FUNCTIONS,
+                                        Kinds.AUTO_IMPORTED_FUNCTIONS));
+
+                            }
+                            break;
+                        case ATTRIBUTE:
+                            if (element.getName().equals("include")) {
+                                flags = EnumSet.of(Kinds.INCLUDES);
+                            } else if (element.getName().equals("include_lib")) {
+                                flags = EnumSet.of(Kinds.INCLUDE_LIBS);
+                            }
+                            break;
+                        default:
+                            break;
+                        }
+                    } else {
+                        if (doubleColon) {
+                            flags = EnumSet.of(Kinds.TYPES);
+                        } else {
+                            flags = EnumSet.of(Kinds.MODULES);
+                        }
                     }
                 }
+                flags = filterFlags(flags);
+                result = addCompletions(flags, offset, before, moduleOrRecord,
+                        pos, fieldsSoFar);
+                final ErlTemplateCompletionProcessor t = new ErlTemplateCompletionProcessor(
+                        doc, offset - before.length(), before.length());
+                result.addAll(Arrays.asList(t.computeCompletionProposals(
+                        viewer, offset)));
+                oldSuggestions = result.size();
+                if (result.size() == 0) {
+                    ErlLogger.debug("no results");
+                    return getNoCompletion(offset);
+                } else {
+                    ErlLogger.debug("%d results", result.size());
+                    return result
+                            .toArray(new ICompletionProposal[result.size()]);
+                }
+            } catch (final Exception e) {
+                ErlLogger.warn(e);
+                return null;
             }
-            flags = filterFlags(flags);
-            result = addCompletions(flags, offset, before, moduleOrRecord, pos,
-                    fieldsSoFar);
-            final ErlTemplateCompletionProcessor t = new ErlTemplateCompletionProcessor(
-                    doc, offset - before.length(), before.length());
-            result.addAll(Arrays.asList(t.computeCompletionProposals(viewer,
-                    offset)));
-            oldSuggestions = result.size();
-            if (result.size() == 0) {
-                ErlLogger.debug("no results");
-                return getNoCompletion(offset);
-            } else {
-                ErlLogger.debug("%d results", result.size());
-                return result.toArray(new ICompletionProposal[result.size()]);
-            }
-        } catch (final Exception e) {
-            ErlLogger.warn(e);
-            return null;
+        } finally {
+            ErlideEventTracer.getInstance().traceOperationEnd("completion", id);
         }
     }
 

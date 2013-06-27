@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -53,7 +54,6 @@ import org.erlide.model.internal.erlang.ErlModule;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementDelta;
 import org.erlide.model.root.IErlElementLocator;
-import org.erlide.model.root.IErlExternalRoot;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlModelChangeListener;
@@ -64,7 +64,6 @@ import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.IElementChangedListener;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.model.util.NatureUtil;
-import org.erlide.model.util.PluginUtils;
 import org.erlide.model.util.ResourceUtil;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
@@ -387,7 +386,7 @@ public class ErlModel extends Openable implements IErlModel {
             if (!project.isOpen()) {
                 project.open(null);
             }
-            return makeErlangProject(project);
+            return findProject(project);
         } catch (final CoreException e) {
             throw new ErlModelException(e);
         }
@@ -421,8 +420,8 @@ public class ErlModel extends Openable implements IErlModel {
         final OtpErlangObject[] objects = new OtpErlangObject[names.length];
         for (int i = 0; i < names.length; i++) {
             final String name = names[i];
-            final String value = PluginUtils.getPVMValue(pvm, name)
-                    .toOSString();
+            final String value = URIUtil.toPath(pvm.getURIValue(name))
+                    .toPortableString();
             objects[i] = new OtpErlangTuple(new OtpErlangObject[] {
                     new OtpErlangString(name), new OtpErlangString(value) });
         }
@@ -822,7 +821,8 @@ public class ErlModel extends Openable implements IErlModel {
             final Map<IResource, IResourceDelta> changedDelta = Maps
                     .newHashMap();
             final IResourceDeltaVisitor visitor;
-            if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
+            switch (event.getType()) {
+            case IResourceChangeEvent.POST_CHANGE:
                 visitor = new IResourceDeltaVisitor() {
                     @Override
                     public boolean visit(final IResourceDelta delta) {
@@ -835,9 +835,7 @@ public class ErlModel extends Openable implements IErlModel {
                                 && CommonUtils
                                         .isErlangFileContentFileName(resource
                                                 .getName());
-                        final boolean erlangProject = resource.getType() == IResource.PROJECT
-                                && NatureUtil
-                                        .hasErlangNature((IProject) resource);
+                        final boolean erlangProject = resource.getType() == IResource.PROJECT;
                         final boolean erlangFolder = resource.getType() == IResource.FOLDER;
                         // &&
                         // ErlideUtil.isOnSourcePathOrParentToFolderOnSourcePath((
@@ -858,7 +856,8 @@ public class ErlModel extends Openable implements IErlModel {
                         return !erlangFile;
                     }
                 };
-            } else if (event.getType() == IResourceChangeEvent.PRE_CLOSE) {
+                break;
+            case IResourceChangeEvent.PRE_CLOSE:
                 visitor = new IResourceDeltaVisitor() {
 
                     @Override
@@ -880,7 +879,8 @@ public class ErlModel extends Openable implements IErlModel {
                 if (erlangProject) {
                     removed.add(resource);
                 }
-            } else {
+                break;
+            default:
                 visitor = new IResourceDeltaVisitor() {
 
                     @Override
@@ -1167,35 +1167,10 @@ public class ErlModel extends Openable implements IErlModel {
         return toolkit;
     }
 
-    private final Map<String, IErlExternalRoot> externals = Maps.newHashMap();
-    private final Map<String, Integer> externalRefCounts = Maps.newHashMap();
-
     @Override
-    public IErlExternalRoot getExternal(final String key) {
-        return externals.get(key);
-    }
-
-    @Override
-    public void removeExternal(final String key) {
-        final Integer integer = externalRefCounts.get(key);
-        if (integer != null) {
-            if (integer.intValue() == 1) {
-                externals.remove(key);
-                externalRefCounts.remove(key);
-            } else {
-                externalRefCounts.put(key, integer - 1);
-            }
-        }
-    }
-
-    @Override
-    public void addExternal(final String key, final IErlExternalRoot external) {
-        if (externals.containsKey(key)) {
-            externalRefCounts.put(key, externalRefCounts.get(key) + 1);
-        } else {
-            externals.put(key, external);
-            externalRefCounts.put(key, 1);
-        }
+    public IErlElementDelta createElementDelta(final int kind, final int flags,
+            final IErlElement element) {
+        return new ErlElementDelta(kind, flags, element);
     }
 
 }

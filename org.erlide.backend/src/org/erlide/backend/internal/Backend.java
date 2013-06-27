@@ -40,25 +40,19 @@ import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.console.BackendShellManager;
-import org.erlide.backend.events.ErlangEventPublisher;
-import org.erlide.backend.events.ErlangLogEventHandler;
-import org.erlide.backend.events.LogEventHandler;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.model.ErlangDebugNode;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.ErlDebugFlags;
-import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.runtime.api.ICodeManager;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.IRuntimeStateListener;
 import org.erlide.runtime.api.InitialCall;
-import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.api.RuntimeUtils;
-import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.util.Asserts;
@@ -73,14 +67,12 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-import com.ericsson.otp.erlang.OtpMbox;
 import com.google.common.collect.Lists;
 
 public abstract class Backend implements IStreamListener, IBackend {
 
     private final IErlRuntime runtime;
     private BackendShellManager shellManager;
-    private ErlangEventPublisher eventDaemon;
     private final ICodeManager codeManager;
 
     private final BackendData data;
@@ -99,15 +91,12 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void dispose() {
-        ErlLogger.debug("disposing backend " + getName());
+        if (data.isDebug()) {
+            unloadDebuggerCode();
+        }
         if (shellManager != null) {
             shellManager.dispose();
             shellManager = null;
-        }
-
-        if (eventDaemon != null) {
-            eventDaemon.stop();
-            eventDaemon = null;
         }
         runtime.dispose();
     }
@@ -144,32 +133,8 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public boolean isStopped() {
-        return runtime.isStopped();
-    }
-
-    @Override
-    public void start() {
-        ErlLogger.debug("starting backend " + getName());
-        runtime.start();
-    }
-
-    @Override
-    public void stop() {
-        if (data.isDebug()) {
-            unloadDebuggerCode();
-        }
-        runtime.stop();
-    }
-
-    @Override
-    public OtpMbox createMbox() {
-        return runtime.createMbox();
-    }
-
-    @Override
-    public OtpMbox createMbox(final String name) {
-        return runtime.createMbox(name);
+    public boolean isRunning() {
+        return runtime.isRunning();
     }
 
     public void removePath(final String path) {
@@ -182,18 +147,8 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public synchronized void initErlang(final boolean watch) {
         ErlLogger.debug("initialize %s: %s", getName(), watch);
-        startErlangApps(getEventPid(), watch);
-
-        // TODO when restarting, don't need these...
-        if (eventDaemon == null) {
-            eventDaemon = new ErlangEventPublisher(this);
-        }
-        eventDaemon.start();
-        new LogEventHandler(getName()).register();
-        new ErlangLogEventHandler(getName()).register();
-        new SystemMonitorHandler(getName()).register();
-
-        backendManager.addBackendListener(eventDaemon.getBackendListener());
+        startErlangApps(getRuntime().getEventMbox().self(), watch);
+        getRuntime().registerEventListener(new SystemMonitorHandler(getName()));
     }
 
     @Override
@@ -259,13 +214,13 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void input(final String s) throws IOException {
-        if (!isStopped()) {
+        if (isRunning()) {
             final IStreamsProxy proxy = getStreamsProxy();
             if (proxy != null) {
                 proxy.write(s);
             } else {
                 ErlLogger
-                        .warn("Could not load module on backend %s, stream proxy is null",
+                        .warn("Could not send input to backend %s, stream proxy is null",
                                 getName());
             }
         }
@@ -294,13 +249,19 @@ public abstract class Backend implements IStreamListener, IBackend {
             // can happen if project was removed
             return;
         }
-        final IProject project = eproject.getWorkspaceProject();
-        final String outDir = project.getLocation()
-                .append(eproject.getOutputLocation()).toOSString();
-        if (outDir.length() > 0) {
-            ErlLogger.debug("backend %s: remove path %s", getName(), outDir);
-            removePath(outDir);
-            // TODO unloadBeamsFromDir(outDir); ?
+        try {
+            final IProject project = eproject.getWorkspaceProject();
+            final String outDir = project.getLocation()
+                    .append(eproject.getOutputLocation()).toOSString();
+            if (outDir.length() > 0) {
+                ErlLogger
+                        .debug("backend %s: remove path %s", getName(), outDir);
+                removePath(outDir);
+                // TODO unloadBeamsFromDir(outDir); ?
+            }
+        } catch (final Exception e) {
+            // can happen when shutting down
+            ErlLogger.warn(e);
         }
     }
 
@@ -529,7 +490,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     public void initialize() {
         runtime.addListener(this);
         shellManager = new BackendShellManager(this);
-        connect();
         for (final ICodeBundle bb : backendManager.getCodeBundles().values()) {
             registerCodeBundle(bb);
         }
@@ -545,68 +505,21 @@ public abstract class Backend implements IStreamListener, IBackend {
     // /////
 
     @Override
-    public boolean isAvailable() {
-        return runtime.isAvailable();
-    }
-
-    @Override
-    public String getNodeName() {
-        return runtime.getNodeName();
-    }
-
-    @Override
-    public OtpErlangPid getEventPid() {
-        return runtime.getEventPid();
-    }
-
-    @Override
-    public void connect() {
-        runtime.connect();
-    }
-
-    @Override
-    public OtpMbox getEventMbox() {
-        return runtime.getEventMbox();
-    }
-
-    @Override
     public IRpcSite getRpcSite() {
         return runtime.getRpcSite();
     }
 
     @Override
-    public RuntimeData getRuntimeData() {
-        return data;
+    public RuntimeInfo getRuntimeInfo() {
+        return runtime.getRuntimeData().getRuntimeInfo();
     }
 
     @Override
-    public void addListener(final IRuntimeStateListener listener) {
-        // TODO not needed
-        runtime.addListener(this);
+    public IErlRuntime getRuntime() {
+        return runtime;
     }
 
     @Override
     public void runtimeDown(final IErlRuntime aRuntime) {
-        // terminate process
-    }
-
-    @Override
-    public void restart() {
-        runtime.restart();
-    }
-
-    @Override
-    public ErlSystemStatus getSystemStatus() {
-        return runtime.getSystemStatus();
-    }
-
-    @Override
-    public void setSystemStatus(final ErlSystemStatus msg) {
-        runtime.setSystemStatus(msg);
-    }
-
-    @Override
-    public void tryConnect() throws RpcException {
-        runtime.tryConnect();
     }
 }

@@ -80,12 +80,12 @@ public class DialyzerUtils {
             final List<String> names = Lists.newArrayList();
             collectFilesAndIncludeDirs(modules, projects, files, names,
                     includeDirs, fromSource);
-            
-			String fileNames = names.size() + " modules ["
-					+ getFileNames(names) + "]";
-			monitor.subTask(fileNames);
-			ErlLogger.debug("Dialyzing %s", fileNames);
-			
+
+            final String fileNames = names.size() + " modules ["
+                    + getFileNames(names) + "]";
+            monitor.subTask(fileNames);
+            ErlLogger.debug("Dialyzing %s", fileNames);
+
             final IRpcSite b = backend.getRpcSite();
             final IRpcFuture future = ErlideDialyze.dialyze(b, files, pltPaths,
                     includeDirs, fromSource, noCheckPLT);
@@ -96,16 +96,16 @@ public class DialyzerUtils {
                     throw new OperationCanceledException();
                 }
                 // check backend down
-                if (backend.isStopped()) {
-                    throw new BackendException("Backend " + backend.getName()
-                            + " is down");
+                if (!backend.isRunning()) {
+                    throw new BackendException("Dialyzer: backend "
+                            + backend.getName() + " is down");
                 }
 
                 OtpErlangObject r = null;
                 try {
                     r = future.checkedGet(500, TimeUnit.MILLISECONDS);
                 } catch (final TimeoutException e) {
-                } catch (final RpcTimeoutException e){
+                } catch (final RpcTimeoutException e) {
                 }
                 if (r != null) {
                     processResult(b, r);

@@ -56,11 +56,11 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.api.IBackend;
 import org.erlide.core.ErlangStatus;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIConstants;
+import org.erlide.ui.UIMessageReporter;
 import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.actions.ClearCacheAction;
@@ -74,8 +74,10 @@ import org.erlide.ui.templates.ErlideContributionTemplateStore;
 import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
+import org.erlide.ui.util.NoRuntimeHandler;
 import org.erlide.ui.util.ProblemMarkerManager;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.ErlideEventBus;
 import org.erlide.util.SystemConfiguration;
 import org.osgi.framework.BundleContext;
 
@@ -150,6 +152,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         ErlLogger.debug("Starting UI " + Thread.currentThread());
         super.start(context);
 
+        ErlideEventBus.register(new NoRuntimeHandler());
+        ErlideEventBus.register(new UIMessageReporter());
+
         if (SystemConfiguration.getInstance().isDeveloper()) {
             BackendManagerPopup.init();
         }
@@ -159,15 +164,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         ErlLogger.debug("Started UI");
 
         erlConsoleManager = new ErlConsoleManager();
-        if (SystemConfiguration.getInstance().isDeveloper()) {
-            try {
-                final IBackend ideBackend = BackendCore.getBackendManager()
-                        .getIdeBackend();
-                erlConsoleManager.runtimeAdded(ideBackend);
-            } catch (final Exception e) {
-                ErlLogger.warn(e);
-            }
-        }
 
         erlangDebuggerBackendListener = new ErlangDebuggerBackendListener();
         BackendCore.getBackendManager().addBackendListener(

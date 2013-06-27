@@ -72,7 +72,6 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.CommonUtils;
-import org.erlide.model.util.PluginUtils;
 import org.erlide.model.util.ResourceUtil;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.PreferencesUtils;
@@ -547,8 +546,7 @@ public class FilteredModulesSelectionDialog extends
 
                                 String path;
                                 final IPath p = new Path(pref);
-                                final IPath v = PluginUtils.resolvePVMPath(pvm,
-                                        p);
+                                final IPath v = pvm.resolvePath(p);
                                 if (v.isAbsolute()) {
                                     path = v.toString();
                                 } else {

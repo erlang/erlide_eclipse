@@ -39,7 +39,6 @@ import org.erlide.model.erlang.IErlMember;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
-import org.erlide.model.internal.root.ErlElementDelta;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElement.Kind;
@@ -541,9 +540,9 @@ public class DefaultErlangFoldingStructureProvider implements
             } catch (final ErlModelException e1) {
             }
             if (structureKnown) {
-                final IErlElementDelta d = new ErlElementDelta(
-                        IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
-                        fModule);
+                final IErlElementDelta d = ErlModelManager.getErlangModel()
+                        .createElementDelta(IErlElementDelta.CHANGED,
+                                IErlElementDelta.F_CONTENT, fModule);
                 processDelta(d);
             } else {
                 try {
@@ -1092,9 +1091,9 @@ public class DefaultErlangFoldingStructureProvider implements
             if (element instanceof IErlModule && element != fModule) {
                 return;
             }
-            final ErlElementDelta d = new ErlElementDelta(
-                    IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
-                    fModule);
+            final IErlElementDelta d = ErlModelManager.getErlangModel()
+                    .createElementDelta(IErlElementDelta.CHANGED,
+                            IErlElementDelta.F_CONTENT, fModule);
             processDelta(d);
         } finally {
             fCachedDocument = null;

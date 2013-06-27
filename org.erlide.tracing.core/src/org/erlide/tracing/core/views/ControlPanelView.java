@@ -674,7 +674,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             public void widgetSelected(final SelectionEvent e) {
                 for (final IBackend backend : NodeHelper.getBackends(true)) {
                     final TracedNode node = new TracedNode();
-                    node.setNodeName(backend.getNodeName());
+                    node.setNodeName(backend.getName());
                     TraceBackend.getInstance().addTracedNode(node);
                 }
                 nodesTableViewer.refresh();

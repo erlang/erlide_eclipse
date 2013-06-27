@@ -17,12 +17,13 @@ public class RuntimeFinder {
 
     public static Collection<RuntimeInfo> guessRuntimeLocations() {
         final List<RuntimeInfo> result = Lists.newArrayList();
-        final String[] locations = { System.getProperty("erlide.runtime"),
-                "c:/program files", "c:/program files (x86)", "c:/programs",
-                "c:/", "c:/apps", "/usr", "/usr/lib", "/usr/lib64",
-                "/usr/local", "/usr/local/lib",
-                "/Library/Frameworks/erlang/Versions", "/proj/uz/erlide",
-                SystemConfiguration.getInstance().getHomeDir() };
+        final String[] locations = { "c:/program files",
+                "c:/program files (x86)", "c:/programs", "c:/", "c:/apps",
+                "/usr", "/usr/lib", "/usr/lib64", "/usr/local",
+                "/usr/local/lib", "/Library/Frameworks/erlang/Versions",
+                "/proj/uz/erlide",
+                SystemConfiguration.getInstance().getHomeDir(),
+                System.getProperty("erlide.runtime") };
         final Set<String> locs = Sets.newHashSet(Arrays.asList(locations));
         for (final String loc : locs) {
             final Collection<File> roots = findRuntime(loc);

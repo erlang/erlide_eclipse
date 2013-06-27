@@ -12,6 +12,7 @@ package org.erlide.ui.util;
 
 import org.eclipse.core.resources.IEncodedStorage;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -124,6 +125,7 @@ public class ErlModelUtils {
             final IFileEditorInput input = (IFileEditorInput) editorInput;
             final IFile file = input.getFile();
             final IErlModel model = ErlModelManager.getErlangModel();
+            final IProject project = file.getProject();
             IErlModule module = model.findModule(file);
             if (module != null) {
                 return module;

@@ -36,8 +36,11 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
     @Override
     protected TemplateContextType getContextType(final ITextViewer viewer,
             final IRegion region) {
-        return ErlideUIPlugin.getDefault().getContextTypeRegistry()
-                .getContextType(ErlangTemplateContextType.ERLANG_CONTEXT_TYPE_ID);
+        return ErlideUIPlugin
+                .getDefault()
+                .getContextTypeRegistry()
+                .getContextType(
+                        ErlangTemplateContextType.ERLANG_CONTEXT_TYPE_ID);
     }
 
     @Override

@@ -102,4 +102,6 @@ public interface IRpcSite {
     OtpErlangObject getRpcResult(OtpMbox mbox, long timeout, String env)
             throws RpcException;
 
+    void setConnected(boolean b);
+
 }

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Testing Support Libraries
 Bundle-SymbolicName: org.erlide.testing.libs;singleton:=true
-Bundle-Version: 1.1.3
+Bundle-Version: 1.1.4
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: commons-collections-3.2.1.jar,
  commons-lang-2.5.jar,
@@ -125,7 +125,7 @@ Export-Package: jdepend.framework,
  org.mockito.exceptions.cause;uses:="org.mockito.exceptions.base",
  org.mockito.exceptions.misusing;uses:="org.mockito.exceptions.base",
  org.mockito.exceptions.verification;uses:="org.mockito.exceptions.base",
- org.mockito.exceptions.verification.junit;uses:="org.mockito.exceptions.base,junit.framework",
+ org.mockito.exceptions.verification.junit;uses:="org.mockito.exceptions.base,org.junit",
  org.mockito.internal,
  org.mockito.internal.configuration,
  org.mockito.internal.creation,

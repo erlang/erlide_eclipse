@@ -129,15 +129,14 @@ public class ModelUtils {
             final IErlProject project, final boolean checkExternals,
             final boolean includes) throws ErlModelException {
         final List<String> result = Lists.newArrayList();
-        final Set<String> names = Sets.newHashSet();
         final Collection<IErlModule> units = getUnits(project, checkExternals,
                 includes);
-        addUnitNamesWithPrefix(prefix, result, names, units, false, includes);
+        addUnitNamesWithPrefix(prefix, result, units, false, includes);
         if (project != null) {
             for (final IErlProject p : project.getReferencedProjects()) {
                 if (p != null) {
                     p.open(null);
-                    addUnitNamesWithPrefix(prefix, result, names,
+                    addUnitNamesWithPrefix(prefix, result,
                             getUnits(p, checkExternals, includes), false,
                             includes);
                 }
@@ -145,8 +144,8 @@ public class ModelUtils {
             if (checkExternals) {
                 final Collection<IErlModule> externalUnits = includes ? project
                         .getExternalIncludes() : project.getExternalModules();
-                addUnitNamesWithPrefix(prefix, result, names, externalUnits,
-                        true, includes);
+                addUnitNamesWithPrefix(prefix, result, externalUnits, true,
+                        includes);
             }
         }
         return result;
@@ -334,19 +333,18 @@ public class ModelUtils {
             0);
 
     private static void addUnitNamesWithPrefix(final String prefix,
-            final List<String> result, final Set<String> names,
-            final Collection<IErlModule> modules, final boolean external,
-            final boolean includes) {
+            final List<String> result, final Collection<IErlModule> modules,
+            final boolean external, final boolean includes) {
         for (final IErlModule module : modules) {
             String moduleName = includes ? module.getName() : module
                     .getModuleName();
             if (external && includes) {
                 moduleName = getIncludeLibPath(module);
             }
-            if (moduleName.startsWith(prefix)) {
-                if (!names.contains(moduleName)) {
+            if (moduleName.startsWith(prefix)
+                    && (includes || !module.getName().endsWith(".hrl"))) {
+                if (!result.contains(moduleName)) {
                     result.add(moduleName);
-                    names.add(moduleName);
                 }
             }
         }

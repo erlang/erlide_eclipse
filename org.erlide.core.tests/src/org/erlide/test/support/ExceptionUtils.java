@@ -16,7 +16,7 @@ public class ExceptionUtils {
     private static final String INDENT = "\t";
     private static List<String> _suppressedPackages = newArrayList("$Proxy",
             "org.junit", "java.lang.reflect.Method", "sun.", "org.eclipse",
-            "junit.framework");
+            "org.junit");
 
     public static String getFilteredStackTrace(final Throwable t) {
         return getFilteredStackTrace(t, true);

@@ -1,13 +1,14 @@
 package org.erlide.cover.core;
 
-import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.cover.views.model.TestTreeModel;
 import org.erlide.cover.views.model.TestTreeObject;
-import org.osgi.service.event.Event;
+import org.erlide.runtime.events.ErlEvent;
+import org.erlide.runtime.events.ErlangEventHandler;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.eventbus.Subscribe;
 
 /**
  * Handler for eunit events
@@ -44,10 +45,12 @@ public class EUnitEventHandler extends ErlangEventHandler {
         log = Activator.getDefault();
     }
 
-    @Override
-    public void handleEvent(final Event event) {
-        final OtpErlangObject data = (OtpErlangObject) event
-                .getProperty("DATA");
+    @Subscribe
+    public void handleEvent(final ErlEvent event) {
+        if (!event.getTopic().equals(getTopic())) {
+            return;
+        }
+        final OtpErlangObject data = event.getEvent();
 
         if (!(data instanceof OtpErlangTuple && ((OtpErlangTuple) data)
                 .elementAt(0) instanceof OtpErlangAtom)) {

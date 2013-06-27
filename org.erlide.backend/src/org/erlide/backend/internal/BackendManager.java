@@ -36,8 +36,6 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendListener;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.backend.events.ErlangEventHandler;
-import org.erlide.backend.events.ErlangEventPublisher;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
@@ -48,9 +46,7 @@ import org.erlide.runtime.api.RuntimeVersion;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.SystemConfiguration;
 import org.osgi.framework.Bundle;
-import org.osgi.service.event.Event;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -90,7 +86,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
 
         launchListener = new BackendManagerLaunchListener(this, DebugPlugin
                 .getDefault().getLaunchManager());
-        registerGlobalEventHandlers();
     }
 
     @SuppressWarnings("unused")
@@ -112,19 +107,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         } catch (final IOException e) {
             // ErlLogger.info("Could not start epmd! " + e.getMessage());
         }
-    }
-
-    private void registerGlobalEventHandlers() {
-        new ErlangEventHandler("*", null) {
-            @Override
-            public void handleEvent(final Event event) {
-                if (SystemConfiguration
-                        .hasFeatureEnabled("erlide.eventhandler.debug")) {
-                    ErlLogger.info("erlang event : "
-                            + ErlangEventPublisher.dumpEvent(event));
-                }
-            }
-        }.register();
     }
 
     @Override
@@ -355,8 +337,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         }
         final Collection<IBackend> list = getAllBackends();
         for (final IBackend b : list) {
-            if (b.getRuntimeData().getRuntimeInfo().getVersion()
-                    .equals(version)) {
+            if (b.getRuntimeInfo().getVersion().equals(version)) {
                 return b.getRpcSite();
             }
         }

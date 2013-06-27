@@ -1,11 +1,13 @@
 package org.erlide.model;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.backend.api.IBackendProvider;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeVersion;
-import org.erlide.util.ExtensionUtils;
+import org.erlide.util.services.ExtensionUtils;
 import org.osgi.framework.BundleContext;
 
 public class ModelPlugin extends Plugin {
@@ -39,6 +41,18 @@ public class ModelPlugin extends Plugin {
     public void start(final BundleContext bundleContext) throws Exception {
         super.start(bundleContext);
         ModelPlugin.context = bundleContext;
+
+        cleanupStateDir();
+    }
+
+    private void cleanupStateDir() {
+        final String ndir = getStateDir();
+        final File fdir = new File(ndir);
+        for (final File f : fdir.listFiles()) {
+            if (f.isFile()) {
+                f.delete();
+            }
+        }
     }
 
     @Override
@@ -49,7 +63,7 @@ public class ModelPlugin extends Plugin {
 
     private IBackendProvider getRuntimeProvider() {
         return ExtensionUtils.getSingletonExtension(
-                "org.erlide.backend.api.backend", IBackendProvider.class);
+                "org.erlide.backend.backend", IBackendProvider.class);
     }
 
     public IRpcSite getIdeBackend() {

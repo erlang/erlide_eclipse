@@ -14,7 +14,7 @@
          get_external_module/2,
          get_external_module_tree/1,
          get_external_include/2,
-     get_external_1/3,
+         get_external_1/3,
          get_lib_dirs/0,
          get_lib_src_include/1,
          get_lib_files/1,

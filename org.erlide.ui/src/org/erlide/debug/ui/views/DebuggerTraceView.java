@@ -49,7 +49,6 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
-import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -494,7 +493,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
         }
         if (part instanceof ErlangEditor) {
             part.setFocus();
-            final AbstractErlangEditor ee = (AbstractErlangEditor) part;
+            final ErlangEditor ee = (ErlangEditor) part;
             final IDocument d = ee.getDocument();
             int lineStart, lineLength;
             try {

@@ -129,7 +129,4 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
         return super.internalGetChildren();
     }
 
-    @Override
-    public void removeExternal() {
-    }
 }

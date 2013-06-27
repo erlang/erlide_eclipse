@@ -199,23 +199,4 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return true;
     }
 
-    @Override
-    public void dispose() {
-        removeExternal();
-        super.dispose();
-    }
-
-    @Override
-    public void close() throws ErlModelException {
-        removeExternal();
-        super.close();
-    }
-
-    @Override
-    public void removeExternal() {
-        ErlModelManager.getErlangModel().removeExternal(
-                externalIncludes + "|" + externalModules + "|"
-                        + projectIncludes);
-    }
-
 }

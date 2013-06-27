@@ -97,14 +97,8 @@ public class RpcFutureImpl implements IRpcFuture {
     @Override
     public OtpErlangObject checkedGet(final long timeout, final TimeUnit unit)
             throws TimeoutException, RpcException {
-        if (isDone()) {
-            if (logCalls) {
-                final Object[] args0 = { result };
-                ErlLogger.debug("call <- %s", args0);
-            }
-            return result;
-        }
-        result = rpcSite.getRpcResult(mbox, timeout, env);
+        result = rpcSite.getRpcResult(mbox,
+                TimeUnit.MILLISECONDS.convert(timeout, unit), env);
         if (isDone()) {
             RpcMonitor.recordResponse(ref, result);
             if (logCalls) {

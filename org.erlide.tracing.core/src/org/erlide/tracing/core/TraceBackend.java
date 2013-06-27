@@ -12,7 +12,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
-import org.erlide.backend.events.ErlangEventHandler;
+import org.erlide.runtime.events.ErlEvent;
+import org.erlide.runtime.events.ErlangEventHandler;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.tracing.core.mvc.model.TraceCollections;
@@ -24,7 +25,6 @@ import org.erlide.tracing.core.mvc.model.treenodes.TracingResultsNode;
 import org.erlide.tracing.core.preferences.PreferenceNames;
 import org.erlide.tracing.core.utils.TraceDataHandler;
 import org.erlide.util.ErlLogger;
-import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangInt;
@@ -33,6 +33,7 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.eventbus.Subscribe;
 
 /**
  * Singleton class used for communication with trace node.
@@ -90,10 +91,12 @@ public class TraceBackend {
         private final TraceDataHandler dataHandler = new TraceDataHandler();
         private boolean firstTrace = true;
 
-        @Override
-        public void handleEvent(final Event event) {
-            final OtpErlangObject message = (OtpErlangObject) event
-                    .getProperty("DATA");
+        @Subscribe
+        public void handleEvent(final ErlEvent event) {
+            if (!event.getTopic().equals(getTopic())) {
+                return;
+            }
+            final OtpErlangObject message = event.getEvent();
             if (message != null) {
                 OtpErlangObject errorReason = null;
                 // System.out.println("data: " + data);
@@ -152,7 +155,8 @@ public class TraceBackend {
                         getBackend(true);
                         loadingFileInfo = true;
                         handler = new TraceEventHandler(tracerBackend.getName());
-                        handler.register();
+                        tracerBackend.getRuntime().registerEventListener(
+                                handler);
 
                         // list of nodes being traced
                         final List<OtpErlangObject> erlangObjects = new ArrayList<OtpErlangObject>();
@@ -331,7 +335,8 @@ public class TraceBackend {
                         loadingFileInfo = true;
                         handler = new TraceEventHandler(tracerBackend.getName());
                         getBackend(true);
-                        handler.register();
+                        tracerBackend.getRuntime().registerEventListener(
+                                handler);
                         tracerBackend.getRpcSite().call(
                                 Constants.ERLANG_HELPER_MODULE, FUN_FILE_INFO,
                                 "s", new OtpErlangString(path));
@@ -366,7 +371,8 @@ public class TraceBackend {
                         handler = new TraceEventHandler(tracerBackend.getName());
                         getBackend(true);
                         TraceCollections.getTracesList().clear();
-                        handler.register();
+                        tracerBackend.getRuntime().registerEventListener(
+                                handler);
                         final OtpErlangLong start = new OtpErlangLong(
                                 theStartIndex);
                         final OtpErlangLong stop = new OtpErlangLong(endIndex);

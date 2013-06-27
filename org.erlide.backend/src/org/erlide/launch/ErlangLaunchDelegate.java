@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.erlide.launch;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
@@ -22,24 +19,26 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
 import org.erlide.model.BeamLocator;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
-import org.erlide.runtime.epmd.IEpmdWatcher;
+import org.erlide.runtime.api.ErlRuntimeFactory;
+import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
-import org.erlide.util.SystemConfiguration;
 
 import com.google.common.collect.Maps;
 
-public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
+public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
+
+    protected IBackend backend;
 
     @Override
     public void launch(final ILaunchConfiguration config, final String mode,
@@ -47,26 +46,6 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             throws CoreException {
         Asserts.isNotNull(config);
 
-        final boolean doContinue = preLaunch(config, mode, launch, monitor);
-        if (!doContinue) {
-            return;
-        }
-        final IBackend backend = doLaunch(config, mode, launch, monitor);
-        if (backend == null) {
-            return;
-        }
-        postLaunch(mode, backend, monitor);
-    }
-
-    protected boolean preLaunch(final ILaunchConfiguration config,
-            final String mode, final ILaunch launch,
-            final IProgressMonitor monitor) throws CoreException {
-        return true;
-    }
-
-    protected IBackend doLaunch(final ILaunchConfiguration config,
-            final String mode, final ILaunch launch,
-            final IProgressMonitor monitor) throws CoreException {
         RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoCatalog()
                 .getRuntime(
                         config.getAttribute(ErlRuntimeAttributes.RUNTIME_NAME,
@@ -78,7 +57,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         if (runtimeInfo == null) {
             // TODO what to do here?
             ErlLogger.error("Can't create backend without a runtime defined!");
-            return null;
+            return;
         }
         final String nodeName = config.getAttribute(
                 ErlRuntimeAttributes.NODE_NAME, "");
@@ -88,7 +67,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         if (info == null) {
             ErlLogger.error("Could not find runtime '%s'", data
                     .getRuntimeInfo().getName());
-            return null;
+            return;
         }
         ErlLogger.debug("doLaunch runtime %s", data.getRuntimeInfo().getName());
         ErlLogger.debug("doLaunch cookie %s (%s)", data.getCookie(),
@@ -102,20 +81,17 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
         if (data.isManaged()) {
             setCaptureOutput(launch);
-            startErtsProcess(launch, data);
-        } else {
-            ErlLogger.info("Node %s exists already.", data.getNodeName());
         }
-
+        IErlRuntime runtime;
         if (!isErlangInternalLaunch(launch)) {
-            return BackendCore.getBackendManager().createExecutionBackend(data);
+            backend = BackendCore.getBackendManager().createExecutionBackend(
+                    data);
+            runtime = backend.getRuntime();
+        } else {
+            runtime = ErlRuntimeFactory.createRuntime(data);
+            runtime.startAndWait();
         }
-        // The backend was already created
-        return null;
-    }
-
-    protected void postLaunch(final String mode, final IBackend b,
-            final IProgressMonitor monitor) throws CoreException {
+        startErtsProcess(launch, data, runtime);
     }
 
     /*
@@ -129,17 +105,18 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         return data;
     }
 
-    private void startErtsProcess(final ILaunch launch, final BackendData data) {
-        final Process process = startRuntimeProcess(data);
+    private void startErtsProcess(final ILaunch launch, final BackendData data,
+            final IErlRuntime runtime) {
+        final Process process = runtime.getProcess();
         if (process == null) {
             ErlLogger.debug("Error starting process");
             data.setManaged(false);
             return;
         }
+        data.setLaunch(launch);
         final Map<String, String> map = Maps.newHashMap();
         map.put("NodeName", data.getNodeName());
         map.put("workingDir", data.getWorkingDir());
-        // final ErtsProcess erts = new ErtsProcess(process, data);
         final IProcess erts = DebugPlugin.newProcess(launch, process,
                 data.getNodeName(), map);
 
@@ -147,68 +124,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
                 data.getNodeName());
     }
 
-    /**
-     * used by selfhost plugin
-     */
-    public void launchInternal(final ILaunchConfiguration configuration,
-            final String mode, final ILaunch launch,
-            final IProgressMonitor monitor) throws CoreException {
-        final ILaunchConfigurationWorkingCopy wc = configuration
-                .getWorkingCopy();
-        wc.setAttribute(ErlRuntimeAttributes.COOKIE, "erlide");
-        launch(wc, mode, launch, monitor);
-    }
-
-    private Process startRuntimeProcess(final BackendData data) {
-        final String[] cmds = data.getCmdLine();
-        final File workingDirectory = new File(data.getWorkingDir());
-
-        try {
-            ErlLogger.debug("START node :> " + Arrays.toString(cmds) + " *** "
-                    + workingDirectory.getCanonicalPath());
-        } catch (final IOException e1) {
-            ErlLogger.debug("START node :> " + Arrays.toString(cmds) + " *** "
-                    + workingDirectory);
-        }
-
-        final ProcessBuilder builder = new ProcessBuilder(cmds);
-        builder.directory(workingDirectory);
-        setEnvironment(data, builder);
-        try {
-            Process process = builder.start();
-            try {
-                final int code = process.exitValue();
-                ErlLogger.error(
-                        "Could not create runtime (exit code = %d): %s", code,
-                        Arrays.toString(cmds));
-                process = null;
-            } catch (final IllegalThreadStateException e) {
-                ErlLogger.debug("process is running");
-            }
-            return process;
-        } catch (final IOException e) {
-            ErlLogger.error("Could not create runtime: %s",
-                    Arrays.toString(cmds));
-            ErlLogger.error(e);
-            return null;
-        }
-    }
-
-    private void setEnvironment(final BackendData data,
-            final ProcessBuilder builder) {
-        final Map<String, String> env = builder.environment();
-        if (!SystemConfiguration.getInstance().isOnWindows()
-                && SystemConfiguration.getInstance().hasSpecialTclLib()) {
-            env.put("TCL_LIBRARY", "/usr/share/tcl/tcl8.4/");
-        }
-        if (data.getEnv() != null) {
-            env.putAll(data.getEnv());
-        }
-    }
-
     private void setCaptureOutput(final ILaunch launch) {
-        // important, so that we don't get the "normal" console for the erlide
-        // backend
+        // important, we don't want the "normal" console for the erlide backend
         final String captureOutput = System.getProperty(
                 "erlide.console.stdout", "false");
         launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, captureOutput);
@@ -242,7 +159,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     }
 
     public static boolean shouldManageNode(final String name,
-            final IEpmdWatcher epmdWatcher) {
+            final EpmdWatcher epmdWatcher) {
         final int atSignIndex = name.indexOf('@');
         String shortName = name;
         if (atSignIndex > 0) {

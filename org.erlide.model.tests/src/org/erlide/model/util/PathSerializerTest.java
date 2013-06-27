@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.model.internal.root.PathSerializer;
+import org.erlide.model.root.PathSerializer;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -42,7 +42,6 @@ import org.erlide.model.erlang.ModuleKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ErlangIncludeFile;
-import org.erlide.model.util.PluginUtils;
 import org.erlide.model.util.ResourceUtil;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
@@ -97,7 +96,7 @@ public final class BuilderHelper {
         final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
                 .getPathVariableManager();
         for (IPath inc : projectIncludeDirs) {
-            inc = PluginUtils.resolvePVMPath(pvm, inc);
+            inc = pvm.resolvePath(inc);
             if (inc.isAbsolute()) {
                 includeDirs.add(inc);
             } else {

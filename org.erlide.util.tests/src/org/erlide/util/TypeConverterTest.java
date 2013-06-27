@@ -15,13 +15,12 @@ import static org.junit.Assert.*;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-import junit.framework.Assert;
-
 import org.erlide.util.erlang.IConvertible;
 import org.erlide.util.erlang.Signature;
 import org.erlide.util.erlang.SignatureException;
 import org.erlide.util.erlang.TypeConverter;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 

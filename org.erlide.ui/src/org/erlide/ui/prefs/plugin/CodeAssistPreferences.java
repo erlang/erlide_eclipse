@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.ErlangCore;
-import org.erlide.model.internal.erlang.PreferencesHelper;
+import org.erlide.model.util.PreferencesHelper;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class CodeAssistPreferences {
@@ -66,7 +66,7 @@ public class CodeAssistPreferences {
         autoActivate = helper.getBoolean(
                 CodeAssistPreferencesConstants.AUTO_ACTIVATE, true);
         delayInMS = helper.getInt(CodeAssistPreferencesConstants.DELAY_IN_MS,
-                100);
+                50);
         erlangTriggers = helper.getString(
                 CodeAssistPreferencesConstants.ERLANG_TRIGGERS, ":#?");
         eDocTriggers = helper.getString(

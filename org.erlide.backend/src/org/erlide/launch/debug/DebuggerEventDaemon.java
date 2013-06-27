@@ -67,7 +67,7 @@ public class DebuggerEventDaemon implements IBackendListener {
                         messages.clear();
                     }
                 } catch (final OtpErlangExit e) {
-                    if (!myBackend.isStopped()) {
+                    if (myBackend.isRunning()) {
                         // backend crashed -- restart?
                         ErlLogger.warn(e);
                     }
@@ -85,7 +85,7 @@ public class DebuggerEventDaemon implements IBackendListener {
 
     public synchronized void start() {
         stopped = false;
-        mbox = backend.createMbox();
+        mbox = backend.getRuntime().createMbox();
         new Thread(new HandlerJob(backend)).start();
     }
 

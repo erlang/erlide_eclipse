@@ -13,6 +13,4 @@ public interface IErlExternalRoot extends IErlExternal {
 
     List<IErlElement> internalGetChildren();
 
-    void removeExternal();
-
 }

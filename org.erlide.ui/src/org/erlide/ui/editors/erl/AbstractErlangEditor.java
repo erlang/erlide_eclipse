@@ -36,7 +36,6 @@ import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
-import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.root.IErlElement;
@@ -68,11 +67,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
 
     public abstract IErlElement getElementAt(int offset, boolean b);
 
-    public abstract ErlToken getTokenAt(int offset);
-
     public abstract IErlModule getModule();
-
-    public abstract IDocument getDocument();
 
     public IErlScanner getScanner() {
         if (erlScanner == null) {

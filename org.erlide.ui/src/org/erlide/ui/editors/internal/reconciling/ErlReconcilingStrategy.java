@@ -93,7 +93,6 @@ public class ErlReconcilingStrategy implements IErlReconcilingStrategy,
         } else if (fScanner != null) {
             fScanner.replaceText(r.getOffset(), r.getLength(), r.getText());
         }
-
     }
 
     public IErlModule getModule() {

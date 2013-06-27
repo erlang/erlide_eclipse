@@ -95,7 +95,7 @@ public class ErlTextHover implements ITextHover,
             return null;
         }
         editor.reconcileNow();
-        final ErlToken token = editor.getTokenAt(offset);
+        final ErlToken token = editor.getScanner().getTokenAt(offset);
         if (token == null) {
             return null;
         }
@@ -234,6 +234,7 @@ public class ErlTextHover implements ITextHover,
         return null;
     }
 
+    @Deprecated
     @Override
     public String getHoverInfo(final ITextViewer textViewer,
             final IRegion hoverRegion) {
@@ -324,7 +325,8 @@ public class ErlTextHover implements ITextHover,
                     if (comment.length() == 0) {
                         return null;
                     }
-                    result.append(HTMLPrinter.asHtml(comment));
+                    result.append(HTMLPrinter.asHtml("<pre>" + comment
+                            + "</pre>"));
                 } else if (found instanceof IErlPreprocessorDef) {
                     final IErlPreprocessorDef preprocessorDef = (IErlPreprocessorDef) found;
                     result.append(preprocessorDef.getExtra());

@@ -49,12 +49,19 @@ public class RpcSite implements IRpcSite {
     private final IErlRuntime runtime;
     private final String nodeName;
     private final OtpNode localNode;
+    private volatile boolean connected;
 
     public RpcSite(final IErlRuntime runtime, final OtpNode localNode,
             final String nodeName) {
         this.runtime = runtime;
         this.localNode = localNode;
         this.nodeName = nodeName;
+        connected = false;
+    }
+
+    @Override
+    public void setConnected(final boolean connected) {
+        this.connected = connected;
     }
 
     @Override
@@ -78,7 +85,7 @@ public class RpcSite implements IRpcSite {
     public IRpcFuture async_call(final OtpErlangObject gleader,
             final String module, final String fun, final String signature,
             final Object... args0) throws RpcException {
-        tryConnect();
+        checkConnected();
         try {
             return sendRpcCall(localNode, nodeName, false, gleader, module,
                     fun, signature, args0);
@@ -107,7 +114,7 @@ public class RpcSite implements IRpcSite {
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args)
             throws RpcException {
-        tryConnect();
+        checkConnected();
         try {
             final IRpcFuture future = sendRpcCall(localNode, nodeName, false,
                     gleader, module, fun, signature, args);
@@ -139,7 +146,7 @@ public class RpcSite implements IRpcSite {
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
             throws RpcException {
-        tryConnect();
+        checkConnected();
         OtpErlangObject result;
         try {
             final IRpcFuture future = sendRpcCall(localNode, nodeName, false,
@@ -173,7 +180,7 @@ public class RpcSite implements IRpcSite {
     public void cast(final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
             throws RpcException {
-        tryConnect();
+        checkConnected();
         try {
             rpcCast(localNode, nodeName, false, gleader, module, fun,
                     signature, args0);
@@ -191,7 +198,7 @@ public class RpcSite implements IRpcSite {
     @Override
     public void send(final OtpErlangPid pid, final Object msg) {
         try {
-            tryConnect();
+            checkConnected();
             final OtpMbox mbox = localNode.createMbox();
             try {
                 if (mbox != null) {
@@ -211,7 +218,7 @@ public class RpcSite implements IRpcSite {
     public void send(final String fullNodeName, final String name,
             final Object msg) {
         try {
-            tryConnect();
+            checkConnected();
             send(localNode, fullNodeName, name, msg);
         } catch (final Exception e) {
         }
@@ -250,18 +257,21 @@ public class RpcSite implements IRpcSite {
     @Override
     public void send(final String name, final Object msg) {
         try {
-            tryConnect();
+            checkConnected();
             send(localNode, nodeName, name, msg);
         } catch (final Exception e) {
         }
     }
 
-    private void tryConnect() throws RpcException {
-        runtime.tryConnect();
-        if (!runtime.isAvailable()) {
+    private void checkConnected() throws RpcException {
+        if (!isConnected()) {
             throw new RpcException(String.format("backend %s down",
                     runtime.getNodeName()));
         }
+    }
+
+    public boolean isConnected() {
+        return connected;
     }
 
     private static void setDefaultTimeout() {

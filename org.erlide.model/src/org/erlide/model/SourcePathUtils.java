@@ -8,7 +8,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.ExtensionUtils;
+import org.erlide.util.services.ExtensionUtils;
 
 import com.google.common.collect.Lists;
 

@@ -40,7 +40,6 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.root.IErlangProjectProperties;
 import org.erlide.model.root.OldErlangProjectProperties;
-import org.erlide.model.util.PluginUtils;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
@@ -274,11 +273,14 @@ public class NewErlangProject extends Wizard implements INewWizard {
      */
     private void reportError(final Exception x) {
         ErlLogger.error(x);
-        ErrorDialog.openError(getShell(), ErlideUIPlugin
-                .getResourceString("wizards.errors.projecterrordesc"),
+        ErrorDialog.openError(
+                getShell(),
+                ErlideUIPlugin
+                        .getResourceString("wizards.errors.projecterrordesc"),
                 ErlideUIPlugin
                         .getResourceString("wizards.errors.projecterrortitle"),
-                PluginUtils.makeStatus(x));
+                new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, 0, x
+                        .getMessage(), x));
     }
 
     /**

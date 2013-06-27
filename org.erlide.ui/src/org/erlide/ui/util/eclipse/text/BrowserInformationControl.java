@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,14 +27,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationListener;
+import org.eclipse.swt.browser.OpenWindowListener;
 import org.eclipse.swt.browser.ProgressAdapter;
 import org.eclipse.swt.browser.ProgressEvent;
+import org.eclipse.swt.browser.WindowEvent;
 import org.eclipse.swt.custom.StyleRange;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -114,12 +113,14 @@ public class BrowserInformationControl extends AbstractInformationControl
      * @since 3.2
      */
     private static final int MIN_WIDTH = 80;
+
     private static final int MIN_HEIGHT = 50;
 
     /**
      * Availability checking cache.
      */
     private static boolean fgIsAvailable = false;
+
     private static boolean fgAvailabilityChecked = false;
 
     /**
@@ -131,10 +132,13 @@ public class BrowserInformationControl extends AbstractInformationControl
 
     /** The control's browser widget */
     private Browser fBrowser;
+
     /** Tells whether the browser has content */
     private boolean fBrowserHasContent;
+
     /** Text layout used to approximate size of content when rendered in browser */
     private TextLayout fTextLayout;
+
     /** Bold text style */
     private TextStyle fBoldStyle;
 
@@ -146,7 +150,7 @@ public class BrowserInformationControl extends AbstractInformationControl
      * 
      * @since 3.4
      */
-    boolean fCompleted = false;
+    private boolean fCompleted = false;
 
     /**
      * The listener to be notified when a delayed location changing event
@@ -235,31 +239,25 @@ public class BrowserInformationControl extends AbstractInformationControl
     @Override
     protected void createContent(final Composite parent) {
         fBrowser = new Browser(parent, SWT.NONE);
+        fBrowser.setJavascriptEnabled(false);
 
         final Display display = getShell().getDisplay();
         fBrowser.setForeground(display
                 .getSystemColor(SWT.COLOR_INFO_FOREGROUND));
         fBrowser.setBackground(display
                 .getSystemColor(SWT.COLOR_INFO_BACKGROUND));
-        fBrowser.addKeyListener(new KeyListener() {
-
-            @Override
-            public void keyPressed(final KeyEvent e) {
-                if (e.character == 0x1B) {
-                    dispose();
-                    // XXX: Just hide? Would avoid constant recreations.
-                }
-            }
-
-            @Override
-            public void keyReleased(final KeyEvent e) {
-            }
-        });
 
         fBrowser.addProgressListener(new ProgressAdapter() {
             @Override
             public void completed(final ProgressEvent event) {
                 fCompleted = true;
+            }
+        });
+
+        fBrowser.addOpenWindowListener(new OpenWindowListener() {
+            @Override
+            public void open(final WindowEvent event) {
+                event.required = true; // Cancel opening of new windows
             }
         });
 
@@ -336,7 +334,11 @@ public class BrowserInformationControl extends AbstractInformationControl
             styles = new String[] {
                     "direction:rtl;", "overflow:hidden;", "word-wrap:break-word;" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else if (!resizable) {
-            styles = new String[] { "overflow:hidden;" };
+            // XXX: In IE, "word-wrap: break-word;" causes bogus wrapping even
+            // in non-broken words :-(see e.g. Javadoc of String).
+            // Re-check whether we really still need this now that the Javadoc
+            // Hover header already sets this style.
+            styles = new String[] { "overflow:hidden;"/*, "word-wrap: break-word;"*/}; //$NON-NLS-1$
         } else {
             styles = new String[] { "overflow:scroll;" }; //$NON-NLS-1$
         }
@@ -438,41 +440,35 @@ public class BrowserInformationControl extends AbstractInformationControl
         fTextLayout = new TextLayout(fBrowser.getDisplay());
 
         // Initialize fonts
-        Font font = fSymbolicFontName == null ? JFaceResources.getDialogFont()
-                : JFaceResources.getFont(fSymbolicFontName);
+        final String symbolicFontName = fSymbolicFontName == null ? JFaceResources.DIALOG_FONT
+                : fSymbolicFontName;
+        Font font = JFaceResources.getFont(symbolicFontName);
         fTextLayout.setFont(font);
         fTextLayout.setWidth(-1);
-        final FontData[] fontData = font.getFontData();
-        for (int i = 0; i < fontData.length; i++) {
-            fontData[i].setStyle(SWT.BOLD);
-        }
-        font = new Font(getShell().getDisplay(), fontData);
+        font = JFaceResources.getFontRegistry().getBold(symbolicFontName);
         fBoldStyle = new TextStyle(font, null, null);
 
         // Compute and set tab width
         fTextLayout.setText("    "); //$NON-NLS-1$
         final int tabWidth = fTextLayout.getBounds().width;
         fTextLayout.setTabs(new int[] { tabWidth });
-
         fTextLayout.setText(""); //$NON-NLS-1$
     }
 
     /*
-     * @see IInformationControl#dispose()
+     * @see org.eclipse.jface.text.AbstractInformationControl#handleDispose()
+     * 
+     * @since 3.6
      */
     @Override
-    public void dispose() {
+    protected void handleDispose() {
         if (fTextLayout != null) {
             fTextLayout.dispose();
             fTextLayout = null;
         }
-        if (fBoldStyle != null) {
-            fBoldStyle.font.dispose();
-            fBoldStyle = null;
-        }
         fBrowser = null;
 
-        super.dispose();
+        super.handleDispose();
     }
 
     /*
@@ -493,9 +489,11 @@ public class BrowserInformationControl extends AbstractInformationControl
                 fInput.getHtml()), presentation);
         String text;
         try {
-            text = reader.getString();
-        } catch (final IOException e) {
-            text = ""; //$NON-NLS-1$
+            try {
+                text = reader.getString();
+            } catch (final IOException e) {
+                text = ""; //$NON-NLS-1$
+            }
         } finally {
             try {
                 reader.close();
@@ -517,9 +515,8 @@ public class BrowserInformationControl extends AbstractInformationControl
         }
 
         final Rectangle bounds = fTextLayout.getBounds(); // does not return
-                                                          // minimum
-        // width, see
-        // https://bugs.eclipse.org/bugs/show_bug.cgi?id=217446
+                                                          // minimum width, see
+                                                          // https://bugs.eclipse.org/bugs/show_bug.cgi?id=217446
         final int lineCount = fTextLayout.getLineCount();
         int textWidth = 0;
         for (int i = 0; i < lineCount; i++) {
@@ -640,7 +637,7 @@ public class BrowserInformationControl extends AbstractInformationControl
     }
 
     /*
-     * @seeorg.eclipse.jface.text.IDelayedInputChangeProvider#
+     * @see org.eclipse.jface.text.IDelayedInputChangeProvider#
      * setDelayedInputChangeListener
      * (org.eclipse.jface.text.IInputChangedListener)
      * 
@@ -707,17 +704,14 @@ public class BrowserInformationControl extends AbstractInformationControl
         }
 
         final GC gc = new GC(fBrowser);
-        final Font font = JFaceResources.getFont(fSymbolicFontName);
+        final Font font = fSymbolicFontName == null ? JFaceResources
+                .getDialogFont() : JFaceResources.getFont(fSymbolicFontName);
         gc.setFont(font);
         final int width = gc.getFontMetrics().getAverageCharWidth();
         final int height = gc.getFontMetrics().getHeight();
         gc.dispose();
 
         return new Point(widthInChars * width, heightInChars * height);
-    }
-
-    public Browser getBrowser() {
-        return fBrowser;
     }
 
 }

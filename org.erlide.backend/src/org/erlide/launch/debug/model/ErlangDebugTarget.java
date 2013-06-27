@@ -84,7 +84,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
             final EnumSet<ErlDebugFlags> debugFlags) throws DebugException {
         super(null);
         fBackend = b;
-        fNodeName = b.getNodeName();
+        fNodeName = b.getName();
         fLaunch = launch;
         fTerminated = false;
         this.projects = projects;
@@ -176,21 +176,17 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         if (dbgPlugin != null) {
             dbgPlugin.getBreakpointManager().removeBreakpointListener(this);
         }
-        fBackend.stop();
-        fTerminated = true;
+        if (debuggerDaemon != null) {
+            debuggerDaemon.stop();
+        }
+        fBackend.dispose();
 
         final ILaunch launch = getLaunch();
         if (launch != null) {
             launch.terminate();
         }
-        fBackend.dispose();
-        final IProcess process = getProcess();
-        if (process != null) {
-            process.terminate();
-        }
-        if (debuggerDaemon != null) {
-            debuggerDaemon.stop();
-        }
+
+        fTerminated = true;
         fireTerminateEvent();
     }
 

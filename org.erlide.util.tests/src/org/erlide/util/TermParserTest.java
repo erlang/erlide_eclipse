@@ -2,12 +2,11 @@ package org.erlide.util;
 
 import java.io.IOException;
 
-import junit.framework.Assert;
-
 import org.erlide.util.erlang.OtpFormatPlaceholder;
 import org.erlide.util.erlang.OtpPatternVariable;
 import org.erlide.util.erlang.TermParser;
 import org.erlide.util.erlang.TermParserException;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

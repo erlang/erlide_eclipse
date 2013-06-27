@@ -17,7 +17,7 @@ import org.erlide.core.builder.CompilerOption.ModuleOption;
 import org.erlide.core.builder.CompilerOption.PathsOption;
 import org.erlide.core.builder.CompilerOption.RawOption;
 import org.erlide.core.builder.CompilerOption.WarningOption;
-import org.erlide.model.internal.erlang.PreferencesHelper;
+import org.erlide.model.util.PreferencesHelper;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.TermParserException;
@@ -159,9 +159,11 @@ public class CompilerOptions {
                     }
                 } else if (option instanceof PathsOption) {
                     final Iterable<String> value = (Iterable<String>) optionValue;
-                    final OtpErlangObject val = ((PathsOption) option)
+                    final OtpErlangList val = (OtpErlangList) ((PathsOption) option)
                             .toTerm(value);
-                    result.add(val);
+                    for (final OtpErlangObject inc : val.elements()) {
+                        result.add(inc);
+                    }
                 } else if (option instanceof ModuleOption) {
                     final String value = (String) optionValue;
                     final OtpErlangObject val = ((ModuleOption) option)
