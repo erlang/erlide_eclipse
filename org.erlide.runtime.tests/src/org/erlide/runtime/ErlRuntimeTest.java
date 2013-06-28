@@ -30,7 +30,7 @@ public class ErlRuntimeTest {
                 "no default info found");
 
         final RuntimeData data = new RuntimeData(info, "run");
-        data.setNodeName("etest");
+        data.setNodeName("etest" + System.currentTimeMillis());
         data.setLongName(false);
         data.setCookie("c");
 
@@ -118,7 +118,7 @@ public class ErlRuntimeTest {
     public void nonManagedRuntimeWorks() {
         final RuntimeInfo info = runtime.getRuntimeData().getRuntimeInfo();
         final RuntimeData data = new RuntimeData(info, "run");
-        data.setNodeName("etest");
+        data.setNodeName(runtime.getNodeName());
         data.setLongName(false);
         data.setCookie("c");
         data.setManaged(false);
