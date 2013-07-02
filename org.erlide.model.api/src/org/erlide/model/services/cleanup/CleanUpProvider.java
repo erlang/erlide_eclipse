@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.model.services.cleanup;
 
+import org.erlide.runtime.api.IRpcSite;
+
 /**
  * <p>
  * The {@link CleanUpProvider} interface defines the responsibilities of an
@@ -25,6 +27,6 @@ public interface CleanUpProvider {
      * Perform clean up.
      * </p>
      */
-    public void cleanUp() throws Exception;
+    void cleanUp(IRpcSite backend) throws Exception;
 
 }

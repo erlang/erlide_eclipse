@@ -12,6 +12,7 @@ package org.erlide.ui.editors.erl.actions;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
+import org.erlide.model.ModelPlugin;
 import org.erlide.model.services.cleanup.CleanUpProviders;
 import org.erlide.util.ErlLogger;
 
@@ -49,7 +50,8 @@ public class CleanUpAction extends Action {
     @Override
     public void run() {
         try {
-            CleanUpProviders.createForIResource(resource).cleanUp();
+            CleanUpProviders.createForIResource(resource).cleanUp(
+                    ModelPlugin.getDefault().getIdeBackend());
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
