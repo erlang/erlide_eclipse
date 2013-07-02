@@ -1,5 +1,8 @@
 package org.erlide.runtime;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.internal.ErlRuntime;
@@ -7,7 +10,6 @@ import org.erlide.runtime.internal.ManagedErlRuntime;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
-import org.erlide.util.Asserts;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,10 +26,9 @@ public class ErlRuntimeTest {
     public void prepareRuntime() {
         final RuntimeInfoCatalog cat = new RuntimeInfoCatalog();
         cat.initializeRuntimesList();
-        Asserts.isTrue(!cat.getRuntimes().isEmpty());
+        assertThat("not empty", !cat.getRuntimes().isEmpty());
         final RuntimeInfo info = cat.getRuntimes().iterator().next();
-        Asserts.isTrue(info != RuntimeInfo.NO_RUNTIME_INFO,
-                "no default info found");
+        assertThat("default info", info != RuntimeInfo.NO_RUNTIME_INFO);
 
         final RuntimeData data = new RuntimeData(info, "run");
         data.setNodeName("etest" + System.currentTimeMillis());
@@ -37,7 +38,7 @@ public class ErlRuntimeTest {
         runtime = new ManagedErlRuntime(data);
         runtime.startAndWait();
         process = runtime.getProcess();
-        Asserts.isNotNull(process, "beam process");
+        assertThat("beam process", process, is(not(nullValue())));
     }
 
     @After
@@ -54,8 +55,8 @@ public class ErlRuntimeTest {
         } catch (final IllegalThreadStateException e) {
             val = -1;
         }
-        Asserts.isTrue(val == -1, "process exited " + val);
-        Asserts.isTrue(runtime.isRunning(), "not running");
+        assertThat("exit value", val, is(-1));
+        assertThat("running", runtime.isRunning(), is(true));
         final IRpcSite site = runtime.getRpcSite();
         OtpErlangObject r;
         try {
@@ -63,7 +64,7 @@ public class ErlRuntimeTest {
         } catch (final RpcException e) {
             r = null;
         }
-        Asserts.isNotNull(r, "rpc not working");
+        assertThat("rpc", r, is(not(nullValue())));
         try {
             runtime.stopAndWait();
         } catch (final Throwable t) {
@@ -102,7 +103,7 @@ public class ErlRuntimeTest {
             } catch (final InterruptedException e) {
             }
         }
-        Asserts.isTrue(aRuntime.state() == state, "state: " + aRuntime.state());
+        assertThat("state", aRuntime.state(), is(state));
         if (aProcess != null) {
             int val;
             try {
@@ -110,7 +111,7 @@ public class ErlRuntimeTest {
             } catch (final IllegalThreadStateException e) {
                 val = -1;
             }
-            Asserts.isTrue(val == code, "process exited with code " + val);
+            assertThat("exit code", val, is(code));
         }
     }
 
@@ -126,8 +127,8 @@ public class ErlRuntimeTest {
         final ErlRuntime runtime2 = new ErlRuntime(data);
         runtime2.startAndWait();
         final Process process2 = runtime2.getProcess();
-        Asserts.isTrue(process2 == null, "beam process " + process2);
-        Asserts.isTrue(runtime2.isRunning(), "not running");
+        assertThat("running", runtime2.isRunning(), is(true));
+        assertThat("beam process", process2, is(nullValue()));
 
         final IRpcSite site = runtime2.getRpcSite();
         OtpErlangObject r;
@@ -136,14 +137,13 @@ public class ErlRuntimeTest {
         } catch (final RpcException e) {
             r = null;
         }
-        Asserts.isNotNull(r, "rpc not working");
+        assertThat("rpc", r, is(not(nullValue())));
         try {
             runtime2.stopAndWait();
         } catch (final Throwable t) {
             System.out.println("EXCEPTION:::: " + t);
         }
         expect(runtime2, process2, -1, State.TERMINATED);
-        Asserts.isTrue(runtime.state() == State.RUNNING,
-                "state: " + runtime.state());
+        assertThat("state", runtime.state(), is(State.RUNNING));
     }
 }

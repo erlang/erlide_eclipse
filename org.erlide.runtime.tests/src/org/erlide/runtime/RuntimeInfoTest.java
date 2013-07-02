@@ -1,6 +1,7 @@
 package org.erlide.runtime;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import java.util.Collection;
 
@@ -13,7 +14,7 @@ public class RuntimeInfoTest {
     public void codePath_Runtime_1() {
         final RuntimeInfo info = new RuntimeInfo("dummy");
         final Collection<String> pa = info.getCodePath();
-        assertTrue(pa.size() == 0);
+        assertThat(pa.size(), is(0));
     }
 
 }
