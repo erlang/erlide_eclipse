@@ -1,0 +1,20 @@
+ERLIDE=/var/lib/jenkins/erlide
+JAVA_HOME=$ERLIDE/jdk1.6.0_26
+JAVA_BASE=$ERLIDE/jdk1.5.0_22
+erlang_R14=$ERLIDE/otp_src_R14B04
+erlang_R13=$ERLIDE/otp_src_R13B04
+BUCKMINSTER=$ERLIDE/buckminster
+TARGET=$ERLIDE/eclipse_target/e37/eclipse
+
+##############################
+
+rm -rf ${WORKSPACE}/buckminster.output
+rm -rf ${WORKSPACE}/buckminster.temp
+
+VER_=$(cat ${WORKSPACE}/org.erlide/feature.xml | grep "version=.*qualifier" | head -n 1 | cut -d\" -f 2 | cut -d. -f1,2,3)
+echo "document.write('$(git describe)');" > info
+echo "document.write('$VER_');" > version
+echo "document.write('$BUILD_ID');" > id
+
+bash -ex org.erlide.site/build ${WORKSPACE} ${JAVA_HOME} ${erlang_R13} ${erlang_R14} ${BUCKMINSTER} ${TARGET}
+bash -ex org.erlide.site/test_unit ${WORKSPACE} ${JAVA_HOME} ${erlang_R13} ${erlang_R14} ${BUCKMINSTER} ${TARGET}
