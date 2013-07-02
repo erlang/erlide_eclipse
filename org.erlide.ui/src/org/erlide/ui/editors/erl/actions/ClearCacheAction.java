@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.ResourceBundle;
 
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.erlide.model.ModelPlugin;
+import org.erlide.model.ModelCore;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
@@ -42,9 +42,8 @@ public class ClearCacheAction extends TextEditorAction {
             return;
         }
         for (final String suffix : suffixes) {
-            final String cacheFileOSPath = ModelPlugin.getDefault()
-                    .getStateLocation()
-                    .append(module.getScannerName() + suffix).toOSString();
+            final String cacheFileOSPath = ModelCore.getStateDir()
+                    + module.getScannerName() + suffix;
             final File cacheFile = new File(cacheFileOSPath);
             cacheFile.delete();
         }

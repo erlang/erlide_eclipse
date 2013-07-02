@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.erlide.model.ErlModelException;
+import org.erlide.model.ModelCore;
 import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.IErlAttribute;
 import org.erlide.model.erlang.IErlComment;
@@ -86,7 +87,7 @@ public final class ErlParser implements IErlParser {
         OtpErlangTuple res = null;
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         if (initialParse) {
-            final String stateDir = ModelPlugin.getStateDir();
+            final String stateDir = ModelCore.getStateDir();
             final String pathNotNull = path == null ? "" : path;
             res = ErlideNoparse.initialParse(backend, scannerName, pathNotNull,
                     initialText, stateDir, updateSearchServer);

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.backend.api.BackendException;
+import org.erlide.model.ModelCore;
 import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.runtime.api.IRpcSite;
@@ -26,7 +27,7 @@ public class ErlideScanner {
 
     public static void initialScan(final String module, final String path,
             final String initialText, final boolean logging) {
-        final String stateDir = ModelPlugin.getStateDir();
+        final String stateDir = ModelCore.getStateDir();
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
             final String loggingOnOff = logging ? "on" : "off";

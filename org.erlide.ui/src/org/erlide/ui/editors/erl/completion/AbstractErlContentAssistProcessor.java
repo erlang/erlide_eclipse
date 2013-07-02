@@ -24,7 +24,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.backend.BackendCore;
 import org.erlide.model.ErlModelException;
-import org.erlide.model.ModelPlugin;
+import org.erlide.model.ModelCore;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlImport;
@@ -589,7 +589,7 @@ public abstract class AbstractErlContentAssistProcessor implements
 
     List<ICompletionProposal> getAutoImportedFunctions(final IRpcSite backend,
             final int offset, final String prefix) {
-        final String stateDir = ModelPlugin.getStateDir();
+        final String stateDir = ModelCore.getStateDir();
         final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(backend,
                 "<auto_imported>", prefix, stateDir);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
@@ -599,7 +599,7 @@ public abstract class AbstractErlContentAssistProcessor implements
 
     List<ICompletionProposal> getImportedFunctions(final IRpcSite backend,
             final int offset, final String prefix) {
-        final String stateDir = ModelPlugin.getStateDir();
+        final String stateDir = ModelCore.getStateDir();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         for (final IErlImport imp : module.getImports()) {
             final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(backend,

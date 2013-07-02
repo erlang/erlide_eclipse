@@ -19,7 +19,6 @@ public class ModelPlugin extends Plugin {
 
     private static BundleContext context;
     static ModelPlugin plugin;
-    private static String stateDirCached = null;
 
     public ModelPlugin() {
         super();
@@ -46,7 +45,7 @@ public class ModelPlugin extends Plugin {
     }
 
     private void cleanupStateDir() {
-        final String ndir = getStateDir();
+        final String ndir = ModelCore.getStateDir();
         final File fdir = new File(ndir);
         for (final File f : fdir.listFiles()) {
             if (f.isFile()) {
@@ -79,13 +78,6 @@ public class ModelPlugin extends Plugin {
     public IRpcSite getBackend(final IProject project) {
         final IBackendProvider provider = getRuntimeProvider();
         return provider.get(project);
-    }
-
-    public static String getStateDir() {
-        if (stateDirCached == null) {
-            stateDirCached = getDefault().getStateLocation().toString();
-        }
-        return stateDirCached;
     }
 
 }

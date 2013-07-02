@@ -35,7 +35,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.model.ErlModelException;
-import org.erlide.model.ModelPlugin;
+import org.erlide.model.ModelCore;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.services.search.ErlSearchScope;
@@ -125,7 +125,7 @@ public class MarkOccurencesHandler {
                     // seconds
                     final OtpErlangObject refs = ErlideSearchServer.findRefs(
                             ideBackend.getRpcSite(), pattern, scope,
-                            ModelPlugin.getStateDir(), true);
+                            ModelCore.getStateDir(), true);
                     if (refs != null) {
                         SearchUtil.addSearchResult(findRefs, refs);
                         fRefs = erlangEditor.markOccurencesHandler
