@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.erlide.ui.dialogfields;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -128,7 +130,7 @@ public class TreeListDialogField extends DialogField {
      * behaviour)
      */
     public void setRemoveButtonIndex(final int removeButtonIndex) {
-        Assert.isTrue(removeButtonIndex < fButtonLabels.length);
+        assertThat(removeButtonIndex, is(lessThan(fButtonLabels.length)));
         fRemoveButtonIndex = removeButtonIndex;
     }
 
@@ -138,7 +140,7 @@ public class TreeListDialogField extends DialogField {
      * then behandled internally. (enable state, button invocation behaviour)
      */
     public void setUpButtonIndex(final int upButtonIndex) {
-        Assert.isTrue(upButtonIndex < fButtonLabels.length);
+        assertThat(upButtonIndex, is(lessThan(fButtonLabels.length)));
         fUpButtonIndex = upButtonIndex;
     }
 
@@ -149,7 +151,7 @@ public class TreeListDialogField extends DialogField {
      * behaviour)
      */
     public void setDownButtonIndex(final int downButtonIndex) {
-        Assert.isTrue(downButtonIndex < fButtonLabels.length);
+        assertThat(downButtonIndex, is(lessThan(fButtonLabels.length)));
         fDownButtonIndex = downButtonIndex;
     }
 

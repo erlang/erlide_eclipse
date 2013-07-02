@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.erlide.model.internal.root;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +20,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
@@ -74,7 +76,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     protected ErlElement(final IParent parent, final String name) {
         fParent = parent;
         fName = name;
-        Assert.isNotNull(fName);
+        assertThat(fName, is(not(nullValue())));
     }
 
     /**

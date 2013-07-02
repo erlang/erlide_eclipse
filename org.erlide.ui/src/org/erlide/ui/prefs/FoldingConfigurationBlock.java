@@ -1,10 +1,12 @@
 package org.erlide.ui.prefs;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -105,7 +107,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
     private final Map<String, Control> fProviderControls;
 
     public FoldingConfigurationBlock(final OverlayPreferenceStore store) {
-        Assert.isNotNull(store);
+        assertThat(store, is(not(nullValue())));
         fStore = store;
         fStore.addKeys(createOverlayStoreKeys());
         fProviderDescriptors = createListModel();

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
-import org.eclipse.core.runtime.Assert;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
@@ -43,7 +45,7 @@ public class TypedViewerFilter extends ViewerFilter {
      */
     public TypedViewerFilter(final Class<?>[] acceptedTypes,
             final Object[] rejectedElements) {
-        Assert.isNotNull(acceptedTypes);
+        assertThat(acceptedTypes, is(not(nullValue())));
         fAcceptedTypes = acceptedTypes;
         fRejectedElements = rejectedElements;
     }

@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.erlide.ui.dialogfields;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -55,7 +57,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
      * behaviour)
      */
     public void setCheckAllButtonIndex(final int checkButtonIndex) {
-        Assert.isTrue(checkButtonIndex < fButtonLabels.length);
+        assertThat(checkButtonIndex, is(lessThan(fButtonLabels.length)));
         fCheckAllButtonIndex = checkButtonIndex;
     }
 
@@ -66,7 +68,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
      * behaviour)
      */
     public void setUncheckAllButtonIndex(final int uncheckButtonIndex) {
-        Assert.isTrue(uncheckButtonIndex < fButtonLabels.length);
+        assertThat(uncheckButtonIndex, is(lessThan(fButtonLabels.length)));
         fUncheckAllButtonIndex = uncheckButtonIndex;
     }
 

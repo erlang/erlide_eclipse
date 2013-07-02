@@ -1,13 +1,15 @@
 package org.erlide.util;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Path;
 
 public class FilePathUtils {
     public static boolean equalFilePaths(String path_1, String path_2) {
-        Assert.isNotNull(path_1);
-        Assert.isNotNull(path_2);
+        assertThat(path_1, is(not(nullValue())));
+        assertThat(path_2, is(not(nullValue())));
         if (!EFS.getLocalFileSystem().isCaseSensitive()) {
             path_1 = path_1.toLowerCase();
             path_2 = path_2.toLowerCase();

@@ -1,9 +1,11 @@
 package org.erlide.core.builder;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.TermParser;
@@ -198,7 +200,7 @@ public abstract class CompilerOption {
                 final String description, final String tooltip) {
             super(name, description, tooltip);
             this.fieldLabels = fieldLabels;
-            Assert.isLegal(fieldLabels.length == 2);
+            assertThat(fieldLabels.length, is(2));
         }
 
         public String[] getFieldLabels() {

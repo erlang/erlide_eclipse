@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.actions;
 
-import org.eclipse.core.runtime.Assert;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
@@ -59,7 +61,7 @@ public abstract class SelectionDispatchAction extends Action implements
      *            the site this action is working on
      */
     protected SelectionDispatchAction(final IWorkbenchSite site) {
-        Assert.isNotNull(site);
+        assertThat(site, is(not(nullValue())));
         fSite = site;
         fSpecialSelectionProvider = null;
     }

@@ -11,7 +11,9 @@
 
 package org.erlide.ui.prefs.plugin.internal;
 
-import org.eclipse.core.runtime.Assert;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -43,9 +45,9 @@ public class ErlangSourceViewerUpdater {
     public ErlangSourceViewerUpdater(final ISourceViewer viewer,
             final ErlangSourceViewerConfiguration configuration,
             final IPreferenceStore preferenceStore) {
-        Assert.isNotNull(viewer);
-        Assert.isNotNull(configuration);
-        Assert.isNotNull(preferenceStore);
+        assertThat(viewer, is(not(nullValue())));
+        assertThat(configuration, is(not(nullValue())));
+        assertThat(preferenceStore, is(not(nullValue())));
         final IPropertyChangeListener fontChangeListener = new IPropertyChangeListener() {
             @Override
             public void propertyChange(final PropertyChangeEvent event) {

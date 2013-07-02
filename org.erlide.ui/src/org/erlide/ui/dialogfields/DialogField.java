@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.dialogfields;
 
-import org.eclipse.core.runtime.Assert;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -230,13 +232,13 @@ public class DialogField {
     }
 
     protected final void assertCompositeNotNull(final Composite comp) {
-        Assert.isNotNull(comp,
-                "uncreated control requested with composite null"); //$NON-NLS-1$
+        assertThat("uncreated control requested with composite null", comp,
+                is(not(nullValue())));
     }
 
     protected final void assertEnoughColumns(final int nColumns) {
-        Assert.isTrue(nColumns >= getNumberOfControls(),
-                "given number of columns is too small"); //$NON-NLS-1$
+        assertThat("given number of columns is too small", nColumns,
+                is(greaterThanOrEqualTo(getNumberOfControls())));
     }
 
 }

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.console;
 
-import org.eclipse.core.runtime.Assert;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocumentPartitioner;
@@ -40,7 +42,7 @@ public final class ErlConsoleDocument extends Document implements
             LEGAL_CONTENT_TYPES = ss;
         }
 
-        Assert.isNotNull(shell);
+        assertThat(shell, is(not(nullValue())));
         this.shell = shell;
         shell.addListener(this);
         changed(shell);
