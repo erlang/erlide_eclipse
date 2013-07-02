@@ -1,5 +1,8 @@
 package org.erlide.model.internal.erlang;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +12,6 @@ import org.erlide.model.erlang.ErlToken;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
-import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
@@ -97,7 +99,7 @@ public class ErlideScanner {
     @SuppressWarnings("boxing")
     public static void replaceText(final String module, final int offset,
             final int removeLength, final String newText) {
-        Asserts.isNotNull(newText);
+        assertThat(newText, is(not(nullValue())));
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
             final OtpErlangObject r = backend.call(ERLIDE_SCANNER,

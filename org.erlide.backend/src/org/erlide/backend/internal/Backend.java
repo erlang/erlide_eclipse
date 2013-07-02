@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.erlide.backend.internal;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -55,7 +58,6 @@ import org.erlide.runtime.api.RuntimeUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
-import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.erlang.OtpErlang;
@@ -81,7 +83,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public Backend(final BackendData data, final IErlRuntime runtime,
             final IBackendManager backendManager) throws BackendException {
-        Asserts.isNotNull(runtime);
+        assertThat(runtime, is(not(nullValue())));
         this.runtime = runtime;
         this.data = data;
         this.backendManager = backendManager;

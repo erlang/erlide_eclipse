@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.erlide.runtime.shell;
 
-import java.util.regex.Pattern;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
-import org.erlide.util.Asserts;
+import java.util.regex.Pattern;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -77,8 +78,8 @@ public class IoRequest {
     }
 
     public IoRequest(final String msg, final IoRequestKind kind) {
-        Asserts.isTrue(kind != IoRequestKind.OUTPUT);
-        Asserts.isTrue(kind != IoRequestKind.PROMPT);
+        assertThat(kind, is(not(IoRequestKind.OUTPUT)));
+        assertThat(kind, is(not(IoRequestKind.PROMPT)));
         message = msg;
         leader = new OtpErlangPid("s", 0, 0, 0);
         sender = new OtpErlangPid("s", 0, 0, 0);

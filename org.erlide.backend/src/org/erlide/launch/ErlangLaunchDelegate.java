@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.erlide.launch;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
@@ -30,7 +33,6 @@ import org.erlide.runtime.api.ErlRuntimeFactory;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 
@@ -44,7 +46,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
     public void launch(final ILaunchConfiguration config, final String mode,
             final ILaunch launch, final IProgressMonitor monitor)
             throws CoreException {
-        Asserts.isNotNull(config);
+        assertThat(config, is(not(nullValue())));
 
         RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoCatalog()
                 .getRuntime(

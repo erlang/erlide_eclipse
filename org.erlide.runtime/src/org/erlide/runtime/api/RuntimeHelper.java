@@ -1,8 +1,10 @@
 package org.erlide.runtime.api;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.erlide.runtime.internal.ParserException;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
@@ -16,7 +18,7 @@ public class RuntimeHelper {
     private final IRpcSite target;
 
     public RuntimeHelper(final IRpcSite target) {
-        Asserts.isNotNull(target);
+        assertThat(target, is(not(nullValue())));
         this.target = target;
     }
 
