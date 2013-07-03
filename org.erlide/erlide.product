@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="erlide" uid="org.erlide.product.product" id="org.erlide.product.product" application="org.eclipse.ui.ide.workbench" version="0.23.1" useFeatures="true" includeLaunchers="true">
+<product name="erlide" uid="org.erlide.ide" id="org.erlide.branding.product" application="org.eclipse.ui.ide.workbench" version="0.23.1" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.erlide/erlang120.gif"/>
@@ -21,7 +21,7 @@
    <windowImages/>
 
    <splash
-      location="org.erlide.product"
+      location="org.erlide.branding"
       startupProgressRect="5,275,445,15" />
    <launcher name="erlide">
       <solaris/>
@@ -47,7 +47,6 @@
    </plugins>
 
    <features>
-      <feature id="org.erlide.product.feature" version="1.0.0.qualifier"/>
       <feature id="org.erlide" version="0.23.1.qualifier"/>
    </features>
 

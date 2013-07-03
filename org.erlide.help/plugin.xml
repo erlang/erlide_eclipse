@@ -10,7 +10,7 @@
       point="org.eclipse.ui.intro">
    <introProductBinding
          introId="org.eclipse.ui.intro.universal"
-         productId="org.erlide.product.product">
+         productId="org.erlide.branding.product">
    </introProductBinding>
 </extension>
 <!--extension
