@@ -47,6 +47,7 @@
    </plugins>
 
    <features>
+      <feature id="org.erlide.product.feature" version="1.0.0.qualifier"/>
       <feature id="org.erlide" version="0.23.1.qualifier"/>
       <feature id="org.erlide.headless"/>
       <feature id="org.eclipse.help"/>

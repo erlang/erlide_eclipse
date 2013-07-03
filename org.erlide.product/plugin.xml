@@ -6,22 +6,14 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.eclipse.ui.ide.workbench"
-            name="erlide - Erlang development tools">
+            name="erlide">
          <property
                name="aboutText"
                value="erlide about haha">
          </property>
          <property
                name="appName"
-               value="erlide - Erlang development tools">
-         </property>
-         <property
-               name="startupForegroundColor"
-               value="000000">
-         </property>
-         <property
-               name="startupMessageRect"
-               value="7,252,445,20">
+               value="erlide">
          </property>
          <property
                name="startupProgressRect"
@@ -31,7 +23,20 @@
                name="preferenceCustomization"
                value="plugin_customization.ini">
          </property>
+         <property
+               name="aboutImage"
+               value="/org.erlide/erlang120.gif">
+         </property>
       </product>
    </extension>
-
+<extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.ui.preferencePages.Workbench"
+            class="org.eclipse.ui.intro.universal.ExtensionFactory:welcomeCustomization"
+            id="org.erlide.intro.introCustomization"
+            name="%introCustomizationPreference.name">
+         <keywordReference id="org.eclipse.ui.ide.appearance"/>
+      </page>
+   </extension>
 </plugin>
