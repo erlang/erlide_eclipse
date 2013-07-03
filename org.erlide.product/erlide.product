@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="erlide - Erlang development tools" uid="org.erlide.product.product" id="org.erlide.product.product" application="org.eclipse.ui.ide.workbench" version="0.23.1" useFeatures="true" includeLaunchers="true">
+<product name="erlide" uid="org.erlide.product.product" id="org.erlide.product.product" application="org.eclipse.ui.ide.workbench" version="0.23.1" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.erlide/erlang120.gif"/>
@@ -30,7 +30,7 @@
       </win>
    </launcher>
 
-   <intro introId="org.erlide.help.intro"/>
+   <intro introId="org.eclipse.ui.intro.universal"/>
 
    <vm>
       <linux include="true">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</linux>

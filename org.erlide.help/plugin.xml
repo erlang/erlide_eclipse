@@ -8,30 +8,10 @@
 </extension>
 <extension
       point="org.eclipse.ui.intro">
-   <intro
-         class="org.eclipse.ui.intro.config.CustomizableIntroPart"
-         id="org.erlide.help.intro">
-   </intro>
    <introProductBinding
-         introId="org.erlide.help.intro"
+         introId="org.eclipse.ui.intro.universal"
          productId="org.erlide.product.product">
    </introProductBinding>
-</extension>
-<extension
-      point="org.eclipse.ui.intro.config">
-   <config
-         content="introContent.xml"
-         id="org.erlide.help.introConfigId"
-         introId="org.erlide.help.intro">
-      <presentation
-            home-page-id="root">
-         <implementation
-               kind="html"
-               os="win32,linux,macosx"
-               style="content/shared.css">
-         </implementation>
-      </presentation>
-   </config>
 </extension>
 <!--extension
       point="org.eclipse.ui.cheatsheets.cheatSheetContent">
