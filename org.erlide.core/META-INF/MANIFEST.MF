@@ -18,14 +18,14 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.filesystem,
  org.eclipse.debug.core,
  org.eclipse.osgi.services,
+ org.erlide.libs;bundle-version="1.8.4",
+ org.erlide.runtime,
+ org.erlide.model.api;bundle-version="0.19.0",
  org.erlide.core.api;bundle-version="0.19.0",
  org.erlide.backend,
  org.erlide.model;bundle-version="0.19.0",
- org.erlide.model.api;bundle-version="0.19.0",
- org.erlide.runtime,
  org.erlide.util;bundle-version="0.18.0",
- org.erlide.util_eclipse;bundle-version="0.18.0",
- org.erlide.libs;bundle-version="1.8.4"
+ org.erlide.util_eclipse;bundle-version="0.18.0"
 Bundle-ActivationPolicy: lazy; exclude="org.erlide.core.content"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .
