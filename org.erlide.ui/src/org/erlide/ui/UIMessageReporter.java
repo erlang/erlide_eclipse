@@ -14,19 +14,22 @@ public class UIMessageReporter {
 
     @Subscribe
     public void displayMessage(final ErlideMessage emsg) {
-        new UIJob("erlide message") {
-            @Override
-            public IStatus runInUIThread(final IProgressMonitor monitor) {
-                final MultiStatus msg = new MultiStatus("org.erlide.ui", 0,
-                        emsg.getMessage(), null);
-                if (emsg.getDetails() != null) {
-                    msg.add(new Status(emsg.getSeverity(), "org.erlide.ui",
-                            emsg.getDetails()));
-                }
-                StatusManager.getManager().handle(msg, StatusManager.BLOCK);
+        try {
+            new UIJob("erlide message") {
+                @Override
+                public IStatus runInUIThread(final IProgressMonitor monitor) {
+                    final MultiStatus msg = new MultiStatus("org.erlide.ui", 0,
+                            emsg.getMessage(), null);
+                    if (emsg.getDetails() != null) {
+                        msg.add(new Status(emsg.getSeverity(), "org.erlide.ui",
+                                emsg.getDetails()));
+                    }
+                    StatusManager.getManager().handle(msg, StatusManager.BLOCK);
 
-                return Status.OK_STATUS;
-            }
-        }.schedule();
+                    return Status.OK_STATUS;
+                }
+            }.schedule();
+        } catch (final IllegalStateException e) {
+        }
     }
 }
