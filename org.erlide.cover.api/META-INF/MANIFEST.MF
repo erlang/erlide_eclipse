@@ -6,7 +6,8 @@ Bundle-Version: 0.20.2.qualifier
 Bundle-Activator: org.erlide.cover.api.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
- org.erlide.model.api
+ org.erlide.model.api,
+ org.erlide.util;bundle-version="0.20.5"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.erlide.cover.api

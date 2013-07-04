@@ -17,8 +17,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.util;bundle-version="0.20.5"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.erlide.cover.constants;x-friends:="org.erlide.cover.ui",
- org.erlide.cover.core;x-friends:="org.erlide.cover.ui",
- org.erlide.cover.runtime.launch;x-friends:="org.erlide.cover.ui",
- org.erlide.cover.views.model;x-friends:="org.erlide.cover.ui"
+Export-Package: org.erlide.cover.constants,
+ org.erlide.cover.core,
+ org.erlide.cover.runtime.launch,
+ org.erlide.cover.views.model
 Bundle-ClassPath: .
