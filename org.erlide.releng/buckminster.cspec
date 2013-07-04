@@ -4,5 +4,6 @@
         <cs:dependency name="org.eclipse.equinox.p2.user.ui" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.platform" componentType="eclipse.feature"/>
         <cs:dependency name="org.junit" componentType="osgi.bundle"/>
+        <cs:dependency name="com.abstratt.eclipsegraphviz.feature" componentType="eclipse.feature"/>
     </cs:dependencies>
 </cs:cspec>

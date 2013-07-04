@@ -6,9 +6,11 @@
     <rm:property key="eclipse.download" value="http://download.eclipse.org" />
     <rm:property key="eclipse.target.platform" value="${eclipse.download}/releases/indigo" />
     <rm:property key="eclipse.orbit" value="${eclipse.download}/tools/orbit/downloads/drops/R20130517111416/repository" />
+    <rm:property key="graphviz" value="http://erlide.org/update" />
  
     <rm:locator pattern="^org\.erlide(?:\..+)?$"
         searchPathRef="localsources" />
+    <rm:locator pattern="^com\.abstratt(?:\..+)?$" searchPathRef="graphviz" />
  
     <rm:locator searchPathRef="eclipse" />
  
@@ -19,6 +21,24 @@
             <rm:property key="buckminster.mutable" value="false" />
             <rm:uri format="{0}">
                 <bc:propertyRef key="eclipse.target.platform" />
+            </rm:uri>
+        </rm:provider>
+        <rm:provider componentTypes="eclipse.feature,osgi.bundle"
+            readerType="p2" source="false" mutable="false">
+            <rm:property key="buckminster.source" value="false" />
+            <rm:property key="buckminster.mutable" value="false" />
+            <rm:uri format="{0}">
+                <bc:propertyRef key="eclipse.orbit" />
+            </rm:uri>
+        </rm:provider>
+    </rm:searchPath>
+    <rm:searchPath name="graphviz">
+        <rm:provider componentTypes="eclipse.feature,osgi.bundle"
+            readerType="p2" source="false" mutable="false">
+            <rm:property key="buckminster.source" value="false" />
+            <rm:property key="buckminster.mutable" value="false" />
+            <rm:uri format="{0}">
+                <bc:propertyRef key="graphviz" />
             </rm:uri>
         </rm:provider>
     </rm:searchPath>
