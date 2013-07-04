@@ -43,53 +43,6 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          id="org.erlide.headless"
          version="0.0.0"/>
 
-   <requires>
-      <import plugin="org.eclipse.compare"/>
-      <import plugin="org.eclipse.core.expressions"/>
-      <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.ui.navigator"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.osgi.services" version="3.2.100" match="greaterOrEqual"/>
-      <import plugin="org.erlide.core"/>
-      <import plugin="org.erlide.backend" version="0.19.0" match="greaterOrEqual"/>
-      <import plugin="org.erlide.model.api" version="0.19.0" match="greaterOrEqual"/>
-      <import plugin="org.erlide.model" version="0.18.0" match="greaterOrEqual"/>
-      <import plugin="org.erlide.runtime"/>
-      <import plugin="org.erlide.util" version="0.19.0" match="greaterOrEqual"/>
-      <import plugin="org.erlide.libs" version="1.1.4" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.help.ui" version="3.5.101"/>
-      <import plugin="org.eclipse.help.webapp"/>
-      <import plugin="org.eclipse.ui.cheatsheets" version="3.3.200" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.intro"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.ui.browser"/>
-      <import plugin="org.erlide.kernel.ide"/>
-      <import plugin="org.erlide.kernel.builder"/>
-      <import plugin="org.erlide.kernel.common"/>
-      <import plugin="org.erlide.kernel.debugger"/>
-      <import plugin="org.erlide.model.api" version="0.20.3" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.6.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.expressions" version="3.4.200" match="greaterOrEqual"/>
-      <import plugin="org.erlide.dialyzer.core" version="0.19.0" match="greaterOrEqual"/>
-      <import plugin="org.erlide.ui" version="0.19.0" match="greaterOrEqual"/>
-      <import plugin="org.erlide.core" version="0.19.0" match="greaterOrEqual"/>
-      <import plugin="org.erlide.core.api" version="0.19.0" match="greaterOrEqual"/>
-      <import plugin="org.erlide.runtime" version="0.19.0" match="greaterOrEqual"/>
-      <import plugin="org.erlide.libs" version="1.10.0" match="greaterOrEqual"/>
-   </requires>
-
    <plugin
          id="org.erlide.ui"
          download-size="0"
