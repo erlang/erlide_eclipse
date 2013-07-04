@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="erlide" uid="org.erlide.product" id="org.erlide.branding.product" application="org.eclipse.ui.ide.workbench" version="1.0.0" useFeatures="true" includeLaunchers="true">
+<product name="erlide" uid="org.erlide.product" id="org.erlide.branding.product" application="org.eclipse.ui.ide.workbench" version="0.25.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.erlide.branding/erlang120.gif"/>
       <text>
-         erlide about haha
+         erlide about haha &lt;b&gt;hej&lt;/b&gt; \nhallå
       </text>
    </aboutInfo>
 
@@ -18,11 +18,13 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i64="/org.erlide/erlang-64.gif"/>
+   <windowImages i16="/org.erlide.branding/images/erlang-64.gif" i32="/org.erlide.branding/images/erlang-64.gif" i48="/org.erlide.branding/images/erlang-64.gif" i64="/org.erlide.branding/images/erlang-64.gif" i128="/org.erlide.branding/images/erlang-64.gif"/>
 
    <splash
       location="org.erlide.branding"
-      startupProgressRect="5,275,445,15" />
+      startupProgressRect="5,275,445,15"
+      startupMessageRect="7,252,445,20"
+      startupForegroundColor="000000" />
    <launcher name="erlide">
       <solaris/>
       <win useIco="false">
@@ -51,7 +53,6 @@ Vlad Dumitrescu, Jakob Cederlund and others
    </plugins>
 
    <features>
-      <feature id="org.erlide.product"/>
       <feature id="org.erlide"/>
       <feature id="org.eclipse.platform"/>
       <feature id="org.eclipse.help"/>

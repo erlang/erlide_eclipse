@@ -23,4 +23,16 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          id="org.erlide.product"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.platform"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.help"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.equinox.p2.user.ui"
+         version="0.0.0"/>
+
 </feature>

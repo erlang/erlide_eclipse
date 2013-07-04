@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.product"
       label="erlide product Feature"
-      version="1.0.0.qualifier"
+      version="0.25.0.qualifier"
       provider-name="erlide.org project">
 
    <description url="http://www.example.com/description">
