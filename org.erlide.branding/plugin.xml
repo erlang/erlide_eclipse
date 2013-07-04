@@ -27,6 +27,10 @@
                name="aboutImage"
                value="erlang120.gif">
          </property>
+         <property
+               name="windowImages"
+               value="/org.erlide/erlang-64.gif">
+         </property>
       </product>
    </extension>
 <extension
