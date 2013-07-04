@@ -17,7 +17,7 @@
          </property>
          <property
                name="startupProgressRect"
-               value="5,275,445,15">
+               value="3,267,494,15">
          </property>
          <property
                name="preferenceCustomization"
@@ -37,8 +37,19 @@
          </property>
          <property
                name="startupMessageRect"
-               value="7,252,445,20">
+               value="3,247,494,20">
          </property>
       </product>
    </extension>
-</plugin>
+	<extension point="org.eclipse.ui.splashHandlers">
+      <splashHandler
+            class="org.erlide.branding.SplashHandler"
+            id="org.erlide.splashHandler">
+      </splashHandler>
+      <splashHandlerProductBinding
+            productId="org.erlide.branding.product"
+            splashId="org.erlide.splashHandler">
+      </splashHandlerProductBinding>
+   </extension>
+  </plugin>
+	
