@@ -4,7 +4,7 @@
 <product name="erlide" uid="org.erlide.ide" id="org.erlide.branding.product" application="org.eclipse.ui.ide.workbench" version="0.23.1" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="/org.erlide/erlang120.gif"/>
+      <image path="/org.erlide.branding/erlang120.gif"/>
       <text>
          erlide about haha
       </text>

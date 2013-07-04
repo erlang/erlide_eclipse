@@ -25,7 +25,7 @@
          </property>
          <property
                name="aboutImage"
-               value="/org.erlide/erlang120.gif">
+               value="erlang120.gif">
          </property>
       </product>
    </extension>
