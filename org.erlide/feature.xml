@@ -43,14 +43,6 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          id="org.erlide.headless"
          version="0.0.0"/>
 
-   <includes
-         id="org.eclipse.platform"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.equinox.executable"
-         version="0.0.0"/>
-
    <requires>
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.eclipse.core.expressions"/>
