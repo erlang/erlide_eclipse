@@ -133,22 +133,24 @@
 		<antcall target="install.p2.director" />
 		<echo message="" />
 		<echo message="Installing Buckminster Headless into ${buckminster.home}..." />
-		<java fork="true" dir="${director.dir}" logError="true" classname="org.eclipse.core.launcher.Main" failonerror="true">
-			<sysproperty key="eclipse.p2.mirrors" value="false" />
-			<classpath>
-				<fileset dir="${director.dir}/plugins">
-					<include name="org.eclipse.equinox.launcher_*.jar" />
-				</fileset>
-			</classpath>
-			<arg line='-data "${director.dir}/workspace"' />
-			<arg line="-r ${eclipse-download}/tools/buckminster/headless-4.2,${eclipse-download}/releases/juno/" />
-			<arg line='-d "${buckminster.home}"' />
-			<arg line="-p Buckminster" />
-			<arg line="-i org.eclipse.buckminster.cmdline.product" />
-			<arg line="-i org.eclipse.buckminster.core.headless.feature.feature.group" />
-			<arg line="-i org.eclipse.buckminster.pde.headless.feature.feature.group" />
-			<arg line="-i org.eclipse.buckminster.git.headless.feature.feature.group" />
-		</java>
+        <java fork="true" dir="${director.dir}" logError="true" classname="org.eclipse.core.launcher.Main" failonerror="true">
+            <sysproperty key="eclipse.p2.mirrors" value="false" />
+            <classpath>
+                <fileset dir="${director.dir}/plugins">
+                    <include name="org.eclipse.equinox.launcher_*.jar" />
+                </fileset>
+            </classpath>
+            <arg line='-data "${director.dir}/workspace"' />
+            <arg line="-r ${eclipse-download}/tools/buckminster/headless-4.2,${eclipse-download}/releases/kepler/,http://erlide.org/update" />
+            <arg line='-d "${buckminster.home}"' />
+            <arg line="-p Buckminster" />
+            <arg line="-i org.eclipse.buckminster.cmdline.product" />
+            <arg line="-i org.eclipse.buckminster.core.headless.feature.feature.group" />
+            <arg line="-i org.eclipse.buckminster.pde.headless.feature.feature.group" />
+            <arg line="-i org.eclipse.buckminster.git.headless.feature.feature.group" />
+            <arg line="-i org.eclipse.buckminster.emma.headless.feature.feature.group" />
+            <arg line="-i org.erlide.feature.group" />
+        </java>
 	</target>
 	
 	<target name="install.b3.headless">
