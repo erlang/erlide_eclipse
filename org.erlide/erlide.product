@@ -4,9 +4,9 @@
 <product name="erlide" uid="org.erlide.product" id="org.erlide.branding.product" application="org.eclipse.ui.ide.workbench" version="0.25.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="/org.erlide.branding/erlang120.gif"/>
+      <image path="/org.erlide.branding/images/erl-zen-badge-160.png"/>
       <text>
-         erlide about haha &lt;b&gt;hej&lt;/b&gt; \nhallå
+         erlide about info...
       </text>
    </aboutInfo>
 
@@ -14,11 +14,10 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-perspective org.erlide.ui.perspectives.ErlangPerspective</programArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.erlide.branding/images/erlang-64.gif" i32="/org.erlide.branding/images/erlang-64.gif" i48="/org.erlide.branding/images/erlang-64.gif" i64="/org.erlide.branding/images/erlang-64.gif" i128="/org.erlide.branding/images/erlang-64.gif"/>
+   <windowImages i16="/org.erlide.branding/images/erlang-16.gif" i32="/org.erlide.branding/images/erlang-32.gif" i48="/org.erlide.branding/images/erlang-48.gif" i64="/org.erlide.branding/images/erlang-64.gif" i128="/org.erlide.branding/images/erlang-128.gif"/>
 
    <splash
       location="org.erlide.branding"
@@ -27,7 +26,7 @@
       startupForegroundColor="000000" />
    <launcher name="erlide">
       <solaris/>
-      <win useIco="false">
+      <win useIco="true">
          <bmp/>
       </win>
    </launcher>
@@ -59,5 +58,8 @@ Vlad Dumitrescu, Jakob Cederlund and others
       <feature id="org.eclipse.equinox.executable"/>
    </features>
 
+   <configurations>
+      <property name="perspective" value="org.erlide.ui.perspectives.ErlangPerspective" />
+   </configurations>
 
 </product>

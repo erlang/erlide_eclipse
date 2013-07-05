@@ -9,7 +9,7 @@
             name="erlide">
          <property
                name="aboutText"
-               value="erlide about haha &lt;b&gt;hej&lt;/b&gt; \nhallå">
+               value="erlide about info...">
          </property>
          <property
                name="appName"
@@ -25,11 +25,11 @@
          </property>
          <property
                name="aboutImage"
-               value="erlang120.gif">
+               value="images/erl-zen-badge-160.png">
          </property>
          <property
                name="windowImages"
-               value="images/erlang-64.gif,images/erlang-64.gif,images/erlang-64.gif,images/erlang-64.gif,images/erlang-64.gif">
+               value="images/erlang-16.gif,images/erlang-32.gif,images/erlang-48.gif,images/erlang-64.gif,images/erlang-128.gif">
          </property>
          <property
                name="startupForegroundColor"
