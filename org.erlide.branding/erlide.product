@@ -59,7 +59,6 @@ Vlad Dumitrescu, Jakob Cederlund and others
    </features>
 
    <configurations>
-      <property name="perspective" value="org.erlide.ui.perspectives.ErlangPerspective" />
    </configurations>
 
 </product>

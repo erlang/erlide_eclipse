@@ -43,6 +43,9 @@
                name="featureImage"
                value="images/erlang-64.gif">
          </property>
+      <property name="introBrandingImage" value="product:images/erlang-48.gif" />
+      <property name="introBrandingImageText" value="Erlide.org project" />
+      <property name="introTitle" value="Welcome to Erlide" />
       </product>
    </extension>
 	<extension point="org.eclipse.ui.splashHandlers">
@@ -55,5 +58,22 @@
             splashId="org.erlide.splashHandler">
       </splashHandlerProductBinding>
    </extension>
-  </plugin>
+<extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.ui.preferencePages.Workbench"
+            class="org.eclipse.ui.intro.universal.ExtensionFactory:welcomeCustomization"
+            id="org.erlide.intro.introCustomization"
+            name="%introCustomizationPreference.name">
+         <keywordReference id="org.eclipse.ui.ide.appearance"/>
+      </page>
+   </extension>
+     <extension
+        point="org.eclipse.ui.intro.configExtension">
+     <configExtension
+           content="intro/introData.xml"
+           configId="org.eclipse.ui.intro.universalConfig">
+     </configExtension>
+     </extension>
+    </plugin>
 	

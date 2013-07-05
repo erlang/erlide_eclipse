@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+	<extensionContent id="org.erlide" style="css/sample.css"
+		name="Erlide workbench" path="overview/@">
+		<group style-id="content-group" id="workbench-group">
+			<link label="Erlang development tools"
+				url="http://org.eclipse.ui.intro/showPage?id=erlide.about" id="erlide.about">
+				<text>explanation to topic  </text>
+			</link>
+
+			<page id="erlide.about" style="/intro/overview.css" style-id="page">
+				<title style-id="intro-header">What is Erlide</title>
+				<include path="overview/navigation-links" />
+				<group id="page-content">
+					<group id="content-header" label="What is Erlide"
+						filteredFrom="swt">
+					</group>
+					<text style-id="page-title" id="page-title" filteredFrom="html">HEADER
+					</text>
+					<text style-id="page-description" id="page-description">
+						CONTENT GOES HERE
+					</text>
+
+				</group>
+			</page>
+			...
+
+		</group>
+	</extensionContent>
+</introContent>
