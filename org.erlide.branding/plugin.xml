@@ -9,7 +9,7 @@
             name="erlide">
          <property
                name="aboutText"
-               value="erlide about info...">
+               value="%aboutText">
          </property>
          <property
                name="appName"
@@ -38,6 +38,10 @@
          <property
                name="startupMessageRect"
                value="3,247,494,20">
+         </property>
+         <property
+               name="featureImage"
+               value="images/erlang-64.gif">
          </property>
       </product>
    </extension>

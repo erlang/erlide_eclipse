@@ -6,7 +6,7 @@
    <aboutInfo>
       <image path="/org.erlide.branding/images/erl-zen-badge-160.png"/>
       <text>
-         erlide about info...
+         %aboutText
       </text>
    </aboutInfo>
 
