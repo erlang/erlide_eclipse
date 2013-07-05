@@ -1,7 +1,9 @@
 package org.erlide.runtime;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeData;
@@ -66,11 +68,10 @@ public class ErlRuntimeTest {
         }
         assertThat("rpc", r, is(not(nullValue())));
         try {
-            runtime.stopAndWait();
-        } catch (final Throwable t) {
-            System.out.println("EXCEPTION:::: " + t);
+            site.cast("erlang", "halt", "i", 0);
+        } catch (final RpcException e1) {
         }
-        expect(runtime, process, -1, State.TERMINATED);
+        expect(runtime, process, 0, State.TERMINATED);
     }
 
     @Test
@@ -81,6 +82,16 @@ public class ErlRuntimeTest {
         } catch (final RpcException e1) {
         }
         expect(runtime, process, 0, State.TERMINATED);
+    }
+
+    @Test
+    public void exitCodeIsDetected() {
+        final IRpcSite site = runtime.getRpcSite();
+        try {
+            site.cast("erlang", "halt", "i", 3);
+        } catch (final RpcException e1) {
+        }
+        expect(runtime, process, 3, State.FAILED);
     }
 
     @Test
@@ -107,8 +118,8 @@ public class ErlRuntimeTest {
         if (aProcess != null) {
             int val;
             try {
-                val = aProcess.exitValue();
-            } catch (final IllegalThreadStateException e) {
+                val = aProcess.waitFor();
+            } catch (final InterruptedException e) {
                 val = -1;
             }
             assertThat("exit code", val, is(code));
