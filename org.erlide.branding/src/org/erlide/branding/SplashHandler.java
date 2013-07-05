@@ -5,7 +5,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
@@ -16,22 +15,6 @@ import org.erlide.core.ErlangPlugin;
 
 @SuppressWarnings("restriction")
 public class SplashHandler extends BasicSplashHandler {
-
-    private static final String BETA_PNG = "icons/erl/powered051.gif";
-    private static final int BORDER = 10;
-    private Image image;
-
-    public SplashHandler() {
-        super();
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        if (image != null) {
-            image.dispose();
-        }
-    }
 
     @Override
     public void init(final Shell splash) {
