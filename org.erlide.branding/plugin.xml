@@ -41,7 +41,7 @@
          </property>
          <property
                name="featureImage"
-               value="images/erlang-64.gif">
+               value="images/erlang-32.gif">
          </property>
       <property name="introBrandingImage" value="product:images/erlang-48.gif" />
       <property name="introBrandingImageText" value="Erlide.org project" />
