@@ -11,6 +11,7 @@
 package org.erlide.backend.internal;
 
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.api.BackendData;
@@ -30,11 +31,13 @@ public class ExternalBackend extends Backend {
     @Override
     public void dispose() {
         try {
-            getData().getLaunch().terminate();
+            final ILaunch launch = getData().getLaunch();
+            if (!launch.isTerminated()) {
+                launch.terminate();
+            }
         } catch (final DebugException e) {
             ErlLogger.error(e);
         }
-
         super.dispose();
     }
 

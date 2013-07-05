@@ -32,6 +32,7 @@ import org.osgi.framework.BundleContext;
 public class ErlangPlugin extends Plugin {
     private static ErlangPlugin plugin;
     private ErlangCore core;
+    private boolean stopping = false;
 
     public ErlangPlugin() {
         super();
@@ -47,6 +48,7 @@ public class ErlangPlugin extends Plugin {
 
     @Override
     public void stop(final BundleContext context) throws Exception {
+        stopping = true;
         try {
             ErlideEventTracer.getInstance().dispose();
             BuildQueueProcessor.getInstance().stop();
@@ -87,5 +89,9 @@ public class ErlangPlugin extends Plugin {
 
     public ErlangCore getCore() {
         return core;
+    }
+
+    public boolean isStopping() {
+        return stopping;
     }
 }
