@@ -60,8 +60,6 @@ public abstract class MessageReporter {
     public static void show(final int severity, final String message,
             final String details) {
         ErlideEventBus.post(new ErlideMessage(severity, message, details));
-        ErlLogger.info(severity + "::: " + message + "\n" + details
-                + "\n------");
     }
 
 }
