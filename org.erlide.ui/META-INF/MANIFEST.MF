@@ -71,9 +71,6 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs",
  org.erlide.ui.editors.erl;
-  x-friends:="org.erlide.wrangler.refactoring,
-   org.erlide.test_support,
-   org.erlide.cover.ui";
   uses:="org.eclipse.jface.text,
    org.eclipse.core.runtime,
    org.eclipse.jface.text.information,
@@ -115,7 +112,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.ui.editors.erl.handlers,
  org.erlide.ui.editors.erl.hover;x-internal:=true,
  org.erlide.ui.editors.erl.hyperlink;x-internal:=true,
- org.erlide.ui.editors.erl.outline;x-friends:="org.erlide.cover.ui";
+ org.erlide.ui.editors.erl.outline;
   uses:="org.eclipse.jface.text,
    org.eclipse.jface.action,
    org.erlide.ui.editors.erl,
@@ -140,7 +137,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.widgets,
    org.erlide.model.erlang",
  org.erlide.ui.handlers,
- org.erlide.ui.internal;x-friends:="org.erlide.cover.ui",
+ org.erlide.ui.internal,
  org.erlide.ui.internal.compare;x-internal:=true,
  org.erlide.ui.internal.folding;x-internal:=true,
  org.erlide.ui.internal.information;x-internal:=true,
@@ -148,8 +145,6 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.ui.internal.util;x-internal:=true,
  org.erlide.ui.jinterface;uses:="org.erlide.runtime.rpc",
  org.erlide.ui.launch;
-  x-friends:="org.erlide.selfhost.plugin,
-   org.erlide.cover.ui";
   uses:="org.eclipse.debug.core,
    org.eclipse.debug.ui,
    org.eclipse.ui,
@@ -342,7 +337,6 @@ Require-Bundle: org.eclipse.compare,
  org.erlide.model;bundle-version="0.18.0",
  org.erlide.runtime,
  org.erlide.util,
- org.erlide.util_eclipse,
  org.erlide.libs;bundle-version="1.1.4"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

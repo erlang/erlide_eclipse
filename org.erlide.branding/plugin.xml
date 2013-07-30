@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ui.ide.workbench"
+            name="erlide">
+         <property
+               name="aboutText"
+               value="%aboutText">
+         </property>
+         <property
+               name="appName"
+               value="erlide">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="3,267,494,15">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property
+               name="aboutImage"
+               value="images/erl-zen-badge-160.png">
+         </property>
+         <property
+               name="windowImages"
+               value="images/erlang-16.gif,images/erlang-32.gif,images/erlang-48.gif,images/erlang-64.gif,images/erlang-128.gif">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="000000">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="3,247,494,20">
+         </property>
+         <property
+               name="featureImage"
+               value="images/erlang-32.gif">
+         </property>
+      <property name="introBrandingImage" value="product:images/erlang-48.gif" />
+      <property name="introBrandingImageText" value="Erlide.org project" />
+      <property name="introTitle" value="Welcome to Erlide" />
+      </product>
+   </extension>
+	<extension point="org.eclipse.ui.splashHandlers">
+      <splashHandler
+            class="org.erlide.branding.SplashHandler"
+            id="org.erlide.splashHandler">
+      </splashHandler>
+      <splashHandlerProductBinding
+            productId="org.erlide.branding.product"
+            splashId="org.erlide.splashHandler">
+      </splashHandlerProductBinding>
+   </extension>
+<extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.ui.preferencePages.Workbench"
+            class="org.eclipse.ui.intro.universal.ExtensionFactory:welcomeCustomization"
+            id="org.erlide.intro.introCustomization"
+            name="%introCustomizationPreference.name">
+         <keywordReference id="org.eclipse.ui.ide.appearance"/>
+      </page>
+   </extension>
+     <extension
+        point="org.eclipse.ui.intro.configExtension">
+     <configExtension
+           content="intro/introData.xml"
+           configId="org.eclipse.ui.intro.universalConfig">
+     </configExtension>
+     </extension>
+    </plugin>
+	

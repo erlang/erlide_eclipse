@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Buckminster Headless - build
+
+	buckminster.home must be specified on the command line, e.g.,
+	 	ant -Dbuckminster.home=/home/bettini/buckminster -f build.ant
+
+	Properties:
+		WORKSPACE  			Eclipse workspace location, or hudson job workspace
+		build.root 			Where to build? WARNING: This folder will be cleaned up, so do not point to user.home or something important
+							Default: ${WORKSPACE}/buildroot
+		buckminster.home	Buckminster headless to use. See http://www.eclipse.org/buckminster/downloads.html
+		projects.location	Where to find projects to build?
+							Default: ${WORKSPACE}
+		eclipse.download	The base URL for all the repositories in the RMAP
+							Default: http://download.eclipse.org
+-->
+<project name="Buckminster Headless" default="buckminster">
+	<import file="common.ant" as="common" />
+
+	<target name="buckminster" depends="common.cleanup,install.buckminster.headless" description="description">
+
+		<property name="resolve.commands.file" location="${projects.location}/org.erlide.releng/headless-resolve-commands.txt" />
+		<property name="perform.commands.file" location="${projects.location}/org.erlide.releng/headless-perform-commands.txt" />
+		<property name="build.properties" location="${projects.location}/org.erlide.releng/build.properties" />
+
+		<echo message="IMPORTANT: Populating an empty target platform may took over 10 minutes." />
+		<echo message="build.properties: ${build.properties}" />
+
+		<run_buckminster commandsfile="${resolve.commands.file}" propertiesfile="${build.properties}" />
+		<run_buckminster commandsfile="${perform.commands.file}" propertiesfile="${build.properties}" />
+
+		<echo message=" " />
+		<echo message="Build Finished" />
+	</target>
+	
+	<target name="b3_aggregation" depends="install.b3.headless" description="description">
+
+		<property name="build.model" location="${projects.location}/org.eclipse.buckminster.examples.rcp.mail.releng/aggregator/target-platform-mirror.b3aggr" />
+		
+		<echo message="IMPORTANT: Mirror aggregation may took over 10 minutes." />
+		<echo message="build.model: ${build.model}" />
+
+		<run_b3_aggregator buildmodel="${build.model}" />
+
+		<echo message=" " />
+		<echo message="Aggregated mirror in: ${user.home}/mirror/rcp/final" />
+	</target>
+</project>

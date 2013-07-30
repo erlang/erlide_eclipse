@@ -6,6 +6,13 @@
          file="erlideContext.xml">
     </contexts>
 </extension>
+<extension
+      point="org.eclipse.ui.intro">
+   <introProductBinding
+         introId="org.eclipse.ui.intro.universal"
+         productId="org.erlide.branding.product">
+   </introProductBinding>
+</extension>
 <!--extension
       point="org.eclipse.ui.cheatsheets.cheatSheetContent">
    <category

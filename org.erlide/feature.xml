@@ -4,7 +4,7 @@
       label="Erlang language tools IDE"
       version="0.23.1.qualifier"
       provider-name="%vendorName"
-      plugin="org.erlide.core"
+      plugin="org.erlide.branding"
       image="erlang-64.gif"
       license-feature="org.erlide.licenses"
       license-feature-version="1.0.0.qualifier">
@@ -59,14 +59,14 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          version="0.0.0"/>
 
    <plugin
-         id="org.erlide.cover.api"
+         id="org.erlide.dialyzer.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.erlide.dialyzer.ui"
+         id="org.erlide.branding"
          download-size="0"
          install-size="0"
          version="0.0.0"

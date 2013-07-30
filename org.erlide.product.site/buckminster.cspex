@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cspecExtension xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns="http://www.eclipse.org/buckminster/CSpec-1.0">
+	<actions>
+		<public name="create.product" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="build/product.ant" />
+				<property key="targets" value="create.product" />
+			</actorProperties>
+			<properties>
+				<property key="profile" value="ErlideProfile" />
+				<property key="iu" value="org.erlide.product" />
+			</properties>
+			<prerequisites alias="repositories">
+				<attribute name="site.p2" />
+				<attribute name="site.tp" />
+			</prerequisites>
+			<products alias="destination" base="${buckminster.output}">
+				<path path="erlide.${target.ws}.${target.os}.${target.arch}/" />
+			</products>
+		</public>
+
+		<public name="create.product.zip" actor="ant">
+			<actorProperties>
+				<property key="buildFileId" value="buckminster.pdetasks" />
+				<property key="targets" value="create.zip" />
+			</actorProperties>
+			<prerequisites alias="action.requirements">
+				<attribute name="create.product" />
+			</prerequisites>
+			<products alias="action.output" base="${buckminster.output}">
+				<path path="erlide.${target.ws}.${target.os}.${target.arch}.zip" />
+			</products>
+		</public>
+
+		<public name="site.tp" actor="ant">
+			<actorProperties>
+				<property key="buildFile" value="build/product.ant" />
+				<property key="targets" value="create.target.platform.repository" />
+			</actorProperties>
+			<properties>
+				<property key="repository.name" value="Erlide Platform Site" />
+			</properties>
+			<products alias="output" base="${buckminster.output}/site.tp/" />
+		</public>
+	</actions>
+</cspecExtension>
