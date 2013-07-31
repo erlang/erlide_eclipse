@@ -2,22 +2,21 @@
 # arguments:
 # WORKSPACE - location of the source code root
 # JAVA_HOME - location of JDK
-# erlang_R14 - location of R14
+# ERLANG_HOME - location of R14
 # BUCKMINSTER - location of the Bucky installation
 # TARGET - location of eclipse installation that defines the target system
 
 WORKSPACE=$1
 JAVA_HOME=$2
-erlang_R13=$3
-erlang_R14=$4
-BUCKMINSTER=$5
-TARGET=$6
+ERLANG_HOME=$3
+BUCKMINSTER=$4
+TARGET=$5
 
 SITE_PRJ=org.erlide.site
 SITE_PRJ_PATH=${WORKSPACE}/${SITE_PRJ}
 
 cp ${SITE_PRJ_PATH}/erl.epf ${SITE_PRJ_PATH}/_erl.epf
-sed -e "s%#{erlang_R14}%${erlang_R14}%g" -e "s%#{erlang_R13}%${erlang_R13}%g" ${SITE_PRJ_PATH}/erl.epf > ${SITE_PRJ_PATH}/_erl.epf
+sed -e "s%#{ERLANG_HOME}%${ERLANG_HOME}%g" ${SITE_PRJ_PATH}/erl.epf > ${SITE_PRJ_PATH}/_erl.epf
 
 cp ${SITE_PRJ_PATH}/bucky_build ${SITE_PRJ_PATH}/_bucky_build
 sed -e "s%#{WORKSPACE}%${WORKSPACE}%g" -e "s%#{TARGET}%${TARGET}%g" -e "s%#{JAVA_HOME}%${JAVA_HOME}%g" -e "s%#{JAVA_BASE}%${JAVA_BASE}%g" -e "s%#{SITE_PRJ}%${SITE_PRJ}%g" ${SITE_PRJ_PATH}/bucky_build > ${SITE_PRJ_PATH}/_bucky_build
@@ -28,5 +27,5 @@ echo "buckminster.temp.root=${WORKSPACE}/buckminster.temp" >> ${SITE_PRJ_PATH}/_
 
 LAUNCHER=`find -L ${BUCKMINSTER}/plugins/ -name "org.eclipse.equinox.launcher_*.jar" -type f | head -n 1`
 
-${JAVA_HOME}/bin/java -Xms128m -Xmx512m -server -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel DEBUG -S ${SITE_PRJ_PATH}/_bucky_build -Derlide.runtime=${erlang_R14}
+${JAVA_HOME}/bin/java -Xms128m -Xmx512m -server -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel DEBUG -S ${SITE_PRJ_PATH}/_bucky_build -Derlide.runtime=${ERLANG_HOME}
 

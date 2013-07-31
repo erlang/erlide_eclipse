@@ -3,23 +3,21 @@
 # arguments:
 # WORKSPACE - location of the source code root
 # JAVA_HOME - location of JDK
-# erlang_R13 - location of R13
-# erlang_R14 - location of R14
+# ERLANG_HOME - location of Erlang
 # BUCKMINSTER - location of the Bucky installation
 # TARGET - location of eclipse installation that defines the target system
 
 WORKSPACE=$1
 JAVA_HOME=$2
-erlang_R13=$3
-erlang_R14=$4
-BUCKMINSTER=$5
-TARGET=$6
+ERLANG_HOME=$3
+BUCKMINSTER=$4
+TARGET=$5
 
 SITE_PRJ=org.erlide.site
 SITE_PRJ_PATH=${WORKSPACE}/${SITE_PRJ}
 
 cp ${SITE_PRJ_PATH}/erl.epf ${SITE_PRJ_PATH}/_erl.epf
-sed -e "s%#{erlang_R14}%${erlang_R14}%g" -e "s%#{erlang_R13}%${erlang_R13}%g" ${SITE_PRJ_PATH}/erl.epf > ${SITE_PRJ_PATH}/_erl.epf
+sed -e "s%#{ERLANG_HOME}%${ERLANG_HOME}%g" ${SITE_PRJ_PATH}/erl.epf > ${SITE_PRJ_PATH}/_erl.epf
 
 cp ${SITE_PRJ_PATH}/bucky_test ${SITE_PRJ_PATH}/_bucky_test
 sed -e "s%#{WORKSPACE}%${WORKSPACE}%g" -e "s%#{TARGET}%${TARGET}%g" -e "s%#{JAVA_HOME}%${JAVA_HOME}%g" -e "s%#{JAVA_BASE}%${JAVA_BASE}%g" -e "s%#{SITE_PRJ}%${SITE_PRJ}%g" ${SITE_PRJ_PATH}/bucky_test > ${SITE_PRJ_PATH}/_bucky_test
@@ -36,9 +34,9 @@ ${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclips
 cp -R ${WORKSPACE}/org.erlide.ui.tests/projects/* ${WORKSPACE}/junit-workspace
 ${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE}/junit-workspace --loglevel DEBUG import ${WORKSPACE}/${SITE_PRJ}/junit.cquery
 
-${JAVA_HOME}/bin/java -Xms128m -Xmx512m -server -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel DEBUG -S ${SITE_PRJ_PATH}/_bucky_test -Derlide.runtime=${erlang_R14}
+${JAVA_HOME}/bin/java -Xms128m -Xmx512m -server -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel DEBUG -S ${SITE_PRJ_PATH}/_bucky_test -Derlide.runtime=${ERLANG_HOME}
 
 ## now run eunit tests
 chmod u+x $SITE_PRJ_PATH/run_eunit
-bash -c "$SITE_PRJ_PATH/run_eunit $WORKSPACE $erlang_R13 output"
+bash -c "$SITE_PRJ_PATH/run_eunit $WORKSPACE $ERLANG_HOME output"
 
