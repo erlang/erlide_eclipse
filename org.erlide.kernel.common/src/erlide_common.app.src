@@ -2,5 +2,6 @@
   [
    {registered,   []},
    {applications, [kernel, stdlib]},
-   {env,          []}
+   {env,          []},
+   {mod, {erlide_common_app, []}}
    ]}.

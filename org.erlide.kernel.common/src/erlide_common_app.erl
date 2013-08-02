@@ -1,4 +1,4 @@
--module(erlide_kernel_common).
+-module(erlide_common_app).
 
 -export([
      init/4

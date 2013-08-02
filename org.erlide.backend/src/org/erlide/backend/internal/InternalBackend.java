@@ -38,7 +38,7 @@ public class InternalBackend extends Backend {
                     .values()) {
                 registerCodeBundle(bb);
             }
-            startErlangApps(getRuntime().getEventMbox().self(), true);
+            startErlideApps(getRuntime().getEventMbox().self(), true);
         }
     }
 }
