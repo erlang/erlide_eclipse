@@ -108,11 +108,11 @@ public abstract class Backend implements IStreamListener, IBackend {
         return runtime.getNodeName();
     }
 
-    protected boolean startErlangApps(final OtpErlangPid jRex,
+    protected boolean startErlideApps(final OtpErlangPid jRex,
             final boolean watch) {
         try {
             getRpcSite().call(
-                    "erlide_kernel_common",
+                    "erlide_common_app",
                     "init",
                     "poii",
                     jRex,
@@ -122,8 +122,8 @@ public abstract class Backend implements IStreamListener, IBackend {
                     SystemConfiguration.getInstance()
                             .getKillProcessSizeLimitMB());
             // TODO should use extension point!
-            getRpcSite().call("erlide_kernel_builder", "init", "");
-            getRpcSite().call("erlide_kernel_ide", "init", "");
+            getRpcSite().call("erlide_builder_app", "init", "");
+            getRpcSite().call("erlide_ide_app", "init", "");
 
             // TODO start tracing when configured to do so!
             // getRpcSite().call("erlide_tracer", "start", "");
@@ -149,7 +149,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public synchronized void initErlang(final boolean watch) {
         ErlLogger.debug("initialize %s: %s", getName(), watch);
-        startErlangApps(getRuntime().getEventMbox().self(), watch);
+        startErlideApps(getRuntime().getEventMbox().self(), watch);
         getRuntime().registerEventListener(new SystemMonitorHandler(getName()));
     }
 

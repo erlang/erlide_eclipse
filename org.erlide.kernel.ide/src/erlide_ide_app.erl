@@ -1,4 +1,4 @@
--module(erlide_kernel_ide).
+-module(erlide_ide_app).
 
 -export([
    init/0
