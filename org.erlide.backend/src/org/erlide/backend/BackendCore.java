@@ -4,30 +4,22 @@ import org.eclipse.core.resources.IProject;
 import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.backend.internal.BackendFactory;
-import org.erlide.backend.internal.BackendManager;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.epmd.EpmdWatcher;
-import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 public class BackendCore {
 
     private static IBackendManager backendManager;
-    private static BackendFactory backendFactory;
     private static EpmdWatcher epmdWatcher;
     private static EpmdWatchJob epmdWatcherJob;
 
+    public static void init(final IBackendManager aBackendManager) {
+        backendManager = aBackendManager;
+    }
+
     public static final IBackendManager getBackendManager() {
-        if (backendManager == null) {
-            final IRuntimeInfoCatalog catalog = BackendCore
-                    .getRuntimeInfoCatalog();
-            final RuntimeInfo erlideRuntime = catalog.getErlideRuntime();
-            backendFactory = new BackendFactory(catalog);
-            backendManager = new BackendManager(erlideRuntime, backendFactory);
-        }
         return backendManager;
     }
 
@@ -58,7 +50,7 @@ public class BackendCore {
 
     private static void startEpmdWatcher() {
         epmdWatcher = new EpmdWatcher();
-        epmdWatcher.addEpmdListener((IEpmdListener) getBackendManager());
+        epmdWatcher.addEpmdListener(getBackendManager());
         epmdWatcherJob = new EpmdWatchJob(epmdWatcher);
         epmdWatcherJob.schedule(1000);
     }

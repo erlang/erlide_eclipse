@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
-import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
@@ -113,8 +112,8 @@ public class CodeManager implements ICodeManager {
 
     private void loadPluginCode(final ICodeBundle p) {
 
-        final Bundle b = OsgiUtil.findOsgiBundle(BackendPlugin.getDefault()
-                .getBundle(), p.getBundleName());
+        final Bundle b = OsgiUtil.findOsgiBundle(backendManager.getBundle(),
+                p.getBundleName());
         ErlLogger.debug("loading plugin " + b.getSymbolicName() + " in "
                 + runtimeInfo.getName());
 
@@ -248,8 +247,8 @@ public class CodeManager implements ICodeManager {
     }
 
     private void unloadPluginCode(final ICodeBundle p) {
-        final Bundle b = OsgiUtil.findOsgiBundle(BackendPlugin.getDefault()
-                .getBundle(), p.getBundleName());
+        final Bundle b = OsgiUtil.findOsgiBundle(backendManager.getBundle(),
+                p.getBundleName());
         @SuppressWarnings("rawtypes")
         Enumeration e;
         ErlLogger.debug("*> really unloading plugin " + p.getClass().getName());
