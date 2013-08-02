@@ -226,7 +226,7 @@ public class BackendShell implements IBackendShell {
             listenersCopy = Lists.newArrayList(listeners);
         }
         for (final BackendShellListener listener : listenersCopy) {
-            listener.changed(this);
+            listener.changed();
         }
     }
 

@@ -33,21 +33,19 @@ public class SendToConsoleAction extends SelectionDispatchAction {
     private final class ConsoleBackendShellListener implements
             BackendShellListener {
 
-        private int offset;
+        private final int offset;
         private int counter;
+        private final IBackendShell shell;
 
-        public ConsoleBackendShellListener() {
-            offset = 0;
-            counter = 0;
-        }
-
-        public void setup(final int offset) {
+        public ConsoleBackendShellListener(final IBackendShell shell,
+                final int offset) {
+            this.shell = shell;
             this.offset = offset;
             counter = 0;
         }
 
         @Override
-        public void changed(final IBackendShell shell) {
+        public void changed() {
             if (shell == null) {
                 return;
             }
@@ -65,7 +63,7 @@ public class SendToConsoleAction extends SelectionDispatchAction {
 
     private final ITextEditor editor;
     private final boolean getOutput;
-    private final ConsoleBackendShellListener consoleBackendShellListener;
+    private ConsoleBackendShellListener consoleBackendShellListener;
     IErlProject project;
 
     @Override
@@ -111,8 +109,9 @@ public class SendToConsoleAction extends SelectionDispatchAction {
         text += "\n"; //$NON-NLS-1$
         // send it off to the console
         if (getOutput) {
-            consoleBackendShellListener.setup(getLineSelection(selection, true)
-                    .getOffset());
+            consoleBackendShellListener = new ConsoleBackendShellListener(
+                    console.getShell(), getLineSelection(selection, true)
+                            .getOffset());
             console.getShell().addListener(consoleBackendShellListener);
         }
         consolePage.input(text);
@@ -186,7 +185,6 @@ public class SendToConsoleAction extends SelectionDispatchAction {
         setToolTipText(getString(bundle, prefix + "tooltip")); //$NON-NLS-1$
         setDescription(getString(bundle, prefix + "description")); //$NON-NLS-1$
         this.editor = editor;
-        consoleBackendShellListener = new ConsoleBackendShellListener();
     }
 
     protected static String getString(final ResourceBundle bundle,
