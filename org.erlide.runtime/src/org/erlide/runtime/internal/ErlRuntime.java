@@ -21,7 +21,7 @@ import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangLogEventHandler;
 import org.erlide.runtime.events.LogEventHandler;
-import org.erlide.runtime.rpc.RpcSite;
+import org.erlide.runtime.internal.rpc.RpcSite;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 

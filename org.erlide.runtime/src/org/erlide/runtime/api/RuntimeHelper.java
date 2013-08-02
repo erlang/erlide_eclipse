@@ -3,7 +3,6 @@ package org.erlide.runtime.api;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import org.erlide.runtime.internal.ParserException;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;

@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.erlide.runtime.api.RuntimeVersion;
-
 public class VersionLocator {
     /**
      * Locate runtimes with this version or newer. If exact matches exists, they

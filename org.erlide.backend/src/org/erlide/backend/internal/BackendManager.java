@@ -42,9 +42,9 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.runtime.api.ICodeBundle.CodeContext;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.RuntimeVersion;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
 

@@ -1,5 +1,7 @@
-package org.erlide.runtime.api;
+package org.erlide.runtime;
 
+import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.internal.ErlRuntime;
 import org.erlide.runtime.internal.ManagedErlRuntime;
 import org.erlide.runtime.internal.NullErlRuntime;

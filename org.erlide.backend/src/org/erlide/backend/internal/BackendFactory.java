@@ -20,7 +20,7 @@ import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.runtime.api.ErlRuntimeFactory;
+import org.erlide.runtime.ErlRuntimeFactory;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;

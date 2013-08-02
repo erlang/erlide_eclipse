@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.erlide.runtime.api.RuntimeVersion;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

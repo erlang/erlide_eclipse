@@ -1,4 +1,4 @@
-package org.erlide.runtime.rpc;
+package org.erlide.runtime.internal.rpc;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -8,8 +8,13 @@ import java.util.concurrent.TimeoutException;
 
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.internal.rpc.RpcFutureImpl;
-import org.erlide.runtime.internal.rpc.RpcResultReceiver;
+import org.erlide.runtime.rpc.IRpcCallback;
+import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.IRpcResultCallback;
+import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcMonitor;
+import org.erlide.runtime.rpc.RpcResult;
+import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.Signature;

@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.erlide.runtime.api.RuntimeVersion;
 
 import com.google.common.collect.Lists;
 

@@ -6,7 +6,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.backend.api.IBackendProvider;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.RuntimeVersion;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.services.ExtensionUtils;
 import org.osgi.framework.BundleContext;
 

@@ -22,8 +22,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.erlide.model.PropertiesUtils;
 import org.erlide.runtime.api.RuntimeCore;
-import org.erlide.runtime.api.RuntimeVersion;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.SystemConfiguration;
 import org.osgi.service.prefs.BackingStoreException;
 

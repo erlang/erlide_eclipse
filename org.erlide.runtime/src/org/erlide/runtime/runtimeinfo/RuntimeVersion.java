@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.api;
+package org.erlide.runtime.runtimeinfo;
 
 import java.io.File;
 import java.io.FileFilter;

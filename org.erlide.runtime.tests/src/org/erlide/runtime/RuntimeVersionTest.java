@@ -3,7 +3,7 @@ package org.erlide.runtime;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import org.erlide.runtime.api.RuntimeVersion;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.junit.Test;
 
 public class RuntimeVersionTest {

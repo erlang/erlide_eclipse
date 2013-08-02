@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.erlide.runtime.api.RuntimeVersion;
 
 public interface IRuntimeInfoCatalog {
 

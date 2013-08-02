@@ -38,7 +38,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
 import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.model.root.PathSerializer;
-import org.erlide.runtime.api.RuntimeVersion;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.PreferencesUtils;
 import org.erlide.util.SystemConfiguration;

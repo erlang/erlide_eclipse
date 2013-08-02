@@ -2,7 +2,7 @@ package org.erlide.backend.api;
 
 import org.eclipse.core.resources.IProject;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.RuntimeVersion;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 
 public interface IBackendProvider {
 

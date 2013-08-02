@@ -18,7 +18,6 @@ import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcMonitor;
-import org.erlide.runtime.rpc.RpcSite;
 import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
