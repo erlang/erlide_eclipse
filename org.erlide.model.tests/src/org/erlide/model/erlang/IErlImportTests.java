@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import java.util.List;
 
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 
@@ -19,7 +19,7 @@ public class IErlImportTests extends ErlModelTestBase {
                         + "-import(lists, [foldl/3, reverse/1, reverse/2]).\n");
         module2.open(null);
         final List<IErlElement> imports = module2
-                .getChildrenOfKind(Kind.IMPORT);
+                .getChildrenOfKind(ErlElementKind.IMPORT);
         final IErlImport import1 = (IErlImport) imports.get(0);
         final String importModule = import1.getImportModule();
         assertEquals("lists", importModule);

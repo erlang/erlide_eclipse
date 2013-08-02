@@ -27,7 +27,7 @@ import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.codeinspection.ui.InputDialogWithCheckbox;
@@ -402,7 +402,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                 CodeInspectionViewsManager.showErlElements(
                         "Modules which depends on "
                                 + wranglerSelection.getErlElement()
-                                        .getAncestorOfKind(Kind.MODULE)
+                                        .getAncestorOfKind(ErlElementKind.MODULE)
                                         .getName(), modules1,
                         DEPENECIES_1_VIEW_ID);
             }
@@ -410,7 +410,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                 CodeInspectionViewsManager.showErlElements(
                         "Modules, on which "
                                 + wranglerSelection.getErlElement()
-                                        .getAncestorOfKind(Kind.MODULE)
+                                        .getAncestorOfKind(ErlElementKind.MODULE)
                                         .getName() + " depends", modules2,
                         DEPENECIES_2_VIEW_ID);
             } else {

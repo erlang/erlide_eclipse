@@ -37,9 +37,9 @@ import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.services.codeassist.ErlideContextAssist;
 import org.erlide.model.services.codeassist.ErlideContextAssist.RecordCompletion;
 import org.erlide.model.services.search.ErlideDoc;
@@ -369,7 +369,7 @@ public abstract class AbstractErlContentAssistProcessor implements
             addSorted(
                     result,
                     getMacroOrRecordCompletions(offset, prefix,
-                            IErlElement.Kind.RECORD_DEF));
+                            ErlElementKind.RECORD_DEF));
         }
         if (flags.contains(Kinds.RECORD_FIELDS)) {
             addSorted(
@@ -381,7 +381,7 @@ public abstract class AbstractErlContentAssistProcessor implements
             addSorted(
                     result,
                     getMacroOrRecordCompletions(offset, prefix,
-                            IErlElement.Kind.MACRO_DEF));
+                            ErlElementKind.MACRO_DEF));
         }
         if (flags.contains(Kinds.EXTERNAL_FUNCTIONS)) {
             addSorted(
@@ -494,7 +494,7 @@ public abstract class AbstractErlContentAssistProcessor implements
     }
 
     List<ICompletionProposal> getMacroOrRecordCompletions(final int offset,
-            final String prefix, final Kind kind) {
+            final String prefix, final ErlElementKind kind) {
         if (module == null) {
             return EMPTY_COMPLETIONS;
         }
@@ -509,7 +509,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         } catch (final CoreException e) {
             ErlLogger.error(e);
         }
-        if (kind == Kind.MACRO_DEF) {
+        if (kind == ErlElementKind.MACRO_DEF) {
             final String[] names = ModelUtils.getPredefinedMacroNames();
             for (final String name : names) {
                 addIfMatches(name, prefix, offset, result);
@@ -557,7 +557,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         IErlPreprocessorDef pd;
         try {
             pd = ModelUtils.findPreprocessorDef(module, recordName,
-                    Kind.RECORD_DEF);
+                    ErlElementKind.RECORD_DEF);
         } catch (final CoreException e) {
             return EMPTY_COMPLETIONS;
         }

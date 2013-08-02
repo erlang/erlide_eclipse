@@ -8,6 +8,7 @@ import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlComment;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.internal.root.ErlMember;
+import org.erlide.model.root.ErlElementKind;
 
 /**
  * @author jakob
@@ -32,8 +33,8 @@ public class ErlComment extends ErlMember implements IErlComment {
      * @see org.erlide.model.root.IErlElement#getKind()
      */
     @Override
-    public Kind getKind() {
-        return Kind.COMMENT;
+    public ErlElementKind getKind() {
+        return ErlElementKind.COMMENT;
     }
 
     @Override

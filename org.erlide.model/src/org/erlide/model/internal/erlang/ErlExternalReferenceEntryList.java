@@ -19,6 +19,7 @@ import org.erlide.model.root.IErlExternal;
 import org.erlide.model.root.IErlExternalRoot;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.ErlideOpen.ExternalTreeEntry;
 import org.erlide.model.util.ModelUtils;
@@ -45,8 +46,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
     }
 
     @Override
-    public Kind getKind() {
-        return Kind.EXTERNAL;
+    public ErlElementKind getKind() {
+        return ErlElementKind.EXTERNAL;
     }
 
     @Override

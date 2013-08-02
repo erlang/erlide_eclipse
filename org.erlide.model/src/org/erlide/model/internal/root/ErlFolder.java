@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.model.ErlModelException;
+import org.erlide.model.ErlModelStatus;
 import org.erlide.model.ErlModelStatusConstants;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlModule;
@@ -21,6 +22,7 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.util.SystemConfiguration;
 
@@ -50,8 +52,8 @@ public class ErlFolder extends Openable implements IErlFolder {
                 model.create(resource);
             }
         } catch (final CoreException e) {
-            throw new ErlModelException(e,
-                    ErlModelStatusConstants.CORE_EXCEPTION);
+            throw new ErlModelException(new ErlModelStatus(
+                    ErlModelStatusConstants.CORE_EXCEPTION, e));
         }
         return true;
     }
@@ -75,8 +77,8 @@ public class ErlFolder extends Openable implements IErlFolder {
     }
 
     @Override
-    public Kind getKind() {
-        return Kind.FOLDER;
+    public ErlElementKind getKind() {
+        return ErlElementKind.FOLDER;
     }
 
     @Override

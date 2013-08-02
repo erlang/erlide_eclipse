@@ -21,6 +21,7 @@ import org.erlide.model.ErlModelStatusConstants;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
 import org.erlide.model.root.IErlElement;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.util.ErlLogger;
 
@@ -189,8 +190,8 @@ public abstract class Openable extends ErlElement implements IOpenable {
         // }
         // for packages and projects must check open buffers
         // to see if they have an child with unsaved changes
-        final Kind elementType = getKind();
-        if (elementType == Kind.PROJECT || elementType == Kind.MODEL) {
+        final ErlElementKind elementType = getKind();
+        if (elementType == ErlElementKind.PROJECT || elementType == ErlElementKind.MODEL) {
             // final Enumeration openBuffers =
             // getBufferManager().getOpenBuffers();
             // while (openBuffers.hasMoreElements()) {

@@ -16,10 +16,10 @@ import org.erlide.model.internal.root.ErlModelCache;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElement.AcceptFlags;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlElementVisitor;
 import org.erlide.model.root.IErlExternal;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
@@ -43,22 +43,22 @@ public class IErlElementTest extends ErlModelTestBase {
     public void getAncestorOfKind() throws Exception {
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
-        final IErlElement ancestor = element.getAncestorOfKind(Kind.FUNCTION);
-        final IErlElement ancestor2 = element.getAncestorOfKind(Kind.MODULE);
-        final IErlElement ancestor3 = element.getAncestorOfKind(Kind.FOLDER);
-        final IErlElement ancestor4 = element.getAncestorOfKind(Kind.PROJECT);
-        final IErlElement ancestor5 = element.getAncestorOfKind(Kind.MODEL);
-        final IErlElement ancestor6 = element.getAncestorOfKind(Kind.TYPESPEC);
+        final IErlElement ancestor = element.getAncestorOfKind(ErlElementKind.FUNCTION);
+        final IErlElement ancestor2 = element.getAncestorOfKind(ErlElementKind.MODULE);
+        final IErlElement ancestor3 = element.getAncestorOfKind(ErlElementKind.FOLDER);
+        final IErlElement ancestor4 = element.getAncestorOfKind(ErlElementKind.PROJECT);
+        final IErlElement ancestor5 = element.getAncestorOfKind(ErlElementKind.MODEL);
+        final IErlElement ancestor6 = element.getAncestorOfKind(ErlElementKind.TYPESPEC);
         assertNotNull(ancestor);
         assertTrue(ancestor instanceof IErlFunction);
-        assertEquals(Kind.FUNCTION, ancestor.getKind());
+        assertEquals(ErlElementKind.FUNCTION, ancestor.getKind());
         assertEquals(element, ancestor);
-        assertEquals(Kind.MODULE, ancestor2.getKind());
-        assertEquals(Kind.FOLDER, ancestor3.getKind());
-        assertEquals(Kind.PROJECT, ancestor4.getKind());
-        assertEquals(Kind.MODEL, ancestor5.getKind());
-        assertEquals(ancestor3, ancestor2.getAncestorOfKind(Kind.FOLDER));
-        assertEquals(ancestor4, ancestor2.getAncestorOfKind(Kind.PROJECT));
+        assertEquals(ErlElementKind.MODULE, ancestor2.getKind());
+        assertEquals(ErlElementKind.FOLDER, ancestor3.getKind());
+        assertEquals(ErlElementKind.PROJECT, ancestor4.getKind());
+        assertEquals(ErlElementKind.MODEL, ancestor5.getKind());
+        assertEquals(ancestor3, ancestor2.getAncestorOfKind(ErlElementKind.FOLDER));
+        assertEquals(ancestor4, ancestor2.getAncestorOfKind(ErlElementKind.PROJECT));
         assertNull(ancestor6);
     }
 
@@ -115,11 +115,11 @@ public class IErlElementTest extends ErlModelTestBase {
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
         final IErlElement element2 = module.getElementAtLine(0);
-        assertEquals(Kind.MODULE, module.getKind());
-        assertEquals(Kind.PROJECT, project.getKind());
-        assertEquals(Kind.FUNCTION, element.getKind());
-        assertEquals(Kind.ATTRIBUTE, element2.getKind());
-        assertEquals(Kind.MODEL, ErlModelManager.getErlangModel().getKind());
+        assertEquals(ErlElementKind.MODULE, module.getKind());
+        assertEquals(ErlElementKind.PROJECT, project.getKind());
+        assertEquals(ErlElementKind.FUNCTION, element.getKind());
+        assertEquals(ErlElementKind.ATTRIBUTE, element2.getKind());
+        assertEquals(ErlElementKind.MODEL, ErlModelManager.getErlangModel().getKind());
     }
 
     // IErlModel getModel();
@@ -253,19 +253,19 @@ public class IErlElementTest extends ErlModelTestBase {
 
         };
         final EnumSet<AcceptFlags> noneOf = EnumSet.noneOf(AcceptFlags.class);
-        project.accept(visitor, noneOf, Kind.MODULE);
+        project.accept(visitor, noneOf, ErlElementKind.MODULE);
         final List<IErlElement> kindModuleElementsVisited = Lists
                 .newArrayList(elements);
         elements.clear();
-        project.accept(visitor, noneOf, Kind.FUNCTION);
+        project.accept(visitor, noneOf, ErlElementKind.FUNCTION);
         final List<IErlElement> kindFunctionElementsVisited = Lists
                 .newArrayList(elements);
         elements.clear();
         project.accept(visitor, EnumSet.of(AcceptFlags.CHILDREN_FIRST),
-                Kind.MODULE);
+                ErlElementKind.MODULE);
         final List<IErlElement> childrenFirst = Lists.newArrayList(elements);
         elements.clear();
-        project.accept(visitor, EnumSet.of(AcceptFlags.LEAFS_ONLY), Kind.MODULE);
+        project.accept(visitor, EnumSet.of(AcceptFlags.LEAFS_ONLY), ErlElementKind.MODULE);
         final List<IErlElement> leafsOnly = Lists.newArrayList(elements);
         elements.clear();
         // assertEquals(4, kindModuleElementsVisited.size());

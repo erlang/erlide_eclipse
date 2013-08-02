@@ -29,7 +29,7 @@ import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlPreprocessorDef;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
+import org.erlide.model.root.ErlElementKind;
 
 class ErlangCompareUtilities {
 
@@ -73,21 +73,21 @@ class ErlangCompareUtilities {
      */
     static String getErlElementID(final IErlElement e) {
         final StringBuilder sb = new StringBuilder();
-        final IErlElement.Kind kind = e.getKind();
+        final ErlElementKind kind = e.getKind();
         sb.append(kind);
-        if (kind == Kind.FUNCTION) {
+        if (kind == ErlElementKind.FUNCTION) {
             final IErlFunction f = (IErlFunction) e;
             sb.append(f.getNameWithArity());
-        } else if (kind == Kind.CLAUSE) {
+        } else if (kind == ErlElementKind.CLAUSE) {
             final IErlFunctionClause fc = (IErlFunctionClause) e;
             sb.append(fc.getHead());
-        } else if (kind == Kind.ATTRIBUTE) {
+        } else if (kind == ErlElementKind.ATTRIBUTE) {
             final IErlAttribute a = (IErlAttribute) e;
             sb.append(a.getName());
             if (a.getValue() != null) {
                 sb.append(a.getValue().toString());
             }
-        } else if (kind == Kind.RECORD_DEF || kind == Kind.MACRO_DEF) {
+        } else if (kind == ErlElementKind.RECORD_DEF || kind == ErlElementKind.MACRO_DEF) {
             final IErlPreprocessorDef pd = (IErlPreprocessorDef) e;
             sb.append(pd.getDefinedName());
         }

@@ -41,9 +41,9 @@ import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlElementDelta;
 import org.erlide.model.root.IErlModel;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.util.IElementChangedListener;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
@@ -441,8 +441,8 @@ public class DefaultErlangFoldingStructureProvider implements
             if (stateMatch(annotation) && !annotation.isComment()
                     && !annotation.isMarkedDeleted()) {
                 final IErlElement element = annotation.getElement();
-                final Kind kind = element.getKind();
-                return kind == Kind.FUNCTION || kind == Kind.CLAUSE;
+                final ErlElementKind kind = element.getKind();
+                return kind == ErlElementKind.FUNCTION || kind == ErlElementKind.CLAUSE;
             }
             return false;
         }
@@ -643,11 +643,11 @@ public class DefaultErlangFoldingStructureProvider implements
         boolean createProjection = false;
         boolean collapse = false;
 
-        if (element.getKind() == IErlElement.Kind.CLAUSE
-                || element.getKind() == IErlElement.Kind.FUNCTION) {
+        if (element.getKind() == ErlElementKind.CLAUSE
+                || element.getKind() == ErlElementKind.FUNCTION) {
             collapse = fAllowCollapsing && fCollapseClauses;
             createProjection = true;
-        } else if (element.getKind() == IErlElement.Kind.COMMENT) {
+        } else if (element.getKind() == ErlElementKind.COMMENT) {
             final IErlComment c = (IErlComment) element;
             if (c.isHeader()) {
                 collapse = fAllowCollapsing && fCollapseHeaderComments;
@@ -655,15 +655,15 @@ public class DefaultErlangFoldingStructureProvider implements
                 collapse = fAllowCollapsing && fCollapseComments;
             }
             createProjection = true;
-        } else if (element.getKind() == IErlElement.Kind.ATTRIBUTE) {
+        } else if (element.getKind() == ErlElementKind.ATTRIBUTE) {
             createProjection = true;
-        } else if (element.getKind() == IErlElement.Kind.EXPORT) {
+        } else if (element.getKind() == ErlElementKind.EXPORT) {
             createProjection = true;
-        } else if (element.getKind() == IErlElement.Kind.RECORD_DEF) {
+        } else if (element.getKind() == ErlElementKind.RECORD_DEF) {
             createProjection = true;
-        } else if (element.getKind() == IErlElement.Kind.MACRO_DEF) {
+        } else if (element.getKind() == ErlElementKind.MACRO_DEF) {
             createProjection = true;
-        } else if (element.getKind() == IErlElement.Kind.TYPESPEC) {
+        } else if (element.getKind() == ErlElementKind.TYPESPEC) {
             collapse = fAllowCollapsing && fCollapseTypespecs;
             createProjection = true;
         }

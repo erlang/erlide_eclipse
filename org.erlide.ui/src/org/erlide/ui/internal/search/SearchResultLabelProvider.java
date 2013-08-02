@@ -17,7 +17,7 @@ import org.eclipse.swt.graphics.Image;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlElement.Kind;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ResourceUtil;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
@@ -139,13 +139,13 @@ public class SearchResultLabelProvider extends LabelProvider implements
         // function - ErlangFunction
         // clause - ClauseHead
         // occurrence - ModuleLineFunctionArityRef
-        Kind kind = Kind.PROBLEM;
+        ErlElementKind kind = ErlElementKind.PROBLEM;
         if (element instanceof String) {
-            kind = Kind.MODULE;
+            kind = ErlElementKind.MODULE;
         } else if (element instanceof ErlangSearchElement) {
             final ErlangSearchElement ese = (ErlangSearchElement) element;
             kind = ese.getKind();
-            if (kind == Kind.FUNCTION) {
+            if (kind == ErlElementKind.FUNCTION) {
                 final IErlModule module = ese.getModule();
                 try {
                     module.open(null);
@@ -155,11 +155,11 @@ public class SearchResultLabelProvider extends LabelProvider implements
                         .findFunction(new ErlangFunction(ese.getName(), ese
                                 .getArity()));
                 if (function != null && function.isExported()) {
-                    kind = Kind.EXPORTFUNCTION;
+                    kind = ErlElementKind.EXPORTFUNCTION;
                 }
             }
         } else if (element instanceof ErlangFunction) {
-            kind = Kind.FUNCTION;
+            kind = ErlElementKind.FUNCTION;
         }
         return fImageProvider.getImageLabel(ErlangElementImageProvider
                 .getImageDescriptionFromKind(kind));

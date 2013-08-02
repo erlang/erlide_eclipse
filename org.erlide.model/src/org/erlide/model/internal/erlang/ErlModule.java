@@ -51,6 +51,7 @@ import org.erlide.model.root.IErlExternal;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ErlangIncludeFile;
 import org.erlide.model.util.ModelUtils;
@@ -278,7 +279,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public IErlImport findImport(final ErlangFunction function) {
         try {
-            for (final IErlElement e : getChildrenOfKind(Kind.IMPORT)) {
+            for (final IErlElement e : getChildrenOfKind(ErlElementKind.IMPORT)) {
                 if (e instanceof IErlImport) {
                     final IErlImport ei = (IErlImport) e;
                     if (ei.hasFunction(function)) {
@@ -293,7 +294,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     public IErlExport findExport(final ErlangFunction function) {
         try {
-            for (final IErlElement e : getChildrenOfKind(Kind.EXPORT)) {
+            for (final IErlElement e : getChildrenOfKind(ErlElementKind.EXPORT)) {
                 if (e instanceof IErlExport) {
                     final IErlExport ee = (IErlExport) e;
                     if (ee.hasFunction(function)) {
@@ -309,7 +310,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public IErlFunction findFunction(final ErlangFunction function) {
         try {
-            for (final IErlElement fun : getChildrenOfKind(Kind.FUNCTION)) {
+            for (final IErlElement fun : getChildrenOfKind(ErlElementKind.FUNCTION)) {
                 if (fun instanceof IErlFunction) {
                     final IErlFunction f = (IErlFunction) fun;
                     if (f.getName().equals(function.name)
@@ -326,7 +327,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public IErlTypespec findTypespec(final String typeName) {
         try {
-            for (final IErlElement child : getChildrenOfKind(Kind.TYPESPEC)) {
+            for (final IErlElement child : getChildrenOfKind(ErlElementKind.TYPESPEC)) {
                 if (child instanceof IErlTypespec) {
                     final IErlTypespec typespec = (IErlTypespec) child;
                     if (typespec.getName().equals(typeName)) {
@@ -341,7 +342,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public IErlPreprocessorDef findPreprocessorDef(final String definedName,
-            final Kind kind) {
+            final ErlElementKind kind) {
         synchronized (getModelLock()) {
             for (final IErlElement m : internalGetChildren()) {
                 if (m instanceof IErlPreprocessorDef) {
@@ -439,8 +440,8 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     @Override
-    public Kind getKind() {
-        return Kind.MODULE;
+    public ErlElementKind getKind() {
+        return ErlElementKind.MODULE;
     }
 
     @Override
@@ -536,13 +537,13 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     @Override
-    public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind) {
+    public Collection<IErlPreprocessorDef> getPreprocessorDefs(final ErlElementKind kind) {
         final List<IErlPreprocessorDef> result = Lists.newArrayList();
         synchronized (getModelLock()) {
             for (final IErlElement e : internalGetChildren()) {
                 if (e instanceof IErlPreprocessorDef) {
                     final IErlPreprocessorDef pd = (IErlPreprocessorDef) e;
-                    if (pd.getKind() == kind || kind == Kind.PROBLEM) {
+                    if (pd.getKind() == kind || kind == ErlElementKind.PROBLEM) {
                         result.add(pd);
                     }
                 }
@@ -618,7 +619,7 @@ public class ErlModule extends Openable implements IErlModule {
     private Collection<IErlModule> getLocalIncludes() throws ErlModelException {
         final List<IErlModule> result = Lists.newArrayList();
         final IParent parent = getParent();
-        for (final IErlElement child : parent.getChildrenOfKind(Kind.MODULE)) {
+        for (final IErlElement child : parent.getChildrenOfKind(ErlElementKind.MODULE)) {
             if (child instanceof IErlModule
                     && ModuleKind.nameToModuleKind(child.getName()) == ModuleKind.HRL) {
                 result.add((IErlModule) child);
@@ -704,7 +705,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public boolean exportsAllFunctions() {
         try {
-            for (final IErlElement e : getChildrenOfKind(Kind.ATTRIBUTE)) {
+            for (final IErlElement e : getChildrenOfKind(ErlElementKind.ATTRIBUTE)) {
                 if (e instanceof IErlAttribute) {
                     final IErlAttribute attr = (IErlAttribute) e;
                     if (attr.getName().equals("compile")) {

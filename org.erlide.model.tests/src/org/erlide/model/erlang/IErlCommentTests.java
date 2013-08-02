@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,14 +61,14 @@ public class IErlCommentTests extends ErlModelTestBase {
         final Iterator<IErlComment> iterator = comments.iterator();
         final IErlComment comment = iterator.next();
         final IErlComment comment2 = iterator.next();
-        assertEquals(Kind.COMMENT, comment.getKind());
-        assertEquals(Kind.COMMENT, comment2.getKind());
+        assertEquals(ErlElementKind.COMMENT, comment.getKind());
+        assertEquals(ErlElementKind.COMMENT, comment2.getKind());
     }
 
     @Test
     public void functionSpecIsComment() throws Exception {
         final List<IErlElement> functions = module4
-                .getChildrenOfKind(Kind.FUNCTION);
+                .getChildrenOfKind(ErlElementKind.FUNCTION);
         final IErlFunction fn = (IErlFunction) functions.get(0);
         final Iterator<IErlMember> iterator = fn.getComments().iterator();
         final IErlMember comment1 = iterator.next();
@@ -81,7 +81,7 @@ public class IErlCommentTests extends ErlModelTestBase {
     @Test
     public void functionSpecIsComment2() throws Exception {
         final List<IErlElement> functions = module5
-                .getChildrenOfKind(Kind.FUNCTION);
+                .getChildrenOfKind(ErlElementKind.FUNCTION);
         IErlFunction fn = (IErlFunction) functions.get(0);
         Iterator<IErlMember> iterator = fn.getComments().iterator();
         IErlMember comment1 = iterator.next();

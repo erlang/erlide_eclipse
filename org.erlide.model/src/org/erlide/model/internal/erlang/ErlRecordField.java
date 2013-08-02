@@ -3,6 +3,7 @@ package org.erlide.model.internal.erlang;
 import org.erlide.model.erlang.IErlRecordDef;
 import org.erlide.model.erlang.IErlRecordField;
 import org.erlide.model.internal.root.ErlMember;
+import org.erlide.model.root.ErlElementKind;
 
 public class ErlRecordField extends ErlMember implements IErlRecordField {
 
@@ -16,8 +17,8 @@ public class ErlRecordField extends ErlMember implements IErlRecordField {
     }
 
     @Override
-    public Kind getKind() {
-        return Kind.RECORD_FIELD;
+    public ErlElementKind getKind() {
+        return ErlElementKind.RECORD_FIELD;
     }
 
     @Override

@@ -22,10 +22,10 @@ import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.erlang.IErlTypespec;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
@@ -194,12 +194,12 @@ public class ModelUtilsTests {
         module.open(null);
         project.open(null);
         final IErlPreprocessorDef preprocessorDef1 = ModelUtils
-                .findPreprocessorDef(module, "rec1", Kind.RECORD_DEF);
+                .findPreprocessorDef(module, "rec1", ErlElementKind.RECORD_DEF);
         final IErlPreprocessorDef preprocessorDef2 = ModelUtils
-                .findPreprocessorDef(include, "rec1", Kind.RECORD_DEF);
+                .findPreprocessorDef(include, "rec1", ErlElementKind.RECORD_DEF);
         final IErlPreprocessorDef preprocessorDef3 = ModelUtils
                 .findPreprocessorDef(Arrays.asList(projects), "f.erl", "rec2",
-                        Kind.RECORD_DEF);
+                        ErlElementKind.RECORD_DEF);
         // then
         // the record should be returned
         assertNotNull(module);
@@ -226,7 +226,7 @@ public class ModelUtilsTests {
         // when
         // looking for the record
         final IErlPreprocessorDef preprocessorDef = ModelUtils
-                .findPreprocessorDef(module, "file_info", Kind.RECORD_DEF);
+                .findPreprocessorDef(module, "file_info", ErlElementKind.RECORD_DEF);
         // then
         // the record should be returned
         assertNotNull(module);
@@ -251,9 +251,9 @@ public class ModelUtilsTests {
                                 + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
         module.open(null);
         final List<IErlPreprocessorDef> macrodDefs = ModelUtils
-                .getAllPreprocessorDefs(module, Kind.MACRO_DEF);
+                .getAllPreprocessorDefs(module, ErlElementKind.MACRO_DEF);
         final List<IErlPreprocessorDef> recordDefs = ModelUtils
-                .getAllPreprocessorDefs(module, Kind.RECORD_DEF);
+                .getAllPreprocessorDefs(module, ErlElementKind.RECORD_DEF);
         assertEquals(2, macrodDefs.size());
         assertEquals(3, recordDefs.size());
     }
@@ -466,11 +466,11 @@ public class ModelUtilsTests {
             // when
             // looking for the record def
             final IErlPreprocessorDef preprocessorDef = ModelUtils
-                    .findPreprocessorDef(module, "rec2", Kind.RECORD_DEF);
+                    .findPreprocessorDef(module, "rec2", ErlElementKind.RECORD_DEF);
             final Collection<IErlProject> myprojects = Lists
                     .newArrayList(project);
             ModelUtils.findPreprocessorDef(myprojects, "a.erl", "rec2",
-                    Kind.RECORD_DEF);
+                    ErlElementKind.RECORD_DEF);
             // then
             // it should be found
             assertNotNull(preprocessorDef);
@@ -510,11 +510,11 @@ public class ModelUtilsTests {
             // when
             // looking for the record def
             final IErlPreprocessorDef preprocessorDef = ModelUtils
-                    .findPreprocessorDef(module, "rec2", Kind.RECORD_DEF);
+                    .findPreprocessorDef(module, "rec2", ErlElementKind.RECORD_DEF);
             final Collection<IErlProject> myprojects = Lists
                     .newArrayList(project);
             ModelUtils.findPreprocessorDef(myprojects, "a.erl", "rec2",
-                    Kind.RECORD_DEF);
+                    ErlElementKind.RECORD_DEF);
             // then
             // it should be found
             assertNotNull(preprocessorDef);
@@ -560,11 +560,11 @@ public class ModelUtilsTests {
             // when
             // looking for the record def
             final IErlPreprocessorDef preprocessorDef = ModelUtils
-                    .findPreprocessorDef(module, "rec2", Kind.RECORD_DEF);
+                    .findPreprocessorDef(module, "rec2", ErlElementKind.RECORD_DEF);
             final Collection<IErlProject> myprojects = Lists
                     .newArrayList(project);
             ModelUtils.findPreprocessorDef(myprojects, "a.erl", "rec2",
-                    Kind.RECORD_DEF);
+                    ErlElementKind.RECORD_DEF);
             // then
             // it should be found
             assertNotNull(preprocessorDef);

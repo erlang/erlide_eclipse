@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import java.util.List;
 
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
+import org.erlide.model.root.ErlElementKind;
 import org.junit.Test;
 
 public class IErlExportTests extends ErlModelTestBase2 {
@@ -15,7 +15,7 @@ public class IErlExportTests extends ErlModelTestBase2 {
     public void hasFunction() throws Exception {
         module.open(null);
         final List<IErlElement> childrenOfKind = module2
-                .getChildrenOfKind(Kind.EXPORT);
+                .getChildrenOfKind(ErlElementKind.EXPORT);
         final IErlElement element = childrenOfKind.get(0);
         final IErlExport export = (IErlExport) element;
         assertTrue(export.hasFunction(functionA.getFunction()));

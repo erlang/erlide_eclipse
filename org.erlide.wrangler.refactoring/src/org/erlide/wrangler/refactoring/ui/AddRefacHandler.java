@@ -24,8 +24,8 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.backend.UserRefactoringsManager;
@@ -117,7 +117,7 @@ public class AddRefacHandler extends AbstractHandler {
             }
 
             for (final IErlElement el : module
-                    .getChildrenOfKind(Kind.ATTRIBUTE)) {
+                    .getChildrenOfKind(ErlElementKind.ATTRIBUTE)) {
                 final IErlAttribute attr = (IErlAttribute) el;
                 if (attr.getName().equals("behaviour")
                         || attr.getName().equals("behavior")) {

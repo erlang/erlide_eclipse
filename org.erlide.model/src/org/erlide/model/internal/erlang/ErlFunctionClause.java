@@ -18,6 +18,7 @@ import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.internal.root.ErlMember;
 import org.erlide.model.root.IErlElement;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -49,8 +50,8 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
     }
 
     @Override
-    public Kind getKind() {
-        return Kind.CLAUSE;
+    public ErlElementKind getKind() {
+        return ErlElementKind.CLAUSE;
     }
 
     /**

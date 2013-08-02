@@ -6,8 +6,8 @@ import java.io.File;
 import java.util.List;
 
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlExternal;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -51,7 +51,7 @@ public class IErlExternalTests extends ErlModelTestBase {
     @Test
     public void isOTP() throws Exception {
         final List<IErlElement> externals = project
-                .getChildrenOfKind(Kind.EXTERNAL);
+                .getChildrenOfKind(ErlElementKind.EXTERNAL);
         final IErlExternal external = (IErlExternal) externals.get(0);
         external.open(null);
         final IErlExternal external2 = (IErlExternal) externals.get(1);
@@ -70,7 +70,7 @@ public class IErlExternalTests extends ErlModelTestBase {
     @Test
     public void hasIncludes() throws Exception {
         final List<IErlElement> externals = project
-                .getChildrenOfKind(Kind.EXTERNAL);
+                .getChildrenOfKind(ErlElementKind.EXTERNAL);
         final IErlExternal external = (IErlExternal) externals.get(0);
         external.open(null);
         final IErlExternal externalOTP = (IErlExternal) externals.get(1);

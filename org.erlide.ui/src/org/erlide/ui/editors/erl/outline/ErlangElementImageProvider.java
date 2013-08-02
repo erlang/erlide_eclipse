@@ -21,9 +21,9 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlFolder;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.ImageDescriptorRegistry;
@@ -199,7 +199,7 @@ public class ErlangElementImageProvider {
         return getImageDescriptionFromKind(element.getKind());
     }
 
-    public static ImageDescriptor getImageDescriptionFromKind(final Kind kind) {
+    public static ImageDescriptor getImageDescriptionFromKind(final ErlElementKind kind) {
         ErlideImage result = ErlideImage.UNKNOWN;
         switch (kind) {
         case ATTRIBUTE:

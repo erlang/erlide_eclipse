@@ -1,7 +1,7 @@
 package org.erlide.ui.internal.search;
 
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlElement.Kind;
+import org.erlide.model.root.ErlElementKind;
 
 public class ErlangSearchElement {
 
@@ -10,12 +10,12 @@ public class ErlangSearchElement {
     private final int arity;
     private final String arguments;
     private final boolean subClause;
-    private final Kind kind;
+    private final ErlElementKind kind;
     private final IErlModule module;
 
     public ErlangSearchElement(final IErlModule module,
             final String moduleName, final String name, final int arity,
-            final String arguments, final boolean subClause, final Kind kind) {
+            final String arguments, final boolean subClause, final ErlElementKind kind) {
         this.module = module;
         this.moduleName = moduleName;
         this.name = name;
@@ -73,7 +73,7 @@ public class ErlangSearchElement {
         return subClause;
     }
 
-    public Kind getKind() {
+    public ErlElementKind getKind() {
         return kind;
     }
 

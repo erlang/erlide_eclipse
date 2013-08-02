@@ -42,29 +42,6 @@ import org.erlide.util.IDisposable;
  */
 public interface IErlElement extends IAdaptable, IDisposable {
 
-    enum Kind {
-        //@formatter:off
-        PROBLEM,
-        MODEL,
-        PROJECT,
-        MODULE,
-        ATTRIBUTE,
-        FUNCTION,
-        CLAUSE,
-        EXPORT,
-        IMPORT,
-        EXPORTFUNCTION,
-        HEADERCOMMENT,
-        COMMENT,
-        RECORD_DEF,
-        MACRO_DEF,
-        FOLDER,
-        TYPESPEC,
-        EXTERNAL,
-        RECORD_FIELD
-        //@formatter:on
-    }
-
     /**
      * Returns whether this Erlang element exists in the model.
      * <p>
@@ -92,7 +69,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
      * @return the first ancestor of this Erlang element that has the given
      *         kind, null if no such an ancestor can be found
      */
-    IErlElement getAncestorOfKind(Kind kind);
+    IErlElement getAncestorOfKind(ErlElementKind kind);
 
     /**
      * Returns the resource that corresponds directly to this element, or
@@ -125,7 +102,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
      *         <code>IErlElement</code>
      * @see IErlElement
      */
-    Kind getKind();
+    ErlElementKind getKind();
 
     /**
      * Returns the element directly containing this element, or
@@ -214,7 +191,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
      * @throws ErlModelException
      */
     void accept(IErlElementVisitor visitor, Set<AcceptFlags> flags,
-            IErlElement.Kind leafKind) throws ErlModelException;
+            ErlElementKind leafKind) throws ErlModelException;
 
     // TODO StyledString? but this needs jface-stuff, which we don't want in a
     // non-ui class, probably we should get rid of this one and put everything

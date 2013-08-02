@@ -36,10 +36,10 @@ import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.internal.erlang.ModelInternalUtils;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ErlangFunction;
@@ -243,14 +243,14 @@ public class OpenAction extends SelectionDispatchAction {
             found = ModelInternalUtils.findVariable(backend, range,
                     openResult.getName(), elementText);
         } else if (openResult.isRecord() || openResult.isMacro()) {
-            final Kind kind = openResult.isMacro() ? Kind.MACRO_DEF
-                    : Kind.RECORD_DEF;
+            final ErlElementKind kind = openResult.isMacro() ? ErlElementKind.MACRO_DEF
+                    : ErlElementKind.RECORD_DEF;
             found = ModelUtils.findPreprocessorDef(module,
                     openResult.getName(), kind);
         } else if (openResult.isField()) {
             final IErlRecordDef def = (IErlRecordDef) ModelUtils
                     .findPreprocessorDef(module, openResult.getFun(),
-                            Kind.RECORD_DEF);
+                            ErlElementKind.RECORD_DEF);
             if (def != null) {
                 found = def.getFieldNamed(openResult.getName());
             }
@@ -261,10 +261,10 @@ public class OpenAction extends SelectionDispatchAction {
     public static boolean isTypeDefOrRecordDef(final IErlElement element,
             final OpenResult res) {
         if (element != null) {
-            if (element.getKind() == IErlElement.Kind.RECORD_DEF) {
+            if (element.getKind() == ErlElementKind.RECORD_DEF) {
                 return true;
             }
-            if (element.getKind() == IErlElement.Kind.TYPESPEC) {
+            if (element.getKind() == ErlElementKind.TYPESPEC) {
                 if (!res.getFun().equals(element.getName())) {
                     return true;
                 }

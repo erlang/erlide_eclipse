@@ -42,6 +42,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.erlide.model.ErlModelException;
+import org.erlide.model.ErlModelStatus;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
 import org.erlide.model.ModelPlugin;
@@ -51,6 +52,7 @@ import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlParser;
 import org.erlide.model.internal.erlang.ErlModule;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementDelta;
 import org.erlide.model.root.IErlElementLocator;
@@ -168,8 +170,8 @@ public class ErlModel extends Openable implements IErlModel {
      * @see IErlElement
      */
     @Override
-    public Kind getKind() {
-        return Kind.MODEL;
+    public ErlElementKind getKind() {
+        return ErlElementKind.MODEL;
     }
 
     /**
@@ -204,7 +206,7 @@ public class ErlModel extends Openable implements IErlModel {
      */
     @Override
     public Collection<IErlProject> getErlangProjects() throws ErlModelException {
-        final Collection<IErlElement> list = getChildrenOfKind(Kind.PROJECT);
+        final Collection<IErlElement> list = getChildrenOfKind(ErlElementKind.PROJECT);
         final Collection<IErlProject> result = Lists.newArrayList();
         for (final IErlElement e : list) {
             result.add((IErlProject) e);
@@ -388,7 +390,7 @@ public class ErlModel extends Openable implements IErlModel {
             }
             return findProject(project);
         } catch (final CoreException e) {
-            throw new ErlModelException(e);
+            throw new ErlModelException(e, new ErlModelStatus(e));
         }
     }
 

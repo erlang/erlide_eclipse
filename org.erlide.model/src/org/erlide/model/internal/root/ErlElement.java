@@ -30,6 +30,7 @@ import org.erlide.model.IParent;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementVisitor;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.util.StringUtils;
 
 import com.google.common.base.Objects;
@@ -132,7 +133,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * @see IErlElement
      */
     @Override
-    public IErlElement getAncestorOfKind(final Kind kind) {
+    public IErlElement getAncestorOfKind(final ErlElementKind kind) {
         IErlElement element = this;
         while (true) {
             if (element.getKind() == kind) {
@@ -223,7 +224,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     @Override
-    public boolean hasChildrenOfKind(final Kind kind) {
+    public boolean hasChildrenOfKind(final ErlElementKind kind) {
         synchronized (getModelLock()) {
             for (final IErlElement child : internalGetChildren()) {
                 if (child.getKind() == kind) {
@@ -418,7 +419,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      *            - one of the constants defined by IErlElement
      */
     @Override
-    public List<IErlElement> getChildrenOfKind(final Kind kind)
+    public List<IErlElement> getChildrenOfKind(final ErlElementKind kind)
             throws ErlModelException {
         final List<IErlElement> result = Lists.newArrayList();
         synchronized (getModelLock()) {
@@ -534,7 +535,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     @Override
     public final void accept(final IErlElementVisitor visitor,
-            final Set<AcceptFlags> flags, final IErlElement.Kind leafKind)
+            final Set<AcceptFlags> flags, final ErlElementKind leafKind)
             throws ErlModelException {
         synchronized (getModelLock()) {
             internalAccept(visitor, flags, leafKind);
@@ -542,7 +543,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     private final void internalAccept(final IErlElementVisitor visitor,
-            final Set<AcceptFlags> flags, final IErlElement.Kind leafKind)
+            final Set<AcceptFlags> flags, final ErlElementKind leafKind)
             throws ErlModelException {
         if (getKind() == leafKind) {
             visitor.visit(this);

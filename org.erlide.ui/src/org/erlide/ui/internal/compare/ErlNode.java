@@ -21,7 +21,7 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.ErlLogger;
@@ -33,10 +33,10 @@ import org.erlide.util.ErlLogger;
 class ErlNode extends DocumentRangeNode implements ITypedElement {
 
     private final ErlNode fParent;
-    private final Kind kind;
+    private final ErlElementKind kind;
     private final String name;
 
-    private ErlNode(final ErlNode parent, final Kind kind, final String name,
+    private ErlNode(final ErlNode parent, final ErlElementKind kind, final String name,
             final String id, final IDocument doc, final int start,
             final int length) {
         super(kind.hashCode(), id, doc, start, length);
@@ -67,9 +67,9 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
     }
 
     public ErlNode(final IDocument doc) {
-        super(Kind.MODEL.hashCode(), "<root>", doc, 0, doc.getLength());
+        super(ErlElementKind.MODEL.hashCode(), "<root>", doc, 0, doc.getLength());
         fParent = null;
-        kind = Kind.MODEL;
+        kind = ErlElementKind.MODEL;
         name = "<root>";
     }
 
@@ -108,7 +108,7 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
     /**
      * @see ITypedInput#getNodeType
      */
-    public Kind getNodeType() {
+    public ErlElementKind getNodeType() {
         return kind;
     }
 

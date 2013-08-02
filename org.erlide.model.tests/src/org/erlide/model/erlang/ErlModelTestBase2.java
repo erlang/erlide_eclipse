@@ -3,7 +3,7 @@ package org.erlide.model.erlang;
 import java.util.List;
 
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Before;
 
@@ -27,7 +27,7 @@ public class ErlModelTestBase2 extends ErlModelTestBase {
                         + "c(A, B, C) ->\n    {c, A, B, C}.\n");
         module2.open(null);
         final List<IErlElement> functions = module2
-                .getChildrenOfKind(Kind.FUNCTION);
+                .getChildrenOfKind(ErlElementKind.FUNCTION);
         functionA = (IErlFunction) functions.get(0);
         functionB = (IErlFunction) functions.get(1);
         functionC = (IErlFunction) functions.get(2);

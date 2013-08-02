@@ -58,6 +58,7 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlModelMarker;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.root.IErlangProjectProperties;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.util.CommonUtils;
@@ -379,8 +380,8 @@ public class ErlProject extends Openable implements IErlProject {
      * @see IErlElement
      */
     @Override
-    public Kind getKind() {
-        return Kind.PROJECT;
+    public ErlElementKind getKind() {
+        return ErlElementKind.PROJECT;
     }
 
     /**
@@ -485,7 +486,7 @@ public class ErlProject extends Openable implements IErlProject {
                 final IErlFolder erlFolder = (IErlFolder) element;
                 erlFolder.open(null);
                 for (final IErlElement e : erlFolder
-                        .getChildrenOfKind(Kind.MODULE)) {
+                        .getChildrenOfKind(ErlElementKind.MODULE)) {
                     if (e instanceof IErlModule) {
                         final IErlModule m = (IErlModule) e;
                         final boolean isModule = ModuleKind.nameToModuleKind(m
@@ -646,8 +647,8 @@ public class ErlProject extends Openable implements IErlProject {
             @Override
             public boolean visit(final IErlElement element)
                     throws ErlModelException {
-                final boolean isExternalOrProject = element.getKind() == Kind.EXTERNAL
-                        || element.getKind() == Kind.PROJECT;
+                final boolean isExternalOrProject = element.getKind() == ErlElementKind.EXTERNAL
+                        || element.getKind() == ErlElementKind.PROJECT;
                 if (element instanceof IErlModule) {
                     final IErlModule module = (IErlModule) element;
                     result.add(module);
@@ -660,7 +661,7 @@ public class ErlProject extends Openable implements IErlProject {
                 }
                 return isExternalOrProject;
             }
-        }, EnumSet.noneOf(AcceptFlags.class), Kind.MODULE);
+        }, EnumSet.noneOf(AcceptFlags.class), ErlElementKind.MODULE);
         return result;
     }
 
@@ -888,8 +889,8 @@ public class ErlProject extends Openable implements IErlProject {
             @Override
             public boolean visit(final IErlElement element)
                     throws ErlModelException {
-                final boolean isExternalOrProject = element.getKind() == Kind.EXTERNAL
-                        || element.getKind() == Kind.PROJECT;
+                final boolean isExternalOrProject = element.getKind() == ErlElementKind.EXTERNAL
+                        || element.getKind() == ErlElementKind.PROJECT;
                 if (element instanceof IErlModule) {
                     final IErlModule module = (IErlModule) element;
                     result.add(module);
@@ -909,7 +910,7 @@ public class ErlProject extends Openable implements IErlProject {
                 }
                 return false;
             }
-        }, EnumSet.noneOf(AcceptFlags.class), Kind.MODULE);
+        }, EnumSet.noneOf(AcceptFlags.class), ErlElementKind.MODULE);
         return result;
     }
 
@@ -938,7 +939,7 @@ public class ErlProject extends Openable implements IErlProject {
                     return false;
                 }
             }, EnumSet.of(AcceptFlags.CHILDREN_FIRST, AcceptFlags.LEAFS_ONLY),
-                    Kind.MODULE);
+                    ErlElementKind.MODULE);
         } catch (final ErlModelException e) {
         }
         super.dispose();
