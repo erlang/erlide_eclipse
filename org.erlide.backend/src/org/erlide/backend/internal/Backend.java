@@ -36,6 +36,7 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
+import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.jdt.annotation.NonNull;
@@ -45,9 +46,9 @@ import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.console.BackendShellManager;
-import org.erlide.launch.debug.ErlideDebug;
-import org.erlide.launch.debug.model.ErlangDebugNode;
-import org.erlide.launch.debug.model.ErlangDebugTarget;
+import org.erlide.backend.debug.ErlideDebug;
+import org.erlide.backend.debug.model.ErlangDebugNode;
+import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.ErlDebugFlags;
@@ -377,9 +378,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         final OtpErlangList nodes = ErlideDebug.nodes(getRpcSite());
         if (nodes != null) {
             for (int i = 1, n = nodes.arity(); i < n; ++i) {
-                final OtpErlangAtom o = (OtpErlangAtom) nodes.elementAt(i);
-                final OtpErlangAtom a = o;
-                final ErlangDebugNode edn = new ErlangDebugNode(target,
+                final OtpErlangAtom a = (OtpErlangAtom) nodes.elementAt(i);
+                final IDebugTarget edn = new ErlangDebugNode(target,
                         a.atomValue());
                 aLaunch.addDebugTarget(edn);
             }

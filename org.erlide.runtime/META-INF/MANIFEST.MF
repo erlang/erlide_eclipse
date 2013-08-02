@@ -7,7 +7,8 @@ Bundle-Vendor: erlide.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.erlide.libs;bundle-version="1.10.2",
  org.erlide.util;bundle-version="0.19.0"
-Export-Package: org.erlide.runtime.api,
+Export-Package: org.erlide.runtime,
+ org.erlide.runtime.api,
  org.erlide.runtime.epmd,
  org.erlide.runtime.events,
  org.erlide.runtime.internal;x-internal:=true,

@@ -7,7 +7,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.erlide.launch.debug.model.ErlangDebugElement;
+import org.erlide.backend.debug.model.ErlangDebugElement;
 
 public class ErlangTracingAction implements IWorkbenchWindowActionDelegate {
 
