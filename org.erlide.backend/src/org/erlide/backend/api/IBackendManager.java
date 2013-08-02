@@ -49,7 +49,7 @@ public interface IBackendManager {
 
     IRpcSite getByVersion(RuntimeVersion version);
 
-    IRpcSite getByProject(IProject project);
+    IRpcSite getByProject(String projectName);
 
     void loadCodepathExtensions();
 

@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -345,8 +346,10 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public IRpcSite getByProject(final IProject project) {
+    public IRpcSite getByProject(final String projectName) {
         try {
+            final IProject project = ResourcesPlugin.getWorkspace().getRoot()
+                    .getProject(projectName);
             final IBackend backend = getBuildBackend(project);
             if (backend == null) {
                 ErlLogger.debug("Could not find backend for project %S",
