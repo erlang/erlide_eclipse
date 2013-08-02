@@ -16,7 +16,7 @@ import java.net.Socket;
 import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.IRuntimeStateListener;
+import org.erlide.runtime.api.IShutdownCallback;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangLogEventHandler;
@@ -52,7 +52,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     private OtpNode localNode;
     final ErlRuntimeReporter reporter;
     private OtpMbox eventMBox;
-    private IRuntimeStateListener listener;
+    private IShutdownCallback callback;
     private ErlSystemStatus lastSystemMessage;
     private IRpcSite rpcSite;
     private final EventBus eventBus;
@@ -97,10 +97,10 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     protected void shutDown() throws Exception {
         localNode.close();
 
-        if (listener != null) {
-            listener.runtimeDown(ErlRuntime.this);
+        if (callback != null) {
+            callback.run();
         }
-        listener = null;
+        callback = null;
         rpcSite.setConnected(false);
     }
 
@@ -171,8 +171,8 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     }
 
     @Override
-    public void addListener(final IRuntimeStateListener aListener) {
-        listener = aListener;
+    public void addShutdownCallback(final IShutdownCallback aCallback) {
+        callback = aCallback;
     }
 
     @Override

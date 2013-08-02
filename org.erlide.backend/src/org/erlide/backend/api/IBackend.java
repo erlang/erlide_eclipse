@@ -6,12 +6,12 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.IRuntimeStateListener;
+import org.erlide.runtime.api.IShutdownCallback;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.IDisposable;
 
-public interface IBackend extends IRuntimeStateListener, IDisposable {
+public interface IBackend extends IShutdownCallback, IDisposable {
 
     String getName();
 

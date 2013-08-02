@@ -3,7 +3,7 @@ package org.erlide.runtime.internal;
 import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.IRuntimeStateListener;
+import org.erlide.runtime.api.IShutdownCallback;
 import org.erlide.runtime.api.NoRuntimeEvent;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.util.ErlideEventBus;
@@ -54,7 +54,7 @@ public class NullErlRuntime implements IErlRuntime {
     }
 
     @Override
-    public void addListener(final IRuntimeStateListener listener) {
+    public void addShutdownCallback(final IShutdownCallback callback) {
         reportNoBackend();
     }
 

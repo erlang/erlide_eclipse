@@ -33,7 +33,7 @@ public interface IErlRuntime extends IDisposable {
 
     OtpMbox getEventMbox();
 
-    void addListener(IRuntimeStateListener listener);
+    void addShutdownCallback(IShutdownCallback callback);
 
     ErlSystemStatus getSystemStatus();
 

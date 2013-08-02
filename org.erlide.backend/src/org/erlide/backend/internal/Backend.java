@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.erlide.backend.internal;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.io.File;
 import java.io.IOException;
@@ -490,7 +492,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void initialize() {
-        runtime.addListener(this);
+        runtime.addShutdownCallback(this);
         shellManager = new BackendShellManager(this);
         for (final ICodeBundle bb : backendManager.getCodeBundles().values()) {
             registerCodeBundle(bb);
@@ -522,6 +524,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void runtimeDown(final IErlRuntime aRuntime) {
+    public void run() {
     }
 }
