@@ -56,7 +56,7 @@ public class TermParser {
 
     private static OtpErlangObject parse(final List<Token> tokens)
             throws TermParserException {
-        if (tokens.size() == 0) {
+        if (tokens.isEmpty()) {
             return null;
         }
         OtpErlangObject result = null;
@@ -98,15 +98,15 @@ public class TermParser {
     private static OtpErlangObject parseList(final List<Token> tokens,
             final Stack<OtpErlangObject> stack, final OtpErlangObject tail)
             throws TermParserException {
-        if (tokens.size() == 0) {
+        if (tokens.isEmpty()) {
             return null;
         }
         final Token t = tokens.get(0);
         if (t.kind == TokenKind.LISTEND) {
             tokens.remove(0);
             try {
-                return new OtpErlangList(stack.toArray(new OtpErlangObject[0]),
-                        tail);
+                return new OtpErlangList(
+                        stack.toArray(new OtpErlangObject[stack.size()]), tail);
             } catch (final OtpErlangException e) {
                 e.printStackTrace();
                 // can't happen
@@ -129,13 +129,14 @@ public class TermParser {
 
     private static OtpErlangObject parseTuple(final List<Token> tokens,
             final Stack<OtpErlangObject> stack) throws TermParserException {
-        if (tokens.size() == 0) {
+        if (tokens.isEmpty()) {
             return null;
         }
         final Token t = tokens.get(0);
         if (t.kind == TokenKind.TUPLEEND) {
             tokens.remove(0);
-            return new OtpErlangTuple(stack.toArray(new OtpErlangObject[0]));
+            return new OtpErlangTuple(stack.toArray(new OtpErlangObject[stack
+                    .size()]));
         } else {
             if (t.kind == TokenKind.CONS) {
                 throw new TermParserException("cons is invalid in tuple");

@@ -66,7 +66,7 @@ public class ErlPatternMatchListenerDelegate implements
                 }
             }
             IFile file = null;
-            if (res != null && res instanceof IFile) {
+            if (res instanceof IFile) {
                 file = (IFile) res;
             }
             final IHyperlink link = new FileLink(file, null, -1, -1,

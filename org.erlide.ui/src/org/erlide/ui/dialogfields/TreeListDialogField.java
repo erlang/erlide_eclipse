@@ -641,7 +641,7 @@ public class TreeListDialogField extends DialogField {
      * Adds an element at a position.
      */
     public void removeAllElements() {
-        if (fElements.size() > 0) {
+        if (!fElements.isEmpty()) {
             fElements.clear();
             refresh();
             dialogFieldChanged();
@@ -666,7 +666,7 @@ public class TreeListDialogField extends DialogField {
      * Removes elements from the list.
      */
     public void removeElements(final List<Object> elements) {
-        if (elements.size() > 0) {
+        if (!elements.isEmpty()) {
             fElements.removeAll(elements);
             if (isOkToUse(fTreeControl)) {
                 fTree.remove(elements.toArray());
@@ -698,7 +698,7 @@ public class TreeListDialogField extends DialogField {
                 element = arr[0];
             }
         } else {
-            if (fElements.size() > 0) {
+            if (!fElements.isEmpty()) {
                 element = fElements.get(0);
             }
         }
@@ -767,14 +767,14 @@ public class TreeListDialogField extends DialogField {
     }
 
     private void moveUp(final List<Object> toMoveUp) {
-        if (toMoveUp.size() > 0) {
+        if (!toMoveUp.isEmpty()) {
             setElements(moveUp(fElements, toMoveUp));
             fTree.reveal(toMoveUp.get(0));
         }
     }
 
     private void moveDown(final List<Object> toMoveDown) {
-        if (toMoveDown.size() > 0) {
+        if (!toMoveDown.isEmpty()) {
             setElements(reverse(moveUp(reverse(fElements), toMoveDown)));
             fTree.reveal(toMoveDown.get(toMoveDown.size() - 1));
         }

@@ -35,11 +35,11 @@ import org.erlide.model.erlang.IErlRecordDef;
 import org.erlide.model.erlang.IErlRecordField;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.services.codeassist.ErlideContextAssist;
 import org.erlide.model.services.codeassist.ErlideContextAssist.RecordCompletion;
 import org.erlide.model.services.search.ErlideDoc;
@@ -305,7 +305,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                 result.addAll(Arrays.asList(t.computeCompletionProposals(
                         viewer, offset)));
                 oldSuggestions = result.size();
-                if (result.size() == 0) {
+                if (result.isEmpty()) {
                     ErlLogger.debug("no results");
                     return getNoCompletion(offset);
                 } else {
@@ -332,8 +332,8 @@ public abstract class AbstractErlContentAssistProcessor implements
             final int offset, final String prefix, final String moduleOrRecord,
             final int pos, final List<String> fieldsSoFar)
             throws CoreException, OtpErlangRangeException, BadLocationException {
-        final IProject workspaceProject = project != null ? project
-                .getWorkspaceProject() : null;
+        final IProject workspaceProject = project == null ? null : project
+                .getWorkspaceProject();
         final IRpcSite backend = BackendCore.getBuildOrIdeBackend(
                 workspaceProject).getRpcSite();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
@@ -706,7 +706,7 @@ public abstract class AbstractErlContentAssistProcessor implements
             final String docStr, final String funWithParameters,
             final List<Point> offsetsAndLengths) {
         int cursorPosition = funWithParameters.length();
-        if (offsetsAndLengths.size() > 0) {
+        if (!offsetsAndLengths.isEmpty()) {
             cursorPosition = offsetsAndLengths.get(0).x;
         }
 
@@ -804,8 +804,8 @@ public abstract class AbstractErlContentAssistProcessor implements
             String funWithParameters = arityOnly ? funWithArity
                     : getNameWithParameters(function.name, parameterNames);
             funWithParameters = funWithParameters.substring(prefix.length());
-            final String htmlComment = comments != null ? HTMLPrinter
-                    .asHtml(HoverUtil.getDocumentationString(comments)) : "";
+            final String htmlComment = comments == null ? "" : HTMLPrinter
+                    .asHtml(HoverUtil.getDocumentationString(comments));
             addFunctionCompletion(offset, result, funWithArity, htmlComment,
                     funWithParameters, offsetsAndLengths);
         }

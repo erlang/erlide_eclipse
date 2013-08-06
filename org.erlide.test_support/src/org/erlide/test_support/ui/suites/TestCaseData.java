@@ -2,6 +2,7 @@ package org.erlide.test_support.ui.suites;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.Bindings;
@@ -87,7 +88,7 @@ public class TestCaseData {
         }
 
         public FailStackItem getFirstStackItem() {
-            if (items.size() == 0) {
+            if (items.isEmpty()) {
                 try {
                     return new FailStackItem(TermParser.getParser().parse(
                             "{unknown,unknown,0}"));
@@ -177,7 +178,7 @@ public class TestCaseData {
         failLocations = new FailLocations(locations);
     }
 
-    static final ArrayList<OtpErlangObject> NO_STACK = new ArrayList<OtpErlangObject>();
+    static final List<OtpErlangObject> NO_STACK = new ArrayList<OtpErlangObject>();
 
     private FailReason parseReason(final OtpErlangObject reason) {
         Bindings b;

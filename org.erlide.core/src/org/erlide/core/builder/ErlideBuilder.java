@@ -217,7 +217,7 @@ public class ErlideBuilder {
                         .newArrayList(results.entrySet());
 
                 // TODO should use some kind of notification!
-                while (waiting.size() > 0) {
+                while (!waiting.isEmpty()) {
                     for (final Entry<IRpcFuture, IResource> result : waiting) {
                         notifier.checkCancel();
                         OtpErlangObject r;

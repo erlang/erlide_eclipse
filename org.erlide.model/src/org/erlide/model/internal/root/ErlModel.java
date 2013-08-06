@@ -90,7 +90,7 @@ import com.google.common.collect.Sets;
  */
 public class ErlModel extends Openable implements IErlModel {
 
-    private final ArrayList<IErlModelChangeListener> fListeners = new ArrayList<IErlModelChangeListener>(
+    private final List<IErlModelChangeListener> fListeners = new ArrayList<IErlModelChangeListener>(
             5);
 
     private final IPathVariableChangeListener fPathVariableChangeListener;

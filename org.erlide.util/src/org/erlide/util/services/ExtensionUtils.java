@@ -14,7 +14,7 @@ import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
 
-public class ExtensionUtils {
+public final class ExtensionUtils {
 
     /**
      * Get an executable extension that has only one implementor. We do no hard

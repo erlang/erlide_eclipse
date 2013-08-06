@@ -13,6 +13,7 @@ package org.erlide.ui.console;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -104,7 +105,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     private SourceViewer consoleInputViewer;
     private IBackendShell shell;
     protected Map<String, IAction> fGlobalActions = new HashMap<String, IAction>();
-    protected ArrayList<String> fSelectionActions = new ArrayList<String>();
+    protected List<String> fSelectionActions = new ArrayList<String>();
     // protected ClearOutputAction fClearOutputAction;
     private final ErlangConsole fConsole;
     private IConsoleView fConsoleView;

@@ -11,6 +11,7 @@
 package org.erlide.ui.templates;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateVariable;
@@ -18,7 +19,7 @@ import org.eclipse.jface.text.templates.TemplateVariableResolver;
 
 public class ModuleVariableResolver extends TemplateVariableResolver {
 
-    private static final ArrayList<ModuleVariableResolver> fInstances = new ArrayList<ModuleVariableResolver>();
+    private static final List<ModuleVariableResolver> fInstances = new ArrayList<ModuleVariableResolver>();
 
     private String fModule = "<module_name>";
 

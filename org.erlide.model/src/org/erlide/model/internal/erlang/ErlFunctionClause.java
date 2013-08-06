@@ -17,8 +17,8 @@ import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.internal.root.ErlMember;
-import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.ErlElementKind;
+import org.erlide.model.root.IErlElement;
 import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -36,8 +36,8 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
         this.parameters = getParameters(parameters);
     }
 
-    public static ArrayList<String> getParameters(final OtpErlangList parameters) {
-        final ArrayList<String> pars = new ArrayList<String>(parameters.arity());
+    public static List<String> getParameters(final OtpErlangList parameters) {
+        final List<String> pars = new ArrayList<String>(parameters.arity());
         for (final OtpErlangObject i : parameters) {
             pars.add(Util.stringValue(i));
         }

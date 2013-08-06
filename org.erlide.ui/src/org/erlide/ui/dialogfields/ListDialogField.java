@@ -692,7 +692,7 @@ public class ListDialogField<Element> extends DialogField {
      * Adds an element at a position.
      */
     public void removeAllElements() {
-        if (fElements.size() > 0) {
+        if (!fElements.isEmpty()) {
             fElements.clear();
             if (isOkToUse(fTableControl)) {
                 fTable.refresh();
@@ -719,7 +719,7 @@ public class ListDialogField<Element> extends DialogField {
      * Removes elements from the list.
      */
     public void removeElements(final List<Element> elements) {
-        if (elements.size() > 0) {
+        if (!elements.isEmpty()) {
             fElements.removeAll(elements);
             if (isOkToUse(fTableControl)) {
                 fTable.remove(elements.toArray());
@@ -751,7 +751,7 @@ public class ListDialogField<Element> extends DialogField {
                 element = arr[0];
             }
         } else {
-            if (fElements.size() > 0) {
+            if (!fElements.isEmpty()) {
                 element = fElements.get(0);
             }
         }
@@ -811,14 +811,14 @@ public class ListDialogField<Element> extends DialogField {
     }
 
     private void moveUp(final List<Element> toMoveUp) {
-        if (toMoveUp.size() > 0) {
+        if (!toMoveUp.isEmpty()) {
             setElements(moveUp(fElements, toMoveUp));
             fTable.reveal(toMoveUp.get(0));
         }
     }
 
     private void moveDown(final List<Element> toMoveDown) {
-        if (toMoveDown.size() > 0) {
+        if (!toMoveDown.isEmpty()) {
             setElements(reverse(moveUp(reverse(fElements), toMoveDown)));
             fTable.reveal(toMoveDown.get(toMoveDown.size() - 1));
         }

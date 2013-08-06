@@ -69,7 +69,7 @@ public class ErlangBreakpointPropertiesRulerAction extends
     public void update() {
         fBreakpoint = null;
         final IBreakpoint breakpoint = getBreakpoint();
-        if (breakpoint != null && breakpoint instanceof IErlangBreakpoint) {
+        if (breakpoint instanceof IErlangBreakpoint) {
             fBreakpoint = breakpoint;
         }
         setEnabled(fBreakpoint != null);

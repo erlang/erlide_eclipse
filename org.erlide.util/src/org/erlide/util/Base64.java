@@ -15,7 +15,10 @@ package org.erlide.util;
  * encoded Strings.
  * 
  */
-public class Base64 {
+public final class Base64 {
+
+    private Base64() {
+    }
 
     private static final byte EQUAL_SIGN = (byte) '=';
 

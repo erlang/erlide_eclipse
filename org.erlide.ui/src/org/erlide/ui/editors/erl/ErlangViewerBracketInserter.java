@@ -330,7 +330,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
         }
 
         int kind = ErlToken.KIND_OTHER;
-        if (tokens != null && tokens.size() > 0) {
+        if (tokens != null && !tokens.isEmpty()) {
             kind = tokens.get(0).getKind();
         } else if (str.length() > 0) {
             kind = str.charAt(0);

@@ -3,7 +3,7 @@ package org.erlide.ui.util;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
-public class DisplayUtils {
+public final class DisplayUtils {
 
     public static void asyncExec(final Runnable runnable) {
         final Display display = PlatformUI.getWorkbench().getDisplay();

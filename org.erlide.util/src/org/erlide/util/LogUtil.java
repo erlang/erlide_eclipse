@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
 
-public class LogUtil {
+public final class LogUtil {
 
     public static String getReportFile() {
         final String s = getReportLocation();

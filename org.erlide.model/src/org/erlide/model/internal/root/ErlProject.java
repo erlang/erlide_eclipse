@@ -47,6 +47,7 @@ import org.erlide.model.erlang.ModuleKind;
 import org.erlide.model.internal.erlang.ErlExternalReferenceEntryList;
 import org.erlide.model.internal.erlang.ErlOtpExternalReferenceEntryList;
 import org.erlide.model.internal.root.ErlModel.External;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
@@ -58,7 +59,6 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlModelMarker;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.root.IErlangProjectProperties;
-import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.util.CommonUtils;
@@ -127,7 +127,7 @@ public class ErlProject extends Openable implements IErlProject {
         if (r == null || !r.isAccessible() || !(r instanceof IContainer)) {
             ErlLogger.warn(
                     "Project %s has no resources: res:%s acc:%s cont:%s",
-                    getName(), r, r != null ? r.isAccessible() : "?",
+                    getName(), r, r == null ? "?" : r.isAccessible(),
                     r instanceof IContainer);
             throw new ErlModelException(new ErlModelStatus(
                     ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
@@ -517,12 +517,12 @@ public class ErlProject extends Openable implements IErlProject {
             final List<IErlModule> cached = erlModelCache
                     .getModulesForProject(this);
             final IErlElementLocator model = ErlModelManager.getErlangModel();
-            if (cached != null) {
-                result.addAll(cached);
-            } else {
+            if (cached == null) {
                 final List<IErlModule> modules = getModulesOrIncludes(fProject,
                         model, getSourceDirs(), true);
                 result.addAll(modules);
+            } else {
+                result.addAll(cached);
             }
             final Collection<IErlModule> includes = getIncludes();
             result.addAll(includes);

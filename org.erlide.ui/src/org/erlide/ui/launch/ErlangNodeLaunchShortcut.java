@@ -184,7 +184,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         wc.setAttribute(ErlRuntimeAttributes.COOKIE, "erlide");
         wc.setAttribute("org.eclipse.debug.core.environmentVariables",
                 Maps.newHashMap());
-        if (mode.equals("debug")) {
+        if ("debug".equals(mode)) {
             final List<String> moduleNames = getProjectAndModuleNames(projects);
             wc.setAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES,
                     moduleNames);
@@ -200,7 +200,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         for (final IErlProject project : projects) {
             result.add(project.getResource());
         }
-        return result.toArray(new IResource[0]);
+        return result.toArray(new IResource[result.size()]);
     }
 
     private List<String> getProjectNames(final Collection<IErlProject> projects) {

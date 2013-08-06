@@ -24,16 +24,13 @@ import java.util.logging.Logger;
 
 public class ErlLogger {
 
-    private static ErlLogger instance;
+    private static final ErlLogger instance = new ErlLogger();
     private Logger logger;
     private String logDir;
     private ConsoleHandler consoleHandler = null;
     private FileHandler fileHandler = null;
 
     public static ErlLogger getInstance() {
-        if (instance == null) {
-            instance = new ErlLogger();
-        }
         return instance;
     }
 

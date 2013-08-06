@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IResourceDelta;
 import org.erlide.model.root.ErlModelManager;
@@ -27,7 +28,7 @@ public class ErlModelDeltaManager {
      * Queue of reconcile deltas on working copies that have yet to be fired.
      * This is a table form IWorkingCopy to IErlElementDelta
      */
-    public HashMap<IWorkingCopy, IErlElementDelta> reconcileDeltas;
+    public Map<IWorkingCopy, IErlElementDelta> reconcileDeltas;
     /**
      * Queue of deltas created explicitly by the model that have yet to be
      * fired.
@@ -168,14 +169,11 @@ public class ErlModelDeltaManager {
     IErlElementDelta mergeDeltas(final Collection<IErlElementDelta> deltas) {
 
         synchronized (deltas) {
-            if (deltas.size() == 0) {
+            if (deltas.isEmpty()) {
                 return null;
             }
             if (deltas.size() == 1) {
                 return deltas.iterator().next();
-            }
-            if (deltas.size() <= 1) {
-                return null;
             }
 
             final Iterator<IErlElementDelta> iterator = deltas.iterator();

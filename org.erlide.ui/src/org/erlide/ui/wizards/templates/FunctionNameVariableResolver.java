@@ -15,14 +15,11 @@ import org.eclipse.jface.text.templates.TemplateVariableResolver;
 
 public class FunctionNameVariableResolver extends TemplateVariableResolver {
 
-    private static FunctionNameVariableResolver fInstance;
+    private static final FunctionNameVariableResolver fInstance = new FunctionNameVariableResolver();
 
     private String fFunctionName;
 
     public static FunctionNameVariableResolver getDefault() {
-        if (fInstance == null) {
-            fInstance = new FunctionNameVariableResolver();
-        }
         return fInstance;
     }
 

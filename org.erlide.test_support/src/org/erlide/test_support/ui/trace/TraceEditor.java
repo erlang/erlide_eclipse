@@ -112,7 +112,7 @@ public class TraceEditor extends TextEditor {
 
                 try {
                     final String cmd = lineStr.substring(26, 32);
-                    if (cmd.equals("return")) {
+                    if ("return".equals(cmd)) {
                         String ref = lineStr.substring(34,
                                 lineStr.indexOf(" ->"));
                         ref = ref.substring(0, ref.length() - 2);
@@ -128,7 +128,7 @@ public class TraceEditor extends TextEditor {
                                 break;
                             }
                         }
-                    } else if (cmd.equals("  call")) {
+                    } else if ("  call".equals(cmd)) {
                         final String ref = lineStr.substring(34,
                                 lineStr.indexOf('('));
                         // find return after it

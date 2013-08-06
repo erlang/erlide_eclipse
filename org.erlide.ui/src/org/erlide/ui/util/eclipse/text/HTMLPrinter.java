@@ -37,7 +37,7 @@ import com.google.common.base.Charsets;
  * <code>org.eclipse.jface.internal.text.revisions</code>.
  * </p>
  */
-public class HTMLPrinter {
+public final class HTMLPrinter {
 
     static RGB BG_COLOR_RGB = new RGB(255, 255, 225);
     static RGB FG_COLOR_RGB = new RGB(0, 0, 0);

@@ -56,7 +56,7 @@ public class ErlangConsolePartitioner implements IConsoleDocumentPartitioner {
             }
 
             boolean updatedRange = false;
-            if (ranges.size() > 0) {
+            if (!ranges.isEmpty()) {
                 final ScriptStyleRange lastRange = ranges
                         .get(ranges.size() - 1);
                 if (lastRange.scriptType == r.scriptType) {

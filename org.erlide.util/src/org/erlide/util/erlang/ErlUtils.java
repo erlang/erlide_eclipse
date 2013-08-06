@@ -178,7 +178,7 @@ public final class ErlUtils {
     private static OtpErlangObject fill(final OtpErlangObject template,
             final List<Object> values) throws SignatureException,
             TermParserException {
-        if (values.size() == 0) {
+        if (values.isEmpty()) {
             return template;
         }
         if (template instanceof OtpErlangList) {

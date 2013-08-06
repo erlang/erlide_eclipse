@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
  * 
  * @since 3.3
  */
-class HTMLMessages {
+final class HTMLMessages {
 
     private static final String RESOURCE_BUNDLE = HTMLMessages.class.getName();
 

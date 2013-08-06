@@ -19,12 +19,12 @@ import org.erlide.model.erlang.IErlImport;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlPreprocessorDef;
 import org.erlide.model.erlang.IErlTypespec;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlExternal;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.root.ErlElementKind;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.StringUtils;
 
@@ -77,7 +77,8 @@ public class ModelUtils {
     private static IErlExternal getElementWithExternalName(
             final IParent parent, final String segment)
             throws ErlModelException {
-        for (final IErlElement i : parent.getChildrenOfKind(ErlElementKind.EXTERNAL)) {
+        for (final IErlElement i : parent
+                .getChildrenOfKind(ErlElementKind.EXTERNAL)) {
             final IErlExternal external = (IErlExternal) i;
             final String externalName = external.getName();
             ErlLogger
@@ -329,7 +330,7 @@ public class ModelUtils {
         return result;
     }
 
-    public static final ArrayList<OtpErlangObject> NO_IMPORTS = new ArrayList<OtpErlangObject>(
+    public static final List<OtpErlangObject> NO_IMPORTS = new ArrayList<OtpErlangObject>(
             0);
 
     private static void addUnitNamesWithPrefix(final String prefix,
@@ -393,7 +394,8 @@ public class ModelUtils {
         if (element == null) {
             return null;
         }
-        final IErlElement ancestor = element.getAncestorOfKind(ErlElementKind.PROJECT);
+        final IErlElement ancestor = element
+                .getAncestorOfKind(ErlElementKind.PROJECT);
         if (ancestor instanceof IErlProject) {
             return (IErlProject) ancestor;
         }

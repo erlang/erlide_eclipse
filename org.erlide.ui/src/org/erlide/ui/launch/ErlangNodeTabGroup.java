@@ -26,7 +26,7 @@ public class ErlangNodeTabGroup extends AbstractLaunchConfigurationTabGroup {
     public Collection<ILaunchConfigurationTab> createMyTabs(
             final ILaunchConfigurationDialog dialog, final String mode) {
         ILaunchConfigurationTab[] tabs;
-        if (mode.equals("debug")) {
+        if ("debug".equals(mode)) {
             tabs = new ILaunchConfigurationTab[] { new ErlangMainTab(),
                     new RuntimeTab(), new DebugTab(), new CodepathTab() };
         } else {
@@ -43,6 +43,6 @@ public class ErlangNodeTabGroup extends AbstractLaunchConfigurationTabGroup {
                 createMyTabs(dialog, mode));
         tabs.addAll(Arrays.asList(new ILaunchConfigurationTab[] {
                 new EnvironmentTab(), new CommonTab() }));
-        setTabs(tabs.toArray(new ILaunchConfigurationTab[0]));
+        setTabs(tabs.toArray(new ILaunchConfigurationTab[tabs.size()]));
     }
 }

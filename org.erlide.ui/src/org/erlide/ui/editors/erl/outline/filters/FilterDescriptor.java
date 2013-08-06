@@ -20,7 +20,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class FilterDescriptor implements Comparable<Object>,
+public final class FilterDescriptor implements Comparable<Object>,
         IPluginContribution {
 
     private static final String EXTENSION_POINT_NAME = "erlangElementFilters"; //$NON-NLS-1$

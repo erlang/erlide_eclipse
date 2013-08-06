@@ -19,7 +19,7 @@ import javax.swing.text.html.HTMLEditorKit;
 
 import org.erlide.util.StringUtils;
 
-public class UIStringUtils {
+public final class UIStringUtils {
 
     private UIStringUtils() {
     }

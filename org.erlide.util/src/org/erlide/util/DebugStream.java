@@ -6,7 +6,7 @@ import java.text.MessageFormat;
 /**
  * @author Jeeeyul 2011. 11. 1.
  */
-public class DebugStream extends PrintStream {
+public final class DebugStream extends PrintStream {
     private static final DebugStream INSTANCE = new DebugStream();
 
     public static void activate() {

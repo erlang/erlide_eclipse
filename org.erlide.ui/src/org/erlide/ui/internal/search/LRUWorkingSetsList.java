@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.ui.IWorkingSet;
@@ -38,7 +39,7 @@ public class LRUWorkingSetsList {
 
     }
 
-    private final ArrayList<IWorkingSet[]> fLRUList;
+    private final List<IWorkingSet[]> fLRUList;
     private final int fSize;
     private final WorkingSetsComparator fComparator = new WorkingSetsComparator();
 
@@ -60,7 +61,7 @@ public class LRUWorkingSetsList {
     }
 
     public Collection<IWorkingSet[]> getSorted() {
-        final ArrayList<IWorkingSet[]> sortedList = new ArrayList<IWorkingSet[]>(
+        final List<IWorkingSet[]> sortedList = new ArrayList<IWorkingSet[]>(
                 fLRUList);
         Collections.sort(sortedList, fComparator);
         return sortedList;
@@ -85,7 +86,7 @@ public class LRUWorkingSetsList {
         }
     }
 
-    private IWorkingSet[] find(final ArrayList<IWorkingSet[]> list,
+    private IWorkingSet[] find(final List<IWorkingSet[]> list,
             final IWorkingSet[] workingSets) {
         final Set<IWorkingSet> workingSetList = new HashSet<IWorkingSet>(
                 Arrays.asList(workingSets));

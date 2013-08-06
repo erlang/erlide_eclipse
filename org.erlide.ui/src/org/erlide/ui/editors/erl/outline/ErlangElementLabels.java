@@ -19,7 +19,7 @@ import org.erlide.model.root.IErlElement;
  * 
  * @version $Revision: 1.10 $
  */
-public class ErlangElementLabels {
+public final class ErlangElementLabels {
 
     /**
      * Method names contain parameter types. e.g. <code>foo(int)</code>

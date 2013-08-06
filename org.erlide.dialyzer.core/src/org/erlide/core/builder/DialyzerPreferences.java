@@ -20,7 +20,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class DialyzerPreferences {
+public final class DialyzerPreferences {
 
     private static final String QUALIFIER = ErlangCore.PLUGIN_ID + "/dialyzer";
 

@@ -12,6 +12,7 @@
 package org.erlide.ui.editors.erl.outline;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
@@ -33,7 +34,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 
     protected ErlangElementImageProvider fImageLabelProvider;
 
-    private ArrayList<ILabelDecorator> fLabelDecorators;
+    private List<ILabelDecorator> fLabelDecorators;
 
     private int fImageFlags;
 

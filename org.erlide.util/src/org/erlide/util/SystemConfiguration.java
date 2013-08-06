@@ -1,6 +1,6 @@
 package org.erlide.util;
 
-public class SystemConfiguration {
+public final class SystemConfiguration {
 
     private static SystemConfiguration instance = new SystemConfiguration();
 
@@ -15,8 +15,8 @@ public class SystemConfiguration {
     private final boolean onWindows;
     private int warnProcessSizeLimitMB;
     private int killProcessSizeLimitMB;
-    private final int MIN_WARN_LIMIT = 5;
-    private final int MIN_KILL_LIMIT = 10;
+    private static final int MIN_WARN_LIMIT = 5;
+    private static final int MIN_KILL_LIMIT = 10;
 
     private SystemConfiguration() {
         mustDefineTclLib = hasFeatureEnabled("erlide.ericsson.user");

@@ -3,7 +3,7 @@ package org.erlide.debug.ui.views;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-public class ActionMessages {
+public final class ActionMessages {
     private static final String BUNDLE_NAME = "org.erlide.debug.ui.views.messages"; //$NON-NLS-1$
 
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle

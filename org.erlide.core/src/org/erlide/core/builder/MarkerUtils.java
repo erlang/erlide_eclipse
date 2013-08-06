@@ -285,7 +285,7 @@ public final class MarkerUtils {
             for (final IMarker m : project.findMarkers(PROBLEM_MARKER, true,
                     IResource.DEPTH_INFINITE)) {
                 final Object source_id = m.getAttribute(IMarker.SOURCE_ID);
-                if (source_id != null && source_id instanceof String
+                if (source_id instanceof String
                         && source_id.equals(file.getFullPath().toString())) {
                     try {
                         m.delete();

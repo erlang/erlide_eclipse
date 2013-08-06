@@ -157,7 +157,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
         });
 
         // Filters provided by extension point
-        if (fBuiltInFilters.size() > 0) {
+        if (!fBuiltInFilters.isEmpty()) {
             createCheckBoxList(group);
         }
 

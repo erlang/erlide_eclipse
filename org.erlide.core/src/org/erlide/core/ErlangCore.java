@@ -196,7 +196,7 @@ public final class ErlangCore {
                     break;
                 }
             }
-            if (!version.equals("?")) {
+            if (!"?".equals(version)) {
                 break;
             }
         }

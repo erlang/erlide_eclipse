@@ -11,11 +11,11 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.IParent;
 import org.erlide.model.ModelPlugin;
 import org.erlide.model.internal.root.Openable;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlExternal;
 import org.erlide.model.root.IErlExternalRoot;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.util.ModelUtils;
@@ -81,7 +81,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     private String getLibName(final String libDir) {
         final IPath p = new Path(libDir);
         String s = p.lastSegment();
-        if (s.equals("ebin")) {
+        if ("ebin".equals(s)) {
             s = p.removeLastSegments(1).lastSegment();
         }
         final int dashPos = s.lastIndexOf('-');

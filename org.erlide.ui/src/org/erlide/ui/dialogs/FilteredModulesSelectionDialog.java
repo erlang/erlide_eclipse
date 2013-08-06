@@ -603,7 +603,7 @@ public class FilteredModulesSelectionDialog extends
             final HashSet<IPath> result = new HashSet<IPath>();
             for (final IPath path : sourcePaths) {
                 final String path_string = path.toString();
-                if (path_string.equals(".")) {
+                if (".".equals(path_string)) {
                     result.add(project.getFullPath());
                 } else {
                     result.add(project.getFolder(path).getFullPath());

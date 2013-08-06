@@ -344,7 +344,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
     public boolean isValid(final ILaunchConfiguration config) {
         setErrorMessage(null);
         final String name = nameText.getText().trim();
-        if (!name.equals("") && !RuntimeData.validateNodeName(name)) {
+        if (!"".equals(name) && !RuntimeData.validateNodeName(name)) {
             setErrorMessage(String.format("Node name '%s' is invalid.", name));
             return false;
         }

@@ -270,7 +270,7 @@ public class Diff<Type> {
 
         Map<Type, List<Integer>> bMatches = null;
         if (comparator == null) {
-            if (a.size() > 0 && a.get(0) instanceof Comparable) {
+            if (!a.isEmpty() && a.get(0) instanceof Comparable) {
                 // this uses the Comparable interface
                 bMatches = new TreeMap<Type, List<Integer>>();
             } else {
@@ -322,7 +322,7 @@ public class Diff<Type> {
             }
         }
 
-        if (thresh.size() > 0) {
+        if (!thresh.isEmpty()) {
             final Integer ti = thresh.lastKey();
             Object[] link = links.get(ti);
             while (link != null) {
@@ -333,7 +333,7 @@ public class Diff<Type> {
             }
         }
 
-        final int size = matches.size() == 0 ? 0 : 1 + matches.lastKey();
+        final int size = matches.isEmpty() ? 0 : 1 + matches.lastKey();
         final Integer[] ary = new Integer[size];
         for (final Integer idx : matches.keySet()) {
             final Integer val = matches.get(idx);
@@ -380,7 +380,7 @@ public class Diff<Type> {
      */
     protected void append(final Integer value) {
         Integer addIdx = null;
-        if (thresh.size() == 0) {
+        if (thresh.isEmpty()) {
             addIdx = 0;
         } else {
             final Integer lastKey = thresh.lastKey();
@@ -400,7 +400,7 @@ public class Diff<Type> {
 
             if (isNonzero(k)) {
                 high = k;
-            } else if (thresh.size() > 0) {
+            } else if (!thresh.isEmpty()) {
                 high = thresh.lastKey();
             }
 
