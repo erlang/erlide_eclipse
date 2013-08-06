@@ -194,7 +194,7 @@ public class IOServer implements Runnable {
                         OtpErlangObject val = null;
                         for (final OtpErlangObject r : reqs) {
                             val = processRequest(from, r);
-                            if (val == error) {
+                            if (val.equals(error)) {
                                 return error;
                             }
                         }
