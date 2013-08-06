@@ -375,8 +375,9 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     private class ErlRuntimeListener implements Listener {
         @Override
         public void terminated(final State from) {
-            ErlLogger.debug(String.format("Runtime %s terminated, exit code: ",
-                    getNodeName(), getExitCode()));
+            ErlLogger.debug(String.format(
+                    "Runtime %s terminated, exit code: %d", getNodeName(),
+                    getExitCode()));
             if (data.isReportErrors()) {
                 reporter.reportRuntimeDown(getNodeName(), getSystemStatus());
             }
@@ -384,7 +385,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
 
         @Override
         public void failed(final State from, final Throwable failure) {
-            ErlLogger.warn(String.format("Runtime %s crashed, exit code: ",
+            ErlLogger.warn(String.format("Runtime %s crashed, exit code: %d",
                     getNodeName(), getExitCode()));
             try {
                 reporter.createFileReport(getNodeName(), getExitCode(),
