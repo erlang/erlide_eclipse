@@ -46,7 +46,7 @@ public class ErlModelCache implements IDisposable {
     private final Cache<IErlProject, Collection<IPath>> projectSourceDirsCache;
     private final Cache<IErlProject, Collection<IPath>> projectIncludeDirsCache;
 
-    private final static boolean disabled = ErlideUtil.isCacheDisabled();
+    private static final boolean disabled = ErlideUtil.isCacheDisabled();
 
     public static ErlModelCache getDefault() {
         if (fgInstance == null) {

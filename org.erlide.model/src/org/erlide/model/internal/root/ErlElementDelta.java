@@ -297,9 +297,8 @@ public class ErlElementDelta implements IErlElementDelta {
      */
     protected boolean equalsAndSameParent(final IErlElement e1,
             final IErlElement e2) {
-        IErlElement parent1;
-        return e1.equals(e2)
-                && (parent1 = (IErlElement) e1.getParent()) != null
+        final IErlElement parent1 = (IErlElement) e1.getParent();
+        return e1.equals(e2) && parent1 != null
                 && parent1.equals(e2.getParent());
     }
 

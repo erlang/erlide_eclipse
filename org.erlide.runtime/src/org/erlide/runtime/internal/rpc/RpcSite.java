@@ -344,7 +344,7 @@ public class RpcSite implements IRpcSite {
                 + args0.length, logCalls, this);
     }
 
-    private final static String SEP = ", ";
+    private static final String SEP = ", ";
 
     private Object argString(final OtpErlangObject[] args) {
         final StringBuilder result = new StringBuilder();

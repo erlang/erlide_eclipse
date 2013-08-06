@@ -7,37 +7,36 @@ import org.eclipse.jdt.annotation.NonNull;
 
 public interface IRuntimeInfoCatalog {
 
-    public final static RuntimeVersion OLDEST_SUPPORTED_VERSION = new RuntimeVersion(
-            14);
+    RuntimeVersion OLDEST_SUPPORTED_VERSION = new RuntimeVersion(14);
 
-    public abstract Collection<RuntimeInfo> getRuntimes();
+    Collection<RuntimeInfo> getRuntimes();
 
-    public abstract void setRuntimes(final Collection<RuntimeInfo> elements,
+    void setRuntimes(final Collection<RuntimeInfo> elements,
             final String dfltRuntime, String ideRuntime);
 
-    public abstract void addRuntime(final RuntimeInfo rt);
+    void addRuntime(final RuntimeInfo rt);
 
-    public abstract Collection<String> getRuntimeNames();
+    Collection<String> getRuntimeNames();
 
-    public abstract boolean hasRuntimeWithName(final String name);
+    boolean hasRuntimeWithName(final String name);
 
-    public abstract RuntimeInfo getRuntime(final String name);
+    RuntimeInfo getRuntime(final String name);
 
-    public abstract void removeRuntime(final String name);
+    void removeRuntime(final String name);
 
-    public abstract String getDefaultRuntimeName();
+    String getDefaultRuntimeName();
 
-    public abstract void setDefaultRuntime(final String name);
+    void setDefaultRuntime(final String name);
 
-    public abstract @NonNull
+    @NonNull
     RuntimeInfo getErlideRuntime();
 
-    public abstract RuntimeInfo getDefaultRuntime();
+    RuntimeInfo getDefaultRuntime();
 
-    public abstract RuntimeInfo getRuntime(final RuntimeVersion runtimeVersion,
+    RuntimeInfo getRuntime(final RuntimeVersion runtimeVersion,
             final String runtimeName);
 
-    public abstract List<String> getAllRuntimesVersions();
+    List<String> getAllRuntimesVersions();
 
     /**
      * If runtime is not set, try to locate one. The first one found as below is
@@ -53,6 +52,6 @@ public interface IRuntimeInfoCatalog {
      * </ul>
      * 
      */
-    public abstract void initializeRuntimesList();
+    void initializeRuntimesList();
 
 }

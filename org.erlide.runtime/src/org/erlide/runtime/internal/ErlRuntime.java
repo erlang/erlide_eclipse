@@ -60,7 +60,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     private EventParser eventHelper;
     boolean crashed;
 
-    final static boolean DEBUG = Boolean.parseBoolean(System
+    static final boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.event.daemon"));
     public static final long POLL_INTERVAL = 200;
 
