@@ -170,6 +170,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         if (fTerminated) {
             return;
         }
+        fTerminated = true;
 
         fBackend.getRpcSite().send("erlide_dbg_mon", new OtpErlangAtom("stop"));
         final DebugPlugin dbgPlugin = DebugPlugin.getDefault();
@@ -186,7 +187,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
             launch.terminate();
         }
 
-        fTerminated = true;
         fireTerminateEvent();
     }
 
