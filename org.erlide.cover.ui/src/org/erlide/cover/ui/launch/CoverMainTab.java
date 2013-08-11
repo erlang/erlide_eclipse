@@ -297,7 +297,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
         } catch (final ErlModelException e) {
             array = new Object[0];
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return array;
     }
@@ -320,7 +320,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
         } catch (final ErlModelException e) {
             array = new Object[0];
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return array;
     }

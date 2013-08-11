@@ -1,6 +1,9 @@
 package org.erlide.model.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
@@ -20,12 +23,12 @@ import org.erlide.model.erlang.IErlPreprocessorDef;
 import org.erlide.model.erlang.IErlRecordDef;
 import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.erlang.IErlTypespec;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.root.ErlElementKind;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;

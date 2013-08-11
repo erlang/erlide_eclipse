@@ -22,6 +22,7 @@ import org.erlide.backend.api.BackendException;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.util.ErlLogger;
 
 public abstract class AsyncCaller<T> implements Runnable {
     long interval;
@@ -56,9 +57,9 @@ public abstract class AsyncCaller<T> implements Runnable {
                             schedule(interval);
                         }
                     } catch (final RpcException e) {
-                        e.printStackTrace();
+                        ErlLogger.error(e);
                     } catch (final TimeoutException e) {
-                        e.printStackTrace();
+                        ErlLogger.error(e);
                     }
                     handleResult(context, result);
                     if (monitor.isCanceled()) {
@@ -70,7 +71,7 @@ public abstract class AsyncCaller<T> implements Runnable {
             };
             job.schedule(interval);
         } catch (final BackendException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
     }

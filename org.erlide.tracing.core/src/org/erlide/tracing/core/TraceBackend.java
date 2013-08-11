@@ -210,9 +210,7 @@ public class TraceBackend {
                             tracing = false;
                         }
                     } catch (final Exception e) {
-                        e.printStackTrace();
-                        ErlLogger.error("Could not start tracing tool: "
-                                + e.getMessage());
+                        ErlLogger.error(e);
                         status = TracingStatus.EXCEPTION_THROWN;
                         errorObject = e;
                         tracing = false;
@@ -617,7 +615,7 @@ public class TraceBackend {
                     .createExecutionBackend(data);
             return b;
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return null;
     }

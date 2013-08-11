@@ -280,7 +280,7 @@ public class ErlideSelection {
                 doc.replace(offset, length, "");
             }
         } catch (final BadLocationException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 
@@ -369,7 +369,7 @@ public class ErlideSelection {
                 doc.replace(offset, 0, contents);
             }
         } catch (final BadLocationException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 

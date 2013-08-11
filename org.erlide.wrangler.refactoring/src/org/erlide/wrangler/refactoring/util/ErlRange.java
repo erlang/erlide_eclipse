@@ -12,6 +12,7 @@ package org.erlide.wrangler.refactoring.util;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.erlide.util.ErlLogger;
 
 /**
  * Specified Range, which has offset attributes.
@@ -63,7 +64,7 @@ public class ErlRange extends Range implements IErlRange {
             length = WranglerUtils.calculateOffsetFromPosition(endLine, endCol,
                     doc) - offset + 1;
         } catch (final BadLocationException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 

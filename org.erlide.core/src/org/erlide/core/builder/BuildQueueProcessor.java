@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Queues;
 
@@ -36,7 +37,7 @@ public class BuildQueueProcessor extends Job {
                 try {
                     Thread.sleep(100);
                 } catch (final InterruptedException e) {
-                    e.printStackTrace();
+                    ErlLogger.error(e);
                 }
                 continue;
             }

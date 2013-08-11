@@ -31,6 +31,7 @@ import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.util.ModelUtils;
+import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 /**
@@ -142,7 +143,7 @@ public class CodeInspectionResultsView extends ViewPart {
         try {
             viewer.refresh();
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
     }

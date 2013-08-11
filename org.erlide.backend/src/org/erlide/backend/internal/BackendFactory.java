@@ -90,7 +90,7 @@ public class BackendFactory implements IBackendFactory {
             b.initialize();
             return b;
         } catch (final BackendException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return null;
     }

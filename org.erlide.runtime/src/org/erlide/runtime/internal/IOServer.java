@@ -224,9 +224,9 @@ public class IOServer implements Runnable {
                 return error;
             }
         } catch (final TermParserException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         } catch (final OtpErlangException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return error;
     }

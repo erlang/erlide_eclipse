@@ -31,6 +31,7 @@ import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.util.ModelUtils;
+import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
@@ -164,7 +165,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 
             });
         } catch (final ErlModelException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
         applyDialogFont(composite);

@@ -346,7 +346,7 @@ public class RefactoringHandler extends AbstractHandler {
                 try {
                     refactoring = runGenFunRefactoring(pages, activeShell);
                 } catch (final OtpErlangRangeException e) {
-                    e.printStackTrace();
+                    ErlLogger.error(e);
                     return null;
                 }
 
@@ -452,7 +452,7 @@ public class RefactoringHandler extends AbstractHandler {
                 refactoring.doAfterRefactoring();
             }
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
         checkWarningMessages();
@@ -532,7 +532,7 @@ public class RefactoringHandler extends AbstractHandler {
                 ErlLogger.error("Wrangler logging error:" + res);
             }
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
     }
@@ -545,7 +545,7 @@ public class RefactoringHandler extends AbstractHandler {
             ret = ret.replaceAll("\\s+$", "");
             return ret;
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             return stringValue;
         }
     }

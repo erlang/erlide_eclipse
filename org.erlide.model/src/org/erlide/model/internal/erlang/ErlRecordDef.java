@@ -6,8 +6,8 @@ import org.erlide.model.erlang.IErlRecordDef;
 import org.erlide.model.erlang.IErlRecordField;
 import org.erlide.model.internal.root.ErlElement;
 import org.erlide.model.internal.root.ErlMember;
-import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.ErlElementKind;
+import org.erlide.model.root.IErlElement;
 
 import com.google.common.base.Objects;
 

@@ -92,7 +92,7 @@ public class ErlangConsole extends TextConsole implements IErlangConsole {
     // view = (IConsoleView) page.showView(id);
     // view.display(this);
     // } catch (final PartInitException e) {
-    // e.printStackTrace();
+    // ErlLogger.error(e);
     // }
     // }
 

@@ -16,6 +16,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.erlide.util.ErlLogger;
 
 public class TraceEditor extends TextEditor {
 
@@ -150,7 +151,7 @@ public class TraceEditor extends TextEditor {
                     // ignore
                 }
             } catch (final BadLocationException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
 

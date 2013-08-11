@@ -8,6 +8,7 @@ import java.util.TreeSet;
 
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -33,7 +34,7 @@ public class ErlideContextAssist {
                 }
             }
         } catch (final RpcException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return result;
     }
@@ -105,9 +106,9 @@ public class ErlideContextAssist {
                 return new RecordCompletion(r);
             }
         } catch (final RpcException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         } catch (final OtpErlangRangeException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return null;
     }
@@ -122,7 +123,7 @@ public class ErlideContextAssist {
                 return (OtpErlangList) res;
             }
         } catch (final RpcException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return null;
     }

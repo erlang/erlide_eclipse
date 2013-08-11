@@ -21,6 +21,7 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
+import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -50,7 +51,7 @@ public class ParserDB {
                     System.out.println(" took "
                             + (System.currentTimeMillis() - time) / 1000);
                 } catch (final Exception e) {
-                    e.printStackTrace();
+                    ErlLogger.error(e);
                 }
                 running = false;
             }
@@ -101,7 +102,7 @@ public class ParserDB {
                 // handleModule(module);
                 // }
                 // } catch (final CoreException e) {
-                // e.printStackTrace();
+                // ErlLogger.error(e);
                 // }
             }
         }

@@ -12,6 +12,7 @@ import java.awt.geom.Point2D;
 
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.erlide.util.ErlLogger;
 
 /**
  * Utility for Java2d transform
@@ -101,7 +102,7 @@ public class SWT2Dutil {
             return new Point((int) Math.floor(dest.getX()),
                     (int) Math.floor(dest.getY()));
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             return new Point(0, 0);
         }
     }

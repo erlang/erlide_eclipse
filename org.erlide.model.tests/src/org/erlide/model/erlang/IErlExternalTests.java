@@ -1,13 +1,14 @@
 package org.erlide.model.erlang;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
 
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlExternal;
-import org.erlide.model.root.ErlElementKind;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.Before;

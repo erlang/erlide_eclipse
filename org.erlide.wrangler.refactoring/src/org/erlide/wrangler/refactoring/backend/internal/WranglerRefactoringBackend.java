@@ -169,7 +169,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
                         || b.atomValue().equals("ok");
             }
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return false;
 

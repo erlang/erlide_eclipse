@@ -9,6 +9,7 @@ import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.util.ErlangFunction;
+import org.erlide.util.ErlLogger;
 
 /**
  * Coverage statistics per function.
@@ -56,7 +57,7 @@ public class FunctionStats extends StatsTreeObject {
 
             lineStart = f.getLineStart();
         } catch (final ErlModelException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
         return lineStart;

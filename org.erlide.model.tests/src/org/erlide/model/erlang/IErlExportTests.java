@@ -1,11 +1,12 @@
 package org.erlide.model.erlang;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.ErlElementKind;
+import org.erlide.model.root.IErlElement;
 import org.junit.Test;
 
 public class IErlExportTests extends ErlModelTestBase2 {

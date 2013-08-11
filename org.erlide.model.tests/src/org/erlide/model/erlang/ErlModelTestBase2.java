@@ -2,8 +2,8 @@ package org.erlide.model.erlang;
 
 import java.util.List;
 
-import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.ErlElementKind;
+import org.erlide.model.root.IErlElement;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Before;
 

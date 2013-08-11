@@ -134,9 +134,9 @@ public class ErlLogger {
             fileHandler.setLevel(java.util.logging.Level.FINEST);
             logger.addHandler(fileHandler);
         } catch (final SecurityException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         } catch (final IOException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 

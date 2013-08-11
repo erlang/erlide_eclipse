@@ -16,6 +16,7 @@ import org.erlide.cover.ui.views.util.ReportGenerator;
 import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.ObjectType;
 import org.erlide.cover.views.model.StatsTreeModel;
+import org.erlide.util.ErlLogger;
 
 /**
  * Exports HTML reports
@@ -86,7 +87,7 @@ public class EksportReports extends Action {
                 obj.setHtmlPath(pathOut);
 
             } catch (final IOException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
 
         } else {
@@ -106,7 +107,7 @@ public class EksportReports extends Action {
                 out.close();
             } catch (final IOException e) {
                 CoverageHelper.reportError("Could not export HTML reports");
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
     }

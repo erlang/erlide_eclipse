@@ -27,6 +27,7 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.runtime.rpc.RpcResult;
+import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.internal.ErlMemberSelection;
@@ -156,7 +157,7 @@ public class GlobalParameters {
 
             }
         } catch (final ClassCastException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
         /*
@@ -195,7 +196,7 @@ public class GlobalParameters {
             }
             return b;
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return true;
     }

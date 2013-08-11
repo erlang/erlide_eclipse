@@ -1,17 +1,21 @@
 package org.erlide.model.erlang;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.erlide.model.internal.erlang.ErlAttribute;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
-import org.erlide.model.root.ErlElementKind;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;

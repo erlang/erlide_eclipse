@@ -289,7 +289,7 @@ public class ErlideDebug {
             }
         } catch (final RpcException e) {
             ErlLogger.warn(e);
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return null;
     }
@@ -395,7 +395,7 @@ public class ErlideDebug {
                 return (OtpErlangList) o;
             }
         } catch (final RpcException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return null;
     }

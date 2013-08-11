@@ -1,6 +1,10 @@
 package org.erlide.model.erlang;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.EnumSet;
@@ -13,13 +17,13 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.internal.root.ErlModelCache;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElement.AcceptFlags;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlElementVisitor;
 import org.erlide.model.root.IErlExternal;
-import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;

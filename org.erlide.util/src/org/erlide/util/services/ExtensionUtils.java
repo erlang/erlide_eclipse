@@ -38,7 +38,7 @@ public final class ExtensionUtils {
                     return clazz.cast(object);
                 }
             } catch (final CoreException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
         return null;

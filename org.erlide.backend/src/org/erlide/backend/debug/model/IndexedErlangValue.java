@@ -19,11 +19,11 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlPreprocessorDef;
 import org.erlide.model.erlang.IErlRecordDef;
 import org.erlide.model.erlang.IErlRecordField;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.util.ModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

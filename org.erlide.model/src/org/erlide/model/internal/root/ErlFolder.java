@@ -17,12 +17,12 @@ import org.erlide.model.ErlModelStatusConstants;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ModuleKind;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.util.SystemConfiguration;
 

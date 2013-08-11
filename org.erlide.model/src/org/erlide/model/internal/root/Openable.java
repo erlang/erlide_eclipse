@@ -20,8 +20,8 @@ import org.erlide.model.ErlModelStatus;
 import org.erlide.model.ErlModelStatusConstants;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
-import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.ErlElementKind;
+import org.erlide.model.root.IErlElement;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.util.ErlLogger;
 

@@ -22,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.PlatformUI;
+import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
@@ -109,7 +110,7 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
             }
 
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return event;
     }
@@ -159,11 +160,11 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
                         "Internal error occured. Please report it!");
             }
         } catch (final IOException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         } catch (final CoreException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
     }

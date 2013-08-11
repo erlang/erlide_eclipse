@@ -16,6 +16,7 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangEventHandler;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -116,7 +117,7 @@ public class CoverEventHandler extends ErlangEventHandler {
                             .findModule(moduleName).getFilePath());
                     moduleStats.setMd5(MD5Checksum.getMD5(file));
                 } catch (final Exception e) {
-                    e.printStackTrace();
+                    ErlLogger.error(e);
                 }
 
                 //

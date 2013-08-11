@@ -70,7 +70,7 @@ public class ErlangHostnameRetriever {
             node.close();
             return result;
         } catch (final IOException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return false;
     }

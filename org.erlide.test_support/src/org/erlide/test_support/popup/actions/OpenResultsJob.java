@@ -85,7 +85,7 @@ public class OpenResultsJob extends UIJob {
                     browser.openURL(file.getRawLocationURI().toURL());
                 } catch (final MalformedURLException e) {
                     // should not happen
-                    e.printStackTrace();
+                    ErlLogger.error(e);
                 }
             } catch (final PartInitException e) {
                 ErlLogger.error(e);

@@ -15,6 +15,8 @@ import java.util.Stack;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import org.erlide.util.ErlLogger;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -108,7 +110,7 @@ public class TermParser {
                 return new OtpErlangList(
                         stack.toArray(new OtpErlangObject[stack.size()]), tail);
             } catch (final OtpErlangException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
                 // can't happen
                 return null;
             }

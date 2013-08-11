@@ -24,6 +24,7 @@ import org.erlide.runtime.shell.BackendShellListener;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.ui.util.DisplayUtils;
+import org.erlide.util.ErlLogger;
 
 public final class ErlConsoleDocument extends Document implements
         BackendShellListener {
@@ -69,7 +70,7 @@ public final class ErlConsoleDocument extends Document implements
                 try {
                     replace(0, getLength(), text);
                 } catch (final BadLocationException e) {
-                    e.printStackTrace();
+                    ErlLogger.error(e);
                 }
             }
         });

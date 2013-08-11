@@ -501,7 +501,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
                 lineLength = d.getLineLength(line - 1);
                 EditorUtility.revealInEditor(ee, lineStart, lineLength - 1);
             } catch (final BadLocationException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
     }

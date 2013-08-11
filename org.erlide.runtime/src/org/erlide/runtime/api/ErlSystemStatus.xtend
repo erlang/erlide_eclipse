@@ -89,9 +89,9 @@ class MemoryStatus {
             maximum = value
         }
       } catch (OtpErlangException e) {
-        e.printStackTrace();
+        ErlLogger.error(e);
       } catch (TermParserException e) {
-        e.printStackTrace();
+        ErlLogger.error(e);
       }
     }
   }

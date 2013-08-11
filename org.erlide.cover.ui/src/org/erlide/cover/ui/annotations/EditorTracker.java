@@ -27,6 +27,7 @@ import org.erlide.cover.core.Logger;
 import org.erlide.cover.views.model.LineResult;
 import org.erlide.cover.views.model.ModuleSet;
 import org.erlide.cover.views.model.ModuleStats;
+import org.erlide.util.ErlLogger;
 
 /**
  * Attaches coverage annotation models.
@@ -323,7 +324,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
         } catch (final BadLocationException e) {
             log.error(e);
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
     }

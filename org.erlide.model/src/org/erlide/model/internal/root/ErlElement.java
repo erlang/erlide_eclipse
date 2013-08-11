@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.erlide.model.internal.root;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -27,10 +29,10 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementVisitor;
-import org.erlide.model.root.ErlElementKind;
 import org.erlide.util.StringUtils;
 
 import com.google.common.base.Objects;

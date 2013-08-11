@@ -60,7 +60,7 @@ public class GraphImageView extends ViewPart {
     // try {
     // url = FileLocator.resolve(url);
     // } catch (IOException e) {
-    // e.printStackTrace();
+    // ErlLogger.error(e);
     // }
     // fragmentPath = new Path(url.getPath());
     // }

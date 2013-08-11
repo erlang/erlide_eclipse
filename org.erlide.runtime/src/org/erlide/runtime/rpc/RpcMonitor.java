@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpErlang;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -173,7 +174,7 @@ public class RpcMonitor {
         try {
             dump(new PrintStream(fileName), n, full);
         } catch (final FileNotFoundException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 

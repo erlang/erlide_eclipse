@@ -21,9 +21,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.ISourceUnit;
-import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ErlangIncludeFile;
 

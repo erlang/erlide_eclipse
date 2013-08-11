@@ -9,6 +9,7 @@ import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -59,7 +60,7 @@ public class ErlideDialyze {
                 result.add(Util.stringValue(o).trim());
             }
         } catch (final RpcException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return result;
     }

@@ -127,9 +127,9 @@ public class TestResultsView extends ViewPart {
                     treeViewer.refresh();
                     control.update();
                 } catch (final TermParserException e) {
-                    e.printStackTrace();
+                    ErlLogger.error(e);
                 } catch (final OtpErlangException e) {
-                    e.printStackTrace();
+                    ErlLogger.error(e);
                 }
             }
 

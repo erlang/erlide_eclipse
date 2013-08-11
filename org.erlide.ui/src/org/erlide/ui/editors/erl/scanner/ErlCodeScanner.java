@@ -62,7 +62,7 @@ public class ErlCodeScanner extends ErlTokenScanner {
             fCrtToken = -1;
             fTokens = ErlideScanner.lightScanString(text, rangeOffset);
         } catch (final ScannerException e) {
-            // e.printStackTrace();
+            // ErlLogger.error(e);
         }
     }
 

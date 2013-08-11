@@ -28,8 +28,8 @@ import org.erlide.model.erlang.IErlAttribute;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlPreprocessorDef;
-import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.ErlElementKind;
+import org.erlide.model.root.IErlElement;
 
 class ErlangCompareUtilities {
 

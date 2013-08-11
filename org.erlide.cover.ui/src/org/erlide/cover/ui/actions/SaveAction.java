@@ -16,6 +16,7 @@ import org.erlide.cover.core.Logger;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.CoverageHelper;
 import org.erlide.cover.views.model.StatsTreeModel;
+import org.erlide.util.ErlLogger;
 
 /**
  * An action for saving coverage results
@@ -104,11 +105,11 @@ public class SaveAction extends Action {
 
         } catch (final FileNotFoundException e) {
             log.error("Error while openning stream");
-            e.printStackTrace();
+            ErlLogger.error(e);
             CoverageHelper.reportError("Cannot save results");
         } catch (final IOException e) {
             log.error("Error while writing to a file");
-            e.printStackTrace();
+            ErlLogger.error(e);
             CoverageHelper.reportError("Cannot save results");
         }
 

@@ -4,13 +4,15 @@
  */
 package org.erlide.test.support;
 
-import static com.google.common.collect.Lists.*;
-import static com.google.common.collect.Sets.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Set;
+
+import org.erlide.util.ErlLogger;
 
 public class ExceptionUtils {
     private static final String INDENT = "\t";
@@ -30,7 +32,7 @@ public class ExceptionUtils {
             writeCleanStackTrace(t, pw, shouldFilter);
             return sw.getBuffer().toString();
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             return e.toString();
         }
     }

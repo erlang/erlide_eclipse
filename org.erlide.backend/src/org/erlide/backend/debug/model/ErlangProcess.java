@@ -233,7 +233,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
                         m.atomValue(), new ErlangFunction(f.atomValue(), a
                                 .intValue()), this, getDebugTarget()));
             } catch (final OtpErlangRangeException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
     }

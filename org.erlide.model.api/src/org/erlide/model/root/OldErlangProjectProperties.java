@@ -24,6 +24,7 @@ import org.erlide.model.PropertiesUtils;
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -73,7 +74,7 @@ public final class OldErlangProjectProperties implements
                 builder.storeToPreferences(npp,
                         (IEclipsePreferences) node.node("new_test"));
             } catch (final BackingStoreException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
 
@@ -131,9 +132,9 @@ public final class OldErlangProjectProperties implements
                 builder.storeToPreferences(npp,
                         (IEclipsePreferences) node.node("test"));
             } catch (final BackingStoreException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             } catch (final URISyntaxException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
 

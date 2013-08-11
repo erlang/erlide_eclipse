@@ -80,7 +80,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
             return new TextSelection(document, startLineOffset, endTextOffset
                     - startLineOffset);
         } catch (final BadLocationException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return selection;
     }

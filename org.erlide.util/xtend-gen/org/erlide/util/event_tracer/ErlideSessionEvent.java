@@ -2,9 +2,9 @@ package org.erlide.util.event_tracer;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
-import org.erlide.util.event_tracer.ErlideEvent;
 
 @SuppressWarnings("all")
 public class ErlideSessionEvent extends ErlideEvent {

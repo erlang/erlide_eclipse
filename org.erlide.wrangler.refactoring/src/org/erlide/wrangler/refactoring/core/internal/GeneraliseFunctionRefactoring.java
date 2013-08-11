@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.swt.widgets.Shell;
+import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage.GenFunReturnParameterName;
@@ -184,7 +185,7 @@ public class GeneraliseFunctionRefactoring extends
 
             return ret;
         } catch (final OtpErlangException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             return null;
         }
     }
@@ -320,7 +321,7 @@ public class GeneraliseFunctionRefactoring extends
      * OtpErlangObject[] positionArray = positions.elements(); for
      * (OtpErlangObject o : positionArray) { try { ret.put(new ErlRange(new
      * Range((OtpErlangTuple) o), doc), (OtpErlangTuple) o); } catch
-     * (OtpErlangRangeException e) { e.printStackTrace(); } }
+     * (OtpErlangRangeException e) { ErlLogger.error(e); } }
      * 
      * return ret; }
      * 
