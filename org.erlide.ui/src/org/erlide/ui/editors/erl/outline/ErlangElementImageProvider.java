@@ -199,7 +199,8 @@ public class ErlangElementImageProvider {
         return getImageDescriptionFromKind(element.getKind());
     }
 
-    public static ImageDescriptor getImageDescriptionFromKind(final ErlElementKind kind) {
+    public static ImageDescriptor getImageDescriptionFromKind(
+            final ErlElementKind kind) {
         ErlideImage result = ErlideImage.UNKNOWN;
         switch (kind) {
         case ATTRIBUTE:

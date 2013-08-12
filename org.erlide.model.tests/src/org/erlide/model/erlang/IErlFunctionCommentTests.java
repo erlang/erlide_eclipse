@@ -1,6 +1,6 @@
 package org.erlide.model.erlang;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;

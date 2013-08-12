@@ -1,9 +1,6 @@
 package org.erlide.model.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.Arrays;
@@ -229,7 +226,8 @@ public class ModelUtilsTests {
         // when
         // looking for the record
         final IErlPreprocessorDef preprocessorDef = ModelUtils
-                .findPreprocessorDef(module, "file_info", ErlElementKind.RECORD_DEF);
+                .findPreprocessorDef(module, "file_info",
+                        ErlElementKind.RECORD_DEF);
         // then
         // the record should be returned
         assertNotNull(module);
@@ -469,7 +467,8 @@ public class ModelUtilsTests {
             // when
             // looking for the record def
             final IErlPreprocessorDef preprocessorDef = ModelUtils
-                    .findPreprocessorDef(module, "rec2", ErlElementKind.RECORD_DEF);
+                    .findPreprocessorDef(module, "rec2",
+                            ErlElementKind.RECORD_DEF);
             final Collection<IErlProject> myprojects = Lists
                     .newArrayList(project);
             ModelUtils.findPreprocessorDef(myprojects, "a.erl", "rec2",
@@ -513,7 +512,8 @@ public class ModelUtilsTests {
             // when
             // looking for the record def
             final IErlPreprocessorDef preprocessorDef = ModelUtils
-                    .findPreprocessorDef(module, "rec2", ErlElementKind.RECORD_DEF);
+                    .findPreprocessorDef(module, "rec2",
+                            ErlElementKind.RECORD_DEF);
             final Collection<IErlProject> myprojects = Lists
                     .newArrayList(project);
             ModelUtils.findPreprocessorDef(myprojects, "a.erl", "rec2",
@@ -563,7 +563,8 @@ public class ModelUtilsTests {
             // when
             // looking for the record def
             final IErlPreprocessorDef preprocessorDef = ModelUtils
-                    .findPreprocessorDef(module, "rec2", ErlElementKind.RECORD_DEF);
+                    .findPreprocessorDef(module, "rec2",
+                            ErlElementKind.RECORD_DEF);
             final Collection<IErlProject> myprojects = Lists
                     .newArrayList(project);
             ModelUtils.findPreprocessorDef(myprojects, "a.erl", "rec2",

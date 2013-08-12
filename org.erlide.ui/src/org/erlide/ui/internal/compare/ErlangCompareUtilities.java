@@ -87,7 +87,8 @@ class ErlangCompareUtilities {
             if (a.getValue() != null) {
                 sb.append(a.getValue().toString());
             }
-        } else if (kind == ErlElementKind.RECORD_DEF || kind == ErlElementKind.MACRO_DEF) {
+        } else if (kind == ErlElementKind.RECORD_DEF
+                || kind == ErlElementKind.MACRO_DEF) {
             final IErlPreprocessorDef pd = (IErlPreprocessorDef) e;
             sb.append(pd.getDefinedName());
         }

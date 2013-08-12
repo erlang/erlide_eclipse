@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.testing.erlang;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.erlide.util.erlang.OtpErlang;
 import org.junit.Test;

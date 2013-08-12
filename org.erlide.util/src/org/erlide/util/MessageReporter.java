@@ -1,6 +1,5 @@
 package org.erlide.util;
 
-
 public abstract class MessageReporter {
 
     /**

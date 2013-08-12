@@ -537,7 +537,8 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     @Override
-    public Collection<IErlPreprocessorDef> getPreprocessorDefs(final ErlElementKind kind) {
+    public Collection<IErlPreprocessorDef> getPreprocessorDefs(
+            final ErlElementKind kind) {
         final List<IErlPreprocessorDef> result = Lists.newArrayList();
         synchronized (getModelLock()) {
             for (final IErlElement e : internalGetChildren()) {
@@ -619,7 +620,8 @@ public class ErlModule extends Openable implements IErlModule {
     private Collection<IErlModule> getLocalIncludes() throws ErlModelException {
         final List<IErlModule> result = Lists.newArrayList();
         final IParent parent = getParent();
-        for (final IErlElement child : parent.getChildrenOfKind(ErlElementKind.MODULE)) {
+        for (final IErlElement child : parent
+                .getChildrenOfKind(ErlElementKind.MODULE)) {
             if (child instanceof IErlModule
                     && ModuleKind.nameToModuleKind(child.getName()) == ModuleKind.HRL) {
                 result.add((IErlModule) child);

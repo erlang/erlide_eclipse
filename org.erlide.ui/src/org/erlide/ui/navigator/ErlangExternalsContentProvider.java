@@ -132,7 +132,8 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
                 }
             }
             final IParent parent = (IParent) element;
-            final boolean result = parent.hasChildrenOfKind(ErlElementKind.EXTERNAL)
+            final boolean result = parent
+                    .hasChildrenOfKind(ErlElementKind.EXTERNAL)
                     || parent.hasChildrenOfKind(ErlElementKind.MODULE);
             if (clock.elapsed(TimeUnit.MILLISECONDS) > 100) {
                 ErlLogger.debug("TIME open " + element.getClass() + " "

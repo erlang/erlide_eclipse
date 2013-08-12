@@ -1,8 +1,7 @@
 package org.erlide.core.services.builder;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;

@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.swt.graphics.Image;

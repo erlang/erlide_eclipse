@@ -191,7 +191,8 @@ public abstract class Openable extends ErlElement implements IOpenable {
         // for packages and projects must check open buffers
         // to see if they have an child with unsaved changes
         final ErlElementKind elementType = getKind();
-        if (elementType == ErlElementKind.PROJECT || elementType == ErlElementKind.MODEL) {
+        if (elementType == ErlElementKind.PROJECT
+                || elementType == ErlElementKind.MODEL) {
             // final Enumeration openBuffers =
             // getBufferManager().getOpenBuffers();
             // while (openBuffers.hasMoreElements()) {

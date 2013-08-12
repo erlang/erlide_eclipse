@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.testing.erlang;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import org.erlide.backend.BackendCore;
 import org.erlide.runtime.api.IRpcSite;

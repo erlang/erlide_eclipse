@@ -402,16 +402,20 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             if (!modules1.isEmpty()) {
                 CodeInspectionViewsManager.showErlElements(
                         "Modules which depends on "
-                                + wranglerSelection.getErlElement()
-                                        .getAncestorOfKind(ErlElementKind.MODULE)
+                                + wranglerSelection
+                                        .getErlElement()
+                                        .getAncestorOfKind(
+                                                ErlElementKind.MODULE)
                                         .getName(), modules1,
                         DEPENECIES_1_VIEW_ID);
             }
             if (!modules2.isEmpty()) {
                 CodeInspectionViewsManager.showErlElements(
                         "Modules, on which "
-                                + wranglerSelection.getErlElement()
-                                        .getAncestorOfKind(ErlElementKind.MODULE)
+                                + wranglerSelection
+                                        .getErlElement()
+                                        .getAncestorOfKind(
+                                                ErlElementKind.MODULE)
                                         .getName() + " depends", modules2,
                         DEPENECIES_2_VIEW_ID);
             } else {

@@ -1,9 +1,7 @@
 package org.erlide.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.runtime.Path;

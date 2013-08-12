@@ -200,7 +200,8 @@ public class SearchUtil {
             if (module != null && offset != -1) {
                 final IErlElement e = module.getElementAt(offset);
                 if (e != null
-                        && (e.getKind() == ErlElementKind.TYPESPEC || e.getKind() == ErlElementKind.RECORD_DEF)) {
+                        && (e.getKind() == ErlElementKind.TYPESPEC || e
+                                .getKind() == ErlElementKind.RECORD_DEF)) {
                     return new TypeRefPattern(moduleName, res.getFun(), limitTo);
                 }
             }

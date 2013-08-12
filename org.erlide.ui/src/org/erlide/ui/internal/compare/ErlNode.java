@@ -36,9 +36,9 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
     private final ErlElementKind kind;
     private final String name;
 
-    private ErlNode(final ErlNode parent, final ErlElementKind kind, final String name,
-            final String id, final IDocument doc, final int start,
-            final int length) {
+    private ErlNode(final ErlNode parent, final ErlElementKind kind,
+            final String name, final String id, final IDocument doc,
+            final int start, final int length) {
         super(kind.hashCode(), id, doc, start, length);
         fParent = parent;
         this.kind = kind;
@@ -67,7 +67,8 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
     }
 
     public ErlNode(final IDocument doc) {
-        super(ErlElementKind.MODEL.hashCode(), "<root>", doc, 0, doc.getLength());
+        super(ErlElementKind.MODEL.hashCode(), "<root>", doc, 0, doc
+                .getLength());
         fParent = null;
         kind = ErlElementKind.MODEL;
         name = "<root>";

@@ -1,7 +1,7 @@
 package org.erlide.annotations;
 
+import com.google.common.base.Objects;
 import java.util.List;
-
 import org.eclipse.xtend.lib.macro.TransformationContext;
 import org.eclipse.xtend.lib.macro.TransformationParticipant;
 import org.eclipse.xtend.lib.macro.declaration.MutableMethodDeclaration;
@@ -9,8 +9,9 @@ import org.eclipse.xtend.lib.macro.declaration.MutableParameterDeclaration;
 import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-
-import com.google.common.base.Objects;
+import org.erlide.annotations.MultipleParameterMethodMemoizer;
+import org.erlide.annotations.ParamterlessMethodMemoizer;
+import org.erlide.annotations.SingleParameterMethodMemoizer;
 
 @SuppressWarnings("all")
 public class MemoizeProcessor implements TransformationParticipant<MutableMethodDeclaration> {

@@ -1,7 +1,6 @@
 package org.erlide.annotations;
 
 import java.util.List;
-
 import org.eclipse.xtend.lib.macro.TransformationContext;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy.CompilationContext;

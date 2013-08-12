@@ -1,7 +1,6 @@
 package org.erlide.model.erlang;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 

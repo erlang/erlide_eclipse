@@ -77,9 +77,11 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     Collection<IErlImport> getImports();
 
-    IErlPreprocessorDef findPreprocessorDef(String definedName, ErlElementKind kind);
+    IErlPreprocessorDef findPreprocessorDef(String definedName,
+            ErlElementKind kind);
 
-    public Collection<IErlPreprocessorDef> getPreprocessorDefs(final ErlElementKind kind);
+    public Collection<IErlPreprocessorDef> getPreprocessorDefs(
+            final ErlElementKind kind);
 
     Collection<ErlangIncludeFile> getIncludeFiles() throws ErlModelException;
 

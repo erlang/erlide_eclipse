@@ -1,10 +1,6 @@
 package org.erlide.model.erlang;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -167,8 +163,8 @@ public class IParentTests extends ErlModelTestBase {
     public void removeChild() throws Exception {
         module.open(null);
         final int childCount = module.getChildCount();
-        final IErlElement element = module.getChildrenOfKind(ErlElementKind.ATTRIBUTE)
-                .iterator().next();
+        final IErlElement element = module
+                .getChildrenOfKind(ErlElementKind.ATTRIBUTE).iterator().next();
         final IErlElement childNamed = module.getChildNamed(element.getName());
         module.removeChild(element);
         final int childCount2 = module.getChildCount();

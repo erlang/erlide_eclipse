@@ -1,6 +1,6 @@
 package org.erlide.core;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlProject;

@@ -1,7 +1,6 @@
 package org.erlide.annotations;
 
 import java.util.List;
-
 import org.eclipse.xtend.lib.macro.TransformationContext;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy.CompilationContext;
 import org.eclipse.xtend.lib.macro.declaration.MutableMethodDeclaration;
@@ -9,6 +8,7 @@ import org.eclipse.xtend.lib.macro.declaration.MutableParameterDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.TypeReference;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
+import org.erlide.annotations.ParametrizedMethodMemoizer;
 
 @SuppressWarnings("all")
 public class SingleParameterMethodMemoizer extends ParametrizedMethodMemoizer {

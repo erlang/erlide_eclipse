@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.internal.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Control;

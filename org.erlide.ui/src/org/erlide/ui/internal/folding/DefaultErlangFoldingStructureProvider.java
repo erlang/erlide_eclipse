@@ -442,7 +442,8 @@ public class DefaultErlangFoldingStructureProvider implements
                     && !annotation.isMarkedDeleted()) {
                 final IErlElement element = annotation.getElement();
                 final ErlElementKind kind = element.getKind();
-                return kind == ErlElementKind.FUNCTION || kind == ErlElementKind.CLAUSE;
+                return kind == ErlElementKind.FUNCTION
+                        || kind == ErlElementKind.CLAUSE;
             }
             return false;
         }
