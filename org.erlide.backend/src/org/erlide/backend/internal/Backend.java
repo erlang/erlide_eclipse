@@ -177,6 +177,9 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     public void assignStreamProxyListeners() {
+        if (data.getLaunch() == null) {
+            return;
+        }
         final IStreamsProxy proxy = getStreamsProxy();
         if (proxy != null) {
             final IStreamMonitor errorStreamMonitor = proxy
