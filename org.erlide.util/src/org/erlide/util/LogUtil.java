@@ -24,11 +24,7 @@ public final class LogUtil {
     public static String getReportLocation() {
         String s = System.getProperty("erlide.logDirectory");
         if (s == null) {
-            if (SystemConfiguration.getInstance().isOnWindows()) {
-                s = "\\\\vhub\\tecsas\\shade\\erlide\\reports";
-            } else {
-                s = "/proj/tecsas/SHADE/erlide/reports";
-            }
+            s = "/proj/uz/erlide/problemreports";
         }
         final File dir = new File(s);
         if (!dir.exists()) {
