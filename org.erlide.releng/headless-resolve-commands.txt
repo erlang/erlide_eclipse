@@ -1,2 +1,0 @@
-setpref targetPlatformPath="${target.platform}"
-resolve "${projects.location}/org.erlide.releng/build.cquery"

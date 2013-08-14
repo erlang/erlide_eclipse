@@ -1,0 +1,364 @@
+<project name="lightning-build" default="buildAndTest" basedir=".">
+	<property name="product.checkout" location="../" />
+	<makeurl file="${product.checkout}" property="product.checkout.url" />
+	<property name="build.feature.dir" location="${basedir}" />
+	<makeurl file="${build.feature.dir}" property="build.feature.dir.url" />
+	<property name="build.dir" location="../build/" />
+	<property name="director.dir" location="${build.dir}/director/" />
+	<property name="buckminster-headless.dir" location="${build.dir}/buckminster-headless/" />
+	<property name="workspace.dir" location="${build.dir}/workspace" />
+	<property name="target.platform.dir" location="${build.dir}/target-platform" />
+	<property name="buckminster.output.root.dir" location="${build.dir}/buckminster-out" />
+	<property name="buckminster.temp.root.dir" location="${build.dir}/buckminster-tmp" />
+	<property name="dist.dir" location="${build.dir}/dist/" />
+	<property name="test.product.build.dir" location="${build.dir}/test-product/" />
+	<property name="test.workspace" location="${build.dir}/test-workspace" />
+	<property name="junit-report-output" value="${build.dir}/test-results" />
+	<property name="raw-junit-report-output" value="${build.dir}/raw-test-results" />
+
+	<target name="init.platform">
+		<condition property="os" value="win32">
+			<os family="windows" />
+		</condition>
+		<condition property="os" value="macosx">
+			<os family="mac" />
+		</condition>
+		<condition property="os" value="linux">
+			<os family="unix" />
+		</condition>
+
+		<condition property="ws" value="win32">
+			<os family="windows" />
+		</condition>
+		<condition property="ws" value="carbon">
+			<os family="mac" />
+		</condition>
+		<condition property="ws" value="gtk">
+			<os family="unix" />
+		</condition>
+
+		<condition property="arch" value="x86_64">
+			<or>
+				<os arch="amd64" />
+				<os arch="x86_64" />
+			</or>
+		</condition>
+		<property name="arch" value="x86" />
+		<echo message="Platform is ${os}, ${ws}, ${arch}" />
+	</target>
+
+	<target name="install.p2.director">
+		<condition property="p2.director.installed">
+			<available file="${director.dir}" />
+		</condition>
+		<antcall target="install.p2.director.internal" />
+	</target>
+
+	<target name="install.p2.director.internal" unless="p2.director.installed">
+		<unzip dest="${build.dir}" src="director_latest.zip" />
+	</target>
+
+	<target name="install-buckminster-headless">
+		<condition property="buckminster.headless.installed">
+			<available file="${buckminster-headless.dir}" />
+		</condition>
+		<antcall target="install-buckminster-headless-internal" />
+	</target>
+
+	<target name="install-buckminster-headless-internal" unless="buckminster.headless.installed" depends="install.p2.director">
+		<java fork="true" dir="${director.dir}" logError="true" classname="org.eclipse.core.launcher.Main" failonerror="true">
+			<classpath>
+				<fileset dir="${director.dir}/plugins">
+					<include name="org.eclipse.equinox.launcher_*.jar" />
+				</fileset>
+			</classpath>
+			<arg line='-data "${director.dir}/workspace"' />
+			<arg line="-r http://download.eclipse.org/tools/buckminster/headless-3.6,http://download.eclipse.org/releases/helios/" />
+			<arg line='-d "${buckminster-headless.dir}"' />
+			<arg line="-p Buckminster" />
+			<arg line="-i org.eclipse.buckminster.cmdline.product" />
+			<arg line="-i org.eclipse.buckminster.core.headless.feature.feature.group" />
+			<arg line="-i org.eclipse.buckminster.pde.headless.feature.feature.group" />
+		</java>
+	</target>
+
+	<target name="rebuild.p2.repository" depends="install.p2.director">
+		<fail unless="local.p2.repository.dir" message="local.p2.repository.dir must be specified.  See rebuild.local.p2.repositories" />
+		<fail unless="local.p2.repository.content.dir" message="local.p2.repository.content.dir must be specified.  See rebuild.local.p2.repositories" />
+
+		<property name="local.p2.repository.absolute.dir" location="${local.p2.repository.dir}" />
+		<property name="local.p2.repository.content.absolute.dir" location="${local.p2.repository.content.dir}" />
+		<makeurl file="${local.p2.repository.absolute.dir}" property="local.p2.repository.file.url" validate="false"/>
+		<delete dir="${local.p2.repository.absolute.dir}" />
+		<echo message="Rebuilding p2 repository ${local.p2.repository.file.url} from ${local.p2.repository.content.absolute.dir}" />
+		<java fork="true" dir="${director.dir}" logError="true" classname="org.eclipse.core.launcher.Main" failonerror="true">
+			<classpath>
+				<fileset dir="${director.dir}/plugins">
+					<include name="org.eclipse.equinox.launcher_*.jar" />
+				</fileset>
+			</classpath>
+			<arg line='-data "${director.dir}/workspace"' />
+			<arg line="-application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher" />
+			<arg line="-metadataRepository ${local.p2.repository.file.url}" />
+			<arg line="-artifactRepository ${local.p2.repository.file.url}" />
+			<arg line='-source "${local.p2.repository.content.absolute.dir}"' />
+			<arg line="-compress" />
+			<arg line="-publishArtifacts" />
+		</java>
+	</target>
+
+	<target name="rebuild.local.p2.repository">
+		<antcall target="rebuild.p2.repository" inheritall="false">
+			<param name="local.p2.repository.dir" value="local-repository" />
+			<param name="local.p2.repository.content.dir" value="local-repository-content" />
+		</antcall>
+	</target>
+
+	<target name="rebuild.local.test.framework.p2.repository">
+		<antcall target="rebuild.p2.repository" inheritall="false">
+			<param name="local.p2.repository.dir" value="eclipse-test-framework-local-repository" />
+			<param name="local.p2.repository.content.dir" value="eclipse-test-framework-local-repository-content" />
+		</antcall>
+	</target>
+
+	<target name="rebuild.local.p2.repositories" depends="rebuild.local.p2.repository, rebuild.local.test.framework.p2.repository" />
+
+	<target name="build.target.product" depends="install-buckminster-headless, rebuild.local.p2.repositories, init.platform">
+		<fail unless="product.target.name" message="product.target.name must be specified" />
+		<java fork="true" dir="${buckminster-headless.dir}" logError="true" classname="org.eclipse.core.launcher.Main" failonerror="true">
+			<classpath>
+				<fileset dir="${buckminster-headless.dir}/plugins">
+					<include name="org.eclipse.equinox.launcher_*.jar" />
+				</fileset>
+			</classpath>
+			<arg line='-data "${workspace.dir}"' />
+			<arg line='--script "${build.feature.dir}/product.buckminster"' />
+			<sysproperty key="build.feature.dir" value="${build.feature.dir}" />
+			<sysproperty key="build.feature.dir.url" value="${build.feature.dir.url}" />
+			<sysproperty key="product.checkout" value="${product.checkout}" />
+			<sysproperty key="product.checkout.url" value="${product.checkout.url}" />
+			<sysproperty key="perform.target" value="buckminster.build.feature#${product.target.name}" />
+			<sysproperty key="buckminster.output.root" value="${buckminster.output.root.dir}" />
+			<sysproperty key="buckminster.temp.root" value="${buckminster.temp.root.dir}" />
+			<sysproperty key="qualifier.replacement.*" value="generator:lastRevision" />
+			<sysproperty key="target.os" value="${os}" />
+			<sysproperty key="target.ws" value="${ws}" />
+			<sysproperty key="target.arch" value="${arch}" />
+			<sysproperty key="eclipse.p2.MD5Check" value="false" />
+			<jvmarg line=" -Xms256m -Xmx512m"/>
+		</java>
+	</target>
+
+	<target name="build.product">
+		<delete dir="${buckminster.output.root.dir}" />
+		<delete dir="${buckminster.temp.root.dir}" />
+		<delete dir="${workspace.dir}" />
+		<antcall target="build.target.product">
+			<param name="product.target.name" value="create.product.zip" />
+		</antcall>
+		<move todir="${dist.dir}" flatten="true">
+			<fileset dir="${buckminster.output.root.dir}/">
+				<include name="buckminster.build.feature_*/*.${os}.${ws}.${arch}.zip" />
+			</fileset>
+		</move>
+	</target>
+
+	<target name="build.test.product">
+		<antcall target="build.target.product">
+			<param name="product.target.name" value="create.product.test" />
+		</antcall>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="test-clean">
+		<delete dir="${buckminster.output.root.dir}" />
+		<delete dir="${buckminster.temp.root.dir}" />
+		<delete dir="${test.product.build.dir}" />
+		<delete dir="${raw-junit-report-output}" />
+		<delete dir="${junit-report-output}" />
+		<delete dir="${target.platform.dir}" />
+		<delete dir="${workspace.dir}" />
+		<delete dir="${test.workspace}" />
+	</target>
+
+	<target name="build-clean">
+		<delete dir="${buckminster.output.root.dir}" />
+		<delete dir="${buckminster.temp.root.dir}" />
+		<delete dir="${target.platform.dir}" />
+		<delete dir="${workspace.dir}" />
+		<delete dir="${dist.dir}" />
+	</target>
+
+	<target name="test-init" depends="init.platform">
+		<property name="eclipse-home" location="${test.product.build.dir}" />
+
+		<tstamp>
+			<format property="TIMENOW" pattern="HHmmssSSSS" />
+		</tstamp>
+		<property name="formatter" value="org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter" />
+		<property name="extraVMargs" value="" />
+		<property name="timeout" value="7200000" />
+		<mkdir dir="${junit-report-output}" />
+		<mkdir dir="${raw-junit-report-output}" />
+		<delete dir="${test.workspace}" quiet="true" />
+	</target>
+
+	<target name="core-test" description="Eclipse application used to launch HEADLESS plugin tests." depends="test-init">
+		<fail unless="test.plugin.id" message="The property test.plugin.id must be set to the plugin or fragment that contains the tests." />
+		<antcall target="java-test">
+			<param name="application" value="org.eclipse.test.coretestapplication" />
+		</antcall>
+	</target>
+
+	<target name="ui-test" description="Eclipse application used to launch UI plugin tests." depends="test-init">
+		<fail unless="test.plugin.id" message="The property test.plugin.id must be set to the plugin or fragment that contains the tests." />
+		<antcall target="java-test">
+			<param name="application" value="org.eclipse.test.uitestapplication" />
+		</antcall>
+	</target>
+
+	<target name="swtbot-test" description="Eclipse application used to launch SWTBot tests." depends="test-init">
+		<fail unless="test.plugin.id" message="The property test.plugin.id must be set to the plugin or fragment that contains the tests." />
+		<antcall target="java-test">
+			<param name="application" value="org.eclipse.swtbot.eclipse.junit4.headless.swtbottestapplication" />
+			<param name="testproduct.if.available" value="-product com.asolutions.lightning.test_product" />
+			<param name="testapplication.if.available" value="-testApplication com.asolutions.lightning.application" />
+		</antcall>
+	</target>
+
+	<target name="java-test">
+		<property name="testproduct.if.available" value="" />
+		<property name="testapplication.if.available" value="" />
+		<!-- this argument was added by swtbot tests for jvm args in macosx -->
+		<condition property="macJvmOptions" value="-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts">
+			<os family="mac" />
+		</condition>
+		<property name="macJvmOptions" value="" />
+
+		<property name="vmargs" value=" -Xms256m -Xmx512m" />
+		<echo message="Running ${test.plugin.id}. Result file: ${junit-report-output}/${test.plugin.id}.xml." />
+
+		<java fork="true" dir="." timeout="${timeout}" logError="true" classname="org.eclipse.core.launcher.Main" output="${junit-report-output}/${test.plugin.id}.txt" failonerror="false">
+			<classpath>
+				<fileset dir="${eclipse-home}/plugins/">
+					<include name="org.eclipse.equinox.launcher_*.jar" />
+				</fileset>
+			</classpath>
+			<arg line="-application ${application}" />
+			<arg line="${testproduct.if.available}" />
+			<arg line="${testapplication.if.available}" />
+			<arg line='-data "${test.workspace}"' />
+			<arg line="formatter=${formatter},${raw-junit-report-output}/${test.plugin.id}.xml" />
+			<arg line="-testPluginName ${test.plugin.id}" />
+			<arg line="-className ${test.plugin.id}.AllTests" />
+			<arg line="-os ${os}" />
+			<arg line="-ws ${ws}" />
+			<arg line="-arch ${arch}" />
+			<arg line="-consolelog" />
+			<jvmarg line="${vmargs} ${extraVMargs} ${macJvmOptions}" />
+		</java>
+		<antcall target="collect-results" />
+	</target>
+
+	<target name="collect-results">
+		<dirname property="output-dir" file="${raw-junit-report-output}/${test.plugin.id}.xml" />
+		<basename property="output-file-name" file="${raw-junit-report-output}/${test.plugin.id}.xml" />
+		<junitreport todir="${junit-report-output}" tofile="${test.plugin.id}.xml">
+			<fileset dir="${output-dir}">
+				<include name="${output-file-name}" />
+			</fileset>
+		</junitreport>
+
+		<xslt style="${eclipse-home}/plugins/org.eclipse.test_3.3.0/JUNIT.XSL" basedir="${junit-report-output}" includes="${test.plugin.id}.result.xml" destdir="${junit-report-output}" />
+
+		<!--save .log content and *.log content from configuration directory-->
+		<concat destfile="${junit-report-output}/${test.plugin.id}.log">
+			<fileset dir="${eclipse-home}" includes="test-workspace/.metadata/*.log" />
+			<fileset dir="${eclipse-home}" includes="configuration/*.log" />
+		</concat>
+	</target>
+
+	<target name="test" depends="test-init">
+		<delete dir="${junit-report-output}" quiet="true" />
+		<delete dir="${raw-junit-report-output}" quiet="true" />
+		<antcall target="core-test">
+			<param name="test.plugin.id" value="com.asolutions.lightning.test" />
+		</antcall>
+		<antcall target="swtbot-test">
+			<param name="test.plugin.id" value="com.asolutions.lightning.swtbot.test" />
+		</antcall>
+		<junitreport todir="${junit-report-output}" tofile="all-tests.xml">
+			<fileset dir="${raw-junit-report-output}">
+				<include name="*.xml" />
+			</fileset>
+		</junitreport>
+	</target>
+
+	<target name="buildAndTest" depends="clean, build.test.product, test" description="Runs all tests and creates a final product for the current platform">
+		<condition property="junit.tests.failed">
+			<or>
+				<resourcecontains resource="${junit-report-output}/all-tests.xml" substring="&lt;error " />
+				<resourcecontains resource="${junit-report-output}/all-tests.xml" substring="&lt;failure " />
+			</or>
+		</condition>
+		<fail if="junit.tests.failed" message="JUnit tests failed.  See report at ${junit-report-output}/all-tests.xml" />
+		<antcall target="build.product" />
+		<echo message="Tests completed without failure.  Product built at ${dist.dir}" />
+	</target>
+
+	<target name="build.cross.platform" depends="build-clean">
+		<echo message="Building Product for Windows" />
+		<antcall target="build.product" inheritall="false">
+			<param name="os" value="win32" />
+			<param name="ws" value="win32" />
+			<param name="arch" value="x86" />
+		</antcall>
+		<echo message="Building Product for Linux" />
+		<antcall target="build.product" inheritall="false">
+			<param name="os" value="linux" />
+			<param name="ws" value="gtk" />
+			<param name="arch" value="x86" />
+		</antcall>
+	</target>
+
+	<target name="materialize.target.platform" depends="rebuild.local.p2.repositories, install-buckminster-headless">
+		<java fork="true" dir="${buckminster-headless.dir}" logError="true" classname="org.eclipse.core.launcher.Main" failonerror="true">
+			<classpath>
+				<fileset dir="${buckminster-headless.dir}/plugins">
+					<include name="org.eclipse.equinox.launcher_*.jar" />
+				</fileset>
+			</classpath>
+			<arg line='-data "${workspace.dir}"' />
+			<arg line='--script "${build.feature.dir}/materialize.target.platform.buckminster"' />
+			<sysproperty key="build.feature.dir" value="${build.feature.dir}" />
+			<sysproperty key="build.feature.dir.url" value="${build.feature.dir.url}" />
+			<sysproperty key="product.checkout" value="${product.checkout}" />
+			<sysproperty key="product.checkout.url" value="${product.checkout.url}" />
+			<sysproperty key="buckminster.output.root" value="${buckminster.output.root.dir}" />
+			<sysproperty key="buckminster.temp.root" value="${buckminster.temp.root.dir}" />
+			<sysproperty key="qualifier.replacement.*" value="generator:lastRevision" />
+			<jvmarg line=" -Xms256m -Xmx512m"/>
+		</java>
+		<echo message="Target Platform was successfully materialized at ${product.checkout.url}/workspace-target-platform" />
+	</target>
+</project>
+
+<!--
+import '${WORKSPACE}source/scodi-server/features/ch.scodi.server.site/site.cquery'
+import '${WORKSPACE}source/scodi-server/features/ch.scodi.server.test.site/site.cquery'
+
+build
+
+perform -D target.os=* -D target.ws=* -D target.arch=* -D qualifier.replacement.*=${version} ch.scodi.server.site#site.p2
+perform -D target.os=win32 -D target.ws=win32 -D target.arch=x86 ch.scodi.server.site#create.product.zip
+
+emma -l '/ch.scodi.server.test.site/ScodiServerTest.launch' -o '${WORKSPACE}output/junit_result.xml' - -xml '${WORKSPACE}/output/coverage_report.xml' - -flatXML
+
+=============
+
+https://github.com/micahhainline/lightning/blob/master/buckminster.build.feature/build.xml
+
+-->

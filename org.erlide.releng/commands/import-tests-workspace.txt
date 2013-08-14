@@ -1,0 +1,4 @@
+importpreferences -F ${projects.location}/org.erlide.releng/erl.epf -S instance
+
+resolve "${projects.location}/org.erlide.releng/junit.cquery"
+

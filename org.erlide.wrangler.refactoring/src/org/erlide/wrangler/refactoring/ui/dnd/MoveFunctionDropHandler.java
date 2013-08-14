@@ -110,8 +110,6 @@ public class MoveFunctionDropHandler implements INavigatorDropHandler {
             ErlLogger.error(e);
         }
 
-        System.out.print("hand");
-
         return Status.OK_STATUS;
     }
 }

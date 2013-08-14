@@ -73,7 +73,7 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
 
                         @Override
                         public void handleException(final Throwable exception) {
-                            System.out.println("Exception in client");
+                            ErlLogger.error("Exception in client");
                         }
 
                         @Override
@@ -88,7 +88,7 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
                 }
             }
         } catch (final Exception ex) {
-            System.out.println(ex.getMessage());
+            ErlLogger.error(ex);
         }
         return status;
     }

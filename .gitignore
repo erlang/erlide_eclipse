@@ -1,3 +1,4 @@
+.vagrant
 *.beam
 *.class
 workspaces
@@ -12,7 +13,6 @@ erlide.log.*
 External_Files
 cover_report
 *.bak
-refac_proj
 junit-*
 temp
 ttb_last_config
@@ -22,4 +22,5 @@ ttb_last_config
 .recommenders
 *._trace
 buildroot
-
+tools
+target.platform

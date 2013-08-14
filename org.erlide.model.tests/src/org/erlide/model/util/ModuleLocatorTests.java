@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Collection;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.model.ErlModelException;
@@ -19,8 +20,8 @@ public class ModuleLocatorTests {
     private IErlProject p2;
 
     @Before
-    public void setup() throws ErlModelException {
-        p1 = ErlideTestUtils.getExistingProject("p1");
+    public void setup() throws CoreException {
+        p1 = ErlideTestUtils.createProject(new Path("p1"), "p1");
         p2 = ErlideTestUtils.getExistingProject("p2");
         if (p1 != null) {
             p1.makeConsistent(null);
