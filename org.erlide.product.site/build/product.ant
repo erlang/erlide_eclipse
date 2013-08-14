@@ -11,11 +11,12 @@
                 targetos="unix"
                 property="product.repositories"
                 refid="repositories.valuepath">
-            <map from="" to="file:/" />
+            <map from="" to="file://" />
         </pathconvert>
         <echoproperties />
         <echo message="Repositories: ${product.repositories}" />
         <echo message="Install Dir : ${product.install.directory}" />
+    	<echo message="IU: ${iu}"/>
  
         <p2.director
             destination="${product.install.directory}"
@@ -33,7 +34,7 @@
 	
 	 <target name="create.target.platform.repository">
 	        <buckminster.targetPlatformLocation property="target.platform.location" />
-	        <property name="target.platform.repository" value="file:/${sp:output}" />
+	        <property name="target.platform.repository" value="file://${sp:output}" />
 	        <property name="repository.name" value="Target Platform Repository" />        
 	        <p2.publish.featuresAndBundles
 	            repository="${target.platform.repository}"

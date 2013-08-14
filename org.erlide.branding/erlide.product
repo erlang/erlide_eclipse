@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="erlide" uid="org.erlide.product" id="org.erlide.branding.product" application="org.eclipse.ui.ide.workbench" version="0.25.0" useFeatures="true" includeLaunchers="true">
+<product name="erlide" uid="org.erlide.product" id="org.erlide.branding.product" application="org.eclipse.ui.ide.workbench" version="0.23.1" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.erlide.branding/images/erl-zen-badge-160.png"/>
@@ -56,9 +56,12 @@ Vlad Dumitrescu, Jakob Cederlund and others
       <feature id="org.eclipse.platform"/>
       <feature id="org.eclipse.help"/>
       <feature id="org.eclipse.equinox.executable"/>
+      <feature id="org.eclipse.equinox.p2.core.feature"/>
+      <feature id="org.eclipse.equinox.p2.rcp.feature"/>
+      <feature id="org.eclipse.equinox.p2.user.ui"/>
+      <feature id="org.eclipse.rcp"/>
+      <feature id="org.eclipse.equinox.p2.extras.feature"/>
    </features>
 
-   <configurations>
-   </configurations>
 
 </product>
