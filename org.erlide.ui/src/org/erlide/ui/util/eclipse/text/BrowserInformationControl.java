@@ -322,7 +322,7 @@ public class BrowserInformationControl extends AbstractInformationControl
         fBrowserHasContent = content != null && content.length() > 0;
 
         if (!fBrowserHasContent) {
-            content = "<html><body ></html>"; //$NON-NLS-1$
+            content = "<html><body></body></html>"; //$NON-NLS-1$
         }
 
         final boolean RTL = (getShell().getStyle() & SWT.RIGHT_TO_LEFT) != 0;
@@ -379,7 +379,6 @@ public class BrowserInformationControl extends AbstractInformationControl
 
         if (!visible) {
             super.setVisible(false);
-            setInput(null);
             return;
         }
 
