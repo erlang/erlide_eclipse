@@ -1,0 +1,39 @@
+def fputs(str, f)
+    File.open(f,'w') do |s|
+        s.puts str
+    end
+end
+
+def build_id
+  ENV['BUILD_ID'] || ''
+end  
+
+task :default => :build
+    
+desc "compile, run test and create update site"
+task :build, [:tools_dir] do |t, args| 
+    puts "Building"
+    args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
+
+    version = `cat org.erlide/feature.xml | grep \"version=.*qualifier\" | head -n 1 | cut -d\\\" -f 2 | cut -d. -f1,2,3`
+    info = `git describe`
+    
+    fputs "document.write('#{info.strip}');", "info"
+    fputs "document.write('#{version.strip}');", "version"
+    fputs "document.write('#{build_id.strip}');", "id"
+
+    system "export PATH=#{args.tools_dir}/bin:$PATH && export ANT_HOME=#{args.tools_dir}/ant && ant -f org.erlide.releng/build.ant build"
+end
+
+desc "upload update site to servers"
+task :publish do
+    puts "Publishing"
+
+end
+
+desc "tag a release in git repo"
+task :mk_release do
+    puts "Creating release"
+
+end
+
