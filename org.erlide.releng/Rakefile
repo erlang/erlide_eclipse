@@ -8,7 +8,7 @@ def build_id
   ENV['BUILD_ID'] || ''
 end  
 
-task :default => :build
+task :default => [:build]
     
 desc "compile, run test and create update site"
 task :build, [:tools_dir] do |t, args| 

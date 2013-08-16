@@ -1,3 +1,5 @@
+#!/bin/bash -xe
+
 SOURCE=$1
 DESTINATION=$2
 USER=$3
