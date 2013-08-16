@@ -1,6 +1,9 @@
 package org.erlide.model.util;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Collection;
 
@@ -11,6 +14,7 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +25,7 @@ public class ModuleLocatorTests {
 
     @Before
     public void setup() throws CoreException {
-        p1 = ErlideTestUtils.createProject(new Path("p1"), "p1");
+        p1 = ErlideTestUtils.getExistingProject("p1");
         p2 = ErlideTestUtils.getExistingProject("p2");
         if (p1 != null) {
             p1.makeConsistent(null);
@@ -33,8 +37,8 @@ public class ModuleLocatorTests {
 
     @Test
     public void demoProjectsShouldBeInWorkspace() {
-        assertNotNull(p1);
-        assertNotNull(p2);
+        MatcherAssert.assertThat(p1, is(not(nullValue())));
+        MatcherAssert.assertThat(p2, is(not(nullValue())));
     }
 
     @Test
@@ -50,11 +54,14 @@ public class ModuleLocatorTests {
     private void checkProjectDirectories(final IErlProject project,
             final Object[] expected_sources, final Object[] expected_includes)
             throws ErlModelException {
-        assertArrayEquals(expected_sources, project.getSourceDirs().toArray());
-        assertArrayEquals(expected_includes, project.getIncludeDirs().toArray());
-        assertEquals("../external_modules", project.getExternalModulesString());
-        assertEquals("../external_includes",
-                project.getExternalIncludesString());
+        MatcherAssert.assertThat(project.getSourceDirs().toArray(),
+                is(expected_sources));
+        MatcherAssert.assertThat(project.getIncludeDirs().toArray(),
+                is(expected_includes));
+        assertThat(project.getExternalModulesString(),
+                is("../external_modules"));
+        assertThat(project.getExternalIncludesString(),
+                is("../external_includes"));
     }
 
     // @Test
@@ -78,7 +85,7 @@ public class ModuleLocatorTests {
     private void checkModuleNamesInList(final String[] mods,
             final Collection<IErlModule> list) {
         for (final String name : mods) {
-            assertTrue(name, hasModWithName(list, name));
+            assertThat(name, hasModWithName(list, name));
         }
     }
 

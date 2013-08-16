@@ -30,8 +30,9 @@
 
 		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-code.txt" propertiesfile="${build.properties}" />
 		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/p2-site.txt" propertiesfile="${build.properties}" />
-		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-tests.txt" propertiesfile="${build.properties}" />
+		
 		<antcall target="import.junit.workspace" />
+        <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-tests.txt" propertiesfile="${build.properties}" />
 		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/run-tests.txt" propertiesfile="${build.properties}" />
 		<antcall target="eunit.tests" />
 
@@ -68,10 +69,10 @@
 
 		<exec executable="chmod">
 			<arg value="u+x" />
-			<arg value="${WORKSPACE}/org.erlide.releng/run_eunit" />
+			<arg value="${projects.location}/org.erlide.releng/run_eunit" />
 		</exec>
-		<exec executable="${WORKSPACE}/org.erlide.releng/run_eunit" failonerror="true">
-			<arg value="${WORKSPACE}" />
+		<exec executable="${projects.location}/org.erlide.releng/run_eunit" failonerror="true">
+			<arg value="${projects.location}" />
 			<arg value="${tool.otp}" />
 			<arg value="buildroot/output" />
 		</exec>

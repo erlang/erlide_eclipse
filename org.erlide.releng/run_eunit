@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash -xe
 
 WORKSPACE=$1
 ERLANG_HOME=$2

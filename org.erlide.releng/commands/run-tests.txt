@@ -1,3 +1,4 @@
+build
 
 junit -l org.erlide.testing/junit_util.launch -o ${projects.location}/buildroot/output/junit_result_util.xml  --flatXML --terseXML --stderr --stdout
 junit -l org.erlide.testing/junit_runtime.launch -o ${projects.location}/buildroot/output/junit_result_runtime.xml  --flatXML --terseXML  --stderr --stdout
@@ -6,4 +7,3 @@ junit -l org.erlide.testing/junit_model.launch -o ${projects.location}/buildroot
 junit -l org.erlide.testing/junit_core.launch -o ${projects.location}/buildroot/output/junit_result_core.xml --flatXML --terseXML  --stderr --stdout
 junit -l org.erlide.testing/junit_dialyzer.launch -o ${projects.location}/buildroot/output/junit_result_dialyzer.xml --flatXML --terseXML  --stderr --stdout
 junit -l org.erlide.testing/junit_ui.launch -o ${projects.location}/buildroot/output/junit_result_ui.xml --flatXML --terseXML  --stderr --stdout
-
