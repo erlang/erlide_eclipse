@@ -1,8 +1,10 @@
 package org.erlide.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -14,7 +16,7 @@ public class ListsUtilsTest {
         final List<String> input = Lists.newArrayList("aaa", "bbb", "ccc");
         final String expected = "aaa--bbb--ccc";
         final String actual = ListsUtils.packList(input, "--");
-        Assert.assertEquals(expected, actual);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -22,7 +24,7 @@ public class ListsUtilsTest {
         final String[] input = new String[] { "aaa", "bbb", "ccc" };
         final String expected = "aaa--bbb--ccc";
         final String actual = ListsUtils.packArray(input, "--");
-        Assert.assertEquals(expected, actual);
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -30,7 +32,7 @@ public class ListsUtilsTest {
         final String input = "aaa--bbb--ccc";
         final String[] expected = new String[] { "aaa", "bbb", "ccc" };
         final String[] actual = ListsUtils.unpackArray(input, "--");
-        Assert.assertArrayEquals(expected, actual);
+        assertThat(actual, is(expected));
     }
 
 }
