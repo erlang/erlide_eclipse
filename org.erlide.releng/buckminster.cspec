@@ -4,7 +4,9 @@
         <cs:dependency name="org.eclipse.equinox.executable" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.equinox.p2.user.ui" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.platform" componentType="eclipse.feature"/>
-        <cs:dependency name="org.junit" componentType="osgi.bundle"/>
         <cs:dependency name="org.eclipse.platform.source" componentType="eclipse.feature"/>
+        <cs:dependency name="org.junit" componentType="osgi.bundle"/>
+        <cs:dependency name="org.erlide.site" componentType="eclipse.feature"/>
+        <cs:dependency name="org.erlide.product.site" componentType="eclipse.feature"/>
     </cs:dependencies>
 </cs:cspec>

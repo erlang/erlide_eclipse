@@ -1,0 +1,5 @@
+setpref targetPlatformPath="${target.platform}"
+
+installJRE --location "${jdk.home}" --name erlide_jre
+
+resolve "${projects.location}/org.erlide.releng/product.cquery"

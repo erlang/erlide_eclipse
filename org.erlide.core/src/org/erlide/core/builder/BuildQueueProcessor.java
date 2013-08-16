@@ -39,10 +39,10 @@ public class BuildQueueProcessor extends Job {
                 } catch (final InterruptedException e) {
                     ErlLogger.error(e);
                 }
-                continue;
+            } else {
+                MarkerUtils.removeTaskMarkers(work.resource);
+                MarkerUtils.createTaskMarkers(work.resource);
             }
-            MarkerUtils.removeTaskMarkers(work.resource);
-            MarkerUtils.createTaskMarkers(work.resource);
         }
         return Status.OK_STATUS;
     }

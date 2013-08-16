@@ -1,0 +1,2 @@
+resolve "${projects.location}/org.erlide.releng/tests.cquery"
+

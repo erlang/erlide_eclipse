@@ -122,7 +122,7 @@ public class TestSourcePathProvider implements SourcePathProvider,
                 }
             });
             if (SystemConfiguration.hasFeatureEnabled("erlide.debug.tspp")) {
-                System.out.println("TSPP took "
+                ErlLogger.debug("TSPP took "
                         + (System.currentTimeMillis() - time));
             }
         } catch (final CoreException e) {

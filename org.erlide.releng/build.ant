@@ -1,49 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	Buckminster Headless - build
+    Buckminster Headless - build
 
-	buckminster.home must be specified on the command line, e.g.,
-	 	ant -Dbuckminster.home=/home/bettini/buckminster -f build.ant
+    buckminster.home must be specified on the command line, e.g.,
+        ant -Dbuckminster.home=/home/bettini/buckminster -f build.ant
 
-	Properties:
-		WORKSPACE  			Eclipse workspace location, or hudson job workspace
-		build.root 			Where to build? WARNING: This folder will be cleaned up, so do not point to user.home or something important
-							Default: ${WORKSPACE}/buildroot
-		buckminster.home	Buckminster headless to use. See http://www.eclipse.org/buckminster/downloads.html
-		projects.location	Where to find projects to build?
-							Default: ${WORKSPACE}
-		eclipse.download	The base URL for all the repositories in the RMAP
-							Default: http://download.eclipse.org
+    Properties:
+        WORKSPACE           Eclipse workspace location, or hudson job workspace
+        build.root          Where to build? WARNING: This folder will be cleaned up, so do not point to user.home or something important
+                            Default: ${WORKSPACE}/buildroot
+        buckminster.home    Buckminster headless to use. See http://www.eclipse.org/buckminster/downloads.html
+        projects.location   Where to find projects to build?
+                            Default: ${WORKSPACE}
+        eclipse.download    The base URL for all the repositories in the RMAP
+                            Default: http://download.eclipse.org
 -->
-<project name="Buckminster Headless" default="buckminster">
+<project name="Buckminster Headless" default="build">
 	<import file="common.ant" as="common" />
 
-	<target name="buckminster" depends="common.cleanup,install.buckminster.headless" description="description">
+	<property name="tool.jdk" value="${user.home}/erlide_tools/jdk" />
+	<property name="tool.otp" value="${user.home}/erlide_tools/otp" />
 
-		<property name="resolve.commands.file" location="${projects.location}/org.erlide.releng/headless-resolve-commands.txt" />
-		<property name="perform.commands.file" location="${projects.location}/org.erlide.releng/headless-perform-commands.txt" />
-		<property name="build.properties" location="${projects.location}/org.erlide.releng/build.properties" />
+	<property name="build.properties" location="${projects.location}/org.erlide.releng/build.properties" />
 
-		<echo message="IMPORTANT: Populating an empty target platform may took over 10 minutes." />
+	<target name="build" depends="common.cleanup,install.buckminster.headless" description="import code" unless="import.code">
+
+		<echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
 		<echo message="build.properties: ${build.properties}" />
 
-		<run_buckminster commandsfile="${resolve.commands.file}" propertiesfile="${build.properties}" />
-		<run_buckminster commandsfile="${perform.commands.file}" propertiesfile="${build.properties}" />
+		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-code.txt" propertiesfile="${build.properties}" />
+		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/p2-site.txt" propertiesfile="${build.properties}" />
+		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-tests.txt" propertiesfile="${build.properties}" />
+		<antcall target="import.junit.workspace" />
+		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/run-tests.txt" propertiesfile="${build.properties}" />
+		<antcall target="eunit.tests" />
 
 		<echo message=" " />
-		<echo message="Build Finished" />
+		<echo message="Finished" />
 	</target>
+
+    <target name="product" depends="install.buckminster.headless" description="import code">
+        <echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
+        <echo message="build.properties: ${build.properties}" />
+
+        <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-features.txt" propertiesfile="${build.properties}" />
+        <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/p2-product.txt" propertiesfile="${build.properties}" />
+
+        <echo message=" " />
+        <echo message="Finished" />
+    </target>
+
+    <target name="all" depends="install.buckminster.headless,build" description="import code">
+        <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/p2-product.txt" propertiesfile="${build.properties}" />
+        <echo message=" " />
+        <echo message="Finished" />
+    </target>
 	
-	<target name="b3_aggregation" depends="install.b3.headless" description="description">
-
-		<property name="build.model" location="${projects.location}/org.eclipse.buckminster.examples.rcp.mail.releng/aggregator/target-platform-mirror.b3aggr" />
-		
-		<echo message="IMPORTANT: Mirror aggregation may took over 10 minutes." />
-		<echo message="build.model: ${build.model}" />
-
-		<run_b3_aggregator buildmodel="${build.model}" />
-
-		<echo message=" " />
-		<echo message="Aggregated mirror in: ${user.home}/mirror/rcp/final" />
+	<target name="import.junit.workspace">
+		<copy todir="${build.root}/buckminster.workspace/junit-workspace">
+			<fileset dir="${projects.location}/org.erlide.ui.tests/projects" />
+		</copy>
+		<run_buckminster workspace="${build.root}/buckminster.workspace/junit-workspace" commandsfile="${projects.location}/org.erlide.releng/commands/import-tests-workspace.txt" propertiesfile="${build.properties}" />
 	</target>
+
+	<target name="eunit.tests">
+		<echo message="Running EUnit..." />
+
+		<exec executable="chmod">
+			<arg value="u+x" />
+			<arg value="${WORKSPACE}/org.erlide.releng/run_eunit" />
+		</exec>
+		<exec executable="${WORKSPACE}/org.erlide.releng/run_eunit" failonerror="true">
+			<arg value="${WORKSPACE}" />
+			<arg value="${tool.otp}" />
+			<arg value="buildroot/output" />
+		</exec>
+
+		<echo message="EUnit done" />
+	</target>
+
 </project>

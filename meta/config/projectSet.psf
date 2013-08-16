@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<psf version="2.0">
+<provider id="org.eclipse.egit.core.GitProvider">
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.backend"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.backend.tests"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.branding"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.core"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.core.api"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.core.tests"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.cover"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.cover.api"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.cover.core"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.cover.erlang"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.cover.site"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.cover.ui"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.dialyzer.core"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.dialyzer.tests"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.dialyzer.ui"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.headless"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.help"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.kernel.builder"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.kernel.common"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.kernel.debugger"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.kernel.ide"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.kernel.tests"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.libs"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.licenses"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.model"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.model.api"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.model.tests"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.product"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.product.site"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.releng"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.runtime"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.runtime.tests"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.sdk"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.site"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.test_support"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.test_support.tests"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.testing"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.testing.libs"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.tracing"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.tracing.core"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.tracing.erlang"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.tracing.help"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.tracing.site"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.tracing.ttbe"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.ui"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.ui.tests"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.util"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.util.tests"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.util_eclipse"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.wrangler"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.wrangler.core"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.wrangler.help"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.wrangler.refactoring"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.wrangler.refactoring.codeinspection"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,org.erlide.wrangler.refactoring.duplicatedcode"/>
+<project reference="1.0,git@github.com:vladdu/erlide.git,build,releng.tools"/>
+</provider>
+<workingSets editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" id="1370890995744_7" label="cover" name="cover">
+<item elementID="=org.erlide.cover.ui" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.cover.erlang" type="4"/>
+<item elementID="=org.erlide.cover.core" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.cover" type="4"/>
+<item elementID="=org.erlide.cover.api" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.cover.site" type="4"/>
+</workingSets>
+<workingSets editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" id="1370890961635_3" label="features" name="features">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.headless" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.sdk" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.licenses" type="4"/>
+</workingSets>
+<workingSets editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" id="1370890952362_2" label="plugins" name="plugins">
+<item elementID="=org.erlide.runtime" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.model" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.util_eclipse" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.kernel.common" type="4"/>
+<item elementID="=org.erlide.core" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.backend" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.kernel.ide" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.kernel.builder" type="4"/>
+<item elementID="=org.erlide.libs" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.core.api" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.help" type="4"/>
+<item elementID="=org.erlide.test_support" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.util" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.branding" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.dialyzer.ui" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.kernel.debugger" type="4"/>
+<item elementID="=org.erlide.dialyzer.core" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.kernel.tests" type="4"/>
+<item elementID="=org.erlide.ui" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.model.api" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+</workingSets>
+<workingSets editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" id="1372865212411_9" label="releng" name="releng">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.product.site" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/TP" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/releng.tools" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.site" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.releng" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.product" type="4"/>
+</workingSets>
+<workingSets editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" id="1370890970682_4" label="tests" name="tests">
+<item elementID="=org.erlide.util.tests" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.testing.libs" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.core.tests" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.runtime.tests" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.dialyzer.tests" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.testing" type="4"/>
+<item elementID="=org.erlide.ui.tests" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.backend.tests" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.test_support.tests" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=org.erlide.model.tests" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+</workingSets>
+<workingSets editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" id="1370890992009_6" label="tracing" name="tracing">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.tracing" type="4"/>
+<item elementID="=org.erlide.tracing.core" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.tracing.site" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.tracing.erlang" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.tracing.ttbe" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.tracing.help" type="4"/>
+</workingSets>
+<workingSets editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" id="1370890986992_5" label="wrangler" name="wrangler">
+<item elementID="=org.erlide.wrangler.refactoring.duplicatedcode" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.wrangler.core" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.wrangler" type="4"/>
+<item elementID="=org.erlide.wrangler.refactoring.codeinspection" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/org.erlide.wrangler.help" type="4"/>
+<item elementID="=org.erlide.wrangler.refactoring" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+</workingSets>
+</psf>
