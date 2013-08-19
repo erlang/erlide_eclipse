@@ -1,67 +1,64 @@
 def fputs(str, f)
-    File.open(f,'w') do |s|
-        s.puts str
-    end
+  File.open(f,'w') do |s|
+    s.puts str
+  end
 end
 
 def build_id
   ENV['BUILD_ID'] || ''
-end  
+end
 
 def generate_version_info
-    version = `cat org.erlide/feature.xml | grep \"version=.*qualifier\" | head -n 1 | cut -d\\\" -f 2 | cut -d. -f1,2,3`
-    info = `git describe`
-    
-    fputs "document.write('#{info.strip}');", "buildroot/info.js"
-    fputs "document.write('#{version.strip}');", "buildroot/version.js"
-    fputs "document.write('#{build_id.strip}');", "buildroot/id.js"
+  version = `cat org.erlide/feature.xml | grep \"version=.*qualifier\" | head -n 1 | cut -d\\\" -f 2 | cut -d. -f1,2,3`
+  info = `git describe`
+
+  fputs "document.write('#{info.strip}');", "buildroot/info.js"
+  fputs "document.write('#{version.strip}');", "buildroot/version.js"
+  fputs "document.write('#{build_id.strip}');", "buildroot/id.js"
 end
 
-def run_ant(task, tools_dir="#{ENV['HOME']}/erlide_tools") 
-    system "export PATH=#{tools_dir}/bin:$PATH "+
-            "&& export ANT_HOME=#{tools_dir}/ant "+
-            "&& ant -f org.erlide.releng/build.ant #{task}"
+def run_ant(task, tools_dir="#{ENV['HOME']}/erlide_tools")
+  system "export PATH=#{tools_dir}/bin:$PATH "+
+  "&& export ANT_HOME=#{tools_dir}/ant "+
+  "&& ant -f org.erlide.releng/build.ant #{task}"
 end
-
 
 task :default => [:'run-tests']
-    
-desc "compile and run test"
-task :run_tests, [:tools_dir] do |t, args| 
-    puts "Building"
-    args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
 
-    run_ant "run.tests"
+desc "compile and run test"
+task :run_tests, [:tools_dir] do |t, args|
+  puts "Building"
+  args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
+
+  run_ant "run.tests"
 end
 
 desc "create update site"
-task :build_p2, [:tools_dir] do |t, args| 
-    puts "Building"
-    args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
+task :build_p2, [:tools_dir] do |t, args|
+  puts "Building"
+  args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
 
-	generate_version_info
-
-    run_ant "build.p2"
+  run_ant "build.p2"
+  generate_version_info
 end
 
 desc "create product"
-task :build_product, [:tools_dir] do |t, args| 
-    puts "Building"
-    args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
+task :build_product, [:tools_dir] do |t, args|
+  puts "Building"
+  args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
 
-	generate_version_info
-
-    run_ant "build.product"
+  run_ant "build.product"
+  generate_version_info
 end
 
 desc "upload update site to servers"
 task :publish do
-    puts "Publishing"
+  puts "Publishing"
 
 end
 
 desc "tag a release in git repo"
 task :mk_release do
-    puts "Creating release"
+  puts "Creating release"
 
 end

@@ -6,4 +6,4 @@ importpreferences -F ${projects.location}/org.erlide.releng/erl.epf -S instance
 importpreferences -F ${projects.location}/meta/config/java_compiler.epf -S instance
 
 resolve "${projects.location}/org.erlide.releng/build.cquery"
-resolve "${projects.location}/org.erlide.releng/tests.cquery"
+resolve "${projects.location}/org.erlide.releng/product.cquery"

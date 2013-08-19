@@ -40,6 +40,7 @@
 		<echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
 		<echo message="build.properties: ${build.properties}" />
 
+		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-code.txt" propertiesfile="${build.properties}" />
 		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/build-p2.txt" propertiesfile="${build.properties}" />
 		
 		<echo message=" " />
@@ -50,6 +51,7 @@
         <echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
         <echo message="build.properties: ${build.properties}" />
 
+		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-product.txt" propertiesfile="${build.properties}" />
         <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/build-product.txt" propertiesfile="${build.properties}" />
 
         <echo message=" " />
