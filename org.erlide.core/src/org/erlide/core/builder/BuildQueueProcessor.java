@@ -6,7 +6,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Queues;
 
@@ -14,13 +13,11 @@ public class BuildQueueProcessor extends Job {
     private static BuildQueueProcessor instance;
     private final ConcurrentLinkedQueue<BuildWorkerInfo> queue = Queues
             .newConcurrentLinkedQueue();
-    private volatile boolean stopped;
 
     public BuildQueueProcessor(final String name) {
         super(name);
         setSystem(true);
         setPriority(Job.DECORATE);
-        schedule();
     }
 
     public void addWork(final BuildWorkerInfo work) {
@@ -31,18 +28,11 @@ public class BuildQueueProcessor extends Job {
     @Override
     protected IStatus run(final IProgressMonitor monitor) {
         BuildWorkerInfo work = null;
-        while (!stopped) {
+        work = queue.poll();
+        while (work != null) {
+            MarkerUtils.removeTaskMarkers(work.resource);
+            MarkerUtils.createTaskMarkers(work.resource);
             work = queue.poll();
-            if (work == null) {
-                try {
-                    Thread.sleep(100);
-                } catch (final InterruptedException e) {
-                    ErlLogger.error(e);
-                }
-            } else {
-                MarkerUtils.removeTaskMarkers(work.resource);
-                MarkerUtils.createTaskMarkers(work.resource);
-            }
         }
         return Status.OK_STATUS;
     }
@@ -54,7 +44,4 @@ public class BuildQueueProcessor extends Job {
         return instance;
     }
 
-    public void stop() {
-        stopped = true;
-    }
 }

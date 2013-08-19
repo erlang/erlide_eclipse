@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.backend.debug.ErlangDebugOptionsManager;
-import org.erlide.core.builder.BuildQueueProcessor;
 import org.erlide.util.event_tracer.ErlideEventTracer;
 import org.osgi.framework.BundleContext;
 
@@ -51,7 +50,6 @@ public class ErlangPlugin extends Plugin {
         stopping = true;
         try {
             ErlideEventTracer.getInstance().dispose();
-            BuildQueueProcessor.getInstance().stop();
 
             ResourcesPlugin.getWorkspace().removeSaveParticipant(
                     getBundle().getSymbolicName());
