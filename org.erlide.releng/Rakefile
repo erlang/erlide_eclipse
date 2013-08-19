@@ -27,7 +27,7 @@ end
 task :default => [:'run-tests']
     
 desc "compile and run test"
-task :'run-tests', [:tools_dir] do |t, args| 
+task :run_tests, [:tools_dir] do |t, args| 
     puts "Building"
     args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
 
@@ -35,7 +35,7 @@ task :'run-tests', [:tools_dir] do |t, args|
 end
 
 desc "create update site"
-task :'build-p2', [:tools_dir] do |t, args| 
+task :build_p2, [:tools_dir] do |t, args| 
     puts "Building"
     args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
 
@@ -45,7 +45,7 @@ task :'build-p2', [:tools_dir] do |t, args|
 end
 
 desc "create product"
-task :'build-product', [:tools_dir] do |t, args| 
+task :build_product, [:tools_dir] do |t, args| 
     puts "Building"
     args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
 
