@@ -7,4 +7,7 @@ importpreferences -F ${projects.location}/meta/config/java_compiler.epf -S insta
 
 resolve "${projects.location}/org.erlide.releng/build.cquery"
 
-#resolve "${projects.location}/org.erlide.releng/tests.cquery"
+build
+
+perform -D target.os=* -D target.ws=* -D target.arch=* org.erlide.site#site.p2
+
