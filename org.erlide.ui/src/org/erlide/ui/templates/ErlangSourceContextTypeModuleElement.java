@@ -28,7 +28,7 @@ public final class ErlangSourceContextTypeModuleElement extends
     /**
      * Creates a new XML context type.
      */
-    private ErlangSourceContextTypeModuleElement() {
+    public ErlangSourceContextTypeModuleElement() {
         addGlobalResolvers();
     }
 
