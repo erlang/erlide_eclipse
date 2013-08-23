@@ -343,6 +343,11 @@ public final class BackendManager implements IBackendManager {
                 return b.getRpcSite();
             }
         }
+        for (final IBackend b : list) {
+            if (b.getRuntimeInfo().getVersion().isCompatible(version)) {
+                return b.getRpcSite();
+            }
+        }
         return null;
     }
 
