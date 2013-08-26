@@ -1,7 +1,6 @@
 List of user visible changes between 0.23.1 and 0.23.2 (20130823)
 
 911efe6 1250 - io:format statements output is not ordered
-389e572 1251: java.lang.NullPointerException when Tracing starts
 99e138e gh120: fix stack overflow when terminating debugged node
 626a7b7 don't report runtime down when shutting down
 6666ce0 gh117: fix stack overflow when terminating debugger
