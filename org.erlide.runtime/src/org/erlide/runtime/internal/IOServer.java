@@ -194,7 +194,7 @@ public class IOServer implements Runnable {
                         OtpErlangObject val = null;
                         for (final OtpErlangObject r : reqs) {
                             val = processRequest(from, r);
-                            if (val == error) {
+                            if (val.equals(error)) {
                                 return error;
                             }
                         }
@@ -224,9 +224,9 @@ public class IOServer implements Runnable {
                 return error;
             }
         } catch (final TermParserException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         } catch (final OtpErlangException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return error;
     }

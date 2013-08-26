@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -42,9 +43,8 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.runtime.api.ICodeBundle.CodeContext;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.RuntimeVersion;
-import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
@@ -52,7 +52,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public final class BackendManager implements IEpmdListener, IBackendManager {
+public final class BackendManager implements IBackendManager {
 
     public enum BackendEvent {
         ADDED, REMOVED, MODULE_LOADED
@@ -69,11 +69,13 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     private final BackendManagerLaunchListener launchListener;
     private final IBackendFactory factory;
     private final RuntimeInfo erlideRuntimeInfo;
+    private final Bundle backendBundle;
 
     public BackendManager(final RuntimeInfo erlideRuntimeInfo,
-            final IBackendFactory factory) {
+            final IBackendFactory factory, final Bundle backendBundle) {
         this.factory = factory;
         this.erlideRuntimeInfo = erlideRuntimeInfo;
+        this.backendBundle = backendBundle;
 
         ideBackend = null;
         executionBackends = Maps.newHashMap();
@@ -290,8 +292,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         if (p != null) {
             return;
         }
-        final CodeBundleImpl pp = new CodeBundleImpl(b.getSymbolicName(),
-                paths, inits);
+        final CodeBundleImpl pp = new CodeBundleImpl(backendBundle,
+                b.getSymbolicName(), paths, inits);
         getCodeBundles().put(b, pp);
         forEachBackend(new Procedure1<IBackend>() {
             @Override
@@ -341,12 +343,19 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
                 return b.getRpcSite();
             }
         }
+        for (final IBackend b : list) {
+            if (b.getRuntimeInfo().getVersion().isCompatible(version)) {
+                return b.getRpcSite();
+            }
+        }
         return null;
     }
 
     @Override
-    public IRpcSite getByProject(final IProject project) {
+    public IRpcSite getByProject(final String projectName) {
         try {
+            final IProject project = ResourcesPlugin.getWorkspace().getRoot()
+                    .getProject(projectName);
             final IBackend backend = getBuildBackend(project);
             if (backend == null) {
                 ErlLogger.debug("Could not find backend for project %S",
@@ -456,5 +465,10 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             }
             return null;
         }
+    }
+
+    @Override
+    public Bundle getBundle() {
+        return backendBundle;
     }
 }

@@ -5,10 +5,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.backend.api.BackendData;
+import org.erlide.backend.launch.ErlangLaunchDelegate;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.core.CoverBackend;
 import org.erlide.cover.core.CoverRunner;
-import org.erlide.launch.ErlangLaunchDelegate;
+import org.erlide.util.ErlLogger;
 
 /**
  * Cover launch configuration
@@ -34,7 +35,7 @@ public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
             coverBackend.initialize(coverData);
             coverBackend.runCoverageAnalysis(new CoverRunner());
         } catch (final CoreException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         } catch (final CoverException e) {
             if (CoverBackend.getInstance().getListeners().size() == 0) {
                 throw new RuntimeException(e.getMessage());

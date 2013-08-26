@@ -6,6 +6,7 @@ import org.erlide.model.erlang.IErlRecordDef;
 import org.erlide.model.erlang.IErlRecordField;
 import org.erlide.model.internal.root.ErlElement;
 import org.erlide.model.internal.root.ErlMember;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 
 import com.google.common.base.Objects;
@@ -27,8 +28,8 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
     }
 
     @Override
-    public Kind getKind() {
-        return Kind.RECORD_DEF;
+    public ErlElementKind getKind() {
+        return ErlElementKind.RECORD_DEF;
     }
 
     @Override
@@ -74,7 +75,7 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
     @Override
     public IErlRecordField getFieldNamed(final String name) {
         try {
-            for (final IErlElement e : getChildrenOfKind(Kind.RECORD_FIELD)) {
+            for (final IErlElement e : getChildrenOfKind(ErlElementKind.RECORD_FIELD)) {
                 if (e instanceof IErlRecordField) {
                     final IErlRecordField field = (IErlRecordField) e;
                     if (field.getFieldName().equals(name)) {

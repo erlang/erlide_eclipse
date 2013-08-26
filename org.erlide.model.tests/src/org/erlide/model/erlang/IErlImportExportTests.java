@@ -5,8 +5,8 @@ import static org.junit.Assert.*;
 import java.util.Collection;
 import java.util.List;
 
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Before;
@@ -28,8 +28,8 @@ public class IErlImportExportTests extends ErlModelTestBase {
                 "-module(zz).\n-export([f/2, f/0]).\n"
                         + "-import(lists, [foldl/3, reverse/1, reverse/2]).\n");
         module2.open(null);
-        imports = module2.getChildrenOfKind(Kind.IMPORT);
-        exports = module2.getChildrenOfKind(Kind.EXPORT);
+        imports = module2.getChildrenOfKind(ErlElementKind.IMPORT);
+        exports = module2.getChildrenOfKind(ErlElementKind.EXPORT);
         import1 = (IErlImport) imports.get(0);
         export = (IErlExport) exports.get(0);
     }

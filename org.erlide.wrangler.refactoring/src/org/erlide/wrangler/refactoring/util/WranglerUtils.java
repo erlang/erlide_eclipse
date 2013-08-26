@@ -44,6 +44,7 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.ChangedFile;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 
@@ -80,7 +81,7 @@ public final class WranglerUtils {
             final int ret = offset - lineOffset < 0 ? 0 : offset - lineOffset;
             return ret + 1;
         } catch (final BadLocationException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             return 0;
 
         }
@@ -141,7 +142,7 @@ public final class WranglerUtils {
             final String s = doc.get(range.getOffset(), range.getLength());
             return s;
         } catch (final BadLocationException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return "";
 
@@ -177,7 +178,7 @@ public final class WranglerUtils {
         try {
             findModulesRecursively(project, erlangFiles);
         } catch (final CoreException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             return new ArrayList<IFile>();
         }
         return erlangFiles;
@@ -358,7 +359,7 @@ public final class WranglerUtils {
             return IDE.openEditor(page, file);
             // return page.openEditor(new FileEditorInput(file), desc.getId());
         } catch (final PartInitException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return null;
 
@@ -422,9 +423,9 @@ public final class WranglerUtils {
                 out.close();
             }
         } catch (final CoreException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         } catch (final IOException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return "";
     }
@@ -490,7 +491,7 @@ public final class WranglerUtils {
                 model.notifyChange(m);
 
             } catch (final Exception e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
 

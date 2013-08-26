@@ -128,10 +128,10 @@ public class DialyzerUtils {
             final String what = whatA.toString();
             final OtpErlangObject result = t.elementAt(1);
 
-            if (what.equals("warnings")) {
+            if ("warnings".equals(what)) {
                 DialyzerMarkerUtils.addDialyzerWarningMarkersFromResultList(
                         backend, (OtpErlangList) result);
-            } else if (what.equals("dialyzer_error")) {
+            } else if ("dialyzer_error".equals(what)) {
                 final String s = Util.ioListToString(result, MAX_MSG_LEN);
                 throw new DialyzerErrorException(s);
             }
@@ -142,7 +142,7 @@ public class DialyzerUtils {
     }
 
     private static String getFileNames(final List<String> names) {
-        if (names.size() == 0) {
+        if (names.isEmpty()) {
             return "";
         }
         final StringBuilder sb = new StringBuilder(100);

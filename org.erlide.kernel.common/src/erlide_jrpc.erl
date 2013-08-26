@@ -41,7 +41,8 @@ init(JPid) ->
 
 event(Id, Msg) ->
 	Self = self(),
-	spawn(fun() -> notify(Id, {event, Id, Msg, Self}) end).
+    %% we can't notify asynchronously because order of messages can get wrong
+    notify(Id, {event, Id, Msg, Self}).
 
 manager(State) ->
 	receive

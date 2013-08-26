@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.dialogfields;
 
-import org.eclipse.core.runtime.Assert;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -61,8 +63,7 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
             final int borderStyle) {
         super();
 
-        Assert.isTrue(buttonsStyle == SWT.RADIO || buttonsStyle == SWT.CHECK
-                || buttonsStyle == SWT.TOGGLE);
+        assertThat(buttonsStyle, isOneOf(SWT.RADIO, SWT.CHECK, SWT.TOGGLE));
         fButtonNames = buttonNames;
 
         final int nButtons = buttonNames.length;

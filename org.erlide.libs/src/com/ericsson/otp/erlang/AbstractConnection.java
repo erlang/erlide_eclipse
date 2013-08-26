@@ -588,10 +588,10 @@ public abstract class AbstractConnection extends Thread {
                         ibuf.mark(0);
                         traceobj = ibuf.read_any();
 
-                        if (traceobj != null) {
-                            System.out.println("   " + traceobj);
-                        } else {
+                        if (traceobj == null) {
                             System.out.println("   (null)");
+                        } else {
+                            System.out.println("   " + traceobj);
                         }
                         ibuf.reset();
                     }

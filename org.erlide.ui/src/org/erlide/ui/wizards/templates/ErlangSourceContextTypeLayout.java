@@ -12,16 +12,15 @@ package org.erlide.ui.wizards.templates;
 import org.eclipse.jface.text.templates.GlobalTemplateVariables;
 import org.eclipse.jface.text.templates.TemplateContextType;
 
-public class ErlangSourceContextTypeLayout extends TemplateContextType {
+public final class ErlangSourceContextTypeLayout extends TemplateContextType {
 
-    private static ErlangSourceContextTypeLayout fInstance;
+    private static ErlangSourceContextTypeLayout fInstance = new ErlangSourceContextTypeLayout();
 
     /**
      * Creates a new XML context type.
      */
-    public ErlangSourceContextTypeLayout() {
+    private ErlangSourceContextTypeLayout() {
         addGlobalResolvers();
-        fInstance = this;
     }
 
     private void addGlobalResolvers() {
@@ -36,9 +35,6 @@ public class ErlangSourceContextTypeLayout extends TemplateContextType {
     }
 
     public static ErlangSourceContextTypeLayout getDefault() {
-        if (fInstance == null) {
-            fInstance = new ErlangSourceContextTypeLayout();
-        }
         return fInstance;
     }
 

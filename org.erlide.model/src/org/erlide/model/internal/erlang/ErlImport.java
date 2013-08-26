@@ -3,6 +3,7 @@ package org.erlide.model.internal.erlang;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlImport;
 import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.ErlElementKind;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 
@@ -28,8 +29,8 @@ public class ErlImport extends ErlImportExport implements IErlImport {
     }
 
     @Override
-    public Kind getKind() {
-        return Kind.IMPORT;
+    public ErlElementKind getKind() {
+        return ErlElementKind.IMPORT;
     }
 
     @Override

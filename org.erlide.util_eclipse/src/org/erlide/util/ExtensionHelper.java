@@ -45,7 +45,7 @@ public class ExtensionHelper {
         if (participants.size() == 1) {
             return participants.get(0);
         }
-        if (participants.size() == 0) {
+        if (participants.isEmpty()) {
             return null;
         }
         if (participants.size() > 1) {

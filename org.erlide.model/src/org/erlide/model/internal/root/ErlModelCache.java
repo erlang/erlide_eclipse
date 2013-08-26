@@ -31,7 +31,9 @@ public class ErlModelCache implements IDisposable {
     // TODO make a more educated guess here...
     // private static final int NAME_CACHE_SIZE = 300;
 
-    private static ErlModelCache fgInstance = null;
+    private static final boolean disabled = ErlideUtil.isCacheDisabled();
+    private static final ErlModelCache fgInstance = disabled ? new DisabledErlModelCache()
+            : new ErlModelCache();
 
     private final Cache<IErlModule, List<IErlModule>> moduleIncludeCache;
     private final Cache<String, IErlModule> pathToModuleCache;
@@ -46,13 +48,7 @@ public class ErlModelCache implements IDisposable {
     private final Cache<IErlProject, Collection<IPath>> projectSourceDirsCache;
     private final Cache<IErlProject, Collection<IPath>> projectIncludeDirsCache;
 
-    private final static boolean disabled = ErlideUtil.isCacheDisabled();
-
     public static ErlModelCache getDefault() {
-        if (fgInstance == null) {
-            fgInstance = disabled ? new DisabledErlModelCache()
-                    : new ErlModelCache();
-        }
         return fgInstance;
     }
 

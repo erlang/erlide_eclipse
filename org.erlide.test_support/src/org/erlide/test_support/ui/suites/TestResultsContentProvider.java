@@ -31,7 +31,7 @@ class TestResultsContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getElements(final Object inputElement) {
-        if (myEvents.size() == 0) {
+        if (myEvents.isEmpty()) {
             return NO_RESULTS_MSG;
         }
         return myEvents.toArray();

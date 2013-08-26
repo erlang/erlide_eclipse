@@ -1,12 +1,14 @@
 package org.erlide.debug.ui.properties;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,7 +29,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.erlide.launch.debug.IErlangBreakpoint;
+import org.erlide.backend.debug.IErlangBreakpoint;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.PixelConverter;
@@ -461,7 +463,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     }
 
     private void setButtonDimensionHint(final Button button) {
-        Assert.isNotNull(button);
+        assertThat(button, is(not(nullValue())));
         final Object o = button.getLayoutData();
         if (o instanceof GridData) {
             final GridData gd = (GridData) o;

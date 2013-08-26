@@ -1,6 +1,7 @@
 package org.erlide.ui.views;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
@@ -101,7 +102,7 @@ public class TraceLogView extends ViewPart {
 
     class TreeParent extends TreeObject {
 
-        private final ArrayList<TreeObject> children;
+        private final List<TreeObject> children;
 
         public TreeParent(final String name) {
             super(name);
@@ -123,7 +124,7 @@ public class TraceLogView extends ViewPart {
         }
 
         public boolean hasChildren() {
-            return children.size() > 0;
+            return !children.isEmpty();
         }
     }
 

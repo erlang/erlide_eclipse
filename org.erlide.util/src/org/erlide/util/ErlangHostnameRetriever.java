@@ -25,26 +25,29 @@ public class ErlangHostnameRetriever {
         String result = null;
         try {
             final Process process = builder.start();
-            final StreamListener listener = new StreamListener(
-                    process.getInputStream());
-            while (listener.isAlive()) {
-                try {
-                    listener.join();
-                    if (hostName == null) {
-                        hostName = listener.getResult();
+            try {
+                final StreamListener listener = new StreamListener(
+                        process.getInputStream());
+                while (listener.isAlive()) {
+                    try {
+                        listener.join();
+                        if (hostName == null) {
+                            hostName = listener.getResult();
+                        }
+                        ErlLogger.debug("Test %s hostname: %s",
+                                longHost ? "long" : "short", hostName);
+                        if (canConnect(hostName)) {
+                            result = hostName;
+                            ErlLogger.debug("OK");
+                        } else {
+                            ErlLogger.warn("Can't use %s as %s name", hostName,
+                                    longHost ? "long" : "short");
+                        }
+                    } catch (final InterruptedException e) {
                     }
-                    ErlLogger.debug("Test %s hostname: %s", longHost ? "long"
-                            : "short", hostName);
-                    if (canConnect(hostName)) {
-                        result = hostName;
-                        ErlLogger.debug("OK");
-                    } else {
-                        ErlLogger.warn("Can't use %s as %s name", hostName,
-                                longHost ? "long" : "short");
-                    }
-                    process.destroy();
-                } catch (final InterruptedException e) {
                 }
+            } finally {
+                process.destroy();
             }
         } catch (final IOException e) {
             ErlLogger.error(e);
@@ -67,7 +70,7 @@ public class ErlangHostnameRetriever {
             node.close();
             return result;
         } catch (final IOException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return false;
     }

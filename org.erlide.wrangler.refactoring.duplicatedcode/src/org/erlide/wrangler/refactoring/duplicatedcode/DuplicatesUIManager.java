@@ -17,6 +17,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.IDuplicatedCodeResultDisplayer;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeElement;
 
@@ -70,7 +71,7 @@ public class DuplicatesUIManager {
                     duplicatedView);
 
         } catch (final PartInitException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 
@@ -86,7 +87,7 @@ public class DuplicatesUIManager {
             view = window.getActivePage().showView(duplicatedView);
             window.getActivePage().hideView(view);
         } catch (final PartInitException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
     }

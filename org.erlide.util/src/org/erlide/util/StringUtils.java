@@ -18,7 +18,7 @@ import org.eclipse.xtext.xbase.lib.Pair;
 
 import com.google.common.collect.Lists;
 
-public class StringUtils {
+public final class StringUtils {
 
     private StringUtils() {
     }

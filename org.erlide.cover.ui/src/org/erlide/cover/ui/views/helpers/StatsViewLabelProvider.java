@@ -18,6 +18,7 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
+import org.erlide.util.ErlLogger;
 
 /**
  * Label provider for statistics view
@@ -49,7 +50,7 @@ public class StatsViewLabelProvider extends LabelProvider implements
                     m = ErlModelManager.getErlangModel().findModule(
                             statsEl.getLabel());
                 } catch (final ErlModelException e) {
-                    e.printStackTrace();
+                    ErlLogger.error(e);
                     return null;
                 }
                 img = ErlangElementImageProvider.getErlImageDescriptor(m,

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.internal.util;
 
-import org.eclipse.core.runtime.Assert;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Control;
 
@@ -86,7 +88,7 @@ public class RowLayouter {
 
     public void perform(final Control[] controls, final int spanColumn) {
         final int numColumns = numColumns();
-        Assert.isTrue(controls.length <= numColumns);
+        assertThat(controls.length, is(lessThanOrEqualTo(numColumns)));
         order(controls);
         int gridIndex = 0;
         for (int i = 0; i < controls.length; i++) {

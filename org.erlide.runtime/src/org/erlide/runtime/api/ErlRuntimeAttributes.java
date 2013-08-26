@@ -16,43 +16,43 @@ package org.erlide.runtime.api;
  */
 public interface ErlRuntimeAttributes {
 
-    final String PREFIX = "org.erlide.core";
+    String PREFIX = "org.erlide.core";
 
-    final String PROJECTS = PREFIX + ".projects";
+    String PROJECTS = PREFIX + ".projects";
 
-    final String MODULE = PREFIX + ".module";
-    final String FUNCTION = PREFIX + ".function";
-    final String ARGUMENTS = PREFIX + ".arguments";
+    String MODULE = PREFIX + ".module";
+    String FUNCTION = PREFIX + ".function";
+    String ARGUMENTS = PREFIX + ".arguments";
 
-    final String RUNTIME_NAME = PREFIX + ".runtime";
-    final String DEFAULT_RUNTIME_NAME = "erts";
+    String RUNTIME_NAME = PREFIX + ".runtime";
+    String DEFAULT_RUNTIME_NAME = "erts";
 
-    final String NODE_NAME = PREFIX + ".nodeName";
-    final String COOKIE = PREFIX + ".cookie";
-    final String START_ME = PREFIX + ".startMe";
-    final String USE_LONG_NAME = PREFIX + ".longName";
+    String NODE_NAME = PREFIX + ".nodeName";
+    String COOKIE = PREFIX + ".cookie";
+    String START_ME = PREFIX + ".startMe";
+    String USE_LONG_NAME = PREFIX + ".longName";
 
-    final String DEBUG_FLAGS = PREFIX + ".debugFlags"; // @see
+    String DEBUG_FLAGS = PREFIX + ".debugFlags"; // @see
     // IErlDebugConstants
 
-    final String DEBUG_INTERPRET_MODULES = PREFIX + ".interpretModules";
+    String DEBUG_INTERPRET_MODULES = PREFIX + ".interpretModules";
 
-    final String WORKING_DIR = PREFIX + ".working_dir";
-    final String DEFAULT_WORKING_DIR = ".";
+    String WORKING_DIR = PREFIX + ".working_dir";
+    String DEFAULT_WORKING_DIR = ".";
 
-    final String EXTRA_ARGS = PREFIX + ".extra_args";
+    String EXTRA_ARGS = PREFIX + ".extra_args";
 
-    final String CONSOLE = PREFIX + ".console";
-    final String INTERNAL = PREFIX + ".has_backend";
+    String CONSOLE = PREFIX + ".console";
+    String INTERNAL = PREFIX + ".has_backend";
 
-    final String DEBUG_TRACED_MODULES = ".traced_modules";
+    String DEBUG_TRACED_MODULES = ".traced_modules";
 
-    final String LOAD_ALL_NODES = PREFIX + ".loadAllNodes";
+    String LOAD_ALL_NODES = PREFIX + ".loadAllNodes";
 
-    final String RESTARTABLE = PREFIX + ".restartable";
+    String RESTARTABLE = PREFIX + ".restartable";
 
-    final String MANAGED = PREFIX + ".managed";
+    String MANAGED = PREFIX + ".managed";
 
-    final String SHELL = PREFIX + ".startShell";
+    String SHELL = PREFIX + ".startShell";
 
 }

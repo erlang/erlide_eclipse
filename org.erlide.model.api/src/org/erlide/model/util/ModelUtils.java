@@ -19,8 +19,8 @@ import org.erlide.model.erlang.IErlImport;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlPreprocessorDef;
 import org.erlide.model.erlang.IErlTypespec;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlExternal;
 import org.erlide.model.root.IErlModel;
@@ -77,7 +77,8 @@ public class ModelUtils {
     private static IErlExternal getElementWithExternalName(
             final IParent parent, final String segment)
             throws ErlModelException {
-        for (final IErlElement i : parent.getChildrenOfKind(Kind.EXTERNAL)) {
+        for (final IErlElement i : parent
+                .getChildrenOfKind(ErlElementKind.EXTERNAL)) {
             final IErlExternal external = (IErlExternal) i;
             final String externalName = external.getName();
             ErlLogger
@@ -173,7 +174,7 @@ public class ModelUtils {
             }
             final IErlPreprocessorDef def = module.findPreprocessorDef(
                     StringUtils.withoutInterrogationMark(definedName),
-                    Kind.MACRO_DEF);
+                    ErlElementKind.MACRO_DEF);
             if (def != null) {
                 final String extra = def.getExtra();
                 final int p = extra.indexOf(',');
@@ -240,7 +241,7 @@ public class ModelUtils {
 
     public static IErlPreprocessorDef findPreprocessorDef(
             final Collection<IErlProject> projects, final String moduleName,
-            final String definedName, final IErlElement.Kind kind)
+            final String definedName, final ErlElementKind kind)
             throws CoreException {
         for (final IErlProject project : projects) {
             if (project != null) {
@@ -259,11 +260,11 @@ public class ModelUtils {
 
     public static IErlPreprocessorDef findPreprocessorDef(
             final IErlModule module, final String definedName,
-            final IErlElement.Kind kind) throws CoreException {
+            final ErlElementKind kind) throws CoreException {
         String unquoted = StringUtils.unquote(definedName);
         final String quoted = StringUtils.quote(definedName);
         final Set<String> names = new HashSet<String>(3);
-        if (kind == Kind.RECORD_DEF) {
+        if (kind == ErlElementKind.RECORD_DEF) {
             while (names.add(unquoted)) {
                 unquoted = resolveMacroValue(unquoted, module);
             }
@@ -317,7 +318,7 @@ public class ModelUtils {
     }
 
     public static List<IErlPreprocessorDef> getAllPreprocessorDefs(
-            final IErlModule module, final IErlElement.Kind kind)
+            final IErlModule module, final ErlElementKind kind)
             throws CoreException {
         final List<IErlPreprocessorDef> result = Lists.newArrayList();
         final List<IErlModule> modulesWithIncludes = Lists.newArrayList(module
@@ -329,7 +330,7 @@ public class ModelUtils {
         return result;
     }
 
-    public static final ArrayList<OtpErlangObject> NO_IMPORTS = new ArrayList<OtpErlangObject>(
+    public static final List<OtpErlangObject> NO_IMPORTS = new ArrayList<OtpErlangObject>(
             0);
 
     private static void addUnitNamesWithPrefix(final String prefix,
@@ -386,14 +387,15 @@ public class ModelUtils {
         if (element instanceof IErlModule) {
             return (IErlModule) element;
         }
-        return (IErlModule) element.getAncestorOfKind(Kind.MODULE);
+        return (IErlModule) element.getAncestorOfKind(ErlElementKind.MODULE);
     }
 
     public static IErlProject getProject(final IErlElement element) {
         if (element == null) {
             return null;
         }
-        final IErlElement ancestor = element.getAncestorOfKind(Kind.PROJECT);
+        final IErlElement ancestor = element
+                .getAncestorOfKind(ErlElementKind.PROJECT);
         if (ancestor instanceof IErlProject) {
             return (IErlProject) ancestor;
         }

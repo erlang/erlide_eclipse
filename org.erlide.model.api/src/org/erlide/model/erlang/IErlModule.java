@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.ISourceUnit;
 import org.erlide.model.util.ErlangFunction;
@@ -76,9 +77,11 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     Collection<IErlImport> getImports();
 
-    IErlPreprocessorDef findPreprocessorDef(String definedName, Kind kind);
+    IErlPreprocessorDef findPreprocessorDef(String definedName,
+            ErlElementKind kind);
 
-    public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind);
+    public Collection<IErlPreprocessorDef> getPreprocessorDefs(
+            final ErlElementKind kind);
 
     Collection<ErlangIncludeFile> getIncludeFiles() throws ErlModelException;
 

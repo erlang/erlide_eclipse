@@ -11,9 +11,9 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlExternalRoot;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
@@ -69,7 +69,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
                 }
                 final IParent parent = (IParent) parentElement;
                 final Collection<IErlElement> children = parent
-                        .getChildrenOfKind(Kind.EXTERNAL);
+                        .getChildrenOfKind(ErlElementKind.EXTERNAL);
                 return children.toArray();
             }
         } catch (final ErlModelException e) {
@@ -132,8 +132,9 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
                 }
             }
             final IParent parent = (IParent) element;
-            final boolean result = parent.hasChildrenOfKind(Kind.EXTERNAL)
-                    || parent.hasChildrenOfKind(Kind.MODULE);
+            final boolean result = parent
+                    .hasChildrenOfKind(ErlElementKind.EXTERNAL)
+                    || parent.hasChildrenOfKind(ErlElementKind.MODULE);
             if (clock.elapsed(TimeUnit.MILLISECONDS) > 100) {
                 ErlLogger.debug("TIME open " + element.getClass() + " "
                         + element + "  " + clock.elapsed(TimeUnit.MILLISECONDS)

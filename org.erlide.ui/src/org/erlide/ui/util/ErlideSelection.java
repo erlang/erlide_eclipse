@@ -280,7 +280,7 @@ public class ErlideSelection {
                 doc.replace(offset, length, "");
             }
         } catch (final BadLocationException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 
@@ -369,7 +369,7 @@ public class ErlideSelection {
                 doc.replace(offset, 0, contents);
             }
         } catch (final BadLocationException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 
@@ -656,7 +656,7 @@ public class ErlideSelection {
     public static int eatFuncCall(final IDocument theDoc, int documentOffset)
             throws BadLocationException {
         final String c = theDoc.get(documentOffset, 1);
-        if (!c.equals(")")) {
+        if (!")".equals(c)) {
             throw new AssertionError("Expecting ) to eat callable. Received: "
                     + c);
         }

@@ -13,6 +13,7 @@ package org.erlide.wrangler.refactoring.duplicatedcode.ui.elements;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 /**
@@ -61,7 +62,7 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
             codePartString = WranglerUtils.getTextSegment(startOffset,
                     endOffset, doc);
         } catch (final BadLocationException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
     }

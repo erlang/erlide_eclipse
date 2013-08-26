@@ -11,6 +11,7 @@
 package org.erlide.ui.util;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
@@ -43,9 +44,9 @@ public class ProblemMarkerManager implements IResourceChangeListener,
      */
     private static class ProjectErrorVisitor implements IResourceDeltaVisitor {
 
-        private final HashSet<IResource> fChangedElements;
+        private final Set<IResource> fChangedElements;
 
-        public ProjectErrorVisitor(final HashSet<IResource> changedElements) {
+        public ProjectErrorVisitor(final Set<IResource> changedElements) {
             fChangedElements = changedElements;
         }
 

@@ -183,7 +183,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
                     }
                 }
             }
-            return ps.toArray(new String[0]);
+            return ps.toArray(new String[ps.size()]);
         }
 
         @Override

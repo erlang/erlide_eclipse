@@ -9,8 +9,8 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ErlangIncludeFile;
 import org.erlide.test.support.ErlideTestUtils;
@@ -133,13 +133,13 @@ public class IErlModuleTests extends ErlModelTestBase {
                         + "-record(?MODULE, {a, b}).\nf(L) -> reverse(L).\n");
         preprocessorDefModule.open(null);
         final IErlPreprocessorDef def1 = preprocessorDefModule
-                .findPreprocessorDef("A", Kind.MACRO_DEF);
+                .findPreprocessorDef("A", ErlElementKind.MACRO_DEF);
         final IErlPreprocessorDef def2 = preprocessorDefModule
-                .findPreprocessorDef("A", Kind.RECORD_DEF);
+                .findPreprocessorDef("A", ErlElementKind.RECORD_DEF);
         final IErlPreprocessorDef def3 = preprocessorDefModule
-                .findPreprocessorDef("B", Kind.MACRO_DEF);
+                .findPreprocessorDef("B", ErlElementKind.MACRO_DEF);
         final IErlPreprocessorDef def4 = preprocessorDefModule
-                .findPreprocessorDef("?MODULE", Kind.RECORD_DEF);
+                .findPreprocessorDef("?MODULE", ErlElementKind.RECORD_DEF);
         assertNotNull(def1);
         assertNull(def2);
         assertNotNull(def3);
@@ -157,9 +157,9 @@ public class IErlModuleTests extends ErlModelTestBase {
                         + "-record(?MODULE, {a, b}).\nf(L) -> reverse(L).\n");
         preprocessorDefModule.open(null);
         final Collection<IErlPreprocessorDef> records = preprocessorDefModule
-                .getPreprocessorDefs(Kind.RECORD_DEF);
+                .getPreprocessorDefs(ErlElementKind.RECORD_DEF);
         final Collection<IErlPreprocessorDef> macros = preprocessorDefModule
-                .getPreprocessorDefs(Kind.MACRO_DEF);
+                .getPreprocessorDefs(ErlElementKind.MACRO_DEF);
         assertEquals(1, records.size());
         assertEquals(2, macros.size());
         final Iterator<IErlPreprocessorDef> iterator = macros.iterator();

@@ -34,9 +34,9 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.services.search.ErlangSearchPattern;
 import org.erlide.model.services.search.FunctionPattern;
@@ -143,26 +143,26 @@ public class SearchUtil {
                 ref.isSubClause(), refToKind(ref));
     }
 
-    public static Kind refToKind(final ModuleLineFunctionArityRef ref) {
+    public static ErlElementKind refToKind(final ModuleLineFunctionArityRef ref) {
         switch (ref.getArity()) {
         case ARI_TYPESPEC:
-            return Kind.TYPESPEC;
+            return ErlElementKind.TYPESPEC;
         case ARI_ATTRIBUTE:
-            return Kind.ATTRIBUTE; // Kind.MODULE; ?
+            return ErlElementKind.ATTRIBUTE; // Kind.MODULE; ?
         case ARI_RECORD_DEF:
-            return Kind.RECORD_DEF;
+            return ErlElementKind.RECORD_DEF;
         case ARI_MACRO_DEF:
-            return Kind.MACRO_DEF;
+            return ErlElementKind.MACRO_DEF;
         case ARI_INCLUDE:
-            return Kind.ATTRIBUTE;
+            return ErlElementKind.ATTRIBUTE;
             // include actually, attributes are not saved (yet)
         case ARI_RECORD_FIELD_DEF:
-            return Kind.RECORD_FIELD;
+            return ErlElementKind.RECORD_FIELD;
         default:
             if (ref.isSubClause()) {
-                return Kind.CLAUSE;
+                return ErlElementKind.CLAUSE;
             }
-            return Kind.FUNCTION;
+            return ErlElementKind.FUNCTION;
         }
     }
 
@@ -200,7 +200,8 @@ public class SearchUtil {
             if (module != null && offset != -1) {
                 final IErlElement e = module.getElementAt(offset);
                 if (e != null
-                        && (e.getKind() == Kind.TYPESPEC || e.getKind() == Kind.RECORD_DEF)) {
+                        && (e.getKind() == ErlElementKind.TYPESPEC || e
+                                .getKind() == ErlElementKind.RECORD_DEF)) {
                     return new TypeRefPattern(moduleName, res.getFun(), limitTo);
                 }
             }

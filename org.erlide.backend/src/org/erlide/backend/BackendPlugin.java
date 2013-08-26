@@ -1,6 +1,12 @@
 package org.erlide.backend;
 
 import org.eclipse.core.runtime.Plugin;
+import org.erlide.backend.api.IBackendFactory;
+import org.erlide.backend.api.IBackendManager;
+import org.erlide.backend.internal.BackendFactory;
+import org.erlide.backend.internal.BackendManager;
+import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.DebugStream;
 import org.osgi.framework.BundleContext;
 
@@ -27,6 +33,13 @@ public class BackendPlugin extends Plugin {
         super.start(context);
         bundleContext = context;
         DebugStream.activate();
+
+        final IRuntimeInfoCatalog catalog = BackendCore.getRuntimeInfoCatalog();
+        final RuntimeInfo erlideRuntime = catalog.getErlideRuntime();
+        final IBackendFactory backendFactory = new BackendFactory(catalog);
+        final IBackendManager backendManager = new BackendManager(
+                erlideRuntime, backendFactory, getBundle());
+        BackendCore.init(backendManager);
     }
 
     @Override

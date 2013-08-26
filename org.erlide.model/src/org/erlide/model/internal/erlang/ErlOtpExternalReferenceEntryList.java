@@ -11,6 +11,7 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.IParent;
 import org.erlide.model.ModelPlugin;
 import org.erlide.model.internal.root.Openable;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlExternal;
 import org.erlide.model.root.IErlExternalRoot;
@@ -29,8 +30,8 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     }
 
     @Override
-    public Kind getKind() {
-        return Kind.EXTERNAL;
+    public ErlElementKind getKind() {
+        return ErlElementKind.EXTERNAL;
     }
 
     @Override
@@ -80,7 +81,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     private String getLibName(final String libDir) {
         final IPath p = new Path(libDir);
         String s = p.lastSegment();
-        if (s.equals("ebin")) {
+        if ("ebin".equals(s)) {
             s = p.removeLastSegments(1).lastSegment();
         }
         final int dashPos = s.lastIndexOf('-');

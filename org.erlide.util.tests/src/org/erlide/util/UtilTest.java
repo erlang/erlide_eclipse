@@ -1,6 +1,8 @@
 package org.erlide.util;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.UnsupportedEncodingException;
 
@@ -162,7 +164,7 @@ public class UtilTest {
         final OtpErlangObject input = new OtpErlangBinary(bytes);
         final byte[] expected = bytes;
         final String actual = Util.stringValue(input);
-        Assert.assertArrayEquals(expected, actual.getBytes(Charsets.ISO_8859_1));
+        assertThat(actual.getBytes(Charsets.ISO_8859_1), is(expected));
     }
 
     @Test
@@ -172,7 +174,7 @@ public class UtilTest {
         final OtpErlangObject input = new OtpErlangBinary(bytes);
         final byte[] expected = bytes;
         final String actual = Util.stringValue(input);
-        Assert.assertArrayEquals(expected, actual.getBytes(Charsets.UTF_8));
+        assertThat(actual.getBytes(Charsets.UTF_8), is(expected));
     }
 
     @Test

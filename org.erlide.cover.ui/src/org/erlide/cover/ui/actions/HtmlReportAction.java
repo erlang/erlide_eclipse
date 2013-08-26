@@ -25,6 +25,7 @@ import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.ObjectType;
 import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.cover.views.model.StatsTreeObject;
+import org.erlide.util.ErlLogger;
 
 /**
  * Action for showing html reports
@@ -131,7 +132,7 @@ public class HtmlReportAction extends Action {
             obj.setHtmlPath(reportPath);
 
         } catch (final IOException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
         for (final ICoverageObject child : obj.getChildren()) {

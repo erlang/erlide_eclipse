@@ -47,6 +47,6 @@ public interface IBackendShell {
 
     String getText();
 
-    public abstract String[] getLastMessages(final int nMessages);
+    String[] getLastMessages(final int nMessages);
 
 }

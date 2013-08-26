@@ -94,7 +94,7 @@ public final class PreferencesHelper {
                 found = true;
             }
         }
-        return result.toArray(new IScopeContext[0]);
+        return result.toArray(new IScopeContext[result.size()]);
     }
 
     public void putByteArray(final String key, final byte[] value) {

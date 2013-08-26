@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.eclipse.jface.text.IDocument;
+import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
 import org.erlide.wrangler.refactoring.util.ErlRange;
@@ -64,7 +65,7 @@ public class ExpressionPosRpcMessage extends AbstractRpcMessage {
                     try {
                         positionDefs.put(new Range(pos), value);
                     } catch (final OtpErlangRangeException e) {
-                        e.printStackTrace();
+                        ErlLogger.error(e);
                         setUnsuccessful("Failed to parse the result!");
                     }
                 }

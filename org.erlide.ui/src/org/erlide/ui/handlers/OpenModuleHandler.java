@@ -85,7 +85,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
             files.add((IFile) resource);
         }
 
-        if (files.size() > 0) {
+        if (!files.isEmpty()) {
 
             final IWorkbenchWindow window = PlatformUI.getWorkbench()
                     .getActiveWorkbenchWindow();
@@ -126,7 +126,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
                                 files.add(con);
                             }
                         }
-                        if (files.size() == 0) {
+                        if (files.isEmpty()) {
                             // final IFile file = ModelUtils.openExternal(null,
                             // path);
                             // files.add(file);

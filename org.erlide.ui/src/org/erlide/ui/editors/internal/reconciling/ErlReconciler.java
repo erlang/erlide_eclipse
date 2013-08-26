@@ -750,7 +750,7 @@ public class ErlReconciler implements IReconciler {
             out.close();
             log.clear();
         } catch (final IOException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 

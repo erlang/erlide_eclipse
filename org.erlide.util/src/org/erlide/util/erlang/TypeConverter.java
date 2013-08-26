@@ -74,28 +74,28 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public final class TypeConverter {
 
     public static Class<?> getClassByName(final String arg) {
-        if (arg.equals("char")) {
+        if ("char".equals(arg)) {
             return char.class;
         }
-        if (arg.equals("byte")) {
+        if ("byte".equals(arg)) {
             return byte.class;
         }
-        if (arg.equals("short")) {
+        if ("short".equals(arg)) {
             return short.class;
         }
-        if (arg.equals("int")) {
+        if ("int".equals(arg)) {
             return int.class;
         }
-        if (arg.equals("long")) {
+        if ("long".equals(arg)) {
             return long.class;
         }
-        if (arg.equals("boolean")) {
+        if ("boolean".equals(arg)) {
             return boolean.class;
         }
-        if (arg.equals("float")) {
+        if ("float".equals(arg)) {
             return float.class;
         }
-        if (arg.equals("double")) {
+        if ("double".equals(arg)) {
             return double.class;
         }
         try {
@@ -199,10 +199,10 @@ public final class TypeConverter {
             if (cls == boolean.class || cls == Boolean.class) {
                 if (obj instanceof OtpErlangAtom) {
                     final String s = ((OtpErlangAtom) obj).atomValue();
-                    if (s.equals("true")) {
+                    if ("true".equals(s)) {
                         return true;
                     }
-                    if (s.equals("false")) {
+                    if ("false".equals(s)) {
                         return false;
                     }
                 }

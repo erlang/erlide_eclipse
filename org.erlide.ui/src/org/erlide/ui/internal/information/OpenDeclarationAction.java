@@ -69,7 +69,7 @@ public final class OpenDeclarationAction extends Action {
                     }
                 }
             } catch (final PartInitException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
     }

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.erlide.backend.internal;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -31,6 +34,7 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
+import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.jdt.annotation.NonNull;
@@ -40,9 +44,9 @@ import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.console.BackendShellManager;
-import org.erlide.launch.debug.ErlideDebug;
-import org.erlide.launch.debug.model.ErlangDebugNode;
-import org.erlide.launch.debug.model.ErlangDebugTarget;
+import org.erlide.backend.debug.ErlideDebug;
+import org.erlide.backend.debug.model.ErlangDebugNode;
+import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.ErlDebugFlags;
@@ -55,7 +59,6 @@ import org.erlide.runtime.api.RuntimeUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
-import org.erlide.util.Asserts;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.erlang.OtpErlang;
@@ -81,7 +84,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public Backend(final BackendData data, final IErlRuntime runtime,
             final IBackendManager backendManager) throws BackendException {
-        Asserts.isNotNull(runtime);
+        assertThat(runtime, is(not(nullValue())));
         this.runtime = runtime;
         this.data = data;
         this.backendManager = backendManager;
@@ -106,11 +109,11 @@ public abstract class Backend implements IStreamListener, IBackend {
         return runtime.getNodeName();
     }
 
-    protected boolean startErlangApps(final OtpErlangPid jRex,
+    protected boolean startErlideApps(final OtpErlangPid jRex,
             final boolean watch) {
         try {
             getRpcSite().call(
-                    "erlide_kernel_common",
+                    "erlide_common_app",
                     "init",
                     "poii",
                     jRex,
@@ -120,8 +123,8 @@ public abstract class Backend implements IStreamListener, IBackend {
                     SystemConfiguration.getInstance()
                             .getKillProcessSizeLimitMB());
             // TODO should use extension point!
-            getRpcSite().call("erlide_kernel_builder", "init", "");
-            getRpcSite().call("erlide_kernel_ide", "init", "");
+            getRpcSite().call("erlide_builder_app", "init", "");
+            getRpcSite().call("erlide_ide_app", "init", "");
 
             // TODO start tracing when configured to do so!
             // getRpcSite().call("erlide_tracer", "start", "");
@@ -147,7 +150,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public synchronized void initErlang(final boolean watch) {
         ErlLogger.debug("initialize %s: %s", getName(), watch);
-        startErlangApps(getRuntime().getEventMbox().self(), watch);
+        startErlideApps(getRuntime().getEventMbox().self(), watch);
         getRuntime().registerEventListener(new SystemMonitorHandler(getName()));
     }
 
@@ -174,6 +177,9 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     public void assignStreamProxyListeners() {
+        if (data.getLaunch() == null) {
+            return;
+        }
         final IStreamsProxy proxy = getStreamsProxy();
         if (proxy != null) {
             final IStreamMonitor errorStreamMonitor = proxy
@@ -373,9 +379,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         final OtpErlangList nodes = ErlideDebug.nodes(getRpcSite());
         if (nodes != null) {
             for (int i = 1, n = nodes.arity(); i < n; ++i) {
-                final OtpErlangAtom o = (OtpErlangAtom) nodes.elementAt(i);
-                final OtpErlangAtom a = o;
-                final ErlangDebugNode edn = new ErlangDebugNode(target,
+                final OtpErlangAtom a = (OtpErlangAtom) nodes.elementAt(i);
+                final IDebugTarget edn = new ErlangDebugNode(target,
                         a.atomValue());
                 aLaunch.addDebugTarget(edn);
             }
@@ -488,7 +493,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void initialize() {
-        runtime.addListener(this);
+        runtime.addShutdownCallback(this);
         shellManager = new BackendShellManager(this);
         for (final ICodeBundle bb : backendManager.getCodeBundles().values()) {
             registerCodeBundle(bb);
@@ -520,6 +525,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void runtimeDown(final IErlRuntime aRuntime) {
+    public void run() {
     }
 }

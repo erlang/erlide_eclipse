@@ -92,7 +92,7 @@ public class SourcePathUtils {
             target = spp;
         }
 
-        abstract public Collection<IPath> call(IProject project);
+        public abstract Collection<IPath> call(IProject project);
     }
 
 }

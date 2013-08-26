@@ -66,7 +66,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
     protected static List<Boolean> getBooleanPreferences(final List<String> p) {
         final List<Boolean> l = new ArrayList<Boolean>(p.size());
         for (final String i : p) {
-            l.add(!i.equals("0") && !i.equals("false")); //$NON-NLS-1$ //$NON-NLS-2$
+            l.add(!"0".equals(i) && !"false".equals(i)); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return l;
     }

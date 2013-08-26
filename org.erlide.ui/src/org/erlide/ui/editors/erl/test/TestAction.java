@@ -97,7 +97,7 @@ public class TestAction extends TextEditorAction {
             out.write(text.getBytes());
             out.close();
         } catch (final IOException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 }

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
-import org.eclipse.core.runtime.Assert;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DragSource;
@@ -107,7 +109,7 @@ public final class SWTUtil {
      *            button for which to set the dimension hint
      */
     public static void setButtonDimensionHint(final Button button) {
-        Assert.isNotNull(button);
+        assertThat(button, is(not(nullValue())));
         final Object gd = button.getLayoutData();
         if (gd instanceof GridData) {
             final GridData gridData = (GridData) gd;

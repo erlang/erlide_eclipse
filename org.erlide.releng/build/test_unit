@@ -1,0 +1,42 @@
+# this script runs all unit tests, i.e. that don't need Eclipse
+
+# arguments:
+# WORKSPACE - location of the source code root
+# JAVA_HOME - location of JDK
+# ERLANG_HOME - location of Erlang
+# BUCKMINSTER - location of the Bucky installation
+# TARGET - location of eclipse installation that defines the target system
+
+WORKSPACE=$1
+JAVA_HOME=$2
+ERLANG_HOME=$3
+BUCKMINSTER=$4
+TARGET=$5
+
+SITE_PRJ=org.erlide.site
+SITE_PRJ_PATH=${WORKSPACE}/${SITE_PRJ}
+
+cp ${SITE_PRJ_PATH}/erl.epf ${SITE_PRJ_PATH}/_erl.epf
+sed -e "s%#{ERLANG_HOME}%${ERLANG_HOME}%g" ${SITE_PRJ_PATH}/erl.epf > ${SITE_PRJ_PATH}/_erl.epf
+
+cp ${SITE_PRJ_PATH}/bucky_test ${SITE_PRJ_PATH}/_bucky_test
+sed -e "s%#{WORKSPACE}%${WORKSPACE}%g" -e "s%#{TARGET}%${TARGET}%g" -e "s%#{JAVA_HOME}%${JAVA_HOME}%g" -e "s%#{JAVA_BASE}%${JAVA_BASE}%g" -e "s%#{SITE_PRJ}%${SITE_PRJ}%g" ${SITE_PRJ_PATH}/bucky_test > ${SITE_PRJ_PATH}/_bucky_test
+
+cp ${SITE_PRJ_PATH}/buckminster.properties ${SITE_PRJ_PATH}/_buckminster.properties
+echo "buckminster.output.root=${WORKSPACE}/buckminster.output" >> ${SITE_PRJ_PATH}/_buckminster.properties
+echo "buckminster.temp.root=${WORKSPACE}/buckminster.temp" >> ${SITE_PRJ_PATH}/_buckminster.properties
+
+LAUNCHER=`find -L ${BUCKMINSTER}/plugins/ -name "org.eclipse.equinox.launcher_*.jar" -type f | head -n 1`
+
+# configure junit-workspace with erlang runtimes
+${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE}/junit-workspace --loglevel DEBUG importpreferences -F ${WORKSPACE}/${SITE_PRJ}/_erl.epf -S instance
+# import test projects in junit-workspace
+cp -R ${WORKSPACE}/org.erlide.ui.tests/projects/* ${WORKSPACE}/junit-workspace
+${JAVA_HOME}/bin/java -Xms128m -Xmx512m -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE}/junit-workspace --loglevel DEBUG import ${WORKSPACE}/${SITE_PRJ}/junit.cquery
+
+${JAVA_HOME}/bin/java -Xms128m -Xmx512m -server -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel DEBUG -S ${SITE_PRJ_PATH}/_bucky_test -Derlide.runtime=${ERLANG_HOME}
+
+## now run eunit tests
+chmod u+x $SITE_PRJ_PATH/run_eunit
+bash -c "$SITE_PRJ_PATH/run_eunit $WORKSPACE $ERLANG_HOME output"
+

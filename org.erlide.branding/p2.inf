@@ -1,0 +1,5 @@
+instructions.configure=org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(location:http${#58}//erlide.org/update/,type:0,name:Erlide site,enabled:true); \
+  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(location:http${#58}//erlide.org/update/,type:1,name:Erlide site,enabled:true); \
+  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(location:http${#58}//download.eclipse.org/releases/indigo/,type:0,name:Eclipse Indigo,enabled:true); \
+  org.eclipse.equinox.p2.touchpoint.eclipse.addRepository(location:http${#58}//download.eclipse.org/releases/Indigo/,type:1,name:Eclipse Indigo,enabled:true);
+  

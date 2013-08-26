@@ -781,8 +781,8 @@ public final class Util {
         try {
             bundle = ResourceBundle.getBundle(BUNDLE_NAME, Locale.getDefault());
         } catch (final MissingResourceException e) {
-            System.out
-                    .println("Missing resource : " + BUNDLE_NAME.replace('.', '/') + ".properties for locale " + Locale.getDefault()); //$NON-NLS-1$//$NON-NLS-2$
+            ErlLogger
+                    .error("Missing resource : " + BUNDLE_NAME.replace('.', '/') + ".properties for locale " + Locale.getDefault()); //$NON-NLS-1$//$NON-NLS-2$
             throw e;
         }
     }

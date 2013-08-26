@@ -13,6 +13,7 @@ import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.cover.views.model.StatsTreeObject;
 import org.erlide.model.root.ErlModelManager;
+import org.erlide.util.ErlLogger;
 
 /**
  * Showing annotations from context menu for specified objects
@@ -87,7 +88,7 @@ public class ShowCoverageAction extends CoverageAction {
             }
         } catch (final Exception e) {
             // TODO
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return false;
     }

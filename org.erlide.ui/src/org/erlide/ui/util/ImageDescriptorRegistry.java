@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
-import java.util.HashMap;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
-import org.eclipse.core.runtime.Assert;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -22,7 +25,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ImageDescriptorRegistry {
 
-    private final HashMap<ImageDescriptor, Image> fRegistry = new HashMap<ImageDescriptor, Image>(
+    private final Map<ImageDescriptor, Image> fRegistry = new HashMap<ImageDescriptor, Image>(
             10);
 
     private final Display fDisplay;
@@ -44,8 +47,8 @@ public class ImageDescriptorRegistry {
      *            for
      */
     public ImageDescriptorRegistry(final Display display) {
+        assertThat(display, is(not(nullValue())));
         fDisplay = display;
-        Assert.isNotNull(fDisplay);
         hookDisplay();
     }
 
@@ -68,8 +71,7 @@ public class ImageDescriptorRegistry {
             return result;
         }
 
-        Assert.isTrue(fDisplay == SWTUtil.getStandardDisplay(),
-                "Allocating image for wrong display."); //$NON-NLS-1$
+        assertThat(fDisplay, is(SWTUtil.getStandardDisplay()));
         result = descriptor.createImage();
         if (result != null) {
             fRegistry.put(descriptor, result);

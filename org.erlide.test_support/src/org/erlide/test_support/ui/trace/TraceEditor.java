@@ -16,6 +16,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.erlide.util.ErlLogger;
 
 public class TraceEditor extends TextEditor {
 
@@ -112,7 +113,7 @@ public class TraceEditor extends TextEditor {
 
                 try {
                     final String cmd = lineStr.substring(26, 32);
-                    if (cmd.equals("return")) {
+                    if ("return".equals(cmd)) {
                         String ref = lineStr.substring(34,
                                 lineStr.indexOf(" ->"));
                         ref = ref.substring(0, ref.length() - 2);
@@ -128,7 +129,7 @@ public class TraceEditor extends TextEditor {
                                 break;
                             }
                         }
-                    } else if (cmd.equals("  call")) {
+                    } else if ("  call".equals(cmd)) {
                         final String ref = lineStr.substring(34,
                                 lineStr.indexOf('('));
                         // find return after it
@@ -150,7 +151,7 @@ public class TraceEditor extends TextEditor {
                     // ignore
                 }
             } catch (final BadLocationException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
 

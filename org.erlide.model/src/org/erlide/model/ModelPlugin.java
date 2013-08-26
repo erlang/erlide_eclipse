@@ -4,9 +4,9 @@ import java.io.File;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Plugin;
-import org.erlide.backend.api.IBackendProvider;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.RuntimeVersion;
+import org.erlide.runtime.api.IRpcSiteProvider;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.services.ExtensionUtils;
 import org.osgi.framework.BundleContext;
 
@@ -19,7 +19,6 @@ public class ModelPlugin extends Plugin {
 
     private static BundleContext context;
     static ModelPlugin plugin;
-    private static String stateDirCached = null;
 
     public ModelPlugin() {
         super();
@@ -46,7 +45,7 @@ public class ModelPlugin extends Plugin {
     }
 
     private void cleanupStateDir() {
-        final String ndir = getStateDir();
+        final String ndir = ModelCore.getStateDir();
         final File fdir = new File(ndir);
         for (final File f : fdir.listFiles()) {
             if (f.isFile()) {
@@ -61,31 +60,24 @@ public class ModelPlugin extends Plugin {
         super.stop(bundleContext);
     }
 
-    private IBackendProvider getRuntimeProvider() {
+    private IRpcSiteProvider getRuntimeProvider() {
         return ExtensionUtils.getSingletonExtension(
-                "org.erlide.backend.backend", IBackendProvider.class);
+                "org.erlide.backend.backend", IRpcSiteProvider.class);
     }
 
     public IRpcSite getIdeBackend() {
-        final IBackendProvider provider = getRuntimeProvider();
+        final IRpcSiteProvider provider = getRuntimeProvider();
         return provider.get();
     }
 
     public IRpcSite getBackend(final RuntimeVersion version) {
-        final IBackendProvider provider = getRuntimeProvider();
+        final IRpcSiteProvider provider = getRuntimeProvider();
         return provider.get(version);
     }
 
     public IRpcSite getBackend(final IProject project) {
-        final IBackendProvider provider = getRuntimeProvider();
-        return provider.get(project);
-    }
-
-    public static String getStateDir() {
-        if (stateDirCached == null) {
-            stateDirCached = getDefault().getStateLocation().toString();
-        }
-        return stateDirCached;
+        final IRpcSiteProvider provider = getRuntimeProvider();
+        return provider.get(project.getName());
     }
 
 }

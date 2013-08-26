@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpErlang;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -112,7 +113,7 @@ public class RpcMonitor {
     private static final List<RpcInfo> slowest = Lists.newLinkedList();
     private static final List<RpcInfo> largest = Lists.newLinkedList();
 
-    public synchronized static void recordResponse(final OtpErlangRef ref,
+    public static synchronized void recordResponse(final OtpErlangRef ref,
             final OtpErlangObject result) {
         if (DISABLED) {
             return;
@@ -173,11 +174,11 @@ public class RpcMonitor {
         try {
             dump(new PrintStream(fileName), n, full);
         } catch (final FileNotFoundException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 
-    public synchronized static void dump(final PrintStream out, final int n,
+    public static synchronized void dump(final PrintStream out, final int n,
             final boolean full) {
         out.format("*** RpcMonitor statistics%n - %d calls%n", callCount);
         if (DISABLED) {

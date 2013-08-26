@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.erlide.releng" componentType="buckminster" version="1.0.0">
+    <cs:dependencies>
+        <cs:dependency name="com.abstratt.eclipsegraphviz.feature" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.equinox.executable" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.equinox.p2.user.ui" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.platform" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.platform.source" componentType="eclipse.feature"/>
+        <cs:dependency name="org.junit" componentType="osgi.bundle"/>
+        <cs:dependency name="org.erlide.site" componentType="eclipse.feature"/>
+        <cs:dependency name="org.erlide.product.site" componentType="eclipse.feature"/>
+    </cs:dependencies>
+</cs:cspec>

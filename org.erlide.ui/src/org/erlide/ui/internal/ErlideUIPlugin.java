@@ -56,6 +56,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
+import org.erlide.core.ConsoleMessageReporter;
 import org.erlide.core.ErlangStatus;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.ui.ErlideImage;
@@ -153,6 +154,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         super.start(context);
 
         ErlideEventBus.register(new NoRuntimeHandler());
+        ErlideEventBus.register(new ConsoleMessageReporter());
         ErlideEventBus.register(new UIMessageReporter());
 
         if (SystemConfiguration.getInstance().isDeveloper()) {

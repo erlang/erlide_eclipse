@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 
 /**
  * Common protocol for Erlang elements that contain other Erlang elements.
@@ -51,9 +51,10 @@ public interface IParent {
      */
     boolean hasChildren();
 
-    List<IErlElement> getChildrenOfKind(Kind kind) throws ErlModelException;
+    List<IErlElement> getChildrenOfKind(ErlElementKind kind)
+            throws ErlModelException;
 
-    boolean hasChildrenOfKind(Kind kind);
+    boolean hasChildrenOfKind(ErlElementKind kind);
 
     IErlElement getChildNamed(String s);
 

@@ -6,6 +6,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.ISourceReference;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 
 public class ErlElementSorter extends ViewerSorter {
@@ -20,8 +21,8 @@ public class ErlElementSorter extends ViewerSorter {
         if (o1 instanceof IErlElement && o2 instanceof IErlElement) {
             final IErlElement e1 = (IErlElement) o1;
             final IErlElement e2 = (IErlElement) o2;
-            if (e1.getKind() == IErlElement.Kind.CLAUSE
-                    && e2.getKind() == IErlElement.Kind.CLAUSE) {
+            if (e1.getKind() == ErlElementKind.CLAUSE
+                    && e2.getKind() == ErlElementKind.CLAUSE) {
                 return comparePositions(viewer, o1, o2);
             }
         }
@@ -46,7 +47,7 @@ public class ErlElementSorter extends ViewerSorter {
         if (how == SORT_ON_NAME) {
             if (element instanceof IErlElement) {
                 final IErlElement e = (IErlElement) element;
-                if (e.getKind() == IErlElement.Kind.FUNCTION) {
+                if (e.getKind() == ErlElementKind.FUNCTION) {
                     return 1000;
                 }
                 return e.getKind().ordinal();
@@ -54,7 +55,7 @@ public class ErlElementSorter extends ViewerSorter {
         } else if (how == SORT_ON_EXPORT) {
             if (element instanceof IErlElement) {
                 final IErlElement e = (IErlElement) element;
-                if (e.getKind() == IErlElement.Kind.FUNCTION) {
+                if (e.getKind() == ErlElementKind.FUNCTION) {
                     if (e instanceof IErlFunction) {
                         final IErlFunction f = (IErlFunction) e;
                         if (f.isExported()) {

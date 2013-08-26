@@ -29,6 +29,7 @@ import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.ObjectType;
 import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.model.root.ErlModelManager;
+import org.erlide.util.ErlLogger;
 
 /**
  * An action for restoring coverage results which were previously saved
@@ -109,11 +110,11 @@ public class RestoreAction extends Action {
 
         } catch (final FileNotFoundException e) {
             log.error("No such file");
-            e.printStackTrace();
+            ErlLogger.error(e);
             CoverageHelper.reportError("Error while reading file");
         } catch (final Exception e) {
             log.error("Error while reading file");
-            e.printStackTrace();
+            ErlLogger.error(e);
             CoverageHelper.reportError("Error while reading file");
         }
 
@@ -142,7 +143,7 @@ public class RestoreAction extends Action {
             }
         } catch (final Exception e) {
             // TODO
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return false;
     }

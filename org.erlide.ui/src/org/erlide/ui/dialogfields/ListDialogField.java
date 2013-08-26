@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.erlide.ui.dialogfields;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -175,7 +177,7 @@ public class ListDialogField<Element> extends DialogField {
      * behaviour)
      */
     public void setRemoveButtonIndex(final int removeButtonIndex) {
-        Assert.isTrue(removeButtonIndex < fButtonLabels.length);
+        assertThat(removeButtonIndex, is(lessThan(fButtonLabels.length)));
         fRemoveButtonIndex = removeButtonIndex;
     }
 
@@ -185,7 +187,7 @@ public class ListDialogField<Element> extends DialogField {
      * then be handled internally. (enable state, button invocation behaviour)
      */
     public void setUpButtonIndex(final int upButtonIndex) {
-        Assert.isTrue(upButtonIndex < fButtonLabels.length);
+        assertThat(upButtonIndex, is(lessThan(fButtonLabels.length)));
         fUpButtonIndex = upButtonIndex;
     }
 
@@ -196,7 +198,7 @@ public class ListDialogField<Element> extends DialogField {
      * behaviour)
      */
     public void setDownButtonIndex(final int downButtonIndex) {
-        Assert.isTrue(downButtonIndex < fButtonLabels.length);
+        assertThat(downButtonIndex, is(lessThan(fButtonLabels.length)));
         fDownButtonIndex = downButtonIndex;
     }
 
@@ -690,7 +692,7 @@ public class ListDialogField<Element> extends DialogField {
      * Adds an element at a position.
      */
     public void removeAllElements() {
-        if (fElements.size() > 0) {
+        if (!fElements.isEmpty()) {
             fElements.clear();
             if (isOkToUse(fTableControl)) {
                 fTable.refresh();
@@ -717,7 +719,7 @@ public class ListDialogField<Element> extends DialogField {
      * Removes elements from the list.
      */
     public void removeElements(final List<Element> elements) {
-        if (elements.size() > 0) {
+        if (!elements.isEmpty()) {
             fElements.removeAll(elements);
             if (isOkToUse(fTableControl)) {
                 fTable.remove(elements.toArray());
@@ -749,7 +751,7 @@ public class ListDialogField<Element> extends DialogField {
                 element = arr[0];
             }
         } else {
-            if (fElements.size() > 0) {
+            if (!fElements.isEmpty()) {
                 element = fElements.get(0);
             }
         }
@@ -809,14 +811,14 @@ public class ListDialogField<Element> extends DialogField {
     }
 
     private void moveUp(final List<Element> toMoveUp) {
-        if (toMoveUp.size() > 0) {
+        if (!toMoveUp.isEmpty()) {
             setElements(moveUp(fElements, toMoveUp));
             fTable.reveal(toMoveUp.get(0));
         }
     }
 
     private void moveDown(final List<Element> toMoveDown) {
-        if (toMoveDown.size() > 0) {
+        if (!toMoveDown.isEmpty()) {
             setElements(reverse(moveUp(reverse(fElements), toMoveDown)));
             fTable.reveal(toMoveDown.get(toMoveDown.size() - 1));
         }

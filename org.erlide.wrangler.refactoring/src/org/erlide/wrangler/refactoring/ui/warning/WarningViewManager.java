@@ -15,6 +15,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.erlide.util.ErlLogger;
 
 /**
  * @author Gyorgy Orosz
@@ -72,7 +73,7 @@ public class WarningViewManager {
                     warningViewID);
             return theView;
         } catch (final PartInitException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return null;
     }

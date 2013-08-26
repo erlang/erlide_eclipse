@@ -10,10 +10,11 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.RuntimeVersion;
+import org.erlide.runtime.epmd.IEpmdListener;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.osgi.framework.Bundle;
 
-public interface IBackendManager {
+public interface IBackendManager extends IEpmdListener {
 
     IBackend getIdeBackend();
 
@@ -49,7 +50,7 @@ public interface IBackendManager {
 
     IRpcSite getByVersion(RuntimeVersion version);
 
-    IRpcSite getByProject(IProject project);
+    IRpcSite getByProject(String projectName);
 
     void loadCodepathExtensions();
 
@@ -57,5 +58,7 @@ public interface IBackendManager {
             final String moduleName);
 
     IBackend getByProcess(IProcess ertsProcess);
+
+    Bundle getBundle();
 
 }

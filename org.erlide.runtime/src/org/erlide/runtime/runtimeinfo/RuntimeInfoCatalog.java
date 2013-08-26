@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.erlide.runtime.api.RuntimeVersion;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -45,7 +44,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
             final Collection<RuntimeInfo> elements, final String dfltRuntime,
             String ideRuntime) {
         runtimes.clear();
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             initializeRuntimesList();
         }
 
@@ -95,7 +94,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
     @Override
     public synchronized void removeRuntime(final String name) {
         runtimes.remove(name);
-        if (runtimes.size() > 0) {
+        if (!runtimes.isEmpty()) {
             if (erlideRuntime.getName().equals(name)) {
                 erlideRuntime = runtimes.values().iterator().next();
             }
@@ -146,7 +145,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
             final String runtimeName) {
         final List<RuntimeInfo> vsns = VersionLocator.locateVersion(
                 runtimeVersion, runtimes.values());
-        if (vsns.size() == 0) {
+        if (vsns.isEmpty()) {
             return null;
         } else if (vsns.size() == 1) {
             return vsns.get(0);
@@ -209,7 +208,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
                 return o2.getName().compareTo(o1.getName());
             }
         });
-        if (list.size() > 0) {
+        if (!list.isEmpty()) {
             final String firstName = list.get(0).getName();
             if (defaultRuntimeName == null) {
                 setDefaultRuntime(firstName);

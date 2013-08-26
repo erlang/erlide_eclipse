@@ -3,6 +3,7 @@ package org.erlide.model.internal.erlang;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlMacroDef;
 import org.erlide.model.internal.root.ErlMember;
+import org.erlide.model.root.ErlElementKind;
 
 import com.google.common.base.Objects;
 
@@ -30,8 +31,8 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
     }
 
     @Override
-    public Kind getKind() {
-        return Kind.MACRO_DEF;
+    public ErlElementKind getKind() {
+        return ErlElementKind.MACRO_DEF;
     }
 
     @Override

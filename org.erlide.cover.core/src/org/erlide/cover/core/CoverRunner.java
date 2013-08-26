@@ -11,6 +11,7 @@ import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.constants.TestConstants;
 import org.erlide.cover.views.model.TestTreeModel;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 
@@ -41,7 +42,7 @@ public class CoverRunner extends AbstractCoverRunner {
             CoverageAnalysis.performAnalysis();
 
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             backend.handleError("Exception while running cover: " + e);
         } finally {
             semaphore.release();

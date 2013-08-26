@@ -34,7 +34,7 @@ public class OpenResult {
         final String kind = ((OtpErlangAtom) openTuple.elementAt(0))
                 .atomValue();
         try {
-            if (kind.equals("external")) {
+            if ("external".equals(kind)) {
                 final OtpErlangAtom element = (OtpErlangAtom) openTuple
                         .elementAt(1);
                 externalCall = true;
@@ -47,14 +47,14 @@ public class OpenResult {
                     path = ((OtpErlangString) openTuple.elementAt(4))
                             .stringValue();
                 }
-            } else if (kind.equals("include")) {
+            } else if ("include".equals(kind)) {
                 include = true;
                 name = Util.stringValue(openTuple.elementAt(1));
-            } else if (kind.equals("include_lib")) {
+            } else if ("include_lib".equals(kind)) {
                 include = true;
                 name = Util.stringValue(openTuple.elementAt(1));
                 path = Util.stringValue(openTuple.elementAt(2));
-            } else if (kind.equals("local")) { // local call
+            } else if ("local".equals(kind)) { // local call
                 localCall = true;
                 final OtpErlangAtom element = (OtpErlangAtom) openTuple
                         .elementAt(1);
@@ -73,7 +73,7 @@ public class OpenResult {
                 if (macro) {
                     name = removeQuestionMark(name);
                 }
-            } else if (kind.equals("variable")) {
+            } else if ("variable".equals(kind)) {
                 variable = true;
                 final OtpErlangObject o = openTuple.elementAt(1);
                 if (o instanceof OtpErlangTuple) {
@@ -84,7 +84,7 @@ public class OpenResult {
                     final OtpErlangAtom a = (OtpErlangAtom) o;
                     name = a.atomValue();
                 }
-            } else if (kind.equals("field")) {
+            } else if ("field".equals(kind)) {
                 field = true;
                 final OtpErlangAtom recordNameA = (OtpErlangAtom) openTuple
                         .elementAt(1);

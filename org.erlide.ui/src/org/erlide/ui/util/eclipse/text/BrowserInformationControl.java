@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.erlide.ui.util.eclipse.text;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Iterator;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
@@ -299,8 +301,11 @@ public class BrowserInformationControl extends AbstractInformationControl
      */
     @Override
     public void setInput(final Object input) {
-        Assert.isLegal(input == null || input instanceof String
-                || input instanceof BrowserInformationControlInput);
+        assertThat(input, is(not(nullValue())));
+        assertThat(
+                input,
+                is(either(instanceOf(String.class)).or(
+                        instanceOf(BrowserInformationControlInput.class))));
 
         if (input instanceof String) {
             setInformation((String) input);
@@ -317,7 +322,7 @@ public class BrowserInformationControl extends AbstractInformationControl
         fBrowserHasContent = content != null && content.length() > 0;
 
         if (!fBrowserHasContent) {
-            content = "<html><body ></html>"; //$NON-NLS-1$
+            content = "<html><body></body></html>"; //$NON-NLS-1$
         }
 
         final boolean RTL = (getShell().getStyle() & SWT.RIGHT_TO_LEFT) != 0;
@@ -374,7 +379,6 @@ public class BrowserInformationControl extends AbstractInformationControl
 
         if (!visible) {
             super.setVisible(false);
-            setInput(null);
             return;
         }
 
@@ -619,7 +623,7 @@ public class BrowserInformationControl extends AbstractInformationControl
      */
     public void addInputChangeListener(
             final IInputChangedListener inputChangeListener) {
-        Assert.isNotNull(inputChangeListener);
+        assertThat(inputChangeListener, is(not(nullValue())));
         fInputChangeListeners.add(inputChangeListener);
     }
 

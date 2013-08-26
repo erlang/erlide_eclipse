@@ -447,7 +447,7 @@ public class OtpNode extends OtpLocalNode {
             if (t == OtpMsg.regSendTag) {
                 final String name = m.getRecipientName();
                 /* special case for netKernel requests */
-                if (name.equals("net_kernel")) {
+                if ("net_kernel".equals(name)) {
                     return netKernel(m);
                 } else {
                     mbox = mboxes.get(name);
@@ -560,9 +560,9 @@ public class OtpNode extends OtpLocalNode {
      */
     public class Mailboxes {
         // mbox pids here
-        private Hashtable<OtpErlangPid, WeakReference<OtpMbox>> byPid = null;
+        private final Hashtable<OtpErlangPid, WeakReference<OtpMbox>> byPid;
         // mbox names here
-        private Hashtable<String, WeakReference<OtpMbox>> byName = null;
+        private final Hashtable<String, WeakReference<OtpMbox>> byName;
 
         public Mailboxes() {
             byPid = new Hashtable<OtpErlangPid, WeakReference<OtpMbox>>(17,

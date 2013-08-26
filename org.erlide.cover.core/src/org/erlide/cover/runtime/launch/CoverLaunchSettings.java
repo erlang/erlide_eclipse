@@ -9,6 +9,7 @@ import org.erlide.cover.core.Activator;
 import org.erlide.cover.core.Logger;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
+import org.erlide.util.ErlLogger;
 
 /**
  * Settings for performing coverage.
@@ -55,7 +56,7 @@ public class CoverLaunchSettings {
             try {
                 config.addModule(data.getModule().replace(".erl", ""));
             } catch (final ErlModelException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
                 throw new CoverException(e.getMessage());
             }
             break;
@@ -76,7 +77,7 @@ public class CoverLaunchSettings {
                     }
                 }
             } catch (final ErlModelException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
                 throw new CoverException(e.getMessage());
             }
             break;

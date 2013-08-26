@@ -52,7 +52,7 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
                 .collectModulesFromResource(model, project);
         final Set<IErlProject> projects = Sets.newHashSet();
         projects.add(model.findProject(project));
-        if (modules.size() != 0) {
+        if (!modules.isEmpty()) {
             try {
                 final IBackend backend = BackendCore.getBackendManager()
                         .getBuildBackend(project);

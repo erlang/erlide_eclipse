@@ -74,6 +74,7 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.CommonUtils;
 import org.erlide.model.util.ResourceUtil;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.PreferencesUtils;
 
 import com.google.common.collect.Lists;
@@ -338,7 +339,7 @@ public class FilteredModulesSelectionDialog extends
                 try {
                     fCollator = new RuleBasedCollator(newRules);
                 } catch (final ParseException e) {
-                    e.printStackTrace();
+                    ErlLogger.error(e);
                     fCollator = collator;
                 }
             }
@@ -603,7 +604,7 @@ public class FilteredModulesSelectionDialog extends
             final HashSet<IPath> result = new HashSet<IPath>();
             for (final IPath path : sourcePaths) {
                 final String path_string = path.toString();
-                if (path_string.equals(".")) {
+                if (".".equals(path_string)) {
                     result.add(project.getFullPath());
                 } else {
                     result.add(project.getFolder(path).getFullPath());

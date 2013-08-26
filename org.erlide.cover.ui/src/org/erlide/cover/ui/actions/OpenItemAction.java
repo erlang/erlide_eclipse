@@ -27,6 +27,7 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.util.ErlLogger;
 
 /**
  * Action for opening items in the editor.
@@ -95,7 +96,7 @@ public class OpenItemAction extends Action {
                 editor.setSelection(f);
 
             } catch (final ErlModelException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
 
         } else {
@@ -132,7 +133,7 @@ public class OpenItemAction extends Action {
             return p;
 
         } catch (final PartInitException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             return null;
         }
 

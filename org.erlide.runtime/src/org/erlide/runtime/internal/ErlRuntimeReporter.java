@@ -105,7 +105,7 @@ public class ErlRuntimeReporter {
         // 129 = SIGHUP (probably logout, ignore)
         // 143 = SIGTERM (probably logout, ignore)
         // 137 = SIGKILL (probably killed by user)
-        return v > 1 && v != 143 && v != 129 && v != 137;
+        return v > 0 && v != 143 && v != 129 && v != 137;
     }
 
     private String createReport(final String nodeName, final String workingDir,

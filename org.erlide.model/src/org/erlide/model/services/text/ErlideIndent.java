@@ -24,9 +24,9 @@ public class ErlideIndent {
             final OtpErlangAtom a = new OtpErlangAtom(e.getKey());
             final String s = e.getValue();
             int n;
-            if (s.equals("false")) {
+            if ("false".equals(s)) {
                 n = 0;
-            } else if (s.equals("true")) {
+            } else if ("true".equals(s)) {
                 n = 1;
             } else {
                 n = Integer.parseInt(s);

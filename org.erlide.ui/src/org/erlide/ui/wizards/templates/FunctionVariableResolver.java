@@ -12,6 +12,7 @@ package org.erlide.ui.wizards.templates;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -26,7 +27,7 @@ import org.erlide.util.ErlLogger;
 
 public class FunctionVariableResolver extends TemplateVariableResolver {
 
-    protected ArrayList<Object[]> functions = new ArrayList<Object[]>();
+    protected List<Object[]> functions = new ArrayList<Object[]>();
 
     @Override
     public void resolve(final TemplateVariable variable,

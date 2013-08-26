@@ -26,7 +26,7 @@ public class InternalBackend extends Backend {
 
     @SuppressWarnings("unused")
     @Override
-    public void runtimeDown(final IErlRuntime runtime) {
+    public void run() {
         getData().setLaunch(null);
         // TODO fix this
         if (false && getData().isRestartable()) {
@@ -38,7 +38,7 @@ public class InternalBackend extends Backend {
                     .values()) {
                 registerCodeBundle(bb);
             }
-            startErlangApps(getRuntime().getEventMbox().self(), true);
+            startErlideApps(getRuntime().getEventMbox().self(), true);
         }
     }
 }

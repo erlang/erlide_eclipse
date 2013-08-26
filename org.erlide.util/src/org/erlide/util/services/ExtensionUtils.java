@@ -14,7 +14,7 @@ import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
 
-public class ExtensionUtils {
+public final class ExtensionUtils {
 
     /**
      * Get an executable extension that has only one implementor. We do no hard
@@ -38,7 +38,7 @@ public class ExtensionUtils {
                     return clazz.cast(object);
                 }
             } catch (final CoreException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
         return null;

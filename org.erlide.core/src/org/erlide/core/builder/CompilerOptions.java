@@ -230,7 +230,7 @@ public class CompilerOptions {
 
     public void setListOption(final CompilerOption opt,
             final List<Pair<String, String>> value) {
-        if (value == null || value.size() == 0) {
+        if (value == null || value.isEmpty()) {
             removeOption(opt);
         } else {
             options.put(opt, value);

@@ -17,6 +17,7 @@ import org.erlide.model.erlang.IErlMember;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
+import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.util.ErlRange;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
@@ -90,7 +91,7 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
                     getEndCol(), member.getSourceRange().getOffset(), member
                             .getSourceRange().getLength());
         } catch (final ErlModelException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             return null;
         }
         return range;

@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class IErlTypespecTests extends ErlModelTestBase {
                                 + "    throw({error, {Line, ?MODULE, Message}}).");
         module2.open(null);
         final List<IErlElement> childrenOfKind = module2
-                .getChildrenOfKind(Kind.TYPESPEC);
+                .getChildrenOfKind(ErlElementKind.TYPESPEC);
         final IErlElement element = childrenOfKind.get(0);
         final IErlTypespec typespec = (IErlTypespec) element;
         assertEquals("return_error", typespec.getName());

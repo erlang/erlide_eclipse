@@ -37,24 +37,6 @@ public class ErlModelException extends CoreException {
     CoreException nestedCoreException;
 
     /**
-     * Creates a Erlang model exception that wrappers the given
-     * <code>Throwable</code>. The exception contains a Erlang-specific status
-     * object with severity <code>IStatus.ERROR</code> and the given status
-     * code.
-     * 
-     * @param e
-     *            the <code>Throwable</code>
-     * @param code
-     *            one of the Erlang-specific status codes declared in
-     *            <code>IErlModelStatusConstants</code>
-     * @see ErlModelStatusConstants
-     * @see org.eclipse.core.runtime.IStatus#ERROR
-     */
-    public ErlModelException(final Throwable e, final int code) {
-        this(new ErlModelStatus(code, e));
-    }
-
-    /**
      * Creates a Erlang model exception for the given <code>CoreException</code>
      * . Equivalent to
      * <code>ErlModelException(exception,IErlModelStatusConstants.CORE_EXCEPTION</code>
@@ -63,8 +45,9 @@ public class ErlModelException extends CoreException {
      * @param exception
      *            the <code>CoreException</code>
      */
-    public ErlModelException(final CoreException exception) {
-        super(exception.getStatus());
+    public ErlModelException(final CoreException exception,
+            final IErlModelStatus status) {
+        super(status);
         nestedCoreException = exception;
     }
 
@@ -77,18 +60,6 @@ public class ErlModelException extends CoreException {
      */
     public ErlModelException(final IErlModelStatus status) {
         super(status);
-    }
-
-    /**
-     * Creates an erlang model exception from the status code (which should be
-     * from IErlModelStatusConstants)
-     * 
-     * @param code
-     *            a code from IErlModelStatusConstants
-     */
-
-    public ErlModelException(final int code) {
-        super(new ErlModelStatus(code));
     }
 
     /**
@@ -115,7 +86,7 @@ public class ErlModelException extends CoreException {
         if (status instanceof IErlModelStatus) {
             return (IErlModelStatus) status;
         }
-        return new ErlModelStatus(nestedCoreException);
+        return null;
     }
 
     /**

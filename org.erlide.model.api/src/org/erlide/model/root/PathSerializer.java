@@ -15,7 +15,7 @@ import com.google.common.collect.Lists;
 
 public final class PathSerializer {
 
-    private static final ArrayList<IPath> EMPTY_LIST = Lists.newArrayList();
+    private static final List<IPath> EMPTY_LIST = Lists.newArrayList();
     public static final String SEP = ";";
 
     public static String packList(final Iterable<IPath> list) {

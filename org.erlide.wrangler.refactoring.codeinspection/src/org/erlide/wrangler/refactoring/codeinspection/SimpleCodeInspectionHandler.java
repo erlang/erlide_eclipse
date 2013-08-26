@@ -25,10 +25,11 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.FunctionRef;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.runtime.rpc.RpcResult;
+import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.codeinspection.ui.InputDialogWithCheckbox;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
@@ -168,7 +169,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
 
             }
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
     }
@@ -220,7 +221,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
 
             }
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
     }
@@ -266,7 +267,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                         "Could not found any incomplete receive patterns!");
             }
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 
@@ -340,7 +341,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                         "Could not found any non tail recursive server!");
             }
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
     }
@@ -401,16 +402,20 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             if (!modules1.isEmpty()) {
                 CodeInspectionViewsManager.showErlElements(
                         "Modules which depends on "
-                                + wranglerSelection.getErlElement()
-                                        .getAncestorOfKind(Kind.MODULE)
+                                + wranglerSelection
+                                        .getErlElement()
+                                        .getAncestorOfKind(
+                                                ErlElementKind.MODULE)
                                         .getName(), modules1,
                         DEPENECIES_1_VIEW_ID);
             }
             if (!modules2.isEmpty()) {
                 CodeInspectionViewsManager.showErlElements(
                         "Modules, on which "
-                                + wranglerSelection.getErlElement()
-                                        .getAncestorOfKind(Kind.MODULE)
+                                + wranglerSelection
+                                        .getErlElement()
+                                        .getAncestorOfKind(
+                                                ErlElementKind.MODULE)
                                         .getName() + " depends", modules2,
                         DEPENECIES_2_VIEW_ID);
             } else {
@@ -419,7 +424,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                                 "There is no large module with the specified parameter!");
             }
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
     }
 
@@ -490,7 +495,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
                 return;
             }
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         if (!modules.isEmpty()) {
             CodeInspectionViewsManager.showErlElements("Large modules",

@@ -16,12 +16,12 @@ import java.net.Socket;
 import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.IRuntimeStateListener;
+import org.erlide.runtime.api.IShutdownCallback;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangLogEventHandler;
 import org.erlide.runtime.events.LogEventHandler;
-import org.erlide.runtime.rpc.RpcSite;
+import org.erlide.runtime.internal.rpc.RpcSite;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 
@@ -52,7 +52,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     private OtpNode localNode;
     final ErlRuntimeReporter reporter;
     private OtpMbox eventMBox;
-    private IRuntimeStateListener listener;
+    private IShutdownCallback callback;
     private ErlSystemStatus lastSystemMessage;
     private IRpcSite rpcSite;
     private final EventBus eventBus;
@@ -60,7 +60,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     private EventParser eventHelper;
     boolean crashed;
 
-    final static boolean DEBUG = Boolean.parseBoolean(System
+    static final boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.event.daemon"));
     public static final long POLL_INTERVAL = 200;
 
@@ -97,10 +97,10 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     protected void shutDown() throws Exception {
         localNode.close();
 
-        if (listener != null) {
-            listener.runtimeDown(ErlRuntime.this);
+        if (callback != null) {
+            callback.run();
         }
-        listener = null;
+        callback = null;
         rpcSite.setConnected(false);
     }
 
@@ -171,8 +171,8 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     }
 
     @Override
-    public void addListener(final IRuntimeStateListener aListener) {
-        listener = aListener;
+    public void addShutdownCallback(final IShutdownCallback aCallback) {
+        callback = aCallback;
     }
 
     @Override
@@ -375,8 +375,9 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     private class ErlRuntimeListener implements Listener {
         @Override
         public void terminated(final State from) {
-            ErlLogger.debug(String.format("Runtime %s terminated, exit code: ",
-                    getNodeName(), getExitCode()));
+            ErlLogger.debug(String.format(
+                    "Runtime %s terminated, exit code: %d", getNodeName(),
+                    getExitCode()));
             if (data.isReportErrors()) {
                 reporter.reportRuntimeDown(getNodeName(), getSystemStatus());
             }
@@ -384,10 +385,14 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
 
         @Override
         public void failed(final State from, final Throwable failure) {
-            ErlLogger.warn(String.format("Runtime %s crashed, exit code: ",
+            ErlLogger.warn(String.format("Runtime %s crashed, exit code: %d",
                     getNodeName(), getExitCode()));
-            reporter.createFileReport(getNodeName(), getExitCode(),
-                    getRuntimeData().getWorkingDir(), getSystemStatus());
+            try {
+                reporter.createFileReport(getNodeName(), getExitCode(),
+                        getRuntimeData().getWorkingDir(), getSystemStatus());
+            } catch (final Throwable t) {
+                ErlLogger.warn(t);
+            }
         }
 
         @Override

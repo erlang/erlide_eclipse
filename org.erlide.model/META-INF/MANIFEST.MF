@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: erlide model
 Bundle-SymbolicName: org.erlide.model;singleton:=true
-Bundle-Version: 0.20.5.qualifier
+Bundle-Version: 0.20.6.qualifier
 Bundle-Activator: org.erlide.model.ModelPlugin
 Bundle-Vendor: erlide.org project
 Require-Bundle: org.eclipse.core.runtime,
@@ -19,7 +19,6 @@ Export-Package: org.erlide.model;x-friends:="org.erlide.core,org.erlide.model.ap
  org.erlide.model.erlang;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.internal.erlang;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.internal.root;x-friends:="org.erlide.core,org.erlide.model.api",
- org.erlide.model.services.cleanup;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.services.codeassist;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.services.search;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.services.text;x-friends:="org.erlide.core,org.erlide.model.api",

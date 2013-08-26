@@ -15,7 +15,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.model.root.IErlElement.Kind;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 
 /**
@@ -70,10 +70,10 @@ public abstract class AbstractErlMemberSelection extends AbstractErlSelection
 
     @Override
     public SelectionKind getKind() {
-        final Kind k = getErlElement().getKind();
-        if (k == Kind.CLAUSE) {
+        final ErlElementKind k = getErlElement().getKind();
+        if (k == ErlElementKind.CLAUSE) {
             return SelectionKind.FUNCTION_CLAUSE;
-        } else if (k == Kind.FUNCTION) {
+        } else if (k == ErlElementKind.FUNCTION) {
             return SelectionKind.FUNCTION;
         } else {
             return SelectionKind.MODULE;

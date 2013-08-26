@@ -98,7 +98,7 @@ public class Activator extends AbstractUIPlugin {
          * } catch (IOException ioe) { ioe.printStackTrace (); throw new
          * CoreException(new Status(IStatus.ERROR, PLUGIN_ID,
          * "Could not load the ebin files!" )); } catch (Exception e) {
-         * e.printStackTrace(); } }
+         * ErlLogger.error(e); } }
          */
 
         res = mb.getRpcSite().call_noexception("wrangler_error_logger", "init",

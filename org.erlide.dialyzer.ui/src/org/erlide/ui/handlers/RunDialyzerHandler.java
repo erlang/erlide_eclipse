@@ -56,7 +56,7 @@ public class RunDialyzerHandler extends AbstractHandler {
 
         @Override
         protected IStatus run(final IProgressMonitor monitor) {
-            if (modules.size() > 0) {
+            if (!modules.isEmpty()) {
                 IBackend backend = null;
                 monitor.beginTask("Dialyzing", IProgressMonitor.UNKNOWN);
 

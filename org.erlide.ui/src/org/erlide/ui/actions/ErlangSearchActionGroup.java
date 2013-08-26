@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.actions;
 
-import org.eclipse.core.runtime.Assert;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
@@ -77,7 +79,7 @@ public class ErlangSearchActionGroup extends ActionGroup {
      *            the Erlang editor
      */
     public ErlangSearchActionGroup(final AbstractErlangEditor editor) {
-        Assert.isNotNull(editor);
+        assertThat(editor, is(not(nullValue())));
         fEditor = editor;
 
         fReferencesGroup = new ReferencesSearchGroup(fEditor);

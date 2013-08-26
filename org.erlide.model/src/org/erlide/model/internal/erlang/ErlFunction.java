@@ -18,6 +18,7 @@ import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlMember;
 import org.erlide.model.internal.root.ErlMember;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ModelUtils;
@@ -75,8 +76,8 @@ public class ErlFunction extends ErlMember implements IErlFunction {
     }
 
     @Override
-    public Kind getKind() {
-        return Kind.FUNCTION;
+    public ErlElementKind getKind() {
+        return ErlElementKind.FUNCTION;
     }
 
     @Override

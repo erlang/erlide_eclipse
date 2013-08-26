@@ -1,0 +1,16 @@
+
+build
+
+# build the site for installing the product, i.e., mail feature and platform feature
+# IMPORTANT: build the site first for all architectures, so that we can create
+# products for multiple architectures
+
+perform -D target.os=* -D target.ws=* -D target.arch=* org.erlide.product.site#site.p2
+
+# now build the products and zip them
+
+perform -D target.os=linux -D target.ws=gtk -D target.arch=x86_64 org.erlide.product.site#create.product.zip
+perform -D target.os=linux -D target.ws=gtk -D target.arch=x86 org.erlide.product.site#create.product.zip
+perform -D target.os=win32 -D target.ws=win32 -D target.arch=x86_64 org.erlide.product.site#create.product.zip
+perform -D target.os=win32 -D target.ws=win32 -D target.arch=x86 org.erlide.product.site#create.product.zip
+perform -D target.os=macosx -D target.ws=cocoa -D target.arch=x86_64 org.erlide.product.site#create.product.zip

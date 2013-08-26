@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.erlide.ui.views;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
@@ -109,8 +111,8 @@ public class EdocView extends AbstractInfoView {
                 final SelectionProvider selectionProvider) {
             super("selectAll");
 
-            Assert.isNotNull(control);
-            Assert.isNotNull(selectionProvider);
+            assertThat(control, is(not(nullValue())));
+            assertThat(selectionProvider, is(not(nullValue())));
             fControl = control;
             fSelectionProvider = selectionProvider;
 
@@ -161,7 +163,7 @@ public class EdocView extends AbstractInfoView {
          *            the widget
          */
         public SelectionProvider(final Control control) {
-            Assert.isNotNull(control);
+            assertThat(control, is(not(nullValue())));
             fControl = control;
             if (fControl instanceof StyledText) {
                 ((StyledText) fControl)

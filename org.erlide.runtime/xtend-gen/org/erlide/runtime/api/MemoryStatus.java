@@ -6,6 +6,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.base.Objects;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.TermParserException;
@@ -111,10 +112,10 @@ public class MemoryStatus {
       } catch (final Throwable _t) {
         if (_t instanceof OtpErlangException) {
           final OtpErlangException e = (OtpErlangException)_t;
-          e.printStackTrace();
+          ErlLogger.error(e);
         } else if (_t instanceof TermParserException) {
           final TermParserException e_1 = (TermParserException)_t;
-          e_1.printStackTrace();
+          ErlLogger.error(e_1);
         } else {
           throw Exceptions.sneakyThrow(_t);
         }

@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 
-public class CommonUtils {
+public final class CommonUtils {
 
     private CommonUtils() {
     }

@@ -7,9 +7,9 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.erlide.model.internal.erlang.ErlAttribute;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
 import org.junit.Test;
@@ -64,11 +64,11 @@ public class IParentTests extends ErlModelTestBase {
     public void getChildrenOfKind() throws Exception {
         module.open(null);
         final List<IErlElement> childrenOfKind = module
-                .getChildrenOfKind(Kind.ATTRIBUTE);
+                .getChildrenOfKind(ErlElementKind.ATTRIBUTE);
         final List<IErlElement> childrenOfKind2 = module
-                .getChildrenOfKind(Kind.FUNCTION);
+                .getChildrenOfKind(ErlElementKind.FUNCTION);
         final List<IErlElement> childrenOfKind3 = module
-                .getChildrenOfKind(Kind.TYPESPEC);
+                .getChildrenOfKind(ErlElementKind.TYPESPEC);
         assertEquals(2, childrenOfKind.size());
         assertEquals(1, childrenOfKind2.size());
         assertEquals(0, childrenOfKind3.size());
@@ -79,11 +79,11 @@ public class IParentTests extends ErlModelTestBase {
     public void hasChildrenOfKind() throws Exception {
         module.open(null);
         final boolean hasChildrenOfKind = module
-                .hasChildrenOfKind(Kind.ATTRIBUTE);
+                .hasChildrenOfKind(ErlElementKind.ATTRIBUTE);
         final boolean hasChildrenOfKind2 = module
-                .hasChildrenOfKind(Kind.FUNCTION);
+                .hasChildrenOfKind(ErlElementKind.FUNCTION);
         final boolean hasChildrenOfKind3 = module
-                .hasChildrenOfKind(Kind.TYPESPEC);
+                .hasChildrenOfKind(ErlElementKind.TYPESPEC);
         assertTrue(hasChildrenOfKind);
         assertTrue(hasChildrenOfKind2);
         assertFalse(hasChildrenOfKind3);
@@ -104,7 +104,7 @@ public class IParentTests extends ErlModelTestBase {
         assertNull(childNamed2);
         assertNull(childNamed3);
         assertNotNull(childNamed4);
-        assertTrue(childNamed5.getKind() == Kind.FUNCTION);
+        assertTrue(childNamed5.getKind() == ErlElementKind.FUNCTION);
     }
 
     // IErlElement getChildWithResource(IResource rsrc);
@@ -163,8 +163,8 @@ public class IParentTests extends ErlModelTestBase {
     public void removeChild() throws Exception {
         module.open(null);
         final int childCount = module.getChildCount();
-        final IErlElement element = module.getChildrenOfKind(Kind.ATTRIBUTE)
-                .iterator().next();
+        final IErlElement element = module
+                .getChildrenOfKind(ErlElementKind.ATTRIBUTE).iterator().next();
         final IErlElement childNamed = module.getChildNamed(element.getName());
         module.removeChild(element);
         final int childCount2 = module.getChildCount();

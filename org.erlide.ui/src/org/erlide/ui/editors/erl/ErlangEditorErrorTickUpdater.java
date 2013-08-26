@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.model.erlang.IErlModule;
@@ -29,7 +31,7 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
     private final ErlangFileLabelProvider fLabelProvider;
 
     public ErlangEditorErrorTickUpdater(final ErlangEditor editor) {
-        Assert.isNotNull(editor);
+        assertThat(editor, is(not(nullValue())));
         fErlangEditor = editor;
         fLabelProvider = new ErlangFileLabelProvider();
         ErlideUIPlugin.getDefault().getProblemMarkerManager().addListener(this);

@@ -64,9 +64,9 @@ import org.erlide.core.builder.DialyzerUtils;
 import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.core.builder.ErlideDialyze;
 import org.erlide.model.ErlModelException;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.IRpcSite;
@@ -745,7 +745,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 if (alternatePltFileDirectory != null) {
                     ebinDirs = Lists.newArrayList();
                     for (final IErlElement i : ErlModelManager.getErlangModel()
-                            .getChildrenOfKind(Kind.PROJECT)) {
+                            .getChildrenOfKind(ErlElementKind.PROJECT)) {
                         final IErlProject project = (IErlProject) i;
                         final String ebinDir = project.getWorkspaceProject()
                                 .getFolder(project.getOutputLocation())

@@ -20,6 +20,7 @@ import org.erlide.runtime.shell.BackendShellListener;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpErlang;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -67,7 +68,7 @@ public class BackendShell implements IBackendShell {
             try {
                 backend.input(string);
             } catch (final IOException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
     }
@@ -226,7 +227,7 @@ public class BackendShell implements IBackendShell {
             listenersCopy = Lists.newArrayList(listeners);
         }
         for (final BackendShellListener listener : listenersCopy) {
-            listener.changed(this);
+            listener.changed();
         }
     }
 

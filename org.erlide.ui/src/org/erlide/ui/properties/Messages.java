@@ -2,7 +2,7 @@ package org.erlide.ui.properties;
 
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS {
+public final class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.erlide.ui.properties.messages"; //$NON-NLS-1$
     public static String OldErlProjectPropertyPage_uz_text;
     public static String OldErlProjectPropertyPage_outLabel_text;

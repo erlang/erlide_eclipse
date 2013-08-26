@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.erlide.model.internal.root;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +20,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
@@ -25,6 +27,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementVisitor;
@@ -74,7 +77,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     protected ErlElement(final IParent parent, final String name) {
         fParent = parent;
         fName = name;
-        Assert.isNotNull(fName);
+        assertThat(fName, is(not(nullValue())));
     }
 
     /**
@@ -130,7 +133,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * @see IErlElement
      */
     @Override
-    public IErlElement getAncestorOfKind(final Kind kind) {
+    public IErlElement getAncestorOfKind(final ErlElementKind kind) {
         IErlElement element = this;
         while (true) {
             if (element.getKind() == kind) {
@@ -221,7 +224,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     @Override
-    public boolean hasChildrenOfKind(final Kind kind) {
+    public boolean hasChildrenOfKind(final ErlElementKind kind) {
         synchronized (getModelLock()) {
             for (final IErlElement child : internalGetChildren()) {
                 if (child.getKind() == kind) {
@@ -416,7 +419,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      *            - one of the constants defined by IErlElement
      */
     @Override
-    public List<IErlElement> getChildrenOfKind(final Kind kind)
+    public List<IErlElement> getChildrenOfKind(final ErlElementKind kind)
             throws ErlModelException {
         final List<IErlElement> result = Lists.newArrayList();
         synchronized (getModelLock()) {
@@ -532,7 +535,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     @Override
     public final void accept(final IErlElementVisitor visitor,
-            final Set<AcceptFlags> flags, final IErlElement.Kind leafKind)
+            final Set<AcceptFlags> flags, final ErlElementKind leafKind)
             throws ErlModelException {
         synchronized (getModelLock()) {
             internalAccept(visitor, flags, leafKind);
@@ -540,7 +543,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     private final void internalAccept(final IErlElementVisitor visitor,
-            final Set<AcceptFlags> flags, final IErlElement.Kind leafKind)
+            final Set<AcceptFlags> flags, final ErlElementKind leafKind)
             throws ErlModelException {
         if (getKind() == leafKind) {
             visitor.visit(this);

@@ -17,10 +17,10 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ModuleKind;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElement.AcceptFlags;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlElementVisitor;
 import org.erlide.model.root.IErlExternal;
 import org.erlide.model.root.IErlModel;
@@ -90,7 +90,7 @@ public class SearchCoreUtil {
             final boolean addExternals, final boolean addOtp)
             throws ErlModelException {
         final Collection<IErlElement> externals = element
-                .getChildrenOfKind(Kind.EXTERNAL);
+                .getChildrenOfKind(ErlElementKind.EXTERNAL);
         for (final IErlElement external : externals) {
             external.accept(new IErlElementVisitor() {
 
@@ -118,7 +118,7 @@ public class SearchCoreUtil {
                     }
                     return true;
                 }
-            }, EnumSet.noneOf(AcceptFlags.class), Kind.MODULE);
+            }, EnumSet.noneOf(AcceptFlags.class), ErlElementKind.MODULE);
         }
     }
 

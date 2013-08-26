@@ -9,11 +9,13 @@
  *******************************************************************************/
 package org.erlide.ui.prefs.plugin;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -136,8 +138,8 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
     }
 
     public static void addKeysAndPrefs(final Map<String, String> map) {
-        Assert.isTrue(INDENT_KEYS.length == INDENT_FIELDS.length);
-        Assert.isTrue(INDENT_FIELDS.length == INDENT_DEFAULTS.length);
+        assertThat(INDENT_KEYS.length, is(INDENT_FIELDS.length));
+        assertThat(INDENT_FIELDS.length, is(INDENT_DEFAULTS.length));
         addKeysAndPrefs(INDENT_KEY, INDENT_KEYS, INDENT_DEFAULTS, map);
     }
 

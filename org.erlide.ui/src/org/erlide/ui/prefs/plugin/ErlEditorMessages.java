@@ -16,7 +16,7 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author VlaDum
  */
-public class ErlEditorMessages extends NLS {
+public final class ErlEditorMessages extends NLS {
 
     private static final String BUNDLE_NAME = "org.erlide.ui.prefs.plugin.ErlEditorMessages"; //$NON-NLS-1$
 

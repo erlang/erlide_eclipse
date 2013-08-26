@@ -22,7 +22,7 @@ package com.ericsson.otp.erlang;
  * Provides a collection of constants used when encoding and decoding Erlang
  * terms.
  */
-public class OtpExternal {
+public final class OtpExternal {
     // no constructor
     private OtpExternal() {
     }

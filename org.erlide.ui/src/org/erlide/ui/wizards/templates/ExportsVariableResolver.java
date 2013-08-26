@@ -12,20 +12,21 @@ package org.erlide.ui.wizards.templates;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateVariable;
 
 public class ExportsVariableResolver extends FunctionVariableResolver {
 
-    private static final ArrayList<FunctionVariableResolver> fInstances = new ArrayList<FunctionVariableResolver>();
+    private static final List<FunctionVariableResolver> fInstances = new ArrayList<FunctionVariableResolver>();
 
     public ExportsVariableResolver() {
         fInstances.add(this);
     }
 
     public static ExportsVariableResolver getDefault() {
-        if (fInstances.size() == 0) {
+        if (fInstances.isEmpty()) {
             fInstances.add(new ExportsVariableResolver());
         }
         return (ExportsVariableResolver) fInstances.get(0);

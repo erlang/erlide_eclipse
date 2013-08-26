@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.util.ErlLogger;
 
 /**
  * Displays warning messages got from Wrangler
@@ -148,7 +149,7 @@ public class WarningView extends ViewPart implements IWarningHandler {
         try {
             viewer.refresh();
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
     }

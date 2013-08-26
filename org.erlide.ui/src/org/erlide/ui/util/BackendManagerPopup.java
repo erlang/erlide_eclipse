@@ -19,7 +19,7 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendListener;
 import org.erlide.util.ErlLogger;
 
-public class BackendManagerPopup implements IBackendListener {
+public final class BackendManagerPopup implements IBackendListener {
 
     private static final IBackendListener fInstance = new BackendManagerPopup();
 

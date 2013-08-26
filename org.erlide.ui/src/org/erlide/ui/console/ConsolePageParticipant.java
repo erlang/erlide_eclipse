@@ -72,7 +72,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
     private IConsoleView fView;
 
     private EOFHandler fEOFHandler;
-    private final String fContextId = "org.eclipse.debug.ui.console"; //$NON-NLS-1$;
+    private final static String fContextId = "org.eclipse.debug.ui.console"; //$NON-NLS-1$;
     private IContextActivation fActivatedContext;
     private IHandlerActivation fActivatedHandler;
 

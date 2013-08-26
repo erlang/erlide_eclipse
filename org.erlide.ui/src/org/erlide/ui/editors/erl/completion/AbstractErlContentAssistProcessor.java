@@ -24,7 +24,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.backend.BackendCore;
 import org.erlide.model.ErlModelException;
-import org.erlide.model.ModelPlugin;
+import org.erlide.model.ModelCore;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlImport;
@@ -35,9 +35,9 @@ import org.erlide.model.erlang.IErlRecordDef;
 import org.erlide.model.erlang.IErlRecordField;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.codeassist.ErlideContextAssist;
@@ -305,7 +305,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                 result.addAll(Arrays.asList(t.computeCompletionProposals(
                         viewer, offset)));
                 oldSuggestions = result.size();
-                if (result.size() == 0) {
+                if (result.isEmpty()) {
                     ErlLogger.debug("no results");
                     return getNoCompletion(offset);
                 } else {
@@ -332,8 +332,8 @@ public abstract class AbstractErlContentAssistProcessor implements
             final int offset, final String prefix, final String moduleOrRecord,
             final int pos, final List<String> fieldsSoFar)
             throws CoreException, OtpErlangRangeException, BadLocationException {
-        final IProject workspaceProject = project != null ? project
-                .getWorkspaceProject() : null;
+        final IProject workspaceProject = project == null ? null : project
+                .getWorkspaceProject();
         final IRpcSite backend = BackendCore.getBuildOrIdeBackend(
                 workspaceProject).getRpcSite();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
@@ -369,7 +369,7 @@ public abstract class AbstractErlContentAssistProcessor implements
             addSorted(
                     result,
                     getMacroOrRecordCompletions(offset, prefix,
-                            IErlElement.Kind.RECORD_DEF));
+                            ErlElementKind.RECORD_DEF));
         }
         if (flags.contains(Kinds.RECORD_FIELDS)) {
             addSorted(
@@ -381,7 +381,7 @@ public abstract class AbstractErlContentAssistProcessor implements
             addSorted(
                     result,
                     getMacroOrRecordCompletions(offset, prefix,
-                            IErlElement.Kind.MACRO_DEF));
+                            ErlElementKind.MACRO_DEF));
         }
         if (flags.contains(Kinds.EXTERNAL_FUNCTIONS)) {
             addSorted(
@@ -494,7 +494,7 @@ public abstract class AbstractErlContentAssistProcessor implements
     }
 
     List<ICompletionProposal> getMacroOrRecordCompletions(final int offset,
-            final String prefix, final Kind kind) {
+            final String prefix, final ErlElementKind kind) {
         if (module == null) {
             return EMPTY_COMPLETIONS;
         }
@@ -509,7 +509,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         } catch (final CoreException e) {
             ErlLogger.error(e);
         }
-        if (kind == Kind.MACRO_DEF) {
+        if (kind == ErlElementKind.MACRO_DEF) {
             final String[] names = ModelUtils.getPredefinedMacroNames();
             for (final String name : names) {
                 addIfMatches(name, prefix, offset, result);
@@ -557,7 +557,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         IErlPreprocessorDef pd;
         try {
             pd = ModelUtils.findPreprocessorDef(module, recordName,
-                    Kind.RECORD_DEF);
+                    ErlElementKind.RECORD_DEF);
         } catch (final CoreException e) {
             return EMPTY_COMPLETIONS;
         }
@@ -589,7 +589,7 @@ public abstract class AbstractErlContentAssistProcessor implements
 
     List<ICompletionProposal> getAutoImportedFunctions(final IRpcSite backend,
             final int offset, final String prefix) {
-        final String stateDir = ModelPlugin.getStateDir();
+        final String stateDir = ModelCore.getStateDir();
         final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(backend,
                 "<auto_imported>", prefix, stateDir);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
@@ -599,7 +599,7 @@ public abstract class AbstractErlContentAssistProcessor implements
 
     List<ICompletionProposal> getImportedFunctions(final IRpcSite backend,
             final int offset, final String prefix) {
-        final String stateDir = ModelPlugin.getStateDir();
+        final String stateDir = ModelCore.getStateDir();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         for (final IErlImport imp : module.getImports()) {
             final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(backend,
@@ -706,7 +706,7 @@ public abstract class AbstractErlContentAssistProcessor implements
             final String docStr, final String funWithParameters,
             final List<Point> offsetsAndLengths) {
         int cursorPosition = funWithParameters.length();
-        if (offsetsAndLengths.size() > 0) {
+        if (!offsetsAndLengths.isEmpty()) {
             cursorPosition = offsetsAndLengths.get(0).x;
         }
 
@@ -804,8 +804,8 @@ public abstract class AbstractErlContentAssistProcessor implements
             String funWithParameters = arityOnly ? funWithArity
                     : getNameWithParameters(function.name, parameterNames);
             funWithParameters = funWithParameters.substring(prefix.length());
-            final String htmlComment = comments != null ? HTMLPrinter
-                    .asHtml(HoverUtil.getDocumentationString(comments)) : "";
+            final String htmlComment = comments == null ? "" : HTMLPrinter
+                    .asHtml(HoverUtil.getDocumentationString(comments));
             addFunctionCompletion(offset, result, funWithArity, htmlComment,
                     funWithParameters, offsetsAndLengths);
         }

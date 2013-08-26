@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
+import java.util.Calendar;
+
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -28,7 +30,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.wb.swt.ResourceManager;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.ui.internal.ErlideUIPlugin;
 
 public class ErlangPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
@@ -46,21 +47,22 @@ public class ErlangPreferencePage extends PreferencePage implements
         panel.setLayout(layout);
 
         final Label img = new Label(panel, SWT.NONE);
-        img.setLayoutData(new GridData(79, SWT.DEFAULT));
-        img.setImage(ResourceManager.getPluginImage(ErlideUIPlugin.PLUGIN_ID,
-                "icons/full/obj16/erlang058.gif"));
+        img.setLayoutData(new GridData(160, 160));
+        img.setImage(ResourceManager.getPluginImage("org.erlide.branding",
+                "images/erl-zen-badge-160.png"));
 
         final Group composite = new Group(panel, SWT.NONE);
         final GridData gd_composite = new GridData(SWT.FILL, SWT.CENTER, false,
                 false);
-        gd_composite.widthHint = 356;
+        gd_composite.widthHint = 289;
         composite.setLayoutData(gd_composite);
         composite.setLayout(new GridLayout());
 
         final Label text = new Label(composite, SWT.NONE);
         text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
         text.setToolTipText("Vlad Dumitrescu, Jakob Cederlund and others");
-        text.setText(PreferenceMessages.ErlangPreferencePage_2);
+        final int year = Calendar.getInstance().get(Calendar.YEAR);
+        text.setText("Erlang IDE by the Erlide team \u00A9 2004-" + year);
 
         final Label textv = new Label(composite, SWT.NONE);
         textv.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));

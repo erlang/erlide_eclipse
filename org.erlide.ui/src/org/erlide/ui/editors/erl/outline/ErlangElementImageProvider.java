@@ -19,9 +19,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.erlide.model.erlang.IErlFunction;
+import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.ui.ErlideImage;
@@ -199,7 +199,8 @@ public class ErlangElementImageProvider {
         return getImageDescriptionFromKind(element.getKind());
     }
 
-    public static ImageDescriptor getImageDescriptionFromKind(final Kind kind) {
+    public static ImageDescriptor getImageDescriptionFromKind(
+            final ErlElementKind kind) {
         ErlideImage result = ErlideImage.UNKNOWN;
         switch (kind) {
         case ATTRIBUTE:

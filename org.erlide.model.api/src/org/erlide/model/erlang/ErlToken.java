@@ -72,27 +72,27 @@ public final class ErlToken {
             kind = KIND_OTHER;
             if (parts[1] instanceof OtpErlangAtom) {
                 final String s = ((OtpErlangAtom) parts[1]).atomValue();
-                if (s.equals("eof")) {
+                if ("eof".equals(s)) {
                     return;
-                } else if (s.equals("ws")) {
+                } else if ("ws".equals(s)) {
                     kind = KIND_WHITESPACE;
-                } else if (s.equals("string")) {
+                } else if ("string".equals(s)) {
                     kind = KIND_STRING;
-                } else if (s.equals("atom")) {
+                } else if ("atom".equals(s)) {
                     kind = KIND_ATOM;
-                } else if (s.equals("var")) {
+                } else if ("var".equals(s)) {
                     kind = KIND_VAR;
-                } else if (s.equals("char")) {
+                } else if ("char".equals(s)) {
                     kind = KIND_CHAR;
-                } else if (s.equals("macro")) {
+                } else if ("macro".equals(s)) {
                     kind = KIND_MACRO;
-                } else if (s.equals("->")) {
+                } else if ("->".equals(s)) {
                     kind = KIND_ARROW;
-                } else if (s.equals("integer")) {
+                } else if ("integer".equals(s)) {
                     kind = KIND_INTEGER;
-                } else if (s.equals("float")) {
+                } else if ("float".equals(s)) {
                     kind = KIND_FLOAT;
-                } else if (s.equals("comment")) {
+                } else if ("comment".equals(s)) {
                     kind = KIND_COMMENT;
                 } else {
                     kind = KIND_OTHER;

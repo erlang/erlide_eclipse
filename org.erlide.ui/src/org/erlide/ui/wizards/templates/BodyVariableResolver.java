@@ -15,14 +15,11 @@ import org.eclipse.jface.text.templates.TemplateVariableResolver;
 
 public class BodyVariableResolver extends TemplateVariableResolver {
 
-    private static BodyVariableResolver fInstance;
+    private static final BodyVariableResolver fInstance = new BodyVariableResolver();
 
     private String fBody = "ok";
 
     public static BodyVariableResolver getDefault() {
-        if (fInstance == null) {
-            fInstance = new BodyVariableResolver();
-        }
         return fInstance;
     }
 

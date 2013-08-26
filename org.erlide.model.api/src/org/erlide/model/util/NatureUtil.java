@@ -3,7 +3,7 @@ package org.erlide.model.util;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
-public class NatureUtil {
+public final class NatureUtil {
 
     /**
      * Returns true if the given project is accessible and it has a Erlang

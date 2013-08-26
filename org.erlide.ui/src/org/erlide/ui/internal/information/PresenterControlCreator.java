@@ -205,7 +205,7 @@ public final class PresenterControlCreator extends
                     }
                 }
             } catch (final PartInitException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
             }
         }
     }

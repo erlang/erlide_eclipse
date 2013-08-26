@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.erlide.util.ErlLogger;
 
 /**
  * Public API for Cover plug-in
@@ -25,7 +26,7 @@ public class CoverageAnalysis {
         try {
             return getCoveragePerformer() != null;
         } catch (final CoreException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             return false;
         }
     }
@@ -104,7 +105,7 @@ public class CoverageAnalysis {
                 proxy = (ICoveragePerformerProxy) ce
                         .createExecutableExtension("class");
             } catch (final CoreException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
                 throw new CoverException(e);
             }
         }

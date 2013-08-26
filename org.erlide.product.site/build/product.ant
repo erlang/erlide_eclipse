@@ -1,0 +1,47 @@
+<project name="Product packaging">
+ 
+    <target name="create.product">
+ 
+        <property name="product.install.directory" location="${sp:destination}" />
+        <delete dir="${product.install.directory}" includeemptydirs="true" failonerror="false" />
+        <mkdir dir="${product.install.directory}" />
+        <buckminster.valuepath value="${fs:repositories}" id="repositories.valuepath" />
+        <pathconvert
+                pathsep=","
+                targetos="unix"
+                property="product.repositories"
+                refid="repositories.valuepath">
+            <map from="" to="file://" />
+        </pathconvert>
+        <echoproperties />
+        <echo message="Repositories: ${product.repositories}" />
+        <echo message="Install Dir : ${product.install.directory}" />
+    	<echo message="IU: ${iu}"/>
+ 
+        <p2.director
+            destination="${product.install.directory}"
+            metadataRepository="${product.repositories}"
+            artifactRepository="${product.repositories}"
+            profile="${profile}"
+            arch="${target.arch}"
+            os="${target.os}"
+            ws="${target.ws}"
+            roaming="true"
+            extraarguments="-profileProperties org.eclipse.update.install.features=true">
+            <iu id="${iu}" />
+        </p2.director>
+    </target>
+	
+	 <target name="create.target.platform.repository">
+	        <buckminster.targetPlatformLocation property="target.platform.location" />
+	        <property name="target.platform.repository" value="file://${sp:output}" />
+	        <property name="repository.name" value="Target Platform Repository" />        
+	        <p2.publish.featuresAndBundles
+	            repository="${target.platform.repository}"
+	            repositoryName="${repository.name}"
+	            source="${target.platform.location}"
+	            publishArtifacts="true" />
+	        <buckminster.publishJRE metadataRepository="${target.platform.repository}" publishArtifacts="false" />
+	    </target>
+	
+</project>

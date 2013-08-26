@@ -13,6 +13,7 @@ import org.erlide.cover.constants.CoverConstants;
 import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -98,7 +99,7 @@ public class CoveragePerformer implements ICoveragePerformer {
                                 CoverConstants.FUN_START, "x", nodesList);
 
             } catch (final RpcException e) {
-                e.printStackTrace();
+                ErlLogger.error(e);
                 throw new CoverException(e.getMessage());
             }
 
@@ -166,7 +167,7 @@ public class CoveragePerformer implements ICoveragePerformer {
                             CoverConstants.FUN_PREP, "x", paths);
 
         } catch (final RpcException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             throw new CoverException(e.getMessage());
         }
     }
@@ -193,7 +194,7 @@ public class CoveragePerformer implements ICoveragePerformer {
                             CoverConstants.FUN_ANALYSE, "x", modules);
 
         } catch (final RpcException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             throw new CoverException(e.getMessage());
         }
     }

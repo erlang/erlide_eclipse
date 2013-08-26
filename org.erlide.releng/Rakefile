@@ -1,0 +1,53 @@
+require File.join(File.dirname(__FILE__), 'erlide')
+
+task :default => [:'run-tests']
+
+desc "compile and run test"
+task :run_tests, [:tools_dir] do |t, args|
+  args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
+  puts "Compile and run tests"
+
+  run_ant "run.tests"
+end
+
+desc "create update site"
+task :build_p2, [:tools_dir] do |t, args|
+  args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
+  puts "Building p2"
+
+  run_ant "build.p2"
+  generate_version_info
+end
+
+desc "create product"
+task :build_product, [:tools_dir] do |t, args|
+  args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
+  puts "Building product"
+
+  run_ant "build.product"
+  generate_version_info
+end
+
+desc "upload update site to servers"
+task :publish_site, [:branch, :build_number] do |t, args|
+  args.with_defaults(:branch => "pu", :build_number => 0)
+  repo_root = "http://erlide.org/update"
+  repo = repo_root + p2_repo(args.branch) 
+  out_dir = "update_sites/#{args.branch}_#{args.build_number}"
+  puts "Publishing site on #{repo} and #{out_dir}"
+  
+  mirror_p2 "site.p2", out_dir
+  system "zip -r #{out_dir}/org.erlide.site.zip #{out_dir}/*"
+end
+
+desc "upload update site to servers"
+task :publish_product do
+  puts "Publishing product"
+
+end
+
+desc "tag a release in git repo"
+task :mk_release do
+  puts "Creating release"
+
+end

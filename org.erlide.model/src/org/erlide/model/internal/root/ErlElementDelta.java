@@ -18,9 +18,9 @@ public class ErlElementDelta implements IErlElementDelta {
 
     private final IErlElement fElement;
 
-    private final ArrayList<ErlElementDelta> fChildren;
+    private final List<ErlElementDelta> fChildren;
 
-    private ArrayList<IResourceDelta> fResourceDeltas;
+    private List<IResourceDelta> fResourceDeltas;
 
     /**
      * @see #getMovedFromElement()
@@ -50,7 +50,7 @@ public class ErlElementDelta implements IErlElementDelta {
      * @param children
      */
     public ErlElementDelta(final int kind, final int flags,
-            final IErlElement element, final ArrayList<ErlElementDelta> children) {
+            final IErlElement element, final List<ErlElementDelta> children) {
         this(kind, flags, element, children, new ArrayList<IResourceDelta>(0));
     }
 
@@ -62,9 +62,8 @@ public class ErlElementDelta implements IErlElementDelta {
      * @param resourceDeltas
      */
     public ErlElementDelta(final int kind, final int flags,
-            final IErlElement element,
-            final ArrayList<ErlElementDelta> children,
-            final ArrayList<IResourceDelta> resourceDeltas) {
+            final IErlElement element, final List<ErlElementDelta> children,
+            final List<IResourceDelta> resourceDeltas) {
         super();
         fKind = kind;
         fFlags = flags;
@@ -297,9 +296,8 @@ public class ErlElementDelta implements IErlElementDelta {
      */
     protected boolean equalsAndSameParent(final IErlElement e1,
             final IErlElement e2) {
-        IErlElement parent1;
-        return e1.equals(e2)
-                && (parent1 = (IErlElement) e1.getParent()) != null
+        final IErlElement parent1 = (IErlElement) e1.getParent();
+        return e1.equals(e2) && parent1 != null
                 && parent1.equals(e2.getParent());
     }
 

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Buckminster Headless - build
+
+    buckminster.home defaults to ${user.home}/buckminster
+        but it can be specified on the command line, e.g.,
+        ant -Dbuckminster.home=/home/bettini/buckminster -f build.ant
+
+    Properties:
+        WORKSPACE           Eclipse workspace location, or hudson job workspace
+        build.root          Where to build? WARNING: This folder will be cleaned up, so do not point to user.home or something important
+                            Default: ${WORKSPACE}/buildroot
+        buckminster.home    Buckminster headless to use. See http://www.eclipse.org/buckminster/downloads.html
+        projects.location   Where to find projects to build?
+                            Default: ${WORKSPACE}
+        eclipse.download    The base URL for all the repositories in the RMAP
+                            Default: http://download.eclipse.org
+-->
+<project name="common">
+	<property name="WORKSPACE" location="${ant.file}/../../" />
+	<property name="build.root" location="${WORKSPACE}/buildroot" />
+	<property name="projects.location" location="${WORKSPACE}" />
+	<property name="target.platform" value="target.platform" />
+	<property name="eclipse.download" value="http://download.eclipse.org" />
+
+	<!-- tools.home must match what is in setup_tools.sh -->
+	<property name="tools.home" location="${user.home}/erlide_tools" />
+	<property name="buckminster.home" location="${tools.home}/buckminster" />
+
+	<property name="director.install.dest" location="${tools.home}" />
+	<property name="director.dir" location="${director.install.dest}/director" />
+	<property name="director.url" value="http://download.eclipse.org/tools/buckminster/products/director_latest.zip" />
+
+	<!-- = = = = = = = = = = = = = = = = =
+          macrodef: replace_win_slashes          
+         = = = = = = = = = = = = = = = = = -->
+	<macrodef name="replace_win_slashes">
+		<attribute name="property.to.process" default="default" />
+		<attribute name="output.property" default="default" />
+		<sequential>
+			<echo message="@{property.to.process}" file="some.tmp.file" />
+			<loadfile property="@{output.property}" srcFile="some.tmp.file">
+				<filterchain>
+					<tokenfilter>
+						<replaceregex pattern="\\" replace="/" flags="g" />
+						<replaceregex pattern=" " replace="\\ " flags="g" />
+					</tokenfilter>
+				</filterchain>
+			</loadfile>
+			<delete file="some.tmp.file" />
+		</sequential>
+	</macrodef>
+
+	<replace_win_slashes property.to.process="${eclipse.download}" output.property="eclipse-download" />
+
+	<!-- = = = = = = = = = = = = = = = = =
+          macrodef: run_buckminster
+          pass the commandsfile to execute      
+         = = = = = = = = = = = = = = = = = -->
+	<macrodef name="run_buckminster">
+		<attribute name="workspace" default="${build.root}/buckminster.workspace"/>
+		<attribute name="commandsfile" default="default" />
+		<attribute name="propertiesfile" default="default" />
+		<sequential>
+			<java fork="true" dir="${buckminster.home}" logError="true" classname="org.eclipse.core.launcher.Main" failonerror="true">
+				<classpath>
+					<fileset dir="${buckminster.home}/plugins">
+						<include name="org.eclipse.equinox.launcher_*.jar" />
+					</fileset>
+				</classpath>
+				<arg line='-update' />
+				<arg line='-data "@{workspace}"' />
+				<arg line='-configuration "${build.root}/configuration"' />
+				<arg line='--properties "@{propertiesfile}"' />
+				<arg line='--script "@{commandsfile}"' />
+				<arg line='-L INFO' /> 
+				<sysproperty key="projects.location" value="${projects.location}" />
+				<sysproperty key="buckminster.output.root" value="${build.root}/buckminster.output" />
+				<sysproperty key="buckminster.temp.root" value="${build.root}/buckminster.temp" />
+				<sysproperty key="target.platform" value="${tools.home}/${target.platform}" />
+				<sysproperty key="jdk.home" value="${tools.home}/jdk" />
+				<sysproperty key="otp.home" value="${tools.home}/otp" />
+				<sysproperty key="eclipse.download" value="${eclipse-download}" />
+				<jvmarg line=" -Xms384m -Xmx1024m" />
+			</java>
+		</sequential>
+	</macrodef>
+
+	<target name="cleanup">
+		<delete failonerror="false" includeemptydirs="true">
+			<fileset dir="${build.root}" defaultexcludes="false">
+				<exclude name="**/.metadata/.plugins/org.eclipse.pde.core/.bundle_pool/" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="reset.target-platform">
+		<delete includeemptydirs="true" failonerror="false">
+			<fileset dir="${build.root}" defaultexcludes="false">
+				<include name="**/.metadata/.plugins/org.eclipse.pde.core/.bundle_pool/" />
+			</fileset>
+			<fileset dir="${tools.home}/${target.platform}" defaultexcludes="false">
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="reset.all" depends="cleanup, reset.target-platform">
+		<delete includeemptydirs="true">
+			<fileset dir="${tools.home}" defaultexcludes="false">
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="install.buckminster.headless">
+		<condition property="buckminster.headless.installed">
+			<available file="${buckminster.home}/buckminster" />
+		</condition>
+		<antcall target="install.buckminster.headless.internal" />
+	</target>
+
+	<target name="install.buckminster.headless.internal" unless="buckminster.headless.installed">
+		<antcall target="install.p2.director" />
+		<echo message="" />
+		<echo message="Installing Buckminster Headless into ${buckminster.home}..." />
+		<java fork="true" dir="${director.dir}" logError="true" classname="org.eclipse.core.launcher.Main" failonerror="true">
+			<sysproperty key="eclipse.p2.mirrors" value="false" />
+			<classpath>
+				<fileset dir="${director.dir}/plugins">
+					<include name="org.eclipse.equinox.launcher_*.jar" />
+				</fileset>
+			</classpath>
+			<arg line='-data "${director.dir}/workspace"' />
+			<arg line="-r ${eclipse-download}/tools/buckminster/headless-4.2,http://download.cloudsmith.com/buckminster/external-4.2,${eclipse-download}/releases/juno/,http://erlide.org/update" />
+			<!--arg line="-r ${eclipse-download}/tools/buckminster/headless-4.3,http://download.cloudsmith.com/buckminster/external-4.3,${eclipse-download}/releases/kepler/,http://erlide.org/update" /-->
+			<!--arg line="-r ${eclipse-download}/tools/buckminster/headless-3.7,http://download.cloudsmith.com/buckminster/external-3.7,${eclipse-download}/releases/indigo/,http://erlide.org/update" /-->
+			<arg line='-d "${buckminster.home}"' />
+			<arg line="-p Buckminster" />
+			<arg line="-i org.eclipse.buckminster.cmdline.product" />
+			<arg line="-i org.eclipse.buckminster.core.headless.feature.feature.group" />
+			<arg line="-i org.eclipse.buckminster.pde.headless.feature.feature.group" />
+			<arg line="-i org.eclipse.buckminster.git.headless.feature.feature.group" />
+			<arg line="-i org.eclipse.buckminster.emma.headless.feature.feature.group" />
+			<arg line="-i org.erlide.headless.feature.group" />
+		</java>
+	</target>
+
+	<target name="install.p2.director">
+		<condition property="p2.director.installed">
+			<available file="${director.dir}" />
+		</condition>
+		<antcall target="install.p2.director.internal" />
+	</target>
+
+	<target name="install.p2.director.internal" unless="p2.director.installed">
+		<echo message="" />
+		<echo message="Installing director from ${director.url}..." />
+		<tempfile destdir="${java.io.tmpdir}" prefix="director-" suffix=".zip" property="director.zip" deleteonexit="true" />
+		<get src="${director.url}" dest="${director.zip}" />
+		<unzip src="${director.zip}" dest="${director.install.dest}" />
+		<delete file="${director.zip}" />
+	</target>
+
+	<target name="install.p2.director.from.local" unless="p2.director.installed">
+		<echo message="" />
+		<echo message="Installing director..." />
+		<unzip dest="${director.install.dest}" src="tools/director_latest.zip" />
+	</target>
+
+</project>

@@ -15,6 +15,7 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlParserProblem;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.internal.root.ErlMember;
+import org.erlide.model.root.ErlElementKind;
 
 public class ErlParserProblem extends ErlMember implements IErlParserProblem {
 
@@ -33,8 +34,8 @@ public class ErlParserProblem extends ErlMember implements IErlParserProblem {
     }
 
     @Override
-    public Kind getKind() {
-        return Kind.PROBLEM;
+    public ErlElementKind getKind() {
+        return ErlElementKind.PROBLEM;
     }
 
     public ProblemKind getProblemKind() {

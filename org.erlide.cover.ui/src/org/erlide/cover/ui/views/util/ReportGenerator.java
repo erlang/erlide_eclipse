@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Platform;
 import org.erlide.cover.core.Activator;
 import org.erlide.cover.core.Logger;
 import org.erlide.cover.views.model.ICoverageObject;
+import org.erlide.util.ErlLogger;
 
 /**
  * Generates HTML collective reports
@@ -72,7 +73,7 @@ public class ReportGenerator {
 
             cssCode = sb.toString();
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             log.error(e);
         }
 
@@ -95,7 +96,7 @@ public class ReportGenerator {
 
             return writer.toString();
         } catch (final Exception e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
             return null;
         }
 
