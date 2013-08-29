@@ -17,7 +17,7 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 
     int fNameRangeOffset, fNameRangeLength;
 
-    public static String uptoCommaOrParen(final String s) {
+    public static String uptoEndOfToken(final String s) {
         if (s == null || s.length() == 0) {
             return s;
         }
@@ -28,6 +28,7 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
         if (i == -1) {
             i = 0;
         }
+
         int j = s.indexOf(',', i);
         if (j == 0 || j == -1) {
             j = s.length();
@@ -36,7 +37,7 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
         if (k < j && k > 0) {
             j = k;
         }
-        return s.substring(0, j);
+        return s.substring(0, j).trim();
     }
 
     protected ErlMember(final IParent parent, final String name) {

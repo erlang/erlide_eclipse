@@ -12,22 +12,11 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
     String macro;
     String extra;
 
-    /**
-     * @param parent
-     * @param imports
-     * @param module
-     */
-    public ErlMacroDef(final IParent parent, final String macro,
+    public ErlMacroDef(final IParent parent, final String name,
             final String extra) {
         super(parent, "macro_definition");
-        this.macro = macro;
         this.extra = extra;
-    }
-
-    public ErlMacroDef(final IParent parent, final String extra) {
-        super(parent, "macro_definition");
-        this.extra = extra;
-        macro = uptoCommaOrParen(extra);
+        macro = name != null ? name : uptoEndOfToken(extra);
     }
 
     @Override

@@ -416,11 +416,9 @@ public final class ErlParser implements IErlParser {
             final OtpErlangObject pos, final OtpErlangObject val,
             final OtpErlangObject extra, final String nameS) {
         if (val instanceof OtpErlangAtom) {
-            // final OtpErlangAtom o = (OtpErlangAtom) val;
             final String s = Util.stringValue(extra);
-            // final ErlMacroDef r = new ErlMacroDef(parent, o.toString(),
-            // s);
-            final ErlMember r = new ErlMacroDef(module, s);
+            final ErlMember r = new ErlMacroDef(module,
+                    ((OtpErlangAtom) val).atomValue(), s);
             setPos(r, pos, false);
             // r.setParseTree(val);
             return r;
@@ -489,7 +487,7 @@ public final class ErlParser implements IErlParser {
                         .stringValue() : null;
                 final OtpErlangList fields = (OtpErlangList) recordTuple
                         .elementAt(1);
-                final ErlRecordDef r = new ErlRecordDef(module, s);
+                final ErlRecordDef r = new ErlRecordDef(module, null, s);
                 setPos(r, pos, false);
                 if (fields != null) {
                     final List<ErlRecordField> children = Lists
@@ -525,7 +523,7 @@ public final class ErlParser implements IErlParser {
         if (val instanceof OtpErlangAtom) {
             final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
                     .stringValue() : null;
-            final ErlRecordDef r = new ErlRecordDef(module, s);
+            final ErlRecordDef r = new ErlRecordDef(module, null, s);
             setPos(r, pos, false);
             return r;
         }
