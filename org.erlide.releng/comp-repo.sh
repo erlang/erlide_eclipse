@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -ex
 #
 # Tool to maintain p2 composite repositories
 #

@@ -52,15 +52,7 @@ Vlad Dumitrescu, Jakob Cederlund and others
    </plugins>
 
    <features>
-      <feature id="org.erlide"/>
-      <feature id="org.eclipse.platform"/>
-      <feature id="org.eclipse.help"/>
-      <feature id="org.eclipse.equinox.executable"/>
-      <feature id="org.eclipse.equinox.p2.core.feature"/>
-      <feature id="org.eclipse.equinox.p2.rcp.feature"/>
-      <feature id="org.eclipse.equinox.p2.user.ui"/>
-      <feature id="org.eclipse.rcp"/>
-      <feature id="org.eclipse.equinox.p2.extras.feature"/>
+      <feature id="org.erlide.product.feature" version="0.23.2.qualifier"/>
    </features>
 
 
