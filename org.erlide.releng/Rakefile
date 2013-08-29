@@ -16,7 +16,6 @@ task :build_p2, [:tools_dir] do |t, args|
   puts "Building p2"
 
   Erlide.run_ant "build.p2"
-  Erlide.generate_version_info
 end
 
 desc "create product"
@@ -25,7 +24,6 @@ task :build_product, [:tools_dir] do |t, args|
   puts "Building product"
 
   Erlide.run_ant "build.product"
-  Erlide.generate_version_info
 end
 
 desc "upload update site to servers"

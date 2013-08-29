@@ -8,13 +8,13 @@ module Erlide
     ENV['BUILD_ID'] || ''
   end
 
-  def Erlide.generate_version_info
+  def Erlide.generate_version_info(where)
     version = PDE.extractSourceFeatureVersion("org.erlide/feature.xml")
     info = `git describe`
 
-    fputs "document.write('#{info.strip}');", "buildroot/info.js"
-    fputs "document.write('#{version.strip}');", "buildroot/version.js"
-    fputs "document.write('#{build_id.strip}');", "buildroot/id.js"
+    fputs "document.write('#{info.strip}');", "#{where}/info.js"
+    fputs "document.write('#{version.strip}');", "#{where}/version.js"
+    fputs "document.write('#{build_id.strip}');", "#{where}/id.js"
   end
 
   def Erlide.run_ant(task, opts={}, tools_dir="#{ENV['HOME']}/erlide_tools")
@@ -67,6 +67,7 @@ module Erlide
 
     if kind == "R"
       PDE.p2_add_composite("#{full_dest}", "#{output_base}")
+      generate_version_info(output_base)
     else if kind != ""
         FileUtils.rm_f("#{output_base}/#{repo}")
         FileUtils.ln_s("#{full_dest}", "#{output_base}/#{repo}")
