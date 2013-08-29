@@ -7,7 +7,7 @@ module PDE
     f = File.open(file, 'r')
     line = f.read
     m = /<feature[^>]* version="([^"]*)"/.match(line)
-    return m[1] unless !m
+    return m[1] unless m.nil?
   end
 
   def PDE.versionRegexp
@@ -21,14 +21,14 @@ module PDE
   def PDE.getBuildTimestamp(dir, name="org.erlide")
     Find.find(dir) do |path|
       m = /^#{name}_#{versionRegexp}\.([^.]*).*/.match(Pathname(path).basename.to_s)
-      return m[1] unless !m
+      return m[1] unless m.nil?
     end
   end
 
   def PDE.getBuildVersion(dir, name="org.erlide")
     Find.find(dir) do |path|
       m = /^#{name}_(#{versionRegexp}).*/.match(Pathname(path).basename.to_s)
-      return m[1] unless !m
+      return m[1] unless m.nil?
     end
   end
 
