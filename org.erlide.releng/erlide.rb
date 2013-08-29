@@ -54,6 +54,9 @@ module Erlide
       dest = "#{version}_#{kind}#{ts}"
     end
 
+    system "zip -r #{source_dir}/../erlide_#{dest}.zip #{source_dir}"
+    FileUtils.mv("#{source_dir}/../erlide_#{dest}.zip", "#{source_dir}/erlide_#{dest}.zip")
+    
     repo = p2_repo_name(branch)
     full_dest = "#{output_base}/archive/#{repo}/#{dest}"
     puts "  output_dir=#{full_dest}"
