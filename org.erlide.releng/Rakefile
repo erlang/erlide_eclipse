@@ -29,8 +29,8 @@ task :build_product, [:tools_dir] do |t, args|
 end
 
 desc "upload update site to servers"
-task :publish_site, [:branch, :build_number] do |t, args|
-  args.with_defaults(:branch => "pu", :build_number => 0)
+task :publish_site, [:branch] do |t, args|
+  args.with_defaults(:branch => "pu")
 
   output_base = ENV['output_base']
   source_dir = Erlide.workspace_dir + "buildroot/buckminster.output/org.erlide.site_1.0.0-eclipse.feature/site.p2"
