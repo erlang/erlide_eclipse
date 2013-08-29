@@ -65,7 +65,8 @@ module Erlide
     if kind == "R"
       PDE.p2_add_composite("#{full_dest}", "#{output_base}")
     else if kind != ""
-        FileUtils.ln_sf("#{full_dest}", "#{output_base}/#{repo}")
+        FileUtils.rm_f("#{output_base}/#{repo}")
+        FileUtils.ln_s("#{full_dest}", "#{output_base}/#{repo}")
       end
     end
 
