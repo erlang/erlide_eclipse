@@ -11,7 +11,7 @@ public class ErlModelManager {
         if (erlangModel == null) {
             final IErlModelProvider provider = ExtensionUtils
                     .getSingletonExtension(
-                            "org.erlide.model_api.modelProvider",
+                            "org.erlide.model.api.modelProvider",
                             IErlModelProvider.class);
             erlangModel = provider.get();
         }

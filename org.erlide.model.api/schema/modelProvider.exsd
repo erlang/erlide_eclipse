@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.erlide.model_api" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.erlide.model.api" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.erlide.model_api" id="modelProvider" name="modelProvider"/>
+         <meta.schema plugin="org.erlide.model.api" id="modelProvider" name="modelProvider"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -49,13 +49,13 @@
 
    <element name="modelProvider">
       <complexType>
-         <attribute name="class" type="string">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.erlide.model.root.ErlModelProvider"/>
+                  <meta.attribute kind="java" basedOn="org.erlide.model.root.IErlModelProvider:"/>
                </appinfo>
             </annotation>
          </attribute>
