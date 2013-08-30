@@ -53,41 +53,6 @@ restart(Nodes) ->
 stop() ->
 	gen_server:cast(?MODULE, stop).
 
-%% should be called if no cover-compilation
-%% over selected modules were performed (external launching)
-%% NameOrPathSrc -> module Name or Path to source files
-%% PathTst -> path to test files (or to module on its own)
-% deprecated
-prepare_and_perform(Type, NameOrPathSrc , PathTst) ->
-	TypeAtom = list_to_atom(Type),
-	case TypeAtom of
-		module ->
-			MName = list_to_atom(NameOrPathSrc),
-			gen_server:call(?MODULE, {prep, TypeAtom, MName, PathTst});
-		application ->
-			AName = list_to_atom(NameOrPathSrc),
-			gen_server:call(?MODULE, {prep, TypeAtom, AName , PathTst});
-		_ ->
-			PathSrc = NameOrPathSrc,
-			gen_server:call(?MODULE, {prep, TypeAtom, PathSrc , PathTst})
-	end.
-
-%perform coverage (on cover_compiled data - after performing some tests)
-% deprecated
-perform(Type,NameOrPathSrc,PathTst) ->
-    TypeAtom = list_to_atom(Type), 
-	case TypeAtom of
-		module ->
-			MName = list_to_atom(NameOrPathSrc),
-			gen_server:call(?MODULE, {perform, TypeAtom, MName, PathTst}); 
-		application ->
-			AName = list_to_atom(NameOrPathSrc),
-			gen_server:call(?MODULE, {perform, TypeAtom, AName , PathTst});
-		_ ->
-			PathSrc = NameOrPathSrc,
-			gen_server:call(?MODULE, {perform, TypeAtom, PathSrc , PathTst})
-	end.
-
 %prepares modules - cover compiles them
 prepare(Paths) ->
 	lists:foreach(fun(Path) ->

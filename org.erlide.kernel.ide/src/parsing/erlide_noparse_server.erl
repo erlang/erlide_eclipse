@@ -76,9 +76,6 @@ main_loop(Modules) ->
             ?MODULE:main_loop(NewMods)
     end.
 
-update_state(ScannerName, Model) ->
-    server_cmd(update_state, {ScannerName, Model}).
-
 server_cmd(Command, Args) ->
     spawn_server(),
     ?SERVER ! {Command, self(), Args},
