@@ -1,11 +1,11 @@
 package org.erlide.engine;
 
 import org.erlide.model.ErlModelException;
-import org.erlide.model.TextChange;
 import org.erlide.model.erlang.ErlangToolkit;
 import org.erlide.model.erlang.ErlangToolkitFactory;
 import org.erlide.model.internal.root.ErlModel;
 import org.erlide.model.root.IErlModel;
+import org.erlide.model.root.IErlServiceProvider;
 import org.erlide.util.ErlLogger;
 
 /**
@@ -16,14 +16,14 @@ import org.erlide.util.ErlLogger;
  * implement it in Erlang or to let it be used by Xtext.
  * </p>
  */
-public class ErlangEngine implements IEngineInput, IResourceChangeListener,
-        IModelProvider {
+public class ErlangEngine implements IErlServiceProvider {
 
-    private volatile static ErlangEngine instance;
+    private static volatile ErlangEngine instance;
 
-    private volatile IErlModel erlangModel;
+    // !!!! XXX
+    private volatile static IErlModel erlangModel;
 
-    private ErlangEngine() {
+    public ErlangEngine() {
     }
 
     public static ErlangEngine getInstance() {
@@ -34,7 +34,7 @@ public class ErlangEngine implements IEngineInput, IResourceChangeListener,
     }
 
     @Override
-    public IErlModel get() {
+    public IErlModel getModel() {
         if (erlangModel == null) {
             final ErlangToolkit toolkit = ErlangToolkitFactory.getInstance();
             erlangModel = new ErlModel(toolkit);
@@ -47,15 +47,6 @@ public class ErlangEngine implements IEngineInput, IResourceChangeListener,
             }
         }
         return erlangModel;
-    }
-
-    @Override
-    public void handleChangedInput(final String id, final TextChange change) {
-    }
-
-    @Override
-    public void handleChangedResources(final ResourceChange delta) {
-
     }
 
 }

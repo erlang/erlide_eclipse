@@ -40,6 +40,7 @@ import org.erlide.model.erlang.FunctionRef;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.services.search.ErlangXref;
+import org.erlide.model.services.search.XrefService;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -49,6 +50,7 @@ public class CallHierarchyView extends ViewPart {
     Tree tree;
     TreeViewer treeViewer;
     Label lblRoot;
+    private final XrefService xrefService;
 
     static class ViewerLabelProvider extends LabelProvider {
         @Override
@@ -102,7 +104,7 @@ public class CallHierarchyView extends ViewPart {
             final FunctionRef ref = new FunctionRef(parent);
             final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
                     .getRpcSite();
-            final FunctionRef[] children = ErlangXref.functionUse(b, ref);
+            final FunctionRef[] children = xrefService.functionUse(b, ref);
             if (children == null) {
                 return new Object[0];
             }
@@ -141,7 +143,10 @@ public class CallHierarchyView extends ViewPart {
     public CallHierarchyView() {
         final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
                 .getRpcSite();
-        ErlangXref.start(b);
+
+        // TODO inject
+        xrefService = new ErlangXref();
+        xrefService.start(b);
     }
 
     @Override
@@ -166,7 +171,7 @@ public class CallHierarchyView extends ViewPart {
                         public void widgetSelected(final SelectionEvent e) {
                             final IRpcSite b = BackendCore.getBackendManager()
                                     .getIdeBackend().getRpcSite();
-                            ErlangXref.update(b);
+                            xrefService.update(b);
                             treeViewer.refresh();
                         }
                     });
@@ -204,7 +209,7 @@ public class CallHierarchyView extends ViewPart {
     public void dispose() {
         final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
                 .getRpcSite();
-        ErlangXref.stop(b);
+        xrefService.stop(b);
         super.dispose();
     }
 

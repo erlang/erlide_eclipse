@@ -15,9 +15,13 @@ import org.erlide.util.erlang.ErlUtils;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public final class ErlangXref {
+public class ErlangXref implements XrefService {
 
-    public static void start(final IRpcSite b) {
+    public ErlangXref() {
+    }
+
+    @Override
+    public void start(final IRpcSite b) {
         try {
             b.call("erlide_xref", "start", "");
         } catch (final Exception e) {
@@ -26,7 +30,8 @@ public final class ErlangXref {
 
     }
 
-    public static void stop(final IRpcSite b) {
+    @Override
+    public void stop(final IRpcSite b) {
         try {
             b.call("erlide_xref", "stop", "");
         } catch (final Exception e) {
@@ -35,8 +40,8 @@ public final class ErlangXref {
 
     }
 
-    public static IRpcFuture addProject(final IRpcSite b,
-            final IErlProject project) {
+    @Override
+    public IRpcFuture addProject(final IRpcSite b, final IErlProject project) {
         try {
             final IPath outputLocation = project.getWorkspaceProject()
                     .getFolder(project.getOutputLocation()).getLocation();
@@ -48,7 +53,8 @@ public final class ErlangXref {
         return null;
     }
 
-    public static void update(final IRpcSite b) {
+    @Override
+    public void update(final IRpcSite b) {
         try {
             b.call("erlide_xref", "update", "");
         } catch (final Exception e) {
@@ -56,8 +62,9 @@ public final class ErlangXref {
         }
     }
 
+    @Override
     @SuppressWarnings("boxing")
-    public static FunctionRef[] functionUse(final IRpcSite b, final String mod,
+    public FunctionRef[] functionUse(final IRpcSite b, final String mod,
             final String fun, final int arity) {
         try {
             final OtpErlangObject r = b.call("erlide_xref", "function_use",
@@ -78,11 +85,8 @@ public final class ErlangXref {
         return null;
     }
 
-    private ErlangXref() {
-    }
-
-    public static FunctionRef[] functionUse(final IRpcSite b,
-            final FunctionRef ref) {
+    @Override
+    public FunctionRef[] functionUse(final IRpcSite b, final FunctionRef ref) {
         return functionUse(b, ref.module, ref.function, ref.arity);
     }
 

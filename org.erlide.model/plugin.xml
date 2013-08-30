@@ -5,7 +5,7 @@
    <extension
          point="org.erlide.model.api.serviceProvider"> 
       <serviceProvider
-            class="org.erlide.model.ErlServiceProvider">
+            class="org.erlide.engine.ErlangEngine">
       </serviceProvider>
    </extension>
    <extension
