@@ -3,10 +3,10 @@
 <plugin>
    <extension-point id="sourcePathProvider" name="sourcePathProvider" schema="schema/sourcePathProvider.exsd"/>
    <extension
-         point="org.erlide.model.api.modelProvider">
-      <modelProvider
-            class="org.erlide.model.ErlModelProvider">
-      </modelProvider>
+         point="org.erlide.model.api.serviceProvider"> 
+      <serviceProvider
+            class="org.erlide.model.ErlServiceProvider">
+      </serviceProvider>
    </extension>
    <extension
          point="org.eclipse.core.runtime.adapters">

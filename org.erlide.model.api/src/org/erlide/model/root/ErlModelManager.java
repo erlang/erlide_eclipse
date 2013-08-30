@@ -1,28 +1,15 @@
 package org.erlide.model.root;
 
-import org.erlide.model.ErlModelException;
-import org.erlide.util.ErlLogger;
+import org.erlide.engine.IModelProvider;
 import org.erlide.util.services.ExtensionUtils;
 
 public class ErlModelManager {
-    private static volatile IErlModel erlangModel;
 
     public static synchronized final IErlModel getErlangModel() {
-        if (erlangModel == null) {
-            final IErlModelProvider provider = ExtensionUtils
-                    .getSingletonExtension(
-                            "org.erlide.model.api.modelProvider",
-                            IErlModelProvider.class);
-            erlangModel = provider.get();
-        }
-        if (!erlangModel.isOpen()) {
-            try {
-                erlangModel.open(null);
-            } catch (final ErlModelException e) {
-                ErlLogger.error(e);
-            }
-        }
-        return erlangModel;
+        final IErlServiceProvider provider = ExtensionUtils
+                .getSingletonExtension("org.erlide.model.api.serviceProvider",
+                        IErlServiceProvider.class);
+        return provider.get(IModelProvider.class).get();
     }
 
 }
