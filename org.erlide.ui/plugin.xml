@@ -400,7 +400,6 @@
             objectClass="org.erlide.backend.debug.ErlangLineBreakpoint">
          <action
                class="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesAction"
-               definitionId="org.erlide.ui.debug.breakpoint.properties"
                enablesFor="1"
                helpContextId="breakpoint_properties_action_context"
                id="org.eclipse.jdt.debug.ui.actions.ErlangBreakpointProperties"
