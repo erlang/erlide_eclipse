@@ -40,7 +40,6 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ModelUtils;
@@ -149,7 +148,9 @@ public class OpenAction extends SelectionDispatchAction {
                 final String scannerName = editor.getScannerName();
                 module = editor.getModule();
                 project = editor.getProject();
-                openResult = ErlideOpen
+                openResult = ErlangEngine
+                        .getInstance()
+                        .getOpenService()
                         .open(backend, scannerName, offset,
                                 ModelUtils.getImportsAsList(module),
                                 project.getExternalModulesString(),
@@ -160,7 +161,8 @@ public class OpenAction extends SelectionDispatchAction {
                 textEditor = (ITextEditor) activeEditor;
                 final String text = textEditor.getDocumentProvider()
                         .getDocument(textEditor.getEditorInput()).get();
-                openResult = ErlideOpen.openText(backend, text, offset);
+                openResult = ErlangEngine.getInstance().getOpenService()
+                        .openText(backend, text, offset);
                 final IFile file = (IFile) textEditor.getEditorInput()
                         .getAdapter(IFile.class);
                 if (file != null) {
@@ -293,8 +295,11 @@ public class OpenAction extends SelectionDispatchAction {
         if (ei != null) {
             final IErlModel model = ErlangEngine.getInstance().getModel();
             moduleName = ei.getImportModule();
-            res2 = ErlideOpen.getSourceFromModule(backend, model.getPathVars(),
-                    moduleName, erlProject.getExternalModulesString());
+            res2 = ErlangEngine
+                    .getInstance()
+                    .getOpenService()
+                    .getSourceFromModule(backend, model.getPathVars(),
+                            moduleName, erlProject.getExternalModulesString());
         }
         if (res2 instanceof OtpErlangString && moduleName != null) {
             // imported from otp module

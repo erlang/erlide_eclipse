@@ -49,7 +49,6 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.services.search.ErlangSearchPattern;
-import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.LimitTo;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.services.search.SearchFor;
@@ -627,9 +626,16 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             final int offset = textSel.getOffset();
             OpenResult res;
             try {
-                res = ErlideOpen.open(backend, module.getScannerName(), offset,
-                        ModelUtils.getImportsAsList(module), "", ErlangEngine
-                                .getInstance().getModel().getPathVars());
+                res = ErlangEngine
+                        .getInstance()
+                        .getOpenService()
+                        .open(backend,
+                                module.getScannerName(),
+                                offset,
+                                ModelUtils.getImportsAsList(module),
+                                "",
+                                ErlangEngine.getInstance().getModel()
+                                        .getPathVars());
             } catch (final RpcException e) {
                 res = null;
             }

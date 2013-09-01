@@ -60,7 +60,6 @@ import org.erlide.model.root.IErlModelMarker;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.root.IErlangProjectProperties;
 import org.erlide.model.root.OldErlangProjectProperties;
-import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.util.CommonUtils;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.model.util.NatureUtil;
@@ -186,7 +185,8 @@ public class ErlProject extends Openable implements IErlProject {
             if (path.isAbsolute() && !fProject.getLocation().isPrefixOf(path)) {
                 final IRpcSite backend = ModelPlugin.getDefault()
                         .getIdeBackend();
-                final Collection<String> includes = ErlideOpen
+                final Collection<String> includes = ErlangEngine.getInstance()
+                        .getOpenService()
                         .getIncludesInDir(backend, path.toPortableString());
                 if (includes != null) {
                     for (final String include : includes) {

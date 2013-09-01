@@ -17,7 +17,6 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
@@ -198,10 +197,13 @@ public class ErlProjectTest {
             final IRpcSite backend = BackendCore.getBackendManager()
                     .getIdeBackend().getRpcSite();
             final IErlModel model = ErlangEngine.getInstance().getModel();
-            final OpenResult res = ErlideOpen.open(backend,
-                    moduleE.getScannerName(), 49,
-                    ModelUtils.getImportsAsList(moduleE),
-                    project.getExternalModulesString(), model.getPathVars());
+            final OpenResult res = ErlangEngine
+                    .getInstance()
+                    .getOpenService()
+                    .open(backend, moduleE.getScannerName(), 49,
+                            ModelUtils.getImportsAsList(moduleE),
+                            project.getExternalModulesString(),
+                            model.getPathVars());
             final IErlFunction function = ModelUtils.findFunction(model,
                     res.getName(), res.getFunction(), res.getPath(), project,
                     IErlElementLocator.Scope.PROJECT_ONLY, moduleE);

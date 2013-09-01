@@ -20,8 +20,7 @@ import org.erlide.model.root.IErlExternal;
 import org.erlide.model.root.IErlExternalRoot;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.services.search.ErlideOpen;
-import org.erlide.model.services.search.ErlideOpen.ExternalTreeEntry;
+import org.erlide.model.services.search.OpenService.ExternalTreeEntry;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.ErlLogger;
@@ -74,15 +73,21 @@ public class ErlExternalReferenceEntryList extends Openable implements
                 if (pm != null) {
                     pm.worked(1);
                 }
-                externalModuleTree = ErlideOpen.getExternalModuleTree(backend,
-                        externalModules, pathVars);
+                externalModuleTree = ErlangEngine
+                        .getInstance()
+                        .getOpenService()
+                        .getExternalModuleTree(backend, externalModules,
+                                pathVars);
             }
             if (externalIncludeTree == null && externalIncludes.length() > 0) {
                 if (pm != null) {
                     pm.worked(1);
                 }
-                externalIncludeTree = ErlideOpen.getExternalModuleTree(backend,
-                        externalIncludes, pathVars);
+                externalIncludeTree = ErlangEngine
+                        .getInstance()
+                        .getOpenService()
+                        .getExternalModuleTree(backend, externalIncludes,
+                                pathVars);
             }
         }
         setChildren(null);

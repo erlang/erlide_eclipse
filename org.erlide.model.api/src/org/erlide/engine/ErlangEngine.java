@@ -1,6 +1,7 @@
 package org.erlide.engine;
 
 import org.erlide.model.root.IErlModel;
+import org.erlide.model.services.search.OpenService;
 import org.erlide.model.services.search.XrefService;
 import org.erlide.util.services.ExtensionUtils;
 
@@ -48,6 +49,11 @@ public class ErlangEngine implements IErlangServiceFactory {
     @Override
     public String getStateDir() {
         return factory.getStateDir();
+    }
+
+    @Override
+    public OpenService getOpenService() {
+        return factory.getOpenService();
     }
 
 }

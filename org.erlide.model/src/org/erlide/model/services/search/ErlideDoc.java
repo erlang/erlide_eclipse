@@ -3,6 +3,7 @@ package org.erlide.model.services.search;
 import java.util.Collection;
 import java.util.List;
 
+import org.erlide.engine.ErlangEngine;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
@@ -67,9 +68,17 @@ public class ErlideDoc {
             final String externalModules, final OtpErlangList pathVars) {
         OtpErlangObject res = null;
         try {
-            final OtpErlangObject input = ide.call("erlide_open", "open",
-                    "aix", module, offset, ErlideOpen.mkContext(
-                            externalModules, null, pathVars, null, imports));
+            final OtpErlangObject input = ide.call(
+                    "erlide_open",
+                    "open",
+                    "aix",
+                    module,
+                    offset,
+                    ErlangEngine
+                            .getInstance()
+                            .getOpenService()
+                            .mkContext(externalModules, null, pathVars, null,
+                                    imports));
             res = b.call("erlide_otp_doc", "get_doc", "sxs", module, input,
                     stateDir);
         } catch (final RpcException e) {

@@ -37,7 +37,6 @@ import org.erlide.model.erlang.IErlPreprocessorDef;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.services.search.ErlangSearchPattern;
-import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.LimitTo;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.services.search.SearchPatternFactory;
@@ -217,9 +216,12 @@ public abstract class FindAction extends SelectionDispatchAction {
             final ISelection sel = getSelection();
             final ITextSelection textSel = (ITextSelection) sel;
             final int offset = textSel.getOffset();
-            final OpenResult res = ErlideOpen.open(b, module.getScannerName(),
-                    offset, ModelUtils.getImportsAsList(module), "",
-                    ErlangEngine.getInstance().getModel().getPathVars());
+            final OpenResult res = ErlangEngine
+                    .getInstance()
+                    .getOpenService()
+                    .open(b, module.getScannerName(), offset,
+                            ModelUtils.getImportsAsList(module), "",
+                            ErlangEngine.getInstance().getModel().getPathVars());
             ErlLogger.debug("find " + res);
             final ErlangSearchPattern ref = SearchUtil
                     .getSearchPatternFromOpenResultAndLimitTo(module, offset,

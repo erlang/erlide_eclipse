@@ -39,7 +39,6 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.services.search.ErlangSearchPattern;
-import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.ErlideSearchServer;
 import org.erlide.model.services.search.LimitTo;
 import org.erlide.model.services.search.ModuleLineFunctionArityRef;
@@ -104,10 +103,16 @@ public class MarkOccurencesHandler {
             }
             try {
                 final int offset = aSelection.getOffset();
-                final OpenResult res = ErlideOpen.open(ideBackend.getRpcSite(),
-                        theModule.getScannerName(), offset,
-                        ModelUtils.getImportsAsList(theModule), "",
-                        ErlangEngine.getInstance().getModel().getPathVars());
+                final OpenResult res = ErlangEngine
+                        .getInstance()
+                        .getOpenService()
+                        .open(ideBackend.getRpcSite(),
+                                theModule.getScannerName(),
+                                offset,
+                                ModelUtils.getImportsAsList(theModule),
+                                "",
+                                ErlangEngine.getInstance().getModel()
+                                        .getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(theModule,
                                 offset, res, LimitTo.ALL_OCCURRENCES, false);

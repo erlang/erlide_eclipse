@@ -14,7 +14,7 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModelChangeListener;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.services.search.ErlideOpen.ExternalTreeEntry;
+import org.erlide.model.services.search.OpenService.ExternalTreeEntry;
 import org.erlide.model.util.ErlideUtil;
 import org.erlide.util.IDisposable;
 
