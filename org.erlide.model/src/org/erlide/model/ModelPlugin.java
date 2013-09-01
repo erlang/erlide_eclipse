@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Plugin;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.IRpcSiteProvider;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -45,7 +46,7 @@ public class ModelPlugin extends Plugin {
     }
 
     private void cleanupStateDir() {
-        final String ndir = ModelCore.getStateDir();
+        final String ndir = ErlangEngine.getInstance().getStateDir();
         final File fdir = new File(ndir);
         for (final File f : fdir.listFiles()) {
             if (f.isFile()) {

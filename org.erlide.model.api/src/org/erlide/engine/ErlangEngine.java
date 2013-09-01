@@ -45,4 +45,9 @@ public class ErlangEngine implements IErlangServiceFactory {
         return factory.getXrefService();
     }
 
+    @Override
+    public String getStateDir() {
+        return factory.getStateDir();
+    }
+
 }

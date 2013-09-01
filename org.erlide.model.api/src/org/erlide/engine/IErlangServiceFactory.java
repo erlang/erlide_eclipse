@@ -9,4 +9,6 @@ public interface IErlangServiceFactory {
 
     XrefService getXrefService();
 
+    String getStateDir();
+
 }

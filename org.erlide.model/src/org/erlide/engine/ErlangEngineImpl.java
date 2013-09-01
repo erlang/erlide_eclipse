@@ -1,5 +1,6 @@
 package org.erlide.engine;
 
+import org.eclipse.core.runtime.Platform;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.ErlangToolkit;
 import org.erlide.model.erlang.ErlangToolkitFactory;
@@ -8,6 +9,7 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.services.search.ErlangXref;
 import org.erlide.model.services.search.XrefService;
 import org.erlide.util.ErlLogger;
+import org.osgi.framework.Bundle;
 
 public class ErlangEngineImpl implements IErlangServiceFactory {
 
@@ -38,4 +40,15 @@ public class ErlangEngineImpl implements IErlangServiceFactory {
         return new ErlangXref();
     }
 
+    private volatile String stateDirCached = null;
+
+    @Override
+    public String getStateDir() {
+        if (stateDirCached == null) {
+            final Bundle modelPlugin = Platform.getBundle("org.erlide.model");
+            stateDirCached = Platform.getStateLocation(modelPlugin)
+                    .toPortableString();
+        }
+        return stateDirCached;
+    }
 }

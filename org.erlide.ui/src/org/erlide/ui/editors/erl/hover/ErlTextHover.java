@@ -42,7 +42,6 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.ModelCore;
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlPreprocessorDef;
@@ -278,7 +277,7 @@ public class ErlTextHover implements ITextHover,
         if (debuggerVar.length() > 0) {
             result.append(debuggerVar);
         }
-        final String stateDir = ModelCore.getStateDir();
+        final String stateDir = ErlangEngine.getInstance().getStateDir();
 
         final IErlProject erlProject = editor.getProject();
 

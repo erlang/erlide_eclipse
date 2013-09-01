@@ -36,7 +36,6 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
-import org.erlide.model.ModelCore;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.services.search.ErlangSearchPattern;
@@ -125,7 +124,7 @@ public class MarkOccurencesHandler {
                     // seconds
                     final OtpErlangObject refs = ErlideSearchServer.findRefs(
                             ideBackend.getRpcSite(), pattern, scope,
-                            ModelCore.getStateDir(), true);
+                            ErlangEngine.getInstance().getStateDir(), true);
                     if (refs != null) {
                         SearchUtil.addSearchResult(findRefs, refs);
                         fRefs = erlangEditor.markOccurencesHandler
