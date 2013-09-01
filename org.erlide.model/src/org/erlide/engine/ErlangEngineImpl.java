@@ -15,11 +15,13 @@ import org.osgi.framework.Bundle;
 
 public class ErlangEngineImpl implements IErlangServiceFactory {
 
-    // !!!! XXX
-    private volatile static IErlModel erlangModel;
-
     public ErlangEngineImpl() {
+
+        // TODO how to inject runtime and other start params?
+
     }
+
+    private volatile static IErlModel erlangModel;
 
     @Override
     public IErlModel getModel() {
@@ -42,7 +44,7 @@ public class ErlangEngineImpl implements IErlangServiceFactory {
         return new ErlangXref();
     }
 
-    private volatile String stateDirCached = null;
+    private volatile String stateDirCached;
 
     @Override
     public String getStateDir() {

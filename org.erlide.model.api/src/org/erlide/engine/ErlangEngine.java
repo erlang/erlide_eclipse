@@ -3,7 +3,6 @@ package org.erlide.engine;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.services.search.OpenService;
 import org.erlide.model.services.search.XrefService;
-import org.erlide.util.services.ExtensionUtils;
 
 /**
  * Facade for the Erlang engine.
@@ -16,16 +15,10 @@ import org.erlide.util.services.ExtensionUtils;
 public class ErlangEngine implements IErlangServiceFactory {
     private volatile static ErlangEngine instance;
 
-    public static ErlangEngine getInstance() {
+    public static synchronized ErlangEngine getInstance() {
         if (instance == null) {
-
             // TODO inject backend in factory
-
-            final IErlangServiceFactory afactory = ExtensionUtils
-                    .getSingletonExtension(
-                            "org.erlide.model.api.serviceFactory",
-                            IErlangServiceFactory.class);
-            instance = new ErlangEngine(afactory);
+            instance = new ErlangEngine(ModelActivator.getErlangEngine());
         }
         return instance;
     }
