@@ -1,21 +1,22 @@
 package org.erlide.core;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.backend.BackendCore;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlScanner;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
@@ -80,7 +81,7 @@ public class ErlProjectTest {
                         "-module(f).\n-include(\"a.hrl\").\n-export([f/0]).\n-record(rec2, {a, b}).\n"
                                 + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
         module.open(null);
-        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         // when
         // looking for the include
         final IErlModule include1 = model.findIncludeFromModule(module,
@@ -114,7 +115,8 @@ public class ErlProjectTest {
             // String includeFile = ModelUtils.findIncludeFile(erlProject,
             // "x.hrl", "");
             project.open(null);
-            final IErlElementLocator model = ErlModelManager.getErlangModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
             final IErlModule module = model.findIncludeFromProject(project,
                     null, includePath,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
@@ -159,7 +161,8 @@ public class ErlProjectTest {
             // when
             // looking for the include file
             project.open(null);
-            final IErlElementLocator model = ErlModelManager.getErlangModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
             final IErlModule module = model.findIncludeFromProject(project,
                     includeName, null, IErlElementLocator.Scope.ALL_PROJECTS);
             // then
@@ -193,11 +196,14 @@ public class ErlProjectTest {
             // looking for lists:reverse/2 and lists:reverse/1
             final IRpcSite backend = BackendCore.getBackendManager()
                     .getIdeBackend().getRpcSite();
-            final IErlModel model = ErlModelManager.getErlangModel();
-            final OpenResult res = ErlideOpen.open(backend,
-                    moduleE.getScannerName(), 49,
-                    ModelUtils.getImportsAsList(moduleE),
-                    project.getExternalModulesString(), model.getPathVars());
+            final IErlModel model = ErlangEngine.getInstance().getModel();
+            final OpenResult res = ErlangEngine
+                    .getInstance()
+                    .getOpenService()
+                    .open(backend, moduleE.getScannerName(), 49,
+                            ModelUtils.getImportsAsList(moduleE),
+                            project.getExternalModulesString(),
+                            model.getPathVars());
             final IErlFunction function = ModelUtils.findFunction(model,
                     res.getName(), res.getFunction(), res.getPath(), project,
                     IErlElementLocator.Scope.PROJECT_ONLY, moduleE);
@@ -235,7 +241,8 @@ public class ErlProjectTest {
                     externalsFileName, absolutePath);
             project.setExternalModulesFile(externalsFile.getAbsolutePath());
             project.open(null);
-            final IErlElementLocator model = ErlModelManager.getErlangModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
             // when
             // looking for it
             final IErlModule externalModule = model.findModuleFromProject(

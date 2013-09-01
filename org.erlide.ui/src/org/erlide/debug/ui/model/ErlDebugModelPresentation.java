@@ -20,8 +20,8 @@ import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.backend.debug.model.ErlangProcess;
 import org.erlide.backend.debug.model.ErlangStackFrame;
 import org.erlide.backend.debug.model.ErlangUninterpretedStackFrame;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.ErlideUIDebugImages;
@@ -174,8 +174,8 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         if (element instanceof LocalFileStorage) {
             final LocalFileStorage lfs = (LocalFileStorage) element;
             try {
-                final IErlElementLocator model = ErlModelManager
-                        .getErlangModel();
+                final IErlElementLocator model = ErlangEngine.getInstance()
+                        .getModel();
                 final IErlModule module = ModelUtils.findModule(model, null,
                         null, lfs.getFullPath().toString(),
                         IErlElementLocator.Scope.ALL_PROJECTS);

@@ -47,8 +47,8 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.builder.CompilerOption;
 import org.erlide.core.builder.CompilerOption.PathsOption;
 import org.erlide.core.builder.CompilerOptions;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
@@ -318,7 +318,7 @@ public class CompilerPreferencePage extends PropertyPage implements
         } else {
             final List<IProject> erlProjects = new ArrayList<IProject>();
             final Set<IProject> projectsWithSpecifics = new HashSet<IProject>();
-            final IErlModel model = ErlModelManager.getErlangModel();
+            final IErlModel model = ErlangEngine.getInstance().getModel();
             try {
                 for (final IErlProject ep : model.getErlangProjects()) {
                     final IProject p = ep.getWorkspaceProject();

@@ -20,11 +20,12 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
-public class ErlideOpen {
+public class ErlideOpen implements OpenService {
 
     private static final String ERLIDE_OPEN = "erlide_open";
 
-    public static OtpErlangObject getSourceFromModule(final IRpcSite backend,
+    @Override
+    public OtpErlangObject getSourceFromModule(final IRpcSite backend,
             final OtpErlangList pathVars, final String mod,
             final String externalModules) throws RpcException {
         final OtpErlangObject res2 = backend.call(ERLIDE_OPEN,
@@ -33,11 +34,12 @@ public class ErlideOpen {
         return res2;
     }
 
+    @Override
     @SuppressWarnings("boxing")
-    public static OpenResult open(final IRpcSite backend,
-            final String scannerName, final int offset,
-            final List<OtpErlangObject> imports, final String externalModules,
-            final OtpErlangList pathVars) throws RpcException {
+    public OpenResult open(final IRpcSite backend, final String scannerName,
+            final int offset, final List<OtpErlangObject> imports,
+            final String externalModules, final OtpErlangList pathVars)
+            throws RpcException {
         // ErlLogger.debug("open offset " + offset);
         final Collection<IPath> extra = SourcePathUtils.getExtraSourcePaths();
         final OtpErlangObject res = backend.call(ERLIDE_OPEN, "open", "aix",
@@ -46,15 +48,17 @@ public class ErlideOpen {
         return new OpenResult(res);
     }
 
+    @Override
     @SuppressWarnings("boxing")
-    public static OpenResult openText(final IRpcSite backend,
-            final String text, final int offset) throws RpcException {
+    public OpenResult openText(final IRpcSite backend, final String text,
+            final int offset) throws RpcException {
         final OtpErlangObject res = backend.call(ERLIDE_OPEN, "open_text",
                 "si", text, offset);
         return new OpenResult(res);
     }
 
-    public static OtpErlangTuple mkContext(final String externalModules,
+    @Override
+    public OtpErlangTuple mkContext(final String externalModules,
             final String externalIncludes, final OtpErlangList pathVars,
             final Collection<IPath> extraSourcePaths,
             final Collection<OtpErlangObject> imports) {
@@ -76,7 +80,8 @@ public class ErlideOpen {
         return new OtpErlangTuple(result.toArray(new OtpErlangObject[] {}));
     }
 
-    public static OtpErlangTuple findFirstVar(final IRpcSite backend,
+    @Override
+    public OtpErlangTuple findFirstVar(final IRpcSite backend,
             final String name, final String source) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
@@ -133,40 +138,8 @@ public class ErlideOpen {
     // return new ArrayList<String>();
     // }
 
-    public static class ExternalTreeEntry {
-        private final String parentPath;
-        private final String path;
-        // private final String name;
-        private final boolean isModule;
-
-        public ExternalTreeEntry(final String parentPath, final String path,
-        // final String name,
-                final boolean isModule) {
-            super();
-            this.parentPath = parentPath;
-            this.path = path;
-            // this.name = name;
-            this.isModule = isModule;
-        }
-
-        public String getParentPath() {
-            return parentPath;
-        }
-
-        public String getPath() {
-            return path;
-        }
-
-        // public String getName() {
-        // return name;
-        // }
-
-        public boolean isModule() {
-            return isModule;
-        }
-    }
-
-    public static List<ExternalTreeEntry> getExternalModuleTree(
+    @Override
+    public List<ExternalTreeEntry> getExternalModuleTree(
             final IRpcSite backend, final String externalModules,
             final OtpErlangList pathVars) {
         ErlLogger.debug("open:external_module_tree -> " + externalModules);
@@ -207,7 +180,8 @@ public class ErlideOpen {
         return Lists.newArrayList();
     }
 
-    public static String getExternalInclude(final IRpcSite backend,
+    @Override
+    public String getExternalInclude(final IRpcSite backend,
             final String filePath, final String externalIncludes,
             final OtpErlangList pathVars) {
         try {
@@ -224,7 +198,8 @@ public class ErlideOpen {
         return null;
     }
 
-    public static List<String> getLibDirs(final IRpcSite backend) {
+    @Override
+    public List<String> getLibDirs(final IRpcSite backend) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
                     "get_lib_dirs", "");
@@ -235,8 +210,8 @@ public class ErlideOpen {
         }
     }
 
-    public static List<String> getLibFiles(final IRpcSite backend,
-            final String entry) {
+    @Override
+    public List<String> getLibFiles(final IRpcSite backend, final String entry) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
                     "get_lib_files", "s", entry);
@@ -247,7 +222,8 @@ public class ErlideOpen {
         }
     }
 
-    public static List<List<String>> getLibSrcInclude(final IRpcSite backend,
+    @Override
+    public List<List<String>> getLibSrcInclude(final IRpcSite backend,
             final List<String> libList) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
@@ -259,8 +235,7 @@ public class ErlideOpen {
         }
     }
 
-    private static List<List<String>> getStringListListTuple(
-            final OtpErlangObject res) {
+    private List<List<String>> getStringListListTuple(final OtpErlangObject res) {
         if (Util.isOk(res)) {
             final OtpErlangTuple t = (OtpErlangTuple) res;
             final OtpErlangList lol = (OtpErlangList) t.elementAt(1);
@@ -280,7 +255,7 @@ public class ErlideOpen {
         return Lists.newArrayList();
     }
 
-    private static List<String> getStringListTuple(final OtpErlangObject res) {
+    private List<String> getStringListTuple(final OtpErlangObject res) {
         if (Util.isOk(res)) {
             final OtpErlangTuple t = (OtpErlangTuple) res;
             final OtpErlangList l = (OtpErlangList) t.elementAt(1);
@@ -294,7 +269,8 @@ public class ErlideOpen {
         return Lists.newArrayList();
     }
 
-    public static Collection<String> getIncludesInDir(final IRpcSite backend,
+    @Override
+    public Collection<String> getIncludesInDir(final IRpcSite backend,
             final String directory) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,

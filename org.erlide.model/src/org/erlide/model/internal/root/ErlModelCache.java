@@ -9,12 +9,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.xtext.xbase.lib.Pair;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModelChangeListener;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.services.search.ErlideOpen.ExternalTreeEntry;
+import org.erlide.model.services.search.OpenService.ExternalTreeEntry;
 import org.erlide.model.util.ErlideUtil;
 import org.erlide.util.IDisposable;
 
@@ -87,8 +87,8 @@ public class ErlModelCache implements IDisposable {
         projectIncludeDirsCache = newCache();
 
         modelChangeListener = new ModelChangeListener();
-        ErlModelManager.getErlangModel().addModelChangeListener(
-                modelChangeListener);
+        ErlangEngine.getInstance().getModel()
+                .addModelChangeListener(modelChangeListener);
     }
 
     public void putModule(final IErlModule module) {
@@ -163,8 +163,8 @@ public class ErlModelCache implements IDisposable {
 
     @Override
     public void dispose() {
-        ErlModelManager.getErlangModel().removeModelChangeListener(
-                modelChangeListener);
+        ErlangEngine.getInstance().getModel()
+                .removeModelChangeListener(modelChangeListener);
     }
 
     public void putExternalTree(final String externalPath,

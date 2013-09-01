@@ -1,6 +1,9 @@
 package org.erlide.model.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
@@ -13,6 +16,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlImport;
 import org.erlide.model.erlang.IErlModule;
@@ -21,7 +25,6 @@ import org.erlide.model.erlang.IErlRecordDef;
 import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.erlang.IErlTypespec;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
@@ -126,7 +129,8 @@ public class ModelUtilsTests {
             // when
             // looking for it
             // within project
-            final IErlElementLocator model = ErlModelManager.getErlangModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
 
             final IErlElement element1 = ModelUtils.findTypeDef(model, moduleB,
                     "bx", "concat_thing", moduleB.getResource().getLocation()
@@ -168,7 +172,7 @@ public class ModelUtilsTests {
         moduleD.open(null);
         // when
         // looking for it with ?MODULE
-        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         final IErlElement element1 = ModelUtils.findFunction(model, "?MODULE",
                 new ErlangFunction("f", 0), null, projects[0],
                 IErlElementLocator.Scope.PROJECT_ONLY, moduleD);
@@ -326,7 +330,8 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for it
-            final IErlElementLocator model = ErlModelManager.getErlangModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
             final IErlModule module = ModelUtils.findModule(model, null, null,
                     absolutePath, IErlElementLocator.Scope.ALL_PROJECTS);
             // then
@@ -391,7 +396,7 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for it with its external module path
-            final IErlModel model = ErlModelManager.getErlangModel();
+            final IErlModel model = ErlangEngine.getInstance().getModel();
             final IErlModule module = ModelUtils.findModule(model, null, null,
                     absolutePath, IErlElementLocator.Scope.ALL_PROJECTS);
             assertNotNull(module);

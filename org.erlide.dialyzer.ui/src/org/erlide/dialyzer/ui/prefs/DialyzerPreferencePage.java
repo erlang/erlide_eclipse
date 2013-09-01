@@ -63,9 +63,9 @@ import org.erlide.core.builder.DialyzerPreferences;
 import org.erlide.core.builder.DialyzerUtils;
 import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.core.builder.ErlideDialyze;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
@@ -432,7 +432,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         } else {
             final List<IProject> erlProjects = new ArrayList<IProject>();
             final Set<IProject> projectsWithSpecifics = new HashSet<IProject>();
-            final IErlModel model = ErlModelManager.getErlangModel();
+            final IErlModel model = ErlangEngine.getInstance().getModel();
             try {
                 for (final IErlProject ep : model.getErlangProjects()) {
                     final IProject p = ep.getWorkspaceProject();
@@ -744,7 +744,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 List<String> ebinDirs = null;
                 if (alternatePltFileDirectory != null) {
                     ebinDirs = Lists.newArrayList();
-                    for (final IErlElement i : ErlModelManager.getErlangModel()
+                    for (final IErlElement i : ErlangEngine.getInstance()
+                            .getModel()
                             .getChildrenOfKind(ErlElementKind.PROJECT)) {
                         final IErlProject project = (IErlProject) i;
                         final String ebinDir = project.getWorkspaceProject()

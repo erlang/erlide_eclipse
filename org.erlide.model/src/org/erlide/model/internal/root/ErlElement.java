@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.erlide.model.internal.root;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -24,11 +26,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementVisitor;
 import org.erlide.util.StringUtils;
@@ -518,7 +520,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     protected Object getModelLock() {
-        return ErlModelManager.getErlangModel().getModelLock();
+        return ErlangEngine.getInstance().getModel().getModelLock();
     }
 
     private static IErlElement getChildWithResource(final ErlElement parent,

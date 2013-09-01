@@ -12,10 +12,10 @@ package org.erlide.wrangler.refactoring.selection.internal;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.IDocument;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlMember;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.util.ErlRange;
@@ -104,6 +104,6 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlModule getErlModule() {
-        return (IErlModule) ErlModelManager.getErlangModel().findElement(file);
+        return (IErlModule) ErlangEngine.getInstance().getModel().findElement(file);
     }
 }

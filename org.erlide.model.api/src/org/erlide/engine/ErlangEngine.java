@@ -1,6 +1,9 @@
 package org.erlide.engine;
 
-import org.erlide.model.TextChange;
+import org.erlide.model.root.IErlModel;
+import org.erlide.model.services.search.OpenService;
+import org.erlide.model.services.search.OtpDocService;
+import org.erlide.model.services.search.XrefService;
 
 /**
  * Facade for the Erlang engine.
@@ -10,15 +13,46 @@ import org.erlide.model.TextChange;
  * implement it in Erlang or to let it be used by Xtext.
  * </p>
  */
-public class ErlangEngine implements IEngineInput, IResourceChangeListener {
+public class ErlangEngine implements IErlangServiceFactory {
+    private volatile static ErlangEngine instance;
 
-    @Override
-    public void handleChangedInput(final String id, final TextChange change) {
+    public static synchronized ErlangEngine getInstance() {
+        if (instance == null) {
+            // TODO inject backend in factory
+            instance = new ErlangEngine(ModelActivator.getErlangEngine());
+        }
+        return instance;
+    }
+
+    private final IErlangServiceFactory factory;
+
+    public ErlangEngine(final IErlangServiceFactory afactory) {
+        factory = afactory;
     }
 
     @Override
-    public void handleChangedResources(final ResourceChange delta) {
+    public IErlModel getModel() {
+        return factory.getModel();
+    }
 
+    @Override
+    public XrefService getXrefService() {
+        return factory.getXrefService();
+    }
+
+    @Override
+    public String getStateDir() {
+        return factory.getStateDir();
+    }
+
+    @Override
+    public OpenService getOpenService() {
+        return factory.getOpenService();
+    }
+
+    @Override
+    public OtpDocService getOtpDocService() {
+        return factory.getOtpDocService();
     }
 
 }

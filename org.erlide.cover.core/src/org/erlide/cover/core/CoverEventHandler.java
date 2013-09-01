@@ -12,7 +12,7 @@ import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.ObjectType;
 import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.cover.views.model.StatsTreeObject;
-import org.erlide.model.root.ErlModelManager;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangEventHandler;
@@ -113,7 +113,7 @@ public class CoverEventHandler extends ErlangEventHandler {
                 // calculate md5
 
                 try {
-                    final File file = new File(ErlModelManager.getErlangModel()
+                    final File file = new File(ErlangEngine.getInstance().getModel()
                             .findModule(moduleName).getFilePath());
                     moduleStats.setMd5(MD5Checksum.getMD5(file));
                 } catch (final Exception e) {

@@ -67,8 +67,8 @@ import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.SourcePathUtils;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.CommonUtils;
@@ -518,8 +518,8 @@ public class FilteredModulesSelectionDialog extends
             // couldn't we just assume all links in external files should be
             // matchable?
             if (project == resource && accessible) {
-                final IErlElementLocator model = ErlModelManager
-                        .getErlangModel();
+                final IErlElementLocator model = ErlangEngine.getInstance()
+                        .getModel();
                 final IErlProject erlProject = model.findProject(project);
                 if (erlProject != null) {
                     final String extMods = erlProject
@@ -583,8 +583,8 @@ public class FilteredModulesSelectionDialog extends
         }
 
         private void addPaths(final IProject project) {
-            final IErlProject erlProject = ErlModelManager.getErlangModel()
-                    .getErlangProject(project);
+            final IErlProject erlProject = ErlangEngine.getInstance()
+                    .getModel().getErlangProject(project);
             if (erlProject != null) {
                 validPaths.addAll(getFullPaths(project,
                         erlProject.getIncludeDirs()));

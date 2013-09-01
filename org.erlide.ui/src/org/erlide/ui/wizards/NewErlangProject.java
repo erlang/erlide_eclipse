@@ -36,7 +36,7 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.ErlangCore;
-import org.erlide.model.root.ErlModelManager;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.root.IErlangProjectProperties;
 import org.erlide.model.root.OldErlangProjectProperties;
@@ -207,6 +207,11 @@ public class NewErlangProject extends Wizard implements INewWizard {
             final OldErlangProjectProperties bprefs = buildPage.getPrefs();
 
             buildPaths(monitor, root, project, new ArrayList<IPath>() {
+                /**
+                 * 
+                 */
+                private static final long serialVersionUID = 8086313054669539150L;
+
                 {
                     addAll(bprefs.getOutputDirs());
                 }
@@ -214,8 +219,8 @@ public class NewErlangProject extends Wizard implements INewWizard {
             buildPaths(monitor, root, project, bprefs.getSourceDirs());
             buildPaths(monitor, root, project, bprefs.getIncludeDirs());
 
-            final IErlProject erlProject = ErlModelManager.getErlangModel()
-                    .getErlangProject(project);
+            final IErlProject erlProject = ErlangEngine.getInstance()
+                    .getModel().getErlangProject(project);
             erlProject.setAllProperties(bprefs);
 
             // TODO add code path to backend

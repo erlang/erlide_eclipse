@@ -43,8 +43,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.ModuleKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
@@ -202,8 +202,8 @@ public class ErlangFileWizardPage extends WizardPage {
                     container = resource.getParent();
                 }
                 final IProject project = resource.getProject();
-                final IErlProject erlProject = ErlModelManager.getErlangModel()
-                        .getErlangProject(project);
+                final IErlProject erlProject = ErlangEngine.getInstance()
+                        .getModel().getErlangProject(project);
                 String txt = container.getFullPath().toString();
                 final Collection<IPath> sourceDirs = erlProject.getSourceDirs();
                 if (!sourceDirs.isEmpty()) {

@@ -21,8 +21,8 @@ import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.util.ErlLogger;
 
@@ -73,7 +73,7 @@ public class ErlReconciler implements IReconciler {
         fStrategy = strategy;
         this.path = path;
         if (path != null) {
-            ErlModelManager.getErlangModel().putEdited(path, module);
+            ErlangEngine.getInstance().getModel().putEdited(path, module);
         }
         // https://bugs.eclipse.org/bugs/show_bug.cgi?id=63898
         if (editor instanceof ErlangEditor) {
@@ -521,7 +521,7 @@ public class ErlReconciler implements IReconciler {
         final ErlReconcilingStrategy s = (ErlReconcilingStrategy) getReconcilingStrategy(IDocument.DEFAULT_CONTENT_TYPE);
         s.uninstall();
         if (path != null) {
-            ErlModelManager.getErlangModel().putEdited(path, null);
+            ErlangEngine.getInstance().getModel().putEdited(path, null);
         }
     }
 

@@ -21,10 +21,10 @@ import org.erlide.cover.ui.Activator;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.StatsTreeObject;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.util.ErlLogger;
@@ -87,7 +87,7 @@ public class OpenItemAction extends Action {
 
             IErlModule module;
             try {
-                module = ErlModelManager.getErlangModel()
+                module = ErlangEngine.getInstance().getModel()
                         .findModule(moduleName);
 
                 final IErlFunction f = module.findFunction(new ErlangFunction(
@@ -110,7 +110,7 @@ public class OpenItemAction extends Action {
 
         IErlModule module;
         try {
-            module = ErlModelManager.getErlangModel().findModule(name);
+            module = ErlangEngine.getInstance().getModel().findModule(name);
         } catch (final ErlModelException e1) {
             e1.printStackTrace();
             return null;

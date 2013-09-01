@@ -34,13 +34,11 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
-import org.erlide.model.ModelCore;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.services.search.ErlangSearchPattern;
-import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.ErlideSearchServer;
 import org.erlide.model.services.search.LimitTo;
 import org.erlide.model.services.search.ModuleLineFunctionArityRef;
@@ -105,10 +103,16 @@ public class MarkOccurencesHandler {
             }
             try {
                 final int offset = aSelection.getOffset();
-                final OpenResult res = ErlideOpen.open(ideBackend.getRpcSite(),
-                        theModule.getScannerName(), offset,
-                        ModelUtils.getImportsAsList(theModule), "",
-                        ErlModelManager.getErlangModel().getPathVars());
+                final OpenResult res = ErlangEngine
+                        .getInstance()
+                        .getOpenService()
+                        .open(ideBackend.getRpcSite(),
+                                theModule.getScannerName(),
+                                offset,
+                                ModelUtils.getImportsAsList(theModule),
+                                "",
+                                ErlangEngine.getInstance().getModel()
+                                        .getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(theModule,
                                 offset, res, LimitTo.ALL_OCCURRENCES, false);
@@ -125,7 +129,7 @@ public class MarkOccurencesHandler {
                     // seconds
                     final OtpErlangObject refs = ErlideSearchServer.findRefs(
                             ideBackend.getRpcSite(), pattern, scope,
-                            ModelCore.getStateDir(), true);
+                            ErlangEngine.getInstance().getStateDir(), true);
                     if (refs != null) {
                         SearchUtil.addSearchResult(findRefs, refs);
                         fRefs = erlangEditor.markOccurencesHandler

@@ -1,6 +1,9 @@
 package org.erlide.model.erlang;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.net.URI;
@@ -15,7 +18,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.model.root.ErlModelManager;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
@@ -42,7 +45,7 @@ public class IErlModelTest extends ErlModelTestBase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        model = ErlModelManager.getErlangModel();
+        model = ErlangEngine.getInstance().getModel();
     }
 
     @After
@@ -306,7 +309,8 @@ public class IErlModelTest extends ErlModelTestBase {
             final String ww = "ww";
             final IErlModule w1 = model.findIncludeFromModule(module, ww, null,
                     IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlElementLocator mymodel = ErlModelManager.getErlangModel();
+            final IErlElementLocator mymodel = ErlangEngine.getInstance()
+                    .getModel();
             final IErlModule w2 = mymodel.findIncludeFromProject(myProject, ww,
                     null, IErlElementLocator.Scope.PROJECT_ONLY);
             // then

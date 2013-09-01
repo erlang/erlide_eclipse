@@ -3,7 +3,7 @@
 <schema targetNamespace="org.erlide.model.api" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.erlide.model.api" id="modelProvider" name="modelProvider"/>
+         <meta.schema plugin="org.erlide.model.api" id="serviceFactory" name="serviceFactory"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="modelProvider"/>
+            <element ref="serviceFactory"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="modelProvider">
+   <element name="serviceFactory">
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.erlide.model.root.IErlModelProvider:"/>
+                  <meta.attribute kind="java" basedOn=":org.erlide.model.root.IErlangServiceFactory"/>
                </appinfo>
             </annotation>
          </attribute>

@@ -18,12 +18,12 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlAttribute;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ModelUtils;
@@ -107,7 +107,7 @@ public class AddRefacHandler extends AbstractHandler {
     private RefacType checkType(final String callbackModule) {
 
         try {
-            final IErlModule module = ErlModelManager.getErlangModel()
+            final IErlModule module = ErlangEngine.getInstance().getModel()
                     .findModule(callbackModule);
             final IErlScanner scanner = module.getScanner();
             try {
@@ -161,12 +161,12 @@ public class AddRefacHandler extends AbstractHandler {
         String path;
 
         try {
-            if (ErlModelManager.getErlangModel().findModule(callbackModule) == null) {
+            if (ErlangEngine.getInstance().getModel().findModule(callbackModule) == null) {
                 return null;
             }
 
-            final IErlProject project = ModelUtils.getProject(ErlModelManager
-                    .getErlangModel().findModule(callbackModule));
+            final IErlProject project = ModelUtils.getProject(ErlangEngine
+                    .getInstance().getModel().findModule(callbackModule));
             path = project.getWorkspaceProject().getLocation()
                     .append(project.getOutputLocation())
                     .append(callbackModule + ".beam").toOSString();

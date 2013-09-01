@@ -11,6 +11,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.ErlModelStatus;
 import org.erlide.model.ErlModelStatusConstants;
@@ -18,7 +19,6 @@ import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ModuleKind;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
@@ -43,7 +43,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         final IContainer c = (IContainer) getResource();
         try {
             // FIXME this is general stuff -> model or model manager?

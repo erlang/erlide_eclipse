@@ -30,12 +30,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.search.SearchCoreUtil;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.services.search.ErlangSearchPattern;
@@ -346,8 +346,8 @@ public class SearchUtil {
                     o = a.getAdapter(IResource.class);
                     if (o != null) {
                         final IResource resource = (IResource) o;
-                        final IErlElement element = ErlModelManager
-                                .getErlangModel().findElement(resource);
+                        final IErlElement element = ErlangEngine.getInstance()
+                                .getModel().findElement(resource);
                         if (element instanceof IParent) {
                             parent = (IParent) element;
                         }

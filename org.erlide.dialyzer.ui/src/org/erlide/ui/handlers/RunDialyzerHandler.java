@@ -30,9 +30,9 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.core.builder.DialyzerUtils;
 import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.dialyzer.ui.Activator;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ModelUtils;
@@ -164,7 +164,7 @@ public class RunDialyzerHandler extends AbstractHandler {
         final Set<IErlModule> modules = Sets.newHashSet();
         if (selection instanceof IStructuredSelection) {
             final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-            final IErlModel model = ErlModelManager.getErlangModel();
+            final IErlModel model = ErlangEngine.getInstance().getModel();
             try {
                 model.open(null);
                 for (final Object i : structuredSelection.toList()) {

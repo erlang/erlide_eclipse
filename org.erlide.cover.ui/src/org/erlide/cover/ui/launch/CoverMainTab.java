@@ -31,9 +31,9 @@ import org.erlide.cover.runtime.launch.ICoverAttributes;
 import org.erlide.cover.runtime.launch.LaunchType;
 import org.erlide.cover.ui.launch.helpers.ProjectElement;
 import org.erlide.cover.ui.launch.helpers.ProjectLabelProvider;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.util.ErlLogger;
@@ -100,7 +100,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
         Collection<IErlProject> projects;
         try {
-            projects = ErlModelManager.getErlangModel().getErlangProjects();
+            projects = ErlangEngine.getInstance().getModel().getErlangProjects();
             final List<String> ps = new ArrayList<String>();
             for (final IErlProject p : projects) {
                 ps.add(p.getName());
@@ -131,7 +131,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
             projectMBr.setText(projectName);
 
             if (projectName != null && projectName.length() > 0) {
-                final IErlProject p = ErlModelManager.getErlangModel()
+                final IErlProject p = ErlangEngine.getInstance().getModel()
                         .getErlangProject(
                                 ResourcesPlugin.getWorkspace().getRoot()
                                         .getProject(projectName));
@@ -256,7 +256,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
                 updateLaunchConfigurationDialog();
                 final String projectName = projectMBr.getText();
                 if (projectName != null && projectName.length() > 0) {
-                    final IErlProject p = ErlModelManager.getErlangModel()
+                    final IErlProject p = ErlangEngine.getInstance().getModel()
                             .getErlangProject(
                                     ResourcesPlugin.getWorkspace().getRoot()
                                             .getProject(projectName));
@@ -279,8 +279,8 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         try {
             final List<ProjectElement> res = new LinkedList<ProjectElement>();
 
-            final Collection<IErlProject> projects = ErlModelManager
-                    .getErlangModel().getErlangProjects();
+            final Collection<IErlProject> projects = ErlangEngine
+                    .getInstance().getModel().getErlangProjects();
 
             for (final IErlProject p : projects) {
                 final ProjectElement elem = new ProjectElement(p.getName(),

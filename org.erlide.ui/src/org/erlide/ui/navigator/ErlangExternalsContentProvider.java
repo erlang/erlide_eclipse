@@ -7,12 +7,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlExternalRoot;
 import org.erlide.model.root.IErlModel;
@@ -55,7 +55,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             if (parentElement instanceof IProject) {
                 final IProject project = (IProject) parentElement;
                 if (project.isOpen()) {
-                    parentElement = ErlModelManager.getErlangModel()
+                    parentElement = ErlangEngine.getInstance().getModel()
                             .findProject(project);
                 }
             }
@@ -83,7 +83,8 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             final IErlElement elt = (IErlElement) element;
             IParent parent = elt.getParent();
             final String filePath = elt.getFilePath();
-            if (parent == ErlModelManager.getErlangModel() && filePath != null) {
+            if (parent == ErlangEngine.getInstance().getModel()
+                    && filePath != null) {
                 // try {
                 // FIXME shouldn't this call be assigned to something!?
                 // ModelUtils.findModule(null, null, filePath,
@@ -110,7 +111,8 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         if (element instanceof IProject) {
             final IProject project = (IProject) element;
             if (project.isOpen()) {
-                element = ErlModelManager.getErlangModel().findProject(project);
+                element = ErlangEngine.getInstance().getModel()
+                        .findProject(project);
             }
         }
         if (element instanceof IErlModule) {

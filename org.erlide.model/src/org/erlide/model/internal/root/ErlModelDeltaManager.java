@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IResourceDelta;
-import org.erlide.model.root.ErlModelManager;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementDelta;
 import org.erlide.model.root.IWorkingCopy;
@@ -177,7 +177,7 @@ public class ErlModelDeltaManager {
             }
 
             final Iterator<IErlElementDelta> iterator = deltas.iterator();
-            final IErlElement cRoot = ErlModelManager.getErlangModel();
+            final IErlElement cRoot = ErlangEngine.getInstance().getModel();
             final ErlElementDelta rootDelta = new ErlElementDelta(0, 0, cRoot);
             boolean insertedTree = false;
             while (iterator.hasNext()) {

@@ -23,8 +23,8 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.backend.BackendCore;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
-import org.erlide.model.ModelCore;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlImport;
@@ -36,7 +36,6 @@ import org.erlide.model.erlang.IErlRecordField;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
@@ -146,7 +145,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                 || kind == Kinds.INCLUDE_LIBS;
         final List<String> names = ModelUtils.findUnitsWithPrefix(prefix,
                 project, kind != Kinds.INCLUDES, includes);
-        final OtpErlangObject res = ErlideDoc.getModules(backend, prefix,
+        final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService().getModules(backend, prefix,
                 names, includes);
         if (res instanceof OtpErlangList) {
             final OtpErlangList resList = (OtpErlangList) res;
@@ -527,7 +526,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
-        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         final IErlModule theModule = ModelUtils.findModule(model, project,
                 moduleName, null,
                 checkAllProjects ? IErlElementLocator.Scope.ALL_PROJECTS
@@ -536,7 +535,7 @@ public abstract class AbstractErlContentAssistProcessor implements
             if (ModelUtils.isOtpModule(theModule)) {
                 final String stateDir = ErlideUIPlugin.getDefault()
                         .getStateLocation().toString();
-                final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
+                final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService().getProposalsWithDoc(b,
                         moduleName, prefix, stateDir);
                 addFunctionProposalsWithDoc(offset, prefix, result, res, null,
                         arityOnly);
@@ -589,8 +588,8 @@ public abstract class AbstractErlContentAssistProcessor implements
 
     List<ICompletionProposal> getAutoImportedFunctions(final IRpcSite backend,
             final int offset, final String prefix) {
-        final String stateDir = ModelCore.getStateDir();
-        final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(backend,
+        final String stateDir = ErlangEngine.getInstance().getStateDir();
+        final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService().getProposalsWithDoc(backend,
                 "<auto_imported>", prefix, stateDir);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         addFunctionProposalsWithDoc(offset, prefix, result, res, null, false);
@@ -599,10 +598,10 @@ public abstract class AbstractErlContentAssistProcessor implements
 
     List<ICompletionProposal> getImportedFunctions(final IRpcSite backend,
             final int offset, final String prefix) {
-        final String stateDir = ModelCore.getStateDir();
+        final String stateDir = ErlangEngine.getInstance().getStateDir();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         for (final IErlImport imp : module.getImports()) {
-            final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(backend,
+            final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService().getProposalsWithDoc(backend,
                     imp.getImportModule(), prefix, stateDir);
             addFunctionProposalsWithDoc(offset, prefix, result, res, imp, false);
         }

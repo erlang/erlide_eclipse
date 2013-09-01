@@ -36,10 +36,10 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ModuleKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ErlangIncludeFile;
 import org.erlide.model.util.ResourceUtil;
@@ -86,7 +86,7 @@ public final class BuilderHelper {
 
     public Collection<IPath> getIncludeDirs(final IProject project,
             final Collection<IPath> includeDirs) {
-        final IErlProject erlProject = ErlModelManager.getErlangModel()
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
         if (erlProject == null) {
             return includeDirs;
@@ -132,8 +132,8 @@ public final class BuilderHelper {
     public void addDependents(final IResource resource,
             final IProject my_project, final Set<BuildResource> result)
             throws ErlModelException {
-        final IErlProject eprj = ErlModelManager.getErlangModel().findProject(
-                my_project);
+        final IErlProject eprj = ErlangEngine.getInstance().getModel()
+                .findProject(my_project);
         if (eprj != null) {
             final Collection<IErlModule> ms = eprj.getModules();
             for (final IErlModule m : ms) {
@@ -196,8 +196,8 @@ public final class BuilderHelper {
         } catch (final Exception e) {
         }
         try {
-            final IErlProject erlProject = ErlModelManager.getErlangModel()
-                    .getErlangProject(project);
+            final IErlProject erlProject = ErlangEngine.getInstance()
+                    .getModel().getErlangProject(project);
             final Collection<IPath> sd = erlProject.getSourceDirs();
             final String[] dirList = new String[sd.size()];
             int j = 0;
@@ -247,7 +247,7 @@ public final class BuilderHelper {
         boolean shouldCompile = beam == null;
 
         if (beam != null) {
-            final IErlProject eprj = ErlModelManager.getErlangModel()
+            final IErlProject eprj = ErlangEngine.getInstance().getModel()
                     .findProject(project);
             if (eprj != null) {
                 shouldCompile = shouldCompileModule(project, source, beam,
@@ -284,7 +284,7 @@ public final class BuilderHelper {
     }
 
     public void refreshOutputDir(final IProject project) throws CoreException {
-        final IErlProject erlProject = ErlModelManager.getErlangModel()
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
         final IPath outputDir = erlProject.getOutputLocation();
         final IResource ebinDir = project.findMember(outputDir);
@@ -362,8 +362,8 @@ public final class BuilderHelper {
                     br.setDerived(true, null);
                     final BuildResource bbr = new BuildResource(br);
                     // br.touch() doesn't work...
-                    final IErlProject erlProject = ErlModelManager
-                            .getErlangModel().getErlangProject(project);
+                    final IErlProject erlProject = ErlangEngine.getInstance()
+                            .getModel().getErlangProject(project);
                     compileErl(project, bbr, erlProject.getOutputLocation()
                             .toString(), backend, compilerOptions);
                 }
@@ -444,7 +444,7 @@ public final class BuilderHelper {
     }
 
     private IPath getBeamForErl(final IResource source) {
-        final IErlProject erlProject = ErlModelManager.getErlangModel()
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(source.getProject());
         IPath p = erlProject.getOutputLocation();
         p = p.append(source.getName());
@@ -622,8 +622,8 @@ public final class BuilderHelper {
             if (getResult() != null) {
                 return false;
             }
-            final IErlProject erlProject = ErlModelManager.getErlangModel()
-                    .getErlangProject(resource.getProject());
+            final IErlProject erlProject = ErlangEngine.getInstance()
+                    .getModel().getErlangProject(resource.getProject());
             if (resource.getType() == IResource.FILE
                     && resource.getFileExtension() != null
                     && "erl".equals(resource.getFileExtension())
@@ -678,8 +678,8 @@ public final class BuilderHelper {
                 return false;
             }
             if (resource.getType() == IResource.PROJECT) {
-                erlProject = ErlModelManager.getErlangModel().getErlangProject(
-                        (IProject) resource);
+                erlProject = ErlangEngine.getInstance().getModel()
+                        .getErlangProject((IProject) resource);
                 return true;
             }
             if (resource.getType() == IResource.FOLDER) {

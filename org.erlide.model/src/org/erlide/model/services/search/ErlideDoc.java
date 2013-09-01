@@ -3,6 +3,7 @@ package org.erlide.model.services.search;
 import java.util.Collection;
 import java.util.List;
 
+import org.erlide.engine.ErlangEngine;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
@@ -15,8 +16,10 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlideDoc {
-    public static OtpErlangObject getProposalsWithDoc(final IRpcSite b,
+public class ErlideDoc implements OtpDocService {
+
+    @Override
+    public OtpErlangObject getProposalsWithDoc(final IRpcSite b,
             final String mod, final String prefix, final String stateDir) {
         OtpErlangObject res = null;
         try {
@@ -28,9 +31,9 @@ public class ErlideDoc {
         return res;
     }
 
-    public static OtpErlangObject getModules(final IRpcSite b,
-            final String prefix, final List<String> projectModules,
-            final boolean includes) {
+    @Override
+    public OtpErlangObject getModules(final IRpcSite b, final String prefix,
+            final List<String> projectModules, final boolean includes) {
         OtpErlangObject res = null;
         try {
             final String what = includes ? "includes" : "modules";
@@ -42,7 +45,8 @@ public class ErlideDoc {
         return res;
     }
 
-    public static OtpErlangObject getOtpDoc(final IRpcSite backend,
+    @Override
+    public OtpErlangObject getOtpDoc(final IRpcSite backend,
             final ErlangFunctionCall functionCall, final String stateDir) {
         OtpErlangObject res = null;
         final OtpErlangTuple input = new OtpErlangTuple(new OtpErlangObject[] {
@@ -60,16 +64,25 @@ public class ErlideDoc {
         return res;
     }
 
+    @Override
     @SuppressWarnings("boxing")
-    public static OtpErlangObject getOtpDoc(final IRpcSite ide,
-            final IRpcSite b, final int offset, final String stateDir,
-            final String module, final Collection<OtpErlangObject> imports,
+    public OtpErlangObject getOtpDoc(final IRpcSite ide, final IRpcSite b,
+            final int offset, final String stateDir, final String module,
+            final Collection<OtpErlangObject> imports,
             final String externalModules, final OtpErlangList pathVars) {
         OtpErlangObject res = null;
         try {
-            final OtpErlangObject input = ide.call("erlide_open", "open",
-                    "aix", module, offset, ErlideOpen.mkContext(
-                            externalModules, null, pathVars, null, imports));
+            final OtpErlangObject input = ide.call(
+                    "erlide_open",
+                    "open",
+                    "aix",
+                    module,
+                    offset,
+                    ErlangEngine
+                            .getInstance()
+                            .getOpenService()
+                            .mkContext(externalModules, null, pathVars, null,
+                                    imports));
             res = b.call("erlide_otp_doc", "get_doc", "sxs", module, input,
                     stateDir);
         } catch (final RpcException e) {
@@ -78,7 +91,8 @@ public class ErlideDoc {
         return res;
     }
 
-    public static String getOtpDocLocation(final IRpcSite b) {
+    @Override
+    public String getOtpDocLocation(final IRpcSite b) {
         // OtpErlangObject res = null;
         // try {
         // // commented out since target doesn't exist

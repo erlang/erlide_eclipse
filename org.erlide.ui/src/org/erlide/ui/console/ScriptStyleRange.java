@@ -1,7 +1,8 @@
 package org.erlide.ui.console;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
 
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;

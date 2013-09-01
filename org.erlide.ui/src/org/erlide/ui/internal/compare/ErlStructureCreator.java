@@ -44,11 +44,11 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.services.IDisposable;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
 import org.erlide.ui.editors.erl.ErlangDocumentSetupParticipant;
@@ -259,7 +259,7 @@ public class ErlStructureCreator extends StructureCreator {
             final IProgressMonitor monitor) throws CoreException {
         IErlModule module = null;
         String s = "";
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         if (element instanceof ResourceNode) {
             final ResourceNode rn = (ResourceNode) element;
             final IResource r = rn.getResource();

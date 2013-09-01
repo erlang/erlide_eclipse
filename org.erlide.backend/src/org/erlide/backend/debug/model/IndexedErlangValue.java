@@ -15,12 +15,12 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IIndexedValue;
 import org.eclipse.debug.core.model.IVariable;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlPreprocessorDef;
 import org.erlide.model.erlang.IErlRecordDef;
 import org.erlide.model.erlang.IErlRecordField;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
@@ -137,7 +137,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
             final Collection<IProject> projects) {
         final List<IErlProject> result = Lists
                 .newArrayListWithCapacity(projects.size());
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         for (final IProject project : projects) {
             final IErlElement element = model.getChildWithResource(project);
             if (element instanceof IErlProject) {

@@ -6,6 +6,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IParent;
 import org.erlide.model.ModelPlugin;
@@ -13,7 +14,6 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.internal.root.Openable;
 import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlExternal;
-import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
 
@@ -49,7 +49,8 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         final IRpcSite backend = ModelPlugin.getDefault().getBackend(
                 ModelUtils.getProject(this).getWorkspaceProject());
         if (backend != null) {
-            final List<String> files = ErlideOpen.getLibFiles(backend, entry);
+            final List<String> files = ErlangEngine.getInstance()
+                    .getOpenService().getLibFiles(backend, entry);
             final List<IErlModule> children = Lists
                     .newArrayListWithCapacity(files.size());
             for (final String file : files) {

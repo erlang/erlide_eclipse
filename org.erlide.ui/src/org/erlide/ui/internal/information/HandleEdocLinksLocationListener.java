@@ -6,7 +6,7 @@ import org.eclipse.swt.browser.LocationListener;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.model.services.search.ErlideDoc;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
@@ -76,7 +76,8 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                 }
                 final String stateDir = ErlideUIPlugin.getDefault()
                         .getStateLocation().toString();
-                final OtpErlangTuple otpDoc = (OtpErlangTuple) ErlideDoc
+                final OtpErlangTuple otpDoc = (OtpErlangTuple) ErlangEngine
+                        .getInstance().getOtpDocService()
                         .getOtpDoc(backend, functionCall, stateDir);
                 if (Util.isOk(otpDoc)) {
                     final String docStr = Util.stringValue(otpDoc.elementAt(1));

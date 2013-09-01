@@ -37,7 +37,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.core.builder.BuilderHelper.SearchVisitor;
-import org.erlide.model.root.ErlModelManager;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.root.OldErlangProjectProperties;
@@ -75,8 +75,8 @@ public class ErlideBuilder {
         try {
             initializeBuilder(monitor);
             MarkerUtils.removeProblemMarkersFor(currentProject);
-            final IErlProject erlProject = ErlModelManager.getErlangModel()
-                    .getErlangProject(currentProject);
+            final IErlProject erlProject = ErlangEngine.getInstance()
+                    .getModel().getErlangProject(currentProject);
             final IFolder bf = currentProject.getFolder(erlProject
                     .getOutputLocation());
             if (bf.exists()) {
@@ -138,7 +138,7 @@ public class ErlideBuilder {
         ErlLogger.debug("###** Starting build " + helper.buildKind(kind)
                 + " of " + project.getName());
         // }
-        final IErlProject erlProject = ErlModelManager.getErlangModel()
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
         try {
             initializeBuilder(monitor);
@@ -178,7 +178,7 @@ public class ErlideBuilder {
                             0, IMarker.SEVERITY_ERROR);
                     throw new BackendException(message);
                 }
-                final IErlModel model = ErlModelManager.getErlangModel();
+                final IErlModel model = ErlangEngine.getInstance().getModel();
                 backend.addProjectPath(model.findProject(project));
 
                 notifier.setProgressPerCompilationUnit(1.0f / n);

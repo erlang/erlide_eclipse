@@ -11,8 +11,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
@@ -38,8 +38,8 @@ public class ErlModulePropertyPage extends PropertyPage {
 
         final IAdaptable element = getElement();
         final IFile file = (IFile) element.getAdapter(IFile.class);
-        final IErlModule module = ErlModelManager.getErlangModel().findModule(
-                file);
+        final IErlModule module = ErlangEngine.getInstance().getModel()
+                .findModule(file);
         String value = "There is no module information about this file.";
         if (module != null) {
             final IErlProject project = ModelUtils.getProject(module);
