@@ -628,8 +628,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             OpenResult res;
             try {
                 res = ErlideOpen.open(backend, module.getScannerName(), offset,
-                        ModelUtils.getImportsAsList(module), "",
-                        ErlangEngine.getInstance().getModel().getPathVars());
+                        ModelUtils.getImportsAsList(module), "", ErlangEngine
+                                .getInstance().getModel().getPathVars());
             } catch (final RpcException e) {
                 res = null;
             }

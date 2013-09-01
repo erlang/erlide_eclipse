@@ -15,8 +15,8 @@ public class ProjectAdapterFactory implements IAdapterFactory {
             final Class adapterType) {
         if (adapterType == IErlProject.class
                 && adaptableObject instanceof IProject) {
-            return ErlangEngine.getInstance().getModel().getErlangProject(
-                    (IProject) adaptableObject);
+            return ErlangEngine.getInstance().getModel()
+                    .getErlangProject((IProject) adaptableObject);
         }
         return null;
     }

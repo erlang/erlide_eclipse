@@ -468,8 +468,8 @@ public class ErlProject extends Openable implements IErlProject {
                 .getExtraSourcePathsForModel(fProject)) {
             sourceDirs.add(s);
         }
-        result.addAll(getModulesOrIncludes(fProject,
-                ErlangEngine.getInstance().getModel(), sourceDirs, true));
+        result.addAll(getModulesOrIncludes(fProject, ErlangEngine.getInstance()
+                .getModel(), sourceDirs, true));
         ErlModel.getErlModelCache().putModulesForProject(this, result);
         return result;
     }
@@ -516,7 +516,8 @@ public class ErlProject extends Openable implements IErlProject {
         } else {
             final List<IErlModule> cached = erlModelCache
                     .getModulesForProject(this);
-            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
             if (cached == null) {
                 final List<IErlModule> modules = getModulesOrIncludes(fProject,
                         model, getSourceDirs(), true);
@@ -627,8 +628,11 @@ public class ErlProject extends Openable implements IErlProject {
     @Override
     public IErlModule getModule(final String name) {
         try {
-            return ErlangEngine.getInstance().getModel().findModuleFromProject(this,
-                    name, null, false, IErlElementLocator.Scope.PROJECT_ONLY);
+            return ErlangEngine
+                    .getInstance()
+                    .getModel()
+                    .findModuleFromProject(this, name, null, false,
+                            IErlElementLocator.Scope.PROJECT_ONLY);
         } catch (final ErlModelException e) {
             // final boolean hasExtension = ListsUtils.hasExtension(name);
             return null;

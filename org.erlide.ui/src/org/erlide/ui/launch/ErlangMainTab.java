@@ -71,7 +71,8 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
         Collection<IErlProject> projects;
         try {
-            projects = ErlangEngine.getInstance().getModel().getErlangProjects();
+            projects = ErlangEngine.getInstance().getModel()
+                    .getErlangProjects();
             final List<String> ps = new ArrayList<String>();
             for (final IErlProject p : projects) {
                 ps.add(p.getName());

@@ -75,8 +75,8 @@ public class ErlideBuilder {
         try {
             initializeBuilder(monitor);
             MarkerUtils.removeProblemMarkersFor(currentProject);
-            final IErlProject erlProject = ErlangEngine.getInstance().getModel()
-                    .getErlangProject(currentProject);
+            final IErlProject erlProject = ErlangEngine.getInstance()
+                    .getModel().getErlangProject(currentProject);
             final IFolder bf = currentProject.getFolder(erlProject
                     .getOutputLocation());
             if (bf.exists()) {

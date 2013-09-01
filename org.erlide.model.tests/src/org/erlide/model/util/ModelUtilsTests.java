@@ -1,6 +1,9 @@
 package org.erlide.model.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
@@ -126,7 +129,8 @@ public class ModelUtilsTests {
             // when
             // looking for it
             // within project
-            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
 
             final IErlElement element1 = ModelUtils.findTypeDef(model, moduleB,
                     "bx", "concat_thing", moduleB.getResource().getLocation()
@@ -326,7 +330,8 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for it
-            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
             final IErlModule module = ModelUtils.findModule(model, null, null,
                     absolutePath, IErlElementLocator.Scope.ALL_PROJECTS);
             // then

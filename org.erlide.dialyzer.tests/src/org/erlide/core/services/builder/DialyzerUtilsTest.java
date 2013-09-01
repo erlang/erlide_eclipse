@@ -1,6 +1,8 @@
 package org.erlide.core.services.builder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -105,7 +107,8 @@ public class DialyzerUtilsTest {
             // putting a dialyzer warning on it
             final int lineNumber = 3;
             final String message = "test message";
-            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
             DialyzerMarkerUtils.addDialyzerWarningMarker(model, erlModule
                     .getResource().getLocation().toPortableString(),
                     lineNumber, message);
@@ -149,7 +152,8 @@ public class DialyzerUtilsTest {
             // putting dialyzer warning markers on the external file
             final String message = "test message";
             final int lineNumber = 2;
-            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
             DialyzerMarkerUtils.addDialyzerWarningMarker(model,
                     externalFile.getAbsolutePath(), lineNumber, message);
             // then
@@ -213,8 +217,8 @@ public class DialyzerUtilsTest {
             final IResource selectedResource = selectResource(select,
                     erlProject, a);
             final Set<IErlModule> modules = DialyzerUtils
-                    .collectModulesFromResource(
-                            ErlangEngine.getInstance().getModel(), selectedResource);
+                    .collectModulesFromResource(ErlangEngine.getInstance()
+                            .getModel(), selectedResource);
             final Set<IErlProject> projects = Sets.newHashSet();
             projects.add(erlProject);
             final List<String> names = new ArrayList<String>();
@@ -336,9 +340,8 @@ public class DialyzerUtilsTest {
             // when
             // collecting files to dialyze
             final Set<IErlModule> modules = DialyzerUtils
-                    .collectModulesFromResource(
-                            ErlangEngine.getInstance().getModel(),
-                            erlProject.getResource());
+                    .collectModulesFromResource(ErlangEngine.getInstance()
+                            .getModel(), erlProject.getResource());
             final Set<IErlProject> projects = Sets.newHashSet();
             projects.add(erlProject);
             final List<String> names = new ArrayList<String>();

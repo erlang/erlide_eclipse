@@ -300,7 +300,8 @@ public class OpenAction extends SelectionDispatchAction {
             // imported from otp module
             final OtpErlangString otpErlangString = (OtpErlangString) res2;
             final String modulePath = otpErlangString.stringValue();
-            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
             return ModelUtils.findFunction(model, moduleName,
                     res.getFunction(), modulePath, erlProject, scope, module);
         } else {

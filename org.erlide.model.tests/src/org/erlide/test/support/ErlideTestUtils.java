@@ -301,8 +301,8 @@ public class ErlideTestUtils {
         }
         erlProject.dispose();
         if (projects != null) {
-            projects.remove(ErlangEngine.getInstance().getModel().findProject(
-                    project));
+            projects.remove(ErlangEngine.getInstance().getModel()
+                    .findProject(project));
         }
         final IErlModel model = ErlangEngine.getInstance().getModel();
         model.resourceChanged(null);

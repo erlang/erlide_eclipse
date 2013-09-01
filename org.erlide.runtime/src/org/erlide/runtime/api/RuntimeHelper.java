@@ -1,7 +1,9 @@
 package org.erlide.runtime.api;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;

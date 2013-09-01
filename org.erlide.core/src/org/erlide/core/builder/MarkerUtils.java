@@ -112,8 +112,8 @@ public final class MarkerUtils {
             res = ResourceUtil.findResourceByLocation(project, fileName);
             if (res == null) {
                 try {
-                    final IErlElementLocator model = ErlangEngine
-                            .getInstance().getModel();
+                    final IErlElementLocator model = ErlangEngine.getInstance()
+                            .getModel();
                     final IErlProject erlProject = model.findProject(project);
                     if (erlProject != null) {
                         final IErlModule includeFile = model

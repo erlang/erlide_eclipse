@@ -67,8 +67,8 @@ public class ErlangLineBreakpoint extends Breakpoint implements
         clauseHead = "";
         if (resource instanceof IFile) {
             final IFile file = (IFile) resource;
-            final IErlModule m = ErlangEngine.getInstance().getModel().findModule(
-                    file);
+            final IErlModule m = ErlangEngine.getInstance().getModel()
+                    .findModule(file);
             if (m != null) {
                 try {
                     m.open(null);

@@ -109,7 +109,8 @@ public class ErlangElementImageProvider {
             }
             return getWorkbenchImageDescriptor(file, flags);
         } else if (element instanceof IFolder) {
-            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
             final IErlFolder ef = (IErlFolder) model
                     .findElement((IResource) element);
             if (ef != null && (ef.isOnSourcePath() || ef.isOnIncludePath())) {

@@ -62,8 +62,8 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
                 options.put("dir", new OtpErlangString(dest.getLocation()
                         .toString()));
                 final List<String> files = new ArrayList<String>();
-                final IErlProject erlProject = ErlangEngine.getInstance().getModel()
-                        .findProject(project);
+                final IErlProject erlProject = ErlangEngine.getInstance()
+                        .getModel().findProject(project);
                 for (final IPath dir : erlProject.getSourceDirs()) {
                     final IFolder folder = project.getFolder(dir);
                     if (folder.isAccessible()) {

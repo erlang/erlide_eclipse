@@ -202,8 +202,8 @@ public class ErlangFileWizardPage extends WizardPage {
                     container = resource.getParent();
                 }
                 final IProject project = resource.getProject();
-                final IErlProject erlProject = ErlangEngine.getInstance().getModel()
-                        .getErlangProject(project);
+                final IErlProject erlProject = ErlangEngine.getInstance()
+                        .getModel().getErlangProject(project);
                 String txt = container.getFullPath().toString();
                 final Collection<IPath> sourceDirs = erlProject.getSourceDirs();
                 if (!sourceDirs.isEmpty()) {

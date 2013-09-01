@@ -191,8 +191,8 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public IErlElement getElementAt(final int position)
             throws ErlModelException {
-        return ErlangEngine.getInstance().getModel().innermostThat(this,
-                new Predicate<IErlElement>() {
+        return ErlangEngine.getInstance().getModel()
+                .innermostThat(this, new Predicate<IErlElement>() {
                     @Override
                     public boolean apply(final IErlElement e) {
                         if (e instanceof ISourceReference) {
@@ -210,8 +210,8 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public IErlMember getElementAtLine(final int lineNumber) {
-        return (IErlMember) ErlangEngine.getInstance().getModel().innermostThat(
-                this, new Predicate<IErlElement>() {
+        return (IErlMember) ErlangEngine.getInstance().getModel()
+                .innermostThat(this, new Predicate<IErlElement>() {
                     @Override
                     public boolean apply(final IErlElement e) {
                         if (e instanceof ISourceReference) {
@@ -652,8 +652,8 @@ public class ErlModule extends Openable implements IErlModule {
     public static IErlModule findExternalIncludeInOpenProjects(
             final IErlModule externalInclude) throws CoreException {
         final String filePath = externalInclude.getFilePath();
-        final Collection<IErlProject> projects = ErlangEngine
-                .getInstance().getModel().getErlangProjects();
+        final Collection<IErlProject> projects = ErlangEngine.getInstance()
+                .getModel().getErlangProjects();
         for (final IErlProject project : projects) {
             final Collection<IErlModule> includes = project.getIncludes();
             for (final IErlModule include : includes) {

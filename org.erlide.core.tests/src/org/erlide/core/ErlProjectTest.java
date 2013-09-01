@@ -1,6 +1,8 @@
 package org.erlide.core;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
@@ -114,7 +116,8 @@ public class ErlProjectTest {
             // String includeFile = ModelUtils.findIncludeFile(erlProject,
             // "x.hrl", "");
             project.open(null);
-            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
             final IErlModule module = model.findIncludeFromProject(project,
                     null, includePath,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
@@ -159,7 +162,8 @@ public class ErlProjectTest {
             // when
             // looking for the include file
             project.open(null);
-            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
             final IErlModule module = model.findIncludeFromProject(project,
                     includeName, null, IErlElementLocator.Scope.ALL_PROJECTS);
             // then
@@ -235,7 +239,8 @@ public class ErlProjectTest {
                     externalsFileName, absolutePath);
             project.setExternalModulesFile(externalsFile.getAbsolutePath());
             project.open(null);
-            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
             // when
             // looking for it
             final IErlModule externalModule = model.findModuleFromProject(

@@ -99,7 +99,8 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
         if (file != null) {
             final IProject project = file.getProject();
             if (project != null) {
-                return ErlangEngine.getInstance().getModel().findProject(project);
+                return ErlangEngine.getInstance().getModel()
+                        .findProject(project);
             }
         }
         return null;
@@ -209,7 +210,8 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
             initialText = Util.getInputStreamAsString(file.getContents(),
                     file.getCharset());
             return ErlangEngine
-                    .getInstance().getModel()
+                    .getInstance()
+                    .getModel()
                     .getToolkit()
                     .createScanner(getScannerName(), initialText, filePath,
                             false);

@@ -132,8 +132,8 @@ public final class BuilderHelper {
     public void addDependents(final IResource resource,
             final IProject my_project, final Set<BuildResource> result)
             throws ErlModelException {
-        final IErlProject eprj = ErlangEngine.getInstance().getModel().findProject(
-                my_project);
+        final IErlProject eprj = ErlangEngine.getInstance().getModel()
+                .findProject(my_project);
         if (eprj != null) {
             final Collection<IErlModule> ms = eprj.getModules();
             for (final IErlModule m : ms) {
@@ -196,8 +196,8 @@ public final class BuilderHelper {
         } catch (final Exception e) {
         }
         try {
-            final IErlProject erlProject = ErlangEngine.getInstance().getModel()
-                    .getErlangProject(project);
+            final IErlProject erlProject = ErlangEngine.getInstance()
+                    .getModel().getErlangProject(project);
             final Collection<IPath> sd = erlProject.getSourceDirs();
             final String[] dirList = new String[sd.size()];
             int j = 0;
@@ -362,8 +362,8 @@ public final class BuilderHelper {
                     br.setDerived(true, null);
                     final BuildResource bbr = new BuildResource(br);
                     // br.touch() doesn't work...
-                    final IErlProject erlProject = ErlangEngine
-                            .getInstance().getModel().getErlangProject(project);
+                    final IErlProject erlProject = ErlangEngine.getInstance()
+                            .getModel().getErlangProject(project);
                     compileErl(project, bbr, erlProject.getOutputLocation()
                             .toString(), backend, compilerOptions);
                 }
@@ -622,8 +622,8 @@ public final class BuilderHelper {
             if (getResult() != null) {
                 return false;
             }
-            final IErlProject erlProject = ErlangEngine.getInstance().getModel()
-                    .getErlangProject(resource.getProject());
+            final IErlProject erlProject = ErlangEngine.getInstance()
+                    .getModel().getErlangProject(resource.getProject());
             if (resource.getType() == IResource.FILE
                     && resource.getFileExtension() != null
                     && "erl".equals(resource.getFileExtension())
@@ -678,8 +678,8 @@ public final class BuilderHelper {
                 return false;
             }
             if (resource.getType() == IResource.PROJECT) {
-                erlProject = ErlangEngine.getInstance().getModel().getErlangProject(
-                        (IProject) resource);
+                erlProject = ErlangEngine.getInstance().getModel()
+                        .getErlangProject((IProject) resource);
                 return true;
             }
             if (resource.getType() == IResource.FOLDER) {

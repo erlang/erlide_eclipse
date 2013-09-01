@@ -56,8 +56,8 @@ public class DialyzerMarkerUtils {
                 if (j != -1) {
                     msg = msg.substring(j + 1);
                 }
-                final IErlElementLocator model = ErlangEngine
-                        .getInstance().getModel();
+                final IErlElementLocator model = ErlangEngine.getInstance()
+                        .getModel();
                 addDialyzerWarningMarker(model, filename, line, msg);
             }
         }

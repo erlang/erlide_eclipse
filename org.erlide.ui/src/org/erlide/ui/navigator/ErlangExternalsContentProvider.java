@@ -83,7 +83,8 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             final IErlElement elt = (IErlElement) element;
             IParent parent = elt.getParent();
             final String filePath = elt.getFilePath();
-            if (parent == ErlangEngine.getInstance().getModel() && filePath != null) {
+            if (parent == ErlangEngine.getInstance().getModel()
+                    && filePath != null) {
                 // try {
                 // FIXME shouldn't this call be assigned to something!?
                 // ModelUtils.findModule(null, null, filePath,
@@ -110,7 +111,8 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         if (element instanceof IProject) {
             final IProject project = (IProject) element;
             if (project.isOpen()) {
-                element = ErlangEngine.getInstance().getModel().findProject(project);
+                element = ErlangEngine.getInstance().getModel()
+                        .findProject(project);
             }
         }
         if (element instanceof IErlModule) {

@@ -59,8 +59,8 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
     public Object[] getChildren(Object parentElement) {
         try {
             if (parentElement instanceof IFile) {
-                parentElement = ErlangEngine.getInstance().getModel().findModule(
-                        (IFile) parentElement);
+                parentElement = ErlangEngine.getInstance().getModel()
+                        .findModule((IFile) parentElement);
             }
             if (parentElement instanceof IOpenable) {
                 final IOpenable openable = (IOpenable) parentElement;

@@ -43,7 +43,8 @@ public class ParserDB {
                     // new File("/home/qvladum/parserDB.txt"));
                     out = System.out;
 
-                    final IErlModel model = ErlangEngine.getInstance().getModel();
+                    final IErlModel model = ErlangEngine.getInstance()
+                            .getModel();
                     final Collection<SourcePathProvider> sourcePathProviders = SourcePathUtils
                             .getSourcePathProviders();
                     final long time = System.currentTimeMillis();

@@ -511,7 +511,8 @@ public class DefaultErlangFoldingStructureProvider implements
             fViewer.removeProjectionListener(this);
             fViewer = null;
             fEditor = null;
-            ErlangEngine.getInstance().getModel().removeModelChangeListener(this);
+            ErlangEngine.getInstance().getModel()
+                    .removeModelChangeListener(this);
         }
     }
 
@@ -541,7 +542,9 @@ public class DefaultErlangFoldingStructureProvider implements
             } catch (final ErlModelException e1) {
             }
             if (structureKnown) {
-                final IErlElementDelta d = ErlangEngine.getInstance().getModel()
+                final IErlElementDelta d = ErlangEngine
+                        .getInstance()
+                        .getModel()
                         .createElementDelta(IErlElementDelta.CHANGED,
                                 IErlElementDelta.F_CONTENT, fModule);
                 processDelta(d);
@@ -563,8 +566,8 @@ public class DefaultErlangFoldingStructureProvider implements
     public void projectionDisabled() {
         fCachedDocument = null;
         if (fElementListener != null) {
-            ErlangEngine.getInstance().getModel().removeElementChangedListener(
-                    fElementListener);
+            ErlangEngine.getInstance().getModel()
+                    .removeElementChangedListener(fElementListener);
             fElementListener = null;
         }
     }
@@ -1092,7 +1095,9 @@ public class DefaultErlangFoldingStructureProvider implements
             if (element instanceof IErlModule && element != fModule) {
                 return;
             }
-            final IErlElementDelta d = ErlangEngine.getInstance().getModel()
+            final IErlElementDelta d = ErlangEngine
+                    .getInstance()
+                    .getModel()
                     .createElementDelta(IErlElementDelta.CHANGED,
                             IErlElementDelta.F_CONTENT, fModule);
             processDelta(d);

@@ -87,8 +87,8 @@ public class ErlModelCache implements IDisposable {
         projectIncludeDirsCache = newCache();
 
         modelChangeListener = new ModelChangeListener();
-        ErlangEngine.getInstance().getModel().addModelChangeListener(
-                modelChangeListener);
+        ErlangEngine.getInstance().getModel()
+                .addModelChangeListener(modelChangeListener);
     }
 
     public void putModule(final IErlModule module) {
@@ -163,8 +163,8 @@ public class ErlModelCache implements IDisposable {
 
     @Override
     public void dispose() {
-        ErlangEngine.getInstance().getModel().removeModelChangeListener(
-                modelChangeListener);
+        ErlangEngine.getInstance().getModel()
+                .removeModelChangeListener(modelChangeListener);
     }
 
     public void putExternalTree(final String externalPath,

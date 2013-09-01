@@ -72,7 +72,8 @@ public class ErlangStackFrame extends ErlangDebugElement implements
         this.bindings = frames;
         IErlModule module;
         try {
-            module = ErlangEngine.getInstance().getModel().findModule(moduleName);
+            module = ErlangEngine.getInstance().getModel()
+                    .findModule(moduleName);
         } catch (final ErlModelException e) {
             ErlLogger.error(e);
             module = null;

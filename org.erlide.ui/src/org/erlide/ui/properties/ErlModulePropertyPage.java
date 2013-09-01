@@ -38,8 +38,8 @@ public class ErlModulePropertyPage extends PropertyPage {
 
         final IAdaptable element = getElement();
         final IFile file = (IFile) element.getAdapter(IFile.class);
-        final IErlModule module = ErlangEngine.getInstance().getModel().findModule(
-                file);
+        final IErlModule module = ErlangEngine.getInstance().getModel()
+                .findModule(file);
         String value = "There is no module information about this file.";
         if (module != null) {
             final IErlProject project = ModelUtils.getProject(module);

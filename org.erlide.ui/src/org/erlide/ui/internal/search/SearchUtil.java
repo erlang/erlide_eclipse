@@ -346,8 +346,8 @@ public class SearchUtil {
                     o = a.getAdapter(IResource.class);
                     if (o != null) {
                         final IResource resource = (IResource) o;
-                        final IErlElement element = ErlangEngine
-                                .getInstance().getModel().findElement(resource);
+                        final IErlElement element = ErlangEngine.getInstance()
+                                .getModel().findElement(resource);
                         if (element instanceof IParent) {
                             parent = (IParent) element;
                         }

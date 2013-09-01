@@ -744,7 +744,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 List<String> ebinDirs = null;
                 if (alternatePltFileDirectory != null) {
                     ebinDirs = Lists.newArrayList();
-                    for (final IErlElement i : ErlangEngine.getInstance().getModel()
+                    for (final IErlElement i : ErlangEngine.getInstance()
+                            .getModel()
                             .getChildrenOfKind(ErlElementKind.PROJECT)) {
                         final IErlProject project = (IErlProject) i;
                         final String ebinDir = project.getWorkspaceProject()

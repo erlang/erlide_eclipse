@@ -161,15 +161,19 @@ public class ErlModelUtils {
             path = ue.getURI().getPath();
         }
         if (path != null) {
-            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
             final IErlModule module = ModelUtils.findModule(model, null, null,
                     path, IErlElementLocator.Scope.ALL_PROJECTS);
             if (module != null) {
                 return module;
             }
             final IPath p = new Path(path);
-            return ErlangEngine.getInstance().getModel().getModuleFromFile(null,
-                    p.lastSegment(), path, encoding, path);
+            return ErlangEngine
+                    .getInstance()
+                    .getModel()
+                    .getModuleFromFile(null, p.lastSegment(), path, encoding,
+                            path);
         }
         return null;
     }
