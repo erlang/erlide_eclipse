@@ -145,7 +145,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                 || kind == Kinds.INCLUDE_LIBS;
         final List<String> names = ModelUtils.findUnitsWithPrefix(prefix,
                 project, kind != Kinds.INCLUDES, includes);
-        final OtpErlangObject res = ErlideDoc.getModules(backend, prefix,
+        final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService().getModules(backend, prefix,
                 names, includes);
         if (res instanceof OtpErlangList) {
             final OtpErlangList resList = (OtpErlangList) res;
@@ -535,7 +535,7 @@ public abstract class AbstractErlContentAssistProcessor implements
             if (ModelUtils.isOtpModule(theModule)) {
                 final String stateDir = ErlideUIPlugin.getDefault()
                         .getStateLocation().toString();
-                final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
+                final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService().getProposalsWithDoc(b,
                         moduleName, prefix, stateDir);
                 addFunctionProposalsWithDoc(offset, prefix, result, res, null,
                         arityOnly);
@@ -589,7 +589,7 @@ public abstract class AbstractErlContentAssistProcessor implements
     List<ICompletionProposal> getAutoImportedFunctions(final IRpcSite backend,
             final int offset, final String prefix) {
         final String stateDir = ErlangEngine.getInstance().getStateDir();
-        final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(backend,
+        final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService().getProposalsWithDoc(backend,
                 "<auto_imported>", prefix, stateDir);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         addFunctionProposalsWithDoc(offset, prefix, result, res, null, false);
@@ -601,7 +601,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         final String stateDir = ErlangEngine.getInstance().getStateDir();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         for (final IErlImport imp : module.getImports()) {
-            final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(backend,
+            final OtpErlangObject res = ErlangEngine.getInstance().getOtpDocService().getProposalsWithDoc(backend,
                     imp.getImportModule(), prefix, stateDir);
             addFunctionProposalsWithDoc(offset, prefix, result, res, imp, false);
         }

@@ -7,8 +7,10 @@ import org.erlide.model.erlang.ErlangToolkitFactory;
 import org.erlide.model.internal.root.ErlModel;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.services.search.ErlangXref;
+import org.erlide.model.services.search.ErlideDoc;
 import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.OpenService;
+import org.erlide.model.services.search.OtpDocService;
 import org.erlide.model.services.search.XrefService;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
@@ -59,5 +61,10 @@ public class ErlangEngineImpl implements IErlangServiceFactory {
     @Override
     public OpenService getOpenService() {
         return new ErlideOpen();
+    }
+
+    @Override
+    public OtpDocService getOtpDocService() {
+        return new ErlideDoc();
     }
 }

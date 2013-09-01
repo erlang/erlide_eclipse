@@ -2,6 +2,7 @@ package org.erlide.engine;
 
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.services.search.OpenService;
+import org.erlide.model.services.search.OtpDocService;
 import org.erlide.model.services.search.XrefService;
 
 /**
@@ -47,6 +48,11 @@ public class ErlangEngine implements IErlangServiceFactory {
     @Override
     public OpenService getOpenService() {
         return factory.getOpenService();
+    }
+
+    @Override
+    public OtpDocService getOtpDocService() {
+        return factory.getOtpDocService();
     }
 
 }
