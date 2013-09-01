@@ -73,6 +73,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlAttribute;
 import org.erlide.model.erlang.IErlFunctionClause;
@@ -83,7 +84,6 @@ import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.services.search.ErlangXref;
 import org.erlide.model.services.search.XrefService;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.actions.CompositeActionGroup;
@@ -156,8 +156,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         super();
         fErlangEditorErrorTickUpdater = new ErlangEditorErrorTickUpdater(this);
 
-        // TODO inject
-        xrefService = new ErlangXref();
+        xrefService = ErlangEngine.getInstance().getXrefService();
     }
 
     @Override

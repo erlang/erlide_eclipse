@@ -1,12 +1,13 @@
 package org.erlide.model.internal.erlang;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.backend.api.BackendException;
 import org.erlide.model.ModelCore;
 import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.ErlToken;
