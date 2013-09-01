@@ -14,9 +14,9 @@ import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.Images;
 import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.ObjectType;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.util.ErlLogger;
 
@@ -47,7 +47,7 @@ public class StatsViewLabelProvider extends LabelProvider implements
             case MODULE:
                 IErlModule m;
                 try {
-                    m = ErlModelManager.getErlangModel().findModule(
+                    m = ErlangEngine.getInstance().getModel().findModule(
                             statsEl.getLabel());
                 } catch (final ErlModelException e) {
                     ErlLogger.error(e);

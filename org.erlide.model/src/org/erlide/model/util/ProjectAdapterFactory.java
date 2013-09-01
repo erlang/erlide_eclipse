@@ -2,7 +2,7 @@ package org.erlide.model.util;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdapterFactory;
-import org.erlide.model.root.ErlModelManager;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.root.IErlProject;
 
 @SuppressWarnings("rawtypes")
@@ -15,7 +15,7 @@ public class ProjectAdapterFactory implements IAdapterFactory {
             final Class adapterType) {
         if (adapterType == IErlProject.class
                 && adaptableObject instanceof IProject) {
-            return ErlModelManager.getErlangModel().getErlangProject(
+            return ErlangEngine.getInstance().getModel().getErlangProject(
                     (IProject) adaptableObject);
         }
         return null;

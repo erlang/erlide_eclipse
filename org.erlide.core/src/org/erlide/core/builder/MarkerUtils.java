@@ -17,10 +17,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.core.ErlangCore;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ISourceRange;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ResourceUtil;
@@ -112,8 +112,8 @@ public final class MarkerUtils {
             res = ResourceUtil.findResourceByLocation(project, fileName);
             if (res == null) {
                 try {
-                    final IErlElementLocator model = ErlModelManager
-                            .getErlangModel();
+                    final IErlElementLocator model = ErlangEngine
+                            .getInstance().getModel();
                     final IErlProject erlProject = model.findProject(project);
                     if (erlProject != null) {
                         final IErlModule includeFile = model

@@ -26,6 +26,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendException;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlImport;
@@ -35,7 +36,6 @@ import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.internal.erlang.ModelInternalUtils;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
@@ -141,7 +141,7 @@ public class OpenAction extends SelectionDispatchAction {
             IErlElement element = null;
             IErlProject project = null;
             IErlModule module = null;
-            final IErlModel model = ErlModelManager.getErlangModel();
+            final IErlModel model = ErlangEngine.getInstance().getModel();
             if (activeEditor instanceof AbstractErlangEditor) {
                 final AbstractErlangEditor editor = (AbstractErlangEditor) activeEditor;
                 textEditor = editor;
@@ -222,7 +222,7 @@ public class OpenAction extends SelectionDispatchAction {
         final IErlElementLocator.Scope scope = NavigationPreferencePage
                 .getCheckAllProjects() ? IErlElementLocator.Scope.ALL_PROJECTS
                 : IErlElementLocator.Scope.REFERENCED_PROJECTS;
-        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         Object found = null;
         if (openResult.isExternalCall()) {
             found = findExternalCallOrType(module, openResult, project,
@@ -291,7 +291,7 @@ public class OpenAction extends SelectionDispatchAction {
         String moduleName = null;
         final IErlImport ei = module.findImport(res.getFunction());
         if (ei != null) {
-            final IErlModel model = ErlModelManager.getErlangModel();
+            final IErlModel model = ErlangEngine.getInstance().getModel();
             moduleName = ei.getImportModule();
             res2 = ErlideOpen.getSourceFromModule(backend, model.getPathVars(),
                     moduleName, erlProject.getExternalModulesString());
@@ -300,7 +300,7 @@ public class OpenAction extends SelectionDispatchAction {
             // imported from otp module
             final OtpErlangString otpErlangString = (OtpErlangString) res2;
             final String modulePath = otpErlangString.stringValue();
-            final IErlElementLocator model = ErlModelManager.getErlangModel();
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             return ModelUtils.findFunction(model, moduleName,
                     res.getFunction(), modulePath, erlProject, scope, module);
         } else {
@@ -322,7 +322,7 @@ public class OpenAction extends SelectionDispatchAction {
             final OpenResult res, final IErlProject project,
             final IErlElement element, final IErlElementLocator.Scope scope)
             throws CoreException {
-        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         if (isTypeDefOrRecordDef(element, res)) {
             return ModelUtils.findTypeDef(model, module, res.getName(),
                     res.getFun(), res.getPath(), project, scope);

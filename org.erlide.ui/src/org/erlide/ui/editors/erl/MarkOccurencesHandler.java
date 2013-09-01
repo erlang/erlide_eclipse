@@ -34,10 +34,10 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.ModelCore;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.services.search.ErlangSearchPattern;
 import org.erlide.model.services.search.ErlideOpen;
@@ -108,7 +108,7 @@ public class MarkOccurencesHandler {
                 final OpenResult res = ErlideOpen.open(ideBackend.getRpcSite(),
                         theModule.getScannerName(), offset,
                         ModelUtils.getImportsAsList(theModule), "",
-                        ErlModelManager.getErlangModel().getPathVars());
+                        ErlangEngine.getInstance().getModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(theModule,
                                 offset, res, LimitTo.ALL_OCCURRENCES, false);

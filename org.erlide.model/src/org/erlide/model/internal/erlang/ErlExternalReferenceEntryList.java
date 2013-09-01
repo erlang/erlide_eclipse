@@ -7,6 +7,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IParent;
 import org.erlide.model.ModelPlugin;
@@ -15,7 +16,6 @@ import org.erlide.model.internal.root.ErlModel;
 import org.erlide.model.internal.root.ErlModelCache;
 import org.erlide.model.internal.root.Openable;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlExternal;
 import org.erlide.model.root.IErlExternalRoot;
 import org.erlide.model.root.IErlModel;
@@ -68,7 +68,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         if (externalModuleTree == null || externalIncludeTree == null) {
             final IRpcSite backend = ModelPlugin.getDefault().getBackend(
                     project.getWorkspaceProject());
-            final OtpErlangList pathVars = ErlModelManager.getErlangModel()
+            final OtpErlangList pathVars = ErlangEngine.getInstance().getModel()
                     .getPathVars();
             if (externalModuleTree == null && externalModules.length() > 0) {
                 if (pm != null) {
@@ -86,7 +86,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
             }
         }
         setChildren(null);
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         if (externalModuleTree != null && !externalModuleTree.isEmpty()) {
             addExternalEntries(pm, externalModuleTree, model, "modules", null,
                     false);

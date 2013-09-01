@@ -24,11 +24,11 @@ import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.erlide.backend.api.BackendException;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlTypespec;
 import org.erlide.model.erlang.ISourceRange;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
@@ -55,7 +55,7 @@ public class ErlModelUtils {
             final ErlangFunction function, final String modulePath,
             final IErlModule module, final IErlProject project,
             final IErlElementLocator.Scope scope) throws CoreException {
-        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         final IErlModule module2 = ModelUtils.findModule(model, project,
                 moduleName, modulePath, scope);
         if (module2 != null) {
@@ -123,7 +123,7 @@ public class ErlModelUtils {
         if (editorInput instanceof IFileEditorInput) {
             final IFileEditorInput input = (IFileEditorInput) editorInput;
             final IFile file = input.getFile();
-            final IErlModel model = ErlModelManager.getErlangModel();
+            final IErlModel model = ErlangEngine.getInstance().getModel();
             IErlModule module = model.findModule(file);
             if (module != null) {
                 return module;
@@ -161,14 +161,14 @@ public class ErlModelUtils {
             path = ue.getURI().getPath();
         }
         if (path != null) {
-            final IErlElementLocator model = ErlModelManager.getErlangModel();
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             final IErlModule module = ModelUtils.findModule(model, null, null,
                     path, IErlElementLocator.Scope.ALL_PROJECTS);
             if (module != null) {
                 return module;
             }
             final IPath p = new Path(path);
-            return ErlModelManager.getErlangModel().getModuleFromFile(null,
+            return ErlangEngine.getInstance().getModel().getModuleFromFile(null,
                     p.lastSegment(), path, encoding, path);
         }
         return null;
@@ -178,7 +178,7 @@ public class ErlModelUtils {
             final int arity) throws CoreException {
         ErlModelUtils.openExternalFunction(module, new ErlangFunction(function,
                 arity), null,
-                ErlModelManager.getErlangModel().findModule(module), null,
+                ErlangEngine.getInstance().getModel().findModule(module), null,
                 IErlElementLocator.Scope.ALL_PROJECTS);
     }
 
@@ -188,7 +188,7 @@ public class ErlModelUtils {
     }
 
     public static void openModule(final String moduleName) throws CoreException {
-        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         final IErlModule module = ModelUtils.findModule(model, null,
                 moduleName, null, IErlElementLocator.Scope.ALL_PROJECTS);
         if (module != null) {

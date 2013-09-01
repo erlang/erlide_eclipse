@@ -32,6 +32,7 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlComment;
@@ -40,7 +41,6 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementDelta;
 import org.erlide.model.root.IErlModel;
@@ -499,7 +499,7 @@ public class DefaultErlangFoldingStructureProvider implements
             fEditor = editor;
             fViewer = viewer;
             fViewer.addProjectionListener(this);
-            final IErlModel mdl = ErlModelManager.getErlangModel();
+            final IErlModel mdl = ErlangEngine.getInstance().getModel();
             mdl.addModelChangeListener(this);
         }
     }
@@ -511,7 +511,7 @@ public class DefaultErlangFoldingStructureProvider implements
             fViewer.removeProjectionListener(this);
             fViewer = null;
             fEditor = null;
-            ErlModelManager.getErlangModel().removeModelChangeListener(this);
+            ErlangEngine.getInstance().getModel().removeModelChangeListener(this);
         }
     }
 
@@ -541,7 +541,7 @@ public class DefaultErlangFoldingStructureProvider implements
             } catch (final ErlModelException e1) {
             }
             if (structureKnown) {
-                final IErlElementDelta d = ErlModelManager.getErlangModel()
+                final IErlElementDelta d = ErlangEngine.getInstance().getModel()
                         .createElementDelta(IErlElementDelta.CHANGED,
                                 IErlElementDelta.F_CONTENT, fModule);
                 processDelta(d);
@@ -563,7 +563,7 @@ public class DefaultErlangFoldingStructureProvider implements
     public void projectionDisabled() {
         fCachedDocument = null;
         if (fElementListener != null) {
-            ErlModelManager.getErlangModel().removeElementChangedListener(
+            ErlangEngine.getInstance().getModel().removeElementChangedListener(
                     fElementListener);
             fElementListener = null;
         }
@@ -1092,7 +1092,7 @@ public class DefaultErlangFoldingStructureProvider implements
             if (element instanceof IErlModule && element != fModule) {
                 return;
             }
-            final IErlElementDelta d = ErlModelManager.getErlangModel()
+            final IErlElementDelta d = ErlangEngine.getInstance().getModel()
                     .createElementDelta(IErlElementDelta.CHANGED,
                             IErlElementDelta.F_CONTENT, fModule);
             processDelta(d);

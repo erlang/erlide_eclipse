@@ -35,11 +35,10 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.backend.BackendCore;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.FunctionRef;
 import org.erlide.model.erlang.IErlFunction;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.services.search.ErlangXref;
 import org.erlide.model.services.search.XrefService;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
@@ -117,8 +116,8 @@ public class CallHierarchyView extends ViewPart {
             final List<IErlFunction> result = new ArrayList<IErlFunction>();
             for (final FunctionRef r : children) {
                 try {
-                    final IErlFunction fun = ErlModelManager.getErlangModel()
-                            .findFunction(r);
+                    final IErlFunction fun = ErlangEngine.getInstance()
+                            .getModel().findFunction(r);
                     if (fun != null) {
                         result.add(fun);
                     }
@@ -145,7 +144,7 @@ public class CallHierarchyView extends ViewPart {
                 .getRpcSite();
 
         // TODO inject
-        xrefService = new ErlangXref();
+        xrefService = ErlangEngine.getInstance().getXrefService();
         xrefService.start(b);
     }
 

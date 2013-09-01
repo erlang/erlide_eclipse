@@ -115,7 +115,7 @@ public class ErlModel extends Openable implements IErlModel {
     /**
      * Constructs a new Erlang Model on the given workspace. Note that only one
      * instance of ErlModel handle should ever be created. One should only
-     * indirect through ErlModel#getErlangModel() to get access to it.
+     * indirect through ErlModel#getInstance().getModel() to get access to it.
      * 
      * @exception Error
      *                if called more than once

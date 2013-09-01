@@ -23,6 +23,7 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.backend.BackendCore;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.ModelCore;
 import org.erlide.model.erlang.IErlFunction;
@@ -36,7 +37,6 @@ import org.erlide.model.erlang.IErlRecordField;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
@@ -527,7 +527,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
-        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         final IErlModule theModule = ModelUtils.findModule(model, project,
                 moduleName, null,
                 checkAllProjects ? IErlElementLocator.Scope.ALL_PROJECTS

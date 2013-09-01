@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.xtext.xbase.lib.Pair;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModelChangeListener;
 import org.erlide.model.root.IErlProject;
@@ -87,7 +87,7 @@ public class ErlModelCache implements IDisposable {
         projectIncludeDirsCache = newCache();
 
         modelChangeListener = new ModelChangeListener();
-        ErlModelManager.getErlangModel().addModelChangeListener(
+        ErlangEngine.getInstance().getModel().addModelChangeListener(
                 modelChangeListener);
     }
 
@@ -163,7 +163,7 @@ public class ErlModelCache implements IDisposable {
 
     @Override
     public void dispose() {
-        ErlModelManager.getErlangModel().removeModelChangeListener(
+        ErlangEngine.getInstance().getModel().removeModelChangeListener(
                 modelChangeListener);
     }
 

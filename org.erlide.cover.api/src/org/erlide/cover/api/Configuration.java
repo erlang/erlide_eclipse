@@ -6,9 +6,9 @@ import java.util.Map;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
 
 /**
@@ -37,7 +37,7 @@ public class Configuration implements IConfiguration {
         if (name == null || name.length() == 0) {
             project = null;
         } else {
-            project = ErlModelManager.getErlangModel().getErlangProject(
+            project = ErlangEngine.getInstance().getModel().getErlangProject(
                     ResourcesPlugin.getWorkspace().getRoot().getProject(name));
         }
     }

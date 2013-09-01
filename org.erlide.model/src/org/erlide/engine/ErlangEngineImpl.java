@@ -5,7 +5,8 @@ import org.erlide.model.erlang.ErlangToolkit;
 import org.erlide.model.erlang.ErlangToolkitFactory;
 import org.erlide.model.internal.root.ErlModel;
 import org.erlide.model.root.IErlModel;
-import org.erlide.model.root.IErlServiceProvider;
+import org.erlide.model.services.search.ErlangXref;
+import org.erlide.model.services.search.XrefService;
 import org.erlide.util.ErlLogger;
 
 /**
@@ -16,21 +17,12 @@ import org.erlide.util.ErlLogger;
  * implement it in Erlang or to let it be used by Xtext.
  * </p>
  */
-public class ErlangEngine implements IErlServiceProvider {
-
-    private static volatile ErlangEngine instance;
+public class ErlangEngineImpl implements IErlangServiceFactory {
 
     // !!!! XXX
     private volatile static IErlModel erlangModel;
 
-    public ErlangEngine() {
-    }
-
-    public static ErlangEngine getInstance() {
-        if (instance == null) {
-            instance = new ErlangEngine();
-        }
-        return instance;
+    public ErlangEngineImpl() {
     }
 
     @Override
@@ -47,6 +39,11 @@ public class ErlangEngine implements IErlServiceProvider {
             }
         }
         return erlangModel;
+    }
+
+    @Override
+    public XrefService getXrefService() {
+        return new ErlangXref();
     }
 
 }

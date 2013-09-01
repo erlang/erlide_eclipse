@@ -28,7 +28,7 @@ import org.erlide.cover.views.model.ModuleSet;
 import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.ObjectType;
 import org.erlide.cover.views.model.StatsTreeModel;
-import org.erlide.model.root.ErlModelManager;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.util.ErlLogger;
 
 /**
@@ -135,7 +135,7 @@ public class RestoreAction extends Action {
     // calculate md5
     private boolean ifMarkAnnotations(final ModuleStats module) {
         try {
-            final File file = new File(ErlModelManager.getErlangModel()
+            final File file = new File(ErlangEngine.getInstance().getModel()
                     .findModule(module.getLabel()).getFilePath());
 
             if (module.getMd5().equals(MD5Checksum.getMD5(file))) {

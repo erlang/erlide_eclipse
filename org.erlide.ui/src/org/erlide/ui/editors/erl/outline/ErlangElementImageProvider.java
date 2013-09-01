@@ -18,9 +18,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlFolder;
@@ -109,7 +109,7 @@ public class ErlangElementImageProvider {
             }
             return getWorkbenchImageDescriptor(file, flags);
         } else if (element instanceof IFolder) {
-            final IErlElementLocator model = ErlModelManager.getErlangModel();
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             final IErlFolder ef = (IErlFolder) model
                     .findElement((IResource) element);
             if (ef != null && (ef.isOnSourcePath() || ef.isOnIncludePath())) {

@@ -20,11 +20,11 @@ import org.eclipse.debug.core.model.IRegisterGroup;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.util.ErlLogger;
@@ -72,7 +72,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements
         this.bindings = frames;
         IErlModule module;
         try {
-            module = ErlModelManager.getErlangModel().findModule(moduleName);
+            module = ErlangEngine.getInstance().getModel().findModule(moduleName);
         } catch (final ErlModelException e) {
             ErlLogger.error(e);
             module = null;

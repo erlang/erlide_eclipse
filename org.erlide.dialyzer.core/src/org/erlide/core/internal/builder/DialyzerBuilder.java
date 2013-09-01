@@ -17,8 +17,8 @@ import org.erlide.core.builder.DialyzerMarkerUtils;
 import org.erlide.core.builder.DialyzerPreferences;
 import org.erlide.core.builder.DialyzerUtils;
 import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.rpc.RpcException;
@@ -47,7 +47,7 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
         if (prefs == null || !prefs.getDialyzeOnCompile()) {
             return null;
         }
-        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         final Set<IErlModule> modules = DialyzerUtils
                 .collectModulesFromResource(model, project);
         final Set<IErlProject> projects = Sets.newHashSet();

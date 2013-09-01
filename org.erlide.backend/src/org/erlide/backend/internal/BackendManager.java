@@ -37,7 +37,7 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendListener;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.model.root.ErlModelManager;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.ICodeBundle;
@@ -129,7 +129,7 @@ public final class BackendManager implements IBackendManager {
     @Override
     public IBackend getBuildBackend(final IProject project)
             throws BackendException {
-        final IErlProject erlProject = ErlModelManager.getErlangModel()
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
         if (erlProject == null) {
             ErlLogger.warn("Project %s is not an erlang project",
@@ -235,7 +235,7 @@ public final class BackendManager implements IBackendManager {
     @Override
     public synchronized void removeExecutionBackend(final IProject project,
             final IBackend b) {
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         b.removeProjectPath(model.findProject(project));
         Set<IBackend> list = executionBackends.get(project);
         if (list == null) {
@@ -410,7 +410,7 @@ public final class BackendManager implements IBackendManager {
             executionBackends.put(project, list);
         }
         list.add(b);
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         b.addProjectPath(model.findProject(project));
     }
 

@@ -45,9 +45,9 @@ import org.eclipse.ui.PartInitException;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.backend.debug.model.TraceChangedEventData;
 import org.erlide.debug.ui.tracing.DebugTraceEvent;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -470,7 +470,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
         }
 
         IEditorPart part = null;
-        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         IErlModule module;
         try {
             module = model.findModule(moduleName);

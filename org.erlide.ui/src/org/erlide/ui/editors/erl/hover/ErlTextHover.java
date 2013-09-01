@@ -41,11 +41,11 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ModelCore;
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlPreprocessorDef;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.ErlideDoc;
@@ -296,7 +296,7 @@ public class ErlTextHover implements ITextHover,
             }
             final IRpcSite backend = backend0.getRpcSite();
 
-            final IErlModel model = ErlModelManager.getErlangModel();
+            final IErlModel model = ErlangEngine.getInstance().getModel();
             final String externalModulesString = erlProject != null ? erlProject
                     .getExternalModulesString() : null;
             final OtpErlangTuple t = (OtpErlangTuple) ErlideDoc.getOtpDoc(

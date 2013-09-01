@@ -6,9 +6,9 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.internal.erlang.ErlAttribute;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
@@ -111,7 +111,7 @@ public class IParentTests extends ErlModelTestBase {
     @Test
     public void getChildWithResource() throws Exception {
         final IProject workspaceProject = project.getWorkspaceProject();
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         final IErlElement childWithResource = model
                 .getChildWithResource(workspaceProject);
         final IResource resource = module.getResource();

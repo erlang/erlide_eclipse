@@ -18,12 +18,12 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendException;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.FunctionRef;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.search.XrefService;
 import org.erlide.model.util.ModelUtils;
@@ -111,7 +111,7 @@ public class CallHierarchyAction extends Action {
                     final IRpcFuture result) {
                 page.activate(context);
                 try {
-                    context.setRoot(ErlModelManager.getErlangModel()
+                    context.setRoot(ErlangEngine.getInstance().getModel()
                             .findFunction(ref));
                 } catch (final ErlModelException e) {
                     ErlLogger.error(e);

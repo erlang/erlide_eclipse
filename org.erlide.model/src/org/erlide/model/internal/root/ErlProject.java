@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.ErlModelStatus;
 import org.erlide.model.ErlModelStatusConstants;
@@ -48,7 +49,6 @@ import org.erlide.model.internal.erlang.ErlExternalReferenceEntryList;
 import org.erlide.model.internal.erlang.ErlOtpExternalReferenceEntryList;
 import org.erlide.model.internal.root.ErlModel.External;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlElementVisitor;
@@ -143,7 +143,7 @@ public class ErlProject extends Openable implements IErlProject {
             // ErlLogger.debug(">>adding otp");
             addOtpExternals(children);
             // ErlLogger.debug("childcount %d", children.size());
-            final IErlModel model = ErlModelManager.getErlangModel();
+            final IErlModel model = ErlangEngine.getInstance().getModel();
             for (final IResource element : elems) {
                 if (element instanceof IFolder) {
                     final IFolder folder = (IFolder) element;
@@ -469,7 +469,7 @@ public class ErlProject extends Openable implements IErlProject {
             sourceDirs.add(s);
         }
         result.addAll(getModulesOrIncludes(fProject,
-                ErlModelManager.getErlangModel(), sourceDirs, true));
+                ErlangEngine.getInstance().getModel(), sourceDirs, true));
         ErlModel.getErlModelCache().putModulesForProject(this, result);
         return result;
     }
@@ -516,7 +516,7 @@ public class ErlProject extends Openable implements IErlProject {
         } else {
             final List<IErlModule> cached = erlModelCache
                     .getModulesForProject(this);
-            final IErlElementLocator model = ErlModelManager.getErlangModel();
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             if (cached == null) {
                 final List<IErlModule> modules = getModulesOrIncludes(fProject,
                         model, getSourceDirs(), true);
@@ -539,7 +539,7 @@ public class ErlProject extends Openable implements IErlProject {
             return cached;
         }
         final List<IErlModule> includes = getModulesOrIncludes(fProject,
-                ErlModelManager.getErlangModel(), getIncludeDirs(), false);
+                ErlangEngine.getInstance().getModel(), getIncludeDirs(), false);
         erlModelCache.putIncludesForProject(this, includes);
         return includes;
     }
@@ -627,7 +627,7 @@ public class ErlProject extends Openable implements IErlProject {
     @Override
     public IErlModule getModule(final String name) {
         try {
-            return ErlModelManager.getErlangModel().findModuleFromProject(this,
+            return ErlangEngine.getInstance().getModel().findModuleFromProject(this,
                     name, null, false, IErlElementLocator.Scope.PROJECT_ONLY);
         } catch (final ErlModelException e) {
             // final boolean hasExtension = ListsUtils.hasExtension(name);
@@ -868,7 +868,7 @@ public class ErlProject extends Openable implements IErlProject {
         final List<IErlProject> result = Lists.newArrayList();
         try {
             for (final IProject project : fProject.getReferencedProjects()) {
-                final IErlProject p = ErlModelManager.getErlangModel()
+                final IErlProject p = ErlangEngine.getInstance().getModel()
                         .getErlangProject(project);
                 if (p != null) {
                     result.add(p);

@@ -41,8 +41,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.core.ErlangCore;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
@@ -71,7 +71,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
         Collection<IErlProject> projects;
         try {
-            projects = ErlModelManager.getErlangModel().getErlangProjects();
+            projects = ErlangEngine.getInstance().getModel().getErlangProjects();
             final List<String> ps = new ArrayList<String>();
             for (final IErlProject p : projects) {
                 ps.add(p.getName());

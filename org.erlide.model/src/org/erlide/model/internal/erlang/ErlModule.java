@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlAttribute;
@@ -46,7 +47,6 @@ import org.erlide.model.internal.root.ErlModel;
 import org.erlide.model.internal.root.ModelConfig;
 import org.erlide.model.internal.root.Openable;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlExternal;
 import org.erlide.model.root.IErlFolder;
@@ -114,7 +114,7 @@ public class ErlModule extends Openable implements IErlModule {
     public boolean internalBuildStructure(final IProgressMonitor pm) {
         final String text = getInitialText();
         if (text != null) {
-            final IErlParser parser = ErlModelManager.getErlangModel()
+            final IErlParser parser = ErlangEngine.getInstance().getModel()
                     .getParser();
             parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
                     text, true);
@@ -162,7 +162,7 @@ public class ErlModule extends Openable implements IErlModule {
     public synchronized boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
         if (internalBuildStructure(pm)) {
-            final IErlModel model = ErlModelManager.getErlangModel();
+            final IErlModel model = ErlangEngine.getInstance().getModel();
             if (model != null) {
                 model.notifyChange(this);
             }
@@ -191,7 +191,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public IErlElement getElementAt(final int position)
             throws ErlModelException {
-        return ErlModelManager.getErlangModel().innermostThat(this,
+        return ErlangEngine.getInstance().getModel().innermostThat(this,
                 new Predicate<IErlElement>() {
                     @Override
                     public boolean apply(final IErlElement e) {
@@ -210,7 +210,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public IErlMember getElementAtLine(final int lineNumber) {
-        return (IErlMember) ErlModelManager.getErlangModel().innermostThat(
+        return (IErlMember) ErlangEngine.getInstance().getModel().innermostThat(
                 this, new Predicate<IErlElement>() {
                     @Override
                     public boolean apply(final IErlElement e) {
@@ -450,7 +450,7 @@ public class ErlModule extends Openable implements IErlModule {
             scanner.dispose();
             scanner = null;
         }
-        ErlModelManager.getErlangModel().removeModule(this);
+        ErlangEngine.getInstance().getModel().removeModule(this);
     }
 
     @Override
@@ -532,7 +532,7 @@ public class ErlModule extends Openable implements IErlModule {
     private IErlScanner getNewScanner() {
         final String filePath = getFilePath();
         final String text = getInitialText();
-        return ErlModelManager.getErlangModel().getToolkit()
+        return ErlangEngine.getInstance().getModel().getToolkit()
                 .createScanner(scannerName, text, filePath, logging);
     }
 
@@ -652,8 +652,8 @@ public class ErlModule extends Openable implements IErlModule {
     public static IErlModule findExternalIncludeInOpenProjects(
             final IErlModule externalInclude) throws CoreException {
         final String filePath = externalInclude.getFilePath();
-        final Collection<IErlProject> projects = ErlModelManager
-                .getErlangModel().getErlangProjects();
+        final Collection<IErlProject> projects = ErlangEngine
+                .getInstance().getModel().getErlangProjects();
         for (final IErlProject project : projects) {
             final Collection<IErlModule> includes = project.getIncludes();
             for (final IErlModule include : includes) {

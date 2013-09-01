@@ -6,9 +6,9 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ModuleKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.util.ResourceUtil;
 import org.erlide.runtime.api.IRpcSite;
@@ -56,8 +56,8 @@ public class DialyzerMarkerUtils {
                 if (j != -1) {
                     msg = msg.substring(j + 1);
                 }
-                final IErlElementLocator model = ErlModelManager
-                        .getErlangModel();
+                final IErlElementLocator model = ErlangEngine
+                        .getInstance().getModel();
                 addDialyzerWarningMarker(model, filename, line, msg);
             }
         }

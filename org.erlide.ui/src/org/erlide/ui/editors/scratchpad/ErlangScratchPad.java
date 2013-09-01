@@ -17,9 +17,9 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlScanner;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
 import org.erlide.ui.actions.CompositeActionGroup;
@@ -99,7 +99,7 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
         if (file != null) {
             final IProject project = file.getProject();
             if (project != null) {
-                return ErlModelManager.getErlangModel().findProject(project);
+                return ErlangEngine.getInstance().getModel().findProject(project);
             }
         }
         return null;
@@ -208,8 +208,8 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
             String initialText;
             initialText = Util.getInputStreamAsString(file.getContents(),
                     file.getCharset());
-            return ErlModelManager
-                    .getErlangModel()
+            return ErlangEngine
+                    .getInstance().getModel()
                     .getToolkit()
                     .createScanner(getScannerName(), initialText, filePath,
                             false);

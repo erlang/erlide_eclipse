@@ -10,11 +10,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.erlide.core.erlang.TestingSupport;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlParser;
 import org.erlide.model.internal.erlang.ErlideScanner;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
 import org.junit.After;
@@ -34,7 +34,7 @@ public class ParsingTests {
      */
     @Before
     public void setUp() throws Exception {
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         module = model.getModuleFromText(model, "testing", "", null);
     }
 
@@ -53,7 +53,7 @@ public class ParsingTests {
         boolean result = false;
         try {
             ErlideScanner.initialScan(scannerModuleName, "", s, false);
-            final IErlParser parser = ErlModelManager.getErlangModel()
+            final IErlParser parser = ErlangEngine.getInstance().getModel()
                     .getParser();
             result = parser.parse(module, scannerModuleName, false, "", s,
                     false);

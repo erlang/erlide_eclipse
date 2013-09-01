@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.SourcePathProvider;
 import org.erlide.model.SourcePathUtils;
@@ -17,7 +18,6 @@ import org.erlide.model.erlang.IErlImportExport;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlPreprocessorDef;
 import org.erlide.model.erlang.IErlTypespec;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
@@ -43,7 +43,7 @@ public class ParserDB {
                     // new File("/home/qvladum/parserDB.txt"));
                     out = System.out;
 
-                    final IErlModel model = ErlModelManager.getErlangModel();
+                    final IErlModel model = ErlangEngine.getInstance().getModel();
                     final Collection<SourcePathProvider> sourcePathProviders = SourcePathUtils
                             .getSourcePathProviders();
                     final long time = System.currentTimeMillis();
@@ -97,7 +97,7 @@ public class ParserDB {
                 // }
                 // test++;
                 // final IErlModule module = ErlModelManager
-                // .getErlangModel().findModule(
+                // .getInstance().getModel().findModule(
                 // (IFile) res.getResource());
                 // handleModule(module);
                 // }

@@ -16,8 +16,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.builder.DialyzerMarkerUtils;
 import org.erlide.core.builder.DialyzerUtils;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
@@ -105,7 +105,7 @@ public class DialyzerUtilsTest {
             // putting a dialyzer warning on it
             final int lineNumber = 3;
             final String message = "test message";
-            final IErlElementLocator model = ErlModelManager.getErlangModel();
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             DialyzerMarkerUtils.addDialyzerWarningMarker(model, erlModule
                     .getResource().getLocation().toPortableString(),
                     lineNumber, message);
@@ -149,7 +149,7 @@ public class DialyzerUtilsTest {
             // putting dialyzer warning markers on the external file
             final String message = "test message";
             final int lineNumber = 2;
-            final IErlElementLocator model = ErlModelManager.getErlangModel();
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             DialyzerMarkerUtils.addDialyzerWarningMarker(model,
                     externalFile.getAbsolutePath(), lineNumber, message);
             // then
@@ -214,7 +214,7 @@ public class DialyzerUtilsTest {
                     erlProject, a);
             final Set<IErlModule> modules = DialyzerUtils
                     .collectModulesFromResource(
-                            ErlModelManager.getErlangModel(), selectedResource);
+                            ErlangEngine.getInstance().getModel(), selectedResource);
             final Set<IErlProject> projects = Sets.newHashSet();
             projects.add(erlProject);
             final List<String> names = new ArrayList<String>();
@@ -337,7 +337,7 @@ public class DialyzerUtilsTest {
             // collecting files to dialyze
             final Set<IErlModule> modules = DialyzerUtils
                     .collectModulesFromResource(
-                            ErlModelManager.getErlangModel(),
+                            ErlangEngine.getInstance().getModel(),
                             erlProject.getResource());
             final Set<IErlProject> projects = Sets.newHashSet();
             projects.add(erlProject);

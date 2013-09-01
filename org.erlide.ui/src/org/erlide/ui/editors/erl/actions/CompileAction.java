@@ -18,8 +18,8 @@ import org.erlide.backend.BackendCore;
 import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.CompilerOptions;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
@@ -60,7 +60,7 @@ public class CompileAction extends Action {
             ErlLogger.error(e);
         }
         final OtpErlangList compilerOptions = prefs.export();
-        final IErlProject erlProject = ErlModelManager.getErlangModel()
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
 
         if ("erl".equals(resource.getFileExtension())) {

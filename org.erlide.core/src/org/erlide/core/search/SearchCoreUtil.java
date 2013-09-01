@@ -13,12 +13,12 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ModuleKind;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElement.AcceptFlags;
 import org.erlide.model.root.IErlElementVisitor;
@@ -37,7 +37,7 @@ public class SearchCoreUtil {
             final boolean addOtp) throws CoreException {
         final ErlSearchScope result = new ErlSearchScope();
         final Set<String> externalModulePaths = new HashSet<String>();
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         for (final IProject project : projects) {
             SearchCoreUtil.addProjectToScope(project, result);
             if (NatureUtil.hasErlangNature(project)) {
@@ -54,7 +54,7 @@ public class SearchCoreUtil {
         if (project == null) {
             return;
         }
-        final IErlProject erlProject = ErlModelManager.getErlangModel()
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
         if (erlProject != null) {
             final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
@@ -79,7 +79,7 @@ public class SearchCoreUtil {
 
     static void addFileToScope(final IFile file, final ErlSearchScope result) {
         if (ModuleKind.hasModuleExtension(file.getName())) {
-            final IErlModule module = ErlModelManager.getErlangModel()
+            final IErlModule module = ErlangEngine.getInstance().getModel()
                     .findModule(file);
             result.addModule(module);
         }
@@ -139,8 +139,8 @@ public class SearchCoreUtil {
     public static ErlSearchScope getWorkspaceScope(final boolean addExternals,
             final boolean addOtp) throws ErlModelException {
         final ErlSearchScope result = new ErlSearchScope();
-        final Collection<IErlProject> erlangProjects = ErlModelManager
-                .getErlangModel().getErlangProjects();
+        final Collection<IErlProject> erlangProjects = ErlangEngine
+                .getInstance().getModel().getErlangProjects();
         for (final IErlProject i : erlangProjects) {
             final Collection<IErlModule> modules = i.getModulesAndIncludes();
             for (final IErlModule j : modules) {
