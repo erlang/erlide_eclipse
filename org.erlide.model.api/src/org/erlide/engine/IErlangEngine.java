@@ -8,6 +8,7 @@ import org.erlide.model.services.search.OtpDocService;
 import org.erlide.model.services.search.SearchServerService;
 import org.erlide.model.services.search.XrefService;
 import org.erlide.model.services.text.IndentService;
+import org.erlide.model.util.ModelUtilService;
 
 public interface IErlangEngine {
 
@@ -28,5 +29,7 @@ public interface IErlangEngine {
     ScannerService getScannerService();
 
     SearchServerService getSearchServerService();
+
+    ModelUtilService getModelUtilService();
 
 }

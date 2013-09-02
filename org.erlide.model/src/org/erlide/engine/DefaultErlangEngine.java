@@ -5,6 +5,7 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.ErlangToolkit;
 import org.erlide.model.erlang.ErlangToolkitFactory;
 import org.erlide.model.internal.erlang.ErlideScanner;
+import org.erlide.model.internal.erlang.ModelInternalUtils;
 import org.erlide.model.internal.root.ErlModel;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.services.codeassist.ContextAssistService;
@@ -20,6 +21,7 @@ import org.erlide.model.services.search.SearchServerService;
 import org.erlide.model.services.search.XrefService;
 import org.erlide.model.services.text.ErlideIndent;
 import org.erlide.model.services.text.IndentService;
+import org.erlide.model.util.ModelUtilService;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
@@ -94,5 +96,10 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public SearchServerService getSearchServerService() {
         return new ErlideSearchServer();
+    }
+
+    @Override
+    public ModelUtilService getModelUtilService() {
+        return new ModelInternalUtils();
     }
 }

@@ -34,7 +34,6 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlRecordDef;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
-import org.erlide.model.internal.erlang.ModelInternalUtils;
 import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
@@ -230,8 +229,8 @@ public class OpenAction extends SelectionDispatchAction {
             found = findExternalCallOrType(module, openResult, project,
                     element, scope);
         } else if (openResult.isInclude()) {
-            found = ModelInternalUtils.findInclude(module, project, openResult,
-                    model);
+            found = ErlangEngine.getInstance().getModelUtilService()
+                    .findInclude(module, project, openResult, model);
         } else if (openResult.isLocalCall()) {
             found = findLocalCall(module, backend, project, openResult,
                     element, scope);
@@ -242,8 +241,11 @@ public class OpenAction extends SelectionDispatchAction {
             final String elementText = editor.getDocumentProvider()
                     .getDocument(editor.getEditorInput())
                     .get(range.getOffset(), range.getLength());
-            found = ModelInternalUtils.findVariable(backend, range,
-                    openResult.getName(), elementText);
+            found = ErlangEngine
+                    .getInstance()
+                    .getModelUtilService()
+                    .findVariable(backend, range, openResult.getName(),
+                            elementText);
         } else if (openResult.isRecord() || openResult.isMacro()) {
             final ErlElementKind kind = openResult.isMacro() ? ErlElementKind.MACRO_DEF
                     : ErlElementKind.RECORD_DEF;
