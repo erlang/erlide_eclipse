@@ -88,7 +88,7 @@ public class DefaultErlangEngine implements IErlangEngine {
 
     @Override
     public IndentService getIndentService() {
-        return new ErlideIndent();
+        return new ErlideIndent(backend);
     }
 
     @Override
