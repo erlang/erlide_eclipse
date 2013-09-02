@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.erlide.model.root.IErlProject;
-import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.IShutdownCallback;

@@ -45,6 +45,7 @@ import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
+import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.console.BackendShellManager;
 import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.model.ErlangDebugNode;
@@ -52,8 +53,6 @@ import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.ErlDebugFlags;
-import org.erlide.runtime.api.ICodeBundle;
-import org.erlide.runtime.api.ICodeManager;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.InitialCall;
@@ -78,7 +77,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     private final IErlRuntime runtime;
     private BackendShellManager shellManager;
-    private final ICodeManager codeManager;
+    private final CodeManager codeManager;
 
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
@@ -90,8 +89,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         this.runtime = runtime;
         this.data = data;
         this.backendManager = backendManager;
-        codeManager = new CodeManager(this.getRpcSite(), data.getRuntimeInfo(),
-                backendManager);
+        codeManager = new CodeManager(getRpcSite(), data.getRuntimeInfo()
+                .getName());
     }
 
     @Override
