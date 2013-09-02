@@ -4,6 +4,7 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.services.search.OpenService;
 import org.erlide.model.services.search.OtpDocService;
 import org.erlide.model.services.search.XrefService;
+import org.erlide.model.services.text.IndentService;
 
 public interface IErlangEngine {
 
@@ -16,5 +17,7 @@ public interface IErlangEngine {
     OpenService getOpenService();
 
     OtpDocService getOtpDocService();
+
+    IndentService getIndentService();
 
 }

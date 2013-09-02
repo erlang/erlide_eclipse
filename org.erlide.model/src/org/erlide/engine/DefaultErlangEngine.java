@@ -12,6 +12,8 @@ import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.OpenService;
 import org.erlide.model.services.search.OtpDocService;
 import org.erlide.model.services.search.XrefService;
+import org.erlide.model.services.text.ErlideIndent;
+import org.erlide.model.services.text.IndentService;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
@@ -66,5 +68,10 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public OtpDocService getOtpDocService() {
         return new ErlideDoc();
+    }
+
+    @Override
+    public IndentService getIndentService() {
+        return new ErlideIndent();
     }
 }
