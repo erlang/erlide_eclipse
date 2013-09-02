@@ -68,7 +68,8 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public String getStateDir() {
         if (stateDirCached == null) {
-            final Bundle modelPlugin = Platform.getBundle("org.erlide.model");
+            final Bundle modelPlugin = Platform
+                    .getBundle(ModelPlugin.PLUGIN_ID);
             stateDirCached = Platform.getStateLocation(modelPlugin)
                     .toPortableString();
         }
@@ -77,7 +78,7 @@ public class DefaultErlangEngine implements IErlangEngine {
 
     @Override
     public OpenService getOpenService() {
-        return new ErlideOpen();
+        return new ErlideOpen(backend);
     }
 
     @Override

@@ -26,7 +26,6 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.erlide.backend.BackendCore;
 import org.erlide.core.search.SearchCoreUtil;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
@@ -41,7 +40,6 @@ import org.erlide.model.services.search.LimitTo;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.services.search.SearchPatternFactory;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ExceptionHandler;
@@ -211,15 +209,13 @@ public abstract class FindAction extends SelectionDispatchAction {
             if (module == null) {
                 return;
             }
-            final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
-                    .getRpcSite();
             final ISelection sel = getSelection();
             final ITextSelection textSel = (ITextSelection) sel;
             final int offset = textSel.getOffset();
             final OpenResult res = ErlangEngine
                     .getInstance()
                     .getOpenService()
-                    .open(b, module.getScannerName(), offset,
+                    .open(module.getScannerName(), offset,
                             ModelUtils.getImportsAsList(module), "",
                             ErlangEngine.getInstance().getModel().getPathVars());
             ErlLogger.debug("find " + res);

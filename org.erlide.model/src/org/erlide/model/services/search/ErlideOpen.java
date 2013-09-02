@@ -24,10 +24,15 @@ public class ErlideOpen implements OpenService {
 
     private static final String ERLIDE_OPEN = "erlide_open";
 
+    private final IRpcSite backend;
+
+    public ErlideOpen(final IRpcSite backend) {
+        this.backend = backend;
+    }
+
     @Override
-    public OtpErlangObject getSourceFromModule(final IRpcSite backend,
-            final OtpErlangList pathVars, final String mod,
-            final String externalModules) throws RpcException {
+    public OtpErlangObject getSourceFromModule(final OtpErlangList pathVars,
+            final String mod, final String externalModules) throws RpcException {
         final OtpErlangObject res2 = backend.call(ERLIDE_OPEN,
                 "get_source_from_module", "ax", mod,
                 mkContext(externalModules, null, pathVars, null, null));
@@ -36,10 +41,9 @@ public class ErlideOpen implements OpenService {
 
     @Override
     @SuppressWarnings("boxing")
-    public OpenResult open(final IRpcSite backend, final String scannerName,
-            final int offset, final List<OtpErlangObject> imports,
-            final String externalModules, final OtpErlangList pathVars)
-            throws RpcException {
+    public OpenResult open(final String scannerName, final int offset,
+            final List<OtpErlangObject> imports, final String externalModules,
+            final OtpErlangList pathVars) throws RpcException {
         // ErlLogger.debug("open offset " + offset);
         final Collection<IPath> extra = SourcePathUtils.getExtraSourcePaths();
         final OtpErlangObject res = backend.call(ERLIDE_OPEN, "open", "aix",
@@ -50,8 +54,8 @@ public class ErlideOpen implements OpenService {
 
     @Override
     @SuppressWarnings("boxing")
-    public OpenResult openText(final IRpcSite backend, final String text,
-            final int offset) throws RpcException {
+    public OpenResult openText(final String text, final int offset)
+            throws RpcException {
         final OtpErlangObject res = backend.call(ERLIDE_OPEN, "open_text",
                 "si", text, offset);
         return new OpenResult(res);
@@ -81,8 +85,7 @@ public class ErlideOpen implements OpenService {
     }
 
     @Override
-    public OtpErlangTuple findFirstVar(final IRpcSite backend,
-            final String name, final String source) {
+    public OtpErlangTuple findFirstVar(final String name, final String source) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
                     "find_first_var", "as", name, source);
@@ -140,8 +143,7 @@ public class ErlideOpen implements OpenService {
 
     @Override
     public List<ExternalTreeEntry> getExternalModuleTree(
-            final IRpcSite backend, final String externalModules,
-            final OtpErlangList pathVars) {
+            final String externalModules, final OtpErlangList pathVars) {
         ErlLogger.debug("open:external_module_tree -> " + externalModules);
         final Stopwatch stopwatch = new Stopwatch().start();
         try {
@@ -181,9 +183,8 @@ public class ErlideOpen implements OpenService {
     }
 
     @Override
-    public String getExternalInclude(final IRpcSite backend,
-            final String filePath, final String externalIncludes,
-            final OtpErlangList pathVars) {
+    public String getExternalInclude(final String filePath,
+            final String externalIncludes, final OtpErlangList pathVars) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
                     "get_external_include", "sx", filePath,
@@ -199,7 +200,7 @@ public class ErlideOpen implements OpenService {
     }
 
     @Override
-    public List<String> getLibDirs(final IRpcSite backend) {
+    public List<String> getLibDirs() {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
                     "get_lib_dirs", "");
@@ -211,7 +212,7 @@ public class ErlideOpen implements OpenService {
     }
 
     @Override
-    public List<String> getLibFiles(final IRpcSite backend, final String entry) {
+    public List<String> getLibFiles(final String entry) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
                     "get_lib_files", "s", entry);
@@ -223,8 +224,7 @@ public class ErlideOpen implements OpenService {
     }
 
     @Override
-    public List<List<String>> getLibSrcInclude(final IRpcSite backend,
-            final List<String> libList) {
+    public List<List<String>> getLibSrcInclude(final List<String> libList) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
                     "get_lib_src_include", "ls", libList);
@@ -270,8 +270,7 @@ public class ErlideOpen implements OpenService {
     }
 
     @Override
-    public Collection<String> getIncludesInDir(final IRpcSite backend,
-            final String directory) {
+    public Collection<String> getIncludesInDir(final String directory) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
                     "get_includes_in_dir", "s", directory);

@@ -105,8 +105,7 @@ public class MarkOccurencesHandler {
                 final OpenResult res = ErlangEngine
                         .getInstance()
                         .getOpenService()
-                        .open(ideBackend.getRpcSite(),
-                                theModule.getScannerName(),
+                        .open(theModule.getScannerName(),
                                 offset,
                                 ModelUtils.getImportsAsList(theModule),
                                 "",

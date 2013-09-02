@@ -63,7 +63,6 @@ import org.erlide.model.util.CommonUtils;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.model.util.NatureUtil;
 import org.erlide.model.util.SourcePathUtils;
-import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
@@ -183,11 +182,9 @@ public class ErlProject extends Openable implements IErlProject {
         final List<String> projectIncludes = Lists.newArrayList();
         for (final IPath path : includeDirs) {
             if (path.isAbsolute() && !fProject.getLocation().isPrefixOf(path)) {
-                final IRpcSite backend = ModelPlugin.getDefault()
-                        .getIdeBackend();
                 final Collection<String> includes = ErlangEngine.getInstance()
                         .getOpenService()
-                        .getIncludesInDir(backend, path.toPortableString());
+                        .getIncludesInDir(path.toPortableString());
                 if (includes != null) {
                     for (final String include : includes) {
                         projectIncludes.add(path.append(include)
