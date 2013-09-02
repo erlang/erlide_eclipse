@@ -3,6 +3,7 @@ package org.erlide.engine;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.model.ErlModelException;
+import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.ErlangToolkit;
 import org.erlide.model.erlang.ErlangToolkitFactory;
 import org.erlide.model.internal.erlang.ErlideScanner;
@@ -25,15 +26,18 @@ import org.erlide.model.services.search.XrefService;
 import org.erlide.model.services.text.ErlideIndent;
 import org.erlide.model.services.text.IndentService;
 import org.erlide.model.util.ModelUtilService;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
 public class DefaultErlangEngine implements IErlangEngine {
 
+    private final IRpcSite backend;
+
     public DefaultErlangEngine() {
+        backend = ModelPlugin.getDefault().getIdeBackend();
 
         // TODO how to inject runtime and other start params?
-
     }
 
     private volatile static IErlModel erlangModel;
@@ -56,7 +60,7 @@ public class DefaultErlangEngine implements IErlangEngine {
 
     @Override
     public XrefService getXrefService() {
-        return new ErlangXref();
+        return new ErlangXref(backend);
     }
 
     private volatile String stateDirCached;

@@ -34,14 +34,12 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.FunctionRef;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.services.search.XrefService;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.util.ErlLogger;
 
@@ -101,9 +99,7 @@ public class CallHierarchyView extends ViewPart {
             }
             final IErlFunction parent = (IErlFunction) parentElement;
             final FunctionRef ref = new FunctionRef(parent);
-            final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
-                    .getRpcSite();
-            final FunctionRef[] children = xrefService.functionUse(b, ref);
+            final FunctionRef[] children = xrefService.functionUse(ref);
             if (children == null) {
                 return new Object[0];
             }
@@ -140,12 +136,8 @@ public class CallHierarchyView extends ViewPart {
     }
 
     public CallHierarchyView() {
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
-                .getRpcSite();
-
-        // TODO inject
         xrefService = ErlangEngine.getInstance().getXrefService();
-        xrefService.start(b);
+        xrefService.start();
     }
 
     @Override
@@ -168,9 +160,7 @@ public class CallHierarchyView extends ViewPart {
                     tltmRefresh.addSelectionListener(new SelectionAdapter() {
                         @Override
                         public void widgetSelected(final SelectionEvent e) {
-                            final IRpcSite b = BackendCore.getBackendManager()
-                                    .getIdeBackend().getRpcSite();
-                            xrefService.update(b);
+                            xrefService.update();
                             treeViewer.refresh();
                         }
                     });
@@ -206,9 +196,7 @@ public class CallHierarchyView extends ViewPart {
 
     @Override
     public void dispose() {
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
-                .getRpcSite();
-        xrefService.stop(b);
+        xrefService.stop();
         super.dispose();
     }
 

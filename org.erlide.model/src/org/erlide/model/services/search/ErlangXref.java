@@ -17,13 +17,16 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlangXref implements XrefService {
 
-    public ErlangXref() {
+    private final IRpcSite backend;
+
+    public ErlangXref(final IRpcSite backend) {
+        this.backend = backend;
     }
 
     @Override
-    public void start(final IRpcSite b) {
+    public void start() {
         try {
-            b.call("erlide_xref", "start", "");
+            backend.call("erlide_xref", "start", "");
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -31,9 +34,9 @@ public class ErlangXref implements XrefService {
     }
 
     @Override
-    public void stop(final IRpcSite b) {
+    public void stop() {
         try {
-            b.call("erlide_xref", "stop", "");
+            backend.call("erlide_xref", "stop", "");
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -41,12 +44,12 @@ public class ErlangXref implements XrefService {
     }
 
     @Override
-    public IRpcFuture addProject(final IRpcSite b, final IErlProject project) {
+    public IRpcFuture addProject(final IErlProject project) {
         try {
             final IPath outputLocation = project.getWorkspaceProject()
                     .getFolder(project.getOutputLocation()).getLocation();
             final String loc = outputLocation.toString();
-            return b.async_call("erlide_xref", "add_project", "s", loc);
+            return backend.async_call("erlide_xref", "add_project", "s", loc);
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -54,9 +57,9 @@ public class ErlangXref implements XrefService {
     }
 
     @Override
-    public void update(final IRpcSite b) {
+    public void update() {
         try {
-            b.call("erlide_xref", "update", "");
+            backend.call("erlide_xref", "update", "");
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -64,11 +67,11 @@ public class ErlangXref implements XrefService {
 
     @Override
     @SuppressWarnings("boxing")
-    public FunctionRef[] functionUse(final IRpcSite b, final String mod,
-            final String fun, final int arity) {
+    public FunctionRef[] functionUse(final String mod, final String fun,
+            final int arity) {
         try {
-            final OtpErlangObject r = b.call("erlide_xref", "function_use",
-                    "aai", mod, fun, arity);
+            final OtpErlangObject r = backend.call("erlide_xref",
+                    "function_use", "aai", mod, fun, arity);
             final Bindings bind = ErlUtils.match("{ok, L}", r);
             if (bind == null) {
                 return new FunctionRef[0];
@@ -86,8 +89,8 @@ public class ErlangXref implements XrefService {
     }
 
     @Override
-    public FunctionRef[] functionUse(final IRpcSite b, final FunctionRef ref) {
-        return functionUse(b, ref.module, ref.function, ref.arity);
+    public FunctionRef[] functionUse(final FunctionRef ref) {
+        return functionUse(ref.module, ref.function, ref.arity);
     }
 
 }
