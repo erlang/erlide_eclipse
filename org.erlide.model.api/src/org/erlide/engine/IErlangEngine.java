@@ -35,4 +35,5 @@ public interface IErlangEngine {
     ModelUtilService getModelUtilService();
 
     CleanupProvider getCleanupProvider(final IResource resource);
+
 }
