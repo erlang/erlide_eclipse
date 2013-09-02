@@ -14,10 +14,11 @@ public interface ContextAssistService {
     public static final int RECORD_NAME = 1;
     public static final int RECORD_FIELD = 2;
 
-    Collection<String> getVariables(IRpcSite b, String src, String prefix);
+    Collection<String> getVariables(String src, String prefix);
 
-    RecordCompletion checkRecordCompletion(IRpcSite b, String substring);
+    RecordCompletion checkRecordCompletion(IRpcSite buildBackend,
+            String substring);
 
-    OtpErlangList getFunctionHead(IRpcSite b, String name, int arity);
+    OtpErlangList getFunctionHead(String name, int arity);
 
 }

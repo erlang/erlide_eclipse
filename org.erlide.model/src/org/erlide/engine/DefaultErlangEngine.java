@@ -93,7 +93,7 @@ public class DefaultErlangEngine implements IErlangEngine {
 
     @Override
     public ContextAssistService getContextAssistService() {
-        return new ErlideContextAssist();
+        return new ErlideContextAssist(backend);
     }
 
     @Override
