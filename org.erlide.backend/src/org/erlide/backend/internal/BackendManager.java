@@ -69,13 +69,11 @@ public final class BackendManager implements IBackendManager {
     private final BackendManagerLaunchListener launchListener;
     private final IBackendFactory factory;
     private final RuntimeInfo erlideRuntimeInfo;
-    private final Bundle backendBundle;
 
     public BackendManager(final RuntimeInfo erlideRuntimeInfo,
-            final IBackendFactory factory, final Bundle backendBundle) {
+            final IBackendFactory factory) {
         this.factory = factory;
         this.erlideRuntimeInfo = erlideRuntimeInfo;
-        this.backendBundle = backendBundle;
 
         ideBackend = null;
         executionBackends = Maps.newHashMap();
@@ -466,8 +464,4 @@ public final class BackendManager implements IBackendManager {
         }
     }
 
-    @Override
-    public Bundle getBundle() {
-        return backendBundle;
-    }
 }

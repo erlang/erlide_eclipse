@@ -58,6 +58,4 @@ public interface IBackendManager extends IEpmdListener {
 
     IBackend getByProcess(IProcess ertsProcess);
 
-    Bundle getBundle();
-
 }
