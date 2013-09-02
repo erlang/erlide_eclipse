@@ -5,6 +5,7 @@ import org.erlide.model.services.codeassist.ContextAssistService;
 import org.erlide.model.services.scanner.ScannerService;
 import org.erlide.model.services.search.OpenService;
 import org.erlide.model.services.search.OtpDocService;
+import org.erlide.model.services.search.SearchServerService;
 import org.erlide.model.services.search.XrefService;
 import org.erlide.model.services.text.IndentService;
 
@@ -25,5 +26,7 @@ public interface IErlangEngine {
     ContextAssistService getContextAssistService();
 
     ScannerService getScannerService();
+
+    SearchServerService getSearchServerService();
 
 }

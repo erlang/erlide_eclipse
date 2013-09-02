@@ -13,8 +13,10 @@ import org.erlide.model.services.scanner.ScannerService;
 import org.erlide.model.services.search.ErlangXref;
 import org.erlide.model.services.search.ErlideDoc;
 import org.erlide.model.services.search.ErlideOpen;
+import org.erlide.model.services.search.ErlideSearchServer;
 import org.erlide.model.services.search.OpenService;
 import org.erlide.model.services.search.OtpDocService;
+import org.erlide.model.services.search.SearchServerService;
 import org.erlide.model.services.search.XrefService;
 import org.erlide.model.services.text.ErlideIndent;
 import org.erlide.model.services.text.IndentService;
@@ -87,5 +89,10 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public ScannerService getScannerService() {
         return new ErlideScanner();
+    }
+
+    @Override
+    public SearchServerService getSearchServerService() {
+        return new ErlideSearchServer();
     }
 }

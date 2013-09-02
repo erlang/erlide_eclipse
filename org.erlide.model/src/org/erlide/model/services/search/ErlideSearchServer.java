@@ -14,11 +14,11 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlideSearchServer {
+public class ErlideSearchServer implements SearchServerService {
 
     private static final int SEARCH_LONG_TIMEOUT = 50000;
 
-    private static OtpErlangList getModulesFromScope(final ErlSearchScope scope) {
+    private OtpErlangList getModulesFromScope(final ErlSearchScope scope) {
         final OtpErlangObject result[] = new OtpErlangObject[scope.size()];
         int i = 0;
         for (final IErlModule module : scope.getModules()) {
@@ -29,14 +29,15 @@ public class ErlideSearchServer {
         return new OtpErlangList(result);
     }
 
-    private static OtpErlangTuple make2Tuple(final String scannerModuleName,
+    private OtpErlangTuple make2Tuple(final String scannerModuleName,
             final String path) {
         return new OtpErlangTuple(
                 new OtpErlangObject[] { new OtpErlangAtom(scannerModuleName),
                         new OtpErlangString(path) });
     }
 
-    public static void startFindRefs(final IRpcSite backend,
+    @Override
+    public void startFindRefs(final IRpcSite backend,
             final ErlangSearchPattern pattern, final ErlSearchScope scope,
             final String stateDir, final IRpcResultCallback callback,
             final boolean updateSearchServer) throws RpcException {
@@ -48,7 +49,8 @@ public class ErlideSearchServer {
                 stateDir, updateSearchServer);
     }
 
-    public static OtpErlangObject findRefs(final IRpcSite backend,
+    @Override
+    public OtpErlangObject findRefs(final IRpcSite backend,
             final ErlangSearchPattern pattern, final ErlSearchScope scope,
             final String stateDir, final boolean updateSearchServer)
             throws RpcException {
@@ -64,7 +66,8 @@ public class ErlideSearchServer {
         return null;
     }
 
-    public static void cancelSearch(final IRpcSite backend,
+    @Override
+    public void cancelSearch(final IRpcSite backend,
             final OtpErlangPid searchDeamonPid) throws RpcException {
         backend.call("erlide_search_server", "cancel_find_refs", "x",
                 searchDeamonPid);
