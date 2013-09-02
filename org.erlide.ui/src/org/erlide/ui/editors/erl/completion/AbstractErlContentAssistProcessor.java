@@ -41,7 +41,6 @@ import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.codeassist.ErlideContextAssist;
 import org.erlide.model.services.codeassist.ErlideContextAssist.RecordCompletion;
-import org.erlide.model.services.search.ErlideDoc;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
