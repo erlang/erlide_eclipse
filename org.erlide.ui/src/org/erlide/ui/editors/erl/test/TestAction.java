@@ -15,8 +15,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.internal.erlang.ErlideScanner;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
@@ -51,8 +51,8 @@ public class TestAction extends TextEditorAction {
             final String text = document.get();
             final String scannerName = module.getScannerName();
             String s;
-            final OtpErlangObject checkAll = ErlideScanner.checkAll(
-                    scannerName, text, true);
+            final OtpErlangObject checkAll = ErlangEngine.getInstance()
+                    .getScannerService().checkAll(scannerName, text, true);
             if (checkAll instanceof OtpErlangTuple) {
                 final OtpErlangTuple t = (OtpErlangTuple) checkAll;
                 s = Util.stringValue(t.elementAt(0));
@@ -64,13 +64,17 @@ public class TestAction extends TextEditorAction {
                 s = Util.stringValue(checkAll);
             }
             ErlLogger.debug("%s", s);
-            final String scannerText = ErlideScanner.getText(scannerName);
+            final String scannerText = ErlangEngine.getInstance()
+                    .getScannerService().getText(scannerName);
             dumpText(scannerText, "/tmp/scanner.txt");
             dumpText(text, "/tmp/editor.txt");
             if (textEditor instanceof ErlangEditor) {
                 final ErlangEditor editor = (ErlangEditor) textEditor;
-                ErlideScanner.dumpLog(editor.getModule().getScannerName(),
-                        "/tmp/x.scanner.log");
+                ErlangEngine
+                        .getInstance()
+                        .getScannerService()
+                        .dumpLog(editor.getModule().getScannerName(),
+                                "/tmp/x.scanner.log");
                 editor.dumpReconcilerLog("/tmp/x.reconciler.log");
             }
             if (module != null) {

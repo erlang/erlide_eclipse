@@ -4,10 +4,12 @@ import org.eclipse.core.runtime.Platform;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.ErlangToolkit;
 import org.erlide.model.erlang.ErlangToolkitFactory;
+import org.erlide.model.internal.erlang.ErlideScanner;
 import org.erlide.model.internal.root.ErlModel;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.services.codeassist.ContextAssistService;
 import org.erlide.model.services.codeassist.ErlideContextAssist;
+import org.erlide.model.services.scanner.ScannerService;
 import org.erlide.model.services.search.ErlangXref;
 import org.erlide.model.services.search.ErlideDoc;
 import org.erlide.model.services.search.ErlideOpen;
@@ -80,5 +82,10 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public ContextAssistService getContextAssistService() {
         return new ErlideContextAssist();
+    }
+
+    @Override
+    public ScannerService getScannerService() {
+        return new ErlideScanner();
     }
 }
