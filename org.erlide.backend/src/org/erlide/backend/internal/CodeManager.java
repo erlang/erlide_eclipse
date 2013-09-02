@@ -20,11 +20,11 @@ import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.erlide.backend.BackendUtils;
-import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.runtime.api.ICodeManager;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
@@ -35,7 +35,7 @@ import com.ericsson.otp.erlang.OtpErlangBinary;
 
 public class CodeManager implements ICodeManager {
 
-    private final IBackend backend;
+    private final IRpcSite backend;
     private final RuntimeInfo runtimeInfo;
 
     private final List<PathItem> pathA;
@@ -44,7 +44,7 @@ public class CodeManager implements ICodeManager {
     private final IBackendManager backendManager;
 
     // only to be called by Backend
-    CodeManager(final IBackend b, final RuntimeInfo runtimeInfo,
+    CodeManager(final IRpcSite b, final RuntimeInfo runtimeInfo,
             final IBackendManager backendManager) {
         backend = b;
         this.runtimeInfo = runtimeInfo;
@@ -58,11 +58,11 @@ public class CodeManager implements ICodeManager {
     public void addPath(final boolean usePathZ, final String path) {
         if (usePathZ) {
             if (addPath(pathZ, path)) {
-                ErlangCode.addPathZ(backend.getRpcSite(), path);
+                ErlangCode.addPathZ(backend, path);
             }
         } else {
             if (addPath(pathA, path)) {
-                ErlangCode.addPathA(backend.getRpcSite(), path);
+                ErlangCode.addPathA(backend, path);
             }
         }
     }
@@ -70,7 +70,7 @@ public class CodeManager implements ICodeManager {
     @Override
     public void removePath(final String path) {
         if (removePath(pathA, path)) {
-            ErlangCode.removePath(backend.getRpcSite(), path);
+            ErlangCode.removePath(backend, path);
         }
     }
 
@@ -107,7 +107,7 @@ public class CodeManager implements ICodeManager {
         if (bin == null) {
             return false;
         }
-        return BeamLoader.loadBeam(backend.getRpcSite(), moduleName, bin);
+        return BeamLoader.loadBeam(backend, moduleName, bin);
     }
 
     private void loadPluginCode(final ICodeBundle p) {
@@ -133,7 +133,7 @@ public class CodeManager implements ICodeManager {
                     e = b.getEntryPaths(dir_path);
                 }
                 if (e == null) {
-                    ErlLogger.debug("* !!! error loading plugin "
+                    ErlLogger.warn("Could not find Erlang code in plugin "
                             + b.getSymbolicName());
                     return;
                 }
@@ -150,8 +150,6 @@ public class CodeManager implements ICodeManager {
                                 ErlLogger.error("Could not load %s",
                                         beamModuleName);
                             }
-                            backendManager.moduleLoaded(backend, null,
-                                    beamModuleName);
                         } catch (final Exception ex) {
                             ErlLogger.warn(ex);
                         }
@@ -197,12 +195,12 @@ public class CodeManager implements ICodeManager {
         final String externalPath = System.getProperty(p.getBundleName()
                 + ".ebin");
         if (externalPath != null) {
-            final boolean accessible = RuntimeUtils.isAccessibleDir(
-                    backend.getRpcSite(), externalPath);
+            final boolean accessible = RuntimeUtils.isAccessibleDir(backend,
+                    externalPath);
             if (accessible) {
                 ErlLogger.debug("adding external %s to code path for %s:: %s",
                         externalPath, backend, runtimeInfo);
-                ErlangCode.addPathA(backend.getRpcSite(), externalPath);
+                ErlangCode.addPathA(backend, externalPath);
                 return;
             } else {
                 ErlLogger.info("external code path %s for %s "
@@ -215,13 +213,12 @@ public class CodeManager implements ICodeManager {
             for (final String ebinDir : ebinDirs) {
                 final String localDir = ebinDir.replaceAll("\\\\", "/");
                 final boolean accessible = RuntimeUtils.isAccessibleDir(
-                        backend.getRpcSite(), localDir);
-                final boolean embedded = ErlangCode.isEmbedded(backend
-                        .getRpcSite());
+                        backend, localDir);
+                final boolean embedded = ErlangCode.isEmbedded(backend);
                 if (accessible && !embedded) {
                     ErlLogger.debug("adding %s to code path for @%s:: %s",
                             localDir, backend.hashCode(), runtimeInfo);
-                    ErlangCode.addPathA(backend.getRpcSite(), localDir);
+                    ErlangCode.addPathA(backend, localDir);
                 } else {
                     ErlLogger.debug("loading %s for %s", p.getBundleName(),
                             runtimeInfo);
@@ -263,7 +260,7 @@ public class CodeManager implements ICodeManager {
     }
 
     private void unloadBeam(final String moduleName) {
-        ErlangCode.delete(backend.getRpcSite(), moduleName);
+        ErlangCode.delete(backend, moduleName);
     }
 
     private static class PathItem {

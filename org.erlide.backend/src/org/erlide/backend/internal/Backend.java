@@ -90,7 +90,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         this.runtime = runtime;
         this.data = data;
         this.backendManager = backendManager;
-        codeManager = new CodeManager(this, data.getRuntimeInfo(),
+        codeManager = new CodeManager(this.getRpcSite(), data.getRuntimeInfo(),
                 backendManager);
     }
 
