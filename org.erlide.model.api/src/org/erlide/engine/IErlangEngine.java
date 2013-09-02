@@ -5,7 +5,7 @@ import org.erlide.model.services.search.OpenService;
 import org.erlide.model.services.search.OtpDocService;
 import org.erlide.model.services.search.XrefService;
 
-public interface IErlangServiceFactory {
+public interface IErlangEngine {
 
     IErlModel getModel();
 

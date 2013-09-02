@@ -9,9 +9,9 @@ package org.erlide.engine;
  * </p>
  */
 public class ErlangEngine {
-    private volatile static IErlangServiceFactory instance;
+    private volatile static IErlangEngine instance;
 
-    public static synchronized IErlangServiceFactory getInstance() {
+    public static synchronized IErlangEngine getInstance() {
         if (instance == null) {
             // TODO inject backend in factory
             instance = ModelActivator.getErlangEngine();

@@ -15,7 +15,7 @@ import org.erlide.model.services.search.XrefService;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
-public class ErlangEngineImpl implements IErlangServiceFactory {
+public class ErlangEngineImpl implements IErlangEngine {
 
     public ErlangEngineImpl() {
 
