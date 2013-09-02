@@ -526,6 +526,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void run() {
+    public void onShutdown() {
     }
 }

@@ -1,5 +1,7 @@
 package org.erlide.runtime.api;
 
-public interface IShutdownCallback extends Runnable {
+public interface IShutdownCallback {
+
+    void onShutdown();
 
 }
