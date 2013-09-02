@@ -1,5 +1,6 @@
 package org.erlide.engine;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.ErlangToolkit;
@@ -8,6 +9,8 @@ import org.erlide.model.internal.erlang.ErlideScanner;
 import org.erlide.model.internal.erlang.ModelInternalUtils;
 import org.erlide.model.internal.root.ErlModel;
 import org.erlide.model.root.IErlModel;
+import org.erlide.model.services.cleanup.CleanupProvider;
+import org.erlide.model.services.cleanup.ErlTidyCleanupProvider;
 import org.erlide.model.services.codeassist.ContextAssistService;
 import org.erlide.model.services.codeassist.ErlideContextAssist;
 import org.erlide.model.services.scanner.ScannerService;
@@ -101,5 +104,22 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public ModelUtilService getModelUtilService() {
         return new ModelInternalUtils();
+    }
+
+    /**
+     * <p>
+     * Construct a {@link CleanUpProvider} appropriate for a particular
+     * {@link IResource}.
+     * </p>
+     * 
+     * @param resource
+     *            {@link IResource} for the Erlang module to clean up
+     * 
+     * @return {@link CleanUpProvider} appropriate for the supplied
+     *         {@link IResource}
+     */
+    @Override
+    public CleanupProvider getCleanupProvider(final IResource resource) {
+        return new ErlTidyCleanupProvider(resource);
     }
 }

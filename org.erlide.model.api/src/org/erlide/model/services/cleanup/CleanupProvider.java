@@ -10,31 +10,22 @@
  *******************************************************************************/
 package org.erlide.model.services.cleanup;
 
-import org.eclipse.core.resources.IResource;
 
 /**
  * <p>
- * The {@link CleanUpProviders} class provides {@link CleanUpProvider}s.
+ * The {@link CleanupProvider} interface defines the responsibilities of an
+ * implementation of Erlang code clean up.
  * </p>
  * 
  * @author Alain O'Dea [alain dot odea at gmail dot com]
  */
-public class CleanUpProviders {
+public interface CleanupProvider {
 
     /**
      * <p>
-     * Construct a {@link CleanUpProvider} appropriate for a particular
-     * {@link IResource}.
+     * Perform clean up.
      * </p>
-     * 
-     * @param resource
-     *            {@link IResource} for the Erlang module to clean up
-     * 
-     * @return {@link CleanUpProvider} appropriate for the supplied
-     *         {@link IResource}
      */
-    public static CleanUpProvider createForIResource(final IResource resource) {
-        return new ErlTidyCleanupProvider(resource);
-    }
+    void cleanUp() throws Exception;
 
 }

@@ -1,6 +1,8 @@
 package org.erlide.engine;
 
+import org.eclipse.core.resources.IResource;
 import org.erlide.model.root.IErlModel;
+import org.erlide.model.services.cleanup.CleanupProvider;
 import org.erlide.model.services.codeassist.ContextAssistService;
 import org.erlide.model.services.scanner.ScannerService;
 import org.erlide.model.services.search.OpenService;
@@ -32,4 +34,5 @@ public interface IErlangEngine {
 
     ModelUtilService getModelUtilService();
 
+    CleanupProvider getCleanupProvider(final IResource resource);
 }

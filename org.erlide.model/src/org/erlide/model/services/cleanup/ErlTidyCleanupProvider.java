@@ -13,19 +13,20 @@ package org.erlide.model.services.cleanup;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.resources.IResource;
+import org.erlide.model.ModelPlugin;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 
 /**
  * <p>
  * The {@link ErlTidyCleanupProvider} class provides an implementation of
- * {@link CleanUpProvider} that uses <code>erl_tidy</code> to do the heavy
+ * {@link CleanupProvider} that uses <code>erl_tidy</code> to do the heavy
  * lifting.
  * </p>
  * 
  * @author Alain O'Dea [alain dot odea at gmail dot com]
  */
-class ErlTidyCleanupProvider implements CleanUpProvider {
+public class ErlTidyCleanupProvider implements CleanupProvider {
 
     /**
      * <p>
@@ -55,10 +56,11 @@ class ErlTidyCleanupProvider implements CleanUpProvider {
     }
 
     @Override
-    public void cleanUp(final IRpcSite backend) throws Exception {
+    public void cleanUp() throws Exception {
         // invoke erl_tidy in the background
         final String absolutePathToErlangModule = resource.getLocation()
                 .toString();
+        final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         final IRpcFuture erlTidyFuture = backend.async_call("erl_tidy", "file",
                 "s", absolutePathToErlangModule);
 
