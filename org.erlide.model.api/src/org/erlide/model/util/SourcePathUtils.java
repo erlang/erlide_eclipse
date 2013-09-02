@@ -1,4 +1,4 @@
-package org.erlide.model;
+package org.erlide.model.util;
 
 import java.util.Collection;
 import java.util.List;
@@ -7,6 +7,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.erlide.model.SourcePathProvider;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.services.ExtensionUtils;
 
@@ -79,9 +80,9 @@ public class SourcePathUtils {
             return sourcePathProviders;
         }
         // TODO should be listening to plugin changes
-        sourcePathProviders = ExtensionUtils.getExtensions(
-                ModelPlugin.PLUGIN_ID + ".sourcePathProvider",
-                SourcePathProvider.class);
+        sourcePathProviders = ExtensionUtils
+                .getExtensions("org.erlide.model.sourcePathProvider",
+                        SourcePathProvider.class);
         return sourcePathProviders;
     }
 
