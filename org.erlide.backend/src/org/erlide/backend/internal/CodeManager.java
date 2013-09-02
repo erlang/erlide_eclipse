@@ -75,13 +75,6 @@ public class CodeManager implements ICodeManager {
     }
 
     @Override
-    public void reRegisterBundles() {
-        for (final ICodeBundle p : registeredBundles) {
-            registerBundle(p);
-        }
-    }
-
-    @Override
     public void register(final ICodeBundle b) {
         registeredBundles.add(b);
         registerBundle(b);

@@ -16,10 +16,8 @@ public interface ICodeManager {
 
     void removePath(final String path);
 
-    void reRegisterBundles();
 
     void register(final ICodeBundle b);
 
     void unregister(final ICodeBundle b);
-
 }
