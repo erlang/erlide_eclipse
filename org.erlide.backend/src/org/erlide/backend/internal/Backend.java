@@ -494,10 +494,10 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(final Collection<ICodeBundle> bundles) {
         runtime.addShutdownCallback(this);
         shellManager = new BackendShellManager(this);
-        for (final ICodeBundle bb : backendManager.getCodeBundles().values()) {
+        for (final ICodeBundle bb : bundles) {
             registerCodeBundle(bb);
         }
         initErlang(data.isManaged());
