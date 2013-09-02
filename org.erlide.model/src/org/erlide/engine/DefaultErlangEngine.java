@@ -98,7 +98,7 @@ public class DefaultErlangEngine implements IErlangEngine {
 
     @Override
     public ScannerService getScannerService() {
-        return new ErlideScanner();
+        return new ErlideScanner(backend);
     }
 
     @Override
