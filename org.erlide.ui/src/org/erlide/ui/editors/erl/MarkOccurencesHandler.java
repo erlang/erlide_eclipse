@@ -128,7 +128,7 @@ public class MarkOccurencesHandler {
                     final OtpErlangObject refs = ErlangEngine
                             .getInstance()
                             .getSearchServerService()
-                            .findRefs(ideBackend.getRpcSite(), pattern, scope,
+                            .findRefs(pattern, scope,
                                     ErlangEngine.getInstance().getStateDir(),
                                     true);
                     if (refs != null) {

@@ -103,7 +103,7 @@ public class DefaultErlangEngine implements IErlangEngine {
 
     @Override
     public SearchServerService getSearchServerService() {
-        return new ErlideSearchServer();
+        return new ErlideSearchServer(backend);
     }
 
     @Override
