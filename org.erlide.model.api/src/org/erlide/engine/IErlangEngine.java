@@ -1,6 +1,7 @@
 package org.erlide.engine;
 
 import org.erlide.model.root.IErlModel;
+import org.erlide.model.services.codeassist.ContextAssistService;
 import org.erlide.model.services.search.OpenService;
 import org.erlide.model.services.search.OtpDocService;
 import org.erlide.model.services.search.XrefService;
@@ -19,5 +20,7 @@ public interface IErlangEngine {
     OtpDocService getOtpDocService();
 
     IndentService getIndentService();
+
+    ContextAssistService getContextAssistService();
 
 }
