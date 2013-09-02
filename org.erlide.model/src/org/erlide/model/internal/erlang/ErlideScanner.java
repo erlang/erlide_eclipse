@@ -11,6 +11,8 @@ import java.util.List;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.ErlToken;
+import org.erlide.model.services.scanner.ScannerException;
+import org.erlide.model.services.scanner.ScannerService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
@@ -21,12 +23,13 @@ import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlideScanner {
+public class ErlideScanner implements ScannerService {
     private static final String ERLIDE_SCANNER = "erlide_scanner";
     private static final Object ENCODING = System.getProperty(
             "erlide.encoding.__test__", "latin1");
 
-    public static void initialScan(final String module, final String path,
+    @Override
+    public void initialScan(final String module, final String path,
             final String initialText, final boolean logging) {
         final String stateDir = ErlangEngine.getInstance().getStateDir();
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
@@ -42,7 +45,8 @@ public class ErlideScanner {
         }
     }
 
-    public static void create(final String module) {
+    @Override
+    public void create(final String module) {
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
             backend.call(ERLIDE_SCANNER, "create", "a", module);
@@ -53,7 +57,8 @@ public class ErlideScanner {
         }
     }
 
-    public static void addref(final String module) {
+    @Override
+    public void addref(final String module) {
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
             backend.call(ERLIDE_SCANNER, "addref", "a", module);
@@ -64,7 +69,8 @@ public class ErlideScanner {
         }
     }
 
-    public static void dispose(final String module) {
+    @Override
+    public void dispose(final String module) {
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
             backend.call(ERLIDE_SCANNER, "dispose", "a", module);
@@ -75,8 +81,9 @@ public class ErlideScanner {
         }
     }
 
+    @Override
     @SuppressWarnings("boxing")
-    public static ErlToken getTokenAt(final String module, final int offset) {
+    public ErlToken getTokenAt(final String module, final int offset) {
         OtpErlangObject r1 = null;
         try {
             r1 = ModelPlugin.getDefault().getIdeBackend()
@@ -98,8 +105,9 @@ public class ErlideScanner {
         return null;
     }
 
+    @Override
     @SuppressWarnings("boxing")
-    public static void replaceText(final String module, final int offset,
+    public void replaceText(final String module, final int offset,
             final int removeLength, final String newText) {
         assertThat(newText, is(not(nullValue())));
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
@@ -124,8 +132,9 @@ public class ErlideScanner {
      * @return
      * @throws BackendException
      */
-    public static List<ErlToken> lightScanString(final String string,
-            final int offset) throws ScannerException {
+    @Override
+    public List<ErlToken> lightScanString(final String string, final int offset)
+            throws ScannerException {
         OtpErlangObject r1 = null;
         final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
@@ -165,8 +174,9 @@ public class ErlideScanner {
                 + "\": " + t1.toString());
     }
 
-    public static OtpErlangObject checkAll(final String module,
-            final String text, final boolean getTokens) {
+    @Override
+    public OtpErlangObject checkAll(final String module, final String text,
+            final boolean getTokens) {
         if (module == null) {
             return null;
         }
@@ -184,7 +194,8 @@ public class ErlideScanner {
 
     }
 
-    public static String getText(final String scannerName) {
+    @Override
+    public String getText(final String scannerName) {
         try {
             final OtpErlangObject o = ModelPlugin.getDefault().getIdeBackend()
                     .call(ERLIDE_SCANNER, "get_text", "a", scannerName);
@@ -194,7 +205,8 @@ public class ErlideScanner {
         }
     }
 
-    public static boolean dumpLog(final String scannerName,
+    @Override
+    public boolean dumpLog(final String scannerName,
             final String dumpLocationFilename) {
         try {
             final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();

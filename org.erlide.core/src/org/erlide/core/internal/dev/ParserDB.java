@@ -11,7 +11,6 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.SourcePathProvider;
-import org.erlide.model.SourcePathUtils;
 import org.erlide.model.erlang.IErlAttribute;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlImportExport;
@@ -21,6 +20,7 @@ import org.erlide.model.erlang.IErlTypespec;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.util.SourcePathUtils;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;

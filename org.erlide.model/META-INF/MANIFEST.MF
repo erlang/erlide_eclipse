@@ -14,10 +14,12 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.libs;bundle-version="1.10.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.erlide.model;x-friends:="org.erlide.core,org.erlide.model.api",
+Export-Package: org.erlide.engine,
+ org.erlide.model;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.erlang;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.internal.erlang;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.internal.root;x-friends:="org.erlide.core,org.erlide.model.api",
+ org.erlide.model.services.cleanup,
  org.erlide.model.services.codeassist;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.services.search;x-friends:="org.erlide.core,org.erlide.model.api",
  org.erlide.model.services.text;x-friends:="org.erlide.core,org.erlide.model.api",

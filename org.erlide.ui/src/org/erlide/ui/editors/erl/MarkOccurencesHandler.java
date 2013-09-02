@@ -39,7 +39,6 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.services.search.ErlangSearchPattern;
-import org.erlide.model.services.search.ErlideSearchServer;
 import org.erlide.model.services.search.LimitTo;
 import org.erlide.model.services.search.ModuleLineFunctionArityRef;
 import org.erlide.model.services.search.OpenResult;
@@ -127,9 +126,12 @@ public class MarkOccurencesHandler {
                             .newArrayList();
                     // TODO: run in background? for large files, this can take
                     // seconds
-                    final OtpErlangObject refs = ErlideSearchServer.findRefs(
-                            ideBackend.getRpcSite(), pattern, scope,
-                            ErlangEngine.getInstance().getStateDir(), true);
+                    final OtpErlangObject refs = ErlangEngine
+                            .getInstance()
+                            .getSearchServerService()
+                            .findRefs(ideBackend.getRpcSite(), pattern, scope,
+                                    ErlangEngine.getInstance().getStateDir(),
+                                    true);
                     if (refs != null) {
                         SearchUtil.addSearchResult(findRefs, refs);
                         fRefs = erlangEditor.markOccurencesHandler

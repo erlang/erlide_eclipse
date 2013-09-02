@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.model.internal.erlang;
 
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.erlang.IErlScanner;
 
@@ -21,35 +22,38 @@ public class ErlScanner implements IErlScanner {
 
     public ErlScanner(final String name) {
         this.name = name;
-        ErlideScanner.create(name);
+        ErlangEngine.getInstance().getScannerService().create(name);
     }
 
     @Override
     public void initialScan(final String initialText, final String path,
             final boolean logging) {
         final String pathNotNull = path == null ? "" : path;
-        ErlideScanner.initialScan(name, pathNotNull, initialText, logging);
+        ErlangEngine.getInstance().getScannerService()
+                .initialScan(name, pathNotNull, initialText, logging);
     }
 
     @Override
     public void dispose() {
-        ErlideScanner.dispose(name);
+        ErlangEngine.getInstance().getScannerService().dispose(name);
     }
 
     @Override
     public void replaceText(final int offset, final int removeLength,
             final String newText) {
-        ErlideScanner.replaceText(name, offset, removeLength, newText);
+        ErlangEngine.getInstance().getScannerService()
+                .replaceText(name, offset, removeLength, newText);
     }
 
     @Override
     public ErlToken getTokenAt(final int offset) {
-        return ErlideScanner.getTokenAt(name, offset);
+        return ErlangEngine.getInstance().getScannerService()
+                .getTokenAt(name, offset);
     }
 
     @Override
     public String getText() {
-        return ErlideScanner.getText(name);
+        return ErlangEngine.getInstance().getScannerService().getText(name);
     }
 
     @Override
@@ -59,6 +63,6 @@ public class ErlScanner implements IErlScanner {
 
     @Override
     public void addref() {
-        ErlideScanner.addref(name);
+        ErlangEngine.getInstance().getScannerService().addref(name);
     }
 }

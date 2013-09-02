@@ -14,10 +14,9 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlideIndent {
+public class ErlideIndent implements IndentService {
 
-    private static List<OtpErlangTuple> fixIndentPrefs(
-            final Map<String, String> m) {
+    private List<OtpErlangTuple> fixIndentPrefs(final Map<String, String> m) {
         final List<OtpErlangTuple> result = new ArrayList<OtpErlangTuple>(
                 m.size());
         for (final Map.Entry<String, String> e : m.entrySet()) {
@@ -39,12 +38,12 @@ public class ErlideIndent {
         return result;
     }
 
+    @Override
     @SuppressWarnings("boxing")
-    public static IndentResult indentLine(final IRpcSite b,
-            final String oldLine, final String txt, final String insertedText,
-            final int tabw, final boolean useTabs,
-            final Map<String, String> prefs) throws RpcException,
-            OtpErlangRangeException {
+    public IndentResult indentLine(final IRpcSite b, final String oldLine,
+            final String txt, final String insertedText, final int tabw,
+            final boolean useTabs, final Map<String, String> prefs)
+            throws RpcException, OtpErlangRangeException {
         ErlLogger.debug("indentLine '%s'", txt);
         final OtpErlangObject o = b.call("erlide_indent", "indent_line",
                 "sssiox", txt, oldLine, insertedText, tabw, useTabs,
@@ -52,18 +51,20 @@ public class ErlideIndent {
         return new IndentResult(o);
     }
 
+    @Override
     @SuppressWarnings("boxing")
-    public static OtpErlangObject indentLines(final IRpcSite b,
-            final int offset, final int length, final String text,
-            final int tabw, final boolean useTabs,
-            final Map<String, String> prefs) throws RpcException {
+    public OtpErlangObject indentLines(final IRpcSite b, final int offset,
+            final int length, final String text, final int tabw,
+            final boolean useTabs, final Map<String, String> prefs)
+            throws RpcException {
         final OtpErlangObject o = b.call(40000, "erlide_indent",
                 "indent_lines", "siiiolx", text, offset, length, tabw, useTabs,
                 fixIndentPrefs(prefs));
         return o;
     }
 
-    public static OtpErlangObject templateIndentLines(final IRpcSite b,
+    @Override
+    public OtpErlangObject templateIndentLines(final IRpcSite b,
             final String prefix, final String text, final int tabw,
             final boolean useTabs, final Map<String, String> prefs)
             throws RpcException {

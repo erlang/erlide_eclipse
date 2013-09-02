@@ -7,7 +7,7 @@ import java.util.TreeMap;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.backend.BackendCore;
-import org.erlide.model.services.text.ErlideIndent;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
@@ -52,12 +52,14 @@ public class IndentAction extends ErlangTextEditorAction {
                 .getRpcSite();
         final boolean useTabs = AutoIndentStrategy.getUseTabsFromPreferences();
         if (template) {
-            final OtpErlangObject r1 = ErlideIndent.templateIndentLines(b,
-                    prefix, text, tabw, useTabs, prefs);
+            final OtpErlangObject r1 = ErlangEngine.getInstance()
+                    .getIndentService()
+                    .templateIndentLines(b, prefix, text, tabw, useTabs, prefs);
             return r1;
         } else {
-            final OtpErlangObject r1 = ErlideIndent.indentLines(b, offset,
-                    length, text, tabw, useTabs, prefs);
+            final OtpErlangObject r1 = ErlangEngine.getInstance()
+                    .getIndentService()
+                    .indentLines(b, offset, length, text, tabw, useTabs, prefs);
             return r1;
         }
     }

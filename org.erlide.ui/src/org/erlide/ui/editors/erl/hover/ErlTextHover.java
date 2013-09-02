@@ -47,7 +47,6 @@ import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlPreprocessorDef;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.services.search.ErlideDoc;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
@@ -298,10 +297,12 @@ public class ErlTextHover implements ITextHover,
             final IErlModel model = ErlangEngine.getInstance().getModel();
             final String externalModulesString = erlProject != null ? erlProject
                     .getExternalModulesString() : null;
-            final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine.getInstance().getOtpDocService().getOtpDoc(
-                    ide.getRpcSite(), backend, offset, stateDir,
-                    editor.getScannerName(), fImports, externalModulesString,
-                    model.getPathVars());
+            final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine
+                    .getInstance()
+                    .getOtpDocService()
+                    .getOtpDoc(ide.getRpcSite(), backend, offset, stateDir,
+                            editor.getScannerName(), fImports,
+                            externalModulesString, model.getPathVars());
             // ErlLogger.debug("otp doc %s", t);
             if (Util.isOk(t)) {
                 element = new OpenResult(t.elementAt(2));

@@ -10,6 +10,8 @@ Export-Package: org.erlide.engine,
  org.erlide.model.erlang,
  org.erlide.model.root,
  org.erlide.model.services.cleanup,
+ org.erlide.model.services.codeassist,
+ org.erlide.model.services.scanner,
  org.erlide.model.services.search,
  org.erlide.model.services.text,
  org.erlide.model.util

@@ -18,15 +18,17 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.OpenResult;
+import org.erlide.model.util.ModelUtilService;
 import org.erlide.runtime.api.IRpcSite;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ModelInternalUtils {
+public class ModelInternalUtils implements ModelUtilService {
 
-    public static ISourceRange findVariable(final IRpcSite backend,
+    @Override
+    public ISourceRange findVariable(final IRpcSite backend,
             final ISourceRange range, final String variableName,
             final String elementText) throws OtpErlangRangeException {
         final OtpErlangTuple res2 = ErlangEngine.getInstance().getOpenService()
@@ -41,7 +43,8 @@ public class ModelInternalUtils {
         return range;
     }
 
-    public static IErlElement findInclude(final IErlModule module,
+    @Override
+    public IErlElement findInclude(final IErlModule module,
             final IErlProject project, final OpenResult res,
             final IErlElementLocator model) throws CoreException {
         if (module != null) {

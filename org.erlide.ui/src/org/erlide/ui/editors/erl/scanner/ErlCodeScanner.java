@@ -15,9 +15,9 @@ import java.util.List;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IToken;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.ErlToken;
-import org.erlide.model.internal.erlang.ErlideScanner;
-import org.erlide.model.internal.erlang.ScannerException;
+import org.erlide.model.services.scanner.ScannerException;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.util.ErlLogger;
 
@@ -60,7 +60,8 @@ public class ErlCodeScanner extends ErlTokenScanner {
         }
         try {
             fCrtToken = -1;
-            fTokens = ErlideScanner.lightScanString(text, rangeOffset);
+            fTokens = ErlangEngine.getInstance().getScannerService()
+                    .lightScanString(text, rangeOffset);
         } catch (final ScannerException e) {
             // ErlLogger.error(e);
         }

@@ -8,15 +8,12 @@ import org.osgi.framework.BundleContext;
 
 public class ModelActivator implements BundleActivator {
 
-    private static IErlangServiceFactory engine;
+    private static IErlangEngine engine;
 
     @Override
     public void start(final BundleContext context) throws Exception {
-        System.out.println("Activate MODEL");
-
         engine = ExtensionUtils.getSingletonExtension(
-                "org.erlide.model.api.serviceFactory",
-                IErlangServiceFactory.class);
+                "org.erlide.model.api.erlangEngine", IErlangEngine.class);
 
         cleanupStateDir();
     }
@@ -25,7 +22,7 @@ public class ModelActivator implements BundleActivator {
     public void stop(final BundleContext context) throws Exception {
     }
 
-    public static IErlangServiceFactory getErlangEngine() {
+    public static IErlangEngine getErlangEngine() {
         return engine;
     }
 

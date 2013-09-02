@@ -21,9 +21,9 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.erlide.backend.BackendCore;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlMember;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.services.text.ErlideIndent;
 import org.erlide.model.services.text.IndentResult;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
@@ -88,8 +88,9 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
             IndentationPreferencePage.addKeysAndPrefs(prefs);
             SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
             final boolean useTabs = getUseTabsFromPreferences();
-            final IndentResult res = ErlideIndent.indentLine(b, oldLine, txt,
-                    c.text, tabw, useTabs, prefs);
+            final IndentResult res = ErlangEngine.getInstance()
+                    .getIndentService()
+                    .indentLine(b, oldLine, txt, c.text, tabw, useTabs, prefs);
 
             if (res.isAddNewLine()) {
                 c.text += "\n";

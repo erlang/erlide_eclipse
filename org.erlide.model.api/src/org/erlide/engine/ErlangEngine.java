@@ -1,10 +1,5 @@
 package org.erlide.engine;
 
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.services.search.OpenService;
-import org.erlide.model.services.search.OtpDocService;
-import org.erlide.model.services.search.XrefService;
-
 /**
  * Facade for the Erlang engine.
  * <p>
@@ -13,46 +8,14 @@ import org.erlide.model.services.search.XrefService;
  * implement it in Erlang or to let it be used by Xtext.
  * </p>
  */
-public class ErlangEngine implements IErlangServiceFactory {
-    private volatile static ErlangEngine instance;
+public class ErlangEngine {
+    private volatile static IErlangEngine instance;
 
-    public static synchronized ErlangEngine getInstance() {
+    public static synchronized IErlangEngine getInstance() {
         if (instance == null) {
             // TODO inject backend in factory
-            instance = new ErlangEngine(ModelActivator.getErlangEngine());
+            instance = ModelActivator.getErlangEngine();
         }
         return instance;
     }
-
-    private final IErlangServiceFactory factory;
-
-    public ErlangEngine(final IErlangServiceFactory afactory) {
-        factory = afactory;
-    }
-
-    @Override
-    public IErlModel getModel() {
-        return factory.getModel();
-    }
-
-    @Override
-    public XrefService getXrefService() {
-        return factory.getXrefService();
-    }
-
-    @Override
-    public String getStateDir() {
-        return factory.getStateDir();
-    }
-
-    @Override
-    public OpenService getOpenService() {
-        return factory.getOpenService();
-    }
-
-    @Override
-    public OtpDocService getOtpDocService() {
-        return factory.getOtpDocService();
-    }
-
 }

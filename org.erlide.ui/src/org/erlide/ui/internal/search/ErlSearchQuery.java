@@ -15,7 +15,6 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.services.search.ErlangSearchPattern;
-import org.erlide.model.services.search.ErlideSearchServer;
 import org.erlide.model.services.search.ModuleLineFunctionArityRef;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
@@ -132,9 +131,13 @@ public class ErlSearchQuery implements ISearchQuery {
                 monitor.worked(progress);
                 if (monitor.isCanceled()) {
                     try {
-                        ErlideSearchServer.cancelSearch(BackendCore
-                                .getBackendManager().getIdeBackend()
-                                .getRpcSite(), backgroundSearchPid);
+                        ErlangEngine
+                                .getInstance()
+                                .getSearchServerService()
+                                .cancelSearch(
+                                        BackendCore.getBackendManager()
+                                                .getIdeBackend().getRpcSite(),
+                                        backgroundSearchPid);
                     } catch (final RpcException e) {
                     }
                 }
@@ -143,9 +146,14 @@ public class ErlSearchQuery implements ISearchQuery {
         };
         try {
             final ErlSearchScope reducedScope = pattern.reduceScope(scope);
-            ErlideSearchServer.startFindRefs(BackendCore.getBackendManager()
-                    .getIdeBackend().getRpcSite(), pattern, reducedScope,
-                    ErlangEngine.getInstance().getStateDir(), callback, false);
+            ErlangEngine
+                    .getInstance()
+                    .getSearchServerService()
+                    .startFindRefs(
+                            BackendCore.getBackendManager().getIdeBackend()
+                                    .getRpcSite(), pattern, reducedScope,
+                            ErlangEngine.getInstance().getStateDir(), callback,
+                            false);
         } catch (final RpcException e) {
             return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
                     "Search error", e);
