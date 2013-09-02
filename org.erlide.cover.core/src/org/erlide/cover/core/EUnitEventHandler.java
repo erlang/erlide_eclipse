@@ -63,6 +63,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
 
         if (resType.atomValue().equals(GROUP_BEGIN)) {
             handle_group_begin(msg);
+        } else if (resType.atomValue().equals(TEST_BEGIN)) {
         } else if (resType.atomValue().equals(TEST_END)) {
             handle_test(msg);
         } else if (resType.atomValue().equals(GROUP_END)) {
