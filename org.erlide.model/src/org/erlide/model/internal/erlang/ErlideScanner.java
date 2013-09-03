@@ -28,11 +28,16 @@ public class ErlideScanner implements ScannerService {
     private static final Object ENCODING = System.getProperty(
             "erlide.encoding.__test__", "latin1");
 
+    private final IRpcSite backend;
+
+    public ErlideScanner(final IRpcSite backend) {
+        this.backend = backend;
+    }
+
     @Override
     public void initialScan(final String module, final String path,
             final String initialText, final boolean logging) {
         final String stateDir = ErlangEngine.getInstance().getStateDir();
-        final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
             final String loggingOnOff = logging ? "on" : "off";
             backend.call(ERLIDE_SCANNER, "initial_scan", "asssoa", module,
@@ -47,7 +52,6 @@ public class ErlideScanner implements ScannerService {
 
     @Override
     public void create(final String module) {
-        final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
             backend.call(ERLIDE_SCANNER, "create", "a", module);
         } catch (final RpcTimeoutException e) {
@@ -59,7 +63,6 @@ public class ErlideScanner implements ScannerService {
 
     @Override
     public void addref(final String module) {
-        final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
             backend.call(ERLIDE_SCANNER, "addref", "a", module);
         } catch (final RpcTimeoutException e) {
@@ -71,7 +74,6 @@ public class ErlideScanner implements ScannerService {
 
     @Override
     public void dispose(final String module) {
-        final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
             backend.call(ERLIDE_SCANNER, "dispose", "a", module);
         } catch (final RpcTimeoutException e) {
@@ -86,8 +88,8 @@ public class ErlideScanner implements ScannerService {
     public ErlToken getTokenAt(final String module, final int offset) {
         OtpErlangObject r1 = null;
         try {
-            r1 = ModelPlugin.getDefault().getIdeBackend()
-                    .call(ERLIDE_SCANNER, "get_token_at", "ai", module, offset);
+            r1 = backend.call(ERLIDE_SCANNER, "get_token_at", "ai", module,
+                    offset);
         } catch (final Exception e) {
             return null;
         }
@@ -110,7 +112,6 @@ public class ErlideScanner implements ScannerService {
     public void replaceText(final String module, final int offset,
             final int removeLength, final String newText) {
         assertThat(newText, is(not(nullValue())));
-        final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
             final OtpErlangObject r = backend.call(ERLIDE_SCANNER,
                     "replace_text", "aiis", module, offset, removeLength,
@@ -136,7 +137,6 @@ public class ErlideScanner implements ScannerService {
     public List<ErlToken> lightScanString(final String string, final int offset)
             throws ScannerException {
         OtpErlangObject r1 = null;
-        final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
         try {
             r1 = backend.call("erlide_scanner", "light_scan_string", "ba",
                     string, ENCODING);
@@ -197,8 +197,8 @@ public class ErlideScanner implements ScannerService {
     @Override
     public String getText(final String scannerName) {
         try {
-            final OtpErlangObject o = ModelPlugin.getDefault().getIdeBackend()
-                    .call(ERLIDE_SCANNER, "get_text", "a", scannerName);
+            final OtpErlangObject o = backend.call(ERLIDE_SCANNER, "get_text",
+                    "a", scannerName);
             return Util.stringValue(o);
         } catch (final RpcException e) {
             return "";
@@ -209,7 +209,6 @@ public class ErlideScanner implements ScannerService {
     public boolean dumpLog(final String scannerName,
             final String dumpLocationFilename) {
         try {
-            final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
             final OtpErlangObject object = backend.call(ERLIDE_SCANNER,
                     "dump_log", "as", scannerName, dumpLocationFilename);
             return Util.isOk(object);

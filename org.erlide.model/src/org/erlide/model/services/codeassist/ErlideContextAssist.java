@@ -16,12 +16,17 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideContextAssist implements ContextAssistService {
 
+    private final IRpcSite backend;
+
+    public ErlideContextAssist(final IRpcSite backend) {
+        this.backend = backend;
+    }
+
     @Override
-    public Collection<String> getVariables(final IRpcSite b, final String src,
-            final String prefix) {
+    public Collection<String> getVariables(final String src, final String prefix) {
         final SortedSet<String> result = new TreeSet<String>();
         try {
-            final OtpErlangObject res = b.call("erlide_content_assist",
+            final OtpErlangObject res = backend.call("erlide_content_assist",
                     "get_variables", "ss", src, prefix);
             if (Util.isOk(res)) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
@@ -37,11 +42,11 @@ public class ErlideContextAssist implements ContextAssistService {
     }
 
     @Override
-    public RecordCompletion checkRecordCompletion(final IRpcSite b,
+    public RecordCompletion checkRecordCompletion(final IRpcSite buildBackend,
             final String substring) {
         try {
-            final OtpErlangObject res = b.call("erlide_content_assist",
-                    "check_record", "s", substring);
+            final OtpErlangObject res = buildBackend.call(
+                    "erlide_content_assist", "check_record", "s", substring);
             if (Util.isOk(res)) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangTuple r = (OtpErlangTuple) t.elementAt(1);
@@ -57,10 +62,9 @@ public class ErlideContextAssist implements ContextAssistService {
 
     @Override
     @SuppressWarnings("boxing")
-    public OtpErlangList getFunctionHead(final IRpcSite b, final String name,
-            final int arity) {
+    public OtpErlangList getFunctionHead(final String name, final int arity) {
         try {
-            final OtpErlangObject res = b.call("erlide_content_assist",
+            final OtpErlangObject res = backend.call("erlide_content_assist",
                     "get_function_head", "ai", name, arity);
             if (res instanceof OtpErlangList) {
                 return (OtpErlangList) res;

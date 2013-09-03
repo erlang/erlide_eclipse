@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -12,25 +11,22 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public interface OpenService {
-    OtpErlangObject getSourceFromModule(final IRpcSite backend,
-            final OtpErlangList pathVars, final String mod,
-            final String externalModules) throws RpcException;
+    OtpErlangObject getSourceFromModule(final OtpErlangList pathVars,
+            final String mod, final String externalModules) throws RpcException;
 
-    OpenResult open(final IRpcSite backend, final String scannerName,
-            final int offset, final List<OtpErlangObject> imports,
-            final String externalModules, final OtpErlangList pathVars)
+    OpenResult open(final String scannerName, final int offset,
+            final List<OtpErlangObject> imports, final String externalModules,
+            final OtpErlangList pathVars) throws RpcException;
+
+    OpenResult openText(final String text, final int offset)
             throws RpcException;
-
-    OpenResult openText(final IRpcSite backend, final String text,
-            final int offset) throws RpcException;
 
     OtpErlangTuple mkContext(final String externalModules,
             final String externalIncludes, final OtpErlangList pathVars,
             final Collection<IPath> extraSourcePaths,
             final Collection<OtpErlangObject> imports);
 
-    OtpErlangTuple findFirstVar(final IRpcSite backend, final String name,
-            final String source);
+    OtpErlangTuple findFirstVar(final String name, final String source);
 
     public class ExternalTreeEntry {
         private final String parentPath;
@@ -65,19 +61,17 @@ public interface OpenService {
         }
     }
 
-    List<ExternalTreeEntry> getExternalModuleTree(final IRpcSite backend,
-            final String externalModules, final OtpErlangList pathVars);
+    List<ExternalTreeEntry> getExternalModuleTree(final String externalModules,
+            final OtpErlangList pathVars);
 
-    String getExternalInclude(final IRpcSite backend, final String filePath,
+    String getExternalInclude(final String filePath,
             final String externalIncludes, final OtpErlangList pathVars);
 
-    List<String> getLibDirs(final IRpcSite backend);
+    List<String> getLibDirs();
 
-    List<String> getLibFiles(final IRpcSite backend, final String entry);
+    List<String> getLibFiles(final String entry);
 
-    List<List<String>> getLibSrcInclude(final IRpcSite backend,
-            final List<String> libList);
+    List<List<String>> getLibSrcInclude(final List<String> libList);
 
-    Collection<String> getIncludesInDir(final IRpcSite backend,
-            final String directory);
+    Collection<String> getIncludesInDir(final String directory);
 }

@@ -19,7 +19,6 @@ import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ModelUtilService;
-import org.erlide.runtime.api.IRpcSite;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
@@ -28,11 +27,11 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ModelInternalUtils implements ModelUtilService {
 
     @Override
-    public ISourceRange findVariable(final IRpcSite backend,
-            final ISourceRange range, final String variableName,
-            final String elementText) throws OtpErlangRangeException {
+    public ISourceRange findVariable(final ISourceRange range,
+            final String variableName, final String elementText)
+            throws OtpErlangRangeException {
         final OtpErlangTuple res2 = ErlangEngine.getInstance().getOpenService()
-                .findFirstVar(backend, variableName, elementText);
+                .findFirstVar(variableName, elementText);
         if (res2 != null) {
             final int relativePos = ((OtpErlangLong) res2.elementAt(0))
                     .intValue() - 1;

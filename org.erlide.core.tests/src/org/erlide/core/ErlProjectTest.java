@@ -8,7 +8,6 @@ import java.io.File;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlModule;
@@ -19,7 +18,6 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.api.IRpcSite;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.util.FilePathUtils;
 import org.junit.After;
@@ -194,13 +192,11 @@ public class ErlProjectTest {
             moduleE.open(null);
             // when
             // looking for lists:reverse/2 and lists:reverse/1
-            final IRpcSite backend = BackendCore.getBackendManager()
-                    .getIdeBackend().getRpcSite();
             final IErlModel model = ErlangEngine.getInstance().getModel();
             final OpenResult res = ErlangEngine
                     .getInstance()
                     .getOpenService()
-                    .open(backend, moduleE.getScannerName(), 49,
+                    .open(moduleE.getScannerName(), 49,
                             ModelUtils.getImportsAsList(moduleE),
                             project.getExternalModulesString(),
                             model.getPathVars());

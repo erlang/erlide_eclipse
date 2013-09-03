@@ -98,7 +98,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         localNode.close();
 
         if (callback != null) {
-            callback.run();
+            callback.onShutdown();
         }
         callback = null;
         rpcSite.setConnected(false);

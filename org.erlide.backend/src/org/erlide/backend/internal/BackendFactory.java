@@ -87,7 +87,7 @@ public class BackendFactory implements IBackendFactory {
             b = data.isInternal() ? new InternalBackend(data, runtime,
                     backendManager) : new ExternalBackend(data, runtime,
                     backendManager);
-            b.initialize();
+            b.initialize(backendManager.getCodeBundles().values());
             return b;
         } catch (final BackendException e) {
             ErlLogger.error(e);

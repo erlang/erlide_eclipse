@@ -41,7 +41,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.backend.BackendCore;
 import org.erlide.core.search.SearchCoreUtil;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
@@ -54,7 +53,6 @@ import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.services.search.SearchFor;
 import org.erlide.model.services.search.SearchPatternFactory;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -618,8 +616,6 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) activePart;
         final IErlModule module = erlangEditor.getModule();
         if (module != null) {
-            final IRpcSite backend = BackendCore.getBackendManager()
-                    .getIdeBackend().getRpcSite();
             final ISelection ssel = erlangEditor.getSite()
                     .getSelectionProvider().getSelection();
             final ITextSelection textSel = (ITextSelection) ssel;
@@ -629,8 +625,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                 res = ErlangEngine
                         .getInstance()
                         .getOpenService()
-                        .open(backend,
-                                module.getScannerName(),
+                        .open(module.getScannerName(),
                                 offset,
                                 ModelUtils.getImportsAsList(module),
                                 "",

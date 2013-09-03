@@ -105,8 +105,7 @@ public class MarkOccurencesHandler {
                 final OpenResult res = ErlangEngine
                         .getInstance()
                         .getOpenService()
-                        .open(ideBackend.getRpcSite(),
-                                theModule.getScannerName(),
+                        .open(theModule.getScannerName(),
                                 offset,
                                 ModelUtils.getImportsAsList(theModule),
                                 "",
@@ -129,7 +128,7 @@ public class MarkOccurencesHandler {
                     final OtpErlangObject refs = ErlangEngine
                             .getInstance()
                             .getSearchServerService()
-                            .findRefs(ideBackend.getRpcSite(), pattern, scope,
+                            .findRefs(pattern, scope,
                                     ErlangEngine.getInstance().getStateDir(),
                                     true);
                     if (refs != null) {

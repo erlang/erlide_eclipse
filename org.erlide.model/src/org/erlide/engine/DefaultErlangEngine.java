@@ -3,6 +3,7 @@ package org.erlide.engine;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.model.ErlModelException;
+import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.ErlangToolkit;
 import org.erlide.model.erlang.ErlangToolkitFactory;
 import org.erlide.model.internal.erlang.ErlideScanner;
@@ -25,15 +26,18 @@ import org.erlide.model.services.search.XrefService;
 import org.erlide.model.services.text.ErlideIndent;
 import org.erlide.model.services.text.IndentService;
 import org.erlide.model.util.ModelUtilService;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
 public class DefaultErlangEngine implements IErlangEngine {
 
+    private final IRpcSite backend;
+
     public DefaultErlangEngine() {
+        backend = ModelPlugin.getDefault().getIdeBackend();
 
         // TODO how to inject runtime and other start params?
-
     }
 
     private volatile static IErlModel erlangModel;
@@ -56,7 +60,7 @@ public class DefaultErlangEngine implements IErlangEngine {
 
     @Override
     public XrefService getXrefService() {
-        return new ErlangXref();
+        return new ErlangXref(backend);
     }
 
     private volatile String stateDirCached;
@@ -64,7 +68,8 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public String getStateDir() {
         if (stateDirCached == null) {
-            final Bundle modelPlugin = Platform.getBundle("org.erlide.model");
+            final Bundle modelPlugin = Platform
+                    .getBundle(ModelPlugin.PLUGIN_ID);
             stateDirCached = Platform.getStateLocation(modelPlugin)
                     .toPortableString();
         }
@@ -73,7 +78,7 @@ public class DefaultErlangEngine implements IErlangEngine {
 
     @Override
     public OpenService getOpenService() {
-        return new ErlideOpen();
+        return new ErlideOpen(backend);
     }
 
     @Override
@@ -83,22 +88,22 @@ public class DefaultErlangEngine implements IErlangEngine {
 
     @Override
     public IndentService getIndentService() {
-        return new ErlideIndent();
+        return new ErlideIndent(backend);
     }
 
     @Override
     public ContextAssistService getContextAssistService() {
-        return new ErlideContextAssist();
+        return new ErlideContextAssist(backend);
     }
 
     @Override
     public ScannerService getScannerService() {
-        return new ErlideScanner();
+        return new ErlideScanner(backend);
     }
 
     @Override
     public SearchServerService getSearchServerService() {
-        return new ErlideSearchServer();
+        return new ErlideSearchServer(backend);
     }
 
     @Override

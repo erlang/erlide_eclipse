@@ -44,7 +44,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
                 properties.getRuntimeVersion());
         if (backend != null) {
             final List<String> libList = ErlangEngine.getInstance()
-                    .getOpenService().getLibDirs(backend);
+                    .getOpenService().getLibDirs();
             addExternalEntries(pm, libList, backend);
         }
         return true;
@@ -53,7 +53,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     private void addExternalEntries(final IProgressMonitor pm,
             final List<String> libList, final IRpcSite backend) {
         final List<List<String>> srcIncludes = ErlangEngine.getInstance()
-                .getOpenService().getLibSrcInclude(backend, libList);
+                .getOpenService().getLibSrcInclude(libList);
         final Iterator<String> iterator = libList.iterator();
         for (final List<String> srcInclude : srcIncludes) {
             final String libDir = iterator.next();

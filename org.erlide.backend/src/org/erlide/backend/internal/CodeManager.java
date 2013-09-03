@@ -20,74 +20,55 @@ import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.erlide.backend.BackendUtils;
-import org.erlide.backend.api.IBackend;
-import org.erlide.backend.api.IBackendManager;
+import org.erlide.backend.api.ICodeBundle;
 import org.erlide.runtime.api.BeamLoader;
-import org.erlide.runtime.api.ICodeBundle;
-import org.erlide.runtime.api.ICodeManager;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeUtils;
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.OsgiUtil;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
-public class CodeManager implements ICodeManager {
+public class CodeManager {
 
-    private final IBackend backend;
-    private final RuntimeInfo runtimeInfo;
-
+    private final IRpcSite site;
+    private final String backendName;
     private final List<PathItem> pathA;
     private final List<PathItem> pathZ;
     private final List<ICodeBundle> registeredBundles;
-    private final IBackendManager backendManager;
 
     // only to be called by Backend
-    CodeManager(final IBackend b, final RuntimeInfo runtimeInfo,
-            final IBackendManager backendManager) {
-        backend = b;
-        this.runtimeInfo = runtimeInfo;
-        this.backendManager = backendManager;
+    CodeManager(final IRpcSite site, final String backendName) {
+        this.site = site;
+        this.backendName = backendName;
         pathA = new ArrayList<PathItem>();
         pathZ = new ArrayList<PathItem>();
         registeredBundles = new ArrayList<ICodeBundle>();
     }
 
-    @Override
     public void addPath(final boolean usePathZ, final String path) {
         if (usePathZ) {
             if (addPath(pathZ, path)) {
-                ErlangCode.addPathZ(backend.getRpcSite(), path);
+                ErlangCode.addPathZ(site, path);
             }
         } else {
             if (addPath(pathA, path)) {
-                ErlangCode.addPathA(backend.getRpcSite(), path);
+                ErlangCode.addPathA(site, path);
             }
         }
     }
 
-    @Override
     public void removePath(final String path) {
         if (removePath(pathA, path)) {
-            ErlangCode.removePath(backend.getRpcSite(), path);
+            ErlangCode.removePath(site, path);
         }
     }
 
-    @Override
-    public void reRegisterBundles() {
-        for (final ICodeBundle p : registeredBundles) {
-            registerBundle(p);
-        }
-    }
-
-    @Override
     public void register(final ICodeBundle b) {
         registeredBundles.add(b);
         registerBundle(b);
     }
 
-    @Override
     public void unregister(final ICodeBundle bundle) {
         if (bundle == null) {
             return;
@@ -107,15 +88,14 @@ public class CodeManager implements ICodeManager {
         if (bin == null) {
             return false;
         }
-        return BeamLoader.loadBeam(backend.getRpcSite(), moduleName, bin);
+        return BeamLoader.loadBeam(site, moduleName, bin);
     }
 
     private void loadPluginCode(final ICodeBundle p) {
 
-        final Bundle b = OsgiUtil.findOsgiBundle(backendManager.getBundle(),
-                p.getBundleName());
+        final Bundle b = p.getBundle();
         ErlLogger.debug("loading plugin " + b.getSymbolicName() + " in "
-                + runtimeInfo.getName());
+                + backendName);
 
         // TODO Do we have to also check any fragments?
         // see FindSupport.findInFragments
@@ -133,7 +113,7 @@ public class CodeManager implements ICodeManager {
                     e = b.getEntryPaths(dir_path);
                 }
                 if (e == null) {
-                    ErlLogger.debug("* !!! error loading plugin "
+                    ErlLogger.warn("Could not find Erlang code in plugin "
                             + b.getSymbolicName());
                     return;
                 }
@@ -150,8 +130,6 @@ public class CodeManager implements ICodeManager {
                                 ErlLogger.error("Could not load %s",
                                         beamModuleName);
                             }
-                            backendManager.moduleLoaded(backend, null,
-                                    beamModuleName);
                         } catch (final Exception ex) {
                             ErlLogger.warn(ex);
                         }
@@ -194,43 +172,42 @@ public class CodeManager implements ICodeManager {
     }
 
     private void registerBundle(final ICodeBundle p) {
-        final String externalPath = System.getProperty(p.getBundleName()
-                + ".ebin");
+        final String externalPath = System.getProperty(p.getBundle()
+                .getSymbolicName() + ".ebin");
         if (externalPath != null) {
-            final boolean accessible = RuntimeUtils.isAccessibleDir(
-                    backend.getRpcSite(), externalPath);
+            final boolean accessible = RuntimeUtils.isAccessibleDir(site,
+                    externalPath);
             if (accessible) {
                 ErlLogger.debug("adding external %s to code path for %s:: %s",
-                        externalPath, backend, runtimeInfo);
-                ErlangCode.addPathA(backend.getRpcSite(), externalPath);
+                        externalPath, site, backendName);
+                ErlangCode.addPathA(site, externalPath);
                 return;
             } else {
                 ErlLogger.info("external code path %s for %s "
                         + "is not accessible, using plugin code", externalPath,
-                        backend, runtimeInfo);
+                        site, backendName);
             }
         }
         final Collection<String> ebinDirs = p.getEbinDirs();
         if (ebinDirs != null) {
             for (final String ebinDir : ebinDirs) {
                 final String localDir = ebinDir.replaceAll("\\\\", "/");
-                final boolean accessible = RuntimeUtils.isAccessibleDir(
-                        backend.getRpcSite(), localDir);
-                final boolean embedded = ErlangCode.isEmbedded(backend
-                        .getRpcSite());
+                final boolean accessible = RuntimeUtils.isAccessibleDir(site,
+                        localDir);
+                final boolean embedded = ErlangCode.isEmbedded(site);
                 if (accessible && !embedded) {
                     ErlLogger.debug("adding %s to code path for @%s:: %s",
-                            localDir, backend.hashCode(), runtimeInfo);
-                    ErlangCode.addPathA(backend.getRpcSite(), localDir);
+                            localDir, site.hashCode(), backendName);
+                    ErlangCode.addPathA(site, localDir);
                 } else {
-                    ErlLogger.debug("loading %s for %s", p.getBundleName(),
-                            runtimeInfo);
+                    ErlLogger.debug("loading %s for %s", p.getBundle(),
+                            backendName);
                     loadPluginCode(p);
                 }
             }
         } else {
-            ErlLogger.warn("Could not find 'ebin' in bundle %s.",
-                    p.getBundleName());
+            ErlLogger
+                    .warn("Could not find 'ebin' in bundle %s.", p.getBundle());
             loadPluginCode(p);
         }
     }
@@ -247,8 +224,7 @@ public class CodeManager implements ICodeManager {
     }
 
     private void unloadPluginCode(final ICodeBundle p) {
-        final Bundle b = OsgiUtil.findOsgiBundle(backendManager.getBundle(),
-                p.getBundleName());
+        final Bundle b = p.getBundle();
         @SuppressWarnings("rawtypes")
         Enumeration e;
         ErlLogger.debug("*> really unloading plugin " + p.getClass().getName());
@@ -263,7 +239,7 @@ public class CodeManager implements ICodeManager {
     }
 
     private void unloadBeam(final String moduleName) {
-        ErlangCode.delete(backend.getRpcSite(), moduleName);
+        ErlangCode.delete(site, moduleName);
     }
 
     private static class PathItem {

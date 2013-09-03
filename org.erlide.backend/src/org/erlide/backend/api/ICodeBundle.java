@@ -8,12 +8,13 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.runtime.api;
+package org.erlide.backend.api;
 
 import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.xtext.xbase.lib.Pair;
+import org.osgi.framework.Bundle;
 
 public interface ICodeBundle {
 
@@ -21,7 +22,7 @@ public interface ICodeBundle {
         ANY, COMMON, BUILDER, IDE, DEBUGGER
     }
 
-    String getBundleName();
+    Bundle getBundle();
 
     Collection<String> getEbinDirs();
 

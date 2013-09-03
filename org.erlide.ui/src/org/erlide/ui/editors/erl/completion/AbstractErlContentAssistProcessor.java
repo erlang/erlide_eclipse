@@ -486,7 +486,7 @@ public abstract class AbstractErlContentAssistProcessor implements
             final int prefixLength = prefix.length();
             final String src = doc.get(o, offset - o - prefixLength);
             final Collection<String> vars = ErlangEngine.getInstance()
-                    .getContextAssistService().getVariables(b, src, prefix);
+                    .getContextAssistService().getVariables(src, prefix);
             for (final String var : vars) {
                 result.add(new CompletionProposal(var, offset - prefixLength,
                         prefixLength, var.length()));

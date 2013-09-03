@@ -150,7 +150,7 @@ public class OpenAction extends SelectionDispatchAction {
                 openResult = ErlangEngine
                         .getInstance()
                         .getOpenService()
-                        .open(backend, scannerName, offset,
+                        .open(scannerName, offset,
                                 ModelUtils.getImportsAsList(module),
                                 project.getExternalModulesString(),
                                 model.getPathVars());
@@ -161,7 +161,7 @@ public class OpenAction extends SelectionDispatchAction {
                 final String text = textEditor.getDocumentProvider()
                         .getDocument(textEditor.getEditorInput()).get();
                 openResult = ErlangEngine.getInstance().getOpenService()
-                        .openText(backend, text, offset);
+                        .openText(text, offset);
                 final IFile file = (IFile) textEditor.getEditorInput()
                         .getAdapter(IFile.class);
                 if (file != null) {
@@ -241,11 +241,8 @@ public class OpenAction extends SelectionDispatchAction {
             final String elementText = editor.getDocumentProvider()
                     .getDocument(editor.getEditorInput())
                     .get(range.getOffset(), range.getLength());
-            found = ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
-                    .findVariable(backend, range, openResult.getName(),
-                            elementText);
+            found = ErlangEngine.getInstance().getModelUtilService()
+                    .findVariable(range, openResult.getName(), elementText);
         } else if (openResult.isRecord() || openResult.isMacro()) {
             final ErlElementKind kind = openResult.isMacro() ? ErlElementKind.MACRO_DEF
                     : ErlElementKind.RECORD_DEF;
@@ -300,8 +297,8 @@ public class OpenAction extends SelectionDispatchAction {
             res2 = ErlangEngine
                     .getInstance()
                     .getOpenService()
-                    .getSourceFromModule(backend, model.getPathVars(),
-                            moduleName, erlProject.getExternalModulesString());
+                    .getSourceFromModule(model.getPathVars(), moduleName,
+                            erlProject.getExternalModulesString());
         }
         if (res2 instanceof OtpErlangString && moduleName != null) {
             // imported from otp module

@@ -20,12 +20,10 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
-import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlMember;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.text.IndentResult;
-import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
@@ -80,8 +78,6 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         final int lineLength = d.getLineLength(lineN);
         final String oldLine = d.get(offset, lineLength + lineOffset - offset);
         try {
-            final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
-                    .getRpcSite();
             final int tabw = getTabWidthFromPreferences();
 
             final Map<String, String> prefs = new TreeMap<String, String>();
@@ -90,7 +86,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
             final boolean useTabs = getUseTabsFromPreferences();
             final IndentResult res = ErlangEngine.getInstance()
                     .getIndentService()
-                    .indentLine(b, oldLine, txt, c.text, tabw, useTabs, prefs);
+                    .indentLine(oldLine, txt, c.text, tabw, useTabs, prefs);
 
             if (res.isAddNewLine()) {
                 c.text += "\n";

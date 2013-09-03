@@ -10,7 +10,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
-import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.services.search.ErlSearchScope;
@@ -131,13 +130,8 @@ public class ErlSearchQuery implements ISearchQuery {
                 monitor.worked(progress);
                 if (monitor.isCanceled()) {
                     try {
-                        ErlangEngine
-                                .getInstance()
-                                .getSearchServerService()
-                                .cancelSearch(
-                                        BackendCore.getBackendManager()
-                                                .getIdeBackend().getRpcSite(),
-                                        backgroundSearchPid);
+                        ErlangEngine.getInstance().getSearchServerService()
+                                .cancelSearch(backgroundSearchPid);
                     } catch (final RpcException e) {
                     }
                 }
@@ -149,9 +143,7 @@ public class ErlSearchQuery implements ISearchQuery {
             ErlangEngine
                     .getInstance()
                     .getSearchServerService()
-                    .startFindRefs(
-                            BackendCore.getBackendManager().getIdeBackend()
-                                    .getRpcSite(), pattern, reducedScope,
+                    .startFindRefs(pattern, reducedScope,
                             ErlangEngine.getInstance().getStateDir(), callback,
                             false);
         } catch (final RpcException e) {

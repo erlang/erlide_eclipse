@@ -8,7 +8,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -58,7 +57,5 @@ public interface IBackendManager extends IEpmdListener {
             final String moduleName);
 
     IBackend getByProcess(IProcess ertsProcess);
-
-    Bundle getBundle();
 
 }

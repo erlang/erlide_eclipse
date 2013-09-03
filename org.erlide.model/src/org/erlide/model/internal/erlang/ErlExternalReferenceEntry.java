@@ -50,7 +50,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
                 ModelUtils.getProject(this).getWorkspaceProject());
         if (backend != null) {
             final List<String> files = ErlangEngine.getInstance()
-                    .getOpenService().getLibFiles(backend, entry);
+                    .getOpenService().getLibFiles(entry);
             final List<IErlModule> children = Lists
                     .newArrayListWithCapacity(files.size());
             for (final String file : files) {

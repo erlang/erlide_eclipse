@@ -16,7 +16,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
@@ -27,7 +26,6 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.search.XrefService;
 import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.jinterface.AsyncCaller;
@@ -99,10 +97,8 @@ public class CallHierarchyAction extends Action {
 
             @Override
             protected IRpcFuture call() throws BackendException {
-                final IRpcSite b = BackendCore.getBackendManager()
-                        .getIdeBackend().getRpcSite();
-                final IRpcFuture result = xrefService.addProject(b,
-                        ModelUtils.getProject(module));
+                final IRpcFuture result = xrefService.addProject(ModelUtils
+                        .getProject(module));
                 return result;
             }
 
