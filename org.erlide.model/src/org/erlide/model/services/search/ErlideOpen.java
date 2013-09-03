@@ -28,8 +28,11 @@ public class ErlideOpen implements OpenService {
 
     private final IRpcSite backend;
 
-    public ErlideOpen(final IRpcSite backend) {
+    private final String stateDir;
+
+    public ErlideOpen(final IRpcSite backend, String stateDir) {
         this.backend = backend;
+        this.stateDir = stateDir;
     }
 
     @Override
@@ -100,7 +103,7 @@ public class ErlideOpen implements OpenService {
         return null;
     }
 
-    public static List<ExternalTreeEntry> getExternalModuleTree(
+    public List<ExternalTreeEntry> getExternalModuleTree(
             final IRpcSite backend, final String externalModules,
             final OtpErlangList pathVars) {
         ErlLogger.debug("open:external_module_tree -> " + externalModules);
@@ -158,8 +161,7 @@ public class ErlideOpen implements OpenService {
         return null;
     }
 
-    public static Map<String, List<String>> getOtpLibSrcIncludes(
-            final IRpcSite backend, String stateDir) {
+    public Map<String, List<String>> getOtpLibSrcIncludes() {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
                     "get_otp_lib_src_includes", "s", stateDir);
@@ -225,6 +227,19 @@ public class ErlideOpen implements OpenService {
         } catch (final RpcException e) {
             ErlLogger.error(e);
         }
+        return null;
+    }
+
+    @Override
+    public List<ExternalTreeEntry> getExternalModuleTree(
+            String externalModules, OtpErlangList pathVars) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<List<String>> getLibSrcInclude(List<String> libList) {
+        // TODO Auto-generated method stub
         return null;
     }
 
