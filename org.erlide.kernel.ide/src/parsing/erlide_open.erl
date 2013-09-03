@@ -133,27 +133,15 @@ get_includes_in_dir(Dir) ->
 %%
 
 filter_includes(Files) ->
-    filter_includes(Files, []).
-
-filter_includes([], Acc) ->
-    lists:reverse(Acc);
-filter_includes([Filename | Rest], Acc) ->
-    case filename:extension(Filename) of
-        ".hrl" ->
-            filter_includes(Rest, [Filename | Acc]);
-        _ ->
-            filter_includes(Rest, Acc)
-    end.
+	[File || File <- Files, filename:extension(File) == ".hrl"].
 
 get_lib_dir(Dir) ->
-    B = filename:basename(Dir),
-    case B of
+    case filename:basename(Dir) of
         "ebin" ->
             filename:dirname(Dir);
         _ ->
             Dir
     end.
-
 
 try_open(Offset, TokensWComments, BeforeReversedWComments, Context) ->
     Tokens = erlide_text:strip_comments(TokensWComments),

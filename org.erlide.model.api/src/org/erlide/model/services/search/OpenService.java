@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -59,7 +60,7 @@ public interface OpenService {
         }
     }
 
-    List<ExternalTreeEntry> getExternalModuleTree(final String externalModules,
+    List<ExternalTreeEntry> getExternalModuleTree(IRpcSite backend, final String externalModules,
             final OtpErlangList pathVars);
 
     String getExternalInclude(final String filePath,
@@ -71,5 +72,5 @@ public interface OpenService {
 
     Collection<String> getIncludesInDir(final String directory);
 
-	Map<String, List<String>> getOtpLibSrcIncludes();
+	Map<String, List<String>> getOtpLibSrcIncludes(IRpcSite backend);
 }

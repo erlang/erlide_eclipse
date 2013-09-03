@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IParent;
+import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.internal.root.ErlModel;
 import org.erlide.model.internal.root.ErlModelCache;
@@ -66,21 +67,27 @@ public class ErlExternalReferenceEntryList extends Openable implements
         if (externalModuleTree == null || externalIncludeTree == null) {
             final OtpErlangList pathVars = ErlangEngine.getInstance()
                     .getModel().getPathVars();
+            final IRpcSite backend = ModelPlugin.getDefault().getBackend(
+                    project.getWorkspaceProject());
             if (externalModuleTree == null && externalModules.length() > 0) {
                 if (pm != null) {
                     pm.worked(1);
                 }
-                externalModuleTree = ErlangEngine.getInstance()
+                externalModuleTree = ErlangEngine
+                        .getInstance()
                         .getOpenService()
-                        .getExternalModuleTree(externalModules, pathVars);
+                        .getExternalModuleTree(backend, externalModules,
+                                pathVars);
             }
             if (externalIncludeTree == null && externalIncludes.length() > 0) {
                 if (pm != null) {
                     pm.worked(1);
                 }
-                externalIncludeTree = ErlangEngine.getInstance()
+                externalIncludeTree = ErlangEngine
+                        .getInstance()
                         .getOpenService()
-                        .getExternalModuleTree(externalIncludes, pathVars);
+                        .getExternalModuleTree(backend, externalIncludes,
+                                pathVars);
             }
         }
         setChildren(null);
