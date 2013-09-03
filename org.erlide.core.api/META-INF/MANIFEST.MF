@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Core Api
 Bundle-SymbolicName: org.erlide.core.api
 Bundle-Version: 0.20.4.qualifier
-Bundle-Activator: org.erlide.core.api.Activator
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.6.1",
@@ -13,6 +12,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.backend;bundle-version="0.19.0",
  org.erlide.libs;bundle-version="1.10.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ActivationPolicy: lazy
-Export-Package: org.erlide.core.api
+
 
