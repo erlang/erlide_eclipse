@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.eclipse.ui;bundle-version="3.7.0",
  org.erlide.ui,
  org.erlide.core
-Export-Package: org.erlide.branding;uses:="org.eclipse.swt.widgets,org.eclipse.ui.splash"
+Export-Package: org.erlide.branding
 Bundle-Vendor: %vendor
 Bundle-ClassPath: .
 Bundle-Localization: plugin
