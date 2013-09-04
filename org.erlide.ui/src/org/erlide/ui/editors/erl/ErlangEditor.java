@@ -382,7 +382,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
         fContextMenuGroup.setContext(null);
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(final Class required) {
         if (IContentOutlinePage.class.equals(required)) {

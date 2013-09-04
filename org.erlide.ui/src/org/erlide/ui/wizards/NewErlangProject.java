@@ -175,7 +175,6 @@ public class NewErlangProject extends Wizard implements INewWizard {
      * @param monitor
      *            reports progress on this object
      */
-    @SuppressWarnings("serial")
     protected void createProject(final IProgressMonitor monitor) {
         monitor.beginTask(ErlideUIPlugin
                 .getResourceString("wizards.messages.creatingproject"), 50);
