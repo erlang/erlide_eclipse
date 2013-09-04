@@ -1,7 +1,6 @@
 package org.erlide.annotations;
 
 import java.util.List;
-
 import org.eclipse.xtend.lib.macro.TransformationContext;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy.CompilationContext;
@@ -39,64 +38,64 @@ public abstract class MethodMemoizer {
     {
       MutableTypeDeclaration _declaringType = this.method.getDeclaringType();
       final Procedure1<MutableTypeDeclaration> _function = new Procedure1<MutableTypeDeclaration>() {
-          public void apply(final MutableTypeDeclaration it) {
-            String _initMethodName = MethodMemoizer.this.initMethodName();
-            final Procedure1<MutableMethodDeclaration> _function = new Procedure1<MutableMethodDeclaration>() {
-                public void apply(final MutableMethodDeclaration init) {
-                  boolean _isStatic = MethodMemoizer.this.method.isStatic();
-                  init.setStatic(_isStatic);
-                  init.setVisibility(Visibility.PRIVATE);
-                  TypeReference _wrappedReturnType = MethodMemoizer.this.wrappedReturnType();
-                  init.setReturnType(_wrappedReturnType);
-                  List<MutableParameterDeclaration> _parameters = MethodMemoizer.this.method.getParameters();
-                  final Procedure1<MutableParameterDeclaration> _function = new Procedure1<MutableParameterDeclaration>() {
-                      public void apply(final MutableParameterDeclaration it) {
-                        String _simpleName = it.getSimpleName();
-                        TypeReference _type = it.getType();
-                        init.addParameter(_simpleName, _type);
-                      }
-                    };
-                  IterableExtensions.<MutableParameterDeclaration>forEach(_parameters, _function);
-                  List<TypeReference> _exceptions = MethodMemoizer.this.method.getExceptions();
-                  init.setExceptions(((TypeReference[])Conversions.unwrapArray(_exceptions, TypeReference.class)));
-                  Expression _body = MethodMemoizer.this.method.getBody();
-                  init.setBody(_body);
+        public void apply(final MutableTypeDeclaration it) {
+          String _initMethodName = MethodMemoizer.this.initMethodName();
+          final Procedure1<MutableMethodDeclaration> _function = new Procedure1<MutableMethodDeclaration>() {
+            public void apply(final MutableMethodDeclaration init) {
+              boolean _isStatic = MethodMemoizer.this.method.isStatic();
+              init.setStatic(_isStatic);
+              init.setVisibility(Visibility.PRIVATE);
+              TypeReference _wrappedReturnType = MethodMemoizer.this.wrappedReturnType();
+              init.setReturnType(_wrappedReturnType);
+              List<MutableParameterDeclaration> _parameters = MethodMemoizer.this.method.getParameters();
+              final Procedure1<MutableParameterDeclaration> _function = new Procedure1<MutableParameterDeclaration>() {
+                public void apply(final MutableParameterDeclaration it) {
+                  String _simpleName = it.getSimpleName();
+                  TypeReference _type = it.getType();
+                  init.addParameter(_simpleName, _type);
                 }
               };
-            it.addMethod(_initMethodName, _function);
-            String _cacheFieldName = MethodMemoizer.this.cacheFieldName();
-            final Procedure1<MutableFieldDeclaration> _function_1 = new Procedure1<MutableFieldDeclaration>() {
-                public void apply(final MutableFieldDeclaration it) {
-                  boolean _isStatic = MethodMemoizer.this.method.isStatic();
-                  it.setStatic(_isStatic);
-                  TypeReference _cacheFieldType = MethodMemoizer.this.cacheFieldType();
-                  it.setType(_cacheFieldType);
-                  final CompilationStrategy _function = new CompilationStrategy() {
-                      public CharSequence compile(final CompilationContext it) {
-                        CharSequence _cacheFieldInit = MethodMemoizer.this.cacheFieldInit(it);
-                        return _cacheFieldInit;
-                      }
-                    };
-                  it.setInitializer(_function);
+              IterableExtensions.<MutableParameterDeclaration>forEach(_parameters, _function);
+              List<TypeReference> _exceptions = MethodMemoizer.this.method.getExceptions();
+              init.setExceptions(((TypeReference[])Conversions.unwrapArray(_exceptions, TypeReference.class)));
+              Expression _body = MethodMemoizer.this.method.getBody();
+              init.setBody(_body);
+            }
+          };
+          it.addMethod(_initMethodName, _function);
+          String _cacheFieldName = MethodMemoizer.this.cacheFieldName();
+          final Procedure1<MutableFieldDeclaration> _function_1 = new Procedure1<MutableFieldDeclaration>() {
+            public void apply(final MutableFieldDeclaration it) {
+              boolean _isStatic = MethodMemoizer.this.method.isStatic();
+              it.setStatic(_isStatic);
+              TypeReference _cacheFieldType = MethodMemoizer.this.cacheFieldType();
+              it.setType(_cacheFieldType);
+              final CompilationStrategy _function = new CompilationStrategy() {
+                public CharSequence compile(final CompilationContext it) {
+                  CharSequence _cacheFieldInit = MethodMemoizer.this.cacheFieldInit(it);
+                  return _cacheFieldInit;
                 }
               };
-            it.addField(_cacheFieldName, _function_1);
-          }
-        };
+              it.setInitializer(_function);
+            }
+          };
+          it.addField(_cacheFieldName, _function_1);
+        }
+      };
       ObjectExtensions.<MutableTypeDeclaration>operator_doubleArrow(_declaringType, _function);
       final Procedure1<MutableMethodDeclaration> _function_1 = new Procedure1<MutableMethodDeclaration>() {
-          public void apply(final MutableMethodDeclaration it) {
-            final CompilationStrategy _function = new CompilationStrategy() {
-                public CharSequence compile(final CompilationContext it) {
-                  CharSequence _cacheCall = MethodMemoizer.this.cacheCall(it);
-                  return _cacheCall;
-                }
-              };
-            it.setBody(_function);
-            TypeReference _wrappedReturnType = MethodMemoizer.this.wrappedReturnType();
-            it.setReturnType(_wrappedReturnType);
-          }
-        };
+        public void apply(final MutableMethodDeclaration it) {
+          final CompilationStrategy _function = new CompilationStrategy() {
+            public CharSequence compile(final CompilationContext it) {
+              CharSequence _cacheCall = MethodMemoizer.this.cacheCall(it);
+              return _cacheCall;
+            }
+          };
+          it.setBody(_function);
+          TypeReference _wrappedReturnType = MethodMemoizer.this.wrappedReturnType();
+          it.setReturnType(_wrappedReturnType);
+        }
+      };
       MutableMethodDeclaration _doubleArrow = ObjectExtensions.<MutableMethodDeclaration>operator_doubleArrow(
         this.method, _function_1);
       _xblockexpression = (_doubleArrow);

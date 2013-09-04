@@ -1,16 +1,15 @@
 package org.erlide.runtime.api;
 
+import com.ericsson.otp.erlang.OtpErlangException;
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.google.common.base.Objects;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.TermParserException;
-
-import com.ericsson.otp.erlang.OtpErlangException;
-import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangObject;
-import com.google.common.base.Objects;
 
 @SuppressWarnings("all")
 public class MemoryStatus {

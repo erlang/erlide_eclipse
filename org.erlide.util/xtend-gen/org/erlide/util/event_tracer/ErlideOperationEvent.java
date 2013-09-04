@@ -1,6 +1,7 @@
 package org.erlide.util.event_tracer;
 
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
+import org.erlide.util.event_tracer.ErlideEvent;
 
 @SuppressWarnings("all")
 public abstract class ErlideOperationEvent extends ErlideEvent {

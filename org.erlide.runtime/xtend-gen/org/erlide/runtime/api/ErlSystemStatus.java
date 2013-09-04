@@ -1,18 +1,18 @@
 package org.erlide.runtime.api;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
-
-import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangTuple;
+import org.erlide.runtime.api.MemoryStatus;
+import org.erlide.runtime.api.ProcessStatus;
 
 @SuppressWarnings("all")
 public class ErlSystemStatus {
@@ -37,11 +37,11 @@ public class ErlSystemStatus {
     OtpErlangObject _elementAt_2 = tuple.elementAt(2);
     OtpErlangObject[] _elements = ((OtpErlangList) _elementAt_2).elements();
     final Function1<OtpErlangObject,String> _function = new Function1<OtpErlangObject,String>() {
-        public String apply(final OtpErlangObject it) {
-          String _atomValue = ((OtpErlangAtom) it).atomValue();
-          return _atomValue;
-        }
-      };
+      public String apply(final OtpErlangObject it) {
+        String _atomValue = ((OtpErlangAtom) it).atomValue();
+        return _atomValue;
+      }
+    };
     List<String> _map = ListExtensions.<OtpErlangObject, String>map(((List<OtpErlangObject>)Conversions.doWrapArray(_elements)), _function);
     this.names = _map;
   }

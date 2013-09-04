@@ -1,13 +1,12 @@
 package org.erlide.backend.internal;
 
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.eventbus.Subscribe;
 import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangEventHandler;
-
-import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangTuple;
-import com.google.common.eventbus.Subscribe;
 
 @SuppressWarnings("all")
 public class SystemMonitorHandler extends ErlangEventHandler {

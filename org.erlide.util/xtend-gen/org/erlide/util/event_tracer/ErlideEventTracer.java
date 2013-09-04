@@ -2,6 +2,15 @@ package org.erlide.util.event_tracer;
 
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
 import org.erlide.util.IDisposable;
+import org.erlide.util.event_tracer.ErlideCrashEvent;
+import org.erlide.util.event_tracer.ErlideEvent;
+import org.erlide.util.event_tracer.ErlideEventTracerHandler;
+import org.erlide.util.event_tracer.ErlideOperationEndEvent;
+import org.erlide.util.event_tracer.ErlideOperationStartEvent;
+import org.erlide.util.event_tracer.ErlideResetEvent;
+import org.erlide.util.event_tracer.ErlideSessionEvent;
+import org.erlide.util.event_tracer.ErlideStatusEvent;
+import org.erlide.util.event_tracer.NullEventHandler;
 
 @SuppressWarnings("all")
 public class ErlideEventTracer implements IDisposable {

@@ -10,13 +10,14 @@ import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.IDisposable;
+import org.erlide.util.event_tracer.ErlideEvent;
+import org.erlide.util.event_tracer.ErlideSessionEvent;
 
 @SuppressWarnings("all")
 public class ErlideEventTracerHandler implements IDisposable {
