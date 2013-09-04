@@ -88,9 +88,15 @@ public class LiveExpressionsView extends ViewPart implements
         String fExpr;
         private String cachedValue = "";
         boolean doEval = false;
+        private final IRpcSite b;
 
-        public LiveExpr(final String s) {
+        public LiveExpr(final IRpcSite b, final String s) {
             fExpr = s;
+            this.b = b;
+        }
+
+        public LiveExpr(final String string) {
+            this(ErlangEngine.getInstance().getBackend(), string);
         }
 
         public void setDoEval(final boolean eval) {
@@ -105,7 +111,6 @@ public class LiveExpressionsView extends ViewPart implements
         }
 
         private String evaluate() {
-            final IRpcSite b = ErlangEngine.getInstance().getBackend();
             final BackendEvalResult r = EvalHelper.eval(b, fExpr + ".", null);
             if (r.isOk()) {
                 return r.getValue().toString();
