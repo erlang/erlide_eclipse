@@ -15,6 +15,7 @@ import org.erlide.runtime.api.IRpcSite;
 
 public interface IErlangEngine {
 
+    @Deprecated
     IRpcSite getBackend();
 
     IErlModel getModel();
