@@ -11,7 +11,9 @@ import org.erlide.model.internal.erlang.ModelInternalUtils;
 import org.erlide.model.internal.root.ErlModel;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.services.ErlideImport;
+import org.erlide.model.services.ErlideProclist;
 import org.erlide.model.services.ImportService;
+import org.erlide.model.services.ProclistService;
 import org.erlide.model.services.cleanup.CleanupProvider;
 import org.erlide.model.services.cleanup.ErlTidyCleanupProvider;
 import org.erlide.model.services.codeassist.ContextAssistService;
@@ -155,5 +157,10 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public EdocExportService getEdocExportService() {
         return new ErlideEdocExport(backend);
+    }
+
+    @Override
+    public ProclistService getProclistService() {
+        return new ErlideProclist();
     }
 }

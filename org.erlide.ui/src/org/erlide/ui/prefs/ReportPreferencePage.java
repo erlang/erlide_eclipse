@@ -190,6 +190,7 @@ public class ReportPreferencePage extends PreferencePage implements
     }
 
     private static void fetchErlangSystemInfo() {
+        @SuppressWarnings("deprecation")
         final IRpcSite ideBackend = ErlangEngine.getInstance().getBackend();
         final String info = getSystemInfo(ideBackend);
         ErlLogger.info("\n++++++++++++++++++++++\n" + info);

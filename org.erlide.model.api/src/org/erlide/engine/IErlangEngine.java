@@ -4,6 +4,7 @@ import org.eclipse.core.resources.IResource;
 import org.erlide.model.erlang.ErlangToolkit;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.services.ImportService;
+import org.erlide.model.services.ProclistService;
 import org.erlide.model.services.cleanup.CleanupProvider;
 import org.erlide.model.services.codeassist.ContextAssistService;
 import org.erlide.model.services.edoc.EdocExportService;
@@ -48,5 +49,7 @@ public interface IErlangEngine {
     ImportService getImportService();
 
     EdocExportService getEdocExportService();
+
+    ProclistService getProclistService();
 
 }

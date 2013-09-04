@@ -105,7 +105,8 @@ public class ProcessListView extends ViewPart {
                 return new OtpErlangObject[] {};
             }
 
-            final OtpErlangList r = ErlideProclist.getProcessList(backend);
+            final OtpErlangList r = ErlangEngine.getInstance()
+                    .getProclistService().getProcessList(backend);
             if (r == null || r.arity() == 0) {
                 return new OtpErlangObject[] {};
             }
@@ -238,13 +239,15 @@ public class ProcessListView extends ViewPart {
         // TODO this is wrong - all backends should be inited
         final IRpcSite ideBackend = ErlangEngine.getInstance().getBackend();
         if (ideBackend != null) {
-            ErlideProclist.processListInit(ideBackend);
+            ErlangEngine.getInstance().getProclistService()
+                    .processListInit(ideBackend);
         }
         BackendCore.getBackendManager().forEachBackend(
                 new Procedure1<IBackend>() {
                     @Override
                     public void apply(final IBackend b) {
-                        ErlideProclist.processListInit(b.getRpcSite());
+                        ErlangEngine.getInstance().getProclistService()
+                                .processListInit(b.getRpcSite());
                     }
                 });
 
@@ -319,8 +322,9 @@ public class ProcessListView extends ViewPart {
                 final OtpErlangPid pid = (OtpErlangPid) ((OtpErlangTuple) obj)
                         .elementAt(0);
 
-                final OtpErlangObject r = ErlideProclist.getProcessInfo(
-                        getBackend().getRpcSite(), pid);
+                final OtpErlangObject r = ErlangEngine.getInstance()
+                        .getProclistService()
+                        .getProcessInfo(getBackend().getRpcSite(), pid);
                 if (r instanceof OtpErlangList) {
                     final OtpErlangList l = (OtpErlangList) r;
                     final StringBuilder s = new StringBuilder();
