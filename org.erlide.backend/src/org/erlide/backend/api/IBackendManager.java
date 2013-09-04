@@ -15,6 +15,7 @@ import org.osgi.framework.Bundle;
 
 public interface IBackendManager extends IEpmdListener {
 
+    @Deprecated
     IBackend getIdeBackend();
 
     IBackend getBuildBackend(final IProject project) throws BackendException;

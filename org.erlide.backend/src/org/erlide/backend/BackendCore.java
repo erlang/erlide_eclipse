@@ -28,6 +28,10 @@ public class BackendCore {
                 .getRuntimeInfoCatalog(new RuntimeInfoPreferencesSerializer());
     }
 
+    /*
+     * The ide backend should not be accessible outside the engine
+     */
+    @Deprecated
     public static IRpcSite getBuildOrIdeBackend(final IProject project) {
         final IBackendManager manager = getBackendManager();
         if (project != null) {
