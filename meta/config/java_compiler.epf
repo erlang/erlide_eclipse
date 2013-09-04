@@ -1,9 +1,9 @@
-#Wed Sep 04 17:32:29 CEST 2013
+#Wed Sep 04 18:06:39 CEST 2013
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.unavoidableGenericTypeProblems=disabled
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.missingHashCodeMethod=warning
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.redundantSuperinterface=warning
 file_export_version=3.0
-/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.autoboxing=warning
+/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.autoboxing=ignore
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.suppressOptionalErrors=enabled
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.nullSpecViolation=warning
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.annotation.nullanalysis=enabled
@@ -11,7 +11,7 @@ file_export_version=3.0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.possibleAccidentalBooleanAssignment=warning
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.annotation.inheritNullAnnotations=enabled
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.unnecessaryTypeCheck=warning
-/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.syntheticAccessEmulation=warning
+/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.syntheticAccessEmulation=ignore
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.fallthroughCase=warning
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.redundantSpecificationOfTypeArguments=warning
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.explicitlyClosedAutoCloseable=warning
