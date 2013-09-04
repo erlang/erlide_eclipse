@@ -1052,9 +1052,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
             return new IllegalArgumentException(
                     "The file's actual encoding doesn't match the declared one",
                     e);
-        } else {
-            return e;
         }
+        return e;
     }
 
     protected boolean isActivePart() {

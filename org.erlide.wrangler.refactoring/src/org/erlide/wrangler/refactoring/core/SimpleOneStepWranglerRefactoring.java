@@ -48,9 +48,8 @@ public abstract class SimpleOneStepWranglerRefactoring extends
             // RefactoringState.WARNING) {
             // return RefactoringStatus.createWarningStatus(message
             // .getMessageString());
-        } else {
-            return RefactoringStatus.createFatalErrorStatus(message
-                    .getMessageString());
         }
+        return RefactoringStatus.createFatalErrorStatus(message
+                .getMessageString());
     }
 }

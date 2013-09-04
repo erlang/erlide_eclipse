@@ -77,9 +77,8 @@ public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring 
 
         if (res.getValue().getClass().equals(OtpErlangString.class)) {
             return ((OtpErlangString) res.getValue()).stringValue();
-        } else {
-            return "";
         }
+        return "";
     }
 
 }

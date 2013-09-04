@@ -107,9 +107,8 @@ public class ResourceUtil {
     public static boolean samePath(final String p1, final String p2) {
         if (EFS.getLocalFileSystem().isCaseSensitive()) {
             return p1.equals(p2);
-        } else {
-            return p1.equalsIgnoreCase(p2);
         }
+        return p1.equalsIgnoreCase(p2);
     }
 
     private final static class FindResourceVisitor implements IResourceVisitor {

@@ -25,13 +25,11 @@ public class NodeLabelProvider extends LabelProvider implements
             if (node.isEnabled()) {
                 return Activator.getDefault().getImageRegistry()
                         .get(Images.CHECKED.toString());
-            } else {
-                return Activator.getDefault().getImageRegistry()
-                        .get(Images.UNCHECKED.toString());
             }
-        } else {
-            return null;
+            return Activator.getDefault().getImageRegistry()
+                    .get(Images.UNCHECKED.toString());
         }
+        return null;
     }
 
     @Override

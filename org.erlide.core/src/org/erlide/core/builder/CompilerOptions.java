@@ -256,9 +256,8 @@ public class CompilerOptions {
         final Object value = options.get(opt);
         if (opt instanceof BooleanOption) {
             return ((Boolean) value).booleanValue();
-        } else {
-            return value != null;
         }
+        return value != null;
     }
 
     public Iterable<String> getPathsOption(final PathsOption option) {

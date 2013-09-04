@@ -55,9 +55,8 @@ public abstract class AbstractResultTreeParent extends AbstractResultTreeObject 
         if (children != null) {
             return children.toArray(new AbstractResultTreeObject[children
                     .size()]);
-        } else {
-            return new AbstractResultTreeObject[0];
         }
+        return new AbstractResultTreeObject[0];
     }
 
     /**

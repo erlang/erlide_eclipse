@@ -457,15 +457,14 @@ public final class WranglerUtils {
 
         if (files.length > 0) {
             return files[0];// else
-        } else {
-            return root.getFile(path);
-            /*
-             * if (file != null) return file;
-             */
-            /*
-             * else throw new WranglerException("File not found!");
-             */
         }
+        return root.getFile(path);
+        /*
+         * if (file != null) return file;
+         */
+        /*
+         * else throw new WranglerException("File not found!");
+         */
     }
 
     /**

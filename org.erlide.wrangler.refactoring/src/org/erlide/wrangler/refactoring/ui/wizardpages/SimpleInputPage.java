@@ -115,11 +115,10 @@ public class SimpleInputPage extends InputPage {
             setErrorMessage(null);
             setPageComplete(true);
             return true;
-        } else {
-            setPageComplete(false);
-            setErrorMessage(inputErrorMsg);
-            return false;
         }
+        setPageComplete(false);
+        setErrorMessage(inputErrorMsg);
+        return false;
     }
 
     /**

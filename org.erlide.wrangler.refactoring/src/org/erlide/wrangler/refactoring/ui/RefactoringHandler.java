@@ -474,9 +474,8 @@ public class RefactoringHandler extends AbstractHandler {
                     public String isValid(final String newText) {
                         if (internalV.isValid(newText)) {
                             return null;
-                        } else {
-                            return "Please type a correct module name!";
                         }
+                        return "Please type a correct module name!";
                     }
                 });
     }

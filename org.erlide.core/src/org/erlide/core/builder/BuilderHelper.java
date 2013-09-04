@@ -415,9 +415,8 @@ public final class BuilderHelper {
                 return BuilderHelper.compileErl(backend, res.getLocation(),
                         outputDir, includeDirs, compilerOptions);
 
-            } else {
-                return null;
             }
+            return null;
         } catch (final Exception e) {
             ErlLogger.warn(e);
             return null;

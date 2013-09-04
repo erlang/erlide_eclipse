@@ -95,9 +95,8 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
                     .getOffset());
             if (element == null) {
                 return module;
-            } else {
-                return element;
             }
+            return element;
 
         } catch (final ErlModelException e) {
         }
@@ -142,12 +141,10 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
             if (si.isVariable()) {
                 return SelectionKind.VARIABLE;
                 // TODO:: expression checking is not implemented
-            } else {
-                return getKind();
             }
-        } else {
             return getKind();
         }
+        return getKind();
     }
 
     @Override

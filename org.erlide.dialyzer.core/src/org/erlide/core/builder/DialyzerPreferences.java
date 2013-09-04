@@ -45,9 +45,8 @@ public final class DialyzerPreferences {
                 projectPrefs.load();
                 projectPrefs.pltPaths = prefs.pltPaths;
                 return projectPrefs;
-            } else {
-                return prefs;
             }
+            return prefs;
         } catch (final BackingStoreException e1) {
             e1.printStackTrace();
             throw new CoreException(

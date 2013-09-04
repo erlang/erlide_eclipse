@@ -312,11 +312,9 @@ public abstract class AbstractErlContentAssistProcessor implements
                 if (result.isEmpty()) {
                     ErlLogger.debug("no results");
                     return getNoCompletion(offset);
-                } else {
-                    ErlLogger.debug("%d results", result.size());
-                    return result
-                            .toArray(new ICompletionProposal[result.size()]);
                 }
+                ErlLogger.debug("%d results", result.size());
+                return result.toArray(new ICompletionProposal[result.size()]);
             } catch (final Exception e) {
                 ErlLogger.warn(e);
                 return null;

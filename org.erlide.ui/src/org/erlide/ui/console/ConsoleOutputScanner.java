@@ -47,13 +47,12 @@ public class ConsoleOutputScanner implements ITokenScanner {
     public IToken nextToken() {
         if (gotten) {
             return Token.EOF;
-        } else {
-            gotten = true;
-            if (text == null) {
-                return Token.EOF;
-            }
-            return new Token(getAttribute(text));
         }
+        gotten = true;
+        if (text == null) {
+            return Token.EOF;
+        }
+        return new Token(getAttribute(text));
     }
 
     private TextAttribute getAttribute(final String string) {

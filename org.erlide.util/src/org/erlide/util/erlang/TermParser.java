@@ -114,19 +114,18 @@ public class TermParser {
                 // can't happen
                 return null;
             }
-        } else {
-            OtpErlangObject atail = tail;
-            if (t.kind == TokenKind.CONS) {
-                tokens.remove(0);
-                atail = parse(tokens);
-            } else {
-                stack.push(parse(tokens));
-                if (tokens.get(0).kind == TokenKind.COMMA) {
-                    tokens.remove(0);
-                }
-            }
-            return parseList(tokens, stack, atail);
         }
+        OtpErlangObject atail = tail;
+        if (t.kind == TokenKind.CONS) {
+            tokens.remove(0);
+            atail = parse(tokens);
+        } else {
+            stack.push(parse(tokens));
+            if (tokens.get(0).kind == TokenKind.COMMA) {
+                tokens.remove(0);
+            }
+        }
+        return parseList(tokens, stack, atail);
     }
 
     private static OtpErlangObject parseTuple(final List<Token> tokens,
@@ -139,17 +138,15 @@ public class TermParser {
             tokens.remove(0);
             return new OtpErlangTuple(stack.toArray(new OtpErlangObject[stack
                     .size()]));
-        } else {
-            if (t.kind == TokenKind.CONS) {
-                throw new TermParserException("cons is invalid in tuple");
-            } else {
-                stack.push(parse(tokens));
-                if (tokens.get(0).kind == TokenKind.COMMA) {
-                    tokens.remove(0);
-                }
-            }
-            return parseTuple(tokens, stack);
         }
+        if (t.kind == TokenKind.CONS) {
+            throw new TermParserException("cons is invalid in tuple");
+        }
+        stack.push(parse(tokens));
+        if (tokens.get(0).kind == TokenKind.COMMA) {
+            tokens.remove(0);
+        }
+        return parseTuple(tokens, stack);
     }
 
     private static enum TokenKind {

@@ -226,22 +226,21 @@ public class TraceBackend {
         if (((OtpErlangAtom) tuple.elementAt(0)).atomValue().equals("error")) {
             errorObject = tuple.elementAt(1);
             return TracingStatus.ERROR;
+        }
+        final OtpErlangList nodeNames = (OtpErlangList) tuple.elementAt(1);
+        activatedNodes = new ArrayList<String>();
+        for (final OtpErlangObject nodeName : nodeNames) {
+            final String nodeNameString = ((OtpErlangAtom) nodeName)
+                    .atomValue();
+            activatedNodes.add(nodeNameString);
+            notActivatedNodes.remove(nodeNameString);
+        }
+        if (activatedNodes.size() == 0) {
+            return TracingStatus.NO_ACTIVATED_NODES;
+        } else if (notActivatedNodes.size() != 0) {
+            return TracingStatus.NOT_ALL_NODES_ACTIVATED;
         } else {
-            final OtpErlangList nodeNames = (OtpErlangList) tuple.elementAt(1);
-            activatedNodes = new ArrayList<String>();
-            for (final OtpErlangObject nodeName : nodeNames) {
-                final String nodeNameString = ((OtpErlangAtom) nodeName)
-                        .atomValue();
-                activatedNodes.add(nodeNameString);
-                notActivatedNodes.remove(nodeNameString);
-            }
-            if (activatedNodes.size() == 0) {
-                return TracingStatus.NO_ACTIVATED_NODES;
-            } else if (notActivatedNodes.size() != 0) {
-                return TracingStatus.NOT_ALL_NODES_ACTIVATED;
-            } else {
-                return TracingStatus.OK;
-            }
+            return TracingStatus.OK;
         }
     }
 

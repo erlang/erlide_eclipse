@@ -60,9 +60,8 @@ public class TracingResultsNode extends TreeNode implements
         }
         if (!startDate.equals(trn.startDate)) {
             return startDate.compareTo(trn.startDate);
-        } else {
-            return endDate.compareTo(trn.endDate);
         }
+        return endDate.compareTo(trn.endDate);
     }
 
     public Date getStartDate() {

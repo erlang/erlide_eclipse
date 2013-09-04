@@ -55,9 +55,8 @@ public class AddRefacHandler extends AbstractHandler {
                     public String isValid(final String newText) {
                         if (internalV.isValid(newText)) {
                             return null;
-                        } else {
-                            return "Please type a correct module name!";
                         }
+                        return "Please type a correct module name!";
                     }
                 });
 
@@ -79,19 +78,18 @@ public class AddRefacHandler extends AbstractHandler {
         if (!addAndLoad(callbackModule, type)) {
             showErrorMesg("Can not load callback module");
             return null;
-        } else {
-            if (type.equals(RefacType.ELEMENTARY)) {
-                UserRefactoringsManager.getInstance().addMyElementary(
-                        callbackModule);
-            } else {
-                UserRefactoringsManager.getInstance().addMyComposite(
-                        callbackModule);
-            }
-
-            MessageDialog.openInformation(PlatformUI.getWorkbench()
-                    .getActiveWorkbenchWindow().getShell(),
-                    "Add user-defined refactoring", "Success!");
         }
+        if (type.equals(RefacType.ELEMENTARY)) {
+            UserRefactoringsManager.getInstance().addMyElementary(
+                    callbackModule);
+        } else {
+            UserRefactoringsManager.getInstance()
+                    .addMyComposite(callbackModule);
+        }
+
+        MessageDialog.openInformation(PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getShell(),
+                "Add user-defined refactoring", "Success!");
 
         return null;
     }

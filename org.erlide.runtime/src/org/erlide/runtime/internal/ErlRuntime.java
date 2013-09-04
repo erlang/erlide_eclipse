@@ -353,6 +353,10 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     }
 
     private class ErlideNodeStatus extends OtpNodeStatus {
+        public ErlideNodeStatus() {
+            // TODO Auto-generated constructor stub
+        }
+
         @Override
         public void remoteStatus(final String node, final boolean up,
                 final Object info) {
@@ -373,6 +377,10 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     }
 
     private class ErlRuntimeListener implements Listener {
+        public ErlRuntimeListener() {
+            // TODO Auto-generated constructor stub
+        }
+
         @Override
         public void terminated(final State from) {
             ErlLogger.debug(String.format(

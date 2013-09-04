@@ -60,14 +60,13 @@ public class OpenErlangAction extends Action {
                     && sSelection.getFirstElement() instanceof IErlElement) {
                 selectedElement = (IErlElement) sSelection.getFirstElement();
                 return true;
-            } else {
-                for (final Object element : sSelection.toList()) {
-                    if (element instanceof IProject) {
-                        final IProject project = (IProject) element;
-                        if (!project.isOpen()) {
-                            selectedClosedProjects.add(project);
-                            return true;
-                        }
+            }
+            for (final Object element : sSelection.toList()) {
+                if (element instanceof IProject) {
+                    final IProject project = (IProject) element;
+                    if (!project.isOpen()) {
+                        selectedClosedProjects.add(project);
+                        return true;
                     }
                 }
             }

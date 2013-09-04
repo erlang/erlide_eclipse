@@ -231,10 +231,8 @@ public class ErlangFileWizardPage extends WizardPage {
                 final IResource member = container.findMember(sourceDir);
                 if (member != null) {
                     return member.getFullPath();
-                } else {
-                    ErlLogger.warn("Could not find %s in %s", sourceDir,
-                            container);
                 }
+                ErlLogger.warn("Could not find %s in %s", sourceDir, container);
             }
         }
         return null;

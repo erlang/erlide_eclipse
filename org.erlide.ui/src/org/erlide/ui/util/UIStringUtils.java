@@ -45,9 +45,8 @@ public final class UIStringUtils {
                 }
             }
             return buf.toString();
-        } else {
-            return hoverInfo;// return initial
         }
+        return hoverInfo;// return initial
     }
 
     /**

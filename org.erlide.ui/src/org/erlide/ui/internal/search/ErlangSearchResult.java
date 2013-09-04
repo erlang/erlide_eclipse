@@ -158,9 +158,8 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
             if (module != null) {
                 if (file != null) {
                     return file.equals(module.getResource());
-                } else {
-                    return ese.getModuleName().equals(module.getFilePath());
                 }
+                return ese.getModuleName().equals(module.getFilePath());
             }
         }
         return false;

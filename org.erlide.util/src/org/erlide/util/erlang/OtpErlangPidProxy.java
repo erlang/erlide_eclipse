@@ -20,9 +20,8 @@ public class OtpErlangPidProxy extends OtpErlangPid {
     public String toString() {
         if (node.equals(node())) {
             return "#Pid<0." + id() + "." + serial() + ">";
-        } else {
-            return super.toString();
         }
+        return super.toString();
     }
 
     @Override

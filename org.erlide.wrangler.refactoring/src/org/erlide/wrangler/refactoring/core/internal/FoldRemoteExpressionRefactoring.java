@@ -80,39 +80,37 @@ public class FoldRemoteExpressionRefactoring extends
         if (functionClause == null) {
             return RefactoringStatus
                     .createFatalErrorStatus("No function clause was given!");
+        }
+        ExpressionPosRpcMessage m = new ExpressionPosRpcMessage();
+        final String path = selection.getFilePath();
+        final String moduleName = ErlangEngine.getInstance()
+                .getModelUtilService().getModule(functionClause)
+                .getModuleName();
+        final String functionName = functionClause.getFunctionName();
+        final int arity = functionClause.getArity();
+
+        int clauseIndex = 1;
+        if (!(functionClause instanceof IErlFunction)) {
+            // FIXME: avoid hacking!!!
+            clauseIndex = Integer
+                    .valueOf(functionClause.getName().substring(1));
+        }
+
+        m = (ExpressionPosRpcMessage) WranglerBackendManager
+                .getRefactoringBackend().callWithParser(m,
+                        "fold_expr_by_name_eclipse", "sssiixi", path,
+                        moduleName, functionName, arity, clauseIndex,
+                        selection.getSearchPath(),
+                        GlobalParameters.getTabWidth());
+
+        if (m.isSuccessful()) {
+            syntaxTree = m.getSyntaxTree();
+            // TODO: store positions, selectedpositions
+            positions = m.getPositionDefinitions(selection.getDocument());
+            selectedPositions = new ArrayList<IErlRange>();
         } else {
-
-            ExpressionPosRpcMessage m = new ExpressionPosRpcMessage();
-            final String path = selection.getFilePath();
-            final String moduleName = ErlangEngine.getInstance()
-                    .getModelUtilService().getModule(functionClause)
-                    .getModuleName();
-            final String functionName = functionClause.getFunctionName();
-            final int arity = functionClause.getArity();
-
-            int clauseIndex = 1;
-            if (!(functionClause instanceof IErlFunction)) {
-                // FIXME: avoid hacking!!!
-                clauseIndex = Integer.valueOf(functionClause.getName()
-                        .substring(1));
-            }
-
-            m = (ExpressionPosRpcMessage) WranglerBackendManager
-                    .getRefactoringBackend().callWithParser(m,
-                            "fold_expr_by_name_eclipse", "sssiixi", path,
-                            moduleName, functionName, arity, clauseIndex,
-                            selection.getSearchPath(),
-                            GlobalParameters.getTabWidth());
-
-            if (m.isSuccessful()) {
-                syntaxTree = m.getSyntaxTree();
-                // TODO: store positions, selectedpositions
-                positions = m.getPositionDefinitions(selection.getDocument());
-                selectedPositions = new ArrayList<IErlRange>();
-            } else {
-                return RefactoringStatus.createFatalErrorStatus(m
-                        .getMessageString());
-            }
+            return RefactoringStatus.createFatalErrorStatus(m
+                    .getMessageString());
         }
 
         return new RefactoringStatus();
@@ -131,10 +129,9 @@ public class FoldRemoteExpressionRefactoring extends
         if (message.isSuccessful()) {
             changedFiles = message.getRefactoringChangeset();
             return new RefactoringStatus();
-        } else {
-            return RefactoringStatus.createFatalErrorStatus(message
-                    .getMessageString());
         }
+        return RefactoringStatus.createFatalErrorStatus(message
+                .getMessageString());
     }
 
     @Override

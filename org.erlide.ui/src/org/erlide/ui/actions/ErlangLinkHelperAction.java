@@ -61,9 +61,8 @@ public class ErlangLinkHelperAction implements ILinkHelper {
                 final IResource resource = module.getCorrespondingResource();
                 if (resource != null) {
                     return new StructuredSelection(resource);
-                } else {
-                    return new StructuredSelection(module);
                 }
+                return new StructuredSelection(module);
             }
         } catch (final CoreException e) {
         }

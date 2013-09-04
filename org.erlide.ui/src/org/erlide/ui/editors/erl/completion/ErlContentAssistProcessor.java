@@ -52,9 +52,8 @@ public class ErlContentAssistProcessor extends
     protected String quoted(final String string, final Kinds kind) {
         if (kind == Kinds.INCLUDES || kind == Kinds.INCLUDE_LIBS) {
             return "\"" + string + "\"";
-        } else {
-            return string;
         }
+        return string;
     }
 
     public void setToPrefs() {

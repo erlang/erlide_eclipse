@@ -52,12 +52,11 @@ public class IndentAction extends ErlangTextEditorAction {
                     .getIndentService()
                     .templateIndentLines(prefix, text, tabw, useTabs, prefs);
             return r1;
-        } else {
-            final OtpErlangObject r1 = ErlangEngine.getInstance()
-                    .getIndentService()
-                    .indentLines(offset, length, text, tabw, useTabs, prefs);
-            return r1;
         }
+        final OtpErlangObject r1 = ErlangEngine.getInstance()
+                .getIndentService()
+                .indentLines(offset, length, text, tabw, useTabs, prefs);
+        return r1;
     }
 
     public static String indentLines(final int offset, final int length,

@@ -165,9 +165,8 @@ public class ErlideScanner implements ScannerService {
                     toks.add(tk);
                 }
                 return toks;
-            } else {
-                throw new ScannerException("unexpected token format");
             }
+            throw new ScannerException("unexpected token format");
         }
         throw new ScannerException("Could not parse string \"" + string
                 + "\": " + t1.toString());

@@ -186,9 +186,8 @@ public abstract class CompilerOption {
         public OtpErlangObject toTerm(final boolean currentValue) {
             if (currentValue) {
                 return new OtpErlangAtom(getName());
-            } else {
-                return new OtpErlangAtom("no" + getName());
             }
+            return new OtpErlangAtom("no" + getName());
         }
     }
 

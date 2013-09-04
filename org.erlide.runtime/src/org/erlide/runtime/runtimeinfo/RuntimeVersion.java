@@ -143,15 +143,12 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
             if (minor == o.minor) {
                 if (micro == o.micro) {
                     return 0;
-                } else {
-                    return micro - o.micro;
                 }
-            } else {
-                return minor - o.minor;
+                return micro - o.micro;
             }
-        } else {
-            return major - o.major;
+            return minor - o.minor;
         }
+        return major - o.major;
     }
 
     public boolean isDefined() {

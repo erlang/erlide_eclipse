@@ -70,9 +70,8 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
             final ISourceViewer sourceViewer, final String contentType) {
         if (contentType.equals(IDocument.DEFAULT_CONTENT_TYPE)) {
             return new IAutoEditStrategy[] { new AutoIndentStrategy(editor) };
-        } else {
-            return NO_AUTOEDIT;
         }
+        return NO_AUTOEDIT;
     }
 
     @Override
@@ -144,11 +143,10 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
                         }
                     };
                     return info;
-                } else {
-                    return new DefaultInformationControl(parent,
-                            EditorsUI.getTooltipAffordanceString(),
-                            new ErlInformationPresenter(true));
                 }
+                return new DefaultInformationControl(parent,
+                        EditorsUI.getTooltipAffordanceString(),
+                        new ErlInformationPresenter(true));
             }
         };
     }

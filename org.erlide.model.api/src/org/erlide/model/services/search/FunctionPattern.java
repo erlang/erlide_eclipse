@@ -32,12 +32,11 @@ public class FunctionPattern extends ErlangSearchPattern {
         if (moduleName == null || moduleName.length() == 0) {
             return makeFAPatternObject(FUNCTION_DEF_ATOM, FUNCTION_CALL_ATOM,
                     name, arity);
-        } else {
-            final OtpErlangAtom defA = matchAnyFunctionDefinition ? FUNCTION_DEF_ATOM
-                    : FUNCTION_DEF_MOD_ATOM;
-            return makeMFAPatternObject(defA, EXTERNAL_CALL_ATOM, moduleName,
-                    name, arity, matchAnyFunctionDefinition);
         }
+        final OtpErlangAtom defA = matchAnyFunctionDefinition ? FUNCTION_DEF_ATOM
+                : FUNCTION_DEF_MOD_ATOM;
+        return makeMFAPatternObject(defA, EXTERNAL_CALL_ATOM, moduleName, name,
+                arity, matchAnyFunctionDefinition);
     }
 
     @Override
@@ -45,9 +44,8 @@ public class FunctionPattern extends ErlangSearchPattern {
         final String s = name + "/" + arity;
         if (moduleName == null || limitTo != LimitTo.REFERENCES) {
             return s;
-        } else {
-            return moduleName + ":" + s;
         }
+        return moduleName + ":" + s;
     }
 
     @Override
@@ -60,9 +58,8 @@ public class FunctionPattern extends ErlangSearchPattern {
         final String s = name + "/" + arity;
         if (moduleName == null || limitTo != LimitTo.REFERENCES) {
             return s;
-        } else {
-            return moduleName + ":" + s;
         }
+        return moduleName + ":" + s;
     }
 
     @Override

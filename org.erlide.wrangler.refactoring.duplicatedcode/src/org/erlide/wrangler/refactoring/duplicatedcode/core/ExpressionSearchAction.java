@@ -40,9 +40,8 @@ public class ExpressionSearchAction extends AbstractDuplicatesSearcherAction {
                         .getTabWidth());
         if (result.isOk()) {
             return new ExpressionSearchParser(result.getValue());
-        } else {
-            throw new WranglerRpcParsingException("RPC error");
         }
+        throw new WranglerRpcParsingException("RPC error");
     }
 
     @Override

@@ -93,14 +93,12 @@ public class SearchResultLabelProvider extends LabelProvider implements
         final String a = ese.getArguments();
         if (ese.isSubClause()) {
             return ese.getName() + a;
-        } else {
-            final String nameWithArity = ese.getName() + "/" + ese.getArity();
-            if (a != null) {
-                return nameWithArity + "  " + a;
-            } else {
-                return nameWithArity;
-            }
         }
+        final String nameWithArity = ese.getName() + "/" + ese.getArity();
+        if (a != null) {
+            return nameWithArity + "  " + a;
+        }
+        return nameWithArity;
     }
 
     private String searchElementToString(final ErlangSearchElement ese) {

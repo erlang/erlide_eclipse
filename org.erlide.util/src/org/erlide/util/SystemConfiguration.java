@@ -120,8 +120,7 @@ public final class SystemConfiguration {
             final String d = System.getenv("HOMEDRIVE");
             final String p = System.getenv("HOMEPATH");
             return d != null && p != null ? d + p : u;
-        } else {
-            return u;
         }
+        return u;
     }
 }

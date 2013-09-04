@@ -136,19 +136,18 @@ public class OpenUtils {
                     .getModel();
             return modelUtilService.findFunction(model, moduleName,
                     res.getFunction(), modulePath, erlProject, scope, module);
-        } else {
-            // functions defined in include files
-            final Collection<IErlModule> allIncludedFiles = module
-                    .findAllIncludedFiles();
-            for (final IErlModule includedModule : allIncludedFiles) {
-                final IErlFunction function = includedModule.findFunction(res
-                        .getFunction());
-                if (function != null) {
-                    return function;
-                }
-            }
-            return null;
         }
+        // functions defined in include files
+        final Collection<IErlModule> allIncludedFiles = module
+                .findAllIncludedFiles();
+        for (final IErlModule includedModule : allIncludedFiles) {
+            final IErlFunction function = includedModule.findFunction(res
+                    .getFunction());
+            if (function != null) {
+                return function;
+            }
+        }
+        return null;
     }
 
     public boolean isTypeDefOrRecordDef(final IErlElement element,

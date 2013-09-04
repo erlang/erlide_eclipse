@@ -295,10 +295,9 @@ public final class PresenterControlCreator extends
                     control));
 
             return control;
-        } else {
-            return new DefaultInformationControl(parent,
-                    EditorsUI.getTooltipAffordanceString(),
-                    new ErlInformationPresenter(true));
         }
+        return new DefaultInformationControl(parent,
+                EditorsUI.getTooltipAffordanceString(),
+                new ErlInformationPresenter(true));
     }
 }

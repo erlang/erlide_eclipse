@@ -122,10 +122,9 @@ public class ErlModule extends Openable implements IErlModule {
             parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
                     text, true);
             return parsed;
-        } else {
-            setChildren(null);
-            return true;
         }
+        setChildren(null);
+        return true;
     }
 
     private String getInitialText() {

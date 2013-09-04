@@ -155,9 +155,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
     public String getReferenceTypeName() throws DebugException {
         if (record != null) {
             return "record";
-        } else {
-            return super.getReferenceTypeName();
         }
+        return super.getReferenceTypeName();
     }
 
     @Override

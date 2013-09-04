@@ -316,9 +316,8 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
             public String getText(final Object element) {
                 if (element instanceof FilterDescriptor) {
                     return ((FilterDescriptor) element).getName();
-                } else {
-                    return null;
                 }
+                return null;
             }
         };
     }

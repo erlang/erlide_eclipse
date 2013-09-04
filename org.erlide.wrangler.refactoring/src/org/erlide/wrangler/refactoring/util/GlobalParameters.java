@@ -59,21 +59,20 @@ public class GlobalParameters {
     public static boolean hasQuickCheck() {
         if (isQCchecked) {
             return hasQuickCheck;
-        } else {
-            final RpcResult res = ErlangEngine.getInstance().getBackend()
-                    .call_noexception("code", "which", "a", "eqc");
-            if (!res.isOk()) {
-                return false;
-            }
-            if (res.getValue() instanceof OtpErlangString) {
-                hasQuickCheck = true;
-                isQCchecked = true;
-            } else {
-                isQCchecked = true;
-                hasQuickCheck = false;
-            }
-            return hasQuickCheck;
         }
+        final RpcResult res = ErlangEngine.getInstance().getBackend()
+                .call_noexception("code", "which", "a", "eqc");
+        if (!res.isOk()) {
+            return false;
+        }
+        if (res.getValue() instanceof OtpErlangString) {
+            hasQuickCheck = true;
+            isQCchecked = true;
+        } else {
+            isQCchecked = true;
+            hasQuickCheck = false;
+        }
+        return hasQuickCheck;
     }
 
     /**

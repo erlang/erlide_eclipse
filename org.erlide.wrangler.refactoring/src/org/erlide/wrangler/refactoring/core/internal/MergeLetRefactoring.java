@@ -58,10 +58,9 @@ public class MergeLetRefactoring extends
         if (message.isSuccessful()) {
             changedFiles = message.getRefactoringChangeset();
             return new RefactoringStatus();
-        } else {
-            return RefactoringStatus.createFatalErrorStatus(message
-                    .getMessageString());
         }
+        return RefactoringStatus.createFatalErrorStatus(message
+                .getMessageString());
     }
 
     @Override

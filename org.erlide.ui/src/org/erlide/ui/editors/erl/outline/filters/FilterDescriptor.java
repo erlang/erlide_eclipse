@@ -244,9 +244,8 @@ public final class FilterDescriptor implements Comparable<Object>,
         if (o instanceof FilterDescriptor) {
             return Collator.getInstance().compare(getName(),
                     ((FilterDescriptor) o).getName());
-        } else {
-            return -1;
         }
+        return -1;
     }
 
     @Override

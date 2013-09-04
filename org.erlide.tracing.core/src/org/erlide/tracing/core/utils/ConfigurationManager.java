@@ -207,9 +207,8 @@ public final class ConfigurationManager {
         final File file = location.toFile();
         if (file.exists() && file.isFile()) {
             return file.delete();
-        } else {
-            return false;
         }
+        return false;
     }
 
     private static String[] getConfigurationsList(final String dirName) {

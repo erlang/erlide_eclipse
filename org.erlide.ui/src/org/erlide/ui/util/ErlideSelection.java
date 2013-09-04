@@ -966,9 +966,8 @@ public class ErlideSelection {
         public boolean hasNext() {
             if (forward) {
                 return startingLine < numberOfLines;
-            } else {
-                return startingLine >= 0;
             }
+            return startingLine >= 0;
         }
 
         /**

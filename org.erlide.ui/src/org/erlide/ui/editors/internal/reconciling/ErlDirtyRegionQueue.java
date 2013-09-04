@@ -42,10 +42,9 @@ public class ErlDirtyRegionQueue {
         if (lastDR != null && lastDR.isMergable(dr)) {
             lastDR.mergeWith(dr);
             return false;
-        } else {
-            fDirtyRegions.addLast(dr);
-            return true;
         }
+        fDirtyRegions.addLast(dr);
+        return true;
     }
 
     /**

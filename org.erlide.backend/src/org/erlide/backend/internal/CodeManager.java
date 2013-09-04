@@ -182,11 +182,10 @@ public class CodeManager {
                         externalPath, site, backendName);
                 ErlangCode.addPathA(site, externalPath);
                 return;
-            } else {
-                ErlLogger.info("external code path %s for %s "
-                        + "is not accessible, using plugin code", externalPath,
-                        site, backendName);
             }
+            ErlLogger.info("external code path %s for %s "
+                    + "is not accessible, using plugin code", externalPath,
+                    site, backendName);
         }
         final Collection<String> ebinDirs = p.getEbinDirs();
         if (ebinDirs != null) {

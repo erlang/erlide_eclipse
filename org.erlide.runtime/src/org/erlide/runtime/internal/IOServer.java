@@ -217,9 +217,8 @@ public class IOServer implements Runnable {
                 final OtpErlangAtom tag = (OtpErlangAtom) arequest;
                 if ("getopts".equals(tag.atomValue())) {
                     return callback.getOpts();
-                } else {
-                    return error;
                 }
+                return error;
             } else {
                 return error;
             }

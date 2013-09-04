@@ -122,9 +122,8 @@ public final class ErlUtils {
                 // no previous binding
                 result.put(var.getName(), term);
                 return result;
-            } else {
-                return old.equals(term) ? result : null;
             }
+            return old.equals(term) ? result : null;
         }
         if (!pattern.getClass().equals(term.getClass())) {
             return null;

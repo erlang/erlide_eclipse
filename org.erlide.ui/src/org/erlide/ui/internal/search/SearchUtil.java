@@ -366,23 +366,22 @@ public class SearchUtil {
             final Collection<IProject> projects) {
         if (projects == null || projects.isEmpty()) {
             return "";
-        } else {
-            final StringBuilder sb = new StringBuilder(
-                    projects.size() == 1 ? "project" : "projects");
-            sb.append(' ');
-            int i = 0;
-            for (final IProject p : projects) {
-                sb.append('\'').append(p.getName()).append("', ");
-                i++;
-                if (i == 2) {
-                    break;
-                }
-            }
-            if (projects.size() > 2) {
-                return sb.append("... ").toString();
-            }
-            return sb.substring(0, sb.length() - 2);
         }
+        final StringBuilder sb = new StringBuilder(
+                projects.size() == 1 ? "project" : "projects");
+        sb.append(' ');
+        int i = 0;
+        for (final IProject p : projects) {
+            sb.append('\'').append(p.getName()).append("', ");
+            i++;
+            if (i == 2) {
+                break;
+            }
+        }
+        if (projects.size() > 2) {
+            return sb.append("... ").toString();
+        }
+        return sb.substring(0, sb.length() - 2);
     }
 
     public static String getSelectionScopeDescription(final ISelection selection) {

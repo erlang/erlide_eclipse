@@ -82,34 +82,33 @@ public class MatchSpecCellEditor extends DialogCellEditor {
                     ((MatchSpec) getValue()).setFunctionString(newText);
                     ((MatchSpec) getValue()).setMsObject(tuple.elementAt(1));
                     return null;
-                } else {
-                    // incorrect match spec
-                    final OtpErlangAtom errorType = (OtpErlangAtom) tuple
-                            .elementAt(1);
-                    if (errorType.atomValue().equals("standard_info")) {
-                        final OtpErlangTuple errorTuple = (OtpErlangTuple) tuple
-                                .elementAt(2);
-                        final StringBuilder builder = new StringBuilder("Line ");
-                        builder.append(errorTuple.elementAt(0)).append(": ");
-                        final OtpErlangList errorList = (OtpErlangList) errorTuple
-                                .elementAt(2);
+                }
+                // incorrect match spec
+                final OtpErlangAtom errorType = (OtpErlangAtom) tuple
+                        .elementAt(1);
+                if (errorType.atomValue().equals("standard_info")) {
+                    final OtpErlangTuple errorTuple = (OtpErlangTuple) tuple
+                            .elementAt(2);
+                    final StringBuilder builder = new StringBuilder("Line ");
+                    builder.append(errorTuple.elementAt(0)).append(": ");
+                    final OtpErlangList errorList = (OtpErlangList) errorTuple
+                            .elementAt(2);
+                    builder.append(((OtpErlangString) errorList.elementAt(0))
+                            .stringValue());
+                    if (errorList.elementAt(1) instanceof OtpErlangString) {
                         builder.append(((OtpErlangString) errorList
-                                .elementAt(0)).stringValue());
-                        if (errorList.elementAt(1) instanceof OtpErlangString) {
-                            builder.append(((OtpErlangString) errorList
-                                    .elementAt(1)).stringValue());
-                        }
-                        return builder.toString();
-                    } else if (errorType.atomValue().equals("not_fun")) {
-                        return "Given expression is not a function";
-                    } else if (errorType.atomValue().equals("unbound_var")) {
-                        final StringBuilder builder = new StringBuilder(
-                                "Unbound variable: ");
-                        builder.append(tuple.elementAt(2));
-                        return builder.toString();
-                    } else {
-                        return tuple.elementAt(2).toString();
+                                .elementAt(1)).stringValue());
                     }
+                    return builder.toString();
+                } else if (errorType.atomValue().equals("not_fun")) {
+                    return "Given expression is not a function";
+                } else if (errorType.atomValue().equals("unbound_var")) {
+                    final StringBuilder builder = new StringBuilder(
+                            "Unbound variable: ");
+                    builder.append(tuple.elementAt(2));
+                    return builder.toString();
+                } else {
+                    return tuple.elementAt(2).toString();
                 }
             } catch (final Exception e) {
                 ErlLogger.error(e);

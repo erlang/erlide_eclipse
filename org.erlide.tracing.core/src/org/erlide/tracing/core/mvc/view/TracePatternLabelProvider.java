@@ -23,18 +23,16 @@ public class TracePatternLabelProvider extends LabelProvider implements
             if (pattern.isEnabled()) {
                 return Activator.getDefault().getImageRegistry()
                         .get(Images.CHECKED.toString());
-            } else {
-                return Activator.getDefault().getImageRegistry()
-                        .get(Images.UNCHECKED.toString());
             }
+            return Activator.getDefault().getImageRegistry()
+                    .get(Images.UNCHECKED.toString());
         } else if (index == TracePatternColumn.LOCAL.ordinal()) {
             if (pattern.isLocal()) {
                 return Activator.getDefault().getImageRegistry()
                         .get(Images.CHECKED.toString());
-            } else {
-                return Activator.getDefault().getImageRegistry()
-                        .get(Images.UNCHECKED.toString());
             }
+            return Activator.getDefault().getImageRegistry()
+                    .get(Images.UNCHECKED.toString());
         } else {
             return null;
         }
@@ -53,9 +51,8 @@ public class TracePatternLabelProvider extends LabelProvider implements
         case ARITY:
             if (tracePattern.getArity() < 0) {
                 return "";
-            } else {
-                return String.valueOf(tracePattern.getArity());
             }
+            return String.valueOf(tracePattern.getArity());
         case LOCAL:
             break;
         case MATCH_SPEC:

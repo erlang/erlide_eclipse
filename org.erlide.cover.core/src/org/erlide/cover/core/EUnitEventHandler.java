@@ -284,10 +284,9 @@ public class EUnitEventHandler extends ErlangEventHandler {
         if (description != null && !description.equals("undefined")) {
             return String.format("%s:%s/%d (%s) at line %d - %s", module,
                     function, arity, description, line, status);
-        } else {
-            return String.format("%s:%s/%d at line %d - %s", module, function,
-                    arity, line, status);
         }
+        return String.format("%s:%s/%d at line %d - %s", module, function,
+                arity, line, status);
     }
 
 }

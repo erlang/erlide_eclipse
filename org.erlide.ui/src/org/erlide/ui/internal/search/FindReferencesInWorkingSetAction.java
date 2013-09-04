@@ -99,8 +99,7 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
     protected ErlSearchScope getScope() throws CoreException {
         if (fWorkingSets != null) {
             return SearchUtil.getWorkingSetsScope(fWorkingSets, false, false);
-        } else {
-            return SearchCoreUtil.getWorkspaceScope(false, false);
         }
+        return SearchCoreUtil.getWorkspaceScope(false, false);
     }
 }

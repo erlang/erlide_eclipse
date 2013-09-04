@@ -83,7 +83,7 @@ public class ErlStructureCreator extends StructureCreator {
     private final class RootErlNode extends ErlNode implements IDisposable {
         private Object fInput;
 
-        private RootErlNode(final IDocument document, final Object input) {
+        RootErlNode(final IDocument document, final Object input) {
             super(document);
             fInput = input;
         }

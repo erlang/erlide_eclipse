@@ -70,10 +70,9 @@ public class ErlideDialyze {
         if (ebinDirs == null) {
             return backend.call(UPDATE_TIMEOUT, "erlide_dialyze", "check_plt",
                     "s", plt);
-        } else {
-            return backend.call(UPDATE_TIMEOUT, "erlide_dialyze",
-                    "update_plt_with_additional_paths", "sls", plt, ebinDirs);
         }
+        return backend.call(UPDATE_TIMEOUT, "erlide_dialyze",
+                "update_plt_with_additional_paths", "sls", plt, ebinDirs);
     }
 
     public static List<String> getPltFiles(final IRpcSite backend,

@@ -50,11 +50,10 @@ public abstract class QuickCheckStateRefactoring extends
         if (!message.isSuccessful()) {
             return RefactoringStatus.createFatalErrorStatus(message
                     .getMessageString());
-        } else {
-            fieldCount = message.getFieldCount();
-            stateFuns = message.getStateFuns();
-            return new RefactoringStatus();
         }
+        fieldCount = message.getFieldCount();
+        stateFuns = message.getStateFuns();
+        return new RefactoringStatus();
     }
 
     /**
