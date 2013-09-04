@@ -1,8 +1,5 @@
 package org.erlide.ui.prefs.plugin;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -29,16 +26,9 @@ public class CodeAssistPreferences {
         return eclipsePreferences;
     }
 
-    public static CodeAssistPreferences get() throws CoreException {
+    public static CodeAssistPreferences get() {
         final CodeAssistPreferences prefs = new CodeAssistPreferences();
-        try {
-            prefs.load();
-        } catch (final BackingStoreException e1) {
-            e1.printStackTrace();
-            throw new CoreException(
-                    new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
-                            "could not retrieve compiler options"));
-        }
+        prefs.load();
         return prefs;
     }
 
@@ -62,7 +52,7 @@ public class CodeAssistPreferences {
     }
 
     @SuppressWarnings("boxing")
-    public void load() throws BackingStoreException {
+    public void load() {
         autoActivate = helper.getBoolean(
                 CodeAssistPreferencesConstants.AUTO_ACTIVATE, true);
         delayInMS = helper.getInt(CodeAssistPreferencesConstants.DELAY_IN_MS,

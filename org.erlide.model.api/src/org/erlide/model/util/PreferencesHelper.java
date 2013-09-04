@@ -160,7 +160,7 @@ public final class PreferencesHelper {
         scope.getNode(qualifier + "/" + key).removeNode();
     }
 
-    public void removeNode(final String key) throws BackingStoreException {
+    public void removeNode(final String key) {
         remove(key, storeContext);
     }
 

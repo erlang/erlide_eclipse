@@ -24,8 +24,6 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlEditorActionBarContributor;
-import org.erlide.util.ErlLogger;
-import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 
@@ -56,11 +54,7 @@ public class CompileAction extends Action {
 
         final BuildResource bres = new BuildResource(resource);
         final CompilerOptions prefs = new CompilerOptions(project);
-        try {
-            prefs.load();
-        } catch (final BackingStoreException e) {
-            ErlLogger.error(e);
-        }
+        prefs.load();
         final OtpErlangList compilerOptions = prefs.export();
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);

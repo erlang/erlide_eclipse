@@ -395,6 +395,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
      * breakpoint page.
      * 
      * @param parent
+     * @throws CoreException
      */
     protected void createTypeSpecificEditors(final Composite parent)
             throws CoreException {

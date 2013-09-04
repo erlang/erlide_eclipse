@@ -19,7 +19,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -333,7 +332,6 @@ public class DialyzerPreferencePage extends PropertyPage implements
         try {
             final DialyzerPreferences p = DialyzerPreferences.get(project);
             return p.hasOptionsAtLowestScope();
-        } catch (final CoreException e) {
         } catch (final RpcException e) {
         }
         return false;
@@ -684,8 +682,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         }
 
         private void checkIfPltFilesShouldBeCopied(
-                final String alternatePltFileDirectory) throws RpcException,
-                IOException {
+                final String alternatePltFileDirectory) throws IOException {
             if (alternatePltFileDirectory == null) {
                 return;
             }
@@ -737,8 +734,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         private void checkPlt(final String pltPath,
                 final String alternatePltFileDirectory,
                 final IProgressMonitor monitor, final IRpcSite backend)
-                throws DialyzerErrorException, BackingStoreException,
-                ErlModelException, RpcException {
+                throws DialyzerErrorException, ErlModelException, RpcException {
             try {
                 monitor.subTask("Checking PLT file " + pltPath);
                 List<String> ebinDirs = null;

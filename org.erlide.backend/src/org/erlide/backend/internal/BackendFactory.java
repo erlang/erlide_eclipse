@@ -16,7 +16,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.api.BackendData;
-import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendManager;
@@ -76,23 +75,17 @@ public class BackendFactory implements IBackendFactory {
         ErlLogger.debug("Create backend " + data.getNodeName());
 
         final IBackend b;
-        try {
-            ErlLogger.info("Creating runtime for %s", data.getNodeName());
-            final IErlRuntime runtime = ErlRuntimeFactory.createRuntime(data);
-            if (data.isManaged()) {
-                runtime.startAndWait();
-            }
-            final IBackendManager backendManager = BackendCore
-                    .getBackendManager();
-            b = data.isInternal() ? new InternalBackend(data, runtime,
-                    backendManager) : new ExternalBackend(data, runtime,
-                    backendManager);
-            b.initialize(backendManager.getCodeBundles().values());
-            return b;
-        } catch (final BackendException e) {
-            ErlLogger.error(e);
+        ErlLogger.info("Creating runtime for %s", data.getNodeName());
+        final IErlRuntime runtime = ErlRuntimeFactory.createRuntime(data);
+        if (data.isManaged()) {
+            runtime.startAndWait();
         }
-        return null;
+        final IBackendManager backendManager = BackendCore.getBackendManager();
+        b = data.isInternal() ? new InternalBackend(data, runtime,
+                backendManager) : new ExternalBackend(data, runtime,
+                backendManager);
+        b.initialize(backendManager.getCodeBundles().values());
+        return b;
     }
 
     private BackendData getIdeBackendData() {

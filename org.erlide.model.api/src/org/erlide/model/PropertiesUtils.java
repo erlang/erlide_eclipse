@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.model;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,8 +28,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public final class PropertiesUtils {
-    public static ErlProjectInfo convertOld(final IErlangProjectProperties old)
-            throws URISyntaxException {
+    public static ErlProjectInfo convertOld(final IErlangProjectProperties old) {
         ErlProjectInfo result = new ErlProjectInfo();
         result = result.setRequiredRuntimeVersion(old
                 .getRequiredRuntimeVersion());

@@ -97,8 +97,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
     }
 
     private static String getErlangPositionText(final String module,
-            final int lineNumber, final String clauseHead)
-            throws DebugException {
+            final int lineNumber, final String clauseHead) {
         final StringBuilder sb = new StringBuilder();
         sb.append(module);
         if (lineNumber != -1) {

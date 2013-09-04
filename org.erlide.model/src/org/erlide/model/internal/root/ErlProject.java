@@ -383,8 +383,7 @@ public class ErlProject extends Openable implements IErlProject {
     /**
      * Returns an array of non-Erlang resources contained in the receiver.
      */
-    public Collection<IResource> getNonErlangResources()
-            throws ErlModelException {
+    public Collection<IResource> getNonErlangResources() {
         return getNonErlangResources(this);
     }
 

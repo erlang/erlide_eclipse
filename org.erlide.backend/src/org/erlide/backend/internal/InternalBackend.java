@@ -12,7 +12,6 @@ package org.erlide.backend.internal;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.api.BackendData;
-import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.runtime.api.IErlRuntime;
 
@@ -20,7 +19,7 @@ public class InternalBackend extends Backend {
 
     public InternalBackend(final BackendData data,
             final @NonNull IErlRuntime runtime,
-            final IBackendManager backendManager) throws BackendException {
+            final IBackendManager backendManager) {
         super(data, runtime, backendManager);
     }
 

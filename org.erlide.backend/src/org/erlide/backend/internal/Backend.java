@@ -42,7 +42,6 @@ import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.api.BackendData;
-import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.api.ICodeBundle;
@@ -84,7 +83,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     protected final IBackendManager backendManager;
 
     public Backend(final BackendData data, final @NonNull IErlRuntime runtime,
-            final IBackendManager backendManager) throws BackendException {
+            final IBackendManager backendManager) {
         assertThat(runtime, is(not(nullValue())));
         this.runtime = runtime;
         this.data = data;

@@ -21,7 +21,6 @@ import org.eclipse.ui.services.IDisposable;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlProject;
 import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
-import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlContentAssistProcessor extends
         AbstractErlContentAssistProcessor implements IDisposable {
@@ -58,16 +57,12 @@ public class ErlContentAssistProcessor extends
 
     public void setToPrefs() {
         final CodeAssistPreferences prefs = new CodeAssistPreferences();
-        try {
-            prefs.load();
-            fCompletionProposalAutoActivationCharacters = prefs
-                    .getErlangTriggers().toCharArray();
-            contentAssistant.setAutoActivationDelay(prefs.getDelayInMS());
-            contentAssistant.enableAutoActivation(prefs.isAutoActivate());
-            contentAssistant.setAutoActivationDelay(prefs.getDelayInMS());
-        } catch (final BackingStoreException e) {
-            fCompletionProposalAutoActivationCharacters = new char[0];
-        }
+        prefs.load();
+        fCompletionProposalAutoActivationCharacters = prefs.getErlangTriggers()
+                .toCharArray();
+        contentAssistant.setAutoActivationDelay(prefs.getDelayInMS());
+        contentAssistant.enableAutoActivation(prefs.isAutoActivate());
+        contentAssistant.setAutoActivationDelay(prefs.getDelayInMS());
     }
 
     private class PreferenceChangeListener implements IPreferenceChangeListener {

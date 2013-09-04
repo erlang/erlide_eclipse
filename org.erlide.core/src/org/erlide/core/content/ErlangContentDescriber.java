@@ -71,7 +71,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
 
     private void fillContentProperties(final String charset,
             final IContentDescription description,
-            final Map<String, Object> properties) throws IOException {
+            final Map<String, Object> properties) {
         if (charset != null) {
             properties.put(CHARSET, charset);
         }

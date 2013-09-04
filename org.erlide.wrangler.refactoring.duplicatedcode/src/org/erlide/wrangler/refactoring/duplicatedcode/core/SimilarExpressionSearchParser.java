@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IFile;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeElement;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCodeInstanceElement;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedFileElement;
-import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -88,7 +87,7 @@ public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
     // { [{ {filename(), integer(), integer()} , {filename(), integer(),
     // integer()} }], integer(), integer(), string()}
     protected DuplicatedCodeElement parseDuplicates(final OtpErlangObject object)
-            throws OtpErlangRangeException, WranglerException {
+            throws OtpErlangRangeException {
         final OtpErlangTuple listElementTuple = (OtpErlangTuple) object;
         final OtpErlangList duplicateCodeList = (OtpErlangList) listElementTuple
                 .elementAt(0);

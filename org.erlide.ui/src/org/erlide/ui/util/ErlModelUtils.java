@@ -23,7 +23,6 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.PartInitException;
-import org.erlide.backend.api.BackendException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlModule;
@@ -103,7 +102,7 @@ public class ErlModelUtils {
     }
 
     public static boolean openTypeInEditor(final String typeName,
-            final IEditorPart editor) throws CoreException, BackendException {
+            final IEditorPart editor) throws CoreException {
         final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) editor;
         final IErlModule module = erlangEditor.getModule();
         if (module == null) {

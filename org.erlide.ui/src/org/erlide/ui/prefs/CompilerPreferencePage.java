@@ -178,11 +178,7 @@ public class CompilerPreferencePage extends PropertyPage implements
         } else {
             prefs = new CompilerOptions(fProject);
         }
-        try {
-            prefs.load();
-        } catch (final BackingStoreException e) {
-            ErlLogger.warn(e);
-        }
+        prefs.load();
         updateUI();
     }
 

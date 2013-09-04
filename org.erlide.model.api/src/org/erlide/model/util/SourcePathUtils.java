@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.model.SourcePathProvider;
 import org.erlide.util.ErlLogger;
@@ -74,8 +73,7 @@ public class SourcePathUtils {
 
     private static Collection<SourcePathProvider> sourcePathProviders = null;
 
-    public static synchronized Collection<SourcePathProvider> getSourcePathProviders()
-            throws CoreException {
+    public static synchronized Collection<SourcePathProvider> getSourcePathProviders() {
         if (sourcePathProviders != null) {
             return sourcePathProviders;
         }

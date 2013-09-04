@@ -243,7 +243,7 @@ public class ErlModule extends Openable implements IErlModule {
         return file;
     }
 
-    public ISourceRange getSourceRange() throws ErlModelException {
+    public ISourceRange getSourceRange() {
         return new SourceRange(0, 0);
     }
 

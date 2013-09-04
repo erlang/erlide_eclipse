@@ -388,8 +388,7 @@ public class ContentAssistTest {
 
     private void completionTestWithoutParsing(final String initialText,
             final int nTotalExpectedCompletions, final String completionChar,
-            final int nExpectedCompletions, final String expectedFirstCompletion)
-            throws CoreException {
+            final int nExpectedCompletions, final String expectedFirstCompletion) {
         // http://www.assembla.com/spaces/erlide/tickets/593-completion--don-t-work-records-with-quoted-names-
         final int offset = initialText.length();
         IDocument document = new StringDocument(initialText);

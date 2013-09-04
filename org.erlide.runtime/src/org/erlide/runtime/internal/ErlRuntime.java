@@ -191,6 +191,9 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         triggerShutdown();
     }
 
+    /**
+     * @throws ErlRuntimeException
+     */
     protected void waitForExit() throws ErlRuntimeException {
     }
 

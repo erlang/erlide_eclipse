@@ -10,7 +10,6 @@ import java.util.concurrent.TimeoutException;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -112,8 +111,6 @@ public class DialyzerUtils {
                 }
             }
         } catch (final RpcException e) {
-            throw new InvocationTargetException(e);
-        } catch (final CoreException e) {
             throw new InvocationTargetException(e);
         } catch (final BackendException e) {
             throw new InvocationTargetException(e);

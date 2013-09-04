@@ -6,7 +6,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.backend.api.BackendException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlFunction;
@@ -44,7 +43,7 @@ public class OpenUtils {
             final IErlProject erlProject, final OpenResult openResult,
             final IErlElement element) throws CoreException, ErlModelException,
             PartInitException, BadLocationException, OtpErlangRangeException,
-            BackendException, RpcException {
+            RpcException {
         if (editor == null) {
             return;
         }
@@ -60,9 +59,8 @@ public class OpenUtils {
     public Object findOpenResult(final ITextEditor editor,
             final IErlModule module, final IRpcSite backend,
             final IErlProject project, final OpenResult openResult,
-            final IErlElement element) throws CoreException, BackendException,
-            ErlModelException, OtpErlangRangeException, RpcException,
-            BadLocationException {
+            final IErlElement element) throws CoreException, ErlModelException,
+            OtpErlangRangeException, RpcException, BadLocationException {
         final IErlElementLocator.Scope scope = NavigationPreferencePage
                 .getCheckAllProjects() ? IErlElementLocator.Scope.ALL_PROJECTS
                 : IErlElementLocator.Scope.REFERENCED_PROJECTS;

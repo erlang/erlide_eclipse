@@ -42,8 +42,7 @@ public class ModuleLocatorTests {
     }
 
     @Test
-    public void demoProjectsShouldBeConfiguredProperly()
-            throws ErlModelException {
+    public void demoProjectsShouldBeConfiguredProperly() {
         checkProjectDirectories(p1, new IPath[] { new Path("src") },
                 new IPath[] { new Path("include"),
                         new Path("T_ROOT/p3/include") });
@@ -52,8 +51,7 @@ public class ModuleLocatorTests {
     }
 
     private void checkProjectDirectories(final IErlProject project,
-            final Object[] expected_sources, final Object[] expected_includes)
-            throws ErlModelException {
+            final Object[] expected_sources, final Object[] expected_includes) {
         MatcherAssert.assertThat(project.getSourceDirs().toArray(),
                 is(expected_sources));
         MatcherAssert.assertThat(project.getIncludeDirs().toArray(),

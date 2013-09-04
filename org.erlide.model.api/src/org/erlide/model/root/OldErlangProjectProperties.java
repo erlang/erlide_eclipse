@@ -10,7 +10,6 @@
 
 package org.erlide.model.root;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -24,7 +23,6 @@ import org.erlide.model.PropertiesUtils;
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
-import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -66,16 +64,12 @@ public final class OldErlangProjectProperties implements
         }
 
         if (SystemConfiguration.hasFeatureEnabled("erlide.newprops")) {
-            try {
-                final ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
-                final ErlProjectInfo npp = builder
-                        .loadFromPreferences((IEclipsePreferences) node
-                                .node("test"));
-                builder.storeToPreferences(npp,
-                        (IEclipsePreferences) node.node("new_test"));
-            } catch (final BackingStoreException e) {
-                ErlLogger.error(e);
-            }
+            final ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
+            final ErlProjectInfo npp = builder
+                    .loadFromPreferences((IEclipsePreferences) node
+                            .node("test"));
+            builder.storeToPreferences(npp,
+                    (IEclipsePreferences) node.node("new_test"));
         }
 
         final String sourceDirsStr = node.get(
@@ -126,16 +120,10 @@ public final class OldErlangProjectProperties implements
         final IEclipsePreferences node = new ProjectScope(project)
                 .getNode("org.erlide.core");
         if (SystemConfiguration.hasFeatureEnabled("erlide.newprops")) {
-            try {
-                final ErlProjectInfo npp = PropertiesUtils.convertOld(this);
-                final ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
-                builder.storeToPreferences(npp,
-                        (IEclipsePreferences) node.node("test"));
-            } catch (final BackingStoreException e) {
-                ErlLogger.error(e);
-            } catch (final URISyntaxException e) {
-                ErlLogger.error(e);
-            }
+            final ErlProjectInfo npp = PropertiesUtils.convertOld(this);
+            final ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
+            builder.storeToPreferences(npp,
+                    (IEclipsePreferences) node.node("test"));
         }
 
         node.removePreferenceChangeListener(this);

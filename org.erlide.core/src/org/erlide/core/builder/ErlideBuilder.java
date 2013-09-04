@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.core.builder;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,7 +60,7 @@ public class ErlideBuilder {
         myProject = prj;
     }
 
-    public void clean(final IProgressMonitor monitor) throws CoreException {
+    public void clean(final IProgressMonitor monitor) {
         final IProject currentProject = getProject();
         if (currentProject == null || !currentProject.isAccessible()) {
             return;
@@ -126,8 +125,7 @@ public class ErlideBuilder {
 
     public IProject[] build(final int kind,
             @SuppressWarnings("rawtypes") final Map args,
-            final IProgressMonitor monitor, final IResourceDelta resourceDelta)
-            throws CoreException {
+            final IProgressMonitor monitor, final IResourceDelta resourceDelta) {
         final long time = System.currentTimeMillis();
         final IProject project = getProject();
         if (project == null || !project.isAccessible()) {
@@ -301,16 +299,13 @@ public class ErlideBuilder {
                 }
             } catch (final CoreException e) {
                 ErlLogger.error(e);
-            } catch (final IOException e) {
-                ErlLogger.error(e);
             }
         }
 
     }
 
     private void fillAppFileDetails(final String srcPath,
-            final String destPath, final Collection<String> sources)
-            throws IOException {
+            final String destPath, final Collection<String> sources) {
         try {
             final IBackend backend = BackendCore.getBackendManager()
                     .getBuildBackend(getProject());

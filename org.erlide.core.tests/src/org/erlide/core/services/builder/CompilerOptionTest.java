@@ -24,7 +24,7 @@ public class CompilerOptionTest {
     }
 
     @Test
-    public void testToTerm_1() throws TermParserException {
+    public void testToTerm_1() {
         final BooleanOption option = CompilerOption.WARN_EXPORT_ALL;
         final OtpErlangObject actual = option.toTerm(true);
         final String expected = "warn_export_all";
@@ -32,7 +32,7 @@ public class CompilerOptionTest {
     }
 
     @Test
-    public void testToTerm_2() throws TermParserException {
+    public void testToTerm_2() {
         final BooleanOption option = CompilerOption.WARN_EXPORT_ALL;
         final OtpErlangObject actual = option.toTerm(false);
         final String expected = "nowarn_export_all";
@@ -40,7 +40,7 @@ public class CompilerOptionTest {
     }
 
     @Test
-    public void testToTerm_3() throws TermParserException {
+    public void testToTerm_3() {
         final BooleanOption option = CompilerOption.DEBUG_INFO;
         final OtpErlangObject actual = option.toTerm(true);
         final String expected = "debug_info";
@@ -48,7 +48,7 @@ public class CompilerOptionTest {
     }
 
     @Test
-    public void testToTerm_4() throws TermParserException {
+    public void testToTerm_4() {
         final BooleanOption option = CompilerOption.DEBUG_INFO;
         final OtpErlangObject actual = option.toTerm(false);
         final String expected = null;
@@ -78,7 +78,7 @@ public class CompilerOptionTest {
     }
 
     @Test
-    public void testToTerm_6() throws TermParserException {
+    public void testToTerm_6() {
         final BooleanOption option = CompilerOption.WARN_EXPORT_ALL;
         final OtpErlangObject actual = option.toTerm(false);
         final String expected = "nowarn_export_all";

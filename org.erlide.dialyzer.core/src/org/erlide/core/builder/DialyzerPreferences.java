@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.core.ErlangCore;
 import org.erlide.engine.ErlangEngine;
@@ -35,24 +32,17 @@ public final class DialyzerPreferences {
     private boolean removeWarningsOnClean;
 
     public static DialyzerPreferences get(final IProject project)
-            throws CoreException, RpcException {
-        try {
-            final DialyzerPreferences prefs = new DialyzerPreferences();
-            prefs.load();
-            if (project != null) {
-                final DialyzerPreferences projectPrefs = new DialyzerPreferences(
-                        project);
-                projectPrefs.load();
-                projectPrefs.pltPaths = prefs.pltPaths;
-                return projectPrefs;
-            }
-            return prefs;
-        } catch (final BackingStoreException e1) {
-            e1.printStackTrace();
-            throw new CoreException(
-                    new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
-                            "could not retrieve dialyzer options"));
+            throws RpcException {
+        final DialyzerPreferences prefs = new DialyzerPreferences();
+        prefs.load();
+        if (project != null) {
+            final DialyzerPreferences projectPrefs = new DialyzerPreferences(
+                    project);
+            projectPrefs.load();
+            projectPrefs.pltPaths = prefs.pltPaths;
+            return projectPrefs;
         }
+        return prefs;
     }
 
     private DialyzerPreferences() {
@@ -93,15 +83,14 @@ public final class DialyzerPreferences {
                 .getBackend(), pltFilesString);
     }
 
-    public static String getAlternatePLTFileDirectoryFromPreferences()
-            throws RpcException {
+    public static String getAlternatePLTFileDirectoryFromPreferences() {
         final IPreferencesService service = Platform.getPreferencesService();
         final String key = "alternate_plt_file_directory";
         final String pluginId = "org.erlide.ui";
         return service.getString(pluginId, key, "", null);
     }
 
-    public void load() throws BackingStoreException, RpcException {
+    public void load() throws RpcException {
         pltPaths = helper.getString(DialyzerPreferencesConstants.PLT_PATHS, "");
         pltPathsFromPrefs = getPLTPathsFromPreferences();
         enabledPltPaths = helper.getString(

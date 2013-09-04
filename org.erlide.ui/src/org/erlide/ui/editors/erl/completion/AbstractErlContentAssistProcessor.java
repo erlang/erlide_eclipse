@@ -333,7 +333,7 @@ public abstract class AbstractErlContentAssistProcessor implements
     private List<ICompletionProposal> addCompletions(final Set<Kinds> flags,
             final int offset, final String prefix, final String moduleOrRecord,
             final int pos, final List<String> fieldsSoFar)
-            throws CoreException, OtpErlangRangeException, BadLocationException {
+            throws CoreException, BadLocationException {
         final IProject workspaceProject = project == null ? null : project
                 .getWorkspaceProject();
         final IRpcSite backend = BackendCore
@@ -475,7 +475,7 @@ public abstract class AbstractErlContentAssistProcessor implements
     }
 
     List<ICompletionProposal> getVariables(final IRpcSite b, final int offset,
-            final String prefix) throws ErlModelException, BadLocationException {
+            final String prefix) throws BadLocationException {
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         // get variables
         final IErlElement el = getElementAt(offset);
@@ -523,8 +523,7 @@ public abstract class AbstractErlContentAssistProcessor implements
 
     List<ICompletionProposal> getExternalCallCompletions(final IRpcSite b,
             String moduleName, final int offset, final String prefix,
-            final boolean arityOnly) throws OtpErlangRangeException,
-            CoreException {
+            final boolean arityOnly) throws CoreException {
         moduleName = ErlangEngine.getInstance().getModelUtilService()
                 .resolveMacroValue(moduleName, module);
         // we have an external call
