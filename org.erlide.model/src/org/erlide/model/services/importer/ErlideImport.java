@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.erlide.model.services;
+package org.erlide.model.services.importer;
 
 import java.util.List;
 

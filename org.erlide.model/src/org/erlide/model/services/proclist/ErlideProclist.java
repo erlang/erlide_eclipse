@@ -1,4 +1,4 @@
-package org.erlide.model.services;
+package org.erlide.model.services.proclist;
 
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.ErlLogger;

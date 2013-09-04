@@ -1,4 +1,4 @@
-package org.erlide.model.services;
+package org.erlide.model.services.importer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -23,23 +22,26 @@ public class ErlProjectImport {
 
     public ErlProjectImport(final OtpErlangObject o) {
         final OtpErlangTuple t = (OtpErlangTuple) o;
+
         OtpErlangList l = (OtpErlangList) t.elementAt(0);
         resources = (SortedSet<String>) erlangStringList2Collection(l,
                 new TreeSet<String>());
+
         l = (OtpErlangList) t.elementAt(1);
         sourceDirs = (List<String>) erlangStringList2Collection(l,
                 new ArrayList<String>());
+
         l = (OtpErlangList) t.elementAt(2);
         includeDirs = (List<String>) erlangStringList2Collection(l,
                 new ArrayList<String>());
-        ErlLogger.debug(">>> %s", t);
+
         final OtpErlangObject beamDirElement = t.elementAt(3);
         if (beamDirElement instanceof OtpErlangAtom) {
             beamDir = "ebin";
         } else {
             beamDir = Util.stringValue(beamDirElement);
         }
-        ErlLogger.debug(">>> %s", beamDir);
+
         l = (OtpErlangList) t.elementAt(4);
         directories = (List<String>) erlangStringList2Collection(l,
                 new ArrayList<String>());

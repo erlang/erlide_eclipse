@@ -49,7 +49,7 @@ import org.erlide.core.ErlangCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.root.IErlangProjectProperties;
 import org.erlide.model.root.OldErlangProjectProperties;
-import org.erlide.model.services.ErlProjectImport;
+import org.erlide.model.services.importer.ErlProjectImport;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 import org.erlide.util.ErlLogger;
