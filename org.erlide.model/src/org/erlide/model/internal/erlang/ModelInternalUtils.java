@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -25,6 +26,7 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
+import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlImport;
 import org.erlide.model.erlang.IErlModule;
@@ -40,8 +42,10 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ModelUtilService;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.StringUtils;
+import org.erlide.util.erlang.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -515,4 +519,27 @@ public class ModelInternalUtils implements ModelUtilService {
         return null;
     }
 
+    @Override
+    public String getModuleInfo(final IErlModule module) {
+        final String errorValue = "There is no module information about this file.";
+        if (module == null) {
+            return errorValue;
+        }
+
+        final IErlProject project = getProject(module);
+        final IPath beamPath = project.getOutputLocation()
+                .append(module.getModuleName()).addFileExtension("beam");
+        final IFile beam = project.getWorkspaceProject().getFile(beamPath);
+
+        final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
+        try {
+            final OtpErlangObject info = backend.call("erlide_backend",
+                    "get_module_info", "s", beam.getLocation()
+                            .toPortableString());
+            return (String) TypeConverter.erlang2java(info, String.class);
+        } catch (final Exception e) {
+            ErlLogger.warn(e);
+        }
+        return errorValue;
+    }
 }

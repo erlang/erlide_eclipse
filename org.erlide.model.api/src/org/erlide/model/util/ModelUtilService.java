@@ -91,4 +91,6 @@ public interface ModelUtilService {
     public abstract String getExternalModulePath(
             final IErlElementLocator model, final IErlModule module);
 
+    String getModuleInfo(IErlModule module);
+
 }
