@@ -25,7 +25,6 @@ import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.search.XrefService;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.jinterface.AsyncCaller;
@@ -86,7 +85,8 @@ public class CallHierarchyAction extends Action {
                             .getAdapter(CallHierarchyView.class);
 
                     cvh.setMessage("<searching... project "
-                            + ModelUtils.getProject(module).getName() + ">");
+                            + ErlangEngine.getInstance().getModelUtilService()
+                                    .getProject(module).getName() + ">");
                     return cvh;
                 } catch (final PartInitException e) {
                     ErlLogger.error("could not open Call hierarchy view: ",
@@ -97,8 +97,9 @@ public class CallHierarchyAction extends Action {
 
             @Override
             protected IRpcFuture call() throws BackendException {
-                final IRpcFuture result = xrefService.addProject(ModelUtils
-                        .getProject(module));
+                final IRpcFuture result = xrefService
+                        .addProject(ErlangEngine.getInstance()
+                                .getModelUtilService().getProject(module));
                 return result;
             }
 

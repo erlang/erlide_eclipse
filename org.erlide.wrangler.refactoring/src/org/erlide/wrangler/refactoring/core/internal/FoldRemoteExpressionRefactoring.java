@@ -17,9 +17,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.swt.widgets.Shell;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
 import org.erlide.wrangler.refactoring.backend.internal.ExpressionPosRpcMessage;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
@@ -84,7 +84,7 @@ public class FoldRemoteExpressionRefactoring extends
 
             ExpressionPosRpcMessage m = new ExpressionPosRpcMessage();
             final String path = selection.getFilePath();
-            final String moduleName = ModelUtils.getModule(functionClause)
+            final String moduleName = ErlangEngine.getInstance().getModelUtilService().getModule(functionClause)
                     .getModuleName();
             final String functionName = functionClause.getFunctionName();
             final int arity = functionClause.getArity();

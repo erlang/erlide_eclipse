@@ -42,7 +42,6 @@ import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.ChangedFile;
@@ -333,7 +332,7 @@ public final class WranglerUtils {
         int offset, length;
         offset = clause.getNameRange().getOffset();
         length = clause.getNameRange().getLength();
-        final IErlModule module = ModelUtils.getModule(clause);
+        final IErlModule module = ErlangEngine.getInstance().getModelUtilService().getModule(clause);
         final IEditorPart editor = openFile((IFile) module.getResource());
         highlightSelection(offset, length, (ITextEditor) editor);
 

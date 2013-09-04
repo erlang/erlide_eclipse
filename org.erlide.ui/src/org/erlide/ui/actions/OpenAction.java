@@ -41,7 +41,6 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ErlangFunction;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
@@ -151,7 +150,7 @@ public class OpenAction extends SelectionDispatchAction {
                         .getInstance()
                         .getOpenService()
                         .open(scannerName, offset,
-                                ModelUtils.getImportsAsList(module),
+                                ErlangEngine.getInstance().getModelUtilService().getImportsAsList(module),
                                 project.getExternalModulesString(),
                                 model.getPathVars());
                 ErlLogger.debug("open " + openResult);
@@ -246,10 +245,10 @@ public class OpenAction extends SelectionDispatchAction {
         } else if (openResult.isRecord() || openResult.isMacro()) {
             final ErlElementKind kind = openResult.isMacro() ? ErlElementKind.MACRO_DEF
                     : ErlElementKind.RECORD_DEF;
-            found = ModelUtils.findPreprocessorDef(module,
+            found = ErlangEngine.getInstance().getModelUtilService().findPreprocessorDef(module,
                     openResult.getName(), kind);
         } else if (openResult.isField()) {
-            final IErlRecordDef def = (IErlRecordDef) ModelUtils
+            final IErlRecordDef def = (IErlRecordDef) ErlangEngine.getInstance().getModelUtilService()
                     .findPreprocessorDef(module, openResult.getFun(),
                             ErlElementKind.RECORD_DEF);
             if (def != null) {
@@ -280,7 +279,7 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlElementLocator.Scope scope) throws RpcException,
             CoreException {
         if (isTypeDefOrRecordDef(element, res)) {
-            return ModelUtils.findTypespec(module, res.getFun());
+            return ErlangEngine.getInstance().getModelUtilService().findTypespec(module, res.getFun());
         }
         final IErlFunction foundElement = module
                 .findFunction(res.getFunction());
@@ -306,7 +305,7 @@ public class OpenAction extends SelectionDispatchAction {
             final String modulePath = otpErlangString.stringValue();
             final IErlElementLocator model = ErlangEngine.getInstance()
                     .getModel();
-            return ModelUtils.findFunction(model, moduleName,
+            return ErlangEngine.getInstance().getModelUtilService().findFunction(model, moduleName,
                     res.getFunction(), modulePath, erlProject, scope, module);
         } else {
             // functions defined in include files
@@ -329,16 +328,16 @@ public class OpenAction extends SelectionDispatchAction {
             throws CoreException {
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         if (isTypeDefOrRecordDef(element, res)) {
-            return ModelUtils.findTypeDef(model, module, res.getName(),
+            return ErlangEngine.getInstance().getModelUtilService().findTypeDef(model, module, res.getName(),
                     res.getFun(), res.getPath(), project, scope);
         }
-        final IErlFunction result = ModelUtils.findFunction(model,
+        final IErlFunction result = ErlangEngine.getInstance().getModelUtilService().findFunction(model,
                 res.getName(), res.getFunction(), res.getPath(), project,
                 scope, module);
         if (result != null) {
             return result;
         }
-        return ModelUtils.findFunction(model, res.getName(),
+        return ErlangEngine.getInstance().getModelUtilService().findFunction(model, res.getName(),
                 new ErlangFunction(res.getFun(), ErlangFunction.ANY_ARITY),
                 res.getPath(), project, scope, module);
     }

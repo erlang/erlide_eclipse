@@ -15,7 +15,6 @@ import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.OpenResult;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.util.FilePathUtils;
 import org.junit.After;
@@ -108,7 +107,7 @@ public class ErlProjectTest {
             project.setIncludeDirs(Lists.newArrayList(p));
             // when
             // looking for the include file
-            // String includeFile = ModelUtils.findIncludeFile(erlProject,
+            // String includeFile = ErlangEngine.getInstance().getModelUtilService().findIncludeFile(erlProject,
             // "x.hrl", "");
             project.open(null);
             final IErlElementLocator model = ErlangEngine.getInstance()
@@ -164,7 +163,7 @@ public class ErlProjectTest {
             // then
             // it should be found in the project defining it
             assertNotNull(module);
-            assertEquals(project2, ModelUtils.getProject(module));
+            assertEquals(project2, ErlangEngine.getInstance().getModelUtilService().getProject(module));
         } finally {
             if (project != null) {
                 ErlideTestUtils.deleteProject(project);
@@ -195,10 +194,10 @@ public class ErlProjectTest {
                     .getInstance()
                     .getOpenService()
                     .open(moduleE.getScannerName(), 49,
-                            ModelUtils.getImportsAsList(moduleE),
+                            ErlangEngine.getInstance().getModelUtilService().getImportsAsList(moduleE),
                             project.getExternalModulesString(),
                             model.getPathVars());
-            final IErlFunction function = ModelUtils.findFunction(model,
+            final IErlFunction function = ErlangEngine.getInstance().getModelUtilService().findFunction(model,
                     res.getName(), res.getFunction(), res.getPath(), project,
                     IErlElementLocator.Scope.PROJECT_ONLY, moduleE);
             assertNotNull(function);
@@ -210,7 +209,7 @@ public class ErlProjectTest {
             // the function should be returned and the module, in External Files
             assertNotNull(module);
             assertEquals(function.getParent(), module);
-            assertEquals(ModelUtils.getProject(function), project);
+            assertEquals(ErlangEngine.getInstance().getModelUtilService().getProject(function), project);
         } finally {
             scanner.dispose();
         }

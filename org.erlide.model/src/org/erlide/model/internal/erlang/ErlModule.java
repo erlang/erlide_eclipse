@@ -54,7 +54,6 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ErlangIncludeFile;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.Util;
@@ -143,7 +142,7 @@ public class ErlModule extends Openable implements IErlModule {
                     if (encoding != null) {
                         charset = encoding;
                     } else {
-                        charset = ModelUtils.getProject(this)
+                        charset = ErlangEngine.getInstance().getModelUtilService().getProject(this)
                                 .getWorkspaceProject().getDefaultCharset();
                     }
                     initialText = Util.getInputStreamAsString(
@@ -456,7 +455,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public Set<IErlModule> getDirectDependentModules() throws ErlModelException {
         final Set<IErlModule> result = new HashSet<IErlModule>();
-        final IErlProject project = ModelUtils.getProject(this);
+        final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(this);
         for (final IErlModule module : project.getModules()) {
             final boolean wasOpen = module.isOpen();
             if (!wasOpen) {
@@ -479,7 +478,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public Set<IErlModule> getAllDependentModules() throws CoreException {
         final Set<IErlModule> result = new HashSet<IErlModule>();
-        final IErlProject project = ModelUtils.getProject(this);
+        final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(this);
         for (final IErlModule module : project.getModules()) {
             final Collection<IErlModule> allIncludedFiles = module
                     .findAllIncludedFiles();
@@ -574,7 +573,7 @@ public class ErlModule extends Openable implements IErlModule {
             return includedFilesForModule;
         }
         final Collection<ErlangIncludeFile> includedFiles = getIncludeFiles();
-        final IErlProject project = ModelUtils.getProject(this);
+        final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(this);
         if (project == null) {
             return result;
         }
@@ -672,7 +671,7 @@ public class ErlModule extends Openable implements IErlModule {
             final IErlFolder folder = (IErlFolder) parent;
             return folder.isOnSourcePath();
         }
-        if (checkPath(ModelUtils.getProject(this).getSourceDirs())) {
+        if (checkPath(ErlangEngine.getInstance().getModelUtilService().getProject(this).getSourceDirs())) {
             return true;
         }
         return false;
@@ -685,7 +684,7 @@ public class ErlModule extends Openable implements IErlModule {
             final IErlFolder folder = (IErlFolder) parent;
             return folder.isOnIncludePath();
         }
-        if (checkPath(ModelUtils.getProject(this).getIncludeDirs())) {
+        if (checkPath(ErlangEngine.getInstance().getModelUtilService().getProject(this).getIncludeDirs())) {
             return true;
         }
         return false;

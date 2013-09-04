@@ -24,7 +24,6 @@ import org.erlide.model.root.IErlElement.AcceptFlags;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlElementVisitor;
 import org.erlide.model.root.IErlExternal;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 
@@ -77,11 +76,11 @@ public class IErlElementTest extends ErlModelTestBase {
     // IErlProject getProject();
     @Test
     public void getProject() throws Exception {
-        assertEquals(project, ModelUtils.getProject(module));
-        assertEquals(project, ModelUtils.getProject(project));
+        assertEquals(project, ErlangEngine.getInstance().getModelUtilService().getProject(module));
+        assertEquals(project, ErlangEngine.getInstance().getModelUtilService().getProject(project));
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
-        assertEquals(project, ModelUtils.getProject(element));
+        assertEquals(project, ErlangEngine.getInstance().getModelUtilService().getProject(element));
     }
 
     // IErlModule getModule();
@@ -89,7 +88,7 @@ public class IErlElementTest extends ErlModelTestBase {
     public void getModule() throws Exception {
         module.open(null);
         final IErlMember element = module.getElementAtLine(3);
-        assertEquals(module, ModelUtils.getModule(element));
+        assertEquals(module, ErlangEngine.getInstance().getModelUtilService().getModule(element));
     }
 
     // IResource getCorrespondingResource();

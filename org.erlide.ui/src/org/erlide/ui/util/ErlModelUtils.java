@@ -34,7 +34,6 @@ import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ErlangFunction;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.editors.util.ErlangExternalEditorInput;
@@ -56,7 +55,7 @@ public class ErlModelUtils {
             final IErlModule module, final IErlProject project,
             final IErlElementLocator.Scope scope) throws CoreException {
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlModule module2 = ModelUtils.findModule(model, project,
+        final IErlModule module2 = ErlangEngine.getInstance().getModelUtilService().findModule(model, project,
                 moduleName, modulePath, scope);
         if (module2 != null) {
             final IEditorPart editor = EditorUtility.openInEditor(module2);
@@ -110,7 +109,7 @@ public class ErlModelUtils {
             return false;
         }
         module.open(null);
-        final IErlTypespec typespec = ModelUtils.findTypespec(module, typeName);
+        final IErlTypespec typespec = ErlangEngine.getInstance().getModelUtilService().findTypespec(module, typeName);
         if (typespec == null) {
             return false;
         }
@@ -163,7 +162,7 @@ public class ErlModelUtils {
         if (path != null) {
             final IErlElementLocator model = ErlangEngine.getInstance()
                     .getModel();
-            final IErlModule module = ModelUtils.findModule(model, null, null,
+            final IErlModule module = ErlangEngine.getInstance().getModelUtilService().findModule(model, null, null,
                     path, IErlElementLocator.Scope.ALL_PROJECTS);
             if (module != null) {
                 return module;
@@ -193,7 +192,7 @@ public class ErlModelUtils {
 
     public static void openModule(final String moduleName) throws CoreException {
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlModule module = ModelUtils.findModule(model, null,
+        final IErlModule module = ErlangEngine.getInstance().getModelUtilService().findModule(model, null,
                 moduleName, null, IErlElementLocator.Scope.ALL_PROJECTS);
         if (module != null) {
             EditorUtility.openInEditor(module);

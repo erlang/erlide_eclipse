@@ -27,9 +27,9 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.hover.ErlTextHover;
 import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
@@ -107,7 +107,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 
     @Override
     protected IErlProject getProject() {
-        return ModelUtils.getProject(getModule());
+        return ErlangEngine.getInstance().getModelUtilService().getProject(getModule());
     }
 
     @Override

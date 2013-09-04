@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
@@ -21,7 +22,6 @@ import org.erlide.model.internal.root.ErlMember;
 import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.util.ErlangFunction;
-import org.erlide.model.util.ModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Lists;
@@ -87,7 +87,7 @@ public class ErlFunction extends ErlMember implements IErlFunction {
 
     @Override
     public boolean isExported() {
-        return fExported || ModelUtils.getModule(this).exportsAllFunctions();
+        return fExported || ErlangEngine.getInstance().getModelUtilService().getModule(this).exportsAllFunctions();
     }
 
     public void setArity(final int i) {

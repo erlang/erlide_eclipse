@@ -1,7 +1,6 @@
 package org.erlide.util.event_tracer;
 
 import org.eclipse.xtend2.lib.StringConcatenation;
-import org.erlide.util.event_tracer.ErlideOperationEvent;
 
 @SuppressWarnings("all")
 public class ErlideOperationEndEvent extends ErlideOperationEvent {

@@ -35,7 +35,6 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
 
@@ -185,7 +184,7 @@ public class RunDialyzerHandler extends AbstractHandler {
             final Set<IErlModule> modules) {
         final Set<IErlProject> projects = Sets.newHashSet();
         for (final IErlModule module : modules) {
-            projects.add(ModelUtils.getProject(module));
+            projects.add(ErlangEngine.getInstance().getModelUtilService().getProject(module));
         }
         return projects;
     }

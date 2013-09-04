@@ -23,7 +23,6 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.util.SystemConfiguration;
 
 /**
@@ -93,14 +92,14 @@ public class ErlFolder extends Openable implements IErlFolder {
 
     @Override
     public boolean isOnSourcePath() {
-        final IErlProject project = ModelUtils.getProject(this);
+        final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(this);
         return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
                 project.getSourceDirs());
     }
 
     @Override
     public boolean isOnIncludePath() {
-        final IErlProject project = ModelUtils.getProject(this);
+        final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(this);
         return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
                 project.getIncludeDirs());
     }
@@ -108,7 +107,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public boolean isSourcePathParent() {
         final IProject project = folder.getProject();
-        final IErlProject erlProject = ModelUtils.getProject(this);
+        final IErlProject erlProject = ErlangEngine.getInstance().getModelUtilService().getProject(this);
         final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
         final IPath path = folder.getFullPath();
         for (final IPath i : sourcePaths) {
@@ -139,7 +138,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     public void setChildren(final Collection<? extends IErlElement> c) {
         if (isOnIncludePath() || isOnSourcePath()) {
             ErlModel.getErlModelCache().removeProject(
-                    ModelUtils.getProject(this));
+                    ErlangEngine.getInstance().getModelUtilService().getProject(this));
         }
         super.setChildren(c);
     }
@@ -148,7 +147,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     public void clearCaches() {
         if (isOnIncludePath() || isOnSourcePath()) {
             ErlModel.getErlModelCache().removeProject(
-                    ModelUtils.getProject(this));
+                    ErlangEngine.getInstance().getModelUtilService().getProject(this));
         }
         super.clearCaches();
     }

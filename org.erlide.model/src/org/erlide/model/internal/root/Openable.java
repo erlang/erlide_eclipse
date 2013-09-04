@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.ErlModelStatus;
 import org.erlide.model.ErlModelStatusConstants;
@@ -22,7 +23,6 @@ import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
 import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.util.ErlLogger;
 
 /**
@@ -294,7 +294,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
         if (workspace == null) {
             return false;
         }
-        return ModelUtils.getTarget(workspace.getRoot(), getResource()
+        return ErlangEngine.getInstance().getModelUtilService().getTarget(workspace.getRoot(), getResource()
                 .getFullPath().makeRelative(), true) != null;
     }
 

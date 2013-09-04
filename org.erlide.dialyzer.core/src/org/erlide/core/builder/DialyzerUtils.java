@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ModuleKind;
@@ -23,7 +24,6 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.RpcException;
@@ -163,7 +163,7 @@ public class DialyzerUtils {
             final Collection<IPath> includeDirs, final boolean fromSource) {
         for (final IErlModule m : modules) {
             final String name = m.getName();
-            final IErlProject erlProject = ModelUtils.getProject(m);
+            final IErlProject erlProject = ErlangEngine.getInstance().getModelUtilService().getProject(m);
             final IProject project = erlProject.getWorkspaceProject();
             final IFolder ebin = project.getFolder(erlProject
                     .getOutputLocation());

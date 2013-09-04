@@ -52,7 +52,6 @@ import org.erlide.model.services.search.LimitTo;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.services.search.SearchFor;
 import org.erlide.model.services.search.SearchPatternFactory;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -627,7 +626,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                         .getOpenService()
                         .open(module.getScannerName(),
                                 offset,
-                                ModelUtils.getImportsAsList(module),
+                                ErlangEngine.getInstance().getModelUtilService().getImportsAsList(module),
                                 "",
                                 ErlangEngine.getInstance().getModel()
                                         .getPathVars());

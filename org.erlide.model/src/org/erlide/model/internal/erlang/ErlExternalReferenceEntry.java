@@ -14,7 +14,6 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.internal.root.Openable;
 import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlExternal;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
 
 import com.google.common.collect.Lists;
@@ -47,7 +46,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
             return true;
         }
         final IRpcSite backend = ModelPlugin.getDefault().getBackend(
-                ModelUtils.getProject(this).getWorkspaceProject());
+                ErlangEngine.getInstance().getModelUtilService().getProject(this).getWorkspaceProject());
         if (backend != null) {
             final List<String> files = ErlangEngine.getInstance()
                     .getOpenService().getLibFiles(entry);

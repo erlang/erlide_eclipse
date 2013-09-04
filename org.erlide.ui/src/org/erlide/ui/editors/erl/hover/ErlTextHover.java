@@ -48,7 +48,6 @@ import org.erlide.model.erlang.IErlPreprocessorDef;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.OpenResult;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
@@ -266,7 +265,7 @@ public class ErlTextHover implements ITextHover,
         final StringBuffer result = new StringBuffer();
         Object element = null;
         // TODO our model is too coarse, here we need access to expressions
-        final Collection<OtpErlangObject> fImports = ModelUtils
+        final Collection<OtpErlangObject> fImports = ErlangEngine.getInstance().getModelUtilService()
                 .getImportsAsList(editor.getModule());
 
         final int offset = hoverRegion.getOffset();

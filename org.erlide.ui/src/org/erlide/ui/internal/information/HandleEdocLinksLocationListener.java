@@ -8,7 +8,6 @@ import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.services.search.OpenResult;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
@@ -61,7 +60,7 @@ public class HandleEdocLinksLocationListener implements LocationListener {
             final ErlangFunctionCall functionCall = HoverUtil
                     .eventToErlangFunctionCall(moduleName, event);
             if (functionCall != null) {
-                final IProject project = ModelUtils.getProject(
+                final IProject project = ErlangEngine.getInstance().getModelUtilService().getProject(
                         editor.getModule()).getWorkspaceProject();
                 final IBackendManager backendManager = BackendCore
                         .getBackendManager();

@@ -13,7 +13,6 @@ import org.erlide.cover.views.model.ObjectType;
 import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.cover.views.model.StatsTreeObject;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangEventHandler;
 import org.erlide.util.ErlLogger;
@@ -147,7 +146,7 @@ public class CoverEventHandler extends ErlangEventHandler {
         final IConfiguration config = CoveragePerformer.getPerformer()
                 .getConfig();
 
-        final String ppath = ModelUtils.getProject(config.getProject())
+        final String ppath = ErlangEngine.getInstance().getModelUtilService().getProject(config.getProject())
                 .getWorkspaceProject().getLocation().toString();
         String mpath = config.getModule(moduleStats.getLabel()).getFilePath();
         mpath = mpath.substring(ppath.length());

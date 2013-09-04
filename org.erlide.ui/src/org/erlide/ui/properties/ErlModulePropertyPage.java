@@ -14,7 +14,6 @@ import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.erlang.TypeConverter;
 
@@ -42,7 +41,7 @@ public class ErlModulePropertyPage extends PropertyPage {
                 .findModule(file);
         String value = "There is no module information about this file.";
         if (module != null) {
-            final IErlProject project = ModelUtils.getProject(module);
+            final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(module);
             final IPath beamPath = project.getOutputLocation()
                     .append(module.getModuleName()).addFileExtension("beam");
             final IFile beam = project.getWorkspaceProject().getFile(beamPath);
