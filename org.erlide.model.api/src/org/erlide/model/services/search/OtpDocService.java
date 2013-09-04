@@ -17,13 +17,12 @@ public interface OtpDocService {
     OtpErlangObject getModules(IRpcSite b, String prefix,
             List<String> projectModules, boolean includes);
 
-    OtpErlangObject getOtpDoc(IRpcSite backend,
-            ErlangFunctionCall functionCall, String stateDir);
+    OtpErlangObject getOtpDoc(IRpcSite b, ErlangFunctionCall functionCall,
+            String stateDir);
 
-    OtpErlangObject getOtpDoc(IRpcSite ide, IRpcSite b, int offset,
-            String stateDir, String module,
-            Collection<OtpErlangObject> imports, String externalModules,
-            OtpErlangList pathVars);
+    OtpErlangObject getOtpDoc(IRpcSite b, int offset, String stateDir,
+            String module, Collection<OtpErlangObject> imports,
+            String externalModules, OtpErlangList pathVars);
 
     String getOtpDocLocation(IRpcSite b);
 

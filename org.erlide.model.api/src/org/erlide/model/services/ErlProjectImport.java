@@ -1,4 +1,4 @@
-package org.erlide.ui.wizards;
+package org.erlide.model.services;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -10,6 +10,8 @@ import org.erlide.model.internal.erlang.ErlideScanner;
 import org.erlide.model.internal.erlang.ModelInternalUtils;
 import org.erlide.model.internal.root.ErlModel;
 import org.erlide.model.root.IErlModel;
+import org.erlide.model.services.ErlideImport;
+import org.erlide.model.services.ImportService;
 import org.erlide.model.services.cleanup.CleanupProvider;
 import org.erlide.model.services.cleanup.ErlTidyCleanupProvider;
 import org.erlide.model.services.codeassist.ContextAssistService;
@@ -93,7 +95,7 @@ public class DefaultErlangEngine implements IErlangEngine {
 
     @Override
     public OtpDocService getOtpDocService() {
-        return new ErlideDoc();
+        return new ErlideDoc(backend);
     }
 
     @Override
@@ -118,7 +120,7 @@ public class DefaultErlangEngine implements IErlangEngine {
 
     @Override
     public ModelUtilService getModelUtilService() {
-        return new ModelInternalUtils();
+        return new ModelInternalUtils(backend);
     }
 
     /**
@@ -141,5 +143,10 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public ErlangToolkit getToolkit() {
         return new ErlangBackendToolkit(backend);
+    }
+
+    @Override
+    public ImportService getImportService() {
+        return new ErlideImport(backend);
     }
 }

@@ -18,6 +18,12 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideDoc implements OtpDocService {
 
+    private final IRpcSite backend;
+
+    public ErlideDoc(final IRpcSite backend) {
+        this.backend = backend;
+    }
+
     @Override
     public OtpErlangObject getProposalsWithDoc(final IRpcSite b,
             final String mod, final String prefix, final String stateDir) {
@@ -46,7 +52,7 @@ public class ErlideDoc implements OtpDocService {
     }
 
     @Override
-    public OtpErlangObject getOtpDoc(final IRpcSite backend,
+    public OtpErlangObject getOtpDoc(final IRpcSite b,
             final ErlangFunctionCall functionCall, final String stateDir) {
         OtpErlangObject res = null;
         final OtpErlangTuple input = new OtpErlangTuple(new OtpErlangObject[] {
@@ -56,7 +62,7 @@ public class ErlideDoc implements OtpDocService {
                 new OtpErlangInt(functionCall.getArity()),
                 new OtpErlangString("") });
         try {
-            res = backend.call("erlide_otp_doc", "get_doc", "sxs",
+            res = b.call("erlide_otp_doc", "get_doc", "sxs",
                     functionCall.getModule(), input, stateDir);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
@@ -66,13 +72,13 @@ public class ErlideDoc implements OtpDocService {
 
     @Override
     @SuppressWarnings("boxing")
-    public OtpErlangObject getOtpDoc(final IRpcSite ide, final IRpcSite b,
-            final int offset, final String stateDir, final String module,
+    public OtpErlangObject getOtpDoc(final IRpcSite b, final int offset,
+            final String stateDir, final String module,
             final Collection<OtpErlangObject> imports,
             final String externalModules, final OtpErlangList pathVars) {
         OtpErlangObject res = null;
         try {
-            final OtpErlangObject input = ide.call(
+            final OtpErlangObject input = backend.call(
                     "erlide_open",
                     "open",
                     "aix",

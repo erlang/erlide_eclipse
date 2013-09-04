@@ -3,6 +3,7 @@ package org.erlide.engine;
 import org.eclipse.core.resources.IResource;
 import org.erlide.model.erlang.ErlangToolkit;
 import org.erlide.model.root.IErlModel;
+import org.erlide.model.services.ImportService;
 import org.erlide.model.services.cleanup.CleanupProvider;
 import org.erlide.model.services.codeassist.ContextAssistService;
 import org.erlide.model.services.scanner.ScannerService;
@@ -42,5 +43,7 @@ public interface IErlangEngine {
     CleanupProvider getCleanupProvider(final IResource resource);
 
     ErlangToolkit getToolkit();
+
+    ImportService getImportService();
 
 }

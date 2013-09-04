@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.erlide.ui.wizards;
+package org.erlide.model.services;
 
 import java.util.List;
 
@@ -15,7 +15,13 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * @author jakob
  * 
  */
-public class ErlideImport {
+public class ErlideImport implements ImportService {
+
+    private final IRpcSite backend;
+
+    public ErlideImport(final IRpcSite backend) {
+        this.backend = backend;
+    }
 
     /**
      * Filter import parameters for newly imported erlang project
@@ -26,11 +32,12 @@ public class ErlideImport {
      * 
      * @return
      */
-    public static ErlProjectImport importProject(final IRpcSite b,
-            final String prefix, final List<String> importSources) {
+    @Override
+    public ErlProjectImport importProject(final String prefix,
+            final List<String> importSources) {
         OtpErlangObject res = null;
         try {
-            res = b.call("erlide_import", "import", "sls", prefix,
+            res = backend.call("erlide_import", "import", "sls", prefix,
                     importSources);
             return new ErlProjectImport(res);
         } catch (final RpcException e) {

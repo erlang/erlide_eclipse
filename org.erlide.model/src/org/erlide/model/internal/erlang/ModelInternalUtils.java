@@ -59,6 +59,12 @@ import com.google.common.collect.Sets;
 
 public class ModelInternalUtils implements ModelUtilService {
 
+    private final IRpcSite backend;
+
+    public ModelInternalUtils(final IRpcSite backend) {
+        this.backend = backend;
+    }
+
     @Override
     public ISourceRange findVariable(final ISourceRange range,
             final String variableName, final String elementText)
@@ -530,7 +536,6 @@ public class ModelInternalUtils implements ModelUtilService {
                 .append(module.getModuleName()).addFileExtension("beam");
         final IFile beam = project.getWorkspaceProject().getFile(beamPath);
 
-        final IRpcSite backend = ErlangEngine.getInstance().getBackend();
         try {
             final OtpErlangObject info = backend.call("erlide_backend",
                     "get_module_info", "s", beam.getLocation()

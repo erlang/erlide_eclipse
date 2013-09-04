@@ -49,6 +49,7 @@ import org.erlide.core.ErlangCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.root.IErlangProjectProperties;
 import org.erlide.model.root.OldErlangProjectProperties;
+import org.erlide.model.services.ErlProjectImport;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 import org.erlide.util.ErlLogger;
@@ -88,8 +89,8 @@ public class ErlangProjectImportWizard extends Wizard implements IImportWizard {
             filesAndDirs.add(s);
         }
         final String projectPath = mainPage.getProjectPath().toString();
-        final ErlProjectImport epi = ErlideImport.importProject(ErlangEngine
-                .getInstance().getBackend(), projectPath, filesAndDirs);
+        final ErlProjectImport epi = ErlangEngine.getInstance()
+                .getImportService().importProject(projectPath, filesAndDirs);
         final IPath beamDir = new Path(epi.getBeamDir());
         importIncludeAndSourceDirsPage.setup(projectPath, epi.getDirectories(),
                 epi.getIncludeDirs(), epi.getSourceDirs(), beamDir);
