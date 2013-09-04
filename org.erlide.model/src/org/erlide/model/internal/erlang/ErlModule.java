@@ -54,6 +54,7 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ErlangIncludeFile;
+import org.erlide.model.util.ModelUtilService;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.Util;
@@ -81,6 +82,8 @@ public class ErlModule extends Openable implements IErlModule {
     private IErlScanner scanner;
     private final String encoding;
 
+    private final ModelUtilService modelUtilService;
+
     public ErlModule(final IParent parent, final String name, final IFile file) {
         this(parent, name, file, null, null, null);
     }
@@ -94,6 +97,7 @@ public class ErlModule extends Openable implements IErlModule {
             final IFile file, final String path, final String encoding,
             final String initialText) {
         super(parent, name);
+        modelUtilService = ErlangEngine.getInstance().getModelUtilService();
         this.file = file;
         this.path = path;
         this.encoding = encoding;
@@ -142,7 +146,7 @@ public class ErlModule extends Openable implements IErlModule {
                     if (encoding != null) {
                         charset = encoding;
                     } else {
-                        charset = ErlangEngine.getInstance().getModelUtilService().getProject(this)
+                        charset = modelUtilService.getProject(this)
                                 .getWorkspaceProject().getDefaultCharset();
                     }
                     initialText = Util.getInputStreamAsString(
@@ -455,7 +459,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public Set<IErlModule> getDirectDependentModules() throws ErlModelException {
         final Set<IErlModule> result = new HashSet<IErlModule>();
-        final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(this);
+        final IErlProject project = modelUtilService.getProject(this);
         for (final IErlModule module : project.getModules()) {
             final boolean wasOpen = module.isOpen();
             if (!wasOpen) {
@@ -478,7 +482,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public Set<IErlModule> getAllDependentModules() throws CoreException {
         final Set<IErlModule> result = new HashSet<IErlModule>();
-        final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(this);
+        final IErlProject project = modelUtilService.getProject(this);
         for (final IErlModule module : project.getModules()) {
             final Collection<IErlModule> allIncludedFiles = module
                     .findAllIncludedFiles();
@@ -573,7 +577,7 @@ public class ErlModule extends Openable implements IErlModule {
             return includedFilesForModule;
         }
         final Collection<ErlangIncludeFile> includedFiles = getIncludeFiles();
-        final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(this);
+        final IErlProject project = modelUtilService.getProject(this);
         if (project == null) {
             return result;
         }
@@ -671,7 +675,7 @@ public class ErlModule extends Openable implements IErlModule {
             final IErlFolder folder = (IErlFolder) parent;
             return folder.isOnSourcePath();
         }
-        if (checkPath(ErlangEngine.getInstance().getModelUtilService().getProject(this).getSourceDirs())) {
+        if (checkPath(modelUtilService.getProject(this).getSourceDirs())) {
             return true;
         }
         return false;
@@ -684,7 +688,7 @@ public class ErlModule extends Openable implements IErlModule {
             final IErlFolder folder = (IErlFolder) parent;
             return folder.isOnIncludePath();
         }
-        if (checkPath(ErlangEngine.getInstance().getModelUtilService().getProject(this).getIncludeDirs())) {
+        if (checkPath(modelUtilService.getProject(this).getIncludeDirs())) {
             return true;
         }
         return false;

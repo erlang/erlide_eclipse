@@ -67,8 +67,11 @@ public class ModelUtilsTests {
         ErlideTestUtils.deleteProjects();
     }
 
+    private ModelUtilService modelUtilService;
+
     @Before
     public void setUp() throws Exception {
+        modelUtilService = ErlangEngine.getInstance().getModelUtilService();
         ErlideTestUtils.initModulesAndIncludes();
     }
 
@@ -89,8 +92,8 @@ public class ModelUtilsTests {
         // fetching imports as list of OtpErlangTuple
         final Collection<IErlElement> children = moduleA.getChildren();
         final Collection<IErlImport> imports2 = moduleA.getImports();
-        final List<OtpErlangObject> imports = ErlangEngine.getInstance()
-                .getModelUtilService().getImportsAsList(moduleA);
+        final List<OtpErlangObject> imports = modelUtilService
+                .getImportsAsList(moduleA);
         // then
         // they should be returned
         if (children.size() != 2) {
@@ -132,42 +135,24 @@ public class ModelUtilsTests {
             final IErlElementLocator model = ErlangEngine.getInstance()
                     .getModel();
 
-            final IErlElement element1 = ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
-                    .findTypeDef(
-                            model,
-                            moduleB,
-                            "bx",
-                            "concat_thing",
-                            moduleB.getResource().getLocation()
-                                    .toPortableString(), projects[0],
-                            IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlElement element1 = modelUtilService.findTypeDef(model,
+                    moduleB, "bx", "concat_thing", moduleB.getResource()
+                            .getLocation().toPortableString(), projects[0],
+                    IErlElementLocator.Scope.PROJECT_ONLY);
             // in other project but path given
-            final IErlElement element2 = ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
-                    .findTypeDef(
-                            model,
-                            moduleB,
-                            "bx",
-                            "concat_thing",
-                            moduleB.getResource().getLocation()
-                                    .toPortableString(), projects[1],
-                            IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlElement element2 = modelUtilService.findTypeDef(model,
+                    moduleB, "bx", "concat_thing", moduleB.getResource()
+                            .getLocation().toPortableString(), projects[1],
+                    IErlElementLocator.Scope.PROJECT_ONLY);
             // in other project no path given, search all projects true
-            final IErlElement element3 = ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
-                    .findTypeDef(model, moduleB, "bx", "concat_thing", null,
-                            projects[1], IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlElement element3 = modelUtilService.findTypeDef(model,
+                    moduleB, "bx", "concat_thing", null, projects[1],
+                    IErlElementLocator.Scope.ALL_PROJECTS);
             // in other project no path given, search all projects false, ->
             // null
-            final IErlElement element4 = ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
-                    .findTypeDef(model, moduleB, "bx", "concat_thing", null,
-                            projects[1], IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlElement element4 = modelUtilService.findTypeDef(model,
+                    moduleB, "bx", "concat_thing", null, projects[1],
+                    IErlElementLocator.Scope.PROJECT_ONLY);
 
             // then
             // it should be returned if found
@@ -191,12 +176,9 @@ public class ModelUtilsTests {
         // when
         // looking for it with ?MODULE
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlElement element1 = ErlangEngine
-                .getInstance()
-                .getModelUtilService()
-                .findFunction(model, "?MODULE", new ErlangFunction("f", 0),
-                        null, projects[0],
-                        IErlElementLocator.Scope.PROJECT_ONLY, moduleD);
+        final IErlElement element1 = modelUtilService.findFunction(model,
+                "?MODULE", new ErlangFunction("f", 0), null, projects[0],
+                IErlElementLocator.Scope.PROJECT_ONLY, moduleD);
         // then
         // it should be found
         assertTrue(element1 instanceof IErlFunction);
@@ -218,16 +200,11 @@ public class ModelUtilsTests {
                                 + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
         module.open(null);
         project.open(null);
-        final IErlPreprocessorDef preprocessorDef1 = ErlangEngine.getInstance()
-                .getModelUtilService()
+        final IErlPreprocessorDef preprocessorDef1 = modelUtilService
                 .findPreprocessorDef(module, "rec1", ErlElementKind.RECORD_DEF);
-        final IErlPreprocessorDef preprocessorDef2 = ErlangEngine
-                .getInstance()
-                .getModelUtilService()
+        final IErlPreprocessorDef preprocessorDef2 = modelUtilService
                 .findPreprocessorDef(include, "rec1", ErlElementKind.RECORD_DEF);
-        final IErlPreprocessorDef preprocessorDef3 = ErlangEngine
-                .getInstance()
-                .getModelUtilService()
+        final IErlPreprocessorDef preprocessorDef3 = modelUtilService
                 .findPreprocessorDef(Arrays.asList(projects), "f.erl", "rec2",
                         ErlElementKind.RECORD_DEF);
         // then
@@ -255,9 +232,7 @@ public class ModelUtilsTests {
         module.open(null);
         // when
         // looking for the record
-        final IErlPreprocessorDef preprocessorDef = ErlangEngine
-                .getInstance()
-                .getModelUtilService()
+        final IErlPreprocessorDef preprocessorDef = modelUtilService
                 .findPreprocessorDef(module, "file_info",
                         ErlElementKind.RECORD_DEF);
         // then
@@ -284,11 +259,9 @@ public class ModelUtilsTests {
                         "-module(g).\n-include_lib(\"kernel/include/file.hrl\").\n-export([f/0]).\n-define(A(B), '++B++').\n-record(rec2, {a, b}).\n"
                                 + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
         module.open(null);
-        final List<IErlPreprocessorDef> macrodDefs = ErlangEngine.getInstance()
-                .getModelUtilService()
+        final List<IErlPreprocessorDef> macrodDefs = modelUtilService
                 .getAllPreprocessorDefs(module, ErlElementKind.MACRO_DEF);
-        final List<IErlPreprocessorDef> recordDefs = ErlangEngine.getInstance()
-                .getModelUtilService()
+        final List<IErlPreprocessorDef> recordDefs = modelUtilService
                 .getAllPreprocessorDefs(module, ErlElementKind.RECORD_DEF);
         assertEquals(2, macrodDefs.size());
         assertEquals(3, recordDefs.size());
@@ -315,14 +288,11 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking via prefix
-            final List<String> moduleNames0 = ErlangEngine.getInstance()
-                    .getModelUtilService()
+            final List<String> moduleNames0 = modelUtilService
                     .findUnitsWithPrefix("ex", project, false, false);
-            final List<String> modules1 = ErlangEngine.getInstance()
-                    .getModelUtilService()
-                    .findUnitsWithPrefix("ex", project, true, false);
-            final List<String> listModules = ErlangEngine.getInstance()
-                    .getModelUtilService()
+            final List<String> modules1 = modelUtilService.findUnitsWithPrefix(
+                    "ex", project, true, false);
+            final List<String> listModules = modelUtilService
                     .findUnitsWithPrefix("list", project, true, false);
             // then
             // we should find it iff we check externals
@@ -366,11 +336,8 @@ public class ModelUtilsTests {
             // looking for it
             final IErlElementLocator model = ErlangEngine.getInstance()
                     .getModel();
-            final IErlModule module = ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
-                    .findModule(model, null, null, absolutePath,
-                            IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule module = modelUtilService.findModule(model, null,
+                    null, absolutePath, IErlElementLocator.Scope.ALL_PROJECTS);
             // then
             // we should find it
             assertNotNull(module);
@@ -403,9 +370,8 @@ public class ModelUtilsTests {
                 "-module(bbc).\n-export(f/0)\nf() ->\n   {abc, ok}.\n");
         // when
         // looking for module with prefix, it should be found
-        final List<String> moduleNames = ErlangEngine.getInstance()
-                .getModelUtilService()
-                .findUnitsWithPrefix("a", projects[0], false, false);
+        final List<String> moduleNames = modelUtilService.findUnitsWithPrefix(
+                "a", projects[0], false, false);
         // then
         // we should find it
         assertNotNull(moduleNames);
@@ -435,17 +401,13 @@ public class ModelUtilsTests {
             // when
             // looking for it with its external module path
             final IErlModel model = ErlangEngine.getInstance().getModel();
-            final IErlModule module = ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
-                    .findModule(model, null, null, absolutePath,
-                            IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule module = modelUtilService.findModule(model, null,
+                    null, absolutePath, IErlElementLocator.Scope.ALL_PROJECTS);
             assertNotNull(module);
             final String externalModulePath = ErlangEngine.getInstance()
                     .getModelUtilService().getExternalModulePath(model, module);
             ErlLogger.debug(" >> %s", externalModulePath);
-            final IErlModule module2 = ErlangEngine.getInstance()
-                    .getModelUtilService()
+            final IErlModule module2 = modelUtilService
                     .getModuleFromExternalModulePath(model, externalModulePath);
             // then
             // we should find it
@@ -481,8 +443,8 @@ public class ModelUtilsTests {
         module.open(null);
         // when
         // looking for the typespec
-        final IErlTypespec typespec = ErlangEngine.getInstance()
-                .getModelUtilService().findTypespec(module, "date");
+        final IErlTypespec typespec = modelUtilService.findTypespec(module,
+                "date");
         // then
         // it should be found
         assertNotNull(typespec);
@@ -514,9 +476,7 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for the record def
-            final IErlPreprocessorDef preprocessorDef = ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
+            final IErlPreprocessorDef preprocessorDef = modelUtilService
                     .findPreprocessorDef(module, "rec2",
                             ErlElementKind.RECORD_DEF);
             final Collection<IErlProject> myprojects = Lists
@@ -564,18 +524,13 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for the record def
-            final IErlPreprocessorDef preprocessorDef = ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
+            final IErlPreprocessorDef preprocessorDef = modelUtilService
                     .findPreprocessorDef(module, "rec2",
                             ErlElementKind.RECORD_DEF);
             final Collection<IErlProject> myprojects = Lists
                     .newArrayList(project);
-            ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
-                    .findPreprocessorDef(myprojects, "a.erl", "rec2",
-                            ErlElementKind.RECORD_DEF);
+            modelUtilService.findPreprocessorDef(myprojects, "a.erl", "rec2",
+                    ErlElementKind.RECORD_DEF);
             // then
             // it should be found
             assertNotNull(preprocessorDef);
@@ -620,18 +575,13 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for the record def
-            final IErlPreprocessorDef preprocessorDef = ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
+            final IErlPreprocessorDef preprocessorDef = modelUtilService
                     .findPreprocessorDef(module, "rec2",
                             ErlElementKind.RECORD_DEF);
             final Collection<IErlProject> myprojects = Lists
                     .newArrayList(project);
-            ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
-                    .findPreprocessorDef(myprojects, "a.erl", "rec2",
-                            ErlElementKind.RECORD_DEF);
+            modelUtilService.findPreprocessorDef(myprojects, "a.erl", "rec2",
+                    ErlElementKind.RECORD_DEF);
             // then
             // it should be found
             assertNotNull(preprocessorDef);

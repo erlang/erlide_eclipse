@@ -49,7 +49,7 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.ui.actions.OpenAction;
+import org.erlide.ui.actions.OpenUtils;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
@@ -265,8 +265,8 @@ public class ErlTextHover implements ITextHover,
         final StringBuffer result = new StringBuffer();
         Object element = null;
         // TODO our model is too coarse, here we need access to expressions
-        final Collection<OtpErlangObject> fImports = ErlangEngine.getInstance().getModelUtilService()
-                .getImportsAsList(editor.getModule());
+        final Collection<OtpErlangObject> fImports = ErlangEngine.getInstance()
+                .getModelUtilService().getImportsAsList(editor.getModule());
 
         final int offset = hoverRegion.getOffset();
         final int length = hoverRegion.getLength();
@@ -314,7 +314,7 @@ public class ErlTextHover implements ITextHover,
             } else {
                 final OpenResult or = new OpenResult(t);
                 element = or;
-                final Object found = OpenAction.findOpenResult(editor,
+                final Object found = new OpenUtils().findOpenResult(editor,
                         editor.getModule(), backend, erlProject, or,
                         editor.getElementAt(offset, false));
                 if (found instanceof IErlFunction) {
