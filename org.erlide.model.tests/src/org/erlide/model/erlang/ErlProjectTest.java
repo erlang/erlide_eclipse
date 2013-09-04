@@ -1,4 +1,4 @@
-package org.erlide.core;
+package org.erlide.model.erlang;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -6,12 +6,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.erlang.IErlFunction;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
@@ -248,7 +246,8 @@ public class ErlProjectTest {
             // we should find it
             assertNotNull(externalModule);
             assertTrue(FilePathUtils.equalFilePaths(absolutePath,
-                    externalModule.getFilePath()));
+                    externalModule.getFilePath(), EFS.getLocalFileSystem()
+                            .isCaseSensitive()));
         } finally {
             if (externalFile != null && externalFile.exists()) {
                 externalFile.delete();

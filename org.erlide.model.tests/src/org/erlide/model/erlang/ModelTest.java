@@ -1,4 +1,4 @@
-package org.erlide.core;
+package org.erlide.model.erlang;
 
 import static org.junit.Assert.assertNotNull;
 
