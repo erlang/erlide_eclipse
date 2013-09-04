@@ -437,10 +437,8 @@ public class RpcSite implements IRpcSite {
     }
 
     private OtpErlangObject[] convertArgs(final String signature,
-            Object... args0) throws SignatureException {
-        if (args0 == null) {
-            args0 = new OtpErlangObject[] {};
-        }
+            final Object... args) throws SignatureException {
+        final Object[] args0 = args == null ? new OtpErlangObject[] {} : args;
 
         Signature[] type;
         type = Signature.parse(signature);
@@ -455,11 +453,11 @@ public class RpcSite implements IRpcSite {
                     "Signature doesn't match parameter number: " + type.length
                             + "/" + args0.length);
         }
-        final OtpErlangObject[] args = new OtpErlangObject[args0.length];
-        for (int i = 0; i < args.length; i++) {
-            args[i] = TypeConverter.java2erlang(args0[i], type[i]);
+        final OtpErlangObject[] args1 = new OtpErlangObject[args0.length];
+        for (int i = 0; i < args1.length; i++) {
+            args1[i] = TypeConverter.java2erlang(args0[i], type[i]);
         }
-        return args;
+        return args1;
     }
 
     private OtpErlangObject buildRpcCastMsg(final OtpErlangObject gleader,

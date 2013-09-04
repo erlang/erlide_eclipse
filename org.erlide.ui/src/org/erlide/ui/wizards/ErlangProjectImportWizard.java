@@ -139,7 +139,8 @@ public class ErlangProjectImportWizard extends Wizard implements IImportWizard {
             getContainer().run(false, true, new WorkspaceModifyOperation() {
 
                 @Override
-                protected void execute(IProgressMonitor monitor) {
+                protected void execute(final IProgressMonitor monitor0) {
+                    IProgressMonitor monitor = monitor0;
                     if (monitor == null) {
                         monitor = new NullProgressMonitor();
                     }

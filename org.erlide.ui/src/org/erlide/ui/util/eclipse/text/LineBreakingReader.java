@@ -94,7 +94,8 @@ public class LineBreakingReader {
         return res;
     }
 
-    private int findNextBreakOffset(int currOffset) {
+    private int findNextBreakOffset(final int currOffset0) {
+        int currOffset = currOffset0;
         int currWidth = 0;
         int nextOffset = fLineBreakIterator.following(currOffset);
         while (nextOffset != BreakIterator.DONE) {
@@ -129,7 +130,8 @@ public class LineBreakingReader {
         return nextOffset;
     }
 
-    private int findWordBegin(int idx) {
+    private int findWordBegin(final int idx0) {
+        int idx = idx0;
         while (idx < fLine.length()
                 && Character.isWhitespace(fLine.charAt(idx))) {
             idx++;

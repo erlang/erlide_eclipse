@@ -56,18 +56,21 @@ public class ErlangSourceViewer extends ProjectionViewer implements IDisposable 
     }
 
     public static SourceViewer createErlangPreviewer(final Composite parent,
-            IColorManager colorManager, final IPreferenceStore topStore,
-            List<TokenHighlight> colors, final String content) {
+            final IColorManager colorManager0, final IPreferenceStore topStore,
+            final List<TokenHighlight> colors0, final String content) {
         // TODO we should move this method, to a utility class (or maybe create
         // an ErlangPreviewSourceViewer class)
-        if (colorManager == null) {
-            colorManager = new ColorManager();
-        }
-        if (colors == null) {
+        final IColorManager colorManager = colorManager0 != null ? colorManager0
+                : new ColorManager();
+
+        List<TokenHighlight> colors;
+        if (colors0 == null) {
             colors = new ArrayList<TokenHighlight>();
             for (final TokenHighlight th : TokenHighlight.values()) {
                 colors.add(th);
             }
+        } else {
+            colors = colors0;
         }
 
         final IPreferenceStore generalTextStore = EditorsUI

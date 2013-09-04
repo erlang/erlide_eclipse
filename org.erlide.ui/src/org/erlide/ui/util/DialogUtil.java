@@ -51,7 +51,8 @@ public final class DialogUtil {
      * Removes the '&' accelerator indicator from a label, if any. Also removes
      * the () accelerators which are used in Asian languages.
      */
-    public static String removeAccel(String label) {
+    public static String removeAccel(final String label0) {
+        String label = label0;
 
         final int startBracket = label.indexOf("(&"); //$NON-NLS-1$
         // Non latin accelerator?

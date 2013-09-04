@@ -46,7 +46,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements
 
     public ErlangStackFrame(final String moduleName,
             final ErlangProcess parent, final IDebugTarget target,
-            int lineNumber, final ErlangFunction function,
+            final int lineNumber0, final ErlangFunction function,
             final OtpErlangList bindings, final int stackFrameNo) {
         super(target);
         fParent = parent;
@@ -79,6 +79,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements
             module = null;
         }
         clauseHead = null;
+        int lineNumber = lineNumber0;
         if (module != null) {
             try {
                 module.open(null);

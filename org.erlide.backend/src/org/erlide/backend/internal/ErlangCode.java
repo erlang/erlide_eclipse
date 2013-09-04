@@ -32,7 +32,8 @@ public final class ErlangCode {
         }
     }
 
-    public static void removePath(final IRpcSite backend, String path) {
+    public static void removePath(final IRpcSite backend, final String path0) {
+        String path = path0;
         try {
             // workaround for bug in code:del_path
             try {
@@ -62,7 +63,8 @@ public final class ErlangCode {
         }
     }
 
-    public static void load(final IRpcSite backend, String name) {
+    public static void load(final IRpcSite backend, final String name0) {
+        String name = name0;
         if (name.endsWith(".beam")) {
             name = name.substring(0, name.length() - 5);
         }

@@ -140,7 +140,7 @@ public class DialyzerMarkerUtils {
 
     public static void addProblemMarker(final IResource resource,
             final String path, final IResource compiledFile,
-            final String message, int lineNumber, final int severity) {
+            final String message, final int lineNumber, final int severity) {
         try {
             final IMarker marker = resource.createMarker(PROBLEM_MARKER);
             marker.setAttribute(IMarker.MESSAGE, message);
@@ -152,10 +152,8 @@ public class DialyzerMarkerUtils {
                 marker.setAttribute(IMarker.SOURCE_ID, compiledFile
                         .getFullPath().toString());
             }
-            if (lineNumber == -1) {
-                lineNumber = 1;
-            }
-            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+            marker.setAttribute(IMarker.LINE_NUMBER,
+                    lineNumber != -1 ? lineNumber : 1);
         } catch (final CoreException e) {
         }
     }

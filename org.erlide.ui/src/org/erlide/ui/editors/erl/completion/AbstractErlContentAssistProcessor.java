@@ -522,10 +522,10 @@ public abstract class AbstractErlContentAssistProcessor implements
     }
 
     List<ICompletionProposal> getExternalCallCompletions(final IRpcSite b,
-            String moduleName, final int offset, final String prefix,
+            final String moduleName0, final int offset, final String prefix,
             final boolean arityOnly) throws CoreException {
-        moduleName = ErlangEngine.getInstance().getModelUtilService()
-                .resolveMacroValue(moduleName, module);
+        final String moduleName = ErlangEngine.getInstance()
+                .getModelUtilService().resolveMacroValue(moduleName0, module);
         // we have an external call
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         final boolean checkAllProjects = NavigationPreferencePage
@@ -846,7 +846,8 @@ public abstract class AbstractErlContentAssistProcessor implements
     }
 
     private void addOffsetsAndLengths(final List<String> parameterNames,
-            int replacementOffset, final List<Point> result) {
+            final int replacementOffset0, final List<Point> result) {
+        int replacementOffset = replacementOffset0;
         for (final String par : parameterNames) {
             result.add(new Point(replacementOffset, par.length()));
             replacementOffset += par.length() + 2;

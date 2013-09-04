@@ -95,11 +95,12 @@ public final class HTMLPrinter {
         return buffer.toString();
     }
 
-    public static String convertToHTMLContent(String content) {
-        content = replace(content, '&', "&amp;"); //$NON-NLS-1$
-        content = replace(content, '"', "&quot;"); //$NON-NLS-1$
-        content = replace(content, '<', "&lt;"); //$NON-NLS-1$
-        return replace(content, '>', "&gt;"); //$NON-NLS-1$
+    public static String convertToHTMLContent(final String content) {
+        String result = content;
+        result = replace(result, '&', "&amp;"); //$NON-NLS-1$
+        result = replace(result, '"', "&quot;"); //$NON-NLS-1$
+        result = replace(result, '<', "&lt;"); //$NON-NLS-1$
+        return replace(result, '>', "&gt;"); //$NON-NLS-1$
     }
 
     public static String read(final Reader rd) {

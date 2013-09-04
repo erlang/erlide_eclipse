@@ -149,7 +149,8 @@ public class HTML2TextReader extends SubstitutionTextReader {
         return null;
     }
 
-    private String html2Text(String html) {
+    private String html2Text(final String html0) {
+        String html = html0;
 
         if (html == null || html.length() == 0) {
             return EMPTY_STRING;

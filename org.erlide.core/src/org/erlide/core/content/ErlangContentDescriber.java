@@ -151,8 +151,8 @@ public class ErlangContentDescriber implements ITextContentDescriber {
      * @param line
      * @return null if nothing found yet; String if found
      */
-    private String getDeclaration(String line) {
-        line = line.trim();
+    private String getDeclaration(final String line0) {
+        final String line = line0.trim();
         Matcher matcher = LATIN1.matcher(line);
         if (matcher.matches()) {
             return "latin1";

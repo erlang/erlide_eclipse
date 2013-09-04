@@ -63,10 +63,9 @@ public class ImageDescriptorRegistry {
      *         <code>null</code> if the image descriptor can't create the
      *         requested image.
      */
-    public Image get(ImageDescriptor descriptor) {
-        if (descriptor == null) {
-            descriptor = ImageDescriptor.getMissingImageDescriptor();
-        }
+    public Image get(final ImageDescriptor descriptor0) {
+        final ImageDescriptor descriptor = descriptor0 != null ? descriptor0
+                : ImageDescriptor.getMissingImageDescriptor();
 
         Image result = fRegistry.get(descriptor);
         if (result != null) {

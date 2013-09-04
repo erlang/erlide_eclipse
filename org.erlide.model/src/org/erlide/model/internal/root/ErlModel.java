@@ -686,10 +686,11 @@ public class ErlModel extends Openable implements IErlModel {
      * Creating a Erlang element has the side effect of creating and opening all
      * of the element's parents if they are not yet open.
      */
-    public IErlElement createFile(final IFile file, IParent parent) {
+    public IErlElement createFile(final IFile file, final IParent parent0) {
         if (file == null) {
             return null;
         }
+        IParent parent = parent0;
         if (parent == null) {
             final IContainer parentResource = file.getParent();
             if (parentResource != null) {

@@ -269,8 +269,9 @@ public final class StringUtils {
 
     }
 
-    public static String replaceNewLines(String message, final String string) {
-        message = message.replaceAll("\r\n", string);
+    public static String replaceNewLines(final String message0,
+            final String string) {
+        String message = message0.replaceAll("\r\n", string);
         message = message.replaceAll("\r", string);
         message = message.replaceAll("\n", string);
 

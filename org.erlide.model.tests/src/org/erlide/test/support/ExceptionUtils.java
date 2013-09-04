@@ -80,7 +80,8 @@ public class ExceptionUtils {
                 + " skipped for " + skippedPackages;
     }
 
-    private static Throwable getBottomThrowable(Throwable t) {
+    private static Throwable getBottomThrowable(final Throwable t0) {
+        Throwable t = t0;
         while (t.getCause() != null) {
             t = t.getCause();
         }

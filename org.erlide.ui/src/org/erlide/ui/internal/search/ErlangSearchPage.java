@@ -610,10 +610,12 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         setSearchFor(initData.getSearchFor());
     }
 
-    public SearchPatternData tryErlangTextSelection(SearchPatternData initData,
-            final IEditorPart activePart) throws ErlModelException {
+    public SearchPatternData tryErlangTextSelection(
+            final SearchPatternData initData0, final IEditorPart activePart)
+            throws ErlModelException {
         final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) activePart;
         final IErlModule module = erlangEditor.getModule();
+        SearchPatternData initData = initData0;
         if (module != null) {
             final ISelection ssel = erlangEditor.getSite()
                     .getSelectionProvider().getSelection();

@@ -124,7 +124,9 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
             return countArgs(args, 0, 1, 0);
         }
 
-        private int countArgs(final String args, int i, final int n, final int p) {
+        private int countArgs(final String args, final int i0, final int n,
+                final int p) {
+            int i = i0;
             if (args.length() == i) {
                 return n;
             }

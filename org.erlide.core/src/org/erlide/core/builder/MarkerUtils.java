@@ -62,18 +62,16 @@ public final class MarkerUtils {
     }
 
     public static void addTaskMarker(final IResource file,
-            final IResource compiledFile, final String message, int lineNumber,
-            final int priority) {
+            final IResource compiledFile, final String message,
+            final int lineNumber, final int priority) {
         try {
             final IMarker marker = file.createMarker(TASK_MARKER);
             marker.setAttribute(IMarker.MESSAGE, message);
             marker.setAttribute(IMarker.PRIORITY, priority);
             marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath()
                     .toString());
-            if (lineNumber == -1) {
-                lineNumber = 1;
-            }
-            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+            marker.setAttribute(IMarker.LINE_NUMBER,
+                    lineNumber != -1 ? lineNumber : 1);
         } catch (final CoreException e) {
         } catch (final Exception e) {
             ErlLogger.warn(e);
@@ -207,7 +205,7 @@ public final class MarkerUtils {
 
     public static void addProblemMarker(final IResource resource,
             final String path, final IResource compiledFile,
-            final String message, int lineNumber, final int severity) {
+            final String message, final int lineNumber, final int severity) {
         try {
             final IMarker marker = resource.createMarker(PROBLEM_MARKER);
             marker.setAttribute(IMarker.MESSAGE, message);
@@ -219,10 +217,8 @@ public final class MarkerUtils {
                 marker.setAttribute(IMarker.SOURCE_ID, compiledFile
                         .getFullPath().toString());
             }
-            if (lineNumber == -1) {
-                lineNumber = 1;
-            }
-            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+            marker.setAttribute(IMarker.LINE_NUMBER,
+                    lineNumber != -1 ? lineNumber : 1);
         } catch (final CoreException e) {
         }
     }
@@ -340,7 +336,7 @@ public final class MarkerUtils {
 
     public static IMarker addMarker(final IResource file,
             final IProject project, final String path, final String message,
-            int lineNumber, final int severity, final String markerKind) {
+            final int lineNumber, final int severity, final String markerKind) {
         try {
             IResource resource;
             if (file != null) {
@@ -353,10 +349,8 @@ public final class MarkerUtils {
             final IMarker marker = resource.createMarker(markerKind);
             marker.setAttribute(IMarker.MESSAGE, message);
             marker.setAttribute(IMarker.SEVERITY, severity);
-            if (lineNumber == -1) {
-                lineNumber = 1;
-            }
-            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+            marker.setAttribute(IMarker.LINE_NUMBER,
+                    lineNumber != -1 ? lineNumber : 1);
             marker.setAttribute(PATH_ATTRIBUTE, path);
             return marker;
         } catch (final CoreException e) {

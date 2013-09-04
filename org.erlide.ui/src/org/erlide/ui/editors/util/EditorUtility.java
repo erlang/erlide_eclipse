@@ -231,7 +231,8 @@ public class EditorUtility {
         return null;
     }
 
-    private static IEditorInput getEditorInput(IErlElement element) {
+    private static IEditorInput getEditorInput(final IErlElement element0) {
+        IErlElement element = element0;
         final IResource resource = element.getResource();
         if (resource instanceof IFile) {
             IFile file = (IFile) resource;

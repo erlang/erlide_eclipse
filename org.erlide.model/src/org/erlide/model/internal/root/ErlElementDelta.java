@@ -269,7 +269,8 @@ public class ErlElementDelta implements IErlElementDelta {
         }
     }
 
-    private List<IParent> getAncestors(IErlElement element) {
+    private List<IParent> getAncestors(final IErlElement element0) {
+        IErlElement element = element0;
         IParent parent = element.getParent();
         if (parent == null) {
             return null;

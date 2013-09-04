@@ -115,7 +115,10 @@ public class StringMatcher {
      *         position of "abc" is returned. For a pattern like"*??*" in text
      *         "abcdf", (1,3) is returned
      */
-    public StringMatcher.Position find(final String text, int start, int end) {
+    public StringMatcher.Position find(final String text, final int start0,
+            final int end0) {
+        int end = end0;
+        int start = start0;
         if (text == null) {
             throw new IllegalArgumentException();
         }
@@ -190,10 +193,12 @@ public class StringMatcher {
      * @param int <code>end<code> marks the ending index (exclusive) of the
      *        substring
      */
-    public boolean match(final String text, int start, int end) {
+    public boolean match(final String text, final int start0, final int end0) {
         if (null == text) {
             throw new IllegalArgumentException();
         }
+        int start = start0;
+        int end = end0;
 
         if (start > end) {
             return false;
@@ -422,8 +427,11 @@ public class StringMatcher {
      * @param <code>ignoreCase</code>, boolean indicating wether code>p</code>
      *        is case sensitive
      */
-    protected boolean regExpRegionMatches(final String text, int tStart,
-            final String p, int pStart, int plen) {
+    protected boolean regExpRegionMatches(final String text, final int tStart0,
+            final String p, final int pStart0, final int plen0) {
+        int plen = plen0;
+        int tStart = tStart0;
+        int pStart = pStart0;
         while (plen-- > 0) {
             final char tchar = text.charAt(tStart++);
             final char pchar = p.charAt(pStart++);

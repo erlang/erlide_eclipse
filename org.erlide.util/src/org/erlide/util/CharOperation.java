@@ -59,14 +59,15 @@ public final class CharOperation {
      *            the suffix character
      * @return the new array
      */
-    public static char[] append(char[] array, final char suffix) {
+    public static char[] append(final char[] array, final char suffix) {
         if (array == null) {
             return new char[] { suffix };
         }
         final int length = array.length;
-        System.arraycopy(array, 0, array = new char[length + 1], 0, length);
-        array[length] = suffix;
-        return array;
+        final char[] arr = new char[length + 1];
+        System.arraycopy(array, 0, arr, 0, length);
+        arr[length] = suffix;
+        return arr;
     }
 
     /**
@@ -129,8 +130,9 @@ public final class CharOperation {
      * @throws NullPointerException
      *             if the target array is null
      */
-    public static char[] append(char[] target, final int index,
+    public static char[] append(final char[] target0, final int index,
             final char[] array, final int start, final int end) {
+        char[] target = target0;
         final int targetLength = target.length;
         final int subLength = end - start;
         final int newTargetLength = subLength + index;
@@ -2163,8 +2165,8 @@ public final class CharOperation {
      *         false otherwise
      */
     public static boolean match(final char[] pattern, final int patternStart,
-            int patternEnd, final char[] name, final int nameStart,
-            int nameEnd, final boolean isCaseSensitive) {
+            final int patternEnd0, final char[] name, final int nameStart,
+            final int nameEnd0, final boolean isCaseSensitive) {
 
         if (name == null) {
             return false; // null name cannot match
@@ -2174,7 +2176,8 @@ public final class CharOperation {
         }
         int iPattern = patternStart;
         int iName = nameStart;
-
+        int patternEnd = patternEnd0;
+        int nameEnd = nameEnd0;
         if (patternEnd < 0) {
             patternEnd = pattern.length;
         }
@@ -3071,7 +3074,8 @@ public final class CharOperation {
      *             if the given array is null
      */
     public static char[][] subarray(final char[][] array, final int start,
-            int end) {
+            final int end0) {
+        int end = end0;
         if (end == -1) {
             end = array.length;
         }
@@ -3132,7 +3136,9 @@ public final class CharOperation {
      * @throws NullPointerException
      *             if the given array is null
      */
-    public static char[] subarray(final char[] array, final int start, int end) {
+    public static char[] subarray(final char[] array, final int start,
+            final int end0) {
+        int end = end0;
         if (end == -1) {
             end = array.length;
         }

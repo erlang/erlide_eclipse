@@ -17,7 +17,7 @@ public class ErlangHostnameRetriever {
         this.otpHome = otpHome;
     }
 
-    public String checkHostName(final boolean longHost, String hostName) {
+    public String checkHostName(final boolean longHost, final String hostName0) {
         nodeName = "foo" + System.currentTimeMillis();
         final ProcessBuilder builder = new ProcessBuilder(Lists.newArrayList(
                 otpHome + "/bin/erl", longHost ? "-name" : "-sname", nodeName,
@@ -31,9 +31,8 @@ public class ErlangHostnameRetriever {
                 while (listener.isAlive()) {
                     try {
                         listener.join();
-                        if (hostName == null) {
-                            hostName = listener.getResult();
-                        }
+                        final String hostName = hostName0 != null ? hostName0
+                                : listener.getResult();
                         ErlLogger.debug("Test %s hostname: %s",
                                 longHost ? "long" : "short", hostName);
                         if (canConnect(hostName)) {

@@ -254,11 +254,12 @@ public class ErlStructureCreator extends StructureCreator {
 
     @Override
     protected IStructureComparator createStructureComparator(
-            final Object element, IDocument document,
+            final Object element, final IDocument document0,
             final ISharedDocumentAdapter sharedDocumentAdapter,
             final IProgressMonitor monitor) throws CoreException {
         IErlModule module = null;
         String s = "";
+        IDocument document = document0;
         final IErlModel model = ErlangEngine.getInstance().getModel();
         if (element instanceof ResourceNode) {
             final ResourceNode rn = (ResourceNode) element;

@@ -151,7 +151,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return name;
     }
 
-    private static String getNameFromExternalPath(String path) {
+    private static String getNameFromExternalPath(final String path0) {
+        String path = path0;
         int i = path.indexOf(".settings");
         if (i > 2) {
             path = path.substring(0, i - 1);

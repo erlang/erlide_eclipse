@@ -208,8 +208,8 @@ public class CompilerOptions {
         }
     }
 
-    public void setSimpleOption(final CompilerOption opt, String value) {
-        value = value.trim();
+    public void setSimpleOption(final CompilerOption opt, final String value0) {
+        final String value = value0.trim();
         if (Strings.isNullOrEmpty(value)) {
             removeOption(opt);
         } else {

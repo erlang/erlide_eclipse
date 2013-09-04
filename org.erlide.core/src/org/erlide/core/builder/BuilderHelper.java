@@ -264,8 +264,9 @@ public final class BuilderHelper {
 
     private boolean shouldCompileModule(final IProject project,
             final IResource source, final IResource beam,
-            boolean shouldCompile, final IErlProject eprj)
+            final boolean shouldCompile0, final IErlProject eprj)
             throws ErlModelException {
+        boolean shouldCompile = shouldCompile0;
         final IErlModule m = eprj.getModule(source.getName());
         if (m != null) {
             final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();

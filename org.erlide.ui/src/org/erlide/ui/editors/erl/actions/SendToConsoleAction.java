@@ -67,7 +67,8 @@ public class SendToConsoleAction extends SelectionDispatchAction {
     IErlProject project;
 
     @Override
-    public void run(ITextSelection selection) {
+    public void run(final ITextSelection selection0) {
+        ITextSelection selection = selection0;
         final IBackendManager backendManager = BackendCore.getBackendManager();
         final Set<IBackend> executionBackends = backendManager
                 .getExecutionBackends(project.getWorkspaceProject());
@@ -152,8 +153,9 @@ public class SendToConsoleAction extends SelectionDispatchAction {
         }
     }
 
-    protected ITextSelection getLineSelection(ITextSelection selection,
+    protected ITextSelection getLineSelection(final ITextSelection selection0,
             final boolean beginningOfNextLine) {
+        ITextSelection selection = selection0;
         final IDocument document = editor.getDocumentProvider().getDocument(
                 editor.getEditorInput());
         if (selection.getLength() == 0) { // don't use isEmpty()!

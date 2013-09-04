@@ -50,7 +50,8 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
     }
 
     @Override
-    public Object[] getChildren(Object parentElement) {
+    public Object[] getChildren(final Object parentElement0) {
+        Object parentElement = parentElement0;
         try {
             if (parentElement instanceof IProject) {
                 final IProject project = (IProject) parentElement;
@@ -108,7 +109,8 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
     }
 
     @Override
-    public boolean hasChildren(Object element) {
+    public boolean hasChildren(final Object element0) {
+        Object element = element0;
         if (element instanceof IProject) {
             final IProject project = (IProject) element;
             if (project.isOpen()) {

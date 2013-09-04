@@ -66,7 +66,8 @@ public class ProblemMarkerManager implements IResourceChangeListener,
         }
 
         private void checkInvalidate(final IResourceDelta delta,
-                IResource resource) {
+                final IResource resource0) {
+            IResource resource = resource0;
             final int kind = delta.getKind();
             if ((kind == IResourceDelta.REMOVED || kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED)
                     && isErrorDelta(delta)) {

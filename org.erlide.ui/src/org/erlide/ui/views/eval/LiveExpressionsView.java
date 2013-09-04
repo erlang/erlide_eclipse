@@ -362,14 +362,14 @@ public class LiveExpressionsView extends ViewPart implements
     }
 
     @Override
-    public void saveState(IMemento aMemento) {
+    public void saveState(final IMemento aMemento) {
         if (exprs.isEmpty()) {
             return;
         }
-        aMemento = aMemento.createChild("LiveExpressions");
+        final IMemento aMemento2 = aMemento.createChild("LiveExpressions");
         final Iterator<LiveExpr> iter = exprs.iterator();
         while (iter.hasNext()) {
-            aMemento.createChild("expression").putTextData(
+            aMemento2.createChild("expression").putTextData(
                     iter.next().toString());
         }
     }

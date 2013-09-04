@@ -17,7 +17,8 @@ import org.erlide.util.ErlangFunctionCall;
 public class HoverUtil {
 
     public static ErlangFunctionCall eventToErlangFunctionCall(
-            String moduleName, final LocationEvent event) {
+            final String moduleName0, final LocationEvent event) {
+        String moduleName = moduleName0;
         final String location = event.location;
         ErlLogger.debug("eventToErlangFunction %s", location);
         final int hashPos = location.lastIndexOf('#');

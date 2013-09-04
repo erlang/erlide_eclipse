@@ -258,12 +258,12 @@ public class ModelInternalUtils implements ModelUtilService {
 
     @Override
     public IErlFunction findFunction(final IErlElementLocator model,
-            String moduleName, final ErlangFunction erlangFunction,
+            final String moduleName0, final ErlangFunction erlangFunction,
             final String modulePath, final IErlProject project,
             final IErlElementLocator.Scope scope, final IErlModule module)
             throws CoreException {
-        if (moduleName != null) {
-            moduleName = resolveMacroValue(moduleName, module);
+        if (moduleName0 != null) {
+            final String moduleName = resolveMacroValue(moduleName0, module);
             final IErlModule module2 = findModule(model, project, moduleName,
                     modulePath, scope);
             if (module2 != null) {
@@ -296,10 +296,11 @@ public class ModelInternalUtils implements ModelUtilService {
 
     @Override
     public IErlElement findTypeDef(final IErlElementLocator model,
-            final IErlModule module, String moduleName, final String typeName,
-            final String modulePath, final IErlProject project,
-            final IErlElementLocator.Scope scope) throws CoreException {
-        moduleName = resolveMacroValue(moduleName, module);
+            final IErlModule module, final String moduleName0,
+            final String typeName, final String modulePath,
+            final IErlProject project, final IErlElementLocator.Scope scope)
+            throws CoreException {
+        final String moduleName = resolveMacroValue(moduleName0, module);
         final IErlModule module2 = findModule(model, project, moduleName,
                 modulePath, scope);
         if (module2 != null) {

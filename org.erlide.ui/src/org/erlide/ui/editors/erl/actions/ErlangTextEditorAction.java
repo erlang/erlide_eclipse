@@ -157,9 +157,9 @@ public class ErlangTextEditorAction extends TextEditorAction {
             final ITextEditor textEditor = getTextEditor();
             final IRunnableWithProgress myRunnableWithProgress = new IRunnableWithProgress() {
                 @Override
-                public void run(IProgressMonitor monitor) {
-                    monitor = monitor == null ? new NullProgressMonitor()
-                            : monitor;
+                public void run(final IProgressMonitor monitor0) {
+                    final IProgressMonitor monitor = monitor0 != null ? monitor0
+                            : new NullProgressMonitor();
                     try {
                         monitor.beginTask("Indenting "
                                 + textEditor.getEditorInput().getName(),

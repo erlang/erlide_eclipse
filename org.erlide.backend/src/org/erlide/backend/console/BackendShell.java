@@ -86,7 +86,8 @@ public class BackendShell implements IBackendShell {
     private int pos = 0;
 
     @Override
-    public void input(String s) {
+    public void input(final String s0) {
+        String s = s0;
         if (!s.endsWith("\n")) {
             s += "\n";
         }

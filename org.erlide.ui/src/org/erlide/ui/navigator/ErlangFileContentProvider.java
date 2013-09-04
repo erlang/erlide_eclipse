@@ -56,7 +56,8 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
      * Return the model elements for a *.erl IFile or NO_CHILDREN for otherwise.
      */
     @Override
-    public Object[] getChildren(Object parentElement) {
+    public Object[] getChildren(final Object parentElement0) {
+        Object parentElement = parentElement0;
         try {
             if (parentElement instanceof IFile) {
                 parentElement = ErlangEngine.getInstance().getModel()
