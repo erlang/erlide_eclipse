@@ -6,6 +6,7 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.services.ImportService;
 import org.erlide.model.services.cleanup.CleanupProvider;
 import org.erlide.model.services.codeassist.ContextAssistService;
+import org.erlide.model.services.edoc.EdocExportService;
 import org.erlide.model.services.scanner.ScannerService;
 import org.erlide.model.services.search.OpenService;
 import org.erlide.model.services.search.OtpDocService;
@@ -45,5 +46,7 @@ public interface IErlangEngine {
     ErlangToolkit getToolkit();
 
     ImportService getImportService();
+
+    EdocExportService getEdocExportService();
 
 }

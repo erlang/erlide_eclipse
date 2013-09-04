@@ -83,7 +83,8 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
                     }
                 }
                 try {
-                    ErlideEdocExport.files(files, options);
+                    ErlangEngine.getInstance().getEdocExportService()
+                            .files(files, options);
                 } catch (final Exception e) {
                     ErlLogger.warn(e);
                 }

@@ -16,6 +16,8 @@ import org.erlide.model.services.cleanup.CleanupProvider;
 import org.erlide.model.services.cleanup.ErlTidyCleanupProvider;
 import org.erlide.model.services.codeassist.ContextAssistService;
 import org.erlide.model.services.codeassist.ErlideContextAssist;
+import org.erlide.model.services.edoc.EdocExportService;
+import org.erlide.model.services.edoc.ErlideEdocExport;
 import org.erlide.model.services.scanner.ScannerService;
 import org.erlide.model.services.search.ErlangXref;
 import org.erlide.model.services.search.ErlideDoc;
@@ -148,5 +150,10 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public ImportService getImportService() {
         return new ErlideImport(backend);
+    }
+
+    @Override
+    public EdocExportService getEdocExportService() {
+        return new ErlideEdocExport(backend);
     }
 }

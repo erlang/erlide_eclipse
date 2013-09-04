@@ -8,26 +8,29 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.ui.wizards;
+package org.erlide.model.services.edoc;
 
 import java.util.Collection;
 import java.util.Map;
 
-import org.erlide.backend.api.BackendException;
-import org.erlide.engine.ErlangEngine;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.erlang.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public class ErlideEdocExport {
+public class ErlideEdocExport implements EdocExportService {
 
-    public static void files(final Collection<String> files,
-            final Map<String, OtpErlangObject> options) throws RpcException,
-            BackendException {
-        final IRpcSite b = ErlangEngine.getInstance().getBackend();
+    private final IRpcSite backend;
+
+    public ErlideEdocExport(final IRpcSite backend) {
+        this.backend = backend;
+    }
+
+    @Override
+    public void files(final Collection<String> files,
+            final Map<String, OtpErlangObject> options) throws RpcException {
         final OtpErlangObject opts = TypeConverter.mapToProplist(options);
-        b.call(15000, "edoc", "files", "lsx", files, opts);
+        backend.call(15000, "edoc", "files", "lsx", files, opts);
     }
 }
