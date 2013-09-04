@@ -137,7 +137,7 @@ public class DefaultErlangEngine implements IErlangEngine {
      */
     @Override
     public CleanupProvider getCleanupProvider(final IResource resource) {
-        return new ErlTidyCleanupProvider(resource);
+        return new ErlTidyCleanupProvider(backend, resource);
     }
 
     @Override
