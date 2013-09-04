@@ -32,7 +32,6 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.api.BackendData;
-import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendListener;
@@ -125,8 +124,7 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public IBackend getBuildBackend(final IProject project)
-            throws BackendException {
+    public IBackend getBuildBackend(final IProject project) {
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
         if (erlProject == null) {
@@ -138,10 +136,6 @@ public final class BackendManager implements IBackendManager {
         if (info == null) {
             ErlLogger.info("Project %s has no runtime info, using ide",
                     project.getName());
-            if (ideBackend == null) {
-                throw new BackendException(
-                        "IDE backend is not created - check configuration!");
-            }
             return ideBackend;
         }
         final String version = info.getVersion().asMajor().toString();
@@ -350,19 +344,14 @@ public final class BackendManager implements IBackendManager {
 
     @Override
     public IRpcSite getByProject(final String projectName) {
-        try {
-            final IProject project = ResourcesPlugin.getWorkspace().getRoot()
-                    .getProject(projectName);
-            final IBackend backend = getBuildBackend(project);
-            if (backend == null) {
-                ErlLogger.debug("Could not find backend for project %S",
-                        project);
-                return null;
-            }
-            return backend.getRpcSite();
-        } catch (final BackendException e) {
+        final IProject project = ResourcesPlugin.getWorkspace().getRoot()
+                .getProject(projectName);
+        final IBackend backend = getBuildBackend(project);
+        if (backend == null) {
+            ErlLogger.debug("Could not find backend for project %S", project);
             return null;
         }
+        return backend.getRpcSite();
     }
 
     @Override

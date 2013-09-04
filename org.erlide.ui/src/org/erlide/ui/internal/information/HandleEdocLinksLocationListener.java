@@ -4,7 +4,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.services.search.OpenResult;
@@ -65,15 +64,9 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                         .getWorkspaceProject();
                 final IBackendManager backendManager = BackendCore
                         .getBackendManager();
-                IRpcSite backend = null;
-                try {
-                    backend = backendManager.getBuildBackend(project)
-                            .getRpcSite();
-                } catch (final BackendException e) {
-                }
-                if (backend == null) {
-                    backend = ErlangEngine.getInstance().getBackend();
-                }
+                final IRpcSite backend = backendManager
+                        .getBuildBackend(project).getRpcSite();
+
                 final String stateDir = ErlideUIPlugin.getDefault()
                         .getStateLocation().toString();
                 final OtpErlangTuple otpDoc = (OtpErlangTuple) ErlangEngine

@@ -1,7 +1,6 @@
 package org.erlide.backend;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.runtime.api.IRpcSite;
@@ -35,10 +34,7 @@ public class BackendCore {
     public static IRpcSite getBuildOrIdeBackend(final IProject project) {
         final IBackendManager manager = getBackendManager();
         if (project != null) {
-            try {
-                return manager.getBuildBackend(project).getRpcSite();
-            } catch (final BackendException e) {
-            }
+            return manager.getBuildBackend(project).getRpcSite();
         }
         return manager.getIdeBackend().getRpcSite();
     }

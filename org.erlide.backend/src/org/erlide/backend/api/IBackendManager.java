@@ -18,7 +18,7 @@ public interface IBackendManager extends IEpmdListener {
     @Deprecated
     IBackend getIdeBackend();
 
-    IBackend getBuildBackend(final IProject project) throws BackendException;
+    IBackend getBuildBackend(final IProject project);
 
     Set<IBackend> getExecutionBackends(final IProject project);
 

@@ -74,8 +74,9 @@ public class EdocConfigurationPropertyPage extends PropertyPage implements
     @Override
     protected Control createContents(final Composite parent) {
         fInitialLocation = null;
+        // TODO must use the project's backend
         final String s = ErlangEngine.getInstance().getOtpDocService()
-                .getOtpDocLocation(ErlangEngine.getInstance().getBackend());
+                .getOtpDocLocation(null);
         try {
             fInitialLocation = new URL("file", null, s);
         } catch (final MalformedURLException e) {

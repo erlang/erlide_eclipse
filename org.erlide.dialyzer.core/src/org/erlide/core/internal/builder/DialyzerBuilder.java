@@ -11,7 +11,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.core.builder.DialyzerMarkerUtils;
 import org.erlide.core.builder.DialyzerPreferences;
@@ -57,8 +56,6 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
                 final IBackend backend = BackendCore.getBackendManager()
                         .getBuildBackend(project);
                 DialyzerUtils.doDialyze(monitor, modules, projects, backend);
-            } catch (final BackendException e) {
-                ErlLogger.error(e);
             } catch (final InvocationTargetException e) {
                 ErlLogger.error(e);
             } catch (final DialyzerErrorException e) {
