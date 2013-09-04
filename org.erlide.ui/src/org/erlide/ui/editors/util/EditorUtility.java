@@ -80,7 +80,8 @@ public class EditorUtility {
         for (final IEditorPart editorPart : allErlangEditors) {
             if (inputElement instanceof IErlElement) {
                 final IErlElement element = (IErlElement) inputElement;
-                final IErlModule module = ErlangEngine.getInstance().getModelUtilService().getModule(element);
+                final IErlModule module = ErlangEngine.getInstance()
+                        .getModelUtilService().getModule(element);
                 final AbstractErlangEditor editor = (AbstractErlangEditor) editorPart;
                 if (module.equals(editor.getModule())) {
                     return editorPart;

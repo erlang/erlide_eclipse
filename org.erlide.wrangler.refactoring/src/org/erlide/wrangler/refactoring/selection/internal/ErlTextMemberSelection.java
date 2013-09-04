@@ -87,8 +87,8 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlElement getErlElement() {
-        final IErlModule module = (IErlModule) ErlangEngine.getInstance().getModel()
-                .findElement(file);
+        final IErlModule module = (IErlModule) ErlangEngine.getInstance()
+                .getModel().findElement(file);
 
         try {
             final IErlElement element = module.getElementAt(textSelection
@@ -152,6 +152,7 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlModule getErlModule() {
-        return (IErlModule) ErlangEngine.getInstance().getModel().findElement(file);
+        return (IErlModule) ErlangEngine.getInstance().getModel()
+                .findElement(file);
     }
 }

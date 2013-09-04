@@ -47,8 +47,8 @@ public class StatsViewLabelProvider extends LabelProvider implements
             case MODULE:
                 IErlModule m;
                 try {
-                    m = ErlangEngine.getInstance().getModel().findModule(
-                            statsEl.getLabel());
+                    m = ErlangEngine.getInstance().getModel()
+                            .findModule(statsEl.getLabel());
                 } catch (final ErlModelException e) {
                     ErlLogger.error(e);
                     return null;

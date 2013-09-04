@@ -19,10 +19,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendUtils;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangStatus;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ISourceRange;
@@ -191,8 +191,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
      */
     protected OtpErlangObject callErlang(final int offset, final int length,
             final String aText) throws RpcException {
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
-                .getRpcSite();
+        final IRpcSite b = ErlangEngine.getInstance().getBackend();
         final OtpErlangObject r1 = BackendUtils.call(b, fErlModule,
                 fErlFunction, offset, length, aText);
         return r1;

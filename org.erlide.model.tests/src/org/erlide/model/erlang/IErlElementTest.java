@@ -76,11 +76,14 @@ public class IErlElementTest extends ErlModelTestBase {
     // IErlProject getProject();
     @Test
     public void getProject() throws Exception {
-        assertEquals(project, ErlangEngine.getInstance().getModelUtilService().getProject(module));
-        assertEquals(project, ErlangEngine.getInstance().getModelUtilService().getProject(project));
+        assertEquals(project, ErlangEngine.getInstance().getModelUtilService()
+                .getProject(module));
+        assertEquals(project, ErlangEngine.getInstance().getModelUtilService()
+                .getProject(project));
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
-        assertEquals(project, ErlangEngine.getInstance().getModelUtilService().getProject(element));
+        assertEquals(project, ErlangEngine.getInstance().getModelUtilService()
+                .getProject(element));
     }
 
     // IErlModule getModule();
@@ -88,7 +91,8 @@ public class IErlElementTest extends ErlModelTestBase {
     public void getModule() throws Exception {
         module.open(null);
         final IErlMember element = module.getElementAtLine(3);
-        assertEquals(module, ErlangEngine.getInstance().getModelUtilService().getModule(element));
+        assertEquals(module, ErlangEngine.getInstance().getModelUtilService()
+                .getModule(element));
     }
 
     // IResource getCorrespondingResource();

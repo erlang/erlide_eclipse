@@ -46,8 +46,8 @@ public class SearchPatternFactory {
                     .withoutExtension(function.getModuleName());
             return new FunctionPattern(withoutExtension,
                     function.getFunctionName(), function.getArity(), limitTo,
-                    true, ErlangEngine.getInstance().getModelUtilService().getModule(function),
-                    !function.isExported());
+                    true, ErlangEngine.getInstance().getModelUtilService()
+                            .getModule(function), !function.isExported());
         } else if (element instanceof IErlMacroDef) {
             final IErlMacroDef m = (IErlMacroDef) element;
             final String unquoted = StringUtils.unquote(m.getDefinedName());

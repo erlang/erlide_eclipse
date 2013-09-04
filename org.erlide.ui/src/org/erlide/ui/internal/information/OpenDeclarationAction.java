@@ -2,7 +2,7 @@ package org.erlide.ui.internal.information;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.PartInitException;
-import org.erlide.backend.BackendCore;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.ui.ErlideImage;
@@ -61,10 +61,9 @@ public final class OpenDeclarationAction extends Action {
                     final OpenResult or = (OpenResult) element;
                     try {
                         final AbstractErlangEditor editor = input.getEditor();
-                        new OpenUtils().openOpenResult(editor,
-                                editor.getModule(), BackendCore
-                                        .getBackendManager().getIdeBackend()
-                                        .getRpcSite(), -1, null, or, null);
+                        new OpenUtils().openOpenResult(editor, editor
+                                .getModule(), ErlangEngine.getInstance()
+                                .getBackend(), -1, null, or, null);
                     } catch (final Exception e) {
                         ErlLogger.error(e);
                     }

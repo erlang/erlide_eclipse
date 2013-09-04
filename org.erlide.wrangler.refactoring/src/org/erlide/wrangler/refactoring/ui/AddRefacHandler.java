@@ -160,12 +160,17 @@ public class AddRefacHandler extends AbstractHandler {
         String path;
 
         try {
-            if (ErlangEngine.getInstance().getModel().findModule(callbackModule) == null) {
+            if (ErlangEngine.getInstance().getModel()
+                    .findModule(callbackModule) == null) {
                 return null;
             }
 
-            final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(ErlangEngine
-                    .getInstance().getModel().findModule(callbackModule));
+            final IErlProject project = ErlangEngine
+                    .getInstance()
+                    .getModelUtilService()
+                    .getProject(
+                            ErlangEngine.getInstance().getModel()
+                                    .findModule(callbackModule));
             path = project.getWorkspaceProject().getLocation()
                     .append(project.getOutputLocation())
                     .append(callbackModule + ".beam").toOSString();

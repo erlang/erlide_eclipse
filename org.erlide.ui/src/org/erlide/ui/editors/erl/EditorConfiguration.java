@@ -107,7 +107,8 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 
     @Override
     protected IErlProject getProject() {
-        return ErlangEngine.getInstance().getModelUtilService().getProject(getModule());
+        return ErlangEngine.getInstance().getModelUtilService()
+                .getProject(getModule());
     }
 
     @Override

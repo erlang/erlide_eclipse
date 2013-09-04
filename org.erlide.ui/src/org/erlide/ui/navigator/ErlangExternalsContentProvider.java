@@ -87,7 +87,8 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
                     && filePath != null) {
                 // try {
                 // FIXME shouldn't this call be assigned to something!?
-                // ErlangEngine.getInstance().getModelUtilService().findModule(null, null, filePath,
+                // ErlangEngine.getInstance().getModelUtilService().findModule(null,
+                // null, filePath,
                 // Scope.ALL_PROJECTS);
                 // } catch (final CoreException e) {
                 // }

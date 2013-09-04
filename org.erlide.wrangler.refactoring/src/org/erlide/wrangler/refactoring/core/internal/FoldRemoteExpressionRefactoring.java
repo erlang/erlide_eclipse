@@ -84,7 +84,8 @@ public class FoldRemoteExpressionRefactoring extends
 
             ExpressionPosRpcMessage m = new ExpressionPosRpcMessage();
             final String path = selection.getFilePath();
-            final String moduleName = ErlangEngine.getInstance().getModelUtilService().getModule(functionClause)
+            final String moduleName = ErlangEngine.getInstance()
+                    .getModelUtilService().getModule(functionClause)
                     .getModuleName();
             final String functionName = functionClause.getFunctionName();
             final int arity = functionClause.getArity();

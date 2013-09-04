@@ -216,8 +216,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
             return;
         }
         final String moduleWoExtension = module.getModuleName();
-        final IProject project = ErlangEngine.getInstance().getModelUtilService().getProject(module)
-                .getWorkspaceProject();
+        final IProject project = ErlangEngine.getInstance()
+                .getModelUtilService().getProject(module).getWorkspaceProject();
         final boolean interpret = checked;
 
         if (erlangDebugTarget.getInterpretedModules().contains(

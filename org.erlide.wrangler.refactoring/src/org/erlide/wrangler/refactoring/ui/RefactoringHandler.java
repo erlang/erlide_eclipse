@@ -241,9 +241,12 @@ public class RefactoringHandler extends AbstractHandler {
         } else if (actionId
                 .equals("org.erlide.wrangler.refactoring.movefunction")) {
 
-            final IProject project = ErlangEngine.getInstance().getModelUtilService().getProject(
-                    GlobalParameters.getWranglerSelection().getErlElement())
-                    .getWorkspaceProject();
+            final IProject project = ErlangEngine
+                    .getInstance()
+                    .getModelUtilService()
+                    .getProject(
+                            GlobalParameters.getWranglerSelection()
+                                    .getErlElement()).getWorkspaceProject();
             final ArrayList<String> moduleList = WranglerUtils
                     .getModuleNames(project);
             final String moduleName = GlobalParameters.getWranglerSelection()

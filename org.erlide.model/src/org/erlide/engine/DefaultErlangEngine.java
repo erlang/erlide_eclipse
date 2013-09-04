@@ -27,7 +27,9 @@ import org.erlide.model.services.text.ErlideIndent;
 import org.erlide.model.services.text.IndentService;
 import org.erlide.model.util.ModelUtilService;
 import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IRpcSiteProvider;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.services.ExtensionUtils;
 import org.osgi.framework.Bundle;
 
 public class DefaultErlangEngine implements IErlangEngine {
@@ -35,9 +37,16 @@ public class DefaultErlangEngine implements IErlangEngine {
     private final IRpcSite backend;
 
     public DefaultErlangEngine() {
-        backend = ModelPlugin.getDefault().getIdeBackend();
-
         // TODO how to inject runtime and other start params?
+
+        final IRpcSiteProvider provider = ExtensionUtils.getSingletonExtension(
+                "org.erlide.backend.backend", IRpcSiteProvider.class);
+        backend = provider.get();
+    }
+
+    @Override
+    public IRpcSite getBackend() {
+        return backend;
     }
 
     private volatile static IErlModel erlangModel;

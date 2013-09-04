@@ -919,7 +919,8 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     boolean moduleInProject(final IErlModule module) {
-        final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(module);
+        final IErlProject project = ErlangEngine.getInstance()
+                .getModelUtilService().getProject(module);
         if (project == null) {
             return false;
         }

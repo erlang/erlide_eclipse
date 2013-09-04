@@ -20,7 +20,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ISourceReference;
@@ -113,8 +112,7 @@ public class OpenAction extends SelectionDispatchAction {
             final IEditorPart activeEditor = getSite().getPage()
                     .getActiveEditor();
             final int offset = selection.getOffset();
-            final IRpcSite backend = BackendCore.getBackendManager()
-                    .getIdeBackend().getRpcSite();
+            final IRpcSite backend = ErlangEngine.getInstance().getBackend();
             ITextEditor textEditor = null;
             OpenResult openResult = null;
             IErlElement element = null;

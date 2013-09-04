@@ -52,11 +52,6 @@ public class ModelPlugin extends Plugin {
                 "org.erlide.backend.backend", IRpcSiteProvider.class);
     }
 
-    public IRpcSite getIdeBackend() {
-        final IRpcSiteProvider provider = getRuntimeProvider();
-        return provider.get();
-    }
-
     public IRpcSite getBackend(final RuntimeVersion version) {
         final IRpcSiteProvider provider = getRuntimeProvider();
         return provider.get(version);

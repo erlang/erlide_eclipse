@@ -60,8 +60,9 @@ public class HandleEdocLinksLocationListener implements LocationListener {
             final ErlangFunctionCall functionCall = HoverUtil
                     .eventToErlangFunctionCall(moduleName, event);
             if (functionCall != null) {
-                final IProject project = ErlangEngine.getInstance().getModelUtilService().getProject(
-                        editor.getModule()).getWorkspaceProject();
+                final IProject project = ErlangEngine.getInstance()
+                        .getModelUtilService().getProject(editor.getModule())
+                        .getWorkspaceProject();
                 final IBackendManager backendManager = BackendCore
                         .getBackendManager();
                 IRpcSite backend = null;
@@ -71,7 +72,7 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                 } catch (final BackendException e) {
                 }
                 if (backend == null) {
-                    backend = backendManager.getIdeBackend().getRpcSite();
+                    backend = ErlangEngine.getInstance().getBackend();
                 }
                 final String stateDir = ErlideUIPlugin.getDefault()
                         .getStateLocation().toString();

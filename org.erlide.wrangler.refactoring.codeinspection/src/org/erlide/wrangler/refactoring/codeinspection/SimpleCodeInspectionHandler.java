@@ -352,7 +352,9 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
         final String function = ((OtpErlangAtom) fTuple.elementAt(1))
                 .atomValue();
         final int arity = ((OtpErlangLong) fTuple.elementAt(2)).intValue();
-        final IErlFunctionClause f = ErlangEngine.getInstance().getModel()
+        final IErlFunctionClause f = ErlangEngine
+                .getInstance()
+                .getModel()
                 .findFunction(
                         new FunctionRef(mod.getModuleName(), function, arity));
         return f;
@@ -453,8 +455,8 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             name = atom.atomValue();
         }
         final String[] modNameParts = name.split("/");
-        final IErlModule mod = ErlangEngine.getInstance().getModel().findModule(
-                modNameParts[modNameParts.length - 1]);
+        final IErlModule mod = ErlangEngine.getInstance().getModel()
+                .findModule(modNameParts[modNameParts.length - 1]);
         return mod;
     }
 

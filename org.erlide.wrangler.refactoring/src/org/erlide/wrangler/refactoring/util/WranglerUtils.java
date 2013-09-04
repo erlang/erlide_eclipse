@@ -332,7 +332,8 @@ public final class WranglerUtils {
         int offset, length;
         offset = clause.getNameRange().getOffset();
         length = clause.getNameRange().getLength();
-        final IErlModule module = ErlangEngine.getInstance().getModelUtilService().getModule(clause);
+        final IErlModule module = ErlangEngine.getInstance()
+                .getModelUtilService().getModule(clause);
         final IEditorPart editor = openFile((IFile) module.getResource());
         highlightSelection(offset, length, (ITextEditor) editor);
 

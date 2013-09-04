@@ -23,8 +23,9 @@ public class ErlangExternalEditorInputFactory implements IElementFactory {
     public static void saveState(final IMemento memento,
             final ErlangExternalEditorInput input) {
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final String externalModulePath = ErlangEngine.getInstance().getModelUtilService().getExternalModulePath(
-                model, input.getModule());
+        final String externalModulePath = ErlangEngine.getInstance()
+                .getModelUtilService()
+                .getExternalModulePath(model, input.getModule());
         memento.putString(TAG_EXTERNAL_MODULE_PATH, externalModulePath);
         final URI uri = input.getURI();
         memento.putString(TAG_URI, uri.toString());
@@ -41,8 +42,8 @@ public class ErlangExternalEditorInputFactory implements IElementFactory {
         IErlModule module;
         try {
             final IErlModel model = ErlangEngine.getInstance().getModel();
-            module = ErlangEngine.getInstance().getModelUtilService().getModuleFromExternalModulePath(model,
-                    externalModulePath);
+            module = ErlangEngine.getInstance().getModelUtilService()
+                    .getModuleFromExternalModulePath(model, externalModulePath);
         } catch (final ErlModelException e1) {
             return null;
         }

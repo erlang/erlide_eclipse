@@ -26,7 +26,6 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
-import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlImport;
 import org.erlide.model.erlang.IErlModule;
@@ -531,7 +530,7 @@ public class ModelInternalUtils implements ModelUtilService {
                 .append(module.getModuleName()).addFileExtension("beam");
         final IFile beam = project.getWorkspaceProject().getFile(beamPath);
 
-        final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
+        final IRpcSite backend = ErlangEngine.getInstance().getBackend();
         try {
             final OtpErlangObject info = backend.call("erlide_backend",
                     "get_module_info", "s", beam.getLocation()

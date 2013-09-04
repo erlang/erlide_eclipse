@@ -14,7 +14,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchSite;
-import org.erlide.backend.BackendCore;
 import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.CompilerOptions;
@@ -47,8 +46,7 @@ public class CompileAction extends Action {
         if (module == null) {
             return;
         }
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
-                .getRpcSite();
+        final IRpcSite b = ErlangEngine.getInstance().getBackend();
 
         final IResource resource = module.getResource();
         final IProject project = resource.getProject();

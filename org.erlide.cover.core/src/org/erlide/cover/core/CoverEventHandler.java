@@ -112,8 +112,8 @@ public class CoverEventHandler extends ErlangEventHandler {
                 // calculate md5
 
                 try {
-                    final File file = new File(ErlangEngine.getInstance().getModel()
-                            .findModule(moduleName).getFilePath());
+                    final File file = new File(ErlangEngine.getInstance()
+                            .getModel().findModule(moduleName).getFilePath());
                     moduleStats.setMd5(MD5Checksum.getMD5(file));
                 } catch (final Exception e) {
                     ErlLogger.error(e);
@@ -146,8 +146,9 @@ public class CoverEventHandler extends ErlangEventHandler {
         final IConfiguration config = CoveragePerformer.getPerformer()
                 .getConfig();
 
-        final String ppath = ErlangEngine.getInstance().getModelUtilService().getProject(config.getProject())
-                .getWorkspaceProject().getLocation().toString();
+        final String ppath = ErlangEngine.getInstance().getModelUtilService()
+                .getProject(config.getProject()).getWorkspaceProject()
+                .getLocation().toString();
         String mpath = config.getModule(moduleStats.getLabel()).getFilePath();
         mpath = mpath.substring(ppath.length());
         log.info(ppath);

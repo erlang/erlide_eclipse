@@ -104,6 +104,7 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlModule getErlModule() {
-        return (IErlModule) ErlangEngine.getInstance().getModel().findElement(file);
+        return (IErlModule) ErlangEngine.getInstance().getModel()
+                .findElement(file);
     }
 }

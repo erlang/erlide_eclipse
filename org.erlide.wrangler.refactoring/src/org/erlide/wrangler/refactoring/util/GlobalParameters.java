@@ -22,7 +22,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElement;
@@ -61,8 +60,7 @@ public class GlobalParameters {
         if (isQCchecked) {
             return hasQuickCheck;
         } else {
-            final RpcResult res = BackendCore.getBackendManager()
-                    .getIdeBackend().getRpcSite()
+            final RpcResult res = ErlangEngine.getInstance().getBackend()
                     .call_noexception("code", "which", "a", "eqc");
             if (!res.isOk()) {
                 return false;
@@ -143,8 +141,8 @@ public class GlobalParameters {
                             WranglerUtils.getDocument(file));
                 } else if (firstElement instanceof IFile) {
                     final IFile file = (IFile) firstElement;
-                    final IErlModule module = ErlangEngine.getInstance().getModel()
-                            .findModule(file);
+                    final IErlModule module = ErlangEngine.getInstance()
+                            .getModel().findModule(file);
                     wranglerSelection = new ErlModuleSelection(module, file);
                 } else {
                     wranglerSelection = null;

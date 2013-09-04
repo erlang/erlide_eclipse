@@ -1605,7 +1605,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
 
     @Override
     public IErlProject getProject() {
-        return ErlangEngine.getInstance().getModelUtilService().getProject(getModule());
+        return ErlangEngine.getInstance().getModelUtilService()
+                .getProject(getModule());
     }
 
     @Override

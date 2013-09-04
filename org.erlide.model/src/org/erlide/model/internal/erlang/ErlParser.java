@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
-import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.IErlAttribute;
 import org.erlide.model.erlang.IErlComment;
 import org.erlide.model.erlang.IErlFunction;
@@ -72,7 +71,7 @@ public final class ErlParser implements IErlParser {
     private final RuntimeHelper helper;
 
     public ErlParser() {
-        helper = new RuntimeHelper(ModelPlugin.getDefault().getIdeBackend());
+        helper = new RuntimeHelper(ErlangEngine.getInstance().getBackend());
     }
 
     @Override
@@ -85,7 +84,7 @@ public final class ErlParser implements IErlParser {
         OtpErlangList forms = null;
         OtpErlangList comments = null;
         OtpErlangTuple res = null;
-        final IRpcSite backend = ModelPlugin.getDefault().getIdeBackend();
+        final IRpcSite backend = ErlangEngine.getInstance().getBackend();
         if (initialParse) {
             final String stateDir = ErlangEngine.getInstance().getStateDir();
             final String pathNotNull = path == null ? "" : path;

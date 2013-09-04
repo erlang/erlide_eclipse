@@ -127,7 +127,8 @@ public final class OpenModuleHandler extends Action implements IHandler,
                             }
                         }
                         if (files.isEmpty()) {
-                            // final IFile file = ErlangEngine.getInstance().getModelUtilService().openExternal(null,
+                            // final IFile file =
+                            // ErlangEngine.getInstance().getModelUtilService().openExternal(null,
                             // path);
                             // files.add(file);
                         }

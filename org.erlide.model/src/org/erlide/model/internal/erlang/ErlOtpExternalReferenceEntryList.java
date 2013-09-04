@@ -36,7 +36,8 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     @Override
     public boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        final IErlProject erlProject = ErlangEngine.getInstance().getModelUtilService().getProject(this);
+        final IErlProject erlProject = ErlangEngine.getInstance()
+                .getModelUtilService().getProject(this);
         final OldErlangProjectProperties properties = new OldErlangProjectProperties(
                 erlProject.getWorkspaceProject());
         final IRpcSite backend = ModelPlugin.getDefault().getBackend(

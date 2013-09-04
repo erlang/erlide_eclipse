@@ -39,7 +39,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.ErlToken;
@@ -280,18 +279,17 @@ public class ErlTextHover implements ITextHover,
         final IErlProject erlProject = editor.getProject();
 
         final IBackendManager backendManager = BackendCore.getBackendManager();
-        final IBackend ide = backendManager.getIdeBackend();
+        final IRpcSite ide = ErlangEngine.getInstance().getBackend();
         String docPath = "";
         String anchor = "";
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getWorkspaceProject();
-            final IBackend backend0 = erlProject == null ? ide : backendManager
-                    .getBuildBackend(project);
-            if (backend0 == null) {
+            final IRpcSite backend = erlProject == null ? ide : backendManager
+                    .getBuildBackend(project).getRpcSite();
+            if (backend == null) {
                 return null;
             }
-            final IRpcSite backend = backend0.getRpcSite();
 
             final IErlModel model = ErlangEngine.getInstance().getModel();
             final String externalModulesString = erlProject != null ? erlProject
@@ -299,7 +297,7 @@ public class ErlTextHover implements ITextHover,
             final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine
                     .getInstance()
                     .getOtpDocService()
-                    .getOtpDoc(ide.getRpcSite(), backend, offset, stateDir,
+                    .getOtpDoc(ide, backend, offset, stateDir,
                             editor.getScannerName(), fImports,
                             externalModulesString, model.getPathVars());
             // ErlLogger.debug("otp doc %s", t);

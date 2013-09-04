@@ -32,8 +32,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.api.IBackend;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
@@ -92,8 +90,6 @@ public class MarkOccurencesHandler {
 
         private void findRefs(final IErlModule theModule,
                 final ITextSelection aSelection, final boolean hasChanged) {
-            final IBackend ideBackend = BackendCore.getBackendManager()
-                    .getIdeBackend();
             fRefs = null;
 
             if (fCanceled) {
@@ -106,7 +102,9 @@ public class MarkOccurencesHandler {
                         .getOpenService()
                         .open(theModule.getScannerName(),
                                 offset,
-                                ErlangEngine.getInstance().getModelUtilService().getImportsAsList(theModule),
+                                ErlangEngine.getInstance()
+                                        .getModelUtilService()
+                                        .getImportsAsList(theModule),
                                 "",
                                 ErlangEngine.getInstance().getModel()
                                         .getPathVars());
@@ -138,9 +136,7 @@ public class MarkOccurencesHandler {
                     }
                 }
             } catch (final RpcTimeoutException e) {
-                if (ideBackend.isRunning()) {
-                    ErlLogger.warn(e);
-                }
+                ErlLogger.warn(e);
             } catch (final RpcException e) {
                 ErlLogger.debug(e);
             } catch (final ErlModelException e) {

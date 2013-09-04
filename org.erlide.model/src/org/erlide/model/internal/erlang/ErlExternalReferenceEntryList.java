@@ -56,7 +56,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
 
         final Stopwatch stopwatch = new Stopwatch().start();
 
-        final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(this);
+        final IErlProject project = ErlangEngine.getInstance()
+                .getModelUtilService().getProject(this);
         final ErlModelCache cache = ErlModel.getErlModelCache();
         List<ExternalTreeEntry> externalModuleTree = cache
                 .getExternalTree(externalModules);

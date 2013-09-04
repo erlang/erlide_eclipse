@@ -45,8 +45,8 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
-import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangCore;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.root.IErlangProjectProperties;
 import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -88,9 +88,8 @@ public class ErlangProjectImportWizard extends Wizard implements IImportWizard {
             filesAndDirs.add(s);
         }
         final String projectPath = mainPage.getProjectPath().toString();
-        final ErlProjectImport epi = ErlideImport.importProject(BackendCore
-                .getBackendManager().getIdeBackend().getRpcSite(), projectPath,
-                filesAndDirs);
+        final ErlProjectImport epi = ErlideImport.importProject(ErlangEngine
+                .getInstance().getBackend(), projectPath, filesAndDirs);
         final IPath beamDir = new Path(epi.getBeamDir());
         importIncludeAndSourceDirsPage.setup(projectPath, epi.getDirectories(),
                 epi.getIncludeDirs(), epi.getSourceDirs(), beamDir);

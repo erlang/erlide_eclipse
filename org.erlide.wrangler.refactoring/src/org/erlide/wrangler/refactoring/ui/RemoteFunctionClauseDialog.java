@@ -96,9 +96,12 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
         functionClausesTree.setLayoutData(treeData);
 
         try {
-            final Collection<IErlModule> erlmodules = ErlangEngine.getInstance().getModelUtilService().getProject(
-                    GlobalParameters.getWranglerSelection().getErlElement())
-                    .getModules();
+            final Collection<IErlModule> erlmodules = ErlangEngine
+                    .getInstance()
+                    .getModelUtilService()
+                    .getProject(
+                            GlobalParameters.getWranglerSelection()
+                                    .getErlElement()).getModules();
 
             for (final IErlModule m : erlmodules) {
                 // must refresh the scanner!

@@ -10,8 +10,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangCore;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.util.PreferencesHelper;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.PreferencesUtils;
@@ -90,8 +90,8 @@ public final class DialyzerPreferences {
         final String pluginId = "org.erlide.ui";
         final String pltFilesString = service
                 .getString(pluginId, key, "", null);
-        return ErlideDialyze.getPltFiles(BackendCore.getBackendManager()
-                .getIdeBackend().getRpcSite(), pltFilesString);
+        return ErlideDialyze.getPltFiles(ErlangEngine.getInstance()
+                .getBackend(), pltFilesString);
     }
 
     public static String getAlternatePLTFileDirectoryFromPreferences()

@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -45,6 +44,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangEventHandler;
@@ -236,8 +236,7 @@ public class ProcessListView extends ViewPart {
         t.setHeaderVisible(true);
 
         // TODO this is wrong - all backends should be inited
-        final IRpcSite ideBackend = BackendCore.getBackendManager()
-                .getIdeBackend().getRpcSite();
+        final IRpcSite ideBackend = ErlangEngine.getInstance().getBackend();
         if (ideBackend != null) {
             ErlideProclist.processListInit(ideBackend);
         }
@@ -363,11 +362,6 @@ public class ProcessListView extends ViewPart {
                 .getSelection();
         if (sel.getFirstElement() != null) {
             final IBackend b = (IBackend) sel.getFirstElement();
-            return b;
-        }
-        final IBackend b = BackendCore.getBackendManager().getIdeBackend();
-        if (b != null) {
-            backends.setSelection(new StructuredSelection(b));
             return b;
         }
         return null;

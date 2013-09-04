@@ -13,8 +13,8 @@ package org.erlide.ui.wizards;
 import java.util.Collection;
 import java.util.Map;
 
-import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendException;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.erlang.TypeConverter;
@@ -26,8 +26,7 @@ public class ErlideEdocExport {
     public static void files(final Collection<String> files,
             final Map<String, OtpErlangObject> options) throws RpcException,
             BackendException {
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
-                .getRpcSite();
+        final IRpcSite b = ErlangEngine.getInstance().getBackend();
         final OtpErlangObject opts = TypeConverter.mapToProplist(options);
         b.call(15000, "edoc", "files", "lsx", files, opts);
     }

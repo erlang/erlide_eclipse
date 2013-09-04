@@ -294,8 +294,11 @@ public abstract class Openable extends ErlElement implements IOpenable {
         if (workspace == null) {
             return false;
         }
-        return ErlangEngine.getInstance().getModelUtilService().getTarget(workspace.getRoot(), getResource()
-                .getFullPath().makeRelative(), true) != null;
+        return ErlangEngine
+                .getInstance()
+                .getModelUtilService()
+                .getTarget(workspace.getRoot(),
+                        getResource().getFullPath().makeRelative(), true) != null;
     }
 
     /**

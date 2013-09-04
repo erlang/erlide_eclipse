@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.model.services.cleanup;
 
-
 /**
  * <p>
  * The {@link CleanupProvider} interface defines the responsibilities of an

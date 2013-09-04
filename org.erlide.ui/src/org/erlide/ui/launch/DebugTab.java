@@ -271,8 +271,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         final List<String> r = new ArrayList<String>();
         for (final Object o : contentProvider.getElements(null)) {
             final IErlModule module = (IErlModule) o;
-            r.add(ErlangEngine.getInstance().getModelUtilService().getProject(module).getName() + ":"
-                    + module.getName());
+            r.add(ErlangEngine.getInstance().getModelUtilService()
+                    .getProject(module).getName()
+                    + ":" + module.getName());
         }
         config.setAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, r);
     }

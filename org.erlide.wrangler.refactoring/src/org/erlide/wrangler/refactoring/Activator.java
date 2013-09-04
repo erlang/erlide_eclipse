@@ -12,8 +12,8 @@ package org.erlide.wrangler.refactoring;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.api.IBackend;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.BundleContext;
@@ -72,9 +72,7 @@ public class Activator extends AbstractUIPlugin {
          * ErlLogger.debug( "Wrangler beam files found at: " +
          * wranglerEbinPath);
          */
-        final IBackend mb = BackendCore.getBackendManager().getIdeBackend();
-
-        ErlLogger.debug("Managed backend found:" + mb.getName());
+        final IRpcSite mb = ErlangEngine.getInstance().getBackend();
 
         /*
          * ErlangCode.addPathA(mb , wranglerEbinPath); ErlangCode .addPathA(mb,
@@ -87,8 +85,8 @@ public class Activator extends AbstractUIPlugin {
          * "Wrangler's path is added to Erlang with result:" + res.isOk() +
          * "\t raw:" + res);
          */
-        RpcResult res = mb.getRpcSite().call_noexception("wrangler_refacs",
-                "init_eclipse", "", new Object[0]);
+        RpcResult res = mb.call_noexception("wrangler_refacs", "init_eclipse",
+                "", new Object[0]);
         /*
          * application :start(wrangler_app) res = mb.call_noexception
          * ("application", "start", "a", "wrangler_app");
@@ -101,8 +99,8 @@ public class Activator extends AbstractUIPlugin {
          * ErlLogger.error(e); } }
          */
 
-        res = mb.getRpcSite().call_noexception("wrangler_error_logger", "init",
-                "x", new OtpErlangList());
+        res = mb.call_noexception("wrangler_error_logger", "init", "x",
+                new OtpErlangList());
 
         ErlLogger.debug("Error logger started:" + res);
     }

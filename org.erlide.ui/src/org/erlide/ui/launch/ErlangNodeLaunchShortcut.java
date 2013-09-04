@@ -72,7 +72,8 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             }
             final IErlElement erlElement = ErlangEngine.getInstance()
                     .getModel().findElement((IResource) element);
-            final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(erlElement);
+            final IErlProject project = ErlangEngine.getInstance()
+                    .getModelUtilService().getProject(erlElement);
             if (project != null) {
                 projects.add(project);
             }

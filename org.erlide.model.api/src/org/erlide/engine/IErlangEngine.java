@@ -11,8 +11,11 @@ import org.erlide.model.services.search.SearchServerService;
 import org.erlide.model.services.search.XrefService;
 import org.erlide.model.services.text.IndentService;
 import org.erlide.model.util.ModelUtilService;
+import org.erlide.runtime.api.IRpcSite;
 
 public interface IErlangEngine {
+
+    IRpcSite getBackend();
 
     IErlModel getModel();
 

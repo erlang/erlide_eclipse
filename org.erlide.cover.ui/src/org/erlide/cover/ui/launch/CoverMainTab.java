@@ -100,7 +100,8 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
         Collection<IErlProject> projects;
         try {
-            projects = ErlangEngine.getInstance().getModel().getErlangProjects();
+            projects = ErlangEngine.getInstance().getModel()
+                    .getErlangProjects();
             final List<String> ps = new ArrayList<String>();
             for (final IErlProject p : projects) {
                 ps.add(p.getName());
@@ -131,7 +132,9 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
             projectMBr.setText(projectName);
 
             if (projectName != null && projectName.length() > 0) {
-                final IErlProject p = ErlangEngine.getInstance().getModel()
+                final IErlProject p = ErlangEngine
+                        .getInstance()
+                        .getModel()
                         .getErlangProject(
                                 ResourcesPlugin.getWorkspace().getRoot()
                                         .getProject(projectName));
@@ -256,7 +259,9 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
                 updateLaunchConfigurationDialog();
                 final String projectName = projectMBr.getText();
                 if (projectName != null && projectName.length() > 0) {
-                    final IErlProject p = ErlangEngine.getInstance().getModel()
+                    final IErlProject p = ErlangEngine
+                            .getInstance()
+                            .getModel()
                             .getErlangProject(
                                     ResourcesPlugin.getWorkspace().getRoot()
                                             .getProject(projectName));
@@ -279,8 +284,8 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         try {
             final List<ProjectElement> res = new LinkedList<ProjectElement>();
 
-            final Collection<IErlProject> projects = ErlangEngine
-                    .getInstance().getModel().getErlangProjects();
+            final Collection<IErlProject> projects = ErlangEngine.getInstance()
+                    .getModel().getErlangProjects();
 
             for (final IErlProject p : projects) {
                 final ProjectElement elem = new ProjectElement(p.getName(),

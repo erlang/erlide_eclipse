@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.services.scanner.ScannerException;
 import org.erlide.model.services.scanner.ScannerService;
@@ -181,9 +180,9 @@ public class ErlideScanner implements ScannerService {
             return null;
         }
         try {
-            final OtpErlangObject o = ModelPlugin
-                    .getDefault()
-                    .getIdeBackend()
+            final OtpErlangObject o = ErlangEngine
+                    .getInstance()
+                    .getBackend()
                     .call(ERLIDE_SCANNER, "check_all", "aso", module, text,
                             getTokens);
             return o;

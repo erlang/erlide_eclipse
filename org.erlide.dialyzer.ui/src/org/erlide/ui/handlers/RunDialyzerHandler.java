@@ -184,7 +184,8 @@ public class RunDialyzerHandler extends AbstractHandler {
             final Set<IErlModule> modules) {
         final Set<IErlProject> projects = Sets.newHashSet();
         for (final IErlModule module : modules) {
-            projects.add(ErlangEngine.getInstance().getModelUtilService().getProject(module));
+            projects.add(ErlangEngine.getInstance().getModelUtilService()
+                    .getProject(module));
         }
         return projects;
     }

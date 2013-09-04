@@ -140,8 +140,11 @@ public abstract class AbstractErlContentAssistProcessor implements
         final List<ICompletionProposal> result = Lists.newArrayList();
         final boolean includes = kind == Kinds.INCLUDES
                 || kind == Kinds.INCLUDE_LIBS;
-        final List<String> names = ErlangEngine.getInstance().getModelUtilService().findUnitsWithPrefix(prefix,
-                project, kind != Kinds.INCLUDES, includes);
+        final List<String> names = ErlangEngine
+                .getInstance()
+                .getModelUtilService()
+                .findUnitsWithPrefix(prefix, project, kind != Kinds.INCLUDES,
+                        includes);
         final OtpErlangObject res = ErlangEngine.getInstance()
                 .getOtpDocService()
                 .getModules(backend, prefix, names, includes);
@@ -212,8 +215,8 @@ public abstract class AbstractErlContentAssistProcessor implements
                             .getInstance()
                             .getContextAssistService()
                             .checkRecordCompletion(
-                                    BackendCore.getBuildOrIdeBackend(
-                                            workspaceProject).getRpcSite(),
+                                    BackendCore
+                                            .getBuildOrIdeBackend(workspaceProject),
                                     before);
                 }
                 if (rc != null && rc.isNameWanted()) {
@@ -335,8 +338,8 @@ public abstract class AbstractErlContentAssistProcessor implements
             throws CoreException, OtpErlangRangeException, BadLocationException {
         final IProject workspaceProject = project == null ? null : project
                 .getWorkspaceProject();
-        final IRpcSite backend = BackendCore.getBuildOrIdeBackend(
-                workspaceProject).getRpcSite();
+        final IRpcSite backend = BackendCore
+                .getBuildOrIdeBackend(workspaceProject);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(
@@ -501,8 +504,8 @@ public abstract class AbstractErlContentAssistProcessor implements
         }
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         try {
-            final List<IErlPreprocessorDef> defs = ErlangEngine.getInstance().getModelUtilService()
-                    .getAllPreprocessorDefs(module, kind);
+            final List<IErlPreprocessorDef> defs = ErlangEngine.getInstance()
+                    .getModelUtilService().getAllPreprocessorDefs(module, kind);
             for (final IErlPreprocessorDef pd : defs) {
                 final String name = pd.getDefinedName();
                 addIfMatches(name, prefix, offset, result);
@@ -511,7 +514,8 @@ public abstract class AbstractErlContentAssistProcessor implements
             ErlLogger.error(e);
         }
         if (kind == ErlElementKind.MACRO_DEF) {
-            final String[] names = ErlangEngine.getInstance().getModelUtilService().getPredefinedMacroNames();
+            final String[] names = ErlangEngine.getInstance()
+                    .getModelUtilService().getPredefinedMacroNames();
             for (final String name : names) {
                 addIfMatches(name, prefix, offset, result);
             }
@@ -523,18 +527,26 @@ public abstract class AbstractErlContentAssistProcessor implements
             String moduleName, final int offset, final String prefix,
             final boolean arityOnly) throws OtpErlangRangeException,
             CoreException {
-        moduleName = ErlangEngine.getInstance().getModelUtilService().resolveMacroValue(moduleName, module);
+        moduleName = ErlangEngine.getInstance().getModelUtilService()
+                .resolveMacroValue(moduleName, module);
         // we have an external call
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlModule theModule = ErlangEngine.getInstance().getModelUtilService().findModule(model, project,
-                moduleName, null,
-                checkAllProjects ? IErlElementLocator.Scope.ALL_PROJECTS
-                        : IErlElementLocator.Scope.REFERENCED_PROJECTS);
+        final IErlModule theModule = ErlangEngine
+                .getInstance()
+                .getModelUtilService()
+                .findModule(
+                        model,
+                        project,
+                        moduleName,
+                        null,
+                        checkAllProjects ? IErlElementLocator.Scope.ALL_PROJECTS
+                                : IErlElementLocator.Scope.REFERENCED_PROJECTS);
         if (theModule != null) {
-            if (ErlangEngine.getInstance().getModelUtilService().isOtpModule(theModule)) {
+            if (ErlangEngine.getInstance().getModelUtilService()
+                    .isOtpModule(theModule)) {
                 final String stateDir = ErlideUIPlugin.getDefault()
                         .getStateLocation().toString();
                 final OtpErlangObject res = ErlangEngine.getInstance()
@@ -558,8 +570,11 @@ public abstract class AbstractErlContentAssistProcessor implements
         }
         IErlPreprocessorDef pd;
         try {
-            pd = ErlangEngine.getInstance().getModelUtilService().findPreprocessorDef(module, recordName,
-                    ErlElementKind.RECORD_DEF);
+            pd = ErlangEngine
+                    .getInstance()
+                    .getModelUtilService()
+                    .findPreprocessorDef(module, recordName,
+                            ErlElementKind.RECORD_DEF);
         } catch (final CoreException e) {
             return EMPTY_COMPLETIONS;
         }

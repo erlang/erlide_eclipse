@@ -175,9 +175,12 @@ public class ErlDebugModelPresentation extends LabelProvider implements
             try {
                 final IErlElementLocator model = ErlangEngine.getInstance()
                         .getModel();
-                final IErlModule module = ErlangEngine.getInstance().getModelUtilService().findModule(model, null,
-                        null, lfs.getFullPath().toString(),
-                        IErlElementLocator.Scope.ALL_PROJECTS);
+                final IErlModule module = ErlangEngine
+                        .getInstance()
+                        .getModelUtilService()
+                        .findModule(model, null, null,
+                                lfs.getFullPath().toString(),
+                                IErlElementLocator.Scope.ALL_PROJECTS);
                 return EditorUtility.getEditorInput(module);
             } catch (final CoreException e) {
                 ErlLogger.error(e);

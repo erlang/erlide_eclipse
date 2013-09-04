@@ -29,13 +29,17 @@ public class UserAdhocRefactoring {
     public boolean load() {
         String callbackPath;
         try {
-            if (ErlangEngine.getInstance().getModel().findModule(
-                    refac.getCallbackModule()) == null) {
+            if (ErlangEngine.getInstance().getModel()
+                    .findModule(refac.getCallbackModule()) == null) {
                 return false;
             }
 
-            final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(ErlangEngine
-                    .getInstance().getModel().findModule(refac.getCallbackModule()));
+            final IErlProject project = ErlangEngine
+                    .getInstance()
+                    .getModelUtilService()
+                    .getProject(
+                            ErlangEngine.getInstance().getModel()
+                                    .findModule(refac.getCallbackModule()));
             callbackPath = project.getWorkspaceProject().getLocation()
                     .append(project.getOutputLocation()).toString();
         } catch (final ErlModelException e) {

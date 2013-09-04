@@ -163,7 +163,8 @@ public class DialyzerUtils {
             final Collection<IPath> includeDirs, final boolean fromSource) {
         for (final IErlModule m : modules) {
             final String name = m.getName();
-            final IErlProject erlProject = ErlangEngine.getInstance().getModelUtilService().getProject(m);
+            final IErlProject erlProject = ErlangEngine.getInstance()
+                    .getModelUtilService().getProject(m);
             final IProject project = erlProject.getWorkspaceProject();
             final IFolder ebin = project.getFolder(erlProject
                     .getOutputLocation());

@@ -293,7 +293,8 @@ public class ErlideTestUtils {
             final List<IErlModule> list = Lists
                     .newArrayList(modulesAndIncludes);
             for (final IErlModule module : list) {
-                if (ErlangEngine.getInstance().getModelUtilService().getProject(module) == erlProject) {
+                if (ErlangEngine.getInstance().getModelUtilService()
+                        .getProject(module) == erlProject) {
                     deleteModule(module);
                 }
             }
