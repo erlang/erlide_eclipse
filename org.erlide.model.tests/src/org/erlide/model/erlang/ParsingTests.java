@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.erlide.core;
+package org.erlide.model.erlang;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -10,13 +10,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.erlide.core.erlang.TestingSupport;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlParser;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
+import org.erlide.model.util.TestingSupport;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

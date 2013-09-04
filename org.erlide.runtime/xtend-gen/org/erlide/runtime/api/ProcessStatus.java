@@ -1,16 +1,17 @@
 package org.erlide.runtime.api;
 
+import org.eclipse.xtend2.lib.StringConcatenation;
+import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.ErlUtils;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.base.Objects;
-import org.eclipse.xtend2.lib.StringConcatenation;
-import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.erlide.util.ErlLogger;
-import org.erlide.util.erlang.Bindings;
-import org.erlide.util.erlang.ErlUtils;
 
 @SuppressWarnings("all")
 public class ProcessStatus {

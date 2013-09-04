@@ -60,7 +60,6 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.model.root.IErlangProjectProperties;
 import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.model.util.CommonUtils;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.model.util.NatureUtil;
 import org.erlide.model.util.SourcePathUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -920,7 +919,7 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     boolean moduleInProject(final IErlModule module) {
-        final IErlProject project = ModelUtils.getProject(module);
+        final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(module);
         if (project == null) {
             return false;
         }

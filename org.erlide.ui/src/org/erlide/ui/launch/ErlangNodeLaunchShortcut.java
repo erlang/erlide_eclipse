@@ -39,7 +39,6 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.util.ErlLogger;
@@ -73,7 +72,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             }
             final IErlElement erlElement = ErlangEngine.getInstance()
                     .getModel().findElement((IResource) element);
-            final IErlProject project = ModelUtils.getProject(erlElement);
+            final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(erlElement);
             if (project != null) {
                 projects.add(project);
             }

@@ -41,6 +41,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.ErlModelStatus;
 import org.erlide.model.IOpenable;
@@ -64,7 +65,6 @@ import org.erlide.model.util.CommonUtils;
 import org.erlide.model.util.ElementChangedEvent;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.IElementChangedListener;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.model.util.NatureUtil;
 import org.erlide.model.util.ResourceUtil;
 import org.erlide.util.ErlLogger;
@@ -1153,8 +1153,9 @@ public class ErlModel extends Openable implements IErlModel {
                 return include;
             }
         }
-        return findIncludeFromProject(ModelUtils.getProject(module),
-                includeName, includePath, true, scope);
+        return findIncludeFromProject(ErlangEngine.getInstance()
+                .getModelUtilService().getProject(module), includeName,
+                includePath, true, scope);
     }
 
     private final Object fModelLock = new Object();

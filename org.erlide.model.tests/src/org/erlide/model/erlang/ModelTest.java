@@ -1,8 +1,7 @@
-package org.erlide.core;
+package org.erlide.model.erlang;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;

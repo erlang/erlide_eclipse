@@ -23,7 +23,6 @@ import org.erlide.backend.debug.model.ErlangUninterpretedStackFrame;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElementLocator;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.ErlideUIDebugImages;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -176,7 +175,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
             try {
                 final IErlElementLocator model = ErlangEngine.getInstance()
                         .getModel();
-                final IErlModule module = ModelUtils.findModule(model, null,
+                final IErlModule module = ErlangEngine.getInstance().getModelUtilService().findModule(model, null,
                         null, lfs.getFullPath().toString(),
                         IErlElementLocator.Scope.ALL_PROJECTS);
                 return EditorUtility.getEditorInput(module);

@@ -5,14 +5,15 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
-import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.runtime.Path;
 
 public class FilePathUtils {
-    public static boolean equalFilePaths(String path_1, String path_2) {
+
+    public static boolean equalFilePaths(String path_1, String path_2,
+            final boolean caseSensitive) {
         assertThat(path_1, is(not(nullValue())));
         assertThat(path_2, is(not(nullValue())));
-        if (!EFS.getLocalFileSystem().isCaseSensitive()) {
+        if (!caseSensitive) {
             path_1 = path_1.toLowerCase();
             path_2 = path_2.toLowerCase();
         }

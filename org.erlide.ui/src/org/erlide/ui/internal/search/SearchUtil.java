@@ -51,8 +51,7 @@ import org.erlide.model.services.search.SearchFor;
 import org.erlide.model.services.search.SearchPatternFactory;
 import org.erlide.model.services.search.TypeRefPattern;
 import org.erlide.model.services.search.VariablePattern;
-import org.erlide.model.util.ModelUtils;
-import org.erlide.ui.actions.OpenAction;
+import org.erlide.ui.actions.OpenUtils;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.StringUtils;
 import org.erlide.util.Util;
@@ -179,7 +178,7 @@ public class SearchUtil {
                 moduleName = module.getModuleName();
                 if (offset != -1) {
                     final IErlElement e = module.getElementAt(offset);
-                    if (OpenAction.isTypeDefOrRecordDef(e, res)) {
+                    if (new OpenUtils().isTypeDefOrRecordDef(e, res)) {
                         return new TypeRefPattern(moduleName, res.getFun(),
                                 limitTo);
                     }
@@ -209,7 +208,8 @@ public class SearchUtil {
             moduleName = unquoted;
             do {
                 oldName = moduleName;
-                moduleName = ModelUtils.resolveMacroValue(moduleName, module);
+                moduleName = ErlangEngine.getInstance().getModelUtilService()
+                        .resolveMacroValue(moduleName, module);
             } while (!moduleName.equals(oldName));
             return new FunctionPattern(moduleName, res.getFun(),
                     res.getArity(), limitTo, matchAnyFunctionDefinition,

@@ -42,7 +42,6 @@ import org.erlide.model.services.search.ErlangSearchPattern;
 import org.erlide.model.services.search.LimitTo;
 import org.erlide.model.services.search.ModuleLineFunctionArityRef;
 import org.erlide.model.services.search.OpenResult;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.ui.editors.erl.ErlangEditor.ActivationListener;
@@ -107,7 +106,7 @@ public class MarkOccurencesHandler {
                         .getOpenService()
                         .open(theModule.getScannerName(),
                                 offset,
-                                ModelUtils.getImportsAsList(theModule),
+                                ErlangEngine.getInstance().getModelUtilService().getImportsAsList(theModule),
                                 "",
                                 ErlangEngine.getInstance().getModel()
                                         .getPathVars());

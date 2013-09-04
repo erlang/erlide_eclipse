@@ -33,7 +33,6 @@ import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.root.IErlangProjectProperties;
 import org.erlide.model.root.OldErlangProjectProperties;
-import org.erlide.model.util.ModelUtils;
 
 import com.google.common.collect.Lists;
 
@@ -294,7 +293,7 @@ public class ErlideTestUtils {
             final List<IErlModule> list = Lists
                     .newArrayList(modulesAndIncludes);
             for (final IErlModule module : list) {
-                if (ModelUtils.getProject(module) == erlProject) {
+                if (ErlangEngine.getInstance().getModelUtilService().getProject(module) == erlProject) {
                     deleteModule(module);
                 }
             }

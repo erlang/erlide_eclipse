@@ -24,7 +24,6 @@ import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.ModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -116,7 +115,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
                 final ErlangDebugTarget target = getErlangDebugTarget();
                 IErlPreprocessorDef pd;
                 try {
-                    pd = ModelUtils.findPreprocessorDef(
+                    pd = ErlangEngine.getInstance().getModelUtilService().findPreprocessorDef(
                             getErlProjects(target.getProjects()), moduleName,
                             a.atomValue(), ErlElementKind.RECORD_DEF);
                     if (pd instanceof IErlRecordDef) {

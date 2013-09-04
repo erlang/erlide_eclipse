@@ -1,13 +1,13 @@
 package org.erlide.model.internal.root;
 
 import org.eclipse.core.runtime.Path;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.IErlMember;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.internal.erlang.SourceRange;
 import org.erlide.model.internal.erlang.SourceRefElement;
-import org.erlide.model.util.ModelUtils;
 
 /**
  * 
@@ -60,7 +60,7 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 
     @Override
     public String getModuleName() {
-        final IErlModule module = ModelUtils.getModule(this);
+        final IErlModule module = ErlangEngine.getInstance().getModelUtilService().getModule(this);
         if (module != null) {
             return module.getName();
         }

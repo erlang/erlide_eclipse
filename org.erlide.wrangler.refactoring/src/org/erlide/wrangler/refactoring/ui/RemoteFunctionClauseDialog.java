@@ -25,12 +25,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
@@ -96,7 +96,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
         functionClausesTree.setLayoutData(treeData);
 
         try {
-            final Collection<IErlModule> erlmodules = ModelUtils.getProject(
+            final Collection<IErlModule> erlmodules = ErlangEngine.getInstance().getModelUtilService().getProject(
                     GlobalParameters.getWranglerSelection().getErlElement())
                     .getModules();
 

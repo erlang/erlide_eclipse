@@ -20,7 +20,6 @@ import org.erlide.model.root.IErlExternalRoot;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.OpenService.ExternalTreeEntry;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.ErlLogger;
 
@@ -57,7 +56,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
 
         final Stopwatch stopwatch = new Stopwatch().start();
 
-        final IErlProject project = ModelUtils.getProject(this);
+        final IErlProject project = ErlangEngine.getInstance().getModelUtilService().getProject(this);
         final ErlModelCache cache = ErlModel.getErlModelCache();
         List<ExternalTreeEntry> externalModuleTree = cache
                 .getExternalTree(externalModules);

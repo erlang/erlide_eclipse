@@ -1,5 +1,6 @@
 package org.erlide.model.services.search;
 
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlAttribute;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlFunctionClause;
@@ -7,7 +8,6 @@ import org.erlide.model.erlang.IErlMacroDef;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlRecordDef;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.util.StringUtils;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.Util;
@@ -46,7 +46,7 @@ public class SearchPatternFactory {
                     .withoutExtension(function.getModuleName());
             return new FunctionPattern(withoutExtension,
                     function.getFunctionName(), function.getArity(), limitTo,
-                    true, ModelUtils.getModule(function),
+                    true, ErlangEngine.getInstance().getModelUtilService().getModule(function),
                     !function.isExported());
         } else if (element instanceof IErlMacroDef) {
             final IErlMacroDef m = (IErlMacroDef) element;

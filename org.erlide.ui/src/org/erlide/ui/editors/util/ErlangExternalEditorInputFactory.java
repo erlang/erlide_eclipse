@@ -13,7 +13,6 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
-import org.erlide.model.util.ModelUtils;
 
 public class ErlangExternalEditorInputFactory implements IElementFactory {
 
@@ -24,7 +23,7 @@ public class ErlangExternalEditorInputFactory implements IElementFactory {
     public static void saveState(final IMemento memento,
             final ErlangExternalEditorInput input) {
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final String externalModulePath = ModelUtils.getExternalModulePath(
+        final String externalModulePath = ErlangEngine.getInstance().getModelUtilService().getExternalModulePath(
                 model, input.getModule());
         memento.putString(TAG_EXTERNAL_MODULE_PATH, externalModulePath);
         final URI uri = input.getURI();
@@ -42,7 +41,7 @@ public class ErlangExternalEditorInputFactory implements IElementFactory {
         IErlModule module;
         try {
             final IErlModel model = ErlangEngine.getInstance().getModel();
-            module = ModelUtils.getModuleFromExternalModulePath(model,
+            module = ErlangEngine.getInstance().getModelUtilService().getModuleFromExternalModulePath(model,
                     externalModulePath);
         } catch (final ErlModelException e1) {
             return null;

@@ -39,7 +39,6 @@ import org.erlide.model.services.search.ErlangSearchPattern;
 import org.erlide.model.services.search.LimitTo;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.services.search.SearchPatternFactory;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ExceptionHandler;
@@ -216,7 +215,7 @@ public abstract class FindAction extends SelectionDispatchAction {
                     .getInstance()
                     .getOpenService()
                     .open(module.getScannerName(), offset,
-                            ModelUtils.getImportsAsList(module), "",
+                            ErlangEngine.getInstance().getModelUtilService().getImportsAsList(module), "",
                             ErlangEngine.getInstance().getModel().getPathVars());
             ErlLogger.debug("find " + res);
             final ErlangSearchPattern ref = SearchUtil

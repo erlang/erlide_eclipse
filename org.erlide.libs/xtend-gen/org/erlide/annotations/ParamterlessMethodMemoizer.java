@@ -7,7 +7,6 @@ import org.eclipse.xtend.lib.macro.declaration.MutableTypeDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.TypeReference;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Extension;
-import org.erlide.annotations.MethodMemoizer;
 
 @SuppressWarnings("all")
 public class ParamterlessMethodMemoizer extends MethodMemoizer {

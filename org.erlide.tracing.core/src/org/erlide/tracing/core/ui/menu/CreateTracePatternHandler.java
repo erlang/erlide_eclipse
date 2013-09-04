@@ -6,8 +6,8 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.ui.PlatformUI;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlFunction;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.tracing.core.TraceBackend;
 import org.erlide.tracing.core.mvc.model.TracePattern;
 
@@ -27,7 +27,8 @@ public class CreateTracePatternHandler extends AbstractHandler {
                 final IErlFunction function = (IErlFunction) firstElement;
                 final TracePattern tracePattern = new TracePattern(true);
                 tracePattern.setFunctionName(function.getFunctionName());
-                tracePattern.setModuleName(ModelUtils.getModule(function)
+                tracePattern.setModuleName(ErlangEngine.getInstance()
+                        .getModelUtilService().getModule(function)
                         .getModuleName());
                 tracePattern.setArity(function.getArity());
                 tracePattern.setLocal(true);

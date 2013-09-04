@@ -85,7 +85,6 @@ import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.services.search.XrefService;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.editors.erl.actions.CallHierarchyAction;
@@ -1606,7 +1605,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
 
     @Override
     public IErlProject getProject() {
-        return ModelUtils.getProject(getModule());
+        return ErlangEngine.getInstance().getModelUtilService().getProject(getModule());
     }
 
     @Override

@@ -1,4 +1,4 @@
-package org.erlide.core.erlang;
+package org.erlide.model.util;
 
 import org.erlide.model.IParent;
 import org.erlide.model.internal.erlang.ErlAttribute;
