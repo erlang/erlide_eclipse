@@ -1,12 +1,13 @@
-package org.erlide.backend.debug;
+package org.erlide.backend.api;
 
+import org.erlide.backend.debug.BackendEvalResult;
 import org.erlide.runtime.api.IRpcSite;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class DebugHelper {
+public class EvalHelper  {
 
     public static BackendEvalResult eval(final IRpcSite b, final String string,
             final OtpErlangObject bindings) {

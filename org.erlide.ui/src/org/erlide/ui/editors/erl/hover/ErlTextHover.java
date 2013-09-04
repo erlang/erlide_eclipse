@@ -279,13 +279,13 @@ public class ErlTextHover implements ITextHover,
         final IErlProject erlProject = editor.getProject();
 
         final IBackendManager backendManager = BackendCore.getBackendManager();
-        final IRpcSite ide = ErlangEngine.getInstance().getBackend();
         String docPath = "";
         String anchor = "";
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getWorkspaceProject();
-            final IRpcSite backend = erlProject == null ? ide : backendManager
+            final IRpcSite backend = erlProject == null ? ErlangEngine
+                    .getInstance().getBackend() : backendManager
                     .getBuildBackend(project).getRpcSite();
             if (backend == null) {
                 return null;
@@ -297,9 +297,9 @@ public class ErlTextHover implements ITextHover,
             final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine
                     .getInstance()
                     .getOtpDocService()
-                    .getOtpDoc(backend, offset, stateDir, editor.getScannerName(),
-                            fImports, externalModulesString,
-                            model.getPathVars());
+                    .getOtpDoc(backend, offset, stateDir,
+                            editor.getScannerName(), fImports,
+                            externalModulesString, model.getPathVars());
             // ErlLogger.debug("otp doc %s", t);
             if (Util.isOk(t)) {
                 element = new OpenResult(t.elementAt(2));
