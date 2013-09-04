@@ -149,6 +149,7 @@ public final class BackendManager implements IBackendManager {
         return b;
     }
 
+    @Deprecated
     @Override
     public IBackend getIdeBackend() {
         // System.out.println("GET ide" + Thread.currentThread());

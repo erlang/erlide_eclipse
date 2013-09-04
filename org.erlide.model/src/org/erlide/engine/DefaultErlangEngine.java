@@ -50,6 +50,7 @@ public class DefaultErlangEngine implements IErlangEngine {
         backend = provider.get();
     }
 
+    @Deprecated
     @Override
     public IRpcSite getBackend() {
         return backend;
