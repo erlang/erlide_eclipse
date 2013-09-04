@@ -31,8 +31,8 @@ import org.erlide.model.erlang.IErlTypespec;
 import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.internal.root.ErlMember;
 import org.erlide.model.root.IErlElement;
+import org.erlide.model.services.scanner.RuntimeHelper;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.RuntimeHelper;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
@@ -68,10 +68,13 @@ public final class ErlParser implements IErlParser {
 
     private static final int FUNCTION_COMMENT_THRESHOLD = 3;
     private static final int MODULE_HEADER_COMMENT_THRESHOLD = 1;
-    private final RuntimeHelper helper;
 
-    public ErlParser() {
-        helper = new RuntimeHelper(ErlangEngine.getInstance().getBackend());
+    private final RuntimeHelper helper;
+    private final IRpcSite backend;
+
+    public ErlParser(final IRpcSite backend) {
+        this.backend = backend;
+        helper = new RuntimeHelper(backend);
     }
 
     @Override
@@ -84,7 +87,6 @@ public final class ErlParser implements IErlParser {
         OtpErlangList forms = null;
         OtpErlangList comments = null;
         OtpErlangTuple res = null;
-        final IRpcSite backend = ErlangEngine.getInstance().getBackend();
         if (initialParse) {
             final String stateDir = ErlangEngine.getInstance().getStateDir();
             final String pathNotNull = path == null ? "" : path;

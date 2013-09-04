@@ -180,11 +180,8 @@ public class ErlideScanner implements ScannerService {
             return null;
         }
         try {
-            final OtpErlangObject o = ErlangEngine
-                    .getInstance()
-                    .getBackend()
-                    .call(ERLIDE_SCANNER, "check_all", "aso", module, text,
-                            getTokens);
+            final OtpErlangObject o = backend.call(ERLIDE_SCANNER, "check_all",
+                    "aso", module, text, getTokens);
             return o;
         } catch (final RpcException e) {
             ErlLogger.warn(e);

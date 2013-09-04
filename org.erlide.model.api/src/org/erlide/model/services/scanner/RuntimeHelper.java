@@ -1,10 +1,12 @@
-package org.erlide.runtime.api;
+package org.erlide.model.services.scanner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
+import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.ParserException;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;

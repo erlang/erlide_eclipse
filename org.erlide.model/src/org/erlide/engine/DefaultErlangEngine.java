@@ -4,8 +4,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.ModelPlugin;
+import org.erlide.model.erlang.ErlangBackendToolkit;
 import org.erlide.model.erlang.ErlangToolkit;
-import org.erlide.model.erlang.ErlangToolkitFactory;
 import org.erlide.model.internal.erlang.ErlideScanner;
 import org.erlide.model.internal.erlang.ModelInternalUtils;
 import org.erlide.model.internal.root.ErlModel;
@@ -54,7 +54,8 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public IErlModel getModel() {
         if (erlangModel == null) {
-            final ErlangToolkit toolkit = ErlangToolkitFactory.getInstance();
+            final ErlangToolkit toolkit = ErlangEngine.getInstance()
+                    .getToolkit();
             erlangModel = new ErlModel(toolkit);
         }
         if (!erlangModel.isOpen()) {
@@ -135,5 +136,10 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public CleanupProvider getCleanupProvider(final IResource resource) {
         return new ErlTidyCleanupProvider(resource);
+    }
+
+    @Override
+    public ErlangToolkit getToolkit() {
+        return new ErlangBackendToolkit(backend);
     }
 }
