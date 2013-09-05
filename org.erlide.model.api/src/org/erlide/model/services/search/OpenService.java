@@ -2,8 +2,10 @@ package org.erlide.model.services.search;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -11,6 +13,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public interface OpenService {
+	
     OtpErlangObject getSourceFromModule(final OtpErlangList pathVars,
             final String mod, final String externalModules) throws RpcException;
 
@@ -52,26 +55,22 @@ public interface OpenService {
             return path;
         }
 
-        // public String getName() {
-        // return name;
-        // }
-
         public boolean isModule() {
             return isModule;
         }
     }
 
-    List<ExternalTreeEntry> getExternalModuleTree(final String externalModules,
+    List<ExternalTreeEntry> getExternalModuleTree(IRpcSite backend, final String externalModules,
             final OtpErlangList pathVars);
 
     String getExternalInclude(final String filePath,
             final String externalIncludes, final OtpErlangList pathVars);
-
-    List<String> getLibDirs();
 
     List<String> getLibFiles(final String entry);
 
     List<List<String>> getLibSrcInclude(final List<String> libList);
 
     Collection<String> getIncludesInDir(final String directory);
+
+	Map<String, List<String>> getOtpLibSrcIncludes(IRpcSite backend);
 }

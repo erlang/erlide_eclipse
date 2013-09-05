@@ -1,7 +1,7 @@
 package org.erlide.model.internal.erlang;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
@@ -17,7 +17,6 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlExternal;
 import org.erlide.model.root.IErlExternalRoot;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.runtime.api.IRpcSite;
 
 public class ErlOtpExternalReferenceEntryList extends Openable implements
@@ -38,38 +37,33 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
             throws ErlModelException {
         final IErlProject erlProject = ErlangEngine.getInstance()
                 .getModelUtilService().getProject(this);
-        final OldErlangProjectProperties properties = new OldErlangProjectProperties(
-                erlProject.getWorkspaceProject());
         final IRpcSite backend = ModelPlugin.getDefault().getBackend(
-                properties.getRuntimeVersion());
+                erlProject.getWorkspaceProject());
         if (backend != null) {
-            final List<String> libList = ErlangEngine.getInstance()
-                    .getOpenService().getLibDirs();
-            addExternalEntries(pm, libList, backend);
+            addExternalEntries(pm, backend);
         }
         return true;
     }
 
     private void addExternalEntries(final IProgressMonitor pm,
-            final List<String> libList, final IRpcSite backend) {
-        final List<List<String>> srcIncludes = ErlangEngine.getInstance()
-                .getOpenService().getLibSrcInclude(libList);
-        final Iterator<String> iterator = libList.iterator();
-        for (final List<String> srcInclude : srcIncludes) {
-            final String libDir = iterator.next();
+            final IRpcSite backend) {
+        final Map<String, List<String>> srcIncludes = ErlangEngine
+                .getInstance().getOpenService().getOtpLibSrcIncludes(backend);
+        for (final String srcInclude : srcIncludes.keySet()) {
             boolean hasHeaders = false;
-            for (final String path : srcInclude) {
+            List<String> paths = srcIncludes.get(srcInclude);
+            for (final String path : paths) {
                 if (includePath(path)) {
                     hasHeaders = true;
                     break;
                 }
             }
             final IErlExternal external = new ErlExternalReferenceEntry(this,
-                    getLibName(libDir), libDir, true, hasHeaders);
+                    getLibName(srcInclude), srcInclude, true, hasHeaders);
             addChild(external);
-            for (final String i : srcInclude) {
+            for (final String path : paths) {
                 external.addChild(new ErlExternalReferenceEntry(external,
-                        getLibName(i), i, false, includePath(i)));
+                        getLibName(path), path, false, includePath(path)));
             }
         }
     }
