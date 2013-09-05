@@ -38,6 +38,8 @@ import org.erlide.backend.api.IBackendListener;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
+import org.erlide.backend.api.IPluginCodeLoader;
+import org.erlide.backend.api.IProjectCodeLoader;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
@@ -149,7 +151,6 @@ public final class BackendManager implements IBackendManager {
         return b;
     }
 
-    @Deprecated
     @Override
     public IBackend getIdeBackend() {
         // System.out.println("GET ide" + Thread.currentThread());
@@ -227,7 +228,7 @@ public final class BackendManager implements IBackendManager {
 
     @Override
     public synchronized void removeExecutionBackend(final IProject project,
-            final IBackend b) {
+            final IProjectCodeLoader b) {
         final IErlModel model = ErlangEngine.getInstance().getModel();
         b.removeProjectPath(model.findProject(project));
         Set<IBackend> list = executionBackends.get(project);
@@ -438,7 +439,7 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public IBackend getByProcess(final IProcess process) {
+    public IPluginCodeLoader getByProcess(final IProcess process) {
         synchronized (allBackends) {
             for (final IBackend backend : allBackends) {
                 final ILaunch launch = backend.getData().getLaunch();

@@ -15,7 +15,6 @@ import org.osgi.framework.Bundle;
 
 public interface IBackendManager extends IEpmdListener {
 
-    @Deprecated
     IBackend getIdeBackend();
 
     IBackend getBuildBackend(final IProject project);
@@ -34,9 +33,9 @@ public interface IBackendManager extends IEpmdListener {
 
     void addExecutionBackend(final IProject project, final IBackend b);
 
-    void removeExecutionBackend(final IProject project, final IBackend b);
+    void removeExecutionBackend(final IProject project, final IProjectCodeLoader b);
 
-    IBackend getBackendForLaunch(final ILaunch launch);
+    IPluginCodeLoader getBackendForLaunch(final ILaunch launch);
 
     void terminateBackendsForLaunch(final ILaunch launch);
 
@@ -57,6 +56,6 @@ public interface IBackendManager extends IEpmdListener {
     void moduleLoaded(final IBackend backend, final IProject project,
             final String moduleName);
 
-    IBackend getByProcess(IProcess ertsProcess);
+    IPluginCodeLoader getByProcess(IProcess ertsProcess);
 
 }

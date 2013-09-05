@@ -10,6 +10,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendListener;
+import org.erlide.backend.api.IPluginCodeLoader;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.IDisposable;
 
@@ -68,7 +69,7 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
         return pages.get(console);
     }
 
-    public IErlangConsole getConsole(final IBackend backend) {
+    public IErlangConsole getConsole(final IPluginCodeLoader backend) {
         return consoles.get(backend);
     }
 

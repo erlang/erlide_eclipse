@@ -18,6 +18,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
+import org.erlide.backend.api.IPluginCodeLoader;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.shell.BackendShellListener;
 import org.erlide.runtime.shell.IBackendShell;
@@ -75,7 +76,7 @@ public class SendToConsoleAction extends SelectionDispatchAction {
         IErlangConsole console = null;
         final ErlConsoleManager erlConsoleManager = ErlideUIPlugin.getDefault()
                 .getErlConsoleManager();
-        for (final IBackend backend : executionBackends) {
+        for (final IPluginCodeLoader backend : executionBackends) {
             console = erlConsoleManager.getConsole(backend);
             if (console != null) {
                 break;
