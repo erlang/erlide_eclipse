@@ -22,7 +22,7 @@ public class ErlangBackendToolkit implements ErlangToolkit {
     @Override
     public ScannerService getScannerService(final String scannerName,
             final String initialText, final String path, final boolean logging) {
-        final ErlScanner scanner = new ErlScanner(scannerName);
+        final ErlScanner scanner = new ErlScanner(backend, scannerName);
         scanner.initialScan(initialText, path, logging);
         return scanner;
     }

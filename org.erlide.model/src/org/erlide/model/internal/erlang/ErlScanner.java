@@ -10,21 +10,21 @@
  *******************************************************************************/
 package org.erlide.model.internal.erlang;
 
-import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.ErlToken;
-import org.erlide.model.services.scanner.BasicScannerService;
+import org.erlide.model.services.parser.ErlideScanner;
 import org.erlide.model.services.scanner.ScannerService;
+import org.erlide.runtime.api.IRpcSite;
 
 /**
  * Erlang syntax scanner
  */
 public class ErlScanner implements ScannerService {
     private final String name;
-    private final BasicScannerService scannerService;
+    private final ErlideScanner scannerService;
 
-    public ErlScanner(final String name) {
+    public ErlScanner(final IRpcSite backend, final String name) {
         this.name = name;
-        scannerService = ErlangEngine.getInstance().getScannerService();
+        scannerService = new ErlideScanner(backend);
         scannerService.create(name);
     }
 
@@ -65,4 +65,5 @@ public class ErlScanner implements ScannerService {
     public void addref() {
         scannerService.addref(name);
     }
+
 }

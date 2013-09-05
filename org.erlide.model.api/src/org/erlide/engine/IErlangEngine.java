@@ -8,7 +8,8 @@ import org.erlide.model.services.codeassist.ContextAssistService;
 import org.erlide.model.services.edoc.EdocExportService;
 import org.erlide.model.services.importer.ImportService;
 import org.erlide.model.services.proclist.ProclistService;
-import org.erlide.model.services.scanner.BasicScannerService;
+import org.erlide.model.services.scanner.ScannerService;
+import org.erlide.model.services.scanner.SimpleScannerService;
 import org.erlide.model.services.search.OpenService;
 import org.erlide.model.services.search.OtpDocService;
 import org.erlide.model.services.search.SearchServerService;
@@ -36,8 +37,6 @@ public interface IErlangEngine {
 
     ContextAssistService getContextAssistService();
 
-    BasicScannerService getScannerService();
-
     SearchServerService getSearchServerService();
 
     ModelUtilService getModelUtilService();
@@ -51,5 +50,9 @@ public interface IErlangEngine {
     EdocExportService getEdocExportService();
 
     ProclistService getProclistService();
+
+    ScannerService getScannerService(String name);
+
+    SimpleScannerService getSimpleScannerService();
 
 }

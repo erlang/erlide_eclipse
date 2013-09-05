@@ -60,7 +60,7 @@ public class ErlCodeScanner extends ErlTokenScanner {
         }
         try {
             fCrtToken = -1;
-            fTokens = ErlangEngine.getInstance().getScannerService()
+            fTokens = ErlangEngine.getInstance().getSimpleScannerService()
                     .lightScanString(text, rangeOffset);
         } catch (final ScannerException e) {
             // ErlLogger.error(e);

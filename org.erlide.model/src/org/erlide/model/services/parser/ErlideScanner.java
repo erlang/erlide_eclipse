@@ -10,8 +10,9 @@ import java.util.List;
 
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.ErlToken;
+import org.erlide.model.services.scanner.InternalScanner;
 import org.erlide.model.services.scanner.ScannerException;
-import org.erlide.model.services.scanner.BasicScannerService;
+import org.erlide.model.services.scanner.SimpleScannerService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
@@ -22,7 +23,7 @@ import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlideScanner implements BasicScannerService {
+public class ErlideScanner implements SimpleScannerService, InternalScanner {
     private static final String ERLIDE_SCANNER = "erlide_scanner";
     private static final Object ENCODING = System.getProperty(
             "erlide.encoding.__test__", "latin1");
@@ -33,7 +34,6 @@ public class ErlideScanner implements BasicScannerService {
         this.backend = backend;
     }
 
-    @Override
     public void initialScan(final String module, final String path,
             final String initialText, final boolean logging) {
         final String stateDir = ErlangEngine.getInstance().getStateDir();
@@ -60,7 +60,6 @@ public class ErlideScanner implements BasicScannerService {
         }
     }
 
-    @Override
     public void addref(final String module) {
         try {
             backend.call(ERLIDE_SCANNER, "addref", "a", module);
@@ -71,7 +70,6 @@ public class ErlideScanner implements BasicScannerService {
         }
     }
 
-    @Override
     public void dispose(final String module) {
         try {
             backend.call(ERLIDE_SCANNER, "dispose", "a", module);
@@ -82,7 +80,6 @@ public class ErlideScanner implements BasicScannerService {
         }
     }
 
-    @Override
     @SuppressWarnings("boxing")
     public ErlToken getTokenAt(final String module, final int offset) {
         OtpErlangObject r1 = null;
@@ -106,7 +103,6 @@ public class ErlideScanner implements BasicScannerService {
         return null;
     }
 
-    @Override
     @SuppressWarnings("boxing")
     public void replaceText(final String module, final int offset,
             final int removeLength, final String newText) {
@@ -183,7 +179,6 @@ public class ErlideScanner implements BasicScannerService {
 
     }
 
-    @Override
     public String getText(final String scannerName) {
         try {
             final OtpErlangObject o = backend.call(ERLIDE_SCANNER, "get_text",

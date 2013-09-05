@@ -325,7 +325,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
                 + endLine.getLength() - getOffset;
         final String str = document.get(getOffset, getLength);
         try {
-            tokens = ErlangEngine.getInstance().getScannerService()
+            tokens = ErlangEngine.getInstance().getSimpleScannerService()
                     .lightScanString(str, 0);
         } catch (final ScannerException e) {
         }
