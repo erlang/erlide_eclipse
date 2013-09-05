@@ -56,7 +56,7 @@ public class ParsingTests {
         boolean result = false;
         try {
             ErlangEngine.getInstance().getScannerService(scannerModuleName)
-                    .initialScan("", s, false);
+                    .initialScan(s, "", false);
             final ParserService parser = ErlangEngine.getInstance().getModel()
                     .getParser();
             result = parser.parse(module, scannerModuleName, false, "", s,
