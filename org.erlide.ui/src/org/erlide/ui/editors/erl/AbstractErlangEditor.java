@@ -37,9 +37,9 @@ import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.services.parsing.ScannerService;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.actions.IndentAction;
 import org.erlide.ui.editors.erl.actions.SendToConsoleAction;
@@ -61,7 +61,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
     private IndentAction indentAction;
     private ToggleCommentAction toggleCommentAction;
     private InformationPresenter fInformationPresenter;
-    private IErlScanner erlScanner;
+    private ScannerService erlScanner;
 
     public abstract void reconcileNow();
 
@@ -69,14 +69,14 @@ public abstract class AbstractErlangEditor extends TextEditor {
 
     public abstract IErlModule getModule();
 
-    public IErlScanner getScanner() {
+    public ScannerService getScanner() {
         if (erlScanner == null) {
             erlScanner = getNewScanner();
         }
         return erlScanner;
     }
 
-    protected abstract IErlScanner getNewScanner();
+    protected abstract ScannerService getNewScanner();
 
     @Override
     protected void configureSourceViewerDecorationSupport(

@@ -25,13 +25,14 @@ import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlImport;
 import org.erlide.model.erlang.IErlMember;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlParser;
 import org.erlide.model.erlang.IErlRecordDef;
 import org.erlide.model.erlang.IErlTypespec;
 import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.internal.root.ErlMember;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.services.scanner.RuntimeHelper;
+import org.erlide.model.services.parsing.ErlideNoparse;
+import org.erlide.model.services.parsing.ParserService;
+import org.erlide.model.services.parsing.RuntimeHelper;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
@@ -49,7 +50,7 @@ import com.google.common.collect.Lists;
  * @author jakob
  * 
  */
-public final class ErlParser implements IErlParser {
+public final class ErlParser implements ParserService {
 
     private static final class SourceOffsetComparator implements
             Comparator<ISourceReference> {

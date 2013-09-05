@@ -31,7 +31,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.ErlToken;
-import org.erlide.model.services.scanner.ScannerException;
+import org.erlide.model.services.parsing.ScannerException;
 import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.ErlLogger;
@@ -325,7 +325,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
                 + endLine.getLength() - getOffset;
         final String str = document.get(getOffset, getLength);
         try {
-            tokens = ErlangEngine.getInstance().getScannerService()
+            tokens = ErlangEngine.getInstance().getSimpleScannerService()
                     .lightScanString(str, 0);
         } catch (final ScannerException e) {
         }

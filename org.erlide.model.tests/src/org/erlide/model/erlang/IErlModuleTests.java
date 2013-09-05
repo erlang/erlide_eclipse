@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
+import org.erlide.model.services.parsing.ScannerService;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ErlangIncludeFile;
 import org.erlide.test.support.ErlideTestUtils;
@@ -205,7 +206,7 @@ public class IErlModuleTests extends ErlModelTestBase {
     public void reconcileText() throws Exception {
         final ErlangFunction f_1 = new ErlangFunction("f", 1);
         final ErlangFunction abc_1 = new ErlangFunction("abc", 1);
-        final IErlScanner scanner = module.getScanner();
+        final ScannerService scanner = module.getScanner();
         try {
             module.open(null);
             final IErlFunction function = module.findFunction(f_1);
@@ -322,7 +323,7 @@ public class IErlModuleTests extends ErlModelTestBase {
     // ErlToken getScannerTokenAt(int offset);
     @Test
     public void getScannerTokenAt() throws Exception {
-        final IErlScanner scanner = module.getScanner();
+        final ScannerService scanner = module.getScanner();
         try {
             module.open(null);
             final ErlToken token = scanner.getTokenAt(-1);
@@ -420,7 +421,7 @@ public class IErlModuleTests extends ErlModelTestBase {
     public void resetCachesWorks() throws Exception {
         module.open(null);
         assertTrue(module.getChildCount() > 0);
-        final IErlScanner scanner = module.getScanner();
+        final ScannerService scanner = module.getScanner();
         try {
             module.resetAndCacheScannerAndParser(scanner.getText());
         } finally {

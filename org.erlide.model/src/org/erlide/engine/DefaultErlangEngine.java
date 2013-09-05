@@ -6,7 +6,7 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.ErlangBackendToolkit;
 import org.erlide.model.erlang.ErlangToolkit;
-import org.erlide.model.internal.erlang.ErlideScanner;
+import org.erlide.model.internal.erlang.ErlScanner;
 import org.erlide.model.internal.erlang.ModelInternalUtils;
 import org.erlide.model.internal.root.ErlModel;
 import org.erlide.model.root.IErlModel;
@@ -18,9 +18,11 @@ import org.erlide.model.services.edoc.EdocExportService;
 import org.erlide.model.services.edoc.ErlideEdocExport;
 import org.erlide.model.services.importer.ErlideImport;
 import org.erlide.model.services.importer.ImportService;
+import org.erlide.model.services.parsing.ErlideScanner;
+import org.erlide.model.services.parsing.ScannerService;
+import org.erlide.model.services.parsing.SimpleScannerService;
 import org.erlide.model.services.proclist.ErlideProclist;
 import org.erlide.model.services.proclist.ProclistService;
-import org.erlide.model.services.scanner.ScannerService;
 import org.erlide.model.services.search.ErlangXref;
 import org.erlide.model.services.search.ErlideDoc;
 import org.erlide.model.services.search.ErlideOpen;
@@ -114,11 +116,6 @@ public class DefaultErlangEngine implements IErlangEngine {
     }
 
     @Override
-    public ScannerService getScannerService() {
-        return new ErlideScanner(backend);
-    }
-
-    @Override
     public SearchServerService getSearchServerService() {
         return new ErlideSearchServer(backend);
     }
@@ -163,5 +160,15 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public ProclistService getProclistService() {
         return new ErlideProclist();
+    }
+
+    @Override
+    public ScannerService getScannerService(final String name) {
+        return new ErlScanner(backend, name);
+    }
+
+    @Override
+    public SimpleScannerService getSimpleScannerService() {
+        return new ErlideScanner(backend);
     }
 }

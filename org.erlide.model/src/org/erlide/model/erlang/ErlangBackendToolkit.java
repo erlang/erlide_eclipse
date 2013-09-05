@@ -2,6 +2,8 @@ package org.erlide.model.erlang;
 
 import org.erlide.model.internal.erlang.ErlParser;
 import org.erlide.model.internal.erlang.ErlScanner;
+import org.erlide.model.services.parsing.ParserService;
+import org.erlide.model.services.parsing.ScannerService;
 import org.erlide.runtime.api.IRpcSite;
 
 public class ErlangBackendToolkit implements ErlangToolkit {
@@ -13,14 +15,14 @@ public class ErlangBackendToolkit implements ErlangToolkit {
     }
 
     @Override
-    public IErlParser createParser() {
+    public ParserService getParserService() {
         return new ErlParser(backend);
     }
 
     @Override
-    public IErlScanner createScanner(final String scannerName,
+    public ScannerService getScannerService(final String scannerName,
             final String initialText, final String path, final boolean logging) {
-        final ErlScanner scanner = new ErlScanner(scannerName);
+        final ErlScanner scanner = new ErlScanner(backend, scannerName);
         scanner.initialScan(initialText, path, logging);
         return scanner;
     }

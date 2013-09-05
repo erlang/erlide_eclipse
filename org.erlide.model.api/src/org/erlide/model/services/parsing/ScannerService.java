@@ -1,8 +1,9 @@
-package org.erlide.model.erlang;
+package org.erlide.model.services.parsing;
 
+import org.erlide.model.erlang.ErlToken;
 import org.erlide.util.IDisposable;
 
-public interface IErlScanner extends IDisposable {
+public interface ScannerService extends IDisposable {
 
     String getName();
 

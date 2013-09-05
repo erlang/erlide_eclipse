@@ -36,9 +36,7 @@ import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlImport;
 import org.erlide.model.erlang.IErlMember;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlParser;
 import org.erlide.model.erlang.IErlPreprocessorDef;
-import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.erlang.IErlTypespec;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
@@ -52,6 +50,8 @@ import org.erlide.model.root.IErlExternal;
 import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.services.parsing.ParserService;
+import org.erlide.model.services.parsing.ScannerService;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ErlangIncludeFile;
 import org.erlide.model.util.ModelUtilService;
@@ -79,7 +79,7 @@ public class ErlModule extends Openable implements IErlModule {
     private boolean parsed;
     private final String scannerName;
     private final Collection<IErlComment> comments;
-    private IErlScanner scanner;
+    private ScannerService scanner;
     private final String encoding;
 
     private final ModelUtilService modelUtilService;
@@ -117,7 +117,7 @@ public class ErlModule extends Openable implements IErlModule {
     public boolean internalBuildStructure(final IProgressMonitor pm) {
         final String text = getInitialText();
         if (text != null) {
-            final IErlParser parser = ErlangEngine.getInstance().getModel()
+            final ParserService parser = ErlangEngine.getInstance().getModel()
                     .getParser();
             parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
                     text, true);
@@ -514,7 +514,7 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     @Override
-    public IErlScanner getScanner() {
+    public ScannerService getScanner() {
         if (scanner == null) {
             scanner = getNewScanner();
         } else {
@@ -531,11 +531,11 @@ public class ErlModule extends Openable implements IErlModule {
         scanner = getNewScanner();
     }
 
-    private IErlScanner getNewScanner() {
+    private ScannerService getNewScanner() {
         final String filePath = getFilePath();
         final String text = getInitialText();
         return ErlangEngine.getInstance().getModel().getToolkit()
-                .createScanner(scannerName, text, filePath, logging);
+                .getScannerService(scannerName, text, filePath, logging);
     }
 
     @Override

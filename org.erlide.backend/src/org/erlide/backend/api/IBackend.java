@@ -15,28 +15,28 @@ public interface IBackend extends IShutdownCallback, IDisposable {
 
     String getName();
 
-    void initialize(Collection<ICodeBundle> collection);
-
     BackendData getData();
 
+    RuntimeInfo getRuntimeInfo();
+
     IRpcSite getRpcSite();
+
+    IErlRuntime getRuntime();
+
+    boolean isRunning();
+
+    IBackendShell getShell(String string);
+
+    void initialize(Collection<ICodeBundle> collection);
+
+    void input(final String s) throws IOException;
 
     void registerCodeBundle(final ICodeBundle bundle);
 
     void unregisterCodeBundle(final ICodeBundle bundle);
 
-    void input(final String s) throws IOException;
-
     void addProjectPath(final IErlProject project);
 
     void removeProjectPath(final IErlProject project);
-
-    RuntimeInfo getRuntimeInfo();
-
-    boolean isRunning();
-
-    IErlRuntime getRuntime();
-
-    IBackendShell getShell(String string);
 
 }

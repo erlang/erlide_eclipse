@@ -14,6 +14,8 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
+import org.erlide.model.services.parsing.InternalScanner;
+import org.erlide.model.services.parsing.ParserService;
 import org.erlide.model.util.TestingSupport;
 import org.junit.After;
 import org.junit.Before;
@@ -47,19 +49,21 @@ public class ParsingTests {
 
     private boolean parse(final String s) {
         final String scannerModuleName = module.getScannerName();
-        ErlangEngine.getInstance().getScannerService()
-                .create(scannerModuleName);
+        // XXX implementation detail - how to do it better?
+        final InternalScanner internalScanner = (InternalScanner) ErlangEngine
+                .getInstance().getSimpleScannerService();
+        internalScanner.create(scannerModuleName);
         boolean result = false;
         try {
-            ErlangEngine.getInstance().getScannerService()
-                    .initialScan(scannerModuleName, "", s, false);
-            final IErlParser parser = ErlangEngine.getInstance().getModel()
+            ErlangEngine.getInstance().getScannerService(scannerModuleName)
+                    .initialScan("", s, false);
+            final ParserService parser = ErlangEngine.getInstance().getModel()
                     .getParser();
             result = parser.parse(module, scannerModuleName, false, "", s,
                     false);
         } finally {
-            ErlangEngine.getInstance().getScannerService()
-                    .dispose(scannerModuleName);
+            ErlangEngine.getInstance().getScannerService(scannerModuleName)
+                    .dispose();
         }
         return result;
     }

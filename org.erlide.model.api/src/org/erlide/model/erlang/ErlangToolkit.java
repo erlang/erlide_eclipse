@@ -1,10 +1,13 @@
 package org.erlide.model.erlang;
 
+import org.erlide.model.services.parsing.ParserService;
+import org.erlide.model.services.parsing.ScannerService;
+
 public interface ErlangToolkit {
 
-    IErlParser createParser();
+    ParserService getParserService();
 
-    IErlScanner createScanner(String scannerName, String initialText,
+    ScannerService getScannerService(String scannerName, String initialText,
             String path, boolean logging);
 
 }

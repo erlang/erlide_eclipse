@@ -51,7 +51,6 @@ import org.erlide.model.erlang.ErlangToolkit;
 import org.erlide.model.erlang.FunctionRef;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlParser;
 import org.erlide.model.internal.erlang.ErlModule;
 import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
@@ -61,6 +60,7 @@ import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlModelChangeListener;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.services.parsing.ParserService;
 import org.erlide.model.util.CommonUtils;
 import org.erlide.model.util.ElementChangedEvent;
 import org.erlide.model.util.ErlangFunction;
@@ -108,7 +108,7 @@ public class ErlModel extends Openable implements IErlModel {
 
     OtpErlangList fCachedPathVars = null;
 
-    private final IErlParser parser;
+    private final ParserService parser;
 
     private final ErlangToolkit toolkit;
 
@@ -123,7 +123,7 @@ public class ErlModel extends Openable implements IErlModel {
     public ErlModel(final ErlangToolkit toolkit) {
         super(null, ""); //$NON-NLS-1$
         this.toolkit = toolkit;
-        parser = toolkit.createParser();
+        parser = toolkit.getParserService();
         fPathVariableChangeListener = new PathVariableChangeListener();
         setupWorkspaceListeners();
         deltaManager = new ErlModelDeltaManager(this);
@@ -928,7 +928,7 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     @Override
-    public IErlParser getParser() {
+    public ParserService getParser() {
         return parser;
     }
 

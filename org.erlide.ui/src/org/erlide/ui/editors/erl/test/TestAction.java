@@ -17,6 +17,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.services.parsing.InternalScanner;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
@@ -50,9 +51,12 @@ public class TestAction extends TextEditorAction {
                     .getDocument(textEditor.getEditorInput());
             final String text = document.get();
             final String scannerName = module.getScannerName();
+            // XXX implementation detail - how to do it better?
+            final InternalScanner internalScanner = (InternalScanner) ErlangEngine
+                    .getInstance().getSimpleScannerService();
+            final OtpErlangObject checkAll = internalScanner.checkAll(
+                    scannerName, text, true);
             String s;
-            final OtpErlangObject checkAll = ErlangEngine.getInstance()
-                    .getScannerService().checkAll(scannerName, text, true);
             if (checkAll instanceof OtpErlangTuple) {
                 final OtpErlangTuple t = (OtpErlangTuple) checkAll;
                 s = Util.stringValue(t.elementAt(0));
@@ -65,16 +69,13 @@ public class TestAction extends TextEditorAction {
             }
             ErlLogger.debug("%s", s);
             final String scannerText = ErlangEngine.getInstance()
-                    .getScannerService().getText(scannerName);
+                    .getScannerService(scannerName).getText();
             dumpText(scannerText, "/tmp/scanner.txt");
             dumpText(text, "/tmp/editor.txt");
             if (textEditor instanceof ErlangEditor) {
                 final ErlangEditor editor = (ErlangEditor) textEditor;
-                ErlangEngine
-                        .getInstance()
-                        .getScannerService()
-                        .dumpLog(editor.getModule().getScannerName(),
-                                "/tmp/x.scanner.log");
+                internalScanner.dumpLog(editor.getModule().getScannerName(),
+                        "/tmp/x.scanner.log");
                 editor.dumpReconcilerLog("/tmp/x.reconciler.log");
             }
             if (module != null) {

@@ -1,4 +1,4 @@
-package org.erlide.model.services.scanner;
+package org.erlide.model.services.parsing;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

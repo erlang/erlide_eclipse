@@ -10,50 +10,50 @@
  *******************************************************************************/
 package org.erlide.model.internal.erlang;
 
-import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.ErlToken;
-import org.erlide.model.erlang.IErlScanner;
+import org.erlide.model.services.parsing.ErlideScanner;
+import org.erlide.model.services.parsing.ScannerService;
+import org.erlide.runtime.api.IRpcSite;
 
 /**
  * Erlang syntax scanner
  */
-public class ErlScanner implements IErlScanner {
+public class ErlScanner implements ScannerService {
     private final String name;
+    private final ErlideScanner scannerService;
 
-    public ErlScanner(final String name) {
+    public ErlScanner(final IRpcSite backend, final String name) {
         this.name = name;
-        ErlangEngine.getInstance().getScannerService().create(name);
+        scannerService = new ErlideScanner(backend);
+        scannerService.create(name);
     }
 
     @Override
     public void initialScan(final String initialText, final String path,
             final boolean logging) {
         final String pathNotNull = path == null ? "" : path;
-        ErlangEngine.getInstance().getScannerService()
-                .initialScan(name, pathNotNull, initialText, logging);
+        scannerService.initialScan(name, pathNotNull, initialText, logging);
     }
 
     @Override
     public void dispose() {
-        ErlangEngine.getInstance().getScannerService().dispose(name);
+        scannerService.dispose(name);
     }
 
     @Override
     public void replaceText(final int offset, final int removeLength,
             final String newText) {
-        ErlangEngine.getInstance().getScannerService()
-                .replaceText(name, offset, removeLength, newText);
+        scannerService.replaceText(name, offset, removeLength, newText);
     }
 
     @Override
     public ErlToken getTokenAt(final int offset) {
-        return ErlangEngine.getInstance().getScannerService()
-                .getTokenAt(name, offset);
+        return scannerService.getTokenAt(name, offset);
     }
 
     @Override
     public String getText() {
-        return ErlangEngine.getInstance().getScannerService().getText(name);
+        return scannerService.getText(name);
     }
 
     @Override
@@ -63,6 +63,7 @@ public class ErlScanner implements IErlScanner {
 
     @Override
     public void addref() {
-        ErlangEngine.getInstance().getScannerService().addref(name);
+        scannerService.addref(name);
     }
+
 }

@@ -8,9 +8,11 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.model.erlang;
+package org.erlide.model.services.parsing;
 
-public interface IErlParserProblem extends IErlMember {
+import org.erlide.model.erlang.IErlMember;
+
+public interface IParserProblem extends IErlMember {
 
     String getMessage();
 

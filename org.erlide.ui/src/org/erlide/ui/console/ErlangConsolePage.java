@@ -77,7 +77,7 @@ import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.erlide.backend.api.IBackend;
-import org.erlide.model.services.scanner.RuntimeHelper;
+import org.erlide.model.services.parsing.RuntimeHelper;
 import org.erlide.runtime.api.ParserException;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.ui.editors.erl.ColorManager;

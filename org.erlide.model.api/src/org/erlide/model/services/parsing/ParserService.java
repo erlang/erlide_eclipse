@@ -1,6 +1,8 @@
-package org.erlide.model.erlang;
+package org.erlide.model.services.parsing;
 
-public interface IErlParser {
+import org.erlide.model.erlang.IErlModule;
+
+public interface ParserService {
 
     public abstract boolean parse(final IErlModule module,
             final String scannerName, final boolean initialParse,
