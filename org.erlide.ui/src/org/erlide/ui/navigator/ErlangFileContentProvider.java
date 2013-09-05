@@ -19,15 +19,15 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.navigator.SaveablesProvider;
 import org.eclipse.ui.progress.UIJob;
+import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.IOpenable;
-import org.erlide.model.IParent;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.root.IErlModelChangeListener;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.IOpenable;
+import org.erlide.engine.IParent;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlModelChangeListener;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
 
 public class ErlangFileContentProvider implements ITreeContentProvider,

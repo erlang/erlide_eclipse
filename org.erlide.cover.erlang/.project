@@ -26,7 +26,7 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.erlide.model.services.builder.DialyzerBuilder</name>
+			<name>org.erlide.engine.services.builder.DialyzerBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>

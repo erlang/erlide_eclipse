@@ -9,7 +9,7 @@ import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.erlide.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlElement;
 
 /**
  * A label provider for ResourceDecorator objects. It creates labels with a

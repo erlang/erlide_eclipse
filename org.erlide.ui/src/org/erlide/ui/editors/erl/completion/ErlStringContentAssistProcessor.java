@@ -8,8 +8,8 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlProject;
 
 public class ErlStringContentAssistProcessor extends
         AbstractErlContentAssistProcessor {

@@ -34,11 +34,11 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.FunctionRef;
-import org.erlide.model.erlang.IErlFunction;
-import org.erlide.model.services.search.XrefService;
+import org.erlide.engine.model.erlang.FunctionRef;
+import org.erlide.engine.model.erlang.IErlFunction;
+import org.erlide.engine.services.search.XrefService;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.util.ErlLogger;
 

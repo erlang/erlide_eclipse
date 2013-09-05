@@ -3,7 +3,7 @@ package org.erlide.ui.editors.util;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.ide.FileStoreEditorInput;
-import org.erlide.model.erlang.IErlModule;
+import org.erlide.engine.model.erlang.IErlModule;
 
 public class ErlangExternalEditorInput extends FileStoreEditorInput implements
         IErlangExternalEditorInput {

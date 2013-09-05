@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: erlide model
 Bundle-SymbolicName: org.erlide.model;singleton:=true
 Bundle-Version: 0.20.6.qualifier
-Bundle-Activator: org.erlide.model.ModelPlugin
+Bundle-Activator: org.erlide.engine.internal.ModelPlugin
 Bundle-Vendor: erlide.org project
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.6.1",
@@ -14,14 +14,12 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.libs;bundle-version="1.10.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.erlide.engine;x-internal:=true,
- org.erlide.model;x-internal:=true,
- org.erlide.model.erlang;x-internal:=true,
- org.erlide.model.internal.erlang;x-internal:=true,
- org.erlide.model.internal.root;x-internal:=true,
- org.erlide.model.services.cleanup;x-internal:=true,
- org.erlide.model.services.codeassist;x-internal:=true,
- org.erlide.model.services.parsing;x-internal:=true,
- org.erlide.model.services.search;x-internal:=true,
- org.erlide.model.services.text;x-internal:=true,
- org.erlide.model.util;x-internal:=true
+Export-Package: org.erlide.engine.internal;x-internal:=true,
+ org.erlide.engine.internal.erlang;x-internal:=true,
+ org.erlide.engine.internal.root;x-internal:=true,
+ org.erlide.engine.internal.services.cleanup;x-internal:=true,
+ org.erlide.engine.internal.services.codeassist;x-internal:=true,
+ org.erlide.engine.internal.services.parsing;x-internal:=true,
+ org.erlide.engine.internal.services.search;x-internal:=true,
+ org.erlide.engine.internal.services.text;x-internal:=true,
+ org.erlide.engine.internal.util;x-internal:=true

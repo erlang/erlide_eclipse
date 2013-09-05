@@ -12,8 +12,8 @@ package org.erlide.wrangler.refactoring.selection;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ISelection;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlElement;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElement;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 

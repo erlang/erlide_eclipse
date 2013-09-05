@@ -49,7 +49,7 @@ import org.erlide.backend.console.BackendShellManager;
 import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.model.ErlangDebugNode;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.runtime.api.IErlRuntime;

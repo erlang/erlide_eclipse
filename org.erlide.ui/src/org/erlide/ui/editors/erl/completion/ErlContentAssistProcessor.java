@@ -18,8 +18,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.services.IDisposable;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
 
 public class ErlContentAssistProcessor extends

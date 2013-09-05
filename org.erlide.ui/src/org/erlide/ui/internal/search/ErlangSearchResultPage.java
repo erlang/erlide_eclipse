@@ -32,7 +32,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.erlide.core.builder.MarkerUtils;
-import org.erlide.model.erlang.IErlModule;
+import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;

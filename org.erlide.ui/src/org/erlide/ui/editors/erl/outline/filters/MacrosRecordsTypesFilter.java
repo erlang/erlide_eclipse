@@ -1,8 +1,8 @@
 package org.erlide.ui.editors.erl.outline.filters;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.model.erlang.IErlPreprocessorDef;
-import org.erlide.model.erlang.IErlTypespec;
+import org.erlide.engine.model.erlang.IErlPreprocessorDef;
+import org.erlide.engine.model.erlang.IErlTypespec;
 
 public class MacrosRecordsTypesFilter extends ErlangViewerFilter {
 

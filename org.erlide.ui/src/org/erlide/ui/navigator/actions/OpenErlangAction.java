@@ -14,8 +14,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.OpenResourceAction;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlExternal;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.util.ErlLogger;
 

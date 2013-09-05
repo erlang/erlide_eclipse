@@ -14,12 +14,12 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
 import org.eclipse.swt.graphics.Image;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlFunction;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.util.ErlangFunction;
-import org.erlide.model.util.ResourceUtil;
+import org.erlide.engine.ErlModelException;
+import org.erlide.engine.model.erlang.IErlFunction;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.ErlElementKind;
+import org.erlide.engine.util.ErlangFunction;
+import org.erlide.engine.util.ResourceUtil;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
 public class SearchResultLabelProvider extends LabelProvider implements

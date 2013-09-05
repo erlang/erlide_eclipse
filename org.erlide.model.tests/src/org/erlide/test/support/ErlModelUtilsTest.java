@@ -1,6 +1,6 @@
 package org.erlide.test.support;
 
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.model.root.IErlProject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

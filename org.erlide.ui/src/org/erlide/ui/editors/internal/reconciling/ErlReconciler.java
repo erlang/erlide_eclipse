@@ -22,7 +22,7 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.erlang.IErlModule;
+import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.util.ErlLogger;
 

@@ -16,8 +16,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.services.parsing.ScannerService;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.util.ErlLogger;
 

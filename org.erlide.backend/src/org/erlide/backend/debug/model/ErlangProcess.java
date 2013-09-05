@@ -27,7 +27,7 @@ import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.debug.ErlangLineBreakpoint;
 import org.erlide.backend.debug.ErlideDebug;
-import org.erlide.model.util.ErlangFunction;
+import org.erlide.engine.util.ErlangFunction;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlangFunctionCall;
 

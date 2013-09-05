@@ -1,6 +1,5 @@
 package org.erlide.engine;
 
-import org.erlide.model.TextChange;
 
 public interface IEngineInput {
 

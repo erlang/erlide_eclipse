@@ -13,9 +13,9 @@ package org.erlide.ui.internal.search;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.core.search.SearchCoreUtil;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.services.search.ErlSearchScope;
-import org.erlide.model.services.search.LimitTo;
+import org.erlide.engine.ErlModelException;
+import org.erlide.engine.services.search.ErlSearchScope;
+import org.erlide.engine.services.search.LimitTo;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 
 /**

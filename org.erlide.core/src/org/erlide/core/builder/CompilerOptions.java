@@ -14,7 +14,7 @@ import org.erlide.core.builder.CompilerOption.ModuleOption;
 import org.erlide.core.builder.CompilerOption.PathsOption;
 import org.erlide.core.builder.CompilerOption.RawOption;
 import org.erlide.core.builder.CompilerOption.WarningOption;
-import org.erlide.model.util.PreferencesHelper;
+import org.erlide.engine.util.PreferencesHelper;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.TermParserException;

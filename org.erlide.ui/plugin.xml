@@ -1370,20 +1370,20 @@
                   </test>
                </and>
                <instanceof
-                     value="org.erlide.model.root.IErlElement">
+                     value="org.erlide.engine.model.root.IErlElement">
                </instanceof>
                <instanceof
                      value="org.eclipse.core.resources.IFolder">
                </instanceof>
                <adapt
-                     type="org.erlide.model.erlang.IErlModule">
+                     type="org.erlide.engine.model.erlang.IErlModule">
                </adapt>
             </or>
          </triggerPoints>
          <possibleChildren>
             <or>
                <instanceof
-                     value="org.erlide.model.root.IErlElement">
+                     value="org.erlide.engine.model.root.IErlElement">
                </instanceof>
             </or>
          </possibleChildren>
@@ -1416,7 +1416,7 @@
          <triggerPoints>
             <or>
                <instanceof
-                     value="org.erlide.model.root.IErlElement">
+                     value="org.erlide.engine.model.root.IErlElement">
                </instanceof>
                <and>
                   <instanceof
@@ -1432,7 +1432,7 @@
          <possibleChildren>
             <or>
                <instanceof
-                     value="org.erlide.model.root.IErlElement">
+                     value="org.erlide.engine.model.root.IErlElement">
                </instanceof>
             </or>
          </possibleChildren>
@@ -1487,7 +1487,7 @@
                      type="org.eclipse.core.resources.IFile">
                </adapt>
                <instanceof
-                     value="org.erlide.model.erlang.IErlModule">
+                     value="org.erlide.engine.model.erlang.IErlModule">
                </instanceof>
             </or>
          </selectionEnablement>
@@ -1600,7 +1600,7 @@
             adaptableType="org.eclipse.ui.IEditorInput"
             class="org.erlide.ui.util.EditorInputToModuleAdapterFactory">
          <adapter
-               type="org.erlide.model.root.IErlElement">
+               type="org.erlide.engine.model.root.IErlElement">
          </adapter>
       </factory>
    </extension>
@@ -1670,7 +1670,7 @@
                         ifEmpty="false"
                         operator="and">
                      <adapt
-                           type="org.erlide.model.root.IErlElement">
+                           type="org.erlide.engine.model.root.IErlElement">
                      </adapt>
                   </iterate>
                </with>
