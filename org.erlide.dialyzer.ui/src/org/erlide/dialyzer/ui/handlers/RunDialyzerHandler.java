@@ -1,4 +1,4 @@
-package org.erlide.ui.handlers;
+package org.erlide.dialyzer.ui.handlers;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
@@ -27,8 +27,8 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
-import org.erlide.core.builder.DialyzerUtils;
-import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
+import org.erlide.dialyzer.builder.DialyzerUtils;
+import org.erlide.dialyzer.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.dialyzer.ui.Activator;
 import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;

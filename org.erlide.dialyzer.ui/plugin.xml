@@ -4,11 +4,11 @@
 <extension
        point="org.eclipse.ui.handlers">
      <handler
-          class="org.erlide.ui.handlers.RunDialyzerHandler"
+          class="org.erlide.dialyzer.ui.handlers.RunDialyzerHandler"
           commandId="org.erlide.ui.commands.runDialyzer">
     </handler>
     <handler
-          class="org.erlide.ui.handlers.RemoveDialyzerWarningsHandler"
+          class="org.erlide.dialyzer.ui.handlers.RemoveDialyzerWarningsHandler"
           commandId="org.erlide.ui.command.removeDialyzerWarnings">
     </handler>
 </extension>

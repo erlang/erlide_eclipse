@@ -1,4 +1,4 @@
-package org.erlide.ui.handlers;
+package org.erlide.dialyzer.ui.handlers;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -8,7 +8,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.erlide.core.builder.DialyzerMarkerUtils;
+import org.erlide.dialyzer.builder.DialyzerMarkerUtils;
 
 public class RemoveDialyzerWarningsHandler extends AbstractHandler {
 

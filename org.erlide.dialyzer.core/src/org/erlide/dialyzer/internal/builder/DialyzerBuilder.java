@@ -1,4 +1,4 @@
-package org.erlide.core.internal.builder;
+package org.erlide.dialyzer.internal.builder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -12,10 +12,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
-import org.erlide.core.builder.DialyzerMarkerUtils;
-import org.erlide.core.builder.DialyzerPreferences;
-import org.erlide.core.builder.DialyzerUtils;
-import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
+import org.erlide.dialyzer.builder.DialyzerMarkerUtils;
+import org.erlide.dialyzer.builder.DialyzerPreferences;
+import org.erlide.dialyzer.builder.DialyzerUtils;
+import org.erlide.dialyzer.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElementLocator;

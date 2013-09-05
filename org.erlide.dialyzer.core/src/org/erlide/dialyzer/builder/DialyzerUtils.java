@@ -1,4 +1,4 @@
-package org.erlide.core.builder;
+package org.erlide.dialyzer.builder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
+import org.erlide.core.builder.BuilderHelper;
 import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.IErlModule;

@@ -1,4 +1,4 @@
-package org.erlide.core.internal.builder;
+package org.erlide.dialyzer.internal.builder;
 
 import org.eclipse.osgi.util.NLS;
 

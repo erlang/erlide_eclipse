@@ -1,4 +1,4 @@
-package org.erlide.core.builder;
+package org.erlide.dialyzer.builder;
 
 import java.util.Collection;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.erlide.core.builder;
+package org.erlide.dialyzer.builder;
 
 public class DialyzerPreferencesConstants {
 
