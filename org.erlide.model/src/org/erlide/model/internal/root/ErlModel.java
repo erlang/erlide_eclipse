@@ -60,7 +60,7 @@ import org.erlide.model.root.IErlFolder;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlModelChangeListener;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.services.scanner.ParserService;
+import org.erlide.model.services.parsing.ParserService;
 import org.erlide.model.util.CommonUtils;
 import org.erlide.model.util.ElementChangedEvent;
 import org.erlide.model.util.ErlangFunction;

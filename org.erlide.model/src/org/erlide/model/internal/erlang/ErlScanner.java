@@ -11,8 +11,8 @@
 package org.erlide.model.internal.erlang;
 
 import org.erlide.model.erlang.ErlToken;
-import org.erlide.model.services.parser.ErlideScanner;
-import org.erlide.model.services.scanner.ScannerService;
+import org.erlide.model.services.parsing.ErlideScanner;
+import org.erlide.model.services.parsing.ScannerService;
 import org.erlide.runtime.api.IRpcSite;
 
 /**

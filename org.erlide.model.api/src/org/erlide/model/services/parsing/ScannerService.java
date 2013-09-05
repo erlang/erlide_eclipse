@@ -1,4 +1,4 @@
-package org.erlide.model.services.scanner;
+package org.erlide.model.services.parsing;
 
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.util.IDisposable;

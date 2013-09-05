@@ -30,7 +30,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.services.scanner.ScannerService;
+import org.erlide.model.services.parsing.ScannerService;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
 import org.erlide.ui.editors.erl.completion.ErlStringContentAssistProcessor;

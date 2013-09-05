@@ -25,7 +25,7 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.services.scanner.ScannerService;
+import org.erlide.model.services.parsing.ScannerService;
 import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.backend.UserRefactoringsManager;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;

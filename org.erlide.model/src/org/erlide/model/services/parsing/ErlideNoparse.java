@@ -1,4 +1,4 @@
-package org.erlide.model.services.parser;
+package org.erlide.model.services.parsing;
 
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlFunction;

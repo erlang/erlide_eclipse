@@ -1,4 +1,4 @@
-package org.erlide.model.services.parser;
+package org.erlide.model.services.parsing;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -10,9 +10,9 @@ import java.util.List;
 
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.ErlToken;
-import org.erlide.model.services.scanner.InternalScanner;
-import org.erlide.model.services.scanner.ScannerException;
-import org.erlide.model.services.scanner.SimpleScannerService;
+import org.erlide.model.services.parsing.InternalScanner;
+import org.erlide.model.services.parsing.ScannerException;
+import org.erlide.model.services.parsing.SimpleScannerService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;

@@ -2,8 +2,8 @@ package org.erlide.model.erlang;
 
 import org.erlide.model.internal.erlang.ErlParser;
 import org.erlide.model.internal.erlang.ErlScanner;
-import org.erlide.model.services.scanner.ParserService;
-import org.erlide.model.services.scanner.ScannerService;
+import org.erlide.model.services.parsing.ParserService;
+import org.erlide.model.services.parsing.ScannerService;
 import org.erlide.runtime.api.IRpcSite;
 
 public class ErlangBackendToolkit implements ErlangToolkit {

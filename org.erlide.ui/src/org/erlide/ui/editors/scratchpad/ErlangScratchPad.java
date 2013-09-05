@@ -21,7 +21,7 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.services.scanner.ScannerService;
+import org.erlide.model.services.parsing.ScannerService;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;

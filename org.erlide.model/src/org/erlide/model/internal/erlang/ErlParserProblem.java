@@ -15,7 +15,7 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.internal.root.ErlMember;
 import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.services.scanner.IParserProblem;
+import org.erlide.model.services.parsing.IParserProblem;
 
 public class ErlParserProblem extends ErlMember implements IParserProblem {
 

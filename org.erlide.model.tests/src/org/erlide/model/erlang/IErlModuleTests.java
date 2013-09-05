@@ -16,7 +16,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
-import org.erlide.model.services.scanner.ScannerService;
+import org.erlide.model.services.parsing.ScannerService;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ErlangIncludeFile;
 import org.erlide.test.support.ErlideTestUtils;

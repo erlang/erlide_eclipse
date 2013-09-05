@@ -1,4 +1,4 @@
-package org.erlide.model.services.scanner;
+package org.erlide.model.services.parsing;
 
 public class ScannerException extends Exception {
 

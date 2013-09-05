@@ -24,7 +24,7 @@ import org.erlide.model.IParent;
 import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.ISourceUnit;
-import org.erlide.model.services.scanner.ScannerService;
+import org.erlide.model.services.parsing.ScannerService;
 import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ErlangIncludeFile;
 

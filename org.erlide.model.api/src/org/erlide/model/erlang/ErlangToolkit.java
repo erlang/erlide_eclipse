@@ -1,7 +1,7 @@
 package org.erlide.model.erlang;
 
-import org.erlide.model.services.scanner.ParserService;
-import org.erlide.model.services.scanner.ScannerService;
+import org.erlide.model.services.parsing.ParserService;
+import org.erlide.model.services.parsing.ScannerService;
 
 public interface ErlangToolkit {
 
