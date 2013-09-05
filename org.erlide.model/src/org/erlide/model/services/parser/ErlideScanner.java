@@ -126,12 +126,6 @@ public class ErlideScanner implements ScannerService {
         }
     }
 
-    /**
-     * @param string
-     * @param offset
-     * @return
-     * @throws BackendException
-     */
     @Override
     public List<ErlToken> lightScanString(final String string, final int offset)
             throws ScannerException {
