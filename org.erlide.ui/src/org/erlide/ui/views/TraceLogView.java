@@ -30,7 +30,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.model.erlang.IErlModule;
+import org.erlide.engine.model.erlang.IErlModule;
 
 /**
  * This sample class demonstrates how to plug-in a new workbench view. The view

@@ -1,8 +1,8 @@
 package org.erlide.ui.editors.erl.outline.filters;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.model.erlang.IErlAttribute;
-import org.erlide.model.erlang.IErlImportExport;
+import org.erlide.engine.model.erlang.IErlAttribute;
+import org.erlide.engine.model.erlang.IErlImportExport;
 
 public class AttributesFilter extends ErlangViewerFilter {
 

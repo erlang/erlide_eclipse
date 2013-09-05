@@ -47,10 +47,10 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.builder.CompilerOption;
 import org.erlide.core.builder.CompilerOption.PathsOption;
 import org.erlide.core.builder.CompilerOptions;
+import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 

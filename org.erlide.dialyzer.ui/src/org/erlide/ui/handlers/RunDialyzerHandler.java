@@ -30,11 +30,11 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.core.builder.DialyzerUtils;
 import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.dialyzer.ui.Activator;
+import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
 

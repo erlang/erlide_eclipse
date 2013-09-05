@@ -39,7 +39,7 @@ import org.erlide.backend.debug.DebuggerEventDaemon;
 import org.erlide.backend.debug.ErlangLineBreakpoint;
 import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.IErlangDebugNode;
-import org.erlide.model.ErlModelException;
+import org.erlide.engine.ErlModelException;
 import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpErlang;

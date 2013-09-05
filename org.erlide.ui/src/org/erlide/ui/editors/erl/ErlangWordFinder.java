@@ -2,8 +2,8 @@ package org.erlide.ui.editors.erl;
 
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
-import org.erlide.model.erlang.ErlToken;
-import org.erlide.model.erlang.IErlModule;
+import org.erlide.engine.model.erlang.ErlToken;
+import org.erlide.engine.model.erlang.IErlModule;
 
 public final class ErlangWordFinder {
 

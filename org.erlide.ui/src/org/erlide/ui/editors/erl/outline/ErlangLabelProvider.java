@@ -24,7 +24,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.erlide.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlElement;
 
 public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 

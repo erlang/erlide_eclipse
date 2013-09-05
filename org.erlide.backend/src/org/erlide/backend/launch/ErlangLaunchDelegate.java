@@ -29,7 +29,7 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
-import org.erlide.model.BeamLocator;
+import org.erlide.engine.BeamLocator;
 import org.erlide.runtime.ErlRuntimeFactory;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.runtime.api.IErlRuntime;

@@ -1,6 +1,6 @@
 package org.erlide.backend.api;
 
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.model.root.IErlProject;
 
 public interface IProjectCodeLoader {
 

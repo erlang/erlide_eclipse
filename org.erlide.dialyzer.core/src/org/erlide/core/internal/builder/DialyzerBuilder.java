@@ -17,9 +17,9 @@ import org.erlide.core.builder.DialyzerPreferences;
 import org.erlide.core.builder.DialyzerUtils;
 import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlElementLocator;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 

@@ -7,7 +7,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.erlang.IErlFunction;
+import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.tracing.core.TraceBackend;
 import org.erlide.tracing.core.mvc.model.TracePattern;
 

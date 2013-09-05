@@ -11,9 +11,9 @@ package org.erlide.ui.editors.erl.outline;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.erlide.model.erlang.IErlFunction;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlElement;
+import org.erlide.engine.model.erlang.IErlFunction;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElement;
 
 /**
  * 

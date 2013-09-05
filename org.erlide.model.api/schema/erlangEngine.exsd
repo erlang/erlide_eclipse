@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.erlide.model.root.IErlangEngine"/>
+                  <meta.attribute kind="java" basedOn=":org.erlide.engine.model.root.IErlangEngine"/>
                </appinfo>
             </annotation>
          </attribute>

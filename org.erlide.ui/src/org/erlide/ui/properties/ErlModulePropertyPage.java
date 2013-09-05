@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.erlang.IErlModule;
+import org.erlide.engine.model.erlang.IErlModule;
 
 public class ErlModulePropertyPage extends PropertyPage {
 

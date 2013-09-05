@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.root.IErlProject;
-import org.erlide.model.root.ProjectPreferencesConstants;
+import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.util.ErlLogger;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;

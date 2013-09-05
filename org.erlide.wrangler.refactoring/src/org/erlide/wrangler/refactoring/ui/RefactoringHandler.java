@@ -29,7 +29,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.erlang.IErlFunctionClause;
+import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.ErlUtils;

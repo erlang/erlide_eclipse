@@ -16,8 +16,8 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IToken;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.erlang.ErlToken;
-import org.erlide.model.services.parsing.ScannerException;
+import org.erlide.engine.model.erlang.ErlToken;
+import org.erlide.engine.services.parsing.ScannerException;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.util.ErlLogger;
 

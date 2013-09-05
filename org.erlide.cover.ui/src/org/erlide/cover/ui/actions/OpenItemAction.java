@@ -21,11 +21,11 @@ import org.erlide.cover.ui.Activator;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.StatsTreeObject;
+import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlFunction;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.util.ErlangFunction;
+import org.erlide.engine.model.erlang.IErlFunction;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.util.ErlangFunction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.util.ErlLogger;
 

@@ -1,8 +1,8 @@
 package org.erlide.ui.editors.scratchpad;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.EditorConfiguration;
 import org.erlide.ui.util.IColorManager;

@@ -19,7 +19,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.api.IPluginCodeLoader;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.shell.BackendShellListener;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.ui.actions.SelectionDispatchAction;

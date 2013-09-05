@@ -8,11 +8,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
+import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlElementLocator;
-import org.erlide.model.root.IErlModel;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlModel;
 
 public class ErlangExternalEditorInputFactory implements IElementFactory {
 

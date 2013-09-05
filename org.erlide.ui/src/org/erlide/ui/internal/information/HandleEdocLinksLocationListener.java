@@ -6,7 +6,7 @@ import org.eclipse.swt.browser.LocationListener;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.model.services.search.OpenResult;
+import org.erlide.engine.services.search.OpenResult;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;

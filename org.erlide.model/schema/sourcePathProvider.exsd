@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.erlide.model" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.erlide.engine" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.erlide.model" id="sourcePathProvider" name="sourcePathProvider"/>
+         <meta.schema plugin="org.erlide.engine" id="sourcePathProvider" name="sourcePathProvider"/>
       </appinfo>
       <documentation>
          Points to a class that provides a list of directories (inside the project) to be included in the Erlang model as source folders, but ONLY for the purpose of extra support in the IDE (navigation, completion, etc). The files in these directories aren&apos;t compiled.
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.erlide.model.util.SourcePathProvider"/>
+                  <meta.attribute kind="java" basedOn=":org.erlide.engine.util.SourcePathProvider"/>
                </appinfo>
             </annotation>
          </attribute>
