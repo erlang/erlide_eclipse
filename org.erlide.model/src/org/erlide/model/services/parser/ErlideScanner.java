@@ -1,4 +1,4 @@
-package org.erlide.model.internal.erlang;
+package org.erlide.model.services.parser;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
