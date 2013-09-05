@@ -11,7 +11,7 @@ import java.util.List;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.services.scanner.ScannerException;
-import org.erlide.model.services.scanner.ScannerService;
+import org.erlide.model.services.scanner.BasicScannerService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
@@ -22,7 +22,7 @@ import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlideScanner implements ScannerService {
+public class ErlideScanner implements BasicScannerService {
     private static final String ERLIDE_SCANNER = "erlide_scanner";
     private static final Object ENCODING = System.getProperty(
             "erlide.encoding.__test__", "latin1");

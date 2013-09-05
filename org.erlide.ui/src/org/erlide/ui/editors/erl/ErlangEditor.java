@@ -79,11 +79,11 @@ import org.erlide.model.erlang.IErlAttribute;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlMember;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.services.scanner.ScannerService;
 import org.erlide.model.services.search.XrefService;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
@@ -620,7 +620,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
             try {
                 fModule = ErlModelUtils.getModule(getEditorInput());
                 fModule.createScanner();
-                final IErlScanner erlScanner = fModule.getScanner();
+                final ScannerService erlScanner = fModule.getScanner();
                 erlScanner.dispose();
             } catch (final CoreException e) {
             }
@@ -1571,7 +1571,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
     }
 
     @Override
-    protected IErlScanner getNewScanner() {
+    protected ScannerService getNewScanner() {
         return getModule().getScanner();
     }
 

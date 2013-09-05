@@ -1,33 +1,22 @@
 package org.erlide.model.services.scanner;
 
-import java.util.List;
-
 import org.erlide.model.erlang.ErlToken;
+import org.erlide.util.IDisposable;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
+public interface ScannerService extends IDisposable {
 
-public interface ScannerService {
+    String getName();
 
-    void initialScan(String module, String path, String initialText,
-            boolean logging);
+    void initialScan(final String initialText, final String path,
+            final boolean logging);
 
-    void create(String module);
+    void replaceText(final int offset, final int removeLength,
+            final String newText);
 
-    void addref(String module);
+    ErlToken getTokenAt(final int offset);
 
-    void dispose(String module);
+    String getText();
 
-    ErlToken getTokenAt(String module, int offset);
-
-    void replaceText(String module, int offset, int removeLength, String newText);
-
-    List<ErlToken> lightScanString(String string, int offset)
-            throws ScannerException;
-
-    OtpErlangObject checkAll(String module, String text, boolean getTokens);
-
-    String getText(String scannerName);
-
-    boolean dumpLog(String scannerName, String dumpLocationFilename);
+    void addref();
 
 }

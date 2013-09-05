@@ -20,7 +20,7 @@ import org.erlide.model.services.importer.ImportService;
 import org.erlide.model.services.parser.ErlideScanner;
 import org.erlide.model.services.proclist.ErlideProclist;
 import org.erlide.model.services.proclist.ProclistService;
-import org.erlide.model.services.scanner.ScannerService;
+import org.erlide.model.services.scanner.BasicScannerService;
 import org.erlide.model.services.search.ErlangXref;
 import org.erlide.model.services.search.ErlideDoc;
 import org.erlide.model.services.search.ErlideOpen;
@@ -114,7 +114,7 @@ public class DefaultErlangEngine implements IErlangEngine {
     }
 
     @Override
-    public ScannerService getScannerService() {
+    public BasicScannerService getScannerService() {
         return new ErlideScanner(backend);
     }
 

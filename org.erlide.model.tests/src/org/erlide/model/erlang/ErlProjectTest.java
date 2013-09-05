@@ -14,6 +14,7 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.services.scanner.ScannerService;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.util.FilePathUtils;
@@ -186,7 +187,7 @@ public class ErlProjectTest {
                         project,
                         "e.erl",
                         "-module(e).\n-export([f/0]).\nf() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
-        final IErlScanner scanner = moduleE.getScanner();
+        final ScannerService scanner = moduleE.getScanner();
         try {
             moduleE.open(null);
             // when

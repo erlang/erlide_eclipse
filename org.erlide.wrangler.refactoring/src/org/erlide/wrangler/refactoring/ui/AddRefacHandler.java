@@ -22,10 +22,10 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlAttribute;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.services.scanner.ScannerService;
 import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.backend.UserRefactoringsManager;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
@@ -106,7 +106,7 @@ public class AddRefacHandler extends AbstractHandler {
         try {
             final IErlModule module = ErlangEngine.getInstance().getModel()
                     .findModule(callbackModule);
-            final IErlScanner scanner = module.getScanner();
+            final ScannerService scanner = module.getScanner();
             try {
                 module.resetAndCacheScannerAndParser(null);
             } finally {

@@ -22,13 +22,13 @@ import org.erlide.model.erlang.IErlImport;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlPreprocessorDef;
 import org.erlide.model.erlang.IErlRecordDef;
-import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.erlang.IErlTypespec;
 import org.erlide.model.root.ErlElementKind;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.services.scanner.ScannerService;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
@@ -124,7 +124,7 @@ public class ModelUtilsTests {
         // final IErlModule moduleC =
         // ErlideTestUtils.createErlModule(projects[1],
         // "c.erl", "-module(c).\n-type cc() :: b:concat_thing().\n");
-        final IErlScanner scanner = moduleB.getScanner();
+        final ScannerService scanner = moduleB.getScanner();
         try {
             moduleB.open(null);
             projects[0].open(null);

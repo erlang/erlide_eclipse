@@ -12,15 +12,15 @@ package org.erlide.model.internal.erlang;
 
 import org.erlide.engine.ErlangEngine;
 import org.erlide.model.erlang.ErlToken;
-import org.erlide.model.erlang.IErlScanner;
+import org.erlide.model.services.scanner.BasicScannerService;
 import org.erlide.model.services.scanner.ScannerService;
 
 /**
  * Erlang syntax scanner
  */
-public class ErlScanner implements IErlScanner {
+public class ErlScanner implements ScannerService {
     private final String name;
-    private final ScannerService scannerService;
+    private final BasicScannerService scannerService;
 
     public ErlScanner(final String name) {
         this.name = name;

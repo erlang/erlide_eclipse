@@ -19,7 +19,7 @@ import org.erlide.model.IOpenable;
 import org.erlide.model.IParent;
 import org.erlide.model.erlang.ErlangToolkit;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlParser;
+import org.erlide.model.services.scanner.ParserService;
 import org.erlide.model.util.ElementChangedEvent;
 import org.erlide.model.util.IElementChangedListener;
 
@@ -163,7 +163,7 @@ public interface IErlModel extends IErlElement, IOpenable, IParent,
 
     void putEdited(String path, IErlModule module);
 
-    IErlParser getParser();
+    ParserService getParser();
 
     ErlangToolkit getToolkit();
 

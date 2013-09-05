@@ -29,8 +29,8 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.services.scanner.ScannerService;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
 import org.erlide.ui.editors.erl.completion.ErlStringContentAssistProcessor;
@@ -394,7 +394,7 @@ public class ContentAssistTest {
         IDocument document = new StringDocument(initialText);
         final IErlModule module = ErlideTestUtils
                 .createModuleFromText(initialText);
-        final IErlScanner scanner = module.getScanner();
+        final ScannerService scanner = module.getScanner();
         try {
             final MockSourceViewer sourceViewer = new MockSourceViewer(
                     document, offset);
