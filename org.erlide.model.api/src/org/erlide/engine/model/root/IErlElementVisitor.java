@@ -18,6 +18,6 @@ public interface IErlElementVisitor {
      *         <code>false</code> if they should be skipped
      * @throws ErlModelException
      */
-    public boolean visit(IErlElement element) throws ErlModelException;
+    boolean visit(IErlElement element) throws ErlModelException;
 
 }

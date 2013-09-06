@@ -24,72 +24,67 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 
 public interface ModelUtilService {
 
-    public abstract ISourceRange findVariable(ISourceRange range,
-            String variableName, String elementText)
-            throws OtpErlangRangeException;
+    ISourceRange findVariable(ISourceRange range, String variableName,
+            String elementText) throws OtpErlangRangeException;
 
-    public abstract IErlElement findInclude(IErlModule module,
-            IErlProject project, OpenResult res, IErlElementLocator model)
-            throws CoreException;
+    IErlElement findInclude(IErlModule module, IErlProject project,
+            OpenResult res, IErlElementLocator model) throws CoreException;
 
     IErlTypespec findTypespec(IErlModule module, String name)
             throws CoreException;
 
-    public abstract Object getTarget(final IContainer container,
-            final IPath path, final boolean checkResourceExistence);
+    Object getTarget(final IContainer container, final IPath path,
+            final boolean checkResourceExistence);
 
-    public abstract IErlProject getProject(final IErlElement element);
+    IErlProject getProject(final IErlElement element);
 
-    public abstract IErlModule getModule(final IErlElement element);
+    IErlModule getModule(final IErlElement element);
 
-    public abstract boolean isOtpModule(final IErlModule module);
+    boolean isOtpModule(final IErlModule module);
 
-    public abstract String[] getPredefinedMacroNames();
+    String[] getPredefinedMacroNames();
 
-    public abstract List<IErlPreprocessorDef> getAllPreprocessorDefs(
-            final IErlModule module, final ErlElementKind kind)
-            throws CoreException;
-
-    public abstract List<OtpErlangObject> getImportsAsList(final IErlModule mod);
-
-    public abstract IErlPreprocessorDef findPreprocessorDef(
-            final IErlModule module, final String definedName,
+    List<IErlPreprocessorDef> getAllPreprocessorDefs(final IErlModule module,
             final ErlElementKind kind) throws CoreException;
 
-    public abstract IErlPreprocessorDef findPreprocessorDef(
+    List<OtpErlangObject> getImportsAsList(final IErlModule mod);
+
+    IErlPreprocessorDef findPreprocessorDef(final IErlModule module,
+            final String definedName, final ErlElementKind kind)
+            throws CoreException;
+
+    IErlPreprocessorDef findPreprocessorDef(
             final Collection<IErlProject> projects, final String moduleName,
             final String definedName, final ErlElementKind kind)
             throws CoreException;
 
-    public abstract IErlElement findTypeDef(final IErlElementLocator model,
+    IErlElement findTypeDef(final IErlElementLocator model,
             final IErlModule module, String moduleName, final String typeName,
             final String modulePath, final IErlProject project,
             final IErlElementLocator.Scope scope) throws CoreException;
 
-    public abstract IErlModule findModule(final IErlElementLocator model,
+    IErlModule findModule(final IErlElementLocator model,
             final IErlProject project, final String moduleName,
             final String modulePath, final IErlElementLocator.Scope scope)
             throws ErlModelException;
 
-    public abstract IErlFunction findFunction(final IErlElementLocator model,
+    IErlFunction findFunction(final IErlElementLocator model,
             String moduleName, final ErlangFunction erlangFunction,
             final String modulePath, final IErlProject project,
             final IErlElementLocator.Scope scope, final IErlModule module)
             throws CoreException;
 
-    public abstract String resolveMacroValue(final String definedName,
-            final IErlModule module);
+    String resolveMacroValue(final String definedName, final IErlModule module);
 
-    public abstract List<String> findUnitsWithPrefix(final String prefix,
+    List<String> findUnitsWithPrefix(final String prefix,
             final IErlProject project, final boolean checkExternals,
             final boolean includes) throws ErlModelException;
 
-    public abstract IErlModule getModuleFromExternalModulePath(
-            final IErlModel model, final String modulePath)
-            throws ErlModelException;
+    IErlModule getModuleFromExternalModulePath(final IErlModel model,
+            final String modulePath) throws ErlModelException;
 
-    public abstract String getExternalModulePath(
-            final IErlElementLocator model, final IErlModule module);
+    String getExternalModulePath(final IErlElementLocator model,
+            final IErlModule module);
 
     String getModuleInfo(IErlModule module);
 

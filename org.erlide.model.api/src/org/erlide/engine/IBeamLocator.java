@@ -5,7 +5,7 @@ import org.eclipse.core.resources.IProject;
 
 public interface IBeamLocator {
 
-    public abstract IFile findModuleBeam(final IProject project,
-            final String module) throws ErlModelException;
+    IFile findModuleBeam(final IProject project, final String module)
+            throws ErlModelException;
 
 }
