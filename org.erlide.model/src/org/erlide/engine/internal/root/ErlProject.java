@@ -121,7 +121,7 @@ public class ErlProject extends Openable implements IErlProject {
             throws ErlModelException {
         final IResource r = getCorrespondingResource();
         // check whether the Erlang project can be opened
-        if (r == null || !r.isAccessible() || !(r instanceof IContainer)) {
+        if (!(r instanceof IContainer) || !r.isAccessible()) {
             ErlLogger.warn(
                     "Project %s has no resources: res:%s acc:%s cont:%s",
                     getName(), r, r == null ? "?" : r.isAccessible(),

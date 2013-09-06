@@ -89,7 +89,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
         } catch (final Exception e) {
             return null;
         }
-        if (r1 == null || !(r1 instanceof OtpErlangTuple)) {
+        if (!(r1 instanceof OtpErlangTuple)) {
             return null;
         }
         final OtpErlangTuple t1 = (OtpErlangTuple) r1;

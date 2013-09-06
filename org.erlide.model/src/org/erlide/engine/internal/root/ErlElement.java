@@ -334,7 +334,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      */
     protected void toStringChildren(final int tab, final StringBuilder buffer,
             final Object info) {
-        if (info == null || !(info instanceof ErlElement)) {
+        if (!(info instanceof ErlElement)) {
             return;
         }
         if (getChildCount() > 0) {

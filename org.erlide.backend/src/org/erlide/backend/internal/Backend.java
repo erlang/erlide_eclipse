@@ -82,7 +82,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     private ErlangDebugTarget debugTarget;
     protected final IBackendManager backendManager;
 
-    public Backend(final BackendData data, final @NonNull IErlRuntime runtime,
+    public Backend(final BackendData data, @NonNull final IErlRuntime runtime,
             final IBackendManager backendManager) {
         assertThat(runtime, is(not(nullValue())));
         this.runtime = runtime;

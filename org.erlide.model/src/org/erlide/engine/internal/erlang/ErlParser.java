@@ -267,7 +267,7 @@ public final class ErlParser implements ParserService {
         final String typeS = type.atomValue();
         if ("error".equals(typeS)) {
             final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
-            final String msg = helper.format_error(er);
+            final String msg = helper.formatError(er);
             final ErlParserProblem e = ErlParserProblem.newError(module, msg);
             setPos(e, er.elementAt(0), false);
             return e;

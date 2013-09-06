@@ -25,7 +25,7 @@ public class RuntimeHelper {
         this.target = target;
     }
 
-    public String format_error(final OtpErlangObject object) {
+    public String formatError(final OtpErlangObject object) {
         final OtpErlangTuple err = (OtpErlangTuple) object;
         final OtpErlangAtom mod = (OtpErlangAtom) err.elementAt(1);
         final OtpErlangObject arg = err.elementAt(2);
