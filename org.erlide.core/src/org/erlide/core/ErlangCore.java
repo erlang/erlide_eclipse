@@ -176,7 +176,7 @@ public final class ErlangCore {
             } else {
                 ErlLogger.debug("***: no bundle group providers");
             }
-        } catch (final Throwable e) {
+        } catch (final Exception e) {
             // ignore
         }
         final Version coreVersion = getBundle().getVersion();

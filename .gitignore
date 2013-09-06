@@ -24,3 +24,5 @@ ttb_last_config
 buildroot
 tools
 target.platform
+.sonar
+

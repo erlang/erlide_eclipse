@@ -20,6 +20,6 @@ Require-Bundle: org.eclipse.ui,
  org.erlide.util;bundle-version="0.19.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.erlide.dialyzer.ui,
- org.erlide.dialyzer.ui.handlers,
- org.erlide.dialyzer.ui.prefs
+Export-Package: org.erlide.dialyzer.ui;x-internal:=true,
+ org.erlide.dialyzer.ui.handlers;x-internal:=true,
+ org.erlide.dialyzer.ui.prefs;x-internal:=true
