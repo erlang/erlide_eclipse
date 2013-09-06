@@ -133,7 +133,7 @@ get_includes_in_dir(Dir) ->
 %%
 
 filter_includes(Files) ->
-	[File || File <- Files, filename:extension(File) == ".hrl"].
+    [File || File <- Files, filename:extension(File) == ".hrl"].
 
 get_lib_dir(Dir) ->
     case filename:basename(Dir) of

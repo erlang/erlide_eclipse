@@ -29,7 +29,7 @@
 %% check if the text is where to enter record field
 check_record(S) ->
     case erlide_scan:string(S) of
-	{ok, Tokens, _Pos} ->
+        {ok, Tokens, _Pos} ->
             ?D(Tokens),
             {State, Name, Prefix, Fields} =
                 check_record_tokens(erlide_scan_model:convert_tokens(Tokens)),
@@ -44,20 +44,20 @@ check_record(S) ->
                 _ ->
                     none
             end;
-	_D ->
+        _D ->
             ?D(_D),
-	    none
+            none
     end.
 
 %% get list of variables matching prefix
 %% the variables are returne as tokens
 get_variables(Src, Prefix) ->
     case erlide_scan:string(Src) of
-	{ok, Tokens, _Pos} ->
-	    ?D({ok, Tokens, _Pos}),
-	    {ok, get_var_tokens(Tokens, Prefix)};
-	_ ->
-	    none
+        {ok, Tokens, _Pos} ->
+            ?D({ok, Tokens, _Pos}),
+            {ok, get_var_tokens(Tokens, Prefix)};
+        _ ->
+            none
     end.
 
 %% final OtpErlangObject res = b.rpcx("erlide_content_assist",
@@ -80,15 +80,15 @@ get_var_tokens([{'#', _}, {var, _Pos, _Value} | Rest], Prefix, Acc) ->
 get_var_tokens([{var, _Pos, Value} | Rest], Prefix, Acc) ->
     S = atom_to_list(Value),
     case S of
-	"_" ->
-	    get_var_tokens(Rest, Prefix, Acc);
-	_ ->
-	    case lists:prefix(Prefix, S) of
-		true ->
-		    get_var_tokens(Rest, Prefix, [S | Acc]);
-		_ ->
-		    get_var_tokens(Rest, Prefix, Acc)
-	    end
+        "_" ->
+            get_var_tokens(Rest, Prefix, Acc);
+        _ ->
+            case lists:prefix(Prefix, S) of
+                true ->
+                    get_var_tokens(Rest, Prefix, [S | Acc]);
+                _ ->
+                    get_var_tokens(Rest, Prefix, Acc)
+            end
     end;
 get_var_tokens([_ | Rest], Prefix, Acc) ->
     get_var_tokens(Rest, Prefix, Acc).

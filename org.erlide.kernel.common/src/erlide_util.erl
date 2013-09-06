@@ -84,8 +84,8 @@ check_and_renew_cached(SourceFileName, _CacheFileName, _Version,
                        RenewFun, _CachedFun, false) ->
     Term = RenewFun(SourceFileName),
     {dont_use_cache, Term};
-check_and_renew_cached(SourceFileName, CacheFileName, 
-                       Version, RenewFun, CachedFun, 
+check_and_renew_cached(SourceFileName, CacheFileName,
+                       Version, RenewFun, CachedFun,
                        true) ->
     ?D(check_and_renew_cached),
     case check_cached(SourceFileName, CacheFileName, Version) of

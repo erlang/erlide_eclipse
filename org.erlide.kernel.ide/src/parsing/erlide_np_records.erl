@@ -21,7 +21,7 @@
 
 
 % check refs to record fields
-% 
+%
 
 check_fields(Tokens, RecordName) ->
     check_fields(record_name, Tokens, RecordName, [], '', []).
@@ -44,7 +44,7 @@ check_fields(record_want_name, [#token{kind=macro, value=NewRecordName} | Rest],
     check_fields(record_name, Rest, NewRecordName, Fields, RecordName, RightSides);
 check_fields(record_want_name, [#token{kind='?'} | Rest], RecordName, Fields, _PrevRecordName, RightSides) -> % 2
     check_fields(record_name, Rest, '?', Fields, RecordName, RightSides);
-check_fields(record_name, [#token{kind=Dot} | Rest], RecordName, Fields, PrevRecordName, RightSides) % 3 
+check_fields(record_name, [#token{kind=Dot} | Rest], RecordName, Fields, PrevRecordName, RightSides) % 3
   when Dot=:='.'; Dot=:=dot->
     check_fields(record_want_dot_field, Rest, RecordName, Fields, PrevRecordName, RightSides);
 check_fields(record_want_dot_field, [#token{kind=atom, value=FieldName, offset=Offset, length=Length} | Rest],

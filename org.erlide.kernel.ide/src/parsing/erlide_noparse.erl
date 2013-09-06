@@ -43,7 +43,7 @@ initial_parse(ScannerName, ModuleFileName, InitialText, StateDir, UseCache,
         BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
         RefsFileName = BaseName ++ ".refs",
         RenewFun = fun(_F) ->
-                           Tokens = get_tokens(ScannerName, ModuleFileName, 
+                           Tokens = get_tokens(ScannerName, ModuleFileName,
                                                InitialText, StateDir),
                            {Model, Refs} =
                                do_parse(ScannerName, RefsFileName, Tokens, StateDir,

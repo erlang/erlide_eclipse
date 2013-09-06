@@ -25,10 +25,10 @@ toggle_comment(Text, From, Length) ->
     {_, _, Lines} = erlide_text:get_text_and_lines(Text, From, Length),
     ?D(Lines),
     LineF = case lists:all(fun(L) -> is_comment_line(L) end, Lines) of
-                   true ->
-                       fun(L) -> uncomment_line(L) end;
-                   false ->
-                       fun(L) -> comment_line(L) end
+                true ->
+                    fun(L) -> uncomment_line(L) end;
+                false ->
+                    fun(L) -> comment_line(L) end
             end,
     lists:flatten(lists:map(LineF, Lines)).
 

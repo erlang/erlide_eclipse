@@ -92,221 +92,221 @@
 -module(erlide_syntax).
 
 -export([type/1,
-	 is_leaf/1,
-	 is_form/1,
-	 is_literal/1,
-	 abstract/1,
-	 concrete/1,
-	 revert/1,
-	 revert_forms/1,
-	 subtrees/1,
-	 make_tree/2,
-	 update_tree/2,
-	 meta/1,
+   is_leaf/1,
+   is_form/1,
+   is_literal/1,
+   abstract/1,
+   concrete/1,
+   revert/1,
+   revert_forms/1,
+   subtrees/1,
+   make_tree/2,
+   update_tree/2,
+   meta/1,
 
-	 get_pos/1,
-	 set_pos/2,
-	 copy_pos/2,
-	 get_precomments/1,
-	 set_precomments/2,
-	 add_precomments/2,
-	 get_postcomments/1,
-	 set_postcomments/2,
-	 add_postcomments/2,
-	 has_comments/1,
-	 remove_comments/1,
-	 copy_comments/2,
-	 join_comments/2,
-	 get_ann/1,
-	 set_ann/2,
-	 add_ann/2,
-	 copy_ann/2,
-	 get_attrs/1,
-	 set_attrs/2,
-	 copy_attrs/2,
+   get_pos/1,
+   set_pos/2,
+   copy_pos/2,
+   get_precomments/1,
+   set_precomments/2,
+   add_precomments/2,
+   get_postcomments/1,
+   set_postcomments/2,
+   add_postcomments/2,
+   has_comments/1,
+   remove_comments/1,
+   copy_comments/2,
+   join_comments/2,
+   get_ann/1,
+   set_ann/2,
+   add_ann/2,
+   copy_ann/2,
+   get_attrs/1,
+   set_attrs/2,
+   copy_attrs/2,
 
-	 flatten_form_list/1,
-	 cons/2,
-	 list_head/1,
-	 list_tail/1,
-	 is_list_skeleton/1,
-	 is_proper_list/1,
-	 list_elements/1,
-	 list_length/1,
-	 normalize_list/1,
-	 compact_list/1,
+   flatten_form_list/1,
+   cons/2,
+   list_head/1,
+   list_tail/1,
+   is_list_skeleton/1,
+   is_proper_list/1,
+   list_elements/1,
+   list_length/1,
+   normalize_list/1,
+   compact_list/1,
 
-	 application/2,
-	 application/3,
-	 application_arguments/1,
-	 application_operator/1,
-	 arity_qualifier/2,
-	 arity_qualifier_argument/1,
-	 arity_qualifier_body/1,
-	 atom/1,
-	 is_atom/2,
-	 atom_value/1,
-	 atom_literal/1,
-	 atom_name/1,
-	 attribute/1,
-	 attribute/2,
-	 attribute_arguments/1,
-	 attribute_name/1,
-	 binary/1,
-	 binary_field/1,
-	 binary_field/2,
-	 binary_field/3,
-	 binary_field_body/1,
-	 binary_field_types/1,
-	 binary_field_size/1,
-	 binary_fields/1,
-	 block_expr/1,
-	 block_expr_body/1,
-	 case_expr/2,
-	 case_expr_argument/1,
-	 case_expr_clauses/1,
-	 catch_expr/1,
-	 catch_expr_body/1,
-	 char/1,
-	 is_char/2,
-	 char_value/1,
-	 char_literal/1,
-	 clause/2,
-	 clause/3,
-	 clause_body/1,
-	 clause_guard/1,
-	 clause_patterns/1,
-	 comment/1,
-	 comment/2,
-	 comment_padding/1,
-	 comment_text/1,
-	 cond_expr/1,
-	 cond_expr_clauses/1,
-	 conjunction/1,
-	 conjunction_body/1,
-	 disjunction/1,
-	 disjunction_body/1,
-	 eof_marker/0,
-	 error_marker/1,
-	 error_marker_info/1,
-	 float/1,
-	 float_value/1,
-	 float_literal/1,
-	 form_list/1,
-	 form_list_elements/1,
-	 fun_expr/1,
-	 fun_expr_arity/1,
-	 fun_expr_clauses/1,
-	 function/2,
-	 function_arity/1,
-	 function_clauses/1,
-	 function_name/1,
-	 generator/2,
-	 generator_body/1,
-	 generator_pattern/1,
-	 if_expr/1,
-	 if_expr_clauses/1,
-	 implicit_fun/1,
-	 implicit_fun/2,
-	 implicit_fun_name/1,
-	 infix_expr/3,
-	 infix_expr_left/1,
-	 infix_expr_operator/1,
-	 infix_expr_right/1,
-	 integer/1,
-	 is_integer/2,
-	 integer_value/1,
-	 integer_literal/1,
-	 list/1,
-	 list/2,
-	 list_comp/2,
-	 list_comp_body/1,
-	 list_comp_template/1,
-	 list_prefix/1,
-	 list_suffix/1,
-	 macro/1,
-	 macro/2,
-	 macro_arguments/1,
-	 macro_name/1,
-	 match_expr/2,
-	 match_expr_body/1,
-	 match_expr_pattern/1,
-	 module_qualifier/2,
-	 module_qualifier_argument/1,
-	 module_qualifier_body/1,
-	 nil/0,
-	 operator/1,
-	 operator_literal/1,
-	 operator_name/1,
-	 parentheses/1,
-	 parentheses_body/1,
-	 prefix_expr/2,
-	 prefix_expr_argument/1,
-	 prefix_expr_operator/1,
-	 qualified_name/1,
-	 qualified_name_segments/1,
-	 query_expr/1,
-	 query_expr_body/1,
-	 receive_expr/1,
-	 receive_expr/3,
-	 receive_expr_action/1,
-	 receive_expr_clauses/1,
-	 receive_expr_timeout/1,
-	 record_access/2,
-	 record_access/3,
-	 record_access_argument/1,
-	 record_access_field/1,
-	 record_access_type/1,
-	 record_expr/2,
-	 record_expr/3,
-	 record_expr_argument/1,
-	 record_expr_fields/1,
-	 record_expr_type/1,
-	 record_field/1,
-	 record_field/2,
-	 record_field_name/1,
-	 record_field_value/1,
-	 record_index_expr/2,
-	 record_index_expr_field/1,
-	 record_index_expr_type/1,
-	 rule/2,
-	 rule_arity/1,
-	 rule_clauses/1,
-	 rule_name/1,
-	 size_qualifier/2,
-	 size_qualifier_argument/1,
-	 size_qualifier_body/1,
-	 string/1,
-	 is_string/2,
-	 string_value/1,
-	 string_literal/1,
-	 text/1,
-	 text_string/1,
-	 try_expr/2,
-	 try_expr/3,
-	 try_expr/4,
-	 try_after_expr/2,
-	 try_expr_body/1,
-	 try_expr_clauses/1,
-	 try_expr_handlers/1,
-	 try_expr_after/1,
-	 class_qualifier/2,
-	 class_qualifier_argument/1,
-	 class_qualifier_body/1,
-	 tuple/1,
-	 tuple_elements/1,
-	 tuple_size/1,
-	 underscore/0,
-	 variable/1,
-	 variable_name/1,
-	 variable_literal/1,
-	 warning_marker/1,
-	 warning_marker_info/1,
+   application/2,
+   application/3,
+   application_arguments/1,
+   application_operator/1,
+   arity_qualifier/2,
+   arity_qualifier_argument/1,
+   arity_qualifier_body/1,
+   atom/1,
+   is_atom/2,
+   atom_value/1,
+   atom_literal/1,
+   atom_name/1,
+   attribute/1,
+   attribute/2,
+   attribute_arguments/1,
+   attribute_name/1,
+   binary/1,
+   binary_field/1,
+   binary_field/2,
+   binary_field/3,
+   binary_field_body/1,
+   binary_field_types/1,
+   binary_field_size/1,
+   binary_fields/1,
+   block_expr/1,
+   block_expr_body/1,
+   case_expr/2,
+   case_expr_argument/1,
+   case_expr_clauses/1,
+   catch_expr/1,
+   catch_expr_body/1,
+   char/1,
+   is_char/2,
+   char_value/1,
+   char_literal/1,
+   clause/2,
+   clause/3,
+   clause_body/1,
+   clause_guard/1,
+   clause_patterns/1,
+   comment/1,
+   comment/2,
+   comment_padding/1,
+   comment_text/1,
+   cond_expr/1,
+   cond_expr_clauses/1,
+   conjunction/1,
+   conjunction_body/1,
+   disjunction/1,
+   disjunction_body/1,
+   eof_marker/0,
+   error_marker/1,
+   error_marker_info/1,
+   float/1,
+   float_value/1,
+   float_literal/1,
+   form_list/1,
+   form_list_elements/1,
+   fun_expr/1,
+   fun_expr_arity/1,
+   fun_expr_clauses/1,
+   function/2,
+   function_arity/1,
+   function_clauses/1,
+   function_name/1,
+   generator/2,
+   generator_body/1,
+   generator_pattern/1,
+   if_expr/1,
+   if_expr_clauses/1,
+   implicit_fun/1,
+   implicit_fun/2,
+   implicit_fun_name/1,
+   infix_expr/3,
+   infix_expr_left/1,
+   infix_expr_operator/1,
+   infix_expr_right/1,
+   integer/1,
+   is_integer/2,
+   integer_value/1,
+   integer_literal/1,
+   list/1,
+   list/2,
+   list_comp/2,
+   list_comp_body/1,
+   list_comp_template/1,
+   list_prefix/1,
+   list_suffix/1,
+   macro/1,
+   macro/2,
+   macro_arguments/1,
+   macro_name/1,
+   match_expr/2,
+   match_expr_body/1,
+   match_expr_pattern/1,
+   module_qualifier/2,
+   module_qualifier_argument/1,
+   module_qualifier_body/1,
+   nil/0,
+   operator/1,
+   operator_literal/1,
+   operator_name/1,
+   parentheses/1,
+   parentheses_body/1,
+   prefix_expr/2,
+   prefix_expr_argument/1,
+   prefix_expr_operator/1,
+   qualified_name/1,
+   qualified_name_segments/1,
+   query_expr/1,
+   query_expr_body/1,
+   receive_expr/1,
+   receive_expr/3,
+   receive_expr_action/1,
+   receive_expr_clauses/1,
+   receive_expr_timeout/1,
+   record_access/2,
+   record_access/3,
+   record_access_argument/1,
+   record_access_field/1,
+   record_access_type/1,
+   record_expr/2,
+   record_expr/3,
+   record_expr_argument/1,
+   record_expr_fields/1,
+   record_expr_type/1,
+   record_field/1,
+   record_field/2,
+   record_field_name/1,
+   record_field_value/1,
+   record_index_expr/2,
+   record_index_expr_field/1,
+   record_index_expr_type/1,
+   rule/2,
+   rule_arity/1,
+   rule_clauses/1,
+   rule_name/1,
+   size_qualifier/2,
+   size_qualifier_argument/1,
+   size_qualifier_body/1,
+   string/1,
+   is_string/2,
+   string_value/1,
+   string_literal/1,
+   text/1,
+   text_string/1,
+   try_expr/2,
+   try_expr/3,
+   try_expr/4,
+   try_after_expr/2,
+   try_expr_body/1,
+   try_expr_clauses/1,
+   try_expr_handlers/1,
+   try_expr_after/1,
+   class_qualifier/2,
+   class_qualifier_argument/1,
+   class_qualifier_body/1,
+   tuple/1,
+   tuple_elements/1,
+   tuple_size/1,
+   underscore/0,
+   variable/1,
+   variable_name/1,
+   variable_literal/1,
+   warning_marker/1,
+   warning_marker_info/1,
 
-	 tree/1,
-	 tree/2,
-	 data/1,
-	 is_tree/1]).
+   tree/1,
+   tree/2,
+   data/1,
+   is_tree/1]).
 
 
 %% =====================================================================
@@ -343,7 +343,7 @@
 %%	type(Com) = comment
 
 -record(com, {pre = [],
-	      post = []}).
+        post = []}).
 
 %% `attr' records store node attributes as an aggregate.
 %%
@@ -357,8 +357,8 @@
 %% `tree' or `wrapper' record.
 
 -record(attr, {pos = 0,
-	       ann = [],
-	       com = none}).
+         ann = [],
+         com = none}).
 
 %% `tree' records represent new-form syntax tree nodes.
 %%
@@ -371,8 +371,8 @@
 %%	is_tree(Tree) = true
 
 -record(tree, {type,
-	       attr = #attr{},
-	       data}).
+         attr = #attr{},
+         data}).
 
 %% `wrapper' records are used for attaching new-form node information to
 %% `erl_parse' trees.
@@ -386,8 +386,8 @@
 %%	is_tree(Wrapper) = false
 
 -record(wrapper, {type,
-		  attr = #attr{},
-		  tree}).
+      attr = #attr{},
+      tree}).
 
 
 %% =====================================================================
@@ -538,59 +538,59 @@ type(#wrapper{type = T}) ->
 type(Node) ->
     %% Check for `erl_parse'-compatible nodes, and otherwise fail.
     case Node of
-	%% Leaf types
-	{atom, _, _} -> atom;
-	{char, _, _} -> char;
-	{float, _, _} -> float;
-	{integer, _, _} -> integer;
-	{nil, _} -> nil;
-	{string, _, _} -> string;
-	{var, _, Name} ->
-	    if Name == '_' -> underscore;
-	       true -> variable
-	    end;
-	{error, _} -> error_marker;
-	{warning, _} -> warning_marker;
-	{eof, _} -> eof_marker;
+  %% Leaf types
+  {atom, _, _} -> atom;
+  {char, _, _} -> char;
+  {float, _, _} -> float;
+  {integer, _, _} -> integer;
+  {nil, _} -> nil;
+  {string, _, _} -> string;
+  {var, _, Name} ->
+      if Name == '_' -> underscore;
+         true -> variable
+      end;
+  {error, _} -> error_marker;
+  {warning, _} -> warning_marker;
+  {eof, _} -> eof_marker;
 
-	%% Composite types
-	{'case', _, _, _} -> case_expr;
-	{'catch', _, _} -> catch_expr;
-	{'cond', _, _} -> cond_expr;
-	{'fun', _, {clauses, _}} -> fun_expr;
-	{'fun', _, {function, _, _}} -> implicit_fun;
-	{'if', _, _} -> if_expr;
-	{'receive', _, _, _, _} -> receive_expr;
-	{'receive', _, _} -> receive_expr;
-	{attribute, _, _, _} -> attribute;
-	{bin, _, _} -> binary;
-	{bin_element, _, _, _, _} -> binary_field;
-	{block, _, _} -> block_expr;
-	{call, _, _, _} -> application;
-	{clause, _, _, _, _} -> clause;
-	{cons, _, _, _} -> list;
-	{function, _, _, _, _} -> function;
-	{generate, _, _, _} -> generator;
-	{lc, _, _, _} -> list_comp;
-	{match, _, _, _} -> match_expr;
-	{op, _, _, _, _} -> infix_expr;
-	{op, _, _, _} -> prefix_expr;
-	{'query', _, _} -> query_expr;
-	{record, _, _, _, _} -> record_expr;
-	{record, _, _, _} -> record_expr;
-	{record_field, _, _, _, _} -> record_access;
-	{record_field, _, _, _} ->
-	    case is_qualified_name(Node) of
-		true -> qualified_name;
-		false -> record_access
-	    end;
-	{record_index, _, _, _} -> record_index_expr;
-	{remote, _, _, _} -> module_qualifier;
-	{rule, _, _, _, _} -> rule;
-	{'try', _, _, _, _, _} -> try_expr;
-	{tuple, _, _} -> tuple;
-	_ ->
-	    erlang:error({badarg, Node})
+  %% Composite types
+  {'case', _, _, _} -> case_expr;
+  {'catch', _, _} -> catch_expr;
+  {'cond', _, _} -> cond_expr;
+  {'fun', _, {clauses, _}} -> fun_expr;
+  {'fun', _, {function, _, _}} -> implicit_fun;
+  {'if', _, _} -> if_expr;
+  {'receive', _, _, _, _} -> receive_expr;
+  {'receive', _, _} -> receive_expr;
+  {attribute, _, _, _} -> attribute;
+  {bin, _, _} -> binary;
+  {bin_element, _, _, _, _} -> binary_field;
+  {block, _, _} -> block_expr;
+  {call, _, _, _} -> application;
+  {clause, _, _, _, _} -> clause;
+  {cons, _, _, _} -> list;
+  {function, _, _, _, _} -> function;
+  {generate, _, _, _} -> generator;
+  {lc, _, _, _} -> list_comp;
+  {match, _, _, _} -> match_expr;
+  {op, _, _, _, _} -> infix_expr;
+  {op, _, _, _} -> prefix_expr;
+  {'query', _, _} -> query_expr;
+  {record, _, _, _, _} -> record_expr;
+  {record, _, _, _} -> record_expr;
+  {record_field, _, _, _, _} -> record_access;
+  {record_field, _, _, _} ->
+      case is_qualified_name(Node) of
+    true -> qualified_name;
+    false -> record_access
+      end;
+  {record_index, _, _, _} -> record_index_expr;
+  {remote, _, _, _} -> module_qualifier;
+  {rule, _, _, _, _} -> rule;
+  {'try', _, _, _, _, _} -> try_expr;
+  {tuple, _, _} -> tuple;
+  _ ->
+      erlang:error({badarg, Node})
     end.
 
 
@@ -633,26 +633,26 @@ type(Node) ->
 
 is_leaf(Node) ->
     case type(Node) of
-	atom -> true;
-	char -> true;
-	comment -> true;	% nonstandard type
-	eof_marker -> true;
-	error_marker -> true;
-	float -> true;
-	integer -> true;
-	nil -> true;
-	operator -> true;	% nonstandard type
-	string -> true;
-	text -> true;		% nonstandard type
-	tuple ->
-	    case tuple_elements(Node) of
-		[] -> true;
-		_ -> false
-	    end;
-	underscore -> true;
-	variable -> true;
-	warning_marker -> true;
-	_ -> false
+  atom -> true;
+  char -> true;
+  comment -> true;	% nonstandard type
+  eof_marker -> true;
+  error_marker -> true;
+  float -> true;
+  integer -> true;
+  nil -> true;
+  operator -> true;	% nonstandard type
+  string -> true;
+  text -> true;		% nonstandard type
+  tuple ->
+      case tuple_elements(Node) of
+    [] -> true;
+    _ -> false
+      end;
+  underscore -> true;
+  variable -> true;
+  warning_marker -> true;
+  _ -> false
     end.
 
 
@@ -689,15 +689,15 @@ is_leaf(Node) ->
 
 is_form(Node) ->
     case type(Node) of
-	attribute -> true;
-	comment -> true;
-	function -> true;
-	eof_marker -> true;
-	error_marker -> true;
-	form_list -> true;
-	rule -> true;
-	warning_marker -> true;
-	_ -> false
+  attribute -> true;
+  comment -> true;
+  function -> true;
+  eof_marker -> true;
+  error_marker -> true;
+  form_list -> true;
+  rule -> true;
+  warning_marker -> true;
+  _ -> false
     end.
 
 
@@ -745,14 +745,14 @@ get_pos(Node) ->
 
 set_pos(Node, Pos) ->
     case Node of
-	#tree{attr = Attr} ->
-	    Node#tree{attr = Attr#attr{pos = Pos}};
-	#wrapper{attr = Attr} ->
-	    Node#wrapper{attr = Attr#attr{pos = Pos}};
-	_ ->
-	    %% We then assume we have an `erl_parse' node, and create a
-	    %% wrapper around it to make things more uniform.
-	    set_pos(wrap(Node), Pos)
+  #tree{attr = Attr} ->
+      Node#tree{attr = Attr#attr{pos = Pos}};
+  #wrapper{attr = Attr} ->
+      Node#wrapper{attr = Attr#attr{pos = Pos}};
+  _ ->
+      %% We then assume we have an `erl_parse' node, and create a
+      %% wrapper around it to make things more uniform.
+      set_pos(wrap(Node), Pos)
     end.
 
 
@@ -782,12 +782,12 @@ get_com(_) -> none.
 
 set_com(Node, Com) ->
     case Node of
-	#tree{attr = Attr} ->
-	    Node#tree{attr = Attr#attr{com = Com}};
-	#wrapper{attr = Attr} ->
-	    Node#wrapper{attr = Attr#attr{com = Com}};
-	_ ->
-	    set_com(wrap(Node), Com)
+  #tree{attr = Attr} ->
+      Node#tree{attr = Attr#attr{com = Com}};
+  #wrapper{attr = Attr} ->
+      Node#wrapper{attr = Attr#attr{com = Com}};
+  _ ->
+      set_com(wrap(Node), Com)
     end.
 
 
@@ -842,12 +842,12 @@ get_precomments_1(#attr{com = #com{pre = Cs}}) -> Cs.
 
 set_precomments(Node, Cs) ->
     case Node of
-	#tree{attr = Attr} ->
-	    Node#tree{attr = set_precomments_1(Attr, Cs)};
-	#wrapper{attr = Attr} ->
-	    Node#wrapper{attr = set_precomments_1(Attr, Cs)};
-	_ ->
-	    set_precomments(wrap(Node), Cs)
+  #tree{attr = Attr} ->
+      Node#tree{attr = set_precomments_1(Attr, Cs)};
+  #wrapper{attr = Attr} ->
+      Node#wrapper{attr = set_precomments_1(Attr, Cs)};
+  _ ->
+      set_precomments(wrap(Node), Cs)
     end.
 
 set_precomments_1(#attr{com = none} = Attr, Cs) ->
@@ -875,12 +875,12 @@ set_precomments_1(#attr{com = Com} = Attr, Cs) ->
 
 add_precomments(Cs, Node) ->
     case Node of
-	#tree{attr = Attr} ->
-	    Node#tree{attr = add_precomments_1(Cs, Attr)};
-	#wrapper{attr = Attr} ->
-	    Node#wrapper{attr = add_precomments_1(Cs, Attr)};
-	_ ->
-	    add_precomments(Cs, wrap(Node))
+  #tree{attr = Attr} ->
+      Node#tree{attr = add_precomments_1(Cs, Attr)};
+  #wrapper{attr = Attr} ->
+      Node#wrapper{attr = add_precomments_1(Cs, Attr)};
+  _ ->
+      add_precomments(Cs, wrap(Node))
     end.
 
 add_precomments_1(Cs, #attr{com = none} = Attr) ->
@@ -940,12 +940,12 @@ get_postcomments_1(#attr{com = #com{post = Cs}}) -> Cs.
 
 set_postcomments(Node, Cs) ->
     case Node of
-	#tree{attr = Attr} ->
-	    Node#tree{attr = set_postcomments_1(Attr, Cs)};
-	#wrapper{attr = Attr} ->
-	    Node#wrapper{attr = set_postcomments_1(Attr, Cs)};
-	_ ->
-	    set_postcomments(wrap(Node), Cs)
+  #tree{attr = Attr} ->
+      Node#tree{attr = set_postcomments_1(Attr, Cs)};
+  #wrapper{attr = Attr} ->
+      Node#wrapper{attr = set_postcomments_1(Attr, Cs)};
+  _ ->
+      set_postcomments(wrap(Node), Cs)
     end.
 
 set_postcomments_1(#attr{com = none} = Attr, Cs) ->
@@ -973,12 +973,12 @@ set_postcomments_1(#attr{com = Com} = Attr, Cs) ->
 
 add_postcomments(Cs, Node) ->
     case Node of
-	#tree{attr = Attr} ->
-	    Node#tree{attr = add_postcomments_1(Cs, Attr)};
-	#wrapper{attr = Attr} ->
-	    Node#wrapper{attr = add_postcomments_1(Cs, Attr)};
-	_ ->
-	    add_postcomments(Cs, wrap(Node))
+  #tree{attr = Attr} ->
+      Node#tree{attr = add_postcomments_1(Cs, Attr)};
+  #wrapper{attr = Attr} ->
+      Node#wrapper{attr = add_postcomments_1(Cs, Attr)};
+  _ ->
+      add_postcomments(Cs, wrap(Node))
     end.
 
 add_postcomments_1(Cs, #attr{com = none} = Attr) ->
@@ -1003,15 +1003,15 @@ add_postcomments_1(Cs, #attr{com = Com} = Attr) ->
 
 has_comments(#tree{attr = Attr}) ->
     case Attr#attr.com of
-	none -> false;
-	#com{pre = [], post = []} -> false;
-	_ -> true
+  none -> false;
+  #com{pre = [], post = []} -> false;
+  _ -> true
     end;
 has_comments(#wrapper{attr = Attr}) ->
     case Attr#attr.com of
-	none -> false;
-	#com{pre = [], post = []} -> false;
-	_ -> true
+  none -> false;
+  #com{pre = [], post = []} -> false;
+  _ -> true
     end;
 has_comments(_) -> false.
 
@@ -1030,12 +1030,12 @@ has_comments(_) -> false.
 
 remove_comments(Node) ->
     case Node of
-	#tree{attr = Attr} ->
-	    Node#tree{attr = Attr#attr{com = none}};
-	#wrapper{attr = Attr} ->
-	    Node#wrapper{attr = Attr#attr{com = none}};
-	_ ->
-	    Node
+  #tree{attr = Attr} ->
+      Node#tree{attr = Attr#attr{com = none}};
+  #wrapper{attr = Attr} ->
+      Node#wrapper{attr = Attr#attr{com = none}};
+  _ ->
+      Node
     end.
 
 
@@ -1113,14 +1113,14 @@ get_ann(_) -> [].
 
 set_ann(Node, As) ->
     case Node of
-	#tree{attr = Attr} ->
-	    Node#tree{attr = Attr#attr{ann = As}};
-	#wrapper{attr = Attr} ->
-	    Node#wrapper{attr = Attr#attr{ann = As}};
-	_ ->
-	    %% Assume we have an `erl_parse' node and create a wrapper
-	    %% structure to carry the annotation.
-	    set_ann(wrap(Node), As)
+  #tree{attr = Attr} ->
+      Node#tree{attr = Attr#attr{ann = As}};
+  #wrapper{attr = Attr} ->
+      Node#wrapper{attr = Attr#attr{ann = As}};
+  _ ->
+      %% Assume we have an `erl_parse' node and create a wrapper
+      %% structure to carry the annotation.
+      set_ann(wrap(Node), As)
     end.
 
 
@@ -1138,14 +1138,14 @@ set_ann(Node, As) ->
 
 add_ann(A, Node) ->
     case Node of
-	#tree{attr = Attr} ->
-	    Node#tree{attr = Attr#attr{ann = [A | Attr#attr.ann]}};
-	#wrapper{attr = Attr} ->
-	    Node#wrapper{attr = Attr#attr{ann = [A | Attr#attr.ann]}};
-	_ ->
-	    %% Assume we have an `erl_parse' node and create a wrapper
-	    %% structure to carry the annotation.
-	    add_ann(A, wrap(Node))
+  #tree{attr = Attr} ->
+      Node#tree{attr = Attr#attr{ann = [A | Attr#attr.ann]}};
+  #wrapper{attr = Attr} ->
+      Node#wrapper{attr = Attr#attr{ann = [A | Attr#attr.ann]}};
+  _ ->
+      %% Assume we have an `erl_parse' node and create a wrapper
+      %% structure to carry the annotation.
+      add_ann(A, wrap(Node))
     end.
 
 
@@ -1193,8 +1193,8 @@ copy_ann(Source, Target) ->
 get_attrs(#tree{attr = Attr}) -> Attr;
 get_attrs(#wrapper{attr = Attr}) -> Attr;
 get_attrs(Node) -> #attr{pos = get_pos(Node),
-			 ann = get_ann(Node),
-			 com = get_com(Node)}.
+       ann = get_ann(Node),
+       com = get_com(Node)}.
 
 
 %% =====================================================================
@@ -1209,12 +1209,12 @@ get_attrs(Node) -> #attr{pos = get_pos(Node),
 
 set_attrs(Node, Attr) ->
     case Node of
-	#tree{} ->
-	    Node#tree{attr = Attr};
-	#wrapper{} ->
-	    Node#wrapper{attr = Attr};
-	_ ->
-	    set_attrs(wrap(Node), Attr)
+  #tree{} ->
+      Node#tree{attr = Attr};
+  #wrapper{} ->
+      Node#wrapper{attr = Attr};
+  _ ->
+      set_attrs(wrap(Node), Attr)
     end.
 
 
@@ -1363,11 +1363,11 @@ flatten_form_list(Node) ->
 
 flatten_form_list_1([F | Fs], As) ->
     case type(F) of
-	form_list ->
-	    As1 = flatten_form_list_1(form_list_elements(F), As),
-	    flatten_form_list_1(Fs, As1);
-	_ ->
-	    flatten_form_list_1(Fs, [F | As])
+  form_list ->
+      As1 = flatten_form_list_1(form_list_elements(F), As),
+      flatten_form_list_1(Fs, As1);
+  _ ->
+      flatten_form_list_1(Fs, [F | As])
     end;
 flatten_form_list_1([], As) ->
     As.
@@ -1450,10 +1450,10 @@ revert_variable(Node) ->
 
 variable_name(Node) ->
     case unwrap(Node) of
-	{var, _, Name} ->
-	    Name;
-	Node1 ->
-	    data(Node1)
+  {var, _, Name} ->
+      Name;
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -1466,10 +1466,10 @@ variable_name(Node) ->
 
 variable_literal(Node) ->
     case unwrap(Node) of
-	{var, _, Name} ->
-	    atom_to_list(Name);
-	Node1 ->
-	    atom_to_list(data(Node1))
+  {var, _, Name} ->
+      atom_to_list(Name);
+  Node1 ->
+      atom_to_list(data(Node1))
     end.
 
 
@@ -1535,12 +1535,12 @@ revert_integer(Node) ->
 
 is_integer(Node, Value) ->
     case unwrap(Node) of
-	{integer, _, Value} ->
-	    true;
-	#tree{type = integer, data = Value} ->
-	    true;
-	_ ->
-	    false
+  {integer, _, Value} ->
+      true;
+  #tree{type = integer, data = Value} ->
+      true;
+  _ ->
+      false
     end.
 
 
@@ -1553,10 +1553,10 @@ is_integer(Node, Value) ->
 
 integer_value(Node) ->
     case unwrap(Node) of
-	{integer, _, Value} ->
-	    Value;
-	Node1 ->
-	    data(Node1)
+  {integer, _, Value} ->
+      Value;
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -1620,10 +1620,10 @@ revert_float(Node) ->
 
 float_value(Node) ->
     case unwrap(Node) of
-	{float, _, Value} ->
-	    Value;
-	Node1 ->
-	    data(Node1)
+  {float, _, Value} ->
+      Value;
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -1684,12 +1684,12 @@ revert_char(Node) ->
 
 is_char(Node, Value) ->
     case unwrap(Node) of
-	{char, _, Value} ->
-	    true;
-	#tree{type = char, data = Value} ->
-	    true;
-	_ ->
-	    false
+  {char, _, Value} ->
+      true;
+  #tree{type = char, data = Value} ->
+      true;
+  _ ->
+      false
     end.
 
 
@@ -1702,10 +1702,10 @@ is_char(Node, Value) ->
 
 char_value(Node) ->
     case unwrap(Node) of
-	{char, _, Char} ->
-	    Char;
-	Node1 ->
-	    data(Node1)
+  {char, _, Char} ->
+      Char;
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -1766,12 +1766,12 @@ revert_string(Node) ->
 
 is_string(Node, Value) ->
     case unwrap(Node) of
-	{string, _, Value} ->
-	    true;
-	#tree{type = string, data = Value} ->
-	    true;
-	_ ->
-	    false
+  {string, _, Value} ->
+      true;
+  #tree{type = string, data = Value} ->
+      true;
+  _ ->
+      false
     end.
 
 
@@ -1784,10 +1784,10 @@ is_string(Node, Value) ->
 
 string_value(Node) ->
     case unwrap(Node) of
-	{string, _, List} ->
-	    List;
-	Node1 ->
-	    data(Node1)
+  {string, _, List} ->
+      List;
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -1845,12 +1845,12 @@ revert_atom(Node) ->
 
 is_atom(Node, Value) ->
     case unwrap(Node) of
-	{atom, _, Value} ->
-	    true;
-	#tree{type = atom, data = Value} ->
-	    true;
-	_ ->
-	    false
+  {atom, _, Value} ->
+      true;
+  #tree{type = atom, data = Value} ->
+      true;
+  _ ->
+      false
     end.
 
 
@@ -1863,10 +1863,10 @@ is_atom(Node, Value) ->
 
 atom_value(Node) ->
     case unwrap(Node) of
-	{atom, _, Name} ->
-	    Name;
-	Node1 ->
-	    data(Node1)
+  {atom, _, Name} ->
+      Name;
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -1941,10 +1941,10 @@ revert_tuple(Node) ->
 
 tuple_elements(Node) ->
     case unwrap(Node) of
-	{tuple, _, List} ->
-	    List;
-	Node1 ->
-	    data(Node1)
+  {tuple, _, List} ->
+      List;
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -2045,15 +2045,15 @@ revert_list(Node) ->
     Pos = get_pos(Node),
     P = list_prefix(Node),
     S = case list_suffix(Node) of
-	    none ->
-		revert_nil(set_pos(nil(), Pos));
-	    S1 ->
-		S1
-	end,
+      none ->
+    revert_nil(set_pos(nil(), Pos));
+      S1 ->
+    S1
+  end,
     lists:foldr(fun (X, A) ->
-			{cons, Pos, X, A}
-		end,
-		S, P).
+      {cons, Pos, X, A}
+    end,
+    S, P).
 
 %% =====================================================================
 %% @spec nil() -> syntaxTree()
@@ -2092,10 +2092,10 @@ revert_nil(Node) ->
 
 list_prefix(Node) ->
     case unwrap(Node) of
-	{cons, _, Head, _} ->
-	    [Head];
-	Node1 ->
-	    (data(Node1))#list.prefix
+  {cons, _, Head, _} ->
+      [Head];
+  Node1 ->
+      (data(Node1))#list.prefix
     end.
 
 
@@ -2121,17 +2121,17 @@ list_prefix(Node) ->
 
 list_suffix(Node) ->
     case unwrap(Node) of
-	{cons, _, _, Tail} ->
-	    %% If there could be comments/annotations on the tail node,
-	    %% we should not return `none' even if it has type `nil'.
-	    case Tail of
-		{nil, _} ->
-		    none;    % no interesting information is lost
-		_ ->
-		    Tail
-	    end;
-	Node1 ->
-	    (data(Node1))#list.suffix
+  {cons, _, _, Tail} ->
+      %% If there could be comments/annotations on the tail node,
+      %% we should not return `none' even if it has type `nil'.
+      case Tail of
+    {nil, _} ->
+        none;    % no interesting information is lost
+    _ ->
+        Tail
+      end;
+  Node1 ->
+      (data(Node1))#list.suffix
     end.
 
 
@@ -2158,13 +2158,13 @@ list_suffix(Node) ->
 
 cons(Head, Tail) ->
     case type(Tail) of
-	list ->
-	    copy_comments(Tail, list([Head | list_prefix(Tail)],
-				     list_suffix(Tail)));
-	nil ->
-	    copy_comments(Tail, list([Head]));
-	_ ->
-	    list([Head], Tail)
+  list ->
+      copy_comments(Tail, list([Head | list_prefix(Tail)],
+             list_suffix(Tail)));
+  nil ->
+      copy_comments(Tail, list([Head]));
+  _ ->
+      list([Head], Tail)
     end.
 
 
@@ -2203,14 +2203,14 @@ list_head(Node) ->
 list_tail(Node) ->
     Tail = list_suffix(Node),
     case tl(list_prefix(Node)) of
-	[] ->
-	    if Tail == none ->
-		    nil();    % implicit list terminator.
-	       true ->
-		    Tail
-	    end;
-	Es ->
-	    list(Es, Tail)    % `Es' is nonempty.
+  [] ->
+      if Tail == none ->
+        nil();    % implicit list terminator.
+         true ->
+        Tail
+      end;
+  Es ->
+      list(Es, Tail)    % `Es' is nonempty.
     end.
 
 
@@ -2225,9 +2225,9 @@ list_tail(Node) ->
 
 is_list_skeleton(Node) ->
     case type(Node) of
-	list -> true;
-	nil -> true;
-	_ -> false
+  list -> true;
+  nil -> true;
+  _ -> false
     end.
 
 
@@ -2255,17 +2255,17 @@ is_list_skeleton(Node) ->
 
 is_proper_list(Node) ->
     case type(Node) of
-	list ->
-	    case list_suffix(Node) of
-		none ->
-		    true;
-		Tail ->
-		    is_proper_list(Tail)
-	    end;
-	nil ->
-	    true;
-	_ ->
-	    false
+  list ->
+      case list_suffix(Node) of
+    none ->
+        true;
+    Tail ->
+        is_proper_list(Tail)
+      end;
+  nil ->
+      true;
+  _ ->
+      false
     end.
 
 
@@ -2287,16 +2287,16 @@ list_elements(Node) ->
 
 list_elements(Node, As) ->
     case type(Node) of
-	list ->
-	    As1 = lists:reverse(list_prefix(Node)) ++ As,
-	    case list_suffix(Node) of
-		none ->
-		    As1;
-		Tail ->
-		    list_elements(Tail, As1)
-	    end;
-	nil ->
-	    As
+  list ->
+      As1 = lists:reverse(list_prefix(Node)) ++ As,
+      case list_suffix(Node) of
+    none ->
+        As1;
+    Tail ->
+        list_elements(Tail, As1)
+      end;
+  nil ->
+      As
     end.
 
 
@@ -2322,16 +2322,16 @@ list_length(Node) ->
 
 list_length(Node, A) ->
     case type(Node) of
-	list ->
-	    A1 = length(list_prefix(Node)) + A,
-	    case list_suffix(Node) of
-		none ->
-		    A1;
-		Tail ->
-		    list_length(Tail, A1)
-	    end;
-	nil ->
-	    A
+  list ->
+      A1 = length(list_prefix(Node)) + A,
+      case list_suffix(Node) of
+    none ->
+        A1;
+    Tail ->
+        list_length(Tail, A1)
+      end;
+  nil ->
+      A
     end.
 
 
@@ -2354,24 +2354,24 @@ list_length(Node, A) ->
 
 normalize_list(Node) ->
     case type(Node) of
-	list ->
-	    P = list_prefix(Node),
-	    case list_suffix(Node) of
-		none ->
-		    copy_attrs(Node, normalize_list_1(P, nil()));
-		Tail ->
-		    Tail1 = normalize_list(Tail),
-		    copy_attrs(Node, normalize_list_1(P, Tail1))
-	    end;
-	_ ->
-	    Node
+  list ->
+      P = list_prefix(Node),
+      case list_suffix(Node) of
+    none ->
+        copy_attrs(Node, normalize_list_1(P, nil()));
+    Tail ->
+        Tail1 = normalize_list(Tail),
+        copy_attrs(Node, normalize_list_1(P, Tail1))
+      end;
+  _ ->
+      Node
     end.
 
 normalize_list_1(Es, Tail) ->
     lists:foldr(fun (X, A) ->
-			list([X], A)    % not `cons'!
-		end,
-		Tail, Es).
+      list([X], A)    % not `cons'!
+    end,
+    Tail, Es).
 
 
 %% =====================================================================
@@ -2391,31 +2391,31 @@ normalize_list_1(Es, Tail) ->
 
 compact_list(Node) ->
     case type(Node) of
-	list ->
-	    case list_suffix(Node) of
-		none ->
-		    Node;
-		Tail ->
-		    case type(Tail) of
-			list ->
-			    Tail1 = compact_list(Tail),
-			    Node1 = list(list_prefix(Node) ++
-					 list_prefix(Tail1),
-					 list_suffix(Tail1)),
-			    join_comments(Tail1,
-					  copy_attrs(Node,
-						     Node1));
-			nil ->
-			    Node1 = list(list_prefix(Node)),
-			    join_comments(Tail,
-					  copy_attrs(Node,
-						     Node1));
-			_ ->
-			    Node
-		    end
-	    end;
-	_ ->
-	    Node
+  list ->
+      case list_suffix(Node) of
+    none ->
+        Node;
+    Tail ->
+        case type(Tail) of
+      list ->
+          Tail1 = compact_list(Tail),
+          Node1 = list(list_prefix(Node) ++
+           list_prefix(Tail1),
+           list_suffix(Tail1)),
+          join_comments(Tail1,
+            copy_attrs(Node,
+                 Node1));
+      nil ->
+          Node1 = list(list_prefix(Node)),
+          join_comments(Tail,
+            copy_attrs(Node,
+                 Node1));
+      _ ->
+          Node
+        end
+      end;
+  _ ->
+      Node
     end.
 
 
@@ -2464,10 +2464,10 @@ revert_binary(Node) ->
 
 binary_fields(Node) ->
     case unwrap(Node) of
-	{bin, _, List} ->
-	    List;
-	Node1 ->
-	    data(Node1)
+  {bin, _, List} ->
+      List;
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -2541,20 +2541,20 @@ revert_binary_field(Node) ->
     Pos = get_pos(Node),
     Body = binary_field_body(Node),
     {Expr, Size} = case type(Body) of
-		       size_qualifier ->
-			   %% Note that size qualifiers are not
-			   %% revertible out of context.
-			   {size_qualifier_body(Body),
-			    size_qualifier_argument(Body)};
-		       _ ->
-			   {Body, default}
-		   end,
+           size_qualifier ->
+         %% Note that size qualifiers are not
+         %% revertible out of context.
+         {size_qualifier_body(Body),
+          size_qualifier_argument(Body)};
+           _ ->
+         {Body, default}
+       end,
     Types = case binary_field_types(Node) of
-		[] ->
-		    default;
-		Ts ->
-		    fold_binary_field_types(Ts)
-	    end,
+    [] ->
+        default;
+    Ts ->
+        fold_binary_field_types(Ts)
+      end,
     {bin_element, Pos, Expr, Size, Types}.
 
 
@@ -2567,14 +2567,14 @@ revert_binary_field(Node) ->
 
 binary_field_body(Node) ->
     case unwrap(Node) of
-	{bin_element, _, Body, Size, _} ->
-	    if Size == default ->
-		    Body;
-	       true ->
-		    size_qualifier(Body, Size)
-	    end;
-	Node1 ->
-	    (data(Node1))#binary_field.body
+  {bin_element, _, Body, Size, _} ->
+      if Size == default ->
+        Body;
+         true ->
+        size_qualifier(Body, Size)
+      end;
+  Node1 ->
+      (data(Node1))#binary_field.body
     end.
 
 
@@ -2590,14 +2590,14 @@ binary_field_body(Node) ->
 
 binary_field_types(Node) ->
     case unwrap(Node) of
-	{bin_element, Pos, _, _, Types} ->
-	    if Types == default ->
-		    [];
-	       true ->
-		    unfold_binary_field_types(Types, Pos)
-	    end;
-	Node1 ->
-	    (data(Node1))#binary_field.types
+  {bin_element, Pos, _, _, Types} ->
+      if Types == default ->
+        [];
+         true ->
+        unfold_binary_field_types(Types, Pos)
+      end;
+  Node1 ->
+      (data(Node1))#binary_field.types
     end.
 
 
@@ -2617,20 +2617,20 @@ binary_field_types(Node) ->
 
 binary_field_size(Node) ->
     case unwrap(Node) of
-	{bin_element, _, _, Size, _} ->
-	    if Size == default ->
-		    none;
-	       true ->
-		    Size
-	    end;
-	Node1 ->
-	    Body = (data(Node1))#binary_field.body,
-	    case type(Body) of
-		size_qualifier ->
-		    size_qualifier_argument(Body);
-		_ ->
-		    none
-	    end
+  {bin_element, _, _, Size, _} ->
+      if Size == default ->
+        none;
+         true ->
+        Size
+      end;
+  Node1 ->
+      Body = (data(Node1))#binary_field.body,
+      case type(Body) of
+    size_qualifier ->
+        size_qualifier_argument(Body);
+    _ ->
+        none
+      end
     end.
 
 
@@ -2653,7 +2653,7 @@ binary_field_size(Node) ->
 
 size_qualifier(Body, Size) ->
     tree(size_qualifier,
-	 #size_qualifier{body = Body, size = Size}).
+   #size_qualifier{body = Body, size = Size}).
 
 
 %% =====================================================================
@@ -2729,10 +2729,10 @@ revert_error_marker(Node) ->
 
 error_marker_info(Node) ->
     case unwrap(Node) of
-	{error, Error} ->
-	    Error;
-	T ->
-	    data(T)
+  {error, Error} ->
+      Error;
+  T ->
+      data(T)
     end.
 
 
@@ -2785,10 +2785,10 @@ revert_warning_marker(Node) ->
 
 warning_marker_info(Node) ->
     case unwrap(Node) of
-	{warning, Error} ->
-	    Error;
-	T ->
-	    data(T)
+  {warning, Error} ->
+      Error;
+  T ->
+      data(T)
     end.
 
 
@@ -2927,101 +2927,101 @@ revert_attribute(Node) ->
     Args = attribute_arguments(Node),
     Pos = get_pos(Node),
     case type(Name) of
-	atom ->
-	    revert_attribute_1(atom_value(Name), Args, Pos, Node);
-	_ ->
-	    Node
+  atom ->
+      revert_attribute_1(atom_value(Name), Args, Pos, Node);
+  _ ->
+      Node
     end.
 
 %% All the checking makes this part a bit messy:
 
 revert_attribute_1(module, [M], Pos, Node) ->
     case revert_module_name(M) of
-	{ok, A} ->
-	    {attribute, Pos, module, A};
-	error -> Node
+  {ok, A} ->
+      {attribute, Pos, module, A};
+  error -> Node
     end;
 revert_attribute_1(module, [M, List], Pos, Node) ->
     Vs = case is_list_skeleton(List) of
-	     true ->
-		 case is_proper_list(List) of
-		     true ->
-			 fold_variable_names(list_elements(List));
-		     false ->
-			 Node
-		 end;
-	     false ->
-		 Node
-	 end,
+       true ->
+     case is_proper_list(List) of
+         true ->
+       fold_variable_names(list_elements(List));
+         false ->
+       Node
+     end;
+       false ->
+     Node
+   end,
     case revert_module_name(M) of
-	{ok, A} ->
-	    {attribute, Pos, module, {A, Vs}};
-	error -> Node
+  {ok, A} ->
+      {attribute, Pos, module, {A, Vs}};
+  error -> Node
     end;
 revert_attribute_1(export, [List], Pos, Node) ->
     case is_list_skeleton(List) of
-	true ->
-	    case is_proper_list(List) of
-		true ->
-		    Fs = fold_function_names(list_elements(List)),
-		    {attribute, Pos, export, Fs};
-		false ->
-		    Node
-	    end;
-	false ->
-	    Node
+  true ->
+      case is_proper_list(List) of
+    true ->
+        Fs = fold_function_names(list_elements(List)),
+        {attribute, Pos, export, Fs};
+    false ->
+        Node
+      end;
+  false ->
+      Node
     end;
 revert_attribute_1(import, [M], Pos, Node) ->
     case revert_module_name(M) of
-	{ok, A} -> {attribute, Pos, import, A};
-	error -> Node
+  {ok, A} -> {attribute, Pos, import, A};
+  error -> Node
     end;
 revert_attribute_1(import, [A, List], Pos, Node) ->
     case type(A) of
-	atom ->
-	    case is_list_skeleton(List) of
-		true ->
-		    case is_proper_list(List) of
-			true ->
-			    Fs = fold_function_names(
-				   list_elements(List)),
-			    {attribute, Pos, import,
-			     {concrete(A), Fs}};
-			false ->
-			    Node
-		    end;
-		false ->
-		    Node
-	    end;
-	_ ->
-	    Node
+  atom ->
+      case is_list_skeleton(List) of
+    true ->
+        case is_proper_list(List) of
+      true ->
+          Fs = fold_function_names(
+           list_elements(List)),
+          {attribute, Pos, import,
+           {concrete(A), Fs}};
+      false ->
+          Node
+        end;
+    false ->
+        Node
+      end;
+  _ ->
+      Node
     end;
 revert_attribute_1(file, [A, Line], Pos, Node) ->
     case type(A) of
-	string ->
-	    case type(Line) of
-		integer ->
-		    {attribute, Pos, file,
-		     {concrete(A), concrete(Line)}};
-		_ ->
-		    Node
-	    end;
-	_ ->
-	    Node
+  string ->
+      case type(Line) of
+    integer ->
+        {attribute, Pos, file,
+         {concrete(A), concrete(Line)}};
+    _ ->
+        Node
+      end;
+  _ ->
+      Node
     end;
 revert_attribute_1(record, [A, Tuple], Pos, Node) ->
     case type(A) of
-	atom ->
-	    case type(Tuple) of
-		tuple ->
-		    Fs = fold_record_fields(
-			   tuple_elements(Tuple)),
-		    {attribute, Pos, record, {concrete(A), Fs}};
-		_ ->
-		    Node
-	    end;
-	_ ->
-	    Node
+  atom ->
+      case type(Tuple) of
+    tuple ->
+        Fs = fold_record_fields(
+         tuple_elements(Tuple)),
+        {attribute, Pos, record, {concrete(A), Fs}};
+    _ ->
+        Node
+      end;
+  _ ->
+      Node
     end;
 revert_attribute_1(N, [T], Pos, _) ->
     {attribute, Pos, N, concrete(T)};
@@ -3030,13 +3030,13 @@ revert_attribute_1(_, _, _, Node) ->
 
 revert_module_name(A) ->
     case type(A) of
-	atom ->
-	    {ok, concrete(A)};
-	qualified_name ->
-	    Ss = qualified_name_segments(A),
-	    {ok, [concrete(S) || S <- Ss]};
-	_ ->
-	    error
+  atom ->
+      {ok, concrete(A)};
+  qualified_name ->
+      Ss = qualified_name_segments(A),
+      {ok, [concrete(S) || S <- Ss]};
+  _ ->
+      error
     end.
 
 
@@ -3049,10 +3049,10 @@ revert_module_name(A) ->
 
 attribute_name(Node) ->
     case unwrap(Node) of
-	{attribute, Pos, Name, _} ->
-	    set_pos(atom(Name), Pos);
-	Node1 ->
-	    (data(Node1))#attribute.name
+  {attribute, Pos, Name, _} ->
+      set_pos(atom(Name), Pos);
+  Node1 ->
+      (data(Node1))#attribute.name
     end.
 
 
@@ -3071,61 +3071,61 @@ attribute_name(Node) ->
 
 attribute_arguments(Node) ->
     case unwrap(Node) of
-	{attribute, Pos, Name, Data} ->
-	    case Name of
-		module ->
-		    {M1, Vs} =
-			case Data of
-			    {M0, Vs0} ->
-				{M0, unfold_variable_names(Vs0, Pos)};
-			    M0 ->
-				{M0, none}
-			end,
-		    M2 = if is_list(M1) ->
-				 qualified_name([atom(A) || A <- M1]);
-			    true ->
-				 atom(M1)
-			 end,
-		    M = set_pos(M2, Pos),
-		    if Vs == none -> [M];
-		       true -> [M, set_pos(list(Vs), Pos)]
-		    end;
-		export ->
-		    [set_pos(
-		       list(unfold_function_names(Data, Pos)),
-		       Pos)];
-		import ->
-		    case Data of
-			{Module, Imports} ->
-			    [if is_list(Module) ->
-				     qualified_name([atom(A)
-						     || A <- Module]);
-				true ->
-				     set_pos(atom(Module), Pos)
-			     end,
-			     set_pos(
-			       list(unfold_function_names(Imports, Pos)),
-			       Pos)];
-			_ ->
-			    [qualified_name([atom(A) || A <- Data])]
-		    end;
-		file ->
-		    {File, Line} = Data,
-		    [set_pos(string(File), Pos),
-		     set_pos(integer(Line), Pos)];
-		record ->
-		    %% Note that we create a tuple as container
-		    %% for the second argument!
-		    {Type, Entries} = Data,
-		    [set_pos(atom(Type), Pos),
-		     set_pos(tuple(unfold_record_fields(Entries)),
-			     Pos)];
-		_ ->
-		    %% Standard single-term generic attribute.
-		    [set_pos(abstract(Data), Pos)]
-	    end;
-	Node1 ->
-	    (data(Node1))#attribute.args
+  {attribute, Pos, Name, Data} ->
+      case Name of
+    module ->
+        {M1, Vs} =
+      case Data of
+          {M0, Vs0} ->
+        {M0, unfold_variable_names(Vs0, Pos)};
+          M0 ->
+        {M0, none}
+      end,
+        M2 = if is_list(M1) ->
+         qualified_name([atom(A) || A <- M1]);
+          true ->
+         atom(M1)
+       end,
+        M = set_pos(M2, Pos),
+        if Vs == none -> [M];
+           true -> [M, set_pos(list(Vs), Pos)]
+        end;
+    export ->
+        [set_pos(
+           list(unfold_function_names(Data, Pos)),
+           Pos)];
+    import ->
+        case Data of
+      {Module, Imports} ->
+          [if is_list(Module) ->
+             qualified_name([atom(A)
+                 || A <- Module]);
+        true ->
+             set_pos(atom(Module), Pos)
+           end,
+           set_pos(
+             list(unfold_function_names(Imports, Pos)),
+             Pos)];
+      _ ->
+          [qualified_name([atom(A) || A <- Data])]
+        end;
+    file ->
+        {File, Line} = Data,
+        [set_pos(string(File), Pos),
+         set_pos(integer(Line), Pos)];
+    record ->
+        %% Note that we create a tuple as container
+        %% for the second argument!
+        {Type, Entries} = Data,
+        [set_pos(atom(Type), Pos),
+         set_pos(tuple(unfold_record_fields(Entries)),
+           Pos)];
+    _ ->
+        %% Standard single-term generic attribute.
+        [set_pos(abstract(Data), Pos)]
+      end;
+  Node1 ->
+      (data(Node1))#attribute.args
     end.
 
 
@@ -3148,7 +3148,7 @@ attribute_arguments(Node) ->
 
 arity_qualifier(Body, Arity) ->
     tree(arity_qualifier,
-	 #arity_qualifier{body = Body, arity = Arity}).
+   #arity_qualifier{body = Body, arity = Arity}).
 
 
 %% =====================================================================
@@ -3200,7 +3200,7 @@ arity_qualifier_argument(Node) ->
 
 module_qualifier(Module, Body) ->
     tree(module_qualifier,
-	 #module_qualifier{module = Module, body = Body}).
+   #module_qualifier{module = Module, body = Body}).
 
 revert_module_qualifier(Node) ->
     Pos = get_pos(Node),
@@ -3219,10 +3219,10 @@ revert_module_qualifier(Node) ->
 
 module_qualifier_argument(Node) ->
     case unwrap(Node) of
-	{remote, _, Module, _} ->
-	    Module;
-	Node1 ->
-	    (data(Node1))#module_qualifier.module
+  {remote, _, Module, _} ->
+      Module;
+  Node1 ->
+      (data(Node1))#module_qualifier.module
     end.
 
 
@@ -3236,10 +3236,10 @@ module_qualifier_argument(Node) ->
 
 module_qualifier_body(Node) ->
     case unwrap(Node) of
-	{remote, _, _, Body} ->
-	    Body;
-	Node1 ->
-	    (data(Node1))#module_qualifier.body
+  {remote, _, _, Body} ->
+      Body;
+  Node1 ->
+      (data(Node1))#module_qualifier.body
     end.
 
 
@@ -3283,10 +3283,10 @@ revert_qualified_name(Node) ->
 
 qualified_name_segments(Node) ->
     case unwrap(Node) of
-	{record_field, _, _, _} = Node1 ->
-	    unfold_qualified_name(Node1);
-	Node1 ->
-	    data(Node1)
+  {record_field, _, _, _} = Node1 ->
+      unfold_qualified_name(Node1);
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -3346,11 +3346,11 @@ revert_function(Node) ->
     Clauses = [revert_clause(C) || C <- function_clauses(Node)],
     Pos = get_pos(Node),
     case type(Name) of
-	atom ->
-	    A = function_arity(Node),
-	    {function, Pos, concrete(Name), A, Clauses};
-	_ ->
-	    Node
+  atom ->
+      A = function_arity(Node),
+      {function, Pos, concrete(Name), A, Clauses};
+  _ ->
+      Node
     end.
 
 
@@ -3366,10 +3366,10 @@ revert_function(Node) ->
 
 function_name(Node) ->
     case unwrap(Node) of
-	{function, Pos, Name, _, _} ->
-	    set_pos(atom(Name), Pos);
-	Node1 ->
-	    (data(Node1))#function.name
+  {function, Pos, Name, _, _} ->
+      set_pos(atom(Name), Pos);
+  Node1 ->
+      (data(Node1))#function.name
     end.
 
 
@@ -3387,10 +3387,10 @@ function_name(Node) ->
 
 function_clauses(Node) ->
     case unwrap(Node) of
-	{function, _, _, _, Clauses} ->
-	    Clauses;
-	Node1 ->
-	    (data(Node1))#function.clauses
+  {function, _, _, _, Clauses} ->
+      Clauses;
+  Node1 ->
+      (data(Node1))#function.clauses
     end.
 
 
@@ -3489,19 +3489,19 @@ clause(Guard, Body) ->
 
 clause(Patterns, Guard, Body) ->
     Guard1 = case Guard of
-		 [] ->
-		     none;
-		 [X | _] when is_list(X) ->
-		     disjunction(conjunction_list(Guard));
-		 [_ | _] ->
-		     %% Handle older forms also.
-		     conjunction(Guard);
-		 _ ->
-		     %% This should be `none' or a syntax tree.
-		     Guard
-	     end,
+     [] ->
+         none;
+     [X | _] when is_list(X) ->
+         disjunction(conjunction_list(Guard));
+     [_ | _] ->
+         %% Handle older forms also.
+         conjunction(Guard);
+     _ ->
+         %% This should be `none' or a syntax tree.
+         Guard
+       end,
     tree(clause, #clause{patterns = Patterns, guard = Guard1,
-			 body = Body}).
+       body = Body}).
 
 conjunction_list([L | Ls]) ->
     [conjunction(L) | conjunction_list(Ls)];
@@ -3511,20 +3511,20 @@ conjunction_list([]) ->
 revert_clause(Node) ->
     Pos = get_pos(Node),
     Guard = case clause_guard(Node) of
-		none ->
-		    [];
-		E ->
-		    case type(E) of
-			disjunction ->
-			    revert_clause_disjunction(E);
-			conjunction ->
-			    %% Only the top level expression is
-			    %% unfolded here; no recursion.
-			    [conjunction_body(E)];
-			_ ->
-			    [[E]]	% a single expression
-		    end
-	    end,
+    none ->
+        [];
+    E ->
+        case type(E) of
+      disjunction ->
+          revert_clause_disjunction(E);
+      conjunction ->
+          %% Only the top level expression is
+          %% unfolded here; no recursion.
+          [conjunction_body(E)];
+      _ ->
+          [[E]]	% a single expression
+        end
+      end,
     {clause, Pos, clause_patterns(Node), Guard,
      clause_body(Node)}.
 
@@ -3532,10 +3532,10 @@ revert_clause_disjunction(D) ->
     %% We handle conjunctions within a disjunction, but only at
     %% the top level; no recursion.
     [case type(E) of
-	 conjunction ->
-	     conjunction_body(E);
-	 _ ->
-	     [E]
+   conjunction ->
+       conjunction_body(E);
+   _ ->
+       [E]
      end
      || E <- disjunction_body(D)].
 
@@ -3544,23 +3544,23 @@ revert_try_clause(Node) ->
 
 fold_try_clause({clause, Pos, [P], Guard, Body}) ->
     P1 = case type(P) of
-	     class_qualifier ->
-		 {tuple, Pos, [class_qualifier_argument(P),
-			       class_qualifier_body(P),
-			       {var, Pos, '_'}]};
-	     _ ->
-		 {tuple, Pos, [{atom, Pos, throw}, P, {var, Pos, '_'}]}
-	 end,
+       class_qualifier ->
+     {tuple, Pos, [class_qualifier_argument(P),
+             class_qualifier_body(P),
+             {var, Pos, '_'}]};
+       _ ->
+     {tuple, Pos, [{atom, Pos, throw}, P, {var, Pos, '_'}]}
+   end,
     {clause, Pos, [P1], Guard, Body}.
 
 unfold_try_clauses(Cs) ->
     [unfold_try_clause(C) || C <- Cs].
 
 unfold_try_clause({clause, Pos, [{tuple, _, [{atom,_,throw}, V, _]}],
-		   Guard, Body}) ->
+       Guard, Body}) ->
     {clause, Pos, [V], Guard, Body};
 unfold_try_clause({clause, Pos, [{tuple, _, [C, V, _]}],
-		   Guard, Body}) ->
+       Guard, Body}) ->
     {clause, Pos, [class_qualifier(C, V)], Guard, Body}.
 
 
@@ -3574,10 +3574,10 @@ unfold_try_clause({clause, Pos, [{tuple, _, [C, V, _]}],
 
 clause_patterns(Node) ->
     case unwrap(Node) of
-	{clause, _, Patterns, _, _} ->
-	    Patterns;
-	Node1 ->
-	    (data(Node1))#clause.patterns
+  {clause, _, Patterns, _, _} ->
+      Patterns;
+  Node1 ->
+      (data(Node1))#clause.patterns
     end.
 
 
@@ -3594,16 +3594,16 @@ clause_patterns(Node) ->
 
 clause_guard(Node) ->
     case unwrap(Node) of
-	{clause, _, _, Guard, _} ->
-	    case Guard of
-		[] -> none;
-		[L | _] when is_list(L) ->
-		    disjunction(conjunction_list(Guard));
-		[_ | _] ->
-		    conjunction(Guard)
-	    end;
-	Node1 ->
-	    (data(Node1))#clause.guard
+  {clause, _, _, Guard, _} ->
+      case Guard of
+    [] -> none;
+    [L | _] when is_list(L) ->
+        disjunction(conjunction_list(Guard));
+    [_ | _] ->
+        conjunction(Guard)
+      end;
+  Node1 ->
+      (data(Node1))#clause.guard
     end.
 
 
@@ -3617,10 +3617,10 @@ clause_guard(Node) ->
 
 clause_body(Node) ->
     case unwrap(Node) of
-	{clause, _, _, _, Body} ->
-	    Body;
-	Node1 ->
-	    (data(Node1))#clause.body
+  {clause, _, _, _, Body} ->
+      Body;
+  Node1 ->
+      (data(Node1))#clause.body
     end.
 
 
@@ -3717,10 +3717,10 @@ revert_catch_expr(Node) ->
 
 catch_expr_body(Node) ->
     case unwrap(Node) of
-	{'catch', _, Expr} ->
-	    Expr;
-	Node1 ->
-	    data(Node1)
+  {'catch', _, Expr} ->
+      Expr;
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -3766,10 +3766,10 @@ revert_match_expr(Node) ->
 
 match_expr_pattern(Node) ->
     case unwrap(Node) of
-	{match, _, Pattern, _} ->
-	    Pattern;
-	Node1 ->
-	    (data(Node1))#match_expr.pattern
+  {match, _, Pattern, _} ->
+      Pattern;
+  Node1 ->
+      (data(Node1))#match_expr.pattern
     end.
 
 
@@ -3782,10 +3782,10 @@ match_expr_pattern(Node) ->
 
 match_expr_body(Node) ->
     case unwrap(Node) of
-	{match, _, _, Body} ->
-	    Body;
-	Node1 ->
-	    (data(Node1))#match_expr.body
+  {match, _, _, Body} ->
+      Body;
+  Node1 ->
+      (data(Node1))#match_expr.body
     end.
 
 
@@ -3868,7 +3868,7 @@ operator_literal(Node) ->
 
 infix_expr(Left, Operator, Right) ->
     tree(infix_expr, #infix_expr{operator = Operator, left = Left,
-				 right = Right}).
+         right = Right}).
 
 revert_infix_expr(Node) ->
     Pos = get_pos(Node),
@@ -3876,12 +3876,12 @@ revert_infix_expr(Node) ->
     Left = infix_expr_left(Node),
     Right = infix_expr_right(Node),
     case type(Operator) of
-	operator ->
-	    %% Note that the operator itself is not revertible out
-	    %% of context.
-	    {op, Pos, operator_name(Operator), Left, Right};
-	_ ->
-	    Node
+  operator ->
+      %% Note that the operator itself is not revertible out
+      %% of context.
+      {op, Pos, operator_name(Operator), Left, Right};
+  _ ->
+      Node
     end.
 
 
@@ -3895,10 +3895,10 @@ revert_infix_expr(Node) ->
 
 infix_expr_left(Node) ->
     case unwrap(Node) of
-	{op, _, _, Left, _} ->
-	    Left;
-	Node1 ->
-	    (data(Node1))#infix_expr.left
+  {op, _, _, Left, _} ->
+      Left;
+  Node1 ->
+      (data(Node1))#infix_expr.left
     end.
 
 
@@ -3912,10 +3912,10 @@ infix_expr_left(Node) ->
 
 infix_expr_operator(Node) ->
     case unwrap(Node) of
-	{op, Pos, Operator, _, _} ->
-	    set_pos(operator(Operator), Pos);
-	Node1 ->
-	    (data(Node1))#infix_expr.operator
+  {op, Pos, Operator, _, _} ->
+      set_pos(operator(Operator), Pos);
+  Node1 ->
+      (data(Node1))#infix_expr.operator
     end.
 
 
@@ -3929,10 +3929,10 @@ infix_expr_operator(Node) ->
 
 infix_expr_right(Node) ->
     case unwrap(Node) of
-	{op, _, _, _, Right} ->
-	    Right;
-	Node1 ->
-	    (data(Node1))#infix_expr.right
+  {op, _, _, _, Right} ->
+      Right;
+  Node1 ->
+      (data(Node1))#infix_expr.right
     end.
 
 
@@ -3964,19 +3964,19 @@ infix_expr_right(Node) ->
 
 prefix_expr(Operator, Argument) ->
     tree(prefix_expr, #prefix_expr{operator = Operator,
-				   argument = Argument}).
+           argument = Argument}).
 
 revert_prefix_expr(Node) ->
     Pos = get_pos(Node),
     Operator = prefix_expr_operator(Node),
     Argument = prefix_expr_argument(Node),
     case type(Operator) of
-	operator ->
-	    %% Note that the operator itself is not revertible out
-	    %% of context.
-	    {op, Pos, operator_name(Operator), Argument};
-	_ ->
-	    Node
+  operator ->
+      %% Note that the operator itself is not revertible out
+      %% of context.
+      {op, Pos, operator_name(Operator), Argument};
+  _ ->
+      Node
     end.
 
 
@@ -3990,10 +3990,10 @@ revert_prefix_expr(Node) ->
 
 prefix_expr_operator(Node) ->
     case unwrap(Node) of
-	{op, Pos, Operator, _} ->
-	    set_pos(operator(Operator), Pos);
-	Node1 ->
-	    (data(Node1))#prefix_expr.operator
+  {op, Pos, Operator, _} ->
+      set_pos(operator(Operator), Pos);
+  Node1 ->
+      (data(Node1))#prefix_expr.operator
     end.
 
 
@@ -4007,10 +4007,10 @@ prefix_expr_operator(Node) ->
 
 prefix_expr_argument(Node) ->
     case unwrap(Node) of
-	{op, _, _, Argument} ->
-	    Argument;
-	Node1 ->
-	    (data(Node1))#prefix_expr.argument
+  {op, _, _, Argument} ->
+      Argument;
+  Node1 ->
+      (data(Node1))#prefix_expr.argument
     end.
 
 
@@ -4104,17 +4104,17 @@ record_field_value(Node) ->
 
 record_index_expr(Type, Field) ->
     tree(record_index_expr, #record_index_expr{type = Type,
-					       field = Field}).
+                 field = Field}).
 
 revert_record_index_expr(Node) ->
     Pos = get_pos(Node),
     Type = record_index_expr_type(Node),
     Field = record_index_expr_field(Node),
     case type(Type) of
-	atom ->
-	    {record_index, Pos, concrete(Type), Field};
-	_ ->
-	    Node
+  atom ->
+      {record_index, Pos, concrete(Type), Field};
+  _ ->
+      Node
     end.
 
 
@@ -4128,10 +4128,10 @@ revert_record_index_expr(Node) ->
 
 record_index_expr_type(Node) ->
     case unwrap(Node) of
-	{record_index, Pos, Type, _} ->
-	    set_pos(atom(Type), Pos);
-	Node1 ->
-	    (data(Node1))#record_index_expr.type
+  {record_index, Pos, Type, _} ->
+      set_pos(atom(Type), Pos);
+  Node1 ->
+      (data(Node1))#record_index_expr.type
     end.
 
 
@@ -4145,10 +4145,10 @@ record_index_expr_type(Node) ->
 
 record_index_expr_field(Node) ->
     case unwrap(Node) of
-	{record_index, _, _, Field} ->
-	    Field;
-	Node1 ->
-	    (data(Node1))#record_index_expr.field
+  {record_index, _, _, Field} ->
+      Field;
+  Node1 ->
+      (data(Node1))#record_index_expr.field
     end.
 
 
@@ -4199,8 +4199,8 @@ record_access(Argument, Field) ->
 
 record_access(Argument, Type, Field) ->
     tree(record_access,#record_access{argument = Argument,
-				      type = Type,
-				      field = Field}).
+              type = Type,
+              field = Field}).
 
 revert_record_access(Node) ->
     Pos = get_pos(Node),
@@ -4208,15 +4208,15 @@ revert_record_access(Node) ->
     Type = record_access_type(Node),
     Field = record_access_field(Node),
     if Type == none ->
-	    {record_field, Pos, Argument, Field};
+      {record_field, Pos, Argument, Field};
        true ->
-	    case type(Type) of
-		atom ->
-		    {record_field, Pos,
-		     Argument, concrete(Type), Field};
-		_ ->
-		    Node
-	    end
+      case type(Type) of
+    atom ->
+        {record_field, Pos,
+         Argument, concrete(Type), Field};
+    _ ->
+        Node
+      end
     end.
 
 
@@ -4230,12 +4230,12 @@ revert_record_access(Node) ->
 
 record_access_argument(Node) ->
     case unwrap(Node) of
-	{record_field, _, Argument, _} ->
-	    Argument;
-	{record_field, _, Argument, _, _} ->
-	    Argument;
-	Node1 ->
-	    (data(Node1))#record_access.argument
+  {record_field, _, Argument, _} ->
+      Argument;
+  {record_field, _, Argument, _, _} ->
+      Argument;
+  Node1 ->
+      (data(Node1))#record_access.argument
     end.
 
 
@@ -4253,12 +4253,12 @@ record_access_argument(Node) ->
 
 record_access_type(Node) ->
     case unwrap(Node) of
-	{record_field, _, _, _} ->
-	    none;
-	{record_field, Pos, _, Type, _} ->
-	    set_pos(atom(Type), Pos);
-	Node1 ->
-	    (data(Node1))#record_access.type
+  {record_field, _, _, _} ->
+      none;
+  {record_field, Pos, _, Type, _} ->
+      set_pos(atom(Type), Pos);
+  Node1 ->
+      (data(Node1))#record_access.type
     end.
 
 
@@ -4272,12 +4272,12 @@ record_access_type(Node) ->
 
 record_access_field(Node) ->
     case unwrap(Node) of
-	{record_field, _, _, Field} ->
-	    Field;
-	{record_field, _, _, _, Field} ->
-	    Field;
-	Node1 ->
-	    (data(Node1))#record_access.field
+  {record_field, _, _, Field} ->
+      Field;
+  {record_field, _, _, _, Field} ->
+      Field;
+  Node1 ->
+      (data(Node1))#record_access.field
     end.
 
 
@@ -4334,7 +4334,7 @@ record_expr(Type, Fields) ->
 
 record_expr(Argument, Type, Fields) ->
     tree(record_expr, #record_expr{argument = Argument,
-				   type = Type, fields = Fields}).
+           type = Type, fields = Fields}).
 
 revert_record_expr(Node) ->
     Pos = get_pos(Node),
@@ -4342,17 +4342,17 @@ revert_record_expr(Node) ->
     Type = record_expr_type(Node),
     Fields = record_expr_fields(Node),
     case type(Type) of
-	atom ->
-	    T = concrete(Type),
-	    Fs = fold_record_fields(Fields),
-	    case Argument of
-		none ->
-		    {record, Pos, T, Fs};
-		_ ->
-		    {record, Pos, Argument, T, Fs}
-	    end;
-	_ ->
-	    Node
+  atom ->
+      T = concrete(Type),
+      Fs = fold_record_fields(Fields),
+      case Argument of
+    none ->
+        {record, Pos, T, Fs};
+    _ ->
+        {record, Pos, Argument, T, Fs}
+      end;
+  _ ->
+      Node
     end.
 
 
@@ -4370,12 +4370,12 @@ revert_record_expr(Node) ->
 
 record_expr_argument(Node) ->
     case unwrap(Node) of
-	{record, _, _, _} ->
-	    none;
-	{record, _, Argument, _, _} ->
-	    Argument;
-	Node1 ->
-	    (data(Node1))#record_expr.argument
+  {record, _, _, _} ->
+      none;
+  {record, _, Argument, _, _} ->
+      Argument;
+  Node1 ->
+      (data(Node1))#record_expr.argument
     end.
 
 
@@ -4391,12 +4391,12 @@ record_expr_argument(Node) ->
 
 record_expr_type(Node) ->
     case unwrap(Node) of
-	{record, Pos, Type, _} ->
-	    set_pos(atom(Type), Pos);
-	{record, Pos, _, Type, _} ->
-	    set_pos(atom(Type), Pos);
-	Node1 ->
-	    (data(Node1))#record_expr.type
+  {record, Pos, Type, _} ->
+      set_pos(atom(Type), Pos);
+  {record, Pos, _, Type, _} ->
+      set_pos(atom(Type), Pos);
+  Node1 ->
+      (data(Node1))#record_expr.type
     end.
 
 
@@ -4414,12 +4414,12 @@ record_expr_type(Node) ->
 
 record_expr_fields(Node) ->
     case unwrap(Node) of
-	{record, _, _, Fields} ->
-	    unfold_record_fields(Fields);
-	{record, _, _, _, Fields} ->
-	    unfold_record_fields(Fields);
-	Node1 ->
-	    (data(Node1))#record_expr.fields
+  {record, _, _, Fields} ->
+      unfold_record_fields(Fields);
+  {record, _, _, _, Fields} ->
+      unfold_record_fields(Fields);
+  Node1 ->
+      (data(Node1))#record_expr.fields
     end.
 
 
@@ -4475,7 +4475,7 @@ application(Module, Name, Arguments) ->
 
 application(Operator, Arguments) ->
     tree(application, #application{operator = Operator,
-				   arguments = Arguments}).
+           arguments = Arguments}).
 
 revert_application(Node) ->
     Pos = get_pos(Node),
@@ -4499,10 +4499,10 @@ revert_application(Node) ->
 
 application_operator(Node) ->
     case unwrap(Node) of
-	{call, _, Operator, _} ->
-	    Operator;
-	Node1 ->
-	    (data(Node1))#application.operator
+  {call, _, Operator, _} ->
+      Operator;
+  Node1 ->
+      (data(Node1))#application.operator
     end.
 
 
@@ -4516,10 +4516,10 @@ application_operator(Node) ->
 
 application_arguments(Node) ->
     case unwrap(Node) of
-	{call, _, _, Arguments} ->
-	    Arguments;
-	Node1 ->
-	    (data(Node1))#application.arguments
+  {call, _, _, Arguments} ->
+      Arguments;
+  Node1 ->
+      (data(Node1))#application.arguments
     end.
 
 
@@ -4569,10 +4569,10 @@ revert_list_comp(Node) ->
 
 list_comp_template(Node) ->
     case unwrap(Node) of
-	{lc, _, Template, _} ->
-	    Template;
-	Node1 ->
-	    (data(Node1))#list_comp.template
+  {lc, _, Template, _} ->
+      Template;
+  Node1 ->
+      (data(Node1))#list_comp.template
     end.
 
 
@@ -4586,10 +4586,10 @@ list_comp_template(Node) ->
 
 list_comp_body(Node) ->
     case unwrap(Node) of
-	{lc, _, _, Body} ->
-	    Body;
-	Node1 ->
-	    (data(Node1))#list_comp.body
+  {lc, _, _, Body} ->
+      Body;
+  Node1 ->
+      (data(Node1))#list_comp.body
     end.
 
 
@@ -4630,10 +4630,10 @@ revert_query_expr(Node) ->
 
 query_expr_body(Node) ->
     case unwrap(Node) of
-	{'query', _, Body} ->
-	    Body;
-	Node1 ->
-	    data(Node1)
+  {'query', _, Body} ->
+      Body;
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -4688,11 +4688,11 @@ revert_rule(Node) ->
     Clauses = [revert_clause(C) || C <- rule_clauses(Node)],
     Pos = get_pos(Node),
     case type(Name) of
-	atom ->
-	    A = rule_arity(Node),
-	    {rule, Pos, concrete(Name), A, Clauses};
-	_ ->
-	    Node
+  atom ->
+      A = rule_arity(Node),
+      {rule, Pos, concrete(Name), A, Clauses};
+  _ ->
+      Node
     end.
 
 
@@ -4705,10 +4705,10 @@ revert_rule(Node) ->
 
 rule_name(Node) ->
     case unwrap(Node) of
-	{rule, Pos, Name, _, _} ->
-	    set_pos(atom(Name), Pos);
-	Node1 ->
-	    (data(Node1))#rule.name
+  {rule, Pos, Name, _, _} ->
+      set_pos(atom(Name), Pos);
+  Node1 ->
+      (data(Node1))#rule.name
     end.
 
 %% =====================================================================
@@ -4720,10 +4720,10 @@ rule_name(Node) ->
 
 rule_clauses(Node) ->
     case unwrap(Node) of
-	{rule, _, _, _, Clauses} ->
-	    Clauses;
-	Node1 ->
-	    (data(Node1))#rule.clauses
+  {rule, _, _, _, Clauses} ->
+      Clauses;
+  Node1 ->
+      (data(Node1))#rule.clauses
     end.
 
 %% =====================================================================
@@ -4792,10 +4792,10 @@ revert_generator(Node) ->
 
 generator_pattern(Node) ->
     case unwrap(Node) of
-	{generate, _, Pattern, _} ->
-	    Pattern;
-	Node1 ->
-	    (data(Node1))#generator.pattern
+  {generate, _, Pattern, _} ->
+      Pattern;
+  Node1 ->
+      (data(Node1))#generator.pattern
     end.
 
 
@@ -4808,10 +4808,10 @@ generator_pattern(Node) ->
 
 generator_body(Node) ->
     case unwrap(Node) of
-	{generate, _, _, Body} ->
-	    Body;
-	Node1 ->
-	    (data(Node1))#generator.body
+  {generate, _, _, Body} ->
+      Body;
+  Node1 ->
+      (data(Node1))#generator.body
     end.
 
 
@@ -4854,10 +4854,10 @@ revert_block_expr(Node) ->
 
 block_expr_body(Node) ->
     case unwrap(Node) of
-	{block, _, Body} ->
-	    Body;
-	Node1 ->
-	    data(Node1)
+  {block, _, Body} ->
+      Body;
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -4913,10 +4913,10 @@ revert_if_expr(Node) ->
 
 if_expr_clauses(Node) ->
     case unwrap(Node) of
-	{'if', _, Clauses} ->
-	    Clauses;
-	Node1 ->
-	    data(Node1)
+  {'if', _, Clauses} ->
+      Clauses;
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -4959,7 +4959,7 @@ if_expr_clauses(Node) ->
 
 case_expr(Argument, Clauses) ->
     tree(case_expr, #case_expr{argument = Argument,
-			       clauses = Clauses}).
+             clauses = Clauses}).
 
 revert_case_expr(Node) ->
     Pos = get_pos(Node),
@@ -4977,10 +4977,10 @@ revert_case_expr(Node) ->
 
 case_expr_argument(Node) ->
     case unwrap(Node) of
-	{'case', _, Argument, _} ->
-	    Argument;
-	Node1 ->
-	    (data(Node1))#case_expr.argument
+  {'case', _, Argument, _} ->
+      Argument;
+  Node1 ->
+      (data(Node1))#case_expr.argument
     end.
 
 
@@ -4994,10 +4994,10 @@ case_expr_argument(Node) ->
 
 case_expr_clauses(Node) ->
     case unwrap(Node) of
-	{'case', _, _, Clauses} ->
-	    Clauses;
-	Node1 ->
-	    (data(Node1))#case_expr.clauses
+  {'case', _, _, Clauses} ->
+      Clauses;
+  Node1 ->
+      (data(Node1))#case_expr.clauses
     end.
 
 
@@ -5053,10 +5053,10 @@ revert_cond_expr(Node) ->
 
 cond_expr_clauses(Node) ->
     case unwrap(Node) of
-	{'cond', _, Clauses} ->
-	    Clauses;
-	Node1 ->
-	    data(Node1)
+  {'cond', _, Clauses} ->
+      Clauses;
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -5125,12 +5125,12 @@ receive_expr(Clauses, Timeout, Action) ->
     %% `receive_expr_action' should in that case return the empty
     %% list regardless.
     Action1 = case Timeout of
-		  none -> [];
-		  _ -> Action
-	      end,
+      none -> [];
+      _ -> Action
+        end,
     tree(receive_expr, #receive_expr{clauses = Clauses,
-				     timeout = Timeout,
-				     action = Action1}).
+             timeout = Timeout,
+             action = Action1}).
 
 revert_receive_expr(Node) ->
     Pos = get_pos(Node),
@@ -5138,10 +5138,10 @@ revert_receive_expr(Node) ->
     Timeout = receive_expr_timeout(Node),
     Action = receive_expr_action(Node),
     case Timeout of
-	none ->
-	    {'receive', Pos, Clauses};
-	_ ->
-	    {'receive', Pos, Clauses, Timeout, Action}
+  none ->
+      {'receive', Pos, Clauses};
+  _ ->
+      {'receive', Pos, Clauses, Timeout, Action}
     end.
 
 
@@ -5156,12 +5156,12 @@ revert_receive_expr(Node) ->
 
 receive_expr_clauses(Node) ->
     case unwrap(Node) of
-	{'receive', _, Clauses} ->
-	    Clauses;
-	{'receive', _, Clauses, _, _} ->
-	    Clauses;
-	Node1 ->
-	    (data(Node1))#receive_expr.clauses
+  {'receive', _, Clauses} ->
+      Clauses;
+  {'receive', _, Clauses, _, _} ->
+      Clauses;
+  Node1 ->
+      (data(Node1))#receive_expr.clauses
     end.
 
 
@@ -5180,12 +5180,12 @@ receive_expr_clauses(Node) ->
 
 receive_expr_timeout(Node) ->
     case unwrap(Node) of
-	{'receive', _, _} ->
-	    none;
-	{'receive', _, _, Timeout, _} ->
-	    Timeout;
-	Node1 ->
-	    (data(Node1))#receive_expr.timeout
+  {'receive', _, _} ->
+      none;
+  {'receive', _, _, Timeout, _} ->
+      Timeout;
+  Node1 ->
+      (data(Node1))#receive_expr.timeout
     end.
 
 
@@ -5201,12 +5201,12 @@ receive_expr_timeout(Node) ->
 
 receive_expr_action(Node) ->
     case unwrap(Node) of
-	{'receive', _, _} ->
-	    [];
-	{'receive', _, _, _, Action} ->
-	    Action;
-	Node1 ->
-	    (data(Node1))#receive_expr.action
+  {'receive', _, _} ->
+      [];
+  {'receive', _, _, _, Action} ->
+      Action;
+  Node1 ->
+      (data(Node1))#receive_expr.action
     end.
 
 
@@ -5299,9 +5299,9 @@ try_after_expr(Body, After) ->
 
 try_expr(Body, Clauses, Handlers, After) ->
     tree(try_expr, #try_expr{body = Body,
-			     clauses = Clauses,
-			     handlers = Handlers,
-			     'after' = After}).
+           clauses = Clauses,
+           handlers = Handlers,
+           'after' = After}).
 
 revert_try_expr(Node) ->
     Pos = get_pos(Node),
@@ -5322,10 +5322,10 @@ revert_try_expr(Node) ->
 
 try_expr_body(Node) ->
     case unwrap(Node) of
-	{'try', _, Body, _, _, _} ->
-	    Body;
-	Node1 ->
-	    (data(Node1))#try_expr.body
+  {'try', _, Body, _, _, _} ->
+      Body;
+  Node1 ->
+      (data(Node1))#try_expr.body
     end.
 
 
@@ -5341,10 +5341,10 @@ try_expr_body(Node) ->
 
 try_expr_clauses(Node) ->
     case unwrap(Node) of
-	{'try', _, _, Clauses, _, _} ->
-	    Clauses;
-	Node1 ->
-	    (data(Node1))#try_expr.clauses
+  {'try', _, _, Clauses, _, _} ->
+      Clauses;
+  Node1 ->
+      (data(Node1))#try_expr.clauses
     end.
 
 
@@ -5358,10 +5358,10 @@ try_expr_clauses(Node) ->
 
 try_expr_handlers(Node) ->
     case unwrap(Node) of
-	{'try', _, _, _, Handlers, _} ->
-	    unfold_try_clauses(Handlers);
-	Node1 ->
-	    (data(Node1))#try_expr.handlers
+  {'try', _, _, _, Handlers, _} ->
+      unfold_try_clauses(Handlers);
+  Node1 ->
+      (data(Node1))#try_expr.handlers
     end.
 
 
@@ -5375,10 +5375,10 @@ try_expr_handlers(Node) ->
 
 try_expr_after(Node) ->
     case unwrap(Node) of
-	{'try', _, _, _, _, After} ->
-	    After;
-	Node1 ->
-	    (data(Node1))#try_expr.'after'
+  {'try', _, _, _, _, After} ->
+      After;
+  Node1 ->
+      (data(Node1))#try_expr.'after'
     end.
 
 
@@ -5402,7 +5402,7 @@ try_expr_after(Node) ->
 
 class_qualifier(Class, Body) ->
     tree(class_qualifier,
-	 #class_qualifier{class = Class, body = Body}).
+   #class_qualifier{class = Class, body = Body}).
 
 
 %% =====================================================================
@@ -5473,18 +5473,18 @@ revert_implicit_fun(Node) ->
     Pos = get_pos(Node),
     Name = implicit_fun_name(Node),
     case type(Name) of
-	arity_qualifier ->
-	    F = arity_qualifier_body(Name),
-	    A = arity_qualifier_argument(Name),
-	    case {type(F), type(A)} of
-		{atom, integer} ->
-		    {'fun', Pos,
-		     {function, concrete(F), concrete(A)}};
-		_ ->
-		    Node
-	    end;
-	_ ->
-	    Node
+  arity_qualifier ->
+      F = arity_qualifier_body(Name),
+      A = arity_qualifier_argument(Name),
+      case {type(F), type(A)} of
+    {atom, integer} ->
+        {'fun', Pos,
+         {function, concrete(F), concrete(A)}};
+    _ ->
+        Node
+      end;
+  _ ->
+      Node
     end.
 
 
@@ -5501,11 +5501,11 @@ revert_implicit_fun(Node) ->
 
 implicit_fun_name(Node) ->
     case unwrap(Node) of
-	{'fun', Pos, {function, Atom, Arity}} ->
-	    arity_qualifier(set_pos(atom(Atom), Pos),
-			    set_pos(integer(Arity), Pos));
-	Node1 ->
-	    data(Node1)
+  {'fun', Pos, {function, Atom, Arity}} ->
+      arity_qualifier(set_pos(atom(Atom), Pos),
+          set_pos(integer(Arity), Pos));
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -5559,10 +5559,10 @@ revert_fun_expr(Node) ->
 
 fun_expr_clauses(Node) ->
     case unwrap(Node) of
-	{'fun', _, {clauses, Clauses}} ->
-	    Clauses;
-	Node1 ->
-	    data(Node1)
+  {'fun', _, {clauses, Clauses}} ->
+      Clauses;
+  Node1 ->
+      data(Node1)
     end.
 
 
@@ -5706,10 +5706,10 @@ macro_arguments(Node) ->
 
 abstract([H | T]) when is_integer(H) ->
     case is_printable([H | T]) of
-	true ->
-	    string([H | T]);
-	false ->
-	    abstract_tail(H, T)
+  true ->
+      string([H | T]);
+  false ->
+      abstract_tail(H, T)
     end;
 abstract([H | T]) ->
     abstract_tail(H, T);
@@ -5767,41 +5767,41 @@ abstract_tail(H, T) ->
 
 concrete(Node) ->
     case type(Node) of
-	atom ->
-	    atom_value(Node);
-	integer ->
-	    integer_value(Node);
-	float ->
-	    float_value(Node);
-	char ->
-	    char_value(Node);
-	string ->
-	    string_value(Node);
-	nil ->
-	    [];
-	list ->
-	    [concrete(list_head(Node))
-	     | concrete(list_tail(Node))];
-	tuple ->
-	    list_to_tuple(concrete_list(tuple_elements(Node)));
-	binary ->
-	    Fs = [revert_binary_field(
-		    binary_field(binary_field_body(F),
-				 case binary_field_size(F) of
-				     none -> none;
-				     S ->
-					 revert(S)
-				 end,
-				 binary_field_types(F)))
-		  || F <- binary_fields(Node)],
-	    {value, B, _} =
-		eval_bits:expr_grp(Fs, [],
-				   fun(F, _) ->
-					   {value, concrete(F), []}
-				   end, [], true),
-	    B;
-    	_ ->
-	    erlang:error({badarg, Node})
+  atom ->
+      atom_value(Node);
+  integer ->
+      integer_value(Node);
+  float ->
+      float_value(Node);
+  char ->
+      char_value(Node);
+  string ->
+      string_value(Node);
+  nil ->
+      [];
+  list ->
+      [concrete(list_head(Node))
+       | concrete(list_tail(Node))];
+  tuple ->
+      list_to_tuple(concrete_list(tuple_elements(Node)));
+  binary ->
+      Fs = [revert_binary_field(
+        binary_field(binary_field_body(F),
+         case binary_field_size(F) of
+             none -> none;
+             S ->
+           revert(S)
+         end,
+         binary_field_types(F)))
+      || F <- binary_fields(Node)],
+      {value, B, _} =
+    eval_bits:expr_grp(Fs, [],
+           fun(F, _) ->
+             {value, concrete(F), []}
+           end, [], true),
+      B;
+      _ ->
+      erlang:error({badarg, Node})
     end.
 
 concrete_list([E | Es]) ->
@@ -5823,29 +5823,29 @@ concrete_list([]) ->
 
 is_literal(T) ->
     case type(T) of
-	atom ->
-	    true;
-	integer ->
-	    true;
-	float ->
-	    true;
-	char->
-	    true;
-	string ->
-	    true;
-	nil ->
-	    true;
-	list ->
-	    case is_literal(list_head(T)) of
-		true ->
-		    is_literal(list_tail(T));
-		false ->
-		    false
-	    end;
-	tuple ->
-	    lists:all(fun is_literal/1, tuple_elements(T));
-	_ ->
-	    false
+  atom ->
+      true;
+  integer ->
+      true;
+  float ->
+      true;
+  char->
+      true;
+  string ->
+      true;
+  nil ->
+      true;
+  list ->
+      case is_literal(list_head(T)) of
+    true ->
+        is_literal(list_tail(T));
+    false ->
+        false
+      end;
+  tuple ->
+      lists:all(fun is_literal/1, tuple_elements(T));
+  _ ->
+      false
     end.
 
 
@@ -5871,26 +5871,26 @@ is_literal(T) ->
 
 revert(Node) ->
     case is_tree(Node) of
-	false ->
-	    %% Just remove any wrapper. `erl_parse' nodes never contain
-	    %% abstract syntax tree nodes as subtrees.
-	    unwrap(Node);
-	true ->
-	    case is_leaf(Node) of
-		true ->
-		    revert_root(Node);
-		false ->
-		    %% First revert the subtrees, where possible.
-		    %% (Sometimes, subtrees cannot be reverted out of
-		    %% context, and the real work will be done when the
-		    %% parent node is reverted.)
-		    Gs = [[revert(X) || X <- L] || L <- subtrees(Node)],
+  false ->
+      %% Just remove any wrapper. `erl_parse' nodes never contain
+      %% abstract syntax tree nodes as subtrees.
+      unwrap(Node);
+  true ->
+      case is_leaf(Node) of
+    true ->
+        revert_root(Node);
+    false ->
+        %% First revert the subtrees, where possible.
+        %% (Sometimes, subtrees cannot be reverted out of
+        %% context, and the real work will be done when the
+        %% parent node is reverted.)
+        Gs = [[revert(X) || X <- L] || L <- subtrees(Node)],
 
-		    %% Then reconstruct the node from the reverted
-		    %% parts, and revert the node itself.
-		    Node1 = update_tree(Node, Gs),
-		    revert_root(Node1)
-	    end
+        %% Then reconstruct the node from the reverted
+        %% parts, and revert the node itself.
+        Node1 = update_tree(Node, Gs),
+        revert_root(Node1)
+      end
     end.
 
 %% Note: The concept of "compatible root node" is not strictly defined.
@@ -5901,91 +5901,91 @@ revert(Node) ->
 
 revert_root(Node) ->
     case type(Node) of
-	application ->
-	    revert_application(Node);
-	atom ->
-	    revert_atom(Node);
-	attribute ->
-	    revert_attribute(Node);
-	binary ->
-	    revert_binary(Node);
-	binary_field ->
-	    revert_binary_field(Node);
-	block_expr ->
-	    revert_block_expr(Node);
-	case_expr ->
-	    revert_case_expr(Node);
-	catch_expr ->
-	    revert_catch_expr(Node);
-	char ->
-	    revert_char(Node);
-	clause ->
-	    revert_clause(Node);
-	cond_expr ->
-	    revert_cond_expr(Node);
-	eof_marker ->
-	    revert_eof_marker(Node);
-	error_marker ->
-	    revert_error_marker(Node);
-	float ->
-	    revert_float(Node);
-	fun_expr ->
-	    revert_fun_expr(Node);
-	function ->
-	    revert_function(Node);
-	generator ->
-	    revert_generator(Node);
-	if_expr ->
-	    revert_if_expr(Node);
-	implicit_fun ->
-	    revert_implicit_fun(Node);
-	infix_expr ->
-	    revert_infix_expr(Node);
-	integer ->
-	    revert_integer(Node);
-	list ->
-	    revert_list(Node);
-	list_comp ->
-	    revert_list_comp(Node);
-	match_expr ->
-	    revert_match_expr(Node);
-	module_qualifier ->
-	    revert_module_qualifier(Node);
-	nil ->
-	    revert_nil(Node);
-	parentheses ->
-	    revert_parentheses(Node);
-	prefix_expr ->
-	    revert_prefix_expr(Node);
-	qualified_name ->
-	    revert_qualified_name(Node);
-	query_expr ->
-	    revert_query_expr(Node);
-	receive_expr ->
-	    revert_receive_expr(Node);
-	record_access ->
-	    revert_record_access(Node);
-	record_expr ->
-	    revert_record_expr(Node);
-	record_index_expr ->
-	    revert_record_index_expr(Node);
-	rule ->
-	    revert_rule(Node);
-	string ->
-	    revert_string(Node);
-	try_expr ->
-	    revert_try_expr(Node);
-	tuple ->
-	    revert_tuple(Node);
-	underscore ->
-	    revert_underscore(Node);
-	variable ->
-	    revert_variable(Node);
-	warning_marker ->
-	    revert_warning_marker(Node);
-	_ ->
-	    %% Non-revertible new-form node
-	    Node
+  application ->
+      revert_application(Node);
+  atom ->
+      revert_atom(Node);
+  attribute ->
+      revert_attribute(Node);
+  binary ->
+      revert_binary(Node);
+  binary_field ->
+      revert_binary_field(Node);
+  block_expr ->
+      revert_block_expr(Node);
+  case_expr ->
+      revert_case_expr(Node);
+  catch_expr ->
+      revert_catch_expr(Node);
+  char ->
+      revert_char(Node);
+  clause ->
+      revert_clause(Node);
+  cond_expr ->
+      revert_cond_expr(Node);
+  eof_marker ->
+      revert_eof_marker(Node);
+  error_marker ->
+      revert_error_marker(Node);
+  float ->
+      revert_float(Node);
+  fun_expr ->
+      revert_fun_expr(Node);
+  function ->
+      revert_function(Node);
+  generator ->
+      revert_generator(Node);
+  if_expr ->
+      revert_if_expr(Node);
+  implicit_fun ->
+      revert_implicit_fun(Node);
+  infix_expr ->
+      revert_infix_expr(Node);
+  integer ->
+      revert_integer(Node);
+  list ->
+      revert_list(Node);
+  list_comp ->
+      revert_list_comp(Node);
+  match_expr ->
+      revert_match_expr(Node);
+  module_qualifier ->
+      revert_module_qualifier(Node);
+  nil ->
+      revert_nil(Node);
+  parentheses ->
+      revert_parentheses(Node);
+  prefix_expr ->
+      revert_prefix_expr(Node);
+  qualified_name ->
+      revert_qualified_name(Node);
+  query_expr ->
+      revert_query_expr(Node);
+  receive_expr ->
+      revert_receive_expr(Node);
+  record_access ->
+      revert_record_access(Node);
+  record_expr ->
+      revert_record_expr(Node);
+  record_index_expr ->
+      revert_record_index_expr(Node);
+  rule ->
+      revert_rule(Node);
+  string ->
+      revert_string(Node);
+  try_expr ->
+      revert_try_expr(Node);
+  tuple ->
+      revert_tuple(Node);
+  underscore ->
+      revert_underscore(Node);
+  variable ->
+      revert_variable(Node);
+  warning_marker ->
+      revert_warning_marker(Node);
+  _ ->
+      %% Non-revertible new-form node
+      Node
     end.
 
 
@@ -6010,34 +6010,34 @@ revert_forms(L) when is_list(L) ->
     revert_forms(form_list(L));
 revert_forms(T) ->
     case type(T) of
-	form_list ->
-	    T1 = flatten_form_list(T),
-	    case catch {ok, revert_forms_1(form_list_elements(T1))} of
-		{ok, Fs} ->
-		    Fs;
-		{error, R} ->
-		    erlang:error({error, R});
-		{'EXIT', R} ->
-		    exit(R);
-		R ->
-		    throw(R)
-	    end;
-	_ ->
-	    erlang:error({badarg, T})
+  form_list ->
+      T1 = flatten_form_list(T),
+      case catch {ok, revert_forms_1(form_list_elements(T1))} of
+    {ok, Fs} ->
+        Fs;
+    {error, R} ->
+        erlang:error({error, R});
+    {'EXIT', R} ->
+        exit(R);
+    R ->
+        throw(R)
+      end;
+  _ ->
+      erlang:error({badarg, T})
     end.
 
 revert_forms_1([T | Ts]) ->
     case type(T) of
-	comment ->
-	    revert_forms_1(Ts);
-	_ ->
-	    T1 = revert(T),
-	    case is_tree(T1) of
-		true ->
-		    throw({error, T1});
-		false ->
-		    [T1 | revert_forms_1(Ts)]
-	    end
+  comment ->
+      revert_forms_1(Ts);
+  _ ->
+      T1 = revert(T),
+      case is_tree(T1) of
+    true ->
+        throw({error, T1});
+    false ->
+        [T1 | revert_forms_1(Ts)]
+      end
     end;
 revert_forms_1([]) ->
     [].
@@ -6106,156 +6106,156 @@ revert_forms_1([]) ->
 
 subtrees(T) ->
     case is_leaf(T) of
-	true ->
-	    [];
-	false ->
-	    case type(T) of
-		application ->
-		    [[application_operator(T)],
-		     application_arguments(T)];
-		arity_qualifier ->
-		    [[arity_qualifier_body(T)],
-		     [arity_qualifier_argument(T)]];
-		attribute ->
-		    case attribute_arguments(T) of
-			none ->
-			    [[attribute_name(T)]];
-			As ->
-			    [[attribute_name(T)], As]
-		    end;
-		binary ->
-		    [binary_fields(T)];
-		binary_field ->
-		    case binary_field_types(T) of
-			[] ->
-			    [[binary_field_body(T)]];
-			Ts ->
-			    [[binary_field_body(T)],
-			     Ts]
-		    end;
-		block_expr ->
-		    [block_expr_body(T)];
-		case_expr ->
-		    [[case_expr_argument(T)],
-		     case_expr_clauses(T)];
-		catch_expr ->
-		    [[catch_expr_body(T)]];
-		class_qualifier ->
-		    [[class_qualifier_argument(T)],
-		     [class_qualifier_body(T)]];
-		clause ->
-		    case clause_guard(T) of
-			none ->
-			    [clause_patterns(T), clause_body(T)];
-			G ->
-			    [clause_patterns(T), [G],
-			     clause_body(T)]
-		    end;
-		cond_expr ->
-		    [cond_expr_clauses(T)];
-		conjunction ->
-		    [conjunction_body(T)];
-		disjunction ->
-		    [disjunction_body(T)];
-		form_list ->
-		    [form_list_elements(T)];
-		fun_expr ->
-		    [fun_expr_clauses(T)];
-		function ->
-		    [[function_name(T)], function_clauses(T)];
-		generator ->
-		    [[generator_pattern(T)], [generator_body(T)]];
-		if_expr ->
-		    [if_expr_clauses(T)];
-		implicit_fun ->
-		    [[implicit_fun_name(T)]];
-		infix_expr ->
-		    [[infix_expr_left(T)],
-		     [infix_expr_operator(T)],
-		     [infix_expr_right(T)]];
-		list ->
-		    case list_suffix(T) of
-			none ->
-			    [list_prefix(T)];
-			S ->
-			    [list_prefix(T), [S]]
-		    end;
-		list_comp ->
-		    [[list_comp_template(T)], list_comp_body(T)];
-		macro ->
-		    case macro_arguments(T) of
-			none ->
-			    [[macro_name(T)]];
-			As ->
-			    [[macro_name(T)], As]
-		    end;
-		match_expr ->
-		    [[match_expr_pattern(T)],
-		     [match_expr_body(T)]];
-		module_qualifier ->
-		    [[module_qualifier_argument(T)],
-		     [module_qualifier_body(T)]];
-		parentheses ->
-		    [[parentheses_body(T)]];
-		prefix_expr ->
-		    [[prefix_expr_operator(T)],
-		     [prefix_expr_argument(T)]];
-		qualified_name ->
-		    [qualified_name_segments(T)];
-		query_expr ->
-		    [[query_expr_body(T)]];
-		receive_expr ->
-		    case receive_expr_timeout(T) of
-			none ->
-			    [receive_expr_clauses(T)];
-			E ->
-			    [receive_expr_clauses(T),
-			     [E],
-			     receive_expr_action(T)]
-		    end;
-		record_access ->
-		    case record_access_type(T) of
-			none ->
-			    [[record_access_argument(T)],
-			     [record_access_field(T)]];
-			R ->
-			    [[record_access_argument(T)],
-			     [R],
-			     [record_access_field(T)]]
-		    end;
-		record_expr ->
-		    case record_expr_argument(T) of
-			none ->
-			    [[record_expr_type(T)],
-			     record_expr_fields(T)];
-			V ->
-			    [[V],
-			     [record_expr_type(T)],
-			     record_expr_fields(T)]
-		    end;
-		record_field ->
-		    case record_field_value(T) of
-			none ->
-			    [[record_field_name(T)]];
-			V ->
-			    [[record_field_name(T)], [V]]
-		    end;
-		record_index_expr ->
-		    [[record_index_expr_type(T)],
-		     [record_index_expr_field(T)]];
-		rule ->
-		    [[rule_name(T)], rule_clauses(T)];
-		size_qualifier ->
-		    [[size_qualifier_body(T)],
-		     [size_qualifier_argument(T)]];
-		try_expr ->
-		    [try_expr_body(T),
-		     try_expr_clauses(T),
-		     try_expr_handlers(T),
-		     try_expr_after(T)];
-		tuple ->
-		    [tuple_elements(T)]
-	    end
+  true ->
+      [];
+  false ->
+      case type(T) of
+    application ->
+        [[application_operator(T)],
+         application_arguments(T)];
+    arity_qualifier ->
+        [[arity_qualifier_body(T)],
+         [arity_qualifier_argument(T)]];
+    attribute ->
+        case attribute_arguments(T) of
+      none ->
+          [[attribute_name(T)]];
+      As ->
+          [[attribute_name(T)], As]
+        end;
+    binary ->
+        [binary_fields(T)];
+    binary_field ->
+        case binary_field_types(T) of
+      [] ->
+          [[binary_field_body(T)]];
+      Ts ->
+          [[binary_field_body(T)],
+           Ts]
+        end;
+    block_expr ->
+        [block_expr_body(T)];
+    case_expr ->
+        [[case_expr_argument(T)],
+         case_expr_clauses(T)];
+    catch_expr ->
+        [[catch_expr_body(T)]];
+    class_qualifier ->
+        [[class_qualifier_argument(T)],
+         [class_qualifier_body(T)]];
+    clause ->
+        case clause_guard(T) of
+      none ->
+          [clause_patterns(T), clause_body(T)];
+      G ->
+          [clause_patterns(T), [G],
+           clause_body(T)]
+        end;
+    cond_expr ->
+        [cond_expr_clauses(T)];
+    conjunction ->
+        [conjunction_body(T)];
+    disjunction ->
+        [disjunction_body(T)];
+    form_list ->
+        [form_list_elements(T)];
+    fun_expr ->
+        [fun_expr_clauses(T)];
+    function ->
+        [[function_name(T)], function_clauses(T)];
+    generator ->
+        [[generator_pattern(T)], [generator_body(T)]];
+    if_expr ->
+        [if_expr_clauses(T)];
+    implicit_fun ->
+        [[implicit_fun_name(T)]];
+    infix_expr ->
+        [[infix_expr_left(T)],
+         [infix_expr_operator(T)],
+         [infix_expr_right(T)]];
+    list ->
+        case list_suffix(T) of
+      none ->
+          [list_prefix(T)];
+      S ->
+          [list_prefix(T), [S]]
+        end;
+    list_comp ->
+        [[list_comp_template(T)], list_comp_body(T)];
+    macro ->
+        case macro_arguments(T) of
+      none ->
+          [[macro_name(T)]];
+      As ->
+          [[macro_name(T)], As]
+        end;
+    match_expr ->
+        [[match_expr_pattern(T)],
+         [match_expr_body(T)]];
+    module_qualifier ->
+        [[module_qualifier_argument(T)],
+         [module_qualifier_body(T)]];
+    parentheses ->
+        [[parentheses_body(T)]];
+    prefix_expr ->
+        [[prefix_expr_operator(T)],
+         [prefix_expr_argument(T)]];
+    qualified_name ->
+        [qualified_name_segments(T)];
+    query_expr ->
+        [[query_expr_body(T)]];
+    receive_expr ->
+        case receive_expr_timeout(T) of
+      none ->
+          [receive_expr_clauses(T)];
+      E ->
+          [receive_expr_clauses(T),
+           [E],
+           receive_expr_action(T)]
+        end;
+    record_access ->
+        case record_access_type(T) of
+      none ->
+          [[record_access_argument(T)],
+           [record_access_field(T)]];
+      R ->
+          [[record_access_argument(T)],
+           [R],
+           [record_access_field(T)]]
+        end;
+    record_expr ->
+        case record_expr_argument(T) of
+      none ->
+          [[record_expr_type(T)],
+           record_expr_fields(T)];
+      V ->
+          [[V],
+           [record_expr_type(T)],
+           record_expr_fields(T)]
+        end;
+    record_field ->
+        case record_field_value(T) of
+      none ->
+          [[record_field_name(T)]];
+      V ->
+          [[record_field_name(T)], [V]]
+        end;
+    record_index_expr ->
+        [[record_index_expr_type(T)],
+         [record_index_expr_field(T)]];
+    rule ->
+        [[rule_name(T)], rule_clauses(T)];
+    size_qualifier ->
+        [[size_qualifier_body(T)],
+         [size_qualifier_argument(T)]];
+    try_expr ->
+        [try_expr_body(T),
+         try_expr_clauses(T),
+         try_expr_handlers(T),
+         try_expr_after(T)];
+    tuple ->
+        [tuple_elements(T)]
+      end
     end.
 
 
@@ -6397,41 +6397,41 @@ make_tree(tuple, [E]) -> tuple(E).
 meta(T) ->
     %% First of all we check for metavariables:
     case type(T) of
-	variable ->
-	    case lists:member(meta_var, get_ann(T)) of
-		false ->
-		    meta_precomment(T);
-		true ->
-		    %% A meta-variable: remove the first found
-		    %% `meta_var' annotation, but otherwise leave
-		    %% the node unchanged.
-		    set_ann(T, lists:delete(meta_var, get_ann(T)))
-	    end;
-	_ ->
-	    case has_comments(T) of
-		true ->
-		    meta_precomment(T);
-		false ->
-		    meta_1(T)
-	    end
+  variable ->
+      case lists:member(meta_var, get_ann(T)) of
+    false ->
+        meta_precomment(T);
+    true ->
+        %% A meta-variable: remove the first found
+        %% `meta_var' annotation, but otherwise leave
+        %% the node unchanged.
+        set_ann(T, lists:delete(meta_var, get_ann(T)))
+      end;
+  _ ->
+      case has_comments(T) of
+    true ->
+        meta_precomment(T);
+    false ->
+        meta_1(T)
+      end
     end.
 
 meta_precomment(T) ->
     case get_precomments(T) of
-	[] ->
-	    meta_postcomment(T);
-	Cs ->
-	    meta_call(set_precomments,
-		      [meta_postcomment(T), list(meta_list(Cs))])
+  [] ->
+      meta_postcomment(T);
+  Cs ->
+      meta_call(set_precomments,
+          [meta_postcomment(T), list(meta_list(Cs))])
     end.
 
 meta_postcomment(T) ->
     case get_postcomments(T) of
-	[] ->
-	    meta_0(T);
-	Cs ->
-	    meta_call(set_postcomments,
-		      [meta_0(T), list(meta_list(Cs))])
+  [] ->
+      meta_0(T);
+  Cs ->
+      meta_call(set_postcomments,
+          [meta_0(T), list(meta_list(Cs))])
     end.
 
 meta_0(T) ->
@@ -6441,59 +6441,59 @@ meta_1(T) ->
     %% First handle leaf nodes and other common cases, in order to
     %% generate compact code.
     case type(T) of
-	atom ->
-	    meta_call(atom, [T]);
-	char ->
-	    meta_call(char, [T]);
-	comment ->
-	    meta_call(comment, [list([string(S)
-				      || S <- comment_text(T)])]);
-	eof_marker ->
-	    meta_call(eof_marker, []);
-	error_marker ->
-	    meta_call(error_marker,
-		      [abstract(error_marker_info(T))]);
-	float ->
-	    meta_call(float, [T]);
-	integer ->
-	    meta_call(integer, [T]);
-	nil ->
-	    meta_call(nil, []);
-	operator ->
-	    meta_call(operator, [atom(operator_name(T))]);
-	string ->
-	    meta_call(string, [T]);
-	text ->
-	    meta_call(text, [string(text_string(T))]);
-	underscore ->
-	    meta_call(underscore, []);
-	variable ->
-	    meta_call(variable, [string(variable_name(T))]);
-	warning_marker ->
-	    meta_call(warning_marker,
-		      [abstract(warning_marker_info(T))]);
-	list ->
-	    case list_suffix(T) of
-		none ->
-		    meta_call(list,
-			      [list(meta_list(list_prefix(T)))]);
-		S ->
-		    meta_call(list,
-			      [list(meta_list(list_prefix(T))),
-			       meta(S)])
-	    end;
-	tuple ->
-	    meta_call(tuple,
-		      [list(meta_list(tuple_elements(T)))]);
-	Type ->
-	    %% All remaining cases are handled using `subtrees'
-	    %% and `make_tree' to decompose and reassemble the
-	    %% nodes. More cases could of course be handled
-	    %% directly to get a more compact output, but I can't
-	    %% be bothered right now.
-	    meta_call(make_tree,
-		      [abstract(Type),
-		       meta_subtrees(subtrees(T))])
+  atom ->
+      meta_call(atom, [T]);
+  char ->
+      meta_call(char, [T]);
+  comment ->
+      meta_call(comment, [list([string(S)
+              || S <- comment_text(T)])]);
+  eof_marker ->
+      meta_call(eof_marker, []);
+  error_marker ->
+      meta_call(error_marker,
+          [abstract(error_marker_info(T))]);
+  float ->
+      meta_call(float, [T]);
+  integer ->
+      meta_call(integer, [T]);
+  nil ->
+      meta_call(nil, []);
+  operator ->
+      meta_call(operator, [atom(operator_name(T))]);
+  string ->
+      meta_call(string, [T]);
+  text ->
+      meta_call(text, [string(text_string(T))]);
+  underscore ->
+      meta_call(underscore, []);
+  variable ->
+      meta_call(variable, [string(variable_name(T))]);
+  warning_marker ->
+      meta_call(warning_marker,
+          [abstract(warning_marker_info(T))]);
+  list ->
+      case list_suffix(T) of
+    none ->
+        meta_call(list,
+            [list(meta_list(list_prefix(T)))]);
+    S ->
+        meta_call(list,
+            [list(meta_list(list_prefix(T))),
+             meta(S)])
+      end;
+  tuple ->
+      meta_call(tuple,
+          [list(meta_list(tuple_elements(T)))]);
+  Type ->
+      %% All remaining cases are handled using `subtrees'
+      %% and `make_tree' to decompose and reassemble the
+      %% nodes. More cases could of course be handled
+      %% directly to get a more compact output, but I can't
+      %% be bothered right now.
+      meta_call(make_tree,
+          [abstract(Type),
+           meta_subtrees(subtrees(T))])
     end.
 
 meta_list([T | Ts]) ->
@@ -6503,8 +6503,8 @@ meta_list([]) ->
 
 meta_subtrees(Gs) ->
     list([list([meta(T)
-		|| T <- G])
-	  || G <- Gs]).
+    || T <- G])
+    || G <- Gs]).
 
 meta_call(F, As) ->
     application(atom(?MODULE), atom(F), As).
@@ -6618,7 +6618,7 @@ data(T) -> erlang:error({badarg, T}).
 wrap(Node) ->
     %% We assume that Node is an old-school `erl_parse' tree.
     #wrapper{type = type(Node), attr = #attr{pos = get_pos(Node)},
-	     tree = Node}.
+       tree = Node}.
 
 
 %% =====================================================================
@@ -6659,9 +6659,9 @@ is_printable(S) ->
 
 unfold_function_names(Ns, Pos) ->
     F = fun ({farity, _Pos, Atom, Arity}) ->
-		N = arity_qualifier(atom(Atom), integer(Arity)),
-		set_pos(N, Pos)
-	end,
+    N = arity_qualifier(atom(Atom), integer(Arity)),
+    set_pos(N, Pos)
+  end,
     [F(N) || N <- Ns].
 
 fold_function_names(Ns) ->
@@ -6671,8 +6671,8 @@ fold_function_name(N) ->
     Name = arity_qualifier_body(N),
     Arity = arity_qualifier_argument(N),
     case (type(Name) == atom) and (type(Arity) == integer) of
-	true ->
-	    {concrete(Name), concrete(Arity)}
+  true ->
+      {concrete(Name), concrete(Arity)}
     end.
 
 fold_variable_names(Vs) ->
@@ -6688,8 +6688,8 @@ unfold_variable_names(Vs, Pos) ->
 
 is_qualified_name({record_field, _, L, R}) ->
     case is_qualified_name(L) of
-	true -> is_qualified_name(R);
-	false -> false
+  true -> is_qualified_name(R);
+  false -> false
     end;
 is_qualified_name({atom, _, _}) -> true;
 is_qualified_name(_) -> false.
@@ -6706,7 +6706,7 @@ fold_qualified_name([S | Ss], Pos) ->
 
 fold_qualified_name([S | Ss], Pos, Ack) ->
     fold_qualified_name(Ss, Pos, {record_field, Pos, Ack,
-				  {atom, Pos, atom_value(S)}});
+          {atom, Pos, atom_value(S)}});
 fold_qualified_name([], _Pos, Ack) ->
     Ack.
 
@@ -6727,10 +6727,10 @@ fold_record_field(F) ->
     Pos = get_pos(F),
     Name = record_field_name(F),
     case record_field_value(F) of
-	none ->
-	    {record_field, Pos, Name};
-	Value ->
-	    {record_field, Pos, Name, Value}
+  none ->
+      {record_field, Pos, Name};
+  Value ->
+      {record_field, Pos, Name, Value}
     end.
 
 unfold_record_fields(Fs) ->
@@ -6746,11 +6746,11 @@ fold_binary_field_types(Ts) ->
 
 fold_binary_field_type(Node) ->
     case type(Node) of
-	size_qualifier ->
-	    {concrete(size_qualifier_body(Node)),
-	     concrete(size_qualifier_argument(Node))};
-	_ ->
-	    concrete(Node)
+  size_qualifier ->
+      {concrete(size_qualifier_body(Node)),
+       concrete(size_qualifier_argument(Node))};
+  _ ->
+      concrete(Node)
     end.
 
 unfold_binary_field_types(Ts, Pos) ->

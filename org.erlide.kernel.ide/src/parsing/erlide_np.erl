@@ -35,7 +35,7 @@ cac_form(function, Tokens, Exports, Imports) ->
 cac_form(attribute, Attribute, _Exports, _Imports) ->
     get_attribute(Attribute);
 cac_form(other, [#token{value=Name, line=Line, offset=Offset, length=Length} | _]=T,
-    _Exports, _Imports) ->
+         _Exports, _Imports) ->
     {#other{pos={{Line, Line, Offset}, Length}, name=Name, tokens=T}, [], [], []};
 cac_form(_, _D, _E, _I) ->
     {eof, [], [], []}.
@@ -100,7 +100,7 @@ get_attribute([#token{kind='-', offset=Offset, line=Line},
     get_other_attribute(Name, Offset, Line, Attribute, Args);
 get_attribute([_, #token{kind=atom, value=Name,
                          line=Line, offset=Offset}
-               | _] = Attribute) ->
+                            | _] = Attribute) ->
     #token{line=LastLine, offset=LastOffset,
            length=LastLength} = last_not_eof(Attribute),
     PosLength = LastOffset - Offset + LastLength,
@@ -220,12 +220,12 @@ get_between(L, A, B) ->
     lists:reverse(get_upto(lists:reverse(R), A)).
 
 get_upto(L, Delim) ->
-        get_upto(L, Delim, []).
+    get_upto(L, Delim, []).
 
 get_upto([], _Delim, _Acc) ->
     [];
 get_upto([#token{kind=Delim} | _], Delim, Acc) ->
-        lists:reverse(Acc);
+    lists:reverse(Acc);
 get_upto([T | Rest], Delim, Acc) ->
     get_upto(Rest, Delim, [T | Acc]).
 
@@ -359,43 +359,43 @@ get_refs_in_code([_ | Rest], Acc) ->
     get_refs_in_code(Rest, Acc).
 
 make_var_def_ref([], Var) ->
-        #var_def{name=Var};
+    #var_def{name=Var};
 make_var_def_ref([{_, _, #var_def{name=Var}} | _], Var) ->
-        #var_ref{name=Var};
+    #var_ref{name=Var};
 make_var_def_ref([{_, _, #var_ref{name=Var}} | _], Var) ->
-        #var_ref{name=Var};
+    #var_ref{name=Var};
 make_var_def_ref([_ | Rest], Var) ->
-        make_var_def_ref(Rest, Var).
+    make_var_def_ref(Rest, Var).
 
 %% find type references in spec, type and opaque
 %% also VERY simple, type(), ?M, #R, only
 %% returns proper refs
 get_refs(Tokens, Name, Arity) ->
-        get_refs(Tokens, Name, Arity, []).
+    get_refs(Tokens, Name, Arity, []).
 
 get_refs([], _, _, Acc) ->
     lists:reverse(Acc);
 get_refs([#token{kind=macro, value=M, offset=Offset, length=Length} | Rest],
-                 Name, Arity, Acc) ->
+         Name, Arity, Acc) ->
     Ref = make_ref(Offset, Length, #macro_ref{name=M}, Name, Arity),
     get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([#token{kind='#', offset=Offset},
           #token{kind=atom, value=R, offset=Offset2, length=Length2} | Rest],
-                 Name, Arity, Acc) ->
+         Name, Arity, Acc) ->
     Ref = make_ref(Offset, Length2+Offset2-Offset, #record_ref{name=R}, Name, Arity),
     get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
-                  #token{kind=atom, value=T, offset=Offset2, length=Length2},
-                  #token{kind='('}, #token{kind=')'} | Rest], Name, Arity, Acc) ->
+          #token{kind=atom, value=T, offset=Offset2, length=Length2},
+          #token{kind='('}, #token{kind=')'} | Rest], Name, Arity, Acc) ->
     Ref = make_ref(Offset, Length2+Offset2-Offset,
                    #type_ref{module=M, type=T}, Name, Arity),
     get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([#token{kind=atom, value=T, offset=Offset, length=Length},
-                  #token{kind='('}, #token{kind=')'} | Rest], Name, Arity, Acc) ->
+          #token{kind='('}, #token{kind=')'} | Rest], Name, Arity, Acc) ->
     Ref = make_ref(Offset, Length, #type_ref{module='_', type=T}, Name, Arity),
     get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([#token{kind=variable, value=V, offset=Offset, length=Length} | Rest],
-                 Name, Arity, Acc) ->
+         Name, Arity, Acc) ->
     Ref = make_ref(Offset, Length, #var_ref{name=V}, Name, Arity),
     get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([_ | Rest], Name, Arity, Acc) ->

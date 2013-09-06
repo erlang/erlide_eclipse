@@ -119,23 +119,23 @@ recomment_forms(Tree, Cs, Insert) when is_list(Tree) ->
     recomment_forms(erl_syntax:form_list(Tree), Cs, Insert);
 recomment_forms(Tree, Cs, Insert) ->
     case erl_syntax:type(Tree) of
-	form_list ->
-	    Tree1 = erl_syntax:flatten_form_list(Tree),
-	    Node = build_tree(Tree1),
+  form_list ->
+      Tree1 = erl_syntax:flatten_form_list(Tree),
+      Node = build_tree(Tree1),
 
-	    %% Here we make a small assumption about the substructure of
-	    %% a `form_list' tree: it has exactly one group of subtrees.
-	    [Node1] = node_subtrees(Node),
-	    List = filter_forms(node_subtrees(Node1)),
-	    List1 = recomment_forms_1(Cs, List, Insert),
-	    revert_tree(set_node_subtrees(Node,
-					  [set_node_subtrees(Node1,
-							     List1)]));
-	_ ->
-	    %% Not a form list - just call `recomment_tree' and
-	    %% append any leftover comments.
-	    {Tree1, Cs1} = recomment_tree(Tree, Cs),
-	    revert_tree(append_comments(Cs1, Tree1))
+      %% Here we make a small assumption about the substructure of
+      %% a `form_list' tree: it has exactly one group of subtrees.
+      [Node1] = node_subtrees(Node),
+      List = filter_forms(node_subtrees(Node1)),
+      List1 = recomment_forms_1(Cs, List, Insert),
+      revert_tree(set_node_subtrees(Node,
+            [set_node_subtrees(Node1,
+                   List1)]));
+  _ ->
+      %% Not a form list - just call `recomment_tree' and
+      %% append any leftover comments.
+      {Tree1, Cs1} = recomment_tree(Tree, Cs),
+      revert_tree(append_comments(Cs1, Tree1))
     end.
 
 append_comments([C | Cs], Tree) ->
@@ -158,29 +158,29 @@ recomment_forms_2(C, [Node | Ns], Insert) ->
     Max = node_max(Node),
     N = comment_delta(Text),
     if L > Max ->
-	    [Node | recomment_forms_2(C, Ns, Insert)];
+      [Node | recomment_forms_2(C, Ns, Insert)];
        L + N < Min - 1 ->
-	    %% At least one empty line between the current form
-	    %% and the comment, so we make it a standalone.
-	    [standalone_comment(C), Node | Ns];
+      %% At least one empty line between the current form
+      %% and the comment, so we make it a standalone.
+      [standalone_comment(C), Node | Ns];
        L < Min ->
-	    %% The comment line should be above this node.
-	    %% (This duplicates what insert/5 would have done.)
-	    [node_add_precomment(C, Node) | Ns];
+      %% The comment line should be above this node.
+      %% (This duplicates what insert/5 would have done.)
+      [node_add_precomment(C, Node) | Ns];
        Col =< 1, L =< Min, L + N >= Min ->
-	    %% This is a conflict - the "first" token of the node
-	    %% overlaps with some comment line, but the comment
-	    %% started at column 1.
-	    Node1 = standalone_comment(C),
-	    if L < Min ->
-		    [Node1, Node | Ns];
-	       true ->
-		    [Node, Node1 | Ns]
-	    end;
+      %% This is a conflict - the "first" token of the node
+      %% overlaps with some comment line, but the comment
+      %% started at column 1.
+      Node1 = standalone_comment(C),
+      if L < Min ->
+        [Node1, Node | Ns];
+         true ->
+        [Node, Node1 | Ns]
+      end;
        Insert == true ->
-	    [insert(Node, L, Col, Ind, C) | Ns];
+      [insert(Node, L, Col, Ind, C) | Ns];
        true ->
-	    [Node | Ns]    % skipping non-toplevel comment
+      [Node | Ns]    % skipping non-toplevel comment
     end;
 recomment_forms_2(C, [], _Top) ->
     [standalone_comment(C)].
@@ -190,17 +190,17 @@ recomment_forms_2(C, [], _Top) ->
 
 standalone_comment({L, Col, _Ind, Text}) ->
     leaf_node(L, L + comment_delta(Text),
-	      erl_syntax:set_pos(erl_syntax:comment(Col - 1, Text), L)).
+        erl_syntax:set_pos(erl_syntax:comment(Col - 1, Text), L)).
 
 %% Compute delta between first and last line of a comment, given
 %% the lines of text.
 
 comment_delta(Text) ->
     case length(Text) of
-	N when N > 0 ->
-	    N - 1;
-	_ ->
-	    0    % avoid negative delta
+  N when N > 0 ->
+      N - 1;
+  _ ->
+      0    % avoid negative delta
     end.
 
 %% This kills line information for program forms that do not come from
@@ -214,31 +214,31 @@ filter_forms(Fs) ->
 
 filter_forms([F | Fs], Kill, S) ->
     case check_file_attr(F) of
-	{true, A1, A2} ->
-	    S1 = case S#filter.file of
-		     undefined ->
-			 S#filter{file = A1, line = A2};
-		     _ ->
-			 S
-		 end,
-	    if S1#filter.file == A1,
-	       S1#filter.line =< A2 ->
-		    [F | filter_forms(Fs, false,
-				      S1#filter{line = A2})];
-	       Kill == true ->
-		    [node_kill_range(F)
-		     | filter_forms(Fs, true, S1)];
-	       true ->
-		    [F | filter_forms(Fs, true, S1)]
-	    end;
-	false ->
-	    case Kill of
-		true ->
-		    [node_kill_range(F)
-		     | filter_forms(Fs, Kill, S)];
-		false ->
-		    [F | filter_forms(Fs, Kill, S)]
-	    end
+  {true, A1, A2} ->
+      S1 = case S#filter.file of
+         undefined ->
+       S#filter{file = A1, line = A2};
+         _ ->
+       S
+     end,
+      if S1#filter.file == A1,
+         S1#filter.line =< A2 ->
+        [F | filter_forms(Fs, false,
+              S1#filter{line = A2})];
+         Kill == true ->
+        [node_kill_range(F)
+         | filter_forms(Fs, true, S1)];
+         true ->
+        [F | filter_forms(Fs, true, S1)]
+      end;
+  false ->
+      case Kill of
+    true ->
+        [node_kill_range(F)
+         | filter_forms(Fs, Kill, S)];
+    false ->
+        [F | filter_forms(Fs, Kill, S)]
+      end
     end;
 filter_forms([], _, _) ->
     [].
@@ -247,49 +247,49 @@ filter_forms([], _, _) ->
 
 check_file_attr(F) ->
     case node_type(F) of
-	tree_node ->
-	    case tree_node_type(F) of
-		attribute ->
-		    case node_subtrees(F) of
-			[L1, L2 | _] ->
-			    check_file_attr_1(L1, L2);
-			_ ->
-			    false
-		    end;
-		_ ->
-		    false
-	    end;
-	_ ->
-	    false
+  tree_node ->
+      case tree_node_type(F) of
+    attribute ->
+        case node_subtrees(F) of
+      [L1, L2 | _] ->
+          check_file_attr_1(L1, L2);
+      _ ->
+          false
+        end;
+    _ ->
+        false
+      end;
+  _ ->
+      false
     end.
 
 check_file_attr_1(L1, L2) ->
     case node_subtrees(L1) of
-	[N1 | _] ->
-	    N2 = leaf_node_value(N1),
-	    case erl_syntax:type(N2) of
-		atom ->
-		    case erl_syntax:atom_value(N2) of
-			file ->
-			    check_file_attr_2(L2);
-			_ ->
-			    false
-		    end;
-		_ ->
-		    false
-	    end;
-	_ ->
-	    false
+  [N1 | _] ->
+      N2 = leaf_node_value(N1),
+      case erl_syntax:type(N2) of
+    atom ->
+        case erl_syntax:atom_value(N2) of
+      file ->
+          check_file_attr_2(L2);
+      _ ->
+          false
+        end;
+    _ ->
+        false
+      end;
+  _ ->
+      false
     end.
 
 check_file_attr_2(L) ->
     case node_subtrees(L) of
-	[N1, N2 | _] ->
-	    T1 = erl_syntax:concrete(revert_tree(N1)),
-	    T2 = erl_syntax:concrete(revert_tree(N2)),
-	    {true, T1, T2};
-	_ ->
-	    false
+  [N1, N2 | _] ->
+      T1 = erl_syntax:concrete(revert_tree(N1)),
+      T2 = erl_syntax:concrete(revert_tree(N2)),
+      {true, T1, T2};
+  _ ->
+      false
     end.
 
 
@@ -336,7 +336,7 @@ recomment_tree(Tree, Cs) ->
 %% part makes no assumptions about how tree nodes and list nodes
 %% are nested; only `build_tree' and `revert_tree' knows about
 %% such things.
-    
+
 insert_comments(Cs, Node) ->
     insert_comments(Cs, Node, []).
 
@@ -344,10 +344,10 @@ insert_comments([C | Cs], Node, Cs1) ->
     {L, Col, Ind, _Text} = C,
     Max = node_max(Node),
     if L =< Max ->
-	    insert_comments(Cs, insert(Node, L, Col, Ind, C),
-			    Cs1);
+      insert_comments(Cs, insert(Node, L, Col, Ind, C),
+          Cs1);
        true ->
-	    insert_comments(Cs, Node, [C | Cs1])
+      insert_comments(Cs, Node, [C | Cs1])
     end;
 insert_comments([], Node, Cs) ->
     {Node, lists:reverse(Cs)}.
@@ -357,44 +357,44 @@ insert_comments([], Node, Cs) ->
 
 insert(Node, L, Col, Ind, C) ->
     case node_type(Node) of
-	list_node ->
-	    %% We cannot attach comments directly to a list node.
-	    set_node_subtrees(Node,
-			      insert_in_list(node_subtrees(Node),
-					     L, Col, Ind, C));
-	_ ->
-	    %% We check if the comment belongs before, or inside
-	    %% the range of the current node.
-	    Min = node_min(Node),
-	    Max = node_max(Node),
-	    if L < Min ->
-		    %% The comment line should be above this node.
-		    node_add_precomment(C, Node);
-	       Min == Max  ->
-		    %% The whole node is on a single line (this
-		    %% should usually catch all leaf nodes), so we
-		    %% postfix the comment.
-		    node_add_postcomment(C, Node);
-	       true ->
-		    %% The comment should be inserted in the
-		    %% subrange of the node, i.e., attached either
-		    %% to the node itself, or to one of its
-		    %% subtrees.
-		    insert_1(Node, L, Col, Ind, C)
-	    end
+  list_node ->
+      %% We cannot attach comments directly to a list node.
+      set_node_subtrees(Node,
+            insert_in_list(node_subtrees(Node),
+               L, Col, Ind, C));
+  _ ->
+      %% We check if the comment belongs before, or inside
+      %% the range of the current node.
+      Min = node_min(Node),
+      Max = node_max(Node),
+      if L < Min ->
+        %% The comment line should be above this node.
+        node_add_precomment(C, Node);
+         Min == Max  ->
+        %% The whole node is on a single line (this
+        %% should usually catch all leaf nodes), so we
+        %% postfix the comment.
+        node_add_postcomment(C, Node);
+         true ->
+        %% The comment should be inserted in the
+        %% subrange of the node, i.e., attached either
+        %% to the node itself, or to one of its
+        %% subtrees.
+        insert_1(Node, L, Col, Ind, C)
+      end
     end.
 
 insert_1(Node, L, Col, Ind, C) ->
     case node_type(Node) of
-	tree_node ->
-	    %% Insert in one of the subtrees.
-	    set_node_subtrees(Node,
-			      insert_in_list(node_subtrees(Node),
-					     L, Col, Ind, C));
-	leaf_node ->
-	    %% Odd case: no components, but not on a single line.
-	    %% (Never mind anyway - just postfix the comment.)
-	    node_add_postcomment(C, Node)
+  tree_node ->
+      %% Insert in one of the subtrees.
+      set_node_subtrees(Node,
+            insert_in_list(node_subtrees(Node),
+               L, Col, Ind, C));
+  leaf_node ->
+      %% Odd case: no components, but not on a single line.
+      %% (Never mind anyway - just postfix the comment.)
+      node_add_postcomment(C, Node)
     end.
 
 %% We assume that there exists at least one tree node in some tree
@@ -403,25 +403,25 @@ insert_1(Node, L, Col, Ind, C) ->
 
 insert_in_list([Node | Ns], L, Col, Ind, C) ->
     Max = node_max(Node),
-    
+
     %% Get the `Min' of the next node that follows in the
     %% flattened left-to-right order, or -1 (minus one) if no such
     %% tree node exists.
     NextMin = next_min_in_list(Ns),
-    
+
     %% `NextMin' could be less than `Max', in inconsistent trees.
     if NextMin < 0 ->
-	    %% There is no following leaf/tree node, so we try
-	    %% to insert at this node.
-	    insert_here(Node, L, Col, Ind, C, Ns);
+      %% There is no following leaf/tree node, so we try
+      %% to insert at this node.
+      insert_here(Node, L, Col, Ind, C, Ns);
        L >= NextMin, NextMin >= Max ->
-	    %% Tend to select the later node, in case the next
-	    %% node should also match.
-	    insert_later(Node, L, Col, Ind, C, Ns);
+      %% Tend to select the later node, in case the next
+      %% node should also match.
+      insert_later(Node, L, Col, Ind, C, Ns);
        L =< Max ->
-	    insert_here(Node, L, Col, Ind, C, Ns);
+      insert_here(Node, L, Col, Ind, C, Ns);
        true ->
-	    insert_later(Node, L, Col, Ind, C, Ns)
+      insert_later(Node, L, Col, Ind, C, Ns)
     end;
 insert_in_list([], L, Col, _, _) ->
     exit({bad_tree, L, Col}).
@@ -452,12 +452,12 @@ next_min_in_list([], []) ->
 
 next_min_in_node(Node, Ack) ->
     case node_type(Node) of
-	leaf_node ->
-	    node_min(Node);
-	tree_node ->
-	    node_min(Node);
-	list_node ->
-	    next_min_in_list(node_subtrees(Node), Ack)
+  leaf_node ->
+      node_min(Node);
+  tree_node ->
+      node_min(Node);
+  list_node ->
+      next_min_in_list(node_subtrees(Node), Ack)
     end.
 
 %% Building an extended syntax tree from an `erl_syntax' abstract
@@ -466,19 +466,19 @@ next_min_in_node(Node, Ack) ->
 build_tree(Node) ->
     L = get_line(Node),
     case erl_syntax:subtrees(Node) of
-	[] ->
-	    %% This guarantees that Min =< Max for the base case.
-	    leaf_node(L, L, Node);
-	Ts ->
-	    %% `Ts' is a list of lists of abstract terms.
-	    {Subtrees, Min, Max} = build_list_list(Ts),
-	    
-	    %% Include L, while preserving Min =< Max.
-	    tree_node(minpos(L, Min),
-		      max(L, Max),
-		      erl_syntax:type(Node),
-		      erl_syntax:get_attrs(Node),
-		      Subtrees)
+  [] ->
+      %% This guarantees that Min =< Max for the base case.
+      leaf_node(L, L, Node);
+  Ts ->
+      %% `Ts' is a list of lists of abstract terms.
+      {Subtrees, Min, Max} = build_list_list(Ts),
+
+      %% Include L, while preserving Min =< Max.
+      tree_node(minpos(L, Min),
+          max(L, Max),
+          erl_syntax:type(Node),
+          erl_syntax:get_attrs(Node),
+          Subtrees)
     end.
 
 %% Since `erl_syntax:subtrees' yields the components in
@@ -518,17 +518,17 @@ build_list_list([], Min, Max, Ack) ->
 
 revert_tree(Node) ->
     case node_type(Node) of
-	leaf_node ->
-	    add_comments(Node, leaf_node_value(Node));
-	tree_node ->
-	    add_comments(Node,
-			 erl_syntax:set_attrs(
-			   erl_syntax:make_tree(
-			     tree_node_type(Node),
-			     revert_list(node_subtrees(Node))),
-			   tree_node_attrs(Node)));
-	list_node ->
-	    revert_list(node_subtrees(Node))
+  leaf_node ->
+      add_comments(Node, leaf_node_value(Node));
+  tree_node ->
+      add_comments(Node,
+       erl_syntax:set_attrs(
+         erl_syntax:make_tree(
+           tree_node_type(Node),
+           revert_list(node_subtrees(Node))),
+         tree_node_attrs(Node)));
+  list_node ->
+      revert_list(node_subtrees(Node))
     end.
 
 revert_list([T | Ts]) ->
@@ -538,21 +538,21 @@ revert_list([]) ->
 
 add_comments(Node, Tree) ->
     case node_precomments(Node) of
-	[] ->
-	    add_comments_1(Node, Tree);
-	Cs ->
-	    Cs1 = lists:reverse(expand_comments(Cs)),
-	    add_comments_1(Node,
-			   erl_syntax:add_precomments(Cs1, Tree))
+  [] ->
+      add_comments_1(Node, Tree);
+  Cs ->
+      Cs1 = lists:reverse(expand_comments(Cs)),
+      add_comments_1(Node,
+         erl_syntax:add_precomments(Cs1, Tree))
     end.
 
 add_comments_1(Node, Tree) ->
     case node_postcomments(Node) of
-	[] ->
-	    Tree;
-	Cs ->
-	    Cs1 = lists:reverse(expand_comments(Cs)),
-	    erl_syntax:add_postcomments(Cs1, Tree)
+  [] ->
+      Tree;
+  Cs ->
+      Cs1 = lists:reverse(expand_comments(Cs)),
+      erl_syntax:add_postcomments(Cs1, Tree)
     end.
 
 expand_comments([C | Cs]) ->
@@ -591,39 +591,39 @@ expand_comment(C) ->
 %% that `erl_syntax:is_leaf' yields `true'.
 
 -record(leaf, {min = 0,
-	       max = 0,
-	       precomments = [],
-	       postcomments = [],
-	       value}).
+         max = 0,
+         precomments = [],
+         postcomments = [],
+         value}).
 
 -record(tree, {min = 0,
-	       max = 0,
-	       type,
-	       attrs,
-	       precomments = [],
-	       postcomments = [],
-	       subtrees = []}).
+         max = 0,
+         type,
+         attrs,
+         precomments = [],
+         postcomments = [],
+         subtrees = []}).
 
 -record(list, {min = 0,
-	       max = 0,
-	       subtrees = []}).
+         max = 0,
+         subtrees = []}).
 
 leaf_node(Min, Max, Value) ->
     #leaf{min = Min,
-	  max = Max,
-	  value = Value}.
+    max = Max,
+    value = Value}.
 
 tree_node(Min, Max, Type, Attrs, Subtrees) ->
     #tree{min = Min,
-	  max = Max,
-	  type = Type,
-	  attrs = Attrs,
-	  subtrees = Subtrees}.
+    max = Max,
+    type = Type,
+    attrs = Attrs,
+    subtrees = Subtrees}.
 
 list_node(Min, Max, Subtrees) ->
     #list{min = Min,
-	  max = Max,
-	  subtrees = Subtrees}.
+    max = Max,
+    subtrees = Subtrees}.
 
 node_type(#leaf{}) ->
     leaf_node;
@@ -648,12 +648,12 @@ node_max(#list{max = Max}) ->
 
 node_kill_range(Node) ->
     case Node of
-	#leaf{} ->
-	    Node#leaf{min = -1, max = -1};
-	#tree{} ->
-	    Node#tree{min = -1, max = -1};
-	#list{} ->
-	    Node#list{min = -1, max = -1}
+  #leaf{} ->
+      Node#leaf{min = -1, max = -1};
+  #tree{} ->
+      Node#tree{min = -1, max = -1};
+  #list{} ->
+      Node#list{min = -1, max = -1}
     end.
 
 node_precomments(#leaf{precomments = Cs}) ->
@@ -663,10 +663,10 @@ node_precomments(#tree{precomments = Cs}) ->
 
 node_add_precomment(C, Node) ->
     case Node of
-	#leaf{} ->
-	    Node#leaf{precomments = [C | Node#leaf.precomments]};
-	#tree{} ->
-	    Node#tree{precomments = [C | Node#tree.precomments]}
+  #leaf{} ->
+      Node#leaf{precomments = [C | Node#leaf.precomments]};
+  #tree{} ->
+      Node#tree{precomments = [C | Node#tree.precomments]}
     end.
 
 node_postcomments(#leaf{postcomments = Cs}) ->
@@ -676,12 +676,12 @@ node_postcomments(#tree{postcomments = Cs}) ->
 
 node_add_postcomment(C, Node) ->
     case Node of
-	#leaf{} ->
-	    Node#leaf{postcomments =
-		      [C | Node#leaf.postcomments]};
-	#tree{} ->
-	    Node#tree{postcomments =
-		      [C | Node#tree.postcomments]}
+  #leaf{} ->
+      Node#leaf{postcomments =
+          [C | Node#leaf.postcomments]};
+  #tree{} ->
+      Node#tree{postcomments =
+          [C | Node#tree.postcomments]}
     end.
 
 node_subtrees(#tree{subtrees = Subtrees}) ->
@@ -697,10 +697,10 @@ tree_node_type(#tree{type = Type}) ->
 
 set_node_subtrees(Node, Subtrees) ->
     case Node of
-	#tree{} ->
-	    Node#tree{subtrees = Subtrees};
-	#list{} ->
-	    Node#list{subtrees = Subtrees}
+  #tree{} ->
+      Node#tree{subtrees = Subtrees};
+  #list{} ->
+      Node#list{subtrees = Subtrees}
     end.
 
 tree_node_attrs(#tree{attrs = Attrs}) ->
@@ -732,18 +732,18 @@ minpos2(X) ->
 
 get_line(Node) ->
     case erl_syntax:get_pos(Node) of
-	L when is_integer(L) ->
-	    L;
-	{L, _} when is_integer(L) ->
-	    L;
-	{_, L} when is_integer(L) ->
-	    L;
-	{L, _, _} when is_integer(L) ->
-	    L;
-	{_, L, _} when is_integer(L) ->
-	    L;
-	Pos ->
-	    exit({bad_position, Pos})
+  L when is_integer(L) ->
+      L;
+  {L, _} when is_integer(L) ->
+      L;
+  {_, L} when is_integer(L) ->
+      L;
+  {L, _, _} when is_integer(L) ->
+      L;
+  {_, L, _} when is_integer(L) ->
+      L;
+  Pos ->
+      exit({bad_position, Pos})
     end.
 
 

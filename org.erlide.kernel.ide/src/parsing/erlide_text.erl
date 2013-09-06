@@ -24,8 +24,8 @@
          get_line_offsets/1,
          detab/3, entab/3, start_column/2, initial_whitespace/1,
          left_strip/1, right_strip/1, strip/1,
-	 strip_percents_and_spaces/1,
-	 strip_comments/1, skip_expr/1]).
+         strip_percents_and_spaces/1,
+         strip_comments/1, skip_expr/1]).
 
 %% -define(DEBUG, 1).
 
@@ -47,8 +47,8 @@ get_text_and_lines(S, From, Length) ->
     get_text_and_lines(L, From, Length, []).
 
 %% @doc Get function call from token list
-%% @spec check_function_call(Tokens::list(), Index::integer()) -> 
-%%           {ok, Module::atom(), Function::atom(), Rest::term()} 
+%% @spec check_function_call(Tokens::list(), Index::integer()) ->
+%%           {ok, Module::atom(), Function::atom(), Rest::term()}
 check_function_call([_|Rest], Index) when Index > 2 ->
     ?D({Index, Rest}),
     check_function_call(Rest, Index-1);
@@ -114,7 +114,7 @@ split_lines(S) ->
 
 split_lines("", _Pos, _LinePos, "", Acc) ->
     Acc;
-split_lines([$$, C | Rest], Pos, LinePos, LineAcc, Acc) 
+split_lines([$$, C | Rest], Pos, LinePos, LineAcc, Acc)
   when C =:=$\n; C =:= $\r ->   % fix for 1193
     split_lines(Rest, Pos+2, LinePos, [C, $$ | LineAcc], Acc);
 split_lines("", _Pos, LinePos, LineAcc, Acc) ->
@@ -341,8 +341,8 @@ get_tab_n_spaces(I, Tablength) ->
     Tablength - I rem Tablength.
 
 get_tab_spaces(I, Tablength) ->
-	Rest = get_tab_n_spaces(I, Tablength),
-	string:chars($ , Rest).
+    Rest = get_tab_n_spaces(I, Tablength),
+    string:chars($ , Rest).
 
 initial_whitespace(S) ->
     initial_whitespace(S, 0).
@@ -382,7 +382,7 @@ get_line_offsets(S) ->
 get_line_offsets("", _, Acc) ->
     list_to_tuple(lists:reverse(Acc));
 get_line_offsets("\r\n" ++ Rest, O, Acc) ->
-	O2 = O+2,
+    O2 = O+2,
     get_line_offsets(Rest, O2, [O2 | Acc]);
 get_line_offsets([EOL|Rest], O, Acc) when EOL =:= $\n; EOL =:= $\r ->
     O1 = O+1,
@@ -397,7 +397,7 @@ left_strip(" "++S) ->
     S;
 left_strip("\t"++S) ->
     S;
-left_strip(S) -> 
+left_strip(S) ->
     S.
 
 %% @doc Strip inital percent signs and initial and trailing spaces from each line string

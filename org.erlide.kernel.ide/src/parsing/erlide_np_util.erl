@@ -72,8 +72,8 @@ extract_comments([], _, TAcc, CAcc) ->
     {lists:reverse(TAcc), lists:reverse(CAcc)};
 extract_comments([#token{kind=comment, offset=ONext, length=LNext, line=NNext,
                          value=VNext}
-                  | Rest], NNext, TAcc,
-				 [#token{kind=comment, offset=O, value=V}=C | CAcc]) ->
+                            | Rest], NNext, TAcc,
+                 [#token{kind=comment, offset=O, value=V}=C | CAcc]) ->
     NewComment = C#token{offset=O, length=ONext-O+LNext, value=V++"\n"++VNext,
                          last_line=NNext},
     extract_comments(Rest, NNext+1, TAcc, [NewComment | CAcc]);
@@ -133,11 +133,11 @@ compact_form(Other) ->
     Other.
 
 to_binary_with_unicode(Comment) when is_list(Comment) ->
-    try 
-        iolist_to_binary(Comment) 
-    catch 
-        _:_ -> 
-            unicode:characters_to_binary(Comment) 
+    try
+        iolist_to_binary(Comment)
+    catch
+        _:_ ->
+            unicode:characters_to_binary(Comment)
     end;
 to_binary_with_unicode(Other) ->
     Other.

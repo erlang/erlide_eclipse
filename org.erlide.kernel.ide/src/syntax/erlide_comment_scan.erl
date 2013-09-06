@@ -67,20 +67,20 @@
 file(Name) ->
     Name1 = filename(Name),
     case catch {ok, file:read_file(Name1)} of
-	{ok, V} ->
-	    case V of
-		{ok, B} ->
-		    string(binary_to_list(B));
-		{error, E} ->
-		    error_read_file(Name1),
-		    exit({read, E})
-	    end;
-	{'EXIT', E} ->
-	    error_read_file(Name1),
-	    exit(E);
-	R ->
-	    error_read_file(Name1),
-	    throw(R)
+  {ok, V} ->
+      case V of
+    {ok, B} ->
+        string(binary_to_list(B));
+    {error, E} ->
+        error_read_file(Name1),
+        exit({read, E})
+      end;
+  {'EXIT', E} ->
+      error_read_file(Name1),
+      exit(E);
+  R ->
+      error_read_file(Name1),
+      throw(R)
     end.
 
 
@@ -257,16 +257,16 @@ join_lines([]) ->
 
 join_lines([{L1, Col1, Ind1, Txt1} | Lines], Txt, L, Col, Ind) ->
     if L1 == L - 1, Col1 == Col, Ind + 1 == Col ->
-	    %% The last test above checks that the previous
-	    %% comment was alone on its line; otherwise it won't
-	    %% be joined with the current; this is not always what
-	    %% one wants, but works well in general.
-	    join_lines(Lines, [Txt1 | Txt], L1, Col1, Ind1);
+      %% The last test above checks that the previous
+      %% comment was alone on its line; otherwise it won't
+      %% be joined with the current; this is not always what
+      %% one wants, but works well in general.
+      join_lines(Lines, [Txt1 | Txt], L1, Col1, Ind1);
        true ->
-	    %% Finish the current comment and let the new line
-	    %% start the next one.
-	    [{L, Col, Ind, Txt}
-	     | join_lines(Lines, [Txt1], L1, Col1, Ind1)]
+      %% Finish the current comment and let the new line
+      %% start the next one.
+      [{L, Col, Ind, Txt}
+       | join_lines(Lines, [Txt1], L1, Col1, Ind1)]
     end;
 join_lines([], Txt, L, Col, Ind) ->
     [{L, Col, Ind, Txt}].
@@ -292,7 +292,7 @@ error_read_file(Name) ->
 
 report_error(S, Vs) ->
     error_logger:error_msg(lists:concat([?MODULE, ": ", S, "\n"]),
-			   Vs).
+         Vs).
 
 
 %% =====================================================================

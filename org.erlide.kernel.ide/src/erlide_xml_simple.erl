@@ -33,10 +33,10 @@ xml_attributes("=" ++ T, TagAcc, AAcc, Tag, Acc) ->
     xml_attr_value(strip(T), lists:reverse(TagAcc), AAcc, Tag, Acc);
 xml_attributes([H|T], TagAcc, AAcc, Tag, Acc) when ?WHITESPACE(H) ->
     case strip(T) of
-	"=" ++ T1 ->
-	    xml_attr_value(strip(T1), lists:reverse(TagAcc), AAcc, Tag, Acc);
-	_ ->
-	    ?bad_xml(T)
+  "=" ++ T1 ->
+      xml_attr_value(strip(T1), lists:reverse(TagAcc), AAcc, Tag, Acc);
+  _ ->
+      ?bad_xml(T)
     end;
 xml_attributes([H|T], TagAcc, AAcc, Tag, Acc) ->
     xml_attributes(T, [H|TagAcc], AAcc, Tag, Acc).
@@ -44,14 +44,14 @@ xml_attributes([H|T], TagAcc, AAcc, Tag, Acc) ->
 xml_attr_value("\"" ++ T1, ATag, AAcc, Tag, Acc) ->
     {Str, T2} = scan_string(T1, []),
     case strip(T2) of
-	"/>" ++ T3 ->
-	    {strip(T3), [{Tag, [{ATag, Str}|AAcc], []}|Acc]};
-	">" ++ T3 ->
-	    xml_content(
-	      strip(T3), Tag, [], lists:reverse(
-				    [{ATag, Str}|AAcc]), Acc);
-	T3 ->
-	    xml_attributes(T3, [], [{ATag, Str}|AAcc], Tag, Acc)
+  "/>" ++ T3 ->
+      {strip(T3), [{Tag, [{ATag, Str}|AAcc], []}|Acc]};
+  ">" ++ T3 ->
+      xml_content(
+        strip(T3), Tag, [], lists:reverse(
+            [{ATag, Str}|AAcc]), Acc);
+  T3 ->
+      xml_attributes(T3, [], [{ATag, Str}|AAcc], Tag, Acc)
     end;
 xml_attr_value(T, _, _, _, _) ->
     ?bad_xml(T).
@@ -68,11 +68,11 @@ xml_content([H|T], Tag, CAcc, Attrs, Acc) ->
 
 xml_text("<" ++ _ = Str, TAcc, Tag, CAcc, Attrs, Acc) ->
     case lists:reverse(strip(TAcc)) of
-	[] ->
-	    xml_content(Str, Tag, CAcc, Attrs, Acc);
-	Txt ->
-	    xml_content(Str, Tag, [{text, Txt}|CAcc],
-			Attrs, Acc)
+  [] ->
+      xml_content(Str, Tag, CAcc, Attrs, Acc);
+  Txt ->
+      xml_content(Str, Tag, [{text, Txt}|CAcc],
+      Attrs, Acc)
     end;
 xml_text([H|T], TAcc, Tag, CAcc, Attrs, Acc) ->
     xml_text(T, [H|TAcc], Tag, CAcc, Attrs, Acc).
@@ -89,7 +89,7 @@ strip([H|T]) when ?WHITESPACE(H) ->
     strip(T);
 strip(Str) ->
     Str.
-    
+
 
 scan_string("\"" ++ T, Acc) ->
     {lists:reverse(Acc), T};
