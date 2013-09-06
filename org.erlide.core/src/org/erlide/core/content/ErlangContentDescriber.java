@@ -75,7 +75,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
         if (charset != null) {
             properties.put(CHARSET, charset);
         }
-        properties.put(RESULT, new Boolean(true));
+        properties.put(RESULT, Boolean.TRUE);
     }
 
     private int internalDescribe(final IContentDescription description,

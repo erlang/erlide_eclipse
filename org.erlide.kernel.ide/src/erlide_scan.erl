@@ -45,9 +45,16 @@
 
 -module(erlide_scan).
 
--export([string/1,string_ws/1,string/2,tokens/3,tokens_ws/3,
-      format_error/1,reserved_word/1,
-      filter/1, filter1/1, filter_comments/1, filter_ws/1]).
+-export([string/1,string/2,
+         string_ws/1,
+         tokens/3,
+         tokens_ws/3,
+         format_error/1,
+         reserved_word/1,
+         filter/1,
+         filter1/1,
+         filter_comments/1,
+         filter_ws/1]).
 
 -import(lists, [reverse/1]).
 
