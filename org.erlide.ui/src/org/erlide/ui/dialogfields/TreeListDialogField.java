@@ -46,6 +46,8 @@ import org.eclipse.swt.widgets.Tree;
 import org.erlide.ui.util.PixelConverter;
 import org.erlide.ui.util.SWTUtil;
 
+import com.google.common.collect.Lists;
+
 /**
  * A list with a button bar. Typical buttons are 'Add', 'Remove', 'Up' and
  * 'Down'. List model is independend of widget creation. DialogFields controls
@@ -102,7 +104,7 @@ public class TreeListDialogField extends DialogField {
         fTreeViewerAdapter = new TreeViewerAdapter();
         fParentElement = this;
 
-        fElements = new ArrayList<Object>(10);
+        fElements = Lists.newArrayList();
 
         fButtonLabels = buttonLabels;
         if (fButtonLabels != null) {
@@ -312,8 +314,7 @@ public class TreeListDialogField extends DialogField {
      * Subclasses may override to specify a different style.
      */
     protected int getTreeStyle() {
-        final int style = SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL;
-        return style;
+        return SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL;
     }
 
     protected TreeViewer createTreeViewer(final Composite parent) {
