@@ -11,7 +11,7 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.internal.erlang.ErlAttribute;
+import org.erlide.engine.internal.model.erlang.ErlAttribute;
 import org.erlide.engine.model.erlang.IErlAttribute;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
