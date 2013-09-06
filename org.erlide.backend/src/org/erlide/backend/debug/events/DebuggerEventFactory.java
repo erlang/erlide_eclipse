@@ -81,7 +81,7 @@ public class DebuggerEventFactory {
                 return new WaitAtEvent(pid, b.getAtom("Mod"), b.getInt("Line"),
                         b.get("Crt"));
             }
-        } catch (final Throwable e) {
+        } catch (final Exception e) {
         }
         // this is a default event that does nothing
         return new MetaEvent(pid, event);

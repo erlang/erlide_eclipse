@@ -401,7 +401,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
             try {
                 reporter.createFileReport(getNodeName(), getExitCode(),
                         getRuntimeData().getWorkingDir(), getSystemStatus());
-            } catch (final Throwable t) {
+            } catch (final Exception t) {
                 ErlLogger.warn(t);
             }
         }

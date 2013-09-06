@@ -268,7 +268,7 @@ public class ResourceManager extends SWTResourceManager {
             if (url != null) {
                 return getPluginImageFromUrl(url);
             }
-        } catch (final Throwable e) {
+        } catch (final Exception e) {
             // Ignore any exceptions
         }
         return null;
