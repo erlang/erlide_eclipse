@@ -324,10 +324,10 @@ public abstract class Backend implements IStreamListener, IBackend {
             registerStartupFunctionStarter(data);
             debugTarget.sendStarted();
         } else {
-            final InitialCall init_call = data.getInitialCall();
-            if (init_call != null) {
-                runInitial(init_call.getModule(), init_call.getName(),
-                        init_call.getParameters());
+            final InitialCall initCall = data.getInitialCall();
+            if (initCall != null) {
+                runInitial(initCall.getModule(), initCall.getName(),
+                        initCall.getParameters());
             }
         }
     }
@@ -344,11 +344,11 @@ public abstract class Backend implements IStreamListener, IBackend {
                 new IDebugEventSetListener() {
                     @Override
                     public void handleDebugEvents(final DebugEvent[] events) {
-                        final InitialCall init_call = myData.getInitialCall();
-                        if (init_call != null) {
-                            runInitial(init_call.getModule(),
-                                    init_call.getName(),
-                                    init_call.getParameters());
+                        final InitialCall initCall = myData.getInitialCall();
+                        if (initCall != null) {
+                            runInitial(initCall.getModule(),
+                                    initCall.getName(),
+                                    initCall.getParameters());
                         }
                         DebugPlugin.getDefault().removeDebugEventListener(this);
                     }
@@ -456,8 +456,8 @@ public abstract class Backend implements IStreamListener, IBackend {
             final IContributor c = el.getContributor();
             final String name = c.getName();
             if (name.equals(bundle.getSymbolicName())) {
-                final String dir_path = el.getAttribute("path");
-                final Enumeration<?> e = bundle.getEntryPaths(dir_path);
+                final String dirPath = el.getAttribute("path");
+                final Enumeration<?> e = bundle.getEntryPaths(dirPath);
                 if (e == null) {
                     ErlLogger.error("* !!! error loading plugin "
                             + bundle.getSymbolicName());

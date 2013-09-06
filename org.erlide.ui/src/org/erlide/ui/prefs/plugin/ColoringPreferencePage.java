@@ -327,10 +327,10 @@ public class ColoringPreferencePage extends PreferencePage implements
 
         fListViewer = new TreeViewer(editorComposite, SWT.SINGLE | SWT.BORDER);
         final Tree tree = fListViewer.getTree();
-        final GridData gd_tree = new GridData(SWT.FILL, SWT.FILL, false, false,
+        final GridData gdTree = new GridData(SWT.FILL, SWT.FILL, false, false,
                 1, 1);
-        gd_tree.widthHint = 100;
-        tree.setLayoutData(gd_tree);
+        gdTree.widthHint = 100;
+        tree.setLayoutData(gdTree);
         fListViewer.setLabelProvider(new ColorListLabelProvider());
         fListViewer.setContentProvider(new ColorListContentProvider());
         fListViewer.setInput(fColors);

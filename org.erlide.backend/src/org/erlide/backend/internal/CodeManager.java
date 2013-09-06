@@ -106,11 +106,11 @@ public class CodeManager {
             final IContributor c = el.getContributor();
             if ("beam_dir".equals(el.getName())
                     && c.getName().equals(b.getSymbolicName())) {
-                final String dir_path = el.getAttribute("path");
+                final String dirPath = el.getAttribute("path");
                 @SuppressWarnings("rawtypes")
                 Enumeration e = null;
-                if (dir_path != null) {
-                    e = b.getEntryPaths(dir_path);
+                if (dirPath != null) {
+                    e = b.getEntryPaths(dirPath);
                 }
                 if (e == null) {
                     ErlLogger.warn("Could not find Erlang code in plugin "

@@ -193,10 +193,10 @@ public final class ErlParser implements ParserService {
 
     private int considerPrevious(final int i, final List<IErlMember> all,
             final LinkedList<IErlMember> comments) {
-        final int i_1 = i - 1;
-        if (i_1 > 0) {
+        final int j = i - 1;
+        if (j > 0) {
             final IErlMember member = all.get(i);
-            final IErlMember member_1 = all.get(i_1);
+            final IErlMember member_1 = all.get(j);
             if (member_1 instanceof IErlComment
                     || member_1 instanceof IErlTypespec) {
                 if (member_1.getLineEnd() + FUNCTION_COMMENT_THRESHOLD >= member
@@ -207,7 +207,7 @@ public final class ErlParser implements ParserService {
                 return -1;
             }
         }
-        return i_1;
+        return j;
     }
 
     /**
