@@ -291,7 +291,7 @@ public class ResourceManager extends SWTResourceManager {
             if (url != null) {
                 return getPluginImageFromUrl(url);
             }
-        } catch (final Throwable e) {
+        } catch (final Exception e) {
             // Ignore any exceptions
         }
         return null;
@@ -302,23 +302,19 @@ public class ResourceManager extends SWTResourceManager {
      */
     private static Image getPluginImageFromUrl(final URL url) {
         try {
-            try {
-                final String key = url.toExternalForm();
-                Image image = m_URLImageMap.get(key);
-                if (image == null) {
-                    final InputStream stream = url.openStream();
-                    try {
-                        image = getImage(stream);
-                        m_URLImageMap.put(key, image);
-                    } finally {
-                        stream.close();
-                    }
+            final String key = url.toExternalForm();
+            Image image = m_URLImageMap.get(key);
+            if (image == null) {
+                final InputStream stream = url.openStream();
+                try {
+                    image = getImage(stream);
+                    m_URLImageMap.put(key, image);
+                } finally {
+                    stream.close();
                 }
-                return image;
-            } catch (final Throwable e) {
-                // Ignore any exceptions
             }
-        } catch (final Throwable e) {
+            return image;
+        } catch (final Exception e) {
             // Ignore any exceptions
         }
         return null;
