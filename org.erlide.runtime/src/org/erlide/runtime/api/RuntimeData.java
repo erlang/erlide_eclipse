@@ -1,7 +1,5 @@
 package org.erlide.runtime.api;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -12,7 +10,6 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 import org.erlide.util.SystemConfiguration;
 
@@ -301,45 +298,6 @@ public class RuntimeData {
 
     public void setReportErrors(final boolean value) {
         reportErrors = value;
-    }
-
-    public void debugPrint() {
-        ErlLogger.info("Data:: " + getClass().getName());
-        for (final Field field : getAllPrivateFields(getClass())) {
-            if (Modifier.isStatic(field.getModifiers())) {
-                continue;
-            }
-            try {
-                final boolean access = field.isAccessible();
-                field.setAccessible(true);
-                try {
-                    ErlLogger.info("%-20s: %s", field.getName(),
-                            field.get(this));
-                } finally {
-                    field.setAccessible(access);
-                }
-            } catch (final Exception e) {
-                ErlLogger.info("Could not read %s! %s", field.getName(),
-                        e.getMessage());
-            }
-        }
-        ErlLogger.info("---------------");
-    }
-
-    protected List<Field> getAllPrivateFields(final Class<?> type) {
-        final List<Field> result = new ArrayList<Field>();
-
-        Class<?> cls = type;
-        while (cls != null && cls != Object.class) {
-            for (final Field field : cls.getDeclaredFields()) {
-                if (!field.isSynthetic()) {
-                    result.add(field);
-                }
-            }
-            cls = cls.getSuperclass();
-        }
-
-        return result;
     }
 
 }

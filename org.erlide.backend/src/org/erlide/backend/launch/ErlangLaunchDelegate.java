@@ -79,10 +79,6 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
 
         data = configureBackend(data, config, mode, launch);
 
-        // if (ErlideUtil.isDeveloper()) {
-        data.debugPrint();
-        // }
-
         if (data.isManaged()) {
             setCaptureOutput(launch);
         }

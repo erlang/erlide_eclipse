@@ -101,7 +101,6 @@ public class BackendFactory implements IBackendFactory {
                 .canUseLongNames());
         result.setInternal(true);
         result.setReportErrors(true);
-        result.debugPrint();
         return result;
     }
 
