@@ -231,12 +231,6 @@
             name="Erlang Navigator">
       </view>
       <view
-            category="org.erlide.views"
-            class="org.erlide.ui.views.ErlLoggerView"
-            icon="icons/icons/sample.gif"
-            id="org.erlide.ui.views.ErlLoggerView"
-            name="Erlang Logger"/>
-      <view
             allowMultiple="false"
             category="org.erlide.views"
             class="org.erlide.ui.views.EpmdView"
