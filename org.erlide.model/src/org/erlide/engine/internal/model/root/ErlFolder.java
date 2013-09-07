@@ -174,11 +174,10 @@ public class ErlFolder extends Openable implements IErlFolder {
                 final String name2 = module.getName();
                 final String moduleName = hasExtension ? name2 : module
                         .getModuleName();
-                if (name.equals(moduleName)) {
-                    if (hasExtension
-                            || isInclude == ModuleKind.hasHrlExtension(name2)) {
-                        return module;
-                    }
+                if (name.equals(moduleName)
+                        && (hasExtension || isInclude == ModuleKind
+                                .hasHrlExtension(name2))) {
+                    return module;
                 }
             }
         }

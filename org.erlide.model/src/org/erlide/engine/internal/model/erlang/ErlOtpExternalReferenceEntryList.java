@@ -87,11 +87,6 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     }
 
     @Override
-    public boolean isOpen() {
-        return super.isOpen();
-    }
-
-    @Override
     public String getFilePath() {
         return null;
     }

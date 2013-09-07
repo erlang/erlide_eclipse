@@ -11,7 +11,7 @@ public interface IErlangBreakpoint extends IBreakpoint {
      * 
      * @return whether this breakpoint supports a condition
      */
-    public boolean supportsCondition();
+    boolean supportsCondition();
 
     /**
      * Returns the conditional expression associated with this breakpoint, or
@@ -22,7 +22,7 @@ public interface IErlangBreakpoint extends IBreakpoint {
      *                if unable to access the property on this breakpoint's
      *                underlying marker
      */
-    public String getCondition() throws CoreException;
+    String getCondition() throws CoreException;
 
     /**
      * Sets the condition associated with this breakpoint. When the condition is
@@ -40,7 +40,7 @@ public interface IErlangBreakpoint extends IBreakpoint {
      *                if unable to set the property on this breakpoint's
      *                underlying marker
      */
-    public void setCondition(String condition) throws CoreException;
+    void setCondition(String condition) throws CoreException;
 
     /**
      * Returns whether the condition on this breakpoint is enabled.
@@ -50,7 +50,7 @@ public interface IErlangBreakpoint extends IBreakpoint {
      *                if unable to access the property on this breakpoint's
      *                underlying marker
      */
-    public boolean isConditionEnabled() throws CoreException;
+    boolean isConditionEnabled() throws CoreException;
 
     /**
      * Sets the enabled state of this breakpoint's condition to the given state.
@@ -62,7 +62,7 @@ public interface IErlangBreakpoint extends IBreakpoint {
      *                if unable to set the property on this breakpoint's
      *                underlying marker
      */
-    public void setConditionEnabled(boolean enabled) throws CoreException;
+    void setConditionEnabled(boolean enabled) throws CoreException;
 
     /**
      * Returns whether the breakpoint suspends when the value of the condition
@@ -76,7 +76,7 @@ public interface IErlangBreakpoint extends IBreakpoint {
      *                underlying marker
      * @since 2.1
      */
-    // public boolean isConditionSuspendOnTrue() throws CoreException;
+    // boolean isConditionSuspendOnTrue() throws CoreException;
     /**
      * Set the suspend state of this breakpoint's condition. If the value is
      * <code>true</code>, the breakpoint will stop when the value of the
@@ -88,22 +88,22 @@ public interface IErlangBreakpoint extends IBreakpoint {
      *                underlying marker
      * @since 2.1
      */
-    // public void setConditionSuspendOnTrue(boolean suspendOnTrue)
+    // void setConditionSuspendOnTrue(boolean suspendOnTrue)
     // throws CoreException;
     /**
      * Set the hit count, the number of times it can hit and continue
      */
-    public void setHitCount(int hitCount);
+    void setHitCount(int hitCount);
 
-    public int getHitCount();
+    int getHitCount();
 
-    public static final int BREAK_ACTION_BREAK = 0;
-    public static final int BREAK_ACTION_TRACE_AND_CONTINUE = 1;
+    final int BREAK_ACTION_BREAK = 0;
+    final int BREAK_ACTION_TRACE_AND_CONTINUE = 1;
 
-    public void setBreakAction(int traceAction);
+    void setBreakAction(int traceAction);
 
-    public int getBreakAction();
+    int getBreakAction();
 
-    public String getMessage();
+    String getMessage();
     // public String getTypeName();
 }

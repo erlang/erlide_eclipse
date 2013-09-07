@@ -388,12 +388,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     @Override
-    public Object clone() {
-        try {
-            return super.clone();
-        } catch (final CloneNotSupportedException e) {
-            throw new Error();
-        }
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     @Override

@@ -12,15 +12,12 @@ public class BreakAtEvent extends MetaEvent {
 
     private final String module;
     private final int line;
-    @SuppressWarnings("unused")
-    private final OtpErlangObject le;
 
     public BreakAtEvent(final OtpErlangPid pid, final String module,
             final int line, final OtpErlangObject le) {
         super(pid, null);
         this.module = module;
         this.line = line;
-        this.le = le;
     }
 
     @Override

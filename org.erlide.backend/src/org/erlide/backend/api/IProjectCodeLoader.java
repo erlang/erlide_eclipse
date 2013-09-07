@@ -4,8 +4,8 @@ import org.erlide.engine.model.root.IErlProject;
 
 public interface IProjectCodeLoader {
 
-    public abstract void addProjectPath(IErlProject project);
+    void addProjectPath(IErlProject project);
 
-    public abstract void removeProjectPath(IErlProject project);
+    void removeProjectPath(IErlProject project);
 
 }
