@@ -54,33 +54,33 @@ parse(Term, Fun, Init) when is_list(Term) ->
     lists:foldl(Fun, Init, Term).
 
 meta({description, Description}, Meta) ->
-    Meta#app_meta{description=Description};
+    Meta#app_meta{description = Description};
 meta({id, Id}, Meta) ->
-    Meta#app_meta{id=Id};
+    Meta#app_meta{id  =Id};
 meta({vsn, Vsn}, Meta) ->
-    Meta#app_meta{vsn=Vsn};
+    Meta#app_meta{vsn = Vsn};
 meta({modules, Modules}, Meta) ->
-    Meta#app_meta{modules=Modules};
+    Meta#app_meta{modules = Modules};
 meta({maxT, MaxT}, Meta) ->
-    Meta#app_meta{maxT=MaxT};
+    Meta#app_meta{maxT = MaxT};
 meta({registered, Registered}, Meta) ->
-    Meta#app_meta{registered=Registered};
+    Meta#app_meta{registered = Registered};
 meta({included_applications, Included_applications}, Meta) ->
-    Meta#app_meta{included_applications=Included_applications};
+    Meta#app_meta{included_applications = Included_applications};
 meta({applications, Applications}, Meta) ->
-    Meta#app_meta{applications=Applications};
+    Meta#app_meta{applications = Applications};
 meta({env, Env}, Meta) ->
-    Meta#app_meta{env=Env};
+    Meta#app_meta{env = Env};
 meta({mod, Mod}, Meta) ->
-    Meta#app_meta{mod=Mod};
+    Meta#app_meta{mod = Mod};
 meta({start_phases, Start_phases}, Meta) ->
-    Meta#app_meta{start_phases=Start_phases};
+    Meta#app_meta{start_phases = Start_phases};
 meta({otp_version, Otp_version}, Meta) ->
-    Meta#app_meta{otp_version=Otp_version};
+    Meta#app_meta{otp_version = Otp_version};
 meta({layout, Layout}, Meta) ->
-    Meta#app_meta{layout=parse(Layout, fun layout/2, #layout{})};
+    Meta#app_meta{layout = parse(Layout, fun layout/2, #layout{})};
 meta({compiler_options, Compiler_options}, Meta) ->
-    Meta#app_meta{compiler_options=Compiler_options};
+    Meta#app_meta{compiler_options = Compiler_options};
 meta(_, Meta) ->
     Meta.
 
@@ -107,40 +107,40 @@ check(K, V, V0) ->
 check_meta({description, Description}, #app_meta{description=Description0}) ->
     check(description, Description, Description0);
 check_meta({id, Id}, Meta) ->
-    Meta#app_meta{id=Id};
+    Meta#app_meta{id = Id};
 check_meta({vsn, Vsn}, Meta) ->
-    Meta#app_meta{vsn=Vsn};
+    Meta#app_meta{vsn = Vsn};
 check_meta({modules, Modules}, Meta) ->
-    Meta#app_meta{modules=Modules};
+    Meta#app_meta{modules = Modules};
 check_meta({maxT, MaxT}, Meta) ->
-    Meta#app_meta{maxT=MaxT};
+    Meta#app_meta{maxT = MaxT};
 check_meta({registered, Registered}, Meta) ->
-    Meta#app_meta{registered=Registered};
+    Meta#app_meta{registered = Registered};
 check_meta({included_applications, Included_applications}, Meta) ->
-    Meta#app_meta{included_applications=Included_applications};
+    Meta#app_meta{included_applications = Included_applications};
 check_meta({applications, Applications}, Meta) ->
-    Meta#app_meta{applications=Applications};
+    Meta#app_meta{applications = Applications};
 check_meta({env, Env}, Meta) ->
-    Meta#app_meta{env=Env};
+    Meta#app_meta{env = Env};
 check_meta({mod, Mod}, Meta) ->
-    Meta#app_meta{mod=Mod};
+    Meta#app_meta{mod = Mod};
 check_meta({start_phases, Start_phases}, Meta) ->
-    Meta#app_meta{start_phases=Start_phases};
+    Meta#app_meta{start_phases = Start_phases};
 check_meta({otp_version, Otp_version}, Meta) ->
-    Meta#app_meta{otp_version=Otp_version};
+    Meta#app_meta{otp_version  =Otp_version};
 check_meta({layout, Layout}, Meta) ->
-    Meta#app_meta{layout=parse(Layout, fun layout/2, #layout{})};
+    Meta#app_meta{layout = parse(Layout, fun layout/2, #layout{})};
 check_meta({compiler_options, Compiler_options}, Meta) ->
-    Meta#app_meta{compiler_options=Compiler_options};
+    Meta#app_meta{compiler_options = Compiler_options};
 check_meta(_, Meta) ->
     Meta.
 
 layout({src, Src}, Layout) ->
-    Layout#layout{src=Src};
+    Layout#layout{src = Src};
 layout({include, Include}, Layout) ->
-    Layout#layout{include=Include};
+    Layout#layout{include = Include};
 layout({ebin, Ebin}, Layout) ->
-    Layout#layout{ebin=Ebin};
+    Layout#layout{ebin = Ebin};
 layout(_, Layout) ->
     Layout.
 
