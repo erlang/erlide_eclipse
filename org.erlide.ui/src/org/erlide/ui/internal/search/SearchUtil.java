@@ -208,7 +208,7 @@ public class SearchUtil {
             moduleName = unquoted;
             do {
                 oldName = moduleName;
-                moduleName = ErlangEngine.getInstance().getModelUtilService()
+                moduleName = ErlangEngine.getInstance().getModelFindService()
                         .resolveMacroValue(moduleName, module);
             } while (!moduleName.equals(oldName));
             return new FunctionPattern(moduleName, res.getFun(),

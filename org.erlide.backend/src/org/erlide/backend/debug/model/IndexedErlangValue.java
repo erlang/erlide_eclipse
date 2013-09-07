@@ -117,7 +117,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
                 try {
                     pd = ErlangEngine
                             .getInstance()
-                            .getModelUtilService()
+                            .getModelFindService()
                             .findPreprocessorDef(
                                     getErlProjects(target.getProjects()),
                                     moduleName, a.atomValue(),

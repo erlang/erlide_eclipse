@@ -176,7 +176,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
                         .getModel();
                 final IErlModule module = ErlangEngine
                         .getInstance()
-                        .getModelUtilService()
+                        .getModelFindService()
                         .findModule(model, null, null,
                                 lfs.getFullPath().toString(),
                                 IErlElementLocator.Scope.ALL_PROJECTS);

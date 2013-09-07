@@ -41,6 +41,7 @@ import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.codeassist.RecordCompletion;
 import org.erlide.engine.util.ErlangFunction;
+import org.erlide.engine.util.ModelFindService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.HoverUtil;
@@ -524,23 +525,19 @@ public abstract class AbstractErlContentAssistProcessor implements
     List<ICompletionProposal> getExternalCallCompletions(final IRpcSite b,
             final String moduleName0, final int offset, final String prefix,
             final boolean arityOnly) throws CoreException {
-        final String moduleName = ErlangEngine.getInstance()
-                .getModelUtilService().resolveMacroValue(moduleName0, module);
+        final ModelFindService modelFindService = ErlangEngine.getInstance()
+                .getModelFindService();
+        final String moduleName = modelFindService.resolveMacroValue(
+                moduleName0, module);
         // we have an external call
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlModule theModule = ErlangEngine
-                .getInstance()
-                .getModelUtilService()
-                .findModule(
-                        model,
-                        project,
-                        moduleName,
-                        null,
-                        checkAllProjects ? IErlElementLocator.Scope.ALL_PROJECTS
-                                : IErlElementLocator.Scope.REFERENCED_PROJECTS);
+        final IErlModule theModule = modelFindService.findModule(model,
+                project, moduleName, null,
+                checkAllProjects ? IErlElementLocator.Scope.ALL_PROJECTS
+                        : IErlElementLocator.Scope.REFERENCED_PROJECTS);
         if (theModule != null) {
             if (ErlangEngine.getInstance().getModelUtilService()
                     .isOtpModule(theModule)) {
@@ -569,7 +566,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         try {
             pd = ErlangEngine
                     .getInstance()
-                    .getModelUtilService()
+                    .getModelFindService()
                     .findPreprocessorDef(module, recordName,
                             ErlElementKind.RECORD_DEF);
         } catch (final CoreException e) {

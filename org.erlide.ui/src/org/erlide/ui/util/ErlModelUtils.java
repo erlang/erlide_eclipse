@@ -55,7 +55,7 @@ public class ErlModelUtils {
             final IErlElementLocator.Scope scope) throws CoreException {
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         final IErlModule module2 = ErlangEngine.getInstance()
-                .getModelUtilService()
+                .getModelFindService()
                 .findModule(model, project, moduleName, modulePath, scope);
         if (module2 != null) {
             final IEditorPart editor = EditorUtility.openInEditor(module2);
@@ -110,7 +110,7 @@ public class ErlModelUtils {
         }
         module.open(null);
         final IErlTypespec typespec = ErlangEngine.getInstance()
-                .getModelUtilService().findTypespec(module, typeName);
+                .getModelFindService().findTypespec(module, typeName);
         if (typespec == null) {
             return false;
         }
@@ -165,7 +165,7 @@ public class ErlModelUtils {
                     .getModel();
             final IErlModule module = ErlangEngine
                     .getInstance()
-                    .getModelUtilService()
+                    .getModelFindService()
                     .findModule(model, null, null, path,
                             IErlElementLocator.Scope.ALL_PROJECTS);
             if (module != null) {
@@ -198,7 +198,7 @@ public class ErlModelUtils {
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         final IErlModule module = ErlangEngine
                 .getInstance()
-                .getModelUtilService()
+                .getModelFindService()
                 .findModule(model, null, moduleName, null,
                         IErlElementLocator.Scope.ALL_PROJECTS);
         if (module != null) {

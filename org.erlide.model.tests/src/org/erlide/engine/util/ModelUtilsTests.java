@@ -29,8 +29,6 @@ import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ScannerService;
-import org.erlide.engine.util.ErlangFunction;
-import org.erlide.engine.util.ModelUtilService;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
@@ -70,10 +68,12 @@ public class ModelUtilsTests {
     }
 
     private ModelUtilService modelUtilService;
+    private ModelFindService modelFindService;
 
     @Before
     public void setUp() throws Exception {
         modelUtilService = ErlangEngine.getInstance().getModelUtilService();
+        modelFindService = ErlangEngine.getInstance().getModelFindService();
         ErlideTestUtils.initModulesAndIncludes();
     }
 
@@ -137,22 +137,22 @@ public class ModelUtilsTests {
             final IErlElementLocator model = ErlangEngine.getInstance()
                     .getModel();
 
-            final IErlElement element1 = modelUtilService.findTypeDef(model,
+            final IErlElement element1 = modelFindService.findTypeDef(model,
                     moduleB, "bx", "concat_thing", moduleB.getResource()
                             .getLocation().toPortableString(), projects[0],
                     IErlElementLocator.Scope.PROJECT_ONLY);
             // in other project but path given
-            final IErlElement element2 = modelUtilService.findTypeDef(model,
+            final IErlElement element2 = modelFindService.findTypeDef(model,
                     moduleB, "bx", "concat_thing", moduleB.getResource()
                             .getLocation().toPortableString(), projects[1],
                     IErlElementLocator.Scope.PROJECT_ONLY);
             // in other project no path given, search all projects true
-            final IErlElement element3 = modelUtilService.findTypeDef(model,
+            final IErlElement element3 = modelFindService.findTypeDef(model,
                     moduleB, "bx", "concat_thing", null, projects[1],
                     IErlElementLocator.Scope.ALL_PROJECTS);
             // in other project no path given, search all projects false, ->
             // null
-            final IErlElement element4 = modelUtilService.findTypeDef(model,
+            final IErlElement element4 = modelFindService.findTypeDef(model,
                     moduleB, "bx", "concat_thing", null, projects[1],
                     IErlElementLocator.Scope.PROJECT_ONLY);
 
@@ -178,7 +178,7 @@ public class ModelUtilsTests {
         // when
         // looking for it with ?MODULE
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlElement element1 = modelUtilService.findFunction(model,
+        final IErlElement element1 = modelFindService.findFunction(model,
                 "?MODULE", new ErlangFunction("f", 0), null, projects[0],
                 IErlElementLocator.Scope.PROJECT_ONLY, moduleD);
         // then
@@ -202,11 +202,11 @@ public class ModelUtilsTests {
                                 + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
         module.open(null);
         project.open(null);
-        final IErlPreprocessorDef preprocessorDef1 = modelUtilService
+        final IErlPreprocessorDef preprocessorDef1 = modelFindService
                 .findPreprocessorDef(module, "rec1", ErlElementKind.RECORD_DEF);
-        final IErlPreprocessorDef preprocessorDef2 = modelUtilService
+        final IErlPreprocessorDef preprocessorDef2 = modelFindService
                 .findPreprocessorDef(include, "rec1", ErlElementKind.RECORD_DEF);
-        final IErlPreprocessorDef preprocessorDef3 = modelUtilService
+        final IErlPreprocessorDef preprocessorDef3 = modelFindService
                 .findPreprocessorDef(Arrays.asList(projects), "f.erl", "rec2",
                         ErlElementKind.RECORD_DEF);
         // then
@@ -234,7 +234,7 @@ public class ModelUtilsTests {
         module.open(null);
         // when
         // looking for the record
-        final IErlPreprocessorDef preprocessorDef = modelUtilService
+        final IErlPreprocessorDef preprocessorDef = modelFindService
                 .findPreprocessorDef(module, "file_info",
                         ErlElementKind.RECORD_DEF);
         // then
@@ -338,7 +338,7 @@ public class ModelUtilsTests {
             // looking for it
             final IErlElementLocator model = ErlangEngine.getInstance()
                     .getModel();
-            final IErlModule module = modelUtilService.findModule(model, null,
+            final IErlModule module = modelFindService.findModule(model, null,
                     null, absolutePath, IErlElementLocator.Scope.ALL_PROJECTS);
             // then
             // we should find it
@@ -403,7 +403,7 @@ public class ModelUtilsTests {
             // when
             // looking for it with its external module path
             final IErlModel model = ErlangEngine.getInstance().getModel();
-            final IErlModule module = modelUtilService.findModule(model, null,
+            final IErlModule module = modelFindService.findModule(model, null,
                     null, absolutePath, IErlElementLocator.Scope.ALL_PROJECTS);
             assertNotNull(module);
             final String externalModulePath = ErlangEngine.getInstance()
@@ -445,7 +445,7 @@ public class ModelUtilsTests {
         module.open(null);
         // when
         // looking for the typespec
-        final IErlTypespec typespec = modelUtilService.findTypespec(module,
+        final IErlTypespec typespec = modelFindService.findTypespec(module,
                 "date");
         // then
         // it should be found
@@ -478,14 +478,14 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for the record def
-            final IErlPreprocessorDef preprocessorDef = modelUtilService
+            final IErlPreprocessorDef preprocessorDef = modelFindService
                     .findPreprocessorDef(module, "rec2",
                             ErlElementKind.RECORD_DEF);
             final Collection<IErlProject> myprojects = Lists
                     .newArrayList(project);
             ErlangEngine
                     .getInstance()
-                    .getModelUtilService()
+                    .getModelFindService()
                     .findPreprocessorDef(myprojects, "a.erl", "rec2",
                             ErlElementKind.RECORD_DEF);
             // then
@@ -526,12 +526,12 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for the record def
-            final IErlPreprocessorDef preprocessorDef = modelUtilService
+            final IErlPreprocessorDef preprocessorDef = modelFindService
                     .findPreprocessorDef(module, "rec2",
                             ErlElementKind.RECORD_DEF);
             final Collection<IErlProject> myprojects = Lists
                     .newArrayList(project);
-            modelUtilService.findPreprocessorDef(myprojects, "a.erl", "rec2",
+            modelFindService.findPreprocessorDef(myprojects, "a.erl", "rec2",
                     ErlElementKind.RECORD_DEF);
             // then
             // it should be found
@@ -577,12 +577,12 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for the record def
-            final IErlPreprocessorDef preprocessorDef = modelUtilService
+            final IErlPreprocessorDef preprocessorDef = modelFindService
                     .findPreprocessorDef(module, "rec2",
                             ErlElementKind.RECORD_DEF);
             final Collection<IErlProject> myprojects = Lists
                     .newArrayList(project);
-            modelUtilService.findPreprocessorDef(myprojects, "a.erl", "rec2",
+            modelFindService.findPreprocessorDef(myprojects, "a.erl", "rec2",
                     ErlElementKind.RECORD_DEF);
             // then
             // it should be found

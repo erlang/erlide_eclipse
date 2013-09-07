@@ -7,6 +7,7 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.internal.model.erlang.ErlScanner;
 import org.erlide.engine.internal.model.erlang.ErlangBackendToolkit;
+import org.erlide.engine.internal.model.erlang.ModelFindUtil;
 import org.erlide.engine.internal.model.erlang.ModelInternalUtils;
 import org.erlide.engine.internal.model.root.ErlModel;
 import org.erlide.engine.internal.services.cleanup.ErlTidyCleanupProvider;
@@ -34,6 +35,7 @@ import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.engine.services.search.SearchServerService;
 import org.erlide.engine.services.search.XrefService;
 import org.erlide.engine.services.text.IndentService;
+import org.erlide.engine.util.ModelFindService;
 import org.erlide.engine.util.ModelUtilService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.IRpcSiteProvider;
@@ -124,6 +126,11 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public ModelUtilService getModelUtilService() {
         return new ModelInternalUtils(backend);
+    }
+
+    @Override
+    public ModelFindService getModelFindService() {
+        return new ModelFindUtil(backend);
     }
 
     /**

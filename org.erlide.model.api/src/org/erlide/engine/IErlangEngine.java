@@ -15,6 +15,7 @@ import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.engine.services.search.SearchServerService;
 import org.erlide.engine.services.search.XrefService;
 import org.erlide.engine.services.text.IndentService;
+import org.erlide.engine.util.ModelFindService;
 import org.erlide.engine.util.ModelUtilService;
 import org.erlide.runtime.api.IRpcSite;
 
@@ -55,4 +56,5 @@ public interface IErlangEngine {
 
     SimpleScannerService getSimpleScannerService();
 
+    ModelFindService getModelFindService();
 }

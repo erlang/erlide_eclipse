@@ -21,6 +21,7 @@ import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.util.ErlangFunction;
+import org.erlide.engine.util.ModelFindService;
 import org.erlide.engine.util.ModelUtilService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
@@ -33,9 +34,11 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public class OpenUtils {
     public ModelUtilService modelUtilService;
+    public ModelFindService modelFindService;
 
     public OpenUtils() {
         modelUtilService = ErlangEngine.getInstance().getModelUtilService();
+        modelFindService = ErlangEngine.getInstance().getModelFindService();
     }
 
     public void openOpenResult(final ITextEditor editor,
@@ -70,7 +73,7 @@ public class OpenUtils {
             found = findExternalCallOrType(module, openResult, project,
                     element, scope);
         } else if (openResult.isInclude()) {
-            found = modelUtilService.findInclude(module, project, openResult,
+            found = modelFindService.findInclude(module, project, openResult,
                     model);
         } else if (openResult.isLocalCall()) {
             found = findLocalCall(module, backend, project, openResult,
@@ -82,15 +85,15 @@ public class OpenUtils {
             final String elementText = editor.getDocumentProvider()
                     .getDocument(editor.getEditorInput())
                     .get(range.getOffset(), range.getLength());
-            found = modelUtilService.findVariable(range, openResult.getName(),
+            found = modelFindService.findVariable(range, openResult.getName(),
                     elementText);
         } else if (openResult.isRecord() || openResult.isMacro()) {
             final ErlElementKind kind = openResult.isMacro() ? ErlElementKind.MACRO_DEF
                     : ErlElementKind.RECORD_DEF;
-            found = modelUtilService.findPreprocessorDef(module,
+            found = modelFindService.findPreprocessorDef(module,
                     openResult.getName(), kind);
         } else if (openResult.isField()) {
-            final IErlRecordDef def = (IErlRecordDef) modelUtilService
+            final IErlRecordDef def = (IErlRecordDef) modelFindService
                     .findPreprocessorDef(module, openResult.getFun(),
                             ErlElementKind.RECORD_DEF);
             if (def != null) {
@@ -106,7 +109,7 @@ public class OpenUtils {
             final IErlElementLocator.Scope scope) throws RpcException,
             CoreException {
         if (isTypeDefOrRecordDef(element, res)) {
-            return modelUtilService.findTypespec(module, res.getFun());
+            return modelFindService.findTypespec(module, res.getFun());
         }
         final IErlFunction foundElement = module
                 .findFunction(res.getFunction());
@@ -132,7 +135,7 @@ public class OpenUtils {
             final String modulePath = otpErlangString.stringValue();
             final IErlElementLocator model = ErlangEngine.getInstance()
                     .getModel();
-            return modelUtilService.findFunction(model, moduleName,
+            return modelFindService.findFunction(model, moduleName,
                     res.getFunction(), modulePath, erlProject, scope, module);
         }
         // functions defined in include files
@@ -169,18 +172,16 @@ public class OpenUtils {
             throws CoreException {
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         if (isTypeDefOrRecordDef(element, res)) {
-            return modelUtilService.findTypeDef(model, module, res.getName(),
+            return modelFindService.findTypeDef(model, module, res.getName(),
                     res.getFun(), res.getPath(), project, scope);
         }
-        final IErlFunction result = ErlangEngine
-                .getInstance()
-                .getModelUtilService()
-                .findFunction(model, res.getName(), res.getFunction(),
-                        res.getPath(), project, scope, module);
+        final IErlFunction result = modelFindService.findFunction(model,
+                res.getName(), res.getFunction(), res.getPath(), project,
+                scope, module);
         if (result != null) {
             return result;
         }
-        return modelUtilService.findFunction(model, res.getName(),
+        return modelFindService.findFunction(model, res.getName(),
                 new ErlangFunction(res.getFun(), ErlangFunction.ANY_ARITY),
                 res.getPath(), project, scope, module);
     }

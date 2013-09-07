@@ -10,8 +10,6 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.erlang.IErlFunction;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlModel;
@@ -206,7 +204,7 @@ public class ErlProjectTest {
                             model.getPathVars());
             final IErlFunction function = ErlangEngine
                     .getInstance()
-                    .getModelUtilService()
+                    .getModelFindService()
                     .findFunction(model, res.getName(), res.getFunction(),
                             res.getPath(), project,
                             IErlElementLocator.Scope.PROJECT_ONLY, moduleE);
