@@ -652,11 +652,9 @@ public class ErlProject extends Openable implements IErlProject {
                     final IErlModule module = (IErlModule) element;
                     result.add(module);
                     return false;
-                } else if (isExternalOrProject) {
-                    if (element instanceof IOpenable) {
-                        final IOpenable openable = (IOpenable) element;
-                        openable.open(null);
-                    }
+                } else if (isExternalOrProject && element instanceof IOpenable) {
+                    final IOpenable openable = (IOpenable) element;
+                    openable.open(null);
                 }
                 return isExternalOrProject;
             }
