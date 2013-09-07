@@ -114,11 +114,7 @@ public class ErlModel extends Openable implements IErlModel {
 
     /**
      * Constructs a new Erlang Model on the given workspace. Note that only one
-     * instance of ErlModel handle should ever be created. One should only
-     * indirect through ErlModel#getInstance().getModel() to get access to it.
-     * 
-     * @exception Error
-     *                if called more than once
+     * instance of ErlModel handle should ever be created.
      */
     public ErlModel(final ErlangToolkit toolkit) {
         super(null, ""); //$NON-NLS-1$
@@ -129,7 +125,7 @@ public class ErlModel extends Openable implements IErlModel {
         deltaManager = new ErlModelDeltaManager(this);
     }
 
-    public void setupWorkspaceListeners() {
+    public final void setupWorkspaceListeners() {
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IPathVariableManager pvm = workspace.getPathVariableManager();
         pvm.addChangeListener(fPathVariableChangeListener);
@@ -144,10 +140,9 @@ public class ErlModel extends Openable implements IErlModel {
         final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
                 .getProjects();
         for (final IProject project : projects) {
-            if (NatureUtil.hasErlangNature(project)) {
-                if (getErlangProject(project) == null) {
-                    addChild(makeErlangProject(project));
-                }
+            if (NatureUtil.hasErlangNature(project)
+                    && getErlangProject(project) == null) {
+                addChild(makeErlangProject(project));
             }
         }
 
@@ -156,14 +151,6 @@ public class ErlModel extends Openable implements IErlModel {
 
     public static final ErlModelCache getErlModelCache() {
         return ErlModelCache.getDefault();
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (!(o instanceof ErlModel)) {
-            return false;
-        }
-        return super.equals(o);
     }
 
     /**
@@ -294,14 +281,12 @@ public class ErlModel extends Openable implements IErlModel {
             if (c == null) {
                 return null;
             }
-            if (openElements) {
-                if (c instanceof IOpenable) {
-                    final IOpenable o = (IOpenable) c;
-                    try {
-                        o.open(null);
-                    } catch (final ErlModelException e) {
-                        return null;
-                    }
+            if (openElements && c instanceof IOpenable) {
+                final IOpenable o = (IOpenable) c;
+                try {
+                    o.open(null);
+                } catch (final ErlModelException e) {
+                    return null;
                 }
             }
             final IResource resource = c.getResource();
@@ -590,8 +575,8 @@ public class ErlModel extends Openable implements IErlModel {
                 final IElementChangedListener listener = listeners[i];
                 long start = -1;
                 if (ModelConfig.verbose) {
-                    System.out
-                            .print("Listener #" + (i + 1) + "=" + listener.toString());//$NON-NLS-1$//$NON-NLS-2$
+                    ErlLogger
+                            .debug("Listener #" + (i + 1) + "=" + listener.toString());//$NON-NLS-1$//$NON-NLS-2$
                     start = System.currentTimeMillis();
                 }
                 // wrap callbacks with Safe runnable for subsequent listeners to
@@ -613,8 +598,8 @@ public class ErlModel extends Openable implements IErlModel {
                     }
                 });
                 if (ModelConfig.verbose) {
-                    System.out
-                            .println(" -> " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+                    ErlLogger
+                            .debug(" -> " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         }
@@ -626,12 +611,13 @@ public class ErlModel extends Openable implements IErlModel {
         }
         final IErlElement e = findElement(resource);
         if (e != null) {
-            return e; // TODO or should this give an exception?
+            // TODO or should this give an exception?
+            return e;
         }
         final int type = resource.getType();
         switch (type) {
         case IResource.PROJECT:
-            return createProject((IProject) resource); // , parent);
+            return createProject((IProject) resource);
         case IResource.FILE:
             return createFile((IFile) resource, parent);
         case IResource.FOLDER:
