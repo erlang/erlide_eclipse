@@ -1,6 +1,5 @@
-package org.erlide.backend.api;
+package org.erlide.backend.debug;
 
-import org.erlide.backend.debug.BackendEvalResult;
 import org.erlide.runtime.api.IRpcSite;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

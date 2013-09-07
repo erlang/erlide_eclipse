@@ -23,7 +23,7 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.util.ModelUtilService;
+import org.erlide.engine.services.search.ModelUtilService;
 import org.erlide.util.SystemConfiguration;
 
 /**

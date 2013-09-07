@@ -1,4 +1,4 @@
-package org.erlide.engine.util;
+package org.erlide.engine.services.search;
 
 import java.util.List;
 

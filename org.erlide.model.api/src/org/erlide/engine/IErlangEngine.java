@@ -10,13 +10,13 @@ import org.erlide.engine.services.importer.ImportService;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.services.parsing.SimpleScannerService;
 import org.erlide.engine.services.proclist.ProclistService;
+import org.erlide.engine.services.search.ModelFindService;
+import org.erlide.engine.services.search.ModelUtilService;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.engine.services.search.SearchServerService;
 import org.erlide.engine.services.search.XrefService;
 import org.erlide.engine.services.text.IndentService;
-import org.erlide.engine.util.ModelFindService;
-import org.erlide.engine.util.ModelUtilService;
 import org.erlide.runtime.api.IRpcSite;
 
 public interface IErlangEngine {

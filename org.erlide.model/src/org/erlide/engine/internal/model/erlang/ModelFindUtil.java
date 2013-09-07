@@ -17,9 +17,9 @@ import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.util.ErlangFunction;
-import org.erlide.engine.util.ModelFindService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.StringUtils;
 

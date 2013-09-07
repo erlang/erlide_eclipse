@@ -29,6 +29,8 @@ import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ScannerService;
+import org.erlide.engine.services.search.ModelFindService;
+import org.erlide.engine.services.search.ModelUtilService;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;

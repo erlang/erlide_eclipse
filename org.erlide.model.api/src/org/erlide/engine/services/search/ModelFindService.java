@@ -1,4 +1,4 @@
-package org.erlide.engine.util;
+package org.erlide.engine.services.search;
 
 import java.util.Collection;
 
@@ -13,7 +13,7 @@ import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.services.search.OpenResult;
+import org.erlide.engine.util.ErlangFunction;
 
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 
