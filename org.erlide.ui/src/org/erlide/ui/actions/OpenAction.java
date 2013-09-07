@@ -46,7 +46,7 @@ import org.erlide.util.ErlLogger;
  */
 public class OpenAction extends SelectionDispatchAction {
 
-    private final OpenUtils data = new OpenUtils();
+    private final OpenUtils helper = new OpenUtils();
 
     /**
      * Creates a new <code>OpenAction</code>. The action requires that the
@@ -112,7 +112,6 @@ public class OpenAction extends SelectionDispatchAction {
             final IEditorPart activeEditor = getSite().getPage()
                     .getActiveEditor();
             final int offset = selection.getOffset();
-            final IRpcSite backend = ErlangEngine.getInstance().getBackend();
             ITextEditor textEditor = null;
             OpenResult openResult = null;
             IErlElement element = null;
@@ -129,8 +128,11 @@ public class OpenAction extends SelectionDispatchAction {
                 openResult = ErlangEngine
                         .getInstance()
                         .getOpenService()
-                        .open(scannerName, offset,
-                                data.modelUtilService.getImportsAsList(module),
+                        .open(scannerName,
+                                offset,
+                                ErlangEngine.getInstance()
+                                        .getModelUtilService()
+                                        .getImportsAsList(module),
                                 project.getExternalModulesString(),
                                 model.getPathVars());
                 ErlLogger.debug("open " + openResult);
@@ -151,8 +153,10 @@ public class OpenAction extends SelectionDispatchAction {
                 }
             }
             if (openResult != null) {
-                new OpenUtils().openOpenResult(textEditor, module, backend,
-                        offset, project, openResult, element);
+                final IRpcSite backend = ErlangEngine.getInstance()
+                        .getBackend();
+                helper.openOpenResult(textEditor, module, backend, offset,
+                        project, openResult, element);
             }
         } catch (final Exception e) {
             ErlLogger.error(e);
