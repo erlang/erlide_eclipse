@@ -172,11 +172,7 @@ public final class TypeConverter {
             if (cls == String.class) {
                 return cvtString(obj);
             }
-            if (cls == char.class || cls == Character.class || cls == int.class
-                    || cls == Integer.class || cls == byte.class
-                    || cls == Byte.class || cls == short.class
-                    || cls == Short.class || cls == long.class
-                    || cls == Long.class) {
+            if (isNumericClass(cls)) {
                 if (obj instanceof OtpErlangLong) {
                     final long res = ((OtpErlangLong) obj).longValue();
                     if (cls == char.class || cls == Character.class) {
@@ -240,6 +236,13 @@ public final class TypeConverter {
         }
     }
 
+    private static boolean isNumericClass(final Class<?> cls) {
+        return cls == char.class || cls == Character.class || cls == int.class
+                || cls == Integer.class || cls == byte.class
+                || cls == Byte.class || cls == short.class
+                || cls == Short.class || cls == long.class || cls == Long.class;
+    }
+
     private static String cvtString(final OtpErlangObject obj)
             throws SignatureException {
         if (obj instanceof OtpErlangString) {
@@ -264,7 +267,7 @@ public final class TypeConverter {
             return res.toString();
         }
         throw new SignatureException(WRONG_ARG_TYPE + obj.getClass().getName()
-                + ", can't convert to String");
+                + CANT_CONVERT_TO + "String");
     }
 
     private static Object cvtArray(final OtpErlangObject obj, final Class<?> cls)
@@ -395,33 +398,8 @@ public final class TypeConverter {
 
     private static void checkConversion(final Object obj) {
         if (TypeConverter.willCheckConversion()) {
-            StackTraceElement el = null;
-            boolean found = false;
             final StackTraceElement[] st = new Throwable().getStackTrace();
-            for (final StackTraceElement ste : st) {
-                if (found) {
-                    if (!((ste.getMethodName().equals("send")
-                            || ste.getMethodName().equals("sendRpc")
-                            || ste.getMethodName().equals("rpc")
-                            || ste.getMethodName().equals("rpct")
-                            || ste.getMethodName().equals("rpcx") || ste
-                            .getMethodName().equals("rpcxt")) && ste
-                            .getClassName().endsWith("Backend"))) {
-                        el = ste;
-                        break;
-                    }
-                }
-                if ((ste.getMethodName().equals("send")
-                        || ste.getMethodName().equals("sendRpc")
-                        || ste.getMethodName().equals("rpc")
-                        || ste.getMethodName().equals("rpct")
-                        || ste.getMethodName().equals("rpcx") || ste
-                        .getMethodName().equals("rpcxt"))
-                        && ste.getClassName().endsWith("Backend")) {
-                    found = true;
-
-                }
-            }
+            final StackTraceElement el = findRpcStacktraceElement(st);
             ErlLogger.debug(" *** deprecated use of java2erlang: "
                     + obj.getClass().getSimpleName() + " " + el);
             if (el == null) {
@@ -431,6 +409,34 @@ public final class TypeConverter {
                 }
             }
         }
+    }
+
+    private static StackTraceElement findRpcStacktraceElement(
+            final StackTraceElement[] st) {
+        boolean found = false;
+        for (final StackTraceElement ste : st) {
+            if (found) {
+                if (!((ste.getMethodName().equals("send")
+                        || ste.getMethodName().equals("sendRpc")
+                        || ste.getMethodName().equals("rpc")
+                        || ste.getMethodName().equals("rpct")
+                        || ste.getMethodName().equals("rpcx") || ste
+                        .getMethodName().equals("rpcxt")) && ste.getClassName()
+                        .endsWith("Backend"))) {
+                    return ste;
+                }
+            }
+            if ((ste.getMethodName().equals("send")
+                    || ste.getMethodName().equals("sendRpc")
+                    || ste.getMethodName().equals("rpc")
+                    || ste.getMethodName().equals("rpct")
+                    || ste.getMethodName().equals("rpcx") || ste
+                    .getMethodName().equals("rpcxt"))
+                    && ste.getClassName().endsWith("Backend")) {
+                found = true;
+            }
+        }
+        return null;
     }
 
     private static OtpErlangObject cvtNumber(final Object obj,
