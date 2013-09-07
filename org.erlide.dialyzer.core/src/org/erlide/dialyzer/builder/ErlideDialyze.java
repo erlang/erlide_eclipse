@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 
 public class ErlideDialyze {
 
+    private static final String ERLIDE_DIALYZE = "erlide_dialyze";
     private static final int LONG_TIMEOUT = 60000;
     // private static final int FILE_TIMEOUT = 20000;
     // private static final int INCLUDE_TIMEOUT = 40000;
@@ -32,7 +33,7 @@ public class ErlideDialyze {
         for (final IPath p : includeDirs) {
             incs.add(p.toString());
         }
-        return backend.async_call("erlide_dialyze", "dialyze", "lslslsoo",
+        return backend.async_call(ERLIDE_DIALYZE, "dialyze", "lslslsoo",
                 files, pltPaths, incs, fromSource, noCheckPLT);
     }
 
@@ -45,7 +46,7 @@ public class ErlideDialyze {
         for (final IPath p : includeDirs) {
             incs.add(p.toString());
         }
-        backend.async_call_result(callback, "erlide_dialyze", "start_dialyze",
+        backend.async_call_result(callback, ERLIDE_DIALYZE, "start_dialyze",
                 "xlslslsoo", files, pltPaths, incs, fromSource, noCheckPLT);
         // ErlLogger.debug("result %s", result.toString());
     }
@@ -55,7 +56,7 @@ public class ErlideDialyze {
         final List<String> result = Lists.newArrayList();
         try {
             final OtpErlangList l = (OtpErlangList) backend.call(
-                    "erlide_dialyze", "format_warnings", "x", warnings);
+                    ERLIDE_DIALYZE, "format_warnings", "x", warnings);
             for (final OtpErlangObject o : l) {
                 result.add(Util.stringValue(o).trim());
             }
@@ -68,16 +69,16 @@ public class ErlideDialyze {
     public static OtpErlangObject checkPlt(final IRpcSite backend,
             final String plt, final List<String> ebinDirs) throws RpcException {
         if (ebinDirs == null) {
-            return backend.call(UPDATE_TIMEOUT, "erlide_dialyze", "check_plt",
+            return backend.call(UPDATE_TIMEOUT, ERLIDE_DIALYZE, "check_plt",
                     "s", plt);
         }
-        return backend.call(UPDATE_TIMEOUT, "erlide_dialyze",
+        return backend.call(UPDATE_TIMEOUT, ERLIDE_DIALYZE,
                 "update_plt_with_additional_paths", "sls", plt, ebinDirs);
     }
 
     public static List<String> getPltFiles(final IRpcSite backend,
             final String pltFiles) throws RpcException {
-        final OtpErlangObject o = backend.call("erlide_dialyze",
+        final OtpErlangObject o = backend.call(ERLIDE_DIALYZE,
                 "get_plt_files", "s", pltFiles);
         if (Util.isOk(o)) {
             final OtpErlangTuple t = (OtpErlangTuple) o;
@@ -101,7 +102,7 @@ public class ErlideDialyze {
     public static void startCheckPlt(final IRpcSite backend, final String plt,
             final List<String> ebinDirs, final IRpcResultCallback callback)
             throws RpcException {
-        backend.async_call_result(callback, "erlide_dialyze",
+        backend.async_call_result(callback, ERLIDE_DIALYZE,
                 "start_update_plt_with_additional_paths", "xsls", plt, ebinDirs);
     }
 }

@@ -58,6 +58,9 @@ import com.google.common.collect.Sets;
 
 public final class BuilderHelper {
 
+    private static final String ERL = "erl";
+    private static final String ERLIDE_BUILDER = "erlide_builder";
+
     public BuilderHelper() {
     }
 
@@ -381,7 +384,7 @@ public final class BuilderHelper {
         final IPath projectPath = project.getLocation();
         final IResource res = bres.getResource();
         final String s = res.getFileExtension();
-        if (!"erl".equals(s)) {
+        if (!ERL.equals(s)) {
             ErlLogger.warn("trying to compile " + res.getName() + "?!?!");
         }
 
@@ -448,7 +451,7 @@ public final class BuilderHelper {
                 .getErlangProject(source.getProject());
         IPath p = erlProject.getOutputLocation();
         p = p.append(source.getName());
-        if (!"erl".equals(p.getFileExtension())) {
+        if (!ERL.equals(p.getFileExtension())) {
             return null;
         }
         final IPath module = p.removeFileExtension();
@@ -502,7 +505,7 @@ public final class BuilderHelper {
             return null;
         }
         IPath erl = path.removeFileExtension();
-        erl = erl.addFileExtension("erl").setDevice(null);
+        erl = erl.addFileExtension(ERL).setDevice(null);
         return erl;
     }
 
@@ -551,7 +554,7 @@ public final class BuilderHelper {
             incs.add(p.toString());
         }
         try {
-            return backend.async_call("erlide_builder", "compile", "sslsx",
+            return backend.async_call(ERLIDE_BUILDER, "compile", "sslsx",
                     fn.toString(), outputdir, incs, compilerOptions);
         } catch (final Exception e) {
             ErlLogger.debug(e);
@@ -562,7 +565,7 @@ public final class BuilderHelper {
     public static IRpcFuture compileYrl(final IRpcSite backend,
             final String fn, final String output) {
         try {
-            return backend.async_call("erlide_builder", "compile_yrl", "ss",
+            return backend.async_call(ERLIDE_BUILDER, "compile_yrl", "ss",
                     fn, output);
         } catch (final Exception e) {
             ErlLogger.debug(e);
@@ -577,7 +580,7 @@ public final class BuilderHelper {
             for (final IBackend b : backendManager
                     .getExecutionBackends(project)) {
                 ErlLogger.debug(":: loading %s in %s", module, b.getName());
-                b.getRpcSite().call("erlide_builder", "load", "ao", module,
+                b.getRpcSite().call(ERLIDE_BUILDER, "load", "ao", module,
                         b.getData().shouldLoadOnAllNodes());
                 backendManager.moduleLoaded(b, project, module);
             }
@@ -588,7 +591,7 @@ public final class BuilderHelper {
 
     public static OtpErlangList getSourceClashes(final IRpcSite backend,
             final String[] dirList) throws RpcException {
-        final OtpErlangObject res = backend.call("erlide_builder",
+        final OtpErlangObject res = backend.call(ERLIDE_BUILDER,
                 "source_clash", "ls", (Object) dirList);
         if (res instanceof OtpErlangList) {
             return (OtpErlangList) res;
@@ -599,7 +602,7 @@ public final class BuilderHelper {
 
     public static OtpErlangList getCodeClashes(final IRpcSite b)
             throws RpcException {
-        final OtpErlangList res = (OtpErlangList) b.call("erlide_builder",
+        final OtpErlangList res = (OtpErlangList) b.call(ERLIDE_BUILDER,
                 "code_clash", null);
         return res;
     }
@@ -626,7 +629,7 @@ public final class BuilderHelper {
                     .getModel().getErlangProject(resource.getProject());
             if (resource.getType() == IResource.FILE
                     && resource.getFileExtension() != null
-                    && "erl".equals(resource.getFileExtension())
+                    && ERL.equals(resource.getFileExtension())
                     && isInCodePath(resource, erlProject)) {
                 final String[] p = resource.getName().split("\\.");
                 if (p[0].equals(fName)) {
@@ -689,7 +692,7 @@ public final class BuilderHelper {
             final IPath path = resource.getParent().getProjectRelativePath();
             final String ext = resource.getFileExtension();
             if (erlProject.getSourceDirs().contains(path)) {
-                if ("erl".equals(ext)) {
+                if (ERL.equals(ext)) {
                     handleErlFile(kind, resource);
                     return false;
                 }

@@ -73,6 +73,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public final class TypeConverter {
 
+    private static final String CANT_CONVERT_TO = ", can't convert to ";
+    private static final String WRONG_ARG_TYPE = "wrong arg type ";
+
     public static Class<?> getClassByName(final String arg) {
         if ("char".equals(arg)) {
             return char.class;
@@ -192,8 +195,8 @@ public final class TypeConverter {
                         return res;
                     }
                 }
-                throw new SignatureException("wrong arg type "
-                        + obj.getClass().getName() + ", can't convert to "
+                throw new SignatureException(WRONG_ARG_TYPE
+                        + obj.getClass().getName() + CANT_CONVERT_TO
                         + cls.getCanonicalName());
             }
             if (cls == boolean.class || cls == Boolean.class) {
@@ -206,8 +209,8 @@ public final class TypeConverter {
                         return false;
                     }
                 }
-                throw new SignatureException("wrong arg type "
-                        + obj.getClass().getName() + ", can't convert to "
+                throw new SignatureException(WRONG_ARG_TYPE
+                        + obj.getClass().getName() + CANT_CONVERT_TO
                         + cls.getCanonicalName());
             }
             if (Collection.class.isAssignableFrom(cls)) {
@@ -220,13 +223,13 @@ public final class TypeConverter {
                     }
                     return Arrays.asList(olist);
                 }
-                throw new SignatureException("wrong arg type "
-                        + obj.getClass().getName() + ", can't convert to "
+                throw new SignatureException(WRONG_ARG_TYPE
+                        + obj.getClass().getName() + CANT_CONVERT_TO
                         + cls.getCanonicalName());
             }
             if (obj instanceof OtpErlangRef) {
-                throw new SignatureException("wrong arg type "
-                        + obj.getClass().getName() + ", can't convert to "
+                throw new SignatureException(WRONG_ARG_TYPE
+                        + obj.getClass().getName() + CANT_CONVERT_TO
                         + cls.getCanonicalName());
             }
             return obj;
@@ -260,8 +263,8 @@ public final class TypeConverter {
             }
             return res.toString();
         }
-        throw new SignatureException("wrong arg type "
-                + obj.getClass().getName() + ", can't convert to String");
+        throw new SignatureException(WRONG_ARG_TYPE + obj.getClass().getName()
+                + ", can't convert to String");
     }
 
     private static Object cvtArray(final OtpErlangObject obj, final Class<?> cls)

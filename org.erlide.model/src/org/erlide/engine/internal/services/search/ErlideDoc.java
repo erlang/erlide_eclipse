@@ -19,6 +19,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideDoc implements OtpDocService {
 
+    private static final String ERLIDE_OTP_DOC = "erlide_otp_doc";
     private final IRpcSite backend;
 
     public ErlideDoc(final IRpcSite backend) {
@@ -30,7 +31,7 @@ public class ErlideDoc implements OtpDocService {
             final String mod, final String prefix, final String stateDir) {
         OtpErlangObject res = null;
         try {
-            res = b.call("erlide_otp_doc", "get_proposals", "ass", mod, prefix,
+            res = b.call(ERLIDE_OTP_DOC, "get_proposals", "ass", mod, prefix,
                     stateDir);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
@@ -44,7 +45,7 @@ public class ErlideDoc implements OtpDocService {
         OtpErlangObject res = null;
         try {
             final String what = includes ? "includes" : "modules";
-            res = b.call("erlide_otp_doc", "get_modules", "slsa", prefix,
+            res = b.call(ERLIDE_OTP_DOC, "get_modules", "slsa", prefix,
                     projectModules, what);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
@@ -63,7 +64,7 @@ public class ErlideDoc implements OtpDocService {
                 new OtpErlangInt(functionCall.getArity()),
                 new OtpErlangString("") });
         try {
-            res = b.call("erlide_otp_doc", "get_doc", "sxs",
+            res = b.call(ERLIDE_OTP_DOC, "get_doc", "sxs",
                     functionCall.getModule(), input, stateDir);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
@@ -90,7 +91,7 @@ public class ErlideDoc implements OtpDocService {
                             .getOpenService()
                             .mkContext(externalModules, null, pathVars, null,
                                     imports));
-            res = b.call("erlide_otp_doc", "get_doc", "sxs", module, input,
+            res = b.call(ERLIDE_OTP_DOC, "get_doc", "sxs", module, input,
                     stateDir);
         } catch (final RpcException e) {
             ErlLogger.warn(e);

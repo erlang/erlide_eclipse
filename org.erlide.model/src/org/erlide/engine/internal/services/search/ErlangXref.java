@@ -18,6 +18,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlangXref implements XrefService {
 
+    private static final String ERLIDE_XREF = "erlide_xref";
     private final IRpcSite backend;
 
     public ErlangXref(final IRpcSite backend) {
@@ -27,7 +28,7 @@ public class ErlangXref implements XrefService {
     @Override
     public void start() {
         try {
-            backend.call("erlide_xref", "start", "");
+            backend.call(ERLIDE_XREF, "start", "");
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -37,7 +38,7 @@ public class ErlangXref implements XrefService {
     @Override
     public void stop() {
         try {
-            backend.call("erlide_xref", "stop", "");
+            backend.call(ERLIDE_XREF, "stop", "");
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -50,7 +51,7 @@ public class ErlangXref implements XrefService {
             final IPath outputLocation = project.getWorkspaceProject()
                     .getFolder(project.getOutputLocation()).getLocation();
             final String loc = outputLocation.toString();
-            return backend.async_call("erlide_xref", "add_project", "s", loc);
+            return backend.async_call(ERLIDE_XREF, "add_project", "s", loc);
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -60,7 +61,7 @@ public class ErlangXref implements XrefService {
     @Override
     public void update() {
         try {
-            backend.call("erlide_xref", "update", "");
+            backend.call(ERLIDE_XREF, "update", "");
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -71,7 +72,7 @@ public class ErlangXref implements XrefService {
     public FunctionRef[] functionUse(final String mod, final String fun,
             final int arity) {
         try {
-            final OtpErlangObject r = backend.call("erlide_xref",
+            final OtpErlangObject r = backend.call(ERLIDE_XREF,
                     "function_use", "aai", mod, fun, arity);
             final Bindings bind = ErlUtils.match("{ok, L}", r);
             if (bind == null) {
