@@ -17,6 +17,9 @@ package org.erlide.util;
  */
 public final class CharOperation {
 
+    private CharOperation() {
+    }
+
     /**
      * Constant for an empty char array
      */
@@ -828,38 +831,9 @@ public final class CharOperation {
      *         separator between each part and appending the given name at the
      *         end
      */
-    @SuppressWarnings("null")
     public static char[] concatWith(final char[] name, final char[][] array,
             final char separator) {
-        final int nameLength = name == null ? 0 : name.length;
-        if (nameLength == 0) {
-            return concatWith(array, separator);
-        }
-
-        final int length = array == null ? 0 : array.length;
-        if (length == 0) {
-            return name;
-        }
-
-        int size = nameLength;
-        int index = length;
-        while (--index >= 0) {
-            if (array[index].length > 0) {
-                size += array[index].length + 1;
-            }
-        }
-        final char[] result = new char[size];
-        index = size;
-        for (int i = length - 1; i >= 0; i--) {
-            final int subLength = array[i].length;
-            if (subLength > 0) {
-                index -= subLength;
-                System.arraycopy(array[i], 0, result, index, subLength);
-                result[--index] = separator;
-            }
-        }
-        System.arraycopy(name, 0, result, 0, nameLength);
-        return result;
+        return concatWith(array, name, separator);
     }
 
     /**
@@ -2489,13 +2463,7 @@ public final class CharOperation {
      *             if array is null
      */
     public static int occurrencesOf(final char toBeFound, final char[] array) {
-        int count = 0;
-        for (final char element : array) {
-            if (toBeFound == element) {
-                count++;
-            }
-        }
-        return count;
+        return occurrencesOf(toBeFound, array, 0);
     }
 
     /**
@@ -2943,31 +2911,9 @@ public final class CharOperation {
      * @return a new array which is the split of the given array using the given
      *         divider
      */
-    @SuppressWarnings("null")
     public static char[][] splitOn(final char divider, final char[] array) {
         final int length = array == null ? 0 : array.length;
-        if (length == 0) {
-            return NO_CHAR_CHAR;
-        }
-
-        int wordCount = 1;
-        for (int i = 0; i < length; i++) {
-            if (array[i] == divider) {
-                wordCount++;
-            }
-        }
-        final char[][] split = new char[wordCount][];
-        int last = 0, currentWord = 0;
-        for (int i = 0; i < length; i++) {
-            if (array[i] == divider) {
-                split[currentWord] = new char[i - last];
-                System.arraycopy(array, last, split[currentWord++], 0, i - last);
-                last = i + 1;
-            }
-        }
-        split[currentWord] = new char[length - last];
-        System.arraycopy(array, last, split[currentWord], 0, length - last);
-        return split;
+        return splitOn(divider, array, 0, length);
     }
 
     /**
