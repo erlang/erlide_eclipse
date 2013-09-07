@@ -39,16 +39,9 @@ import org.erlide.ui.editors.util.ErlangExternalEditorInput;
 
 public class ErlModelUtils {
 
-    /**
-     * @param moduleName
-     * @param function
-     * @param modulePath
-     * @param module
-     * @param project
-     * @param scope
-     * @return
-     * @throws CoreException
-     */
+    private ErlModelUtils() {
+    }
+
     public static boolean openExternalFunction(final String moduleName,
             final ErlangFunction function, final String modulePath,
             final IErlModule module, final IErlProject project,
@@ -78,11 +71,6 @@ public class ErlModelUtils {
 
     /**
      * Activate editor and select erlang function
-     * 
-     * @param fun
-     * @param arity
-     * @param editor
-     * @throws CoreException
      */
     public static boolean openFunctionInEditor(
             final ErlangFunction erlangFunction, final IEditorPart editor)
@@ -139,46 +127,56 @@ public class ErlModelUtils {
             final ErlangExternalEditorInput erlangExternalEditorInput = (ErlangExternalEditorInput) editorInput;
             return erlangExternalEditorInput.getModule();
         }
-        String path = null;
-        String encoding = null;
+        final String path = getPathForInput(editorInput);
+        if (path == null) {
+            return null;
+        }
+        final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+        final IErlModule module = ErlangEngine
+                .getInstance()
+                .getModelFindService()
+                .findModule(model, null, null, path,
+                        IErlElementLocator.Scope.ALL_PROJECTS);
+        if (module != null) {
+            return module;
+        }
+        final String encoding = getEncodingForInput(editorInput);
+        final IPath p = new Path(path);
+        return ErlangEngine.getInstance().getModel()
+                .getModuleFromFile(null, p.lastSegment(), path, encoding, path);
+
+    }
+
+    private static String getPathForInput(final IEditorInput editorInput) {
         if (editorInput instanceof IStorageEditorInput) {
             final IStorageEditorInput sei = (IStorageEditorInput) editorInput;
             try {
                 final IStorage storage = sei.getStorage();
                 final IPath p = storage.getFullPath();
-                path = p.toPortableString();
-                if (storage instanceof IEncodedStorage) {
-                    final IEncodedStorage encodedStorage = (IEncodedStorage) storage;
-                    encoding = encodedStorage.getCharset();
-                } else {
-                    encoding = ResourcesPlugin.getEncoding();
-                }
+                return p.toPortableString();
             } catch (final CoreException e) {
             }
         }
         if (editorInput instanceof IURIEditorInput) {
             final IURIEditorInput ue = (IURIEditorInput) editorInput;
-            path = ue.getURI().getPath();
-        }
-        if (path != null) {
-            final IErlElementLocator model = ErlangEngine.getInstance()
-                    .getModel();
-            final IErlModule module = ErlangEngine
-                    .getInstance()
-                    .getModelFindService()
-                    .findModule(model, null, null, path,
-                            IErlElementLocator.Scope.ALL_PROJECTS);
-            if (module != null) {
-                return module;
-            }
-            final IPath p = new Path(path);
-            return ErlangEngine
-                    .getInstance()
-                    .getModel()
-                    .getModuleFromFile(null, p.lastSegment(), path, encoding,
-                            path);
+            return ue.getURI().getPath();
         }
         return null;
+    }
+
+    private static String getEncodingForInput(final IEditorInput editorInput) {
+        if (editorInput instanceof IStorageEditorInput) {
+            final IStorageEditorInput sei = (IStorageEditorInput) editorInput;
+            try {
+                final IStorage storage = sei.getStorage();
+                if (storage instanceof IEncodedStorage) {
+                    final IEncodedStorage encodedStorage = (IEncodedStorage) storage;
+                    return encodedStorage.getCharset();
+                }
+            } catch (final CoreException e) {
+            }
+        }
+        return ResourcesPlugin.getEncoding();
     }
 
     public static void openMFA(final String module, final String function,
