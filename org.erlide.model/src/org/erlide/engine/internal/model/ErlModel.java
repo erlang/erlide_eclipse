@@ -65,7 +65,6 @@ import org.erlide.engine.model.root.IErlElementDelta;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.ElementChangedEvent;
 import org.erlide.engine.util.ErlangFunction;
@@ -109,15 +108,12 @@ public class ErlModel extends Openable implements IErlModel {
 
     OtpErlangList fCachedPathVars = null;
 
-    private final ParserService parser;
-
     /**
      * Constructs a new Erlang Model on the given workspace. Note that only one
      * instance of ErlModel handle should ever be created.
      */
     public ErlModel() {
         super(null, ""); //$NON-NLS-1$
-        parser = ErlangEngine.getInstance().getParserService();
         fPathVariableChangeListener = new PathVariableChangeListener();
         setupWorkspaceListeners();
         deltaManager = new ErlModelDeltaManager(this);
@@ -905,11 +901,6 @@ public class ErlModel extends Openable implements IErlModel {
                 remove(rsrc);
             }
         }
-    }
-
-    @Override
-    public ParserService getParser() {
-        return parser;
     }
 
     private static IErlModule getModuleFromCacheByNameOrPath(

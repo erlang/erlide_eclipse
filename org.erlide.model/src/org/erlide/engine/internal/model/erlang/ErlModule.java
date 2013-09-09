@@ -114,8 +114,8 @@ public class ErlModule extends Openable implements IErlModule {
     public boolean internalBuildStructure(final IProgressMonitor pm) {
         final String text = getInitialText();
         if (text != null) {
-            final ParserService parser = ErlangEngine.getInstance().getModel()
-                    .getParser();
+            final ParserService parser = ErlangEngine.getInstance()
+                    .getParserService();
             parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
                     text, true);
             return parsed;

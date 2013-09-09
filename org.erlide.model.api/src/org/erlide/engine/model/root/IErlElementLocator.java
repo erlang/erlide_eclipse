@@ -8,6 +8,7 @@ import org.erlide.engine.model.erlang.FunctionRef;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlModule;
 
+// TODO extract this as a service
 public interface IErlElementLocator {
 
     enum Scope {

@@ -30,7 +30,7 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.erlang.ErlToken;
+import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.parsing.ScannerException;
 import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.internal.ErlideUIPlugin;

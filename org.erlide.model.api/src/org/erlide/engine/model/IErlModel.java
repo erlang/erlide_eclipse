@@ -19,7 +19,6 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementDelta;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.util.ElementChangedEvent;
 import org.erlide.engine.util.IElementChangedListener;
 
@@ -162,8 +161,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent,
     public void removeModule(final IErlModule module);
 
     void putEdited(String path, IErlModule module);
-
-    ParserService getParser();
 
     Object getModelLock();
 

@@ -13,7 +13,6 @@ import java.util.List;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.services.parsing.InternalScanner;
 import org.erlide.engine.services.parsing.ParserService;
@@ -58,8 +57,8 @@ public class ParsingTests {
         try {
             ErlangEngine.getInstance().getScannerService(scannerModuleName)
                     .initialScan(s, "", false);
-            final ParserService parser = ErlangEngine.getInstance().getModel()
-                    .getParser();
+            final ParserService parser = ErlangEngine.getInstance()
+                    .getParserService();
             result = parser.parse(module, scannerModuleName, false, "", s,
                     false);
         } finally {

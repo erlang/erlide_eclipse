@@ -9,7 +9,7 @@
  *     Vlad Dumitrescu
  *******************************************************************************/
 
-package org.erlide.engine.model.erlang;
+package org.erlide.engine.services.parsing;
 
 import org.erlide.util.ErlLogger;
 

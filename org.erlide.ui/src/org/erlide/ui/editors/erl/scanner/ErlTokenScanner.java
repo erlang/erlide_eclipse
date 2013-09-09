@@ -7,7 +7,7 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.erlide.engine.model.erlang.ErlToken;
+import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.TokenHighlight;

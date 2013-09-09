@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.engine;
+package org.erlide.engine.model.root;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,9 +17,6 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.engine.model.root.ErlProjectInfo;
-import org.erlide.engine.model.root.IErlangProjectProperties;
-import org.erlide.engine.model.root.PathEntry;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.PreferencesUtils;

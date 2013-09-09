@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.erlang.ErlToken;
+import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.parsing.InternalScanner;
 import org.erlide.engine.services.parsing.ScannerException;
 import org.erlide.engine.services.parsing.SimpleScannerService;

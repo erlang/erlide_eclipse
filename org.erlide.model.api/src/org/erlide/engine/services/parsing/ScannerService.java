@@ -1,6 +1,5 @@
 package org.erlide.engine.services.parsing;
 
-import org.erlide.engine.model.erlang.ErlToken;
 import org.erlide.util.IDisposable;
 
 public interface ScannerService extends IDisposable {
