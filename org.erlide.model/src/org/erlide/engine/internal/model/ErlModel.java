@@ -54,7 +54,6 @@ import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.internal.model.root.Openable;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IErlModelChangeListener;
-import org.erlide.engine.model.erlang.ErlangToolkit;
 import org.erlide.engine.model.erlang.FunctionRef;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlModule;
@@ -114,16 +113,13 @@ public class ErlModel extends Openable implements IErlModel {
 
     private final ParserService parser;
 
-    private final ErlangToolkit toolkit;
-
     /**
      * Constructs a new Erlang Model on the given workspace. Note that only one
      * instance of ErlModel handle should ever be created.
      */
-    public ErlModel(final ErlangToolkit toolkit) {
+    public ErlModel() {
         super(null, ""); //$NON-NLS-1$
-        this.toolkit = toolkit;
-        parser = toolkit.getParserService();
+        parser = ErlangEngine.getInstance().getParserService();
         fPathVariableChangeListener = new PathVariableChangeListener();
         setupWorkspaceListeners();
         deltaManager = new ErlModelDeltaManager(this);
@@ -1153,11 +1149,6 @@ public class ErlModel extends Openable implements IErlModel {
     @Override
     public Object getModelLock() {
         return fModelLock;
-    }
-
-    @Override
-    public ErlangToolkit getToolkit() {
-        return toolkit;
     }
 
     @Override

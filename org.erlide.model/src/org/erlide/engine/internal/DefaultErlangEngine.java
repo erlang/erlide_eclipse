@@ -3,12 +3,11 @@ package org.erlide.engine.internal;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.engine.ErlModelException;
-import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.internal.model.ErlModel;
 import org.erlide.engine.internal.model.ModelSearcher;
+import org.erlide.engine.internal.model.erlang.ErlParser;
 import org.erlide.engine.internal.model.erlang.ErlScanner;
-import org.erlide.engine.internal.model.erlang.ErlangBackendToolkit;
 import org.erlide.engine.internal.model.erlang.ModelFindUtil;
 import org.erlide.engine.internal.model.erlang.ModelInternalUtils;
 import org.erlide.engine.internal.services.cleanup.ErlTidyCleanupProvider;
@@ -24,11 +23,11 @@ import org.erlide.engine.internal.services.search.ErlideSearchServer;
 import org.erlide.engine.internal.services.text.ErlideIndent;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.ModelSearcherService;
-import org.erlide.engine.model.erlang.ErlangToolkit;
 import org.erlide.engine.services.cleanup.CleanupProvider;
 import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.edoc.EdocExportService;
 import org.erlide.engine.services.importer.ImportService;
+import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.services.parsing.SimpleScannerService;
 import org.erlide.engine.services.proclist.ProclistService;
@@ -68,9 +67,7 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public IErlModel getModel() {
         if (erlangModel == null) {
-            final ErlangToolkit toolkit = ErlangEngine.getInstance()
-                    .getToolkit();
-            erlangModel = new ErlModel(toolkit);
+            erlangModel = new ErlModel();
         }
         if (!erlangModel.isOpen()) {
             try {
@@ -153,8 +150,16 @@ public class DefaultErlangEngine implements IErlangEngine {
     }
 
     @Override
-    public ErlangToolkit getToolkit() {
-        return new ErlangBackendToolkit(backend);
+    public ParserService getParserService() {
+        return new ErlParser(backend);
+    }
+
+    @Override
+    public ScannerService getScannerService(final String scannerName,
+            final String initialText, final String path, final boolean logging) {
+        final ErlScanner scanner = new ErlScanner(backend, scannerName);
+        scanner.initialScan(initialText, path, logging);
+        return scanner;
     }
 
     @Override
