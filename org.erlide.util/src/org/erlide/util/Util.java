@@ -50,19 +50,14 @@ import com.google.common.base.Charsets;
 public final class Util {
 
     private static final String ARGUMENTS_DELIMITER = "#"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.erlide.util.util"; //$NON-NLS-1$
+    private static final char[] DOUBLE_QUOTES = "''".toCharArray(); //$NON-NLS-1$
+    private static final String EMPTY_ARGUMENT = "   "; //$NON-NLS-1$
+    // public static final String[] fgEmptyStringArray = new String[0];
+    private static final char[] SINGLE_QUOTE = "'".toCharArray(); //$NON-NLS-1$
 
     /* Bundle containing messages */
-    static ResourceBundle bundle;
-
-    private static final String BUNDLE_NAME = "org.erlide.util.util"; //$NON-NLS-1$
-
-    private static final char[] DOUBLE_QUOTES = "''".toCharArray(); //$NON-NLS-1$
-
-    private static final String EMPTY_ARGUMENT = "   "; //$NON-NLS-1$
-
-    // public static final String[] fgEmptyStringArray = new String[0];
-
-    private static final char[] SINGLE_QUOTE = "'".toCharArray(); //$NON-NLS-1$
+    private static ResourceBundle bundle;
 
     static {
         relocalize();
