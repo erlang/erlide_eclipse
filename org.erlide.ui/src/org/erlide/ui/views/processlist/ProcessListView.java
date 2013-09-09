@@ -368,8 +368,7 @@ public class ProcessListView extends ViewPart {
             final IBackend b = (IBackend) sel.getFirstElement();
             return b;
         }
-        return null;
-
+        return BackendCore.getBackendManager().getIdeBackend();
     }
 
 }
