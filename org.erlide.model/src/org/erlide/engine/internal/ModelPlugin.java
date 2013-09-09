@@ -1,11 +1,6 @@
 package org.erlide.engine.internal;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Plugin;
-import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.IRpcSiteProvider;
-import org.erlide.runtime.runtimeinfo.RuntimeVersion;
-import org.erlide.util.services.ExtensionUtils;
 import org.osgi.framework.BundleContext;
 
 public class ModelPlugin extends Plugin {
@@ -45,21 +40,6 @@ public class ModelPlugin extends Plugin {
     public void stop(final BundleContext bundleContext) throws Exception {
         ModelPlugin.context = null;
         super.stop(bundleContext);
-    }
-
-    private IRpcSiteProvider getRuntimeProvider() {
-        return ExtensionUtils.getSingletonExtension(
-                "org.erlide.backend.backend", IRpcSiteProvider.class);
-    }
-
-    public IRpcSite getBackend(final RuntimeVersion version) {
-        final IRpcSiteProvider provider = getRuntimeProvider();
-        return provider.get(version);
-    }
-
-    public IRpcSite getBackend(final IProject project) {
-        final IRpcSiteProvider provider = getRuntimeProvider();
-        return provider.get(project.getName());
     }
 
 }

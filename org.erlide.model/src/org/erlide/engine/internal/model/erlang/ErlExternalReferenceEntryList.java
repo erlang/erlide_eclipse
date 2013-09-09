@@ -10,10 +10,10 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IParent;
-import org.erlide.engine.internal.ModelPlugin;
 import org.erlide.engine.internal.model.root.ErlModel;
 import org.erlide.engine.internal.model.root.ErlModelCache;
 import org.erlide.engine.internal.model.root.Openable;
+import org.erlide.engine.internal.util.BackendUtil;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlExternal;
@@ -67,8 +67,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
         if (externalModuleTree == null || externalIncludeTree == null) {
             final OtpErlangList pathVars = ErlangEngine.getInstance()
                     .getModel().getPathVars();
-            final IRpcSite backend = ModelPlugin.getDefault().getBackend(
-                    project.getWorkspaceProject());
+            final IRpcSite backend = new BackendUtil().getBackend(project
+                    .getWorkspaceProject());
             if (externalModuleTree == null && externalModules.length() > 0) {
                 if (pm != null) {
                     pm.worked(1);
