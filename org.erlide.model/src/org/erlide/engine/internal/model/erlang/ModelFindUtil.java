@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.IErlPreprocessorDef;

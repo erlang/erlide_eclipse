@@ -3,7 +3,7 @@ package org.erlide.engine.services.search;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.engine.ErlModelException;
+import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.IErlPreprocessorDef;

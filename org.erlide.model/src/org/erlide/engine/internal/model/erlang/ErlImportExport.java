@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.erlide.engine.IParent;
+import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlImportExport;
 import org.erlide.engine.util.ErlangFunction;
 

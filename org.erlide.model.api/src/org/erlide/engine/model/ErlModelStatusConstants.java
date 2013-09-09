@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.engine;
+package org.erlide.engine.model;
 
-import org.erlide.engine.model.IErlModelStatus;
+
 
 /**
  * Status codes used with Erlang model status objects.

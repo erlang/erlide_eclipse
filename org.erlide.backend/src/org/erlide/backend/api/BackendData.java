@@ -31,7 +31,7 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.debug.ErlDebugConstants;
 import org.erlide.backend.launch.IErlangLaunchDelegateConstants;
-import org.erlide.engine.IBeamLocator;
+import org.erlide.engine.model.IBeamLocator;
 import org.erlide.engine.model.erlang.ModuleKind;
 import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.runtime.api.ErlRuntimeAttributes;

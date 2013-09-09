@@ -8,18 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.engine;
+package org.erlide.engine.model;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.erlide.engine.model.IErlModelStatus;
 
 /**
  * A checked exception representing a failure in the Erlang model. Erlang model
- * exceptions contain a Erlang-specific status object describing the cause of
+ * exceptions contain an Erlang-specific status object describing the cause of
  * the exception.
  * <p>
  * This class is not intended to be subclassed by clients. Instances of this
@@ -90,8 +89,8 @@ public class ErlModelException extends CoreException {
     }
 
     /**
-     * Returns whether this exception indicates that a Erlang model element does
-     * not exist. Such exceptions have a status with a code of
+     * Returns whether this exception indicates that an Erlang model element
+     * does not exist. Such exceptions have a status with a code of
      * <code>IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>. This is a
      * convenience method.
      * 

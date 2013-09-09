@@ -1,8 +1,8 @@
 package org.erlide.engine.internal.model.erlang;
 
-import org.erlide.engine.ErlModelException;
-import org.erlide.engine.IParent;
 import org.erlide.engine.internal.model.root.ErlElement;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlRecordDef;
 import org.erlide.engine.model.erlang.IErlRecordField;
 import org.erlide.engine.model.root.ErlElementKind;

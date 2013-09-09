@@ -1,6 +1,5 @@
 package org.erlide.engine.services.search;
 
-import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.IErlAttribute;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
@@ -14,10 +13,15 @@ import org.erlide.util.Util;
 
 public class SearchPatternFactory {
 
-    public static ErlangSearchPattern getSearchPattern(
-            final SearchFor searchFor, final String moduleName,
-            final String name, final int arity, final LimitTo limitTo,
-            final IErlModule module) {
+    private final ModelUtilService modelUtilService;
+
+    public SearchPatternFactory(final ModelUtilService modelUtilService) {
+        this.modelUtilService = modelUtilService;
+    }
+
+    public ErlangSearchPattern getSearchPattern(final SearchFor searchFor,
+            final String moduleName, final String name, final int arity,
+            final LimitTo limitTo, final IErlModule module) {
         switch (searchFor) {
         case FUNCTION:
             return new FunctionPattern(moduleName, name, arity, limitTo, true,
@@ -38,7 +42,7 @@ public class SearchPatternFactory {
         return null;
     }
 
-    public static ErlangSearchPattern getSearchPatternFromErlElementAndLimitTo(
+    public ErlangSearchPattern getSearchPatternFromErlElementAndLimitTo(
             final IErlElement element, final LimitTo limitTo) {
         if (element instanceof IErlFunction) {
             final IErlFunction function = (IErlFunction) element;
@@ -46,8 +50,8 @@ public class SearchPatternFactory {
                     .withoutExtension(function.getModuleName());
             return new FunctionPattern(withoutExtension,
                     function.getFunctionName(), function.getArity(), limitTo,
-                    true, ErlangEngine.getInstance().getModelUtilService()
-                            .getModule(function), !function.isExported());
+                    true, modelUtilService.getModule(function),
+                    !function.isExported());
         } else if (element instanceof IErlMacroDef) {
             final IErlMacroDef m = (IErlMacroDef) element;
             final String unquoted = StringUtils.unquote(m.getDefinedName());

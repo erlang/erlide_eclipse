@@ -9,7 +9,8 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.erlide.engine.ErlModelException;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ErlSearchScope;
@@ -88,7 +89,8 @@ public class SearchTest {
         moduleB.open(null);
         // when
         // searching for the call to a:f
-        final ErlangSearchPattern ref = SearchPatternFactory.getSearchPattern(
+        final ErlangSearchPattern ref = new SearchPatternFactory(ErlangEngine
+                .getInstance().getModelUtilService()).getSearchPattern(
                 SearchFor.FUNCTION, "a", "f", 0, limitTo, moduleA);
         final ErlSearchScope scope = new ErlSearchScope(moduleA);
         scope.addModule(moduleB);
@@ -124,7 +126,8 @@ public class SearchTest {
         moduleB.open(null);
         // when
         // searching for the call to a:f
-        final ErlangSearchPattern ref = SearchPatternFactory.getSearchPattern(
+        final ErlangSearchPattern ref = new SearchPatternFactory(ErlangEngine
+                .getInstance().getModelUtilService()).getSearchPattern(
                 SearchFor.FUNCTION, "a", "f", 0, LimitTo.REFERENCES, moduleA);
         final ErlSearchScope scope = new ErlSearchScope(moduleA);
         scope.addModule(moduleB);
@@ -153,7 +156,8 @@ public class SearchTest {
         moduleB.open(null);
         // when
         // searching for the variable A from module a
-        final ErlangSearchPattern pattern = SearchPatternFactory
+        final ErlangSearchPattern pattern = new SearchPatternFactory(
+                ErlangEngine.getInstance().getModelUtilService())
                 .getSearchPattern(SearchFor.VARIABLE, null, "A", 0,
                         LimitTo.ALL_OCCURRENCES, moduleA);
         final ErlSearchScope scope = new ErlSearchScope(moduleA);

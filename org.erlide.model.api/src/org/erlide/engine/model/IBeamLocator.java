@@ -1,4 +1,4 @@
-package org.erlide.engine;
+package org.erlide.engine.model;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;

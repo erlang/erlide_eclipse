@@ -27,8 +27,8 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.erlide.core.search.SearchCoreUtil;
-import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlAttribute;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.engine.model.erlang.IErlModule;
@@ -264,7 +264,8 @@ public abstract class FindAction extends SelectionDispatchAction {
      */
     public void run(final IErlElement element) {
         try {
-            final ErlangSearchPattern pattern = SearchPatternFactory
+            final ErlangSearchPattern pattern = new SearchPatternFactory(
+                    ErlangEngine.getInstance().getModelUtilService())
                     .getSearchPatternFromErlElementAndLimitTo(element,
                             getLimitTo());
             SearchUtil.runQuery(pattern, getScope(), getScopeDescription(),

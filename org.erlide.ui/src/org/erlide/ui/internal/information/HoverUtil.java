@@ -6,7 +6,7 @@ import java.net.URL;
 import java.util.Collection;
 
 import org.eclipse.swt.browser.LocationEvent;
-import org.erlide.engine.ErlModelException;
+import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlMember;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;

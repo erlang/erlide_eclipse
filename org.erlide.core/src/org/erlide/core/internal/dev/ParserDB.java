@@ -8,9 +8,9 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.SourcePathProvider;
+import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlAttribute;
 import org.erlide.engine.model.erlang.IErlFunction;

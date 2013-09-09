@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.engine;
+package org.erlide.engine.model;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 

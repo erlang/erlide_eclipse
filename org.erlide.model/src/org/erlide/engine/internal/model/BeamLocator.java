@@ -1,10 +1,13 @@
-package org.erlide.engine;
+package org.erlide.engine.internal.model;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IBeamLocator;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.SystemConfiguration;
 

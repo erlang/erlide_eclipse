@@ -13,7 +13,7 @@ package org.erlide.engine.internal.model.erlang;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.engine.IParent;
+import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.engine.model.root.ErlElementKind;

@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.erlide.engine.services.codeassist;
 
-import org.erlide.engine.ErlModelException;
+import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.root.IErlElement;
 
 /**

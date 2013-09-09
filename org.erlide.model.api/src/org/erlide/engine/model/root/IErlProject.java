@@ -15,9 +15,9 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.engine.ErlModelException;
-import org.erlide.engine.IOpenable;
-import org.erlide.engine.IParent;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;

@@ -3,8 +3,8 @@
  */
 package org.erlide.engine.model.root;
 
-import org.erlide.engine.IOpenable;
-import org.erlide.engine.IParent;
+import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.IParent;
 
 /**
  * @author jakob

@@ -2,8 +2,8 @@ package org.erlide.engine.internal;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform;
-import org.erlide.engine.ErlModelException;
 import org.erlide.engine.IErlangEngine;
+import org.erlide.engine.internal.model.BeamLocator;
 import org.erlide.engine.internal.model.ErlModel;
 import org.erlide.engine.internal.model.erlang.ErlParser;
 import org.erlide.engine.internal.model.erlang.ErlScanner;
@@ -21,8 +21,9 @@ import org.erlide.engine.internal.services.search.ErlideOpen;
 import org.erlide.engine.internal.services.search.ErlideSearchServer;
 import org.erlide.engine.internal.services.search.ModelSearcher;
 import org.erlide.engine.internal.services.text.ErlideIndent;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IBeamLocator;
 import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.ModelSearcherService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
 import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.edoc.EdocExportService;
@@ -32,6 +33,7 @@ import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.services.parsing.SimpleScannerService;
 import org.erlide.engine.services.proclist.ProclistService;
 import org.erlide.engine.services.search.ModelFindService;
+import org.erlide.engine.services.search.ModelSearcherService;
 import org.erlide.engine.services.search.ModelUtilService;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.OtpDocService;
@@ -190,5 +192,10 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public ModelSearcherService getModelSearcherService() {
         return new ModelSearcher();
+    }
+
+    @Override
+    public IBeamLocator getBeamLocator() {
+        return new BeamLocator();
     }
 }

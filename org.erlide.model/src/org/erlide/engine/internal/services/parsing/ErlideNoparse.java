@@ -1,6 +1,6 @@
 package org.erlide.engine.internal.services.parsing;
 
-import org.erlide.engine.ErlModelException;
+import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;

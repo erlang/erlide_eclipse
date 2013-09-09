@@ -17,9 +17,9 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.services.parsing.ErlideNoparse;
+import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlAttribute;
 import org.erlide.engine.model.erlang.IErlComment;
 import org.erlide.engine.model.erlang.IErlFunction;

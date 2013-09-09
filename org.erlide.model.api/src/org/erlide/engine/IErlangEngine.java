@@ -1,8 +1,8 @@
 package org.erlide.engine;
 
 import org.eclipse.core.resources.IResource;
+import org.erlide.engine.model.IBeamLocator;
 import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.ModelSearcherService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
 import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.edoc.EdocExportService;
@@ -12,6 +12,7 @@ import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.services.parsing.SimpleScannerService;
 import org.erlide.engine.services.proclist.ProclistService;
 import org.erlide.engine.services.search.ModelFindService;
+import org.erlide.engine.services.search.ModelSearcherService;
 import org.erlide.engine.services.search.ModelUtilService;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.OtpDocService;
@@ -63,5 +64,7 @@ public interface IErlangEngine {
     ModelFindService getModelFindService();
 
     ModelSearcherService getModelSearcherService();
+
+    IBeamLocator getBeamLocator();
 
 }

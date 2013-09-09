@@ -29,7 +29,7 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
-import org.erlide.engine.BeamLocator;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.runtime.ErlRuntimeFactory;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.runtime.api.IErlRuntime;
@@ -101,7 +101,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
             final ILaunchConfiguration config, final String mode,
             final ILaunch launch) {
         data.setLaunch(launch);
-        data.setBeamLocator(new BeamLocator());
+        data.setBeamLocator(ErlangEngine.getInstance().getBeamLocator());
         return data;
     }
 

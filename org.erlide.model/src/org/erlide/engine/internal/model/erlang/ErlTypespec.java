@@ -9,8 +9,8 @@
  *******************************************************************************/
 package org.erlide.engine.internal.model.erlang;
 
-import org.erlide.engine.ErlModelException;
-import org.erlide.engine.IParent;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlTypespec;
 import org.erlide.engine.model.root.ErlElementKind;
 

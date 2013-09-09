@@ -1,4 +1,4 @@
-package org.erlide.engine.model;
+package org.erlide.engine.services.search;
 
 import java.util.Collection;
 

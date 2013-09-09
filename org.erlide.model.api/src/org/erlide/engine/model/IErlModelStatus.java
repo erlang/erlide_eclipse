@@ -12,7 +12,6 @@ package org.erlide.engine.model;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.erlide.engine.ErlModelStatusConstants;
 import org.erlide.engine.model.root.IErlElement;
 
 /**

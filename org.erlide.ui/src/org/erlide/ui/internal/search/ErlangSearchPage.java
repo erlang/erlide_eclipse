@@ -42,8 +42,8 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.search.SearchCoreUtil;
-import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.services.search.ErlSearchScope;
@@ -710,7 +710,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     }
 
     private SearchPatternData determineInitValuesFrom(final IErlElement e) {
-        final ErlangSearchPattern pattern = SearchPatternFactory
+        final ErlangSearchPattern pattern = new SearchPatternFactory(
+                ErlangEngine.getInstance().getModelUtilService())
                 .getSearchPatternFromErlElementAndLimitTo(e, getLimitTo());
         if (pattern == null) {
             return null;

@@ -8,13 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.engine;
+package org.erlide.engine.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.erlide.engine.model.IErlModelStatus;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.util.Util;
 

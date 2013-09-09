@@ -13,9 +13,9 @@ package org.erlide.engine.model.root;
 
 import java.util.Collection;
 
-import org.erlide.engine.ErlModelException;
-import org.erlide.engine.IOpenable;
-import org.erlide.engine.IParent;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlModule;
 
 /**

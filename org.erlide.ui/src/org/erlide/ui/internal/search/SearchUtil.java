@@ -30,9 +30,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.search.SearchCoreUtil;
-import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.IParent;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlElementKind;
@@ -254,7 +254,8 @@ public class SearchUtil {
             arity = Integer.valueOf(name.substring(p + 1));
             name = name.substring(0, p);
         }
-        return SearchPatternFactory.getSearchPattern(searchFor, moduleName,
+        return new SearchPatternFactory(ErlangEngine.getInstance()
+                .getModelUtilService()).getSearchPattern(searchFor, moduleName,
                 name, arity, limitTo, module);
     }
 
