@@ -42,7 +42,6 @@ import org.erlide.engine.ErlModelStatusConstants;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IOpenable;
 import org.erlide.engine.internal.ModelPlugin;
-import org.erlide.engine.internal.model.ErlModel.External;
 import org.erlide.engine.internal.model.ErlModelCache;
 import org.erlide.engine.internal.model.erlang.ErlExternalReferenceEntryList;
 import org.erlide.engine.internal.model.erlang.ErlOtpExternalReferenceEntryList;
@@ -679,9 +678,9 @@ public class ErlProject extends Openable implements IErlProject {
         }
     }
 
-    private String getExternal(final External external) {
+    private String getExternal(final ExternalKind external) {
         final IPreferencesService service = Platform.getPreferencesService();
-        final String key = external == External.EXTERNAL_INCLUDES ? "default_external_includes"
+        final String key = external == ExternalKind.EXTERNAL_INCLUDES ? "default_external_includes"
                 : "default_external_modules";
         String result = getExternal(external, service, key, "org.erlide.ui");
         if ("".equals(result)) {
@@ -690,7 +689,7 @@ public class ErlProject extends Openable implements IErlProject {
         return result;
     }
 
-    private String getExternal(final External external,
+    private String getExternal(final ExternalKind external,
             final IPreferencesService service, final String key,
             final String pluginId) {
         final String s = service.getString(pluginId, key, "", null);
@@ -699,7 +698,7 @@ public class ErlProject extends Openable implements IErlProject {
         }
         final String global = s;
         final IErlangProjectProperties prefs = getProperties();
-        final String projprefs = external == External.EXTERNAL_INCLUDES ? prefs
+        final String projprefs = external == ExternalKind.EXTERNAL_INCLUDES ? prefs
                 .getExternalIncludesFile() : prefs.getExternalModulesFile();
         return PreferencesUtils.packArray(new String[] { projprefs, global });
     }
@@ -710,7 +709,7 @@ public class ErlProject extends Openable implements IErlProject {
         String externalModulesString = modelCache
                 .getExternalModulesString(this);
         if (externalModulesString == null) {
-            externalModulesString = getExternal(External.EXTERNAL_MODULES);
+            externalModulesString = getExternal(ExternalKind.EXTERNAL_MODULES);
             modelCache.putExternalModulesString(this, externalModulesString);
         }
         return externalModulesString;
@@ -722,7 +721,7 @@ public class ErlProject extends Openable implements IErlProject {
         String externalIncludesString = modelCache
                 .getExternalIncludesString(this);
         if (externalIncludesString == null) {
-            externalIncludesString = getExternal(External.EXTERNAL_INCLUDES);
+            externalIncludesString = getExternal(ExternalKind.EXTERNAL_INCLUDES);
             modelCache.putExternalIncludesString(this, externalIncludesString);
         }
         return externalIncludesString;

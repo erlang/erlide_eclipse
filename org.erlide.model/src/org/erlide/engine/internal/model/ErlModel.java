@@ -106,10 +106,6 @@ public class ErlModel extends Openable implements IErlModel {
 
     private final ErlModelDeltaManager deltaManager;
 
-    public enum External {
-        EXTERNAL_MODULES, EXTERNAL_INCLUDES
-    }
-
     OtpErlangList fCachedPathVars = null;
 
     private final ParserService parser;
