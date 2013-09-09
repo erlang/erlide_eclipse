@@ -16,7 +16,7 @@ import org.erlide.engine.ErlModelStatus;
 import org.erlide.engine.ErlModelStatusConstants;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IParent;
-import org.erlide.engine.internal.model.ErlModel;
+import org.erlide.engine.internal.model.ErlModelCache;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;
@@ -141,7 +141,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public void setChildren(final Collection<? extends IErlElement> c) {
         if (isOnIncludePath() || isOnSourcePath()) {
-            ErlModel.getErlModelCache().removeProject(
+            ErlModelCache.getDefault().removeProject(
                     modelUtilService.getProject(this));
         }
         super.setChildren(c);
@@ -150,7 +150,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public void clearCaches() {
         if (isOnIncludePath() || isOnSourcePath()) {
-            ErlModel.getErlModelCache().removeProject(
+            ErlModelCache.getDefault().removeProject(
                     modelUtilService.getProject(this));
         }
         super.clearCaches();

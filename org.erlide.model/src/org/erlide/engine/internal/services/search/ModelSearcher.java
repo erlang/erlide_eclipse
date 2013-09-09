@@ -1,4 +1,4 @@
-package org.erlide.engine.internal.model;
+package org.erlide.engine.internal.services.search;
 
 import java.util.Collection;
 import java.util.List;
@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IParent;
+import org.erlide.engine.internal.model.ErlModelCache;
 import org.erlide.engine.model.ModelSearcherService;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;
@@ -51,8 +52,8 @@ public class ModelSearcher implements ModelSearcherService {
         }
         checked.add(module);
 
-        final List<IErlModule> includedFilesForModule = ErlModel
-                .getErlModelCache().getIncludedFilesForModule(module);
+        final List<IErlModule> includedFilesForModule = ErlModelCache
+                .getDefault().getIncludedFilesForModule(module);
         if (includedFilesForModule != null && !includedFilesForModule.isEmpty()) {
             return includedFilesForModule;
         }
@@ -97,7 +98,7 @@ public class ModelSearcher implements ModelSearcherService {
             }
             findAllIncludedFilesAux(checked, result, modules, includeFileName);
         }
-        ErlModel.getErlModelCache().putIncludedFilesForModule(module, result);
+        ErlModelCache.getDefault().putIncludedFilesForModule(module, result);
         return result;
     }
 

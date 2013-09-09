@@ -52,6 +52,7 @@ import org.erlide.engine.internal.model.root.ErlElementDelta;
 import org.erlide.engine.internal.model.root.ErlFolder;
 import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.internal.model.root.Openable;
+import org.erlide.engine.internal.util.ModelConfig;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IErlModelChangeListener;
 import org.erlide.engine.model.erlang.FunctionRef;
@@ -147,10 +148,6 @@ public class ErlModel extends Openable implements IErlModel {
         }
 
         return true;
-    }
-
-    public static final ErlModelCache getErlModelCache() {
-        return ErlModelCache.getDefault();
     }
 
     /**
@@ -385,7 +382,7 @@ public class ErlModel extends Openable implements IErlModel {
         @Override
         public void pathVariableChanged(final IPathVariableChangeEvent event) {
             fCachedPathVars = null;
-            getErlModelCache().pathVarsChanged();
+            ErlModelCache.getDefault().pathVarsChanged();
             try {
                 // broadcast this change to projects, they need to clear their
                 // caches
@@ -545,12 +542,12 @@ public class ErlModel extends Openable implements IErlModel {
             mapModule.remove(module);
             moduleMap.remove(key);
         }
-        ErlModel.getErlModelCache().removeModule(module);
+        ErlModelCache.getDefault().removeModule(module);
     }
 
     @Override
     public void putEdited(final String path, final IErlModule module) {
-        ErlModel.getErlModelCache().putEdited(path, module);
+        ErlModelCache.getDefault().putEdited(path, module);
     }
 
     /**
@@ -921,7 +918,7 @@ public class ErlModel extends Openable implements IErlModel {
     private static IErlModule getModuleFromCacheByNameOrPath(
             final ErlProject project, final String moduleName,
             final String modulePath, final IErlElementLocator.Scope scope) {
-        final ErlModelCache erlModelCache = getErlModelCache();
+        final ErlModelCache erlModelCache = ErlModelCache.getDefault();
         if (modulePath != null) {
             final IErlModule module = erlModelCache.getModuleByPath(modulePath);
             if (module != null

@@ -42,12 +42,11 @@ import org.erlide.engine.ErlModelStatusConstants;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IOpenable;
 import org.erlide.engine.internal.ModelPlugin;
-import org.erlide.engine.internal.model.ErlModel;
 import org.erlide.engine.internal.model.ErlModel.External;
 import org.erlide.engine.internal.model.ErlModelCache;
-import org.erlide.engine.internal.model.ModelConfig;
 import org.erlide.engine.internal.model.erlang.ErlExternalReferenceEntryList;
 import org.erlide.engine.internal.model.erlang.ErlOtpExternalReferenceEntryList;
+import org.erlide.engine.internal.util.ModelConfig;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IErlModelMarker;
 import org.erlide.engine.model.erlang.IErlModule;
@@ -455,7 +454,7 @@ public class ErlProject extends Openable implements IErlProject {
 
     @Override
     public Collection<IErlModule> getModules() throws ErlModelException {
-        final List<IErlModule> modulesForProject = ErlModel.getErlModelCache()
+        final List<IErlModule> modulesForProject = ErlModelCache.getDefault()
                 .getModulesForProject(this);
         if (modulesForProject != null) {
             return modulesForProject;
@@ -468,7 +467,7 @@ public class ErlProject extends Openable implements IErlProject {
         }
         result.addAll(getModulesOrIncludes(fProject, ErlangEngine.getInstance()
                 .getModel(), sourceDirs, true));
-        ErlModel.getErlModelCache().putModulesForProject(this, result);
+        ErlModelCache.getDefault().putModulesForProject(this, result);
         return result;
     }
 
@@ -503,7 +502,7 @@ public class ErlProject extends Openable implements IErlProject {
     public Collection<IErlModule> getModulesAndIncludes()
             throws ErlModelException {
         final List<IErlModule> result = new ArrayList<IErlModule>();
-        final ErlModelCache erlModelCache = ErlModel.getErlModelCache();
+        final ErlModelCache erlModelCache = ErlModelCache.getDefault();
         final List<IErlModule> modulesForProject = erlModelCache
                 .getModulesForProject(this);
         final List<IErlModule> includesForProject = erlModelCache
@@ -531,7 +530,7 @@ public class ErlProject extends Openable implements IErlProject {
 
     @Override
     public Collection<IErlModule> getIncludes() throws ErlModelException {
-        final ErlModelCache erlModelCache = ErlModel.getErlModelCache();
+        final ErlModelCache erlModelCache = ErlModelCache.getDefault();
         final List<IErlModule> cached = erlModelCache
                 .getIncludesForProject(this);
         if (cached != null) {

@@ -10,7 +10,6 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IParent;
-import org.erlide.engine.internal.model.ErlModel;
 import org.erlide.engine.internal.model.ErlModelCache;
 import org.erlide.engine.internal.model.root.Openable;
 import org.erlide.engine.internal.util.BackendUtil;
@@ -59,7 +58,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
 
         final IErlProject project = ErlangEngine.getInstance()
                 .getModelUtilService().getProject(this);
-        final ErlModelCache cache = ErlModel.getErlModelCache();
+        final ErlModelCache cache = ErlModelCache.getDefault();
         List<ExternalTreeEntry> externalModuleTree = cache
                 .getExternalTree(externalModules);
         List<ExternalTreeEntry> externalIncludeTree = cache
