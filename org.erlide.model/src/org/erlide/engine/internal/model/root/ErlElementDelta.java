@@ -13,13 +13,9 @@ import com.google.common.collect.Lists;
 public class ErlElementDelta implements IErlElementDelta {
 
     private int fKind;
-
     private int fFlags;
-
     private final IErlElement fElement;
-
     private final List<ErlElementDelta> fChildren;
-
     private List<IResourceDelta> fResourceDeltas;
 
     /**

@@ -16,7 +16,7 @@ import org.erlide.engine.ErlModelStatus;
 import org.erlide.engine.ErlModelStatusConstants;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IParent;
-import org.erlide.engine.internal.model.ErlModelCache;
+import org.erlide.engine.internal.model.cache.ErlModelCache;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;

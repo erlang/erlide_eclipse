@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IParent;
-import org.erlide.engine.internal.model.ErlModelCache;
+import org.erlide.engine.internal.model.cache.ErlModelCache;
 import org.erlide.engine.model.ModelSearcherService;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;

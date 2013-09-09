@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IParent;
-import org.erlide.engine.internal.model.ErlModelCache;
+import org.erlide.engine.internal.model.cache.ErlModelCache;
 import org.erlide.engine.internal.model.root.Openable;
 import org.erlide.engine.internal.util.BackendUtil;
 import org.erlide.engine.model.IErlModel;

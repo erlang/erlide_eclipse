@@ -47,6 +47,7 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IOpenable;
 import org.erlide.engine.IParent;
 import org.erlide.engine.internal.ModelPlugin;
+import org.erlide.engine.internal.model.cache.ErlModelCache;
 import org.erlide.engine.internal.model.erlang.ErlModule;
 import org.erlide.engine.internal.model.root.ErlElementDelta;
 import org.erlide.engine.internal.model.root.ErlFolder;

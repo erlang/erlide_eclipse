@@ -1,4 +1,4 @@
-package org.erlide.engine.internal.model;
+package org.erlide.engine.internal.model.cache;
 
 import java.util.Collection;
 import java.util.List;

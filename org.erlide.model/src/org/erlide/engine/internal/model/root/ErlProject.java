@@ -42,7 +42,7 @@ import org.erlide.engine.ErlModelStatusConstants;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IOpenable;
 import org.erlide.engine.internal.ModelPlugin;
-import org.erlide.engine.internal.model.ErlModelCache;
+import org.erlide.engine.internal.model.cache.ErlModelCache;
 import org.erlide.engine.internal.model.erlang.ErlExternalReferenceEntryList;
 import org.erlide.engine.internal.model.erlang.ErlOtpExternalReferenceEntryList;
 import org.erlide.engine.internal.util.ModelConfig;
