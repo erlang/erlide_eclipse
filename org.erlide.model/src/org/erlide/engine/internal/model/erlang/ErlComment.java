@@ -5,7 +5,6 @@ package org.erlide.engine.internal.model.erlang;
 
 import org.erlide.engine.ErlModelException;
 import org.erlide.engine.IParent;
-import org.erlide.engine.internal.model.root.ErlMember;
 import org.erlide.engine.model.erlang.IErlComment;
 import org.erlide.engine.model.erlang.ISourceRange;
 import org.erlide.engine.model.root.ErlElementKind;

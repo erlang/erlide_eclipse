@@ -1,6 +1,5 @@
 package org.erlide.engine.internal.model.erlang;
 
-import org.erlide.engine.internal.model.root.ErlMember;
 import org.erlide.engine.model.erlang.IErlRecordDef;
 import org.erlide.engine.model.erlang.IErlRecordField;
 import org.erlide.engine.model.root.ErlElementKind;

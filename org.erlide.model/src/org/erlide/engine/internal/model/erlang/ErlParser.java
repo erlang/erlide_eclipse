@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.internal.model.root.ErlMember;
 import org.erlide.engine.internal.services.parsing.ErlideNoparse;
 import org.erlide.engine.model.erlang.IErlAttribute;
 import org.erlide.engine.model.erlang.IErlComment;

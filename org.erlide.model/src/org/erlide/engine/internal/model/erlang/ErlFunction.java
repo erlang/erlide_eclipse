@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IParent;
-import org.erlide.engine.internal.model.root.ErlMember;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.engine.model.erlang.IErlMember;

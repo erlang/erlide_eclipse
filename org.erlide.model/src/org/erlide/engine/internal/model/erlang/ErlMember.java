@@ -1,10 +1,8 @@
-package org.erlide.engine.internal.model.root;
+package org.erlide.engine.internal.model.erlang;
 
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IParent;
-import org.erlide.engine.internal.model.erlang.SourceRange;
-import org.erlide.engine.internal.model.erlang.SourceRefElement;
 import org.erlide.engine.model.erlang.IErlMember;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ISourceRange;
