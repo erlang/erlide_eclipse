@@ -137,8 +137,9 @@ public class OpenUtils {
                     res.getFunction(), modulePath, erlProject, scope, module);
         }
         // functions defined in include files
-        final Collection<IErlModule> allIncludedFiles = module
-                .findAllIncludedFiles();
+        final Collection<IErlModule> allIncludedFiles = ErlangEngine
+                .getInstance().getModelSearcherService()
+                .findAllIncludedFiles(module);
         for (final IErlModule includedModule : allIncludedFiles) {
             final IErlFunction function = includedModule.findFunction(res
                     .getFunction());

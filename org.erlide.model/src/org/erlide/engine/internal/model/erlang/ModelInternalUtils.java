@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.ErlModelException;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IOpenable;
 import org.erlide.engine.IParent;
 import org.erlide.engine.model.IErlModel;
@@ -200,8 +201,9 @@ public class ModelInternalUtils implements ModelUtilService {
             final IErlModule module, final ErlElementKind kind)
             throws CoreException {
         final List<IErlPreprocessorDef> result = Lists.newArrayList();
-        final List<IErlModule> modulesWithIncludes = Lists.newArrayList(module
-                .findAllIncludedFiles());
+        final List<IErlModule> modulesWithIncludes = Lists
+                .newArrayList(ErlangEngine.getInstance()
+                        .getModelSearcherService().findAllIncludedFiles(module));
         modulesWithIncludes.add(module);
         for (final IErlModule m : modulesWithIncludes) {
             result.addAll(m.getPreprocessorDefs(kind));

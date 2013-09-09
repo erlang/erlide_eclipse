@@ -14,15 +14,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.erlide.engine.model.erlang.ErlToken;
-import org.erlide.engine.model.erlang.IErlAttribute;
-import org.erlide.engine.model.erlang.IErlComment;
-import org.erlide.engine.model.erlang.IErlFunction;
-import org.erlide.engine.model.erlang.IErlImport;
-import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.erlang.IErlPreprocessorDef;
-import org.erlide.engine.model.erlang.IErlTypespec;
-import org.erlide.engine.model.erlang.ModuleKind;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.services.parsing.ScannerService;
@@ -379,16 +371,17 @@ public class IErlModuleTests extends ErlModelTestBase {
     @Test
     public void findAllIncludedFiles() throws Exception {
         module.open(null);
-        final Collection<IErlModule> includedFiles = module
-                .findAllIncludedFiles();
+        final Collection<IErlModule> includedFiles = ErlangEngine.getInstance()
+                .getModelSearcherService().findAllIncludedFiles(module);
         final String yyHrl = "yy.hrl";
         final IErlModule include = ErlideTestUtils.createInclude(project,
                 yyHrl, "-include(\"zz.hrl\").\n-define(A, hej).\n");
         final IErlModule include2 = ErlideTestUtils.createInclude(project,
                 "zz.hrl", "-define(B(X), lists:reverse(X)).\n");
         module.open(null);
-        final List<IErlModule> includedFiles2 = Lists.newArrayList(module
-                .findAllIncludedFiles());
+        final List<IErlModule> includedFiles2 = Lists.newArrayList(ErlangEngine
+                .getInstance().getModelSearcherService()
+                .findAllIncludedFiles(module));
         assertEquals(0, includedFiles.size());
         assertEquals(2, includedFiles2.size());
         assertEquals(include, includedFiles2.get(0));
@@ -404,8 +397,9 @@ public class IErlModuleTests extends ErlModelTestBase {
         final IErlModule include2 = ErlideTestUtils.createInclude(project,
                 "zz.hrl", "-include(\"yy.hrl\").\n-define(A, hej).\n");
         module.open(null);
-        final Collection<IErlModule> includedFiles2 = module
-                .findAllIncludedFiles();
+        final Collection<IErlModule> includedFiles2 = ErlangEngine
+                .getInstance().getModelSearcherService()
+                .findAllIncludedFiles(module);
     }
 
     // boolean isOnSourcePath();

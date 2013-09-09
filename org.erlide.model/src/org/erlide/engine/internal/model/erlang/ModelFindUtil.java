@@ -78,8 +78,8 @@ public class ModelFindUtil implements ModelFindService {
         if (typespec != null) {
             return typespec;
         }
-        final Collection<IErlModule> includedFiles = module
-                .findAllIncludedFiles();
+        final Collection<IErlModule> includedFiles = ErlangEngine.getInstance()
+                .getModelSearcherService().findAllIncludedFiles(module);
         for (final IErlModule includedFile : includedFiles) {
             typespec = includedFile.findTypespec(name);
             if (typespec != null) {
@@ -179,8 +179,9 @@ public class ModelFindUtil implements ModelFindService {
         }
         names.add(quoted);
         names.add(definedName);
-        final List<IErlModule> allIncludedFiles = Lists.newArrayList(module
-                .findAllIncludedFiles());
+        final List<IErlModule> allIncludedFiles = Lists
+                .newArrayList(ErlangEngine.getInstance()
+                        .getModelSearcherService().findAllIncludedFiles(module));
         allIncludedFiles.add(0, module);
         for (final IErlModule includedFile : allIncludedFiles) {
             for (final String name : names) {

@@ -15,6 +15,7 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.engine.internal;x-internal:=true,
+ org.erlide.engine.internal.model,
  org.erlide.engine.internal.model.erlang;x-internal:=true,
  org.erlide.engine.internal.model.root;x-internal:=true,
  org.erlide.engine.internal.services.cleanup;x-internal:=true,

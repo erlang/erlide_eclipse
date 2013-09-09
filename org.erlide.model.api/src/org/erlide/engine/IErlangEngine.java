@@ -2,6 +2,7 @@ package org.erlide.engine;
 
 import org.eclipse.core.resources.IResource;
 import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.ModelSearcherService;
 import org.erlide.engine.model.erlang.ErlangToolkit;
 import org.erlide.engine.services.cleanup.CleanupProvider;
 import org.erlide.engine.services.codeassist.ContextAssistService;
@@ -57,4 +58,7 @@ public interface IErlangEngine {
     SimpleScannerService getSimpleScannerService();
 
     ModelFindService getModelFindService();
+
+    ModelSearcherService getModelSearcherService();
+
 }

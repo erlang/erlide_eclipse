@@ -135,8 +135,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     void setComments(Collection<? extends IErlComment> comments);
 
-    Collection<IErlModule> findAllIncludedFiles() throws CoreException;
-
     boolean isOnSourcePath();
 
     boolean isOnIncludePath();

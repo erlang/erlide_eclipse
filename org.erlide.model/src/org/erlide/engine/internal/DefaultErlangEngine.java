@@ -6,6 +6,7 @@ import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.internal.model.ErlModel;
+import org.erlide.engine.internal.model.ModelSearcher;
 import org.erlide.engine.internal.model.erlang.ErlScanner;
 import org.erlide.engine.internal.model.erlang.ErlangBackendToolkit;
 import org.erlide.engine.internal.model.erlang.ModelFindUtil;
@@ -22,6 +23,7 @@ import org.erlide.engine.internal.services.search.ErlideOpen;
 import org.erlide.engine.internal.services.search.ErlideSearchServer;
 import org.erlide.engine.internal.services.text.ErlideIndent;
 import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.ModelSearcherService;
 import org.erlide.engine.model.erlang.ErlangToolkit;
 import org.erlide.engine.services.cleanup.CleanupProvider;
 import org.erlide.engine.services.codeassist.ContextAssistService;
@@ -61,7 +63,7 @@ public class DefaultErlangEngine implements IErlangEngine {
         return backend;
     }
 
-    private volatile static IErlModel erlangModel;
+    private volatile static ErlModel erlangModel;
 
     @Override
     public IErlModel getModel() {
@@ -178,5 +180,10 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public SimpleScannerService getSimpleScannerService() {
         return new ErlideScanner(backend);
+    }
+
+    @Override
+    public ModelSearcherService getModelSearcherService() {
+        return new ModelSearcher();
     }
 }

@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IParent;
-import org.erlide.engine.internal.model.ErlModel;
 import org.erlide.engine.internal.model.ModelConfig;
 import org.erlide.engine.internal.model.root.Openable;
 import org.erlide.engine.model.IErlModel;
@@ -47,7 +46,6 @@ import org.erlide.engine.model.erlang.ISourceReference;
 import org.erlide.engine.model.erlang.ModuleKind;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
-import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ParserService;
@@ -64,7 +62,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 public class ErlModule extends Openable implements IErlModule {
 
@@ -483,8 +480,9 @@ public class ErlModule extends Openable implements IErlModule {
         final Set<IErlModule> result = new HashSet<IErlModule>();
         final IErlProject project = modelUtilService.getProject(this);
         for (final IErlModule module : project.getModules()) {
-            final Collection<IErlModule> allIncludedFiles = module
-                    .findAllIncludedFiles();
+            final Collection<IErlModule> allIncludedFiles = ErlangEngine
+                    .getInstance().getModelSearcherService()
+                    .findAllIncludedFiles(module);
             if (allIncludedFiles.contains(this)) {
                 result.add(module);
             }
@@ -553,118 +551,6 @@ public class ErlModule extends Openable implements IErlModule {
             }
         }
         return result;
-    }
-
-    @Override
-    public Collection<IErlModule> findAllIncludedFiles() throws CoreException {
-        final List<IErlModule> checked = Lists.newArrayList();
-        return findAllIncludedFiles(checked);
-    }
-
-    public Collection<IErlModule> findAllIncludedFiles(
-            final List<IErlModule> checked) throws CoreException {
-        final Collection<IErlModule> result = Sets.newHashSet();
-
-        if (checked.contains(this)) {
-            return result;
-        }
-        checked.add(this);
-
-        final List<IErlModule> includedFilesForModule = ErlModel
-                .getErlModelCache().getIncludedFilesForModule(this);
-        if (includedFilesForModule != null && !includedFilesForModule.isEmpty()) {
-            return includedFilesForModule;
-        }
-        final Collection<ErlangIncludeFile> includedFiles = getIncludeFiles();
-        final IErlProject project = modelUtilService.getProject(this);
-        if (project == null) {
-            return result;
-        }
-        final Collection<IErlModule> includes = project.getIncludes();
-        includes.addAll(getLocalIncludes());
-        Collection<IErlModule> externalIncludes = null;
-        Collection<IErlModule> referencedIncludes = null;
-        Collection<IErlModule> modules = null;
-        for (final ErlangIncludeFile includeFile : includedFiles) {
-            final String includeFileName = includeFile.getFilenameLastPart();
-            if (findAllIncludedFilesAux(checked, result, includes,
-                    includeFileName)) {
-                continue;
-            }
-            if (referencedIncludes == null) {
-                referencedIncludes = Lists.newArrayList();
-                final Collection<IErlProject> referencedProjects = project
-                        .getReferencedProjects();
-                for (final IErlProject referencedProject : referencedProjects) {
-                    referencedIncludes.addAll(referencedProject.getIncludes());
-                }
-            }
-            if (findAllIncludedFilesAux(checked, result, referencedIncludes,
-                    includeFileName)) {
-                continue;
-            }
-            if (externalIncludes == null) {
-                externalIncludes = project.getExternalIncludes();
-            }
-            if (findAllIncludedFilesAux(checked, result, externalIncludes,
-                    includeFileName)) {
-                continue;
-            }
-            if (modules == null) {
-                modules = project.getModules();
-            }
-            findAllIncludedFilesAux(checked, result, modules, includeFileName);
-        }
-        ErlModel.getErlModelCache().putIncludedFilesForModule(this, result);
-        return result;
-    }
-
-    private Collection<IErlModule> getLocalIncludes() throws ErlModelException {
-        final List<IErlModule> result = Lists.newArrayList();
-        final IParent parent = getParent();
-        for (final IErlElement child : parent
-                .getChildrenOfKind(ErlElementKind.MODULE)) {
-            if (child instanceof IErlModule
-                    && ModuleKind.nameToModuleKind(child.getName()) == ModuleKind.HRL) {
-                result.add((IErlModule) child);
-            }
-        }
-        return result;
-    }
-
-    private boolean findAllIncludedFilesAux(final List<IErlModule> checked,
-            final Collection<IErlModule> result,
-            final Collection<IErlModule> includes, final String includeFileName)
-            throws CoreException {
-        for (final IErlModule include : includes) {
-            if (include.getName().equals(includeFileName)) {
-                if (include.getParent() instanceof IErlExternal) {
-                    result.add(findExternalIncludeInOpenProjects(include));
-                } else {
-                    result.add(include);
-                }
-                final ErlModule m = (ErlModule) include;
-                result.addAll(m.findAllIncludedFiles(checked));
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static IErlModule findExternalIncludeInOpenProjects(
-            final IErlModule externalInclude) throws CoreException {
-        final String filePath = externalInclude.getFilePath();
-        final Collection<IErlProject> projects = ErlangEngine.getInstance()
-                .getModel().getErlangProjects();
-        for (final IErlProject project : projects) {
-            final Collection<IErlModule> includes = project.getIncludes();
-            for (final IErlModule include : includes) {
-                if (include.getFilePath().equals(filePath)) {
-                    return include;
-                }
-            }
-        }
-        return externalInclude;
     }
 
     @Override
