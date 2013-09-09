@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.engine.internal.model.root;
+package org.erlide.engine.internal.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +48,12 @@ import org.erlide.engine.IOpenable;
 import org.erlide.engine.IParent;
 import org.erlide.engine.internal.ModelPlugin;
 import org.erlide.engine.internal.model.erlang.ErlModule;
+import org.erlide.engine.internal.model.root.ErlElementDelta;
+import org.erlide.engine.internal.model.root.ErlFolder;
+import org.erlide.engine.internal.model.root.ErlProject;
+import org.erlide.engine.internal.model.root.Openable;
+import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.IErlModelChangeListener;
 import org.erlide.engine.model.erlang.ErlangToolkit;
 import org.erlide.engine.model.erlang.FunctionRef;
 import org.erlide.engine.model.erlang.IErlFunction;
@@ -57,8 +63,6 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementDelta;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlFolder;
-import org.erlide.engine.model.root.IErlModel;
-import org.erlide.engine.model.root.IErlModelChangeListener;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.util.CommonUtils;

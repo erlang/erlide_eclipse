@@ -8,7 +8,9 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.engine.model.root;
+package org.erlide.engine.model;
+
+import org.erlide.engine.model.root.IErlElement;
 
 public interface IErlModelChangeListener {
 

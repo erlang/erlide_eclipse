@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.engine;
 
-import org.erlide.engine.model.root.IErlModelStatus;
+import org.erlide.engine.model.IErlModelStatus;
 
 /**
  * Status codes used with Erlang model status objects.

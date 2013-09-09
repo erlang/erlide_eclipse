@@ -1,4 +1,4 @@
-package org.erlide.engine.internal.model.root;
+package org.erlide.engine.internal.model;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,9 +11,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.util.ErlideUtil;
+import org.erlide.engine.model.IErlModelChangeListener;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
-import org.erlide.engine.model.root.IErlModelChangeListener;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenService.ExternalTreeEntry;
 import org.erlide.util.IDisposable;

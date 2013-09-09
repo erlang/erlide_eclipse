@@ -12,9 +12,9 @@ import java.util.List;
 
 import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
-import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.services.parsing.InternalScanner;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.util.TestingSupport;

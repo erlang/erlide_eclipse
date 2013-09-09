@@ -17,12 +17,12 @@ import org.eclipse.debug.core.model.IIndexedValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlPreprocessorDef;
 import org.erlide.engine.model.erlang.IErlRecordDef;
 import org.erlide.engine.model.erlang.IErlRecordField;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
-import org.erlide.engine.model.root.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

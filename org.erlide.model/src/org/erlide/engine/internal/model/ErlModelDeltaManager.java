@@ -1,4 +1,4 @@
-package org.erlide.engine.internal.model.root;
+package org.erlide.engine.internal.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IResourceDelta;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.internal.model.root.ErlElementDelta;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementDelta;
 import org.erlide.engine.model.root.IWorkingCopy;

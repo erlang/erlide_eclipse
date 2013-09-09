@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.engine.model.root;
+package org.erlide.engine.model;
 
 import java.util.Collection;
 
@@ -19,6 +19,10 @@ import org.erlide.engine.IOpenable;
 import org.erlide.engine.IParent;
 import org.erlide.engine.model.erlang.ErlangToolkit;
 import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlElementDelta;
+import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.util.ElementChangedEvent;
 import org.erlide.engine.util.IElementChangedListener;

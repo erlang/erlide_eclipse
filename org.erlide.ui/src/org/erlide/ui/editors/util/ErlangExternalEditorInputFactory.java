@@ -10,9 +10,9 @@ import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 import org.erlide.engine.ErlModelException;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElementLocator;
-import org.erlide.engine.model.root.IErlModel;
 
 public class ErlangExternalEditorInputFactory implements IElementFactory {
 

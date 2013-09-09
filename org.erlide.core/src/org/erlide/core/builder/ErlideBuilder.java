@@ -37,7 +37,7 @@ import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.core.builder.BuilderHelper.SearchVisitor;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.root.IErlModel;
+import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.OldErlangProjectProperties;
 import org.erlide.runtime.rpc.IRpcFuture;

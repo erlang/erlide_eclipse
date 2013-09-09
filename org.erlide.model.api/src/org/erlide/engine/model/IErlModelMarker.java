@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.engine.model.root;
+package org.erlide.engine.model;
 
 /**
  * Markers used by the Erlang model.

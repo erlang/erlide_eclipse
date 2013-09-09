@@ -6,6 +6,7 @@ Bundle-Version: 0.20.5.qualifier
 Bundle-Vendor: erlide.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.erlide.engine,
+ org.erlide.engine.model,
  org.erlide.engine.model.erlang,
  org.erlide.engine.model.root,
  org.erlide.engine.services.cleanup,

@@ -12,11 +12,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.erlang.ErlAttribute;
+import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlAttribute;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlFolder;
-import org.erlide.engine.model.root.IErlModel;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;

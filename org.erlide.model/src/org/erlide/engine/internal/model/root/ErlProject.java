@@ -42,9 +42,14 @@ import org.erlide.engine.ErlModelStatusConstants;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IOpenable;
 import org.erlide.engine.internal.ModelPlugin;
+import org.erlide.engine.internal.model.ErlModel;
+import org.erlide.engine.internal.model.ErlModel.External;
+import org.erlide.engine.internal.model.ErlModelCache;
+import org.erlide.engine.internal.model.ModelConfig;
 import org.erlide.engine.internal.model.erlang.ErlExternalReferenceEntryList;
 import org.erlide.engine.internal.model.erlang.ErlOtpExternalReferenceEntryList;
-import org.erlide.engine.internal.model.root.ErlModel.External;
+import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.IErlModelMarker;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;
 import org.erlide.engine.model.root.ErlElementKind;
@@ -54,8 +59,6 @@ import org.erlide.engine.model.root.IErlElementVisitor;
 import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlFolder;
-import org.erlide.engine.model.root.IErlModel;
-import org.erlide.engine.model.root.IErlModelMarker;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.engine.model.root.OldErlangProjectProperties;
@@ -911,11 +914,11 @@ public class ErlProject extends Openable implements IErlProject {
         return result;
     }
 
-    void pathVarsChanged() {
+    public void pathVarsChanged() {
         clearCaches();
     }
 
-    boolean moduleInProject(final IErlModule module) {
+    public boolean moduleInProject(final IErlModule module) {
         final IErlProject project = ErlangEngine.getInstance()
                 .getModelUtilService().getProject(module);
         if (project == null) {
