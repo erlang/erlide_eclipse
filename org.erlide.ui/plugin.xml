@@ -8,7 +8,7 @@
      <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.erlide.ui.editors.erl.ErlangEditor"
+            class="org.erlide.engine.ExecutableExtensionsFactory:org.erlide.ui.editors.erl.ErlangEditor"
             contributorClass="org.erlide.ui.editors.erl.ErlEditorActionBarContributor"
             default="true"
             extensions="erl,hrl"

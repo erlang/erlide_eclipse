@@ -141,7 +141,7 @@ public class CallHierarchyView extends ViewPart {
     }
 
     public CallHierarchyView() {
-        xrefService = ErlangEngine.getInstance().getXrefService();
+        xrefService = ErlangEngine.getInstance().get(XrefService.class);
         xrefService.start();
     }
 

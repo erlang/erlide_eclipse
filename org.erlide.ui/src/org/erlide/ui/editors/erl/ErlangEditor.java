@@ -151,11 +151,11 @@ public class ErlangEditor extends AbstractErlangEditor implements
             this, null, IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP,
             new ActivationListener());
 
-    public ErlangEditor() {
+    public ErlangEditor(final XrefService xrefService) {
         super();
         fErlangEditorErrorTickUpdater = new ErlangEditorErrorTickUpdater(this);
 
-        xrefService = ErlangEngine.getInstance().getXrefService();
+        this.xrefService = xrefService;
     }
 
     @Override

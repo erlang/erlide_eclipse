@@ -59,7 +59,8 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public <T extends ErlangService> T get(final Class<T> type) {
         try {
-            return (T) implementations.get(type).newInstance();
+            Class<? extends ErlangService> clazz = implementations.get(type);
+            return (T) clazz.newInstance();
         } catch (final InstantiationException e) {
             e.printStackTrace();
         } catch (final IllegalAccessException e) {
@@ -102,11 +103,6 @@ public class DefaultErlangEngine implements IErlangEngine {
             }
         }
         return erlangModel;
-    }
-
-    @Override
-    public XrefService getXrefService() {
-        return get(XrefService.class);
     }
 
     private volatile String stateDirCached;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.FunctionRef;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.XrefService;
@@ -21,8 +22,8 @@ public class ErlangXref implements XrefService {
     private static final String ERLIDE_XREF = "erlide_xref";
     private final IRpcSite backend;
 
-    public ErlangXref(final IRpcSite backend) {
-        this.backend = backend;
+    public ErlangXref() {
+        this.backend = ErlangEngine.getInstance().getBackend();
     }
 
     @Override
@@ -72,8 +73,8 @@ public class ErlangXref implements XrefService {
     public FunctionRef[] functionUse(final String mod, final String fun,
             final int arity) {
         try {
-            final OtpErlangObject r = backend.call(ERLIDE_XREF,
-                    "function_use", "aai", mod, fun, arity);
+            final OtpErlangObject r = backend.call(ERLIDE_XREF, "function_use",
+                    "aai", mod, fun, arity);
             final Bindings bind = ErlUtils.match("{ok, L}", r);
             if (bind == null) {
                 return new FunctionRef[0];
