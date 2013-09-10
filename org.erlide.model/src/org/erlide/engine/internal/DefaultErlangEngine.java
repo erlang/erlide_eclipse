@@ -10,7 +10,6 @@ import org.erlide.engine.InjectionException;
 import org.erlide.engine.internal.model.BeamLocator;
 import org.erlide.engine.internal.model.ErlModel;
 import org.erlide.engine.internal.model.erlang.ErlParser;
-import org.erlide.engine.internal.model.erlang.ErlScanner;
 import org.erlide.engine.internal.model.erlang.ModelFindUtil;
 import org.erlide.engine.internal.model.erlang.ModelInternalUtils;
 import org.erlide.engine.internal.services.cleanup.ErlTidyCleanupProvider;
@@ -36,7 +35,6 @@ import org.erlide.engine.services.edoc.EdocExportService;
 import org.erlide.engine.services.importer.ImportService;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.ScannerProviderService;
-import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.services.parsing.SimpleScannerService;
 import org.erlide.engine.services.proclist.ProclistService;
 import org.erlide.engine.services.search.ModelFindService;
@@ -213,11 +211,6 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public ProclistService getProclistService() {
         return new ErlideProclist();
-    }
-
-    @Override
-    public ScannerService getScannerService(final String name) {
-        return new ErlScanner(backend, name);
     }
 
     @Override

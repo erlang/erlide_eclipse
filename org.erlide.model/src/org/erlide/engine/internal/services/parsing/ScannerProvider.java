@@ -14,11 +14,8 @@ public class ScannerProvider implements ScannerProviderService {
     }
 
     @Override
-    public ScannerService get(final String scannerName,
-            final String initialText, final String path, final boolean logging) {
-        final ErlScanner scanner = new ErlScanner(backend, scannerName);
-        scanner.initialScan(initialText, path, logging);
-        return scanner;
+    public ScannerService get(final String scannerName) {
+        return new ErlScanner(backend, scannerName);
     }
 
 }

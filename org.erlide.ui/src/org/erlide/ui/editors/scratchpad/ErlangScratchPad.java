@@ -209,8 +209,10 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
             String initialText;
             initialText = Util.getInputStreamAsString(file.getContents(),
                     file.getCharset());
-            return ErlangEngine.getInstance().getScannerProviderService()
-                    .get(getScannerName(), initialText, filePath, false);
+            final ScannerService scanner = ErlangEngine.getInstance()
+                    .getScannerProviderService().get(getScannerName());
+            scanner.initialScan(initialText, filePath, false);
+            return scanner;
         } catch (final CoreException e) {
             ErlLogger.warn(e);
         }

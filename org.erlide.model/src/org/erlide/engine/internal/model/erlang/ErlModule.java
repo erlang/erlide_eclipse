@@ -532,8 +532,10 @@ public class ErlModule extends Openable implements IErlModule {
     private ScannerService getNewScanner() {
         final String filePath = getFilePath();
         final String text = getInitialText();
-        return ErlangEngine.getInstance().getScannerProviderService()
-                .get(scannerName, text, filePath, logging);
+        scanner = ErlangEngine.getInstance().getScannerProviderService()
+                .get(scannerName);
+        scanner.initialScan(text, filePath, logging);
+        return scanner;
     }
 
     @Override

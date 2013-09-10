@@ -8,7 +8,6 @@ import org.erlide.engine.services.edoc.EdocExportService;
 import org.erlide.engine.services.importer.ImportService;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.ScannerProviderService;
-import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.services.parsing.SimpleScannerService;
 import org.erlide.engine.services.proclist.ProclistService;
 import org.erlide.engine.services.search.ModelFindService;
@@ -50,8 +49,6 @@ public interface IErlangEngine {
     EdocExportService getEdocExportService();
 
     ProclistService getProclistService();
-
-    ScannerService getScannerService(String name);
 
     SimpleScannerService getSimpleScannerService();
 

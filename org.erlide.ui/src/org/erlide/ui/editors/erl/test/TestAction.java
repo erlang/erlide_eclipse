@@ -69,7 +69,7 @@ public class TestAction extends TextEditorAction {
             }
             ErlLogger.debug("%s", s);
             final String scannerText = ErlangEngine.getInstance()
-                    .getScannerService(scannerName).getText();
+                    .getScannerProviderService().get(scannerName).getText();
             dumpText(scannerText, "/tmp/scanner.txt");
             dumpText(text, "/tmp/editor.txt");
             if (textEditor instanceof ErlangEditor) {

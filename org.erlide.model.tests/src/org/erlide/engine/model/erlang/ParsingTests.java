@@ -55,15 +55,15 @@ public class ParsingTests {
         internalScanner.create(scannerModuleName);
         boolean result = false;
         try {
-            ErlangEngine.getInstance().getScannerService(scannerModuleName)
-                    .initialScan(s, "", false);
+            ErlangEngine.getInstance().getScannerProviderService()
+                    .get(scannerModuleName).initialScan(s, "", false);
             final ParserService parser = ErlangEngine.getInstance()
                     .getParserService();
             result = parser.parse(module, scannerModuleName, false, "", s,
                     false);
         } finally {
-            ErlangEngine.getInstance().getScannerService(scannerModuleName)
-                    .dispose();
+            ErlangEngine.getInstance().getScannerProviderService()
+                    .get(scannerModuleName).dispose();
         }
         return result;
     }
