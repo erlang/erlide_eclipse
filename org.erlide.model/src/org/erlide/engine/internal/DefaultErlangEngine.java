@@ -97,9 +97,11 @@ public class DefaultErlangEngine implements IErlangEngine {
                 "org.erlide.backend.backend", IRpcSiteProvider.class);
         backend = provider.get();
 
+        // TODO use exension points?
+
         implementations.put(XrefService.class, ErlangXref.class);
         implementations.put(IndentService.class, ErlideIndent.class);
-
+        implementations.put(OtpDocService.class, ErlideDoc.class);
     }
 
     @Deprecated
@@ -141,11 +143,6 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public OpenService getOpenService() {
         return new ErlideOpen(backend, getStateDir());
-    }
-
-    @Override
-    public OtpDocService getOtpDocService() {
-        return new ErlideDoc(backend);
     }
 
     @Override

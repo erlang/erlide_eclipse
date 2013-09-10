@@ -47,6 +47,7 @@ import org.erlide.engine.model.erlang.IErlPreprocessorDef;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.search.OpenResult;
+import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.actions.OpenUtils;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
@@ -298,7 +299,7 @@ public class ErlTextHover implements ITextHover,
                     .getExternalModulesString() : null;
             final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine
                     .getInstance()
-                    .getOtpDocService()
+                    .getService(OtpDocService.class)
                     .getOtpDoc(backend, offset, stateDir,
                             editor.getScannerName(), fImports,
                             externalModulesString, model.getPathVars());

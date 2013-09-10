@@ -3,13 +3,14 @@ package org.erlide.engine.services.search;
 import java.util.Collection;
 import java.util.List;
 
+import org.erlide.engine.services.ErlangService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.ErlangFunctionCall;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public interface OtpDocService {
+public interface OtpDocService extends ErlangService {
 
     OtpErlangObject getProposalsWithDoc(IRpcSite b, String mod, String prefix,
             String stateDir);

@@ -41,6 +41,7 @@ import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.codeassist.RecordCompletion;
 import org.erlide.engine.services.search.ModelFindService;
+import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.engine.util.ErlangFunction;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -147,7 +148,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                 .findUnitsWithPrefix(prefix, project, kind != Kinds.INCLUDES,
                         includes);
         final OtpErlangObject res = ErlangEngine.getInstance()
-                .getOtpDocService()
+                .getService(OtpDocService.class)
                 .getModules(backend, prefix, names, includes);
         if (res instanceof OtpErlangList) {
             final OtpErlangList resList = (OtpErlangList) res;
@@ -544,7 +545,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                 final String stateDir = ErlideUIPlugin.getDefault()
                         .getStateLocation().toString();
                 final OtpErlangObject res = ErlangEngine.getInstance()
-                        .getOtpDocService()
+                        .getService(OtpDocService.class)
                         .getProposalsWithDoc(b, moduleName, prefix, stateDir);
                 addFunctionProposalsWithDoc(offset, prefix, result, res, null,
                         arityOnly);
@@ -603,7 +604,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         final String stateDir = ErlangEngine.getInstance().getStateDir();
         final OtpErlangObject res = ErlangEngine
                 .getInstance()
-                .getOtpDocService()
+                .getService(OtpDocService.class)
                 .getProposalsWithDoc(backend, "<auto_imported>", prefix,
                         stateDir);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
@@ -618,7 +619,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         for (final IErlImport imp : module.getImports()) {
             final OtpErlangObject res = ErlangEngine
                     .getInstance()
-                    .getOtpDocService()
+                    .getService(OtpDocService.class)
                     .getProposalsWithDoc(backend, imp.getImportModule(),
                             prefix, stateDir);
             addFunctionProposalsWithDoc(offset, prefix, result, res, imp, false);

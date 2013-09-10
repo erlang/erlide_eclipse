@@ -16,7 +16,6 @@ import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.ModelSearcherService;
 import org.erlide.engine.services.search.ModelUtilService;
 import org.erlide.engine.services.search.OpenService;
-import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.engine.services.search.SearchServerService;
 import org.erlide.runtime.api.IRpcSite;
 
@@ -34,8 +33,6 @@ public interface IErlangEngine {
     // //
 
     OpenService getOpenService();
-
-    OtpDocService getOtpDocService();
 
     ContextAssistService getContextAssistService();
 
