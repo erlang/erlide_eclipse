@@ -149,7 +149,7 @@ public abstract class SourceRefElement extends ErlElement implements
         fSourceRangeLength = length;
     }
 
-    protected void setLineStart(final int lineStart) {
+    public void setLineStart(final int lineStart) {
         this.lineStart = lineStart;
     }
 
@@ -158,7 +158,7 @@ public abstract class SourceRefElement extends ErlElement implements
         return lineStart;
     }
 
-    protected void setLineEnd(final int lineEnd) {
+    public void setLineEnd(final int lineEnd) {
         this.lineEnd = lineEnd;
     }
 

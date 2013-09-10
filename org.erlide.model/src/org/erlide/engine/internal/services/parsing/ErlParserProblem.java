@@ -8,8 +8,9 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.engine.internal.model.erlang;
+package org.erlide.engine.internal.services.parsing;
 
+import org.erlide.engine.internal.model.erlang.ErlMember;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ISourceRange;

@@ -1,6 +1,5 @@
 package org.erlide.engine.internal.services.parsing;
 
-import org.erlide.engine.internal.model.erlang.ErlScanner;
 import org.erlide.engine.services.parsing.ScannerProviderService;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.runtime.api.IRpcSite;

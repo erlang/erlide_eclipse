@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.engine.internal.model.erlang;
+package org.erlide.engine.internal.services.parsing;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +18,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.internal.services.parsing.ErlideNoparse;
+import org.erlide.engine.internal.model.erlang.ErlAttribute;
+import org.erlide.engine.internal.model.erlang.ErlComment;
+import org.erlide.engine.internal.model.erlang.ErlExport;
+import org.erlide.engine.internal.model.erlang.ErlFunction;
+import org.erlide.engine.internal.model.erlang.ErlFunctionClause;
+import org.erlide.engine.internal.model.erlang.ErlImport;
+import org.erlide.engine.internal.model.erlang.ErlMacroDef;
+import org.erlide.engine.internal.model.erlang.ErlMember;
+import org.erlide.engine.internal.model.erlang.ErlRecordDef;
+import org.erlide.engine.internal.model.erlang.ErlRecordField;
+import org.erlide.engine.internal.model.erlang.ErlTypespec;
+import org.erlide.engine.internal.model.erlang.SourceRefElement;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlAttribute;
 import org.erlide.engine.model.erlang.IErlComment;
