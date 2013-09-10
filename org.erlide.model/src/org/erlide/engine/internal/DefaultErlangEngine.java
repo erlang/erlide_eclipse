@@ -18,6 +18,7 @@ import org.erlide.engine.internal.services.codeassist.ErlideContextAssist;
 import org.erlide.engine.internal.services.edoc.ErlideEdocExport;
 import org.erlide.engine.internal.services.importer.ErlideImport;
 import org.erlide.engine.internal.services.parsing.ErlideScanner;
+import org.erlide.engine.internal.services.parsing.ScannerProvider;
 import org.erlide.engine.internal.services.proclist.ErlideProclist;
 import org.erlide.engine.internal.services.search.ErlangXref;
 import org.erlide.engine.internal.services.search.ErlideDoc;
@@ -34,6 +35,7 @@ import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.edoc.EdocExportService;
 import org.erlide.engine.services.importer.ImportService;
 import org.erlide.engine.services.parsing.ParserService;
+import org.erlide.engine.services.parsing.ScannerProviderService;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.services.parsing.SimpleScannerService;
 import org.erlide.engine.services.proclist.ProclistService;
@@ -194,11 +196,8 @@ public class DefaultErlangEngine implements IErlangEngine {
     }
 
     @Override
-    public ScannerService getScannerService(final String scannerName,
-            final String initialText, final String path, final boolean logging) {
-        final ErlScanner scanner = new ErlScanner(backend, scannerName);
-        scanner.initialScan(initialText, path, logging);
-        return scanner;
+    public ScannerProviderService getScannerProviderService() {
+        return new ScannerProvider(backend);
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.edoc.EdocExportService;
 import org.erlide.engine.services.importer.ImportService;
 import org.erlide.engine.services.parsing.ParserService;
+import org.erlide.engine.services.parsing.ScannerProviderService;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.services.parsing.SimpleScannerService;
 import org.erlide.engine.services.proclist.ProclistService;
@@ -43,8 +44,7 @@ public interface IErlangEngine {
 
     ParserService getParserService();
 
-    ScannerService getScannerService(String scannerName, String initialText,
-            String path, boolean logging);
+    ScannerProviderService getScannerProviderService();
 
     ImportService getImportService();
 
