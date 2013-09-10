@@ -3,6 +3,7 @@ package org.erlide.engine;
 import org.eclipse.core.resources.IResource;
 import org.erlide.engine.model.IBeamLocator;
 import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.services.ErlangService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
 import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.edoc.EdocExportService;
@@ -22,6 +23,9 @@ import org.erlide.engine.services.text.IndentService;
 import org.erlide.runtime.api.IRpcSite;
 
 public interface IErlangEngine {
+
+    <T extends ErlangService> T get(Class<T> type)
+            throws InstantiationException, IllegalAccessException;
 
     @Deprecated
     IRpcSite getBackend();

@@ -2,20 +2,21 @@ package org.erlide.engine.services.search;
 
 import org.erlide.engine.model.erlang.FunctionRef;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.services.ErlangService;
 import org.erlide.runtime.rpc.IRpcFuture;
 
-public interface XrefService {
+public interface XrefService extends ErlangService {
 
-    public abstract void start();
+    void start();
 
-    public abstract void stop();
+    void stop();
 
-    public abstract IRpcFuture addProject(IErlProject project);
+    IRpcFuture addProject(IErlProject project);
 
-    public abstract void update();
+    void update();
 
-    public abstract FunctionRef[] functionUse(String mod, String fun, int arity);
+    FunctionRef[] functionUse(String mod, String fun, int arity);
 
-    public abstract FunctionRef[] functionUse(FunctionRef ref);
+    FunctionRef[] functionUse(FunctionRef ref);
 
 }

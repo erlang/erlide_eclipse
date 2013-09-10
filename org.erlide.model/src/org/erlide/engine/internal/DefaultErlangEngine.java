@@ -1,5 +1,7 @@
 package org.erlide.engine.internal;
 
+import java.util.Map;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.engine.IErlangEngine;
@@ -24,6 +26,7 @@ import org.erlide.engine.internal.services.text.ErlideIndent;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IBeamLocator;
 import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.services.ErlangService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
 import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.edoc.EdocExportService;
@@ -46,7 +49,24 @@ import org.erlide.util.ErlLogger;
 import org.erlide.util.services.ExtensionUtils;
 import org.osgi.framework.Bundle;
 
+import com.google.common.collect.Maps;
+
 public class DefaultErlangEngine implements IErlangEngine {
+
+    private final Map<Class<? extends ErlangService>, Class<? extends ErlangService>> implementations = Maps
+            .newHashMap();
+
+    @Override
+    public <T extends ErlangService> T get(final Class<T> type) {
+        try {
+            return (T) implementations.get(type).newInstance();
+        } catch (final InstantiationException e) {
+            e.printStackTrace();
+        } catch (final IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     private final IRpcSite backend;
 
@@ -56,6 +76,9 @@ public class DefaultErlangEngine implements IErlangEngine {
         final IRpcSiteProvider provider = ExtensionUtils.getSingletonExtension(
                 "org.erlide.backend.backend", IRpcSiteProvider.class);
         backend = provider.get();
+
+        implementations.put(XrefService.class, ErlangXref.class);
+
     }
 
     @Deprecated
@@ -83,7 +106,7 @@ public class DefaultErlangEngine implements IErlangEngine {
 
     @Override
     public XrefService getXrefService() {
-        return new ErlangXref(backend);
+        return get(XrefService.class);
     }
 
     private volatile String stateDirCached;
@@ -198,4 +221,5 @@ public class DefaultErlangEngine implements IErlangEngine {
     public IBeamLocator getBeamLocator() {
         return new BeamLocator();
     }
+
 }
