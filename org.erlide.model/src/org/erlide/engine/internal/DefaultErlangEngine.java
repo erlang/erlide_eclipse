@@ -1,10 +1,12 @@
 package org.erlide.engine.internal;
 
+import java.lang.reflect.Constructor;
 import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.engine.IErlangEngine;
+import org.erlide.engine.InjectionException;
 import org.erlide.engine.internal.model.BeamLocator;
 import org.erlide.engine.internal.model.ErlModel;
 import org.erlide.engine.internal.model.erlang.ErlParser;
@@ -59,14 +61,31 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public <T extends ErlangService> T get(final Class<T> type) {
         try {
-            Class<? extends ErlangService> clazz = implementations.get(type);
-            return (T) clazz.newInstance();
-        } catch (final InstantiationException e) {
-            e.printStackTrace();
-        } catch (final IllegalAccessException e) {
-            e.printStackTrace();
+            final Class<? extends ErlangService> clazz = implementations
+                    .get(type);
+
+            final Constructor<?> constructor = clazz.getConstructors()[0];
+            final Class<?>[] parameterTypes = constructor.getParameterTypes();
+            final Object[] initargs = new Object[parameterTypes.length];
+            for (int i = 0; i < parameterTypes.length; i++) {
+                final Class<?> paramType = parameterTypes[i];
+                if (IRpcSite.class == paramType) {
+                    initargs[i] = backend;
+                } else if (IErlModel.class == paramType) {
+                    initargs[i] = erlangModel;
+                } else if (String.class == paramType) {
+                    initargs[i] = stateDir;
+                } else {
+                    throw new InjectionException(
+                            "Constructor parameters are not injectable (ErlangService): "
+                                    + paramType.getName());
+                }
+            }
+            return (T) constructor.newInstance(initargs);
+        } catch (final Exception e) {
+            throw new InjectionException("Could not instantiate service "
+                    + type.getName(), e);
         }
-        return null;
     }
 
     private final IRpcSite backend;
@@ -88,7 +107,7 @@ public class DefaultErlangEngine implements IErlangEngine {
         return backend;
     }
 
-    private volatile static ErlModel erlangModel;
+    private volatile ErlModel erlangModel;
 
     @Override
     public IErlModel getModel() {
@@ -105,17 +124,17 @@ public class DefaultErlangEngine implements IErlangEngine {
         return erlangModel;
     }
 
-    private volatile String stateDirCached;
+    private volatile String stateDir;
 
     @Override
     public String getStateDir() {
-        if (stateDirCached == null) {
+        if (stateDir == null) {
             final Bundle modelPlugin = Platform
                     .getBundle(ModelPlugin.PLUGIN_ID);
-            stateDirCached = Platform.getStateLocation(modelPlugin)
+            stateDir = Platform.getStateLocation(modelPlugin)
                     .toPortableString();
         }
-        return stateDirCached;
+        return stateDir;
     }
 
     @Override
