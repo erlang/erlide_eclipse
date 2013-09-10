@@ -58,25 +58,7 @@ public class ExecutableExtensionsFactory implements
             final Constructor<?> constructor = getDefaultConstructor(clazz);
             final Class<?>[] parameterTypes = constructor.getParameterTypes();
             final Object[] initargs = new Object[parameterTypes.length];
-            for (int i = 0; i < parameterTypes.length; i++) {
-                final Class<?> paramType = parameterTypes[i];
-                if (ErlangService.class.isAssignableFrom(paramType)) {
-                    @SuppressWarnings("unchecked")
-                    final Class<? extends ErlangService> serviceClass = (Class<? extends ErlangService>) paramType;
-                    final Object parameter = ErlangEngine.getInstance()
-                            .getService(serviceClass);
-                    if (parameter != null) {
-                        initargs[i] = parameter;
-                    } else {
-                        throw new InjectionException("Constructor parameter "
-                                + serviceClass.getName()
-                                + " could not be instantiated");
-                    }
-                } else {
-                    throw new InjectionException(
-                            "Constructor parameters are not injectable (ErlangService)");
-                }
-            }
+            assignParameters(parameterTypes, initargs);
             return constructor.newInstance(initargs);
         } catch (final ClassNotFoundException e) {
             throw new CoreException(new Status(IStatus.ERROR, bundleName,
@@ -99,8 +81,34 @@ public class ExecutableExtensionsFactory implements
         }
     }
 
-    private Constructor<?> getDefaultConstructor(final Class<?> clazz)
-            throws InjectionException {
+    private void assignParameters(final Class<?>[] parameterTypes,
+            final Object[] initargs) {
+        for (int i = 0; i < parameterTypes.length; i++) {
+            final Class<?> paramType = parameterTypes[i];
+            if (ErlangService.class.isAssignableFrom(paramType)) {
+                @SuppressWarnings("unchecked")
+                final Class<? extends ErlangService> serviceClass = (Class<? extends ErlangService>) paramType;
+                initargs[i] = injectParameter(serviceClass);
+            } else {
+                throw new InjectionException(
+                        "Constructor parameters are not injectable (ErlangService)");
+            }
+        }
+    }
+
+    private Object injectParameter(
+            final Class<? extends ErlangService> serviceClass) {
+        final Object parameter = ErlangEngine.getInstance().getService(
+                serviceClass);
+        if (parameter != null) {
+            return parameter;
+        }
+        throw new InjectionException("Constructor parameter "
+                + serviceClass.getName() + " could not be instantiated");
+
+    }
+
+    private Constructor<?> getDefaultConstructor(final Class<?> clazz) {
         final Constructor<?>[] constructorArgs = clazz.getConstructors();
         if (constructorArgs.length == 1) {
             return constructorArgs[0];

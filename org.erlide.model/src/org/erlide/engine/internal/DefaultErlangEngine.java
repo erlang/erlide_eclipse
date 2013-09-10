@@ -74,23 +74,28 @@ public class DefaultErlangEngine implements IErlangEngine {
             final Object[] initargs = new Object[parameterTypes.length];
             for (int i = 0; i < parameterTypes.length; i++) {
                 final Class<?> paramType = parameterTypes[i];
-                if (IRpcSite.class == paramType) {
-                    initargs[i] = backend;
-                } else if (IErlModel.class == paramType) {
-                    initargs[i] = erlangModel;
-                } else if (String.class == paramType) {
-                    initargs[i] = stateDir;
-                } else {
-                    throw new InjectionException(
-                            "Constructor parameters are not injectable (ErlangService): "
-                                    + paramType.getName());
-                }
+                initargs[i] = injectParameter(paramType);
             }
             return (T) constructor.newInstance(initargs);
         } catch (final Exception e) {
             throw new InjectionException("Could not instantiate service "
                     + type.getName(), e);
         }
+    }
+
+    private Object injectParameter(final Class<?> paramType) {
+        if (IRpcSite.class == paramType) {
+            return backend;
+        }
+        if (IErlModel.class == paramType) {
+            return erlangModel;
+        }
+        if (String.class == paramType) {
+            return stateDir;
+        }
+        throw new InjectionException(
+                "Constructor parameters are not injectable (ErlangService): "
+                        + paramType.getName());
     }
 
     public DefaultErlangEngine() {
