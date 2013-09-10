@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.engine.internal.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -94,19 +93,11 @@ import com.google.common.collect.Sets;
  */
 public class ErlModel extends Openable implements IErlModel {
 
-    private final List<IErlModelChangeListener> fListeners = new ArrayList<IErlModelChangeListener>(
-            5);
-
+    private final List<IErlModelChangeListener> fListeners;
     private final IPathVariableChangeListener fPathVariableChangeListener;
-
-    /**
-     * Listeners for element changes
-     */
-    final List<IElementChangedListener> elementChangedListeners = new ArrayList<IElementChangedListener>();
-
+    final List<IElementChangedListener> elementChangedListeners;
     private final ErlModelDeltaManager deltaManager;
-
-    OtpErlangList fCachedPathVars = null;
+    OtpErlangList fCachedPathVars;
 
     /**
      * Constructs a new Erlang Model on the given workspace. Note that only one
@@ -116,6 +107,8 @@ public class ErlModel extends Openable implements IErlModel {
         super(null, ""); //$NON-NLS-1$
         fPathVariableChangeListener = new PathVariableChangeListener();
         setupWorkspaceListeners();
+        fListeners = Lists.newArrayList();
+        elementChangedListeners = Lists.newArrayList();
         deltaManager = new ErlModelDeltaManager(this);
     }
 
@@ -800,9 +793,9 @@ public class ErlModel extends Openable implements IErlModel {
         }
 
         private final class PreCloseVisitor implements IResourceDeltaVisitor {
-            private final ArrayList<IResource> removed;
+            private final List<IResource> removed;
 
-            private PreCloseVisitor(ArrayList<IResource> removed) {
+            private PreCloseVisitor(final List<IResource> removed) {
                 this.removed = removed;
             }
 
@@ -811,8 +804,7 @@ public class ErlModel extends Openable implements IErlModel {
                     throws CoreException {
                 final IResource resource = delta.getResource();
                 final boolean erlangProject = resource.getType() == IResource.PROJECT
-                        && NatureUtil
-                                .hasErlangNature((IProject) resource);
+                        && NatureUtil.hasErlangNature((IProject) resource);
                 if (erlangProject) {
                     removed.add(resource);
                 }
@@ -821,14 +813,14 @@ public class ErlModel extends Openable implements IErlModel {
         }
 
         private final class PostChangeVisitor implements IResourceDeltaVisitor {
-            private final ArrayList<IResource> removed;
-            private final ArrayList<IResource> added;
-            private final ArrayList<IResource> changed;
+            private final List<IResource> removed;
+            private final List<IResource> added;
+            private final List<IResource> changed;
             private final Map<IResource, IResourceDelta> changedDelta;
 
-            private PostChangeVisitor(ArrayList<IResource> removed,
-                    ArrayList<IResource> added, ArrayList<IResource> changed,
-                    Map<IResource, IResourceDelta> changedDelta) {
+            private PostChangeVisitor(final List<IResource> removed,
+                    final List<IResource> added, final List<IResource> changed,
+                    final Map<IResource, IResourceDelta> changedDelta) {
                 this.removed = removed;
                 this.added = added;
                 this.changed = changed;
@@ -839,13 +831,12 @@ public class ErlModel extends Openable implements IErlModel {
             public boolean visit(final IResourceDelta delta) {
                 final IResource resource = delta.getResource();
                 if (ModelConfig.verbose) {
-                    ErlLogger.debug("delta " + delta.getKind()
-                            + " for " + resource.getLocation());
+                    ErlLogger.debug("delta " + delta.getKind() + " for "
+                            + resource.getLocation());
                 }
                 final boolean erlangFile = resource.getType() == IResource.FILE
-                        && CommonUtils
-                                .isErlangFileContentFileName(resource
-                                        .getName());
+                        && CommonUtils.isErlangFileContentFileName(resource
+                                .getName());
                 final boolean erlangProject = resource.getType() == IResource.PROJECT;
                 final boolean erlangFolder = resource.getType() == IResource.FOLDER;
                 // &&
@@ -871,15 +862,16 @@ public class ErlModel extends Openable implements IErlModel {
         @Override
         public void resourceChanged(final IResourceChangeEvent event) {
             final IResourceDelta rootDelta = event.getDelta();
-            final ArrayList<IResource> added = Lists.newArrayList();
-            final ArrayList<IResource> changed = Lists.newArrayList();
-            final ArrayList<IResource> removed = Lists.newArrayList();
+            final List<IResource> added = Lists.newArrayList();
+            final List<IResource> changed = Lists.newArrayList();
+            final List<IResource> removed = Lists.newArrayList();
             final Map<IResource, IResourceDelta> changedDelta = Maps
                     .newHashMap();
             final IResourceDeltaVisitor visitor;
             switch (event.getType()) {
             case IResourceChangeEvent.POST_CHANGE:
-                visitor = new PostChangeVisitor(removed, added, changed, changedDelta);
+                visitor = new PostChangeVisitor(removed, added, changed,
+                        changedDelta);
                 break;
             case IResourceChangeEvent.PRE_CLOSE:
                 visitor = new PreCloseVisitor(removed);
