@@ -63,8 +63,8 @@ public class ExecutableExtensionsFactory implements
                 if (ErlangService.class.isAssignableFrom(paramType)) {
                     @SuppressWarnings("unchecked")
                     final Class<? extends ErlangService> serviceClass = (Class<? extends ErlangService>) paramType;
-                    final Object parameter = ErlangEngine.getInstance().get(
-                            serviceClass);
+                    final Object parameter = ErlangEngine.getInstance()
+                            .getService(serviceClass);
                     if (parameter != null) {
                         initargs[i] = parameter;
                     } else {

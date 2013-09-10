@@ -2,12 +2,13 @@ package org.erlide.engine.services.text;
 
 import java.util.Map;
 
+import org.erlide.engine.services.ErlangService;
 import org.erlide.runtime.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 
-public interface IndentService {
+public interface IndentService extends ErlangService {
 
     IndentResult indentLine(String oldLine, String txt, String insertedText,
             int tabw, boolean useTabs, Map<String, String> prefs)

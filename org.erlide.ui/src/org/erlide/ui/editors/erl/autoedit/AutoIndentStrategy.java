@@ -24,6 +24,7 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.IErlMember;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.services.text.IndentResult;
+import org.erlide.engine.services.text.IndentService;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
@@ -85,7 +86,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
             SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
             final boolean useTabs = getUseTabsFromPreferences();
             final IndentResult res = ErlangEngine.getInstance()
-                    .getIndentService()
+                    .getService(IndentService.class)
                     .indentLine(oldLine, txt, c.text, tabw, useTabs, prefs);
 
             if (res.isAddNewLine()) {

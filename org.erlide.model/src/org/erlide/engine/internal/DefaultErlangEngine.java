@@ -59,7 +59,7 @@ public class DefaultErlangEngine implements IErlangEngine {
             .newHashMap();
 
     @Override
-    public <T extends ErlangService> T get(final Class<T> type) {
+    public <T extends ErlangService> T getService(final Class<T> type) {
         try {
             final Class<? extends ErlangService> clazz = implementations
                     .get(type);
@@ -98,6 +98,7 @@ public class DefaultErlangEngine implements IErlangEngine {
         backend = provider.get();
 
         implementations.put(XrefService.class, ErlangXref.class);
+        implementations.put(IndentService.class, ErlideIndent.class);
 
     }
 
@@ -145,11 +146,6 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public OtpDocService getOtpDocService() {
         return new ErlideDoc(backend);
-    }
-
-    @Override
-    public IndentService getIndentService() {
-        return new ErlideIndent(backend);
     }
 
     @Override

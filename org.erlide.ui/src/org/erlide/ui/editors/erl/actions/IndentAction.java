@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.services.text.IndentService;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
@@ -42,20 +43,22 @@ public class IndentAction extends ErlangTextEditorAction {
     private static OtpErlangObject doIndentLines(final int offset,
             final int length, final String text, final boolean template,
             final String prefix) throws RpcException {
+
+        final IndentService indentService = ErlangEngine.getInstance()
+                .getService(IndentService.class);
+
         final int tabw = AutoIndentStrategy.getTabWidthFromPreferences();
         final Map<String, String> prefs = new TreeMap<String, String>();
         IndentationPreferencePage.addKeysAndPrefs(prefs);
         SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
         final boolean useTabs = AutoIndentStrategy.getUseTabsFromPreferences();
         if (template) {
-            final OtpErlangObject r1 = ErlangEngine.getInstance()
-                    .getIndentService()
-                    .templateIndentLines(prefix, text, tabw, useTabs, prefs);
+            final OtpErlangObject r1 = indentService.templateIndentLines(
+                    prefix, text, tabw, useTabs, prefs);
             return r1;
         }
-        final OtpErlangObject r1 = ErlangEngine.getInstance()
-                .getIndentService()
-                .indentLines(offset, length, text, tabw, useTabs, prefs);
+        final OtpErlangObject r1 = indentService.indentLines(offset, length,
+                text, tabw, useTabs, prefs);
         return r1;
     }
 

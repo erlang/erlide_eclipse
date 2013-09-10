@@ -18,12 +18,11 @@ import org.erlide.engine.services.search.ModelUtilService;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.engine.services.search.SearchServerService;
-import org.erlide.engine.services.text.IndentService;
 import org.erlide.runtime.api.IRpcSite;
 
 public interface IErlangEngine {
 
-    <T extends ErlangService> T get(Class<T> type);
+    <T extends ErlangService> T getService(Class<T> type);
 
     @Deprecated
     IRpcSite getBackend();
@@ -32,11 +31,11 @@ public interface IErlangEngine {
 
     String getStateDir();
 
+    // //
+
     OpenService getOpenService();
 
     OtpDocService getOtpDocService();
-
-    IndentService getIndentService();
 
     ContextAssistService getContextAssistService();
 
