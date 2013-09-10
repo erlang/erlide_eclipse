@@ -93,8 +93,6 @@ public class DefaultErlangEngine implements IErlangEngine {
         }
     }
 
-    private final IRpcSite backend;
-
     public DefaultErlangEngine() {
         // TODO how to inject runtime and other start params?
 
@@ -107,7 +105,10 @@ public class DefaultErlangEngine implements IErlangEngine {
         implementations.put(XrefService.class, ErlangXref.class);
         implementations.put(IndentService.class, ErlideIndent.class);
         implementations.put(OtpDocService.class, ErlideDoc.class);
+        implementations.put(IBeamLocator.class, BeamLocator.class);
     }
+
+    private final IRpcSite backend;
 
     @Deprecated
     @Override
@@ -228,11 +229,6 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public ModelSearcherService getModelSearcherService() {
         return new ModelSearcher();
-    }
-
-    @Override
-    public IBeamLocator getBeamLocator() {
-        return new BeamLocator();
     }
 
 }

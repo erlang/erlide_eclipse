@@ -1,7 +1,6 @@
 package org.erlide.engine;
 
 import org.eclipse.core.resources.IResource;
-import org.erlide.engine.model.IBeamLocator;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.services.ErlangService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
@@ -60,7 +59,5 @@ public interface IErlangEngine {
     ModelFindService getModelFindService();
 
     ModelSearcherService getModelSearcherService();
-
-    IBeamLocator getBeamLocator();
 
 }
