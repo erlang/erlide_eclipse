@@ -63,6 +63,11 @@ public class DefaultErlangEngine implements IErlangEngine {
         try {
             final Class<? extends ErlangService> clazz = implementations
                     .get(type);
+            if (clazz == null) {
+                throw new InjectionException(
+                        "ErlangService implementation not found for "
+                                + type.getName());
+            }
 
             final Constructor<?> constructor = clazz.getConstructors()[0];
             final Class<?>[] parameterTypes = constructor.getParameterTypes();
