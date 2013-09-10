@@ -3,6 +3,7 @@
 *.class
 workspaces
 bin/
+ebin/*.app
 *.orig
 hs_err*.log
 safe_erlide.log
