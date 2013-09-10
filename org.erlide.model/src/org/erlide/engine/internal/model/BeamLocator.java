@@ -22,6 +22,7 @@ public class BeamLocator implements IBeamLocator {
         try {
             r.refreshLocal(IResource.DEPTH_ONE, null);
         } catch (final CoreException e) {
+            // ignore
         }
         final String beam = SystemConfiguration.withoutExtension(module)
                 + ".beam";

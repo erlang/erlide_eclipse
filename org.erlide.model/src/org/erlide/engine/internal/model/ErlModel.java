@@ -791,6 +791,83 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     class ResourceChangeListener implements IResourceChangeListener {
+        private final class NoOpVisitor implements IResourceDeltaVisitor {
+            @Override
+            public boolean visit(final IResourceDelta delta)
+                    throws CoreException {
+                return false;
+            }
+        }
+
+        private final class PreCloseVisitor implements IResourceDeltaVisitor {
+            private final ArrayList<IResource> removed;
+
+            private PreCloseVisitor(ArrayList<IResource> removed) {
+                this.removed = removed;
+            }
+
+            @Override
+            public boolean visit(final IResourceDelta delta)
+                    throws CoreException {
+                final IResource resource = delta.getResource();
+                final boolean erlangProject = resource.getType() == IResource.PROJECT
+                        && NatureUtil
+                                .hasErlangNature((IProject) resource);
+                if (erlangProject) {
+                    removed.add(resource);
+                }
+                return false;
+            }
+        }
+
+        private final class PostChangeVisitor implements IResourceDeltaVisitor {
+            private final ArrayList<IResource> removed;
+            private final ArrayList<IResource> added;
+            private final ArrayList<IResource> changed;
+            private final Map<IResource, IResourceDelta> changedDelta;
+
+            private PostChangeVisitor(ArrayList<IResource> removed,
+                    ArrayList<IResource> added, ArrayList<IResource> changed,
+                    Map<IResource, IResourceDelta> changedDelta) {
+                this.removed = removed;
+                this.added = added;
+                this.changed = changed;
+                this.changedDelta = changedDelta;
+            }
+
+            @Override
+            public boolean visit(final IResourceDelta delta) {
+                final IResource resource = delta.getResource();
+                if (ModelConfig.verbose) {
+                    ErlLogger.debug("delta " + delta.getKind()
+                            + " for " + resource.getLocation());
+                }
+                final boolean erlangFile = resource.getType() == IResource.FILE
+                        && CommonUtils
+                                .isErlangFileContentFileName(resource
+                                        .getName());
+                final boolean erlangProject = resource.getType() == IResource.PROJECT;
+                final boolean erlangFolder = resource.getType() == IResource.FOLDER;
+                // &&
+                // ErlideUtil.isOnSourcePathOrParentToFolderOnSourcePath((
+                // IFolder)
+                // resource);
+                if (erlangFile || erlangProject || erlangFolder) {
+                    if (delta.getKind() == IResourceDelta.ADDED) {
+                        added.add(resource);
+                    }
+                    if (delta.getKind() == IResourceDelta.CHANGED) {
+                        changed.add(resource);
+                        changedDelta.put(resource, delta);
+                    }
+                    if (delta.getKind() == IResourceDelta.REMOVED) {
+                        removed.add(resource);
+                    }
+                }
+                return !erlangFile;
+            }
+        }
+
         @Override
         public void resourceChanged(final IResourceChangeEvent event) {
             final IResourceDelta rootDelta = event.getDelta();
@@ -802,56 +879,10 @@ public class ErlModel extends Openable implements IErlModel {
             final IResourceDeltaVisitor visitor;
             switch (event.getType()) {
             case IResourceChangeEvent.POST_CHANGE:
-                visitor = new IResourceDeltaVisitor() {
-                    @Override
-                    public boolean visit(final IResourceDelta delta) {
-                        final IResource resource = delta.getResource();
-                        if (ModelConfig.verbose) {
-                            ErlLogger.debug("delta " + delta.getKind()
-                                    + " for " + resource.getLocation());
-                        }
-                        final boolean erlangFile = resource.getType() == IResource.FILE
-                                && CommonUtils
-                                        .isErlangFileContentFileName(resource
-                                                .getName());
-                        final boolean erlangProject = resource.getType() == IResource.PROJECT;
-                        final boolean erlangFolder = resource.getType() == IResource.FOLDER;
-                        // &&
-                        // ErlideUtil.isOnSourcePathOrParentToFolderOnSourcePath((
-                        // IFolder)
-                        // resource);
-                        if (erlangFile || erlangProject || erlangFolder) {
-                            if (delta.getKind() == IResourceDelta.ADDED) {
-                                added.add(resource);
-                            }
-                            if (delta.getKind() == IResourceDelta.CHANGED) {
-                                changed.add(resource);
-                                changedDelta.put(resource, delta);
-                            }
-                            if (delta.getKind() == IResourceDelta.REMOVED) {
-                                removed.add(resource);
-                            }
-                        }
-                        return !erlangFile;
-                    }
-                };
+                visitor = new PostChangeVisitor(removed, added, changed, changedDelta);
                 break;
             case IResourceChangeEvent.PRE_CLOSE:
-                visitor = new IResourceDeltaVisitor() {
-
-                    @Override
-                    public boolean visit(final IResourceDelta delta)
-                            throws CoreException {
-                        final IResource resource = delta.getResource();
-                        final boolean erlangProject = resource.getType() == IResource.PROJECT
-                                && NatureUtil
-                                        .hasErlangNature((IProject) resource);
-                        if (erlangProject) {
-                            removed.add(resource);
-                        }
-                        return false;
-                    }
-                };
+                visitor = new PreCloseVisitor(removed);
                 final IResource resource = event.getResource();
                 final boolean erlangProject = resource.getType() == IResource.PROJECT
                         && NatureUtil.hasErlangNature((IProject) resource);
@@ -860,14 +891,7 @@ public class ErlModel extends Openable implements IErlModel {
                 }
                 break;
             default:
-                visitor = new IResourceDeltaVisitor() {
-
-                    @Override
-                    public boolean visit(final IResourceDelta delta)
-                            throws CoreException {
-                        return false;
-                    }
-                };
+                visitor = new NoOpVisitor();
             }
             if (rootDelta != null) {
                 try {
