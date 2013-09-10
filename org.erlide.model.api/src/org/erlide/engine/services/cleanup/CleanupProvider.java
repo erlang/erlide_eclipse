@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.engine.services.cleanup;
 
+import org.eclipse.core.resources.IResource;
+
 /**
  * <p>
  * The {@link CleanupProvider} interface defines the responsibilities of an
@@ -25,6 +27,6 @@ public interface CleanupProvider {
      * Perform clean up.
      * </p>
      */
-    void cleanUp() throws Exception;
+    void cleanUp(final IResource resource) throws Exception;
 
 }

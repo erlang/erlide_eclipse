@@ -35,7 +35,6 @@ public class ErlTidyCleanupProvider implements CleanupProvider {
      */
     private static final long PATIENCE_LIMIT = 10000;
 
-    private final IResource resource;
     private final IRpcSite backend;
 
     /**
@@ -49,14 +48,12 @@ public class ErlTidyCleanupProvider implements CleanupProvider {
      * @param resource
      *            {@link IResource} for an Erlang module
      */
-    public ErlTidyCleanupProvider(final IRpcSite backend,
-            final IResource resource) {
+    public ErlTidyCleanupProvider(final IRpcSite backend) {
         this.backend = backend;
-        this.resource = resource;
     }
 
     @Override
-    public void cleanUp() throws Exception {
+    public void cleanUp(final IResource resource) throws Exception {
         // invoke erl_tidy in the background
         final String absolutePathToErlangModule = resource.getLocation()
                 .toString();

@@ -49,7 +49,7 @@ public class CleanUpAction extends Action {
     @Override
     public void run() {
         try {
-            ErlangEngine.getInstance().getCleanupProvider(resource).cleanUp();
+            ErlangEngine.getInstance().getCleanupProvider().cleanUp(resource);
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
