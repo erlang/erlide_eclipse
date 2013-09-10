@@ -140,8 +140,8 @@ public class CallHierarchyView extends ViewPart {
         }
     }
 
-    public CallHierarchyView() {
-        xrefService = ErlangEngine.getInstance().get(XrefService.class);
+    public CallHierarchyView(final XrefService xrefService) {
+        this.xrefService = xrefService;
         xrefService.start();
     }
 

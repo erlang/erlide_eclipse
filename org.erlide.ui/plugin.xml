@@ -248,7 +248,7 @@
       <view
             allowMultiple="false"
             category="org.erlide.views"
-            class="org.erlide.ui.views.CallHierarchyView"
+            class="org.erlide.engine.ExecutableExtensionsFactory:org.erlide.ui.views.CallHierarchyView"
             id="org.erlide.ui.callhierarchy"
             name="Call Hierarchy"
             restorable="true">
