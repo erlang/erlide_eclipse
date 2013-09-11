@@ -7,9 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.List;
 
-import org.erlide.engine.model.erlang.IErlExport;
-import org.erlide.engine.model.erlang.IErlImport;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.util.ErlangFunction;

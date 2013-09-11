@@ -2,8 +2,6 @@ package org.erlide.engine.model.erlang;
 
 import static org.junit.Assert.assertEquals;
 
-import org.erlide.engine.model.erlang.ISourceRange;
-import org.erlide.engine.model.erlang.ISourceReference;
 import org.erlide.engine.model.root.IErlElement;
 import org.junit.Test;
 

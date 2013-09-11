@@ -32,8 +32,8 @@ public class ErlideOpen implements OpenService {
 
     private final String stateDir;
 
-    public ErlideOpen(final IRpcSite backend, String stateDir) {
-        this.ideBackend = backend;
+    public ErlideOpen(final IRpcSite backend, final String stateDir) {
+        ideBackend = backend;
         this.stateDir = stateDir;
     }
 
@@ -106,8 +106,9 @@ public class ErlideOpen implements OpenService {
     }
 
     @Override
-    public List<ExternalTreeEntry> getExternalModuleTree(IRpcSite backend,
-            final String externalModules, final OtpErlangList pathVars) {
+    public List<ExternalTreeEntry> getExternalModuleTree(
+            final IRpcSite backend, final String externalModules,
+            final OtpErlangList pathVars) {
         ErlLogger.debug("open:external_module_tree -> " + externalModules);
         final Stopwatch stopwatch = new Stopwatch().start();
         try {
@@ -164,18 +165,18 @@ public class ErlideOpen implements OpenService {
     }
 
     @Override
-    public Map<String, List<String>> getOtpLibSrcIncludes(IRpcSite backend) {
+    public Map<String, List<String>> getOtpLibSrcIncludes(final IRpcSite backend) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
                     "get_otp_lib_src_includes", "s", stateDir);
             if (Util.isOk(res)) {
-                OtpErlangTuple tres = (OtpErlangTuple) res;
+                final OtpErlangTuple tres = (OtpErlangTuple) res;
                 final OtpErlangList lot = (OtpErlangList) tres.elementAt(1);
-                Map<String, List<String>> result = Maps.newHashMap();
+                final Map<String, List<String>> result = Maps.newHashMap();
                 for (final OtpErlangObject o : lot) {
                     final OtpErlangTuple t = (OtpErlangTuple) o;
-                    OtpErlangString s = (OtpErlangString) t.elementAt(0);
-                    OtpErlangList l = (OtpErlangList) t.elementAt(1);
+                    final OtpErlangString s = (OtpErlangString) t.elementAt(0);
+                    final OtpErlangList l = (OtpErlangList) t.elementAt(1);
                     final List<String> subResult = Lists
                             .newArrayListWithCapacity(l.arity());
                     for (final OtpErlangObject o2 : l) {
@@ -234,7 +235,7 @@ public class ErlideOpen implements OpenService {
     }
 
     @Override
-    public List<List<String>> getLibSrcInclude(List<String> libList) {
+    public List<List<String>> getLibSrcInclude(final List<String> libList) {
         // TODO Auto-generated method stub
         return null;
     }

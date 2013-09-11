@@ -6,7 +6,7 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class EvalHelper  {
+public class EvalHelper {
 
     public static BackendEvalResult eval(final IRpcSite b, final String string,
             final OtpErlangObject bindings) {

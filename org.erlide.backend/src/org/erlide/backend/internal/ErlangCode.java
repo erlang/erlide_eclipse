@@ -79,8 +79,8 @@ public final class ErlangCode {
 
     public static boolean isEmbedded(final IRpcSite backend) {
         try {
-            final OtpErlangObject r = backend.call(CODE, "ensure_loaded",
-                    "a", "funny_module_name_that_nobody_would_use");
+            final OtpErlangObject r = backend.call(CODE, "ensure_loaded", "a",
+                    "funny_module_name_that_nobody_would_use");
             final Bindings b = ErlUtils.match("{error, What}", r);
             if (b.getAtom("What").equals("embedded")) {
                 return true;

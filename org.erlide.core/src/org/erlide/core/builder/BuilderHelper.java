@@ -565,8 +565,8 @@ public final class BuilderHelper {
     public static IRpcFuture compileYrl(final IRpcSite backend,
             final String fn, final String output) {
         try {
-            return backend.async_call(ERLIDE_BUILDER, "compile_yrl", "ss",
-                    fn, output);
+            return backend.async_call(ERLIDE_BUILDER, "compile_yrl", "ss", fn,
+                    output);
         } catch (final Exception e) {
             ErlLogger.debug(e);
             return null;

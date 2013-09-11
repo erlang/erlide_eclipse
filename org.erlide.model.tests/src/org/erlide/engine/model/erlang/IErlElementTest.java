@@ -18,15 +18,12 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.cache.ErlModelCache;
 import org.erlide.engine.model.ErlModelException;
-import org.erlide.engine.model.erlang.IErlFunction;
-import org.erlide.engine.model.erlang.IErlMember;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlElement.AcceptFlags;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlElementVisitor;
 import org.erlide.engine.model.root.IErlExternal;
-import org.erlide.engine.model.root.IErlElement.AcceptFlags;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 

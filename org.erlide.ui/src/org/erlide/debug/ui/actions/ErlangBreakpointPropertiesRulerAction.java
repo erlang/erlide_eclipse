@@ -2,6 +2,7 @@ package org.erlide.debug.ui.actions;
 
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.ui.actions.RulerBreakpointAction;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.text.source.IVerticalRulerInfo;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;

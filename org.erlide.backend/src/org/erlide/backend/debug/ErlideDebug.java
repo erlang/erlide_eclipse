@@ -31,9 +31,9 @@ public class ErlideDebug {
             final boolean showSystemProcesses, final boolean showErlideProcesses) {
         OtpErlangList procs = null;
         try {
-            procs = (OtpErlangList) BackendUtils.ok(backend.call(
-                    ERLIDE_DEBUG, "processes", "oo", showSystemProcesses,
-                    showErlideProcesses));
+            procs = (OtpErlangList) BackendUtils.ok(backend
+                    .call(ERLIDE_DEBUG, "processes", "oo", showSystemProcesses,
+                            showErlideProcesses));
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
@@ -123,8 +123,8 @@ public class ErlideDebug {
             final String module, final boolean distributed,
             final boolean interpret) {
         try {
-            final OtpErlangObject res = backend.call(ERLIDE_DEBUG,
-                    "interpret", "soo", module, distributed, interpret);
+            final OtpErlangObject res = backend.call(ERLIDE_DEBUG, "interpret",
+                    "soo", module, distributed, interpret);
             if (res instanceof OtpErlangTuple) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangObject o = t.elementAt(0);
@@ -172,8 +172,7 @@ public class ErlideDebug {
     public static void sendStarted(final IBackend backend,
             final OtpErlangPid meta) {
         try {
-            backend.getRpcSite()
-                    .call(ERLIDE_DEBUG, "send_started", "x", meta);
+            backend.getRpcSite().call(ERLIDE_DEBUG, "send_started", "x", meta);
         } catch (final RpcTimeoutException e) {
             if (backend.isRunning()) {
                 ErlLogger.warn(e);
@@ -210,8 +209,8 @@ public class ErlideDebug {
     public static OtpErlangList getBindings(final IBackend backend,
             final OtpErlangPid meta) {
         try {
-            final OtpErlangObject res = backend.getRpcSite().call(
-                    ERLIDE_DEBUG, "bindings", "x", meta);
+            final OtpErlangObject res = backend.getRpcSite().call(ERLIDE_DEBUG,
+                    "bindings", "x", meta);
             return (OtpErlangList) res;
         } catch (final RpcTimeoutException e) {
             if (backend.isRunning()) {

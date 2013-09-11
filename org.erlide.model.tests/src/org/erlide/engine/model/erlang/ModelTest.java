@@ -2,7 +2,6 @@ package org.erlide.engine.model.erlang;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;

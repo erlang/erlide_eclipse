@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.erlide.engine.model.erlang.IErlAttribute;
-import org.erlide.engine.model.erlang.IErlFunction;
-import org.erlide.engine.model.erlang.ISourceRange;
 import org.erlide.engine.model.root.IErlElement;
 import org.junit.Before;
 import org.junit.Test;

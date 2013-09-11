@@ -33,7 +33,8 @@ public interface IBackendManager extends IEpmdListener {
 
     void addExecutionBackend(final IProject project, final IBackend b);
 
-    void removeExecutionBackend(final IProject project, final IProjectCodeLoader b);
+    void removeExecutionBackend(final IProject project,
+            final IProjectCodeLoader b);
 
     IPluginCodeLoader getBackendForLaunch(final ILaunch launch);
 
