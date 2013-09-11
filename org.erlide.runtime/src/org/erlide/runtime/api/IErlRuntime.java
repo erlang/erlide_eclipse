@@ -27,20 +27,20 @@ public interface IErlRuntime extends IDisposable {
 
     RuntimeData getRuntimeData();
 
-    OtpMbox createMbox(String string);
-
-    OtpMbox createMbox();
-
     OtpMbox getEventMbox();
 
-    void addShutdownCallback(IShutdownCallback callback);
+    Process getProcess();
 
     ErlSystemStatus getSystemStatus();
 
     void setSystemStatus(ErlSystemStatus msg);
 
-    void registerEventListener(Object handler);
+    OtpMbox createMbox(String string);
 
-    Process getProcess();
+    OtpMbox createMbox();
+
+    void addShutdownCallback(IShutdownCallback callback);
+
+    void registerEventListener(Object handler);
 
 }

@@ -227,15 +227,13 @@ public class GeneraliseFunctionRefactoring extends
                             funDefPos, exp, GlobalParameters.getTabWidth(),
                             new OtpErlangBoolean(sideEffect), getSelectedPos(),
                             logCmd);
-                } else {
-                    return WranglerBackendManager.getRefactoringBackend().call(
-                            "gen_fun_1_eclipse", "xsxxxxxxxix",
-                            new OtpErlangBoolean(sideEffect),
-                            sel.getFilePath(), parName, funName, arity,
-                            funDefPos, exp, getSelectedPos(),
-                            sel.getSearchPath(),
-                            GlobalParameters.getTabWidth(), logCmd);
                 }
+                return WranglerBackendManager.getRefactoringBackend().call(
+                        "gen_fun_1_eclipse", "xsxxxxxxxix",
+                        new OtpErlangBoolean(sideEffect), sel.getFilePath(),
+                        parName, funName, arity, funDefPos, exp,
+                        getSelectedPos(), sel.getSearchPath(),
+                        GlobalParameters.getTabWidth(), logCmd);
             } else if (state == State.more_than_one_clause) {
                 if (onlyInClause) {
                     return WranglerBackendManager.getRefactoringBackend().call(
@@ -243,14 +241,12 @@ public class GeneraliseFunctionRefactoring extends
                             sel.getFilePath(), parName, funName, arity,
                             funDefPos, exp, GlobalParameters.getTabWidth(),
                             sideEffectPar, getSelectedPos(), logCmd);
-                } else {
-                    return WranglerBackendManager.getRefactoringBackend().call(
-                            "gen_fun_1_eclipse", "xsxxxxxxxix", sideEffectPar,
-                            sel.getFilePath(), parName, funName, arity,
-                            funDefPos, exp, getSelectedPos(),
-                            sel.getSearchPath(),
-                            GlobalParameters.getTabWidth(), logCmd);
                 }
+                return WranglerBackendManager.getRefactoringBackend().call(
+                        "gen_fun_1_eclipse", "xsxxxxxxxix", sideEffectPar,
+                        sel.getFilePath(), parName, funName, arity, funDefPos,
+                        exp, getSelectedPos(), sel.getSearchPath(),
+                        GlobalParameters.getTabWidth(), logCmd);
             }
         }
 
@@ -266,10 +262,9 @@ public class GeneraliseFunctionRefactoring extends
         if (theMessage.isSuccessful()) {
             changedFiles = theMessage.getRefactoringChangeset();
             return new RefactoringStatus();
-        } else {
-            return RefactoringStatus.createFatalErrorStatus(theMessage
-                    .getMessageString());
         }
+        return RefactoringStatus.createFatalErrorStatus(theMessage
+                .getMessageString());
     }
 
     @Override

@@ -27,10 +27,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.model.erlang.IErlFunctionClause;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.erlang.IErlFunctionClause;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElement;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
@@ -75,8 +75,9 @@ public class CodeInspectionResultsView extends ViewPart {
                         + e.getResource().getFullPath().toString();
             } else if (e instanceof IErlFunctionClause) {
                 final IErlFunctionClause fc = (IErlFunctionClause) e;
-                return ModelUtils.getModule(fc).getModuleName() + ":"
-                        + fc.toString();
+                return ErlangEngine.getInstance().getModelUtilService()
+                        .getModule(fc).getModuleName()
+                        + ":" + fc.toString();
             }
             return e.toString();
         }

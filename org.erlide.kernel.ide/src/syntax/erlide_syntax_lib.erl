@@ -55,7 +55,7 @@
 %% @spec map(Function, Tree::syntaxTree()) -> syntaxTree()
 %%
 %%          Function = (syntaxTree()) -> syntaxTree()
-%% 
+%%
 %% @doc Applies a function to each node of a syntax tree. The result of
 %% each application replaces the corresponding original node. The order
 %% of traversal is bottom-up.
@@ -78,7 +78,7 @@ map(F, Tree) ->
 %% @spec map_subtrees(Function, syntaxTree()) -> syntaxTree()
 %%
 %%          Function = (Tree) -> Tree1
-%%         
+%%
 %% @doc Applies a function to each immediate subtree of a syntax tree.
 %% The result of each application replaces the corresponding original
 %% node.
@@ -366,7 +366,7 @@ generate(_Key, Range) ->
 %%
 %% @doc Like <code>new_variable_name/1</code>, but generates a list of
 %% <code>N</code> new names.
-%% 
+%%
 %% @see new_variable_name/1
 
 new_variable_names(N, S) ->
@@ -380,7 +380,7 @@ new_variable_names(N, S) ->
 %%
 %% @doc Like <code>new_variable_name/2</code>, but generates a list of
 %% <code>N</code> new names.
-%% 
+%%
 %% @see new_variable_name/2
 
 new_variable_names(N, F, S) when is_integer(N) ->
@@ -599,7 +599,7 @@ vann_list_comp_body_join() ->
                                   end,
             Env1 = ordsets:union(Env, Bound1),
             {T1, {Env1, ordsets:union(Bound, Bound1),
-                  ordsets:union(Free, 
+                  ordsets:union(Free,
                                 ordsets:subtract(Free1, Bound))}}
     end.
 
@@ -777,7 +777,7 @@ delete_binding_anns([]) ->
 %% @see erlang:fault/1
 %% @see erlang:fault/2
 
-is_fail_expr(E) ->          
+is_fail_expr(E) ->
     case erl_syntax:type(E) of
         application ->
             N = length(erl_syntax:application_arguments(E)),
@@ -989,7 +989,7 @@ collect_attribute(_, {N, V}, Info) ->
 %% Abstract datatype for collecting module information.
 
 -record(forms, {module, exports, module_imports, imports, attributes,
-		records, errors, warnings, functions, rules}).
+    records, errors, warnings, functions, rules}).
 
 new_finfo() ->
     #forms{module = none,
@@ -1237,9 +1237,9 @@ analyze_module_attribute(Node) ->
                 [M] ->
                     module_name_to_atom(M);
                 [M, L] ->
-		    M1 = module_name_to_atom(M),
-		    L1 = analyze_variable_list(L),
-		    {M1, L1};
+        M1 = module_name_to_atom(M),
+        L1 = analyze_variable_list(L),
+        {M1, L1};
                 _ ->
                     throw(syntax_error)
             end;
@@ -1251,7 +1251,7 @@ analyze_variable_list(Node) ->
     case erl_syntax:is_proper_list(Node) of
         true ->
             [erl_syntax:variable_name(V)
-	     || V <- erl_syntax:list_elements(Node)];
+       || V <- erl_syntax:list_elements(Node)];
         false ->
             throw(syntax_error)
     end.
@@ -1378,12 +1378,12 @@ analyze_import_attribute(Node) ->
     case erl_syntax:type(Node) of
         attribute ->
             case erl_syntax:attribute_arguments(Node) of
-		[M] ->
-		    module_name_to_atom(M);
-		[M, L] ->
-		    M1 = module_name_to_atom(M),
-		    L1 = analyze_function_name_list(L),
-		    {M1, L1};
+    [M] ->
+        module_name_to_atom(M);
+    [M, L] ->
+        M1 = module_name_to_atom(M),
+        L1 = analyze_function_name_list(L),
+        {M1, L1};
                 _ ->
                     throw(syntax_error)
             end;
@@ -1476,7 +1476,7 @@ analyze_record_attribute_tuple(Node) ->
     case erl_syntax:type(Node) of
         tuple ->
             [analyze_record_field(F)
-	     || F <- erl_syntax:tuple_elements(Node)];
+       || F <- erl_syntax:tuple_elements(Node)];
         _ ->
             throw(syntax_error)
     end.
@@ -1525,54 +1525,54 @@ analyze_record_attribute_tuple(Node) ->
 
 analyze_record_expr(Node) ->
     case erl_syntax:type(Node) of
-	record_expr ->
+  record_expr ->
             A = erl_syntax:record_expr_type(Node),
             case erl_syntax:type(A) of
                 atom ->
                     Fs = [analyze_record_field(F)
-			  || F <- erl_syntax:record_expr_fields(Node)],
+        || F <- erl_syntax:record_expr_fields(Node)],
                     {record_expr, {erl_syntax:atom_value(A), Fs}};
                 _ ->
                     throw(syntax_error)
             end;
-	record_access ->
-	    F = erl_syntax:record_access_field(Node),
-	    case erl_syntax:type(F) of
-		atom ->
-		    case erl_syntax:record_access_type(Node) of
-			none ->
-			    {record_access, erl_syntax:atom_value(F)};
-			A ->
-			    case erl_syntax:type(A) of
-				atom ->
-				    {record_access,
-				     {erl_syntax:atom_value(A),
-				      erl_syntax:atom_value(F)}};
-				_ ->
-				    throw(syntax_error)
-			    end
-		    end;
-		_ ->
-		    throw(syntax_error)
-	    end;
-	record_index_expr ->
-	    F = erl_syntax:record_index_expr_field(Node),
-	    case erl_syntax:type(F) of
-		atom ->
-		    A = erl_syntax:record_index_expr_type(Node),
-		    case erl_syntax:type(A) of
-			atom ->
-			    {record_index_expr,
-			     {erl_syntax:atom_value(A),
-			      erl_syntax:atom_value(F)}};
-			_ ->
-			    throw(syntax_error)
-		    end;
-		_ ->
-		    throw(syntax_error)
-	    end;
-	Type ->
-	    Type
+  record_access ->
+      F = erl_syntax:record_access_field(Node),
+      case erl_syntax:type(F) of
+    atom ->
+        case erl_syntax:record_access_type(Node) of
+      none ->
+          {record_access, erl_syntax:atom_value(F)};
+      A ->
+          case erl_syntax:type(A) of
+        atom ->
+            {record_access,
+             {erl_syntax:atom_value(A),
+              erl_syntax:atom_value(F)}};
+        _ ->
+            throw(syntax_error)
+          end
+        end;
+    _ ->
+        throw(syntax_error)
+      end;
+  record_index_expr ->
+      F = erl_syntax:record_index_expr_field(Node),
+      case erl_syntax:type(F) of
+    atom ->
+        A = erl_syntax:record_index_expr_type(Node),
+        case erl_syntax:type(A) of
+      atom ->
+          {record_index_expr,
+           {erl_syntax:atom_value(A),
+            erl_syntax:atom_value(F)}};
+      _ ->
+          throw(syntax_error)
+        end;
+    _ ->
+        throw(syntax_error)
+      end;
+  Type ->
+      Type
     end.
 
 %% =====================================================================
@@ -1710,7 +1710,7 @@ analyze_rule(Node) ->
 %%          FunctionName = atom() | {atom(), integer()}
 %%                       | {ModuleName, FunctionName}
 %%          ModuleName = atom()
-%%      
+%%
 %% @doc Returns the name of an implicit fun expression "<code>fun
 %% <em>F</em></code>". The result is a representation of the function
 %% name <code>F</code>. (Cf. <code>analyze_function_name/1</code>.)
@@ -1998,15 +1998,15 @@ rewrite(Tree, Tree1) ->
 
 module_name_to_atom(M) ->
     case erl_syntax:type(M) of
-	atom ->
-	    erl_syntax:atom_value(M);
-	qualified_name ->
-	    list_to_atom(packages:concat(
-			   [erl_syntax:atom_value(A)
-			    || A <- erl_syntax:qualified_name_segments(M)])
-			);
-	_ ->
-	    throw(syntax_error)
+  atom ->
+      erl_syntax:atom_value(M);
+  qualified_name ->
+      list_to_atom(packages:concat(
+         [erl_syntax:atom_value(A)
+          || A <- erl_syntax:qualified_name_segments(M)])
+      );
+  _ ->
+      throw(syntax_error)
     end.
 
 %% This splits lines at line terminators and expands tab characters to

@@ -122,11 +122,8 @@ public enum TokenHighlight {
                     ColoringPreferencePage.COLORS_QUALIFIER.length(),
                     key.length() - ColoringPreferencePage.COLOR_KEY.length()
                             - 1);
-        } else {
-            return key.substring(
-                    ColoringPreferencePage.COLORS_QUALIFIER.length(),
-                    key.length() - ColoringPreferencePage.STYLE_KEY.length()
-                            - 1);
         }
+        return key.substring(ColoringPreferencePage.COLORS_QUALIFIER.length(),
+                key.length() - ColoringPreferencePage.STYLE_KEY.length() - 1);
     }
 }

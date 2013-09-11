@@ -1,7 +1,5 @@
 package org.erlide.engine;
 
-import org.erlide.model.TextChange;
-
 /**
  * Facade for the Erlang engine.
  * <p>
@@ -10,15 +8,14 @@ import org.erlide.model.TextChange;
  * implement it in Erlang or to let it be used by Xtext.
  * </p>
  */
-public class ErlangEngine implements IEngineInput, IResourceChangeListener {
+public class ErlangEngine {
+    private volatile static IErlangEngine engine;
 
-    @Override
-    public void handleChangedInput(final String id, final TextChange change) {
+    public static synchronized IErlangEngine getInstance() {
+        if (engine == null) {
+            // TODO inject backend in factory
+            engine = ModelActivator.getErlangEngine();
+        }
+        return engine;
     }
-
-    @Override
-    public void handleChangedResources(final ResourceChange delta) {
-
-    }
-
 }

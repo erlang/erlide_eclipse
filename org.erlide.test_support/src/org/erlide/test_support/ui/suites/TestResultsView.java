@@ -218,9 +218,8 @@ public class TestResultsView extends ViewPart {
             final String tcase = b.getAtom("C");
             if (tcase.length() == 0) {
                 return "suite " + suite;
-            } else {
-                return "suite " + suite + "; case " + tcase;
             }
+            return "suite " + suite + "; case " + tcase;
         } catch (final TermParserException e) {
         } catch (final OtpErlangException e) {
         }

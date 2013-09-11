@@ -28,12 +28,10 @@ public class VariableNameValidator implements IValidator {
                 || s.substring(0, 1).toUpperCase().equals(s.substring(0, 1))) {
             if (s.replaceAll("[A-Za-z_@0-9]", "").length() == 0) {
                 return true;
-            } else {
-                return false;
             }
-        } else {
             return false;
         }
+        return false;
     }
 
 }

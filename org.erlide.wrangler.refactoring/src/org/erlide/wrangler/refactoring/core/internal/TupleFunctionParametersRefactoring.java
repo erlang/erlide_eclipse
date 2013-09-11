@@ -79,9 +79,8 @@ public class TupleFunctionParametersRefactoring extends
         }
         if (depth == 0) {
             return noC + 1;
-        } else {
-            return -1;
         }
+        return -1;
     }
 
     @Override

@@ -18,15 +18,14 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlAttribute;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlScanner;
-import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.erlang.IErlAttribute;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.ErlElementKind;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.backend.UserRefactoringsManager;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
@@ -56,9 +55,8 @@ public class AddRefacHandler extends AbstractHandler {
                     public String isValid(final String newText) {
                         if (internalV.isValid(newText)) {
                             return null;
-                        } else {
-                            return "Please type a correct module name!";
                         }
+                        return "Please type a correct module name!";
                     }
                 });
 
@@ -80,19 +78,18 @@ public class AddRefacHandler extends AbstractHandler {
         if (!addAndLoad(callbackModule, type)) {
             showErrorMesg("Can not load callback module");
             return null;
-        } else {
-            if (type.equals(RefacType.ELEMENTARY)) {
-                UserRefactoringsManager.getInstance().addMyElementary(
-                        callbackModule);
-            } else {
-                UserRefactoringsManager.getInstance().addMyComposite(
-                        callbackModule);
-            }
-
-            MessageDialog.openInformation(PlatformUI.getWorkbench()
-                    .getActiveWorkbenchWindow().getShell(),
-                    "Add user-defined refactoring", "Success!");
         }
+        if (type.equals(RefacType.ELEMENTARY)) {
+            UserRefactoringsManager.getInstance().addMyElementary(
+                    callbackModule);
+        } else {
+            UserRefactoringsManager.getInstance()
+                    .addMyComposite(callbackModule);
+        }
+
+        MessageDialog.openInformation(PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getShell(),
+                "Add user-defined refactoring", "Success!");
 
         return null;
     }
@@ -107,9 +104,9 @@ public class AddRefacHandler extends AbstractHandler {
     private RefacType checkType(final String callbackModule) {
 
         try {
-            final IErlModule module = ErlModelManager.getErlangModel()
+            final IErlModule module = ErlangEngine.getInstance().getModel()
                     .findModule(callbackModule);
-            final IErlScanner scanner = module.getScanner();
+            final ScannerService scanner = module.getScanner();
             try {
                 module.resetAndCacheScannerAndParser(null);
             } finally {
@@ -161,12 +158,17 @@ public class AddRefacHandler extends AbstractHandler {
         String path;
 
         try {
-            if (ErlModelManager.getErlangModel().findModule(callbackModule) == null) {
+            if (ErlangEngine.getInstance().getModel()
+                    .findModule(callbackModule) == null) {
                 return null;
             }
 
-            final IErlProject project = ModelUtils.getProject(ErlModelManager
-                    .getErlangModel().findModule(callbackModule));
+            final IErlProject project = ErlangEngine
+                    .getInstance()
+                    .getModelUtilService()
+                    .getProject(
+                            ErlangEngine.getInstance().getModel()
+                                    .findModule(callbackModule));
             path = project.getWorkspaceProject().getLocation()
                     .append(project.getOutputLocation())
                     .append(callbackModule + ".beam").toOSString();

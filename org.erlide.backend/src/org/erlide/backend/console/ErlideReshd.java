@@ -7,9 +7,10 @@ import org.erlide.runtime.rpc.RpcException;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
-public class ErlideReshd {
+public class ErlideReshd implements ShellService {
 
-    public static OtpErlangPid start(final IErlRuntime runtime) {
+    @Override
+    public OtpErlangPid start(final IErlRuntime runtime) {
         try {
             final OtpErlangObject r = runtime.getRpcSite().call("erlide_shell",
                     "start", "p", runtime.getEventMbox().self());

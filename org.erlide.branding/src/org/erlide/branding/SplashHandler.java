@@ -13,7 +13,6 @@ import org.eclipse.ui.branding.IProductConstants;
 import org.eclipse.ui.splash.BasicSplashHandler;
 import org.erlide.core.ErlangPlugin;
 
-@SuppressWarnings("restriction")
 public class SplashHandler extends BasicSplashHandler {
 
     @Override

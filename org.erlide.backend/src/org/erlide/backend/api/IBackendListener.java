@@ -14,11 +14,10 @@ import org.eclipse.core.resources.IProject;
 
 public interface IBackendListener {
 
-    public void runtimeAdded(IBackend backend);
+    void runtimeAdded(IBackend backend);
 
-    public void runtimeRemoved(IBackend backend);
+    void runtimeRemoved(IBackend backend);
 
-    public void moduleLoaded(IBackend aBackend, IProject project,
-            String moduleName);
+    void moduleLoaded(IBackend aBackend, IProject project, String moduleName);
 
 }

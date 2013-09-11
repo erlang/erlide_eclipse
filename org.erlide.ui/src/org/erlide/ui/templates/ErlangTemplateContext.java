@@ -25,8 +25,10 @@ public class ErlangTemplateContext extends DocumentTemplateContext {
         return evaluate(template, false);
     }
 
-    public TemplateBuffer evaluate(Template template, final boolean indentFrom0)
-            throws BadLocationException, TemplateException {
+    public TemplateBuffer evaluate(final Template template0,
+            final boolean indentFrom0) throws BadLocationException,
+            TemplateException {
+        Template template = template0;
         if (!canEvaluate(template)) {
             return null;
         }

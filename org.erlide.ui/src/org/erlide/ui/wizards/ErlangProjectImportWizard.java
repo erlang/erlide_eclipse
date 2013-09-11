@@ -45,10 +45,11 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
-import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangCore;
-import org.erlide.model.root.IErlangProjectProperties;
-import org.erlide.model.root.OldErlangProjectProperties;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.root.IErlangProjectProperties;
+import org.erlide.engine.model.root.OldErlangProjectProperties;
+import org.erlide.engine.services.importer.ErlProjectImport;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 import org.erlide.util.ErlLogger;
@@ -88,9 +89,8 @@ public class ErlangProjectImportWizard extends Wizard implements IImportWizard {
             filesAndDirs.add(s);
         }
         final String projectPath = mainPage.getProjectPath().toString();
-        final ErlProjectImport epi = ErlideImport.importProject(BackendCore
-                .getBackendManager().getIdeBackend().getRpcSite(), projectPath,
-                filesAndDirs);
+        final ErlProjectImport epi = ErlangEngine.getInstance()
+                .getImportService().importProject(projectPath, filesAndDirs);
         final IPath beamDir = new Path(epi.getBeamDir());
         importIncludeAndSourceDirsPage.setup(projectPath, epi.getDirectories(),
                 epi.getIncludeDirs(), epi.getSourceDirs(), beamDir);
@@ -139,7 +139,8 @@ public class ErlangProjectImportWizard extends Wizard implements IImportWizard {
             getContainer().run(false, true, new WorkspaceModifyOperation() {
 
                 @Override
-                protected void execute(IProgressMonitor monitor) {
+                protected void execute(final IProgressMonitor monitor0) {
+                    IProgressMonitor monitor = monitor0;
                     if (monitor == null) {
                         monitor = new NullProgressMonitor();
                     }

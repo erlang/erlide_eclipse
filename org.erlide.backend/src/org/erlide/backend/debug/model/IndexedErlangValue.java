@@ -15,16 +15,15 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IIndexedValue;
 import org.eclipse.debug.core.model.IVariable;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlPreprocessorDef;
-import org.erlide.model.erlang.IErlRecordDef;
-import org.erlide.model.erlang.IErlRecordField;
-import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.erlang.IErlPreprocessorDef;
+import org.erlide.engine.model.erlang.IErlRecordDef;
+import org.erlide.engine.model.erlang.IErlRecordField;
+import org.erlide.engine.model.root.ErlElementKind;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlProject;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -116,9 +115,13 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
                 final ErlangDebugTarget target = getErlangDebugTarget();
                 IErlPreprocessorDef pd;
                 try {
-                    pd = ModelUtils.findPreprocessorDef(
-                            getErlProjects(target.getProjects()), moduleName,
-                            a.atomValue(), ErlElementKind.RECORD_DEF);
+                    pd = ErlangEngine
+                            .getInstance()
+                            .getModelFindService()
+                            .findPreprocessorDef(
+                                    getErlProjects(target.getProjects()),
+                                    moduleName, a.atomValue(),
+                                    ErlElementKind.RECORD_DEF);
                     if (pd instanceof IErlRecordDef) {
                         final IErlRecordDef r = (IErlRecordDef) pd;
                         if (r.hasChildren()
@@ -137,7 +140,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
             final Collection<IProject> projects) {
         final List<IErlProject> result = Lists
                 .newArrayListWithCapacity(projects.size());
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         for (final IProject project : projects) {
             final IErlElement element = model.getChildWithResource(project);
             if (element instanceof IErlProject) {
@@ -152,9 +155,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
     public String getReferenceTypeName() throws DebugException {
         if (record != null) {
             return "record";
-        } else {
-            return super.getReferenceTypeName();
         }
+        return super.getReferenceTypeName();
     }
 
     @Override

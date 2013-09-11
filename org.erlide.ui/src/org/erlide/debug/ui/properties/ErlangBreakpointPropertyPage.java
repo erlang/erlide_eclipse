@@ -1,7 +1,9 @@
 package org.erlide.debug.ui.properties;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -393,6 +395,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
      * breakpoint page.
      * 
      * @param parent
+     * @throws CoreException
      */
     protected void createTypeSpecificEditors(final Composite parent)
             throws CoreException {

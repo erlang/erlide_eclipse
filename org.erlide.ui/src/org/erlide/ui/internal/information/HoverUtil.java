@@ -6,9 +6,9 @@ import java.net.URL;
 import java.util.Collection;
 
 import org.eclipse.swt.browser.LocationEvent;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlMember;
-import org.erlide.model.root.IErlElement;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.erlang.IErlMember;
+import org.erlide.engine.model.root.IErlElement;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.erlide.util.ErlLogger;
@@ -17,7 +17,8 @@ import org.erlide.util.ErlangFunctionCall;
 public class HoverUtil {
 
     public static ErlangFunctionCall eventToErlangFunctionCall(
-            String moduleName, final LocationEvent event) {
+            final String moduleName0, final LocationEvent event) {
+        String moduleName = moduleName0;
         final String location = event.location;
         ErlLogger.debug("eventToErlangFunction %s", location);
         final int hashPos = location.lastIndexOf('#');

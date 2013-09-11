@@ -95,9 +95,8 @@ public class ChangedFile {
             }
             change.setEdit(multiEdit);
             return change;
-        } else {
-            return null;
         }
+        return null;
     }
 
     public Change createChanges() throws IOException {

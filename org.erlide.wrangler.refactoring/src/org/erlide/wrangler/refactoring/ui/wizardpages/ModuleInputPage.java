@@ -28,11 +28,10 @@ public class ModuleInputPage extends SimpleInputPage {
             setPageComplete(true);
             return true;
 
-        } else {
-            setPageComplete(false);
-            setErrorMessage(inputErrorMsg);
-            return false;
         }
+        setPageComplete(false);
+        setErrorMessage(inputErrorMsg);
+        return false;
     }
 
     @Override

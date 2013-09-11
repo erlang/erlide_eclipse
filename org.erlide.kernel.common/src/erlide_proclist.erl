@@ -16,38 +16,38 @@
 -module(erlide_proclist).
 
 -export([
-		 init/1,
-		 
-		 process_list/0,
-		 process_list_init/0,
-		 get_process_info/1
-		]).
+     init/1,
+
+     process_list/0,
+     process_list_init/0,
+     get_process_info/1
+    ]).
 
 init(_EventSinkPid) ->
-	process_list_init(),
-	ok.
+  process_list_init(),
+  ok.
 
 %% taken from distel, for testing
 %% original author: Luke Gorrie
 
 process_list() ->
-	[info(Pid) || Pid <- processes()].
+  [info(Pid) || Pid <- processes()].
 
 info(Pid) ->
-    {Pid, 
-     name(Pid), 
-     initial_call(Pid), 
-     reductions(Pid), 
+    {Pid,
+     name(Pid),
+     initial_call(Pid),
+     reductions(Pid),
      messages(Pid)
     }.
 
 name(Pid) ->
-	case process_info(Pid, registered_name) of
-		{registered_name, Regname} ->
-			Regname;
-		_ ->
-			lists:flatten(io_lib:format("~p", [Pid]))
-	end.
+  case process_info(Pid, registered_name) of
+    {registered_name, Regname} ->
+      Regname;
+    _ ->
+      lists:flatten(io_lib:format("~p", [Pid]))
+  end.
 
 initial_call(Pid) ->
     case process_info(Pid, initial_call) of
@@ -58,40 +58,40 @@ initial_call(Pid) ->
     end.
 
 reductions(Pid) ->
-	{reductions, NrReds} = process_info(Pid, reductions),
-	NrReds.
+  {reductions, NrReds} = process_info(Pid, reductions),
+  NrReds.
 
 messages(Pid) ->
-	{message_queue_len, Len} = process_info(Pid, message_queue_len),
-	Len.
+  {message_queue_len, Len} = process_info(Pid, message_queue_len),
+  Len.
 
 get_process_info(Pid) ->
-	case (catch erlang:process_info(Pid)) of
-		{'EXIT', Reason} ->
-			{error, Reason};
-		Result ->
-			Result
-	end.
+  case (catch erlang:process_info(Pid)) of
+    {'EXIT', Reason} ->
+      {error, Reason};
+    Result ->
+      Result
+  end.
 
 process_list_init() ->
-	case get(process_list_init) of
-		true ->
-			ok;
-		_ ->
-			put(process_list_init, true),
-			spawn(fun() ->
-						  process_list_updater() 
-				  end)
-	end.
+  case get(process_list_init) of
+    true ->
+      ok;
+    _ ->
+      put(process_list_init, true),
+      spawn(fun() ->
+              process_list_updater()
+          end)
+  end.
 
 process_list_updater() ->
-	receive
-		stop -> ok;
-		_ -> process_list_updater()
-		after 5000 ->
-			erlide_jrpc:event(processlist, {erlang:now(), self()}),
-			process_list_updater()
-	end.
+  receive
+    stop -> ok;
+    _ -> process_list_updater()
+    after 5000 ->
+      erlide_jrpc:event(processlist, {erlang:now(), self()}),
+      process_list_updater()
+  end.
 
 
 %% end distel

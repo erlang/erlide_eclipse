@@ -18,12 +18,11 @@ class DebugEventHandler {
         debugTarget = erlangDebugTarget;
     }
 
-    public void handleMessages(final Collection<OtpErlangObject> messages)
-            throws Exception {
+    public void handleMessages(final Collection<OtpErlangObject> messages) {
         for (final OtpErlangObject message : messages) {
             try {
                 handleMessage(message);
-            } catch (final Throwable e) {
+            } catch (final Exception e) {
                 ErlLogger.info(e);
             }
         }
@@ -31,9 +30,7 @@ class DebugEventHandler {
 
     private void handleMessage(final OtpErlangObject message)
             throws DebugException {
-        // ErlLogger.debug("DEBUGGER @@@ >> " + message);
         final DebuggerEvent event = DebuggerEventFactory.parse(message);
-        // ErlLogger.debug("DEBUGGER @@@ :: " + event);
         event.execute(debugTarget);
     }
 }

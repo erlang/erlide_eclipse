@@ -6,18 +6,14 @@ SITE_TYPE=$3 # master, beta, nightly
 DESTINATION=$4
 USER=$5
 
-if [ "$SOURCE_ID" == "lastStable" ]; then
-	SOURCE_ID=`ls -l ${WORKSPACE}/../../${SOURCE_JOB}/lastStable | awk '{print $11}' | sed 's#builds/##'`
-fi
-
-IN=${WORKSPACE}/../../${SOURCE_JOB}/builds/${SOURCE_ID}/archive/buckminster.output/org.erlide.site_1.0.0-eclipse.feature/site.p2
+IN=${WORKSPACE}/buildroot/buckminster.output/org.erlide.site_1.0.0-eclipse.feature/site.p2
 OUT=${ERLIDE}/update_sites/${SOURCE_JOB}_${SOURCE_ID}
 
 rm -rf ${OUT}/*
 mkdir -p $OUT
 
 # mirror job output to OUT
-bash -ex ${WORKSPACE}/org.erlide.site/mirror_p2 ${JAVA_HOME} ${ECLIPSE} file://${IN} file://${OUT}
+bash -ex org.erlide.releng/mirror_p2 ${JAVA_HOME} ${ECLIPSE} file://${IN} file://${OUT}
 if [ $? != 0 ]; then 
 	exit $?
 fi

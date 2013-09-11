@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
 import org.erlide.core.search.SearchCoreUtil;
-import org.erlide.model.services.search.ErlSearchScope;
+import org.erlide.engine.services.search.ErlSearchScope;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 
 /**
@@ -99,8 +99,7 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
     protected ErlSearchScope getScope() throws CoreException {
         if (fWorkingSets != null) {
             return SearchUtil.getWorkingSetsScope(fWorkingSets, false, false);
-        } else {
-            return SearchCoreUtil.getWorkspaceScope(false, false);
         }
+        return SearchCoreUtil.getWorkspaceScope(false, false);
     }
 }

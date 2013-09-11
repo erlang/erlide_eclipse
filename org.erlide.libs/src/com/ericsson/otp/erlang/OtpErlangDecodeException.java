@@ -27,6 +27,11 @@ package com.ericsson.otp.erlang;
  */
 public class OtpErlangDecodeException extends OtpErlangException {
     /**
+     * 
+     */
+    private static final long serialVersionUID = -7141404432023809031L;
+
+    /**
      * Provides a detailed message.
      */
     public OtpErlangDecodeException(final String msg) {

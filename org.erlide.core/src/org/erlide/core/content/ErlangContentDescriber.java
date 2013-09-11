@@ -71,11 +71,11 @@ public class ErlangContentDescriber implements ITextContentDescriber {
 
     private void fillContentProperties(final String charset,
             final IContentDescription description,
-            final Map<String, Object> properties) throws IOException {
+            final Map<String, Object> properties) {
         if (charset != null) {
             properties.put(CHARSET, charset);
         }
-        properties.put(RESULT, new Boolean(true));
+        properties.put(RESULT, Boolean.TRUE);
     }
 
     private int internalDescribe(final IContentDescription description,
@@ -151,8 +151,8 @@ public class ErlangContentDescriber implements ITextContentDescriber {
      * @param line
      * @return null if nothing found yet; String if found
      */
-    private String getDeclaration(String line) {
-        line = line.trim();
+    private String getDeclaration(final String line0) {
+        final String line = line0.trim();
         Matcher matcher = LATIN1.matcher(line);
         if (matcher.matches()) {
             return "latin1";

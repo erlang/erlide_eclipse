@@ -3,8 +3,8 @@ package org.erlide.cover.api;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlProject;
 
 /**
  * Interface for coverage configuration

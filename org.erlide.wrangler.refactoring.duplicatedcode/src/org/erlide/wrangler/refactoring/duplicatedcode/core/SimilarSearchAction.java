@@ -63,9 +63,8 @@ public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
 
         if (result.isOk()) {
             return new SimilarExpressionSearchParser(result.getValue());
-        } else {
-            throw new WranglerRpcParsingException("RPC error");
         }
+        throw new WranglerRpcParsingException("RPC error");
     }
 
     @Override

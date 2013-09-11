@@ -30,42 +30,15 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.model.erlang.IErlModule;
-
-/**
- * This sample class demonstrates how to plug-in a new workbench view. The view
- * shows data obtained from the model. The sample creates a dummy model on the
- * fly, but a real implementation would connect to the model available either in
- * this or another plug-in (e.g. the workspace). The view is connected to the
- * model using a content provider.
- * <p>
- * The view uses a label provider to define how model objects should be
- * presented in the view. Each view can present the same model objects using
- * different labels and icons, if needed. Alternatively, a single label provider
- * can be shared between views in order to ensure that objects of the same type
- * are presented in the same way everywhere.
- * <p>
- */
+import org.erlide.engine.model.erlang.IErlModule;
 
 public class TraceLogView extends ViewPart {
 
     TreeViewer viewer;
-
     private DrillDownAdapter drillDownAdapter;
-
     private Action action1;
-
     private Action action2;
-
     Action doubleClickAction;
-
-    /*
-     * The content provider class is responsible for providing objects to the
-     * view. It can wrap existing objects in adapters or simply return objects
-     * as-is. These objects may be sensitive to the current input of the view,
-     * or ignore it and always show the same content (like Task List, for
-     * example).
-     */
 
     class TreeObject implements IAdaptable {
 
@@ -184,10 +157,6 @@ public class TraceLogView extends ViewPart {
             return false;
         }
 
-        /*
-         * We will set up a dummy model to initialize tree heararchy. In a real
-         * code, you will connect to a real model and expose its hierarchy.
-         */
         private void initialize() {
             final TreeObject to1 = new TreeObject("Leaf 1");
             final TreeObject to2 = new TreeObject("Leaf 2");

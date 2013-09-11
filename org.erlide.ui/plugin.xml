@@ -8,7 +8,7 @@
      <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.erlide.ui.editors.erl.ErlangEditor"
+            class="org.erlide.engine.ExecutableExtensionsFactory:org.erlide.ui.editors.erl.ErlangEditor"
             contributorClass="org.erlide.ui.editors.erl.ErlEditorActionBarContributor"
             default="true"
             extensions="erl,hrl"
@@ -231,12 +231,6 @@
             name="Erlang Navigator">
       </view>
       <view
-            category="org.erlide.views"
-            class="org.erlide.ui.views.ErlLoggerView"
-            icon="icons/icons/sample.gif"
-            id="org.erlide.ui.views.ErlLoggerView"
-            name="Erlang Logger"/>
-      <view
             allowMultiple="false"
             category="org.erlide.views"
             class="org.erlide.ui.views.EpmdView"
@@ -254,7 +248,7 @@
       <view
             allowMultiple="false"
             category="org.erlide.views"
-            class="org.erlide.ui.views.CallHierarchyView"
+            class="org.erlide.engine.ExecutableExtensionsFactory:org.erlide.ui.views.CallHierarchyView"
             id="org.erlide.ui.callhierarchy"
             name="Call Hierarchy"
             restorable="true">
@@ -400,7 +394,6 @@
             objectClass="org.erlide.backend.debug.ErlangLineBreakpoint">
          <action
                class="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesAction"
-               definitionId="org.erlide.ui.debug.breakpoint.properties"
                enablesFor="1"
                helpContextId="breakpoint_properties_action_context"
                id="org.eclipse.jdt.debug.ui.actions.ErlangBreakpointProperties"
@@ -1371,20 +1364,20 @@
                   </test>
                </and>
                <instanceof
-                     value="org.erlide.model.root.IErlElement">
+                     value="org.erlide.engine.model.root.IErlElement">
                </instanceof>
                <instanceof
                      value="org.eclipse.core.resources.IFolder">
                </instanceof>
                <adapt
-                     type="org.erlide.model.erlang.IErlModule">
+                     type="org.erlide.engine.model.erlang.IErlModule">
                </adapt>
             </or>
          </triggerPoints>
          <possibleChildren>
             <or>
                <instanceof
-                     value="org.erlide.model.root.IErlElement">
+                     value="org.erlide.engine.model.root.IErlElement">
                </instanceof>
             </or>
          </possibleChildren>
@@ -1417,7 +1410,7 @@
          <triggerPoints>
             <or>
                <instanceof
-                     value="org.erlide.model.root.IErlElement">
+                     value="org.erlide.engine.model.root.IErlElement">
                </instanceof>
                <and>
                   <instanceof
@@ -1433,7 +1426,7 @@
          <possibleChildren>
             <or>
                <instanceof
-                     value="org.erlide.model.root.IErlElement">
+                     value="org.erlide.engine.model.root.IErlElement">
                </instanceof>
             </or>
          </possibleChildren>
@@ -1488,7 +1481,7 @@
                      type="org.eclipse.core.resources.IFile">
                </adapt>
                <instanceof
-                     value="org.erlide.model.erlang.IErlModule">
+                     value="org.erlide.engine.model.erlang.IErlModule">
                </instanceof>
             </or>
          </selectionEnablement>
@@ -1601,7 +1594,7 @@
             adaptableType="org.eclipse.ui.IEditorInput"
             class="org.erlide.ui.util.EditorInputToModuleAdapterFactory">
          <adapter
-               type="org.erlide.model.root.IErlElement">
+               type="org.erlide.engine.model.root.IErlElement">
          </adapter>
       </factory>
    </extension>
@@ -1671,7 +1664,7 @@
                         ifEmpty="false"
                         operator="and">
                      <adapt
-                           type="org.erlide.model.root.IErlElement">
+                           type="org.erlide.engine.model.root.IErlElement">
                      </adapt>
                   </iterate>
                </with>

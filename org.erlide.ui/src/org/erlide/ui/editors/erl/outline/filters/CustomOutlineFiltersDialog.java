@@ -1,7 +1,9 @@
 package org.erlide.ui.editors.erl.outline.filters;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -314,9 +316,8 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
             public String getText(final Object element) {
                 if (element instanceof FilterDescriptor) {
                     return ((FilterDescriptor) element).getName();
-                } else {
-                    return null;
                 }
+                return null;
             }
         };
     }
@@ -324,7 +325,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
     // ---------- result handling ----------
 
     @Override
-    protected void setResult(@SuppressWarnings("rawtypes") final List newResult) {
+    protected void setResult(final List newResult) {
         super.setResult(newResult);
         if (fUserDefinedPatterns.getText().length() > 0) {
             fEnablePatterns = fEnableUserDefinedPatterns.getSelection();

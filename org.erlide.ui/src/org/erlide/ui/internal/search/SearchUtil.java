@@ -30,29 +30,28 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.search.SearchCoreUtil;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.IParent;
-import org.erlide.model.erlang.IErlFunctionClause;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.services.search.ErlSearchScope;
-import org.erlide.model.services.search.ErlangSearchPattern;
-import org.erlide.model.services.search.FunctionPattern;
-import org.erlide.model.services.search.IncludePattern;
-import org.erlide.model.services.search.LimitTo;
-import org.erlide.model.services.search.MacroPattern;
-import org.erlide.model.services.search.ModuleLineFunctionArityRef;
-import org.erlide.model.services.search.OpenResult;
-import org.erlide.model.services.search.RecordFieldPattern;
-import org.erlide.model.services.search.RecordPattern;
-import org.erlide.model.services.search.SearchFor;
-import org.erlide.model.services.search.SearchPatternFactory;
-import org.erlide.model.services.search.TypeRefPattern;
-import org.erlide.model.services.search.VariablePattern;
-import org.erlide.model.util.ModelUtils;
-import org.erlide.ui.actions.OpenAction;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IParent;
+import org.erlide.engine.model.erlang.IErlFunctionClause;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.ErlElementKind;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.services.search.ErlSearchScope;
+import org.erlide.engine.services.search.ErlangSearchPattern;
+import org.erlide.engine.services.search.FunctionPattern;
+import org.erlide.engine.services.search.IncludePattern;
+import org.erlide.engine.services.search.LimitTo;
+import org.erlide.engine.services.search.MacroPattern;
+import org.erlide.engine.services.search.ModuleLineFunctionArityRef;
+import org.erlide.engine.services.search.OpenResult;
+import org.erlide.engine.services.search.RecordFieldPattern;
+import org.erlide.engine.services.search.RecordPattern;
+import org.erlide.engine.services.search.SearchFor;
+import org.erlide.engine.services.search.SearchPatternFactory;
+import org.erlide.engine.services.search.TypeRefPattern;
+import org.erlide.engine.services.search.VariablePattern;
+import org.erlide.ui.actions.OpenUtils;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.StringUtils;
 import org.erlide.util.Util;
@@ -179,7 +178,7 @@ public class SearchUtil {
                 moduleName = module.getModuleName();
                 if (offset != -1) {
                     final IErlElement e = module.getElementAt(offset);
-                    if (OpenAction.isTypeDefOrRecordDef(e, res)) {
+                    if (new OpenUtils().isTypeDefOrRecordDef(e, res)) {
                         return new TypeRefPattern(moduleName, res.getFun(),
                                 limitTo);
                     }
@@ -209,7 +208,8 @@ public class SearchUtil {
             moduleName = unquoted;
             do {
                 oldName = moduleName;
-                moduleName = ModelUtils.resolveMacroValue(moduleName, module);
+                moduleName = ErlangEngine.getInstance().getModelFindService()
+                        .resolveMacroValue(moduleName, module);
             } while (!moduleName.equals(oldName));
             return new FunctionPattern(moduleName, res.getFun(),
                     res.getArity(), limitTo, matchAnyFunctionDefinition,
@@ -254,7 +254,8 @@ public class SearchUtil {
             arity = Integer.valueOf(name.substring(p + 1));
             name = name.substring(0, p);
         }
-        return SearchPatternFactory.getSearchPattern(searchFor, moduleName,
+        return new SearchPatternFactory(ErlangEngine.getInstance()
+                .getModelUtilService()).getSearchPattern(searchFor, moduleName,
                 name, arity, limitTo, module);
     }
 
@@ -346,8 +347,8 @@ public class SearchUtil {
                     o = a.getAdapter(IResource.class);
                     if (o != null) {
                         final IResource resource = (IResource) o;
-                        final IErlElement element = ErlModelManager
-                                .getErlangModel().findElement(resource);
+                        final IErlElement element = ErlangEngine.getInstance()
+                                .getModel().findElement(resource);
                         if (element instanceof IParent) {
                             parent = (IParent) element;
                         }
@@ -366,23 +367,22 @@ public class SearchUtil {
             final Collection<IProject> projects) {
         if (projects == null || projects.isEmpty()) {
             return "";
-        } else {
-            final StringBuilder sb = new StringBuilder(
-                    projects.size() == 1 ? "project" : "projects");
-            sb.append(' ');
-            int i = 0;
-            for (final IProject p : projects) {
-                sb.append('\'').append(p.getName()).append("', ");
-                i++;
-                if (i == 2) {
-                    break;
-                }
-            }
-            if (projects.size() > 2) {
-                return sb.append("... ").toString();
-            }
-            return sb.substring(0, sb.length() - 2);
         }
+        final StringBuilder sb = new StringBuilder(
+                projects.size() == 1 ? "project" : "projects");
+        sb.append(' ');
+        int i = 0;
+        for (final IProject p : projects) {
+            sb.append('\'').append(p.getName()).append("', ");
+            i++;
+            if (i == 2) {
+                break;
+            }
+        }
+        if (projects.size() > 2) {
+            return sb.append("... ").toString();
+        }
+        return sb.substring(0, sb.length() - 2);
     }
 
     public static String getSelectionScopeDescription(final ISelection selection) {

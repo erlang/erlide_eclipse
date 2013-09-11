@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: erlide product branding
 Bundle-SymbolicName: org.erlide.branding;singleton:=true
-Bundle-Version: 0.23.1.qualifier
+Bundle-Version: 0.24.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.eclipse.ui.intro.universal;bundle-version="3.2.500",
  org.eclipse.ui;bundle-version="3.7.0",
  org.erlide.ui,
  org.erlide.core
-Export-Package: org.erlide.branding;uses:="org.eclipse.swt.widgets,org.eclipse.ui.splash"
+Export-Package: org.erlide.branding
 Bundle-Vendor: %vendor
 Bundle-ClassPath: .
 Bundle-Localization: plugin

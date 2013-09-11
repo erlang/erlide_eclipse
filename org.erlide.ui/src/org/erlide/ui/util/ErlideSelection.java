@@ -295,7 +295,8 @@ public class ErlideSelection {
         }
     }
 
-    public int countSpacesAfter(int offset) throws BadLocationException {
+    public int countSpacesAfter(final int offset0) throws BadLocationException {
+        int offset = offset0;
         if (offset >= doc.getLength()) {
             return 0;
         }
@@ -345,7 +346,8 @@ public class ErlideSelection {
      *            the contents should be added after the line specified here.
      */
     public static void addLine(final IDocument doc, final String endLineDelim,
-            String contents, final int afterLine) {
+            final String contents0, final int afterLine) {
+        String contents = contents0;
         try {
 
             int offset = -1;
@@ -653,8 +655,9 @@ public class ErlideSelection {
      * @return
      * @throws BadLocationException
      */
-    public static int eatFuncCall(final IDocument theDoc, int documentOffset)
-            throws BadLocationException {
+    public static int eatFuncCall(final IDocument theDoc,
+            final int documentOffset0) throws BadLocationException {
+        int documentOffset = documentOffset0;
         final String c = theDoc.get(documentOffset, 1);
         if (!")".equals(c)) {
             throw new AssertionError("Expecting ) to eat callable. Received: "
@@ -773,7 +776,9 @@ public class ErlideSelection {
      *         same offset passed as a parameter).
      */
     public static Pair<String, Integer> extractActivationToken(
-            final IDocument document, int offset, final boolean getFullQualifier) {
+            final IDocument document, final int offset0,
+            final boolean getFullQualifier) {
+        int offset = offset0;
         try {
             if (getFullQualifier) {
                 // if we have to get the full qualifier, we'll have to walk the
@@ -966,9 +971,8 @@ public class ErlideSelection {
         public boolean hasNext() {
             if (forward) {
                 return startingLine < numberOfLines;
-            } else {
-                return startingLine >= 0;
             }
+            return startingLine >= 0;
         }
 
         /**

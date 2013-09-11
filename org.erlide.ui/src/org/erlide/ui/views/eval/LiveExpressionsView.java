@@ -58,9 +58,9 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.backend.BackendCore;
 import org.erlide.backend.debug.BackendEvalResult;
-import org.erlide.backend.debug.DebugHelper;
+import org.erlide.backend.debug.EvalHelper;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -88,9 +88,15 @@ public class LiveExpressionsView extends ViewPart implements
         String fExpr;
         private String cachedValue = "";
         boolean doEval = false;
+        private final IRpcSite b;
 
-        public LiveExpr(final String s) {
+        public LiveExpr(final IRpcSite b, final String s) {
             fExpr = s;
+            this.b = b;
+        }
+
+        public LiveExpr(final String string) {
+            this(ErlangEngine.getInstance().getBackend(), string);
         }
 
         public void setDoEval(final boolean eval) {
@@ -105,9 +111,7 @@ public class LiveExpressionsView extends ViewPart implements
         }
 
         private String evaluate() {
-            final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
-                    .getRpcSite();
-            final BackendEvalResult r = DebugHelper.eval(b, fExpr + ".", null);
+            final BackendEvalResult r = EvalHelper.eval(b, fExpr + ".", null);
             if (r.isOk()) {
                 return r.getValue().toString();
             }
@@ -304,9 +308,8 @@ public class LiveExpressionsView extends ViewPart implements
                         String str = item.getText(1);
                         if (str.length() > 0) {
                             // ErlLogger.debug(str);
-                            final BackendEvalResult r = DebugHelper.eval(
-                                    BackendCore.getBackendManager()
-                                            .getIdeBackend().getRpcSite(),
+                            final BackendEvalResult r = EvalHelper.eval(
+                                    ErlangEngine.getInstance().getBackend(),
                                     "lists:flatten(io_lib:format(\"~p\", ["
                                             + item.getText(1) + "])).", null);
                             if (r.isOk()) {
@@ -359,14 +362,14 @@ public class LiveExpressionsView extends ViewPart implements
     }
 
     @Override
-    public void saveState(IMemento aMemento) {
+    public void saveState(final IMemento aMemento) {
         if (exprs.isEmpty()) {
             return;
         }
-        aMemento = aMemento.createChild("LiveExpressions");
+        final IMemento aMemento2 = aMemento.createChild("LiveExpressions");
         final Iterator<LiveExpr> iter = exprs.iterator();
         while (iter.hasNext()) {
-            aMemento.createChild("expression").putTextData(
+            aMemento2.createChild("expression").putTextData(
                     iter.next().toString());
         }
     }

@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,10 +63,9 @@ public class ImageDescriptorRegistry {
      *         <code>null</code> if the image descriptor can't create the
      *         requested image.
      */
-    public Image get(ImageDescriptor descriptor) {
-        if (descriptor == null) {
-            descriptor = ImageDescriptor.getMissingImageDescriptor();
-        }
+    public Image get(final ImageDescriptor descriptor0) {
+        final ImageDescriptor descriptor = descriptor0 != null ? descriptor0
+                : ImageDescriptor.getMissingImageDescriptor();
 
         Image result = fRegistry.get(descriptor);
         if (result != null) {

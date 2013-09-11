@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.builder.CompilerOption.BooleanOption;
@@ -17,7 +14,7 @@ import org.erlide.core.builder.CompilerOption.ModuleOption;
 import org.erlide.core.builder.CompilerOption.PathsOption;
 import org.erlide.core.builder.CompilerOption.RawOption;
 import org.erlide.core.builder.CompilerOption.WarningOption;
-import org.erlide.model.util.PreferencesHelper;
+import org.erlide.engine.util.PreferencesHelper;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.TermParserException;
@@ -36,17 +33,9 @@ public class CompilerOptions {
     private final Map<CompilerOption, Object> options;
     private PreferencesHelper helper;
 
-    public static OtpErlangList get(final IProject project)
-            throws CoreException {
+    public static OtpErlangList get(final IProject project) {
         final CompilerOptions prefs = new CompilerOptions(project);
-        try {
-            prefs.load();
-        } catch (final BackingStoreException e1) {
-            e1.printStackTrace();
-            throw new CoreException(
-                    new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
-                            "could not retrieve compiler options"));
-        }
+        prefs.load();
         final OtpErlangList compilerOptions = prefs.export();
         return compilerOptions;
     }
@@ -115,7 +104,7 @@ public class CompilerOptions {
         helper.flush();
     }
 
-    public void load() throws BackingStoreException {
+    public void load() {
         options.clear();
         for (final CompilerOption option : CompilerOption.ALL_OPTIONS) {
             final String value = helper.getString(option.getName(), null);
@@ -219,8 +208,8 @@ public class CompilerOptions {
         }
     }
 
-    public void setSimpleOption(final CompilerOption opt, String value) {
-        value = value.trim();
+    public void setSimpleOption(final CompilerOption opt, final String value0) {
+        final String value = value0.trim();
         if (Strings.isNullOrEmpty(value)) {
             removeOption(opt);
         } else {
@@ -256,9 +245,8 @@ public class CompilerOptions {
         final Object value = options.get(opt);
         if (opt instanceof BooleanOption) {
             return ((Boolean) value).booleanValue();
-        } else {
-            return value != null;
         }
+        return value != null;
     }
 
     public Iterable<String> getPathsOption(final PathsOption option) {

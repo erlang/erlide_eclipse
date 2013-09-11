@@ -20,23 +20,20 @@ public class ProcessLabelProvider extends LabelProvider implements
             if (process.isSelected()) {
                 return Activator.getDefault().getImageRegistry()
                         .get(Images.CHECKED.toString());
-            } else {
+            }
+            return Activator.getDefault().getImageRegistry()
+                    .get(Images.UNCHECKED.toString());
+        }
+        // flag columns
+        final ProcessFlag flag = ProcessFlag.getByIndex(columnIndex
+                - ProcessColumn.values().length);
+        if (flag != null) {
+            if (process.hasFlag(flag)) {
                 return Activator.getDefault().getImageRegistry()
-                        .get(Images.UNCHECKED.toString());
+                        .get(Images.CHECKED.toString());
             }
-        } else {
-            // flag columns
-            final ProcessFlag flag = ProcessFlag.getByIndex(columnIndex
-                    - ProcessColumn.values().length);
-            if (flag != null) {
-                if (process.hasFlag(flag)) {
-                    return Activator.getDefault().getImageRegistry()
-                            .get(Images.CHECKED.toString());
-                } else {
-                    return Activator.getDefault().getImageRegistry()
-                            .get(Images.UNCHECKED.toString());
-                }
-            }
+            return Activator.getDefault().getImageRegistry()
+                    .get(Images.UNCHECKED.toString());
         }
 
         return null;

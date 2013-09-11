@@ -11,7 +11,7 @@
 package org.erlide.ui.internal;
 
 import org.eclipse.core.runtime.Assert;
-import org.erlide.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlElement;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
 

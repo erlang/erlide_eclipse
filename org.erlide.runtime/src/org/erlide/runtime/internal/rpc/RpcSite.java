@@ -35,6 +35,8 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class RpcSite implements IRpcSite {
 
+    private static final OtpErlangAtom USER_ATOM = new OtpErlangAtom("user");
+
     public static final long INFINITY = Long.MAX_VALUE;
 
     // use this for debugging
@@ -73,7 +75,7 @@ public class RpcSite implements IRpcSite {
     public void async_call_result(final IRpcResultCallback cb, final String m,
             final String f, final String signature, final Object... args)
             throws RpcException {
-        final OtpErlangAtom gleader = new OtpErlangAtom("user");
+        final OtpErlangAtom gleader = USER_ATOM;
         try {
             final Object[] args1 = new Object[args.length + 1];
             System.arraycopy(args, 0, args1, 1, args.length);
@@ -102,7 +104,7 @@ public class RpcSite implements IRpcSite {
     @Override
     public IRpcFuture async_call(final String module, final String fun,
             final String signature, final Object... args0) throws RpcException {
-        return async_call(new OtpErlangAtom("user"), module, fun, signature,
+        return async_call(USER_ATOM, module, fun, signature,
                 args0);
     }
 
@@ -110,7 +112,7 @@ public class RpcSite implements IRpcSite {
     public void async_call_cb(final IRpcCallback cb, final long timeout,
             final String module, final String fun, final String signature,
             final Object... args) throws RpcException {
-        async_call_cb(cb, timeout, new OtpErlangAtom("user"), module, fun,
+        async_call_cb(cb, timeout, USER_ATOM, module, fun,
                 signature, args);
     }
 
@@ -177,7 +179,7 @@ public class RpcSite implements IRpcSite {
     public OtpErlangObject call(final long timeout, final String module,
             final String fun, final String signature, final Object... args0)
             throws RpcException {
-        return call(timeout, new OtpErlangAtom("user"), module, fun, signature,
+        return call(timeout, USER_ATOM, module, fun, signature,
                 args0);
     }
 
@@ -197,7 +199,7 @@ public class RpcSite implements IRpcSite {
     @Override
     public void cast(final String module, final String fun,
             final String signature, final Object... args0) throws RpcException {
-        cast(new OtpErlangAtom("user"), module, fun, signature, args0);
+        cast(USER_ATOM, module, fun, signature, args0);
     }
 
     @Override
@@ -437,10 +439,8 @@ public class RpcSite implements IRpcSite {
     }
 
     private OtpErlangObject[] convertArgs(final String signature,
-            Object... args0) throws SignatureException {
-        if (args0 == null) {
-            args0 = new OtpErlangObject[] {};
-        }
+            final Object... args) throws SignatureException {
+        final Object[] args0 = args == null ? new OtpErlangObject[] {} : args;
 
         Signature[] type;
         type = Signature.parse(signature);
@@ -455,11 +455,11 @@ public class RpcSite implements IRpcSite {
                     "Signature doesn't match parameter number: " + type.length
                             + "/" + args0.length);
         }
-        final OtpErlangObject[] args = new OtpErlangObject[args0.length];
-        for (int i = 0; i < args.length; i++) {
-            args[i] = TypeConverter.java2erlang(args0[i], type[i]);
+        final OtpErlangObject[] args1 = new OtpErlangObject[args0.length];
+        for (int i = 0; i < args1.length; i++) {
+            args1[i] = TypeConverter.java2erlang(args0[i], type[i]);
         }
-        return args;
+        return args1;
     }
 
     private OtpErlangObject buildRpcCastMsg(final OtpErlangObject gleader,

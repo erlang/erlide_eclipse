@@ -20,13 +20,13 @@ import org.eclipse.debug.core.model.IRegisterGroup;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlFunction;
-import org.erlide.model.erlang.IErlFunctionClause;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.util.ErlangFunction;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.erlang.IErlFunction;
+import org.erlide.engine.model.erlang.IErlFunctionClause;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.util.ErlangFunction;
 import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -46,7 +46,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements
 
     public ErlangStackFrame(final String moduleName,
             final ErlangProcess parent, final IDebugTarget target,
-            int lineNumber, final ErlangFunction function,
+            final int lineNumber0, final ErlangFunction function,
             final OtpErlangList bindings, final int stackFrameNo) {
         super(target);
         fParent = parent;
@@ -72,12 +72,14 @@ public class ErlangStackFrame extends ErlangDebugElement implements
         this.bindings = frames;
         IErlModule module;
         try {
-            module = ErlModelManager.getErlangModel().findModule(moduleName);
+            module = ErlangEngine.getInstance().getModel()
+                    .findModule(moduleName);
         } catch (final ErlModelException e) {
             ErlLogger.error(e);
             module = null;
         }
         clauseHead = null;
+        int lineNumber = lineNumber0;
         if (module != null) {
             try {
                 module.open(null);

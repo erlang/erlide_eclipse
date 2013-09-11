@@ -39,20 +39,17 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.model.ModelCore;
-import org.erlide.model.erlang.ErlToken;
-import org.erlide.model.erlang.IErlFunction;
-import org.erlide.model.erlang.IErlPreprocessorDef;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.root.IErlProject;
-import org.erlide.model.services.search.ErlideDoc;
-import org.erlide.model.services.search.OpenResult;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.erlang.IErlFunction;
+import org.erlide.engine.model.erlang.IErlPreprocessorDef;
+import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.services.parsing.ErlToken;
+import org.erlide.engine.services.search.OpenResult;
+import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.ui.actions.OpenAction;
+import org.erlide.ui.actions.OpenUtils;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
@@ -201,9 +198,11 @@ public class ErlTextHover implements ITextHover,
                     }
 
                     @Override
-                    public void setSize(int width, int height) {
+                    public void setSize(final int width0, final int height0) {
                         // default size is too small
                         final Point bounds = getSizeConstraints();
+                        int width = width0;
+                        int height = height0;
                         if (bounds != null) {
                             if (bounds.x != SWT.DEFAULT) {
                                 width = Math.min(bounds.x, width * 2);
@@ -268,8 +267,8 @@ public class ErlTextHover implements ITextHover,
         final StringBuffer result = new StringBuffer();
         Object element = null;
         // TODO our model is too coarse, here we need access to expressions
-        final Collection<OtpErlangObject> fImports = ModelUtils
-                .getImportsAsList(editor.getModule());
+        final Collection<OtpErlangObject> fImports = ErlangEngine.getInstance()
+                .getModelUtilService().getImportsAsList(editor.getModule());
 
         final int offset = hoverRegion.getOffset();
         final int length = hoverRegion.getLength();
@@ -278,31 +277,32 @@ public class ErlTextHover implements ITextHover,
         if (debuggerVar.length() > 0) {
             result.append(debuggerVar);
         }
-        final String stateDir = ModelCore.getStateDir();
+        final String stateDir = ErlangEngine.getInstance().getStateDir();
 
         final IErlProject erlProject = editor.getProject();
 
         final IBackendManager backendManager = BackendCore.getBackendManager();
-        final IBackend ide = backendManager.getIdeBackend();
         String docPath = "";
         String anchor = "";
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getWorkspaceProject();
-            final IBackend backend0 = erlProject == null ? ide : backendManager
-                    .getBuildBackend(project);
-            if (backend0 == null) {
+            final IRpcSite backend = erlProject == null ? ErlangEngine
+                    .getInstance().getBackend() : backendManager
+                    .getBuildBackend(project).getRpcSite();
+            if (backend == null) {
                 return null;
             }
-            final IRpcSite backend = backend0.getRpcSite();
 
-            final IErlModel model = ErlModelManager.getErlangModel();
+            final IErlModel model = ErlangEngine.getInstance().getModel();
             final String externalModulesString = erlProject != null ? erlProject
                     .getExternalModulesString() : null;
-            final OtpErlangTuple t = (OtpErlangTuple) ErlideDoc.getOtpDoc(
-                    ide.getRpcSite(), backend, offset, stateDir,
-                    editor.getScannerName(), fImports, externalModulesString,
-                    model.getPathVars());
+            final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine
+                    .getInstance()
+                    .getService(OtpDocService.class)
+                    .getOtpDoc(backend, offset, stateDir,
+                            editor.getScannerName(), fImports,
+                            externalModulesString, model.getPathVars());
             // ErlLogger.debug("otp doc %s", t);
             if (Util.isOk(t)) {
                 element = new OpenResult(t.elementAt(2));
@@ -315,7 +315,7 @@ public class ErlTextHover implements ITextHover,
             } else {
                 final OpenResult or = new OpenResult(t);
                 element = or;
-                final Object found = OpenAction.findOpenResult(editor,
+                final Object found = new OpenUtils().findOpenResult(editor,
                         editor.getModule(), backend, erlProject, or,
                         editor.getElementAt(offset, false));
                 if (found instanceof IErlFunction) {

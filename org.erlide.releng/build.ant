@@ -42,21 +42,21 @@
 
 		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-code.txt" propertiesfile="${build.properties}" />
 		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/build-p2.txt" propertiesfile="${build.properties}" />
-		
+
 		<echo message=" " />
 		<echo message="Finished" />
 	</target>
 
-    <target name="build.product" depends="common.cleanup,install.buckminster.headless" description="build product">
-        <echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
-        <echo message="build.properties: ${build.properties}" />
+	<target name="build.product" depends="common.cleanup,install.buckminster.headless" description="build product">
+		<echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
+		<echo message="build.properties: ${build.properties}" />
 
 		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-product.txt" propertiesfile="${build.properties}" />
-        <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/build-product.txt" propertiesfile="${build.properties}" />
+		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/build-product.txt" propertiesfile="${build.properties}" />
 
-        <echo message=" " />
-        <echo message="Finished" />
-    </target>
+		<echo message=" " />
+		<echo message="Finished" />
+	</target>
 
 	<target name="import.junit.workspace">
 		<copy todir="${build.root}/buckminster.workspace/junit-workspace">
@@ -75,7 +75,7 @@
 		<exec executable="${projects.location}/org.erlide.releng/run_eunit" failonerror="true">
 			<arg value="${projects.location}" />
 			<arg value="${tool.otp}" />
-			<arg value="buildroot/output" />
+			<arg value="${projects.location}/buildroot/output/junit" />
 		</exec>
 
 		<echo message="EUnit done" />

@@ -178,9 +178,8 @@ public class StatsTreeObject implements ICoverageObject {
 
         if (it.hasPrevious()) {
             return children.get(it.previous());
-        } else {
-            return null;
         }
+        return null;
     }
 
     @Override
@@ -191,9 +190,8 @@ public class StatsTreeObject implements ICoverageObject {
         it.next();
         if (it.hasNext()) {
             return children.get(it.next());
-        } else {
-            return null;
         }
+        return null;
     }
 
     @Override

@@ -26,11 +26,11 @@ public final class ErlUtils {
     private ErlUtils() {
     }
 
-    final static private TermParser termParser = TermParser.getParser();
+    final private static TermParser TERM_PARSER = TermParser.getParser();
 
     public static OtpErlangObject parse(final String string)
             throws TermParserException {
-        return termParser.parse(string);
+        return TERM_PARSER.parse(string);
     }
 
     /**
@@ -122,9 +122,8 @@ public final class ErlUtils {
                 // no previous binding
                 result.put(var.getName(), term);
                 return result;
-            } else {
-                return old.equals(term) ? result : null;
             }
+            return old.equals(term) ? result : null;
         }
         if (!pattern.getClass().equals(term.getClass())) {
             return null;
@@ -136,7 +135,7 @@ public final class ErlUtils {
             return matchList(pattern, term, bindings);
         } else if (pattern instanceof OtpErlangTuple) {
             return matchTuple(((OtpErlangTuple) pattern).elements(),
-                    ((OtpErlangTuple) term).elements(), bindings, false);
+                    ((OtpErlangTuple) term).elements(), bindings);
         }
         return null;
     }
@@ -215,8 +214,7 @@ public final class ErlUtils {
     }
 
     private static Bindings matchTuple(final OtpErlangObject[] patterns,
-            final OtpErlangObject[] terms, final Bindings bindings,
-            final boolean list) {
+            final OtpErlangObject[] terms, final Bindings bindings) {
         if (patterns.length != terms.length) {
             return null;
         }

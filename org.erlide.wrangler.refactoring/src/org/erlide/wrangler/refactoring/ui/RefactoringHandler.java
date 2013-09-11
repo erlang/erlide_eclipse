@@ -28,8 +28,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.model.erlang.IErlFunctionClause;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.ErlUtils;
@@ -241,9 +241,12 @@ public class RefactoringHandler extends AbstractHandler {
         } else if (actionId
                 .equals("org.erlide.wrangler.refactoring.movefunction")) {
 
-            final IProject project = ModelUtils.getProject(
-                    GlobalParameters.getWranglerSelection().getErlElement())
-                    .getWorkspaceProject();
+            final IProject project = ErlangEngine
+                    .getInstance()
+                    .getModelUtilService()
+                    .getProject(
+                            GlobalParameters.getWranglerSelection()
+                                    .getErlElement()).getWorkspaceProject();
             final ArrayList<String> moduleList = WranglerUtils
                     .getModuleNames(project);
             final String moduleName = GlobalParameters.getWranglerSelection()
@@ -471,9 +474,8 @@ public class RefactoringHandler extends AbstractHandler {
                     public String isValid(final String newText) {
                         if (internalV.isValid(newText)) {
                             return null;
-                        } else {
-                            return "Please type a correct module name!";
                         }
+                        return "Please type a correct module name!";
                     }
                 });
     }

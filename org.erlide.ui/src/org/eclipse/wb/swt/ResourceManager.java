@@ -49,7 +49,7 @@ public class ResourceManager extends SWTResourceManager {
     // Image
     //
     // //////////////////////////////////////////////////////////////////////////
-    private static Map<ImageDescriptor, Image> m_descriptorImageMap = new HashMap<ImageDescriptor, Image>();
+    private static Map<ImageDescriptor, Image> descriptorImageMap = new HashMap<ImageDescriptor, Image>();
 
     /**
      * Returns an {@link ImageDescriptor} stored in the file at the specified
@@ -97,10 +97,10 @@ public class ResourceManager extends SWTResourceManager {
         if (descriptor == null) {
             return null;
         }
-        Image image = m_descriptorImageMap.get(descriptor);
+        Image image = descriptorImageMap.get(descriptor);
         if (image == null) {
             image = descriptor.createImage();
-            m_descriptorImageMap.put(descriptor, image);
+            descriptorImageMap.put(descriptor, image);
         }
         return image;
     }
@@ -197,11 +197,11 @@ public class ResourceManager extends SWTResourceManager {
         SWTResourceManager.disposeImages();
         // dispose ImageDescriptor images
         {
-            for (final Iterator<Image> I = m_descriptorImageMap.values()
+            for (final Iterator<Image> I = descriptorImageMap.values()
                     .iterator(); I.hasNext();) {
                 I.next().dispose();
             }
-            m_descriptorImageMap.clear();
+            descriptorImageMap.clear();
         }
         // dispose decorated images
         for (int i = 0; i < m_decoratedImageMap.length; i++) {
@@ -268,7 +268,7 @@ public class ResourceManager extends SWTResourceManager {
             if (url != null) {
                 return getPluginImageFromUrl(url);
             }
-        } catch (final Throwable e) {
+        } catch (final Exception e) {
             // Ignore any exceptions
         }
         return null;
@@ -291,7 +291,7 @@ public class ResourceManager extends SWTResourceManager {
             if (url != null) {
                 return getPluginImageFromUrl(url);
             }
-        } catch (final Throwable e) {
+        } catch (final Exception e) {
             // Ignore any exceptions
         }
         return null;
@@ -302,23 +302,19 @@ public class ResourceManager extends SWTResourceManager {
      */
     private static Image getPluginImageFromUrl(final URL url) {
         try {
-            try {
-                final String key = url.toExternalForm();
-                Image image = m_URLImageMap.get(key);
-                if (image == null) {
-                    final InputStream stream = url.openStream();
-                    try {
-                        image = getImage(stream);
-                        m_URLImageMap.put(key, image);
-                    } finally {
-                        stream.close();
-                    }
+            final String key = url.toExternalForm();
+            Image image = m_URLImageMap.get(key);
+            if (image == null) {
+                final InputStream stream = url.openStream();
+                try {
+                    image = getImage(stream);
+                    m_URLImageMap.put(key, image);
+                } finally {
+                    stream.close();
                 }
-                return image;
-            } catch (final Throwable e) {
-                // Ignore any exceptions
             }
-        } catch (final Throwable e) {
+            return image;
+        } catch (final Exception e) {
             // Ignore any exceptions
         }
         return null;
@@ -412,7 +408,7 @@ public class ResourceManager extends SWTResourceManager {
             throws Exception {
         // try to work with 'plugin' as with OSGI BundleContext
         try {
-            final Class<?> BundleClass = Class
+            final Class<?> bundleClass = Class
                     .forName("org.osgi.framework.Bundle"); //$NON-NLS-1$
             final Class<?> BundleContextClass = Class
                     .forName("org.osgi.framework.BundleContext"); //$NON-NLS-1$
@@ -434,7 +430,7 @@ public class ResourceManager extends SWTResourceManager {
                 final Class<?> PlatformClass = Class
                         .forName("org.eclipse.core.runtime.Platform"); //$NON-NLS-1$
                 final Method findMethod = PlatformClass.getMethod(
-                        "find", new Class[] { BundleClass, IPathClass }); //$NON-NLS-1$
+                        "find", new Class[] { bundleClass, IPathClass }); //$NON-NLS-1$
                 return (URL) findMethod.invoke(null, new Object[] { bundle,
                         path });
             }
@@ -443,21 +439,21 @@ public class ResourceManager extends SWTResourceManager {
         }
         // else work with 'plugin' as with usual Eclipse plugin
         {
-            final Class<?> PluginClass = Class
+            final Class<?> pluginClass = Class
                     .forName("org.eclipse.core.runtime.Plugin"); //$NON-NLS-1$
-            if (PluginClass.isAssignableFrom(plugin.getClass())) {
+            if (pluginClass.isAssignableFrom(plugin.getClass())) {
                 //
-                final Class<?> PathClass = Class
+                final Class<?> pathClass = Class
                         .forName("org.eclipse.core.runtime.Path"); //$NON-NLS-1$
-                final Constructor<?> pathConstructor = PathClass
+                final Constructor<?> pathConstructor = pathClass
                         .getConstructor(new Class[] { String.class });
                 final Object path = pathConstructor
                         .newInstance(new Object[] { name });
                 //
-                final Class<?> IPathClass = Class
+                final Class<?> iPathClass = Class
                         .forName("org.eclipse.core.runtime.IPath"); //$NON-NLS-1$
-                final Method findMethod = PluginClass.getMethod(
-                        "find", new Class[] { IPathClass }); //$NON-NLS-1$
+                final Method findMethod = pluginClass.getMethod(
+                        "find", new Class[] { iPathClass }); //$NON-NLS-1$
                 return (URL) findMethod.invoke(plugin, new Object[] { path });
             }
         }

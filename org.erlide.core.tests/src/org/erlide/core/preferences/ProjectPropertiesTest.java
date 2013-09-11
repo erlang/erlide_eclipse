@@ -1,14 +1,14 @@
 package org.erlide.core.preferences;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.model.root.IErlProject;
-import org.erlide.model.root.IErlangProjectProperties;
-import org.erlide.model.root.OldErlangProjectProperties;
-import org.erlide.model.root.ProjectPreferencesConstants;
+import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.IErlangProjectProperties;
+import org.erlide.engine.model.root.OldErlangProjectProperties;
+import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

@@ -21,8 +21,8 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.erlide.backend.api.IBackend;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.ui.editors.erl.EditorConfiguration;
 import org.erlide.ui.editors.erl.scanner.ErlCodeScanner;
@@ -89,6 +89,6 @@ final public class ErlangConsoleSourceViewerConfiguration extends
             return null;
         }
         final IProject prj = projects.iterator().next();
-        return ErlModelManager.getErlangModel().findProject(prj);
+        return ErlangEngine.getInstance().getModel().findProject(prj);
     }
 }

@@ -45,9 +45,16 @@
 
 -module(erlide_scan).
 
--export([string/1,string_ws/1,string/2,tokens/3,tokens_ws/3,
-     format_error/1,reserved_word/1,
-     filter/1, filter1/1, filter_comments/1, filter_ws/1]).
+-export([string/1,string/2,
+         string_ws/1,
+         tokens/3,
+         tokens_ws/3,
+         format_error/1,
+         reserved_word/1,
+         filter/1,
+         filter1/1,
+         filter_comments/1,
+         filter_ws/1]).
 
 -import(lists, [reverse/1]).
 
@@ -63,7 +70,7 @@
 
 format_error({string,Quote,Head}) ->
     ["unterminated " ++ string_thing(Quote) ++
-     " starting with " ++ io_lib:write_string(Head,Quote)];
+         " starting with " ++ io_lib:write_string(Head,Quote)];
 format_error({illegal,Type}) -> io_lib:fwrite("illegal ~w", [Type]);
 format_error(char) -> "unterminated character";
 format_error(scan) -> "premature end";
@@ -85,7 +92,7 @@ string_thing(_) -> "string".
 string(Cs) ->
     case string_ws(Cs) of
         {ok, Toks, Pos} ->
-             {ok, filter_ws(Toks), Pos};
+            {ok, filter_ws(Toks), Pos};
         Error ->
             Error
     end.
@@ -211,7 +218,7 @@ scan([C|Cs], _Stack, Toks, Pos, State, Errors)
 scan([$_|Cs], _Stack, Toks, Pos, State, Errors) ->      % _Variables
     sub_scan_name(Cs, [$_,fun scan_variable/6], Toks, Pos, State, Errors);
 scan([C|Cs], _Stack, Toks, Pos, State, Errors)
-    when C >= $0, C =< $9 ->                            % Numbers
+  when C >= $0, C =< $9 ->                            % Numbers
     scan_number(Cs, [C], Toks, Pos, State, Errors);
 scan([$$|Cs], Stack, Toks, Pos, State, Errors) ->    % Character constant
     scan_char(Cs, Stack, Toks, Pos, State, Errors);
@@ -303,24 +310,24 @@ scan(Eof, _Stack, Toks, Pos, State, Errors) ->
 
 scan_atom(Cs, Name, Toks, Pos, State, Errors) ->
     case catch list_to_atom(Name) of
-    Atom when is_atom(Atom) ->
-        Val = case reserved_word(Atom) of
-              true ->
-              {Atom,{Pos, length(Name)}};
-              false ->
-              {atom,{Pos, length(Name)}, Atom}
-          end,
-        scan(Cs, [], [Val|Toks], inc(Pos, length(Name)), State, Errors);
-    _ ->
-        scan(Cs, [], Toks, Pos, State, [{{illegal,atom},Pos}|Errors])
+        Atom when is_atom(Atom) ->
+            Val = case reserved_word(Atom) of
+                      true ->
+                          {Atom,{Pos, length(Name)}};
+                      false ->
+                          {atom,{Pos, length(Name)}, Atom}
+                  end,
+            scan(Cs, [], [Val|Toks], inc(Pos, length(Name)), State, Errors);
+        _ ->
+            scan(Cs, [], Toks, Pos, State, [{{illegal,atom},Pos}|Errors])
     end.
 
 scan_variable(Cs, Name, Toks, Pos, State, Errors) ->
     case catch list_to_atom(Name) of
-    A when is_atom(A) ->
-        scan(Cs, [], [{var,{Pos, length(Name)},list_to_atom(Name)}|Toks], inc(Pos,length(Name)), State, Errors);
-    _ ->
-        scan(Cs, [], Toks, Pos, State, [{{illegal,var},Pos}|Errors])
+        A when is_atom(A) ->
+            scan(Cs, [], [{var,{Pos, length(Name)},list_to_atom(Name)}|Toks], inc(Pos,length(Name)), State, Errors);
+        _ ->
+            scan(Cs, [], Toks, Pos, State, [{{illegal,var},Pos}|Errors])
     end.
 
 %% scan_macro(Cs, Name, Toks, Pos, State, Errors) ->
@@ -337,18 +344,18 @@ scan_variable(Cs, Name, Toks, Pos, State, Errors) ->
 %% Returns the scanned name on the stack, unreversed.
 %%
 sub_scan_name([C|Cs]=Css, Stack, Toks, Pos, State, Errors) ->
-  case name_char(C) of
-    true ->
-      sub_scan_name(Cs, [C|Stack], Toks, Pos, State, Errors);
-    false ->
-      [Fun|Name] = reverse(Stack),
-      Fun(Css, Name, Toks, Pos, State, Errors)
-  end;
+    case name_char(C) of
+        true ->
+            sub_scan_name(Cs, [C|Stack], Toks, Pos, State, Errors);
+        false ->
+            [Fun|Name] = reverse(Stack),
+            Fun(Css, Name, Toks, Pos, State, Errors)
+    end;
 sub_scan_name([], Stack, Toks, Pos, State, Errors) ->
-  more([], Stack, Toks, Pos, State, Errors, fun sub_scan_name/6);
+    more([], Stack, Toks, Pos, State, Errors, fun sub_scan_name/6);
 sub_scan_name(Eof, Stack, Toks, Pos, State, Errors) ->
-  [Fun|Name] = reverse(Stack),
-  Fun(Eof, Name, Toks, Pos, State, Errors).
+    [Fun|Name] = reverse(Stack),
+    Fun(Eof, Name, Toks, Pos, State, Errors).
 
 name_char(C) when C >= $a, C =< $z -> true;
 name_char(C) when C >= $ß, C =< $ÿ, C =/= $÷ -> true;
@@ -361,12 +368,12 @@ name_char(_) -> false.
 
 scan_char([$\\|Cs], Stack, Toks, Pos, State, Errors) ->
     case sub_scan_escape(Cs, Pos) of
-    {Rest, Val, StrVal, NewPos} ->
-        scan(Rest, Stack, [{char, {Pos, length(StrVal)+2}, Val, [$$, $\\]++StrVal}|Toks], inc(NewPos, 2), State, Errors);
-    more ->
-        more(Cs, Stack, Toks, Pos, State, Errors, fun scan_char/6);
-    continue ->
-        scan(Cs, Stack, Toks, Pos, State, Errors)
+        {Rest, Val, StrVal, NewPos} ->
+            scan(Rest, Stack, [{char, {Pos, length(StrVal)+2}, Val, [$$, $\\]++StrVal}|Toks], inc(NewPos, 2), State, Errors);
+        more ->
+            more(Cs, Stack, Toks, Pos, State, Errors, fun scan_char/6);
+        continue ->
+            scan(Cs, Stack, Toks, Pos, State, Errors)
     end;
 scan_char([], Stack, Toks, Pos, State, Errors) ->
     more([], Stack, Toks, Pos, State, Errors, fun scan_char/6);
@@ -442,25 +449,25 @@ escape_char($d) -> $\d;                %\d = DEL
 escape_char(C) -> C.
 
 utf8_str_length(List) ->
-   case get_length(List, 0) of
-       -1 ->
-          length(List);
-       Int ->
-          Int
+    case get_length(List, 0) of
+        -1 ->
+            length(List);
+        Int ->
+            Int
     end.
 
 get_length([], Len) ->
-   Len;
+    Len;
 get_length([C|Rest], Len) when C <16#80 ->
-   get_length(Rest, Len +1);
+    get_length(Rest, Len +1);
 get_length([C1,C2|Rest], Len) when C1 =< 16#FF, C2 =< 16#FF, C1 band 16#E0 =:= 16#C0, C2 band 16#C0 =:= 16#80 ->
-   get_length(Rest, Len+1);
+    get_length(Rest, Len+1);
 get_length([C1,_C2,_C3|Rest], Len) when C1 =< 16#FF, C1 band 16#F0 =:= 16#E0 ->
-   get_length(Rest, Len +1);
+    get_length(Rest, Len +1);
 get_length([C1,_C2,_C3,_C4|Rest], Len) when C1 =< 16#FF, C1 band 16#F8 =:= 16#F0 ->
-   get_length(Rest, Len +1);
+    get_length(Rest, Len +1);
 get_length(_Bad, _Len) ->
-   -1.
+    -1.
 
 scan_string([$"|Cs], Stack, Toks, Pos, State, Errors) ->
     [StartPos,$"|S] = reverse(Stack),
@@ -475,12 +482,12 @@ scan_string([$\n|Cs]=_ACs, Stack, Toks, Pos, State, Errors) ->
 %%     scan(ACs, [], [{string,{StartPos, length(SS)+1},VS,[$"|SS]}|Toks], inc(Pos,length(SS)+1), State, Errors);
 scan_string([$\\|Cs], Stack, Toks, Pos, State, Errors) ->
     case sub_scan_escape(Cs, Pos) of
-    {Rest, Val, StrVal, _NewPos} ->
-        scan_string(Rest, [{Val, [$\\|StrVal]}|Stack], Toks, Pos, State, Errors);
-    more ->
-        more(Cs, Stack, Toks, Pos, State, Errors, fun scan_string/6);
-    continue ->
-        scan(Cs, Stack, Toks, Pos, State, Errors)
+        {Rest, Val, StrVal, _NewPos} ->
+            scan_string(Rest, [{Val, [$\\|StrVal]}|Stack], Toks, Pos, State, Errors);
+        more ->
+            more(Cs, Stack, Toks, Pos, State, Errors, fun scan_string/6);
+        continue ->
+            scan(Cs, Stack, Toks, Pos, State, Errors)
     end;
 scan_string([C|Cs], Stack, Toks, Pos, State, Errors) ->
     scan_string(Cs, [{C,[C]}|Stack], Toks, Pos, State, Errors);
@@ -496,31 +503,31 @@ scan_qatom([$'|Cs], Stack, Toks, Pos, State, Errors) ->
     [StartPos,$'|S] = reverse(Stack),
     {VS, SS} = unstack(S),
     case catch list_to_atom(VS) of
-    A when is_atom(A) ->
-        StrVal = [$'|SS]++[$'],
-        scan(Cs, [], [{atom,{StartPos, length(StrVal)},A,StrVal}|Toks], inc(Pos,length(StrVal)), State, Errors);
-    _ ->
-        scan(Cs, [], Toks, Pos, State, [{{illegal,atom},StartPos}|Errors])
+        A when is_atom(A) ->
+            StrVal = [$'|SS]++[$'],
+            scan(Cs, [], [{atom,{StartPos, length(StrVal)},A,StrVal}|Toks], inc(Pos,length(StrVal)), State, Errors);
+        _ ->
+            scan(Cs, [], Toks, Pos, State, [{{illegal,atom},StartPos}|Errors])
     end;
 scan_qatom([$\n|Cs], Stack, Toks, Pos, State, Errors) ->
-%    scan_qatom(Cs, [{$\n,"\n"}|Stack], Toks, incrow(Pos), State, Errors);
+    %    scan_qatom(Cs, [{$\n,"\n"}|Stack], Toks, incrow(Pos), State, Errors);
     [StartPos,$'|S] = reverse(Stack),
     {VS, SS} = unstack(S),
     case catch list_to_atom(VS) of
-    A when is_atom(A) ->
-        StrVal = [$'|SS],
-        scan(Cs, [], [{atom,{StartPos, length(StrVal)},A,StrVal}|Toks], inc(Pos,length(StrVal)), State, Errors);
-    _ ->
-        scan(Cs, [], Toks, Pos, State, [{{illegal,atom},StartPos}|Errors])
+        A when is_atom(A) ->
+            StrVal = [$'|SS],
+            scan(Cs, [], [{atom,{StartPos, length(StrVal)},A,StrVal}|Toks], inc(Pos,length(StrVal)), State, Errors);
+        _ ->
+            scan(Cs, [], Toks, Pos, State, [{{illegal,atom},StartPos}|Errors])
     end;
 scan_qatom([$\\|Cs], Stack, Toks, Pos, State, Errors) ->
     case sub_scan_escape(Cs, Pos) of
-    {Rest, Val, StrVal, _NewPos} ->
-        scan_qatom(Rest, [{Val, [$\\|StrVal]}|Stack], Toks, Pos, State, Errors);
-    more ->
-        more(Cs, Stack, Toks, Pos, State, Errors, fun scan_qatom/6);
-    continue ->
-        scan(Cs, Stack, Toks, Pos, State, Errors)
+        {Rest, Val, StrVal, _NewPos} ->
+            scan_qatom(Rest, [{Val, [$\\|StrVal]}|Stack], Toks, Pos, State, Errors);
+        more ->
+            more(Cs, Stack, Toks, Pos, State, Errors, fun scan_qatom/6);
+        continue ->
+            scan(Cs, Stack, Toks, Pos, State, Errors)
     end;
 scan_qatom([C|Cs], Stack, Toks, Pos, State, Errors) ->
     scan_qatom(Cs, [{C,[C]}|Stack], Toks, Pos, State, Errors);
@@ -534,8 +541,8 @@ scan_qatom(Eof, Stack, _Toks, Pos, State, Errors) ->
 
 unstack(L) ->
     Fun = fun({V,S}, {VL, SL}) ->
-          {[V|VL], [S|SL]}
-      end,
+                  {[V|VL], [S|SL]}
+          end,
     {VL, SL} = lists:foldl(Fun, {[], []}, L),
     {lists:reverse(VL), lists:flatten(lists:reverse(SL))}.
 
@@ -547,19 +554,19 @@ scan_number([C|Cs], Stack, Toks, Pos, State, Errors) when C >= $0, C =< $9 ->
     scan_number(Cs, [C|Stack], Toks, Pos, State, Errors);
 scan_number([$#|Cs], Stack, Toks, Pos, State, Errors) ->
     case catch list_to_integer(reverse(Stack)) of
-    B when is_integer(B), B >= 2, B =< 1+$Z-$A+10 ->
-        scan_based_int(Cs, [B], Toks, Pos, State, Errors);
-    B ->
-        scan(Cs, [], Toks, Pos, State, [{{base,B},Pos}|Errors])
+        B when is_integer(B), B >= 2, B =< 1+$Z-$A+10 ->
+            scan_based_int(Cs, [B], Toks, Pos, State, Errors);
+        B ->
+            scan(Cs, [], Toks, Pos, State, [{{base,B},Pos}|Errors])
     end;
 scan_number([], Stack, Toks, Pos, State, Errors) ->
     more([], Stack, Toks, Pos, State, Errors, fun scan_number/6);
 scan_number(Cs, Stack, Toks, Pos, State, Errors) ->
     case catch list_to_integer(reverse(Stack)) of
-    N when is_integer(N) ->
-        scan(Cs, [], [{integer,{Pos, length(Stack)},N,reverse(Stack)}|Toks], inc(Pos,length(Stack)), State, Errors);
-    _ ->
-        scan(Cs, [], Toks, Pos, State, [{{illegal,integer},Pos}|Errors])
+        N when is_integer(N) ->
+            scan(Cs, [], [{integer,{Pos, length(Stack)},N,reverse(Stack)}|Toks], inc(Pos,length(Stack)), State, Errors);
+        _ ->
+            scan(Cs, [], Toks, Pos, State, [{{illegal,integer},Pos}|Errors])
     end.
 
 scan_based_int([C|Cs], [B|Stack], Toks, Pos, State, Errors)
@@ -575,13 +582,13 @@ scan_based_int([], Stack, Toks, Pos, State, Errors) ->
     more([], Stack, Toks, Pos, State, Errors, fun scan_based_int/6);
 scan_based_int(Cs, [B|Stack], Toks, Pos, State, Errors) ->
     case catch erlang:list_to_integer(reverse(Stack), B) of
-    N when is_integer(N) ->
-        Len = length(Stack)+1+length(integer_to_list(B)),
-        scan(Cs, [], [{integer,{Pos, Len},N,integer_to_list(B)++[$#]++reverse(Stack)}|Toks],
-         inc(Pos,Len), State, Errors);
-    _ ->
-        Len = 1+length(integer_to_list(B)),
-        scan(Cs, [], [{error,{Pos,Len},integer_to_list(B)++[$#],integer_to_list(B)++[$#]}|Toks], inc(Pos, Len), State, Errors)
+        N when is_integer(N) ->
+            Len = length(Stack)+1+length(integer_to_list(B)),
+            scan(Cs, [], [{integer,{Pos, Len},N,integer_to_list(B)++[$#]++reverse(Stack)}|Toks],
+                 inc(Pos,Len), State, Errors);
+        _ ->
+            Len = 1+length(integer_to_list(B)),
+            scan(Cs, [], [{error,{Pos,Len},integer_to_list(B)++[$#],integer_to_list(B)++[$#]}|Toks], inc(Pos, Len), State, Errors)
     end.
 
 scan_fraction([C|Cs], Stack, Toks, Pos, State, Errors) when C >= $0, C =< $9 ->
@@ -594,10 +601,10 @@ scan_fraction([], Stack, Toks, Pos, State, Errors) ->
     more([], Stack, Toks, Pos, State, Errors, fun scan_fraction/6);
 scan_fraction(Cs, Stack, Toks, Pos, State, Errors) ->
     case catch list_to_float(reverse(Stack)) of
-    F when is_float(F) ->
-        scan(Cs, [], [{float,{Pos, length(Stack)},F,reverse(Stack)}|Toks], inc(Pos,length(Stack)), State, Errors);
-    _ ->
-        scan(Cs, [], Toks, Pos, State, [{{illegal,float},Pos}|Errors])
+        F when is_float(F) ->
+            scan(Cs, [], [{float,{Pos, length(Stack)},F,reverse(Stack)}|Toks], inc(Pos,length(Stack)), State, Errors);
+        _ ->
+            scan(Cs, [], Toks, Pos, State, [{{illegal,float},Pos}|Errors])
     end.
 
 scan_exponent_sign([$+|Cs], Stack, Toks, Pos, State, Errors) ->
@@ -615,10 +622,10 @@ scan_exponent([], Stack, Toks, Pos, State, Errors) ->
     more([], Stack, Toks, Pos, State, Errors, fun scan_exponent/6);
 scan_exponent(Cs, Stack, Toks, Pos, State, Errors) ->
     case catch list_to_float(reverse(Stack)) of
-    F when is_float(F) ->
-        scan(Cs, [], [{float,{Pos,length(Stack)},F,reverse(Stack)}|Toks], inc(Pos,length(Stack)), State, Errors);
-    _ ->
-        scan(Cs, [], Toks, Pos, State, [{{illegal,float},Pos}|Errors])
+        F when is_float(F) ->
+            scan(Cs, [], [{float,{Pos,length(Stack)},F,reverse(Stack)}|Toks], inc(Pos,length(Stack)), State, Errors);
+        _ ->
+            scan(Cs, [], Toks, Pos, State, [{{illegal,float},Pos}|Errors])
     end.
 
 
@@ -637,7 +644,7 @@ scan_comment([C|Cs], Stack, Toks, Pos, State, Errors) ->
 scan_comment([], Stack, Toks, Pos, State, Errors) ->
     more([], Stack, Toks, Pos, State, Errors, fun scan_comment/6);
 scan_comment(Eof, Stack, Toks, Pos, State, Errors) ->
-%    done(Eof, Errors, Toks, Pos, State).
+    %    done(Eof, Errors, Toks, Pos, State).
     done(Eof, Errors, [{comment, {Pos, length(Stack)}, lists:reverse(Stack)}|Toks], inc(Pos,length(Stack)), State).
 
 
@@ -657,11 +664,11 @@ scan_white([C|Cs], Stack, Toks, Pos, State, Errors)
   when C >= $\000, C =< $\s, C =/= $\n; C >= $\200, C =< $\240 ->
     scan_white(Cs, [C|Stack], Toks, Pos, State, Errors);
 scan_white([], Stack, Toks, Pos, State, Errors) ->
-  scan([], [], [{ws, {Pos, length(Stack)}, lists:reverse(Stack)}|Toks], inc(Pos, length(Stack)), State, Errors);
+    scan([], [], [{ws, {Pos, length(Stack)}, lists:reverse(Stack)}|Toks], inc(Pos, length(Stack)), State, Errors);
 scan_white(eof, _Stack, Toks, Pos, State, Errors) ->
     done(eof, Errors, Toks, Pos, State);
 scan_white(Cs, Stack, Toks, Pos, State, Errors) ->
-  scan(Cs, [], [{ws, {Pos, length(Stack)}, lists:reverse(Stack)}|Toks], inc(Pos, length(Stack)), State, Errors).
+    scan(Cs, [], [{ws, {Pos, length(Stack)}, lists:reverse(Stack)}|Toks], inc(Pos, length(Stack)), State, Errors).
 
 %% reserved_word(Atom) -> Bool
 %%   return 'true' if Atom is an Erlang reserved word, else 'false'.
@@ -700,35 +707,35 @@ reserved_word(_) -> false.
 %% comments are used only for highlighting
 filter_comments(L) ->
     Fun = fun({comment, _, _}) -> false;
-         (_) -> true
-      end,
+             (_) -> true
+          end,
     lists:filter(Fun, L).
 
 filter_ws(L) ->
     Fun = fun({ws, _, _}) -> false;
-         (_) -> true
-      end,
+             (_) -> true
+          end,
     lists:filter(Fun, L).
 
 %% when we do syntax highlighting, we need a slightly different format
 filter(L) ->
     lists:flatmap(fun({A, B}) ->
-              [{A, B}];
-             ({A, B, D}) ->
-              [{A, B, to_token(D)}];
-             ({A, B, _D, E}) ->
-              [{A, B, E}]
-          end, L).
+                          [{A, B}];
+                     ({A, B, D}) ->
+                          [{A, B, to_token(D)}];
+                     ({A, B, _D, E}) ->
+                          [{A, B, E}]
+                  end, L).
 
 %% when doing normal parsing
 filter1(L) ->
     lists:flatmap(fun({A, B}) ->
-              [{A, B}];
-             ({A, B, D}) ->
-              [{A, B, D}];
-             ({A, B, D, _E}) ->
-              [{A, B, D}]
-          end, L).
+                          [{A, B}];
+                     ({A, B, D}) ->
+                          [{A, B, D}];
+                     ({A, B, D, _E}) ->
+                          [{A, B, D}]
+                  end, L).
 
 to_token(X) when is_list(X) ->
     io_lib:write_string(X);

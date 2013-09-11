@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: erlide model
 Bundle-SymbolicName: org.erlide.model;singleton:=true
-Bundle-Version: 0.20.6.qualifier
-Bundle-Activator: org.erlide.model.ModelPlugin
+Bundle-Version: 0.24.0.qualifier
+Bundle-Activator: org.erlide.engine.internal.ModelPlugin
 Bundle-Vendor: erlide.org project
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.6.1",
@@ -11,15 +11,16 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.model.api;bundle-version="0.19.0",
  org.erlide.runtime;bundle-version="0.18.0",
  org.erlide.util;bundle-version="0.18.0",
- org.erlide.libs;bundle-version="1.10.0",
- org.erlide.backend;bundle-version="0.20.4"
+ org.erlide.libs;bundle-version="1.10.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.erlide.model;x-friends:="org.erlide.core,org.erlide.model.api",
- org.erlide.model.erlang;x-friends:="org.erlide.core,org.erlide.model.api",
- org.erlide.model.internal.erlang;x-friends:="org.erlide.core,org.erlide.model.api",
- org.erlide.model.internal.root;x-friends:="org.erlide.core,org.erlide.model.api",
- org.erlide.model.services.codeassist;x-friends:="org.erlide.core,org.erlide.model.api",
- org.erlide.model.services.search;x-friends:="org.erlide.core,org.erlide.model.api",
- org.erlide.model.services.text;x-friends:="org.erlide.core,org.erlide.model.api",
- org.erlide.model.util;x-friends:="org.erlide.core,org.erlide.model.api"
+Export-Package: org.erlide.engine.internal;x-internal:=true,
+ org.erlide.engine.internal.model,
+ org.erlide.engine.internal.model.erlang;x-internal:=true,
+ org.erlide.engine.internal.model.root;x-internal:=true,
+ org.erlide.engine.internal.services.cleanup;x-internal:=true,
+ org.erlide.engine.internal.services.codeassist;x-internal:=true,
+ org.erlide.engine.internal.services.parsing;x-internal:=true,
+ org.erlide.engine.internal.services.search;x-internal:=true,
+ org.erlide.engine.internal.services.text;x-internal:=true,
+ org.erlide.engine.internal.util;x-internal:=true

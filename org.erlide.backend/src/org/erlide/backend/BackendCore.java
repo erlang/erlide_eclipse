@@ -1,10 +1,9 @@
 package org.erlide.backend;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.backend.api.BackendException;
-import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
@@ -28,15 +27,16 @@ public class BackendCore {
                 .getRuntimeInfoCatalog(new RuntimeInfoPreferencesSerializer());
     }
 
-    public static IBackend getBuildOrIdeBackend(final IProject project) {
+    /*
+     * The ide backend should not be accessible outside the engine
+     */
+    @Deprecated
+    public static IRpcSite getBuildOrIdeBackend(final IProject project) {
         final IBackendManager manager = getBackendManager();
         if (project != null) {
-            try {
-                return manager.getBuildBackend(project);
-            } catch (final BackendException e) {
-            }
+            return manager.getBuildBackend(project).getRpcSite();
         }
-        return manager.getIdeBackend();
+        return manager.getIdeBackend().getRpcSite();
     }
 
     public static EpmdWatcher getEpmdWatcher() {

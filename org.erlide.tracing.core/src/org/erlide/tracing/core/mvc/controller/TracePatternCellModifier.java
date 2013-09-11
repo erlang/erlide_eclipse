@@ -47,9 +47,8 @@ public class TracePatternCellModifier implements ICellModifier {
         case ARITY:
             if (pattern.getArity() < 0) {
                 return "";
-            } else {
-                return String.valueOf(pattern.getArity());
             }
+            return String.valueOf(pattern.getArity());
         case MATCH_SPEC:
             return pattern.getMatchSpec();
         default:

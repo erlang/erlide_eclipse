@@ -42,11 +42,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.erlide.backend.api.BackendData;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
 import org.erlide.debug.ui.views.InterpretedModuleListContentProvider;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElement;
 import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.ui.dialogs.AddInterpretedModulesSelectionDialog;
@@ -203,7 +202,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         if (dialogResult == null || dialogResult.length == 0) {
             return result;
         }
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         for (final Object o : dialogResult) {
             if (o instanceof IFile) {
                 final IFile file = (IFile) o;
@@ -272,8 +271,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         final List<String> r = new ArrayList<String>();
         for (final Object o : contentProvider.getElements(null)) {
             final IErlModule module = (IErlModule) o;
-            r.add(ModelUtils.getProject(module).getName() + ":"
-                    + module.getName());
+            r.add(ErlangEngine.getInstance().getModelUtilService()
+                    .getProject(module).getName()
+                    + ":" + module.getName());
         }
         config.setAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, r);
     }

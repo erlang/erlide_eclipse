@@ -23,8 +23,9 @@ import org.erlide.runtime.epmd.EpmdWatcher;
  */
 public class EpmdWatchJob extends Job {
 
-    private static final int defaultInterval = 1000;
-    private int interval = defaultInterval;
+    private static final int DEFAULT_INTERVAL = 1000;
+
+    private int interval = DEFAULT_INTERVAL;
     private final EpmdWatcher watcher;
     private boolean isStopped;
 
@@ -33,7 +34,7 @@ public class EpmdWatchJob extends Job {
         assert aWatcher != null;
 
         watcher = aWatcher;
-        interval = anInterval < 0 ? defaultInterval : anInterval;
+        interval = anInterval < 0 ? DEFAULT_INTERVAL : anInterval;
         isStopped = false;
 
         setSystem(true);
@@ -41,7 +42,7 @@ public class EpmdWatchJob extends Job {
     }
 
     public EpmdWatchJob(final EpmdWatcher watcher) {
-        this(watcher, defaultInterval);
+        this(watcher, DEFAULT_INTERVAL);
     }
 
     @Override

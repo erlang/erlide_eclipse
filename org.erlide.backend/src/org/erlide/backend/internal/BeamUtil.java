@@ -143,8 +143,8 @@ public class BeamUtil {
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();
             if (c.getName().equals(b.getSymbolicName())) {
-                final String dir_path = el.getAttribute("path");
-                final Enumeration<?> e = b.getEntryPaths(dir_path);
+                final String dirPath = el.getAttribute("path");
+                final Enumeration<?> e = b.getEntryPaths(dirPath);
                 if (e == null) {
                     ErlLogger.debug("* !!! error loading plugin "
                             + b.getSymbolicName());

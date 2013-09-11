@@ -583,8 +583,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
      * Utility method with conventions
      */
     public static void errorDialog(final Shell shell, final String title,
-            String message, final Throwable t) {
+            final String message0, final Throwable t) {
         IStatus status;
+        String message = message0;
         if (t instanceof CoreException) {
             status = ((CoreException) t).getStatus();
             // if the 'message' resource string and the IStatus' message are the

@@ -32,19 +32,19 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.IParent;
-import org.erlide.model.erlang.IErlComment;
-import org.erlide.model.erlang.IErlMember;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.ISourceRange;
-import org.erlide.model.erlang.ISourceReference;
-import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlElementDelta;
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.util.IElementChangedListener;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.IParent;
+import org.erlide.engine.model.erlang.IErlComment;
+import org.erlide.engine.model.erlang.IErlMember;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.erlang.ISourceRange;
+import org.erlide.engine.model.erlang.ISourceReference;
+import org.erlide.engine.model.root.ErlElementKind;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlElementDelta;
+import org.erlide.engine.util.IElementChangedListener;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension;
@@ -499,7 +499,7 @@ public class DefaultErlangFoldingStructureProvider implements
             fEditor = editor;
             fViewer = viewer;
             fViewer.addProjectionListener(this);
-            final IErlModel mdl = ErlModelManager.getErlangModel();
+            final IErlModel mdl = ErlangEngine.getInstance().getModel();
             mdl.addModelChangeListener(this);
         }
     }
@@ -511,7 +511,8 @@ public class DefaultErlangFoldingStructureProvider implements
             fViewer.removeProjectionListener(this);
             fViewer = null;
             fEditor = null;
-            ErlModelManager.getErlangModel().removeModelChangeListener(this);
+            ErlangEngine.getInstance().getModel()
+                    .removeModelChangeListener(this);
         }
     }
 
@@ -541,7 +542,9 @@ public class DefaultErlangFoldingStructureProvider implements
             } catch (final ErlModelException e1) {
             }
             if (structureKnown) {
-                final IErlElementDelta d = ErlModelManager.getErlangModel()
+                final IErlElementDelta d = ErlangEngine
+                        .getInstance()
+                        .getModel()
                         .createElementDelta(IErlElementDelta.CHANGED,
                                 IErlElementDelta.F_CONTENT, fModule);
                 processDelta(d);
@@ -563,8 +566,8 @@ public class DefaultErlangFoldingStructureProvider implements
     public void projectionDisabled() {
         fCachedDocument = null;
         if (fElementListener != null) {
-            ErlModelManager.getErlangModel().removeElementChangedListener(
-                    fElementListener);
+            ErlangEngine.getInstance().getModel()
+                    .removeElementChangedListener(fElementListener);
             fElementListener = null;
         }
     }
@@ -1092,7 +1095,9 @@ public class DefaultErlangFoldingStructureProvider implements
             if (element instanceof IErlModule && element != fModule) {
                 return;
             }
-            final IErlElementDelta d = ErlModelManager.getErlangModel()
+            final IErlElementDelta d = ErlangEngine
+                    .getInstance()
+                    .getModel()
                     .createElementDelta(IErlElementDelta.CHANGED,
                             IErlElementDelta.F_CONTENT, fModule);
             processDelta(d);

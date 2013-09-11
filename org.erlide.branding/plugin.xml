@@ -29,7 +29,7 @@
          </property>
          <property
                name="windowImages"
-               value="images/erlang-16.gif,images/erlang-32.gif,images/erlang-48.gif,images/erlang-64.gif,images/erlang-128.gif">
+               value="images/erlide-16.gif,images/erlide-32.gif,images/erlide-48.gif,images/erlide-64.gif,images/erlide-128.gif">
          </property>
          <property
                name="startupForegroundColor"
@@ -41,9 +41,9 @@
          </property>
          <property
                name="featureImage"
-               value="images/erlang-32.gif">
+               value="images/erlide-32.gif">
          </property>
-      <property name="introBrandingImage" value="product:images/erlang-48.gif" />
+      <property name="introBrandingImage" value="product:images/erlide-48.gif" />
       <property name="introBrandingImageText" value="Erlide.org project" />
       <property name="introTitle" value="Welcome to Erlide" />
       </product>

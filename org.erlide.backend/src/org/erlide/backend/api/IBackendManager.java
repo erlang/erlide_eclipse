@@ -8,7 +8,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -18,7 +17,7 @@ public interface IBackendManager extends IEpmdListener {
 
     IBackend getIdeBackend();
 
-    IBackend getBuildBackend(final IProject project) throws BackendException;
+    IBackend getBuildBackend(final IProject project);
 
     Set<IBackend> getExecutionBackends(final IProject project);
 
@@ -34,9 +33,10 @@ public interface IBackendManager extends IEpmdListener {
 
     void addExecutionBackend(final IProject project, final IBackend b);
 
-    void removeExecutionBackend(final IProject project, final IBackend b);
+    void removeExecutionBackend(final IProject project,
+            final IProjectCodeLoader b);
 
-    IBackend getBackendForLaunch(final ILaunch launch);
+    IPluginCodeLoader getBackendForLaunch(final ILaunch launch);
 
     void terminateBackendsForLaunch(final ILaunch launch);
 
@@ -57,8 +57,6 @@ public interface IBackendManager extends IEpmdListener {
     void moduleLoaded(final IBackend backend, final IProject project,
             final String moduleName);
 
-    IBackend getByProcess(IProcess ertsProcess);
-
-    Bundle getBundle();
+    IPluginCodeLoader getByProcess(IProcess ertsProcess);
 
 }

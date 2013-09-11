@@ -174,18 +174,14 @@ public class CodeAssistPreferencePage extends PreferencePage implements
     @Override
     protected void performDefaults() {
         prefs = new CodeAssistPreferences();
-        try {
-            prefs.load();
-            if (autoActivateButton == null) {
-                return;
-            }
-            autoActivateButton.setSelection(prefs.isAutoActivate());
-            delayText.setText(Integer.toString(prefs.getDelayInMS()));
-            erlangTriggersText.setText(prefs.getErlangTriggers());
-            eDocTriggersText.setText(prefs.geteDocTriggers());
-        } catch (final BackingStoreException e) {
-            ErlLogger.warn(e);
+        prefs.load();
+        if (autoActivateButton == null) {
+            return;
         }
+        autoActivateButton.setSelection(prefs.isAutoActivate());
+        delayText.setText(Integer.toString(prefs.getDelayInMS()));
+        erlangTriggersText.setText(prefs.getErlangTriggers());
+        eDocTriggersText.setText(prefs.geteDocTriggers());
         super.performDefaults();
     }
 

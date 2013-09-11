@@ -8,8 +8,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.navigator.ILinkHelper;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlElement;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElement;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.util.ErlModelUtils;
 
@@ -61,9 +61,8 @@ public class ErlangLinkHelperAction implements ILinkHelper {
                 final IResource resource = module.getCorrespondingResource();
                 if (resource != null) {
                     return new StructuredSelection(resource);
-                } else {
-                    return new StructuredSelection(module);
                 }
+                return new StructuredSelection(module);
             }
         } catch (final CoreException e) {
         }

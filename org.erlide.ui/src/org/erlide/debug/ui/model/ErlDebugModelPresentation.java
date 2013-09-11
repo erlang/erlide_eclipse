@@ -20,10 +20,9 @@ import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.backend.debug.model.ErlangProcess;
 import org.erlide.backend.debug.model.ErlangStackFrame;
 import org.erlide.backend.debug.model.ErlangUninterpretedStackFrame;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElementLocator;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.ui.ErlideUIDebugImages;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -98,8 +97,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
     }
 
     private static String getErlangPositionText(final String module,
-            final int lineNumber, final String clauseHead)
-            throws DebugException {
+            final int lineNumber, final String clauseHead) {
         final StringBuilder sb = new StringBuilder();
         sb.append(module);
         if (lineNumber != -1) {
@@ -174,11 +172,14 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         if (element instanceof LocalFileStorage) {
             final LocalFileStorage lfs = (LocalFileStorage) element;
             try {
-                final IErlElementLocator model = ErlModelManager
-                        .getErlangModel();
-                final IErlModule module = ModelUtils.findModule(model, null,
-                        null, lfs.getFullPath().toString(),
-                        IErlElementLocator.Scope.ALL_PROJECTS);
+                final IErlElementLocator model = ErlangEngine.getInstance()
+                        .getModel();
+                final IErlModule module = ErlangEngine
+                        .getInstance()
+                        .getModelFindService()
+                        .findModule(model, null, null,
+                                lfs.getFullPath().toString(),
+                                IErlElementLocator.Scope.ALL_PROJECTS);
                 return EditorUtility.getEditorInput(module);
             } catch (final CoreException e) {
                 ErlLogger.error(e);

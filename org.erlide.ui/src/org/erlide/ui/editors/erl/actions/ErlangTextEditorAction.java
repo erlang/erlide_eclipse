@@ -19,15 +19,15 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendUtils;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangStatus;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.ISourceRange;
-import org.erlide.model.erlang.ISourceReference;
-import org.erlide.model.root.IErlElement;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.erlang.ISourceRange;
+import org.erlide.engine.model.erlang.ISourceReference;
+import org.erlide.engine.model.root.IErlElement;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.actions.ActionMessages;
@@ -157,9 +157,9 @@ public class ErlangTextEditorAction extends TextEditorAction {
             final ITextEditor textEditor = getTextEditor();
             final IRunnableWithProgress myRunnableWithProgress = new IRunnableWithProgress() {
                 @Override
-                public void run(IProgressMonitor monitor) {
-                    monitor = monitor == null ? new NullProgressMonitor()
-                            : monitor;
+                public void run(final IProgressMonitor monitor0) {
+                    final IProgressMonitor monitor = monitor0 != null ? monitor0
+                            : new NullProgressMonitor();
                     try {
                         monitor.beginTask("Indenting "
                                 + textEditor.getEditorInput().getName(),
@@ -191,8 +191,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
      */
     protected OtpErlangObject callErlang(final int offset, final int length,
             final String aText) throws RpcException {
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
-                .getRpcSite();
+        final IRpcSite b = ErlangEngine.getInstance().getBackend();
         final OtpErlangObject r1 = BackendUtils.call(b, fErlModule,
                 fErlFunction, offset, length, aText);
         return r1;

@@ -83,9 +83,8 @@ public final class ExtensionUtils {
             final Class<?> componentClass = getClass(componentType);
             if (componentClass != null) {
                 return Array.newInstance(componentClass, 0).getClass();
-            } else {
-                return null;
             }
+            return null;
         } else {
             return null;
         }

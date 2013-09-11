@@ -3,6 +3,7 @@
 *.class
 workspaces
 bin/
+ebin/*.app
 *.orig
 hs_err*.log
 safe_erlide.log
@@ -24,3 +25,5 @@ ttb_last_config
 buildroot
 tools
 target.platform
+.sonar
+

@@ -32,16 +32,17 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.api.BackendData;
-import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendListener;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.root.IErlProject;
-import org.erlide.runtime.api.ICodeBundle;
-import org.erlide.runtime.api.ICodeBundle.CodeContext;
+import org.erlide.backend.api.ICodeBundle;
+import org.erlide.backend.api.ICodeBundle.CodeContext;
+import org.erlide.backend.api.IPluginCodeLoader;
+import org.erlide.backend.api.IProjectCodeLoader;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -69,13 +70,11 @@ public final class BackendManager implements IBackendManager {
     private final BackendManagerLaunchListener launchListener;
     private final IBackendFactory factory;
     private final RuntimeInfo erlideRuntimeInfo;
-    private final Bundle backendBundle;
 
     public BackendManager(final RuntimeInfo erlideRuntimeInfo,
-            final IBackendFactory factory, final Bundle backendBundle) {
+            final IBackendFactory factory) {
         this.factory = factory;
         this.erlideRuntimeInfo = erlideRuntimeInfo;
-        this.backendBundle = backendBundle;
 
         ideBackend = null;
         executionBackends = Maps.newHashMap();
@@ -127,9 +126,8 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public IBackend getBuildBackend(final IProject project)
-            throws BackendException {
-        final IErlProject erlProject = ErlModelManager.getErlangModel()
+    public IBackend getBuildBackend(final IProject project) {
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
         if (erlProject == null) {
             ErlLogger.warn("Project %s is not an erlang project",
@@ -140,10 +138,6 @@ public final class BackendManager implements IBackendManager {
         if (info == null) {
             ErlLogger.info("Project %s has no runtime info, using ide",
                     project.getName());
-            if (ideBackend == null) {
-                throw new BackendException(
-                        "IDE backend is not created - check configuration!");
-            }
             return ideBackend;
         }
         final String version = info.getVersion().asMajor().toString();
@@ -234,8 +228,8 @@ public final class BackendManager implements IBackendManager {
 
     @Override
     public synchronized void removeExecutionBackend(final IProject project,
-            final IBackend b) {
-        final IErlModel model = ErlModelManager.getErlangModel();
+            final IProjectCodeLoader b) {
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         b.removeProjectPath(model.findProject(project));
         Set<IBackend> list = executionBackends.get(project);
         if (list == null) {
@@ -292,8 +286,7 @@ public final class BackendManager implements IBackendManager {
         if (p != null) {
             return;
         }
-        final CodeBundleImpl pp = new CodeBundleImpl(backendBundle,
-                b.getSymbolicName(), paths, inits);
+        final CodeBundle pp = new CodeBundle(b, paths, inits);
         getCodeBundles().put(b, pp);
         forEachBackend(new Procedure1<IBackend>() {
             @Override
@@ -353,19 +346,14 @@ public final class BackendManager implements IBackendManager {
 
     @Override
     public IRpcSite getByProject(final String projectName) {
-        try {
-            final IProject project = ResourcesPlugin.getWorkspace().getRoot()
-                    .getProject(projectName);
-            final IBackend backend = getBuildBackend(project);
-            if (backend == null) {
-                ErlLogger.debug("Could not find backend for project %S",
-                        project);
-                return null;
-            }
-            return backend.getRpcSite();
-        } catch (final BackendException e) {
+        final IProject project = ResourcesPlugin.getWorkspace().getRoot()
+                .getProject(projectName);
+        final IBackend backend = getBuildBackend(project);
+        if (backend == null) {
+            ErlLogger.debug("Could not find backend for project %S", project);
             return null;
         }
+        return backend.getRpcSite();
     }
 
     @Override
@@ -410,7 +398,7 @@ public final class BackendManager implements IBackendManager {
             executionBackends.put(project, list);
         }
         list.add(b);
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         b.addProjectPath(model.findProject(project));
     }
 
@@ -451,7 +439,7 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public IBackend getByProcess(final IProcess process) {
+    public IPluginCodeLoader getByProcess(final IProcess process) {
         synchronized (allBackends) {
             for (final IBackend backend : allBackends) {
                 final ILaunch launch = backend.getData().getLaunch();
@@ -467,8 +455,4 @@ public final class BackendManager implements IBackendManager {
         }
     }
 
-    @Override
-    public Bundle getBundle() {
-        return backendBundle;
-    }
 }

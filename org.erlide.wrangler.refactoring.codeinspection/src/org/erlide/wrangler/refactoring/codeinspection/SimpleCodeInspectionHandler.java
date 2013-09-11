@@ -21,13 +21,13 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.FunctionRef;
-import org.erlide.model.erlang.IErlFunctionClause;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.erlang.FunctionRef;
+import org.erlide.engine.model.erlang.IErlFunctionClause;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.ErlElementKind;
+import org.erlide.engine.model.root.IErlElement;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
@@ -352,7 +352,9 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
         final String function = ((OtpErlangAtom) fTuple.elementAt(1))
                 .atomValue();
         final int arity = ((OtpErlangLong) fTuple.elementAt(2)).intValue();
-        final IErlFunctionClause f = ErlModelManager.getErlangModel()
+        final IErlFunctionClause f = ErlangEngine
+                .getInstance()
+                .getModel()
                 .findFunction(
                         new FunctionRef(mod.getModuleName(), function, arity));
         return f;
@@ -453,8 +455,8 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             name = atom.atomValue();
         }
         final String[] modNameParts = name.split("/");
-        final IErlModule mod = ErlModelManager.getErlangModel().findModule(
-                modNameParts[modNameParts.length - 1]);
+        final IErlModule mod = ErlangEngine.getInstance().getModel()
+                .findModule(modNameParts[modNameParts.length - 1]);
         return mod;
     }
 

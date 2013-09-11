@@ -16,7 +16,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.model.SourcePathProvider;
+import org.erlide.engine.model.SourcePathProvider;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 

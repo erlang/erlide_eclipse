@@ -3,18 +3,18 @@
 <plugin>
    <extension-point id="sourcePathProvider" name="sourcePathProvider" schema="schema/sourcePathProvider.exsd"/>
    <extension
-         point="org.erlide.model_api.modelProvider">
-      <modelProvider
-            class="org.erlide.model.ErlModelProvider">
-      </modelProvider>
+         point="org.erlide.model.api.erlangEngine"> 
+      <erlangEngine 
+            class="org.erlide.engine.internal.DefaultErlangEngine">
+      </erlangEngine>
    </extension>
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.eclipse.core.resources.IResource"
-            class="org.erlide.model.util.ElementAdapterFactory">
+            class="org.erlide.engine.internal.util.ElementAdapterFactory">
          <adapter
-               type="org.erlide.model.root.IErlElement">
+               type="org.erlide.engine.model.root.IErlElement">
          </adapter>
       </factory>
    </extension>

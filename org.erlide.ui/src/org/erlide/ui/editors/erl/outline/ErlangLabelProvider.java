@@ -24,7 +24,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.erlide.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlElement;
 
 public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 
@@ -129,7 +129,8 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         return getTextFlags();
     }
 
-    protected Image decorateImage(Image image, final Object element) {
+    protected Image decorateImage(final Image image0, final Object element) {
+        Image image = image0;
         if (fLabelDecorators != null && image != null) {
             for (int i = 0; i < fLabelDecorators.size(); i++) {
                 final ILabelDecorator decorator = fLabelDecorators.get(i);
@@ -147,7 +148,8 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         return decorateImage(result, element);
     }
 
-    protected String decorateText(String text, final Object element) {
+    protected String decorateText(final String text0, final Object element) {
+        String text = text0;
         if (fLabelDecorators != null && text.length() > 0) {
             for (int i = 0; i < fLabelDecorators.size(); i++) {
                 final ILabelDecorator decorator = fLabelDecorators.get(i);

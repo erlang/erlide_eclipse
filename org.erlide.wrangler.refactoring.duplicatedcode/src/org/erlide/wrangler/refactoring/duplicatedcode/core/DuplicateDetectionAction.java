@@ -87,7 +87,7 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
         return new DuplicateDetectionParser(result.getValue());
     }
 
-    private String getSuffixPath() throws IOException, WranglerWarningException {
+    private String getSuffixPath() throws IOException {
         final Bundle[] bs = Platform
                 .getFragments(Platform
                         .getBundle(org.erlide.wrangler.refactoring.Activator.PLUGIN_ID));

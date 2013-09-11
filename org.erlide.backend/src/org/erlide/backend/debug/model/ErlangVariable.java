@@ -52,10 +52,9 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
                 || avalue instanceof OtpErlangString) {
             return new IndexedErlangValue(getDebugTarget(), aname, avalue,
                     aprocess, moduleName);
-        } else {
-            return new ErlangValue(getDebugTarget(), aname, avalue, aprocess,
-                    moduleName);
         }
+        return new ErlangValue(getDebugTarget(), aname, avalue, aprocess,
+                moduleName);
     }
 
     @Override

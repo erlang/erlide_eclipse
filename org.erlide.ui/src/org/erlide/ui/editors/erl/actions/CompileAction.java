@@ -18,14 +18,12 @@ import org.erlide.backend.BackendCore;
 import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.CompilerOptions;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlEditorActionBarContributor;
-import org.erlide.util.ErlLogger;
-import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 
@@ -47,20 +45,18 @@ public class CompileAction extends Action {
         if (module == null) {
             return;
         }
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
-                .getRpcSite();
 
         final IResource resource = module.getResource();
         final IProject project = resource.getProject();
+
+        final IRpcSite b = BackendCore.getBackendManager()
+                .getBuildBackend(project).getRpcSite();
+
         final BuildResource bres = new BuildResource(resource);
         final CompilerOptions prefs = new CompilerOptions(project);
-        try {
-            prefs.load();
-        } catch (final BackingStoreException e) {
-            ErlLogger.error(e);
-        }
+        prefs.load();
         final OtpErlangList compilerOptions = prefs.export();
-        final IErlProject erlProject = ErlModelManager.getErlangModel()
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
 
         if ("erl".equals(resource.getFileExtension())) {

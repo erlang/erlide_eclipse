@@ -1,7 +1,7 @@
 package org.erlide.core.builder;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.util.Collection;
 import java.util.List;
@@ -186,9 +186,8 @@ public abstract class CompilerOption {
         public OtpErlangObject toTerm(final boolean currentValue) {
             if (currentValue) {
                 return new OtpErlangAtom(getName());
-            } else {
-                return new OtpErlangAtom("no" + getName());
             }
+            return new OtpErlangAtom("no" + getName());
         }
     }
 

@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.model.util.PreferencesHelper;
+import org.erlide.engine.util.PreferencesHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

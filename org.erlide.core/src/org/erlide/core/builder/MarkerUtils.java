@@ -17,13 +17,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.core.ErlangCore;
-import org.erlide.model.erlang.IErlFunction;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.ISourceRange;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElementLocator;
-import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.ResourceUtil;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.erlang.IErlFunction;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.erlang.ISourceRange;
+import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.util.ResourceUtil;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.erlang.ErlUtils;
@@ -62,18 +62,16 @@ public final class MarkerUtils {
     }
 
     public static void addTaskMarker(final IResource file,
-            final IResource compiledFile, final String message, int lineNumber,
-            final int priority) {
+            final IResource compiledFile, final String message,
+            final int lineNumber, final int priority) {
         try {
             final IMarker marker = file.createMarker(TASK_MARKER);
             marker.setAttribute(IMarker.MESSAGE, message);
             marker.setAttribute(IMarker.PRIORITY, priority);
             marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath()
                     .toString());
-            if (lineNumber == -1) {
-                lineNumber = 1;
-            }
-            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+            marker.setAttribute(IMarker.LINE_NUMBER,
+                    lineNumber != -1 ? lineNumber : 1);
         } catch (final CoreException e) {
         } catch (final Exception e) {
             ErlLogger.warn(e);
@@ -112,8 +110,8 @@ public final class MarkerUtils {
             res = ResourceUtil.findResourceByLocation(project, fileName);
             if (res == null) {
                 try {
-                    final IErlElementLocator model = ErlModelManager
-                            .getErlangModel();
+                    final IErlElementLocator model = ErlangEngine.getInstance()
+                            .getModel();
                     final IErlProject erlProject = model.findProject(project);
                     if (erlProject != null) {
                         final IErlModule includeFile = model
@@ -207,7 +205,7 @@ public final class MarkerUtils {
 
     public static void addProblemMarker(final IResource resource,
             final String path, final IResource compiledFile,
-            final String message, int lineNumber, final int severity) {
+            final String message, final int lineNumber, final int severity) {
         try {
             final IMarker marker = resource.createMarker(PROBLEM_MARKER);
             marker.setAttribute(IMarker.MESSAGE, message);
@@ -219,10 +217,8 @@ public final class MarkerUtils {
                 marker.setAttribute(IMarker.SOURCE_ID, compiledFile
                         .getFullPath().toString());
             }
-            if (lineNumber == -1) {
-                lineNumber = 1;
-            }
-            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+            marker.setAttribute(IMarker.LINE_NUMBER,
+                    lineNumber != -1 ? lineNumber : 1);
         } catch (final CoreException e) {
         }
     }
@@ -302,22 +298,18 @@ public final class MarkerUtils {
     public void createProblemMarkerFor(final IResource resource,
             final IErlFunction erlElement, final String message,
             final int problemSeverity) throws CoreException {
-        try {
-            final IMarker marker = resource.createMarker(PROBLEM_MARKER);
-            final int severity = problemSeverity;
+        final IMarker marker = resource.createMarker(PROBLEM_MARKER);
+        final int severity = problemSeverity;
 
-            final ISourceRange range = erlElement == null ? null : erlElement
-                    .getNameRange();
-            final int start = range == null ? 0 : range.getOffset();
-            final int end = range == null ? 1 : start + range.getLength();
-            marker.setAttributes(
-                    new String[] { IMarker.MESSAGE, IMarker.SEVERITY,
-                            IMarker.CHAR_START, IMarker.CHAR_END },
-                    new Object[] { message, Integer.valueOf(severity),
-                            Integer.valueOf(start), Integer.valueOf(end) });
-        } catch (final CoreException e) {
-            throw e;
-        }
+        final ISourceRange range = erlElement == null ? null : erlElement
+                .getNameRange();
+        final int start = range == null ? 0 : range.getOffset();
+        final int end = range == null ? 1 : start + range.getLength();
+        marker.setAttributes(
+                new String[] { IMarker.MESSAGE, IMarker.SEVERITY,
+                        IMarker.CHAR_START, IMarker.CHAR_END },
+                new Object[] { message, Integer.valueOf(severity),
+                        Integer.valueOf(start), Integer.valueOf(end) });
     }
 
     public static IMarker createSearchResultMarker(final IErlModule module,
@@ -340,7 +332,7 @@ public final class MarkerUtils {
 
     public static IMarker addMarker(final IResource file,
             final IProject project, final String path, final String message,
-            int lineNumber, final int severity, final String markerKind) {
+            final int lineNumber, final int severity, final String markerKind) {
         try {
             IResource resource;
             if (file != null) {
@@ -353,10 +345,8 @@ public final class MarkerUtils {
             final IMarker marker = resource.createMarker(markerKind);
             marker.setAttribute(IMarker.MESSAGE, message);
             marker.setAttribute(IMarker.SEVERITY, severity);
-            if (lineNumber == -1) {
-                lineNumber = 1;
-            }
-            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+            marker.setAttribute(IMarker.LINE_NUMBER,
+                    lineNumber != -1 ? lineNumber : 1);
             marker.setAttribute(PATH_ATTRIBUTE, path);
             return marker;
         } catch (final CoreException e) {

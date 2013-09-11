@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -45,6 +44,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangEventHandler;
@@ -105,7 +105,8 @@ public class ProcessListView extends ViewPart {
                 return new OtpErlangObject[] {};
             }
 
-            final OtpErlangList r = ErlideProclist.getProcessList(backend);
+            final OtpErlangList r = ErlangEngine.getInstance()
+                    .getProclistService().getProcessList(backend);
             if (r == null || r.arity() == 0) {
                 return new OtpErlangObject[] {};
             }
@@ -236,16 +237,17 @@ public class ProcessListView extends ViewPart {
         t.setHeaderVisible(true);
 
         // TODO this is wrong - all backends should be inited
-        final IRpcSite ideBackend = BackendCore.getBackendManager()
-                .getIdeBackend().getRpcSite();
+        final IRpcSite ideBackend = ErlangEngine.getInstance().getBackend();
         if (ideBackend != null) {
-            ErlideProclist.processListInit(ideBackend);
+            ErlangEngine.getInstance().getProclistService()
+                    .processListInit(ideBackend);
         }
         BackendCore.getBackendManager().forEachBackend(
                 new Procedure1<IBackend>() {
                     @Override
                     public void apply(final IBackend b) {
-                        ErlideProclist.processListInit(b.getRpcSite());
+                        ErlangEngine.getInstance().getProclistService()
+                                .processListInit(b.getRpcSite());
                     }
                 });
 
@@ -320,8 +322,9 @@ public class ProcessListView extends ViewPart {
                 final OtpErlangPid pid = (OtpErlangPid) ((OtpErlangTuple) obj)
                         .elementAt(0);
 
-                final OtpErlangObject r = ErlideProclist.getProcessInfo(
-                        getBackend().getRpcSite(), pid);
+                final OtpErlangObject r = ErlangEngine.getInstance()
+                        .getProclistService()
+                        .getProcessInfo(getBackend().getRpcSite(), pid);
                 if (r instanceof OtpErlangList) {
                     final OtpErlangList l = (OtpErlangList) r;
                     final StringBuilder s = new StringBuilder();
@@ -365,13 +368,7 @@ public class ProcessListView extends ViewPart {
             final IBackend b = (IBackend) sel.getFirstElement();
             return b;
         }
-        final IBackend b = BackendCore.getBackendManager().getIdeBackend();
-        if (b != null) {
-            backends.setSelection(new StructuredSelection(b));
-            return b;
-        }
-        return null;
-
+        return BackendCore.getBackendManager().getIdeBackend();
     }
 
 }

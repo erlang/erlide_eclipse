@@ -18,7 +18,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.model.root.IErlProject;
+import org.erlide.backend.api.IPluginCodeLoader;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.shell.BackendShellListener;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.ui.actions.SelectionDispatchAction;
@@ -67,14 +68,15 @@ public class SendToConsoleAction extends SelectionDispatchAction {
     IErlProject project;
 
     @Override
-    public void run(ITextSelection selection) {
+    public void run(final ITextSelection selection0) {
+        ITextSelection selection = selection0;
         final IBackendManager backendManager = BackendCore.getBackendManager();
         final Set<IBackend> executionBackends = backendManager
                 .getExecutionBackends(project.getWorkspaceProject());
         IErlangConsole console = null;
         final ErlConsoleManager erlConsoleManager = ErlideUIPlugin.getDefault()
                 .getErlConsoleManager();
-        for (final IBackend backend : executionBackends) {
+        for (final IPluginCodeLoader backend : executionBackends) {
             console = erlConsoleManager.getConsole(backend);
             if (console != null) {
                 break;
@@ -152,8 +154,9 @@ public class SendToConsoleAction extends SelectionDispatchAction {
         }
     }
 
-    protected ITextSelection getLineSelection(ITextSelection selection,
+    protected ITextSelection getLineSelection(final ITextSelection selection0,
             final boolean beginningOfNextLine) {
+        ITextSelection selection = selection0;
         final IDocument document = editor.getDocumentProvider().getDocument(
                 editor.getEditorInput());
         if (selection.getLength() == 0) { // don't use isEmpty()!

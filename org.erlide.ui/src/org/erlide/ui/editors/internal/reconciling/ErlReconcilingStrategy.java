@@ -16,8 +16,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlScanner;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.util.ErlLogger;
 
@@ -28,7 +28,7 @@ public class ErlReconcilingStrategy implements IErlReconcilingStrategy,
     private final AbstractErlangEditor fEditor;
     // private IDocument fDoc;
     private IProgressMonitor mon;
-    private IErlScanner fScanner;
+    private ScannerService fScanner;
 
     // private boolean initialInsert;
 

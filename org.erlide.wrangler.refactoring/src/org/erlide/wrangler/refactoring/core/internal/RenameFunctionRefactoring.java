@@ -128,8 +128,7 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 
         if (res.getValue().getClass().equals(OtpErlangString.class)) {
             return ((OtpErlangString) res.getValue()).stringValue();
-        } else {
-            return "";
         }
+        return "";
     }
 }

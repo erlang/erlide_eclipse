@@ -98,7 +98,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         localNode.close();
 
         if (callback != null) {
-            callback.run();
+            callback.onShutdown();
         }
         callback = null;
         rpcSite.setConnected(false);
@@ -191,6 +191,9 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         triggerShutdown();
     }
 
+    /**
+     * @throws ErlRuntimeException
+     */
     protected void waitForExit() throws ErlRuntimeException {
     }
 
@@ -353,6 +356,10 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     }
 
     private class ErlideNodeStatus extends OtpNodeStatus {
+        public ErlideNodeStatus() {
+            // TODO Auto-generated constructor stub
+        }
+
         @Override
         public void remoteStatus(final String node, final boolean up,
                 final Object info) {
@@ -373,6 +380,10 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     }
 
     private class ErlRuntimeListener implements Listener {
+        public ErlRuntimeListener() {
+            // TODO Auto-generated constructor stub
+        }
+
         @Override
         public void terminated(final State from) {
             ErlLogger.debug(String.format(
@@ -390,7 +401,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
             try {
                 reporter.createFileReport(getNodeName(), getExitCode(),
                         getRuntimeData().getWorkingDir(), getSystemStatus());
-            } catch (final Throwable t) {
+            } catch (final Exception t) {
                 ErlLogger.warn(t);
             }
         }

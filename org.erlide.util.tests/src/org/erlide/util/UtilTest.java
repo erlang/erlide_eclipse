@@ -4,8 +4,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-import java.io.UnsupportedEncodingException;
-
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.TermParser;
 import org.erlide.util.erlang.TermParserException;
@@ -149,7 +147,7 @@ public class UtilTest {
     }
 
     @Test
-    public void stringValue_4() throws TermParserException {
+    public void stringValue_4() {
         final OtpErlangObject input = new OtpErlangBinary(new byte[] { 51, 52,
                 53 });
         final String expected = "345";
@@ -158,8 +156,7 @@ public class UtilTest {
     }
 
     @Test
-    public void stringValue_5() throws TermParserException,
-            UnsupportedEncodingException {
+    public void stringValue_5() {
         final byte[] bytes = new byte[] { 197 - 256, 246 - 256 };
         final OtpErlangObject input = new OtpErlangBinary(bytes);
         final byte[] expected = bytes;
@@ -168,8 +165,7 @@ public class UtilTest {
     }
 
     @Test
-    public void stringValue_6() throws TermParserException,
-            UnsupportedEncodingException {
+    public void stringValue_6() {
         final byte[] bytes = new byte[] { (byte) 0xE8, (byte) 0x8F, (byte) 0xAF };
         final OtpErlangObject input = new OtpErlangBinary(bytes);
         final byte[] expected = bytes;

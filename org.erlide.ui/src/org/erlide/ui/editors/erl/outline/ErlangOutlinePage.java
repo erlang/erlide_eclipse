@@ -51,11 +51,11 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.erlide.core.ErlangCore;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.ISourceReference;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlModelChangeListener;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.IErlModelChangeListener;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.erlang.ISourceReference;
+import org.erlide.engine.model.root.IErlElement;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.actions.CompositeActionGroup;
@@ -130,7 +130,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     public ErlangOutlinePage(final ErlangEditor editor) {
         // myDocProvider = documentProvider;
         fEditor = editor;
-        ErlModelManager.getErlangModel().addModelChangeListener(this);
+        ErlangEngine.getInstance().getModel().addModelChangeListener(this);
     }
 
     /**
@@ -349,7 +349,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             fEditor.outlinePageClosed();
             fEditor = null;
         }
-        ErlModelManager.getErlangModel().removeModelChangeListener(this);
+        ErlangEngine.getInstance().getModel().removeModelChangeListener(this);
 
         super.dispose();
     }

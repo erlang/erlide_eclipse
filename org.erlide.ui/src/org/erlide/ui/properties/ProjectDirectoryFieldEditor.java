@@ -115,9 +115,8 @@ public class ProjectDirectoryFieldEditor extends DirectoryFieldEditor {
                     // JavaPlugin.log(e);
                     // }
                     return new StatusInfo();
-                } else {
-                    return new StatusInfo(IStatus.ERROR, "");
                 }
+                return new StatusInfo(IStatus.ERROR, "");
             }
         };
         dialog.setValidator(validator);

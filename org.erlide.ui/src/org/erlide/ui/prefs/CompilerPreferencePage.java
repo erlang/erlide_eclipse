@@ -47,10 +47,10 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.builder.CompilerOption;
 import org.erlide.core.builder.CompilerOption.PathsOption;
 import org.erlide.core.builder.CompilerOptions;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -178,11 +178,7 @@ public class CompilerPreferencePage extends PropertyPage implements
         } else {
             prefs = new CompilerOptions(fProject);
         }
-        try {
-            prefs.load();
-        } catch (final BackingStoreException e) {
-            ErlLogger.warn(e);
-        }
+        prefs.load();
         updateUI();
     }
 
@@ -318,7 +314,7 @@ public class CompilerPreferencePage extends PropertyPage implements
         } else {
             final List<IProject> erlProjects = new ArrayList<IProject>();
             final Set<IProject> projectsWithSpecifics = new HashSet<IProject>();
-            final IErlModel model = ErlModelManager.getErlangModel();
+            final IErlModel model = ErlangEngine.getInstance().getModel();
             try {
                 for (final IErlProject ep : model.getErlangProjects()) {
                     final IProject p = ep.getWorkspaceProject();

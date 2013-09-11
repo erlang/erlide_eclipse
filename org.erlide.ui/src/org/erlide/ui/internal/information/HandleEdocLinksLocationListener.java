@@ -4,11 +4,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.model.services.search.ErlideDoc;
-import org.erlide.model.services.search.OpenResult;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.services.search.OpenResult;
+import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
@@ -61,22 +60,18 @@ public class HandleEdocLinksLocationListener implements LocationListener {
             final ErlangFunctionCall functionCall = HoverUtil
                     .eventToErlangFunctionCall(moduleName, event);
             if (functionCall != null) {
-                final IProject project = ModelUtils.getProject(
-                        editor.getModule()).getWorkspaceProject();
+                final IProject project = ErlangEngine.getInstance()
+                        .getModelUtilService().getProject(editor.getModule())
+                        .getWorkspaceProject();
                 final IBackendManager backendManager = BackendCore
                         .getBackendManager();
-                IRpcSite backend = null;
-                try {
-                    backend = backendManager.getBuildBackend(project)
-                            .getRpcSite();
-                } catch (final BackendException e) {
-                }
-                if (backend == null) {
-                    backend = backendManager.getIdeBackend().getRpcSite();
-                }
+                final IRpcSite backend = backendManager
+                        .getBuildBackend(project).getRpcSite();
+
                 final String stateDir = ErlideUIPlugin.getDefault()
                         .getStateLocation().toString();
-                final OtpErlangTuple otpDoc = (OtpErlangTuple) ErlideDoc
+                final OtpErlangTuple otpDoc = (OtpErlangTuple) ErlangEngine
+                        .getInstance().getService(OtpDocService.class)
                         .getOtpDoc(backend, functionCall, stateDir);
                 if (Util.isOk(otpDoc)) {
                     final String docStr = Util.stringValue(otpDoc.elementAt(1));

@@ -20,11 +20,11 @@ import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlFunctionClause;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.erlang.IErlFunctionClause;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElement;
 import org.erlide.util.ErlLogger;
 
 public class ErlangLineBreakpoint extends Breakpoint implements
@@ -67,8 +67,8 @@ public class ErlangLineBreakpoint extends Breakpoint implements
         clauseHead = "";
         if (resource instanceof IFile) {
             final IFile file = (IFile) resource;
-            final IErlModule m = ErlModelManager.getErlangModel().findModule(
-                    file);
+            final IErlModule m = ErlangEngine.getInstance().getModel()
+                    .findModule(file);
             if (m != null) {
                 try {
                     m.open(null);

@@ -41,21 +41,17 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.backend.BackendCore;
 import org.erlide.core.search.SearchCoreUtil;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.services.search.ErlSearchScope;
-import org.erlide.model.services.search.ErlangSearchPattern;
-import org.erlide.model.services.search.ErlideOpen;
-import org.erlide.model.services.search.LimitTo;
-import org.erlide.model.services.search.OpenResult;
-import org.erlide.model.services.search.SearchFor;
-import org.erlide.model.services.search.SearchPatternFactory;
-import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.services.search.ErlSearchScope;
+import org.erlide.engine.services.search.ErlangSearchPattern;
+import org.erlide.engine.services.search.LimitTo;
+import org.erlide.engine.services.search.OpenResult;
+import org.erlide.engine.services.search.SearchFor;
+import org.erlide.engine.services.search.SearchPatternFactory;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -614,22 +610,30 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         setSearchFor(initData.getSearchFor());
     }
 
-    public SearchPatternData tryErlangTextSelection(SearchPatternData initData,
-            final IEditorPart activePart) throws ErlModelException {
+    public SearchPatternData tryErlangTextSelection(
+            final SearchPatternData initData0, final IEditorPart activePart)
+            throws ErlModelException {
         final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) activePart;
         final IErlModule module = erlangEditor.getModule();
+        SearchPatternData initData = initData0;
         if (module != null) {
-            final IRpcSite backend = BackendCore.getBackendManager()
-                    .getIdeBackend().getRpcSite();
             final ISelection ssel = erlangEditor.getSite()
                     .getSelectionProvider().getSelection();
             final ITextSelection textSel = (ITextSelection) ssel;
             final int offset = textSel.getOffset();
             OpenResult res;
             try {
-                res = ErlideOpen.open(backend, module.getScannerName(), offset,
-                        ModelUtils.getImportsAsList(module), "",
-                        ErlModelManager.getErlangModel().getPathVars());
+                res = ErlangEngine
+                        .getInstance()
+                        .getOpenService()
+                        .open(module.getScannerName(),
+                                offset,
+                                ErlangEngine.getInstance()
+                                        .getModelUtilService()
+                                        .getImportsAsList(module),
+                                "",
+                                ErlangEngine.getInstance().getModel()
+                                        .getPathVars());
             } catch (final RpcException e) {
                 res = null;
             }
@@ -706,7 +710,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     }
 
     private SearchPatternData determineInitValuesFrom(final IErlElement e) {
-        final ErlangSearchPattern pattern = SearchPatternFactory
+        final ErlangSearchPattern pattern = new SearchPatternFactory(
+                ErlangEngine.getInstance().getModelUtilService())
                 .getSearchPatternFromErlElementAndLimitTo(e, getLimitTo());
         if (pattern == null) {
             return null;

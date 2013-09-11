@@ -69,7 +69,7 @@
 %-spec format_error(Error::term()) -> string().
 format_error({string,Quote,Head}) ->
     lists:flatten(["unterminated " ++ string_thing(Quote) ++
-                   " starting with " ++ io_lib:write_string(Head,Quote)]);
+                       " starting with " ++ io_lib:write_string(Head,Quote)]);
 format_error({illegal,Type}) ->
     lists:flatten(io_lib:fwrite("illegal ~w", [Type]));
 format_error(char) -> "unterminated character";
@@ -89,7 +89,7 @@ string(Chars, StartLocation) ->
 string(Chars, Line, Options) when is_integer(Line), is_list(Chars) ->
     string1(Chars, options(Options), Line, no_col, []);
 string(Chars, {Line,Column}, Options)
-    when is_integer(Line), is_integer(Column), Column >= 1, is_list(Chars) ->
+  when is_integer(Line), is_integer(Column), Column >= 1, is_list(Chars) ->
     string1(Chars, options(Options), Line, Column, []).
 
 tokens(Cont, Chars, StartLocation) ->
@@ -98,10 +98,10 @@ tokens(Cont, Chars, StartLocation) ->
 tokens([], Chars, Line, Options) when is_integer(Line), is_list(Chars) ->
     tokens1(Chars, options(Options), Line, no_col, [], fun scan/6, []);
 tokens([], Chars, {Line,Column}, Options)
-    when is_integer(Line), is_integer(Column), Column >= 1, is_list(Chars) ->
+  when is_integer(Line), is_integer(Column), Column >= 1, is_list(Chars) ->
     tokens1(Chars, options(Options), Line, Column, [], fun scan/6, []);
 tokens({Cs,St,Line,Col,Toks,Fun,Any}, Chars, _Loc, _Opts)
-    when is_list(Chars); Chars =:= eof ->
+  when is_list(Chars); Chars =:= eof ->
     tokens1(Cs++Chars, St, Line, Col, Toks, Fun, Any).
 
 token_info(Token) ->
@@ -759,13 +759,13 @@ scan_number(Cs, St, Line, Col, Toks, Ncs0) ->
     end.
 
 scan_based_int([C|Cs], St, Line, Col, Toks, {B,Ncs,Bcs})
-    when ?DIGIT(C), C < $0+B ->
+  when ?DIGIT(C), C < $0+B ->
     scan_based_int(Cs, St, Line, Col, Toks, {B,[C|Ncs],Bcs});
 scan_based_int([C|Cs], St, Line, Col, Toks, {B,Ncs,Bcs})
-    when C >= $A, B > 10, C < $A+B-10 ->
+  when C >= $A, B > 10, C < $A+B-10 ->
     scan_based_int(Cs, St, Line, Col, Toks, {B,[C|Ncs],Bcs});
 scan_based_int([C|Cs], St, Line, Col, Toks, {B,Ncs,Bcs})
-    when C >= $a, B > 10, C < $a+B-10 ->
+  when C >= $a, B > 10, C < $a+B-10 ->
     scan_based_int(Cs, St, Line, Col, Toks, {B,[C|Ncs],Bcs});
 scan_based_int([]=Cs, _St, Line, Col, Toks, State) ->
     {more, {Cs,Line,Col,Toks,fun scan_based_int/6,State}};

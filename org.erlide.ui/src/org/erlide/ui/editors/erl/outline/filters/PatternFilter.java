@@ -7,7 +7,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.ui.dialogs.SearchPattern;
-import org.erlide.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlElement;
 import org.erlide.ui.editors.erl.outline.ErlangLabelProvider;
 
 import com.google.common.collect.Maps;

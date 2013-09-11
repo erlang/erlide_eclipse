@@ -8,12 +8,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.debug.ui.utils.ModuleListContentProvider;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.CommonUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.util.CommonUtils;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.util.ErlLogger;
 
@@ -51,7 +51,7 @@ public class InterpretedModuleListContentProvider extends
      *            moduleName;...)
      */
     public void addModules(final Collection<String> interpret) {
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         for (final String projectColonModule : interpret) {
             // project:module | module
             final String[] projectModule = projectColonModule.split(":");

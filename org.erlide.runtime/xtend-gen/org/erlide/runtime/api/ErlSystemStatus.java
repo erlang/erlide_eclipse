@@ -37,11 +37,11 @@ public class ErlSystemStatus {
     OtpErlangObject _elementAt_2 = tuple.elementAt(2);
     OtpErlangObject[] _elements = ((OtpErlangList) _elementAt_2).elements();
     final Function1<OtpErlangObject,String> _function = new Function1<OtpErlangObject,String>() {
-        public String apply(final OtpErlangObject it) {
-          String _atomValue = ((OtpErlangAtom) it).atomValue();
-          return _atomValue;
-        }
-      };
+      public String apply(final OtpErlangObject it) {
+        String _atomValue = ((OtpErlangAtom) it).atomValue();
+        return _atomValue;
+      }
+    };
     List<String> _map = ListExtensions.<OtpErlangObject, String>map(((List<OtpErlangObject>)Conversions.doWrapArray(_elements)), _function);
     this.names = _map;
   }

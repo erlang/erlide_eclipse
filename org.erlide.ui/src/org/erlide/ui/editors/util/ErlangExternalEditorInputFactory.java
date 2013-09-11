@@ -8,12 +8,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElementLocator;
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElementLocator;
 
 public class ErlangExternalEditorInputFactory implements IElementFactory {
 
@@ -23,9 +22,10 @@ public class ErlangExternalEditorInputFactory implements IElementFactory {
 
     public static void saveState(final IMemento memento,
             final ErlangExternalEditorInput input) {
-        final IErlElementLocator model = ErlModelManager.getErlangModel();
-        final String externalModulePath = ModelUtils.getExternalModulePath(
-                model, input.getModule());
+        final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+        final String externalModulePath = ErlangEngine.getInstance()
+                .getModelUtilService()
+                .getExternalModulePath(model, input.getModule());
         memento.putString(TAG_EXTERNAL_MODULE_PATH, externalModulePath);
         final URI uri = input.getURI();
         memento.putString(TAG_URI, uri.toString());
@@ -41,9 +41,9 @@ public class ErlangExternalEditorInputFactory implements IElementFactory {
         }
         IErlModule module;
         try {
-            final IErlModel model = ErlModelManager.getErlangModel();
-            module = ModelUtils.getModuleFromExternalModulePath(model,
-                    externalModulePath);
+            final IErlModel model = ErlangEngine.getInstance().getModel();
+            module = ErlangEngine.getInstance().getModelUtilService()
+                    .getModuleFromExternalModulePath(model, externalModulePath);
         } catch (final ErlModelException e1) {
             return null;
         }

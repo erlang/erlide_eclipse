@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.erlide.backend.internal;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,18 +42,16 @@ import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.api.BackendData;
-import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
+import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.console.BackendShellManager;
 import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.model.ErlangDebugNode;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.ErlDebugFlags;
-import org.erlide.runtime.api.ICodeBundle;
-import org.erlide.runtime.api.ICodeManager;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.InitialCall;
@@ -76,20 +76,20 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     private final IErlRuntime runtime;
     private BackendShellManager shellManager;
-    private final ICodeManager codeManager;
+    private final CodeManager codeManager;
 
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
     protected final IBackendManager backendManager;
 
-    public Backend(final BackendData data, final IErlRuntime runtime,
-            final IBackendManager backendManager) throws BackendException {
+    public Backend(final BackendData data, @NonNull final IErlRuntime runtime,
+            final IBackendManager backendManager) {
         assertThat(runtime, is(not(nullValue())));
         this.runtime = runtime;
         this.data = data;
         this.backendManager = backendManager;
-        codeManager = new CodeManager(this, data.getRuntimeInfo(),
-                backendManager);
+        codeManager = new CodeManager(getRpcSite(), data.getRuntimeInfo()
+                .getName());
     }
 
     @Override
@@ -324,10 +324,10 @@ public abstract class Backend implements IStreamListener, IBackend {
             registerStartupFunctionStarter(data);
             debugTarget.sendStarted();
         } else {
-            final InitialCall init_call = data.getInitialCall();
-            if (init_call != null) {
-                runInitial(init_call.getModule(), init_call.getName(),
-                        init_call.getParameters());
+            final InitialCall initCall = data.getInitialCall();
+            if (initCall != null) {
+                runInitial(initCall.getModule(), initCall.getName(),
+                        initCall.getParameters());
             }
         }
     }
@@ -344,11 +344,11 @@ public abstract class Backend implements IStreamListener, IBackend {
                 new IDebugEventSetListener() {
                     @Override
                     public void handleDebugEvents(final DebugEvent[] events) {
-                        final InitialCall init_call = myData.getInitialCall();
-                        if (init_call != null) {
-                            runInitial(init_call.getModule(),
-                                    init_call.getName(),
-                                    init_call.getParameters());
+                        final InitialCall initCall = myData.getInitialCall();
+                        if (initCall != null) {
+                            runInitial(initCall.getModule(),
+                                    initCall.getName(),
+                                    initCall.getParameters());
                         }
                         DebugPlugin.getDefault().removeDebugEventListener(this);
                     }
@@ -456,8 +456,8 @@ public abstract class Backend implements IStreamListener, IBackend {
             final IContributor c = el.getContributor();
             final String name = c.getName();
             if (name.equals(bundle.getSymbolicName())) {
-                final String dir_path = el.getAttribute("path");
-                final Enumeration<?> e = bundle.getEntryPaths(dir_path);
+                final String dirPath = el.getAttribute("path");
+                final Enumeration<?> e = bundle.getEntryPaths(dirPath);
                 if (e == null) {
                     ErlLogger.error("* !!! error loading plugin "
                             + bundle.getSymbolicName());
@@ -492,10 +492,10 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(final Collection<ICodeBundle> bundles) {
         runtime.addShutdownCallback(this);
         shellManager = new BackendShellManager(this);
-        for (final ICodeBundle bb : backendManager.getCodeBundles().values()) {
+        for (final ICodeBundle bb : bundles) {
             registerCodeBundle(bb);
         }
         initErlang(data.isManaged());
@@ -525,6 +525,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void run() {
+    public void onShutdown() {
     }
 }

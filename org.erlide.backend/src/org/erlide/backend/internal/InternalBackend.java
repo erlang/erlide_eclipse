@@ -10,35 +10,21 @@
  *******************************************************************************/
 package org.erlide.backend.internal;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.api.BackendData;
-import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.runtime.api.ICodeBundle;
 import org.erlide.runtime.api.IErlRuntime;
-import org.erlide.util.ErlLogger;
 
 public class InternalBackend extends Backend {
 
-    public InternalBackend(final BackendData data, final IErlRuntime runtime,
-            final IBackendManager backendManager) throws BackendException {
+    public InternalBackend(final BackendData data,
+            final @NonNull IErlRuntime runtime,
+            final IBackendManager backendManager) {
         super(data, runtime, backendManager);
     }
 
-    @SuppressWarnings("unused")
     @Override
-    public void run() {
+    public void onShutdown() {
         getData().setLaunch(null);
-        // TODO fix this
-        if (false && getData().isRestartable()) {
-            ErlLogger.debug("restart %s", getName());
-
-            // TODO remove code duplication here
-            // connect();
-            for (final ICodeBundle bb : backendManager.getCodeBundles()
-                    .values()) {
-                registerCodeBundle(bb);
-            }
-            startErlideApps(getRuntime().getEventMbox().self(), true);
-        }
     }
 }

@@ -17,6 +17,9 @@ package org.erlide.util;
  */
 public final class CharOperation {
 
+    private CharOperation() {
+    }
+
     /**
      * Constant for an empty char array
      */
@@ -59,14 +62,15 @@ public final class CharOperation {
      *            the suffix character
      * @return the new array
      */
-    public static char[] append(char[] array, final char suffix) {
+    public static char[] append(final char[] array, final char suffix) {
         if (array == null) {
             return new char[] { suffix };
         }
         final int length = array.length;
-        System.arraycopy(array, 0, array = new char[length + 1], 0, length);
-        array[length] = suffix;
-        return array;
+        final char[] arr = new char[length + 1];
+        System.arraycopy(array, 0, arr, 0, length);
+        arr[length] = suffix;
+        return arr;
     }
 
     /**
@@ -129,8 +133,9 @@ public final class CharOperation {
      * @throws NullPointerException
      *             if the target array is null
      */
-    public static char[] append(char[] target, final int index,
+    public static char[] append(final char[] target0, final int index,
             final char[] array, final int start, final int end) {
+        char[] target = target0;
         final int targetLength = target.length;
         final int subLength = end - start;
         final int newTargetLength = subLength + index;
@@ -826,38 +831,9 @@ public final class CharOperation {
      *         separator between each part and appending the given name at the
      *         end
      */
-    @SuppressWarnings("null")
     public static char[] concatWith(final char[] name, final char[][] array,
             final char separator) {
-        final int nameLength = name == null ? 0 : name.length;
-        if (nameLength == 0) {
-            return concatWith(array, separator);
-        }
-
-        final int length = array == null ? 0 : array.length;
-        if (length == 0) {
-            return name;
-        }
-
-        int size = nameLength;
-        int index = length;
-        while (--index >= 0) {
-            if (array[index].length > 0) {
-                size += array[index].length + 1;
-            }
-        }
-        final char[] result = new char[size];
-        index = size;
-        for (int i = length - 1; i >= 0; i--) {
-            final int subLength = array[i].length;
-            if (subLength > 0) {
-                index -= subLength;
-                System.arraycopy(array[i], 0, result, index, subLength);
-                result[--index] = separator;
-            }
-        }
-        System.arraycopy(name, 0, result, 0, nameLength);
-        return result;
+        return concatWith(array, name, separator);
     }
 
     /**
@@ -2163,8 +2139,8 @@ public final class CharOperation {
      *         false otherwise
      */
     public static boolean match(final char[] pattern, final int patternStart,
-            int patternEnd, final char[] name, final int nameStart,
-            int nameEnd, final boolean isCaseSensitive) {
+            final int patternEnd0, final char[] name, final int nameStart,
+            final int nameEnd0, final boolean isCaseSensitive) {
 
         if (name == null) {
             return false; // null name cannot match
@@ -2174,7 +2150,8 @@ public final class CharOperation {
         }
         int iPattern = patternStart;
         int iName = nameStart;
-
+        int patternEnd = patternEnd0;
+        int nameEnd = nameEnd0;
         if (patternEnd < 0) {
             patternEnd = pattern.length;
         }
@@ -2486,13 +2463,7 @@ public final class CharOperation {
      *             if array is null
      */
     public static int occurrencesOf(final char toBeFound, final char[] array) {
-        int count = 0;
-        for (final char element : array) {
-            if (toBeFound == element) {
-                count++;
-            }
-        }
-        return count;
+        return occurrencesOf(toBeFound, array, 0);
     }
 
     /**
@@ -2940,31 +2911,9 @@ public final class CharOperation {
      * @return a new array which is the split of the given array using the given
      *         divider
      */
-    @SuppressWarnings("null")
     public static char[][] splitOn(final char divider, final char[] array) {
         final int length = array == null ? 0 : array.length;
-        if (length == 0) {
-            return NO_CHAR_CHAR;
-        }
-
-        int wordCount = 1;
-        for (int i = 0; i < length; i++) {
-            if (array[i] == divider) {
-                wordCount++;
-            }
-        }
-        final char[][] split = new char[wordCount][];
-        int last = 0, currentWord = 0;
-        for (int i = 0; i < length; i++) {
-            if (array[i] == divider) {
-                split[currentWord] = new char[i - last];
-                System.arraycopy(array, last, split[currentWord++], 0, i - last);
-                last = i + 1;
-            }
-        }
-        split[currentWord] = new char[length - last];
-        System.arraycopy(array, last, split[currentWord], 0, length - last);
-        return split;
+        return splitOn(divider, array, 0, length);
     }
 
     /**
@@ -3071,7 +3020,8 @@ public final class CharOperation {
      *             if the given array is null
      */
     public static char[][] subarray(final char[][] array, final int start,
-            int end) {
+            final int end0) {
+        int end = end0;
         if (end == -1) {
             end = array.length;
         }
@@ -3132,7 +3082,9 @@ public final class CharOperation {
      * @throws NullPointerException
      *             if the given array is null
      */
-    public static char[] subarray(final char[] array, final int start, int end) {
+    public static char[] subarray(final char[] array, final int start,
+            final int end0) {
+        int end = end0;
         if (end == -1) {
             end = array.length;
         }

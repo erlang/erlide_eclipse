@@ -7,7 +7,7 @@
          point="org.eclipse.core.resources.builders">
       <builder>
          <run
-               class="org.erlide.core.internal.builder.DialyzerBuilder">
+               class="org.erlide.dialyzer.internal.builder.DialyzerBuilder">
          </run>
       </builder>
    </extension>

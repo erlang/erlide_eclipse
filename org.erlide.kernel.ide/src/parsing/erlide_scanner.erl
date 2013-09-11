@@ -42,13 +42,13 @@ scan_string(L) when is_list(L) ->
     erlide_scan_model:get_all_tokens(M).
 
 initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache) ->
-%%     Text = case InitialText of
-%%                "" ->
-%%                    {ok, B} = file:read_file(ModuleFileName),
-%%                    binary_to_list(B);
-%%                _ ->
-%%                    InitialText
-%%            end,
+    %%     Text = case InitialText of
+    %%                "" ->
+    %%                    {ok, B} = file:read_file(ModuleFileName),
+    %%                    binary_to_list(B);
+    %%                _ ->
+    %%                    InitialText
+    %%            end,
     Text = InitialText,
     CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
     RenewFun = fun(_F) -> erlide_scan_model:do_scan(ScannerName, Text) end,
@@ -61,7 +61,7 @@ get_token_at(ScannerName, Offset) when is_atom(ScannerName), is_integer(Offset) 
 initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache, Logging)
   when is_atom(ScannerName), is_list(ModuleFileName), is_list(InitialText), is_list(StateDir) ->
     erlide_scanner_server:server_cmd(ScannerName, initial_scan,
-               {ScannerName, ModuleFileName, InitialText, StateDir, UseCache, Logging}).
+                                     {ScannerName, ModuleFileName, InitialText, StateDir, UseCache, Logging}).
 
 create(ScannerName) when is_atom(ScannerName) ->
     erlide_scanner_server:spawn_server(ScannerName).

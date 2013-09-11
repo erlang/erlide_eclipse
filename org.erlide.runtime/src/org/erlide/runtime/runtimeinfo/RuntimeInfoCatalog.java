@@ -42,7 +42,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
     @Override
     public synchronized void setRuntimes(
             final Collection<RuntimeInfo> elements, final String dfltRuntime,
-            String ideRuntime) {
+            final String ideRuntime) {
         runtimes.clear();
         if (elements.isEmpty()) {
             initializeRuntimesList();
@@ -55,10 +55,8 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         if (defaultRuntimeName == null) {
             setDefaultRuntimes();
         }
-        if (ideRuntime == null) {
-            ideRuntime = defaultRuntimeName;
-        }
-        erlideRuntime = runtimes.get(ideRuntime);
+        erlideRuntime = runtimes.get(ideRuntime != null ? ideRuntime
+                : defaultRuntimeName);
         // Asserts.isNotNull(erlideRuntime);
     }
 

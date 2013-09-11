@@ -29,9 +29,8 @@ public class MatchSpec implements Serializable {
     public int hashCode() {
         if (functionString == null) {
             return 0;
-        } else {
-            return functionString.hashCode();
         }
+        return functionString.hashCode();
     }
 
     public String getFunctionString() {

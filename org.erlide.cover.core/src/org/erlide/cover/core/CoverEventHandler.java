@@ -12,8 +12,7 @@ import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.ObjectType;
 import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.cover.views.model.StatsTreeObject;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangEventHandler;
 import org.erlide.util.ErlLogger;
@@ -113,8 +112,8 @@ public class CoverEventHandler extends ErlangEventHandler {
                 // calculate md5
 
                 try {
-                    final File file = new File(ErlModelManager.getErlangModel()
-                            .findModule(moduleName).getFilePath());
+                    final File file = new File(ErlangEngine.getInstance()
+                            .getModel().findModule(moduleName).getFilePath());
                     moduleStats.setMd5(MD5Checksum.getMD5(file));
                 } catch (final Exception e) {
                     ErlLogger.error(e);
@@ -147,8 +146,9 @@ public class CoverEventHandler extends ErlangEventHandler {
         final IConfiguration config = CoveragePerformer.getPerformer()
                 .getConfig();
 
-        final String ppath = ModelUtils.getProject(config.getProject())
-                .getWorkspaceProject().getLocation().toString();
+        final String ppath = ErlangEngine.getInstance().getModelUtilService()
+                .getProject(config.getProject()).getWorkspaceProject()
+                .getLocation().toString();
         String mpath = config.getModule(moduleStats.getLabel()).getFilePath();
         mpath = mpath.substring(ppath.length());
         log.info(ppath);

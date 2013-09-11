@@ -50,19 +50,14 @@ import com.google.common.base.Charsets;
 public final class Util {
 
     private static final String ARGUMENTS_DELIMITER = "#"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.erlide.util.util"; //$NON-NLS-1$
+    private static final char[] DOUBLE_QUOTES = "''".toCharArray(); //$NON-NLS-1$
+    private static final String EMPTY_ARGUMENT = "   "; //$NON-NLS-1$
+    // public static final String[] fgEmptyStringArray = new String[0];
+    private static final char[] SINGLE_QUOTE = "'".toCharArray(); //$NON-NLS-1$
 
     /* Bundle containing messages */
-    static ResourceBundle bundle;
-
-    private static final String BUNDLE_NAME = "org.erlide.util.util"; //$NON-NLS-1$
-
-    private static final char[] DOUBLE_QUOTES = "''".toCharArray(); //$NON-NLS-1$
-
-    private static final String EMPTY_ARGUMENT = "   "; //$NON-NLS-1$
-
-    // public static final String[] fgEmptyStringArray = new String[0];
-
-    private static final char[] SINGLE_QUOTE = "'".toCharArray(); //$NON-NLS-1$
+    private static ResourceBundle bundle;
 
     static {
         relocalize();
@@ -236,7 +231,9 @@ public final class Util {
      * 
      * @see #concat(String, String)
      */
-    public static String concat(String s1, final char c, String s2) {
+    public static String concat(final String s10, final char c, final String s20) {
+        String s1 = s10;
+        String s2 = s20;
         if (s1 == null) {
             s1 = "null"; //$NON-NLS-1$
         }
@@ -259,7 +256,9 @@ public final class Util {
      * creates an extra char array, since the String constructor copies its
      * argument, but there's no way around this.
      */
-    public static String concat(String s1, String s2) {
+    public static String concat(final String s10, final String s20) {
+        String s1 = s10;
+        String s2 = s20;
         if (s1 == null) {
             s1 = "null"; //$NON-NLS-1$
         }
@@ -279,7 +278,11 @@ public final class Util {
      * 
      * @see #concat(String, String)
      */
-    public static String concat(String s1, String s2, String s3) {
+    public static String concat(final String s10, final String s20,
+            final String s30) {
+        String s1 = s10;
+        String s2 = s20;
+        String s3 = s30;
         if (s1 == null) {
             s1 = "null"; //$NON-NLS-1$
         }
@@ -528,7 +531,8 @@ public final class Util {
      * Separate all the arguments of a String made by
      * getProblemArgumentsForMarker
      */
-    public static String[] getProblemArgumentsFromMarker(String argumentsString) {
+    public static String[] getProblemArgumentsFromMarker(
+            final String argumentsString) {
         if (argumentsString == null) {
             return null;
         }
@@ -544,12 +548,13 @@ public final class Util {
         } catch (final NumberFormatException e) {
             return null;
         }
-        argumentsString = argumentsString.substring(index + 1, length);
+        final String argumentsString1 = argumentsString.substring(index + 1,
+                length);
 
         String[] args = new String[length];
         int count = 0;
 
-        final StringTokenizer tokenizer = new StringTokenizer(argumentsString,
+        final StringTokenizer tokenizer = new StringTokenizer(argumentsString1,
                 ARGUMENTS_DELIMITER);
         while (tokenizer.hasMoreTokens()) {
             String argument = tokenizer.nextToken();
@@ -1373,7 +1378,8 @@ public final class Util {
     }
 
     private static StringBuilder ioListToStringBuilder(final OtpErlangObject o,
-            StringBuilder sb, final int maxLength) {
+            final StringBuilder sb0, final int maxLength) {
+        StringBuilder sb = sb0;
         if (sb.length() >= maxLength) {
             return sb;
         }

@@ -16,18 +16,15 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendException;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.FunctionRef;
-import org.erlide.model.erlang.IErlFunction;
-import org.erlide.model.erlang.IErlFunctionClause;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.services.search.ErlangXref;
-import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.erlang.FunctionRef;
+import org.erlide.engine.model.erlang.IErlFunction;
+import org.erlide.engine.model.erlang.IErlFunctionClause;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.services.search.XrefService;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.jinterface.AsyncCaller;
@@ -38,12 +35,14 @@ public class CallHierarchyAction extends Action {
 
     private final ErlangEditor editor;
     IErlModule module;
+    private final XrefService xrefService;
 
     public CallHierarchyAction(final ErlangEditor erlangEditor,
-            final IErlModule module) {
+            final IErlModule module, final XrefService xrefService) {
         super("Call hierarchy");
         editor = erlangEditor;
         this.module = module;
+        this.xrefService = xrefService;
     }
 
     @Override
@@ -86,7 +85,8 @@ public class CallHierarchyAction extends Action {
                             .getAdapter(CallHierarchyView.class);
 
                     cvh.setMessage("<searching... project "
-                            + ModelUtils.getProject(module).getName() + ">");
+                            + ErlangEngine.getInstance().getModelUtilService()
+                                    .getProject(module).getName() + ">");
                     return cvh;
                 } catch (final PartInitException e) {
                     ErlLogger.error("could not open Call hierarchy view: ",
@@ -97,10 +97,9 @@ public class CallHierarchyAction extends Action {
 
             @Override
             protected IRpcFuture call() throws BackendException {
-                final IRpcSite b = BackendCore.getBackendManager()
-                        .getIdeBackend().getRpcSite();
-                final IRpcFuture result = ErlangXref.addProject(b,
-                        ModelUtils.getProject(module));
+                final IRpcFuture result = xrefService
+                        .addProject(ErlangEngine.getInstance()
+                                .getModelUtilService().getProject(module));
                 return result;
             }
 
@@ -109,7 +108,7 @@ public class CallHierarchyAction extends Action {
                     final IRpcFuture result) {
                 page.activate(context);
                 try {
-                    context.setRoot(ErlModelManager.getErlangModel()
+                    context.setRoot(ErlangEngine.getInstance().getModel()
                             .findFunction(ref));
                 } catch (final ErlModelException e) {
                     ErlLogger.error(e);

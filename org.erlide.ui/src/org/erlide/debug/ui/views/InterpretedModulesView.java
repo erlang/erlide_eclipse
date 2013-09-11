@@ -31,8 +31,8 @@ import org.erlide.backend.debug.model.ErlangDebugElement;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.backend.debug.model.ErtsProcess;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -216,8 +216,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
             return;
         }
         final String moduleWoExtension = module.getModuleName();
-        final IProject project = ModelUtils.getProject(module)
-                .getWorkspaceProject();
+        final IProject project = ErlangEngine.getInstance()
+                .getModelUtilService().getProject(module).getWorkspaceProject();
         final boolean interpret = checked;
 
         if (erlangDebugTarget.getInterpretedModules().contains(

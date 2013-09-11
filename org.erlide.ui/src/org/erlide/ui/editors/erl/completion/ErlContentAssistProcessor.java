@@ -18,10 +18,9 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.services.IDisposable;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlProject;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
-import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlContentAssistProcessor extends
         AbstractErlContentAssistProcessor implements IDisposable {
@@ -52,23 +51,18 @@ public class ErlContentAssistProcessor extends
     protected String quoted(final String string, final Kinds kind) {
         if (kind == Kinds.INCLUDES || kind == Kinds.INCLUDE_LIBS) {
             return "\"" + string + "\"";
-        } else {
-            return string;
         }
+        return string;
     }
 
     public void setToPrefs() {
         final CodeAssistPreferences prefs = new CodeAssistPreferences();
-        try {
-            prefs.load();
-            fCompletionProposalAutoActivationCharacters = prefs
-                    .getErlangTriggers().toCharArray();
-            contentAssistant.setAutoActivationDelay(prefs.getDelayInMS());
-            contentAssistant.enableAutoActivation(prefs.isAutoActivate());
-            contentAssistant.setAutoActivationDelay(prefs.getDelayInMS());
-        } catch (final BackingStoreException e) {
-            fCompletionProposalAutoActivationCharacters = new char[0];
-        }
+        prefs.load();
+        fCompletionProposalAutoActivationCharacters = prefs.getErlangTriggers()
+                .toCharArray();
+        contentAssistant.setAutoActivationDelay(prefs.getDelayInMS());
+        contentAssistant.enableAutoActivation(prefs.isAutoActivate());
+        contentAssistant.setAutoActivationDelay(prefs.getDelayInMS());
     }
 
     private class PreferenceChangeListener implements IPreferenceChangeListener {

@@ -68,7 +68,7 @@ public class ErlInformationPresenter implements
      * so, in this function we remove the ones existing and add the ones
      * dependent on the platform
      */
-    private String correctLineDelimiters(String str) {
+    private String correctLineDelimiters(final String str) {
         final StringBuffer buf = new StringBuffer();
         for (String s : StringUtils.splitLines(str)) {
 
@@ -82,8 +82,7 @@ public class ErlInformationPresenter implements
                 buf.append(LINE_DELIM);
             }
         }
-        str = buf.toString();
-        return str;
+        return buf.toString();
     }
 
     /**

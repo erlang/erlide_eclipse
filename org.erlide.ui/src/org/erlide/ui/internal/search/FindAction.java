@@ -26,23 +26,19 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.erlide.backend.BackendCore;
 import org.erlide.core.search.SearchCoreUtil;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlAttribute;
-import org.erlide.model.erlang.IErlFunctionClause;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlPreprocessorDef;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.services.search.ErlSearchScope;
-import org.erlide.model.services.search.ErlangSearchPattern;
-import org.erlide.model.services.search.ErlideOpen;
-import org.erlide.model.services.search.LimitTo;
-import org.erlide.model.services.search.OpenResult;
-import org.erlide.model.services.search.SearchPatternFactory;
-import org.erlide.model.util.ModelUtils;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.erlang.IErlAttribute;
+import org.erlide.engine.model.erlang.IErlFunctionClause;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.erlang.IErlPreprocessorDef;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.services.search.ErlSearchScope;
+import org.erlide.engine.services.search.ErlangSearchPattern;
+import org.erlide.engine.services.search.LimitTo;
+import org.erlide.engine.services.search.OpenResult;
+import org.erlide.engine.services.search.SearchPatternFactory;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ExceptionHandler;
@@ -212,14 +208,17 @@ public abstract class FindAction extends SelectionDispatchAction {
             if (module == null) {
                 return;
             }
-            final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
-                    .getRpcSite();
             final ISelection sel = getSelection();
             final ITextSelection textSel = (ITextSelection) sel;
             final int offset = textSel.getOffset();
-            final OpenResult res = ErlideOpen.open(b, module.getScannerName(),
-                    offset, ModelUtils.getImportsAsList(module), "",
-                    ErlModelManager.getErlangModel().getPathVars());
+            final OpenResult res = ErlangEngine
+                    .getInstance()
+                    .getOpenService()
+                    .open(module.getScannerName(),
+                            offset,
+                            ErlangEngine.getInstance().getModelUtilService()
+                                    .getImportsAsList(module), "",
+                            ErlangEngine.getInstance().getModel().getPathVars());
             ErlLogger.debug("find " + res);
             final ErlangSearchPattern ref = SearchUtil
                     .getSearchPatternFromOpenResultAndLimitTo(module, offset,
@@ -265,7 +264,8 @@ public abstract class FindAction extends SelectionDispatchAction {
      */
     public void run(final IErlElement element) {
         try {
-            final ErlangSearchPattern pattern = SearchPatternFactory
+            final ErlangSearchPattern pattern = new SearchPatternFactory(
+                    ErlangEngine.getInstance().getModelUtilService())
                     .getSearchPatternFromErlElementAndLimitTo(element,
                             getLimitTo());
             SearchUtil.runQuery(pattern, getScope(), getScopeDescription(),

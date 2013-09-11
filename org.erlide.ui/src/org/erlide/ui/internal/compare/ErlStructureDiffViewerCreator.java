@@ -22,6 +22,10 @@ public class ErlStructureDiffViewerCreator implements IViewerCreator {
     }
 
     private static class ErlViewerComparator extends ViewerComparator {
+        public ErlViewerComparator() {
+            // TODO Auto-generated constructor stub
+        }
+
         @Override
         public int compare(final Viewer viewer, final Object e1, final Object e2) {
             final ErlNode en1 = getErlNode(e1);

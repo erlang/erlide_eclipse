@@ -38,12 +38,12 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.model.IParent;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.ISourceRange;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlExternal;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.IParent;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.erlang.ISourceRange;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -80,7 +80,8 @@ public class EditorUtility {
         for (final IEditorPart editorPart : allErlangEditors) {
             if (inputElement instanceof IErlElement) {
                 final IErlElement element = (IErlElement) inputElement;
-                final IErlModule module = ModelUtils.getModule(element);
+                final IErlModule module = ErlangEngine.getInstance()
+                        .getModelUtilService().getModule(element);
                 final AbstractErlangEditor editor = (AbstractErlangEditor) editorPart;
                 if (module.equals(editor.getModule())) {
                     return editorPart;
@@ -230,7 +231,8 @@ public class EditorUtility {
         return null;
     }
 
-    private static IEditorInput getEditorInput(IErlElement element) {
+    private static IEditorInput getEditorInput(final IErlElement element0) {
+        IErlElement element = element0;
         final IResource resource = element.getResource();
         if (resource instanceof IFile) {
             IFile file = (IFile) resource;

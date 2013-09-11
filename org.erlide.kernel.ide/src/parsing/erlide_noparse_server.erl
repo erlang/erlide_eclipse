@@ -8,7 +8,7 @@
 %%
 
 -export([modules/0, dump_module/1, create/3, destroy/1,
-   all/0, stop/0, find/3, xdump/0]).
+         all/0, stop/0, find/3, xdump/0]).
 
 %% internal exports
 -export([loop/1]).
@@ -75,9 +75,6 @@ main_loop(Modules) ->
             NewMods = cmd(Cmd, From, Args, Modules),
             ?MODULE:main_loop(NewMods)
     end.
-
-update_state(ScannerName, Model) ->
-    server_cmd(update_state, {ScannerName, Model}).
 
 server_cmd(Command, Args) ->
     spawn_server(),

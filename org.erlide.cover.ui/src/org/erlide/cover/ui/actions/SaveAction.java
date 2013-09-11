@@ -93,10 +93,9 @@ public class SaveAction extends Action {
         log.info(location);
         log.info(name);
 
-        ObjectOutputStream objOutStream;
         try {
-            objOutStream = new ObjectOutputStream(new FileOutputStream(location
-                    .append(name).toString()));
+            final ObjectOutputStream objOutStream = new ObjectOutputStream(
+                    new FileOutputStream(location.append(name).toString()));
             try {
                 objOutStream.writeObject(StatsTreeModel.getInstance());
             } finally {

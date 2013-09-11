@@ -236,7 +236,8 @@ public abstract class ErlidePreferencePage extends PreferencePage {
         updateStatus(status);
     }
 
-    protected void updateStatus(IStatus status) {
+    protected void updateStatus(final IStatus status0) {
+        IStatus status = status0;
         if (!status.matches(IStatus.ERROR)) {
             for (final Text text : fNumberFields) {
                 final IStatus s = validatePositiveNumber(text.getText());

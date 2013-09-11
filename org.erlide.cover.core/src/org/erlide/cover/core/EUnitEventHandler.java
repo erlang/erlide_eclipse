@@ -63,6 +63,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
 
         if (resType.atomValue().equals(GROUP_BEGIN)) {
             handle_group_begin(msg);
+        } else if (resType.atomValue().equals(TEST_BEGIN)) {
         } else if (resType.atomValue().equals(TEST_END)) {
             handle_test(msg);
         } else if (resType.atomValue().equals(GROUP_END)) {
@@ -283,10 +284,9 @@ public class EUnitEventHandler extends ErlangEventHandler {
         if (description != null && !description.equals("undefined")) {
             return String.format("%s:%s/%d (%s) at line %d - %s", module,
                     function, arity, description, line, status);
-        } else {
-            return String.format("%s:%s/%d at line %d - %s", module, function,
-                    arity, line, status);
         }
+        return String.format("%s:%s/%d at line %d - %s", module, function,
+                arity, line, status);
     }
 
 }

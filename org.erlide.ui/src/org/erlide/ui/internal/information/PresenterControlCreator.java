@@ -25,11 +25,11 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.erlide.backend.BackendCore;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.services.search.OpenResult;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.services.search.OpenResult;
 import org.erlide.ui.ErlideImage;
-import org.erlide.ui.actions.OpenAction;
+import org.erlide.ui.actions.OpenUtils;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.SimpleSelectionProvider;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -197,9 +197,9 @@ public final class PresenterControlCreator extends
                 } else if (element instanceof OpenResult) {
                     final OpenResult or = (OpenResult) element;
                     try {
-                        OpenAction.openOpenResult(editor, editor.getModule(),
-                                BackendCore.getBackendManager().getIdeBackend()
-                                        .getRpcSite(), -1, null, or, null);
+                        new OpenUtils().openOpenResult(editor, editor
+                                .getModule(), ErlangEngine.getInstance()
+                                .getBackend(), -1, null, or, null);
                     } catch (final Exception e) {
                         ErlLogger.error(e);
                     }
@@ -295,10 +295,9 @@ public final class PresenterControlCreator extends
                     control));
 
             return control;
-        } else {
-            return new DefaultInformationControl(parent,
-                    EditorsUI.getTooltipAffordanceString(),
-                    new ErlInformationPresenter(true));
         }
+        return new DefaultInformationControl(parent,
+                EditorsUI.getTooltipAffordanceString(),
+                new ErlInformationPresenter(true));
     }
 }

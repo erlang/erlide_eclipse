@@ -26,15 +26,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.model.ModelCore;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.root.IErlProject;
-import org.erlide.model.root.IErlangProjectProperties;
-import org.erlide.model.root.OldErlangProjectProperties;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.IErlangProjectProperties;
+import org.erlide.engine.model.root.OldErlangProjectProperties;
 
 import com.google.common.collect.Lists;
 
@@ -170,7 +168,7 @@ public class ErlideTestUtils {
             final String moduleContents, final IFolder folder)
             throws CoreException {
         final IFile file = createFile(moduleName, moduleContents, folder);
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         IErlModule module = model.findModule(file);
         if (module == null) {
             final String path = file.getLocation().toPortableString();
@@ -198,7 +196,8 @@ public class ErlideTestUtils {
         if (file != null) {
             file.delete(true, null);
         }
-        final IPath stateDir = new Path(ModelCore.getStateDir());
+        final IPath stateDir = new Path(ErlangEngine.getInstance()
+                .getStateDir());
         // FIXME this code should not know about caches!
         final String cacheExts[] = { ".noparse", ".refs", ".scan" };
         for (final String ext : cacheExts) {
@@ -219,7 +218,7 @@ public class ErlideTestUtils {
         } catch (final CoreException x) {
             // ignore
         }
-        final IErlProject erlProject = ErlModelManager.getErlangModel()
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .newProject(name, path.toPortableString());
         final IProject project = erlProject.getWorkspaceProject();
         final IErlangProjectProperties prefs = new OldErlangProjectProperties(
@@ -243,7 +242,7 @@ public class ErlideTestUtils {
     public static IErlProject getExistingProject(final String name) {
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         final IProject project = root.getProject(name);
-        return ErlModelManager.getErlangModel().getErlangProject(project);
+        return ErlangEngine.getInstance().getModel().getErlangProject(project);
     }
 
     public static void createFolderHelper(final IFolder folder)
@@ -294,17 +293,18 @@ public class ErlideTestUtils {
             final List<IErlModule> list = Lists
                     .newArrayList(modulesAndIncludes);
             for (final IErlModule module : list) {
-                if (ModelUtils.getProject(module) == erlProject) {
+                if (ErlangEngine.getInstance().getModelUtilService()
+                        .getProject(module) == erlProject) {
                     deleteModule(module);
                 }
             }
         }
         erlProject.dispose();
         if (projects != null) {
-            projects.remove(ErlModelManager.getErlangModel().findProject(
-                    project));
+            projects.remove(ErlangEngine.getInstance().getModel()
+                    .findProject(project));
         }
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         model.resourceChanged(null);
         model.open(null);
     }
@@ -331,7 +331,7 @@ public class ErlideTestUtils {
 
     public static void initProjects() throws CoreException {
         projects = Lists.newArrayList();
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         model.open(null);
         final List<IErlElement> children = model.getChildren();
         for (final IErlElement child : children) {
@@ -345,7 +345,7 @@ public class ErlideTestUtils {
     }
 
     public static IErlModule createModuleFromText(final String initialText) {
-        final IErlModel model = ErlModelManager.getErlangModel();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         final IErlModule module = model.getModuleFromText(model, "test1",
                 initialText, "test1");
         modulesAndIncludes.add(module);

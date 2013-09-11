@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Properties;
@@ -104,7 +103,7 @@ public class ReportGenerator {
 
     // obtain templates
     private String getTemplateFromJar(final boolean relative)
-            throws IOException, URISyntaxException {
+            throws IOException {
         URL bundleRoot;
         if (relative) {
             bundleRoot = Platform.getBundle(

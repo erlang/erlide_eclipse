@@ -59,9 +59,9 @@ check_pattern(Pattern, Mod, #function_def{function=F, arity=A} = FD, _, _, _)->
 check_pattern(Pattern, Mod, #type_ref{module='_', type=T}, _, _, _) ->
     lists:member(#type_ref{module=Mod, type=T}, Pattern);
 check_pattern(Pattern, _Mod, #var_ref{}=VR, F, A, C) ->
-        check_var_pattern(Pattern, VR, F, A, C);
+    check_var_pattern(Pattern, VR, F, A, C);
 check_pattern(Pattern, _Mod, #var_def{}=VD, F, A, C) ->
-        check_var_pattern(Pattern, VD, F, A, C);
+    check_var_pattern(Pattern, VD, F, A, C);
 check_pattern(Pattern, _Mod, D, _, _, _) ->
     lists:member(D, Pattern).
 
@@ -76,7 +76,7 @@ check_function_ref(#function_def_mod{module=Mod, function=F, arity=A1}, [#functi
 check_function_ref(X, [_|Tail]) ->
     check_function_ref(X, Tail).
 
-    
+
 
 check_var_pattern([], _, _, _, _) ->
     false;

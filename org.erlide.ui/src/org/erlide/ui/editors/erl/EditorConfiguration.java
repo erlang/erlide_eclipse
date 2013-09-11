@@ -27,9 +27,9 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.hover.ErlTextHover;
 import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
@@ -70,9 +70,8 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
             final ISourceViewer sourceViewer, final String contentType) {
         if (contentType.equals(IDocument.DEFAULT_CONTENT_TYPE)) {
             return new IAutoEditStrategy[] { new AutoIndentStrategy(editor) };
-        } else {
-            return NO_AUTOEDIT;
         }
+        return NO_AUTOEDIT;
     }
 
     @Override
@@ -107,7 +106,8 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 
     @Override
     protected IErlProject getProject() {
-        return ModelUtils.getProject(getModule());
+        return ErlangEngine.getInstance().getModelUtilService()
+                .getProject(getModule());
     }
 
     @Override
@@ -143,11 +143,10 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
                         }
                     };
                     return info;
-                } else {
-                    return new DefaultInformationControl(parent,
-                            EditorsUI.getTooltipAffordanceString(),
-                            new ErlInformationPresenter(true));
                 }
+                return new DefaultInformationControl(parent,
+                        EditorsUI.getTooltipAffordanceString(),
+                        new ErlInformationPresenter(true));
             }
         };
     }

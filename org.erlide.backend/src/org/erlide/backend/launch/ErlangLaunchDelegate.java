@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.erlide.backend.launch;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Map;
 
@@ -27,7 +29,8 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
-import org.erlide.model.BeamLocator;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.IBeamLocator;
 import org.erlide.runtime.ErlRuntimeFactory;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.runtime.api.IErlRuntime;
@@ -77,10 +80,6 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
 
         data = configureBackend(data, config, mode, launch);
 
-        // if (ErlideUtil.isDeveloper()) {
-        data.debugPrint();
-        // }
-
         if (data.isManaged()) {
             setCaptureOutput(launch);
         }
@@ -103,7 +102,8 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
             final ILaunchConfiguration config, final String mode,
             final ILaunch launch) {
         data.setLaunch(launch);
-        data.setBeamLocator(new BeamLocator());
+        data.setBeamLocator(ErlangEngine.getInstance().getService(
+                IBeamLocator.class));
         return data;
     }
 

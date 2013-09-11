@@ -73,17 +73,18 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.erlang.IErlAttribute;
-import org.erlide.model.erlang.IErlFunctionClause;
-import org.erlide.model.erlang.IErlMember;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.erlang.IErlScanner;
-import org.erlide.model.erlang.ISourceRange;
-import org.erlide.model.erlang.ISourceReference;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.ModelUtils;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.erlang.IErlAttribute;
+import org.erlide.engine.model.erlang.IErlFunctionClause;
+import org.erlide.engine.model.erlang.IErlMember;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.erlang.ISourceRange;
+import org.erlide.engine.model.erlang.ISourceReference;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.services.parsing.ScannerService;
+import org.erlide.engine.services.search.XrefService;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.editors.erl.actions.CallHierarchyAction;
@@ -144,24 +145,19 @@ public class ErlangEditor extends AbstractErlangEditor implements
     private CallHierarchyAction callhierarchy;
     private IErlModule fModule = null;
 
+    XrefService xrefService;
+
     final MarkOccurencesHandler markOccurencesHandler = new MarkOccurencesHandler(
             this, null, IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP,
             new ActivationListener());
 
-    /**
-     * Simple constructor
-     * 
-     */
-    public ErlangEditor() {
+    public ErlangEditor(final XrefService xrefService) {
         super();
         fErlangEditorErrorTickUpdater = new ErlangEditorErrorTickUpdater(this);
+
+        this.xrefService = xrefService;
     }
 
-    /**
-     * Simple disposer
-     * 
-     * @see org.eclipse.ui.IWorkbenchPart#dispose()
-     */
     @Override
     public void dispose() {
         if (colorManager != null) {
@@ -311,7 +307,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
             // IErlangHelpContextIds.INDENT_ACTION);
         }
 
-        callhierarchy = new CallHierarchyAction(this, getModule());
+        callhierarchy = new CallHierarchyAction(this, getModule(), xrefService);
         callhierarchy
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.CALLHIERARCHY);
         setAction("CallHierarchy", callhierarchy);
@@ -386,7 +382,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
         fContextMenuGroup.setContext(null);
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(final Class required) {
         if (IContentOutlinePage.class.equals(required)) {
@@ -625,7 +620,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
             try {
                 fModule = ErlModelUtils.getModule(getEditorInput());
                 fModule.createScanner();
-                final IErlScanner erlScanner = fModule.getScanner();
+                final ScannerService erlScanner = fModule.getScanner();
                 erlScanner.dispose();
             } catch (final CoreException e) {
             }
@@ -1056,9 +1051,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
             return new IllegalArgumentException(
                     "The file's actual encoding doesn't match the declared one",
                     e);
-        } else {
-            return e;
         }
+        return e;
     }
 
     protected boolean isActivePart() {
@@ -1577,7 +1571,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
     }
 
     @Override
-    protected IErlScanner getNewScanner() {
+    protected ScannerService getNewScanner() {
         return getModule().getScanner();
     }
 
@@ -1609,7 +1603,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
 
     @Override
     public IErlProject getProject() {
-        return ModelUtils.getProject(getModule());
+        return ErlangEngine.getInstance().getModelUtilService()
+                .getProject(getModule());
     }
 
     @Override

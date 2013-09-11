@@ -19,7 +19,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -59,16 +58,16 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.builder.DialyzerPreferences;
-import org.erlide.core.builder.DialyzerUtils;
-import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
-import org.erlide.core.builder.ErlideDialyze;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.root.ErlElementKind;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
-import org.erlide.model.root.IErlModel;
-import org.erlide.model.root.IErlProject;
+import org.erlide.dialyzer.builder.DialyzerPreferences;
+import org.erlide.dialyzer.builder.DialyzerUtils;
+import org.erlide.dialyzer.builder.DialyzerUtils.DialyzerErrorException;
+import org.erlide.dialyzer.builder.ErlideDialyze;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.root.ErlElementKind;
+import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.prefs.ProjectSelectionDialog;
@@ -333,7 +332,6 @@ public class DialyzerPreferencePage extends PropertyPage implements
         try {
             final DialyzerPreferences p = DialyzerPreferences.get(project);
             return p.hasOptionsAtLowestScope();
-        } catch (final CoreException e) {
         } catch (final RpcException e) {
         }
         return false;
@@ -432,7 +430,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         } else {
             final List<IProject> erlProjects = new ArrayList<IProject>();
             final Set<IProject> projectsWithSpecifics = new HashSet<IProject>();
-            final IErlModel model = ErlModelManager.getErlangModel();
+            final IErlModel model = ErlangEngine.getInstance().getModel();
             try {
                 for (final IErlProject ep : model.getErlangProjects()) {
                     final IProject p = ep.getWorkspaceProject();
@@ -669,8 +667,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 final String alternatePltFileDirectory = DialyzerPreferences
                         .getAlternatePLTFileDirectoryFromPreferences();
                 checkIfPltFilesShouldBeCopied(alternatePltFileDirectory);
-                final IRpcSite backend = BackendCore.getBuildOrIdeBackend(
-                        fProject).getRpcSite();
+                final IRpcSite backend = BackendCore
+                        .getBuildOrIdeBackend(fProject);
                 for (final String pltPath : selectedPLTPaths) {
                     checkPlt(pltPath, alternatePltFileDirectory, monitor,
                             backend);
@@ -684,8 +682,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         }
 
         private void checkIfPltFilesShouldBeCopied(
-                final String alternatePltFileDirectory) throws RpcException,
-                IOException {
+                final String alternatePltFileDirectory) throws IOException {
             if (alternatePltFileDirectory == null) {
                 return;
             }
@@ -737,14 +734,14 @@ public class DialyzerPreferencePage extends PropertyPage implements
         private void checkPlt(final String pltPath,
                 final String alternatePltFileDirectory,
                 final IProgressMonitor monitor, final IRpcSite backend)
-                throws DialyzerErrorException, BackingStoreException,
-                ErlModelException, RpcException {
+                throws DialyzerErrorException, ErlModelException, RpcException {
             try {
                 monitor.subTask("Checking PLT file " + pltPath);
                 List<String> ebinDirs = null;
                 if (alternatePltFileDirectory != null) {
                     ebinDirs = Lists.newArrayList();
-                    for (final IErlElement i : ErlModelManager.getErlangModel()
+                    for (final IErlElement i : ErlangEngine.getInstance()
+                            .getModel()
                             .getChildrenOfKind(ErlElementKind.PROJECT)) {
                         final IErlProject project = (IErlProject) i;
                         final String ebinDir = project.getWorkspaceProject()

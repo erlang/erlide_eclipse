@@ -246,9 +246,8 @@ public final class StringUtils {
         if (i != -1) {
             return new Pair<String, String>(fullRep.substring(0, i),
                     fullRep.substring(i + 1));
-        } else {
-            return new Pair<String, String>(fullRep, "");
         }
+        return new Pair<String, String>(fullRep, "");
 
     }
 
@@ -270,8 +269,9 @@ public final class StringUtils {
 
     }
 
-    public static String replaceNewLines(String message, final String string) {
-        message = message.replaceAll("\r\n", string);
+    public static String replaceNewLines(final String message0,
+            final String string) {
+        String message = message0.replaceAll("\r\n", string);
         message = message.replaceAll("\r", string);
         message = message.replaceAll("\n", string);
 
@@ -293,9 +293,8 @@ public final class StringUtils {
         final int length = s.length();
         if (length > 2 && s.charAt(0) == '\'' && s.charAt(length - 1) == '\'') {
             return s.substring(1, length - 1);
-        } else {
-            return s;
         }
+        return s;
     }
 
     public static String quote(final String s) {
@@ -312,9 +311,8 @@ public final class StringUtils {
             final Character c = checkCharAt(i, list);
             if (c == null) {
                 break;
-            } else {
-                b.append(c);
             }
+            b.append(c);
             i++;
         }
         return b.toString();

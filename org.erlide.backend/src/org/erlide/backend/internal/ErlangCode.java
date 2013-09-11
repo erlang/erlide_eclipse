@@ -13,12 +13,14 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public final class ErlangCode {
 
+    private static final String CODE = "code";
+
     private ErlangCode() {
     }
 
     public static void addPathA(final IRpcSite backend, final String path) {
         try {
-            backend.call("code", "add_patha", "s", path);
+            backend.call(CODE, "add_patha", "s", path);
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -26,13 +28,14 @@ public final class ErlangCode {
 
     public static void addPathZ(final IRpcSite backend, final String path) {
         try {
-            backend.call("code", "add_pathz", "s", path);
+            backend.call(CODE, "add_pathz", "s", path);
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
     }
 
-    public static void removePath(final IRpcSite backend, String path) {
+    public static void removePath(final IRpcSite backend, final String path0) {
+        String path = path0;
         try {
             // workaround for bug in code:del_path
             try {
@@ -42,7 +45,7 @@ public final class ErlangCode {
             } catch (final Exception e) {
                 // ignore
             }
-            backend.call("code", "del_path", "s", path);
+            backend.call(CODE, "del_path", "s", path);
         } catch (final Exception e) {
         }
     }
@@ -50,19 +53,20 @@ public final class ErlangCode {
     public static OtpErlangObject loadBinary(final IRpcSite b,
             final String beamf, final OtpErlangBinary code) throws RpcException {
         OtpErlangObject result;
-        result = b.call("code", "load_binary", "asb", beamf, beamf, code);
+        result = b.call(CODE, "load_binary", "asb", beamf, beamf, code);
         return result;
     }
 
     public static void delete(final IRpcSite fBackend, final String moduleName) {
         try {
-            fBackend.call("code", "delete", "a", moduleName);
+            fBackend.call(CODE, "delete", "a", moduleName);
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
     }
 
-    public static void load(final IRpcSite backend, String name) {
+    public static void load(final IRpcSite backend, final String name0) {
+        String name = name0;
         if (name.endsWith(".beam")) {
             name = name.substring(0, name.length() - 5);
         }
@@ -75,8 +79,8 @@ public final class ErlangCode {
 
     public static boolean isEmbedded(final IRpcSite backend) {
         try {
-            final OtpErlangObject r = backend.call("code", "ensure_loaded",
-                    "a", "funny_module_name_that_nobody_would_use");
+            final OtpErlangObject r = backend.call(CODE, "ensure_loaded", "a",
+                    "funny_module_name_that_nobody_would_use");
             final Bindings b = ErlUtils.match("{error, What}", r);
             if (b.getAtom("What").equals("embedded")) {
                 return true;

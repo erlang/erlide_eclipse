@@ -12,11 +12,11 @@ package org.erlide.ui.editors.erl.outline;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.model.ErlModelException;
-import org.erlide.model.IParent;
-import org.erlide.model.erlang.IErlModule;
-import org.erlide.model.root.ErlModelManager;
-import org.erlide.model.root.IErlElement;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IParent;
+import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.IErlElement;
 import org.erlide.util.ErlLogger;
 
 public class ErlangContentProvider implements ITreeContentProvider {
@@ -70,8 +70,8 @@ public class ErlangContentProvider implements ITreeContentProvider {
     @Override
     public void dispose() {
         if (fListener != null) {
-            ErlModelManager.getErlangModel().removeElementChangedListener(
-                    fListener);
+            ErlangEngine.getInstance().getModel()
+                    .removeElementChangedListener(fListener);
             fListener = null;
         }
     }
@@ -89,11 +89,11 @@ public class ErlangContentProvider implements ITreeContentProvider {
             // TODO fixme
             fListener = new ElementChangedListener(null);
 
-            ErlModelManager.getErlangModel().addElementChangedListener(
-                    fListener);
+            ErlangEngine.getInstance().getModel()
+                    .addElementChangedListener(fListener);
         } else if (!isModule && fListener != null) {
-            ErlModelManager.getErlangModel().removeElementChangedListener(
-                    fListener);
+            ErlangEngine.getInstance().getModel()
+                    .removeElementChangedListener(fListener);
             fListener = null;
         }
     }
