@@ -13,7 +13,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public interface OpenService {
-	
+
     OtpErlangObject getSourceFromModule(final OtpErlangList pathVars,
             final String mod, final String externalModules) throws RpcException;
 
@@ -60,8 +60,8 @@ public interface OpenService {
         }
     }
 
-    List<ExternalTreeEntry> getExternalModuleTree(IRpcSite backend, final String externalModules,
-            final OtpErlangList pathVars);
+    List<ExternalTreeEntry> getExternalModuleTree(IRpcSite backend,
+            final String externalModules, final OtpErlangList pathVars);
 
     String getExternalInclude(final String filePath,
             final String externalIncludes, final OtpErlangList pathVars);
@@ -72,5 +72,5 @@ public interface OpenService {
 
     Collection<String> getIncludesInDir(final String directory);
 
-	Map<String, List<String>> getOtpLibSrcIncludes(IRpcSite backend);
+    Map<String, List<String>> getOtpLibSrcIncludes(IRpcSite backend);
 }

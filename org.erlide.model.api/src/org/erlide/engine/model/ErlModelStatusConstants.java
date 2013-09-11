@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.engine.model;
 
-
-
 /**
  * Status codes used with Erlang model status objects.
  * <p>

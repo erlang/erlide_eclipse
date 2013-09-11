@@ -33,8 +33,8 @@ public class ErlideDialyze {
         for (final IPath p : includeDirs) {
             incs.add(p.toString());
         }
-        return backend.async_call(ERLIDE_DIALYZE, "dialyze", "lslslsoo",
-                files, pltPaths, incs, fromSource, noCheckPLT);
+        return backend.async_call(ERLIDE_DIALYZE, "dialyze", "lslslsoo", files,
+                pltPaths, incs, fromSource, noCheckPLT);
     }
 
     public static void startDialyzer(final IRpcSite backend,
@@ -78,8 +78,8 @@ public class ErlideDialyze {
 
     public static List<String> getPltFiles(final IRpcSite backend,
             final String pltFiles) throws RpcException {
-        final OtpErlangObject o = backend.call(ERLIDE_DIALYZE,
-                "get_plt_files", "s", pltFiles);
+        final OtpErlangObject o = backend.call(ERLIDE_DIALYZE, "get_plt_files",
+                "s", pltFiles);
         if (Util.isOk(o)) {
             final OtpErlangTuple t = (OtpErlangTuple) o;
             final OtpErlangObject e1 = t.elementAt(1);

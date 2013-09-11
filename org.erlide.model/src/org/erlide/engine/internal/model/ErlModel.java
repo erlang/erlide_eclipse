@@ -404,6 +404,9 @@ public class ErlModel extends Openable implements IErlModel {
     public IErlFunction findFunction(final FunctionRef r)
             throws ErlModelException {
         final IErlModule module = findModule(r.module);
+        if (module == null) {
+            return null;
+        }
         module.open(null);
         return module.findFunction(new ErlangFunction(r.function, r.arity));
     }

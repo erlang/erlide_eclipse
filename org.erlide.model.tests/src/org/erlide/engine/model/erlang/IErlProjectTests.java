@@ -15,7 +15,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.OldErlangProjectProperties;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;

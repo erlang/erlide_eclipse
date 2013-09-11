@@ -9,10 +9,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.erlide.engine.model.erlang.IErlComment;
-import org.erlide.engine.model.erlang.IErlFunction;
-import org.erlide.engine.model.erlang.IErlMember;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.test.support.ErlideTestUtils;

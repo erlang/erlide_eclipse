@@ -5,8 +5,6 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.List;
 
-import org.erlide.engine.model.erlang.IErlMacroDef;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.test.support.ErlideTestUtils;

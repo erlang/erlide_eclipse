@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
-import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;

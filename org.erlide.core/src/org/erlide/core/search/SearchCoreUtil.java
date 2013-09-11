@@ -21,10 +21,10 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlElement.AcceptFlags;
 import org.erlide.engine.model.root.IErlElementVisitor;
 import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.IErlElement.AcceptFlags;
 import org.erlide.engine.services.search.ErlSearchScope;
 import org.erlide.engine.util.NatureUtil;
 
