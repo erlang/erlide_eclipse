@@ -25,9 +25,9 @@ import org.erlide.ui.util.TypedViewerFilter;
 
 public class DirectorySelectUtil {
 
-    public static IContainer chooseLocation(String dialogTitle,
-            String labelText, IProject project2, String outputLocation,
-            Shell shell) {
+    public static IContainer chooseLocation(final String dialogTitle,
+            final String labelText, final IProject project2,
+            final String outputLocation, final Shell shell) {
         final IWorkspaceRoot root = project2.getWorkspace().getRoot();
         final Class<?>[] acceptedClasses = new Class[] { IProject.class,
                 IFolder.class };
@@ -41,23 +41,23 @@ public class DirectorySelectUtil {
         }
         final ViewerFilter filter = new TypedViewerFilter(acceptedClasses,
                 rejectedElements.toArray());
-    
+
         final ILabelProvider lp = new WorkbenchLabelProvider();
         final ITreeContentProvider cp = new WorkbenchContentProvider();
-    
+
         IResource initSelection = null;
         if (outputLocation != null) {
             initSelection = root.findMember(outputLocation);
         }
-    
+
         final FolderSelectionDialog dialog = new FolderSelectionDialog(shell,
                 lp, cp);
         dialog.setTitle(dialogTitle);
-    
+
         final ISelectionStatusValidator validator = new ISelectionStatusValidator() {
             ISelectionStatusValidator myValidator = new TypedElementSelectionValidator(
                     acceptedClasses, false);
-    
+
             @Override
             public IStatus validate(final Object[] selection) {
                 final IStatus typedStatus = myValidator.validate(selection);
@@ -77,9 +77,8 @@ public class DirectorySelectUtil {
                     // JavaPlugin.log(e);
                     // }
                     return new StatusInfo();
-                } else {
-                    return new StatusInfo(IStatus.ERROR, "");
                 }
+                return new StatusInfo(IStatus.ERROR, "");
             }
         };
         dialog.setValidator(validator);
@@ -88,7 +87,7 @@ public class DirectorySelectUtil {
         dialog.setInput(root);
         dialog.setInitialSelection(initSelection);
         dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
-    
+
         if (dialog.open() == Window.OK) {
             return (IContainer) dialog.getFirstResult();
         }
