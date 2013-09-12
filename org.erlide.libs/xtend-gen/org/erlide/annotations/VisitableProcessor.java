@@ -114,7 +114,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
                   }
                 };
                 List<TypeReference> _map = ListExtensions.map(_parameters, _function);
-                final MutableMethodDeclaration existingMethod = it.findMethod(_simpleName, ((TypeReference[])Conversions.unwrapArray(_map, TypeReference.class)));
+                final MutableMethodDeclaration existingMethod = it.findDeclaredMethod(_simpleName, ((TypeReference[])Conversions.unwrapArray(_map, TypeReference.class)));
                 boolean _tripleEquals = (existingMethod == null);
                 if (_tripleEquals) {
                   String _simpleName_1 = method.getSimpleName();
