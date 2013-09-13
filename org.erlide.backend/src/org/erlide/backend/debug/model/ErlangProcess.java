@@ -23,11 +23,11 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
-import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.debug.ErlangLineBreakpoint;
 import org.erlide.backend.debug.ErlideDebug;
-import org.erlide.engine.util.ErlangFunction;
+import org.erlide.backend.internal.BackendPlugin;
+import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlangFunctionCall;
 

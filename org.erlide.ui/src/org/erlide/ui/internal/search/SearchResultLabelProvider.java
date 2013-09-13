@@ -15,10 +15,10 @@ import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
 import org.eclipse.swt.graphics.Image;
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlElementKind;
-import org.erlide.engine.util.ErlangFunction;
 import org.erlide.engine.util.ResourceUtil;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 

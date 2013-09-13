@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.engine.util;
+package org.erlide.engine.model;
 
 /**
  * An element changed listener receives notification of changes to Erlang

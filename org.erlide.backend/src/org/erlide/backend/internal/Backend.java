@@ -40,7 +40,6 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.jdt.annotation.NonNull;
-import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;

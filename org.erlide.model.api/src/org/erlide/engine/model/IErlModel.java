@@ -19,8 +19,6 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementDelta;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.util.ElementChangedEvent;
-import org.erlide.engine.util.IElementChangedListener;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.base.Predicate;

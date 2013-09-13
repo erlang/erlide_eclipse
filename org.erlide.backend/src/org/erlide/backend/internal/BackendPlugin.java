@@ -1,10 +1,9 @@
-package org.erlide.backend;
+package org.erlide.backend.internal;
 
 import org.eclipse.core.runtime.Plugin;
+import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.backend.internal.BackendFactory;
-import org.erlide.backend.internal.BackendManager;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.DebugStream;

@@ -8,6 +8,7 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.cache.ErlModelCache;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IParent;
+import org.erlide.engine.model.erlang.ErlangIncludeFile;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;
 import org.erlide.engine.model.root.ErlElementKind;
@@ -16,7 +17,6 @@ import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelSearcherService;
 import org.erlide.engine.services.search.ModelUtilService;
-import org.erlide.engine.util.ErlangIncludeFile;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

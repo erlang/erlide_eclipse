@@ -15,12 +15,12 @@ import java.util.List;
 
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IParent;
+import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.engine.model.erlang.IErlMember;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
-import org.erlide.engine.util.ErlangFunction;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Lists;

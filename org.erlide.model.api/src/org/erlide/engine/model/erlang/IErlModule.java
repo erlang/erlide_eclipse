@@ -25,8 +25,6 @@ import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.ISourceUnit;
 import org.erlide.engine.services.parsing.ScannerService;
-import org.erlide.engine.util.ErlangFunction;
-import org.erlide.engine.util.ErlangIncludeFile;
 
 /**
  * Represents an entire Erlang compilation unit (<code>.erl</code> or

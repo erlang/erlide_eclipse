@@ -19,8 +19,6 @@ import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.parsing.ScannerService;
-import org.erlide.engine.util.ErlangFunction;
-import org.erlide.engine.util.ErlangIncludeFile;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 

@@ -11,11 +11,11 @@ import java.util.Map;
 import org.eclipse.core.resources.IResourceDelta;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.root.ErlElementDelta;
+import org.erlide.engine.model.ElementChangedEvent;
+import org.erlide.engine.model.IElementChangedListener;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementDelta;
 import org.erlide.engine.model.root.IWorkingCopy;
-import org.erlide.engine.util.ElementChangedEvent;
-import org.erlide.engine.util.IElementChangedListener;
 
 public class ErlModelDeltaManager {
     public static final int DEFAULT_CHANGE_EVENT = 0;

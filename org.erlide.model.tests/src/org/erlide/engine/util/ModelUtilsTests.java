@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlImport;
 import org.erlide.engine.model.erlang.IErlModule;

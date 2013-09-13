@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.erlide.backend.internal.BackendPlugin;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.Util;
