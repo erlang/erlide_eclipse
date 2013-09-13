@@ -614,12 +614,23 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public String createScannerName() {
-        if (getCorrespondingResource() != null) {
-            return getCorrespondingResource().getFullPath().toPortableString()
-                    .substring(1);
+        final IResource resource = getCorrespondingResource();
+        if (resource != null) {
+            return resource.getFullPath().toPortableString().substring(1);
         }
-        final int hash = hashCode();
-        final String name = getName() != null ? getName() : "";
+        int hash;
+        if (initialText != null && !initialText.isEmpty()) {
+            // we need to use the initialText if available, to avoid that
+            // different anonymous modules get the same scanner name (which
+            // causes problems in erlang compare)
+            hash = initialText.hashCode();
+        } else {
+            hash = hashCode();
+        }
+        String name = getName();
+        if (name == null) {
+            name = "";
+        }
         return String.format("%s_%08x", name, hash);
     }
 
