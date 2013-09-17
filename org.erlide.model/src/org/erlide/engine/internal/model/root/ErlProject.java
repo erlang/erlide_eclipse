@@ -60,6 +60,7 @@ import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.engine.model.root.OldErlangProjectProperties;
+import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
 import org.erlide.engine.util.SourcePathUtils;
@@ -183,7 +184,7 @@ public class ErlProject extends Openable implements IErlProject {
         for (final IPath path : includeDirs) {
             if (path.isAbsolute() && !fProject.getLocation().isPrefixOf(path)) {
                 final Collection<String> includes = ErlangEngine.getInstance()
-                        .getOpenService()
+                        .getService(OpenService.class)
                         .getIncludesInDir(path.toPortableString());
                 if (includes != null) {
                     for (final String include : includes) {

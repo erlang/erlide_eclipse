@@ -15,6 +15,7 @@ import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlExternal;
+import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.api.IRpcSite;
 
 import com.google.common.collect.Lists;
@@ -51,7 +52,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         final IRpcSite backend = new BackendUtil().getBackend(workspaceProject);
         if (backend != null) {
             final List<String> files = ErlangEngine.getInstance()
-                    .getOpenService().getLibFiles(entry);
+                    .getService(OpenService.class).getLibFiles(entry);
             final List<IErlModule> children = Lists
                     .newArrayListWithCapacity(files.size());
             for (final String file : files) {

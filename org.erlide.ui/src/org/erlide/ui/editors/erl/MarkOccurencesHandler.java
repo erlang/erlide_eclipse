@@ -40,6 +40,7 @@ import org.erlide.engine.services.search.ErlangSearchPattern;
 import org.erlide.engine.services.search.LimitTo;
 import org.erlide.engine.services.search.ModuleLineFunctionArityRef;
 import org.erlide.engine.services.search.OpenResult;
+import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.ui.editors.erl.ErlangEditor.ActivationListener;
@@ -99,7 +100,7 @@ public class MarkOccurencesHandler {
                 final int offset = aSelection.getOffset();
                 final OpenResult res = ErlangEngine
                         .getInstance()
-                        .getOpenService()
+                        .getService(OpenService.class)
                         .open(theModule.getScannerName(),
                                 offset,
                                 ErlangEngine.getInstance()

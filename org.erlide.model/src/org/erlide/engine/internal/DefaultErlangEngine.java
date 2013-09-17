@@ -111,6 +111,7 @@ public class DefaultErlangEngine implements IErlangEngine {
         implementations.put(IndentService.class, ErlideIndent.class);
         implementations.put(OtpDocService.class, ErlideDoc.class);
         implementations.put(IBeamLocator.class, BeamLocator.class);
+        implementations.put(OpenService.class, ErlideOpen.class);
     }
 
     private final IRpcSite backend;
@@ -149,11 +150,6 @@ public class DefaultErlangEngine implements IErlangEngine {
                     .toPortableString();
         }
         return stateDir;
-    }
-
-    @Override
-    public OpenService getOpenService() {
-        return new ErlideOpen(backend, getStateDir());
     }
 
     @Override

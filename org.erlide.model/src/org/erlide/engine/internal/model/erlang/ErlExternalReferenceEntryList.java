@@ -19,6 +19,7 @@ import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.OpenService.ExternalTreeEntry;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.ErlLogger;
@@ -74,7 +75,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
                 }
                 externalModuleTree = ErlangEngine
                         .getInstance()
-                        .getOpenService()
+                        .getService(OpenService.class)
                         .getExternalModuleTree(backend, externalModules,
                                 pathVars);
             }
@@ -84,7 +85,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
                 }
                 externalIncludeTree = ErlangEngine
                         .getInstance()
-                        .getOpenService()
+                        .getService(OpenService.class)
                         .getExternalModuleTree(backend, externalIncludes,
                                 pathVars);
             }

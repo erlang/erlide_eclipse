@@ -17,6 +17,7 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.api.IRpcSite;
 
 public class ErlOtpExternalReferenceEntryList extends Openable implements
@@ -48,7 +49,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     private void addExternalEntries(final IProgressMonitor pm,
             final IRpcSite backend) {
         final Map<String, List<String>> srcIncludes = ErlangEngine
-                .getInstance().getOpenService().getOtpLibSrcIncludes(backend);
+                .getInstance().getService(OpenService.class).getOtpLibSrcIncludes(backend);
         for (final String srcInclude : srcIncludes.keySet()) {
             boolean hasHeaders = false;
             final List<String> paths = srcIncludes.get(srcInclude);

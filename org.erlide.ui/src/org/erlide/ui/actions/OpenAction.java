@@ -27,6 +27,7 @@ import org.erlide.engine.model.erlang.ISourceReference;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenResult;
+import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.util.ErlModelUtils;
@@ -127,7 +128,7 @@ public class OpenAction extends SelectionDispatchAction {
                 project = editor.getProject();
                 openResult = ErlangEngine
                         .getInstance()
-                        .getOpenService()
+                        .getService(OpenService.class)
                         .open(scannerName,
                                 offset,
                                 ErlangEngine.getInstance()
@@ -141,7 +142,7 @@ public class OpenAction extends SelectionDispatchAction {
                 textEditor = (ITextEditor) activeEditor;
                 final String text = textEditor.getDocumentProvider()
                         .getDocument(textEditor.getEditorInput()).get();
-                openResult = ErlangEngine.getInstance().getOpenService()
+                openResult = ErlangEngine.getInstance().getService(OpenService.class)
                         .openText(text, offset);
                 final IFile file = (IFile) textEditor.getEditorInput()
                         .getAdapter(IFile.class);

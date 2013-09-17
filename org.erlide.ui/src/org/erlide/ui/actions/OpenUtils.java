@@ -22,6 +22,7 @@ import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.OpenResult;
+import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
@@ -123,7 +124,7 @@ public class OpenUtils {
             moduleName = ei.getImportModule();
             res2 = ErlangEngine
                     .getInstance()
-                    .getOpenService()
+                    .getService(OpenService.class)
                     .getSourceFromModule(model.getPathVars(), moduleName,
                             erlProject.getExternalModulesString());
         }

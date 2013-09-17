@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
@@ -88,7 +89,7 @@ public class ErlideDoc implements OtpDocService {
                     offset,
                     ErlangEngine
                             .getInstance()
-                            .getOpenService()
+                            .getService(OpenService.class)
                             .mkContext(externalModules, null, pathVars, null,
                                     imports));
             res = b.call(ERLIDE_OTP_DOC, "get_doc", "sxs", module, input,
