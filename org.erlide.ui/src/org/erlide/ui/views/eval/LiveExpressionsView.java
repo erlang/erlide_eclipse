@@ -84,6 +84,8 @@ public class LiveExpressionsView extends ViewPart implements
     private Action fAddAction;
     Action fRemoveAction;
 
+    private final IRpcSite backend;
+
     private static class LiveExpr {
         String fExpr;
         private String cachedValue = "";
@@ -93,10 +95,6 @@ public class LiveExpressionsView extends ViewPart implements
         public LiveExpr(final IRpcSite b, final String s) {
             fExpr = s;
             this.b = b;
-        }
-
-        public LiveExpr(final String string) {
-            this(ErlangEngine.getInstance().getBackend(), string);
         }
 
         public void setDoEval(final boolean eval) {
@@ -201,6 +199,7 @@ public class LiveExpressionsView extends ViewPart implements
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
                 IResourceChangeEvent.POST_BUILD);
 
+        backend = ErlangEngine.getInstance().getBackend();
         // TODO make the backend configurable (as for console)
     }
 
@@ -271,7 +270,7 @@ public class LiveExpressionsView extends ViewPart implements
         if (!restoreState()) {
             /* Fill LiveExpressions for first time */
             exprs = new ArrayList<LiveExpr>(10);
-            addExpr(new LiveExpr("erlang:now()"));
+            addExpr(new LiveExpr(backend, "erlang:now()"));
         }
         viewer.setInput(exprs);
 
@@ -309,7 +308,7 @@ public class LiveExpressionsView extends ViewPart implements
                         if (str.length() > 0) {
                             // ErlLogger.debug(str);
                             final BackendEvalResult r = EvalHelper.eval(
-                                    ErlangEngine.getInstance().getBackend(),
+                                    backend,
                                     "lists:flatten(io_lib:format(\"~p\", ["
                                             + item.getText(1) + "])).", null);
                             if (r.isOk()) {
@@ -383,7 +382,7 @@ public class LiveExpressionsView extends ViewPart implements
             if (expressions.length > 0) {
                 exprs = new ArrayList<LiveExpr>(expressions.length);
                 for (final IMemento element : expressions) {
-                    exprs.add(new LiveExpr(element.getTextData()));
+                    exprs.add(new LiveExpr(backend, element.getTextData()));
                 }
             }
             return true;
@@ -491,7 +490,7 @@ public class LiveExpressionsView extends ViewPart implements
 
             @Override
             public void run() {
-                addExpr(new LiveExpr("expr"));
+                addExpr(new LiveExpr(backend, "expr"));
             }
         };
         fAddAction.setText("Add expression");

@@ -236,12 +236,16 @@ public class ProcessListView extends ViewPart {
         t.setLinesVisible(true);
         t.setHeaderVisible(true);
 
+        initErlangService();
+
+        makeActions();
+        hookContextMenu();
+        hookDoubleClickAction();
+        contributeToActionBars();
+    }
+
+    private void initErlangService() {
         // TODO this is wrong - all backends should be inited
-        final IRpcSite ideBackend = ErlangEngine.getInstance().getBackend();
-        if (ideBackend != null) {
-            ErlangEngine.getInstance().getProclistService()
-                    .processListInit(ideBackend);
-        }
         BackendCore.getBackendManager().forEachBackend(
                 new Procedure1<IBackend>() {
                     @Override
@@ -250,11 +254,6 @@ public class ProcessListView extends ViewPart {
                                 .processListInit(b.getRpcSite());
                     }
                 });
-
-        makeActions();
-        hookContextMenu();
-        hookDoubleClickAction();
-        contributeToActionBars();
     }
 
     private void hookContextMenu() {
