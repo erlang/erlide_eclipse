@@ -316,7 +316,7 @@ public class ErlTextHover implements ITextHover,
                 final OpenResult or = new OpenResult(t);
                 element = or;
                 final Object found = new OpenUtils().findOpenResult(editor,
-                        editor.getModule(), backend, erlProject, or,
+                        editor.getModule(), erlProject, or,
                         editor.getElementAt(offset, false));
                 if (found instanceof IErlFunction) {
                     final IErlFunction function = (IErlFunction) found;
