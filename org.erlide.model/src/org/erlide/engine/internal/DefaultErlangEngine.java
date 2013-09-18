@@ -3,7 +3,6 @@ package org.erlide.engine.internal;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.InjectionException;
@@ -175,14 +174,8 @@ public class DefaultErlangEngine implements IErlangEngine {
     /**
      * <p>
      * Construct a {@link CleanUpProvider} appropriate for a particular
-     * {@link IResource}.
+     * IResource.
      * </p>
-     * 
-     * @param resource
-     *            {@link IResource} for the Erlang module to clean up
-     * 
-     * @return {@link CleanUpProvider} appropriate for the supplied
-     *         {@link IResource}
      */
     @Override
     public CleanupProvider getCleanupProvider() {
