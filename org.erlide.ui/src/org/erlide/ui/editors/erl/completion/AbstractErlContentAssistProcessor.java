@@ -218,7 +218,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                             .getContextAssistService()
                             .checkRecordCompletion(
                                     BackendCore
-                                            .getBuildOrIdeBackend(workspaceProject),
+                                            .getBuildBackend(workspaceProject),
                                     before);
                 }
                 if (rc != null && rc.isNameWanted()) {
@@ -339,7 +339,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         final IProject workspaceProject = project == null ? null : project
                 .getWorkspaceProject();
         final IRpcSite backend = BackendCore
-                .getBuildOrIdeBackend(workspaceProject);
+                .getBuildBackend(workspaceProject);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(

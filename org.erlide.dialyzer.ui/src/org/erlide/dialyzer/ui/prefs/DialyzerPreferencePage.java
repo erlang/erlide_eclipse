@@ -554,7 +554,7 @@ public class DialyzerPreferencePage extends ProjectSpecificPreferencePage {
                         .getAlternatePLTFileDirectoryFromPreferences();
                 checkIfPltFilesShouldBeCopied(alternatePltFileDirectory);
                 final IRpcSite backend = BackendCore
-                        .getBuildOrIdeBackend(fProject);
+                        .getBuildBackend(fProject);
                 for (final String pltPath : selectedPLTPaths) {
                     checkPlt(pltPath, alternatePltFileDirectory, monitor,
                             backend);
