@@ -80,12 +80,12 @@ public final class ErlangCore {
         workspace.addSaveParticipant(plugin.getBundle().getSymbolicName(),
                 getSaveParticipant());
 
-        ErlangDebugOptionsManager.getDefault().start();
+        erlangDebugOptionsManager.start();
         ErlLogger.debug("Started CORE");
     }
 
     public void stop() {
-        ErlangDebugOptionsManager.getDefault().shutdown();
+        erlangDebugOptionsManager.shutdown();
         final String location = ResourcesPlugin.getWorkspace().getRoot()
                 .getLocation().toPortableString();
 

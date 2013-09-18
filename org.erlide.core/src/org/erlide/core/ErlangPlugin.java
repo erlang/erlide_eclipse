@@ -77,8 +77,7 @@ public class ErlangPlugin extends Plugin {
                 .getExtensionRegistry();
         final String logDir = workspace.getRoot().getLocation()
                 .toPortableString();
-        final ErlangDebugOptionsManager erlangDebugOptionsManager = ErlangDebugOptionsManager
-                .getDefault();
+        final ErlangDebugOptionsManager erlangDebugOptionsManager = new ErlangDebugOptionsManager();
 
         core = new ErlangCore(this, workspace, extensionRegistry, logDir,
                 erlangDebugOptionsManager);
