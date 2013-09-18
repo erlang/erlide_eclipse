@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IPathVariableManager;
@@ -98,12 +99,13 @@ public final class BuilderHelper {
                 .getIncludeDirs();
         final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
                 .getPathVariableManager();
-        for (IPath inc : projectIncludeDirs) {
-            inc = pvm.resolvePath(inc);
-            if (inc.isAbsolute()) {
-                includeDirs.add(inc);
+        for (final IPath inc : projectIncludeDirs) {
+            final IPath incPath = URIUtil.toPath(pvm.resolveURI(URIUtil
+                    .toURI(inc)));
+            if (incPath.isAbsolute()) {
+                includeDirs.add(incPath);
             } else {
-                final IFolder folder = project.getFolder(inc);
+                final IFolder folder = project.getFolder(incPath);
                 if (folder != null) {
                     final IPath location = folder.getLocation();
                     if (location != null) {

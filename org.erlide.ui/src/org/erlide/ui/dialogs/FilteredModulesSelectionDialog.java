@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
@@ -547,7 +548,8 @@ public class FilteredModulesSelectionDialog extends
 
                                 String path;
                                 final IPath p = new Path(pref);
-                                final IPath v = pvm.resolvePath(p);
+                                final IPath v = URIUtil.toPath(pvm
+                                        .resolveURI(URIUtil.toURI(p)));
                                 if (v.isAbsolute()) {
                                     path = v.toString();
                                 } else {
