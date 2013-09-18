@@ -15,8 +15,12 @@
 %%
 %% Exported Functions
 %%
--export([dialyze/5, format_warnings/1, check_plt/1, get_plt_files/1, update_plt_with_additional_paths/2,
-         start_dialyze/6, start_update_plt_with_additional_paths/3]).
+-export([dialyze/5, 
+         format_warnings/1, 
+         check_plt/1, 
+         update_plt_with_additional_paths/2,
+         start_dialyze/6, 
+         start_update_plt_with_additional_paths/3]).
 
 -compile({no_auto_import, [error/1, error/2]}).
 
@@ -230,15 +234,6 @@ start_update_plt_with_additional_paths(JPid, FileName, Paths) ->
             error(Msg)
     end.
 
-get_plt_files(PltFiles) ->
-    Files = string:tokens(PltFiles, ","),
-    case get_plt_files(Files, []) of
-        [L | _]=R when is_list(L) ->
-            {ok, R};
-        _ ->
-            no_files_found
-    end.
-
 %%
 %% Local Functions
 %%
@@ -249,22 +244,6 @@ flat({dialyzer_error, E}) ->
     flat(E);
 flat(L) ->
     lists:flatten(L).
-
-get_plt_files([], Acc) ->
-    lists:reverse(Acc);
-get_plt_files([File | Rest], Acc) ->
-    case filename:extension(File) of
-        ".plt" ->
-            get_plt_files(Rest, [File | Acc]);
-        _ ->
-            case file:read_file(File) of
-                {ok, B} ->
-                    L = erlide_util:split_lines(binary_to_list(B)),
-                    get_plt_files(L ++ Rest, Acc);
-                _ ->
-                    get_plt_files(Rest, [File | Acc])
-            end
-    end.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% stolen from dialyzer.hrl
