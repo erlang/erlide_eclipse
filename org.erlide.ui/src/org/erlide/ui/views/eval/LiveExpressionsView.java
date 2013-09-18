@@ -60,14 +60,15 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.backend.debug.BackendEvalResult;
 import org.erlide.backend.debug.EvalHelper;
-import org.erlide.engine.ErlangEngine;
 import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IRpcSiteProvider;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.DisplayUtils;
 import org.erlide.ui.views.SourceViewerInformationControl;
 import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.services.ExtensionUtils;
 
 /**
  * @author Vlad Dumitrescu
@@ -192,14 +193,13 @@ public class LiveExpressionsView extends ViewPart implements
     static class NameSorter extends ViewerSorter {
     }
 
-    /**
-     * The constructor.
-     */
     public LiveExpressionsView() {
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
                 IResourceChangeEvent.POST_BUILD);
 
-        backend = ErlangEngine.getInstance().getBackend();
+        final IRpcSiteProvider provider = ExtensionUtils.getSingletonExtension(
+                "org.erlide.backend.backend", IRpcSiteProvider.class);
+        backend = provider.get();
         // TODO make the backend configurable (as for console)
     }
 
