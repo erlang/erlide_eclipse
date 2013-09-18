@@ -27,6 +27,7 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
+import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.internal.ErlMemberSelection;
@@ -60,7 +61,7 @@ public class GlobalParameters {
         if (isQCchecked) {
             return hasQuickCheck;
         }
-        final RpcResult res = ErlangEngine.getInstance().getBackend()
+        final RpcResult res = Activator.getDefault().getBackend()
                 .call_noexception("code", "which", "a", "eqc");
         if (!res.isOk()) {
             return false;

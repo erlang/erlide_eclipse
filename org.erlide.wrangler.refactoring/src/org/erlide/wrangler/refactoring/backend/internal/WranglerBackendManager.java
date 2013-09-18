@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend.internal;
 
-import org.erlide.engine.ErlangEngine;
+import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.backend.WranglerSyntaxBackend;
 
 /**
@@ -30,8 +30,8 @@ public class WranglerBackendManager {
      */
     public static WranglerRefactoringBackend getRefactoringBackend() {
         if (refactoringBackend == null) {
-            refactoringBackend = new WranglerRefactoringBackend(ErlangEngine
-                    .getInstance().getBackend());
+            refactoringBackend = new WranglerRefactoringBackend(Activator
+                    .getDefault().getBackend());
         }
         return refactoringBackend;
     }
@@ -43,8 +43,8 @@ public class WranglerBackendManager {
      */
     public static WranglerSyntaxBackend getSyntaxBackend() {
         if (syntaxBackend == null) {
-            syntaxBackend = new WranglerSyntaxBackend(ErlangEngine
-                    .getInstance().getBackend());
+            syntaxBackend = new WranglerSyntaxBackend(Activator.getDefault()
+                    .getBackend());
         }
         return syntaxBackend;
     }

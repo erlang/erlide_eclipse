@@ -12,10 +12,11 @@ package org.erlide.wrangler.refactoring;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.erlide.engine.ErlangEngine;
 import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IRpcSiteProvider;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.services.ExtensionUtils;
 import org.osgi.framework.BundleContext;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -52,15 +53,20 @@ public class Activator extends AbstractUIPlugin {
     public Activator() {
     }
 
+    public IRpcSite getBackend() {
+        final IRpcSiteProvider provider = ExtensionUtils.getSingletonExtension(
+                "org.erlide.backend.backend", IRpcSiteProvider.class);
+        return provider.get();
+    }
+
     /**
      * Loads the necessary *.ebin files to the Erlang node for the plug-in.
      * 
      * @throws CoreException
      *             detailed exception about the loading process errors
      */
-
     private void initWrangler() throws CoreException {
-        final IRpcSite mb = ErlangEngine.getInstance().getBackend();
+        final IRpcSite mb = getBackend();
         RpcResult res = mb.call_noexception("wrangler_refacs", "init_eclipse",
                 "", new Object[0]);
         ErlLogger.debug("Wrangler app started:\n" + res);
