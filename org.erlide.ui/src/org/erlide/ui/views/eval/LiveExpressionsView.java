@@ -87,6 +87,69 @@ public class LiveExpressionsView extends ViewPart implements
 
     private final IRpcSite backend;
 
+    private final class ListenerImplementation implements Listener {
+        private final Table t;
+        SourceViewerInformationControl info = null;
+
+        private ListenerImplementation(Table t) {
+            this.t = t;
+        }
+
+        @Override
+        public void handleEvent(final Event event) {
+            switch (event.type) {
+            case SWT.Dispose:
+            case SWT.KeyDown:
+            case SWT.MouseMove: {
+                if (info == null) {
+                    break;
+                }
+                info.dispose();
+                info = null;
+                break;
+            }
+            case SWT.MouseHover: {
+                final TableItem item = t
+                        .getItem(new Point(event.x, event.y));
+                if (item != null) {
+                    String str = item.getText(1);
+                    if (str.length() > 0) {
+                        // ErlLogger.debug(str);
+                        final BackendEvalResult r = EvalHelper.eval(
+                                backend,
+                                "lists:flatten(io_lib:format(\"~p\", ["
+                                        + item.getText(1) + "])).", null);
+                        if (r.isOk()) {
+                            str = ErlUtils.asString(r.getValue());
+                        } else {
+                            str = r.getErrorReason().toString();
+                        }
+                        info = new SourceViewerInformationControl(
+                                t.getShell(), SWT.ON_TOP | SWT.TOOL
+                                        | SWT.RESIZE, SWT.MULTI | SWT.WRAP,
+                                PreferenceConstants.EDITOR_TEXT_FONT, null);
+                        info.setForegroundColor(t.getDisplay()
+                                .getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+                        info.setBackgroundColor(t.getDisplay()
+                                .getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+                        info.setInformation(str);
+
+                        final Rectangle rect = item.getBounds(1);
+                        final int lw = t.getGridLineWidth();
+                        final Point pt = t.toDisplay(rect.x + lw, rect.y
+                                + lw);
+                        info.setLocation(pt);
+                        info.setSize(rect.width + lw, t.getBounds().height
+                                - rect.y);
+                        info.setVisible(true);
+                    }
+                }
+            }
+                break;
+            }
+        }
+    }
+
     private static class LiveExpr {
         String fExpr;
         private String cachedValue = "";
@@ -283,64 +346,7 @@ public class LiveExpressionsView extends ViewPart implements
         contributeToActionBars();
         hookGlobalActions();
 
-        final Listener tableListener = new Listener() {
-
-            SourceViewerInformationControl info = null;
-
-            @Override
-            public void handleEvent(final Event event) {
-                switch (event.type) {
-                case SWT.Dispose:
-                case SWT.KeyDown:
-                case SWT.MouseMove: {
-                    if (info == null) {
-                        break;
-                    }
-                    info.dispose();
-                    info = null;
-                    break;
-                }
-                case SWT.MouseHover: {
-                    final TableItem item = t
-                            .getItem(new Point(event.x, event.y));
-                    if (item != null) {
-                        String str = item.getText(1);
-                        if (str.length() > 0) {
-                            // ErlLogger.debug(str);
-                            final BackendEvalResult r = EvalHelper.eval(
-                                    backend,
-                                    "lists:flatten(io_lib:format(\"~p\", ["
-                                            + item.getText(1) + "])).", null);
-                            if (r.isOk()) {
-                                str = ErlUtils.asString(r.getValue());
-                            } else {
-                                str = r.getErrorReason().toString();
-                            }
-                            info = new SourceViewerInformationControl(
-                                    t.getShell(), SWT.ON_TOP | SWT.TOOL
-                                            | SWT.RESIZE, SWT.MULTI | SWT.WRAP,
-                                    PreferenceConstants.EDITOR_TEXT_FONT, null);
-                            info.setForegroundColor(t.getDisplay()
-                                    .getSystemColor(SWT.COLOR_INFO_FOREGROUND));
-                            info.setBackgroundColor(t.getDisplay()
-                                    .getSystemColor(SWT.COLOR_INFO_BACKGROUND));
-                            info.setInformation(str);
-
-                            final Rectangle rect = item.getBounds(1);
-                            final int lw = t.getGridLineWidth();
-                            final Point pt = t.toDisplay(rect.x + lw, rect.y
-                                    + lw);
-                            info.setLocation(pt);
-                            info.setSize(rect.width + lw, t.getBounds().height
-                                    - rect.y);
-                            info.setVisible(true);
-                        }
-                    }
-                }
-                    break;
-                }
-            }
-        };
+        final Listener tableListener = new ListenerImplementation(t);
         t.addListener(SWT.Dispose, tableListener);
         t.addListener(SWT.KeyDown, tableListener);
         t.addListener(SWT.MouseMove, tableListener);
@@ -378,7 +384,7 @@ public class LiveExpressionsView extends ViewPart implements
             memento = memento.getChild("LiveExpressions");
         }
         if (memento != null) {
-            final IMemento expressions[] = memento.getChildren("expression");
+            final IMemento[] expressions = memento.getChildren("expression");
             if (expressions.length > 0) {
                 exprs = new ArrayList<LiveExpr>(expressions.length);
                 for (final IMemento element : expressions) {
