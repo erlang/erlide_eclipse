@@ -287,9 +287,8 @@ public class ErlTextHover implements ITextHover,
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getWorkspaceProject();
-            final IRpcSite backend = erlProject == null ? ErlangEngine
-                    .getInstance().getBackend() : backendManager
-                    .getBuildBackend(project).getRpcSite();
+            final IRpcSite backend = backendManager.getBuildBackend(project)
+                    .getRpcSite();
             if (backend == null) {
                 return null;
             }
