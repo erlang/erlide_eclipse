@@ -315,12 +315,8 @@ public class DialyzerPreferencePage extends ProjectSpecificPreferencePage {
 
     @Override
     protected boolean hasProjectSpecificOptions(final IProject project) {
-        try {
-            final DialyzerPreferences p = DialyzerPreferences.get(project);
-            return p.hasOptionsAtLowestScope();
-        } catch (final RpcException e) {
-        }
-        return false;
+        final DialyzerPreferences p = DialyzerPreferences.get(project);
+        return p.hasOptionsAtLowestScope();
     }
 
     @Override
@@ -553,8 +549,7 @@ public class DialyzerPreferencePage extends ProjectSpecificPreferencePage {
                 final String alternatePltFileDirectory = DialyzerPreferences
                         .getAlternatePLTFileDirectoryFromPreferences();
                 checkIfPltFilesShouldBeCopied(alternatePltFileDirectory);
-                final IRpcSite backend = BackendCore
-                        .getBuildBackend(fProject);
+                final IRpcSite backend = BackendCore.getBuildBackend(fProject);
                 for (final String pltPath : selectedPLTPaths) {
                     checkPlt(pltPath, alternatePltFileDirectory, monitor,
                             backend);
