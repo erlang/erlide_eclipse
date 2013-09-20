@@ -8,7 +8,7 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.core.builder;
+package org.erlide.core.internal.builder;
 
 import java.util.Collection;
 import java.util.Date;
@@ -35,6 +35,10 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
+import org.erlide.core.builder.BuildResource;
+import org.erlide.core.builder.BuilderHelper;
+import org.erlide.core.builder.CompilerOptions;
+import org.erlide.core.builder.MarkerUtils;
 import org.erlide.core.builder.BuilderHelper.SearchVisitor;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.backend.debug.ErlangDebugOptionsManager;
-import org.erlide.core.builder.BuilderUpdater;
+import org.erlide.core.internal.builder.BuilderUpdater;
 import org.erlide.util.event_tracer.ErlideEventTracer;
 import org.osgi.framework.BundleContext;
 

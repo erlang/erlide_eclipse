@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.builder;
+package org.erlide.core.internal.builder;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -17,6 +17,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osgi.util.NLS;
+import org.erlide.core.builder.BuilderHelper;
+import org.erlide.core.builder.IProblem;
 import org.erlide.util.ErlLogger;
 
 public class BuildNotifier {
