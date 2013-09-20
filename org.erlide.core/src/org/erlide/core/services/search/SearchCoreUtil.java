@@ -1,4 +1,4 @@
-package org.erlide.core.search;
+package org.erlide.core.services.search;
 
 import java.util.Collection;
 import java.util.EnumSet;

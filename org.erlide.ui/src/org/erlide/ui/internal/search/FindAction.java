@@ -26,7 +26,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.erlide.core.search.SearchCoreUtil;
+import org.erlide.core.services.search.SearchCoreUtil;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlAttribute;
