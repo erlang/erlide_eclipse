@@ -18,9 +18,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public class ErlangBuilder extends IncrementalProjectBuilder {
-    @SuppressWarnings("rawtypes")
+
     @Override
-    protected IProject[] build(final int kind, final Map args,
+    protected IProject[] build(final int kind, final Map<String, String> args,
             final IProgressMonitor monitor) throws CoreException {
         final IProject project = getProject();
         final ErlideBuilder builder = new ErlideBuilder(project);
