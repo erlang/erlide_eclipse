@@ -368,7 +368,7 @@
          <action
                class="org.erlide.ui.actions.ToggleNatureAction"
                id="org.erlide.ui.AddNatureAction"
-               label="Add Erlang nature"
+               label="Mark as Erlang project"
                menubarPath="org.eclipse.ui.projectConfigure/additions">
          </action>
          <visibility>
@@ -381,7 +381,7 @@
          <action
                class="org.erlide.ui.actions.ToggleNatureAction"
                id="org.erlide.ui.AddNatureAction"
-               label="Remove Erlang nature"
+               label="Unmark as Erlang project"
                menubarPath="org.eclipse.ui.projectConfigure/additions">
          </action>
          <visibility>
