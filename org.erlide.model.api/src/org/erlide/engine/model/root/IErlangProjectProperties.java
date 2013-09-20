@@ -1,6 +1,7 @@
 package org.erlide.engine.model.root;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
@@ -55,5 +56,14 @@ public interface IErlangProjectProperties {
     RuntimeVersion getRequiredRuntimeVersion();
 
     String getRuntimeName();
+
+    boolean isUseExternalBuilder();
+
+    Map<String, String> getExternalBuilderProperties();
+
+    void setUseExternalBuilder(boolean useExternalBuilder);
+
+    void setExternalBuilderProperties(
+            Map<String, String> externalBuilderProperties);
 
 }
