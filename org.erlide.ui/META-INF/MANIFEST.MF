@@ -87,7 +87,8 @@ Require-Bundle: org.eclipse.compare,
  org.erlide.model;bundle-version="0.18.0",
  org.erlide.runtime,
  org.erlide.util,
- org.erlide.libs;bundle-version="1.1.4"
+ org.erlide.libs;bundle-version="1.1.4",
+ org.eclipse.ui.externaltools;bundle-version="3.2.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-ExtensibleAPI: true

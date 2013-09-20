@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.erlide.core;
 
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.backend.debug.ErlangDebugOptionsManager;
+import org.erlide.core.builder.BuilderUpdater;
 import org.erlide.util.event_tracer.ErlideEventTracer;
 import org.osgi.framework.BundleContext;
 
@@ -32,6 +34,7 @@ public class ErlangPlugin extends Plugin {
     private static ErlangPlugin plugin;
     private ErlangCore core;
     private boolean stopping = false;
+    private IResourceChangeListener builderUpdater;
 
     public ErlangPlugin() {
         super();
@@ -51,8 +54,10 @@ public class ErlangPlugin extends Plugin {
         try {
             ErlideEventTracer.getInstance().dispose();
 
-            ResourcesPlugin.getWorkspace().removeSaveParticipant(
-                    getBundle().getSymbolicName());
+            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            workspace.removeSaveParticipant(getBundle().getSymbolicName());
+            workspace.removeResourceChangeListener(builderUpdater);
+
             if (core != null) {
                 core.stop();
             }
@@ -78,6 +83,9 @@ public class ErlangPlugin extends Plugin {
         final String logDir = workspace.getRoot().getLocation()
                 .toPortableString();
         final ErlangDebugOptionsManager erlangDebugOptionsManager = new ErlangDebugOptionsManager();
+
+        builderUpdater = new BuilderUpdater();
+        workspace.addResourceChangeListener(builderUpdater);
 
         core = new ErlangCore(this, workspace, extensionRegistry, logDir,
                 erlangDebugOptionsManager);
