@@ -55,6 +55,7 @@ public interface IErlangProjectProperties {
 
     RuntimeVersion getRequiredRuntimeVersion();
 
+    @Deprecated
     String getRuntimeName();
 
     boolean isUseExternalBuilder();

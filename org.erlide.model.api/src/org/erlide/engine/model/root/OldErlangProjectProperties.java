@@ -283,6 +283,7 @@ public final class OldErlangProjectProperties implements
         return runtimeVersion;
     }
 
+    @Deprecated
     @Override
     public String getRuntimeName() {
         return runtimeName;
