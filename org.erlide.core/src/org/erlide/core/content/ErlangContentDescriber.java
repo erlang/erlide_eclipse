@@ -23,6 +23,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
             "%+[ *-]+coding: *utf-8", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
     private static final String CHARSET = "ErlangContentDescriber.charset"; //$NON-NLS-1$
     private static final String RESULT = "ErlangContentDescriber.processed"; //$NON-NLS-1$
+    private static final Pattern ESCRIPT_TAG = Pattern.compile("#![.]*escript");
 
     @Override
     public int describe(final InputStream input,
