@@ -22,8 +22,8 @@ ttb_last_config
 .~lock.*
 .recommenders
 *._trace
-buildroot
-tools
-target.platform
+/buildroot
+/tools
+/target.platform
 .sonar
 
