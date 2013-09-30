@@ -100,8 +100,8 @@ public class BackendShell implements IBackendShell {
     }
 
     private void addRequest(final IoRequest req) {
-        final int length = req.getLength();
-        this.length += length;
+        final int reqLength = req.getLength();
+        length += reqLength;
         synchronized (requests) {
             requests.add(req);
         }
