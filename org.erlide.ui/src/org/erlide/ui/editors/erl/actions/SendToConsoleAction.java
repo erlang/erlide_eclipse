@@ -20,6 +20,7 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.api.IPluginCodeLoader;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.runtime.shell.BackendShellEvent;
 import org.erlide.runtime.shell.BackendShellListener;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.ui.actions.SelectionDispatchAction;
@@ -45,8 +46,9 @@ public class SendToConsoleAction extends SelectionDispatchAction {
             counter = 0;
         }
 
+        // TODO maybe it should check for specific kinds instead
         @Override
-        public void changed() {
+        public void changed(final BackendShellEvent event) {
             if (shell == null) {
                 return;
             }
