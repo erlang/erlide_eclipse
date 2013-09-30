@@ -193,8 +193,6 @@ public class BackendShell implements IBackendShell {
 
     @Override
     public void add(final List<OtpErlangObject> msgs) {
-        final List<IoRequest> requests = Lists.newArrayListWithCapacity(msgs
-                .size());
         final int prevLength = length;
         final StringBuffer text = new StringBuffer();
         synchronized (requests) {
