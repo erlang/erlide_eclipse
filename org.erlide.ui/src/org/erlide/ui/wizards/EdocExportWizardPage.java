@@ -77,7 +77,7 @@ public class EdocExportWizardPage extends WizardPage {
                     }
                 }
             }
-            return ps.toArray(new IProject[0]);
+            return ps.toArray(new IProject[ps.size()]);
         }
 
         @Override

@@ -963,7 +963,7 @@ public class ErlangProjectImportWizardPage extends
         // }
         final List<?> resourcesToExport = selectionGroup
                 .getAllWhiteCheckedItems();
-        if (resourcesToExport.size() == 0) {
+        if (resourcesToExport.isEmpty()) {
             setErrorMessage(WizardMessages.FileImport_noneSelected);
             return false;
         }
