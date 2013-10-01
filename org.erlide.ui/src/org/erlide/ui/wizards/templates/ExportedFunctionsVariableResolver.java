@@ -11,18 +11,17 @@
 package org.erlide.ui.wizards.templates;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ExportedFunctionsVariableResolver extends FunctionVariableResolver {
 
-    private static final List<FunctionVariableResolver> fInstances = new ArrayList<FunctionVariableResolver>();
+    private static final ArrayList<FunctionVariableResolver> fInstances = new ArrayList<FunctionVariableResolver>();
 
     public ExportedFunctionsVariableResolver() {
         fInstances.add(this);
     }
 
     public static ExportedFunctionsVariableResolver getDefault() {
-        if (fInstances.isEmpty()) {
+        if (fInstances.size() == 0) {
             fInstances.add(new ExportedFunctionsVariableResolver());
         }
         return (ExportedFunctionsVariableResolver) fInstances.get(0);

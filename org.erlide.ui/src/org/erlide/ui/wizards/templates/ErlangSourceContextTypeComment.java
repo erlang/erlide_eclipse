@@ -22,7 +22,7 @@ import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
-public final class ErlangSourceContextTypeComment extends TemplateContextType {
+public class ErlangSourceContextTypeComment extends TemplateContextType {
 
     /** Key to store custom templates. */
     private static final String ERLANGSOURCE_TEMPLATES_KEY = "org.erlide.ui.erlangsource.template"; //$NON-NLS-1$
@@ -35,7 +35,7 @@ public final class ErlangSourceContextTypeComment extends TemplateContextType {
     public static final String ERLANGSOURCE_CONTEXT_TYPE_LAYOUT = "org.erlide.ui.erlangsource.template.context.layout";
 
     /** The shared instance. */
-    private final static ErlangSourceContextTypeComment fInstance = new ErlangSourceContextTypeComment();
+    private static ErlangSourceContextTypeComment fInstance;
 
     /** The template store. */
     private TemplateStore fStore;
@@ -46,8 +46,9 @@ public final class ErlangSourceContextTypeComment extends TemplateContextType {
     /**
      * Creates a new XML context type.
      */
-    private ErlangSourceContextTypeComment() {
+    public ErlangSourceContextTypeComment() {
         addGlobalResolvers();
+        fInstance = this;
     }
 
     private void addGlobalResolvers() {
@@ -64,6 +65,9 @@ public final class ErlangSourceContextTypeComment extends TemplateContextType {
      * @return the shared instance
      */
     public static ErlangSourceContextTypeComment getDefault() {
+        if (fInstance == null) {
+            fInstance = new ErlangSourceContextTypeComment();
+        }
         return fInstance;
     }
 

@@ -168,7 +168,7 @@ public class ErlangFileWizardPage extends WizardPage {
         for (final Template element : moduleTemplates) {
             final String name = element.getName();
             skeleton.add(name);
-            if ("module".equals(name)) {
+            if (name.equals("module")) {
                 defaultSkeleton = i;
             }
             ++i;
@@ -187,7 +187,8 @@ public class ErlangFileWizardPage extends WizardPage {
      */
 
     private void initialize() {
-        if (fSelection instanceof IStructuredSelection && !fSelection.isEmpty()) {
+        if (fSelection != null && !fSelection.isEmpty()
+                && fSelection instanceof IStructuredSelection) {
             final IStructuredSelection ssel = (IStructuredSelection) fSelection;
             if (ssel.size() > 1) {
                 return;
@@ -206,7 +207,7 @@ public class ErlangFileWizardPage extends WizardPage {
                         .getModel().getErlangProject(project);
                 String txt = container.getFullPath().toString();
                 final Collection<IPath> sourceDirs = erlProject.getSourceDirs();
-                if (!sourceDirs.isEmpty()) {
+                if (sourceDirs.size() > 0) {
                     final IPath sourceDirWithinContainer = sourceDirWithinContainer(
                             sourceDirs, container);
                     if (sourceDirWithinContainer != null) {

@@ -13,15 +13,17 @@ package org.erlide.ui.templates;
 import org.eclipse.jface.text.templates.GlobalTemplateVariables;
 import org.eclipse.jface.text.templates.TemplateContextType;
 
-public final class ErlangSourceContextTypeModuleElement extends
-        TemplateContextType {
+public class ErlangSourceContextTypeModuleElement extends TemplateContextType {
 
-    private static final ErlangSourceContextTypeModuleElement fInstance = new ErlangSourceContextTypeModuleElement();
+    private static ErlangSourceContextTypeModuleElement fInstance;
 
     /** This context's id */
     public static final String ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID = "org.erlide.ui.erlangsource.template.context.module.element"; //$NON-NLS-1$
 
     public static ErlangSourceContextTypeModuleElement getDefault() {
+        if (fInstance == null) {
+            fInstance = new ErlangSourceContextTypeModuleElement();
+        }
         return fInstance;
     }
 
@@ -30,6 +32,7 @@ public final class ErlangSourceContextTypeModuleElement extends
      */
     public ErlangSourceContextTypeModuleElement() {
         addGlobalResolvers();
+        fInstance = this;
     }
 
     private void addGlobalResolvers() {

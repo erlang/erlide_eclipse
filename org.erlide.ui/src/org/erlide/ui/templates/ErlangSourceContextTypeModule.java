@@ -17,7 +17,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 
 public class ErlangSourceContextTypeModule extends TemplateContextType {
 
-    private static final ErlangSourceContextTypeModule fInstance = new ErlangSourceContextTypeModule();
+    private static ErlangSourceContextTypeModule fInstance;
 
     /** This context's id */
     public static final String ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID = "org.erlide.ui.erlangsource.template.context.module"; //$NON-NLS-1$
@@ -28,6 +28,7 @@ public class ErlangSourceContextTypeModule extends TemplateContextType {
     public ErlangSourceContextTypeModule() {
         addGlobalResolvers();
         addModuleResolver();
+        fInstance = this;
     }
 
     private void addModuleResolver() {
@@ -56,6 +57,9 @@ public class ErlangSourceContextTypeModule extends TemplateContextType {
     }
 
     public static ErlangSourceContextTypeModule getDefault() {
+        if (fInstance == null) {
+            fInstance = new ErlangSourceContextTypeModule();
+        }
         return fInstance;
     }
 
