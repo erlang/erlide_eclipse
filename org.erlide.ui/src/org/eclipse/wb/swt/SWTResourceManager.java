@@ -397,7 +397,7 @@ public class SWTResourceManager {
                                     .getField("lfUnderline").set(logFont, Byte.valueOf((byte) 1)); //$NON-NLS-1$
                         }
                     }
-                } catch (final Exception e) {
+                } catch (final Throwable e) {
                     System.err
                             .println("Unable to set underline or strikeout" + " (probably on a non-Windows platform). " + e); //$NON-NLS-1$ //$NON-NLS-2$
                 }
