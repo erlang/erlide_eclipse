@@ -2,8 +2,9 @@ package org.erlide.core.internal.builder
 
 import org.eclipse.core.resources.IProject
 import org.erlide.core.builder.IBuilder
-import static extension org.erlide.core.internal.builder.ErlangToolExtensions.*
 import org.erlide.util.ErlLogger
+
+import static extension org.erlide.core.internal.builder.ErlangToolExtensions.*
 
 class BuilderFactory {
 
@@ -11,6 +12,10 @@ class BuilderFactory {
         if (project.hasMakefile) {
             ErlLogger.trace("builder", "make")
             return new MakeBuilder(project)
+        }
+        if (project.hasEmakefile) {
+            ErlLogger.trace("builder", "emake")
+            return new EmakeBuilder(project)
         }
         if (project.hasRebarConfig) {
             ErlLogger.trace("builder", "rebar")

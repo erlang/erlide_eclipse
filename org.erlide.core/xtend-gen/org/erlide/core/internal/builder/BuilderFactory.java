@@ -2,6 +2,7 @@ package org.erlide.core.internal.builder;
 
 import org.eclipse.core.resources.IProject;
 import org.erlide.core.builder.IBuilder;
+import org.erlide.core.internal.builder.EmakeBuilder;
 import org.erlide.core.internal.builder.ErlangToolExtensions;
 import org.erlide.core.internal.builder.InternalBuilder;
 import org.erlide.core.internal.builder.MakeBuilder;
@@ -16,6 +17,12 @@ public class BuilderFactory {
       ErlLogger.trace("builder", "make");
       MakeBuilder _makeBuilder = new MakeBuilder(project);
       return _makeBuilder;
+    }
+    boolean _hasEmakefile = ErlangToolExtensions.hasEmakefile(project);
+    if (_hasEmakefile) {
+      ErlLogger.trace("builder", "emake");
+      EmakeBuilder _emakeBuilder = new EmakeBuilder(project);
+      return _emakeBuilder;
     }
     boolean _hasRebarConfig = ErlangToolExtensions.hasRebarConfig(project);
     if (_hasRebarConfig) {

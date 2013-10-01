@@ -20,6 +20,9 @@ import org.erlide.core.builder.IBuilder;
 
 public class ErlangBuilder extends IncrementalProjectBuilder {
 
+    // TODO creating new builders means there can be no build state in memory,
+    // is it a good idea?
+
     @Override
     protected IProject[] build(final int kind, final Map<String, String> args,
             final IProgressMonitor monitor) throws CoreException {
