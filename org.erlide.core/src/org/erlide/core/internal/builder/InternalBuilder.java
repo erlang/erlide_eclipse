@@ -39,6 +39,7 @@ import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.BuilderHelper.SearchVisitor;
 import org.erlide.core.builder.CompilerOptions;
+import org.erlide.core.builder.IBuilder;
 import org.erlide.core.builder.MarkerUtils;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
@@ -54,16 +55,17 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class ErlideBuilder {
+public class InternalBuilder implements IBuilder {
 
     BuildNotifier notifier;
     private final BuilderHelper helper = new BuilderHelper();
     private final IProject myProject;
 
-    public ErlideBuilder(final IProject prj) {
+    public InternalBuilder(final IProject prj) {
         myProject = prj;
     }
 
+    @Override
     public void clean(final IProgressMonitor monitor) {
         final IProject currentProject = getProject();
         if (currentProject == null || !currentProject.isAccessible()) {
@@ -132,8 +134,9 @@ public class ErlideBuilder {
         }
     }
 
+    @Override
     public IProject[] build(final int kind, final Map<String, String> args,
-            final IProgressMonitor monitor, final IResourceDelta resourceDelta) {
+            final IResourceDelta resourceDelta, final IProgressMonitor monitor) {
         final long time = System.currentTimeMillis();
         final IProject project = getProject();
         if (project == null || !project.isAccessible()) {
