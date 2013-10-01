@@ -13,17 +13,17 @@ public class BuilderFactory {
   public IBuilder getBuilderFor(final IProject project) {
     boolean _hasMakefile = ErlangToolExtensions.hasMakefile(project);
     if (_hasMakefile) {
-      ErlLogger.debug("Use make builder");
+      ErlLogger.trace("builder", "make");
       MakeBuilder _makeBuilder = new MakeBuilder(project);
       return _makeBuilder;
     }
     boolean _hasRebarConfig = ErlangToolExtensions.hasRebarConfig(project);
     if (_hasRebarConfig) {
-      ErlLogger.debug("Use rebar builder");
+      ErlLogger.trace("builder", "rebar");
       RebarBuilder _rebarBuilder = new RebarBuilder(project);
       return _rebarBuilder;
     }
-    ErlLogger.debug("Use internal builder");
+    ErlLogger.trace("builder", "internal");
     InternalBuilder _internalBuilder = new InternalBuilder(project);
     return _internalBuilder;
   }

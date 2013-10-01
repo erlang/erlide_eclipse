@@ -9,14 +9,14 @@ class BuilderFactory {
 
     def IBuilder getBuilderFor(IProject project) {
         if (project.hasMakefile) {
-            ErlLogger.debug("Use make builder")
+            ErlLogger.trace("builder", "make")
             return new MakeBuilder(project)
         }
         if (project.hasRebarConfig) {
-            ErlLogger.debug("Use rebar builder")
+            ErlLogger.trace("builder", "rebar")
             return new RebarBuilder(project)
         }
-        ErlLogger.debug("Use internal builder")
+        ErlLogger.trace("builder", "internal")
         return new InternalBuilder(project)
     }
 
