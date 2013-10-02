@@ -17,27 +17,7 @@ class ErlangToolExtensions {
     }
 
     def static getTopFile(IContainer container, String filename) {
-        return container.members.findFirst[name == filename] 
-    }
-
-    def static hasRebarConfig(IProject project) {
-        project.hasTopFile("rebar.config")
-    }
-
-    def static hasMakefile(IProject project) {
-        project.hasTopFile("Makefile")
-    }
-
-    def static hasConcreteMk(IProject project) {
-        project.hasTopFile("concrete.mk")
-    }
-
-    def static hasErlangMk(IProject project) {
-        project.hasTopFile("erlang.mk")
-    }
-
-    def static hasEmakefile(IProject project) {
-        project.hasTopFile("Emakefile")
+        return container.members.findFirst[name == filename]
     }
 
     def static isUniversalMake(IFile makefile) {
@@ -56,13 +36,37 @@ class ErlangToolExtensions {
         EFS.getStore(uri).toLocalFile(0, new NullProgressMonitor());
     }
 
-    def static getMakeTargets(IFile makefile) {
+    def static getMakefileTargets(IFile makefile) {
         val lines = Files.readLines(getRealFile(makefile), Charsets.ISO_8859_1)
-        lines.map[if (hasTarget) split(":").head else null].filterNull
+        lines.map[if(hasTarget) split(":").head else null].filterNull
     }
 
     def private static hasTarget(String line) {
         line.matches("[a-z0-9_-]+:.*")
+    }
+
+    def static buildsWithMake(IProject project) {
+        return project.hasTopFile("Makefile") && project.hasMakeBuilderEnabled
+    }
+
+    def static buildsWithEmake(IProject project) {
+        return project.hasTopFile("Emakefile") && project.hasEmakeBuilderEnabled
+    }
+
+    def static buildsWithRebar(IProject project) {
+        return project.hasTopFile("rebar.config") && project.hasRebarBuilderEnabled
+    }
+
+    def static hasMakeBuilderEnabled(IProject project) {
+        return false;
+    }
+
+    def static hasEmakeBuilderEnabled(IProject project) {
+        return false;
+    }
+
+    def static hasRebarBuilderEnabled(IProject project) {
+        return false;
     }
 
 }

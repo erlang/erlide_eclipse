@@ -12,20 +12,20 @@ import org.erlide.util.ErlLogger;
 @SuppressWarnings("all")
 public class BuilderFactory {
   public IBuilder getBuilderFor(final IProject project) {
-    boolean _hasMakefile = ErlangToolExtensions.hasMakefile(project);
-    if (_hasMakefile) {
+    boolean _buildsWithMake = ErlangToolExtensions.buildsWithMake(project);
+    if (_buildsWithMake) {
       ErlLogger.trace("builder", "make");
       MakeBuilder _makeBuilder = new MakeBuilder(project);
       return _makeBuilder;
     }
-    boolean _hasEmakefile = ErlangToolExtensions.hasEmakefile(project);
-    if (_hasEmakefile) {
+    boolean _buildsWithEmake = ErlangToolExtensions.buildsWithEmake(project);
+    if (_buildsWithEmake) {
       ErlLogger.trace("builder", "emake");
       EmakeBuilder _emakeBuilder = new EmakeBuilder(project);
       return _emakeBuilder;
     }
-    boolean _hasRebarConfig = ErlangToolExtensions.hasRebarConfig(project);
-    if (_hasRebarConfig) {
+    boolean _buildsWithRebar = ErlangToolExtensions.buildsWithRebar(project);
+    if (_buildsWithRebar) {
       ErlLogger.trace("builder", "rebar");
       RebarBuilder _rebarBuilder = new RebarBuilder(project);
       return _rebarBuilder;
