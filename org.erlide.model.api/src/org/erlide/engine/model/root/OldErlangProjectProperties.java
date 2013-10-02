@@ -45,8 +45,7 @@ public final class OldErlangProjectProperties implements
             ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
     private String runtimeName = null;
     private boolean nukeOutputOnClean = false;
-    private boolean useExternalBuilder = false;
-    private Map<String, String> externalBuilderProperties;
+    private Map<String, String> builderProperties;
 
     public OldErlangProjectProperties() {
     }
@@ -112,8 +111,6 @@ public final class OldErlangProjectProperties implements
                 ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
         setNukeOutputOnClean(node.getBoolean(
                 ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN, false));
-        setUseExternalBuilder(node.getBoolean(
-                ProjectPreferencesConstants.USE_EXTERNAL_BUILDER, false));
         // setExternalBuilderProperties(node.get(
         // ProjectPreferencesConstants.EXTERNAL_BUILDER_PROPERTIES, null));
     }
@@ -158,8 +155,6 @@ public final class OldErlangProjectProperties implements
                     externalModulesFile);
             node.putBoolean(ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
                     isNukeOutputOnClean());
-            node.putBoolean(ProjectPreferencesConstants.USE_EXTERNAL_BUILDER,
-                    isUseExternalBuilder());
 
             node.flush();
         } finally {
@@ -290,23 +285,12 @@ public final class OldErlangProjectProperties implements
     }
 
     @Override
-    public boolean isUseExternalBuilder() {
-        return useExternalBuilder;
+    public Map<String, String> getBuilderProperties() {
+        return builderProperties;
     }
 
     @Override
-    public void setUseExternalBuilder(final boolean useExternalBuilder) {
-        this.useExternalBuilder = useExternalBuilder;
-    }
-
-    @Override
-    public Map<String, String> getExternalBuilderProperties() {
-        return externalBuilderProperties;
-    }
-
-    @Override
-    public void setExternalBuilderProperties(
-            final Map<String, String> externalBuilderProperties) {
-        this.externalBuilderProperties = externalBuilderProperties;
+    public void setBuilderProperties(final Map<String, String> builderProperties) {
+        this.builderProperties = builderProperties;
     }
 }

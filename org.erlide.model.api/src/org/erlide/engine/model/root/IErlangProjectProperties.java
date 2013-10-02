@@ -58,13 +58,8 @@ public interface IErlangProjectProperties {
     @Deprecated
     String getRuntimeName();
 
-    boolean isUseExternalBuilder();
+    Map<String, String> getBuilderProperties();
 
-    Map<String, String> getExternalBuilderProperties();
-
-    void setUseExternalBuilder(boolean useExternalBuilder);
-
-    void setExternalBuilderProperties(
-            Map<String, String> externalBuilderProperties);
+    void setBuilderProperties(Map<String, String> externalBuilderProperties);
 
 }
