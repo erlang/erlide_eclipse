@@ -20,7 +20,6 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Sets;
@@ -37,12 +36,7 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
             final IProgressMonitor monitor) throws CoreException {
         final IProject project = getProject();
         DialyzerPreferences prefs = null;
-        try {
-            prefs = DialyzerPreferences.get(project);
-        } catch (final RpcException e1) {
-            ErlLogger.warn(e1);
-            return null;
-        }
+        prefs = DialyzerPreferences.get(project);
         if (prefs == null || !prefs.getDialyzeOnCompile()) {
             return null;
         }

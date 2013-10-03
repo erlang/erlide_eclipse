@@ -99,9 +99,6 @@ public class ProjectPropertiesTest {
         expected.put("workdir", "/some/dir");
 
         final IProject project = erlProject.getWorkspaceProject();
-        final IEclipsePreferences node = new ProjectScope(project)
-                .getNode("org.erlide.core");
-
         final IErlangProjectProperties pp = new OldErlangProjectProperties(
                 project);
         final Map<String, String> actual = pp.getBuilderProperties();

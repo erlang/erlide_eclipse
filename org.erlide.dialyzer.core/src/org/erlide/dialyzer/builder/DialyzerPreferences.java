@@ -13,7 +13,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.core.ErlangCore;
 import org.erlide.engine.util.PreferencesHelper;
-import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -37,8 +36,7 @@ public final class DialyzerPreferences {
     private boolean noCheckPLT;
     private boolean removeWarningsOnClean;
 
-    public static DialyzerPreferences get(final IProject project)
-            throws RpcException {
+    public static DialyzerPreferences get(final IProject project) {
         final DialyzerPreferences prefs = new DialyzerPreferences();
         prefs.load();
         if (project != null) {
@@ -78,8 +76,7 @@ public final class DialyzerPreferences {
         helper.flush();
     }
 
-    private static Collection<String> getPLTPathsFromPreferences()
-            throws RpcException {
+    private static Collection<String> getPLTPathsFromPreferences() {
         final IPreferencesService service = Platform.getPreferencesService();
         final String key = "default_plt_files";
         final String pluginId = "org.erlide.ui";
@@ -95,7 +92,7 @@ public final class DialyzerPreferences {
         return service.getString(pluginId, key, "", null);
     }
 
-    public void load() throws RpcException {
+    public void load() {
         pltPaths = helper.getString(DialyzerPreferencesConstants.PLT_PATHS, "");
         pltPathsFromPrefs = getPLTPathsFromPreferences();
         enabledPltPaths = helper.getString(

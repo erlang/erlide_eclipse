@@ -23,7 +23,7 @@ import org.eclipse.xtext.xbase.lib.ListExtensions;
 public class ErlangToolExtensions {
   private static boolean hasTopFile(final IContainer container, final String filename) {
     IResource _topFile = ErlangToolExtensions.getTopFile(container, filename);
-    return (!Objects.equal(_topFile, null));
+    return (_topFile != null);
   }
   
   public static IResource getTopFile(final IContainer container, final String filename) {
@@ -45,8 +45,8 @@ public class ErlangToolExtensions {
   public static boolean isUniversalMake(final IFile makefile) {
     try {
       final File file = ErlangToolExtensions.getRealFile(makefile);
-      boolean _equals = Objects.equal(file, null);
-      if (_equals) {
+      boolean _tripleEquals = (file == null);
+      if (_tripleEquals) {
         return false;
       }
       final String top = Files.readFirstLine(file, Charsets.ISO_8859_1);
@@ -61,8 +61,8 @@ public class ErlangToolExtensions {
       File _xblockexpression = null;
       {
         final URI uri = ifile.getRawLocationURI();
-        boolean _equals = Objects.equal(uri, null);
-        if (_equals) {
+        boolean _tripleEquals = (uri == null);
+        if (_tripleEquals) {
           return null;
         }
         IFileStore _store = EFS.getStore(uri);

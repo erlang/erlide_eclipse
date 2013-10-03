@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.NullProgressMonitor
 class ErlangToolExtensions {
 
     def private static hasTopFile(IContainer container, String filename) {
-        return getTopFile(container, filename) != null
+        return getTopFile(container, filename) !== null
     }
 
     def static getTopFile(IContainer container, String filename) {
@@ -22,7 +22,7 @@ class ErlangToolExtensions {
 
     def static isUniversalMake(IFile makefile) {
         val file = getRealFile(makefile)
-        if(file == null) return false
+        if(file === null) return false
 
         val top = Files.readFirstLine(file, Charsets.ISO_8859_1)
         return top == "# Copyright 2012 Erlware, LLC. All Rights Reserved."
@@ -30,7 +30,7 @@ class ErlangToolExtensions {
 
     def static getRealFile(IResource ifile) {
         val URI uri = ifile.getRawLocationURI()
-        if (uri == null)
+        if (uri === null)
             return null
 
         EFS.getStore(uri).toLocalFile(0, new NullProgressMonitor());
