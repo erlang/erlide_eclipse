@@ -10,6 +10,9 @@ import org.erlide.core.builder.IBuilder;
 import org.erlide.core.builder.MarkerUtils;
 import org.erlide.core.internal.executor.ToolExecutor;
 import org.erlide.core.internal.executor.ToolExecutor.ToolResults;
+import org.erlide.util.ErlLogger;
+
+import com.google.common.base.Joiner;
 
 public abstract class ExternalBuilder implements IBuilder {
 
@@ -50,7 +53,9 @@ public abstract class ExternalBuilder implements IBuilder {
         }
         final ToolResults result = ex.run(location, getCleanTarget(), project
                 .getLocation().toPortableString());
-        createMarkers(result);
+        if (result != null) {
+            createMarkers(result);
+        }
         m.worked(9);
     }
 
@@ -63,11 +68,14 @@ public abstract class ExternalBuilder implements IBuilder {
     }
 
     private void createMarkers(final ToolResults result) {
-        // exit!=0 ?
-        // no target?
-        // other error?
+        if (result.exit > 2) {
+            ErlLogger.error("The '" + location + "' builder returned error "
+                    + result.exit + "\n" + Joiner.on('\n').join(result.output)
+                    + "--------------\n" + Joiner.on('\n').join(result.error)
+                    + "--------------");
+            return;
+        }
 
-        // else parse output
         final IMessageParser parser = getMessageParser();
         for (final String msg : result.output) {
             parser.createMarkers(msg);
@@ -75,7 +83,7 @@ public abstract class ExternalBuilder implements IBuilder {
     }
 
     protected IMessageParser getMessageParser() {
-        return new ErlcMessageParser();
+        return new ErlcMessageParser(project);
     }
 
 }

@@ -27,6 +27,7 @@ import org.erlide.util.SystemConfiguration;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public final class OldErlangProjectProperties implements
         IPreferenceChangeListener, IErlangProjectProperties {
@@ -53,6 +54,7 @@ public final class OldErlangProjectProperties implements
     public OldErlangProjectProperties(final IProject prj) {
         super();
         project = prj;
+        builderProperties = Maps.newHashMap();
         final IEclipsePreferences root = new ProjectScope(project)
                 .getNode("org.erlide.core");
         // TODO load() should not be in constructor!
