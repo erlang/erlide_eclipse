@@ -1,6 +1,10 @@
 package org.erlide.core.preferences;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+
+import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -16,6 +20,7 @@ import org.junit.Test;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Maps;
 
 public class ProjectPropertiesTest {
     private static IErlProject erlProject;
@@ -85,5 +90,22 @@ public class ProjectPropertiesTest {
         final String actual = pp.getSourceDirs().toString();
 
         assertEquals(convertListString(expected), actual);
+    }
+
+    @Test
+    public void builderPropertiesShouldBeSavedAndRetrieved() {
+        final Map<String, String> expected = Maps.newHashMap();
+        expected.put("builder", "make");
+        expected.put("workdir", "/some/dir");
+
+        final IProject project = erlProject.getWorkspaceProject();
+        final IEclipsePreferences node = new ProjectScope(project)
+                .getNode("org.erlide.core");
+
+        final IErlangProjectProperties pp = new OldErlangProjectProperties(
+                project);
+        final Map<String, String> actual = pp.getBuilderProperties();
+
+        assertThat(actual.get("builder"), is(expected.get("builder")));
     }
 }

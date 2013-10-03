@@ -205,7 +205,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
             final OldErlangProjectProperties bprefs = buildPage.getPrefs();
 
-            buildPaths(monitor, root, project, new ArrayList<IPath>() {
+            buildPaths(root, project, new ArrayList<IPath>() {
                 /**
                  * 
                  */
@@ -214,9 +214,9 @@ public class NewErlangProject extends Wizard implements INewWizard {
                 {
                     addAll(bprefs.getOutputDirs());
                 }
-            });
-            buildPaths(monitor, root, project, bprefs.getSourceDirs());
-            buildPaths(monitor, root, project, bprefs.getIncludeDirs());
+            }, monitor);
+            buildPaths(root, project, bprefs.getSourceDirs(), monitor);
+            buildPaths(root, project, bprefs.getIncludeDirs(), monitor);
 
             final IErlProject erlProject = ErlangEngine.getInstance()
                     .getModel().getErlangProject(project);
@@ -238,26 +238,26 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
     /**
      * Builds the path from the specified path list.
-     * 
-     * @param monitor
-     *            The progress monitor to use
      * @param root
      *            the root worksapce
      * @param project
      *            the project
-     * @param list
+     * @param pathList
      *            the paths to create
+     * @param monitor
+     *            The progress monitor to use
+     * 
      * @throws CoreException
      *             if a problem occures
      */
-    private void buildPaths(final IProgressMonitor monitor,
-            final IWorkspaceRoot root, final IProject project,
-            final Collection<IPath> list) throws CoreException {
+    private void buildPaths(final IWorkspaceRoot root,
+            final IProject project, final Collection<IPath> pathList,
+            final IProgressMonitor monitor) throws CoreException {
         // Some paths are optionals (include): If we do not specify it, we get a
         // null string and we do not need to create the directory
-        if (list != null) {
+        if (pathList != null) {
             final IPath projectPath = project.getFullPath();
-            for (final IPath pp : list) {
+            for (final IPath pp : pathList) {
                 // only create in-project paths
                 if (!pp.isAbsolute() && !pp.toString().equals(".")
                         && !pp.isEmpty()) {

@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
+import org.erlide.util.MapCodec;
 import org.erlide.util.SystemConfiguration;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -113,8 +114,8 @@ public final class OldErlangProjectProperties implements
                 ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
         setNukeOutputOnClean(node.getBoolean(
                 ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN, false));
-        // setExternalBuilderProperties(node.get(
-        // ProjectPreferencesConstants.EXTERNAL_BUILDER_PROPERTIES, null));
+        setBuilderProperties(MapCodec.decode(node.get(
+                ProjectPreferencesConstants.BUILDER_PROPERTIES, "")));
     }
 
     @Override
@@ -157,6 +158,9 @@ public final class OldErlangProjectProperties implements
                     externalModulesFile);
             node.putBoolean(ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
                     isNukeOutputOnClean());
+
+            node.put(ProjectPreferencesConstants.BUILDER_PROPERTIES,
+                    MapCodec.encode(getBuilderProperties()));
 
             node.flush();
         } finally {
@@ -218,6 +222,7 @@ public final class OldErlangProjectProperties implements
         outputDirs = bprefs.getOutputDirs();
         runtimeName = bprefs.getRuntimeName();
         runtimeVersion = bprefs.getRequiredRuntimeVersion();
+        builderProperties = Maps.newHashMap(bprefs.getBuilderProperties());
     }
 
     @Override
