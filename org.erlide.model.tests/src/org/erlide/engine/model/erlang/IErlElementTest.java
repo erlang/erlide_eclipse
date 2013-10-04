@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.cache.ErlModelCache;
+import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
@@ -199,7 +200,7 @@ public class IErlElementTest extends ErlModelTestBase {
     // boolean isStructureKnown() throws ErlModelException;
     @Test
     public void isStructureKnown() throws Exception {
-        project.setSourceDirs(project.getSourceDirs());
+        ((ErlProject) project).setSourceDirs(project.getSourceDirs());
         // this sets structureKnown to false
 
         final boolean structureKnown = project.isStructureKnown();

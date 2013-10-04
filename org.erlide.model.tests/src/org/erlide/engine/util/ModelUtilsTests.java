@@ -17,6 +17,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlFunction;
@@ -289,7 +290,8 @@ public class ModelUtilsTests {
             final String externalsFileName = "x.erlidex";
             final File externalsFile = ErlideTestUtils.createTmpFile(
                     externalsFileName, absolutePath);
-            project.setExternalModulesFile(externalsFile.getAbsolutePath());
+            ((ErlProject) project).setExternalModulesFile(externalsFile
+                    .getAbsolutePath());
             project.open(null);
             // when
             // looking via prefix
@@ -335,7 +337,8 @@ public class ModelUtilsTests {
             final String externalsFileName = "x.erlidex";
             final File externalsFile = ErlideTestUtils.createTmpFile(
                     externalsFileName, absolutePath);
-            project.setExternalModulesFile(externalsFile.getAbsolutePath());
+            ((ErlProject) project).setExternalModulesFile(externalsFile
+                    .getAbsolutePath());
             project.open(null);
             // when
             // looking for it
@@ -401,7 +404,8 @@ public class ModelUtilsTests {
             final String externalsFileName = "x.erlidex";
             final File externalsFile = ErlideTestUtils.createTmpFile(
                     externalsFileName, absolutePath);
-            project.setExternalModulesFile(externalsFile.getAbsolutePath());
+            ((ErlProject) project).setExternalModulesFile(externalsFile
+                    .getAbsolutePath());
             project.open(null);
             // when
             // looking for it with its external module path
@@ -477,7 +481,7 @@ public class ModelUtilsTests {
                     "-record(rec2, {field, another=def}.");
             final String includePath = externalInclude.getAbsolutePath();
             final IPath p = new Path(includePath).removeLastSegments(1);
-            project.setIncludeDirs(Lists.newArrayList(p));
+            ((ErlProject) project).setIncludeDirs(Lists.newArrayList(p));
             project.open(null);
             // when
             // looking for the record def
@@ -525,7 +529,8 @@ public class ModelUtilsTests {
             final String externalsFileName = "x.erlidex";
             final File externalsFile = ErlideTestUtils.createTmpFile(
                     externalsFileName, includePath);
-            project.setExternalIncludesFile(externalsFile.getAbsolutePath());
+            ((ErlProject) project).setExternalIncludesFile(externalsFile
+                    .getAbsolutePath());
             project.open(null);
             // when
             // looking for the record def
@@ -576,7 +581,7 @@ public class ModelUtilsTests {
             final IPath[] paths = ErlideTestUtils.splitPathAfter(1, path);
             pathVariableManager.setValue(pathVariableName, paths[0]);
             path = new Path(pathVariableName).append(paths[1]);
-            project.setIncludeDirs(Lists.newArrayList(path));
+            ((ErlProject) project).setIncludeDirs(Lists.newArrayList(path));
             project.open(null);
             // when
             // looking for the record def
