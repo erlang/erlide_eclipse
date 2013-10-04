@@ -17,6 +17,7 @@ import org.erlide.test.support.ErlideTestUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -89,20 +90,26 @@ public class ProjectPropertiesTest {
                 project);
         final String actual = pp.getSourceDirs().toString();
 
-        assertEquals(convertListString(expected), actual);
+        assertThat(actual, is(convertListString(expected)));
     }
 
     @Test
-    public void builderPropertiesShouldBeSavedAndRetrieved() {
+    public void builderPropertiesShouldBeSavedAndRetrieved()
+            throws BackingStoreException {
         final Map<String, String> expected = Maps.newHashMap();
         expected.put("builder", "make");
         expected.put("workdir", "/some/dir");
+        expected.put("args", " -f hoo \"baz\" ");
 
         final IProject project = erlProject.getWorkspaceProject();
-        final IErlangProjectProperties pp = new OldErlangProjectProperties(
-                project);
+        IErlangProjectProperties pp = new OldErlangProjectProperties(project);
+        pp.setBuilderProperties(expected);
+        pp.store();
+        pp = new OldErlangProjectProperties(project);
         final Map<String, String> actual = pp.getBuilderProperties();
 
         assertThat(actual.get("builder"), is(expected.get("builder")));
+        assertThat(actual.get("workdir"), is(expected.get("workdir")));
+        assertThat(actual.get("args"), is(expected.get("args")));
     }
 }
