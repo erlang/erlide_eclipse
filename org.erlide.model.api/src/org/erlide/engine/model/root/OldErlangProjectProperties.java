@@ -56,16 +56,21 @@ public final class OldErlangProjectProperties implements
         super();
         project = prj;
         builderProperties = Maps.newHashMap();
-        final IEclipsePreferences root = new ProjectScope(project)
-                .getNode("org.erlide.core");
         // TODO load() should not be in constructor!
-        load(root);
+        load();
     }
 
-    private void load(final IEclipsePreferences node) {
+    @Override
+    public void preferenceChange(final PreferenceChangeEvent event) {
+        load();
+    }
+
+    private void load() {
         if (project == null) {
             return;
         }
+        final IEclipsePreferences node = new ProjectScope(project)
+                .getNode("org.erlide.core");
 
         if (SystemConfiguration.hasFeatureEnabled("erlide.newprops")) {
             final ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
@@ -222,7 +227,12 @@ public final class OldErlangProjectProperties implements
         outputDirs = bprefs.getOutputDirs();
         runtimeName = bprefs.getRuntimeName();
         runtimeVersion = bprefs.getRequiredRuntimeVersion();
-        builderProperties = Maps.newHashMap(bprefs.getBuilderProperties());
+        final Map<String, String> builderPrefs = bprefs.getBuilderProperties();
+        if (builderPrefs != null) {
+            builderProperties = Maps.newHashMap(builderPrefs);
+        } else {
+            builderProperties = Maps.newHashMap();
+        }
     }
 
     @Override
@@ -256,13 +266,6 @@ public final class OldErlangProjectProperties implements
     public RuntimeVersion getRuntimeVersion() {
         final RuntimeInfo runtimeInfo = getRuntimeInfo();
         return runtimeInfo != null ? runtimeInfo.getVersion() : runtimeVersion;
-    }
-
-    @Override
-    public void preferenceChange(final PreferenceChangeEvent event) {
-        final IEclipsePreferences root = new ProjectScope(project)
-                .getNode("org.erlide.core");
-        load(root);
     }
 
     @Override

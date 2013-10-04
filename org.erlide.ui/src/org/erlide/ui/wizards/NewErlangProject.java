@@ -10,7 +10,6 @@
 package org.erlide.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IContainer;
@@ -205,26 +204,13 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
             final OldErlangProjectProperties bprefs = buildPage.getPrefs();
 
-            buildPaths(root, project, new ArrayList<IPath>() {
-                /**
-                 * 
-                 */
-                private static final long serialVersionUID = 8086313054669539150L;
-
-                {
-                    addAll(bprefs.getOutputDirs());
-                }
-            }, monitor);
+            buildPaths(root, project, bprefs.getOutputDirs(), monitor);
             buildPaths(root, project, bprefs.getSourceDirs(), monitor);
             buildPaths(root, project, bprefs.getIncludeDirs(), monitor);
 
             final IErlProject erlProject = ErlangEngine.getInstance()
                     .getModel().getErlangProject(project);
             erlProject.setAllProperties(bprefs);
-
-            // TODO add code path to backend
-            // final String out = project.getLocation().append(
-            // prefs.getOutputDir()).toString();
         } catch (final CoreException e) {
             ErlLogger.debug(e);
             reportError(e);
@@ -238,6 +224,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
     /**
      * Builds the path from the specified path list.
+     * 
      * @param root
      *            the root worksapce
      * @param project
@@ -250,9 +237,9 @@ public class NewErlangProject extends Wizard implements INewWizard {
      * @throws CoreException
      *             if a problem occures
      */
-    private void buildPaths(final IWorkspaceRoot root,
-            final IProject project, final Collection<IPath> pathList,
-            final IProgressMonitor monitor) throws CoreException {
+    private void buildPaths(final IWorkspaceRoot root, final IProject project,
+            final Collection<IPath> pathList, final IProgressMonitor monitor)
+            throws CoreException {
         // Some paths are optionals (include): If we do not specify it, we get a
         // null string and we do not need to create the directory
         if (pathList != null) {
