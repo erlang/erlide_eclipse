@@ -1,4 +1,4 @@
-package org.erlide.core.internal.executor;
+package org.erlide.core.executor;
 
 import java.util.Arrays;
 import java.util.Collection;

@@ -3,7 +3,7 @@ package org.erlide.core.internal.builder;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.core.internal.executor.ToolExecutor.ToolResults;
+import org.erlide.core.executor.ToolExecutor.ToolResults;
 
 public class MakeBuilder extends ExternalBuilder {
 

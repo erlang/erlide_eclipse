@@ -8,8 +8,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.erlide.core.builder.IBuilder;
 import org.erlide.core.builder.MarkerUtils;
-import org.erlide.core.internal.executor.ToolExecutor;
-import org.erlide.core.internal.executor.ToolExecutor.ToolResults;
+import org.erlide.core.executor.ToolExecutor;
+import org.erlide.core.executor.ToolExecutor.ToolResults;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.base.Joiner;
