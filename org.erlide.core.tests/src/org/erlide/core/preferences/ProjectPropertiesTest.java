@@ -11,7 +11,7 @@ import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IErlangProjectProperties;
-import org.erlide.engine.model.root.OldErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.AfterClass;
@@ -49,7 +49,7 @@ public class ProjectPropertiesTest {
                 .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.OUTPUT_DIR, expected);
 
-        final IErlangProjectProperties pp = new OldErlangProjectProperties(
+        final IErlangProjectProperties pp = new ErlangProjectProperties(
                 project);
         final String actual = pp.getOutputDir().toPortableString();
 
@@ -65,7 +65,7 @@ public class ProjectPropertiesTest {
                 .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.INCLUDE_DIRS, expected);
 
-        final IErlangProjectProperties pp = new OldErlangProjectProperties(
+        final IErlangProjectProperties pp = new ErlangProjectProperties(
                 project);
         final String actual = pp.getIncludeDirs().toString();
 
@@ -86,7 +86,7 @@ public class ProjectPropertiesTest {
                 .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.SOURCE_DIRS, expected);
 
-        final IErlangProjectProperties pp = new OldErlangProjectProperties(
+        final IErlangProjectProperties pp = new ErlangProjectProperties(
                 project);
         final String actual = pp.getSourceDirs().toString();
 
@@ -102,10 +102,10 @@ public class ProjectPropertiesTest {
         expected.put("args", " -f hoo \"baz\" ");
 
         final IProject project = erlProject.getWorkspaceProject();
-        IErlangProjectProperties pp = new OldErlangProjectProperties(project);
+        IErlangProjectProperties pp = new ErlangProjectProperties(project);
         pp.setBuilderProperties(expected);
         pp.store();
-        pp = new OldErlangProjectProperties(project);
+        pp = new ErlangProjectProperties(project);
         final Map<String, String> actual = pp.getBuilderProperties();
 
         assertThat(actual.get("builder"), is(expected.get("builder")));

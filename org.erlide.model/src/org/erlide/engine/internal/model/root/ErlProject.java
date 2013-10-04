@@ -59,7 +59,7 @@ import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IErlangProjectProperties;
-import org.erlide.engine.model.root.OldErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
@@ -637,7 +637,7 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private IErlangProjectProperties getProperties() {
-        return new OldErlangProjectProperties(fProject);
+        return new ErlangProjectProperties(fProject);
     }
 
     @Override

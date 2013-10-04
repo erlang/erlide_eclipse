@@ -27,12 +27,12 @@ import org.erlide.util.ErlLogger;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;
 
-public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
+public class ErlangProjectPropertyPage extends FieldEditorOverlayPage {
 
     /**
      * Constructor for ErlProjectPropertyPage.
      */
-    public OldErlProjectPropertyPage() {
+    public ErlangProjectPropertyPage() {
         super("Erlang project properties", GRID);
         setPropertiesOnly();
     }

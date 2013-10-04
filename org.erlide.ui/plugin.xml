@@ -285,7 +285,7 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="org.erlide.ui.properties.OldErlProjectPropertyPage"
+            class="org.erlide.ui.properties.ErlangProjectPropertyPage"
             id="org.erlide.core"
             name="Erlang">
     <enabledWhen>

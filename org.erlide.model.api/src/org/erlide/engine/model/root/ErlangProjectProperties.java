@@ -24,13 +24,12 @@ import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.MapCodec;
-import org.erlide.util.SystemConfiguration;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public final class OldErlangProjectProperties implements
+public final class ErlangProjectProperties implements
         IPreferenceChangeListener, IErlangProjectProperties {
 
     private IProject project;
@@ -49,10 +48,10 @@ public final class OldErlangProjectProperties implements
     private boolean nukeOutputOnClean = false;
     private Map<String, String> builderProperties;
 
-    public OldErlangProjectProperties() {
+    public ErlangProjectProperties() {
     }
 
-    public OldErlangProjectProperties(final IProject prj) {
+    public ErlangProjectProperties(final IProject prj) {
         super();
         project = prj;
         builderProperties = Maps.newHashMap();
@@ -71,15 +70,6 @@ public final class OldErlangProjectProperties implements
         }
         final IEclipsePreferences node = new ProjectScope(project)
                 .getNode("org.erlide.core");
-
-        if (SystemConfiguration.hasFeatureEnabled("erlide.newprops")) {
-            final ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
-            final ErlProjectInfo npp = builder
-                    .loadFromPreferences((IEclipsePreferences) node
-                            .node("test"));
-            builder.storeToPreferences(npp,
-                    (IEclipsePreferences) node.node("new_test"));
-        }
 
         final String sourceDirsStr = node.get(
                 ProjectPreferencesConstants.SOURCE_DIRS,
@@ -130,13 +120,6 @@ public final class OldErlangProjectProperties implements
         }
         final IEclipsePreferences node = new ProjectScope(project)
                 .getNode("org.erlide.core");
-        if (SystemConfiguration.hasFeatureEnabled("erlide.newprops")) {
-            final ErlProjectInfo npp = PropertiesUtils.convertOld(this);
-            final ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
-            builder.storeToPreferences(npp,
-                    (IEclipsePreferences) node.node("test"));
-        }
-
         node.removePreferenceChangeListener(this);
 
         try {

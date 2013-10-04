@@ -36,7 +36,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
-import org.erlide.engine.model.root.OldErlangProjectProperties;
+import org.erlide.engine.model.root.IErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -59,7 +60,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
     private Button externalModulesBrowse;
     private Button externalIncludesBrowse;
 
-    OldErlangProjectProperties prefs;
+    ErlangProjectProperties prefs;
 
     /**
      * Constructor inherited from parent
@@ -88,7 +89,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
      */
     @Override
     public void createControl(final Composite parent) {
-        prefs = new OldErlangProjectProperties();
+        prefs = new ErlangProjectProperties();
         prefs.setRuntimeVersion(BackendCore.getRuntimeInfoCatalog()
                 .getDefaultRuntime().getVersion());
 
@@ -305,7 +306,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
     };
     private Text text;
 
-    public OldErlangProjectProperties getPrefs() {
+    public IErlangProjectProperties getPrefs() {
         return prefs;
     }
 

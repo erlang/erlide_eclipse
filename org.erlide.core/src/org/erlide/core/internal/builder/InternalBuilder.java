@@ -44,7 +44,7 @@ import org.erlide.core.builder.MarkerUtils;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.OldErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.util.ErlLogger;
 
@@ -85,7 +85,7 @@ public class InternalBuilder implements IBuilder {
             final IFolder bf = currentProject.getFolder(erlProject
                     .getOutputLocation());
             if (bf.exists()) {
-                final boolean nukeOutput = new OldErlangProjectProperties(
+                final boolean nukeOutput = new ErlangProjectProperties(
                         currentProject).isNukeOutputOnClean();
                 if (nukeOutput) {
                     bf.delete(true, monitor);

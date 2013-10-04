@@ -16,7 +16,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.OldErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.test.support.ErlideTestUtils;
@@ -401,7 +401,7 @@ public class IErlProjectTests extends ErlModelTestBase {
         final IErlProject aProject = projects[0];
         final Collection<IPath> sourceDirs = aProject.getSourceDirs();
         try {
-            final OldErlangProjectProperties properties = new OldErlangProjectProperties(
+            final ErlangProjectProperties properties = new ErlangProjectProperties(
                     aProject.getWorkspaceProject());
             final IPath srcx = new Path("srcx");
             properties.setSourceDirs(Lists.newArrayList(srcx));

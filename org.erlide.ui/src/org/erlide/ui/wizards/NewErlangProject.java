@@ -38,7 +38,6 @@ import org.erlide.core.ErlangCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IErlangProjectProperties;
-import org.erlide.engine.model.root.OldErlangProjectProperties;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
@@ -123,8 +122,9 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
                 @Override
                 protected void execute(final IProgressMonitor monitor) {
-                    createProject(monitor != null ? monitor
-                            : new NullProgressMonitor());
+                    createProject(buildPage.getPrefs(),
+                            monitor != null ? monitor
+                                    : new NullProgressMonitor());
 
                     try {
                         final IWorkbench workbench = ErlideUIPlugin
@@ -171,10 +171,13 @@ public class NewErlangProject extends Wizard implements INewWizard {
     /**
      * This is the actual implementation for project creation.
      * 
+     * @param prefs
+     * 
      * @param monitor
      *            reports progress on this object
      */
-    protected void createProject(final IProgressMonitor monitor) {
+    protected void createProject(final IErlangProjectProperties prefs,
+            final IProgressMonitor monitor) {
         monitor.beginTask(ErlideUIPlugin
                 .getResourceString("wizards.messages.creatingproject"), 50);
         try {
@@ -202,15 +205,13 @@ public class NewErlangProject extends Wizard implements INewWizard {
             monitor.subTask(ErlideUIPlugin
                     .getResourceString("wizards.messages.creatingfiles"));
 
-            final OldErlangProjectProperties bprefs = buildPage.getPrefs();
-
-            createFolders(project, bprefs.getOutputDirs(), monitor);
-            createFolders(project, bprefs.getSourceDirs(), monitor);
-            createFolders(project, bprefs.getIncludeDirs(), monitor);
+            createFolders(project, prefs.getOutputDirs(), monitor);
+            createFolders(project, prefs.getSourceDirs(), monitor);
+            createFolders(project, prefs.getIncludeDirs(), monitor);
 
             final IErlProject erlProject = ErlangEngine.getInstance()
                     .getModel().getErlangProject(project);
-            erlProject.setAllProperties(bprefs);
+            erlProject.setAllProperties(prefs);
         } catch (final CoreException e) {
             ErlLogger.debug(e);
             reportError(e);

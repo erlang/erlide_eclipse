@@ -2,8 +2,8 @@ package org.erlide.core.internal.builder
 
 import org.eclipse.core.resources.IProject
 import org.erlide.core.builder.IBuilder
-import org.erlide.engine.model.root.OldErlangProjectProperties
 import org.erlide.util.ErlLogger
+import org.erlide.engine.model.root.ErlangProjectProperties
 
 class BuilderFactory {
 
@@ -12,8 +12,8 @@ class BuilderFactory {
     static val REBAR_BUILDER = "rebar"
 
     def IBuilder getBuilderFor(IProject project) {
-        val properties = new OldErlangProjectProperties(project);
-        val builder = properties.builderProperties.get("builder")
+        val properties = new ErlangProjectProperties(project);
+        val builder = properties.getBuilderProperties.get("builder")
         switch (builder) {
             case MAKE_BUILDER: {
                 ErlLogger.trace("builder", MAKE_BUILDER)

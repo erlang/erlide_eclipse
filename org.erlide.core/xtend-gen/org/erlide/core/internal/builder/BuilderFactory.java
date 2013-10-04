@@ -8,7 +8,7 @@ import org.erlide.core.internal.builder.EmakeBuilder;
 import org.erlide.core.internal.builder.InternalBuilder;
 import org.erlide.core.internal.builder.MakeBuilder;
 import org.erlide.core.internal.builder.RebarBuilder;
-import org.erlide.engine.model.root.OldErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.util.ErlLogger;
 
 @SuppressWarnings("all")
@@ -22,8 +22,8 @@ public class BuilderFactory {
   public IBuilder getBuilderFor(final IProject project) {
     IBuilder _xblockexpression = null;
     {
-      OldErlangProjectProperties _oldErlangProjectProperties = new OldErlangProjectProperties(project);
-      final OldErlangProjectProperties properties = _oldErlangProjectProperties;
+      ErlangProjectProperties _erlangProjectProperties = new ErlangProjectProperties(project);
+      final ErlangProjectProperties properties = _erlangProjectProperties;
       Map<String,String> _builderProperties = properties.getBuilderProperties();
       final String builder = _builderProperties.get("builder");
       IBuilder _switchResult = null;
