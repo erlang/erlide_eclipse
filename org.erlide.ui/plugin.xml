@@ -1502,24 +1502,6 @@
       </linkHelper>
    </extension>
 
-   <!-- Bind the Properties content extension to the viewer -->
-   <extension
-         point="org.eclipse.ui.importWizards">
-      <category
-            id="org.erlide.ui.ErlangProjectImport.category"
-            name="Erlang">
-      </category>
-      <wizard
-            category="org.erlide.ui.ErlangProjectImport.category"
-            class="org.erlide.ui.wizards.ErlangProjectImportWizard"
-            icon="icons/full/obj16/erlang_editor.gif"
-            id="org.erlide.ui.ErlangProjectImport.wizard"
-            name="Import erlang project into workspace">
-         <description>
-            Import an existing erlang project from the local file system into the workspace.
-         </description>
-      </wizard>
-   </extension>
    <extension
          point="org.eclipse.ui.decorators">
       <decorator
