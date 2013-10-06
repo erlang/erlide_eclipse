@@ -10,6 +10,7 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
@@ -106,7 +107,7 @@ public class ErlProjectTest {
                     "-record(rec2, {field, another=def}.");
             final String includePath = externalInclude.getAbsolutePath();
             final IPath p = new Path(includePath).removeLastSegments(1);
-            project.setIncludeDirs(Lists.newArrayList(p));
+            ((ErlProject) project).setIncludeDirs(Lists.newArrayList(p));
             // when
             // looking for the include file
             // String includeFile =
@@ -155,7 +156,7 @@ public class ErlProjectTest {
                     "-record(rec2, {field, another=def}.");
             final String includePath = externalInclude.getFilePath();
             final IPath p = new Path(includePath).removeLastSegments(1);
-            project.setIncludeDirs(Lists.newArrayList(p));
+            ((ErlProject) project).setIncludeDirs(Lists.newArrayList(p));
             // when
             // looking for the include file
             project.open(null);
@@ -242,7 +243,8 @@ public class ErlProjectTest {
             final String externalsFileName = "x.erlidex";
             final File externalsFile = ErlideTestUtils.createTmpFile(
                     externalsFileName, absolutePath);
-            project.setExternalModulesFile(externalsFile.getAbsolutePath());
+            ((ErlProject) project).setExternalModulesFile(externalsFile
+                    .getAbsolutePath());
             project.open(null);
             final IErlElementLocator model = ErlangEngine.getInstance()
                     .getModel();

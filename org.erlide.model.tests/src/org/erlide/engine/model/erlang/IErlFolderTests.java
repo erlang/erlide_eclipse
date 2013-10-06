@@ -11,6 +11,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
@@ -48,7 +49,7 @@ public class IErlFolderTests extends ErlModelTestBase {
         ErlideTestUtils.createFolderHelper(folder2);
         final IPath belowPath = new Path(src).append(below);
         final Collection<IPath> sourceDirs = Lists.newArrayList(belowPath);
-        project2.setSourceDirs(sourceDirs);
+        ((ErlProject) project2).setSourceDirs(sourceDirs);
     }
 
     // Collection<IErlModule> getModules() throws ErlModelException;

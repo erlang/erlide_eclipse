@@ -285,7 +285,7 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="org.erlide.ui.properties.OldErlProjectPropertyPage"
+            class="org.erlide.ui.properties.ErlangProjectPropertyPage"
             id="org.erlide.core"
             name="Erlang">
     <enabledWhen>
@@ -295,9 +295,10 @@
         </enabledWhen>
       </page>
       <page
+            category="org.erlide.core"
             class="org.erlide.ui.prefs.CompilerPreferencePage"
             id="org.erlide.ui.properties.compilerPreferencePage"
-            name="Erlang compiler">
+            name="Building">
     <enabledWhen>
        <adapt type="org.eclipse.core.resources.IProject">
               <test property="org.eclipse.core.resources.projectNature" value="org.erlide.core.erlnature"/>
@@ -305,6 +306,7 @@
         </enabledWhen>
       </page>
       <page
+            category="org.erlide.core"
             class="org.erlide.ui.properties.EdocConfigurationPropertyPage"
             id="org.eclipse.jdt.ui.propertyPages.EdocConfigurationPropertyPage"
             name="Edoc">
@@ -368,7 +370,7 @@
          <action
                class="org.erlide.ui.actions.ToggleNatureAction"
                id="org.erlide.ui.AddNatureAction"
-               label="Add Erlang nature"
+               label="Mark as Erlang project"
                menubarPath="org.eclipse.ui.projectConfigure/additions">
          </action>
          <visibility>
@@ -381,7 +383,7 @@
          <action
                class="org.erlide.ui.actions.ToggleNatureAction"
                id="org.erlide.ui.AddNatureAction"
-               label="Remove Erlang nature"
+               label="Unmark as Erlang project"
                menubarPath="org.eclipse.ui.projectConfigure/additions">
          </action>
          <visibility>
@@ -1500,24 +1502,6 @@
       </linkHelper>
    </extension>
 
-   <!-- Bind the Properties content extension to the viewer -->
-   <extension
-         point="org.eclipse.ui.importWizards">
-      <category
-            id="org.erlide.ui.ErlangProjectImport.category"
-            name="Erlang">
-      </category>
-      <wizard
-            category="org.erlide.ui.ErlangProjectImport.category"
-            class="org.erlide.ui.wizards.ErlangProjectImportWizard"
-            icon="icons/full/obj16/erlang_editor.gif"
-            id="org.erlide.ui.ErlangProjectImport.wizard"
-            name="Import erlang project into workspace">
-         <description>
-            Import an existing erlang project from the local file system into the workspace.
-         </description>
-      </wizard>
-   </extension>
    <extension
          point="org.eclipse.ui.decorators">
       <decorator

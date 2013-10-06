@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
+import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlExternal;
@@ -31,7 +32,8 @@ public class IErlExternalTests extends ErlModelTestBase {
                 "-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
         final String absolutePath = externalFile.getAbsolutePath();
         externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX, absolutePath);
-        project.setExternalModulesFile(externalsFile.getAbsolutePath());
+        ((ErlProject) project).setExternalModulesFile(externalsFile
+                .getAbsolutePath());
         project.open(null);
     }
 
@@ -44,7 +46,7 @@ public class IErlExternalTests extends ErlModelTestBase {
         if (externalsFile != null && externalsFile.exists()) {
             externalsFile.delete();
         }
-        project.setExternalModulesFile(externalModulesString);
+        ((ErlProject) project).setExternalModulesFile(externalModulesString);
         super.tearDown();
     }
 

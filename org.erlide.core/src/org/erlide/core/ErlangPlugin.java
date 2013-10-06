@@ -51,8 +51,9 @@ public class ErlangPlugin extends Plugin {
         try {
             ErlideEventTracer.getInstance().dispose();
 
-            ResourcesPlugin.getWorkspace().removeSaveParticipant(
-                    getBundle().getSymbolicName());
+            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            workspace.removeSaveParticipant(getBundle().getSymbolicName());
+
             if (core != null) {
                 core.stop();
             }
@@ -78,6 +79,7 @@ public class ErlangPlugin extends Plugin {
         final String logDir = workspace.getRoot().getLocation()
                 .toPortableString();
         final ErlangDebugOptionsManager erlangDebugOptionsManager = new ErlangDebugOptionsManager();
+
 
         core = new ErlangCore(this, workspace, extensionRegistry, logDir,
                 erlangDebugOptionsManager);

@@ -10,7 +10,6 @@
 package org.erlide.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IContainer;
@@ -39,7 +38,6 @@ import org.erlide.core.ErlangCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IErlangProjectProperties;
-import org.erlide.engine.model.root.OldErlangProjectProperties;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
@@ -124,8 +122,9 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
                 @Override
                 protected void execute(final IProgressMonitor monitor) {
-                    createProject(monitor != null ? monitor
-                            : new NullProgressMonitor());
+                    createProject(buildPage.getPrefs(),
+                            monitor != null ? monitor
+                                    : new NullProgressMonitor());
 
                     try {
                         final IWorkbench workbench = ErlideUIPlugin
@@ -172,10 +171,13 @@ public class NewErlangProject extends Wizard implements INewWizard {
     /**
      * This is the actual implementation for project creation.
      * 
+     * @param prefs
+     * 
      * @param monitor
      *            reports progress on this object
      */
-    protected void createProject(final IProgressMonitor monitor) {
+    protected void createProject(final IErlangProjectProperties prefs,
+            final IProgressMonitor monitor) {
         monitor.beginTask(ErlideUIPlugin
                 .getResourceString("wizards.messages.creatingproject"), 50);
         try {
@@ -203,28 +205,13 @@ public class NewErlangProject extends Wizard implements INewWizard {
             monitor.subTask(ErlideUIPlugin
                     .getResourceString("wizards.messages.creatingfiles"));
 
-            final OldErlangProjectProperties bprefs = buildPage.getPrefs();
-
-            buildPaths(monitor, root, project, new ArrayList<IPath>() {
-                /**
-                 * 
-                 */
-                private static final long serialVersionUID = 8086313054669539150L;
-
-                {
-                    addAll(bprefs.getOutputDirs());
-                }
-            });
-            buildPaths(monitor, root, project, bprefs.getSourceDirs());
-            buildPaths(monitor, root, project, bprefs.getIncludeDirs());
+            createFolders(project, prefs.getOutputDirs(), monitor);
+            createFolders(project, prefs.getSourceDirs(), monitor);
+            createFolders(project, prefs.getIncludeDirs(), monitor);
 
             final IErlProject erlProject = ErlangEngine.getInstance()
                     .getModel().getErlangProject(project);
-            erlProject.setAllProperties(bprefs);
-
-            // TODO add code path to backend
-            // final String out = project.getLocation().append(
-            // prefs.getOutputDir()).toString();
+            erlProject.setAllProperties(prefs);
         } catch (final CoreException e) {
             ErlLogger.debug(e);
             reportError(e);
@@ -238,31 +225,18 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
     /**
      * Builds the path from the specified path list.
-     * 
-     * @param monitor
-     *            The progress monitor to use
-     * @param root
-     *            the root worksapce
-     * @param project
-     *            the project
-     * @param list
-     *            the paths to create
-     * @throws CoreException
-     *             if a problem occures
      */
-    private void buildPaths(final IProgressMonitor monitor,
-            final IWorkspaceRoot root, final IProject project,
-            final Collection<IPath> list) throws CoreException {
+    private void createFolders(final IProject project,
+            final Collection<IPath> pathList, final IProgressMonitor monitor)
+            throws CoreException {
         // Some paths are optionals (include): If we do not specify it, we get a
         // null string and we do not need to create the directory
-        if (list != null) {
-            final IPath projectPath = project.getFullPath();
-            for (final IPath pp : list) {
+        if (pathList != null) {
+            for (final IPath path : pathList) {
                 // only create in-project paths
-                if (!pp.isAbsolute() && !pp.toString().equals(".")
-                        && !pp.isEmpty()) {
-                    final IPath path = projectPath.append(pp);
-                    final IFolder folder = root.getFolder(path);
+                if (!path.isAbsolute() && !path.toString().equals(".")
+                        && !path.isEmpty()) {
+                    final IFolder folder = project.getFolder(path);
                     createFolderHelper(folder, monitor);
                 }
             }
@@ -270,10 +244,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
     }
 
     /**
-     * Displays an error that occured during the project creation. *
-     * 
-     * @param x
-     *            details on the error
+     * Displays an error that occured during the project creation.
      */
     private void reportError(final Exception x) {
         ErlLogger.error(x);

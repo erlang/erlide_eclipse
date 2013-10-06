@@ -12,6 +12,7 @@ package org.erlide.engine.model.root;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -22,12 +23,13 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
-import org.erlide.util.SystemConfiguration;
+import org.erlide.util.MapCodec;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
-public final class OldErlangProjectProperties implements
+public final class ErlangProjectProperties implements
         IPreferenceChangeListener, IErlangProjectProperties {
 
     private IProject project;
@@ -44,32 +46,30 @@ public final class OldErlangProjectProperties implements
             ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
     private String runtimeName = null;
     private boolean nukeOutputOnClean = false;
+    private Map<String, String> builderProperties;
 
-    public OldErlangProjectProperties() {
+    public ErlangProjectProperties() {
     }
 
-    public OldErlangProjectProperties(final IProject prj) {
+    public ErlangProjectProperties(final IProject prj) {
         super();
         project = prj;
-        final IEclipsePreferences root = new ProjectScope(project)
-                .getNode("org.erlide.core");
+        builderProperties = Maps.newHashMap();
         // TODO load() should not be in constructor!
-        load(root);
+        load();
     }
 
-    private void load(final IEclipsePreferences node) {
+    @Override
+    public void preferenceChange(final PreferenceChangeEvent event) {
+        load();
+    }
+
+    private void load() {
         if (project == null) {
             return;
         }
-
-        if (SystemConfiguration.hasFeatureEnabled("erlide.newprops")) {
-            final ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
-            final ErlProjectInfo npp = builder
-                    .loadFromPreferences((IEclipsePreferences) node
-                            .node("test"));
-            builder.storeToPreferences(npp,
-                    (IEclipsePreferences) node.node("new_test"));
-        }
+        final IEclipsePreferences node = new ProjectScope(project)
+                .getNode("org.erlide.core");
 
         final String sourceDirsStr = node.get(
                 ProjectPreferencesConstants.SOURCE_DIRS,
@@ -109,6 +109,8 @@ public final class OldErlangProjectProperties implements
                 ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
         setNukeOutputOnClean(node.getBoolean(
                 ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN, false));
+        setBuilderProperties(MapCodec.decode(node.get(
+                ProjectPreferencesConstants.BUILDER_PROPERTIES, "")));
     }
 
     @Override
@@ -118,13 +120,6 @@ public final class OldErlangProjectProperties implements
         }
         final IEclipsePreferences node = new ProjectScope(project)
                 .getNode("org.erlide.core");
-        if (SystemConfiguration.hasFeatureEnabled("erlide.newprops")) {
-            final ErlProjectInfo npp = PropertiesUtils.convertOld(this);
-            final ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
-            builder.storeToPreferences(npp,
-                    (IEclipsePreferences) node.node("test"));
-        }
-
         node.removePreferenceChangeListener(this);
 
         try {
@@ -151,6 +146,9 @@ public final class OldErlangProjectProperties implements
                     externalModulesFile);
             node.putBoolean(ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
                     isNukeOutputOnClean());
+
+            node.put(ProjectPreferencesConstants.BUILDER_PROPERTIES,
+                    MapCodec.encode(getBuilderProperties()));
 
             node.flush();
         } finally {
@@ -212,6 +210,12 @@ public final class OldErlangProjectProperties implements
         outputDirs = bprefs.getOutputDirs();
         runtimeName = bprefs.getRuntimeName();
         runtimeVersion = bprefs.getRequiredRuntimeVersion();
+        final Map<String, String> builderPrefs = bprefs.getBuilderProperties();
+        if (builderPrefs != null) {
+            builderProperties = Maps.newHashMap(builderPrefs);
+        } else {
+            builderProperties = Maps.newHashMap();
+        }
     }
 
     @Override
@@ -248,13 +252,6 @@ public final class OldErlangProjectProperties implements
     }
 
     @Override
-    public void preferenceChange(final PreferenceChangeEvent event) {
-        final IEclipsePreferences root = new ProjectScope(project)
-                .getNode("org.erlide.core");
-        load(root);
-    }
-
-    @Override
     public void setRuntimeVersion(final RuntimeVersion runtimeVersion) {
         this.runtimeVersion = runtimeVersion;
     }
@@ -274,9 +271,19 @@ public final class OldErlangProjectProperties implements
         return runtimeVersion;
     }
 
+    @Deprecated
     @Override
     public String getRuntimeName() {
         return runtimeName;
     }
 
+    @Override
+    public Map<String, String> getBuilderProperties() {
+        return builderProperties;
+    }
+
+    @Override
+    public void setBuilderProperties(final Map<String, String> builderProperties) {
+        this.builderProperties = builderProperties;
+    }
 }

@@ -9,7 +9,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.erlide.core.builder.ErlideBuilder;
+import org.erlide.core.internal.builder.InternalBuilder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
@@ -19,7 +19,7 @@ import org.junit.Test;
 public class ErlangBuilderTest {
 
     private IProject prj;
-    private ErlideBuilder builder;
+    private InternalBuilder builder;
 
     @Before
     public void initialClean() throws CoreException {
@@ -31,7 +31,7 @@ public class ErlangBuilderTest {
             beam.delete(true, null);
         }
 
-        builder = new ErlideBuilder(prj);
+        builder = new InternalBuilder(prj);
     }
 
     @After
@@ -43,7 +43,7 @@ public class ErlangBuilderTest {
     @Test
     public void projectShouldBuild() throws CoreException {
         builder.build(IncrementalProjectBuilder.FULL_BUILD, null,
-                new NullProgressMonitor(), null);
+                null, new NullProgressMonitor());
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
 
         final IResource beam = prj.findMember("ebin/m21.beam");
@@ -53,7 +53,7 @@ public class ErlangBuilderTest {
     @Test
     public void projectShouldClean() throws CoreException {
         builder.build(IncrementalProjectBuilder.FULL_BUILD, null,
-                new NullProgressMonitor(), null);
+                null, new NullProgressMonitor());
         builder.clean(new NullProgressMonitor());
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
 

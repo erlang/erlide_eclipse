@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.erlide.core.ErlangCore;
+import org.erlide.util.ErlLogger;
 
 public class ToggleNatureAction implements IObjectActionDelegate {
 
@@ -89,6 +90,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
             project.setDescription(description, null);
 
         } catch (final CoreException e) {
+            ErlLogger.warn(e);
         }
     }
 }

@@ -9,7 +9,6 @@ import org.erlide.util.PreferencesUtils;
 
 public class ProjectPathEditor extends PathEditor {
     private final IProject project;
-    private String fOutputLocation;
     private final String dirChooserLabelText;
 
     public ProjectPathEditor(final String name, final String labelText,
@@ -23,8 +22,7 @@ public class ProjectPathEditor extends PathEditor {
     @Override
     protected String getNewInputObject() {
         final IContainer container = DirectorySelectUtil.chooseLocation(
-                dirChooserLabelText, getLabelText(), project, fOutputLocation,
-                getShell());
+                dirChooserLabelText, getLabelText(), project, null, getShell());
         if (container != null) {
             return container.getProjectRelativePath().toString();
         }

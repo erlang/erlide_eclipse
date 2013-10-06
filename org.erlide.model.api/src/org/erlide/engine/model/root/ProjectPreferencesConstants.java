@@ -45,6 +45,10 @@ public final class ProjectPreferencesConstants {
     public static final String PROJECT_TYPE = "type";
     public static final String DEFAULT_PROJECT_TYPE = "NORMAL";
 
+    public static final String NUKE_OUTPUT_ON_CLEAN = "nukeOutputOnClean";
+    public static final String USE_EXTERNAL_BUILDER = "useExternalBuilder";
+    public static final String BUILDER_PROPERTIES = "externalBuilderProperties";
+
     // new project properties
 
     public static final String SOURCES = "sources";
@@ -59,7 +63,6 @@ public final class ProjectPreferencesConstants {
     // tracing properties
     public static final String TRACING = "tracing";
     public static final String TRACED_MODULES = "modules";
-    public static final String NUKE_OUTPUT_ON_CLEAN = "nukeOutputOnClean";
 
     private ProjectPreferencesConstants() {
     }

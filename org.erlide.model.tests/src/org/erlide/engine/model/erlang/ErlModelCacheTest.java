@@ -1,4 +1,4 @@
-package org.erlide.core;
+package org.erlide.engine.model.erlang;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -7,6 +7,7 @@ import java.io.File;
 
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
@@ -101,7 +102,8 @@ public class ErlModelCacheTest {
             final String absolutePath = externalFile.getAbsolutePath();
             final File externalsFile = ErlideTestUtils.createTmpFile(
                     "x.erlidex", absolutePath);
-            project.setExternalModulesFile(externalsFile.getAbsolutePath());
+            ((ErlProject) project).setExternalModulesFile(externalsFile
+                    .getAbsolutePath());
             project.open(null);
             final IErlElementLocator model = ErlangEngine.getInstance()
                     .getModel();

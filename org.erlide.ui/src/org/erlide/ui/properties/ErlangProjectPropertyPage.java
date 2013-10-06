@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
@@ -28,12 +27,12 @@ import org.erlide.util.ErlLogger;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;
 
-public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
+public class ErlangProjectPropertyPage extends FieldEditorOverlayPage {
 
     /**
      * Constructor for ErlProjectPropertyPage.
      */
-    public OldErlProjectPropertyPage() {
+    public ErlangProjectPropertyPage() {
         super("Erlang project properties", GRID);
         setPropertiesOnly();
     }
@@ -53,21 +52,20 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
         } catch (final CoreException e) {
         }
 
-        final Composite fieldEditorParent = getFieldEditorParent();
         final ProjectDirectoryFieldEditor out = new ProjectDirectoryFieldEditor(
                 ProjectPreferencesConstants.OUTPUT_DIR, "Output directory:",
-                fieldEditorParent, prj, false);
+                getFieldEditorParent(), prj, false);
         addField(out);
 
         final ProjectPathEditor src = new ProjectPathEditor(
                 ProjectPreferencesConstants.SOURCE_DIRS, "Source directories:",
-                "Select directory:", fieldEditorParent, prj);
+                "Select directory:", getFieldEditorParent(), prj);
         addField(src);
 
         final ProjectPathEditor inc = new ProjectPathEditor(
                 ProjectPreferencesConstants.INCLUDE_DIRS,
-                "Include directories:", "Select directory:", fieldEditorParent,
-                prj);
+                "Include directories:", "Select directory:",
+                getFieldEditorParent(), prj);
         addField(inc);
 
         // IPreferenceStore ps = getPreferenceStore();
@@ -93,12 +91,13 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
         }
         addField(new ComboFieldEditor(
                 ProjectPreferencesConstants.RUNTIME_VERSION,
-                "Runtime version:", versionsArray, fieldEditorParent));
+                "Runtime version:", versionsArray, getFieldEditorParent()));
 
         addField(new BooleanFieldEditor(
                 ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
                 "When cleaning, delete the whole output directories (is faster)",
-                fieldEditorParent));
+                getFieldEditorParent()));
+
     }
 
     @Override

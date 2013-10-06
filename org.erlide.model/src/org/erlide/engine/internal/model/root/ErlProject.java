@@ -51,6 +51,7 @@ import org.erlide.engine.model.IOpenable;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;
 import org.erlide.engine.model.root.ErlElementKind;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlElementVisitor;
@@ -59,7 +60,6 @@ import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IErlangProjectProperties;
-import org.erlide.engine.model.root.OldErlangProjectProperties;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
@@ -637,7 +637,7 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private IErlangProjectProperties getProperties() {
-        return new OldErlangProjectProperties(fProject);
+        return new ErlangProjectProperties(fProject);
     }
 
     @Override
@@ -728,7 +728,6 @@ public class ErlProject extends Openable implements IErlProject {
         return externalIncludesString;
     }
 
-    @Override
     public void setIncludeDirs(final Collection<IPath> includeDirs)
             throws BackingStoreException {
         getModelCache().removeProject(this);
@@ -738,7 +737,6 @@ public class ErlProject extends Openable implements IErlProject {
         setStructureKnown(false);
     }
 
-    @Override
     public void setSourceDirs(final Collection<IPath> sourceDirs)
             throws BackingStoreException {
         getModelCache().removeProject(this);
@@ -748,7 +746,6 @@ public class ErlProject extends Openable implements IErlProject {
         setStructureKnown(false);
     }
 
-    @Override
     public void setExternalModulesFile(final String absolutePath)
             throws BackingStoreException {
         getModelCache().removeProject(this);
@@ -758,7 +755,6 @@ public class ErlProject extends Openable implements IErlProject {
         setStructureKnown(false);
     }
 
-    @Override
     public void setExternalIncludesFile(final String absolutePath)
             throws BackingStoreException {
         getModelCache().removeProject(this);

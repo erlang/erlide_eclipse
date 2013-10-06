@@ -9,81 +9,24 @@
  *******************************************************************************/
 package org.erlide.core.internal.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.erlide.core.ErlangCore;
-import org.erlide.util.ErlLogger;
 
 /**
- * Simple project nature
- * 
+ * Erlang project nature
  * 
  * @author Eric Merritt [cyberlync at yahoo dot com]
+ * @author Vlad Dumitrescu [vladdu55 att gmail dot com]
  */
 public class ErlangNature implements IProjectNature {
 
     private IProject project;
 
-    /**
-     * Not used yet; this is like ErlangCore for a specific project.
-     * 
-     * @param project
-     *            the project we want to know about (if it is null, null is
-     *            returned)
-     * @return the erlang nature for a project (or null if it does not exist for
-     *         the project)
-     * 
-     * @note: it's synchronized because more than 1 place could call
-     *        getErlangNature at the same time and more than one nature ended up
-     *        being created from project.getNature().
-     */
-    public static synchronized ErlangNature getErlangNature(
-            final IProject project) {
-        if (project != null && project.isOpen()) {
-            try {
-                final IProjectNature n = project
-                        .getNature(ErlangCore.NATURE_ID);
-                if (n instanceof ErlangNature) {
-                    return (ErlangNature) n;
-                }
-            } catch (final CoreException e) {
-                ErlLogger.info(e);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @return all the Erlang natures available in the workspace (for opened and
-     *         existing projects)
-     */
-    public static List<ErlangNature> getAllErlangNatures() {
-        final List<ErlangNature> natures = new ArrayList<ErlangNature>();
-        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        final IProject[] projects = root.getProjects();
-        for (final IProject project : projects) {
-            final ErlangNature nature = getErlangNature(project);
-            if (nature != null) {
-                natures.add(nature);
-            }
-        }
-        return natures;
-    }
-
-    /**
-     * Configure the nature
-     * 
-     * @see org.eclipse.core.resources.IProjectNature#configure()
-     */
     @Override
     public void configure() throws CoreException {
         final IProjectDescription description = project.getDescription();
@@ -98,11 +41,6 @@ public class ErlangNature implements IProjectNature {
         }
     }
 
-    /**
-     * deconfigure the nature
-     * 
-     * @see org.eclipse.core.resources.IProjectNature#deconfigure()
-     */
     @Override
     public void deconfigure() throws CoreException {
         final IProjectDescription description = project.getDescription();
@@ -124,42 +62,20 @@ public class ErlangNature implements IProjectNature {
         }
     }
 
-    /**
-     * Get the project
-     * 
-     * @see org.eclipse.core.resources.IProjectNature#getProject()
-     */
     @Override
     public IProject getProject() {
         return project;
     }
 
-    /**
-     * Set the project
-     * 
-     * @see org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.resources.IProject)
-     */
     @Override
     public void setProject(final IProject lproject) {
         project = lproject;
     }
 
-    /**
-     * Test for buildspec
-     * 
-     * @param commands
-     * @return
-     */
     private boolean hasBuildSpec(final ICommand[] commands) {
         return getBuildSpecCount(commands) != 0;
     }
 
-    /**
-     * Get spec count
-     * 
-     * @param commands
-     * @return
-     */
     private int getBuildSpecCount(final ICommand[] commands) {
         int count = 0;
         for (final ICommand element : commands) {

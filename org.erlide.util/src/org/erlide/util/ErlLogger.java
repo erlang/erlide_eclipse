@@ -81,6 +81,11 @@ public class ErlLogger {
         }
     }
 
+    public static void trace(final String tag, final String fmt,
+            final Object... o) {
+        info("USAGE: " + tag + ": " + fmt, o);
+    }
+
     public static void debug(final String fmt, final Object... o) {
         getInstance().log(Level.FINEST, fmt, o);
     }

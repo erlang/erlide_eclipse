@@ -8,7 +8,7 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.core.builder;
+package org.erlide.core.internal.builder;
 
 import java.util.Collection;
 import java.util.Date;
@@ -35,11 +35,16 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
+import org.erlide.core.builder.BuildResource;
+import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.BuilderHelper.SearchVisitor;
+import org.erlide.core.builder.CompilerOptions;
+import org.erlide.core.builder.IBuilder;
+import org.erlide.core.builder.MarkerUtils;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.OldErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.util.ErlLogger;
 
@@ -50,16 +55,17 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class ErlideBuilder {
+public class InternalBuilder implements IBuilder {
 
     BuildNotifier notifier;
     private final BuilderHelper helper = new BuilderHelper();
     private final IProject myProject;
 
-    public ErlideBuilder(final IProject prj) {
+    public InternalBuilder(final IProject prj) {
         myProject = prj;
     }
 
+    @Override
     public void clean(final IProgressMonitor monitor) {
         final IProject currentProject = getProject();
         if (currentProject == null || !currentProject.isAccessible()) {
@@ -79,31 +85,12 @@ public class ErlideBuilder {
             final IFolder bf = currentProject.getFolder(erlProject
                     .getOutputLocation());
             if (bf.exists()) {
-                final boolean nukeOutput = new OldErlangProjectProperties(
+                final boolean nukeOutput = new ErlangProjectProperties(
                         currentProject).isNukeOutputOnClean();
                 if (nukeOutput) {
                     bf.delete(true, monitor);
                 } else {
-                    final IResource[] beams = bf.members();
-                    monitor.beginTask("Cleaning Erlang files", beams.length);
-                    if (beams.length > 0) {
-                        final float delta = 100.0f / beams.length;
-                        for (final IResource element : beams) {
-                            if ("beam".equals(element.getFileExtension())) {
-                                final IResource source = findCorrespondingSource(element);
-                                if (source != null) {
-                                    element.delete(true, monitor);
-                                }
-                                notifier.updateProgressDelta(delta);
-                            }
-                            if ("app".equals(element.getFileExtension())) {
-                                final IResource source = findCorrespondingSource(element);
-                                if (source != null) {
-                                    element.delete(true, monitor);
-                                }
-                            }
-                        }
-                    }
+                    cleanupOutput(bf, monitor);
                 }
             }
 
@@ -123,9 +110,33 @@ public class ErlideBuilder {
         }
     }
 
-    public IProject[] build(final int kind,
-            @SuppressWarnings("rawtypes") final Map args,
-            final IProgressMonitor monitor, final IResourceDelta resourceDelta) {
+    private void cleanupOutput(final IFolder folder,
+            final IProgressMonitor monitor) throws CoreException {
+        final IResource[] beams = folder.members();
+        monitor.beginTask("Cleaning Erlang files", beams.length);
+        if (beams.length > 0) {
+            final float delta = 100.0f / beams.length;
+            for (final IResource element : beams) {
+                if ("beam".equals(element.getFileExtension())) {
+                    final IResource source = findCorrespondingSource(element);
+                    if (source != null) {
+                        element.delete(true, monitor);
+                    }
+                    notifier.updateProgressDelta(delta);
+                }
+                if ("app".equals(element.getFileExtension())) {
+                    final IResource source = findCorrespondingSource(element);
+                    if (source != null) {
+                        element.delete(true, monitor);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public IProject[] build(final int kind, final Map<String, String> args,
+            final IResourceDelta resourceDelta, final IProgressMonitor monitor) {
         final long time = System.currentTimeMillis();
         final IProject project = getProject();
         if (project == null || !project.isAccessible()) {
@@ -157,94 +168,7 @@ public class ErlideBuilder {
             handleAppFile(getProject().getLocation().toPortableString() + "/"
                     + out, erlProject.getSourceDirs());
 
-            final OtpErlangList compilerOptions = CompilerOptions.get(project);
-            ErlLogger.debug(">>> compiler options ::: " + compilerOptions);
-
-            final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
-                    kind, args, project, resourceDelta);
-            final int n = resourcesToBuild.size();
-            // if (BuilderHelper.isDebugging()) {
-            ErlLogger.debug("Will compile %d resource(s)", Integer.valueOf(n));
-            // }
-            if (n > 0) {
-                final IBackend backend = BackendCore.getBackendManager()
-                        .getBuildBackend(project);
-                if (backend == null) {
-                    final String message = "No backend with the required "
-                            + "version could be found. Can't build.";
-                    MarkerUtils.addProblemMarker(project, null, null, message,
-                            0, IMarker.SEVERITY_ERROR);
-                    throw new BackendException(message);
-                }
-                final IErlModel model = ErlangEngine.getInstance().getModel();
-                backend.addProjectPath(model.findProject(project));
-
-                notifier.setProgressPerCompilationUnit(1.0f / n);
-                final Map<IRpcFuture, IResource> results = new HashMap<IRpcFuture, IResource>();
-                for (final BuildResource bres : resourcesToBuild) {
-                    notifier.checkCancel();
-                    final IResource resource = bres.getResource();
-                    MarkerUtils.deleteMarkers(resource);
-                    // notifier.aboutToCompile(resource);
-                    if ("erl".equals(resource.getFileExtension())) {
-                        final String outputDir = erlProject.getOutputLocation()
-                                .toString();
-                        final IRpcFuture f = helper.startCompileErl(project,
-                                bres, outputDir, backend.getRpcSite(),
-                                compilerOptions,
-                                kind == IncrementalProjectBuilder.FULL_BUILD);
-                        if (f != null) {
-                            results.put(f, resource);
-                        }
-                    } else if ("yrl".equals(resource.getFileExtension())) {
-                        final IRpcFuture f = helper
-                                .startCompileYrl(project, resource,
-                                        backend.getRpcSite(), compilerOptions);
-                        if (f != null) {
-                            results.put(f, resource);
-                        }
-                    } else {
-                        ErlLogger.warn("Don't know how to compile: %s",
-                                resource.getName());
-                    }
-                }
-
-                final List<Entry<IRpcFuture, IResource>> done = Lists
-                        .newArrayList();
-                final List<Entry<IRpcFuture, IResource>> waiting = Lists
-                        .newArrayList(results.entrySet());
-
-                // TODO should use some kind of notification!
-                while (!waiting.isEmpty()) {
-                    for (final Entry<IRpcFuture, IResource> result : waiting) {
-                        notifier.checkCancel();
-                        OtpErlangObject r;
-                        try {
-                            r = result.getKey().get(100, TimeUnit.MILLISECONDS);
-                        } catch (final Exception e) {
-                            r = null;
-                        }
-                        if (r != null) {
-                            final IResource resource = result.getValue();
-
-                            helper.completeCompile(project, resource, r,
-                                    backend.getRpcSite(), compilerOptions);
-                            notifier.compiled(resource);
-
-                            done.add(result);
-                        }
-                    }
-                    waiting.removeAll(done);
-                    done.clear();
-                }
-                helper.refreshOutputDir(project);
-
-                try {
-                    helper.checkForClashes(backend.getRpcSite(), project);
-                } catch (final Exception e) {
-                }
-                backend.removeProjectPath(model.findProject(project));
-            }
+            handleErlangFiles(erlProject, project, args, kind, resourceDelta);
 
         } catch (final OperationCanceledException e) {
             if (BuilderHelper.isDebugging()) {
@@ -267,6 +191,98 @@ public class ErlideBuilder {
             // }
         }
         return null;
+    }
+
+    private void handleErlangFiles(final IErlProject erlProject,
+            final IProject project, final Map<String, String> args,
+            final int kind, final IResourceDelta resourceDelta)
+            throws CoreException, BackendException {
+        final OtpErlangList compilerOptions = CompilerOptions.get(project);
+        ErlLogger.debug(">>> compiler options ::: " + compilerOptions);
+
+        final Set<BuildResource> resourcesToBuild = getResourcesToBuild(kind,
+                args, project, resourceDelta);
+        final int n = resourcesToBuild.size();
+        // if (BuilderHelper.isDebugging()) {
+        ErlLogger.debug("Will compile %d resource(s)", Integer.valueOf(n));
+        // }
+        if (n > 0) {
+            final IBackend backend = BackendCore.getBackendManager()
+                    .getBuildBackend(project);
+            if (backend == null) {
+                final String message = "No backend with the required "
+                        + "version could be found. Can't build.";
+                MarkerUtils.addProblemMarker(project, null, null, message, 0,
+                        IMarker.SEVERITY_ERROR);
+                throw new BackendException(message);
+            }
+            final IErlModel model = ErlangEngine.getInstance().getModel();
+            backend.addProjectPath(model.findProject(project));
+
+            notifier.setProgressPerCompilationUnit(1.0f / n);
+            final Map<IRpcFuture, IResource> results = new HashMap<IRpcFuture, IResource>();
+            for (final BuildResource bres : resourcesToBuild) {
+                notifier.checkCancel();
+                final IResource resource = bres.getResource();
+                MarkerUtils.deleteMarkers(resource);
+                // notifier.aboutToCompile(resource);
+                if ("erl".equals(resource.getFileExtension())) {
+                    final String outputDir = erlProject.getOutputLocation()
+                            .toString();
+                    final IRpcFuture f = helper.startCompileErl(project, bres,
+                            outputDir, backend.getRpcSite(), compilerOptions,
+                            kind == IncrementalProjectBuilder.FULL_BUILD);
+                    if (f != null) {
+                        results.put(f, resource);
+                    }
+                } else if ("yrl".equals(resource.getFileExtension())) {
+                    final IRpcFuture f = helper.startCompileYrl(project,
+                            resource, backend.getRpcSite(), compilerOptions);
+                    if (f != null) {
+                        results.put(f, resource);
+                    }
+                } else {
+                    ErlLogger.warn("Don't know how to compile: %s",
+                            resource.getName());
+                }
+            }
+
+            final List<Entry<IRpcFuture, IResource>> done = Lists
+                    .newArrayList();
+            final List<Entry<IRpcFuture, IResource>> waiting = Lists
+                    .newArrayList(results.entrySet());
+
+            // TODO should use some kind of notification!
+            while (!waiting.isEmpty()) {
+                for (final Entry<IRpcFuture, IResource> result : waiting) {
+                    notifier.checkCancel();
+                    OtpErlangObject r;
+                    try {
+                        r = result.getKey().get(100, TimeUnit.MILLISECONDS);
+                    } catch (final Exception e) {
+                        r = null;
+                    }
+                    if (r != null) {
+                        final IResource resource = result.getValue();
+
+                        helper.completeCompile(project, resource, r,
+                                backend.getRpcSite(), compilerOptions);
+                        notifier.compiled(resource);
+
+                        done.add(result);
+                    }
+                }
+                waiting.removeAll(done);
+                done.clear();
+            }
+            helper.refreshOutputDir(project);
+
+            try {
+                helper.checkForClashes(backend.getRpcSite(), project);
+            } catch (final Exception e) {
+            }
+            backend.removeProjectPath(model.findProject(project));
+        }
     }
 
     private void handleAppFile(final String outPath,
