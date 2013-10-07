@@ -329,9 +329,6 @@ public final class BuilderHelper {
                     .lastSegment();
             BuilderHelper.loadModule(project, beamf);
             refreshDirs(project, t.elementAt(2));
-        } else {
-            ErlLogger.warn(">>>> compile error... %s\n   %s", source.getName(),
-                    t);
         }
 
         // process compilation messages
