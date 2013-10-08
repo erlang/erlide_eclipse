@@ -6,13 +6,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.builder.MarkerUtils;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.root.BuilderConfigParser;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
 
 public class EmakeBuilder extends ExternalBuilder {
 
-    EmakeBuilder(final IProject project) {
-        super(project, "erl");
+    @Override
+    public String getOsCommand() {
+        return "erl";
     }
 
     @Override
@@ -26,7 +28,13 @@ public class EmakeBuilder extends ExternalBuilder {
     }
 
     @Override
+    public BuilderConfigParser getConfigParser() {
+        return null;
+    }
+
+    @Override
     public void clean(final IProgressMonitor monitor) {
+        final IProject project = getProject();
         MarkerUtils.removeProblemMarkersFor(project);
 
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()

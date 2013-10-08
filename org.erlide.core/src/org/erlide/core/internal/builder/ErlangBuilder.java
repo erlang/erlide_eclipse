@@ -16,25 +16,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.builder.IBuilder;
 
-public class ErlangBuilder extends IncrementalProjectBuilder {
+public abstract class ErlangBuilder extends IncrementalProjectBuilder {
 
-    // TODO creating new builders means there can be no build state in memory,
-    // is it a good idea?
-
+    // make this method public
     @Override
-    protected IProject[] build(final int kind, final Map<String, String> args,
-            final IProgressMonitor monitor) throws CoreException {
-        final IProject project = getProject();
-        final IBuilder builder = new BuilderFactory().getBuilderFor(project);
-        return builder.build(kind, args, getDelta(project), monitor);
-    }
-
-    @Override
-    protected void clean(final IProgressMonitor monitor) throws CoreException {
-        final IProject project = getProject();
-        final IBuilder builder = new BuilderFactory().getBuilderFor(project);
-        builder.clean(monitor);
-    }
+    public abstract IProject[] build(int kind, Map<String, String> args,
+            IProgressMonitor monitor) throws CoreException;
 }

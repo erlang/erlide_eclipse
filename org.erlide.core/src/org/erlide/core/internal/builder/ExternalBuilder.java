@@ -3,39 +3,41 @@ package org.erlide.core.internal.builder;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
-import org.erlide.core.builder.IBuilder;
 import org.erlide.core.builder.MarkerUtils;
 import org.erlide.core.executor.ToolExecutor;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
+import org.erlide.engine.model.root.BuilderConfigParser;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.base.Joiner;
 
-public abstract class ExternalBuilder implements IBuilder {
+public abstract class ExternalBuilder extends ErlangBuilder {
 
     protected final ToolExecutor ex;
-    protected final String location;
-    protected final IProject project;
 
-    public ExternalBuilder(final IProject project, final String cmd) {
-        this.project = project;
+    public ExternalBuilder() {
         ex = new ToolExecutor();
-        location = ex.getToolLocation(cmd);
+        System.out.println("##### builder: " + getOsCommand());
     }
+
+    public abstract BuilderConfigParser getConfigParser();
+
+    public abstract String getOsCommand();
 
     @Override
     public IProject[] build(final int kind, final Map<String, String> args,
-            final IResourceDelta delta, final IProgressMonitor monitor) {
+            final IProgressMonitor monitor) throws CoreException {
         final SubMonitor m = SubMonitor.convert(monitor, 10);
+        final IProject project = getProject();
 
         MarkerUtils.removeProblemMarkersFor(project);
         m.worked(1);
 
-        final ToolResults result = ex.run(location, getCompileTarget(), project
-                .getLocation().toPortableString());
+        final ToolResults result = ex.run(getOsCommand(), getCompileTarget(),
+                project.getLocation().toPortableString());
         createMarkers(result);
         m.worked(9);
         return null;
@@ -44,6 +46,7 @@ public abstract class ExternalBuilder implements IBuilder {
     @Override
     public void clean(final IProgressMonitor monitor) {
         final SubMonitor m = SubMonitor.convert(monitor, 10);
+        final IProject project = getProject();
 
         MarkerUtils.removeProblemMarkersFor(project);
         m.worked(1);
@@ -51,28 +54,20 @@ public abstract class ExternalBuilder implements IBuilder {
         if (getCleanTarget() == null) {
             return;
         }
-        final ToolResults result = ex.run(location, getCleanTarget(), project
-                .getLocation().toPortableString());
+        final ToolResults result = ex.run(getOsCommand(), getCleanTarget(),
+                project.getLocation().toPortableString());
         if (result != null) {
             createMarkers(result);
         }
         m.worked(9);
     }
 
-    protected String getCompileTarget() {
-        return "compile";
-    }
-
-    protected String getCleanTarget() {
-        return "clean";
-    }
-
     private void createMarkers(final ToolResults result) {
         if (result.exit > 2) {
-            ErlLogger.error("The '" + location + "' builder returned error "
-                    + result.exit + "\n" + Joiner.on('\n').join(result.output)
-                    + "--------------\n" + Joiner.on('\n').join(result.error)
-                    + "--------------");
+            ErlLogger.error("The '" + getOsCommand()
+                    + "' builder returned error " + result.exit + "\n"
+                    + Joiner.on('\n').join(result.output) + "--------------\n"
+                    + Joiner.on('\n').join(result.error) + "--------------");
             return;
         }
 
@@ -83,7 +78,15 @@ public abstract class ExternalBuilder implements IBuilder {
     }
 
     protected IMessageParser getMessageParser() {
-        return new ErlcMessageParser(project);
+        return new ErlcMessageParser(getProject());
+    }
+
+    protected String getCompileTarget() {
+        return "compile";
+    }
+
+    protected String getCleanTarget() {
+        return "clean";
     }
 
 }

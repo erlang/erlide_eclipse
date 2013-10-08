@@ -31,7 +31,7 @@ public class ErlangBuilderTest {
             beam.delete(true, null);
         }
 
-        builder = new InternalBuilder(prj);
+        builder = new InternalBuilder();
     }
 
     @After
@@ -43,7 +43,7 @@ public class ErlangBuilderTest {
     @Test
     public void projectShouldBuild() throws CoreException {
         builder.build(IncrementalProjectBuilder.FULL_BUILD, null,
-                null, new NullProgressMonitor());
+                new NullProgressMonitor());
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
 
         final IResource beam = prj.findMember("ebin/m21.beam");
@@ -53,7 +53,7 @@ public class ErlangBuilderTest {
     @Test
     public void projectShouldClean() throws CoreException {
         builder.build(IncrementalProjectBuilder.FULL_BUILD, null,
-                null, new NullProgressMonitor());
+                new NullProgressMonitor());
         builder.clean(new NullProgressMonitor());
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
 

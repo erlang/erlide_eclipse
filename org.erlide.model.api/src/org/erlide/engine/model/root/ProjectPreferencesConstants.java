@@ -46,8 +46,9 @@ public final class ProjectPreferencesConstants {
     public static final String DEFAULT_PROJECT_TYPE = "NORMAL";
 
     public static final String NUKE_OUTPUT_ON_CLEAN = "nukeOutputOnClean";
-    public static final String USE_EXTERNAL_BUILDER = "useExternalBuilder";
-    public static final String BUILDER_PROPERTIES = "externalBuilderProperties";
+    public static final String BUILDER = "builder";
+    public static final String BUILDER_COMPILE_TARGET = "builderCompileTarget";
+    public static final String BUILDER_CLEAN_TARGET = "builderCleanTarget";
 
     // new project properties
 
