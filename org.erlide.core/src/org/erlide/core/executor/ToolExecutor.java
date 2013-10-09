@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfigurationType;
@@ -34,13 +35,20 @@ public class ToolExecutor {
         }
     }
 
+    public ToolResults runFromPath(final String cmd, final String args,
+            final String wdir) {
+        final String cmd1 = (new Path(cmd)).isAbsolute() ? cmd
+                : getToolLocation(cmd);
+        return run(cmd1, args, wdir);
+    }
+
     public ToolResults run(final String cmd, final String args,
             final String wdir) {
 
         final ILaunchManager launchManager = DebugPlugin.getDefault()
                 .getLaunchManager();
         final ILaunchConfigurationType type = launchManager
-                .getLaunchConfigurationType("org.eclipse.ui.externaltools.ProgramLaunchConfigurationType");
+                .getLaunchConfigurationType(IExternalToolConstants.ID_PROGRAM_BUILDER_LAUNCH_CONFIGURATION_TYPE);
 
         try {
             final ILaunchConfigurationWorkingCopy launchConfig = type
@@ -54,8 +62,6 @@ public class ToolExecutor {
                     IExternalToolConstants.ATTR_WORKING_DIRECTORY, wdir);
             launchConfig.setAttribute(
                     IExternalToolConstants.ATTR_LAUNCH_IN_BACKGROUND, true);
-            launchConfig.setAttribute(IExternalToolConstants.ATTR_SHOW_CONSOLE,
-                    true);
             launchConfig.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);
 
             final ILaunch myLaunch = launchConfig.launch(
@@ -84,7 +90,7 @@ public class ToolExecutor {
                     });
             while (!process.isTerminated()) {
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(60);
                 } catch (final InterruptedException e) {
                 }
             }
@@ -98,6 +104,15 @@ public class ToolExecutor {
     }
 
     public String getToolLocation(final String cmd) {
+        // hack because sometimes first call returns an empty value
+        final String result = getToolLocation_1(cmd);
+        if (result != null) {
+            return result;
+        }
+        return getToolLocation_1(cmd);
+    }
+
+    public String getToolLocation_1(final String cmd) {
         if (SystemConfiguration.getInstance().isOnWindows()) {
             return getWindowsToolLocation(cmd);
         }
@@ -105,21 +120,26 @@ public class ToolExecutor {
     }
 
     public String getUnixToolLocation(final String cmd) {
-        final ToolResults make = run("/bin/bash", "-c \"which " + cmd + "\"",
+        final ToolResults tool = run("/bin/bash", "-c \"which " + cmd + "\"",
                 null);
-        if (make.output.isEmpty()) {
+        if (tool.output.isEmpty()) {
+            ErlLogger.warn("Tool %s not on $PATH!", cmd);
+            System.out.println(tool.output);
+            System.out.println(tool.error);
+            System.out.println(tool.exit);
             return null;
         }
-        return make.output.iterator().next();
+        return tool.output.iterator().next();
     }
 
     public String getWindowsToolLocation(final String cmd) {
-        final ToolResults make = run("c:\\Windows\\System32\\cmd.exe",
+        final ToolResults tool = run("c:\\Windows\\System32\\cmd.exe",
                 "-c \"where " + cmd + "\"", null);
-        if (make.output.isEmpty()) {
+        if (tool.output.isEmpty()) {
+            ErlLogger.warn("Tool %s not on $PATH!", cmd);
             return null;
         }
-        return make.output.iterator().next();
+        return tool.output.iterator().next();
     }
 
 }

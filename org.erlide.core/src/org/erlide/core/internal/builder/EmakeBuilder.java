@@ -14,6 +14,7 @@ public class EmakeBuilder extends ExternalBuilder {
 
     @Override
     public String getOsCommand() {
+        // TODO better to use erlide runtime?
         return "erl";
     }
 
@@ -43,6 +44,7 @@ public class EmakeBuilder extends ExternalBuilder {
         if (bf.exists()) {
             try {
                 bf.delete(true, monitor);
+                bf.create(true, true, null);
             } catch (final CoreException e) {
                 ErlLogger.warn("Could not clean up output directory "
                         + bf.getLocation());

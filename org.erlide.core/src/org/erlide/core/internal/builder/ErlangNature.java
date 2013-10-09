@@ -36,12 +36,12 @@ public class ErlangNature implements IProjectNature {
 
     @Override
     public void configure() throws CoreException {
-        setProjectBuilder(project, "internal");
+        setErlangProjectBuilder(project, "internal");
     }
 
     @Override
     public void deconfigure() throws CoreException {
-        unsetAllBuilders(project);
+        unsetAllErlangBuilders(project);
     }
 
     @Override
@@ -54,22 +54,11 @@ public class ErlangNature implements IProjectNature {
         project = lproject;
     }
 
-    private static boolean hasBuildSpec(final ICommand[] commands) {
-        int count = 0;
-        for (final ICommand element : commands) {
-            if (ErlangCore.BUILDER_ID.equals(element.getBuilderName())) {
-                count++;
-            }
-        }
-        final int buildSpecCount = count;
-        return buildSpecCount != 0;
-    }
-
     private final static Collection<String> ALL_BUILDER_IDS = Lists
             .newArrayList(ErlangCore.BUILDER_ID, ErlangCore.MAKEBUILDER_ID,
                     ErlangCore.EMAKEBUILDER_ID, ErlangCore.REBARBUILDER_ID);
 
-    private final static Map<String, String> BUILDER_ID_MAP = Maps.newHashMap();
+    public final static Map<String, String> BUILDER_ID_MAP = Maps.newHashMap();
     static {
         BUILDER_ID_MAP.put("internal", ErlangCore.BUILDER_ID);
         BUILDER_ID_MAP.put("make", ErlangCore.MAKEBUILDER_ID);
@@ -77,9 +66,9 @@ public class ErlangNature implements IProjectNature {
         BUILDER_ID_MAP.put("rebar", ErlangCore.REBARBUILDER_ID);
     }
 
-    public static void setProjectBuilder(final IProject prj,
+    public static void setErlangProjectBuilder(final IProject prj,
             final String builderName) throws CoreException {
-        unsetAllBuilders(prj);
+        unsetAllErlangBuilders(prj);
 
         final IProjectDescription description = prj.getDescription();
         final ICommand[] old = description.getBuildSpec();
@@ -93,7 +82,7 @@ public class ErlangNature implements IProjectNature {
         prj.setDescription(description, new NullProgressMonitor());
     }
 
-    public static void unsetAllBuilders(final IProject prj)
+    public static void unsetAllErlangBuilders(final IProject prj)
             throws CoreException {
         final IProjectDescription description = prj.getDescription();
         final ICommand[] old = description.getBuildSpec();

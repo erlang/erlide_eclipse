@@ -35,9 +35,8 @@ public abstract class ExternalBuilder extends ErlangBuilder {
 
         MarkerUtils.removeProblemMarkersFor(project);
         m.worked(1);
-
-        final ToolResults result = ex.run(getOsCommand(), getCompileTarget(),
-                project.getLocation().toPortableString());
+        final ToolResults result = ex.runFromPath(getOsCommand(),
+                getCompileTarget(), project.getLocation().toPortableString());
         createMarkers(result);
         m.worked(9);
         return null;
