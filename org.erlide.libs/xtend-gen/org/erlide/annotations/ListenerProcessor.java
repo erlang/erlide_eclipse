@@ -1,6 +1,5 @@
 package org.erlide.annotations;
 
-import com.google.common.base.Objects;
 import java.util.ArrayList;
 import org.eclipse.xtend.lib.macro.AbstractFieldProcessor;
 import org.eclipse.xtend.lib.macro.TransformationContext;
@@ -27,8 +26,8 @@ public class ListenerProcessor extends AbstractFieldProcessor {
       context.addError(field, "Primitives can\'t be used as event.");
     }
     Expression _initializer = field.getInitializer();
-    boolean _notEquals = (!Objects.equal(_initializer, null));
-    if (_notEquals) {
+    boolean _tripleNotEquals = (_initializer != null);
+    if (_tripleNotEquals) {
       context.addError(field, "Listener event dont\'t need an initializer");
     }
     final TypeReference eventType = field.getType();

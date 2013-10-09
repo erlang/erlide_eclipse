@@ -27,7 +27,7 @@ class ListenerProcessor extends AbstractFieldProcessor {
         if (field.type.primitive) {
             field.addError("Primitives can't be used as event.")
         }
-        if (field.initializer != null) {
+        if (field.initializer !== null) {
             field.addError("Listener event dont't need an initializer")
         }
         
