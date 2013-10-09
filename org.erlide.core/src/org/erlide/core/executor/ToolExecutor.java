@@ -33,11 +33,17 @@ public class ToolExecutor {
             error = Lists.newArrayList();
             exit = -1;
         }
+
+        @Override
+        public String toString() {
+            return "{{{\n  " + output + "\n  " + error + "\n  " + exit
+                    + "\n}}}";
+        }
     }
 
     public ToolResults runFromPath(final String cmd, final String args,
             final String wdir) {
-        final String cmd1 = (new Path(cmd)).isAbsolute() ? cmd
+        final String cmd1 = new Path(cmd).isAbsolute() ? cmd
                 : getToolLocation(cmd);
         return run(cmd1, args, wdir);
     }
@@ -88,13 +94,16 @@ public class ToolExecutor {
                             result.error.addAll(Arrays.asList(text.split("\n")));
                         }
                     });
-            while (!process.isTerminated()) {
+            while (result.exit < 0) {
                 try {
-                    Thread.sleep(60);
-                } catch (final InterruptedException e) {
+                    result.exit = process.getExitValue();
+                } catch (final Exception e) {
+                    try {
+                        Thread.sleep(60);
+                    } catch (final InterruptedException e1) {
+                    }
                 }
             }
-            result.exit = process.getExitValue();
             return result;
         } catch (final CoreException e) {
             ErlLogger.error(e);
@@ -124,9 +133,6 @@ public class ToolExecutor {
                 null);
         if (tool.output.isEmpty()) {
             ErlLogger.warn("Tool %s not on $PATH!", cmd);
-            System.out.println(tool.output);
-            System.out.println(tool.error);
-            System.out.println(tool.exit);
             return null;
         }
         return tool.output.iterator().next();
@@ -134,7 +140,7 @@ public class ToolExecutor {
 
     public String getWindowsToolLocation(final String cmd) {
         final ToolResults tool = run("c:\\Windows\\System32\\cmd.exe",
-                "-c \"where " + cmd + "\"", null);
+                "/c \"where " + cmd + "\"", null);
         if (tool.output.isEmpty()) {
             ErlLogger.warn("Tool %s not on $PATH!", cmd);
             return null;

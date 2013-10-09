@@ -20,7 +20,6 @@ public abstract class ExternalBuilder extends ErlangBuilder {
 
     public ExternalBuilder() {
         ex = new ToolExecutor();
-        System.out.println("##### builder: " + getOsCommand());
     }
 
     public abstract BuilderConfigParser getConfigParser();
