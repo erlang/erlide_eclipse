@@ -39,6 +39,9 @@ public final class ErlangCore {
     public static final String PLUGIN_ID = "org.erlide.core";
     public static final String NATURE_ID = PLUGIN_ID + ".erlnature";
     public static final String BUILDER_ID = PLUGIN_ID + ".erlbuilder";
+    public static final String MAKEBUILDER_ID = PLUGIN_ID + ".makebuilder";
+    public static final String EMAKEBUILDER_ID = PLUGIN_ID + ".emakebuilder";
+    public static final String REBARBUILDER_ID = PLUGIN_ID + ".rebarbuilder";
     public static final String ERLIDE_GLOBAL_TRACE_OPTION = "org.erlide.backend/debug";
 
     private String featureVersion;

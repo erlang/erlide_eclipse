@@ -9,17 +9,17 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.erlide.core.internal.builder.InternalBuilder;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ErlangBuilderTest {
+public class InternalBuilderTest {
 
     private IProject prj;
-    private InternalBuilder builder;
 
     @Before
     public void initialClean() throws CoreException {
@@ -30,20 +30,18 @@ public class ErlangBuilderTest {
         if (beam != null) {
             beam.delete(true, null);
         }
-
-        builder = new InternalBuilder();
+        ErlangNature.setProjectBuilder(prj, "internal");
     }
 
     @After
     public void restore() {
         prj = null;
-        builder = null;
     }
 
     @Test
     public void projectShouldBuild() throws CoreException {
-        builder.build(IncrementalProjectBuilder.FULL_BUILD, null,
-                new NullProgressMonitor());
+        prj.build(IncrementalProjectBuilder.FULL_BUILD, ErlangCore.BUILDER_ID,
+                null, new NullProgressMonitor());
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
 
         final IResource beam = prj.findMember("ebin/m21.beam");
@@ -52,9 +50,10 @@ public class ErlangBuilderTest {
 
     @Test
     public void projectShouldClean() throws CoreException {
-        builder.build(IncrementalProjectBuilder.FULL_BUILD, null,
-                new NullProgressMonitor());
-        builder.clean(new NullProgressMonitor());
+        prj.build(IncrementalProjectBuilder.FULL_BUILD, ErlangCore.BUILDER_ID,
+                null, new NullProgressMonitor());
+        prj.build(IncrementalProjectBuilder.CLEAN_BUILD, ErlangCore.BUILDER_ID,
+                null, new NullProgressMonitor());
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
 
         final IResource beam = prj.findMember("ebin/m21.beam");
