@@ -12,6 +12,8 @@ package org.erlide.dialyzer.ui.prefs;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,6 +36,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -47,7 +50,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangCore;
 import org.erlide.dialyzer.builder.DialyzerPreferences;
@@ -56,12 +64,13 @@ import org.erlide.dialyzer.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.dialyzer.builder.ErlideDialyze;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.ui.prefs.ProjectSpecificPreferencePage;
+import org.erlide.ui.prefs.ProjectSelectionDialog;
 import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -69,7 +78,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
-public class DialyzerPreferencePage extends ProjectSpecificPreferencePage {
+public class DialyzerPreferencePage extends PropertyPage implements
+        IWorkbenchPreferencePage {
 
     public class ContentProvider implements IStructuredContentProvider {
 
@@ -128,9 +138,14 @@ public class DialyzerPreferencePage extends ProjectSpecificPreferencePage {
     private static final int MAX_PLT_FILES = 256;
 
     DialyzerPreferences prefs;
+    private IProject fProject;
+    private Button fUseProjectSettings;
+    private Link fChangeWorkspaceSettings;
+    protected ControlEnableState fBlockEnableState;
     // private final Text pltEdit = null;
     private Combo fromCombo;
     private Button dialyzeCheckbox;
+    private Composite prefsComposite;
     private CheckboxTableViewer fPLTTableViewer;
     private Button fAddButton;
     private Button fEditButton;
@@ -313,10 +328,13 @@ public class DialyzerPreferencePage extends ProjectSpecificPreferencePage {
         return button;
     }
 
-    @Override
     protected boolean hasProjectSpecificOptions(final IProject project) {
         final DialyzerPreferences p = DialyzerPreferences.get(project);
         return p.hasOptionsAtLowestScope();
+    }
+
+    private boolean isProjectPreferencePage() {
+        return fProject != null;
     }
 
     @Override
@@ -325,7 +343,6 @@ public class DialyzerPreferencePage extends ProjectSpecificPreferencePage {
         return super.createDescriptionLabel(parent);
     }
 
-    @Override
     protected void enableProjectSpecificSettings(
             final boolean useProjectSpecificSettings) {
         fUseProjectSettings.setSelection(useProjectSpecificSettings);
@@ -348,6 +365,87 @@ public class DialyzerPreferencePage extends ProjectSpecificPreferencePage {
         }
     }
 
+    private void createProjectSpecificSettingsCheckBoxAndLink(
+            final Composite parent) {
+        if (isProjectPreferencePage()) {
+            final Composite composite = new Composite(parent, SWT.NONE);
+            composite.setFont(parent.getFont());
+            final GridLayout layout = new GridLayout(2, false);
+            layout.marginHeight = 0;
+            layout.marginWidth = 0;
+            composite.setLayout(layout);
+            composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+                    false));
+
+            fUseProjectSettings = new Button(composite, SWT.CHECK);
+            fUseProjectSettings.setText("Enable project specific settings");
+            fUseProjectSettings.addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(final SelectionEvent e) {
+                    final boolean sel = fUseProjectSettings.getSelection();
+                    enableProjectSpecificSettings(sel);
+                    super.widgetSelected(e);
+                }
+            });
+
+            fChangeWorkspaceSettings = createLink(composite,
+                    "Configure Workspace settings...");
+            fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END,
+                    SWT.CENTER, false, false));
+
+            final Label horizontalLine = new Label(composite, SWT.SEPARATOR
+                    | SWT.HORIZONTAL);
+            horizontalLine.setLayoutData(new GridData(GridData.FILL,
+                    GridData.FILL, true, false, 2, 1));
+            horizontalLine.setFont(composite.getFont());
+        } else { // if (supportsProjectSpecificOptions() && offerLink()) {
+            fChangeWorkspaceSettings = createLink(parent,
+                    "Configure project specific settings..");
+            fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END,
+                    SWT.CENTER, true, false));
+        }
+
+    }
+
+    private Link createLink(final Composite composite, final String text) {
+        final Link link = new Link(composite, SWT.NONE);
+        link.setFont(composite.getFont());
+        link.setText("<A>" + text + "</A>"); //$NON-NLS-1$//$NON-NLS-2$
+        link.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                doLinkActivated((Link) e.widget);
+            }
+        });
+        return link;
+    }
+
+    void doLinkActivated(final Link widget) {
+        if (isProjectPreferencePage()) {
+            openWorkspacePreferences(null);
+        } else {
+            final List<IProject> erlProjects = new ArrayList<IProject>();
+            final Set<IProject> projectsWithSpecifics = new HashSet<IProject>();
+            final IErlModel model = ErlangEngine.getInstance().getModel();
+            try {
+                for (final IErlProject ep : model.getErlangProjects()) {
+                    final IProject p = ep.getWorkspaceProject();
+                    if (hasProjectSpecificOptions(p)) {
+                        projectsWithSpecifics.add(p);
+                    }
+                    erlProjects.add(p);
+                }
+            } catch (final ErlModelException e) {
+            }
+            final ProjectSelectionDialog dialog = new ProjectSelectionDialog(
+                    getShell(), erlProjects, projectsWithSpecifics);
+            if (dialog.open() == Window.OK) {
+                final IProject res = (IProject) dialog.getFirstResult();
+                openProjectProperties(res);
+            }
+        }
+    }
+
     protected void enableButtons() {
         final IStructuredSelection selection = (IStructuredSelection) fPLTTableViewer
                 .getSelection();
@@ -358,13 +456,25 @@ public class DialyzerPreferencePage extends ProjectSpecificPreferencePage {
         fAddButton.setEnabled(shownPLTFiles.size() < MAX_PLT_FILES);
     }
 
-    @Override
-    protected String getPreferencePageID() {
+    private void openProjectProperties(final IProject project) {
+        final String id = getPropertyPageID();
+        if (id != null) {
+            PreferencesUtil.createPropertyDialogOn(getShell(), project, id,
+                    new String[] { id }, null).open();
+        }
+    }
+
+    protected final void openWorkspacePreferences(final Object data) {
+        final String id = getPreferencePageID();
+        PreferencesUtil.createPreferenceDialogOn(getShell(), id,
+                new String[] { id }, data).open();
+    }
+
+    protected static String getPreferencePageID() {
         return "org.erlide.ui.preferences.dialyzer";
     }
 
-    @Override
-    protected String getPropertyPageID() {
+    protected static String getPropertyPageID() {
         return "org.erlide.ui.properties.dialyzerPreferencePage";
     }
 
@@ -445,6 +555,10 @@ public class DialyzerPreferencePage extends ProjectSpecificPreferencePage {
     public void setElement(final IAdaptable element) {
         fProject = (IProject) element.getAdapter(IResource.class);
         super.setElement(element);
+    }
+
+    @Override
+    public void init(final IWorkbench workbench) {
     }
 
     private String selectPLTDialog(final String s) {
