@@ -59,6 +59,7 @@ public class BuildersTest {
         testBuilder("make");
     }
 
+    @Ignore
     @Test
     public void emakeBuilderShouldWork() throws CoreException {
         testBuilder("emake");
