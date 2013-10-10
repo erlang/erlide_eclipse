@@ -17,7 +17,6 @@ import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class BuildersTest {
@@ -26,16 +25,14 @@ public class BuildersTest {
 
     @Before
     public void initialClean() throws CoreException {
-        final IErlProject p2 = ErlideTestUtils.getExistingProject("p2");
+        final IErlProject p2 = ErlideTestUtils.getExistingProject("builders");
         prj = p2.getResource().getProject();
 
-        final IResource beam = prj.findMember("ebin/m21.beam");
-        if (beam != null) {
-            beam.delete(true, null);
-        }
         final IResource ebin = prj.findMember("ebin");
         if (ebin != null) {
-            ebin.refreshLocal(IResource.DEPTH_ONE, null);
+            ebin.delete(true, null);
+        } else {
+            prj.getFolder("ebin").create(true, true, null);
         }
     }
 
@@ -56,10 +53,8 @@ public class BuildersTest {
         testBuilder("internal");
     }
 
-    @Ignore
     @Test
     public void makeBuilderShouldWork() throws CoreException {
-        // TODO how to make sure make is installed on test server?
         testBuilder("make");
     }
 
@@ -68,33 +63,31 @@ public class BuildersTest {
         testBuilder("emake");
     }
 
-    @Ignore
     @Test
     public void rebarBuilderShouldWork() throws CoreException {
-        // TODO how to make sure rebar is installed on test server?
         testBuilder("rebar");
     }
 
     private void testBuilder(final String builder) throws CoreException {
         ErlangNature.setErlangProjectBuilder(prj, builder);
         final String builderId = ErlangNature.BUILDER_ID_MAP.get(builder);
-        final String targetBeamPath = "ebin/m21.beam";
+        final String targetBeamPath = "ebin/mod.beam";
 
         final IResource beam0 = prj.findMember(targetBeamPath);
         assertThat("beam must not exist before test", beam0, nullValue());
 
         prj.build(IncrementalProjectBuilder.FULL_BUILD, builderId, null, null);
-        // waitBuildToFinish();
+        waitBuildToFinish();
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
-        // waitRefreshToFinish();
+        waitRefreshToFinish();
 
         final IResource beam = prj.findMember(targetBeamPath);
         assertThat("beam was not created", beam, notNullValue());
 
         prj.build(IncrementalProjectBuilder.CLEAN_BUILD, builderId, null, null);
-        // waitBuildToFinish();
+        waitBuildToFinish();
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
-        // waitRefreshToFinish();
+        waitRefreshToFinish();
 
         final IResource beam2 = prj.findMember(targetBeamPath);
         assertThat("beam was not removed", beam2, nullValue());
