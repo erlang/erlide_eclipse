@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
+<setAttribute key="additional_plugins"/>
 <booleanAttribute key="append.args" value="true"/>
 <stringAttribute key="application" value="org.eclipse.pde.junit.runtime.coretestapplication"/>
 <booleanAttribute key="askclear" value="false"/>
@@ -17,8 +18,11 @@
 <listEntry value="/org.erlide.core/bin"/>
 </listAttribute>
 <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/pde-junit"/>
-<booleanAttribute key="default" value="true"/>
-<booleanAttribute key="includeOptional" value="true"/>
+<booleanAttribute key="default" value="false"/>
+<stringAttribute key="deselected_workspace_plugins" value="org.erlide.branding,org.erlide.cover.api,org.erlide.cover.core,org.erlide.cover.erlang,org.erlide.cover.ui,org.erlide.dialyzer.core,org.erlide.dialyzer.tests,org.erlide.dialyzer.ui,org.erlide.help,org.erlide.kernel.tests,org.erlide.test_support,org.erlide.test_support.tests,org.erlide.tracing.core,org.erlide.tracing.erlang,org.erlide.tracing.help,org.erlide.tracing.ttbe,org.erlide.ui,org.erlide.ui.tests,org.erlide.wrangler.core,org.erlide.wrangler.help,org.erlide.wrangler.refactoring,org.erlide.wrangler.refactoring.codeinspection,org.erlide.wrangler.refactoring.duplicatedcode"/>
+<stringAttribute key="featureDefaultLocation" value="workspace"/>
+<stringAttribute key="featurePluginResolution" value="workspace"/>
+<booleanAttribute key="includeOptional" value="false"/>
 <stringAttribute key="location" value="${workspace_loc}/junit-workspace"/>
 <setAttribute key="name.schedenig.eclipse.grepconsole.DisabledIds"/>
 <setAttribute key="name.schedenig.eclipse.grepconsole.EnabledIds"/>
@@ -47,9 +51,87 @@
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.equinox.p2.director.app.product"/>
 <booleanAttribute key="run_in_ui_thread" value="false"/>
+<setAttribute key="selected_features">
+<setEntry value="com.abstratt.eclipsegraphviz.feature:default"/>
+<setEntry value="org.eclipse.cvs.source:default"/>
+<setEntry value="org.eclipse.cvs:default"/>
+<setEntry value="org.eclipse.emf.codegen.ecore.source:default"/>
+<setEntry value="org.eclipse.emf.codegen.ecore.ui.source:default"/>
+<setEntry value="org.eclipse.emf.codegen.ecore.ui:default"/>
+<setEntry value="org.eclipse.emf.codegen.ecore:default"/>
+<setEntry value="org.eclipse.emf.codegen.source:default"/>
+<setEntry value="org.eclipse.emf.codegen.ui.source:default"/>
+<setEntry value="org.eclipse.emf.codegen.ui:default"/>
+<setEntry value="org.eclipse.emf.codegen:default"/>
+<setEntry value="org.eclipse.emf.common.ui.source:default"/>
+<setEntry value="org.eclipse.emf.common.ui:default"/>
+<setEntry value="org.eclipse.emf.common:default"/>
+<setEntry value="org.eclipse.emf.converter.source:default"/>
+<setEntry value="org.eclipse.emf.converter:default"/>
+<setEntry value="org.eclipse.emf.databinding.edit.source:default"/>
+<setEntry value="org.eclipse.emf.databinding.edit:default"/>
+<setEntry value="org.eclipse.emf.databinding.source:default"/>
+<setEntry value="org.eclipse.emf.databinding:default"/>
+<setEntry value="org.eclipse.emf.doc.source:default"/>
+<setEntry value="org.eclipse.emf.doc:default"/>
+<setEntry value="org.eclipse.emf.ecore.edit.source:default"/>
+<setEntry value="org.eclipse.emf.ecore.edit:default"/>
+<setEntry value="org.eclipse.emf.ecore.editor.source:default"/>
+<setEntry value="org.eclipse.emf.ecore.editor:default"/>
+<setEntry value="org.eclipse.emf.ecore:default"/>
+<setEntry value="org.eclipse.emf.edit.source:default"/>
+<setEntry value="org.eclipse.emf.edit.ui.source:default"/>
+<setEntry value="org.eclipse.emf.edit.ui:default"/>
+<setEntry value="org.eclipse.emf.edit:default"/>
+<setEntry value="org.eclipse.emf.mapping.ecore.editor.source:default"/>
+<setEntry value="org.eclipse.emf.mapping.ecore.editor:default"/>
+<setEntry value="org.eclipse.emf.mapping.ecore.source:default"/>
+<setEntry value="org.eclipse.emf.mapping.ecore:default"/>
+<setEntry value="org.eclipse.emf.mapping.source:default"/>
+<setEntry value="org.eclipse.emf.mapping.ui.source:default"/>
+<setEntry value="org.eclipse.emf.mapping.ui:default"/>
+<setEntry value="org.eclipse.emf.mapping:default"/>
+<setEntry value="org.eclipse.emf.sdk:default"/>
+<setEntry value="org.eclipse.emf.source:default"/>
+<setEntry value="org.eclipse.emf:default"/>
+<setEntry value="org.eclipse.equinox.p2.core.feature.source:default"/>
+<setEntry value="org.eclipse.equinox.p2.core.feature:default"/>
+<setEntry value="org.eclipse.equinox.p2.extras.feature.source:default"/>
+<setEntry value="org.eclipse.equinox.p2.extras.feature:default"/>
+<setEntry value="org.eclipse.equinox.p2.rcp.feature.source:default"/>
+<setEntry value="org.eclipse.equinox.p2.rcp.feature:default"/>
+<setEntry value="org.eclipse.equinox.p2.user.ui.source:default"/>
+<setEntry value="org.eclipse.equinox.p2.user.ui:default"/>
+<setEntry value="org.eclipse.help.source:default"/>
+<setEntry value="org.eclipse.help:default"/>
+<setEntry value="org.eclipse.jdt.source:default"/>
+<setEntry value="org.eclipse.jdt:default"/>
+<setEntry value="org.eclipse.pde.source:default"/>
+<setEntry value="org.eclipse.pde:default"/>
+<setEntry value="org.eclipse.platform.source:default"/>
+<setEntry value="org.eclipse.platform:default"/>
+<setEntry value="org.eclipse.rcp.source:default"/>
+<setEntry value="org.eclipse.rcp:default"/>
+<setEntry value="org.eclipse.sdk:default"/>
+<setEntry value="org.erlide.cover.site:default"/>
+<setEntry value="org.erlide.cover:default"/>
+<setEntry value="org.erlide.headless:default"/>
+<setEntry value="org.erlide.licenses:default"/>
+<setEntry value="org.erlide.product.feature:default"/>
+<setEntry value="org.erlide.product.site:default"/>
+<setEntry value="org.erlide.sdk:default"/>
+<setEntry value="org.erlide.site:default"/>
+<setEntry value="org.erlide.tracing.update:default"/>
+<setEntry value="org.erlide.tracing:default"/>
+<setEntry value="org.erlide.wrangler:default"/>
+<setEntry value="org.erlide:default"/>
+<setEntry value="shade:default"/>
+</setAttribute>
+<stringAttribute key="selected_target_plugins" value="com.ibm.icu@default:default,javax.servlet.jsp@default:default,javax.servlet@default:default,org.apache.ant@default:default,org.apache.commons.el@default:default,org.apache.commons.io@default:default,org.apache.commons.logging*1.1.1.v201101211721@default:default,org.apache.jasper@default:default,org.apache.lucene.analysis@default:default,org.apache.lucene.core@default:default,org.apache.lucene.highlighter@default:default,org.apache.lucene.memory@default:default,org.apache.lucene.misc@default:default,org.apache.lucene.queries@default:default,org.apache.lucene.snowball@default:default,org.apache.lucene.spellchecker@default:default,org.apache.lucene@default:default,org.eclipse.ant.core@default:default,org.eclipse.compare.core@default:default,org.eclipse.compare@default:default,org.eclipse.core.commands@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.databinding.observable@default:default,org.eclipse.core.databinding.property@default:default,org.eclipse.core.databinding@default:default,org.eclipse.core.expressions@default:default,org.eclipse.core.externaltools@default:default,org.eclipse.core.filebuffers@default:default,org.eclipse.core.filesystem.linux.x86@default:false,org.eclipse.core.filesystem@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.resources@default:default,org.eclipse.core.runtime.compatibility.auth@default:default,org.eclipse.core.runtime.compatibility.registry@default:false,org.eclipse.core.runtime@default:true,org.eclipse.core.variables@default:default,org.eclipse.debug.core@default:default,org.eclipse.equinox.app@default:default,org.eclipse.equinox.common@2:true,org.eclipse.equinox.event@default:default,org.eclipse.equinox.http.jetty@default:default,org.eclipse.equinox.http.servlet@default:default,org.eclipse.equinox.p2.core@default:default,org.eclipse.equinox.p2.engine@default:default,org.eclipse.equinox.p2.metadata.repository@default:default,org.eclipse.equinox.p2.metadata@default:default,org.eclipse.equinox.p2.repository@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.equinox.security@default:default,org.eclipse.equinox.servletbridge.extensionbundle@default:false,org.eclipse.help.base@default:default,org.eclipse.help@default:default,org.eclipse.jface.databinding@default:default,org.eclipse.jface.text@default:default,org.eclipse.jface@default:default,org.eclipse.ltk.core.refactoring@default:default,org.eclipse.ltk.ui.refactoring@default:default,org.eclipse.osgi.services@default:default,org.eclipse.osgi@-1:true,org.eclipse.search@default:default,org.eclipse.swt.gtk.linux.x86@default:false,org.eclipse.swt@default:default,org.eclipse.team.core@default:default,org.eclipse.team.ui@default:default,org.eclipse.text@default:default,org.hamcrest.core@default:default,org.junit*4.8.2.v4_8_2_v20110321-1705@default:default,org.mortbay.jetty.server@default:default,org.mortbay.jetty.util@default:default"/>
+<stringAttribute key="selected_workspace_plugins" value="org.erlide.backend.tests@default:false,org.erlide.backend@default:default,org.erlide.core.api@default:default,org.erlide.core.tests@default:false,org.erlide.core@default:default,org.erlide.kernel.builder@default:default,org.erlide.kernel.common@default:default,org.erlide.kernel.debugger@default:default,org.erlide.kernel.ide@default:default,org.erlide.libs@default:default,org.erlide.model.api@default:default,org.erlide.model.tests@default:false,org.erlide.model@default:default,org.erlide.runtime.tests@default:false,org.erlide.runtime@default:default,org.erlide.testing.libs@default:default,org.erlide.testing@default:default,org.erlide.util.tests@default:false,org.erlide.util@default:default,org.erlide.util_eclipse@default:default"/>
 <booleanAttribute key="show_selected_only" value="false"/>
 <stringAttribute key="templateConfig" value="${target_home}\configuration\config.ini"/>
-<stringAttribute key="timestamp" value="1378293380210"/>
+<stringAttribute key="timestamp" value="1381394943153"/>
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useCustomFeatures" value="false"/>
 <booleanAttribute key="useDefaultConfig" value="true"/>

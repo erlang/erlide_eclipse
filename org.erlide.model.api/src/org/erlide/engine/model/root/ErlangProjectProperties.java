@@ -12,7 +12,6 @@ package org.erlide.engine.model.root;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -23,11 +22,9 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
-import org.erlide.util.MapCodec;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 public final class ErlangProjectProperties implements
         IPreferenceChangeListener, IErlangProjectProperties {
@@ -45,8 +42,11 @@ public final class ErlangProjectProperties implements
     private RuntimeVersion runtimeVersion = new RuntimeVersion(
             ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
     private String runtimeName = null;
+
     private boolean nukeOutputOnClean = false;
-    private Map<String, String> builderProperties;
+    private String builderName = "internal";
+    private final String builderCompileTarget = "compile";
+    private final String builderCleanTarget = "clean";
 
     public ErlangProjectProperties() {
     }
@@ -54,7 +54,6 @@ public final class ErlangProjectProperties implements
     public ErlangProjectProperties(final IProject prj) {
         super();
         project = prj;
-        builderProperties = Maps.newHashMap();
         // TODO load() should not be in constructor!
         load();
     }
@@ -109,8 +108,8 @@ public final class ErlangProjectProperties implements
                 ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
         setNukeOutputOnClean(node.getBoolean(
                 ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN, false));
-        setBuilderProperties(MapCodec.decode(node.get(
-                ProjectPreferencesConstants.BUILDER_PROPERTIES, "")));
+        setBuilderName(node
+                .get(ProjectPreferencesConstants.BUILDER, "internal"));
     }
 
     @Override
@@ -127,8 +126,8 @@ public final class ErlangProjectProperties implements
                     PathSerializer.packList(sourceDirs));
             node.put(ProjectPreferencesConstants.INCLUDE_DIRS,
                     PathSerializer.packList(includeDirs));
-            node.put(ProjectPreferencesConstants.OUTPUT_DIR, getOutputDir()
-                    .toString());
+            node.put(ProjectPreferencesConstants.OUTPUT_DIR,
+                    PathSerializer.packList(outputDirs));
             node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
                     externalIncludesFile);
             if (runtimeVersion.isDefined()) {
@@ -147,8 +146,8 @@ public final class ErlangProjectProperties implements
             node.putBoolean(ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
                     isNukeOutputOnClean());
 
-            node.put(ProjectPreferencesConstants.BUILDER_PROPERTIES,
-                    MapCodec.encode(getBuilderProperties()));
+            node.put(ProjectPreferencesConstants.BUILDER, getBuilderName()
+                    .toString());
 
             node.flush();
         } finally {
@@ -210,12 +209,7 @@ public final class ErlangProjectProperties implements
         outputDirs = bprefs.getOutputDirs();
         runtimeName = bprefs.getRuntimeName();
         runtimeVersion = bprefs.getRequiredRuntimeVersion();
-        final Map<String, String> builderPrefs = bprefs.getBuilderProperties();
-        if (builderPrefs != null) {
-            builderProperties = Maps.newHashMap(builderPrefs);
-        } else {
-            builderProperties = Maps.newHashMap();
-        }
+        builderName = bprefs.getBuilderName();
     }
 
     @Override
@@ -278,12 +272,12 @@ public final class ErlangProjectProperties implements
     }
 
     @Override
-    public Map<String, String> getBuilderProperties() {
-        return builderProperties;
+    public String getBuilderName() {
+        return builderName;
     }
 
     @Override
-    public void setBuilderProperties(final Map<String, String> builderProperties) {
-        this.builderProperties = builderProperties;
+    public void setBuilderName(final String builder) {
+        this.builderName = builder;
     }
 }

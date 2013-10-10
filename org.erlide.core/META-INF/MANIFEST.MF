@@ -11,7 +11,7 @@ Export-Package: org.erlide.core,
  org.erlide.core.content,
  org.erlide.core.engine,
  org.erlide.core.executor,
- org.erlide.core.internal.builder;x-internal:=true,
+ org.erlide.core.internal.builder;x-friends:="org.erlide.ui.tests,org.erlide.ui",
  org.erlide.core.internal.dev;x-internal:=true,
  org.erlide.core.services.search
 Require-Bundle: org.eclipse.core.runtime,

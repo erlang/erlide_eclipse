@@ -9,6 +9,10 @@
  *******************************************************************************/
 package org.erlide.core.internal.builder;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -16,6 +20,9 @@ import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.erlide.core.ErlangCore;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Erlang project nature
@@ -29,37 +36,12 @@ public class ErlangNature implements IProjectNature {
 
     @Override
     public void configure() throws CoreException {
-        final IProjectDescription description = project.getDescription();
-        if (!hasBuildSpec(description.getBuildSpec())) {
-            final ICommand[] old = description.getBuildSpec(), specs = new ICommand[old.length + 1];
-            System.arraycopy(old, 0, specs, 0, old.length);
-            final ICommand command = description.newCommand();
-            command.setBuilderName(ErlangCore.BUILDER_ID);
-            specs[old.length] = command;
-            description.setBuildSpec(specs);
-            project.setDescription(description, new NullProgressMonitor());
-        }
+        setErlangProjectBuilder(project, "internal");
     }
 
     @Override
     public void deconfigure() throws CoreException {
-        final IProjectDescription description = project.getDescription();
-        final int count = getBuildSpecCount(description.getBuildSpec());
-        if (count != 0) {
-            final ICommand[] old = description.getBuildSpec();
-            final ICommand[] specs = new ICommand[old.length - count];
-            int i = 0;
-            int j = 0;
-            while (j < old.length) {
-                final String oldBuilderName = old[j].getBuilderName();
-                if (!ErlangCore.BUILDER_ID.equals(oldBuilderName)) {
-                    specs[i++] = old[j];
-                }
-                j++;
-            }
-            description.setBuildSpec(specs);
-            project.setDescription(description, new NullProgressMonitor());
-        }
+        unsetAllErlangBuilders(project);
     }
 
     @Override
@@ -72,17 +54,47 @@ public class ErlangNature implements IProjectNature {
         project = lproject;
     }
 
-    private boolean hasBuildSpec(final ICommand[] commands) {
-        return getBuildSpecCount(commands) != 0;
+    private final static Collection<String> ALL_BUILDER_IDS = Lists
+            .newArrayList(ErlangCore.BUILDER_ID, ErlangCore.MAKEBUILDER_ID,
+                    ErlangCore.EMAKEBUILDER_ID, ErlangCore.REBARBUILDER_ID);
+
+    public final static Map<String, String> BUILDER_ID_MAP = Maps.newHashMap();
+    static {
+        BUILDER_ID_MAP.put("internal", ErlangCore.BUILDER_ID);
+        BUILDER_ID_MAP.put("make", ErlangCore.MAKEBUILDER_ID);
+        BUILDER_ID_MAP.put("emake", ErlangCore.EMAKEBUILDER_ID);
+        BUILDER_ID_MAP.put("rebar", ErlangCore.REBARBUILDER_ID);
     }
 
-    private int getBuildSpecCount(final ICommand[] commands) {
-        int count = 0;
-        for (final ICommand element : commands) {
-            if (ErlangCore.BUILDER_ID.equals(element.getBuilderName())) {
-                count++;
+    public static void setErlangProjectBuilder(final IProject prj,
+            final String builderName) throws CoreException {
+        unsetAllErlangBuilders(prj);
+
+        final IProjectDescription description = prj.getDescription();
+        final ICommand[] old = description.getBuildSpec();
+        final ICommand[] specs = new ICommand[old.length + 1];
+        System.arraycopy(old, 0, specs, 0, old.length);
+        final ICommand command = description.newCommand();
+        command.setBuilderName(BUILDER_ID_MAP.get(builderName));
+        specs[old.length] = command;
+
+        description.setBuildSpec(specs);
+        prj.setDescription(description, new NullProgressMonitor());
+    }
+
+    public static void unsetAllErlangBuilders(final IProject prj)
+            throws CoreException {
+        final IProjectDescription description = prj.getDescription();
+        final ICommand[] old = description.getBuildSpec();
+        final List<ICommand> specs = Lists.newArrayList();
+        for (final ICommand cmd : old) {
+            final String oldBuilderName = cmd.getBuilderName();
+            if (!ALL_BUILDER_IDS.contains(oldBuilderName)) {
+                specs.add(cmd);
             }
         }
-        return count;
+        description.setBuildSpec(specs.toArray(new ICommand[specs.size()]));
+        prj.setDescription(description, new NullProgressMonitor());
     }
+
 }

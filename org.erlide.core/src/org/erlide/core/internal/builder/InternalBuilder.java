@@ -39,12 +39,11 @@ import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.BuilderHelper.SearchVisitor;
 import org.erlide.core.builder.CompilerOptions;
-import org.erlide.core.builder.IBuilder;
 import org.erlide.core.builder.MarkerUtils;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.util.ErlLogger;
 
@@ -55,14 +54,69 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class InternalBuilder implements IBuilder {
+public class InternalBuilder extends ErlangBuilder {
 
     BuildNotifier notifier;
     private final BuilderHelper helper = new BuilderHelper();
-    private final IProject myProject;
 
-    public InternalBuilder(final IProject prj) {
-        myProject = prj;
+    @Override
+    public IProject[] build(final int kind, final Map<String, String> args,
+            final IProgressMonitor monitor) throws CoreException {
+        final long time = System.currentTimeMillis();
+        final IProject project = getProject();
+        if (project == null || !project.isAccessible()) {
+            return new IProject[0];
+        }
+
+        // if (BuilderHelper.isDebugging()) {
+        ErlLogger.debug("###** Starting build " + helper.buildKind(kind)
+                + " of " + project.getName());
+        // }
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                .getErlangProject(project);
+        try {
+            initializeBuilder(monitor);
+
+            // TODO validate source and include directories
+
+            final IPath out = erlProject.getOutputLocation();
+            final IResource outr = project.findMember(out);
+            if (outr != null) {
+                try {
+                    outr.setDerived(true, null);
+                    outr.refreshLocal(IResource.DEPTH_ZERO, null);
+                } catch (final CoreException e) {
+                    // ignore it
+                }
+            }
+
+            handleAppFile(getProject().getLocation().toPortableString() + "/"
+                    + out, erlProject.getSourceDirs());
+
+            handleErlangFiles(erlProject, project, args, kind,
+                    getDelta(getProject()));
+
+        } catch (final OperationCanceledException e) {
+            if (BuilderHelper.isDebugging()) {
+                ErlLogger.debug("Build of " + project.getName()
+                        + " was canceled.");
+            }
+        } catch (final Exception e) {
+            ErlLogger.error(e);
+            final String msg = NLS.bind(
+                    BuilderMessages.build_inconsistentProject, e.getMessage(),
+                    e.getClass().getName());
+            MarkerUtils.addProblemMarker(project, null, null, msg, 0,
+                    IMarker.SEVERITY_ERROR);
+        } finally {
+            cleanup();
+            // if (BuilderHelper.isDebugging()) {
+            ErlLogger.debug("###** Finished build of " + project.getName()
+                    + " took "
+                    + Long.toString(System.currentTimeMillis() - time));
+            // }
+        }
+        return null;
     }
 
     @Override
@@ -132,65 +186,6 @@ public class InternalBuilder implements IBuilder {
                 }
             }
         }
-    }
-
-    @Override
-    public IProject[] build(final int kind, final Map<String, String> args,
-            final IResourceDelta resourceDelta, final IProgressMonitor monitor) {
-        final long time = System.currentTimeMillis();
-        final IProject project = getProject();
-        if (project == null || !project.isAccessible()) {
-            return new IProject[0];
-        }
-
-        // if (BuilderHelper.isDebugging()) {
-        ErlLogger.debug("###** Starting build " + helper.buildKind(kind)
-                + " of " + project.getName());
-        // }
-        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
-                .getErlangProject(project);
-        try {
-            initializeBuilder(monitor);
-
-            // TODO validate source and include directories
-
-            final IPath out = erlProject.getOutputLocation();
-            final IResource outr = project.findMember(out);
-            if (outr != null) {
-                try {
-                    outr.setDerived(true, null);
-                    outr.refreshLocal(IResource.DEPTH_ZERO, null);
-                } catch (final CoreException e) {
-                    // ignore it
-                }
-            }
-
-            handleAppFile(getProject().getLocation().toPortableString() + "/"
-                    + out, erlProject.getSourceDirs());
-
-            handleErlangFiles(erlProject, project, args, kind, resourceDelta);
-
-        } catch (final OperationCanceledException e) {
-            if (BuilderHelper.isDebugging()) {
-                ErlLogger.debug("Build of " + project.getName()
-                        + " was canceled.");
-            }
-        } catch (final Exception e) {
-            ErlLogger.error(e);
-            final String msg = NLS.bind(
-                    BuilderMessages.build_inconsistentProject, e.getMessage(),
-                    e.getClass().getName());
-            MarkerUtils.addProblemMarker(project, null, null, msg, 0,
-                    IMarker.SEVERITY_ERROR);
-        } finally {
-            cleanup();
-            // if (BuilderHelper.isDebugging()) {
-            ErlLogger.debug("###** Finished build of " + project.getName()
-                    + " took "
-                    + Long.toString(System.currentTimeMillis() - time));
-            // }
-        }
-        return null;
     }
 
     private void handleErlangFiles(final IErlProject erlProject,
@@ -371,10 +366,6 @@ public class InternalBuilder implements IBuilder {
         }
         submon.done();
         return resourcesToBuild;
-    }
-
-    public IProject getProject() {
-        return myProject;
     }
 
     public IResource findCorrespondingSource(final IResource beam)

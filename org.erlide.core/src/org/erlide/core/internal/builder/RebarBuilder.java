@@ -1,11 +1,18 @@
 package org.erlide.core.internal.builder;
 
-import org.eclipse.core.resources.IProject;
+import org.erlide.engine.model.root.BuilderConfigParser;
 
 public class RebarBuilder extends ExternalBuilder {
 
-    public RebarBuilder(final IProject project) {
-        super(project, "rebar");
+    @Override
+    public String getOsCommand() {
+        return "rebar";
+    }
+
+    @Override
+    public BuilderConfigParser getConfigParser() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
