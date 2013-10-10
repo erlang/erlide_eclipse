@@ -34,6 +34,14 @@ public class ToolExecutor {
             exit = -1;
         }
 
+        public boolean isFailed() {
+            return exit != 0;
+        }
+
+        public boolean isCommandNotFound() {
+            return exit == -1;
+        }
+
         @Override
         public String toString() {
             return "{{{\n  " + output + "\n  " + error + "\n  " + exit
@@ -41,15 +49,14 @@ public class ToolExecutor {
         }
     }
 
-    public ToolResults runFromPath(final String cmd, final String args,
+    public ToolResults run(final String cmd0, final String args,
             final String wdir) {
-        final String cmd1 = new Path(cmd).isAbsolute() ? cmd
-                : getToolLocation(cmd);
-        return run(cmd1, args, wdir);
-    }
+        final String cmd = new Path(cmd0).isAbsolute() ? cmd0
+                : getToolLocation(cmd0);
 
-    public ToolResults run(final String cmd, final String args,
-            final String wdir) {
+        if (cmd == null) {
+            return new ToolResults();
+        }
 
         final ILaunchManager launchManager = DebugPlugin.getDefault()
                 .getLaunchManager();
@@ -94,9 +101,11 @@ public class ToolExecutor {
                             result.error.addAll(Arrays.asList(text.split("\n")));
                         }
                     });
-            while (result.exit < 0) {
+            boolean done = false;
+            while (!done) {
                 try {
                     result.exit = process.getExitValue();
+                    done = true;
                 } catch (final Exception e) {
                     try {
                         Thread.sleep(60);
@@ -114,35 +123,41 @@ public class ToolExecutor {
 
     public String getToolLocation(final String cmd) {
         // hack because sometimes first call returns an empty value
-        final String result = getToolLocation_1(cmd);
-        if (result != null) {
-            return result;
+        String result;
+        final int MAX_TRIES = 5;
+        for (int i = 1; i < MAX_TRIES; i++) {
+            result = getToolLocation_1(cmd);
+            if (result != null) {
+                return result;
+            }
         }
-        return getToolLocation_1(cmd);
+        result = getToolLocation_1(cmd);
+        if (result == null) {
+            ErlLogger.warn("Tool '%s' not found in $PATH!", cmd);
+        }
+        return result;
     }
 
-    public String getToolLocation_1(final String cmd) {
+    private String getToolLocation_1(final String cmd) {
         if (SystemConfiguration.getInstance().isOnWindows()) {
             return getWindowsToolLocation(cmd);
         }
         return getUnixToolLocation(cmd);
     }
 
-    public String getUnixToolLocation(final String cmd) {
-        final ToolResults tool = run("/bin/bash", "-c \"which " + cmd + "\"",
+    private String getUnixToolLocation(final String cmd) {
+        final ToolResults tool = run("/bin/sh", "-c \"which " + cmd + "\"",
                 null);
         if (tool.output.isEmpty()) {
-            ErlLogger.warn("Tool %s not on $PATH!", cmd);
             return null;
         }
         return tool.output.iterator().next();
     }
 
-    public String getWindowsToolLocation(final String cmd) {
+    private String getWindowsToolLocation(final String cmd) {
         final ToolResults tool = run("c:\\Windows\\System32\\cmd.exe",
                 "/c \"where " + cmd + "\"", null);
         if (tool.output.isEmpty()) {
-            ErlLogger.warn("Tool %s not on $PATH!", cmd);
             return null;
         }
         return tool.output.iterator().next();

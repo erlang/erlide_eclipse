@@ -2,6 +2,7 @@ package org.erlide.core.internal.builder;
 
 import java.util.Map;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -34,9 +35,15 @@ public abstract class ExternalBuilder extends ErlangBuilder {
 
         MarkerUtils.removeProblemMarkersFor(project);
         m.worked(1);
-        final ToolResults result = ex.runFromPath(getOsCommand(),
-                getCompileTarget(), project.getLocation().toPortableString());
-        createMarkers(result);
+        final ToolResults result = ex.run(getOsCommand(), getCompileTarget(),
+                project.getLocation().toPortableString());
+        if (result.isCommandNotFound()) {
+            MarkerUtils.addMarker(null, project, null,
+                    "Builder command not found: " + getOsCommand(), 0,
+                    IMarker.SEVERITY_ERROR, MarkerUtils.PROBLEM_MARKER);
+        } else {
+            createMarkers(result);
+        }
         m.worked(9);
         return null;
     }

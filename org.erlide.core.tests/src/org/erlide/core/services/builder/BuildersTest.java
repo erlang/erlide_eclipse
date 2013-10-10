@@ -33,6 +33,10 @@ public class BuildersTest {
         if (beam != null) {
             beam.delete(true, null);
         }
+        final IResource ebin = prj.findMember("ebin");
+        if (ebin != null) {
+            ebin.refreshLocal(IResource.DEPTH_ONE, null);
+        }
     }
 
     @After
@@ -59,7 +63,6 @@ public class BuildersTest {
         testBuilder("make");
     }
 
-    @Ignore
     @Test
     public void emakeBuilderShouldWork() throws CoreException {
         testBuilder("emake");
@@ -75,22 +78,26 @@ public class BuildersTest {
     private void testBuilder(final String builder) throws CoreException {
         ErlangNature.setErlangProjectBuilder(prj, builder);
         final String builderId = ErlangNature.BUILDER_ID_MAP.get(builder);
+        final String targetBeamPath = "ebin/m21.beam";
+
+        final IResource beam0 = prj.findMember(targetBeamPath);
+        assertThat("beam must not exist before test", beam0, nullValue());
 
         prj.build(IncrementalProjectBuilder.FULL_BUILD, builderId, null, null);
-        waitBuildToFinish();
+        // waitBuildToFinish();
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
-        waitRefreshToFinish();
+        // waitRefreshToFinish();
 
-        final IResource beam = prj.findMember("ebin/m21.beam");
-        assertThat("beam doesn't exist", beam, notNullValue());
+        final IResource beam = prj.findMember(targetBeamPath);
+        assertThat("beam was not created", beam, notNullValue());
 
         prj.build(IncrementalProjectBuilder.CLEAN_BUILD, builderId, null, null);
-        waitBuildToFinish();
+        // waitBuildToFinish();
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
-        waitRefreshToFinish();
+        // waitRefreshToFinish();
 
-        final IResource beam2 = prj.findMember("ebin/m21.beam");
-        assertThat("beam exists", beam2, nullValue());
+        final IResource beam2 = prj.findMember(targetBeamPath);
+        assertThat("beam was not removed", beam2, nullValue());
     }
 
     private void waitRefreshToFinish() {
