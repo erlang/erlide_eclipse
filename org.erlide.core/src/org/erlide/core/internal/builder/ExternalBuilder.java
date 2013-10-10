@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
@@ -35,6 +36,14 @@ public abstract class ExternalBuilder extends ErlangBuilder {
 
         MarkerUtils.removeProblemMarkersFor(project);
         m.worked(1);
+
+        // TODO use project config!
+        // XXX how do we know what make uses?
+        final IResource ebin = project.findMember("ebin");
+        if (ebin == null) {
+            project.getFolder("ebin").create(true, true, null);
+        }
+
         final ToolResults result = ex.run(getOsCommand(), getCompileTarget(),
                 project.getLocation().toPortableString());
         if (result.isCommandNotFound()) {

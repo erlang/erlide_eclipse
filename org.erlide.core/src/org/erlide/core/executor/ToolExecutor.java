@@ -2,6 +2,7 @@ package org.erlide.core.executor;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.runtime.CoreException;
@@ -15,6 +16,7 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 
@@ -50,7 +52,7 @@ public class ToolExecutor {
     }
 
     public ToolResults run(final String cmd0, final String args,
-            final String wdir) {
+            final String wdir, final Procedure1<String> progressCallback) {
         final String cmd = new Path(cmd0).isAbsolute() ? cmd0
                 : getToolLocation(cmd0);
 
@@ -89,7 +91,14 @@ public class ToolExecutor {
                         @Override
                         public void streamAppended(final String text,
                                 final IStreamMonitor monitor) {
-                            result.output.addAll(Arrays.asList(text.split("\n")));
+                            final List<String> lines = Arrays.asList(text
+                                    .split("\n"));
+                            result.output.addAll(lines);
+                            if (progressCallback != null) {
+                                for (final String line : lines) {
+                                    progressCallback.apply(line);
+                                }
+                            }
                         }
                     });
             process.getStreamsProxy().getErrorStreamMonitor()
@@ -118,7 +127,11 @@ public class ToolExecutor {
             ErlLogger.error(e);
             return null;
         }
+    }
 
+    public ToolResults run(final String cmd0, final String args,
+            final String wdir) {
+        return run(cmd0, args, wdir, null);
     }
 
     public String getToolLocation(final String cmd) {
