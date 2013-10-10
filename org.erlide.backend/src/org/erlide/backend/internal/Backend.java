@@ -148,7 +148,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     public synchronized void initErlang(final boolean watch) {
-        ErlLogger.debug("initialize %s: %s", getName(), watch);
         startErlideApps(getRuntime().getEventMbox().self(), watch);
         getRuntime().registerEventListener(new SystemMonitorHandler(getName()));
     }
@@ -237,7 +236,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         final String outDir = project.getLocation()
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
-            ErlLogger.debug("backend %s: add path %s", getName(), outDir);
             final boolean accessible = RuntimeUtils.isAccessibleDir(
                     getRpcSite(), outDir);
             if (accessible) {
@@ -259,8 +257,6 @@ public abstract class Backend implements IStreamListener, IBackend {
             final String outDir = project.getLocation()
                     .append(eproject.getOutputLocation()).toOSString();
             if (outDir.length() > 0) {
-                ErlLogger
-                        .debug("backend %s: remove path %s", getName(), outDir);
                 removePath(outDir);
                 // TODO unloadBeamsFromDir(outDir); ?
             }

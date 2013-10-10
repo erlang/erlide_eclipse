@@ -74,9 +74,6 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
                     .getRuntimeInfo().getName());
             return;
         }
-        ErlLogger.debug("doLaunch runtime %s", data.getRuntimeInfo().getName());
-        ErlLogger.debug("doLaunch cookie %s (%s)", data.getCookie(),
-                data.getCookie());
 
         data = configureBackend(data, config, mode, launch);
 
@@ -111,7 +108,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
             final IErlRuntime runtime) {
         final Process process = runtime.getProcess();
         if (process == null) {
-            ErlLogger.debug("Error starting process");
+            ErlLogger.warn("Error starting process");
             data.setManaged(false);
             return;
         }

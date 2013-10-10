@@ -392,7 +392,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
         }
         if (IPropertySource.class.equals(required)) {
             if (myPropertySource == null) {
-                ErlLogger.debug("make prop source...");
                 myPropertySource = new ErlangPropertySource(this);
             }
             return myPropertySource;

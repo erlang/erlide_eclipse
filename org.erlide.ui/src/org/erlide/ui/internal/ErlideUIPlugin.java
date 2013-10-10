@@ -150,7 +150,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
      */
     @Override
     public void start(final BundleContext context) throws Exception {
-        ErlLogger.debug("Starting UI " + Thread.currentThread());
+        ErlLogger.info("Starting UI " + Thread.currentThread());
         super.start(context);
 
         ErlideEventBus.register(new NoRuntimeHandler());
@@ -163,7 +163,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
         loadDefaultEditorColors();
 
-        ErlLogger.debug("Started UI");
+        ErlLogger.info("Started UI");
 
         erlConsoleManager = new ErlConsoleManager();
 
@@ -490,12 +490,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             fFoldingStructureProviderRegistry = new ErlangFoldingStructureProviderRegistry();
         }
         return fFoldingStructureProviderRegistry;
-    }
-
-    public static void debug(final String message) {
-        if (getDefault().isDebugging()) {
-            ErlLogger.debug(message);
-        }
     }
 
     public static void createStandardGroups(final IMenuManager menu) {

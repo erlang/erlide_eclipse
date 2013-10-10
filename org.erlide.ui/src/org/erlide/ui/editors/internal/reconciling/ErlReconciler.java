@@ -716,7 +716,6 @@ public class ErlReconciler implements IReconciler {
     }
 
     public void reset() {
-        ErlLogger.debug("reset");
         if (fIsIncrementalReconciler) {
             synchronized (fDirtyRegionQueue) {
                 fDirtyRegionQueue.purgeQueue();

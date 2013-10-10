@@ -167,7 +167,6 @@ public class BackendShell implements IBackendShell {
     @Override
     public IoRequest findAtPos(final int thePos) {
         synchronized (requests) {
-            ErlLogger.debug("findAtPos %s", thePos);
             for (final IoRequest req : requests) {
                 if (req.getStart() <= thePos
                         && req.getStart() + req.getLength() > thePos) {

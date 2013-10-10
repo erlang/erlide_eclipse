@@ -88,7 +88,7 @@ public class IOServer implements Runnable {
                     new OtpErlangAtom("io_reply"), replyAs, reply);
             mbox.send(from, replyMsg);
         } else {
-            ErlLogger.debug("IOServer: unknown message " + msg);
+            ErlLogger.warn("IOServer: unknown message " + msg);
         }
     }
 

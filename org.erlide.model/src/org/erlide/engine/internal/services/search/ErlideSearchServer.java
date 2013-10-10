@@ -51,8 +51,6 @@ public class ErlideSearchServer implements SearchServerService {
             final IRpcResultCallback callback, final boolean updateSearchServer)
             throws RpcException {
         final OtpErlangList modules = getModulesFromScope(scope);
-        ErlLogger.debug("startFindRefs " + pattern.getSearchObject() + "    #"
-                + modules.arity() + " modules");
         backend.async_call_result(callback, "erlide_search_server",
                 "start_find_refs", "xxxso", pattern.getSearchObject(), modules,
                 stateDir, updateSearchServer);

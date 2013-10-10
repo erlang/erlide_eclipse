@@ -33,7 +33,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
                 return p.getChildren().toArray();
             } catch (final ErlModelException x) {
                 if (!x.isDoesNotExist()) {
-                    ErlLogger.debug("element missing: " + x.getMessage());
+                    ErlLogger.warn("element missing: " + x.getMessage());
                 }
             }
         }

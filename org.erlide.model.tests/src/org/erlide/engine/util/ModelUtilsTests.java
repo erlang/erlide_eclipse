@@ -102,10 +102,6 @@ public class ModelUtilsTests {
                 .getImportsAsList(moduleA);
         // then
         // they should be returned
-        if (children.size() != 2) {
-            ErlLogger.debug("" + moduleA);
-            ErlLogger.debug("" + children);
-        }
         assertEquals(2, children.size());
         assertEquals(1, imports2.size());
         assertEquals(1, imports.size());

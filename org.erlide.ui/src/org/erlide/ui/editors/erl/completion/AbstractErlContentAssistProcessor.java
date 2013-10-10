@@ -260,7 +260,6 @@ public abstract class AbstractErlContentAssistProcessor implements
                 } else {
                     pos = colonPos;
                     before = prefix;
-                    ErlLogger.debug("element %s", element);
                     if (element != null) {
                         switch (element.getKind()) {
                         case EXPORT:
@@ -338,8 +337,7 @@ public abstract class AbstractErlContentAssistProcessor implements
             throws CoreException, BadLocationException {
         final IProject workspaceProject = project == null ? null : project
                 .getWorkspaceProject();
-        final IRpcSite backend = BackendCore
-                .getBuildBackend(workspaceProject);
+        final IRpcSite backend = BackendCore.getBuildBackend(workspaceProject);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(

@@ -67,7 +67,7 @@ public final class ErlangCore {
     public void start() throws CoreException {
         final String version = getFeatureVersionImpl();
 
-        ErlLogger.debug("Starting CORE " + Thread.currentThread());
+        ErlLogger.info("Starting CORE " + Thread.currentThread());
         String dev = "(" + EncodingUtils.getEncoding() + ") ";
         if (SystemConfiguration.getInstance().isDeveloper()) {
             dev += " developer version ***";
@@ -84,7 +84,7 @@ public final class ErlangCore {
                 getSaveParticipant());
 
         erlangDebugOptionsManager.start();
-        ErlLogger.debug("Started CORE");
+        ErlLogger.info("Started CORE");
     }
 
     public void stop() {
@@ -177,7 +177,7 @@ public final class ErlangCore {
             if (providers != null) {
                 version = findErlideFeatureVersion(providers);
             } else {
-                ErlLogger.debug("***: no bundle group providers");
+                ErlLogger.info("***: no bundle group providers");
             }
         } catch (final Exception e) {
             // ignore

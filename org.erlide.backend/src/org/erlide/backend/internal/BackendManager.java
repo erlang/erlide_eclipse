@@ -355,7 +355,7 @@ public final class BackendManager implements IBackendManager {
                 .getProject(projectName);
         final IBackend backend = getBuildBackend(project);
         if (backend == null) {
-            ErlLogger.debug("Could not find backend for project %S", project);
+            ErlLogger.warn("Could not find backend for project %S", project);
             return null;
         }
         return backend.getRpcSite();

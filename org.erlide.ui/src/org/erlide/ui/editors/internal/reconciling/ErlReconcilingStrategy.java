@@ -58,8 +58,6 @@ public class ErlReconcilingStrategy implements IErlReconcilingStrategy,
     public void initialReconcile() {
         fModule = fEditor != null ? fEditor.getModule() : null;
         fScanner = fEditor != null ? fEditor.getScanner() : null;
-        ErlLogger.debug("## initial reconcile "
-                + (fModule != null ? fModule.getName() : ""));
         if (fModule != null) {
             fModule.initialReconcile();
         }

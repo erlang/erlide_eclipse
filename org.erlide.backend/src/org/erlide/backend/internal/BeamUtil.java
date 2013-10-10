@@ -132,9 +132,6 @@ public class BeamUtil {
             f.delete();
         }
 
-        ErlLogger.debug("unpacking plugin " + b.getSymbolicName() + " in "
-                + location);
-
         // TODO Do we have to also check any fragments?
         // see FindSupport.findInFragments
 

@@ -75,7 +75,6 @@ public class BackendFactory implements IBackendFactory {
         ErlLogger.debug("Create backend " + data.getNodeName());
 
         final IBackend b;
-        ErlLogger.info("Creating runtime for %s", data.getNodeName());
         final IErlRuntime runtime = ErlRuntimeFactory.createRuntime(data);
         if (data.isManaged()) {
             runtime.startAndWait();

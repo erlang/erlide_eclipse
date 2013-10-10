@@ -27,7 +27,6 @@ public class DummyProcess implements IProcess {
 
     @Override
     public String getLabel() {
-        ErlLogger.debug("getlabel");
         return "...";
     }
 

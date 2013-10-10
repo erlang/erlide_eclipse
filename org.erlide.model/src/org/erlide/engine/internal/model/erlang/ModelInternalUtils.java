@@ -81,8 +81,6 @@ public class ModelInternalUtils implements ModelUtilService {
                 .getChildrenOfKind(ErlElementKind.EXTERNAL)) {
             final IErlExternal external = (IErlExternal) i;
             final String externalName = external.getName();
-            ErlLogger
-                    .debug("externalName %s segment %s", externalName, segment);
             if (externalName.equals(segment)) {
                 return external;
             }
@@ -97,8 +95,6 @@ public class ModelInternalUtils implements ModelUtilService {
                 .split(modulePath));
         model.open(null);
         final IErlElement childNamed = model.getChildNamed(path.get(0));
-        ErlLogger.debug(">>childNamed %s", childNamed == null ? "<null>"
-                : childNamed.getName());
         if (childNamed instanceof IParent) {
             IParent parent = (IParent) childNamed;
             final int n = path.size() - 1;

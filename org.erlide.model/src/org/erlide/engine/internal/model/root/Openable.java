@@ -243,11 +243,9 @@ public abstract class Openable extends ErlElement implements IOpenable {
     @Override
     public void makeConsistent(final IProgressMonitor monitor)
             throws ErlModelException {
-        ErlLogger.debug("make consistent? ");
         if (isConsistent()) {
             return;
         }
-        ErlLogger.debug("make consistent");
     }
 
     // /**

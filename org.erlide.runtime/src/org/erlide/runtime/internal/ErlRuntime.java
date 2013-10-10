@@ -231,8 +231,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         int tries = MAX_RETRIES;
         boolean ok = false;
         while (!ok && tries > 0) {
-            ErlLogger.debug("# ping..." + getNodeName() + " "
-                    + Thread.currentThread().getName());
             ok = localNode.ping(getNodeName(), RETRY_DELAY
                     + (MAX_RETRIES - tries) * RETRY_DELAY % 3);
             tries--;
@@ -346,7 +344,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
                         getNodeName());
                 return false;
             }
-            ErlLogger.debug("code server started");
+            ErlLogger.info("code server started");
             return true;
         } catch (final Exception e) {
             ErlLogger.error("error starting code server for %s: %s",
