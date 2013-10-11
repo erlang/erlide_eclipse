@@ -112,7 +112,6 @@ public class MarkOccurencesHandler {
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(theModule,
                                 offset, res, LimitTo.ALL_OCCURRENCES, false);
-                ErlLogger.debug("open %s", res);
                 if (fCanceled) {
                     return;
                 }
@@ -133,17 +132,16 @@ public class MarkOccurencesHandler {
                         SearchUtil.addSearchResult(findRefs, refs);
                         fRefs = erlangEditor.markOccurencesHandler
                                 .getErlangRefs(theModule, findRefs);
-                        ErlLogger.debug("refs %s", refs);
                     }
                 }
             } catch (final RpcTimeoutException e) {
                 ErlLogger.warn(e);
             } catch (final RpcException e) {
-                ErlLogger.debug(e);
+                ErlLogger.warn(e);
             } catch (final ErlModelException e) {
-                ErlLogger.debug(e);
+                ErlLogger.warn(e);
             } catch (final OtpErlangRangeException e) {
-                ErlLogger.debug(e);
+                ErlLogger.warn(e);
             }
             if (fRefs == null) {
                 if (!erlangEditor.markOccurencesHandler.fStickyOccurrenceAnnotations) {
