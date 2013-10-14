@@ -164,7 +164,6 @@ public class ErlModel extends Openable implements IErlModel {
 
     public IErlProject makeErlangProject(final IProject project) {
         final IErlProject ep = new ErlProject(project, this);
-        ErlLogger.debug("makeErlangProject " + ep);
         addChild(ep);
         final ErlModelCache cache = getModelCache();
         cache.newProjectCreated();

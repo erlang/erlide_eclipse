@@ -344,7 +344,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
                         getNodeName());
                 return false;
             }
-            ErlLogger.info("code server started");
             return true;
         } catch (final Exception e) {
             ErlLogger.error("error starting code server for %s: %s",

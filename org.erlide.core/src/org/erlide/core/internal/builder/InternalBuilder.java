@@ -69,8 +69,8 @@ public class InternalBuilder extends ErlangBuilder {
         }
 
         // if (BuilderHelper.isDebugging()) {
-        ErlLogger.debug("###** Starting build " + helper.buildKind(kind)
-                + " of " + project.getName());
+        ErlLogger.trace("build",
+                "Start " + project.getName() + ": " + helper.buildKind(kind));
         // }
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
@@ -111,8 +111,7 @@ public class InternalBuilder extends ErlangBuilder {
         } finally {
             cleanup();
             // if (BuilderHelper.isDebugging()) {
-            ErlLogger.debug("###** Finished build of " + project.getName()
-                    + " took "
+            ErlLogger.trace("build", " Done " + project.getName() + " took "
                     + Long.toString(System.currentTimeMillis() - time));
             // }
         }
@@ -127,7 +126,7 @@ public class InternalBuilder extends ErlangBuilder {
         }
 
         if (BuilderHelper.isDebugging()) {
-            ErlLogger.debug("Cleaning " + currentProject.getName() //$NON-NLS-1$
+            ErlLogger.trace("build", "Cleaning " + currentProject.getName() //$NON-NLS-1$
                     + " @ " + new Date(System.currentTimeMillis()));
         }
 
@@ -193,7 +192,6 @@ public class InternalBuilder extends ErlangBuilder {
             final int kind, final IResourceDelta resourceDelta)
             throws CoreException, BackendException {
         final OtpErlangList compilerOptions = CompilerOptions.get(project);
-        ErlLogger.debug(">>> compiler options ::: " + compilerOptions);
 
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(kind,
                 args, project, resourceDelta);
