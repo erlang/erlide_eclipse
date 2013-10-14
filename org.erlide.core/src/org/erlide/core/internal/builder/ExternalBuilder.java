@@ -1,5 +1,6 @@
 package org.erlide.core.internal.builder;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
@@ -8,6 +9,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
+import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.MarkerUtils;
 import org.erlide.core.executor.ToolExecutor;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
@@ -19,6 +21,7 @@ import com.google.common.base.Joiner;
 public abstract class ExternalBuilder extends ErlangBuilder {
 
     protected final ToolExecutor ex;
+    protected final BuilderHelper helper = new BuilderHelper();
 
     public ExternalBuilder() {
         ex = new ToolExecutor();
@@ -33,6 +36,9 @@ public abstract class ExternalBuilder extends ErlangBuilder {
             final IProgressMonitor monitor) throws CoreException {
         final SubMonitor m = SubMonitor.convert(monitor, 10);
         final IProject project = getProject();
+
+        ErlLogger.trace("build", "Start " + helper.buildKind(kind) + " for "
+                + project.getName() + ": " + getOsCommand());
 
         MarkerUtils.removeProblemMarkersFor(project);
         m.worked(1);
@@ -55,6 +61,9 @@ public abstract class ExternalBuilder extends ErlangBuilder {
             createMarkers(result);
         }
         m.worked(9);
+
+        ErlLogger.trace("build", "Done " + project.getName());
+
         return null;
     }
 
@@ -86,10 +95,22 @@ public abstract class ExternalBuilder extends ErlangBuilder {
             return;
         }
 
+        boolean markers = false;
         final IMessageParser parser = getMessageParser();
         for (final String msg : result.output) {
-            parser.createMarkers(msg);
+            markers |= parser.createMarkers(msg);
         }
+        if (!markers && result.exit != 0) {
+            MarkerUtils.addMarker(null, getProject(), null, "Build error: "
+                    + strip(result.output), 1, IMarker.SEVERITY_ERROR,
+                    IMarker.PROBLEM);
+        }
+    }
+
+    private String strip(final Collection<String> output) {
+        String result = Joiner.on(' ').join(output);
+        result = result.replaceAll(" +", " ");
+        return result;
     }
 
     protected IMessageParser getMessageParser() {
