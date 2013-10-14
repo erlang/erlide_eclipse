@@ -4,6 +4,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
+import java.io.StringBufferInputStream;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -63,8 +67,24 @@ public class BuildersTest {
         testBuilder("emake");
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void rebarBuilderShouldWork() throws CoreException {
+        final IFolder folder = (IFolder) prj.findMember("src");
+        final IFile app = folder.getFile("z.app.src");
+        app.create(new StringBufferInputStream(
+                "{application, builders,{description, \"\"},{vsn, \"1\"},"
+                        + "{registered, []},{applications, [kernel,stdlib]},"
+                        + "{mod, { mod, []}},{env, []}]}."), true, null);
+        try {
+            testBuilder("rebar");
+        } finally {
+            app.delete(true, null);
+        }
+    }
+
+    @Test(expected = AssertionError.class)
+    public void rebarBuilderShouldNotWorkWithoutAppFile() throws CoreException {
         testBuilder("rebar");
     }
 
@@ -74,7 +94,7 @@ public class BuildersTest {
         final String targetBeamPath = "ebin/mod.beam";
 
         final IResource beam0 = prj.findMember(targetBeamPath);
-        assertThat("beam must not exist before test", beam0, nullValue());
+        assertThat("beam existed before test", beam0, nullValue());
 
         prj.build(IncrementalProjectBuilder.FULL_BUILD, builderId, null, null);
         waitBuildToFinish();
