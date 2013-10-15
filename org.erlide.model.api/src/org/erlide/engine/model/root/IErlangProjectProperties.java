@@ -17,15 +17,9 @@ public interface IErlangProjectProperties {
 
     void setIncludeDirs(final Collection<IPath> includeDirs2);
 
-    @Deprecated
     IPath getOutputDir();
 
-    @Deprecated
     void setOutputDir(final IPath dir);
-
-    Collection<IPath> getOutputDirs();
-
-    void setOutputDirs(final Collection<IPath> dirs);
 
     Collection<IPath> getSourceDirs();
 

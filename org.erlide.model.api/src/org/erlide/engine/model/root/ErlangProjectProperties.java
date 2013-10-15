@@ -16,6 +16,7 @@ import java.util.Collections;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
@@ -33,8 +34,7 @@ public final class ErlangProjectProperties implements IPreferenceChangeListener,
 
     private Collection<IPath> sourceDirs = PathSerializer
             .unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
-    private Collection<IPath> outputDirs = PathSerializer
-            .unpackList(ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
+    private IPath outputDir = new Path(ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
     private Collection<IPath> includeDirs = PathSerializer
             .unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
     private String externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
@@ -78,7 +78,7 @@ public final class ErlangProjectProperties implements IPreferenceChangeListener,
         includeDirs = PathSerializer.unpackList(includeDirsStr);
         final String outputDirsStr = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
                 ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
-        outputDirs = PathSerializer.unpackList(outputDirsStr);
+        outputDir = new Path(outputDirsStr);
         runtimeVersion = new RuntimeVersion(node.get(
                 ProjectPreferencesConstants.RUNTIME_VERSION, null));
         runtimeName = node.get(ProjectPreferencesConstants.RUNTIME_NAME, null);
@@ -121,8 +121,7 @@ public final class ErlangProjectProperties implements IPreferenceChangeListener,
                     PathSerializer.packList(sourceDirs));
             node.put(ProjectPreferencesConstants.INCLUDE_DIRS,
                     PathSerializer.packList(includeDirs));
-            node.put(ProjectPreferencesConstants.OUTPUT_DIR,
-                    PathSerializer.packList(outputDirs));
+            node.put(ProjectPreferencesConstants.OUTPUT_DIR, outputDir.toPortableString());
             node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES, externalIncludesFile);
             if (runtimeVersion.isDefined()) {
                 node.put(ProjectPreferencesConstants.RUNTIME_VERSION, runtimeVersion
@@ -159,29 +158,13 @@ public final class ErlangProjectProperties implements IPreferenceChangeListener,
     }
 
     @Override
-    @Deprecated
     public IPath getOutputDir() {
-        try {
-            return outputDirs.iterator().next();
-        } catch (final Exception e) {
-            return null;
-        }
+        return outputDir;
     }
 
     @Override
-    public Collection<IPath> getOutputDirs() {
-        return outputDirs;
-    }
-
-    @Override
-    @Deprecated
     public void setOutputDir(final IPath dir) {
-        setOutputDirs(Lists.newArrayList(dir));
-    }
-
-    @Override
-    public void setOutputDirs(final Collection<IPath> dirs) {
-        outputDirs = Lists.newArrayList(dirs);
+        outputDir = dir;
     }
 
     @Override
@@ -199,7 +182,7 @@ public final class ErlangProjectProperties implements IPreferenceChangeListener,
         final IErlangProjectProperties bprefs = erlangProjectProperties;
         includeDirs = bprefs.getIncludeDirs();
         sourceDirs = bprefs.getSourceDirs();
-        outputDirs = bprefs.getOutputDirs();
+        outputDir = bprefs.getOutputDir();
         runtimeName = bprefs.getRuntimeName();
         runtimeVersion = bprefs.getRequiredRuntimeVersion();
         builderName = bprefs.getBuilderName();

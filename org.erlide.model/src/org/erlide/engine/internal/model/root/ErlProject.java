@@ -806,13 +806,8 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     @Override
-    @Deprecated
     public IPath getOutputLocation() {
         return getProperties().getOutputDir();
-    }
-
-    public Collection<IPath> getOutputLocations() {
-        return getProperties().getOutputDirs();
     }
 
     @Override
