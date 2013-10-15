@@ -88,4 +88,6 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     IProject getWorkspaceProject();
 
+    IErlangProjectProperties getProperties();
+
 }

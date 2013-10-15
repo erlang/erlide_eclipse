@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -37,11 +36,10 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
-import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.ui.wizards.NewErlangProject.ProjectInfo;
 import org.erlide.util.PreferencesUtils;
 import org.erlide.util.SystemConfiguration;
 
@@ -61,28 +59,18 @@ public class ProjectPreferencesWizardPage extends WizardPage {
     private Button externalModulesBrowse;
     private Button externalIncludesBrowse;
 
-    ErlangProjectProperties prefs;
+    private final ProjectInfo info;
 
     /**
      * Constructor inherited from parent
      * 
      * @param pageName
+     * @param info
      * @wbp.parser.constructor
      */
-    public ProjectPreferencesWizardPage(final String pageName) {
+    public ProjectPreferencesWizardPage(final String pageName, final ProjectInfo info) {
         super(pageName);
-    }
-
-    /**
-     * Constructor inherited from parents parent
-     * 
-     * @param pageName
-     * @param title
-     * @param titleImage
-     */
-    public ProjectPreferencesWizardPage(final String pageName,
-            final String title, final ImageDescriptor titleImage) {
-        super(pageName, title, titleImage);
+        this.info = info;
     }
 
     /**
@@ -90,10 +78,6 @@ public class ProjectPreferencesWizardPage extends WizardPage {
      */
     @Override
     public void createControl(final Composite parent) {
-        prefs = new ErlangProjectProperties();
-        prefs.setRuntimeVersion(BackendCore.getRuntimeInfoCatalog()
-                .getDefaultRuntime().getVersion());
-
         // create the composite to hold the widgets
         final Composite composite = new Composite(parent, SWT.NONE);
 
@@ -165,7 +149,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             fd_output.left = new FormAttachment(0, 141);
             output.setLayoutData(fd_output);
         }
-        output.setText(prefs.getOutputDir().toString());
+        output.setText(info.output.toString());
         output.addListener(SWT.Modify, nameModifyListener);
         final String resourceString2 = ErlideUIPlugin
                 .getResourceString("wizards.labels.source");
@@ -196,15 +180,14 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             source.setLayoutData(fd_source);
         }
         source.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
-        source.setText(PathSerializer.packList(prefs.getSourceDirs()));
+        source.setText(PathSerializer.packList(info.sources));
         source.addListener(SWT.Modify, nameModifyListener);
 
         final Label includesLabel = new Label(composite, SWT.NONE);
         includesLabel.setAlignment(SWT.RIGHT);
         {
             final FormData fd_includesLabel = new FormData();
-            fd_includesLabel.right = new FormAttachment(lblNewLabel, 0,
-                    SWT.RIGHT);
+            fd_includesLabel.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
             fd_includesLabel.top = new FormAttachment(0, 101);
             fd_includesLabel.left = new FormAttachment(0, 5);
             includesLabel.setLayoutData(fd_includesLabel);
@@ -219,15 +202,15 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             include.setLayoutData(fd_include);
         }
         include.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
-        include.setText(PathSerializer.packList(prefs.getIncludeDirs()));
+        include.setText(PathSerializer.packList(info.includes));
         include.addListener(SWT.Modify, nameModifyListener);
 
         final Label lblTestSources = new Label(composite, SWT.NONE);
+        lblTestSources.setEnabled(false);
         lblTestSources.setAlignment(SWT.RIGHT);
         {
             final FormData fd_lblTestSources = new FormData();
-            fd_lblTestSources.right = new FormAttachment(lblNewLabel, 0,
-                    SWT.RIGHT);
+            fd_lblTestSources.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
             fd_lblTestSources.top = new FormAttachment(0, 131);
             fd_lblTestSources.left = new FormAttachment(0, 5);
             lblTestSources.setLayoutData(fd_lblTestSources);
@@ -235,6 +218,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         lblTestSources.setText(resourceString4 + ":");
 
         test = new Text(composite, SWT.BORDER);
+        test.setEnabled(false);
         {
             final FormData fd_test = new FormData();
             fd_test.right = new FormAttachment(0, 592);
@@ -249,8 +233,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         nodeNameLabel.setAlignment(SWT.RIGHT);
         {
             final FormData fd_nodeNameLabel = new FormData();
-            fd_nodeNameLabel.right = new FormAttachment(lblNewLabel, 44,
-                    SWT.RIGHT);
+            fd_nodeNameLabel.right = new FormAttachment(lblNewLabel, 44, SWT.RIGHT);
             fd_nodeNameLabel.top = new FormAttachment(0, 179);
             fd_nodeNameLabel.left = new FormAttachment(0, 5);
             nodeNameLabel.setLayoutData(fd_nodeNameLabel);
@@ -260,8 +243,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         runtimeVersion = new Combo(composite, SWT.READ_ONLY);
         {
             final FormData fd_runtimeVersion = new FormData();
-            fd_runtimeVersion.bottom = new FormAttachment(nodeNameLabel, 0,
-                    SWT.BOTTOM);
+            fd_runtimeVersion.bottom = new FormAttachment(nodeNameLabel, 0, SWT.BOTTOM);
             fd_runtimeVersion.left = new FormAttachment(nodeNameLabel, 6);
             fd_runtimeVersion.right = new FormAttachment(100, -349);
             runtimeVersion.setLayoutData(fd_runtimeVersion);
@@ -342,12 +324,10 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         return search(ext, file, new ArrayList<String>());
     }
 
-    private List<String> search(final String ext, final File file,
-            final List<String> list) {
+    private List<String> search(final String ext, final File file, final List<String> list) {
         if (file.isFile()) {
             final IPath path = new Path(file.getPath());
-            if (path.getFileExtension() != null
-                    && path.getFileExtension().equals(ext)) {
+            if (path.getFileExtension() != null && path.getFileExtension().equals(ext)) {
                 list.add(file.getPath());
             }
         } else if (file.isDirectory()) {
@@ -361,16 +341,14 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
     protected boolean testPageComplete() {
         if (null != output
-                && (output.getText() == null || output.getText().trim()
-                        .length() == 0)) {
+                && (output.getText() == null || output.getText().trim().length() == 0)) {
             setErrorMessage(ErlideUIPlugin
                     .getResourceString("wizards.errors.outputrequired"));
             return false;
         }
 
         if (null != source
-                && (source.getText() == null || source.getText().trim()
-                        .length() == 0)) {
+                && (source.getText() == null || source.getText().trim().length() == 0)) {
             setErrorMessage(ErlideUIPlugin
                     .getResourceString("wizards.errors.sourcerequired"));
             return false;
@@ -385,17 +363,16 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
         @Override
         public void handleEvent(final Event e) {
-            prefs.setOutputDir(new Path(output.getText()));
-            prefs.setSourceDirs(PathSerializer.unpackList(source.getText()));
-            prefs.setIncludeDirs(PathSerializer.unpackList(include.getText()));
-            final RuntimeVersion rv = new RuntimeVersion(
-                    runtimeVersion.getText());
-            prefs.setRuntimeVersion(rv);
+            info.output = new Path(output.getText());
+            info.sources = PathSerializer.unpackList(source.getText());
+            info.includes = PathSerializer.unpackList(include.getText());
+            final RuntimeVersion rv = new RuntimeVersion(runtimeVersion.getText());
+            info.runtimeVersion = rv;
             if (externalModules != null) {
-                prefs.setExternalModulesFile(externalModules.getText());
+                info.externalModulesFile = externalModules.getText();
             }
             if (externalIncludes != null) {
-                prefs.setExternalIncludesFile(externalIncludes.getText());
+                info.externalIncludesFile = externalIncludes.getText();
             }
 
             setPageComplete(testPageComplete());
@@ -404,10 +381,6 @@ public class ProjectPreferencesWizardPage extends WizardPage {
     private Button discoverBtn;
     private Text test;
     private Combo builder;
-
-    public IErlangProjectProperties getPrefs() {
-        return prefs;
-    }
 
     private void createExternalModuleEditor(final Composite parent) {
         final Composite composite = parent;
@@ -431,7 +404,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             externalModules.setLayoutData(fd_externalModules);
         }
         externalModules.setToolTipText("enter a list of folders");
-        externalModules.setText(prefs.getExternalModulesFile());
+        externalModules.setText(info.externalModulesFile);
         externalModules.addListener(SWT.Modify, nameModifyListener);
         externalModulesBrowse = new Button(composite, SWT.NONE);
         {
@@ -472,7 +445,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             externalIncludes.setLayoutData(fd_externalIncludes);
         }
         externalIncludes.setToolTipText("enter a list of folders");
-        externalIncludes.setText(prefs.getExternalModulesFile());
+        externalIncludes.setText(info.externalModulesFile);
         externalIncludes.addListener(SWT.Modify, nameModifyListener);
         externalIncludesBrowse = new Button(composite, SWT.NONE);
         {
