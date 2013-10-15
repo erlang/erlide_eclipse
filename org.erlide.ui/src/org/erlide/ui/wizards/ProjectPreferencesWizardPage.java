@@ -23,8 +23,9 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -36,8 +37,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
-import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -96,25 +97,74 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         // create the composite to hold the widgets
         final Composite composite = new Composite(parent, SWT.NONE);
 
-        // create the desired layout for this wizard page
-        final GridLayout gl = new GridLayout();
-        gl.numColumns = 3;
-        composite.setLayout(gl);
-
         final String resourceString = ErlideUIPlugin
                 .getResourceString("wizards.labels.buildoutput");
-        // create the widgets and their grid data objects
+        composite.setLayout(new FormLayout());
+
+        final Label lblNewLabel = new Label(composite, SWT.NONE);
+        {
+            final FormData fd_lblNewLabel = new FormData();
+            fd_lblNewLabel.top = new FormAttachment(0, 10);
+            fd_lblNewLabel.left = new FormAttachment(0, 91);
+            lblNewLabel.setLayoutData(fd_lblNewLabel);
+        }
+        lblNewLabel.setText("Builder:");
+
+        builder = new Combo(composite, SWT.READ_ONLY);
+        builder.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                enableInputWidgets(builder.getSelectionIndex() == 0);
+                fillDirWidgetsFromConfig(builder.getText());
+            }
+        });
+        {
+            final FormData fd_builder = new FormData();
+            fd_builder.top = new FormAttachment(0, 7);
+            fd_builder.left = new FormAttachment(0, 141);
+            builder.setLayoutData(fd_builder);
+        }
+        builder.setItems(new String[] { "internal", "rebar", "make", "emake" });
+        builder.select(0);
+
+        discoverBtn = new Button(composite, SWT.PUSH);
+        {
+            final FormData fd_discoverBtn = new FormData();
+            fd_discoverBtn.bottom = new FormAttachment(0, 31);
+            fd_discoverBtn.top = new FormAttachment(0, 5);
+            fd_discoverBtn.left = new FormAttachment(0, 482);
+            discoverBtn.setLayoutData(fd_discoverBtn);
+        }
+        discoverBtn
+                .setToolTipText("Tries to guess the project's configuration \nby finding all erl and hrl files");
+        discoverBtn.setText("Discover paths...");
+        discoverBtn.addListener(SWT.Selection, new Listener() {
+
+            @Override
+            public void handleEvent(final Event event) {
+                discoverPaths();
+            }
+        });
+
         final Label outLabel = new Label(composite, SWT.NONE);
+        outLabel.setAlignment(SWT.RIGHT);
+        {
+            final FormData fd_outLabel = new FormData();
+            fd_outLabel.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
+            fd_outLabel.top = new FormAttachment(0, 41);
+            fd_outLabel.left = new FormAttachment(0, 5);
+            outLabel.setLayoutData(fd_outLabel);
+        }
         outLabel.setText("output Dir");
-        final GridData gd_Label = new GridData();
-        gd_Label.minimumWidth = 50;
-        outLabel.setLayoutData(gd_Label);
         outLabel.setText(resourceString + ":");
         output = new Text(composite, SWT.BORDER);
-        GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
-        gd.minimumWidth = 50;
-        gd.widthHint = 467;
-        output.setLayoutData(gd);
+        {
+            final FormData fd_output = new FormData();
+            fd_output.right = new FormAttachment(0, 592);
+            fd_output.top = new FormAttachment(0, 36);
+            fd_output.left = new FormAttachment(0, 141);
+            output.setLayoutData(fd_output);
+        }
         output.setText(prefs.getOutputDir().toString());
         output.addListener(SWT.Modify, nameModifyListener);
         final String resourceString2 = ErlideUIPlugin
@@ -127,77 +177,124 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         // set the composite as the control for this page
         setControl(composite);
 
-        final Label label = new Label(composite, SWT.NONE);
-        label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-                1, 1));
-
         final Label l1 = new Label(composite, SWT.NONE);
+        l1.setAlignment(SWT.RIGHT);
+        {
+            final FormData fd_l1 = new FormData();
+            fd_l1.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
+            fd_l1.top = new FormAttachment(0, 71);
+            fd_l1.left = new FormAttachment(0, 5);
+            l1.setLayoutData(fd_l1);
+        }
         l1.setText(resourceString2 + ":");
         source = new Text(composite, SWT.BORDER);
+        {
+            final FormData fd_source = new FormData();
+            fd_source.right = new FormAttachment(0, 592);
+            fd_source.top = new FormAttachment(0, 66);
+            fd_source.left = new FormAttachment(0, 141);
+            source.setLayoutData(fd_source);
+        }
         source.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
-        gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-        gd.widthHint = 371;
-        source.setLayoutData(gd);
         source.setText(PathSerializer.packList(prefs.getSourceDirs()));
         source.addListener(SWT.Modify, nameModifyListener);
-        new Label(composite, SWT.NONE);
 
         final Label includesLabel = new Label(composite, SWT.NONE);
+        includesLabel.setAlignment(SWT.RIGHT);
+        {
+            final FormData fd_includesLabel = new FormData();
+            fd_includesLabel.right = new FormAttachment(lblNewLabel, 0,
+                    SWT.RIGHT);
+            fd_includesLabel.top = new FormAttachment(0, 101);
+            fd_includesLabel.left = new FormAttachment(0, 5);
+            includesLabel.setLayoutData(fd_includesLabel);
+        }
         includesLabel.setText(resourceString3 + ":");
         include = new Text(composite, SWT.BORDER);
+        {
+            final FormData fd_include = new FormData();
+            fd_include.right = new FormAttachment(0, 592);
+            fd_include.top = new FormAttachment(0, 96);
+            fd_include.left = new FormAttachment(0, 141);
+            include.setLayoutData(fd_include);
+        }
         include.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
-        gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-        include.setLayoutData(gd);
         include.setText(PathSerializer.packList(prefs.getIncludeDirs()));
         include.addListener(SWT.Modify, nameModifyListener);
-        new Label(composite, SWT.NONE);
 
         final Label lblTestSources = new Label(composite, SWT.NONE);
+        lblTestSources.setAlignment(SWT.RIGHT);
+        {
+            final FormData fd_lblTestSources = new FormData();
+            fd_lblTestSources.right = new FormAttachment(lblNewLabel, 0,
+                    SWT.RIGHT);
+            fd_lblTestSources.top = new FormAttachment(0, 131);
+            fd_lblTestSources.left = new FormAttachment(0, 5);
+            lblTestSources.setLayoutData(fd_lblTestSources);
+        }
         lblTestSources.setText(resourceString4 + ":");
 
-        text = new Text(composite, SWT.BORDER);
-        text.setEditable(false);
-        text.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
-        text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        new Label(composite, SWT.NONE);
-        new Label(composite, SWT.NONE);
-
-        final Button discoverBtn = new Button(composite, SWT.PUSH);
-        discoverBtn
-                .setToolTipText("Tries to guess the project's configuration \nby finding all erl and hrl files");
-        final GridData gd_discoverBtn = new GridData(SWT.RIGHT, SWT.FILL,
-                false, false);
-        gd_discoverBtn.heightHint = 26;
-        discoverBtn.setLayoutData(gd_discoverBtn);
-        discoverBtn.setText("Discover paths...");
-        discoverBtn.addListener(SWT.Selection, new Listener() {
-
-            @Override
-            public void handleEvent(final Event event) {
-                discoverPaths();
-            }
-        });
-        new Label(composite, SWT.NONE);
+        test = new Text(composite, SWT.BORDER);
+        {
+            final FormData fd_test = new FormData();
+            fd_test.right = new FormAttachment(0, 592);
+            fd_test.top = new FormAttachment(0, 126);
+            fd_test.left = new FormAttachment(0, 141);
+            test.setLayoutData(fd_test);
+        }
+        test.setEditable(false);
+        test.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
 
         final Label nodeNameLabel = new Label(composite, SWT.NONE);
-        nodeNameLabel.setText("Backend version");
+        nodeNameLabel.setAlignment(SWT.RIGHT);
+        {
+            final FormData fd_nodeNameLabel = new FormData();
+            fd_nodeNameLabel.right = new FormAttachment(lblNewLabel, 44,
+                    SWT.RIGHT);
+            fd_nodeNameLabel.top = new FormAttachment(0, 179);
+            fd_nodeNameLabel.left = new FormAttachment(0, 5);
+            nodeNameLabel.setLayoutData(fd_nodeNameLabel);
+        }
+        nodeNameLabel.setText("Minimum Erlang version");
 
         runtimeVersion = new Combo(composite, SWT.READ_ONLY);
-        final GridData gd_backendName = new GridData(SWT.LEFT, SWT.CENTER,
-                true, false);
-        gd_backendName.widthHint = 62;
-        runtimeVersion.setLayoutData(gd_backendName);
+        {
+            final FormData fd_runtimeVersion = new FormData();
+            fd_runtimeVersion.bottom = new FormAttachment(nodeNameLabel, 0,
+                    SWT.BOTTOM);
+            fd_runtimeVersion.left = new FormAttachment(nodeNameLabel, 6);
+            fd_runtimeVersion.right = new FormAttachment(100, -349);
+            runtimeVersion.setLayoutData(fd_runtimeVersion);
+        }
         final String[] runtimeVersions = getAllRuntimeVersions();
         runtimeVersion.setItems(runtimeVersions);
-        runtimeVersion.setText(prefs.getRuntimeVersion().asMinor().toString());
+        runtimeVersion.setText(runtimeVersions[runtimeVersions.length - 1]);
         runtimeVersion.addListener(SWT.Modify, nameModifyListener);
 
-        new Label(composite, SWT.NONE);
         if (SystemConfiguration.getInstance().isTest()) {
             createExternalModuleEditor(composite);
             createExternalIncludeEditor(composite);
         }
 
+    }
+
+    protected void enableInputWidgets(final boolean b) {
+        discoverBtn.setEnabled(b);
+        output.setEnabled(b);
+        source.setEnabled(b);
+        include.setEnabled(b);
+        test.setEnabled(b);
+    }
+
+    protected void fillDirWidgetsFromConfig(final String builder) {
+        final WizardNewProjectCreationPage prev = (WizardNewProjectCreationPage) getPreviousPage();
+        final IPath loc = prev.getLocationPath();
+        final File dir = loc.toFile();
+
+        if (!prev.getProjectName().isEmpty() && dir.exists()) {
+            // TODO autodiscover project settings
+
+        }
     }
 
     private String[] getAllRuntimeVersions() {
@@ -304,7 +401,9 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             setPageComplete(testPageComplete());
         }
     };
-    private Text text;
+    private Button discoverBtn;
+    private Text test;
+    private Combo builder;
 
     public IErlangProjectProperties getPrefs() {
         return prefs;
@@ -315,17 +414,32 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
         final String resourceString4 = "External modules file";
         final Label label = new Label(composite, SWT.NONE);
+        {
+            final FormData fd_label = new FormData();
+            fd_label.top = new FormAttachment(0, 207);
+            fd_label.left = new FormAttachment(0, 5);
+            label.setLayoutData(fd_label);
+        }
         label.setBackground(SWTResourceManager.getColor(255, 255, 183));
         label.setText(resourceString4 + ":");
         externalModules = new Text(composite, SWT.BORDER);
+        {
+            final FormData fd_externalModules = new FormData();
+            fd_externalModules.right = new FormAttachment(0, 477);
+            fd_externalModules.top = new FormAttachment(0, 202);
+            fd_externalModules.left = new FormAttachment(0, 141);
+            externalModules.setLayoutData(fd_externalModules);
+        }
         externalModules.setToolTipText("enter a list of folders");
         externalModules.setText(prefs.getExternalModulesFile());
-        final GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
-        gd.minimumWidth = 50;
-        gd.widthHint = 384;
-        externalModules.setLayoutData(gd);
         externalModules.addListener(SWT.Modify, nameModifyListener);
         externalModulesBrowse = new Button(composite, SWT.NONE);
+        {
+            final FormData fd_externalModulesBrowse = new FormData();
+            fd_externalModulesBrowse.top = new FormAttachment(0, 203);
+            fd_externalModulesBrowse.left = new FormAttachment(0, 482);
+            externalModulesBrowse.setLayoutData(fd_externalModulesBrowse);
+        }
         externalModulesBrowse.setText("Browse...");
         externalModulesBrowse.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -341,17 +455,32 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
         final String resourceString4 = "External includes file";
         final Label label = new Label(composite, SWT.NONE);
+        {
+            final FormData fd_label = new FormData();
+            fd_label.top = new FormAttachment(0, 237);
+            fd_label.left = new FormAttachment(0, 5);
+            label.setLayoutData(fd_label);
+        }
         label.setBackground(SWTResourceManager.getColor(255, 255, 183));
         label.setText(resourceString4 + ":");
         externalIncludes = new Text(composite, SWT.BORDER);
+        {
+            final FormData fd_externalIncludes = new FormData();
+            fd_externalIncludes.right = new FormAttachment(0, 477);
+            fd_externalIncludes.top = new FormAttachment(0, 232);
+            fd_externalIncludes.left = new FormAttachment(0, 141);
+            externalIncludes.setLayoutData(fd_externalIncludes);
+        }
         externalIncludes.setToolTipText("enter a list of folders");
         externalIncludes.setText(prefs.getExternalModulesFile());
-        final GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
-        gd.minimumWidth = 50;
-        gd.widthHint = 384;
-        externalIncludes.setLayoutData(gd);
         externalIncludes.addListener(SWT.Modify, nameModifyListener);
         externalIncludesBrowse = new Button(composite, SWT.NONE);
+        {
+            final FormData fd_externalIncludesBrowse = new FormData();
+            fd_externalIncludesBrowse.top = new FormAttachment(0, 233);
+            fd_externalIncludesBrowse.left = new FormAttachment(0, 482);
+            externalIncludesBrowse.setLayoutData(fd_externalIncludesBrowse);
+        }
         externalIncludesBrowse.setText("Browse...");
         externalIncludesBrowse.addSelectionListener(new SelectionAdapter() {
             @Override
