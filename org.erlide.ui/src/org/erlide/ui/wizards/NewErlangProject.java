@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -38,9 +37,9 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.ErlangCore;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IErlangProjectProperties;
-import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
@@ -62,31 +61,18 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
     private WizardNewProjectCreationPage mainPage;
     private ProjectPreferencesWizardPage buildPage;
-    private ProjectInfo info;
+    private IErlangProjectProperties info;
 
     @Override
     public void init(final IWorkbench workbench, final IStructuredSelection selection) {
         setNeedsProgressMonitor(true);
     }
 
-    static class ProjectInfo {
-        String name;
-        IPath location;
-        String builder = "internal";
-        IPath output = new Path("ebin");
-        Collection<IPath> sources = Lists.newArrayList((IPath) new Path("src"));
-        Collection<IPath> includes = Lists.newArrayList((IPath) new Path("include"));
-        Collection<IPath> tests = Lists.newArrayList((IPath) new Path("test"));
-        RuntimeVersion runtimeVersion;
-        String externalModulesFile = "";
-        String externalIncludesFile = "";
-    }
-
     @Override
     public void addPages() {
         try {
             super.addPages();
-            info = new ProjectInfo();
+            info = new ErlangProjectProperties();
             mainPage = new ProjectNewCreationPage(MAIN_PAGE, info);
             mainPage.setTitle(ErlideUIPlugin
                     .getResourceString("wizards.titles.newproject"));
@@ -155,12 +141,12 @@ public class NewErlangProject extends Wizard implements INewWizard {
      * @return
      */
     private boolean validateFinish() {
-        if (info.output.isEmpty()) {
+        if (info.getOutputDir().isEmpty()) {
             reportError(ErlideUIPlugin.getResourceString("wizard.errors.buildpath"));
             return false;
         }
 
-        if (info.sources.isEmpty()) {
+        if (info.getSourceDirs().isEmpty()) {
             reportError(ErlideUIPlugin.getResourceString("wizards.errors.sourcepath"));
             return false;
         }
@@ -193,21 +179,13 @@ public class NewErlangProject extends Wizard implements INewWizard {
             monitor.subTask(ErlideUIPlugin
                     .getResourceString("wizards.messages.creatingfiles"));
 
-            createFolders(project, Lists.newArrayList(info.output), monitor);
-            createFolders(project, info.sources, monitor);
-            createFolders(project, info.includes, monitor);
+            createFolders(project, Lists.newArrayList(info.getOutputDir()), monitor);
+            createFolders(project, info.getSourceDirs(), monitor);
+            createFolders(project, info.getIncludeDirs(), monitor);
 
             final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                     .getErlangProject(project);
-            final IErlangProjectProperties prefs = erlProject.getProperties();
-            prefs.setBuilderName(info.builder);
-            prefs.setOutputDir(info.output);
-            prefs.setSourceDirs(info.sources);
-            prefs.setIncludeDirs(info.includes);
-            prefs.setExternalModulesFile(info.externalModulesFile);
-            prefs.setExternalIncludesFile(info.externalIncludesFile);
-            prefs.setRuntimeVersion(info.runtimeVersion);
-            erlProject.setAllProperties(prefs);
+            erlProject.setAllProperties(info);
         } catch (final CoreException e) {
             ErlLogger.debug(e);
             reportError(e);

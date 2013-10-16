@@ -36,10 +36,10 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
+import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.ui.wizards.NewErlangProject.ProjectInfo;
 import org.erlide.util.PreferencesUtils;
 import org.erlide.util.SystemConfiguration;
 
@@ -59,7 +59,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
     private Button externalModulesBrowse;
     private Button externalIncludesBrowse;
 
-    private final ProjectInfo info;
+    private final IErlangProjectProperties info;
 
     /**
      * Constructor inherited from parent
@@ -68,7 +68,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
      * @param info
      * @wbp.parser.constructor
      */
-    public ProjectPreferencesWizardPage(final String pageName, final ProjectInfo info) {
+    public ProjectPreferencesWizardPage(final String pageName,
+            final IErlangProjectProperties info) {
         super(pageName);
         this.info = info;
     }
@@ -149,7 +150,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             fd_output.left = new FormAttachment(0, 141);
             output.setLayoutData(fd_output);
         }
-        output.setText(info.output.toString());
+        output.setText(info.getOutputDir().toString());
         output.addListener(SWT.Modify, nameModifyListener);
         final String resourceString2 = ErlideUIPlugin
                 .getResourceString("wizards.labels.source");
@@ -180,7 +181,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             source.setLayoutData(fd_source);
         }
         source.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
-        source.setText(PathSerializer.packList(info.sources));
+        source.setText(PathSerializer.packList(info.getSourceDirs()));
         source.addListener(SWT.Modify, nameModifyListener);
 
         final Label includesLabel = new Label(composite, SWT.NONE);
@@ -202,7 +203,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             include.setLayoutData(fd_include);
         }
         include.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
-        include.setText(PathSerializer.packList(info.includes));
+        include.setText(PathSerializer.packList(info.getIncludeDirs()));
         include.addListener(SWT.Modify, nameModifyListener);
 
         final Label lblTestSources = new Label(composite, SWT.NONE);
@@ -363,16 +364,16 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
         @Override
         public void handleEvent(final Event e) {
-            info.output = new Path(output.getText());
-            info.sources = PathSerializer.unpackList(source.getText());
-            info.includes = PathSerializer.unpackList(include.getText());
+            info.setOutputDir(new Path(output.getText()));
+            info.setSourceDirs(PathSerializer.unpackList(source.getText()));
+            info.setIncludeDirs(PathSerializer.unpackList(include.getText()));
             final RuntimeVersion rv = new RuntimeVersion(runtimeVersion.getText());
-            info.runtimeVersion = rv;
+            info.setRuntimeVersion(rv);
             if (externalModules != null) {
-                info.externalModulesFile = externalModules.getText();
+                info.setExternalModulesFile(externalModules.getText());
             }
             if (externalIncludes != null) {
-                info.externalIncludesFile = externalIncludes.getText();
+                info.setExternalIncludesFile(externalIncludes.getText());
             }
 
             setPageComplete(testPageComplete());
@@ -404,7 +405,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             externalModules.setLayoutData(fd_externalModules);
         }
         externalModules.setToolTipText("enter a list of folders");
-        externalModules.setText(info.externalModulesFile);
+        externalModules.setText(info.getExternalModulesFile());
         externalModules.addListener(SWT.Modify, nameModifyListener);
         externalModulesBrowse = new Button(composite, SWT.NONE);
         {
@@ -445,7 +446,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             externalIncludes.setLayoutData(fd_externalIncludes);
         }
         externalIncludes.setToolTipText("enter a list of folders");
-        externalIncludes.setText(info.externalModulesFile);
+        externalIncludes.setText(info.getExternalIncludesFile());
         externalIncludes.addListener(SWT.Modify, nameModifyListener);
         externalIncludesBrowse = new Button(composite, SWT.NONE);
         {
