@@ -23,6 +23,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class BuildersTest {
 
     private IProject prj;
@@ -67,7 +68,6 @@ public class BuildersTest {
         testBuilder("emake");
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void rebarBuilderShouldWork() throws CoreException {
         final IFolder folder = (IFolder) prj.findMember("src");
@@ -90,7 +90,7 @@ public class BuildersTest {
 
     private void testBuilder(final String builder) throws CoreException {
         ErlangNature.setErlangProjectBuilder(prj, builder);
-        final String builderId = ErlangNature.BUILDER_ID_MAP.get(builder);
+        final String builderId = ErlangNature.getBuilder(builder).getId();
         final String targetBeamPath = "ebin/mod.beam";
 
         final IResource beam0 = prj.findMember(targetBeamPath);

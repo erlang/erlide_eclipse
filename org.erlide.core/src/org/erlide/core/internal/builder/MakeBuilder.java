@@ -2,8 +2,11 @@ package org.erlide.core.internal.builder;
 
 import java.util.Collection;
 
+import org.eclipse.core.runtime.IPath;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
 import org.erlide.engine.model.root.BuilderConfigParser;
+import org.erlide.engine.model.root.IErlangProjectProperties;
 
 public class MakeBuilder extends ExternalBuilder {
 
@@ -24,6 +27,17 @@ public class MakeBuilder extends ExternalBuilder {
     public BuilderConfigParser getConfigParser() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void createConfig(final IPath location, final IErlangProjectProperties info) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public String getId() {
+        return ErlangCore.PLUGIN_ID + ".make.builder";
     }
 
 }

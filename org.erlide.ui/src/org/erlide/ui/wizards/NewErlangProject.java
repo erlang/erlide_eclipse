@@ -36,6 +36,7 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
@@ -171,9 +172,12 @@ public class NewErlangProject extends Wizard implements INewWizard {
             project.open(monitor);
 
             description = project.getDescription();
-
             description.setNatureIds(new String[] { ErlangCore.NATURE_ID });
             project.setDescription(description, new SubProgressMonitor(monitor, 10));
+            if (info.getBuilderName() != null) {
+                ErlangNature.setErlangProjectBuilder(project, info.getBuilderName());
+                createBuilderConfig(project, info.getBuilderName());
+            }
 
             monitor.worked(10);
             monitor.subTask(ErlideUIPlugin
@@ -195,6 +199,10 @@ public class NewErlangProject extends Wizard implements INewWizard {
         } finally {
             monitor.done();
         }
+    }
+
+    private void createBuilderConfig(final IProject project, final String builderName) {
+        ErlangNature.getBuilder(builderName).createConfig(project.getLocation(), info);
     }
 
     /**

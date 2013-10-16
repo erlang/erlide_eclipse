@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.erlide.core.internal.builder;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -19,8 +18,10 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.erlide.core.ErlangCore;
+import org.erlide.util.ErlLogger;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -54,16 +55,13 @@ public class ErlangNature implements IProjectNature {
         project = lproject;
     }
 
-    private final static Collection<String> ALL_BUILDER_IDS = Lists
-            .newArrayList(ErlangCore.BUILDER_ID, ErlangCore.MAKEBUILDER_ID,
-                    ErlangCore.EMAKEBUILDER_ID, ErlangCore.REBARBUILDER_ID);
-
-    public final static Map<String, String> BUILDER_ID_MAP = Maps.newHashMap();
+    public final static Map<String, Class<? extends ErlangBuilder>> BUILDER_MAP = Maps
+            .newHashMap();
     static {
-        BUILDER_ID_MAP.put("internal", ErlangCore.BUILDER_ID);
-        BUILDER_ID_MAP.put("make", ErlangCore.MAKEBUILDER_ID);
-        BUILDER_ID_MAP.put("emake", ErlangCore.EMAKEBUILDER_ID);
-        BUILDER_ID_MAP.put("rebar", ErlangCore.REBARBUILDER_ID);
+        BUILDER_MAP.put("internal", InternalBuilder.class);
+        BUILDER_MAP.put("make", MakeBuilder.class);
+        BUILDER_MAP.put("emake", EmakeBuilder.class);
+        BUILDER_MAP.put("rebar", RebarBuilder.class);
     }
 
     public static void setErlangProjectBuilder(final IProject prj,
@@ -75,26 +73,61 @@ public class ErlangNature implements IProjectNature {
         final ICommand[] specs = new ICommand[old.length + 1];
         System.arraycopy(old, 0, specs, 0, old.length);
         final ICommand command = description.newCommand();
-        command.setBuilderName(BUILDER_ID_MAP.get(builderName));
-        specs[old.length] = command;
-
-        description.setBuildSpec(specs);
-        prj.setDescription(description, new NullProgressMonitor());
+        try {
+            command.setBuilderName(BUILDER_MAP.get(builderName).newInstance().getId());
+            specs[old.length] = command;
+            description.setBuildSpec(specs);
+            prj.setDescription(description, new NullProgressMonitor());
+        } catch (final InstantiationException e) {
+            ErlLogger.error(e);
+        } catch (final IllegalAccessException e) {
+            ErlLogger.error(e);
+        }
     }
 
-    public static void unsetAllErlangBuilders(final IProject prj)
-            throws CoreException {
+    public static void unsetAllErlangBuilders(final IProject prj) throws CoreException {
         final IProjectDescription description = prj.getDescription();
         final ICommand[] old = description.getBuildSpec();
+        final List<String> allIds = Lists.newArrayList(Iterables.transform(
+                BUILDER_MAP.values(),
+                new Function<Class<? extends ErlangBuilder>, String>() {
+                    @Override
+                    public final String apply(final Class<? extends ErlangBuilder> input) {
+                        try {
+                            return input.newInstance().getId();
+                        } catch (final InstantiationException e) {
+                            ErlLogger.error(e);
+                        } catch (final IllegalAccessException e) {
+                            ErlLogger.error(e);
+                        }
+                        return null;
+                    }
+                }));
         final List<ICommand> specs = Lists.newArrayList();
         for (final ICommand cmd : old) {
             final String oldBuilderName = cmd.getBuilderName();
-            if (!ALL_BUILDER_IDS.contains(oldBuilderName)) {
+            if (!allIds.contains(oldBuilderName)) {
                 specs.add(cmd);
             }
         }
         description.setBuildSpec(specs.toArray(new ICommand[specs.size()]));
         prj.setDescription(description, new NullProgressMonitor());
+    }
+
+    public static ErlangBuilder getBuilder(final String builderName) {
+        if ("internal".equals(builderName)) {
+            return new InternalBuilder();
+        }
+        if ("rebar".equals(builderName)) {
+            return new RebarBuilder();
+        }
+        if ("emake".equals(builderName)) {
+            return new EmakeBuilder();
+        }
+        if ("make".equals(builderName)) {
+            return new MakeBuilder();
+        }
+        throw new IllegalArgumentException("unknown builder: " + builderName);
     }
 
 }

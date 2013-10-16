@@ -9,18 +9,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.builder.MarkerUtils;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.BuilderConfigParser;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.util.ErlLogger;
 
 public class EmakeBuilder extends ExternalBuilder {
 
     @Override
     public String getOsCommand() {
-        final IBackend backend = BackendCore.getBackendManager()
-                .getBuildBackend(getProject());
+        final IBackend backend = BackendCore.getBackendManager().getBuildBackend(
+                getProject());
         final IPath path = new Path(backend.getRuntimeInfo().getOtpHome())
                 .append("bin/erl");
         return path.toOSString();
@@ -63,6 +65,17 @@ public class EmakeBuilder extends ExternalBuilder {
                 // ignore
             }
         }
+    }
+
+    @Override
+    public void createConfig(final IPath location, final IErlangProjectProperties info) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public String getId() {
+        return ErlangCore.PLUGIN_ID + ".emake.builder";
     }
 
 }

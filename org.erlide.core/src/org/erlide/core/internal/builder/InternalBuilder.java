@@ -35,6 +35,7 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendException;
 import org.erlide.backend.api.IBackend;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.BuilderHelper.SearchVisitor;
@@ -44,6 +45,7 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.util.ErlLogger;
 
@@ -356,6 +358,16 @@ public class InternalBuilder extends ErlangBuilder {
         beam.getProject().accept(searcher);
         final IResource source = searcher.getResult();
         return source;
+    }
+
+    @Override
+    public void createConfig(final IPath location, final IErlangProjectProperties info) {
+        // do nothing
+    }
+
+    @Override
+    public String getId() {
+        return ErlangCore.PLUGIN_ID + ".erlbuilder";
     }
 
 }

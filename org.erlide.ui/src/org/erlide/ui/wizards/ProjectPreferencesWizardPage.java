@@ -82,8 +82,6 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         // create the composite to hold the widgets
         final Composite composite = new Composite(parent, SWT.NONE);
 
-        final String resourceString = ErlideUIPlugin
-                .getResourceString("wizards.labels.buildoutput");
         composite.setLayout(new FormLayout());
 
         final Label lblNewLabel = new Label(composite, SWT.NONE);
@@ -120,8 +118,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             fd_discoverBtn.left = new FormAttachment(0, 482);
             discoverBtn.setLayoutData(fd_discoverBtn);
         }
-        discoverBtn
-                .setToolTipText("Tries to guess the project's configuration \nby finding all erl and hrl files");
+        discoverBtn.setToolTipText("Tries to guess the project's configuration \n"
+                + "by finding all erl and hrl files");
         discoverBtn.setText("Discover paths...");
         discoverBtn.addListener(SWT.Selection, new Listener() {
 
@@ -140,7 +138,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             fd_outLabel.left = new FormAttachment(0, 5);
             outLabel.setLayoutData(fd_outLabel);
         }
-        outLabel.setText("output Dir");
+        final String resourceString = ErlideUIPlugin
+                .getResourceString("wizards.labels.buildoutput");
         outLabel.setText(resourceString + ":");
         output = new Text(composite, SWT.BORDER);
         {
@@ -152,12 +151,6 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         }
         output.setText(info.getOutputDir().toString());
         output.addListener(SWT.Modify, nameModifyListener);
-        final String resourceString2 = ErlideUIPlugin
-                .getResourceString("wizards.labels.source");
-        final String resourceString3 = ErlideUIPlugin
-                .getResourceString("wizards.labels.include");
-        final String resourceString4 = ErlideUIPlugin
-                .getResourceString("wizards.labels.testsources");
 
         // set the composite as the control for this page
         setControl(composite);
@@ -171,6 +164,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             fd_l1.left = new FormAttachment(0, 5);
             l1.setLayoutData(fd_l1);
         }
+        final String resourceString2 = ErlideUIPlugin
+                .getResourceString("wizards.labels.source");
         l1.setText(resourceString2 + ":");
         source = new Text(composite, SWT.BORDER);
         {
@@ -193,6 +188,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             fd_includesLabel.left = new FormAttachment(0, 5);
             includesLabel.setLayoutData(fd_includesLabel);
         }
+        final String resourceString3 = ErlideUIPlugin
+                .getResourceString("wizards.labels.include");
         includesLabel.setText(resourceString3 + ":");
         include = new Text(composite, SWT.BORDER);
         {
@@ -216,6 +213,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             fd_lblTestSources.left = new FormAttachment(0, 5);
             lblTestSources.setLayoutData(fd_lblTestSources);
         }
+        final String resourceString4 = ErlideUIPlugin
+                .getResourceString("wizards.labels.testsources");
         lblTestSources.setText(resourceString4 + ":");
 
         test = new Text(composite, SWT.BORDER);

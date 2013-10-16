@@ -7,11 +7,14 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.builder.MarkerUtils;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.BuilderConfigParser;
 import org.erlide.engine.model.root.IErlFolder;
+import org.erlide.engine.model.root.IErlangProjectProperties;
 
 public class RebarBuilder extends ExternalBuilder {
 
@@ -42,9 +45,8 @@ public class RebarBuilder extends ExternalBuilder {
             @Override
             public boolean visit(final IResource resource) throws CoreException {
                 if (resource.getName().endsWith(".app.src")) {
-                    final IErlFolder folder = (IErlFolder) ErlangEngine
-                            .getInstance().getModel()
-                            .findElement(resource.getParent());
+                    final IErlFolder folder = (IErlFolder) ErlangEngine.getInstance()
+                            .getModel().findElement(resource.getParent());
                     if (folder != null && folder.isOnSourcePath()) {
                         foundAppSrc = true;
                     }
@@ -57,6 +59,17 @@ public class RebarBuilder extends ExternalBuilder {
                     "No .app.src file found, can't compile with rebar", -1,
                     IMarker.SEVERITY_ERROR, IMarker.PROBLEM);
         }
+    }
+
+    @Override
+    public void createConfig(final IPath location, final IErlangProjectProperties info) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public String getId() {
+        return ErlangCore.PLUGIN_ID + ".rebar.builder";
     }
 
 }
