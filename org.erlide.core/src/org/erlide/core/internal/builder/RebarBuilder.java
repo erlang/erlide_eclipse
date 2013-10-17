@@ -7,7 +7,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.builder.MarkerUtils;
@@ -62,9 +61,9 @@ public class RebarBuilder extends ExternalBuilder {
     }
 
     @Override
-    public void createConfig(final IPath location, final IErlangProjectProperties info) {
-        // TODO Auto-generated method stub
-
+    public void createConfig(final IErlangProjectProperties info) {
+        // TODO call rebar create
+        // what app id?
     }
 
     @Override

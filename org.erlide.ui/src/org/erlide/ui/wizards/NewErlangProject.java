@@ -36,6 +36,7 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.internal.builder.BuildersInfo;
 import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.ErlangProjectProperties;
@@ -202,7 +203,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
     }
 
     private void createBuilderConfig(final IProject project, final String builderName) {
-        ErlangNature.getBuilder(builderName).createConfig(project.getLocation(), info);
+        BuildersInfo.valueOf(builderName).getImpl().createConfig(info);
     }
 
     /**
@@ -210,7 +211,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
      */
     private void createFolders(final IProject project, final Collection<IPath> pathList,
             final IProgressMonitor monitor) throws CoreException {
-        // Some paths are optionals (include): If we do not specify it, we get a
+        // Some paths are optional (include): If we do not specify it, we get a
         // null string and we do not need to create the directory
         if (pathList != null) {
             for (final IPath path : pathList) {
@@ -223,35 +224,22 @@ public class NewErlangProject extends Wizard implements INewWizard {
         }
     }
 
-    /**
-     * Displays an error that occured during the project creation.
-     */
     private void reportError(final Exception x) {
         ErlLogger.error(x);
-        ErrorDialog
-                .openError(
-                        getShell(),
-                        ErlideUIPlugin
-                                .getResourceString("wizards.errors.projecterrordesc"),
-                        ErlideUIPlugin
-                                .getResourceString("wizards.errors.projecterrortitle"),
-                        new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, 0, x
-                                .getMessage(), x));
+        final String description = ErlideUIPlugin
+                .getResourceString("wizards.errors.projecterrordesc");
+        final String title = ErlideUIPlugin
+                .getResourceString("wizards.errors.projecterrortitle");
+        ErrorDialog.openError(getShell(), description, title, new Status(IStatus.ERROR,
+                ErlideUIPlugin.PLUGIN_ID, 0, x.getMessage(), x));
     }
 
-    /**
-     * Displays an error that occured during the project creation. *
-     * 
-     * @param x
-     *            details on the error
-     */
     private void reportError(final String x) {
         final Status status = new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, 0, x,
                 null);
-
-        ErrorDialog.openError(getShell(), x,
-                ErlideUIPlugin.getResourceString("wizards.errors.projecterrortitle"),
-                status);
+        final String title = ErlideUIPlugin
+                .getResourceString("wizards.errors.projecterrortitle");
+        ErrorDialog.openError(getShell(), x, title, status);
     }
 
     /**

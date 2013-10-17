@@ -52,4 +52,8 @@ public interface IErlangProjectProperties {
 
     void setBuilderName(String builder);
 
+    void setName(String projectName);
+
+    String getName();
+
 }
