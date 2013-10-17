@@ -2,6 +2,7 @@ package org.erlide.core.internal.builder;
 
 import java.util.Collection;
 
+import org.eclipse.core.resources.IProject;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
 import org.erlide.engine.model.root.BuilderConfigParser;
@@ -29,7 +30,7 @@ public class MakeBuilder extends ExternalBuilder {
     }
 
     @Override
-    public void createConfig(final IErlangProjectProperties info) {
+    public void createConfig(final IProject project, final IErlangProjectProperties info) {
         // TODO Auto-generated method stub
 
     }

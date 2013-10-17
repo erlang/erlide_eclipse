@@ -11,8 +11,12 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtend2.lib.StringConcatenation;
+import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
+import org.eclipse.xtext.xbase.lib.IterableExtensions;
+import org.eclipse.xtext.xbase.lib.ObjectExtensions;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
@@ -27,6 +31,7 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.SystemConfiguration;
 
 @SuppressWarnings("all")
 public class EmakeBuilder extends ExternalBuilder {
@@ -40,8 +45,18 @@ public class EmakeBuilder extends ExternalBuilder {
       String _otpHome = _runtimeInfo.getOtpHome();
       Path _path = new Path(_otpHome);
       final IPath path = _path.append("bin/erl");
-      String _oSString = path.toOSString();
-      _xblockexpression = (_oSString);
+      String _xifexpression = null;
+      SystemConfiguration _instance = SystemConfiguration.getInstance();
+      boolean _isOnWindows = _instance.isOnWindows();
+      if (_isOnWindows) {
+        String _portableString = path.toPortableString();
+        String _plus = (_portableString + ".exe");
+        _xifexpression = _plus;
+      } else {
+        String _portableString_1 = path.toPortableString();
+        _xifexpression = _portableString_1;
+      }
+      _xblockexpression = (_xifexpression);
     }
     return _xblockexpression;
   }
@@ -66,37 +81,40 @@ public class EmakeBuilder extends ExternalBuilder {
     final IErlProject erlProject = _model.getErlangProject(project);
     IPath _outputLocation = erlProject.getOutputLocation();
     final IFolder bf = project.getFolder(_outputLocation);
-    boolean _exists = bf.exists();
-    if (_exists) {
-      try {
-        IResource[] _members = bf.members();
-        for (final IResource f : _members) {
-          try {
-            f.delete(true, null);
-          } catch (final Throwable _t) {
-            if (_t instanceof CoreException) {
-              final CoreException e = (CoreException)_t;
-              IPath _location = bf.getLocation();
-              String _plus = ("Could not clean up output directory " + _location);
-              ErlLogger.warn(_plus);
-            } else {
-              throw Exceptions.sneakyThrow(_t);
-            }
+    final Procedure1<IFolder> _function = new Procedure1<IFolder>() {
+      public void apply(final IFolder it) {
+        try {
+          boolean _exists = it.exists();
+          if (_exists) {
+            IResource[] _members = it.members();
+            final Procedure1<IResource> _function = new Procedure1<IResource>() {
+              public void apply(final IResource it) {
+                try {
+                  it.delete(true, null);
+                } catch (final Throwable _t) {
+                  if (_t instanceof CoreException) {
+                    final CoreException e = (CoreException)_t;
+                    IPath _location = it.getLocation();
+                    String _plus = ("Could not clean up output directory " + _location);
+                    ErlLogger.warn(_plus);
+                  } else {
+                    throw Exceptions.sneakyThrow(_t);
+                  }
+                }
+              }
+            };
+            IterableExtensions.<IResource>forEach(((Iterable<IResource>)Conversions.doWrapArray(_members)), _function);
           }
-        }
-      } catch (final Throwable _t_1) {
-        if (_t_1 instanceof CoreException) {
-          final CoreException e_1 = (CoreException)_t_1;
-        } else {
-          throw Exceptions.sneakyThrow(_t_1);
+        } catch (Throwable _e) {
+          throw Exceptions.sneakyThrow(_e);
         }
       }
-    }
+    };
+    ObjectExtensions.<IFolder>operator_doubleArrow(bf, _function);
   }
   
-  public void createConfig(final IErlangProjectProperties info) {
-    IProject _project = this.getProject();
-    final IFile config = _project.getFile("Emakefile");
+  public void createConfig(final IProject project, final IErlangProjectProperties info) {
+    final IFile config = project.getFile("Emakefile");
     try {
       StringConcatenation _builder = new StringConcatenation();
       {

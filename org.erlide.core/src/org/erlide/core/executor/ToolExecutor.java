@@ -46,42 +46,35 @@ public class ToolExecutor {
 
         @Override
         public String toString() {
-            return "{{{\n  " + output + "\n  " + error + "\n  " + exit
-                    + "\n}}}";
+            return "{{{\n  " + output + "\n  " + error + "\n  " + exit + "\n}}}";
         }
     }
 
-    public ToolResults run(final String cmd0, final String args,
-            final String wdir, final Procedure1<String> progressCallback) {
-        final String cmd = new Path(cmd0).isAbsolute() ? cmd0
-                : getToolLocation(cmd0);
+    public ToolResults run(final String cmd0, final String args, final String wdir,
+            final Procedure1<String> progressCallback) {
+        final String cmd = new Path(cmd0).isAbsolute() ? cmd0 : getToolLocation(cmd0);
 
         if (cmd == null) {
             return new ToolResults();
         }
 
-        final ILaunchManager launchManager = DebugPlugin.getDefault()
-                .getLaunchManager();
+        final ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
         final ILaunchConfigurationType type = launchManager
                 .getLaunchConfigurationType(IExternalToolConstants.ID_PROGRAM_BUILDER_LAUNCH_CONFIGURATION_TYPE);
 
         try {
-            final ILaunchConfigurationWorkingCopy launchConfig = type
-                    .newInstance(null, launchManager
-                            .generateLaunchConfigurationName("erlTool"));
+            final ILaunchConfigurationWorkingCopy launchConfig = type.newInstance(null,
+                    launchManager.generateLaunchConfigurationName("erlTool"));
+            launchConfig.setAttribute(IExternalToolConstants.ATTR_LOCATION, cmd);
+            launchConfig.setAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, args);
             launchConfig
-                    .setAttribute(IExternalToolConstants.ATTR_LOCATION, cmd);
-            launchConfig.setAttribute(
-                    IExternalToolConstants.ATTR_TOOL_ARGUMENTS, args);
-            launchConfig.setAttribute(
-                    IExternalToolConstants.ATTR_WORKING_DIRECTORY, wdir);
-            launchConfig.setAttribute(
-                    IExternalToolConstants.ATTR_LAUNCH_IN_BACKGROUND, true);
+                    .setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, wdir);
+            launchConfig.setAttribute(IExternalToolConstants.ATTR_LAUNCH_IN_BACKGROUND,
+                    true);
             launchConfig.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);
 
-            final ILaunch myLaunch = launchConfig.launch(
-                    ILaunchManager.RUN_MODE, new NullProgressMonitor(), false,
-                    false);
+            final ILaunch myLaunch = launchConfig.launch(ILaunchManager.RUN_MODE,
+                    new NullProgressMonitor(), false, false);
 
             final ToolResults result = new ToolResults();
             final IProcess process = myLaunch.getProcesses()[0];
@@ -91,8 +84,7 @@ public class ToolExecutor {
                         @Override
                         public void streamAppended(final String text,
                                 final IStreamMonitor monitor) {
-                            final List<String> lines = Arrays.asList(text
-                                    .split("\n"));
+                            final List<String> lines = Arrays.asList(text.split("\n"));
                             result.output.addAll(lines);
                             if (progressCallback != null) {
                                 for (final String line : lines) {
@@ -129,8 +121,7 @@ public class ToolExecutor {
         }
     }
 
-    public ToolResults run(final String cmd0, final String args,
-            final String wdir) {
+    public ToolResults run(final String cmd0, final String args, final String wdir) {
         return run(cmd0, args, wdir, null);
     }
 
@@ -159,8 +150,7 @@ public class ToolExecutor {
     }
 
     private String getUnixToolLocation(final String cmd) {
-        final ToolResults tool = run("/bin/sh", "-c \"which " + cmd + "\"",
-                null);
+        final ToolResults tool = run("/bin/sh", "-c \"which " + cmd + "\"", null);
         if (tool.output.isEmpty()) {
             return null;
         }
@@ -168,12 +158,12 @@ public class ToolExecutor {
     }
 
     private String getWindowsToolLocation(final String cmd) {
-        final ToolResults tool = run("c:\\Windows\\System32\\cmd.exe",
-                "/c \"where " + cmd + "\"", null);
+        final ToolResults tool = run("c:\\Windows\\System32\\cmd.exe", "/c \"where "
+                + cmd + "\"", null);
         if (tool.output.isEmpty()) {
             return null;
         }
-        return tool.output.iterator().next();
+        return tool.output.iterator().next().replace('\\', '/');
     }
 
 }

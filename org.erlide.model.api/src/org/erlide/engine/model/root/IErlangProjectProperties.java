@@ -56,4 +56,8 @@ public interface IErlangProjectProperties {
 
     String getName();
 
+    IPath getLocation();
+
+    void setLocation(IPath location);
+
 }

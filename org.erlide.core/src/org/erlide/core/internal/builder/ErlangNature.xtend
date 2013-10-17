@@ -38,7 +38,7 @@ class ErlangNature implements IProjectNature {
         val ICommand[] specs = newArrayOfSize(old.length + 1)
         System::arraycopy(old, 0, specs, 0, old.length)
         val command = description.newCommand
-        command.builderName = BuildersInfo.valueOf(builderName).impl.id
+        command.builderName = BuildersInfo.valueOf(builderName.toUpperCase).impl.id
         specs.set(old.length, command)
         description.buildSpec = specs
         prj.setDescription(description, new NullProgressMonitor())

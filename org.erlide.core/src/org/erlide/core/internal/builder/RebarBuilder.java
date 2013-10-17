@@ -61,7 +61,7 @@ public class RebarBuilder extends ExternalBuilder {
     }
 
     @Override
-    public void createConfig(final IErlangProjectProperties info) {
+    public void createConfig(final IProject project, final IErlangProjectProperties info) {
         // TODO call rebar create
         // what app id?
     }

@@ -1,7 +1,10 @@
 package org.erlide.ui.wizards;
 
 import java.util.List;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -39,13 +42,22 @@ public class ProjectNewCreationPage extends WizardNewProjectCreationPage {
     final Function1<BuildersInfo,String> _function = new Function1<BuildersInfo,String>() {
       public String apply(final BuildersInfo it) {
         String _string = it.toString();
-        return _string;
+        String _lowerCase = _string.toLowerCase();
+        return _lowerCase;
       }
     };
     List<String> _map = ListExtensions.<BuildersInfo, String>map(((List<BuildersInfo>)Conversions.doWrapArray(builders)), _function);
     builder.setItems(((String[])Conversions.unwrapArray(_map, String.class)));
     int _ordinal = BuildersInfo.INTERNAL.ordinal();
     builder.select(_ordinal);
+    final ModifyListener _function_1 = new ModifyListener() {
+      public void modifyText(final ModifyEvent it) {
+        String _text = builder.getText();
+        String _upperCase = _text.toUpperCase();
+        ProjectNewCreationPage.this.info.setBuilderName(_upperCase);
+      }
+    };
+    builder.addModifyListener(_function_1);
   }
   
   public void setVisible(final boolean visible) {
@@ -54,6 +66,8 @@ public class ProjectNewCreationPage extends WizardNewProjectCreationPage {
     if (_not) {
       String _projectName = this.getProjectName();
       this.info.setName(_projectName);
+      IPath _locationPath = this.getLocationPath();
+      this.info.setLocation(_locationPath);
     }
   }
 }

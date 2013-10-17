@@ -27,6 +27,6 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
     public abstract IProject[] build(int kind, Map<String, String> args,
             IProgressMonitor monitor) throws CoreException;
 
-    public abstract void createConfig(IErlangProjectProperties info);
+    public abstract void createConfig(IProject project, IErlangProjectProperties info);
 
 }

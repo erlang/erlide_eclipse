@@ -361,7 +361,7 @@ public class InternalBuilder extends ErlangBuilder {
     }
 
     @Override
-    public void createConfig(final IErlangProjectProperties info) {
+    public void createConfig(final IProject project, final IErlangProjectProperties info) {
         // do nothing
     }
 

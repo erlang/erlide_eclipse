@@ -1,6 +1,7 @@
 package org.erlide.core.internal.builder
 
 import java.io.StringBufferInputStream
+import org.eclipse.core.resources.IProject
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.Path
@@ -10,13 +11,18 @@ import org.erlide.core.builder.MarkerUtils
 import org.erlide.engine.ErlangEngine
 import org.erlide.engine.model.root.IErlangProjectProperties
 import org.erlide.util.ErlLogger
+import org.erlide.util.SystemConfiguration
 
 @SuppressWarnings('deprecation')
 class EmakeBuilder extends ExternalBuilder {
+
     override getOsCommand() {
-        val backend = BackendCore::backendManager.getBuildBackend(project)
+        val backend = BackendCore.backendManager.getBuildBackend(project)
         val path = new Path(backend.runtimeInfo.otpHome).append('bin/erl')
-        path.toOSString
+        if (SystemConfiguration.instance.onWindows)
+            path.toPortableString + ".exe"
+        else
+            path.toPortableString
     }
 
     protected override getCompileTarget() {
@@ -33,24 +39,23 @@ class EmakeBuilder extends ExternalBuilder {
 
     override clean(IProgressMonitor monitor) {
         val project = project
-        MarkerUtils::removeProblemMarkersFor(project)
-        val erlProject = ErlangEngine::instance.model.getErlangProject(project)
+        MarkerUtils.removeProblemMarkersFor(project)
+        val erlProject = ErlangEngine.instance.model.getErlangProject(project)
         val bf = project.getFolder(erlProject.outputLocation)
-        if (bf.exists) {
-            try {
-                for (f : bf.members) {
+        bf => [
+            if (exists) {
+                members.forEach [
                     try {
-                        f.delete(true, null)
+                        delete(true, null)
                     } catch (CoreException e) {
-                        ErlLogger::warn('Could not clean up output directory ' + bf.location)
+                        ErlLogger::warn('Could not clean up output directory ' + location)
                     }
-                }
-            } catch (CoreException e) {
+                ]
             }
-        }
+        ]
     }
 
-    override createConfig(IErlangProjectProperties info) {
+    override createConfig(IProject project, IErlangProjectProperties info) {
         val config = project.getFile('Emakefile')
         try {
             val template = '''

@@ -1,0 +1,10 @@
+diff a/org.erlide.core/src/org/erlide/core/internal/builder/EmakeBuilder.xtend b/org.erlide.core/src/org/erlide/core/internal/builder/EmakeBuilder.xtend	(rejected hunks)
+@@ -61,7 +61,7 @@
+                 �ENDFOR�
+             '''
+             println(">> " + template)
+-            config.create(new StringBufferInputStream(template), true, null)
++            Files.write(template, config, Charsets.ISO_8859_1)
+         } catch (CoreException e) {
+             ErlLogger::error(e)
+         }

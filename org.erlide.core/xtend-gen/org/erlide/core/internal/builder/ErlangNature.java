@@ -52,7 +52,8 @@ public class ErlangNature implements IProjectNature {
     int _length_1 = old.length;
     System.arraycopy(old, 0, specs, 0, _length_1);
     final ICommand command = description.newCommand();
-    BuildersInfo _valueOf = BuildersInfo.valueOf(builderName);
+    String _upperCase = builderName.toUpperCase();
+    BuildersInfo _valueOf = BuildersInfo.valueOf(_upperCase);
     ErlangBuilder _impl = _valueOf.getImpl();
     String _id = _impl.getId();
     command.setBuilderName(_id);

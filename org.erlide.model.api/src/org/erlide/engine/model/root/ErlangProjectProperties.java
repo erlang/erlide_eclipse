@@ -51,6 +51,8 @@ public final class ErlangProjectProperties implements
 
     private String name;
 
+    private IPath location;
+
     public ErlangProjectProperties() {
     }
 
@@ -276,5 +278,15 @@ public final class ErlangProjectProperties implements
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public IPath getLocation() {
+        return location;
+    }
+
+    @Override
+    public void setLocation(final IPath location) {
+        this.location = location;
     }
 }
