@@ -5,6 +5,7 @@ workspaces
 bin/
 ebin/*.app
 *.orig
+*.rej
 hs_err*.log
 safe_erlide.log
 .metadata

@@ -12,6 +12,7 @@ package org.erlide.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
@@ -29,12 +30,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.builder.BuildersInfo;
 import org.erlide.core.internal.builder.ErlangNature;
@@ -49,6 +50,7 @@ import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Creates a new erlide project in the Eclipse workbench.
@@ -56,14 +58,11 @@ import com.google.common.collect.Lists;
  * @author Eric Merritt [cyberlync at yahoo dot com]
  * @author Vlad Dumitrescu
  */
-public class NewErlangProject extends Wizard implements INewWizard {
+public class NewErlangProjectWizard extends Wizard implements INewWizard {
 
-    private static final String MAIN_PAGE = "mainPage";
-    private static final String BUILD_PAGE = "buildPage";
-
-    private WizardNewProjectCreationPage mainPage;
-    private ProjectPreferencesWizardPage buildPage;
     private IErlangProjectProperties info;
+    private Map<BuildersInfo, ProjectPreferencesWizardPage> buildPages;
+    private ErlangNewProjectCreationPage mainPage;
 
     @Override
     public void init(final IWorkbench workbench, final IStructuredSelection selection) {
@@ -75,7 +74,8 @@ public class NewErlangProject extends Wizard implements INewWizard {
         try {
             super.addPages();
             info = new ErlangProjectProperties();
-            mainPage = new ProjectNewCreationPage(MAIN_PAGE, info);
+            buildPages = Maps.newEnumMap(BuildersInfo.class);
+            mainPage = new ErlangNewProjectCreationPage("mainPage", info);
             mainPage.setTitle(ErlideUIPlugin
                     .getResourceString("wizards.titles.newproject"));
             mainPage.setDescription(ErlideUIPlugin
@@ -84,14 +84,19 @@ public class NewErlangProject extends Wizard implements INewWizard {
                     ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
             addPage(mainPage);
 
-            buildPage = new ProjectPreferencesWizardPage(BUILD_PAGE, info);
-            buildPage.setTitle(ErlideUIPlugin
-                    .getResourceString("wizards.titles.buildprefs"));
-            buildPage.setDescription(ErlideUIPlugin
-                    .getResourceString("wizards.descs.buildprefs"));
-            buildPage.setImageDescriptor(ErlideUIPlugin.getDefault().getImageDescriptor(
-                    ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
-            addPage(buildPage);
+            for (final BuildersInfo builder : BuildersInfo.values()) {
+                final ProjectPreferencesWizardPage buildPage = ProjectPreferencesWizardPageFactory
+                        .create(builder, info);
+                buildPages.put(builder, buildPage);
+                buildPage.setTitle(ErlideUIPlugin
+                        .getResourceString("wizards.titles.buildprefs"));
+                buildPage.setDescription(ErlideUIPlugin
+                        .getResourceString("wizards.descs.buildprefs"));
+                buildPage.setImageDescriptor(ErlideUIPlugin.getDefault()
+                        .getImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
+                addPage(buildPage);
+
+            }
         } catch (final Exception x) {
             reportError(x);
         }
@@ -162,11 +167,11 @@ public class NewErlangProject extends Wizard implements INewWizard {
             final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
             monitor.subTask(ErlideUIPlugin
                     .getResourceString("wizards.messages.creatingdirectories"));
-            final IProject project = root.getProject(mainPage.getProjectName());
+            final IProject project = root.getProject(info.getName());
             IProjectDescription description = ResourcesPlugin.getWorkspace()
                     .newProjectDescription(project.getName());
-            if (!Platform.getLocation().equals(mainPage.getLocationPath())) {
-                description.setLocation(mainPage.getLocationPath());
+            if (!Platform.getLocation().equals(info.getLocation())) {
+                description.setLocation(info.getLocation());
             }
             project.create(description, monitor);
             monitor.worked(10);
@@ -262,4 +267,13 @@ public class NewErlangProject extends Wizard implements INewWizard {
         }
     }
 
+    @Override
+    public IWizardPage getNextPage(final IWizardPage page) {
+        if (page == mainPage) {
+            final ProjectPreferencesWizardPage result = buildPages.get(BuildersInfo
+                    .values()[mainPage.builder.getSelectionIndex()]);
+            return result;
+        }
+        return null;
+    }
 }

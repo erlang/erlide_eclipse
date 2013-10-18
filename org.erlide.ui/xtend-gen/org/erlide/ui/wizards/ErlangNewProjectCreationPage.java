@@ -18,10 +18,12 @@ import org.erlide.core.internal.builder.BuildersInfo;
 import org.erlide.engine.model.root.IErlangProjectProperties;
 
 @SuppressWarnings("all")
-public class ProjectNewCreationPage extends WizardNewProjectCreationPage {
+public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
   private final IErlangProjectProperties info;
   
-  public ProjectNewCreationPage(final String name, final IErlangProjectProperties info) {
+  public Combo builder;
+  
+  public ErlangNewProjectCreationPage(final String name, final IErlangProjectProperties info) {
     super(name);
     this.info = info;
   }
@@ -37,7 +39,7 @@ public class ProjectNewCreationPage extends WizardNewProjectCreationPage {
     final Label label = _label;
     label.setText("Build system to be used:");
     Combo _combo = new Combo(composite, SWT.READ_ONLY);
-    final Combo builder = _combo;
+    this.builder = _combo;
     final BuildersInfo[] builders = BuildersInfo.values();
     final Function1<BuildersInfo,String> _function = new Function1<BuildersInfo,String>() {
       public String apply(final BuildersInfo it) {
@@ -47,17 +49,17 @@ public class ProjectNewCreationPage extends WizardNewProjectCreationPage {
       }
     };
     List<String> _map = ListExtensions.<BuildersInfo, String>map(((List<BuildersInfo>)Conversions.doWrapArray(builders)), _function);
-    builder.setItems(((String[])Conversions.unwrapArray(_map, String.class)));
+    this.builder.setItems(((String[])Conversions.unwrapArray(_map, String.class)));
     int _ordinal = BuildersInfo.INTERNAL.ordinal();
-    builder.select(_ordinal);
+    this.builder.select(_ordinal);
     final ModifyListener _function_1 = new ModifyListener() {
       public void modifyText(final ModifyEvent it) {
-        String _text = builder.getText();
+        String _text = ErlangNewProjectCreationPage.this.builder.getText();
         String _upperCase = _text.toUpperCase();
-        ProjectNewCreationPage.this.info.setBuilderName(_upperCase);
+        ErlangNewProjectCreationPage.this.info.setBuilderName(_upperCase);
       }
     };
-    builder.addModifyListener(_function_1);
+    this.builder.addModifyListener(_function_1);
   }
   
   public void setVisible(final boolean visible) {
