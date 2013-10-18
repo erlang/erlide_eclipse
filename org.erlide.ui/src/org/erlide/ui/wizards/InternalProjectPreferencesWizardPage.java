@@ -2,7 +2,6 @@ package org.erlide.ui.wizards;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
@@ -24,10 +22,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.erlide.backend.BackendCore;
 import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.engine.model.root.PathSerializer;
-import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.PreferencesUtils;
 import org.erlide.util.SystemConfiguration;
@@ -38,7 +34,6 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
     Text source;
     Text include;
     Text backendCookie;
-    Combo runtimeVersion;
     Text externalModules;
     Text externalIncludes;
     private Button discoverBtn;
@@ -67,8 +62,8 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         FormData fd_discoverBtn;
         {
             fd_discoverBtn = new FormData();
+            fd_discoverBtn.bottom = new FormAttachment(100, -96);
             fd_discoverBtn.right = new FormAttachment(100, -10);
-            fd_discoverBtn.bottom = new FormAttachment(0, 186);
             discoverBtn.setLayoutData(fd_discoverBtn);
         }
         discoverBtn.setToolTipText("Tries to guess the project's configuration \n"
@@ -171,6 +166,7 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         lblTestSources.setText(resourceString4 + ":");
 
         test = new Text(composite, SWT.BORDER);
+        fd_discoverBtn.top = new FormAttachment(test, 26);
         fd_lblTestSources.right = new FormAttachment(test, -10);
         test.setEnabled(false);
         {
@@ -182,33 +178,6 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         }
         test.setEditable(false);
         test.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
-
-        final Label nodeNameLabel = new Label(composite, SWT.NONE);
-        fd_discoverBtn.top = new FormAttachment(nodeNameLabel, -6, SWT.TOP);
-        nodeNameLabel.setAlignment(SWT.RIGHT);
-        FormData fd_nodeNameLabel;
-        {
-            fd_nodeNameLabel = new FormData();
-            fd_nodeNameLabel.top = new FormAttachment(0, 166);
-            fd_nodeNameLabel.left = new FormAttachment(0, 5);
-            nodeNameLabel.setLayoutData(fd_nodeNameLabel);
-        }
-        nodeNameLabel.setText("Minimum Erlang version:");
-
-        runtimeVersion = new Combo(composite, SWT.READ_ONLY);
-        fd_nodeNameLabel.right = new FormAttachment(runtimeVersion, -6);
-        {
-            final FormData fd_runtimeVersion = new FormData();
-            fd_runtimeVersion.top = new FormAttachment(0, 158);
-            fd_runtimeVersion.bottom = new FormAttachment(nodeNameLabel, 0, SWT.BOTTOM);
-            fd_runtimeVersion.left = new FormAttachment(0, 181);
-            fd_runtimeVersion.right = new FormAttachment(100, -349);
-            runtimeVersion.setLayoutData(fd_runtimeVersion);
-        }
-        final String[] runtimeVersions = getAllRuntimeVersions();
-        runtimeVersion.setItems(runtimeVersions);
-        runtimeVersion.setText(runtimeVersions[runtimeVersions.length - 1]);
-        runtimeVersion.addListener(SWT.Modify, nameModifyListener);
 
         if (SystemConfiguration.getInstance().isTest()) {
             createExternalModuleEditor(composite);
@@ -234,12 +203,6 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
             // TODO autodiscover project settings
 
         }
-    }
-
-    private String[] getAllRuntimeVersions() {
-        final Collection<String> versions = BackendCore.getRuntimeInfoCatalog()
-                .getAllRuntimesVersions();
-        return versions.toArray(new String[versions.size()]);
     }
 
     protected void discoverPaths() {
@@ -323,8 +286,6 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
             info.setOutputDir(new Path(output.getText()));
             info.setSourceDirs(PathSerializer.unpackList(source.getText()));
             info.setIncludeDirs(PathSerializer.unpackList(include.getText()));
-            final RuntimeVersion rv = new RuntimeVersion(runtimeVersion.getText());
-            info.setRuntimeVersion(rv);
             if (externalModules != null) {
                 info.setExternalModulesFile(externalModules.getText());
             }

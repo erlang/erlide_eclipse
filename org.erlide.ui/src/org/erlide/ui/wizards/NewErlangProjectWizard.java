@@ -271,7 +271,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     public IWizardPage getNextPage(final IWizardPage page) {
         if (page == mainPage) {
             final ProjectPreferencesWizardPage result = buildPages.get(BuildersInfo
-                    .values()[mainPage.builder.getSelectionIndex()]);
+                    .valueOf(info.getBuilderName()));
             return result;
         }
         return null;

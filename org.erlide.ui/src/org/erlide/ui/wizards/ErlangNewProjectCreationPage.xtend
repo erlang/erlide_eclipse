@@ -8,10 +8,11 @@ import org.eclipse.swt.widgets.Label
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage
 import org.erlide.core.internal.builder.BuildersInfo
 import org.erlide.engine.model.root.IErlangProjectProperties
+import org.erlide.engine.model.root.ProjectPreferencesConstants
+import org.erlide.runtime.runtimeinfo.RuntimeVersion
 
 class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
     val IErlangProjectProperties info
-    public var Combo builder
 
     new(String name, IErlangProjectProperties info) {
         super(name);
@@ -27,13 +28,28 @@ class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
         val label = new Label(composite, SWT::NONE)
         label.text = 'Build system to be used:'
 
-        builder = new Combo(composite, SWT::READ_ONLY)
+        val builder = new Combo(composite, SWT::READ_ONLY)
         val builders = BuildersInfo::values
         builder.items = builders.map[toString.toLowerCase]
         builder.select(BuildersInfo.INTERNAL.ordinal)
         builder.addModifyListener [
             info.builderName = builder.text.toUpperCase
         ]
+        info.builderName = builder.text.toUpperCase
+
+        val label2 = new Label(composite, SWT::NONE)
+        label2.text = 'Minimum Erlang version:'
+
+        val version = new Combo(composite, SWT::READ_ONLY)
+
+        val runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS
+        version.setItems(runtimeVersions.map[toString])
+        version.setText(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
+        version.addModifyListener [
+            info.runtimeVersion = new RuntimeVersion(version.text)
+        ]
+        info.runtimeVersion = new RuntimeVersion(version.text)
+
     }
 
     override setVisible(boolean visible) {
