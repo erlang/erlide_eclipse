@@ -14,6 +14,8 @@ import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
+import org.eclipse.xtext.xbase.lib.ObjectExtensions;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.core.internal.builder.BuildersInfo;
 import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
@@ -41,53 +43,58 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
     Combo _combo = new Combo(composite, SWT.READ_ONLY);
     final Combo builder = _combo;
     final BuildersInfo[] builders = BuildersInfo.values();
-    final Function1<BuildersInfo,String> _function = new Function1<BuildersInfo,String>() {
-      public String apply(final BuildersInfo it) {
-        String _string = it.toString();
-        String _lowerCase = _string.toLowerCase();
-        return _lowerCase;
-      }
-    };
-    List<String> _map = ListExtensions.<BuildersInfo, String>map(((List<BuildersInfo>)Conversions.doWrapArray(builders)), _function);
-    builder.setItems(((String[])Conversions.unwrapArray(_map, String.class)));
-    int _ordinal = BuildersInfo.INTERNAL.ordinal();
-    builder.select(_ordinal);
-    final ModifyListener _function_1 = new ModifyListener() {
-      public void modifyText(final ModifyEvent it) {
-        String _text = builder.getText();
+    final Procedure1<Combo> _function = new Procedure1<Combo>() {
+      public void apply(final Combo it) {
+        final Function1<BuildersInfo,String> _function = new Function1<BuildersInfo,String>() {
+          public String apply(final BuildersInfo it) {
+            String _string = it.toString();
+            String _lowerCase = _string.toLowerCase();
+            return _lowerCase;
+          }
+        };
+        List<String> _map = ListExtensions.<BuildersInfo, String>map(((List<BuildersInfo>)Conversions.doWrapArray(builders)), _function);
+        it.setItems(((String[])Conversions.unwrapArray(_map, String.class)));
+        int _ordinal = BuildersInfo.INTERNAL.ordinal();
+        it.select(_ordinal);
+        final ModifyListener _function_1 = new ModifyListener() {
+          public void modifyText(final ModifyEvent it) {
+            String _text = builder.getText();
+            String _upperCase = _text.toUpperCase();
+            ErlangNewProjectCreationPage.this.info.setBuilderName(_upperCase);
+          }
+        };
+        it.addModifyListener(_function_1);
+        String _text = it.getText();
         String _upperCase = _text.toUpperCase();
         ErlangNewProjectCreationPage.this.info.setBuilderName(_upperCase);
       }
     };
-    builder.addModifyListener(_function_1);
-    String _text = builder.getText();
-    String _upperCase = _text.toUpperCase();
-    this.info.setBuilderName(_upperCase);
+    ObjectExtensions.<Combo>operator_doubleArrow(builder, _function);
     Label _label_1 = new Label(composite, SWT.NONE);
     final Label label2 = _label_1;
     label2.setText("Minimum Erlang version:");
     Combo _combo_1 = new Combo(composite, SWT.READ_ONLY);
     final Combo version = _combo_1;
     final RuntimeVersion[] runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS;
-    final Function1<RuntimeVersion,String> _function_2 = new Function1<RuntimeVersion,String>() {
+    final Function1<RuntimeVersion,String> _function_1 = new Function1<RuntimeVersion,String>() {
       public String apply(final RuntimeVersion it) {
         String _string = it.toString();
         return _string;
       }
     };
-    List<String> _map_1 = ListExtensions.<RuntimeVersion, String>map(((List<RuntimeVersion>)Conversions.doWrapArray(runtimeVersions)), _function_2);
-    version.setItems(((String[])Conversions.unwrapArray(_map_1, String.class)));
+    List<String> _map = ListExtensions.<RuntimeVersion, String>map(((List<RuntimeVersion>)Conversions.doWrapArray(runtimeVersions)), _function_1);
+    version.setItems(((String[])Conversions.unwrapArray(_map, String.class)));
     version.setText(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
-    final ModifyListener _function_3 = new ModifyListener() {
+    final ModifyListener _function_2 = new ModifyListener() {
       public void modifyText(final ModifyEvent it) {
         String _text = version.getText();
         RuntimeVersion _runtimeVersion = new RuntimeVersion(_text);
         ErlangNewProjectCreationPage.this.info.setRuntimeVersion(_runtimeVersion);
       }
     };
-    version.addModifyListener(_function_3);
-    String _text_1 = version.getText();
-    RuntimeVersion _runtimeVersion = new RuntimeVersion(_text_1);
+    version.addModifyListener(_function_2);
+    String _text = version.getText();
+    RuntimeVersion _runtimeVersion = new RuntimeVersion(_text);
     this.info.setRuntimeVersion(_runtimeVersion);
   }
   

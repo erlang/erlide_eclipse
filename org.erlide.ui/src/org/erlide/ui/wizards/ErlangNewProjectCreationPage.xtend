@@ -30,12 +30,14 @@ class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
 
         val builder = new Combo(composite, SWT::READ_ONLY)
         val builders = BuildersInfo::values
-        builder.items = builders.map[toString.toLowerCase]
-        builder.select(BuildersInfo.INTERNAL.ordinal)
-        builder.addModifyListener [
-            info.builderName = builder.text.toUpperCase
+        builder => [
+            items = builders.map[toString.toLowerCase]
+            select(BuildersInfo.INTERNAL.ordinal)
+            addModifyListener [
+                info.builderName = builder.text.toUpperCase
+            ]
+            info.builderName = text.toUpperCase
         ]
-        info.builderName = builder.text.toUpperCase
 
         val label2 = new Label(composite, SWT::NONE)
         label2.text = 'Minimum Erlang version:'

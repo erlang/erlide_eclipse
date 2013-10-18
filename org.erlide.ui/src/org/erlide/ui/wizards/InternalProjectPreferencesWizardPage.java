@@ -8,6 +8,8 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
@@ -23,21 +25,14 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.engine.model.root.IErlangProjectProperties;
-import org.erlide.engine.model.root.PathSerializer;
-import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.PreferencesUtils;
 import org.erlide.util.SystemConfiguration;
 
 public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWizardPage {
 
-    Text output;
-    Text source;
-    Text include;
-    Text backendCookie;
     Text externalModules;
     Text externalIncludes;
     private Button discoverBtn;
-    private Text test;
     private Button externalModulesBrowse;
     private Button externalIncludesBrowse;
 
@@ -52,9 +47,8 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
      */
     @Override
     public void createControl(final Composite parent) {
-        // create the composite to hold the widgets
-        final Composite composite = new Composite(parent, SWT.NONE);
-        setControl(composite);
+        super.createControl(parent);
+        final Composite composite = (Composite) getControl();
 
         composite.setLayout(new FormLayout());
 
@@ -77,107 +71,7 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
             }
         });
 
-        final Label outLabel = new Label(composite, SWT.NONE);
-        outLabel.setAlignment(SWT.RIGHT);
-        FormData fd_outLabel;
-        {
-            fd_outLabel = new FormData();
-            fd_outLabel.top = new FormAttachment(0, 28);
-            fd_outLabel.left = new FormAttachment(0, 5);
-            outLabel.setLayoutData(fd_outLabel);
-        }
-        final String resourceString = ErlideUIPlugin
-                .getResourceString("wizards.labels.buildoutput");
-        outLabel.setText(resourceString + ":");
-        output = new Text(composite, SWT.BORDER);
-        fd_outLabel.right = new FormAttachment(output, -10);
-        {
-            final FormData fd_output = new FormData();
-            fd_output.top = new FormAttachment(0, 23);
-            fd_output.right = new FormAttachment(0, 592);
-            fd_output.left = new FormAttachment(0, 141);
-            output.setLayoutData(fd_output);
-        }
-        output.setText(info.getOutputDir().toString());
-        output.addListener(SWT.Modify, nameModifyListener);
-
-        final Label l1 = new Label(composite, SWT.NONE);
-        l1.setAlignment(SWT.RIGHT);
-        FormData fd_l1;
-        {
-            fd_l1 = new FormData();
-            fd_l1.top = new FormAttachment(0, 58);
-            fd_l1.left = new FormAttachment(0, 5);
-            l1.setLayoutData(fd_l1);
-        }
-        final String resourceString2 = ErlideUIPlugin
-                .getResourceString("wizards.labels.source");
-        l1.setText(resourceString2 + ":");
-        source = new Text(composite, SWT.BORDER);
-        fd_l1.right = new FormAttachment(source, -10);
-        {
-            final FormData fd_source = new FormData();
-            fd_source.top = new FormAttachment(0, 53);
-            fd_source.right = new FormAttachment(0, 592);
-            fd_source.left = new FormAttachment(0, 141);
-            source.setLayoutData(fd_source);
-        }
-        source.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
-        source.setText(PathSerializer.packList(info.getSourceDirs()));
-        source.addListener(SWT.Modify, nameModifyListener);
-
-        final Label includesLabel = new Label(composite, SWT.NONE);
-        includesLabel.setAlignment(SWT.RIGHT);
-        FormData fd_includesLabel;
-        {
-            fd_includesLabel = new FormData();
-            fd_includesLabel.top = new FormAttachment(0, 88);
-            fd_includesLabel.left = new FormAttachment(0, 5);
-            includesLabel.setLayoutData(fd_includesLabel);
-        }
-        final String resourceString3 = ErlideUIPlugin
-                .getResourceString("wizards.labels.include");
-        includesLabel.setText(resourceString3 + ":");
-        include = new Text(composite, SWT.BORDER);
-        fd_includesLabel.right = new FormAttachment(include, -10);
-        {
-            final FormData fd_include = new FormData();
-            fd_include.top = new FormAttachment(0, 83);
-            fd_include.right = new FormAttachment(0, 592);
-            fd_include.left = new FormAttachment(0, 141);
-            include.setLayoutData(fd_include);
-        }
-        include.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
-        include.setText(PathSerializer.packList(info.getIncludeDirs()));
-        include.addListener(SWT.Modify, nameModifyListener);
-
-        final Label lblTestSources = new Label(composite, SWT.NONE);
-        lblTestSources.setEnabled(false);
-        lblTestSources.setAlignment(SWT.RIGHT);
-        FormData fd_lblTestSources;
-        {
-            fd_lblTestSources = new FormData();
-            fd_lblTestSources.top = new FormAttachment(0, 118);
-            fd_lblTestSources.left = new FormAttachment(0, 5);
-            lblTestSources.setLayoutData(fd_lblTestSources);
-        }
-        final String resourceString4 = ErlideUIPlugin
-                .getResourceString("wizards.labels.testsources");
-        lblTestSources.setText(resourceString4 + ":");
-
-        test = new Text(composite, SWT.BORDER);
-        fd_discoverBtn.top = new FormAttachment(test, 26);
-        fd_lblTestSources.right = new FormAttachment(test, -10);
-        test.setEnabled(false);
-        {
-            final FormData fd_test = new FormData();
-            fd_test.top = new FormAttachment(0, 113);
-            fd_test.right = new FormAttachment(0, 592);
-            fd_test.left = new FormAttachment(0, 141);
-            test.setLayoutData(fd_test);
-        }
-        test.setEditable(false);
-        test.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
+        // fd_discoverBtn.top = new FormAttachment(test, 26);
 
         if (SystemConfiguration.getInstance().isTest()) {
             createExternalModuleEditor(composite);
@@ -186,12 +80,10 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
 
     }
 
+    @Override
     protected void enableInputWidgets(final boolean b) {
         discoverBtn.setEnabled(b);
-        output.setEnabled(b);
-        source.setEnabled(b);
-        include.setEnabled(b);
-        test.setEnabled(b);
+        super.enableInputWidgets(b);
     }
 
     protected void fillDirWidgetsFromConfig(final String builder) {
@@ -259,44 +151,6 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         return list;
     }
 
-    protected boolean testPageComplete() {
-        if (null != output
-                && (output.getText() == null || output.getText().trim().length() == 0)) {
-            setErrorMessage(ErlideUIPlugin
-                    .getResourceString("wizards.errors.outputrequired"));
-            return false;
-        }
-
-        if (null != source
-                && (source.getText() == null || source.getText().trim().length() == 0)) {
-            setErrorMessage(ErlideUIPlugin
-                    .getResourceString("wizards.errors.sourcerequired"));
-            return false;
-        }
-
-        setErrorMessage(null);
-        setMessage(null);
-        return true;
-    }
-
-    private final Listener nameModifyListener = new Listener() {
-
-        @Override
-        public void handleEvent(final Event e) {
-            info.setOutputDir(new Path(output.getText()));
-            info.setSourceDirs(PathSerializer.unpackList(source.getText()));
-            info.setIncludeDirs(PathSerializer.unpackList(include.getText()));
-            if (externalModules != null) {
-                info.setExternalModulesFile(externalModules.getText());
-            }
-            if (externalIncludes != null) {
-                info.setExternalIncludesFile(externalIncludes.getText());
-            }
-
-            setPageComplete(testPageComplete());
-        }
-    };
-
     private void createExternalModuleEditor(final Composite parent) {
         final Composite composite = parent;
 
@@ -320,7 +174,12 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         }
         externalModules.setToolTipText("enter a list of folders");
         externalModules.setText(info.getExternalModulesFile());
-        externalModules.addListener(SWT.Modify, nameModifyListener);
+        externalModules.addModifyListener(new ModifyListener() {
+            @Override
+            public void modifyText(final ModifyEvent e) {
+                info.setExternalModulesFile(externalModules.getText());
+            }
+        });
         externalModulesBrowse = new Button(composite, SWT.NONE);
         {
             final FormData fd_externalModulesBrowse = new FormData();
@@ -361,7 +220,12 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         }
         externalIncludes.setToolTipText("enter a list of folders");
         externalIncludes.setText(info.getExternalIncludesFile());
-        externalIncludes.addListener(SWT.Modify, nameModifyListener);
+        externalIncludes.addModifyListener(new ModifyListener() {
+            @Override
+            public void modifyText(final ModifyEvent e) {
+                info.setExternalIncludesFile(externalIncludes.getText());
+            }
+        });
         externalIncludesBrowse = new Button(composite, SWT.NONE);
         {
             final FormData fd_externalIncludesBrowse = new FormData();
