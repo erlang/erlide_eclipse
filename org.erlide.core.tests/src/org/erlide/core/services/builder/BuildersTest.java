@@ -51,22 +51,23 @@ public class BuildersTest {
     public static void finish() throws CoreException {
         final IErlProject p2 = ErlideTestUtils.getExistingProject("p2");
         final IProject prj = p2.getResource().getProject();
-        ErlangNature.setErlangProjectBuilder(prj, "internal");
+        ErlangNature.setErlangProjectBuilder(prj,
+                BuildersInfo.INTERNAL.toString());
     }
 
     @Test
     public void internalBuilderShouldWork() throws CoreException {
-        testBuilder("internal");
+        testBuilder(BuildersInfo.INTERNAL.toString());
     }
 
     @Test
     public void makeBuilderShouldWork() throws CoreException {
-        testBuilder("make");
+        testBuilder(BuildersInfo.MAKE.toString());
     }
 
     @Test
     public void emakeBuilderShouldWork() throws CoreException {
-        testBuilder("emake");
+        testBuilder(BuildersInfo.EMAKE.toString());
     }
 
     @Test
@@ -86,7 +87,7 @@ public class BuildersTest {
 
     @Test(expected = AssertionError.class)
     public void rebarBuilderShouldNotWorkWithoutAppFile() throws CoreException {
-        testBuilder("rebar");
+        testBuilder(BuildersInfo.REBAR.toString());
     }
 
     private void testBuilder(final String builder) throws CoreException {
