@@ -28,7 +28,7 @@
          point="org.eclipse.core.resources.builders">
       <builder >
          <run
-               class="org.erlide.core.internal.builder.RebarBuilder">
+               class="org.erlide.core.internal.builder.external.RebarBuilder">
          </run>
       </builder>
    </extension>
@@ -38,7 +38,7 @@
          point="org.eclipse.core.resources.builders">
       <builder >
          <run
-               class="org.erlide.core.internal.builder.MakeBuilder">
+               class="org.erlide.core.internal.builder.external.MakeBuilder">
          </run>
       </builder>
    </extension>
@@ -48,7 +48,7 @@
          point="org.eclipse.core.resources.builders">
       <builder >
          <run
-               class="org.erlide.core.internal.builder.EmakeBuilder">
+               class="org.erlide.core.internal.builder.external.EmakeBuilder">
          </run>
       </builder>
    </extension>

@@ -45,7 +45,6 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.util.ErlLogger;
 
@@ -56,7 +55,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class InternalBuilder extends ErlangBuilder {
+public class InternalBuilder extends IncrementalProjectBuilder implements ErlangBuilder {
 
     BuildNotifier notifier;
     private final BuilderHelper helper = new BuilderHelper();
@@ -361,13 +360,13 @@ public class InternalBuilder extends ErlangBuilder {
     }
 
     @Override
-    public void createConfig(final IProject project, final IErlangProjectProperties info) {
-        // do nothing
+    public String getId() {
+        return ErlangCore.PLUGIN_ID + ".erlbuilder";
     }
 
     @Override
-    public String getId() {
-        return ErlangCore.PLUGIN_ID + ".erlbuilder";
+    public BuilderConfigurator getConfigurator() {
+        return new InternalConfigurator();
     }
 
 }

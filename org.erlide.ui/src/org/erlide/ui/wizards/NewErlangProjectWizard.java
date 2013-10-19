@@ -37,7 +37,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.internal.builder.BuildersInfo;
+import org.erlide.core.internal.builder.BuilderInfo;
 import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.ErlangProjectProperties;
@@ -61,7 +61,7 @@ import com.google.common.collect.Maps;
 public class NewErlangProjectWizard extends Wizard implements INewWizard {
 
     private IErlangProjectProperties info;
-    private Map<BuildersInfo, ProjectPreferencesWizardPage> buildPages;
+    private Map<BuilderInfo, ProjectPreferencesWizardPage> buildPages;
     private ErlangNewProjectCreationPage mainPage;
 
     @Override
@@ -74,7 +74,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         try {
             super.addPages();
             info = new ErlangProjectProperties();
-            buildPages = Maps.newEnumMap(BuildersInfo.class);
+            buildPages = Maps.newEnumMap(BuilderInfo.class);
             mainPage = new ErlangNewProjectCreationPage("mainPage", info);
             mainPage.setTitle(ErlideUIPlugin
                     .getResourceString("wizards.titles.newproject"));
@@ -84,7 +84,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
                     ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
             addPage(mainPage);
 
-            for (final BuildersInfo builder : BuildersInfo.values()) {
+            for (final BuilderInfo builder : BuilderInfo.values()) {
                 final ProjectPreferencesWizardPage buildPage = ProjectPreferencesWizardPageFactory
                         .create(builder, info);
                 buildPages.put(builder, buildPage);
@@ -208,7 +208,8 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     }
 
     private void createBuilderConfig(final IProject project, final String builderName) {
-        BuildersInfo.valueOf(builderName).getImpl().createConfig(project, info);
+        BuilderInfo.valueOf(builderName).getImpl().getConfigurator()
+                .createConfig(project, info);
     }
 
     /**
@@ -270,7 +271,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     @Override
     public IWizardPage getNextPage(final IWizardPage page) {
         if (page == mainPage) {
-            final ProjectPreferencesWizardPage result = buildPages.get(BuildersInfo
+            final ProjectPreferencesWizardPage result = buildPages.get(BuilderInfo
                     .valueOf(info.getBuilderName()));
             return result;
         }

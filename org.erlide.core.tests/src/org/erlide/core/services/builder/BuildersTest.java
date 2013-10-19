@@ -15,7 +15,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.core.internal.builder.BuildersInfo;
+import org.erlide.core.internal.builder.BuilderInfo;
 import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
@@ -52,22 +52,22 @@ public class BuildersTest {
         final IErlProject p2 = ErlideTestUtils.getExistingProject("p2");
         final IProject prj = p2.getResource().getProject();
         ErlangNature.setErlangProjectBuilder(prj,
-                BuildersInfo.INTERNAL.toString());
+                BuilderInfo.INTERNAL.toString());
     }
 
     @Test
     public void internalBuilderShouldWork() throws CoreException {
-        testBuilder(BuildersInfo.INTERNAL.toString());
+        testBuilder(BuilderInfo.INTERNAL.toString());
     }
 
     @Test
     public void makeBuilderShouldWork() throws CoreException {
-        testBuilder(BuildersInfo.MAKE.toString());
+        testBuilder(BuilderInfo.MAKE.toString());
     }
 
     @Test
     public void emakeBuilderShouldWork() throws CoreException {
-        testBuilder(BuildersInfo.EMAKE.toString());
+        testBuilder(BuilderInfo.EMAKE.toString());
     }
 
     @Test
@@ -87,12 +87,12 @@ public class BuildersTest {
 
     @Test(expected = AssertionError.class)
     public void rebarBuilderShouldNotWorkWithoutAppFile() throws CoreException {
-        testBuilder(BuildersInfo.REBAR.toString());
+        testBuilder(BuilderInfo.REBAR.toString());
     }
 
     private void testBuilder(final String builder) throws CoreException {
         ErlangNature.setErlangProjectBuilder(prj, builder);
-        final String builderId = BuildersInfo.valueOf(builder).getImpl()
+        final String builderId = BuilderInfo.valueOf(builder).getImpl()
                 .getId();
         final String targetBeamPath = "ebin/mod.beam";
 

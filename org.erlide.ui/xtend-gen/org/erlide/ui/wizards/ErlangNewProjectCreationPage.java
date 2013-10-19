@@ -19,7 +19,7 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-import org.erlide.core.internal.builder.BuildersInfo;
+import org.erlide.core.internal.builder.BuilderInfo;
 import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -73,16 +73,16 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
     label.setText("Build system to be used:");
     BuilderSelectionListener _builderSelectionListener = new BuilderSelectionListener(this.info);
     final BuilderSelectionListener listener = _builderSelectionListener;
-    final BuildersInfo[] builders = BuildersInfo.values();
-    final Procedure1<BuildersInfo> _function_2 = new Procedure1<BuildersInfo>() {
-      public void apply(final BuildersInfo builder) {
+    final BuilderInfo[] builders = BuilderInfo.values();
+    final Procedure1<BuilderInfo> _function_2 = new Procedure1<BuilderInfo>() {
+      public void apply(final BuilderInfo builder) {
         Button _button = new Button(composite, SWT.RADIO);
         Button check = _button;
         String _string = builder.toString();
         String _lowerCase = _string.toLowerCase();
         check.setText(_lowerCase);
         check.setData(builder);
-        boolean _tripleEquals = (builder == BuildersInfo.INTERNAL);
+        boolean _tripleEquals = (builder == BuilderInfo.INTERNAL);
         if (_tripleEquals) {
           check.setSelection(true);
         }
@@ -94,8 +94,8 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
         new Label(composite, SWT.NONE);
       }
     };
-    IterableExtensions.<BuildersInfo>forEach(((Iterable<BuildersInfo>)Conversions.doWrapArray(builders)), _function_2);
-    String _string = BuildersInfo.INTERNAL.toString();
+    IterableExtensions.<BuilderInfo>forEach(((Iterable<BuilderInfo>)Conversions.doWrapArray(builders)), _function_2);
+    String _string = BuilderInfo.INTERNAL.toString();
     String _upperCase = _string.toUpperCase();
     this.info.setBuilderName(_upperCase);
   }
@@ -111,11 +111,11 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
     }
   }
   
-  public String getDescription(final BuildersInfo builder) {
+  public String getDescription(final BuilderInfo builder) {
     String _switchResult = null;
     boolean _matched = false;
     if (!_matched) {
-      if (Objects.equal(builder,BuildersInfo.INTERNAL)) {
+      if (Objects.equal(builder,BuilderInfo.INTERNAL)) {
         _matched=true;
         StringConcatenation _builder = new StringConcatenation();
         _builder.append(": let erlide do the compiling.");
@@ -123,7 +123,7 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
       }
     }
     if (!_matched) {
-      if (Objects.equal(builder,BuildersInfo.MAKE)) {
+      if (Objects.equal(builder,BuilderInfo.MAKE)) {
         _matched=true;
         StringConcatenation _builder_1 = new StringConcatenation();
         _builder_1.append(": choose this if there is a Makefile (even if it calls rebar or emake).");
@@ -131,7 +131,7 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
       }
     }
     if (!_matched) {
-      if (Objects.equal(builder,BuildersInfo.EMAKE)) {
+      if (Objects.equal(builder,BuilderInfo.EMAKE)) {
         _matched=true;
         StringConcatenation _builder_2 = new StringConcatenation();
         _builder_2.append(": straight Emake.");
@@ -139,7 +139,7 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
       }
     }
     if (!_matched) {
-      if (Objects.equal(builder,BuildersInfo.REBAR)) {
+      if (Objects.equal(builder,BuilderInfo.REBAR)) {
         _matched=true;
         StringConcatenation _builder_3 = new StringConcatenation();
         _builder_3.append(": straight rebar.");

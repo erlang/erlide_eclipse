@@ -9,10 +9,10 @@ import org.eclipse.swt.widgets.Combo
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Label
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage
-import org.erlide.core.internal.builder.BuildersInfo
 import org.erlide.engine.model.root.IErlangProjectProperties
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
+import org.erlide.core.internal.builder.BuilderInfo
 
 class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
     val IErlangProjectProperties info
@@ -46,12 +46,12 @@ class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
         label.text = 'Build system to be used:'
 
         val listener = new BuilderSelectionListener(info)
-        val builders = BuildersInfo::values
+        val builders = BuilderInfo::values
         builders.forEach [ builder |
             var check = new Button(composite, SWT.RADIO)
             check.text = builder.toString.toLowerCase
             check.data = builder
-            if (builder === BuildersInfo.INTERNAL) {
+            if (builder === BuilderInfo.INTERNAL) {
                 check.selection = true
             }
             check.addSelectionListener(listener)
@@ -59,7 +59,7 @@ class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
             description.text = getDescription(builder)
             new Label(composite, SWT::NONE)
         ]
-        info.builderName = BuildersInfo.INTERNAL.toString.toUpperCase
+        info.builderName = BuilderInfo.INTERNAL.toString.toUpperCase
 
     }
 
@@ -71,15 +71,15 @@ class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
         }
     }
 
-    def String getDescription(BuildersInfo builder){
+    def String getDescription(BuilderInfo builder){
         switch(builder){
-            case BuildersInfo.INTERNAL:
+            case BuilderInfo.INTERNAL:
                 ''': let erlide do the compiling.'''
-            case BuildersInfo.MAKE:
+            case BuilderInfo.MAKE:
                 ''': choose this if there is a Makefile (even if it calls rebar or emake).'''
-            case BuildersInfo.EMAKE:
+            case BuilderInfo.EMAKE:
                 ''': straight Emake.'''
-            case BuildersInfo.REBAR:
+            case BuilderInfo.REBAR:
                 ''': straight rebar.'''
         }
     }
@@ -98,6 +98,6 @@ class BuilderSelectionListener implements SelectionListener {
     }
 
     override widgetSelected(SelectionEvent e) {
-        info.builderName = (e.widget.data as BuildersInfo).toString
+        info.builderName = (e.widget.data as BuilderInfo).toString
     }
 }

@@ -1,15 +1,13 @@
-package org.erlide.core.internal.builder
+package org.erlide.core.internal.builder.external
 
-import java.io.StringBufferInputStream
-import org.eclipse.core.resources.IProject
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.Path
 import org.erlide.backend.BackendCore
 import org.erlide.core.ErlangCore
 import org.erlide.core.builder.MarkerUtils
+import org.erlide.core.internal.builder.ExternalBuilder
 import org.erlide.engine.ErlangEngine
-import org.erlide.engine.model.root.IErlangProjectProperties
 import org.erlide.util.ErlLogger
 import org.erlide.util.SystemConfiguration
 
@@ -33,10 +31,6 @@ class EmakeBuilder extends ExternalBuilder {
         null
     }
 
-    override getConfigParser() {
-        null
-    }
-
     override clean(IProgressMonitor monitor) {
         val project = project
         MarkerUtils.removeProblemMarkersFor(project)
@@ -55,22 +49,12 @@ class EmakeBuilder extends ExternalBuilder {
         ]
     }
 
-    override createConfig(IProject project, IErlangProjectProperties info) {
-        val config = project.getFile('Emakefile')
-        try {
-            val template = '''
-                «FOR src : info.sourceDirs»
-                    {'«src.toPortableString»/*',[«FOR inc : info.includeDirs»{i, "«inc.toPortableString»"},«ENDFOR»]}.
-                «ENDFOR»
-            '''
-            println(">> " + template)
-            config.create(new StringBufferInputStream(template), true, null)
-        } catch (CoreException e) {
-            ErlLogger::error(e)
-        }
-    }
-
     override getId() {
         ErlangCore::PLUGIN_ID + '.emake.builder'
     }
+    
+    override getConfigurator() {
+        new EmakeConfigurator
+    }
+    
 }

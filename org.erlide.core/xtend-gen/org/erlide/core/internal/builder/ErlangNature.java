@@ -14,7 +14,7 @@ import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
-import org.erlide.core.internal.builder.BuildersInfo;
+import org.erlide.core.internal.builder.BuilderInfo;
 import org.erlide.core.internal.builder.ErlangBuilder;
 
 /**
@@ -53,7 +53,7 @@ public class ErlangNature implements IProjectNature {
     System.arraycopy(old, 0, specs, 0, _length_1);
     final ICommand command = description.newCommand();
     String _upperCase = builderName.toUpperCase();
-    BuildersInfo _valueOf = BuildersInfo.valueOf(_upperCase);
+    BuilderInfo _valueOf = BuilderInfo.valueOf(_upperCase);
     ErlangBuilder _impl = _valueOf.getImpl();
     String _id = _impl.getId();
     command.setBuilderName(_id);
@@ -67,15 +67,15 @@ public class ErlangNature implements IProjectNature {
   public static void unsetAllErlangBuilders(final IProject prj) throws CoreException {
     final IProjectDescription description = prj.getDescription();
     final ICommand[] old = description.getBuildSpec();
-    BuildersInfo[] _values = BuildersInfo.values();
-    final Function1<BuildersInfo,String> _function = new Function1<BuildersInfo,String>() {
-      public String apply(final BuildersInfo it) {
+    BuilderInfo[] _values = BuilderInfo.values();
+    final Function1<BuilderInfo,String> _function = new Function1<BuilderInfo,String>() {
+      public String apply(final BuilderInfo it) {
         ErlangBuilder _impl = it.getImpl();
         String _id = _impl.getId();
         return _id;
       }
     };
-    final List<String> allIds = ListExtensions.<BuildersInfo, String>map(((List<BuildersInfo>)Conversions.doWrapArray(_values)), _function);
+    final List<String> allIds = ListExtensions.<BuilderInfo, String>map(((List<BuilderInfo>)Conversions.doWrapArray(_values)), _function);
     final ArrayList<ICommand> specs = CollectionLiterals.<ICommand>newArrayList();
     for (final ICommand cmd : old) {
       {
