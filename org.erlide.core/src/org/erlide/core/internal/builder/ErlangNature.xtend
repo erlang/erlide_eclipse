@@ -38,7 +38,7 @@ class ErlangNature implements IProjectNature {
         val ICommand[] specs = newArrayOfSize(old.length + 1)
         System::arraycopy(old, 0, specs, 0, old.length)
         val command = description.newCommand
-        command.builderName = BuilderInfo.valueOf(builderName.toUpperCase).getImpl.id
+        command.builderName = BuilderInfo.valueOf(builderName.toUpperCase).getBuilder.id
         specs.set(old.length, command)
         description.buildSpec = specs
         prj.setDescription(description, new NullProgressMonitor())
@@ -47,7 +47,7 @@ class ErlangNature implements IProjectNature {
     static def unsetAllErlangBuilders(IProject prj) throws CoreException {
         val description = prj.description
         val old = description.buildSpec
-        val allIds = BuilderInfo.values.map[getImpl.id]
+        val allIds = BuilderInfo.values.map[getBuilder.id]
 
         val specs = newArrayList
         for (cmd : old) {

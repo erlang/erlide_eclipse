@@ -23,6 +23,4 @@ public interface ErlangBuilder {
     public abstract IProject[] build(int kind, Map<String, String> args,
             IProgressMonitor monitor) throws CoreException;
 
-    public abstract BuilderConfigurator getConfigurator();
-
 }

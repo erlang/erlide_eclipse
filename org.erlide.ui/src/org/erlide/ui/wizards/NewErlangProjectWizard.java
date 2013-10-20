@@ -208,8 +208,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     }
 
     private void createBuilderConfig(final IProject project, final String builderName) {
-        BuilderInfo.valueOf(builderName).getImpl().getConfigurator()
-                .createConfig(project, info);
+        BuilderInfo.valueOf(builderName).getConfigurator().createConfig(project, info);
     }
 
     /**

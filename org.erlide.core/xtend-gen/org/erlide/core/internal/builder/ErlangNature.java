@@ -54,8 +54,8 @@ public class ErlangNature implements IProjectNature {
     final ICommand command = description.newCommand();
     String _upperCase = builderName.toUpperCase();
     BuilderInfo _valueOf = BuilderInfo.valueOf(_upperCase);
-    ErlangBuilder _impl = _valueOf.getImpl();
-    String _id = _impl.getId();
+    ErlangBuilder _builder = _valueOf.getBuilder();
+    String _id = _builder.getId();
     command.setBuilderName(_id);
     int _length_2 = old.length;
     specs[_length_2] = command;
@@ -70,8 +70,8 @@ public class ErlangNature implements IProjectNature {
     BuilderInfo[] _values = BuilderInfo.values();
     final Function1<BuilderInfo,String> _function = new Function1<BuilderInfo,String>() {
       public String apply(final BuilderInfo it) {
-        ErlangBuilder _impl = it.getImpl();
-        String _id = _impl.getId();
+        ErlangBuilder _builder = it.getBuilder();
+        String _id = _builder.getId();
         return _id;
       }
     };

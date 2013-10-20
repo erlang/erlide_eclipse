@@ -17,9 +17,7 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.builder.MarkerUtils;
-import org.erlide.core.internal.builder.BuilderConfigurator;
 import org.erlide.core.internal.builder.ExternalBuilder;
-import org.erlide.core.internal.builder.external.EmakeConfigurator;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.IErlModel;
@@ -107,10 +105,5 @@ public class EmakeBuilder extends ExternalBuilder {
   public String getId() {
     String _plus = (ErlangCore.PLUGIN_ID + ".emake.builder");
     return _plus;
-  }
-  
-  public BuilderConfigurator getConfigurator() {
-    EmakeConfigurator _emakeConfigurator = new EmakeConfigurator();
-    return _emakeConfigurator;
   }
 }

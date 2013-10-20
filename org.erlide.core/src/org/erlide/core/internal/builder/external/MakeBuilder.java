@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import org.erlide.core.ErlangCore;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
-import org.erlide.core.internal.builder.BuilderConfigurator;
 import org.erlide.core.internal.builder.ExternalBuilder;
 
 public class MakeBuilder extends ExternalBuilder {
@@ -28,12 +27,6 @@ public class MakeBuilder extends ExternalBuilder {
     @Override
     public String getId() {
         return ErlangCore.PLUGIN_ID + ".make.builder";
-    }
-
-    @Override
-    public BuilderConfigurator getConfigurator() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

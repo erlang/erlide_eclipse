@@ -44,8 +44,4 @@ class RebarBuilder extends ExternalBuilder {
         ErlangCore::PLUGIN_ID + '.rebar.builder'
     }
     
-    override getConfigurator() {
-        new RebarConfigurator
-    }
-    
 }

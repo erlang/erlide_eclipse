@@ -364,9 +364,4 @@ public class InternalBuilder extends IncrementalProjectBuilder implements Erlang
         return ErlangCore.PLUGIN_ID + ".erlbuilder";
     }
 
-    @Override
-    public BuilderConfigurator getConfigurator() {
-        return new InternalConfigurator();
-    }
-
 }

@@ -10,9 +10,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.builder.MarkerUtils;
-import org.erlide.core.internal.builder.BuilderConfigurator;
 import org.erlide.core.internal.builder.ExternalBuilder;
-import org.erlide.core.internal.builder.external.RebarConfigurator;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.IErlModel;
@@ -90,10 +88,5 @@ public class RebarBuilder extends ExternalBuilder {
   public String getId() {
     String _plus = (ErlangCore.PLUGIN_ID + ".rebar.builder");
     return _plus;
-  }
-  
-  public BuilderConfigurator getConfigurator() {
-    RebarConfigurator _rebarConfigurator = new RebarConfigurator();
-    return _rebarConfigurator;
   }
 }

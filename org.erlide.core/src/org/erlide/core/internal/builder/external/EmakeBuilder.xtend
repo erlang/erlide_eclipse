@@ -53,8 +53,4 @@ class EmakeBuilder extends ExternalBuilder {
         ErlangCore::PLUGIN_ID + '.emake.builder'
     }
     
-    override getConfigurator() {
-        new EmakeConfigurator
-    }
-    
 }

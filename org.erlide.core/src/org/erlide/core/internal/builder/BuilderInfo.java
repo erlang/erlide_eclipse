@@ -1,29 +1,56 @@
 package org.erlide.core.internal.builder;
 
 import org.erlide.core.internal.builder.external.EmakeBuilder;
+import org.erlide.core.internal.builder.external.EmakeConfigurator;
 import org.erlide.core.internal.builder.external.MakeBuilder;
+import org.erlide.core.internal.builder.external.MakeConfigurator;
 import org.erlide.core.internal.builder.external.RebarBuilder;
-import org.erlide.util.ErlLogger;
+import org.erlide.core.internal.builder.external.RebarConfigurator;
 
 public enum BuilderInfo {
-    INTERNAL(InternalBuilder.class), MAKE(MakeBuilder.class), EMAKE(EmakeBuilder.class), REBAR(
-            RebarBuilder.class);
+    INTERNAL, MAKE, EMAKE, REBAR;
 
-    final private Class<? extends ErlangBuilder> impl;
+    private ErlangBuilder builder = null;
+    private BuilderConfigurator configurator = null;
 
-    BuilderInfo(final Class<? extends ErlangBuilder> impl) {
-        this.impl = impl;
+    public synchronized ErlangBuilder getBuilder() {
+        if (builder == null) {
+            switch (this) {
+            case INTERNAL:
+                builder = new InternalBuilder();
+                break;
+            case MAKE:
+                builder = new MakeBuilder();
+                break;
+            case EMAKE:
+                builder = new EmakeBuilder();
+                break;
+            case REBAR:
+                builder = new RebarBuilder();
+                break;
+            }
+        }
+        return builder;
     }
 
-    public ErlangBuilder getImpl() {
-        try {
-            return impl.newInstance();
-        } catch (final InstantiationException e) {
-            ErlLogger.error(e);
-        } catch (final IllegalAccessException e) {
-            ErlLogger.error(e);
+    public synchronized BuilderConfigurator getConfigurator() {
+        if (configurator == null) {
+            switch (this) {
+            case INTERNAL:
+                configurator = new InternalConfigurator();
+                break;
+            case MAKE:
+                configurator = new MakeConfigurator();
+                break;
+            case EMAKE:
+                configurator = new EmakeConfigurator();
+                break;
+            case REBAR:
+                configurator = new RebarConfigurator();
+                break;
+            }
         }
-        return null;
+        return configurator;
     }
 
 }
