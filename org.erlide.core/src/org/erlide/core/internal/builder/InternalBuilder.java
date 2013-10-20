@@ -55,7 +55,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class InternalBuilder extends IncrementalProjectBuilder implements ErlangBuilder {
+public class InternalBuilder extends ErlangBuilder {
 
     BuildNotifier notifier;
     private final BuilderHelper helper = new BuilderHelper();

@@ -9,6 +9,7 @@ import org.erlide.core.builder.MarkerUtils
 import org.erlide.core.internal.builder.ExternalBuilder
 import org.erlide.engine.ErlangEngine
 import org.erlide.engine.model.root.IErlFolder
+import org.erlide.engine.model.root.IErlangProjectProperties
 
 class RebarBuilder extends ExternalBuilder {
     override getOsCommand() {
@@ -42,6 +43,14 @@ class RebarBuilder extends ExternalBuilder {
 
     override getId() {
         ErlangCore::PLUGIN_ID + '.rebar.builder'
+    }
+    
+    override readConfiguration() {
+        throw new UnsupportedOperationException("TODO: auto-generated method stub")
+    }
+    
+    override writeConfiguration(IErlangProjectProperties info) {
+        throw new UnsupportedOperationException("TODO: auto-generated method stub")
     }
     
 }

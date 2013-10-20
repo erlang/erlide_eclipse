@@ -29,11 +29,12 @@ public enum BuilderInfo {
                 builder = new RebarBuilder();
                 break;
             }
+            builder.setConfigurator(getConfigurator());
         }
         return builder;
     }
 
-    public synchronized BuilderConfigurator getConfigurator() {
+    public BuilderConfigurator getConfigurator() {
         if (configurator == null) {
             switch (this) {
             case INTERNAL:

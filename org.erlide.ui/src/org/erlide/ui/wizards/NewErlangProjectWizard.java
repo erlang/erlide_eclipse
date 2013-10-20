@@ -182,7 +182,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
             project.setDescription(description, new SubProgressMonitor(monitor, 10));
             if (info.getBuilderName() != null) {
                 ErlangNature.setErlangProjectBuilder(project, info.getBuilderName());
-                createBuilderConfig(project, info.getBuilderName());
+                createBuilderConfig(info.getBuilderName());
             }
 
             monitor.worked(10);
@@ -207,8 +207,8 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         }
     }
 
-    private void createBuilderConfig(final IProject project, final String builderName) {
-        BuilderInfo.valueOf(builderName).getConfigurator().createConfig(project, info);
+    private void createBuilderConfig(final String builderName) {
+        BuilderInfo.valueOf(builderName).getBuilder().setConfiguration(info);
     }
 
     /**

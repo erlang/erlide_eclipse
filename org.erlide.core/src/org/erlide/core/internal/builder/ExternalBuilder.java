@@ -6,7 +6,6 @@ import java.util.Map;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
@@ -18,8 +17,7 @@ import org.erlide.util.ErlLogger;
 
 import com.google.common.base.Joiner;
 
-public abstract class ExternalBuilder extends IncrementalProjectBuilder implements
-        ErlangBuilder {
+public abstract class ExternalBuilder extends ErlangBuilder {
 
     protected final ToolExecutor ex;
     protected final BuilderHelper helper = new BuilderHelper();

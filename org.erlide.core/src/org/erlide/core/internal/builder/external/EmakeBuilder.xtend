@@ -10,6 +10,7 @@ import org.erlide.core.internal.builder.ExternalBuilder
 import org.erlide.engine.ErlangEngine
 import org.erlide.util.ErlLogger
 import org.erlide.util.SystemConfiguration
+import org.erlide.engine.model.root.IErlangProjectProperties
 
 @SuppressWarnings('deprecation')
 class EmakeBuilder extends ExternalBuilder {
@@ -51,6 +52,14 @@ class EmakeBuilder extends ExternalBuilder {
 
     override getId() {
         ErlangCore::PLUGIN_ID + '.emake.builder'
+    }
+    
+    override readConfiguration() {
+        throw new UnsupportedOperationException("TODO: auto-generated method stub")
+    }
+    
+    override writeConfiguration(IErlangProjectProperties info) {
+        throw new UnsupportedOperationException("TODO: auto-generated method stub")
     }
     
 }

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -28,13 +29,12 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     // Pattern.compile("#![.]*escript");
 
     @Override
-    public int describe(final InputStream input,
-            final IContentDescription description) throws IOException {
+    public int describe(final InputStream input, final IContentDescription description)
+            throws IOException {
         return describe2(input, description, new HashMap<String, Object>());
     }
 
-    int describe2(final InputStream input,
-            final IContentDescription description,
+    int describe2(final InputStream input, final IContentDescription description,
             final Map<String, Object> properties) throws IOException {
         if (!isProcessed(properties)) {
             fillContentProperties(input, description, properties);
@@ -43,9 +43,22 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     }
 
     @Override
-    public int describe(final Reader input,
-            final IContentDescription description) throws IOException {
+    public int describe(final Reader input, final IContentDescription description)
+            throws IOException {
         return describe2(input, description, new HashMap<String, Object>());
+    }
+
+    public static Charset detectEncoding(final String s) {
+        final String line = s.trim();
+        Matcher matcher = LATIN1.matcher(line);
+        if (matcher.matches()) {
+            return Charsets.ISO_8859_1;
+        }
+        matcher = UTF8.matcher(line);
+        if (matcher.matches()) {
+            return Charsets.UTF_8;
+        }
+        return null;
     }
 
     int describe2(final Reader input, final IContentDescription description,
@@ -65,16 +78,14 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     }
 
     private void fillContentProperties(final InputStream input,
-            final IContentDescription description,
-            final Map<String, Object> properties) throws IOException {
+            final IContentDescription description, final Map<String, Object> properties)
+            throws IOException {
         final String encoding = "UTF-8"; //$NON-NLS-1$
-        fillContentProperties(readEncoding(input, encoding), description,
-                properties);
+        fillContentProperties(readEncoding(input, encoding), description, properties);
     }
 
     private void fillContentProperties(final String charset,
-            final IContentDescription description,
-            final Map<String, Object> properties) {
+            final IContentDescription description, final Map<String, Object> properties) {
         if (charset != null) {
             properties.put(CHARSET, charset);
         }
@@ -93,8 +104,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
             }
             final String charsetName = realCharsetName(charset);
             if (charsetName != null) {
-                description.setProperty(IContentDescription.CHARSET,
-                        charsetName);
+                description.setProperty(IContentDescription.CHARSET, charsetName);
             } else {
                 // keep the default setting, as in the
             }
@@ -121,13 +131,11 @@ public class ErlangContentDescriber implements ITextContentDescriber {
         String line = null;
 
         while ((line = readLine(input)) != null) {
-            final String decl = getDeclaration(line);
+            final Charset decl = detectEncoding(line);
             if (decl == null) {
                 return null;
             }
-            if (decl.length() > 0) {
-                return decl;
-            }
+            return decl.toString();
         }
         return null;
     }
@@ -142,27 +150,10 @@ public class ErlangContentDescriber implements ITextContentDescriber {
             if (linesRead > 2) {
                 return null;
             }
-            final String decl = getDeclaration(line);
+            final Charset decl = detectEncoding(line);
             if (decl != null) {
-                return decl;
+                return decl.toString();
             }
-        }
-        return null;
-    }
-
-    /**
-     * @param line
-     * @return null if nothing found yet; String if found
-     */
-    private String getDeclaration(final String line0) {
-        final String line = line0.trim();
-        Matcher matcher = LATIN1.matcher(line);
-        if (matcher.matches()) {
-            return "latin1";
-        }
-        matcher = UTF8.matcher(line);
-        if (matcher.matches()) {
-            return "utf8";
         }
         return null;
     }
@@ -193,4 +184,5 @@ public class ErlangContentDescriber implements ITextContentDescriber {
         }
         return new String(sb);
     }
+
 }
