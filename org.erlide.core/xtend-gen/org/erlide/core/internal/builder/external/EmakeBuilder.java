@@ -22,7 +22,6 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
@@ -106,15 +105,5 @@ public class EmakeBuilder extends ExternalBuilder {
   public String getId() {
     String _plus = (ErlangCore.PLUGIN_ID + ".emake.builder");
     return _plus;
-  }
-  
-  public IErlangProjectProperties readConfiguration() {
-    UnsupportedOperationException _unsupportedOperationException = new UnsupportedOperationException("TODO: auto-generated method stub");
-    throw _unsupportedOperationException;
-  }
-  
-  public void writeConfiguration(final IErlangProjectProperties info) {
-    UnsupportedOperationException _unsupportedOperationException = new UnsupportedOperationException("TODO: auto-generated method stub");
-    throw _unsupportedOperationException;
   }
 }

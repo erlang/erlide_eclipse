@@ -16,7 +16,6 @@ import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlFolder;
-import org.erlide.engine.model.root.IErlangProjectProperties;
 
 @SuppressWarnings("all")
 public class RebarBuilder extends ExternalBuilder {
@@ -89,15 +88,5 @@ public class RebarBuilder extends ExternalBuilder {
   public String getId() {
     String _plus = (ErlangCore.PLUGIN_ID + ".rebar.builder");
     return _plus;
-  }
-  
-  public IErlangProjectProperties readConfiguration() {
-    UnsupportedOperationException _unsupportedOperationException = new UnsupportedOperationException("TODO: auto-generated method stub");
-    throw _unsupportedOperationException;
-  }
-  
-  public void writeConfiguration(final IErlangProjectProperties info) {
-    UnsupportedOperationException _unsupportedOperationException = new UnsupportedOperationException("TODO: auto-generated method stub");
-    throw _unsupportedOperationException;
   }
 }

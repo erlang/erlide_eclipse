@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.content.ErlangContentDescriber;
 import org.erlide.engine.model.root.IErlangProjectProperties;
-import org.erlide.util.ErlLogger;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
@@ -47,7 +46,7 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
         this.configurator = configurator;
     }
 
-    public IErlangProjectProperties getConfiguration() {
+    public IErlangProjectProperties getConfiguration() throws IOException {
         if (configurator == null) {
             return null;
         }
@@ -57,21 +56,22 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
         }
         final IResource conf = getProject().findMember(configFile);
         final File confFile = new File(conf.getLocation().toString());
-        try {
-            final String line = Files.readFirstLine(confFile, Charsets.ISO_8859_1);
-            Charset coding = ErlangContentDescriber.detectEncoding(line);
-            if (coding == null) {
-                coding = Charsets.ISO_8859_1;
-            }
-            final List<String> confString = Files.readLines(confFile, coding);
-            return configurator.decodeConfig(Joiner.on("\n").join(confString));
-        } catch (final IOException e) {
-            ErlLogger.error(e);
+
+        final String line = Files.readFirstLine(confFile, Charsets.ISO_8859_1);
+        Charset coding = ErlangContentDescriber.detectEncoding(line);
+        if (coding == null) {
+            coding = Charsets.ISO_8859_1;
         }
-        return null;
+        final List<String> confString = Files.readLines(confFile, coding);
+        if (confString != null) {
+            return configurator.decodeConfig(Joiner.on("\n").join(confString));
+        } else {
+            // TODO or throw exception?
+            return null;
+        }
     }
 
-    public void setConfiguration(final IErlangProjectProperties info) {
+    public void setConfiguration(final IErlangProjectProperties info) throws IOException {
         if (configurator == null) {
             return;
         }
@@ -81,11 +81,9 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
         }
         final IResource conf = getProject().findMember(configFile);
         final File confFile = new File(conf.getLocation().toString());
-        try {
-            final String confString = configurator.encodeConfig(getProject(), info);
+        final String confString = configurator.encodeConfig(getProject(), info);
+        if (confString != null) {
             Files.write("%% coding: UTF-8\n" + confString, confFile, Charsets.UTF_8);
-        } catch (final IOException e) {
-            ErlLogger.error(e);
         }
     }
 
