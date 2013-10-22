@@ -29,8 +29,7 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
     private final IEclipsePreferences defaultRootNode;
     private final IEclipsePreferences instanceRootNode;
 
-    public RuntimeInfoPreferencesSerializer(
-            final IEclipsePreferences instanceRootNode,
+    public RuntimeInfoPreferencesSerializer(final IEclipsePreferences instanceRootNode,
             final IEclipsePreferences defaultRootNode) {
         this.instanceRootNode = instanceRootNode;
         this.defaultRootNode = defaultRootNode;
@@ -74,12 +73,7 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
         if (data.runtimes.size() > 0) {
             dflt = data.defaultRuntimeName != null ? data.defaultRuntimeName
                     : data.runtimes.iterator().next().getName();
-            ide = data.erlideRuntimeName != null ? data.erlideRuntimeName
-                    : dflt;
-        }
-        if (dflt == null || ide == null) {
-            ErlLogger.warn("Could not configure runtimes: dflt=%s ide=%s",
-                    dflt, ide);
+            ide = data.erlideRuntimeName != null ? data.erlideRuntimeName : dflt;
         }
         return new RuntimeInfoCatalogData(data.runtimes, dflt, ide);
     }
@@ -87,8 +81,7 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
     private RuntimeInfoCatalogData loadPrefs(final RuntimeInfoCatalogData data,
             final IEclipsePreferences root) {
         String[] children;
-        final Collection<RuntimeInfo> runtimes = new ArrayList<RuntimeInfo>(
-                data.runtimes);
+        final Collection<RuntimeInfo> runtimes = new ArrayList<RuntimeInfo>(data.runtimes);
         try {
             children = root.childrenNames();
             for (final String name : children) {
@@ -99,11 +92,8 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
             ErlLogger.warn(e);
         }
 
-        final String defaultRuntimeName = root.get(DEFAULT_KEY,
-                data.defaultRuntimeName);
-        final String ideRuntimeName = root.get(ERLIDE_KEY,
-                data.erlideRuntimeName);
-        return new RuntimeInfoCatalogData(runtimes, defaultRuntimeName,
-                ideRuntimeName);
+        final String defaultRuntimeName = root.get(DEFAULT_KEY, data.defaultRuntimeName);
+        final String ideRuntimeName = root.get(ERLIDE_KEY, data.erlideRuntimeName);
+        return new RuntimeInfoCatalogData(runtimes, defaultRuntimeName, ideRuntimeName);
     }
 }
