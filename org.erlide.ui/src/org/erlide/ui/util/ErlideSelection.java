@@ -45,9 +45,8 @@ public class ErlideSelection {
      *            The text editor operating in Eclipse
      */
     public ErlideSelection(final ITextEditor textEditor) {
-        this(textEditor.getDocumentProvider().getDocument(
-                textEditor.getEditorInput()), (ITextSelection) textEditor
-                .getSelectionProvider().getSelection());
+        this(textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput()),
+                (ITextSelection) textEditor.getSelectionProvider().getSelection());
     }
 
     /**
@@ -79,12 +78,11 @@ public class ErlideSelection {
     public ErlideSelection(final IDocument doc, final int line, final int col,
             final int len) {
         this.doc = doc;
-        textSelection = new TextSelection(doc, getAbsoluteCursorOffset(line,
-                col), len);
+        textSelection = new TextSelection(doc, getAbsoluteCursorOffset(line, col), len);
     }
 
-    public static int getAbsoluteCursorOffset(final IDocument doc,
-            final int line, final int col) {
+    public static int getAbsoluteCursorOffset(final IDocument doc, final int line,
+            final int col) {
         try {
             final IRegion offsetR = doc.getLineInformation(line);
             return offsetR.getOffset() + col;
@@ -125,8 +123,7 @@ public class ErlideSelection {
      *            this is the offset of the end of the selection
      */
     public void setSelection(final int absoluteStart, final int absoluteEnd) {
-        textSelection = new TextSelection(doc, absoluteStart, absoluteEnd
-                - absoluteStart);
+        textSelection = new TextSelection(doc, absoluteStart, absoluteEnd - absoluteStart);
     }
 
     /**
@@ -147,15 +144,14 @@ public class ErlideSelection {
         final IRegion endLine = getEndLine();
         final IRegion startLine = getStartLine();
 
-        textSelection = new TextSelection(doc, startLine.getOffset(),
-                endLine.getOffset() + endLine.getLength()
-                        - startLine.getOffset());
+        textSelection = new TextSelection(doc, startLine.getOffset(), endLine.getOffset()
+                + endLine.getLength() - startLine.getOffset());
     }
 
     protected static void beep(final Exception e) {
         ErlLogger.info(e);
-        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()
-                .getDisplay().beep();
+        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getDisplay()
+                .beep();
     }
 
     /**
@@ -164,8 +160,7 @@ public class ErlideSelection {
     public int getCursorColumn() {
         try {
             final int absoluteOffset = getAbsoluteCursorOffset();
-            final IRegion region = doc
-                    .getLineInformationOfOffset(absoluteOffset);
+            final IRegion region = doc.getLineInformationOfOffset(absoluteOffset);
             return absoluteOffset - region.getOffset();
         } catch (final BadLocationException e) {
             throw new RuntimeException(e);
@@ -201,8 +196,8 @@ public class ErlideSelection {
      */
     public static String getLine(final IDocument doc, final int i) {
         try {
-            return doc.get(doc.getLineInformation(i).getOffset(), doc
-                    .getLineInformation(i).getLength());
+            return doc.get(doc.getLineInformation(i).getOffset(),
+                    doc.getLineInformation(i).getLength());
         } catch (final Exception e) {
             return "";
         }
@@ -269,8 +264,7 @@ public class ErlideSelection {
             int length = -1;
 
             if (doc.getNumberOfLines() > i) {
-                final int nextLineOffset = doc.getLineInformation(i + 1)
-                        .getOffset();
+                final int nextLineOffset = doc.getLineInformation(i + 1).getOffset();
                 length = nextLineOffset - offset;
             } else {
                 length = lineInformation.getLength();
@@ -381,10 +375,8 @@ public class ErlideSelection {
      * @throws BadLocationException
      */
     public String getLineContentsFromCursor() throws BadLocationException {
-        final int lineOfOffset = getDoc().getLineOfOffset(
-                getAbsoluteCursorOffset());
-        final IRegion lineInformation = getDoc().getLineInformation(
-                lineOfOffset);
+        final int lineOfOffset = getDoc().getLineOfOffset(getAbsoluteCursorOffset());
+        final IRegion lineInformation = getDoc().getLineInformation(lineOfOffset);
 
         final String lineToCursor = getDoc().get(
                 getAbsoluteCursorOffset(),
@@ -400,10 +392,8 @@ public class ErlideSelection {
      * @throws BadLocationException
      */
     public String getLineContentsToCursor() throws BadLocationException {
-        final int lineOfOffset = getDoc().getLineOfOffset(
-                getAbsoluteCursorOffset());
-        final IRegion lineInformation = getDoc().getLineInformation(
-                lineOfOffset);
+        final int lineOfOffset = getDoc().getLineOfOffset(getAbsoluteCursorOffset());
+        final IRegion lineInformation = getDoc().getLineInformation(lineOfOffset);
         final String lineToCursor = getDoc().get(lineInformation.getOffset(),
                 getAbsoluteCursorOffset() - lineInformation.getOffset());
         return lineToCursor;
@@ -619,13 +609,10 @@ public class ErlideSelection {
      */
     public void replaceLineContentsToSelection(final String newContents)
             throws BadLocationException {
-        final int lineOfOffset = getDoc().getLineOfOffset(
-                getAbsoluteCursorOffset());
-        final IRegion lineInformation = getDoc().getLineInformation(
-                lineOfOffset);
+        final int lineOfOffset = getDoc().getLineOfOffset(getAbsoluteCursorOffset());
+        final IRegion lineInformation = getDoc().getLineInformation(lineOfOffset);
         getDoc().replace(lineInformation.getOffset(),
-                getAbsoluteCursorOffset() - lineInformation.getOffset(),
-                newContents);
+                getAbsoluteCursorOffset() - lineInformation.getOffset(), newContents);
 
     }
 
@@ -655,13 +642,12 @@ public class ErlideSelection {
      * @return
      * @throws BadLocationException
      */
-    public static int eatFuncCall(final IDocument theDoc,
-            final int documentOffset0) throws BadLocationException {
+    public static int eatFuncCall(final IDocument theDoc, final int documentOffset0)
+            throws BadLocationException {
         int documentOffset = documentOffset0;
         final String c = theDoc.get(documentOffset, 1);
         if (!")".equals(c)) {
-            throw new AssertionError("Expecting ) to eat callable. Received: "
-                    + c);
+            throw new AssertionError("Expecting ) to eat callable. Received: " + c);
         }
 
         while (documentOffset > 0 && !theDoc.get(documentOffset, 1).equals("(")) {
@@ -674,8 +660,7 @@ public class ErlideSelection {
     /**
      * Checks if the activationToken ends with some char from cs.
      */
-    public static boolean endsWithSomeChar(final char cs[],
-            final String activationToken) {
+    public static boolean endsWithSomeChar(final char[] cs, final String activationToken) {
         for (int i = 0; i < cs.length; i++) {
             if (activationToken.endsWith(cs[i] + "")) {
                 return true;
@@ -685,8 +670,7 @@ public class ErlideSelection {
 
     }
 
-    public static List<Integer> getLineStartOffsets(
-            final String replacementString) {
+    public static List<Integer> getLineStartOffsets(final String replacementString) {
         final ArrayList<Integer> ret = new ArrayList<Integer>();
         ret.add(0);// there is always a starting one at 0
 
@@ -714,8 +698,7 @@ public class ErlideSelection {
         return ret;
     }
 
-    public static List<Integer> getLineBreakOffsets(
-            final String replacementString) {
+    public static List<Integer> getLineBreakOffsets(final String replacementString) {
         final ArrayList<Integer> ret = new ArrayList<Integer>();
 
         int ignoreNextNAt = -1;
@@ -775,9 +758,8 @@ public class ErlideSelection {
      *         change if we need to get the full qualifier, otherwise, it is the
      *         same offset passed as a parameter).
      */
-    public static Pair<String, Integer> extractActivationToken(
-            final IDocument document, final int offset0,
-            final boolean getFullQualifier) {
+    public static Pair<String, Integer> extractActivationToken(final IDocument document,
+            final int offset0, final boolean getFullQualifier) {
         int offset = offset0;
         try {
             if (getFullQualifier) {
@@ -807,8 +789,7 @@ public class ErlideSelection {
                 i--;
             }
 
-            return new Pair<String, Integer>(document.get(i, offset - i),
-                    offset);
+            return new Pair<String, Integer>(document.get(i, offset - i), offset);
         } catch (final BadLocationException e) {
             return new Pair<String, Integer>("", offset); //$NON-NLS-1$
         }
@@ -899,8 +880,8 @@ public class ErlideSelection {
      * @return
      * @throws BadLocationException
      */
-    public static int getFirstCharRelativeLinePosition(final IDocument doc,
-            final int line) throws BadLocationException {
+    public static int getFirstCharRelativeLinePosition(final IDocument doc, final int line)
+            throws BadLocationException {
         IRegion region;
         region = doc.getLineInformation(line);
         return getFirstCharRelativePosition(doc, region);
@@ -929,8 +910,8 @@ public class ErlideSelection {
      *         absolute offset)
      * @throws BadLocationException
      */
-    public static int getFirstCharPosition(final IDocument doc,
-            final int cursorOffset) throws BadLocationException {
+    public static int getFirstCharPosition(final IDocument doc, final int cursorOffset)
+            throws BadLocationException {
         IRegion region;
         region = doc.getLineInformationOfOffset(cursorOffset);
         final int offset = region.getOffset();
@@ -1028,8 +1009,7 @@ public class ErlideSelection {
     /**
      * @return if the col is inside the initial col/len
      */
-    public static boolean isInside(final int col, final int initialCol,
-            final int len) {
+    public static boolean isInside(final int col, final int initialCol, final int len) {
         if (col >= initialCol && col <= initialCol + len) {
             return true;
         }
@@ -1039,8 +1019,7 @@ public class ErlideSelection {
     /**
      * @return if the region passed is composed of a single line
      */
-    public static boolean endsInSameLine(final IDocument document,
-            final IRegion region) {
+    public static boolean endsInSameLine(final IDocument document, final IRegion region) {
         try {
             final int startLine = document.getLineOfOffset(region.getOffset());
             final int end = region.getOffset() + region.getLength();

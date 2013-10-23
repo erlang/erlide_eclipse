@@ -67,8 +67,7 @@ public class CodeAssistPreferencePage extends PreferencePage implements
             }
         });
 
-        delayText = addLabelledTextField(composite, "Auto activation dela&y:",
-                4, 0);
+        delayText = addLabelledTextField(composite, "Auto activation dela&y:", 4, 0);
         erlangTriggersText = addLabelledTextField(composite,
                 "Auto activation triggers for &Erlang:", 100, 4, 0);
         eDocTriggersText = addLabelledTextField(composite,
@@ -84,14 +83,13 @@ public class CodeAssistPreferencePage extends PreferencePage implements
         eDocTriggersText.setEnabled(enabled);
     }
 
-    protected Text addLabelledTextField(final Composite parent,
-            final String label, final int textlimit, final int indent) {
+    protected Text addLabelledTextField(final Composite parent, final String label,
+            final int textlimit, final int indent) {
         return addLabelledTextField(parent, label, textlimit, textlimit, indent);
     }
 
-    protected Text addLabelledTextField(final Composite parent,
-            final String label, final int modelTextLimit,
-            final int fieldTextLimit, final int indent) {
+    protected Text addLabelledTextField(final Composite parent, final String label,
+            final int modelTextLimit, final int fieldTextLimit, final int indent) {
         final PixelConverter pixelConverter = new PixelConverter(parent);
 
         labelControl = new Label(parent, SWT.WRAP);
@@ -127,19 +125,16 @@ public class CodeAssistPreferencePage extends PreferencePage implements
     }
 
     protected void validateSettings() {
-        statusChanged(ErlidePreferencePage.validatePositiveNumber(delayText
-                .getText()));
-        statusChanged(validateCommaSeparatedCharacters(erlangTriggersText
-                .getText()));
-        statusChanged(validateCommaSeparatedCharacters(eDocTriggersText
-                .getText()));
+        statusChanged(ErlidePreferencePage.validatePositiveNumber(delayText.getText()));
+        statusChanged(validateCommaSeparatedCharacters(erlangTriggersText.getText()));
+        statusChanged(validateCommaSeparatedCharacters(eDocTriggersText.getText()));
     }
 
     private IStatus validateCommaSeparatedCharacters(final String text) {
         final StatusInfo status = new StatusInfo();
         status.setOK();
         if (text.length() > 1) {
-            final String chars[] = text.split(",");
+            final String[] chars = text.split(",");
             for (final String c : chars) {
                 if (c.trim().length() != 1) {
                     status.setError("Trigger keys should be a list of comma-separated characters");
