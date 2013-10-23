@@ -8,7 +8,7 @@ class ErlideEventTracer implements IDisposable {
     val ErlideEventTracerHandler handler
 
     new() {
-        val String tracerPath = System::getProperty("erlide.event_tracer");
+        val String tracerPath = System.getProperty("erlide.event_tracer");
         if (tracerPath === null) {
             handler = new NullEventHandler
         } else {
@@ -33,11 +33,11 @@ class ErlideEventTracer implements IDisposable {
     }
 
     def traceOperationStart(String operation, Object id) {
-        trace(new ErlideOperationStartEvent(operation, Integer::toHexString(System::identityHashCode(id))))
+        trace(new ErlideOperationStartEvent(operation, Integer.toHexString(System.identityHashCode(id))))
     }
 
     def traceOperationEnd(String operation, Object id) {
-        trace(new ErlideOperationEndEvent(operation, Integer::toHexString(System::identityHashCode(id))))
+        trace(new ErlideOperationEndEvent(operation, Integer.toHexString(System.identityHashCode(id))))
     }
 
     def traceOperationStart(Object id) {

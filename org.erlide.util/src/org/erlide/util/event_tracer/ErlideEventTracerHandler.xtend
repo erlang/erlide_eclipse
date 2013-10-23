@@ -14,8 +14,8 @@ import org.erlide.util.ErlLogger
 import org.erlide.util.IDisposable
 
 class ErlideEventTracerHandler implements IDisposable {
-    protected String user = System::getProperty("user.name")
-    protected String machine = Inet4Address::localHost.canonicalHostName
+    protected String user = System.getProperty("user.name")
+    protected String machine = Inet4Address.localHost.canonicalHostName
 
     val IPath storagePath
     PrintWriter file
@@ -34,12 +34,12 @@ class ErlideEventTracerHandler implements IDisposable {
         if(storagePath === null) return
         val Date date = new Date(event.timestamp)
         val String sdate = formatter.format(date)
-        val String name = storagePath.append(Integer::toHexString(event.workspace)).append(sdate + ".log").
+        val String name = storagePath.append(Integer.toHexString(event.workspace)).append(sdate + ".log").
             toPortableString
         try {
             file = new PrintWriter(new BufferedWriter(new FileWriter(name, false)))
         } catch (IOException e) {
-            ErlLogger::warn("Could not create event trace log file: %s", name)
+            ErlLogger.warn("Could not create event trace log file: %s", name)
             file = null
         }
 

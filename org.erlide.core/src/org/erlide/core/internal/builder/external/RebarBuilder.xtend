@@ -27,7 +27,7 @@ class RebarBuilder extends ExternalBuilder {
         foundAppSrc = false
         project.accept [ resource |
             if (resource.name.endsWith('.app.src')) {
-                val folder = (ErlangEngine::instance.model.findElement(resource.parent) as IErlFolder)
+                val folder = (ErlangEngine.instance.model.findElement(resource.parent) as IErlFolder)
                 if (folder !== null && folder.onSourcePath) {
                     foundAppSrc = true
                 }
@@ -35,13 +35,13 @@ class RebarBuilder extends ExternalBuilder {
             !foundAppSrc
         ]
         if (! foundAppSrc) {
-            MarkerUtils::addMarker(null, project, null, "No .app.src file found, can't compile with rebar", -1,
-                IMarker::SEVERITY_ERROR, IMarker::PROBLEM)
+            MarkerUtils.addMarker(null, project, null, "No .app.src file found, can't compile with rebar", -1,
+                IMarker.SEVERITY_ERROR, IMarker.PROBLEM)
         }
     }
 
     override getId() {
-        ErlangCore::PLUGIN_ID + '.rebar.builder'
+        ErlangCore.PLUGIN_ID + '.rebar.builder'
     }
     
 }

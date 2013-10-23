@@ -21,7 +21,7 @@ class ErlideSessionEvent extends ErlideEvent {
     val public int workspace
 
     new(String aWorkspace) {
-        super(System::currentTimeMillis)
+        super(System.currentTimeMillis)
         workspace = aWorkspace.hashCode
     }
 
@@ -33,7 +33,7 @@ class ErlideSessionEvent extends ErlideEvent {
 
 class ErlideResetEvent extends ErlideEvent {
     new() {
-        super(System::currentTimeMillis)
+        super(System.currentTimeMillis)
     }
 
     override String print() '''
@@ -45,7 +45,7 @@ class ErlideCrashEvent extends ErlideEvent {
     val String backend
 
     new(String myBackend) {
-        super(System::currentTimeMillis)
+        super(System.currentTimeMillis)
         backend = myBackend
     }
 
@@ -59,7 +59,7 @@ abstract class ErlideOperationEvent extends ErlideEvent {
     val protected String id
 
     new(String myOperation, String myId) {
-        super(System::currentTimeMillis)
+        super(System.currentTimeMillis)
         operation = myOperation
         id = myId
     }
@@ -91,7 +91,7 @@ class ErlideStatusEvent extends ErlideEvent {
     val Object status
 
     new(Object myStatus) {
-        super(System::currentTimeMillis)
+        super(System.currentTimeMillis)
         status = myStatus
     }
 

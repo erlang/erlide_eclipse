@@ -14,11 +14,11 @@ import java.lang.annotation.ElementType
 import com.google.common.collect.Lists
 import java.util.Collections
 
-@Target(ElementType::METHOD)
+@Target(ElementType.METHOD)
 @Active(typeof(MemoizeProcessor))
 annotation Memoize {
-  long cacheDuration = Long::MAX_VALUE;
-  long maxSize = Long::MAX_VALUE;
+  long cacheDuration = Long.MAX_VALUE;
+  long maxSize = Long.MAX_VALUE;
 }
 
 class MemoizeProcessor implements TransformationParticipant<MutableMethodDeclaration> {
@@ -49,7 +49,7 @@ abstract class MethodMemoizer {
     method.declaringType => [
       addMethod(initMethodName) [ init |
         init.static = method.static
-        init.visibility = Visibility::PRIVATE
+        init.visibility = Visibility.PRIVATE
         init.returnType = wrappedReturnType
         method.parameters.forEach[init.addParameter(simpleName, type)]
         init.exceptions = method.exceptions

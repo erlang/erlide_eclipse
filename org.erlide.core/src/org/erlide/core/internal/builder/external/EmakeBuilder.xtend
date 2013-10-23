@@ -42,7 +42,7 @@ class EmakeBuilder extends ExternalBuilder {
                     try {
                         delete(true, null)
                     } catch (CoreException e) {
-                        ErlLogger::warn('Could not clean up output directory ' + location)
+                        ErlLogger.warn('Could not clean up output directory ' + location)
                     }
                 ]
             }
@@ -50,7 +50,7 @@ class EmakeBuilder extends ExternalBuilder {
     }
 
     override getId() {
-        ErlangCore::PLUGIN_ID + '.emake.builder'
+        ErlangCore.PLUGIN_ID + '.emake.builder'
     }
    
 }

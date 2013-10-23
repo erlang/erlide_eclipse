@@ -25,13 +25,13 @@ class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
     override createControl(Composite parent) {
         super.createControl(parent)
 
-        val composite = new Composite((control as Composite), SWT::NONE)
+        val composite = new Composite((control as Composite), SWT.NONE)
         composite.layout = new GridLayout(3, false)
 
-        val label2 = new Label(composite, SWT::NONE)
+        val label2 = new Label(composite, SWT.NONE)
         label2.text = 'Minimum Erlang version:'
 
-        val version = new Combo(composite, SWT::READ_ONLY)
+        val version = new Combo(composite, SWT.READ_ONLY)
         val runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS
         version.setItems(runtimeVersions.map[toString])
         version.setText(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
@@ -40,13 +40,13 @@ class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
         ]
         info.runtimeVersion = new RuntimeVersion(version.text)
 
-        new Label(composite, SWT::NONE)
+        new Label(composite, SWT.NONE)
 
-        val label = new Label(composite, SWT::NONE)
+        val label = new Label(composite, SWT.NONE)
         label.text = 'Build system to be used:'
 
         val listener = new BuilderSelectionListener(info)
-        val builders = BuilderInfo::values
+        val builders = BuilderInfo.values
         builders.forEach [ builder |
             var check = new Button(composite, SWT.RADIO)
             check.text = builder.toString.toLowerCase
@@ -55,9 +55,9 @@ class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
                 check.selection = true
             }
             check.addSelectionListener(listener)
-            val description = new Label(composite, SWT::NONE)
+            val description = new Label(composite, SWT.NONE)
             description.text = getDescription(builder)
-            new Label(composite, SWT::NONE)
+            new Label(composite, SWT.NONE)
         ]
         info.builderName = BuilderInfo.INTERNAL.toString.toUpperCase
 
