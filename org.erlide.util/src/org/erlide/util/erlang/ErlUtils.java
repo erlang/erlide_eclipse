@@ -28,8 +28,7 @@ public final class ErlUtils {
 
     final private static TermParser TERM_PARSER = TermParser.getParser();
 
-    public static OtpErlangObject parse(final String string)
-            throws TermParserException {
+    public static OtpErlangObject parse(final String string) throws TermParserException {
         return TERM_PARSER.parse(string);
     }
 
@@ -58,14 +57,13 @@ public final class ErlUtils {
         return match(parse(pattern), parse(term), new BindingsImpl());
     }
 
-    public static Bindings match(final String pattern,
-            final OtpErlangObject term) throws TermParserException {
+    public static Bindings match(final String pattern, final OtpErlangObject term)
+            throws TermParserException {
         return match(parse(pattern), term, new BindingsImpl());
     }
 
-    public static Bindings match(final String pattern,
-            final OtpErlangObject term, final Bindings bindings)
-            throws TermParserException {
+    public static Bindings match(final String pattern, final OtpErlangObject term,
+            final Bindings bindings) throws TermParserException {
         return match(parse(pattern), term, bindings);
     }
 
@@ -74,13 +72,12 @@ public final class ErlUtils {
         return match(parse(pattern), parse(term), bindings);
     }
 
-    public static Bindings match(final OtpErlangObject pattern,
-            final OtpErlangObject term) {
+    public static Bindings match(final OtpErlangObject pattern, final OtpErlangObject term) {
         return match(pattern, term, new BindingsImpl());
     }
 
-    public static Bindings match(final OtpErlangObject pattern,
-            final String term) throws TermParserException {
+    public static Bindings match(final OtpErlangObject pattern, final String term)
+            throws TermParserException {
         return match(pattern, parse(term), new BindingsImpl());
     }
 
@@ -129,13 +126,13 @@ public final class ErlUtils {
             return null;
         }
 
-        if (pattern.equals(term)) {
-            return bindings;
-        } else if (pattern instanceof OtpErlangList) {
+        if (pattern instanceof OtpErlangList) {
             return matchList(pattern, term, bindings);
         } else if (pattern instanceof OtpErlangTuple) {
             return matchTuple(((OtpErlangTuple) pattern).elements(),
                     ((OtpErlangTuple) term).elements(), bindings);
+        } else if (pattern.equals(term)) {
+            return bindings;
         }
         return null;
     }
@@ -152,8 +149,7 @@ public final class ErlUtils {
         if (patternArity < termArity && lpattern.isProper()) {
             return null;
         }
-        if (patternArity == termArity
-                && lpattern.isProper() != lterm.isProper()) {
+        if (patternArity == termArity && lpattern.isProper() != lterm.isProper()) {
             return null;
         }
         Bindings rez = bindings;
@@ -168,21 +164,18 @@ public final class ErlUtils {
             return rez;
         }
         if (lpattern.getLastTail() instanceof OtpPatternVariable) {
-            return match(lpattern.getLastTail(),
-                    lterm.getNthTail(patternArity), rez);
+            return match(lpattern.getLastTail(), lterm.getNthTail(patternArity), rez);
         }
         return match(lpattern.getLastTail(), lterm.getLastTail(), rez);
     }
 
     private static OtpErlangObject fill(final OtpErlangObject template,
-            final List<Object> values) throws SignatureException,
-            TermParserException {
+            final List<Object> values) throws SignatureException, TermParserException {
         if (values.isEmpty()) {
             return template;
         }
         if (template instanceof OtpErlangList) {
-            final OtpErlangObject[] elements = ((OtpErlangList) template)
-                    .elements();
+            final OtpErlangObject[] elements = ((OtpErlangList) template).elements();
             final List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
                     elements.length);
             for (final OtpErlangObject elem : elements) {
@@ -190,8 +183,7 @@ public final class ErlUtils {
             }
             return new OtpErlangList(result.toArray(elements));
         } else if (template instanceof OtpErlangTuple) {
-            final OtpErlangObject[] elements = ((OtpErlangTuple) template)
-                    .elements();
+            final OtpErlangObject[] elements = ((OtpErlangTuple) template).elements();
             final List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
                     elements.length);
             for (final OtpErlangObject elem : elements) {
@@ -205,8 +197,7 @@ public final class ErlUtils {
             if (signs.length == 0 && !(ret instanceof OtpErlangObject)) {
                 throw new TermParserException("funny placeholder");
             }
-            final Signature sign = signs.length == 0 ? new Signature('x')
-                    : signs[0];
+            final Signature sign = signs.length == 0 ? new Signature('x') : signs[0];
             return TypeConverter.java2erlang(ret, sign);
         } else {
             return template;
