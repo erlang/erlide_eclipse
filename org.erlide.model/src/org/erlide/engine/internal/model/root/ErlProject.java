@@ -707,25 +707,13 @@ public class ErlProject extends Openable implements IErlProject {
 
     @Override
     public String getExternalModulesString() {
-        final ErlModelCache modelCache = getModelCache();
-        String externalModulesString = modelCache
-                .getExternalModulesString(this);
-        if (externalModulesString == null) {
-            externalModulesString = getExternal(ExternalKind.EXTERNAL_MODULES);
-            modelCache.putExternalModulesString(this, externalModulesString);
-        }
+        final String externalModulesString = getExternal(ExternalKind.EXTERNAL_MODULES);
         return externalModulesString;
     }
 
     @Override
     public String getExternalIncludesString() {
-        final ErlModelCache modelCache = getModelCache();
-        String externalIncludesString = modelCache
-                .getExternalIncludesString(this);
-        if (externalIncludesString == null) {
-            externalIncludesString = getExternal(ExternalKind.EXTERNAL_INCLUDES);
-            modelCache.putExternalIncludesString(this, externalIncludesString);
-        }
+        final String externalIncludesString = getExternal(ExternalKind.EXTERNAL_INCLUDES);
         return externalIncludesString;
     }
 
@@ -767,27 +755,17 @@ public class ErlProject extends Openable implements IErlProject {
 
     @Override
     public Collection<IPath> getSourceDirs() {
-        final ErlModelCache modelCache = getModelCache();
-        Collection<IPath> sourceDirs = modelCache.getSourceDirs(this);
-        if (sourceDirs == null) {
-            final IErlangProjectProperties properties = getProperties();
-            sourceDirs = properties.getSourceDirs();
-            sourceDirs = resolvePaths(sourceDirs);
-            modelCache.putSourceDirs(this, sourceDirs);
-        }
+        final IErlangProjectProperties properties = getProperties();
+        Collection<IPath> sourceDirs = properties.getSourceDirs();
+        sourceDirs = resolvePaths(sourceDirs);
         return sourceDirs;
     }
 
     @Override
     public Collection<IPath> getIncludeDirs() {
-        final ErlModelCache modelCache = getModelCache();
-        Collection<IPath> includeDirs = modelCache.getIncludeDirs(this);
-        if (includeDirs == null) {
-            final IErlangProjectProperties properties = getProperties();
-            includeDirs = properties.getIncludeDirs();
-            includeDirs = resolvePaths(includeDirs);
-            modelCache.putIncludeDirs(this, includeDirs);
-        }
+        final IErlangProjectProperties properties = getProperties();
+        Collection<IPath> includeDirs = properties.getIncludeDirs();
+        includeDirs = resolvePaths(includeDirs);
         return includeDirs;
     }
 
