@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.content.ErlangContentDescriber;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.ProjectConfigurator;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
@@ -30,7 +31,7 @@ import com.google.common.io.Files;
 
 public abstract class ErlangBuilder extends IncrementalProjectBuilder {
 
-    private BuilderConfigurator configurator;
+    private ProjectConfigurator configurator;
 
     public abstract String getId();
 
@@ -38,11 +39,11 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
     public abstract IProject[] build(int kind, Map<String, String> args,
             IProgressMonitor monitor) throws CoreException;
 
-    BuilderConfigurator getConfigurator() {
+    ProjectConfigurator getConfigurator() {
         return configurator;
     }
 
-    public void setConfigurator(final BuilderConfigurator configurator) {
+    public void setConfigurator(final ProjectConfigurator configurator) {
         this.configurator = configurator;
     }
 

@@ -42,7 +42,6 @@ public class ProjectPropertiesTest {
 
     @Test
     public void setSourcesTest() {
-        final IProject project = erlProject.getWorkspaceProject();
         final IPath sd1 = new Path("src");
         assertThat(erlProject.getProperties().getSourceDirs(), contains(sd1));
 

@@ -5,10 +5,10 @@ import java.util.Collection;
 import org.eclipse.core.resources.IProject;
 import org.erlide.core.executor.ToolExecutor;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
-import org.erlide.core.internal.builder.BuilderConfigurator;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.ProjectConfigurator;
 
-public class MakeConfigurator implements BuilderConfigurator {
+public class MakeConfigurator implements ProjectConfigurator {
 
     @Override
     public String encodeConfig(final IProject project, final ErlangProjectProperties info) {

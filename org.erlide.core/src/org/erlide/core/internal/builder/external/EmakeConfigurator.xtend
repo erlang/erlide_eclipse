@@ -1,10 +1,10 @@
 package org.erlide.core.internal.builder.external
 
 import org.eclipse.core.resources.IProject
-import org.erlide.core.internal.builder.BuilderConfigurator
 import org.erlide.engine.model.root.ErlangProjectProperties
+import org.erlide.engine.model.root.ProjectConfigurator
 
-class EmakeConfigurator implements BuilderConfigurator {
+class EmakeConfigurator implements ProjectConfigurator {
 
     override String encodeConfig(IProject project, ErlangProjectProperties info) {
         '''

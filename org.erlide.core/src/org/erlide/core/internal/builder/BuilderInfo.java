@@ -6,12 +6,13 @@ import org.erlide.core.internal.builder.external.MakeBuilder;
 import org.erlide.core.internal.builder.external.MakeConfigurator;
 import org.erlide.core.internal.builder.external.RebarBuilder;
 import org.erlide.core.internal.builder.external.RebarConfigurator;
+import org.erlide.engine.model.root.ProjectConfigurator;
 
 public enum BuilderInfo {
     INTERNAL, MAKE, EMAKE, REBAR;
 
     private ErlangBuilder builder = null;
-    private BuilderConfigurator configurator = null;
+    private ProjectConfigurator configurator = null;
 
     public synchronized ErlangBuilder getBuilder() {
         if (builder == null) {
@@ -34,7 +35,7 @@ public enum BuilderInfo {
         return builder;
     }
 
-    public BuilderConfigurator getConfigurator() {
+    public ProjectConfigurator getConfigurator() {
         if (configurator == null) {
             switch (this) {
             case INTERNAL:

@@ -4,11 +4,11 @@ import java.util.Collection;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.xtend2.lib.StringConcatenation;
-import org.erlide.core.internal.builder.BuilderConfigurator;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.ProjectConfigurator;
 
 @SuppressWarnings("all")
-public class EmakeConfigurator implements BuilderConfigurator {
+public class EmakeConfigurator implements ProjectConfigurator {
   public String encodeConfig(final IProject project, final ErlangProjectProperties info) {
     StringConcatenation _builder = new StringConcatenation();
     {

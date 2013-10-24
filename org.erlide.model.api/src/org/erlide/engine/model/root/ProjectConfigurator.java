@@ -1,9 +1,8 @@
-package org.erlide.core.internal.builder;
+package org.erlide.engine.model.root;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.engine.model.root.ErlangProjectProperties;
 
-public interface BuilderConfigurator {
+public interface ProjectConfigurator {
 
     /**
      * Path of config file relative to project. Null if not applicable.
