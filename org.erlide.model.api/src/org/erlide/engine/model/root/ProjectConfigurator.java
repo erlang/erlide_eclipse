@@ -5,12 +5,6 @@ import org.eclipse.core.resources.IProject;
 public interface ProjectConfigurator {
 
     /**
-     * Path of config file relative to project. Null if not applicable.
-     * 
-     */
-    String getConfigFile();
-
-    /**
      * Encode the project properties in a string (as it would look like in the
      * config file).
      */

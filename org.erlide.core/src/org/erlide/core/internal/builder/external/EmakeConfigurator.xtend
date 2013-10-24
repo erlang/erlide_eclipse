@@ -18,7 +18,7 @@ class EmakeConfigurator implements ProjectConfigurator {
         null
     }
 
-    override getConfigFile() {
+    def getConfigFile() {
         'Emakefile'
     }
 

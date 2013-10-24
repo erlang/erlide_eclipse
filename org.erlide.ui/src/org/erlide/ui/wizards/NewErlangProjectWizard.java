@@ -212,8 +212,8 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         }
     }
 
-    private void createBuilderConfig(final String builderName) throws IOException {
-        BuilderInfo.valueOf(builderName).getBuilder().setConfiguration(info);
+    private void createBuilderConfig(final String builderName) {
+        // BuilderInfo.valueOf(builderName).getBuilder().setConfiguration(info);
     }
 
     /**

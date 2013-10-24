@@ -27,12 +27,6 @@ public class InternalConfigurator implements ProjectConfigurator {
         return null;
     }
 
-    @Override
-    public String getConfigFile() {
-        // none
-        return null;
-    }
-
     private void load(final IEclipsePreferences node) {
         final ErlangProjectProperties result = new ErlangProjectProperties();
         if (node == null) {

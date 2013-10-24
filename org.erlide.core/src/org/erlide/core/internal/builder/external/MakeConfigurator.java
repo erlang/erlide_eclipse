@@ -34,7 +34,6 @@ public class MakeConfigurator implements ProjectConfigurator {
         return make.output;
     }
 
-    @Override
     public String getConfigFile() {
         return "Makefile";
     }

@@ -28,7 +28,7 @@ class RebarConfigurator implements ProjectConfigurator {
         //        List<OtpErlangObject> content = parseErlangTerms(string)
     }
 
-    override getConfigFile() {
+    def getConfigFile() {
         'rebar.config'
     }
 
