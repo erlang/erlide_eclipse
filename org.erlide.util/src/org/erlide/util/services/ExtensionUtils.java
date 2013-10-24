@@ -23,21 +23,21 @@ public final class ExtensionUtils {
     public static <T> T getSingletonExtension(final String id,
             final Class<? extends T> clazz) {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        final IConfigurationElement[] elements = reg
-                .getConfigurationElementsFor(id);
+        final IConfigurationElement[] elements = reg.getConfigurationElementsFor(id);
         if (elements.length > 1) {
-            ErlLogger
-                    .warn("There are multiple implementors of extension %s! Picking one of them...",
-                            id);
+            ErlLogger.warn("There are multiple implementors of extension %s! "
+                    + "Picking one of them...", id);
         }
         for (final IConfigurationElement element : elements) {
             try {
-                final Object object = element
-                        .createExecutableExtension("class");
+                final Object object = element.createExecutableExtension("class");
                 if (clazz.isInstance(object)) {
                     return clazz.cast(object);
                 }
             } catch (final CoreException e) {
+                e.printStackTrace();
+                // for some reason, ErlLogger only is printed if the above is
+                // here...
                 ErlLogger.error(e);
             }
         }
@@ -47,12 +47,10 @@ public final class ExtensionUtils {
     public static <T> Provider<? extends T> getSingletonProviderExtension(
             final String id, final Class<? extends Provider<? extends T>> clazz) {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        final IConfigurationElement[] elements = reg
-                .getConfigurationElementsFor(id);
+        final IConfigurationElement[] elements = reg.getConfigurationElementsFor(id);
         for (final IConfigurationElement element : elements) {
             try {
-                final Object object = element
-                        .createExecutableExtension("provider");
+                final Object object = element.createExecutableExtension("provider");
                 if (clazz.isInstance(object)) {
                     return clazz.cast(object);
                 }
@@ -90,16 +88,13 @@ public final class ExtensionUtils {
         }
     }
 
-    public static <T> List<T> getExtensions(final String id,
-            final Class<T> clazz) {
+    public static <T> List<T> getExtensions(final String id, final Class<T> clazz) {
         final List<T> result = Lists.newArrayList();
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        final IConfigurationElement[] elements = reg
-                .getConfigurationElementsFor(id);
+        final IConfigurationElement[] elements = reg.getConfigurationElementsFor(id);
         for (final IConfigurationElement element : elements) {
             try {
-                final Object object = element
-                        .createExecutableExtension("class");
+                final Object object = element.createExecutableExtension("class");
                 if (clazz.isInstance(object)) {
                     result.add(clazz.cast(object));
                 }
@@ -113,17 +108,15 @@ public final class ExtensionUtils {
     private ExtensionUtils() {
     }
 
-    public static <T> List<T> getExtensions2(final String id,
-            final String name, final Class<T> clazz) {
+    public static <T> List<T> getExtensions2(final String id, final String name,
+            final Class<T> clazz) {
         final List<T> result = Lists.newArrayList();
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        final IConfigurationElement[] elements = reg
-                .getConfigurationElementsFor(id);
+        final IConfigurationElement[] elements = reg.getConfigurationElementsFor(id);
         for (final IConfigurationElement element : elements) {
             for (final IConfigurationElement child : element.getChildren()) {
                 try {
-                    final Object object = child
-                            .createExecutableExtension("class");
+                    final Object object = child.createExecutableExtension("class");
                     if (clazz.isInstance(object)) {
                         result.add(clazz.cast(object));
                     }

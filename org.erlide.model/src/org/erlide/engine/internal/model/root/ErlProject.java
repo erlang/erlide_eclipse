@@ -97,7 +97,7 @@ public class ErlProject extends Openable implements IErlProject {
     /**
      * Whether the underlying file system is case sensitive.
      */
-    protected static final boolean IS_CASE_SENSITIVE = !new File("Temp").equals(new File("temp")); //$NON-NLS-1$ //$NON-NLS-2$
+    private static final boolean IS_CASE_SENSITIVE = !new File("Temp").equals(new File("temp")); //$NON-NLS-1$ //$NON-NLS-2$
 
     protected IProject fProject;
     private final ErlangProjectProperties properties;
@@ -106,7 +106,8 @@ public class ErlProject extends Openable implements IErlProject {
     public ErlProject(final IProject project, final ErlElement parent) {
         super(parent, project.getName());
         fProject = project;
-        properties = new ErlangProjectProperties();
+        loadCoreProperties();
+        properties = loadProperties();
         nonErlangResources = null;
     }
 
@@ -761,15 +762,14 @@ public class ErlProject extends Openable implements IErlProject {
     private Collection<IPath> resolvePaths(final Collection<IPath> paths) {
         final IPathVariableManager pathVariableManager = ResourcesPlugin
                 .getWorkspace().getPathVariableManager();
-        final List<IPath> cachedIncludeDirs = Lists
-                .newArrayListWithCapacity(paths.size());
+        final List<IPath> result = Lists.newArrayListWithCapacity(paths.size());
         for (final IPath includeDir : paths) {
             @SuppressWarnings("deprecation")
             final IPath resolvedPath = pathVariableManager
                     .resolvePath(includeDir);
-            cachedIncludeDirs.add(resolvedPath);
+            result.add(resolvedPath);
         }
-        return Collections.unmodifiableCollection(cachedIncludeDirs);
+        return Collections.unmodifiableCollection(result);
     }
 
     @Override
@@ -913,6 +913,15 @@ public class ErlProject extends Openable implements IErlProject {
     public void close() throws ErlModelException {
         clearCaches();
         super.close();
+    }
+
+    private void loadCoreProperties() {
+        // TODO builder and builder config
+    }
+
+    private ErlangProjectProperties loadProperties() {
+        // TODO builder.getconf.load(node)
+        return new ErlangProjectProperties();
     }
 
     private void storeProperties() {

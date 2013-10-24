@@ -33,32 +33,27 @@ public class ErlModelException extends CoreException {
 
     private static final long serialVersionUID = 1L;
 
-    CoreException nestedCoreException;
+    private final CoreException nestedCoreException;
 
     /**
-     * Creates a Erlang model exception for the given <code>CoreException</code>
-     * . Equivalent to
-     * <code>ErlModelException(exception,IErlModelStatusConstants.CORE_EXCEPTION</code>
-     * .
+     * Creates a Erlang model exception for a given <code>CoreException</code>.
      * 
      * @param exception
      *            the <code>CoreException</code>
      */
-    public ErlModelException(final CoreException exception,
-            final IErlModelStatus status) {
+    public ErlModelException(final CoreException exception, final IErlModelStatus status) {
         super(status);
         nestedCoreException = exception;
     }
 
     /**
-     * Creates a Erlang model exception for the given Erlang-specific status
-     * object.
+     * Creates a Erlang model exception for an Erlang-specific status object.
      * 
      * @param status
      *            the Erlang-specific status object
      */
     public ErlModelException(final IErlModelStatus status) {
-        super(status);
+        this(null, status);
     }
 
     /**

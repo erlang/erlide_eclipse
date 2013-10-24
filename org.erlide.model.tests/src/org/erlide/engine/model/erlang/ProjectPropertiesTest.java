@@ -1,22 +1,27 @@
-package org.erlide.core.preferences;
+package org.erlide.engine.model.erlang;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
-import org.erlide.test.support.ErlideTestUtils;
+import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 
 public class ProjectPropertiesTest {
     private static IErlProject erlProject;
@@ -33,6 +38,18 @@ public class ProjectPropertiesTest {
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         ErlideTestUtils.deleteProjects();
+    }
+
+    @Test
+    public void setSourcesTest() {
+        final IProject project = erlProject.getWorkspaceProject();
+        final IPath sd1 = new Path("src");
+        assertThat(erlProject.getProperties().getSourceDirs(), contains(sd1));
+
+        final IPath sd2 = new Path("a");
+        erlProject.getProperties().setSourceDirs(Lists.newArrayList(sd2));
+        assertThat(erlProject.getProperties().getSourceDirs(), hasSize(1));
+        assertThat(erlProject.getProperties().getSourceDirs(), contains(sd2));
     }
 
     @Test

@@ -3,6 +3,7 @@ package org.erlide.engine.internal;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.InjectionException;
@@ -24,7 +25,6 @@ import org.erlide.engine.internal.services.search.ErlideOpen;
 import org.erlide.engine.internal.services.search.ErlideSearchServer;
 import org.erlide.engine.internal.services.search.ModelSearcher;
 import org.erlide.engine.internal.services.text.ErlideIndent;
-import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IBeamLocator;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.services.ErlangService;
@@ -131,7 +131,7 @@ public class DefaultErlangEngine implements IErlangEngine {
         if (!erlangModel.isOpen()) {
             try {
                 erlangModel.open(null);
-            } catch (final ErlModelException e) {
+            } catch (final CoreException e) {
                 ErlLogger.error(e);
             }
         }
