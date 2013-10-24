@@ -6,19 +6,19 @@ import org.eclipse.core.resources.IProject;
 import org.erlide.core.executor.ToolExecutor;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
 import org.erlide.core.internal.builder.BuilderConfigurator;
-import org.erlide.engine.model.root.IErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 
 public class MakeConfigurator implements BuilderConfigurator {
 
     @Override
-    public String encodeConfig(final IProject project, final IErlangProjectProperties info) {
+    public String encodeConfig(final IProject project, final ErlangProjectProperties info) {
         // do nothing, creating a generic Makefile is too difficult
         // maybe if users demand it
         return null;
     }
 
     @Override
-    public IErlangProjectProperties decodeConfig(final String config) {
+    public ErlangProjectProperties decodeConfig(final String config) {
         // do nothing at the moment
         return null;
     }

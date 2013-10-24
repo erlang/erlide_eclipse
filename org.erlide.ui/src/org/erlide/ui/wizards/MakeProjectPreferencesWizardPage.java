@@ -2,12 +2,12 @@ package org.erlide.ui.wizards;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.erlide.engine.model.root.IErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 
 public class MakeProjectPreferencesWizardPage extends ProjectPreferencesWizardPage {
 
     public MakeProjectPreferencesWizardPage(final String pageName,
-            final IErlangProjectProperties info) {
+            final ErlangProjectProperties info) {
         super(pageName, info);
         // TODO Auto-generated constructor stub
     }

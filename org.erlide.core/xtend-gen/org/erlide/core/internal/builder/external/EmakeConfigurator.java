@@ -5,11 +5,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.erlide.core.internal.builder.BuilderConfigurator;
-import org.erlide.engine.model.root.IErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 
 @SuppressWarnings("all")
 public class EmakeConfigurator implements BuilderConfigurator {
-  public String encodeConfig(final IProject project, final IErlangProjectProperties info) {
+  public String encodeConfig(final IProject project, final ErlangProjectProperties info) {
     StringConcatenation _builder = new StringConcatenation();
     {
       Collection<IPath> _sourceDirs = info.getSourceDirs();
@@ -34,7 +34,7 @@ public class EmakeConfigurator implements BuilderConfigurator {
     return _builder.toString();
   }
   
-  public IErlangProjectProperties decodeConfig(final String config) {
+  public ErlangProjectProperties decodeConfig(final String config) {
     return null;
   }
   

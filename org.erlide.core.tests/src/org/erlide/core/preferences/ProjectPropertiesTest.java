@@ -7,9 +7,8 @@ import static org.junit.Assert.assertEquals;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.IErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.AfterClass;
@@ -27,8 +26,8 @@ public class ProjectPropertiesTest {
         ErlideTestUtils.initProjects();
         // We set up projects here, it's quite costly
         final String name1 = "testproject1";
-        erlProject = ErlideTestUtils.createProject(
-                ErlideTestUtils.getTmpPath(name1), name1);
+        erlProject = ErlideTestUtils.createProject(ErlideTestUtils.getTmpPath(name1),
+                name1);
     }
 
     @AfterClass
@@ -45,7 +44,7 @@ public class ProjectPropertiesTest {
                 .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.OUTPUT_DIR, expected);
 
-        final IErlangProjectProperties pp = new ErlangProjectProperties(project);
+        final ErlangProjectProperties pp = erlProject.getProperties();
         final String actual = pp.getOutputDir().toPortableString();
 
         assertEquals(expected, actual);
@@ -60,15 +59,14 @@ public class ProjectPropertiesTest {
                 .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.INCLUDE_DIRS, expected);
 
-        final IErlangProjectProperties pp = new ErlangProjectProperties(project);
+        final ErlangProjectProperties pp = erlProject.getProperties();
         final String actual = pp.getIncludeDirs().toString();
 
         assertEquals(convertListString(expected), actual);
     }
 
     private String convertListString(final String expected) {
-        return "[" + Joiner.on(", ").join(Splitter.on(";").split(expected))
-                + "]";
+        return "[" + Joiner.on(", ").join(Splitter.on(";").split(expected)) + "]";
     }
 
     @Test
@@ -80,7 +78,7 @@ public class ProjectPropertiesTest {
                 .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.SOURCE_DIRS, expected);
 
-        final IErlangProjectProperties pp = new ErlangProjectProperties(project);
+        final ErlangProjectProperties pp = erlProject.getProperties();
         final String actual = pp.getSourceDirs().toString();
 
         assertThat(actual, is(convertListString(expected)));

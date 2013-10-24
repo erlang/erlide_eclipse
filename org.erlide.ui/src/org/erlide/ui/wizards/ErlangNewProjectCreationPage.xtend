@@ -9,15 +9,14 @@ import org.eclipse.swt.widgets.Combo
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Label
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage
-import org.erlide.engine.model.root.IErlangProjectProperties
+import org.erlide.core.internal.builder.BuilderInfo
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
-import org.erlide.core.internal.builder.BuilderInfo
 
 class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
-    val IErlangProjectProperties info
+    val NewProjectData info
 
-    new(String name, IErlangProjectProperties info) {
+    new(String name, NewProjectData info) {
         super(name);
         this.info = info
     }
@@ -88,9 +87,9 @@ class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
 
 class BuilderSelectionListener implements SelectionListener {
 
-    val IErlangProjectProperties info
+    val NewProjectData info
 
-    new(IErlangProjectProperties info) {
+    new(NewProjectData info) {
         this.info = info
     }
 

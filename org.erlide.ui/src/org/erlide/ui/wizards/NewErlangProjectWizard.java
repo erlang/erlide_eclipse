@@ -41,9 +41,7 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.builder.BuilderInfo;
 import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
@@ -61,7 +59,7 @@ import com.google.common.collect.Maps;
  */
 public class NewErlangProjectWizard extends Wizard implements INewWizard {
 
-    private IErlangProjectProperties info;
+    private NewProjectData info;
     private Map<BuilderInfo, ProjectPreferencesWizardPage> buildPages;
     private ErlangNewProjectCreationPage mainPage;
 
@@ -74,7 +72,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     public void addPages() {
         try {
             super.addPages();
-            info = new ErlangProjectProperties();
+            info = new NewProjectData();
             buildPages = Maps.newEnumMap(BuilderInfo.class);
             mainPage = new ErlangNewProjectCreationPage("mainPage", info);
             mainPage.setTitle(ErlideUIPlugin

@@ -21,7 +21,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.engine.model.root.IErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
@@ -31,7 +31,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
  */
 public abstract class ProjectPreferencesWizardPage extends WizardPage {
 
-    protected final IErlangProjectProperties info;
+    protected final ErlangProjectProperties info;
     private Text output;
     protected Text source;
     protected Text include;
@@ -46,7 +46,7 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
      * @wbp.parser.constructor
      */
     public ProjectPreferencesWizardPage(final String pageName,
-            final IErlangProjectProperties info) {
+            final ErlangProjectProperties info) {
         super(pageName);
         this.info = info;
     }

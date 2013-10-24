@@ -3,13 +3,13 @@ package org.erlide.ui.wizards;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.erlide.core.internal.builder.BuilderInfo;
-import org.erlide.engine.model.root.IErlangProjectProperties;
+import org.erlide.ui.wizards.NewProjectData;
 
 @SuppressWarnings("all")
 public class BuilderSelectionListener implements SelectionListener {
-  private final IErlangProjectProperties info;
+  private final NewProjectData info;
   
-  public BuilderSelectionListener(final IErlangProjectProperties info) {
+  public BuilderSelectionListener(final NewProjectData info) {
     this.info = info;
   }
   

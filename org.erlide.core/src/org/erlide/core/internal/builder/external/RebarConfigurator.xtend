@@ -2,11 +2,11 @@ package org.erlide.core.internal.builder.external
 
 import org.eclipse.core.resources.IProject
 import org.erlide.core.internal.builder.BuilderConfigurator
-import org.erlide.engine.model.root.IErlangProjectProperties
+import org.erlide.engine.model.root.ErlangProjectProperties
 
 class RebarConfigurator implements BuilderConfigurator {
 
-    override encodeConfig(IProject project, IErlangProjectProperties info) {
+    override encodeConfig(IProject project, ErlangProjectProperties info) {
         null
 
     // TODO we need to keep the original parsed config and only replace changed parts!

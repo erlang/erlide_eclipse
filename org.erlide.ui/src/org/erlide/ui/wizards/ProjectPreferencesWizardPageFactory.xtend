@@ -1,6 +1,6 @@
 package org.erlide.ui.wizards
 
-import org.erlide.engine.model.root.IErlangProjectProperties
+import org.erlide.engine.model.root.ErlangProjectProperties
 import java.util.Map
 import org.erlide.core.internal.builder.BuilderInfo
 
@@ -13,7 +13,7 @@ class ProjectPreferencesWizardPageFactory {
         BuilderInfo.REBAR -> RebarProjectPreferencesWizardPage
     }
 
-    static def ProjectPreferencesWizardPage create(BuilderInfo builder, IErlangProjectProperties info) {
+    static def ProjectPreferencesWizardPage create(BuilderInfo builder, ErlangProjectProperties info) {
         val clazz = PAGES.get(builder)
         clazz.constructors.get(0).newInstance("buildPage", info) as ProjectPreferencesWizardPage
     }

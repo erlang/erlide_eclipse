@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.erlide.engine.model.root.IErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.util.PreferencesUtils;
 import org.erlide.util.SystemConfiguration;
 
@@ -37,7 +37,7 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
     private Button externalIncludesBrowse;
 
     public InternalProjectPreferencesWizardPage(final String pageName,
-            final IErlangProjectProperties info) {
+            final ErlangProjectProperties info) {
         super(pageName, info);
         // TODO Auto-generated constructor stub
     }

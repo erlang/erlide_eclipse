@@ -22,7 +22,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.content.ErlangContentDescriber;
-import org.erlide.engine.model.root.IErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
@@ -46,7 +46,7 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
         this.configurator = configurator;
     }
 
-    public IErlangProjectProperties getConfiguration() throws IOException {
+    public ErlangProjectProperties getConfiguration() throws IOException {
         if (configurator == null) {
             return null;
         }
@@ -65,13 +65,12 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
         final List<String> confString = Files.readLines(confFile, coding);
         if (confString != null) {
             return configurator.decodeConfig(Joiner.on("\n").join(confString));
-        } else {
-            // TODO or throw exception?
-            return null;
         }
+        // TODO or throw exception?
+        return null;
     }
 
-    public void setConfiguration(final IErlangProjectProperties info) throws IOException {
+    public void setConfiguration(final ErlangProjectProperties info) throws IOException {
         if (configurator == null) {
             return;
         }

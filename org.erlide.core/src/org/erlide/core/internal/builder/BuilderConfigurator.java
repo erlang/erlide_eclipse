@@ -1,7 +1,7 @@
 package org.erlide.core.internal.builder;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.engine.model.root.IErlangProjectProperties;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 
 public interface BuilderConfigurator {
 
@@ -15,11 +15,11 @@ public interface BuilderConfigurator {
      * Encode the project properties in a string (as it would look like in the
      * config file).
      */
-    String encodeConfig(IProject project, IErlangProjectProperties info);
+    String encodeConfig(IProject project, ErlangProjectProperties info);
 
     /**
      * Decode project properties from string (as read from config file).
      */
-    IErlangProjectProperties decodeConfig(String config);
+    ErlangProjectProperties decodeConfig(String config);
 
 }
