@@ -2,7 +2,7 @@ package org.erlide.engine.model.erlang;
 
 import static org.junit.Assert.assertEquals;
 
-import org.erlide.test.support.ErlideTestUtils;
+import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.Test;
 
 public class IErlFunctionCommentTests extends ErlModelTestBase {

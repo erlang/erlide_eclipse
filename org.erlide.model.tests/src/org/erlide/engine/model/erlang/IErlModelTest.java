@@ -25,7 +25,7 @@ import org.erlide.engine.model.IErlModelChangeListener;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.test.support.ErlideTestUtils;
+import org.erlide.engine.util.ErlideTestUtils;
 import org.erlide.util.Util;
 import org.junit.After;
 import org.junit.Before;

@@ -22,7 +22,7 @@ import org.erlide.engine.model.root.IErlElement.AcceptFlags;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlElementVisitor;
 import org.erlide.engine.model.root.IErlExternal;
-import org.erlide.test.support.ErlideTestUtils;
+import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;

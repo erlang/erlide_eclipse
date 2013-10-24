@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
-import org.erlide.test.support.ErlideTestUtils;
+import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.Before;
 
 public class ErlModelTestBase2 extends ErlModelTestBase {

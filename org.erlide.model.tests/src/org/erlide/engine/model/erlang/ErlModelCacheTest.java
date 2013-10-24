@@ -11,7 +11,7 @@ import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.test.support.ErlideTestUtils;
+import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

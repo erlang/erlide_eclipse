@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.core.internal.builder.BuilderInfo;
 import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.test.support.ErlideTestUtils;
+import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

@@ -1,4 +1,4 @@
-package org.erlide.test.support;
+package org.erlide.engine.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
