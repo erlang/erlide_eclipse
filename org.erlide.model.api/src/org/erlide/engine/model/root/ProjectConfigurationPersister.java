@@ -30,10 +30,10 @@ public abstract class ProjectConfigurationPersister {
         return configurator;
     }
 
-    public abstract ErlangProjectProperties getConfiguration()
-            throws IOException;
+    public abstract ErlangProjectProperties getConfiguration(
+            IErlProject erlProject) throws IOException;
 
-    public abstract void setConfiguration(
-            @NonNull final ErlangProjectProperties info) throws IOException;
+    public abstract void setConfiguration(IErlProject erlProject,
+            final ErlangProjectProperties info) throws IOException;
 
 }

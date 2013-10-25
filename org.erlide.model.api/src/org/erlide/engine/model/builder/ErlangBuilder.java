@@ -29,7 +29,7 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
     public abstract IProject[] build(int kind, Map<String, String> args,
             IProgressMonitor monitor) throws CoreException;
 
-    ProjectConfigurationPersister getConfigurationPersister() {
+    public ProjectConfigurationPersister getConfigurationPersister() {
         return configurator;
     }
 

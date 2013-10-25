@@ -3,7 +3,6 @@ package org.erlide.core.internal.builder.external;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.core.executor.ToolExecutor;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
 import org.erlide.engine.model.root.ErlangProjectProperties;
@@ -12,15 +11,14 @@ import org.erlide.engine.model.root.ProjectConfigurator;
 public class MakeConfigurator implements ProjectConfigurator {
 
     @Override
-    public String encodeConfig(@NonNull final IProject project,
-            @NonNull final ErlangProjectProperties info) {
+    public String encodeConfig(final IProject project, final ErlangProjectProperties info) {
         // do nothing, creating a generic Makefile is too difficult
         // maybe if users demand it
         return null;
     }
 
     @Override
-    public ErlangProjectProperties decodeConfig(@NonNull final String config) {
+    public ErlangProjectProperties decodeConfig(final String config) {
         // do nothing at the moment
         return null;
     }

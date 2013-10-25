@@ -10,6 +10,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.core.content.ErlangContentDescriber;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.model.root.ProjectConfigurator;
 
@@ -31,7 +32,8 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
     }
 
     @Override
-    public ErlangProjectProperties getConfiguration() throws IOException {
+    public ErlangProjectProperties getConfiguration(final IErlProject project)
+            throws IOException {
         if (fileName == null) {
             return null;
         }
@@ -55,8 +57,8 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
     }
 
     @Override
-    public void setConfiguration(@NonNull final ErlangProjectProperties info)
-            throws IOException {
+    public void setConfiguration(final IErlProject project,
+            final ErlangProjectProperties info) throws IOException {
         final IProject aProject = getProject();
         if (aProject == null) {
             return;

@@ -50,6 +50,7 @@ import org.erlide.engine.model.ErlModelStatusConstants;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IErlModelMarker;
 import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;
 import org.erlide.engine.model.root.ErlElementKind;
@@ -61,6 +62,7 @@ import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
@@ -805,12 +807,27 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private ErlangProjectProperties loadProperties() {
-        // TODO builder.getconf.load(node)
-        return new ErlangProjectProperties();
+        try {
+            return ErlangBuilder.getFactory().getBuilder("INTERNAL")
+                    .getConfigurationPersister().getConfiguration(this);
+        } catch (final IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void storeProperties() {
-        // TODO getBuilder.getConfigurator.store
+        try {
+            final ProjectConfigurationPersister configurationPersister = ErlangBuilder
+                    .getFactory().getBuilder("INTERNAL")
+                    .getConfigurationPersister();
+            if (properties != null) {
+                configurationPersister.setConfiguration(this, properties);
+            }
+        } catch (final IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
-
 }
