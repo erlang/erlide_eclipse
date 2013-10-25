@@ -88,4 +88,10 @@
       <super type="org.eclipse.debug.core.breakpointMarker"/>
       <persistent value="true"/>
    </extension>
+  <extension
+        point="org.erlide.model.api.builderFactory">
+     <builderFactory
+           class="org.erlide.core.internal.builder.ErlangBuilderFactory">
+     </builderFactory>
+  </extension>
 </plugin>

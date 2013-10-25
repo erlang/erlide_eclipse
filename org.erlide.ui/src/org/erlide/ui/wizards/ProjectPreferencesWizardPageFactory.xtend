@@ -1,8 +1,8 @@
 package org.erlide.ui.wizards
 
-import org.erlide.engine.model.root.ErlangProjectProperties
 import java.util.Map
-import org.erlide.core.internal.builder.BuilderInfo
+import org.erlide.engine.model.builder.BuilderInfo
+import org.erlide.engine.model.root.ErlangProjectProperties
 
 class ProjectPreferencesWizardPageFactory {
 

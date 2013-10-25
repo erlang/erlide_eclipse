@@ -13,6 +13,7 @@ import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.MarkerUtils;
 import org.erlide.core.executor.ToolExecutor;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
+import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.base.Joiner;

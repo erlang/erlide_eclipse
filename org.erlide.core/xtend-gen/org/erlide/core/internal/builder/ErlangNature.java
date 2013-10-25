@@ -14,8 +14,9 @@ import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
-import org.erlide.core.internal.builder.BuilderInfo;
-import org.erlide.core.internal.builder.ErlangBuilder;
+import org.erlide.engine.model.builder.BuilderInfo;
+import org.erlide.engine.model.builder.ErlangBuilder;
+import org.erlide.engine.model.builder.IErlangBuilderFactory;
 
 /**
  * Erlang project nature
@@ -52,9 +53,9 @@ public class ErlangNature implements IProjectNature {
     int _length_1 = old.length;
     System.arraycopy(old, 0, specs, 0, _length_1);
     final ICommand command = description.newCommand();
+    IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
     String _upperCase = builderName.toUpperCase();
-    BuilderInfo _valueOf = BuilderInfo.valueOf(_upperCase);
-    ErlangBuilder _builder = _valueOf.getBuilder();
+    ErlangBuilder _builder = _factory.getBuilder(_upperCase);
     String _id = _builder.getId();
     command.setBuilderName(_id);
     int _length_2 = old.length;
@@ -70,7 +71,9 @@ public class ErlangNature implements IProjectNature {
     BuilderInfo[] _values = BuilderInfo.values();
     final Function1<BuilderInfo,String> _function = new Function1<BuilderInfo,String>() {
       public String apply(final BuilderInfo it) {
-        ErlangBuilder _builder = it.getBuilder();
+        IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
+        String _name = it.name();
+        ErlangBuilder _builder = _factory.getBuilder(_name);
         String _id = _builder.getId();
         return _id;
       }

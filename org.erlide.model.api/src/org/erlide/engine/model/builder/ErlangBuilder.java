@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.internal.builder;
+package org.erlide.engine.model.builder;
 
 import java.util.Map;
 
@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
+import org.erlide.util.services.ExtensionUtils;
 
 public abstract class ErlangBuilder extends IncrementalProjectBuilder {
 
@@ -32,8 +33,15 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
         return configurator;
     }
 
-    public void setConfigurationPersister(final ProjectConfigurationPersister configurator) {
+    public void setConfigurationPersister(
+            final ProjectConfigurationPersister configurator) {
         this.configurator = configurator;
+    }
+
+    public static IErlangBuilderFactory getFactory() {
+        return ExtensionUtils.getSingletonExtension(
+                "org.erlide.model.api.builderFactory",
+                IErlangBuilderFactory.class);
     }
 
 }

@@ -12,8 +12,8 @@ public abstract class ProjectConfigurationPersister {
     private final ProjectConfigurator configurator;
     private IProject project;
 
-    public ProjectConfigurationPersister(@NonNull final ProjectConfigurator configurator) {
-        Preconditions.checkNotNull(project);
+    public ProjectConfigurationPersister(
+            @NonNull final ProjectConfigurator configurator) {
         Preconditions.checkNotNull(configurator);
         this.configurator = configurator;
     }
@@ -30,9 +30,10 @@ public abstract class ProjectConfigurationPersister {
         return configurator;
     }
 
-    public abstract ErlangProjectProperties getConfiguration() throws IOException;
-
-    public abstract void setConfiguration(@NonNull final ErlangProjectProperties info)
+    public abstract ErlangProjectProperties getConfiguration()
             throws IOException;
+
+    public abstract void setConfiguration(
+            @NonNull final ErlangProjectProperties info) throws IOException;
 
 }

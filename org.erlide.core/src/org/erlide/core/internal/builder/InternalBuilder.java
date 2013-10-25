@@ -43,6 +43,7 @@ import org.erlide.core.builder.CompilerOptions;
 import org.erlide.core.builder.MarkerUtils;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.util.ErlLogger;

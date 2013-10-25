@@ -19,7 +19,7 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-import org.erlide.core.internal.builder.BuilderInfo;
+import org.erlide.engine.model.builder.BuilderInfo;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.wizards.BuilderSelectionListener;

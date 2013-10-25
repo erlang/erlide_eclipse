@@ -2,4 +2,5 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="erlangEngine" name="erlangEngine" schema="schema/erlangEngine.exsd"/>
+   <extension-point id="builderFactory" name="builderFactory" schema="schema/builderFactory.exsd"/>
 </plugin>

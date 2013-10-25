@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Combo
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Label
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage
-import org.erlide.core.internal.builder.BuilderInfo
+import org.erlide.engine.model.builder.BuilderInfo
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
 

@@ -15,8 +15,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.core.internal.builder.BuilderInfo;
 import org.erlide.core.internal.builder.ErlangNature;
+import org.erlide.engine.model.builder.BuilderInfo;
+import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.After;
@@ -92,7 +93,7 @@ public class BuildersTest {
 
     private void testBuilder(final String builder) throws CoreException {
         ErlangNature.setErlangProjectBuilder(prj, builder);
-        final String builderId = BuilderInfo.valueOf(builder).getBuilder()
+        final String builderId = ErlangBuilder.getFactory().getBuilder(builder)
                 .getId();
         final String targetBeamPath = "ebin/mod.beam";
 
