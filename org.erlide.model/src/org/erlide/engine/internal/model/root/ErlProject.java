@@ -199,112 +199,8 @@ public class ErlProject extends Openable implements IErlProject {
         }
     }
 
-    /*
-     * Returns whether the given resource is accessible through the children or
-     * the non-Erlang resources of this project. Returns true if the resource is
-     * not in the project. Assumes that the resource is a folder or a file.
-     */
-    public boolean contains(final IResource resource) {
-        //
-        // IClasspathEntry[] classpath;
-        // IPath output;
-        // try
-        // {
-        // classpath = getResolvedClasspath(true/* ignoreUnresolvedEntry */,
-        // false/* don't generateMarkerOnError */, false/*
-        // * don't
-        // * returnResolutionInProgress
-        // */);
-        // output = getOutputLocation();
-        // }
-        // catch (ErlModelException e)
-        // {
-        // return false;
-        // }
-        //
-        // IPath fullPath = resource.getFullPath();
-        // IPath innerMostOutput = output.isPrefixOf(fullPath) ? output : null;
-        // IClasspathEntry innerMostEntry = null;
-        // for (int j = 0, cpLength = classpath.length; j < cpLength; j++)
-        // {
-        // IClasspathEntry entry = classpath[j];
-        //
-        // IPath entryPath = entry.getPath();
-        // if ((innerMostEntry == null || innerMostEntry.getPath().isPrefixOf(
-        // entryPath))
-        // && entryPath.isPrefixOf(fullPath))
-        // {
-        // innerMostEntry = entry;
-        // }
-        // IPath entryOutput = classpath[j].getOutputLocation();
-        // if (entryOutput != null && entryOutput.isPrefixOf(fullPath))
-        // {
-        // innerMostOutput = entryOutput;
-        // }
-        // }
-        // if (innerMostEntry != null)
-        // {
-        // // special case prj==src and nested output location
-        // if (innerMostOutput != null && innerMostOutput.segmentCount() > 1 //
-        // output
-        // // isn't
-        // // project
-        // && innerMostEntry.getPath().segmentCount() == 1)
-        // { // 1 segment must be project name
-        // return false;
-        // }
-        // if (resource instanceof IFolder)
-        // {
-        // // folders are always included in src/lib entries
-        // return true;
-        // }
-        // switch (innerMostEntry.getEntryKind())
-        // {
-        // case IClasspathEntry.CPE_SOURCE :
-        // // .class files are not visible in source folders
-        // return !org.eclipse.jdt.internal.compiler.util.Util
-        // .isClassFileName(fullPath.lastSegment());
-        // case IClasspathEntry.CPE_LIBRARY :
-        // // .Erlang files are not visible in library folders
-        // return !org.eclipse.jdt.internal.compiler.util.Util
-        // .isErlangFileName(fullPath.lastSegment());
-        // }
-        // }
-        // if (innerMostOutput != null)
-        // {
-        // return false;
-        // }
-        return true;
-    }
-
-    // /**
-    // * TODO: Record a new marker denoting a classpath problem
-    // */
-    // void createCodeProblemMarker(final IErlModelStatus status) {
-    // /*
-    // * final IMarker marker = null; int severity; String[] arguments = new
-    // * String[0]; final boolean isCycleProblem = false,
-    // * isClasspathFileFormatProblem = false; switch (status.getCode()) {
-    // *
-    // * case IErlModelStatusConstants.INCOMPATIBLE_ERTS_LEVEL: final String
-    // * setting = getOption( ErlangCore.CORE_INCOMPATIBLE_ERTS_LEVEL, true);
-    // * if (ErlangCore.ERROR.equals(setting)) { severity =
-    // * IMarker.SEVERITY_ERROR; } else if
-    // * (ErlangCore.WARNING.equals(setting)) { severity =
-    // * IMarker.SEVERITY_WARNING; } else { return; // setting == IGNORE }
-    // * break;
-    // *
-    // * default: final IPath path = status.getPath(); if (path != null) {
-    // * arguments = new String[] { path.toString() }; } if
-    // * (ErlangCore.ERROR.equals(getOption(
-    // * ErlangCore.CORE_INCOMPLETE_CLASSPATH, true))) { severity =
-    // * IMarker.SEVERITY_ERROR; } else { severity = IMarker.SEVERITY_WARNING; }
-    // * break; }
-    // */
-    // }
-
     /**
-     * /** Removes the Erlang nature from the project.
+     * Removes the Erlang nature from the project.
      */
     public void deconfigure() throws CoreException {
         // unregister Erlang builder
@@ -397,17 +293,6 @@ public class ErlProject extends Openable implements IErlProject {
     public IResource getCorrespondingResource() {
         return fProject;
     }
-
-    // /**
-    // * @see IErlElement
-    // */
-    // @Override
-    // public IResource getUnderlyingResource() throws ErlModelException {
-    // if (!exists()) {
-    // throw newNotPresentException();
-    // }
-    // return fProject;
-    // }
 
     @Override
     public int hashCode() {
