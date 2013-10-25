@@ -10,6 +10,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.core.content.ErlangContentDescriber;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.model.root.ProjectConfigurator;
 
 import com.google.common.base.Charsets;
@@ -44,14 +45,18 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
         }
         final List<String> confString = Files.readLines(confFile, coding);
         if (confString != null) {
-            return getConfigurator().decodeConfig(Joiner.on("\n").join(confString));
+            final String content = Joiner.on("\n").join(confString);
+            if (content != null) {
+                return getConfigurator().decodeConfig(content);
+            }
         }
         // TODO or throw exception?
         return null;
     }
 
     @Override
-    public void setConfiguration(final ErlangProjectProperties info) throws IOException {
+    public void setConfiguration(@NonNull final ErlangProjectProperties info)
+            throws IOException {
         final IResource conf = getProject().findMember(fileName);
         final File confFile = new File(conf.getLocation().toString());
         final String confString = getConfigurator().encodeConfig(getProject(), info);

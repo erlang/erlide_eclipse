@@ -3,8 +3,11 @@ package org.erlide.core.internal.builder;
 import java.io.IOException;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.model.root.ProjectConfigurator;
 
 import com.google.common.base.Preconditions;
@@ -21,6 +24,10 @@ public class PreferencesProjectConfigurationPersister extends
         this.nodeKey = nodeKey;
     }
 
+    private IEclipsePreferences getNode() {
+        return new ProjectScope(getProject()).getNode(nodeKey);
+    }
+
     @Override
     public ErlangProjectProperties getConfiguration() throws IOException {
         // TODO Auto-generated method stub
@@ -30,7 +37,6 @@ public class PreferencesProjectConfigurationPersister extends
     @Override
     public void setConfiguration(final ErlangProjectProperties info) throws IOException {
         // TODO Auto-generated method stub
-
     }
 
 }

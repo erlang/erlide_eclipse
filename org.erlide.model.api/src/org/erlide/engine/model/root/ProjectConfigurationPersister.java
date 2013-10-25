@@ -1,11 +1,9 @@
-package org.erlide.core.internal.builder;
+package org.erlide.engine.model.root;
 
 import java.io.IOException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.annotation.NonNull;
-import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.ProjectConfigurator;
 
 import com.google.common.base.Preconditions;
 
@@ -22,6 +20,8 @@ public abstract class ProjectConfigurationPersister {
         this.configurator = configurator;
     }
 
+    @SuppressWarnings("null")
+    @NonNull
     public IProject getProject() {
         return project;
     }
@@ -32,7 +32,7 @@ public abstract class ProjectConfigurationPersister {
 
     public abstract ErlangProjectProperties getConfiguration() throws IOException;
 
-    public abstract void setConfiguration(final ErlangProjectProperties info)
+    public abstract void setConfiguration(@NonNull final ErlangProjectProperties info)
             throws IOException;
 
 }

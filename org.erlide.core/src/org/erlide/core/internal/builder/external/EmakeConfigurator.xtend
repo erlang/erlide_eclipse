@@ -3,6 +3,7 @@ package org.erlide.core.internal.builder.external
 import org.eclipse.core.resources.IProject
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.ProjectConfigurator
+import org.erlide.core.internal.builder.FileProjectConfigurationPersister
 
 class EmakeConfigurator implements ProjectConfigurator {
 
@@ -20,6 +21,10 @@ class EmakeConfigurator implements ProjectConfigurator {
 
     def getConfigFile() {
         'Emakefile'
+    }
+    
+    override getPersister(IProject project) {
+        return new FileProjectConfigurationPersister(project, this, 'Emakefile')
     }
 
 }

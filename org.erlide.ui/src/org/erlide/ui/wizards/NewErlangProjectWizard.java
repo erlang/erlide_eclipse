@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.wizards;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
@@ -119,12 +118,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
                 @Override
                 protected void execute(final IProgressMonitor monitor)
                         throws InvocationTargetException {
-                    try {
-                        createProject(monitor != null ? monitor
-                                : new NullProgressMonitor());
-                    } catch (final IOException e) {
-                        throw new InvocationTargetException(e);
-                    }
+                    createProject(monitor != null ? monitor : new NullProgressMonitor());
 
                     try {
                         final IWorkbench workbench = ErlideUIPlugin.getDefault()
@@ -165,7 +159,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         return true;
     }
 
-    protected void createProject(final IProgressMonitor monitor) throws IOException {
+    protected void createProject(final IProgressMonitor monitor) {
         monitor.beginTask(
                 ErlideUIPlugin.getResourceString("wizards.messages.creatingproject"), 50);
         try {

@@ -4,7 +4,9 @@ import java.util.Collection;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.xtend2.lib.StringConcatenation;
+import org.erlide.core.internal.builder.FileProjectConfigurationPersister;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.model.root.ProjectConfigurator;
 
 @SuppressWarnings("all")
@@ -40,5 +42,10 @@ public class EmakeConfigurator implements ProjectConfigurator {
   
   public String getConfigFile() {
     return "Emakefile";
+  }
+  
+  public ProjectConfigurationPersister getPersister(final IProject project) {
+    FileProjectConfigurationPersister _fileProjectConfigurationPersister = new FileProjectConfigurationPersister(project, this, "Emakefile");
+    return _fileProjectConfigurationPersister;
   }
 }

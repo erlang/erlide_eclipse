@@ -3,8 +3,10 @@ package org.erlide.core.internal.builder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.PathSerializer;
+import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.api.RuntimeCore;
@@ -104,6 +106,12 @@ public class InternalConfigurator implements ProjectConfigurator {
         } catch (final BackingStoreException e) {
             ErlLogger.warn(e);
         }
+    }
+
+    @Override
+    public ProjectConfigurationPersister getPersister(@NonNull final IProject project) {
+        return new PreferencesProjectConfigurationPersister(project, this,
+                "org.erlide.core");
     }
 
 }

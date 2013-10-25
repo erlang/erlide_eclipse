@@ -3,6 +3,7 @@ package org.erlide.core.internal.builder.external
 import org.eclipse.core.resources.IProject
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.ProjectConfigurator
+import org.erlide.core.internal.builder.FileProjectConfigurationPersister
 
 class RebarConfigurator implements ProjectConfigurator {
 
@@ -28,8 +29,8 @@ class RebarConfigurator implements ProjectConfigurator {
         //        List<OtpErlangObject> content = parseErlangTerms(string)
     }
 
-    def getConfigFile() {
-        'rebar.config'
+    override getPersister(IProject project) {
+        new FileProjectConfigurationPersister(project, this, 'rebar.config')
     }
 
 }
