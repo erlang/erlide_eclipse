@@ -1,13 +1,14 @@
 package org.erlide.core.internal.builder.external
 
 import org.eclipse.core.resources.IProject
+import org.eclipse.jdt.annotation.NonNull
+import org.erlide.core.internal.builder.FileProjectConfigurationPersister
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.ProjectConfigurator
-import org.erlide.core.internal.builder.FileProjectConfigurationPersister
 
 class RebarConfigurator implements ProjectConfigurator {
 
-    override encodeConfig(IProject project, ErlangProjectProperties info) {
+    override encodeConfig(@NonNull IProject project, @NonNull ErlangProjectProperties info) {
         null
 
     // TODO we need to keep the original parsed config and only replace changed parts!
@@ -25,7 +26,7 @@ class RebarConfigurator implements ProjectConfigurator {
     //        '''
     }
 
-    override decodeConfig(String config) {
+    override decodeConfig(@NonNull String config) {
         //        List<OtpErlangObject> content = parseErlangTerms(string)
     }
 

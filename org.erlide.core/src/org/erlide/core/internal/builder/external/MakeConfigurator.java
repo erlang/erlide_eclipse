@@ -14,14 +14,15 @@ import org.erlide.engine.model.root.ProjectConfigurator;
 public class MakeConfigurator implements ProjectConfigurator {
 
     @Override
-    public String encodeConfig(final IProject project, final ErlangProjectProperties info) {
+    public String encodeConfig(@NonNull final IProject project,
+            @NonNull final ErlangProjectProperties info) {
         // do nothing, creating a generic Makefile is too difficult
         // maybe if users demand it
         return null;
     }
 
     @Override
-    public ErlangProjectProperties decodeConfig(final String config) {
+    public ErlangProjectProperties decodeConfig(@NonNull final String config) {
         // do nothing at the moment
         return null;
     }

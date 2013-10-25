@@ -3,6 +3,7 @@ package org.erlide.core.internal.builder.external;
 import java.util.Collection;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.erlide.core.internal.builder.FileProjectConfigurationPersister;
 import org.erlide.engine.model.root.ErlangProjectProperties;
@@ -11,7 +12,7 @@ import org.erlide.engine.model.root.ProjectConfigurator;
 
 @SuppressWarnings("all")
 public class EmakeConfigurator implements ProjectConfigurator {
-  public String encodeConfig(final IProject project, final ErlangProjectProperties info) {
+  public String encodeConfig(@NonNull final IProject project, @NonNull final ErlangProjectProperties info) {
     StringConcatenation _builder = new StringConcatenation();
     {
       Collection<IPath> _sourceDirs = info.getSourceDirs();
@@ -36,7 +37,7 @@ public class EmakeConfigurator implements ProjectConfigurator {
     return _builder.toString();
   }
   
-  public ErlangProjectProperties decodeConfig(final String config) {
+  public ErlangProjectProperties decodeConfig(@NonNull final String config) {
     return null;
   }
   

@@ -1,13 +1,14 @@
 package org.erlide.core.internal.builder.external
 
 import org.eclipse.core.resources.IProject
+import org.eclipse.jdt.annotation.NonNull
+import org.erlide.core.internal.builder.FileProjectConfigurationPersister
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.ProjectConfigurator
-import org.erlide.core.internal.builder.FileProjectConfigurationPersister
 
 class EmakeConfigurator implements ProjectConfigurator {
 
-    override String encodeConfig(IProject project, ErlangProjectProperties info) {
+    override String encodeConfig(@NonNull IProject project, @NonNull ErlangProjectProperties info) {
         '''
             «FOR src : info.sourceDirs»
                 {'«src.toPortableString»/*',[«FOR inc : info.includeDirs»{i, "«inc.toPortableString»"},«ENDFOR»]}.
@@ -15,7 +16,7 @@ class EmakeConfigurator implements ProjectConfigurator {
         '''
     }
 
-    override decodeConfig(String config) {
+    override decodeConfig(@NonNull String config) {
         null
     }
 
