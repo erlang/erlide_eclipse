@@ -5,8 +5,6 @@ import org.eclipse.jdt.annotation.NonNull;
 
 public interface ProjectConfigurator {
 
-    ProjectConfigurationPersister getPersister(@NonNull IProject project);
-
     /**
      * Encode the project properties in a string (as it would look like in the
      * config file).
@@ -15,6 +13,10 @@ public interface ProjectConfigurator {
 
     /**
      * Decode project properties from string (as read from config file).
+     * 
+     * TODO: store encoding
+     * 
+     * TODO: store config text as template to use for encoding
      */
     ErlangProjectProperties decodeConfig(@NonNull String config);
 

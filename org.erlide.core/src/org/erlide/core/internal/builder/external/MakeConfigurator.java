@@ -6,9 +6,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.core.executor.ToolExecutor;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
-import org.erlide.core.internal.builder.FileProjectConfigurationPersister;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.model.root.ProjectConfigurator;
 
 public class MakeConfigurator implements ProjectConfigurator {
@@ -38,12 +36,4 @@ public class MakeConfigurator implements ProjectConfigurator {
         return make.output;
     }
 
-    public String getConfigFile() {
-        return "Makefile";
-    }
-
-    @Override
-    public ProjectConfigurationPersister getPersister(@NonNull final IProject project) {
-        return new FileProjectConfigurationPersister(project, this, "Makefile");
-    }
 }

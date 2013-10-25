@@ -10,20 +10,20 @@ import com.google.common.base.Preconditions;
 public abstract class ProjectConfigurationPersister {
 
     private final ProjectConfigurator configurator;
-    private final IProject project;
+    private IProject project;
 
-    public ProjectConfigurationPersister(@NonNull final IProject project,
-            @NonNull final ProjectConfigurator configurator) {
+    public ProjectConfigurationPersister(@NonNull final ProjectConfigurator configurator) {
         Preconditions.checkNotNull(project);
         Preconditions.checkNotNull(configurator);
-        this.project = project;
         this.configurator = configurator;
     }
 
-    @SuppressWarnings("null")
-    @NonNull
     public IProject getProject() {
         return project;
+    }
+
+    public void setProject(final IProject project) {
+        this.project = project;
     }
 
     public ProjectConfigurator getConfigurator() {

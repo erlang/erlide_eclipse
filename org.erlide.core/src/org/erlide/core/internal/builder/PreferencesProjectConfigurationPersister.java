@@ -2,7 +2,6 @@ package org.erlide.core.internal.builder;
 
 import java.io.IOException;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -25,9 +24,9 @@ public class PreferencesProjectConfigurationPersister extends
 
     private final String nodeKey;
 
-    public PreferencesProjectConfigurationPersister(@NonNull final IProject project,
+    public PreferencesProjectConfigurationPersister(
             @NonNull final ProjectConfigurator configurator, @NonNull final String nodeKey) {
-        super(project, configurator);
+        super(configurator);
         Preconditions.checkNotNull(nodeKey);
         this.nodeKey = nodeKey;
     }
@@ -85,7 +84,8 @@ public class PreferencesProjectConfigurationPersister extends
     }
 
     @Override
-    public void setConfiguration(final ErlangProjectProperties info) throws IOException {
+    public void setConfiguration(@NonNull final ErlangProjectProperties info)
+            throws IOException {
         final IEclipsePreferences node = getNode();
         if (node == null) {
             ErlLogger.warn("Could not store project preferences for "

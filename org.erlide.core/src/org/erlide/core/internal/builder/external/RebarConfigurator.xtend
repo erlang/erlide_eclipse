@@ -2,7 +2,6 @@ package org.erlide.core.internal.builder.external
 
 import org.eclipse.core.resources.IProject
 import org.eclipse.jdt.annotation.NonNull
-import org.erlide.core.internal.builder.FileProjectConfigurationPersister
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.ProjectConfigurator
 
@@ -28,10 +27,6 @@ class RebarConfigurator implements ProjectConfigurator {
 
     override decodeConfig(@NonNull String config) {
         //        List<OtpErlangObject> content = parseErlangTerms(string)
-    }
-
-    override getPersister(IProject project) {
-        new FileProjectConfigurationPersister(project, this, 'rebar.config')
     }
 
 }

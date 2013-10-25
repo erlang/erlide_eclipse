@@ -16,11 +16,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.engine.model.root.ProjectConfigurator;
+import org.erlide.engine.model.root.ProjectConfigurationPersister;
 
 public abstract class ErlangBuilder extends IncrementalProjectBuilder {
 
-    private ProjectConfigurator configurator;
+    private ProjectConfigurationPersister configurator;
 
     public abstract String getId();
 
@@ -28,11 +28,12 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
     public abstract IProject[] build(int kind, Map<String, String> args,
             IProgressMonitor monitor) throws CoreException;
 
-    ProjectConfigurator getConfigurator() {
+    ProjectConfigurationPersister getConfigurationPersister() {
         return configurator;
     }
 
-    public void setConfigurator(final ProjectConfigurator configurator) {
+    public void setConfigurationPersister(final ProjectConfigurationPersister configurator) {
         this.configurator = configurator;
     }
+
 }

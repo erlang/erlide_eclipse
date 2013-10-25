@@ -6,13 +6,13 @@ import org.erlide.core.internal.builder.external.MakeBuilder;
 import org.erlide.core.internal.builder.external.MakeConfigurator;
 import org.erlide.core.internal.builder.external.RebarBuilder;
 import org.erlide.core.internal.builder.external.RebarConfigurator;
-import org.erlide.engine.model.root.ProjectConfigurator;
+import org.erlide.engine.model.root.ProjectConfigurationPersister;
 
 public enum BuilderInfo {
     INTERNAL, MAKE, EMAKE, REBAR;
 
     private ErlangBuilder builder = null;
-    private ProjectConfigurator configurator = null;
+    private ProjectConfigurationPersister configurator;
 
     public synchronized ErlangBuilder getBuilder() {
         if (builder == null) {
@@ -30,29 +30,32 @@ public enum BuilderInfo {
                 builder = new RebarBuilder();
                 break;
             }
-            builder.setConfigurator(getConfigurator());
+            builder.setConfigurationPersister(getConfiguratorPersister());
         }
         return builder;
     }
 
-    public ProjectConfigurator getConfigurator() {
+    public ProjectConfigurationPersister getConfiguratorPersister() {
         if (configurator == null) {
             switch (this) {
             case INTERNAL:
-                configurator = new InternalConfigurator();
+                configurator = new PreferencesProjectConfigurationPersister(
+                        new InternalConfigurator(), "org.erlide.core");
                 break;
             case MAKE:
-                configurator = new MakeConfigurator();
+                configurator = new FileProjectConfigurationPersister(
+                        new MakeConfigurator(), "Makefile");
                 break;
             case EMAKE:
-                configurator = new EmakeConfigurator();
+                configurator = new FileProjectConfigurationPersister(
+                        new EmakeConfigurator(), "Emakefile");
                 break;
             case REBAR:
-                configurator = new RebarConfigurator();
+                configurator = new FileProjectConfigurationPersister(
+                        new RebarConfigurator(), "rebar.config");
                 break;
             }
         }
         return configurator;
     }
-
 }

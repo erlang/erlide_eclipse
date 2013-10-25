@@ -3,7 +3,6 @@ package org.erlide.core.internal.builder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.model.root.ProjectConfigurator;
 
 public class InternalConfigurator implements ProjectConfigurator {
@@ -19,12 +18,6 @@ public class InternalConfigurator implements ProjectConfigurator {
     public ErlangProjectProperties decodeConfig(@NonNull final String config) {
         // nothing to do here
         return null;
-    }
-
-    @Override
-    public ProjectConfigurationPersister getPersister(@NonNull final IProject project) {
-        return new PreferencesProjectConfigurationPersister(project, this,
-                "org.erlide.core");
     }
 
 }
