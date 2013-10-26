@@ -50,6 +50,7 @@ import org.erlide.engine.model.ErlModelStatusConstants;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IErlModelMarker;
 import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.builder.BuilderInfo;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;
@@ -102,14 +103,13 @@ public class ErlProject extends Openable implements IErlProject {
     private static final boolean IS_CASE_SENSITIVE = !new File("Temp").equals(new File("temp")); //$NON-NLS-1$ //$NON-NLS-2$
 
     protected IProject fProject;
-    private final ErlangProjectProperties properties;
+    private ErlangProjectProperties properties;
     private Collection<IResource> nonErlangResources;
+    private String builderName = BuilderInfo.INTERNAL.name();
 
     public ErlProject(final IProject project, final ErlElement parent) {
         super(parent, project.getName());
         fProject = project;
-        loadCoreProperties();
-        properties = loadProperties();
         nonErlangResources = null;
     }
 
@@ -521,11 +521,19 @@ public class ErlProject extends Openable implements IErlProject {
 
     @Override
     public ErlangProjectProperties getProperties() {
+        if (properties == null) {
+            loadCoreProperties();
+            properties = loadProperties();
+        }
         return properties;
     }
 
     public IEclipsePreferences getPropertiesNode() {
         return new ProjectScope(fProject).getNode("org.erlide.core");
+    }
+
+    public IEclipsePreferences getCorePropertiesNode() {
+        return new ProjectScope(fProject).getNode("org.erlide.model");
     }
 
     @Override
@@ -606,42 +614,42 @@ public class ErlProject extends Openable implements IErlProject {
 
     public void setIncludeDirs(final Collection<IPath> includeDirs) {
         getModelCache().removeProject(this);
-        properties.setIncludeDirs(includeDirs);
+        getProperties().setIncludeDirs(includeDirs);
         storeProperties();
         setStructureKnown(false);
     }
 
     public void setSourceDirs(final Collection<IPath> sourceDirs) {
         getModelCache().removeProject(this);
-        properties.setSourceDirs(sourceDirs);
+        getProperties().setSourceDirs(sourceDirs);
         storeProperties();
         setStructureKnown(false);
     }
 
     public void setExternalModulesFile(final String absolutePath) {
         getModelCache().removeProject(this);
-        properties.setExternalModulesFile(absolutePath);
+        getProperties().setExternalModulesFile(absolutePath);
         storeProperties();
         setStructureKnown(false);
     }
 
     public void setExternalIncludesFile(final String absolutePath) {
         getModelCache().removeProject(this);
-        properties.setExternalIncludesFile(absolutePath);
+        getProperties().setExternalIncludesFile(absolutePath);
         storeProperties();
         setStructureKnown(false);
     }
 
     @Override
     public Collection<IPath> getSourceDirs() {
-        Collection<IPath> sourceDirs = properties.getSourceDirs();
+        Collection<IPath> sourceDirs = getProperties().getSourceDirs();
         sourceDirs = resolvePaths(sourceDirs);
         return sourceDirs;
     }
 
     @Override
     public Collection<IPath> getIncludeDirs() {
-        Collection<IPath> includeDirs = properties.getIncludeDirs();
+        Collection<IPath> includeDirs = getProperties().getIncludeDirs();
         includeDirs = resolvePaths(includeDirs);
         return includeDirs;
     }
@@ -803,16 +811,26 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private void loadCoreProperties() {
-        // TODO builder and builder config
+        final IEclipsePreferences node = getCorePropertiesNode();
+        builderName = node.get("builderName", BuilderInfo.INTERNAL.name());
+    }
+
+    private void saveCoreProperties() {
+        final IEclipsePreferences node = getCorePropertiesNode();
+        node.put("builderName", builderName);
+        try {
+            node.flush();
+        } catch (final BackingStoreException e) {
+            // ignore?
+        }
     }
 
     private ErlangProjectProperties loadProperties() {
         try {
-            return ErlangBuilder.getFactory().getBuilder("INTERNAL")
+            return ErlangBuilder.getFactory().getBuilder(builderName)
                     .getConfigurationPersister().getConfiguration(this);
         } catch (final IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ErlLogger.error(e);
             return null;
         }
     }
@@ -820,13 +838,13 @@ public class ErlProject extends Openable implements IErlProject {
     private void storeProperties() {
         try {
             final ProjectConfigurationPersister configurationPersister = ErlangBuilder
-                    .getFactory().getBuilder("INTERNAL")
+                    .getFactory().getBuilder(builderName)
                     .getConfigurationPersister();
             if (properties != null) {
                 configurationPersister.setConfiguration(this, properties);
             }
         } catch (final IOException e) {
-            // TODO Auto-generated catch block
+            ErlLogger.error(e);
             e.printStackTrace();
         }
     }

@@ -21,7 +21,7 @@ import org.erlide.util.services.ExtensionUtils;
 
 public abstract class ErlangBuilder extends IncrementalProjectBuilder {
 
-    private ProjectConfigurationPersister configurator;
+    private ProjectConfigurationPersister persister;
 
     public abstract String getId();
 
@@ -30,12 +30,12 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
             IProgressMonitor monitor) throws CoreException;
 
     public ProjectConfigurationPersister getConfigurationPersister() {
-        return configurator;
+        return persister;
     }
 
     public void setConfigurationPersister(
-            final ProjectConfigurationPersister configurator) {
-        this.configurator = configurator;
+            final ProjectConfigurationPersister persister) {
+        this.persister = persister;
     }
 
     public static IErlangBuilderFactory getFactory() {

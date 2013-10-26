@@ -16,8 +16,8 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.internal.model.root.ErlProject;
-import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -34,8 +34,10 @@ public class IErlProjectTests extends ErlModelTestBase {
     @Test
     public void getModules() throws Exception {
         ErlideTestUtils.createInclude(projects[0], "bb.erl", "-module(bb).\n");
-        ErlideTestUtils.createModule(projects[0], "cc.hrl", "-define(A, hej).\n");
-        ErlideTestUtils.createInclude(projects[0], "dd.hrl", "-define(B, du).\n");
+        ErlideTestUtils.createModule(projects[0], "cc.hrl",
+                "-define(A, hej).\n");
+        ErlideTestUtils.createInclude(projects[0], "dd.hrl",
+                "-define(B, du).\n");
         final List<IErlModule> expected = Lists.newArrayList(module);
         final Collection<IErlModule> modules = projects[0].getModules();
         assertEquals(expected, modules);
@@ -48,9 +50,10 @@ public class IErlProjectTests extends ErlModelTestBase {
     public void getIncludes() throws Exception {
         ErlideTestUtils.createModule(projects[0], "aa.erl", "-module(aa).\n");
         ErlideTestUtils.createInclude(projects[0], "bb.erl", "-module(bb).\n");
-        ErlideTestUtils.createModule(projects[0], "cc.hrl", "-define(A, hej).\n");
-        final IErlModule includeDD = ErlideTestUtils.createInclude(projects[0], "dd.hrl",
-                "-define(B, du).\n");
+        ErlideTestUtils.createModule(projects[0], "cc.hrl",
+                "-define(A, hej).\n");
+        final IErlModule includeDD = ErlideTestUtils.createInclude(projects[0],
+                "dd.hrl", "-define(B, du).\n");
         final List<IErlModule> expected = Lists.newArrayList(includeDD);
         final Collection<IErlModule> includes = projects[0].getIncludes();
         assertEquals(expected, includes);
@@ -60,12 +63,14 @@ public class IErlProjectTests extends ErlModelTestBase {
     @Test
     public void getModulesAndIncludes() throws Exception {
         ErlideTestUtils.createInclude(projects[0], "bb.erl", "-module(bb).\n");
-        ErlideTestUtils.createModule(projects[0], "cc.hrl", "-define(A, hej).\n");
-        final IErlModule includeD = ErlideTestUtils.createInclude(projects[0], "dd.hrl",
-                "-define(B, du).\n");
+        ErlideTestUtils.createModule(projects[0], "cc.hrl",
+                "-define(A, hej).\n");
+        final IErlModule includeD = ErlideTestUtils.createInclude(projects[0],
+                "dd.hrl", "-define(B, du).\n");
         // FIXME should all of them be returned?
         final List<IErlModule> expected = Lists.newArrayList(module, includeD);
-        final Collection<IErlModule> includes = projects[0].getModulesAndIncludes();
+        final Collection<IErlModule> includes = projects[0]
+                .getModulesAndIncludes();
         assertEquals(expected, includes);
     }
 
@@ -77,28 +82,35 @@ public class IErlProjectTests extends ErlModelTestBase {
         File externalFile = null;
         File externalsFile = null;
         final IErlProject aProject = projects[0];
-        final String externalModulesString = aProject.getExternalModulesString();
+        final String externalModulesString = aProject
+                .getExternalModulesString();
         try {
             // given
             // an erlang project and an external file not in any project
             final String externalFileName = "external.erl";
-            externalFile = ErlideTestUtils.createTmpFile(externalFileName,
-                    "-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
+            externalFile = ErlideTestUtils
+                    .createTmpFile(externalFileName,
+                            "-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
             final String absolutePath = externalFile.getAbsolutePath();
-            externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX, absolutePath);
+            externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX,
+                    absolutePath);
             aProject.open(null);
-            final Collection<IErlModule> otpModules = aProject.getExternalModules();
+            final Collection<IErlModule> otpModules = aProject
+                    .getExternalModules();
             ((ErlProject) aProject).setExternalModulesFile(externalsFile
                     .getAbsolutePath());
             aProject.open(null);
             // when
             // fetching all external modules
-            final Collection<IErlModule> externalModules = aProject.getExternalModules();
+            final Collection<IErlModule> externalModules = aProject
+                    .getExternalModules();
             // then
             // the external file should be returned
             final Set<IErlModule> otpSet = Sets.newHashSet(otpModules);
-            final Set<IErlModule> externalSet = Sets.newHashSet(externalModules);
-            final Set<IErlModule> difference = Sets.difference(externalSet, otpSet);
+            final Set<IErlModule> externalSet = Sets
+                    .newHashSet(externalModules);
+            final Set<IErlModule> difference = Sets.difference(externalSet,
+                    otpSet);
             assertEquals(1, difference.size());
             final IErlModule externalModule = difference.iterator().next();
             assertNotNull(externalModule);
@@ -110,7 +122,8 @@ public class IErlProjectTests extends ErlModelTestBase {
             if (externalsFile != null && externalsFile.exists()) {
                 externalsFile.delete();
             }
-            ((ErlProject) aProject).setExternalModulesFile(externalModulesString);
+            ((ErlProject) aProject)
+                    .setExternalModulesFile(externalModulesString);
         }
     }
 
@@ -122,7 +135,8 @@ public class IErlProjectTests extends ErlModelTestBase {
         File externalFile = null;
         File externalsFile = null;
         final IErlProject aProject = projects[0];
-        final String externalIncludesString = aProject.getExternalIncludesString();
+        final String externalIncludesString = aProject
+                .getExternalIncludesString();
         try {
             // given
             // an erlang project and an external file not in any project
@@ -131,10 +145,11 @@ public class IErlProjectTests extends ErlModelTestBase {
                     "-define(E, hej).\n");
             final String absolutePath = externalFile.getAbsolutePath();
             final String externalsFileName = XX_ERLIDEX;
-            externalsFile = ErlideTestUtils
-                    .createTmpFile(externalsFileName, absolutePath);
+            externalsFile = ErlideTestUtils.createTmpFile(externalsFileName,
+                    absolutePath);
             aProject.open(null);
-            final Collection<IErlModule> otpIncludes = aProject.getExternalIncludes();
+            final Collection<IErlModule> otpIncludes = aProject
+                    .getExternalIncludes();
             ((ErlProject) aProject).setExternalIncludesFile(externalsFile
                     .getAbsolutePath());
             aProject.open(null);
@@ -145,8 +160,10 @@ public class IErlProjectTests extends ErlModelTestBase {
             // then
             // the external file should be returned
             final Set<IErlModule> otpSet = Sets.newHashSet(otpIncludes);
-            final Set<IErlModule> externalSet = Sets.newHashSet(externalIncludes);
-            final Set<IErlModule> difference = Sets.difference(externalSet, otpSet);
+            final Set<IErlModule> externalSet = Sets
+                    .newHashSet(externalIncludes);
+            final Set<IErlModule> difference = Sets.difference(externalSet,
+                    otpSet);
             assertEquals(1, difference.size());
             final IErlModule externalInclude = difference.iterator().next();
             assertNotNull(externalInclude);
@@ -158,7 +175,8 @@ public class IErlProjectTests extends ErlModelTestBase {
             if (externalsFile != null && externalsFile.exists()) {
                 externalsFile.delete();
             }
-            ((ErlProject) aProject).setExternalIncludesFile(externalIncludesString);
+            ((ErlProject) aProject)
+                    .setExternalIncludesFile(externalIncludesString);
         }
     }
 
@@ -177,8 +195,10 @@ public class IErlProjectTests extends ErlModelTestBase {
             final String absolutePath = externalFile.getAbsolutePath();
             final List<IPath> newIncludeDirs = Lists.newArrayList(includeDirs);
             aProject.open(null);
-            final Collection<IErlModule> otpIncludes = aProject.getExternalIncludes();
-            final IPath absoluteDir = new Path(absolutePath).removeLastSegments(1);
+            final Collection<IErlModule> otpIncludes = aProject
+                    .getExternalIncludes();
+            final IPath absoluteDir = new Path(absolutePath)
+                    .removeLastSegments(1);
             newIncludeDirs.add(absoluteDir);
             ((ErlProject) aProject).setIncludeDirs(newIncludeDirs);
             aProject.open(null);
@@ -189,8 +209,10 @@ public class IErlProjectTests extends ErlModelTestBase {
             // then
             // the external file should be returned
             final Set<IErlModule> otpSet = Sets.newHashSet(otpIncludes);
-            final Set<IErlModule> externalSet = Sets.newHashSet(externalIncludes);
-            final Set<IErlModule> difference = Sets.difference(externalSet, otpSet);
+            final Set<IErlModule> externalSet = Sets
+                    .newHashSet(externalIncludes);
+            final Set<IErlModule> difference = Sets.difference(externalSet,
+                    otpSet);
             final IErlModule externalInclude = difference.iterator().next();
             assertNotNull(externalInclude);
             assertEquals(absolutePath, externalInclude.getFilePath());
@@ -206,13 +228,15 @@ public class IErlProjectTests extends ErlModelTestBase {
     @Test
     public void getExternalModulesString() throws Exception {
         final IErlProject aProject = projects[0];
-        final String externalIncludesString = aProject.getExternalIncludesString();
+        final String externalIncludesString = aProject
+                .getExternalIncludesString();
         try {
             final String s = "/hej";
             ((ErlProject) aProject).setExternalModulesFile(s);
             assertEquals(s, aProject.getExternalModulesString());
         } finally {
-            ((ErlProject) aProject).setExternalModulesFile(externalIncludesString);
+            ((ErlProject) aProject)
+                    .setExternalModulesFile(externalIncludesString);
         }
     }
 
@@ -220,13 +244,15 @@ public class IErlProjectTests extends ErlModelTestBase {
     @Test
     public void getExternalIncludesString() throws Exception {
         final IErlProject aProject = projects[0];
-        final String externalIncludesString = aProject.getExternalIncludesString();
+        final String externalIncludesString = aProject
+                .getExternalIncludesString();
         try {
             final String s = "/tjo";
             ((ErlProject) aProject).setExternalIncludesFile(s);
             assertEquals(s, aProject.getExternalIncludesString());
         } finally {
-            ((ErlProject) aProject).setExternalIncludesFile(externalIncludesString);
+            ((ErlProject) aProject)
+                    .setExternalIncludesFile(externalIncludesString);
         }
     }
 
@@ -246,8 +272,10 @@ public class IErlProjectTests extends ErlModelTestBase {
             final String absolutePath = externalFile.getAbsolutePath();
             final List<IPath> newIncludeDirs = Lists.newArrayList(includeDirs);
             aProject.open(null);
-            final Collection<IErlModule> otpIncludes = aProject.getExternalIncludes();
-            final IPath absoluteDir = new Path(absolutePath).removeLastSegments(1);
+            final Collection<IErlModule> otpIncludes = aProject
+                    .getExternalIncludes();
+            final IPath absoluteDir = new Path(absolutePath)
+                    .removeLastSegments(1);
             newIncludeDirs.add(absoluteDir);
             ((ErlProject) aProject).setIncludeDirs(newIncludeDirs);
             aProject.open(null);
@@ -258,12 +286,15 @@ public class IErlProjectTests extends ErlModelTestBase {
             // then
             // the external file should be returned
             final Set<IErlModule> otpSet = Sets.newHashSet(otpIncludes);
-            final Set<IErlModule> externalSet = Sets.newHashSet(externalIncludes);
-            final Set<IErlModule> difference = Sets.difference(externalSet, otpSet);
+            final Set<IErlModule> externalSet = Sets
+                    .newHashSet(externalIncludes);
+            final Set<IErlModule> difference = Sets.difference(externalSet,
+                    otpSet);
             assertEquals(1, difference.size());
             final IErlModule externalInclude = difference.iterator().next();
             assertNotNull(externalInclude);
-            assertEquals(absolutePath, externalInclude.getFilePath());
+            assertEquals(new Path(absolutePath),
+                    new Path(externalInclude.getFilePath()));
         } finally {
             if (externalFile != null && externalFile.exists()) {
                 externalFile.delete();
@@ -399,7 +430,8 @@ public class IErlProjectTests extends ErlModelTestBase {
     public void getReferencedProjects() throws Exception {
         final IProject aProject = projects[0].getWorkspaceProject();
         final IProjectDescription description = aProject.getDescription();
-        final IProject[] refs = new IProject[] { projects[1].getWorkspaceProject() };
+        final IProject[] refs = new IProject[] { projects[1]
+                .getWorkspaceProject() };
         try {
             description.setReferencedProjects(refs);
             aProject.setDescription(description, null);
@@ -432,8 +464,8 @@ public class IErlProjectTests extends ErlModelTestBase {
         try {
             // given
             // an Erlang project and a module
-            final IErlModule aModule = ErlideTestUtils.createModule(aProject, "aa.erl",
-                    "-module(aa).\n");
+            final IErlModule aModule = ErlideTestUtils.createModule(aProject,
+                    "aa.erl", "-module(aa).\n");
             final IPath srcxPath = new Path("srcx");
             final List<IPath> srcxDirs = Lists.newArrayList(srcxPath);
             aProject.open(null);
