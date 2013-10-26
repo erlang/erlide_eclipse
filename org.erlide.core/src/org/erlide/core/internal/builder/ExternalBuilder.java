@@ -8,6 +8,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.MarkerUtils;
@@ -39,30 +41,36 @@ public abstract class ExternalBuilder extends ErlangBuilder {
                 "Start " + helper.buildKind(kind) + " for " + project.getName() + ": "
                         + getOsCommand());
 
-        MarkerUtils.removeProblemMarkersFor(project);
-        m.worked(1);
+        try {
+            MarkerUtils.removeProblemMarkersFor(project);
+            m.worked(1);
 
-        // TODO use project config!
-        // XXX how do we know what make uses?
-        final IResource ebin = project.findMember("ebin");
-        if (ebin == null) {
-            project.getFolder("ebin").create(true, true, null);
+            // TODO use project config!
+            // XXX how do we know what make uses?
+            final IResource ebin = project.findMember("ebin");
+            if (ebin == null) {
+                project.getFolder("ebin").create(true, true, null);
+            }
+
+            final ToolResults result = ex.run(getOsCommand(), getCompileTarget(), project
+                    .getLocation().toPortableString());
+
+            if (result.isCommandNotFound()) {
+                MarkerUtils.addMarker(null, project, null, "Builder command not found: "
+                        + getOsCommand(), 0, IMarker.SEVERITY_ERROR,
+                        MarkerUtils.PROBLEM_MARKER);
+            } else {
+                createMarkers(result);
+            }
+            m.worked(9);
+
+            ErlLogger.trace("build", "Done " + project.getName());
+
+        } catch (final Exception e) {
+            e.printStackTrace();
+            throw new CoreException(new Status(IStatus.ERROR, "org.erlide.core",
+                    "builder error", e));
         }
-
-        final ToolResults result = ex.run(getOsCommand(), getCompileTarget(), project
-                .getLocation().toPortableString());
-
-        if (result.isCommandNotFound()) {
-            MarkerUtils.addMarker(null, project, null, "Builder command not found: "
-                    + getOsCommand(), 0, IMarker.SEVERITY_ERROR,
-                    MarkerUtils.PROBLEM_MARKER);
-        } else {
-            createMarkers(result);
-        }
-        m.worked(9);
-
-        ErlLogger.trace("build", "Done " + project.getName());
-
         return null;
     }
 
