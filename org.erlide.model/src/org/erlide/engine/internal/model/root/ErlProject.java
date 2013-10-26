@@ -105,7 +105,7 @@ public class ErlProject extends Openable implements IErlProject {
     protected IProject fProject;
     private ErlangProjectProperties properties;
     private Collection<IResource> nonErlangResources;
-    private String builderName = BuilderInfo.INTERNAL.name();
+    private String builderName;
 
     public ErlProject(final IProject project, final ErlElement parent) {
         super(parent, project.getName());
