@@ -20,4 +20,8 @@ public class EmakeProjectPreferencesWizardPage extends ProjectPreferencesWizardP
 
     }
 
+    @Override
+    protected String getBuilderDescription() {
+        return "Emake...";
+    }
 }

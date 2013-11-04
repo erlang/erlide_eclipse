@@ -278,4 +278,9 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         }
         externalIncludes.setText(result);
     }
+
+    @Override
+    protected String getBuilderDescription() {
+        return "Internal...";
+    }
 }

@@ -49,6 +49,9 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
             final ErlangProjectProperties info) {
         super(pageName);
         this.info = info;
+
+        setTitle("Builder preferences");
+        setDescription(getBuilderDescription());
     }
 
     /**
@@ -206,4 +209,7 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
         return true;
     }
 
+    protected String getBuilderDescription() {
+        return null;
+    }
 }

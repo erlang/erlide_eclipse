@@ -61,6 +61,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     private NewProjectData info;
     private Map<BuilderInfo, ProjectPreferencesWizardPage> buildPages;
     private ErlangNewProjectCreationPage mainPage;
+    private ErlangProjectBuilderPage builderPage;
 
     @Override
     public void init(final IWorkbench workbench, final IStructuredSelection selection) {
@@ -73,6 +74,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
             super.addPages();
             info = new NewProjectData();
             buildPages = Maps.newEnumMap(BuilderInfo.class);
+
             mainPage = new ErlangNewProjectCreationPage("mainPage", info);
             mainPage.setTitle(ErlideUIPlugin
                     .getResourceString("wizards.titles.newproject"));
@@ -82,14 +84,19 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
                     ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
             addPage(mainPage);
 
+            builderPage = new ErlangProjectBuilderPage("builderPage", info);
+            builderPage.setTitle(ErlideUIPlugin
+                    .getResourceString("wizards.titles.builderprefs"));
+            builderPage.setDescription(ErlideUIPlugin
+                    .getResourceString("wizards.descs.builderprefs"));
+            builderPage.setImageDescriptor(ErlideUIPlugin.getDefault()
+                    .getImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
+            addPage(builderPage);
+
             for (final BuilderInfo builder : BuilderInfo.values()) {
                 final ProjectPreferencesWizardPage buildPage = ProjectPreferencesWizardPageFactory
                         .create(builder, info);
                 buildPages.put(builder, buildPage);
-                buildPage.setTitle(ErlideUIPlugin
-                        .getResourceString("wizards.titles.buildprefs"));
-                buildPage.setDescription(ErlideUIPlugin
-                        .getResourceString("wizards.descs.buildprefs"));
                 buildPage.setImageDescriptor(ErlideUIPlugin.getDefault()
                         .getImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
                 addPage(buildPage);
@@ -269,6 +276,9 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     @Override
     public IWizardPage getNextPage(final IWizardPage page) {
         if (page == mainPage) {
+            return builderPage;
+        }
+        if (page == builderPage) {
             final ProjectPreferencesWizardPage result = buildPages.get(BuilderInfo
                     .valueOf(info.getBuilderName()));
             return result;

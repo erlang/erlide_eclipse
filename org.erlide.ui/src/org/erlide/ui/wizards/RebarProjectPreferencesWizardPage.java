@@ -17,8 +17,13 @@ public class RebarProjectPreferencesWizardPage extends ProjectPreferencesWizardP
         // create the composite to hold the widgets
         final Composite composite = new Composite(parent, SWT.NONE);
         setControl(composite);
+
         // TODO Auto-generated method stub
 
     }
 
+    @Override
+    protected String getBuilderDescription() {
+        return "Rebar...";
+    }
 }
