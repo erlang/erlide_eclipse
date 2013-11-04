@@ -3,6 +3,7 @@ package org.erlide.core.internal.builder;
 import java.util.EnumMap;
 import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
 import org.erlide.core.internal.builder.external.EmakeBuilder;
 import org.erlide.core.internal.builder.external.EmakeConfigurator;
 import org.erlide.core.internal.builder.external.MakeBuilder;
@@ -12,6 +13,8 @@ import org.erlide.core.internal.builder.external.RebarConfigurator;
 import org.erlide.engine.model.builder.BuilderInfo;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
+import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.util.ErlLogger;
 
@@ -59,10 +62,12 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
     }
 
     private ProjectConfigurationPersister getConfigurationPersister(final BuilderInfo info) {
+        if (info == null) {
+            return null;
+        }
         switch (info) {
         case INTERNAL:
-            return new PreferencesProjectConfigurationPersister(
-                    new InternalConfigurator(), "org.erlide.core");
+            return new PreferencesProjectConfigurationPersister("org.erlide.core");
         case MAKE:
             return new FileProjectConfigurationPersister(new MakeConfigurator(),
                     "Makefile");
@@ -74,7 +79,34 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
                     "rebar.config");
         }
         // doesn't happen
+        throw new IllegalArgumentException("Illegal Erlang builder: " + info.toString());
+    }
+
+    @Override
+    public BuilderInfo getBuilder(final IErlProject eproject) {
+        final IProject project = eproject.getWorkspaceProject();
+        if (project.findMember("Makefile") != null) {
+            return BuilderInfo.MAKE;
+        }
+        if (project.findMember("Emakefile") != null) {
+            return BuilderInfo.EMAKE;
+        }
+        if (project.findMember("rebar.config") != null) {
+            return BuilderInfo.REBAR;
+        }
+        if (project.exists()) {
+            return BuilderInfo.INTERNAL;
+        }
         return null;
+    }
+
+    @Override
+    public ErlangProjectProperties getConfig(final IErlProject project) {
+        final ProjectConfigurationPersister persister = getConfigurationPersister(getBuilder(project));
+        if (persister == null) {
+            return null;
+        }
+        return persister.getConfiguration(project);
     }
 
 }

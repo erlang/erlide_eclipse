@@ -1,7 +1,9 @@
 package org.erlide.ui.wizards;
 
 import com.google.common.base.Objects;
+import java.io.File;
 import java.util.List;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -133,5 +135,24 @@ public class ErlangProjectBuilderPage extends WizardPage {
       }
     }
     return _switchResult;
+  }
+  
+  public void setVisible(final boolean visible) {
+    super.setVisible(visible);
+    if (visible) {
+      this.detectBuilderConfig();
+    }
+  }
+  
+  public Object detectBuilderConfig() {
+    Object _xifexpression = null;
+    IPath _location = this.info.getLocation();
+    String _portableString = _location.toPortableString();
+    File _file = new File(_portableString);
+    boolean _exists = _file.exists();
+    if (_exists) {
+      _xifexpression = null;
+    }
+    return _xifexpression;
   }
 }

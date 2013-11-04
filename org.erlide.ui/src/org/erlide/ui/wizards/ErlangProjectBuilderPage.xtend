@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Label
 import org.erlide.engine.model.builder.BuilderInfo
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
+import java.io.File
 
 class ErlangProjectBuilderPage extends WizardPage {
 
@@ -68,6 +69,19 @@ class ErlangProjectBuilderPage extends WizardPage {
             case BuilderInfo.EMAKE: ''': straight Emake.'''
             case BuilderInfo.REBAR: ''': straight rebar.'''
         }
+    }
+
+    override setVisible(boolean visible) {
+        super.setVisible(visible)
+        if (visible) {
+            detectBuilderConfig
+        }
+    }
+
+    def detectBuilderConfig() {
+        if (new File(info.location.toPortableString).exists) {
+                         
+        } 
     }
 
 }

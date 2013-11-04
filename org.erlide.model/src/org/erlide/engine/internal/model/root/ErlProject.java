@@ -826,26 +826,16 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private ErlangProjectProperties loadProperties() {
-        try {
-            return ErlangBuilder.getFactory().getBuilder(builderName)
-                    .getConfigurationPersister().getConfiguration(this);
-        } catch (final IOException e) {
-            ErlLogger.error(e);
-            return null;
-        }
+        return ErlangBuilder.getFactory().getBuilder(builderName)
+                .getConfigurationPersister().getConfiguration(this);
     }
 
     private void storeProperties() {
-        try {
-            final ProjectConfigurationPersister configurationPersister = ErlangBuilder
-                    .getFactory().getBuilder(builderName)
-                    .getConfigurationPersister();
-            if (properties != null) {
-                configurationPersister.setConfiguration(this, properties);
-            }
-        } catch (final IOException e) {
-            ErlLogger.error(e);
-            e.printStackTrace();
+        final ProjectConfigurationPersister configurationPersister = ErlangBuilder
+                .getFactory().getBuilder(builderName)
+                .getConfigurationPersister();
+        if (properties != null) {
+            configurationPersister.setConfiguration(this, properties);
         }
     }
 }

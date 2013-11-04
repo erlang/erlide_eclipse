@@ -1,7 +1,5 @@
 package org.erlide.core.internal.builder;
 
-import java.io.IOException;
-
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -10,7 +8,6 @@ import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
-import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -25,9 +22,7 @@ public class PreferencesProjectConfigurationPersister extends
 
     private final String nodeKey;
 
-    public PreferencesProjectConfigurationPersister(
-            @NonNull final ProjectConfigurator configurator, @NonNull final String nodeKey) {
-        super(configurator);
+    public PreferencesProjectConfigurationPersister(@NonNull final String nodeKey) {
         Preconditions.checkNotNull(nodeKey);
         this.nodeKey = nodeKey;
     }
@@ -37,8 +32,7 @@ public class PreferencesProjectConfigurationPersister extends
     }
 
     @Override
-    public ErlangProjectProperties getConfiguration(final IErlProject project)
-            throws IOException {
+    public ErlangProjectProperties getConfiguration(final IErlProject project) {
         setProject(project.getWorkspaceProject());
         final ErlangProjectProperties result = new ErlangProjectProperties();
         final IEclipsePreferences node = getNode();
@@ -88,7 +82,7 @@ public class PreferencesProjectConfigurationPersister extends
 
     @Override
     public void setConfiguration(final IErlProject project,
-            final ErlangProjectProperties info) throws IOException {
+            final ErlangProjectProperties info) {
         setProject(project.getWorkspaceProject());
         final IEclipsePreferences node = getNode();
         if (node == null) {
