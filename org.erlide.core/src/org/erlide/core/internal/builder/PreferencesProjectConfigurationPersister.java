@@ -3,7 +3,6 @@ package org.erlide.core.internal.builder;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.PathSerializer;
@@ -22,7 +21,7 @@ public class PreferencesProjectConfigurationPersister extends
 
     private final String nodeKey;
 
-    public PreferencesProjectConfigurationPersister(@NonNull final String nodeKey) {
+    public PreferencesProjectConfigurationPersister(final String nodeKey) {
         Preconditions.checkNotNull(nodeKey);
         this.nodeKey = nodeKey;
     }

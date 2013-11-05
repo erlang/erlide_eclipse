@@ -1,15 +1,16 @@
 package org.erlide.engine.model.builder;
 
 public enum BuilderInfo {
-    INTERNAL(null), MAKE("Makefile"), EMAKE("Emakefile"), REBAR("rebar.config");
+    INTERNAL("org.erlide.core"), MAKE("Makefile"), EMAKE("Emakefile"), REBAR(
+            "rebar.config");
 
-    private final String configFile;
+    private final String configName;
 
-    BuilderInfo(final String configFile) {
-        this.configFile = configFile;
+    BuilderInfo(final String configName) {
+        this.configName = configName;
     }
 
-    public String getConfigFile() {
-        return configFile;
+    public String getConfigName() {
+        return configName;
     }
 }

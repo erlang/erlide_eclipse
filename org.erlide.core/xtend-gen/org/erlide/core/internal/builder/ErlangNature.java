@@ -98,20 +98,20 @@ public class ErlangNature implements IProjectNature {
   public static BuilderInfo detectBuilder(final IContainer folder) {
     BuilderInfo _xblockexpression = null;
     {
-      String _configFile = BuilderInfo.MAKE.getConfigFile();
-      IResource _findMember = folder.findMember(_configFile);
+      String _configName = BuilderInfo.MAKE.getConfigName();
+      IResource _findMember = folder.findMember(_configName);
       boolean _tripleNotEquals = (_findMember != null);
       if (_tripleNotEquals) {
         return BuilderInfo.MAKE;
       }
-      String _configFile_1 = BuilderInfo.EMAKE.getConfigFile();
-      IResource _findMember_1 = folder.findMember(_configFile_1);
+      String _configName_1 = BuilderInfo.EMAKE.getConfigName();
+      IResource _findMember_1 = folder.findMember(_configName_1);
       boolean _tripleNotEquals_1 = (_findMember_1 != null);
       if (_tripleNotEquals_1) {
         return BuilderInfo.EMAKE;
       }
-      String _configFile_2 = BuilderInfo.REBAR.getConfigFile();
-      IResource _findMember_2 = folder.findMember(_configFile_2);
+      String _configName_2 = BuilderInfo.REBAR.getConfigName();
+      IResource _findMember_2 = folder.findMember(_configName_2);
       boolean _tripleNotEquals_2 = (_findMember_2 != null);
       if (_tripleNotEquals_2) {
         return BuilderInfo.REBAR;

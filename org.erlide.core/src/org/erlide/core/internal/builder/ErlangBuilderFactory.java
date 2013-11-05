@@ -64,18 +64,19 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
         if (info == null) {
             return null;
         }
+        String configName = info.getConfigName();
         switch (info) {
         case INTERNAL:
-            return new PreferencesProjectConfigurationPersister("org.erlide.core");
+            return new PreferencesProjectConfigurationPersister(configName);
         case MAKE:
             return new FileProjectConfigurationPersister(new MakeConfigurator(),
-                    info.getConfigFile());
+                    configName);
         case EMAKE:
             return new FileProjectConfigurationPersister(new EmakeConfigurator(),
-                    info.getConfigFile());
+                    configName);
         case REBAR:
             return new FileProjectConfigurationPersister(new RebarConfigurator(),
-                    info.getConfigFile());
+                    configName);
         }
         // doesn't happen
         throw new IllegalArgumentException("Illegal Erlang builder: " + info.toString());

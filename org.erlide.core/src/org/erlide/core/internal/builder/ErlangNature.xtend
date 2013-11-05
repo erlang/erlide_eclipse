@@ -63,12 +63,12 @@ class ErlangNature implements IProjectNature {
     }
 
     static def detectBuilder(IContainer folder) {
-        if (folder.findMember(BuilderInfo.MAKE.configFile) !== null) {
+        if (folder.findMember(BuilderInfo.MAKE.getConfigName) !== null) {
             return BuilderInfo.MAKE        }
-        if (folder.findMember(BuilderInfo.EMAKE.configFile) !== null) {
+        if (folder.findMember(BuilderInfo.EMAKE.getConfigName) !== null) {
             return BuilderInfo.EMAKE
         }
-        if (folder.findMember(BuilderInfo.REBAR.configFile) !== null) {
+        if (folder.findMember(BuilderInfo.REBAR.getConfigName) !== null) {
             return BuilderInfo.REBAR
         }
         if (folder.exists) {
