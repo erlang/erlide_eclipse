@@ -52,23 +52,22 @@ public class BuildersTest {
     public static void finish() throws CoreException {
         final IErlProject p2 = ErlideTestUtils.getExistingProject("p2");
         final IProject prj = p2.getResource().getProject();
-        ErlangNature.setErlangProjectBuilder(prj,
-                BuilderTool.INTERNAL.toString());
+        ErlangNature.setErlangProjectBuilder(prj, BuilderTool.INTERNAL);
     }
 
     @Test
     public void internalBuilderShouldWork() throws CoreException {
-        testBuilder(BuilderTool.INTERNAL.toString());
+        testBuilder(BuilderTool.INTERNAL);
     }
 
     @Test
     public void makeBuilderShouldWork() throws CoreException {
-        testBuilder(BuilderTool.MAKE.toString());
+        testBuilder(BuilderTool.MAKE);
     }
 
     @Test
     public void emakeBuilderShouldWork() throws CoreException {
-        testBuilder(BuilderTool.EMAKE.toString());
+        testBuilder(BuilderTool.EMAKE);
     }
 
     @Test
@@ -80,7 +79,7 @@ public class BuildersTest {
                         + "{registered, []},{applications, [kernel,stdlib]},"
                         + "{mod, { mod, []}},{env, []}]}."), true, null);
         try {
-            testBuilder("rebar");
+            testBuilder(BuilderTool.REBAR);
         } finally {
             app.delete(true, null);
         }
@@ -88,13 +87,12 @@ public class BuildersTest {
 
     @Test(expected = AssertionError.class)
     public void rebarBuilderShouldNotWorkWithoutAppFile() throws CoreException {
-        testBuilder(BuilderTool.REBAR.toString());
+        testBuilder(BuilderTool.REBAR);
     }
 
-    private void testBuilder(final String builder) throws CoreException {
+    private void testBuilder(final BuilderTool builder) throws CoreException {
         ErlangNature.setErlangProjectBuilder(prj, builder);
-        final String builderId = ErlangBuilder.getFactory().getBuilder(builder)
-                .getId();
+        final String builderId = ErlangBuilder.getFactory().getBuilder(builder).getId();
         final String targetBeamPath = "ebin/mod.beam";
 
         final IResource beam0 = prj.findMember(targetBeamPath);

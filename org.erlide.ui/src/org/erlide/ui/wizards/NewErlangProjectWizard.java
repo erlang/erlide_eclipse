@@ -187,7 +187,8 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
             description.setNatureIds(new String[] { ErlangCore.NATURE_ID });
             project.setDescription(description, new SubProgressMonitor(monitor, 10));
             if (info.getBuilderName() != null) {
-                ErlangNature.setErlangProjectBuilder(project, info.getBuilderName());
+                ErlangNature.setErlangProjectBuilder(project,
+                        BuilderTool.valueOf(info.getBuilderName()));
                 createBuilderConfig(info.getBuilderName());
             }
 

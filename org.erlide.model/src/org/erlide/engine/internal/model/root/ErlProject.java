@@ -50,6 +50,7 @@ import org.erlide.engine.model.ErlModelStatusConstants;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IErlModelMarker;
 import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.IErlModule;
@@ -105,7 +106,8 @@ public class ErlProject extends Openable implements IErlProject {
     protected IProject fProject;
     private ErlangProjectProperties properties;
     private Collection<IResource> nonErlangResources;
-    private String builderName;
+    private BuilderTool builderTool;
+    private BuilderConfig builderConfig;
 
     public ErlProject(final IProject project, final ErlElement parent) {
         super(parent, project.getName());
@@ -810,14 +812,18 @@ public class ErlProject extends Openable implements IErlProject {
         super.close();
     }
 
-    private void loadCoreProperties() {
+    public void loadCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        builderName = node.get("builderName", BuilderTool.INTERNAL.name());
+        builderTool = BuilderTool.valueOf(node.get("builderTool",
+                BuilderTool.INTERNAL.name()));
+        builderConfig = BuilderConfig.valueOf(node.get("builderConfig",
+                BuilderConfig.INTERNAL.name()));
     }
 
-    private void saveCoreProperties() {
+    public void saveCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        node.put("builderName", builderName);
+        node.put("builderTool", builderTool.name());
+        node.put("builderConfig", builderConfig.name());
         try {
             node.flush();
         } catch (final BackingStoreException e) {
@@ -826,16 +832,26 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private ErlangProjectProperties loadProperties() {
-        return ErlangBuilder.getFactory().getBuilder(builderName)
-                .getConfigurationPersister().getConfiguration(this);
+        final ProjectConfigurationPersister persister = ErlangBuilder
+                .getFactory().getConfigurationPersister(builderConfig);
+        return persister.getConfiguration(this);
     }
 
     private void storeProperties() {
-        final ProjectConfigurationPersister configurationPersister = ErlangBuilder
-                .getFactory().getBuilder(builderName)
-                .getConfigurationPersister();
+        final ProjectConfigurationPersister persister = ErlangBuilder
+                .getFactory().getConfigurationPersister(builderConfig);
         if (properties != null) {
-            configurationPersister.setConfiguration(this, properties);
+            persister.setConfiguration(this, properties);
         }
+    }
+
+    @Override
+    public BuilderTool getBuilderTool() {
+        return builderTool;
+    }
+
+    @Override
+    public BuilderConfig getBuilderConfig() {
+        return builderConfig;
     }
 }

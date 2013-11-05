@@ -16,12 +16,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.util.services.ExtensionUtils;
 
 public abstract class ErlangBuilder extends IncrementalProjectBuilder {
-
-    private ProjectConfigurationPersister persister;
 
     public abstract String getId();
 
@@ -29,19 +26,9 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
     public abstract IProject[] build(int kind, Map<String, String> args,
             IProgressMonitor monitor) throws CoreException;
 
-    public ProjectConfigurationPersister getConfigurationPersister() {
-        return persister;
-    }
-
-    public void setConfigurationPersister(
-            final ProjectConfigurationPersister persister) {
-        this.persister = persister;
-    }
-
     public static IErlangBuilderFactory getFactory() {
         return ExtensionUtils.getSingletonExtension(
-                "org.erlide.model.api.builderFactory",
-                IErlangBuilderFactory.class);
+                "org.erlide.model.api.builderFactory", IErlangBuilderFactory.class);
     }
 
 }

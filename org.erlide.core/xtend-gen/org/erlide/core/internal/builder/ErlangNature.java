@@ -33,7 +33,7 @@ public class ErlangNature implements IProjectNature {
   private IProject project;
   
   public void configure() throws CoreException {
-    ErlangNature.setErlangProjectBuilder(this.project, "internal");
+    ErlangNature.setErlangProjectBuilder(this.project, BuilderTool.INTERNAL);
   }
   
   public void deconfigure() throws CoreException {
@@ -48,7 +48,7 @@ public class ErlangNature implements IProjectNature {
     this.project = lproject;
   }
   
-  public static void setErlangProjectBuilder(final IProject prj, final String builderName) throws CoreException {
+  public static void setErlangProjectBuilder(final IProject prj, final BuilderTool builder) throws CoreException {
     ErlangNature.unsetAllErlangBuilders(prj);
     final IProjectDescription description = prj.getDescription();
     final ICommand[] old = description.getBuildSpec();
@@ -59,8 +59,7 @@ public class ErlangNature implements IProjectNature {
     System.arraycopy(old, 0, specs, 0, _length_1);
     final ICommand command = description.newCommand();
     IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
-    String _upperCase = builderName.toUpperCase();
-    ErlangBuilder _builder = _factory.getBuilder(_upperCase);
+    ErlangBuilder _builder = _factory.getBuilder(builder);
     String _id = _builder.getId();
     command.setBuilderName(_id);
     int _length_2 = old.length;
@@ -77,8 +76,7 @@ public class ErlangNature implements IProjectNature {
     final Function1<BuilderTool,String> _function = new Function1<BuilderTool,String>() {
       public String apply(final BuilderTool it) {
         IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
-        String _name = it.name();
-        ErlangBuilder _builder = _factory.getBuilder(_name);
+        ErlangBuilder _builder = _factory.getBuilder(it);
         String _id = _builder.getId();
         return _id;
       }

@@ -13,26 +13,16 @@ import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
-import org.erlide.util.ErlLogger;
 
 public class ErlangBuilderFactory implements IErlangBuilderFactory {
 
     public ErlangBuilderFactory() {
     }
 
-    @Override
-    public ErlangBuilder getBuilder(final String name) {
-        try {
-            return getBuilder(BuilderTool.valueOf(name));
-        } catch (final IllegalArgumentException e) {
-            ErlLogger.error("Bad builder requested: %s, returning INTERNAL.", name);
-            return getBuilder(BuilderTool.INTERNAL);
-        }
-    }
-
     private final Map<BuilderTool, ErlangBuilder> builderMap = new EnumMap<BuilderTool, ErlangBuilder>(
             BuilderTool.class);
 
+    @Override
     public synchronized ErlangBuilder getBuilder(final BuilderTool info) {
         ErlangBuilder builder = builderMap.get(info);
         if (builder == null) {
@@ -52,7 +42,6 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
             default:
                 builder = new InternalBuilder();
             }
-            // builder.setConfigurationPersister(getConfigurationPersister(info));
         }
         builderMap.put(info, builder);
         return builder;

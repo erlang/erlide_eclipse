@@ -18,6 +18,8 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IOpenable;
 import org.erlide.engine.model.IParent;
+import org.erlide.engine.model.builder.BuilderConfig;
+import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -89,5 +91,9 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
     IProject getWorkspaceProject();
 
     ErlangProjectProperties getProperties();
+
+    BuilderTool getBuilderTool();
+
+    BuilderConfig getBuilderConfig();
 
 }

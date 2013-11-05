@@ -40,6 +40,9 @@ public enum BuilderTool {
         }
     }.apply();
 
+    /**
+     * @return the list of BuilderConfigs that can be used with this tool
+     */
     public Collection<BuilderConfig> getMatchingConfigs() {
         return Collections.unmodifiableCollection(toolConfigsMap.get(this));
     }

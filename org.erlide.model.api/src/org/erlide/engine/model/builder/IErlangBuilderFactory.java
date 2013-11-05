@@ -4,7 +4,7 @@ import org.erlide.engine.model.root.ProjectConfigurationPersister;
 
 public interface IErlangBuilderFactory {
 
-    ErlangBuilder getBuilder(String id);
+    ErlangBuilder getBuilder(BuilderTool tool);
 
     ProjectConfigurationPersister getConfigurationPersister(BuilderConfig info);
 

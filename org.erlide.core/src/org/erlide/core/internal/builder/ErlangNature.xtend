@@ -21,7 +21,7 @@ class ErlangNature implements IProjectNature {
     var IProject project
 
     override configure() throws CoreException {
-        setErlangProjectBuilder(project, 'internal')
+        setErlangProjectBuilder(project, BuilderTool.INTERNAL)
     }
 
     override deconfigure() throws CoreException {
@@ -36,14 +36,14 @@ class ErlangNature implements IProjectNature {
         project = lproject
     }
 
-    static def setErlangProjectBuilder(IProject prj, String builderName) throws CoreException {
+    static def setErlangProjectBuilder(IProject prj, BuilderTool builder) throws CoreException {
         unsetAllErlangBuilders(prj)
         val description = prj.description
         val old = description.buildSpec
         val ICommand[] specs = newArrayOfSize(old.length + 1)
         System.arraycopy(old, 0, specs, 0, old.length)
         val command = description.newCommand
-        command.builderName = ErlangBuilder.factory.getBuilder(builderName.toUpperCase).id
+        command.builderName = ErlangBuilder.factory.getBuilder(builder).id
         specs.set(old.length, command)
         description.buildSpec = specs
         prj.setDescription(description, new NullProgressMonitor())
@@ -52,7 +52,7 @@ class ErlangNature implements IProjectNature {
     static def unsetAllErlangBuilders(IProject prj) throws CoreException {
         val description = prj.description
         val old = description.buildSpec
-        val allIds = BuilderTool.values.map[ErlangBuilder.factory.getBuilder(name).id]
+        val allIds = BuilderTool.values.map[ErlangBuilder.factory.getBuilder(it).id]
 
         val specs = newArrayList
         for (cmd : old) {
