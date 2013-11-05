@@ -19,7 +19,7 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-import org.erlide.engine.model.builder.BuilderInfo;
+import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.wizards.BuilderSelectionListener;
@@ -72,16 +72,16 @@ public class ErlangProjectBuilderPage extends WizardPage {
     label.setText("Build system to be used:");
     BuilderSelectionListener _builderSelectionListener = new BuilderSelectionListener(this.info);
     final BuilderSelectionListener listener = _builderSelectionListener;
-    final BuilderInfo[] builders = BuilderInfo.values();
-    final Procedure1<BuilderInfo> _function_2 = new Procedure1<BuilderInfo>() {
-      public void apply(final BuilderInfo builder) {
+    final BuilderTool[] builders = BuilderTool.values();
+    final Procedure1<BuilderTool> _function_2 = new Procedure1<BuilderTool>() {
+      public void apply(final BuilderTool builder) {
         Button _button = new Button(composite, SWT.RADIO);
         Button check = _button;
         String _string = builder.toString();
         String _lowerCase = _string.toLowerCase();
         check.setText(_lowerCase);
         check.setData(builder);
-        boolean _tripleEquals = (builder == BuilderInfo.INTERNAL);
+        boolean _tripleEquals = (builder == BuilderTool.INTERNAL);
         if (_tripleEquals) {
           check.setSelection(true);
         }
@@ -93,17 +93,17 @@ public class ErlangProjectBuilderPage extends WizardPage {
         new Label(composite, SWT.NONE);
       }
     };
-    IterableExtensions.<BuilderInfo>forEach(((Iterable<BuilderInfo>)Conversions.doWrapArray(builders)), _function_2);
-    String _string = BuilderInfo.INTERNAL.toString();
+    IterableExtensions.<BuilderTool>forEach(((Iterable<BuilderTool>)Conversions.doWrapArray(builders)), _function_2);
+    String _string = BuilderTool.INTERNAL.toString();
     String _upperCase = _string.toUpperCase();
     this.info.setBuilderName(_upperCase);
   }
   
-  public String getDescription(final BuilderInfo builder) {
+  public String getDescription(final BuilderTool builder) {
     String _switchResult = null;
     boolean _matched = false;
     if (!_matched) {
-      if (Objects.equal(builder,BuilderInfo.INTERNAL)) {
+      if (Objects.equal(builder,BuilderTool.INTERNAL)) {
         _matched=true;
         StringConcatenation _builder = new StringConcatenation();
         _builder.append(": let erlide do the compiling.");
@@ -111,7 +111,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
       }
     }
     if (!_matched) {
-      if (Objects.equal(builder,BuilderInfo.MAKE)) {
+      if (Objects.equal(builder,BuilderTool.MAKE)) {
         _matched=true;
         StringConcatenation _builder_1 = new StringConcatenation();
         _builder_1.append(": choose this if there is a Makefile (even if it calls rebar or emake).");
@@ -119,7 +119,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
       }
     }
     if (!_matched) {
-      if (Objects.equal(builder,BuilderInfo.EMAKE)) {
+      if (Objects.equal(builder,BuilderTool.EMAKE)) {
         _matched=true;
         StringConcatenation _builder_2 = new StringConcatenation();
         _builder_2.append(": straight Emake.");
@@ -127,7 +127,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
       }
     }
     if (!_matched) {
-      if (Objects.equal(builder,BuilderInfo.REBAR)) {
+      if (Objects.equal(builder,BuilderTool.REBAR)) {
         _matched=true;
         StringConcatenation _builder_3 = new StringConcatenation();
         _builder_3.append(": straight rebar.");

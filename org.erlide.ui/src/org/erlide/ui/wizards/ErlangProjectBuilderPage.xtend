@@ -9,10 +9,10 @@ import org.eclipse.swt.widgets.Button
 import org.eclipse.swt.widgets.Combo
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Label
-import org.erlide.engine.model.builder.BuilderInfo
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
 import java.io.File
+import org.erlide.engine.model.builder.BuilderTool
 
 class ErlangProjectBuilderPage extends WizardPage {
 
@@ -46,12 +46,12 @@ class ErlangProjectBuilderPage extends WizardPage {
         label.text = 'Build system to be used:'
 
         val listener = new BuilderSelectionListener(info)
-        val builders = BuilderInfo.values
+        val builders = BuilderTool.values
         builders.forEach [ builder |
             var check = new Button(composite, SWT.RADIO)
             check.text = builder.toString.toLowerCase
             check.data = builder
-            if (builder === BuilderInfo.INTERNAL) {
+            if (builder === BuilderTool.INTERNAL) {
                 check.selection = true
             }
             check.addSelectionListener(listener)
@@ -59,15 +59,15 @@ class ErlangProjectBuilderPage extends WizardPage {
             description.text = getDescription(builder)
             new Label(composite, SWT.NONE)
         ]
-        info.builderName = BuilderInfo.INTERNAL.toString.toUpperCase
+        info.builderName = BuilderTool.INTERNAL.toString.toUpperCase
     }
 
-    def String getDescription(BuilderInfo builder) {
+    def String getDescription(BuilderTool builder) {
         switch (builder) {
-            case BuilderInfo.INTERNAL: ''': let erlide do the compiling.'''
-            case BuilderInfo.MAKE: ''': choose this if there is a Makefile (even if it calls rebar or emake).'''
-            case BuilderInfo.EMAKE: ''': straight Emake.'''
-            case BuilderInfo.REBAR: ''': straight rebar.'''
+            case BuilderTool.INTERNAL: ''': let erlide do the compiling.'''
+            case BuilderTool.MAKE: ''': choose this if there is a Makefile (even if it calls rebar or emake).'''
+            case BuilderTool.EMAKE: ''': straight Emake.'''
+            case BuilderTool.REBAR: ''': straight rebar.'''
         }
     }
 
@@ -98,7 +98,7 @@ class BuilderSelectionListener implements SelectionListener {
     }
 
     override widgetSelected(SelectionEvent e) {
-        info.builderName = (e.widget.data as BuilderInfo).toString
+        info.builderName = (e.widget.data as BuilderTool).toString
     }
 
 }

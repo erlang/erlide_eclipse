@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.core.internal.builder.ErlangNature;
-import org.erlide.engine.model.builder.BuilderInfo;
+import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ErlideTestUtils;
@@ -53,22 +53,22 @@ public class BuildersTest {
         final IErlProject p2 = ErlideTestUtils.getExistingProject("p2");
         final IProject prj = p2.getResource().getProject();
         ErlangNature.setErlangProjectBuilder(prj,
-                BuilderInfo.INTERNAL.toString());
+                BuilderTool.INTERNAL.toString());
     }
 
     @Test
     public void internalBuilderShouldWork() throws CoreException {
-        testBuilder(BuilderInfo.INTERNAL.toString());
+        testBuilder(BuilderTool.INTERNAL.toString());
     }
 
     @Test
     public void makeBuilderShouldWork() throws CoreException {
-        testBuilder(BuilderInfo.MAKE.toString());
+        testBuilder(BuilderTool.MAKE.toString());
     }
 
     @Test
     public void emakeBuilderShouldWork() throws CoreException {
-        testBuilder(BuilderInfo.EMAKE.toString());
+        testBuilder(BuilderTool.EMAKE.toString());
     }
 
     @Test
@@ -88,7 +88,7 @@ public class BuildersTest {
 
     @Test(expected = AssertionError.class)
     public void rebarBuilderShouldNotWorkWithoutAppFile() throws CoreException {
-        testBuilder(BuilderInfo.REBAR.toString());
+        testBuilder(BuilderTool.REBAR.toString());
     }
 
     private void testBuilder(final String builder) throws CoreException {

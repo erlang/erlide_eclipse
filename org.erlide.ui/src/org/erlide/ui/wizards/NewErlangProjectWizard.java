@@ -39,7 +39,7 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.builder.BuilderInfo;
+import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -59,7 +59,7 @@ import com.google.common.collect.Maps;
 public class NewErlangProjectWizard extends Wizard implements INewWizard {
 
     private NewProjectData info;
-    private Map<BuilderInfo, ProjectPreferencesWizardPage> buildPages;
+    private Map<BuilderTool, ProjectPreferencesWizardPage> buildPages;
     private ErlangNewProjectCreationPage mainPage;
     private ErlangProjectBuilderPage builderPage;
 
@@ -73,7 +73,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         try {
             super.addPages();
             info = new NewProjectData();
-            buildPages = Maps.newEnumMap(BuilderInfo.class);
+            buildPages = Maps.newEnumMap(BuilderTool.class);
 
             mainPage = new ErlangNewProjectCreationPage("mainPage", info);
             mainPage.setTitle(ErlideUIPlugin
@@ -93,7 +93,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
                     .getImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
             addPage(builderPage);
 
-            for (final BuilderInfo builder : BuilderInfo.values()) {
+            for (final BuilderTool builder : BuilderTool.values()) {
                 final ProjectPreferencesWizardPage buildPage = ProjectPreferencesWizardPageFactory
                         .create(builder, info);
                 buildPages.put(builder, buildPage);
@@ -279,7 +279,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
             return builderPage;
         }
         if (page == builderPage) {
-            final BuilderInfo builder = BuilderInfo.valueOf(info.getBuilderName());
+            final BuilderTool builder = BuilderTool.valueOf(info.getBuilderName());
             return buildPages.get(builder);
         }
         return null;

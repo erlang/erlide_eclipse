@@ -9,7 +9,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.core.content.ErlangContentDescriber;
-import org.erlide.engine.model.builder.BuilderInfo;
+import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
@@ -34,7 +34,7 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
         this.configurator = configurator;
         this.fileName = fileName;
         extraConfigurationPersister = new PreferencesProjectConfigurationPersister(
-                BuilderInfo.INTERNAL.getConfigName());
+                BuilderTool.INTERNAL.getToolMarker());
     }
 
     @Override

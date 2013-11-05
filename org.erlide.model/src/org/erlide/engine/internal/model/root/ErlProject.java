@@ -50,7 +50,7 @@ import org.erlide.engine.model.ErlModelStatusConstants;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IErlModelMarker;
 import org.erlide.engine.model.IOpenable;
-import org.erlide.engine.model.builder.BuilderInfo;
+import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;
@@ -682,7 +682,7 @@ public class ErlProject extends Openable implements IErlProject {
         return getProperties().getRuntimeVersion();
     }
 
-    final IPath DOT_PATH = new Path(".");
+    private final static IPath DOT_PATH = new Path(".");
 
     @Override
     public boolean hasSourceDir(final IPath path) {
@@ -812,7 +812,7 @@ public class ErlProject extends Openable implements IErlProject {
 
     private void loadCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        builderName = node.get("builderName", BuilderInfo.INTERNAL.name());
+        builderName = node.get("builderName", BuilderTool.INTERNAL.name());
     }
 
     private void saveCoreProperties() {

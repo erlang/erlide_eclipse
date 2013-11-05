@@ -2,7 +2,7 @@ package org.erlide.ui.wizards;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.erlide.engine.model.builder.BuilderInfo;
+import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.ui.wizards.NewProjectData;
 
 @SuppressWarnings("all")
@@ -18,7 +18,7 @@ public class BuilderSelectionListener implements SelectionListener {
   
   public void widgetSelected(final SelectionEvent e) {
     Object _data = e.widget.getData();
-    String _string = ((BuilderInfo) _data).toString();
+    String _string = ((BuilderTool) _data).toString();
     this.info.setBuilderName(_string);
   }
 }

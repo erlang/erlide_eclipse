@@ -6,8 +6,11 @@ import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IProjectNature
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.NullProgressMonitor
-import org.erlide.engine.model.builder.BuilderInfo
+import org.erlide.engine.model.builder.BuilderConfig
+import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.builder.ErlangBuilder
+import org.erlide.engine.model.root.ErlangProjectProperties
+import org.erlide.engine.model.root.IErlProject
 
 /** 
  * Erlang project nature
@@ -49,7 +52,7 @@ class ErlangNature implements IProjectNature {
     static def unsetAllErlangBuilders(IProject prj) throws CoreException {
         val description = prj.description
         val old = description.buildSpec
-        val allIds = BuilderInfo.values.map[ErlangBuilder.factory.getBuilder(name).id]
+        val allIds = BuilderTool.values.map[ErlangBuilder.factory.getBuilder(name).id]
 
         val specs = newArrayList
         for (cmd : old) {
@@ -62,18 +65,48 @@ class ErlangNature implements IProjectNature {
         prj.setDescription(description, new NullProgressMonitor())
     }
 
-    static def detectBuilder(IContainer folder) {
-        if (folder.findMember(BuilderInfo.MAKE.getConfigName) !== null) {
-            return BuilderInfo.MAKE        }
-        if (folder.findMember(BuilderInfo.EMAKE.getConfigName) !== null) {
-            return BuilderInfo.EMAKE
+    static def BuilderTool detectBuilderTool(IContainer folder) {
+        if (!folder.exists) {
+            return null
         }
-        if (folder.findMember(BuilderInfo.REBAR.getConfigName) !== null) {
-            return BuilderInfo.REBAR
+        if (folder.findMember(BuilderTool.MAKE.getToolMarker) !== null) {
+            return BuilderTool.MAKE
         }
-        if (folder.exists) {
-            return BuilderInfo.INTERNAL
+        if (folder.findMember(BuilderTool.EMAKE.getToolMarker) !== null) {
+            return BuilderTool.EMAKE
         }
-        null
+        if (folder.findMember(BuilderTool.REBAR.getToolMarker) !== null) {
+            return BuilderTool.REBAR
+        }
+        BuilderTool.INTERNAL
     }
+
+    static def BuilderConfig detectBuilderConfig(IContainer folder) {
+        if (!folder.exists) {
+            return null
+        }
+        if (folder.findMember(BuilderTool.EMAKE.getToolMarker) !== null) {
+            return BuilderConfig.EMAKE
+        }
+        if (folder.findMember(BuilderTool.REBAR.getToolMarker) !== null) {
+            return BuilderConfig.REBAR
+        }
+        BuilderConfig.INTERNAL
+    }
+
+    /**
+     * Returns the detected configuration for the project. Returns null if
+     * impossible (project doesn't exist or files not available).
+     */
+    static def ErlangProjectProperties getConfig(IErlProject project) {
+
+        // TODO detect is only for when creating project!
+        val builderConfig = detectBuilderConfig(project.workspaceProject)
+        val persister = ErlangBuilder.factory.getConfigurationPersister(builderConfig)
+        if (persister == null) {
+            return null
+        }
+        persister.getConfiguration(project)
+    }
+
 }
