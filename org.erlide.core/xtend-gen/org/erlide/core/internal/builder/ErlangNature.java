@@ -95,25 +95,32 @@ public class ErlangNature implements IProjectNature {
     prj.setDescription(description, _nullProgressMonitor);
   }
   
-  public static String detectBuilder(final IContainer folder) {
-    String _xblockexpression = null;
+  public static BuilderInfo detectBuilder(final IContainer folder) {
+    BuilderInfo _xblockexpression = null;
     {
-      IResource _findMember = folder.findMember("Emakefile");
+      String _configFile = BuilderInfo.MAKE.getConfigFile();
+      IResource _findMember = folder.findMember(_configFile);
       boolean _tripleNotEquals = (_findMember != null);
       if (_tripleNotEquals) {
-        return "emake";
+        return BuilderInfo.MAKE;
       }
-      IResource _findMember_1 = folder.findMember("Makefile");
+      String _configFile_1 = BuilderInfo.EMAKE.getConfigFile();
+      IResource _findMember_1 = folder.findMember(_configFile_1);
       boolean _tripleNotEquals_1 = (_findMember_1 != null);
       if (_tripleNotEquals_1) {
-        return "make";
+        return BuilderInfo.EMAKE;
       }
-      IResource _findMember_2 = folder.findMember("rebar.config");
+      String _configFile_2 = BuilderInfo.REBAR.getConfigFile();
+      IResource _findMember_2 = folder.findMember(_configFile_2);
       boolean _tripleNotEquals_2 = (_findMember_2 != null);
       if (_tripleNotEquals_2) {
-        return "rebar";
+        return BuilderInfo.REBAR;
       }
-      _xblockexpression = ("internal");
+      boolean _exists = folder.exists();
+      if (_exists) {
+        return BuilderInfo.INTERNAL;
+      }
+      _xblockexpression = (null);
     }
     return _xblockexpression;
   }

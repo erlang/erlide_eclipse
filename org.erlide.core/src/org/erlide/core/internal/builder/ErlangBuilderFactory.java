@@ -3,7 +3,6 @@ package org.erlide.core.internal.builder;
 import java.util.EnumMap;
 import java.util.Map;
 
-import org.eclipse.core.resources.IProject;
 import org.erlide.core.internal.builder.external.EmakeBuilder;
 import org.erlide.core.internal.builder.external.EmakeConfigurator;
 import org.erlide.core.internal.builder.external.MakeBuilder;
@@ -70,39 +69,22 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
             return new PreferencesProjectConfigurationPersister("org.erlide.core");
         case MAKE:
             return new FileProjectConfigurationPersister(new MakeConfigurator(),
-                    "Makefile");
+                    info.getConfigFile());
         case EMAKE:
             return new FileProjectConfigurationPersister(new EmakeConfigurator(),
-                    "Emakefile");
+                    info.getConfigFile());
         case REBAR:
             return new FileProjectConfigurationPersister(new RebarConfigurator(),
-                    "rebar.config");
+                    info.getConfigFile());
         }
         // doesn't happen
         throw new IllegalArgumentException("Illegal Erlang builder: " + info.toString());
     }
 
     @Override
-    public BuilderInfo getBuilder(final IErlProject eproject) {
-        final IProject project = eproject.getWorkspaceProject();
-        if (project.findMember("Makefile") != null) {
-            return BuilderInfo.MAKE;
-        }
-        if (project.findMember("Emakefile") != null) {
-            return BuilderInfo.EMAKE;
-        }
-        if (project.findMember("rebar.config") != null) {
-            return BuilderInfo.REBAR;
-        }
-        if (project.exists()) {
-            return BuilderInfo.INTERNAL;
-        }
-        return null;
-    }
-
-    @Override
     public ErlangProjectProperties getConfig(final IErlProject project) {
-        final ProjectConfigurationPersister persister = getConfigurationPersister(getBuilder(project));
+        final ProjectConfigurationPersister persister = getConfigurationPersister(ErlangNature
+                .detectBuilder(project.getWorkspaceProject()));
         if (persister == null) {
             return null;
         }

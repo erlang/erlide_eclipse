@@ -8,16 +8,6 @@ public interface IErlangBuilderFactory {
     ErlangBuilder getBuilder(String id);
 
     /**
-     * Returns the BuilderInfo that applies for this project, if any, by
-     * checking for the appropriate build file at the top level. If project
-     * doesn't exist, returns null.
-     * 
-     * @param project
-     * @return
-     */
-    BuilderInfo getBuilder(IErlProject project);
-
-    /**
      * Returns the detected configuration for the project. Returns null if
      * impossible (project doesn't exist or files not available).
      * 

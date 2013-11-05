@@ -26,8 +26,7 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
     private final ProjectConfigurator configurator;
 
     public FileProjectConfigurationPersister(
-            @NonNull final ProjectConfigurator configurator,
-            @NonNull final String fileName) {
+            @NonNull final ProjectConfigurator configurator, final String fileName) {
         Preconditions.checkNotNull(fileName);
         Preconditions.checkNotNull(configurator);
         this.configurator = configurator;
