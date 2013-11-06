@@ -108,19 +108,14 @@ class ErlangProjectProperties {
         this.runtimeName = runtimeName
     }
 
-    override int hashCode() {
-        Objects.hashCode(outputDir, sourceDirs, includeDirs, externalIncludesFile, externalModulesFile, runtimeVersion,
-            runtimeName, nukeOutputOnClean, encoding)
-    }
-
-    override boolean equals(Object obj) {
-        if (this === obj)
+    def boolean sameAs(Object other1) {
+        if (this === other1)
             return true
-        if (obj === null)
+        if (other1 === null)
             return false
-        if (getClass() != obj.getClass())
+        if (!(other1 instanceof ErlangProjectProperties))
             return false
-        val ErlangProjectProperties other = obj as ErlangProjectProperties
+        val other = other1 as ErlangProjectProperties
         if (outputDir === null) {
             if (other.outputDir !== null)
                 return false
@@ -167,7 +162,10 @@ class ErlangProjectProperties {
     }
 
     override toString() {
-        val helper = Objects.toStringHelper(this)
+        val helper = Objects.toStringHelper(this) =>[
+            add("outputDir", outputDir)
+            add("sources", sourceDirs)
+        ]
         helper.toString
     }
 

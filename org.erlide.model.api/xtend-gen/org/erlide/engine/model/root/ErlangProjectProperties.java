@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.xtext.xbase.lib.ObjectExtensions;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.api.RuntimeCore;
@@ -202,33 +204,20 @@ public class ErlangProjectProperties {
     return _runtimeName;
   }
   
-  public int hashCode() {
-    IPath _outputDir = this.getOutputDir();
-    String _externalIncludesFile = this.getExternalIncludesFile();
-    String _externalModulesFile = this.getExternalModulesFile();
-    boolean _isNukeOutputOnClean = this.isNukeOutputOnClean();
-    Charset _encoding = this.getEncoding();
-    int _hashCode = Objects.hashCode(_outputDir, this.sourceDirs, this.includeDirs, _externalIncludesFile, _externalModulesFile, this.runtimeVersion, 
-      this.runtimeName, Boolean.valueOf(_isNukeOutputOnClean), _encoding);
-    return _hashCode;
-  }
-  
-  public boolean equals(final Object obj) {
-    boolean _tripleEquals = (this == obj);
+  public boolean sameAs(final Object other1) {
+    boolean _tripleEquals = (this == other1);
     if (_tripleEquals) {
       return true;
     }
-    boolean _tripleEquals_1 = (obj == null);
+    boolean _tripleEquals_1 = (other1 == null);
     if (_tripleEquals_1) {
       return false;
     }
-    Class<? extends ErlangProjectProperties> _class = this.getClass();
-    Class<? extends Object> _class_1 = obj.getClass();
-    boolean _notEquals = (!Objects.equal(_class, _class_1));
-    if (_notEquals) {
+    boolean _not = (!(other1 instanceof ErlangProjectProperties));
+    if (_not) {
       return false;
     }
-    final ErlangProjectProperties other = ((ErlangProjectProperties) obj);
+    final ErlangProjectProperties other = ((ErlangProjectProperties) other1);
     IPath _outputDir = this.getOutputDir();
     boolean _tripleEquals_2 = (_outputDir == null);
     if (_tripleEquals_2) {
@@ -241,8 +230,8 @@ public class ErlangProjectProperties {
       IPath _outputDir_2 = this.getOutputDir();
       IPath _outputDir_3 = other.getOutputDir();
       boolean _equals = _outputDir_2.equals(_outputDir_3);
-      boolean _not = (!_equals);
-      if (_not) {
+      boolean _not_1 = (!_equals);
+      if (_not_1) {
         return false;
       }
     }
@@ -254,8 +243,8 @@ public class ErlangProjectProperties {
       }
     } else {
       boolean _equals_1 = this.sourceDirs.equals(other.sourceDirs);
-      boolean _not_1 = (!_equals_1);
-      if (_not_1) {
+      boolean _not_2 = (!_equals_1);
+      if (_not_2) {
         return false;
       }
     }
@@ -267,8 +256,8 @@ public class ErlangProjectProperties {
       }
     } else {
       boolean _equals_2 = this.includeDirs.equals(other.includeDirs);
-      boolean _not_2 = (!_equals_2);
-      if (_not_2) {
+      boolean _not_3 = (!_equals_2);
+      if (_not_3) {
         return false;
       }
     }
@@ -284,8 +273,8 @@ public class ErlangProjectProperties {
       String _externalIncludesFile_2 = this.getExternalIncludesFile();
       String _externalIncludesFile_3 = other.getExternalIncludesFile();
       boolean _equals_3 = _externalIncludesFile_2.equals(_externalIncludesFile_3);
-      boolean _not_3 = (!_equals_3);
-      if (_not_3) {
+      boolean _not_4 = (!_equals_3);
+      if (_not_4) {
         return false;
       }
     }
@@ -300,8 +289,8 @@ public class ErlangProjectProperties {
       String _externalModulesFile_1 = this.getExternalModulesFile();
       String _externalModulesFile_2 = other.getExternalModulesFile();
       boolean _equals_4 = _externalModulesFile_1.equals(_externalModulesFile_2);
-      boolean _not_4 = (!_equals_4);
-      if (_not_4) {
+      boolean _not_5 = (!_equals_4);
+      if (_not_5) {
         return false;
       }
     }
@@ -313,8 +302,8 @@ public class ErlangProjectProperties {
       }
     } else {
       boolean _equals_5 = this.runtimeVersion.equals(other.runtimeVersion);
-      boolean _not_5 = (!_equals_5);
-      if (_not_5) {
+      boolean _not_6 = (!_equals_5);
+      if (_not_6) {
         return false;
       }
     }
@@ -326,15 +315,15 @@ public class ErlangProjectProperties {
       }
     } else {
       boolean _equals_6 = this.runtimeName.equals(other.runtimeName);
-      boolean _not_6 = (!_equals_6);
-      if (_not_6) {
+      boolean _not_7 = (!_equals_6);
+      if (_not_7) {
         return false;
       }
     }
     boolean _isNukeOutputOnClean = other.isNukeOutputOnClean();
     boolean _isNukeOutputOnClean_1 = this.isNukeOutputOnClean();
-    boolean _notEquals_1 = (_isNukeOutputOnClean != _isNukeOutputOnClean_1);
-    if (_notEquals_1) {
+    boolean _notEquals = (_isNukeOutputOnClean != _isNukeOutputOnClean_1);
+    if (_notEquals) {
       return false;
     }
     Charset _encoding = this.getEncoding();
@@ -349,8 +338,8 @@ public class ErlangProjectProperties {
       Charset _encoding_2 = this.getEncoding();
       Charset _encoding_3 = other.getEncoding();
       boolean _equals_7 = _encoding_2.equals(_encoding_3);
-      boolean _not_7 = (!_equals_7);
-      if (_not_7) {
+      boolean _not_8 = (!_equals_7);
+      if (_not_8) {
         return false;
       }
     }
@@ -360,7 +349,15 @@ public class ErlangProjectProperties {
   public String toString() {
     String _xblockexpression = null;
     {
-      final ToStringHelper helper = Objects.toStringHelper(this);
+      ToStringHelper _stringHelper = Objects.toStringHelper(this);
+      final Procedure1<ToStringHelper> _function = new Procedure1<ToStringHelper>() {
+        public void apply(final ToStringHelper it) {
+          IPath _outputDir = ErlangProjectProperties.this.getOutputDir();
+          it.add("outputDir", _outputDir);
+          it.add("sources", ErlangProjectProperties.this.sourceDirs);
+        }
+      };
+      final ToStringHelper helper = ObjectExtensions.<ToStringHelper>operator_doubleArrow(_stringHelper, _function);
       String _string = helper.toString();
       _xblockexpression = (_string);
     }

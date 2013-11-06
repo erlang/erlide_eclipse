@@ -1,7 +1,7 @@
 package org.erlide.engine.model.erlang.configuration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
@@ -14,6 +14,7 @@ import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
+import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
         final ErlangProjectProperties expected = new ErlangProjectProperties();
         final ErlangProjectProperties actual = configurator.decodeConfig("");
 
-        assertThat(actual, is(expected));
+        assertThat(actual, is(ErlangProjectPropertiesMatcher.sameAs(expected)));
     }
 
     @Test
@@ -39,15 +40,18 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
         final String cfgFile = BuilderConfig.REBAR.getConfigName();
         final String config = getFileContent(cfgFile);
 
-        final IPath expected = new Path("src2");
         final String config1 = config + "{erl_opts, [{i, \"myinclude\"}, "
-                + "{src_dirs, [\"src\", \"" + expected.toPortableString() + "\"]}]}.";
+                + "{src_dirs, [\"src\", \"src2\"]}]}.";
         setFileContent(cfgFile, config1);
 
-        ((ErlProject) project).loadProperties();
-        final Collection<IPath> actual = project.getProperties().getSourceDirs();
+        final ErlangProjectProperties p2 = ((ErlProject) project).loadProperties();
 
-        assertThat(actual, hasSize(2));
-        assertThat(actual, contains(expected));
+        final Collection<IPath> actualSources = p2.getSourceDirs();
+        assertThat(actualSources, hasSize(2));
+        assertThat(actualSources, hasItem(new Path("src2")));
+
+        final Collection<IPath> actualIncludes = p2.getIncludeDirs();
+        assertThat(actualIncludes, hasSize(1));
+        assertThat(actualIncludes, hasItem(new Path("myinclude")));
     }
 }

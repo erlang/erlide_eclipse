@@ -857,9 +857,9 @@ public class ErlProject extends Openable implements IErlProject {
         final Collection<BuilderConfig> configs = builderTool
                 .getMatchingConfigs();
         if (configs.size() == 1) {
-            builderConfig = configs.iterator().next();
+            setBuilderConfig(configs.iterator().next());
         } else if (!configs.contains(builderConfig)) {
-            builderConfig = null;
+            setBuilderConfig(null);
         }
     }
 
@@ -875,7 +875,12 @@ public class ErlProject extends Openable implements IErlProject {
                     "Builder config %s can't be used with tool %s", config,
                     builderTool));
         }
+
+        // TODO unsubscribe from notifications from old config
+
         builderConfig = config;
+
+        // TODO subscribe to notifications from new config
     }
 
     public boolean hasConfigurationFor(final BuilderConfig config) {
