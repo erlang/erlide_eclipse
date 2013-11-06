@@ -1,6 +1,6 @@
 package org.erlide.engine.internal.services.parsing;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.erlide.engine.services.parsing.SimpleParserService;
 import org.erlide.runtime.api.IRpcSite;
@@ -19,10 +19,10 @@ public class ErlideParser implements SimpleParserService {
     }
 
     @Override
-    public Collection<OtpErlangObject> parse(final String s) {
+    public List<OtpErlangObject> parse(final String s) {
         final RpcResult res = backend.call_noexception("erlide_parse",
                 "consult", "b", s);
-        if (res.equals(res)) {
+        if (res.isOk()) {
             final OtpErlangObject val = res.getValue();
             if (val instanceof OtpErlangList) {
                 return Lists.newArrayList(((OtpErlangList) val).elements());

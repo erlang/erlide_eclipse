@@ -11,19 +11,13 @@ consult(B) when is_binary(B) ->
 consult(L) when is_list(L) ->
     {ok, Toks, _} = erl_scan:string(L),
     FormToks = split(Toks),
-    try 
-        {ok, lists:map(fun parse1/1, FormToks)}
-    catch 
-        _:E ->
-            {error, E}
-    end.
+    lists:map(fun parse1/1, FormToks).
 
 parse1(Toks) ->
-    R = erl_parse:parse(Toks),
-    erlide_log:log({Toks, R}),
+    R = erl_parse:parse_exprs(Toks),
     case R of
-        {ok, Fs, _} ->
-            Fs;
+        {ok, [Fs]} ->
+            erl_parse:normalise(Fs);
         Err ->
             throw(Err)
     end.
@@ -35,7 +29,7 @@ split([], R, []) ->
     lists:reverse(R);
 split([], R, Acc) ->
     lists:reverse(R, [lists:reverse(Acc)]);
-split([{'.', _}=H|T], R, Acc) ->
+split([{dot, _}=H|T], R, Acc) ->
     split(T, [lists:reverse(Acc, [H])|R], []);
 split([H|T], R, Acc) ->
     split(T, R, [H|Acc]).
