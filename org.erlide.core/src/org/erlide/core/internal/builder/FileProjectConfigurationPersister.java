@@ -9,7 +9,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.core.content.ErlangContentDescriber;
-import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
@@ -25,7 +24,7 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
 
     private final String fileName;
     private final ProjectConfigurator configurator;
-    private final ProjectConfigurationPersister extraConfigurationPersister;
+    private final ProjectConfigurationPersister extraPersister;
 
     public FileProjectConfigurationPersister(
             @NonNull final ProjectConfigurator configurator, final String fileName) {
@@ -33,8 +32,7 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
         Preconditions.checkNotNull(configurator);
         this.configurator = configurator;
         this.fileName = fileName;
-        extraConfigurationPersister = new PreferencesProjectConfigurationPersister(
-                BuilderTool.INTERNAL.getToolMarker());
+        extraPersister = new PreferencesProjectConfigurationPersister();
     }
 
     @Override
@@ -68,8 +66,7 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
 
     private ErlangProjectProperties mergeWithExtraConfig(final IErlProject project,
             final ErlangProjectProperties source) {
-        final ErlangProjectProperties extra = extraConfigurationPersister
-                .getConfiguration(project);
+        final ErlangProjectProperties extra = extraPersister.getConfiguration(project);
         if (source.getExternalModulesFile() == null) {
             source.setExternalModulesFile(extra.getExternalModulesFile());
         }

@@ -530,10 +530,6 @@ public class ErlProject extends Openable implements IErlProject {
         return properties;
     }
 
-    public IEclipsePreferences getPropertiesNode() {
-        return new ProjectScope(fProject).getNode("org.erlide.core");
-    }
-
     public IEclipsePreferences getCorePropertiesNode() {
         return new ProjectScope(fProject).getNode("org.erlide.model");
     }

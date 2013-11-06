@@ -3,6 +3,7 @@ package org.erlide.core.internal.builder;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.PathSerializer;
@@ -24,6 +25,10 @@ public class PreferencesProjectConfigurationPersister extends
     public PreferencesProjectConfigurationPersister(final String nodeKey) {
         Preconditions.checkNotNull(nodeKey);
         this.nodeKey = nodeKey;
+    }
+
+    public PreferencesProjectConfigurationPersister() {
+        this(BuilderConfig.INTERNAL.getConfigName());
     }
 
     private IEclipsePreferences getNode() {
