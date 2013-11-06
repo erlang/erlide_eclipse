@@ -33,6 +33,10 @@ public class RebarConfigurator implements ProjectConfigurator {
         TermParser _parser = TermParser.getParser();
         final OtpErlangObject content = _parser.parse(config);
         final Bindings bindings = ErlUtils.match("{erl_opts,Opts}", content);
+        boolean _tripleEquals = (bindings == null);
+        if (_tripleEquals) {
+          return result;
+        }
         final Collection<OtpErlangObject> opts = bindings.getList("Opts");
         final Procedure1<OtpErlangObject> _function = new Procedure1<OtpErlangObject>() {
           public void apply(final OtpErlangObject it) {

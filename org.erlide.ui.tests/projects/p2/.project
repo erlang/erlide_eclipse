@@ -6,12 +6,12 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>org.erlide.core.erlbuilder</name>
+			<name>org.erlide.core.internal.builder.DialyzerBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.erlide.core.internal.builder.DialyzerBuilder</name>
+			<name>org.erlide.core.erlbuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>

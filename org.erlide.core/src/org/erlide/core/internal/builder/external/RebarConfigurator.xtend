@@ -35,6 +35,8 @@ class RebarConfigurator implements ProjectConfigurator {
 
         val content = TermParser.parser.parse(config)
         val bindings = ErlUtils.match("{erl_opts,Opts}", content)
+        if(bindings === null) return result
+        
         val opts = bindings.getList("Opts")
         opts.forEach [
             val b = ErlUtils.match("{Tag,Arg}", it)
