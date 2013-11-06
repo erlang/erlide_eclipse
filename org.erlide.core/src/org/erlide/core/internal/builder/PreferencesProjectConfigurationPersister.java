@@ -8,6 +8,7 @@ import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
+import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -124,6 +125,11 @@ public class PreferencesProjectConfigurationPersister extends
         } catch (final BackingStoreException e) {
             ErlLogger.warn(e);
         }
+    }
+
+    @Override
+    public ProjectConfigurator getConfigurator() {
+        return null;
     }
 
 }

@@ -28,7 +28,12 @@ class RebarConfigurator implements ProjectConfigurator {
     }
 
     override decodeConfig(String config) {
-        //        List<OtpErlangObject> content = parseErlangTerms(string)
+        //val List<OtpErlangObject> content = parseErlangTerms(config)
+        val result = new ErlangProjectProperties()
+        
+        
+        
+        result
     }
 
 }

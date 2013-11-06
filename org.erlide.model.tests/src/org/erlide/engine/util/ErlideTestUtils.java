@@ -5,11 +5,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Scanner;
 
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
@@ -354,6 +356,20 @@ public class ErlideTestUtils {
         for (final IErlProject project : projects) {
             project.resourceChanged(new ResourceDeltaStub());
         }
+    }
+
+    public static void createFileInProjectAt(final IProject project,
+            final String filename, final String content, final Charset encoding)
+            throws CoreException {
+        final IFile res = project.getFile(filename);
+        res.create(new ByteArrayInputStream(content.getBytes(encoding)), false, null);
+    }
+
+    public static String convertStreamToString(final InputStream contents,
+            final Charset encoding) {
+        final java.util.Scanner s = new Scanner(contents, encoding.name())
+                .useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
     }
 
 }

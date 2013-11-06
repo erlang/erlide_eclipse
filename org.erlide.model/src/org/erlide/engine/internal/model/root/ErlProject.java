@@ -827,15 +827,17 @@ public class ErlProject extends Openable implements IErlProject {
         }
     }
 
-    private ErlangProjectProperties loadProperties() {
+    public ErlangProjectProperties loadProperties() {
         final ProjectConfigurationPersister persister = ErlangBuilder
                 .getFactory().getConfigurationPersister(builderConfig);
+        persister.setProject(getWorkspaceProject());
         return persister.getConfiguration(this);
     }
 
     private void storeProperties() {
         final ProjectConfigurationPersister persister = ErlangBuilder
                 .getFactory().getConfigurationPersister(builderConfig);
+        persister.setProject(getWorkspaceProject());
         if (properties != null) {
             persister.setConfiguration(this, properties);
         }

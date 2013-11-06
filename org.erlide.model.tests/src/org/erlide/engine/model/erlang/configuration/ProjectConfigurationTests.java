@@ -42,4 +42,9 @@ public class ProjectConfigurationTests extends AbstractProjectConfigurationTests
         project.setBuilderTool(BuilderTool.MAKE);
         assertThat(project.getBuilderConfig(), is(BuilderConfig.INTERNAL));
     }
+
+    @Override
+    public void configCanBeParsed() {
+        // not relevant
+    }
 }

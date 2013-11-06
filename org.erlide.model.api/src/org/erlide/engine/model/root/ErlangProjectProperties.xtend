@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.Path
 import org.erlide.runtime.api.RuntimeCore
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
 import java.nio.charset.Charset
+import com.google.common.base.Objects
 
 class ErlangProjectProperties {
     @Property var IPath outputDir
@@ -76,6 +77,7 @@ class ErlangProjectProperties {
     }
 
     def getRuntimeVersion() {
+
         // XXX ???
         val runtimeInfo = runtimeInfo
         if (runtimeInfo !== null) {
@@ -104,6 +106,69 @@ class ErlangProjectProperties {
 
     @Deprecated def setRuntimeName(String runtimeName) {
         this.runtimeName = runtimeName
+    }
+
+    override int hashCode() {
+        Objects.hashCode(outputDir, sourceDirs, includeDirs, externalIncludesFile, externalModulesFile, runtimeVersion,
+            runtimeName, nukeOutputOnClean, encoding)
+    }
+
+    override boolean equals(Object obj) {
+        if (this === obj)
+            return true
+        if (obj === null)
+            return false
+        if (getClass() != obj.getClass())
+            return false
+        val ErlangProjectProperties other = obj as ErlangProjectProperties
+        if (outputDir === null) {
+            if (other.outputDir !== null)
+                return false
+        } else if (!outputDir.equals(other.outputDir))
+            return false
+        if (sourceDirs === null) {
+            if (other.sourceDirs !== null)
+                return false
+        } else if (!sourceDirs.equals(other.sourceDirs))
+            return false
+        if (includeDirs === null) {
+            if (other.includeDirs !== null)
+                return false
+        } else if (!includeDirs.equals(other.includeDirs))
+            return false
+        if (externalIncludesFile === null) {
+            if (other.externalIncludesFile !== null)
+                return false
+        } else if (!externalIncludesFile.equals(other.externalIncludesFile))
+            return false
+        if (_externalModulesFile === null) {
+            if (other.externalModulesFile !== null)
+                return false
+        } else if (!externalModulesFile.equals(other.externalModulesFile))
+            return false
+        if (runtimeVersion === null) {
+            if (other.runtimeVersion !== null)
+                return false
+        } else if (!runtimeVersion.equals(other.runtimeVersion))
+            return false
+        if (runtimeName === null) {
+            if (other.runtimeName !== null)
+                return false
+        } else if (!runtimeName.equals(other.runtimeName))
+            return false
+        if (other.nukeOutputOnClean != nukeOutputOnClean)
+            return false
+        if (encoding === null) {
+            if (other.encoding !== null)
+                return false
+        } else if (!encoding.equals(other.encoding))
+            return false
+        return true
+    }
+
+    override toString() {
+        val helper = Objects.toStringHelper(this)
+        helper.toString
     }
 
 }

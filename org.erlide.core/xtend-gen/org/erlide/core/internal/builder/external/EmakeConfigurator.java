@@ -11,6 +11,12 @@ public class EmakeConfigurator implements ProjectConfigurator {
   }
   
   public ErlangProjectProperties decodeConfig(final String config) {
-    return null;
+    ErlangProjectProperties _xblockexpression = null;
+    {
+      ErlangProjectProperties _erlangProjectProperties = new ErlangProjectProperties();
+      final ErlangProjectProperties result = _erlangProjectProperties;
+      _xblockexpression = (result);
+    }
+    return _xblockexpression;
   }
 }

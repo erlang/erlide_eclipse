@@ -23,8 +23,8 @@ import com.google.common.io.Files;
 public class FileProjectConfigurationPersister extends ProjectConfigurationPersister {
 
     private final String fileName;
-    private final ProjectConfigurator configurator;
     private final ProjectConfigurationPersister extraPersister;
+    private final ProjectConfigurator configurator;
 
     public FileProjectConfigurationPersister(
             @NonNull final ProjectConfigurator configurator, final String fileName) {
@@ -55,7 +55,7 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
                 final String content = Joiner.on("\n").join(confString);
                 if (content != null) {
                     return mergeWithExtraConfig(project,
-                            configurator.decodeConfig(content));
+                            getConfigurator().decodeConfig(content));
                 }
             }
         } catch (final IOException e) {
@@ -85,7 +85,7 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
         }
         final IResource conf = aProject.findMember(fileName);
         final File confFile = new File(conf.getLocation().toString());
-        final String confString = configurator.encodeConfig(aProject, info);
+        final String confString = getConfigurator().encodeConfig(aProject, info);
         if (confString != null) {
             final String content = "%% coding: UTF-8\n" + confString;
             try {
@@ -94,6 +94,11 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
                 ErlLogger.error(e);
             }
         }
+    }
+
+    @Override
+    public ProjectConfigurator getConfigurator() {
+        return configurator;
     }
 
 }

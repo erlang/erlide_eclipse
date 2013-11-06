@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import com.google.common.base.Objects;
+
 public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 
     public static final int UNUSED = -1;
@@ -174,7 +176,7 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hashCode(major, minor, micro);
     }
 
     public static String getRuntimeVersion(final String path) {
@@ -213,8 +215,7 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
                     r &= pathname.getName().startsWith("kernel-");
                     final String canonicalPath = pathname.getCanonicalPath()
                             .toLowerCase();
-                    final String absolutePath = pathname.getAbsolutePath()
-                            .toLowerCase();
+                    final String absolutePath = pathname.getAbsolutePath().toLowerCase();
                     r &= canonicalPath.equals(absolutePath);
                     return r;
                 } catch (final IOException e) {

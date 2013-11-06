@@ -64,4 +64,9 @@ public class InternalProjectConfigurationTests extends AbstractProjectConfigurat
         assertThat(actual, is(convertListString(expected)));
     }
 
+    @Override
+    public void configCanBeParsed() {
+        // not relevant
+    }
+
 }

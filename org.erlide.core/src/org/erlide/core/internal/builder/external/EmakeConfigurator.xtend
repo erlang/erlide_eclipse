@@ -20,7 +20,11 @@ class EmakeConfigurator implements ProjectConfigurator {
     }
 
     override ErlangProjectProperties decodeConfig(String config) {
-        null
+        val result = new ErlangProjectProperties()
+        
+        
+        
+        result
     }
 
 }

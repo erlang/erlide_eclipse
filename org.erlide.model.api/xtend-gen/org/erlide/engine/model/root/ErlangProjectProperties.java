@@ -1,6 +1,8 @@
 package org.erlide.engine.model.root;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Objects;
+import com.google.common.base.Objects.ToStringHelper;
 import com.google.common.collect.Lists;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -198,5 +200,170 @@ public class ErlangProjectProperties {
   public String setRuntimeName(final String runtimeName) {
     String _runtimeName = this.runtimeName = runtimeName;
     return _runtimeName;
+  }
+  
+  public int hashCode() {
+    IPath _outputDir = this.getOutputDir();
+    String _externalIncludesFile = this.getExternalIncludesFile();
+    String _externalModulesFile = this.getExternalModulesFile();
+    boolean _isNukeOutputOnClean = this.isNukeOutputOnClean();
+    Charset _encoding = this.getEncoding();
+    int _hashCode = Objects.hashCode(_outputDir, this.sourceDirs, this.includeDirs, _externalIncludesFile, _externalModulesFile, this.runtimeVersion, 
+      this.runtimeName, Boolean.valueOf(_isNukeOutputOnClean), _encoding);
+    return _hashCode;
+  }
+  
+  public boolean equals(final Object obj) {
+    boolean _tripleEquals = (this == obj);
+    if (_tripleEquals) {
+      return true;
+    }
+    boolean _tripleEquals_1 = (obj == null);
+    if (_tripleEquals_1) {
+      return false;
+    }
+    Class<? extends ErlangProjectProperties> _class = this.getClass();
+    Class<? extends Object> _class_1 = obj.getClass();
+    boolean _notEquals = (!Objects.equal(_class, _class_1));
+    if (_notEquals) {
+      return false;
+    }
+    final ErlangProjectProperties other = ((ErlangProjectProperties) obj);
+    IPath _outputDir = this.getOutputDir();
+    boolean _tripleEquals_2 = (_outputDir == null);
+    if (_tripleEquals_2) {
+      IPath _outputDir_1 = other.getOutputDir();
+      boolean _tripleNotEquals = (_outputDir_1 != null);
+      if (_tripleNotEquals) {
+        return false;
+      }
+    } else {
+      IPath _outputDir_2 = this.getOutputDir();
+      IPath _outputDir_3 = other.getOutputDir();
+      boolean _equals = _outputDir_2.equals(_outputDir_3);
+      boolean _not = (!_equals);
+      if (_not) {
+        return false;
+      }
+    }
+    boolean _tripleEquals_3 = (this.sourceDirs == null);
+    if (_tripleEquals_3) {
+      boolean _tripleNotEquals_1 = (other.sourceDirs != null);
+      if (_tripleNotEquals_1) {
+        return false;
+      }
+    } else {
+      boolean _equals_1 = this.sourceDirs.equals(other.sourceDirs);
+      boolean _not_1 = (!_equals_1);
+      if (_not_1) {
+        return false;
+      }
+    }
+    boolean _tripleEquals_4 = (this.includeDirs == null);
+    if (_tripleEquals_4) {
+      boolean _tripleNotEquals_2 = (other.includeDirs != null);
+      if (_tripleNotEquals_2) {
+        return false;
+      }
+    } else {
+      boolean _equals_2 = this.includeDirs.equals(other.includeDirs);
+      boolean _not_2 = (!_equals_2);
+      if (_not_2) {
+        return false;
+      }
+    }
+    String _externalIncludesFile = this.getExternalIncludesFile();
+    boolean _tripleEquals_5 = (_externalIncludesFile == null);
+    if (_tripleEquals_5) {
+      String _externalIncludesFile_1 = other.getExternalIncludesFile();
+      boolean _tripleNotEquals_3 = (_externalIncludesFile_1 != null);
+      if (_tripleNotEquals_3) {
+        return false;
+      }
+    } else {
+      String _externalIncludesFile_2 = this.getExternalIncludesFile();
+      String _externalIncludesFile_3 = other.getExternalIncludesFile();
+      boolean _equals_3 = _externalIncludesFile_2.equals(_externalIncludesFile_3);
+      boolean _not_3 = (!_equals_3);
+      if (_not_3) {
+        return false;
+      }
+    }
+    boolean _tripleEquals_6 = (this._externalModulesFile == null);
+    if (_tripleEquals_6) {
+      String _externalModulesFile = other.getExternalModulesFile();
+      boolean _tripleNotEquals_4 = (_externalModulesFile != null);
+      if (_tripleNotEquals_4) {
+        return false;
+      }
+    } else {
+      String _externalModulesFile_1 = this.getExternalModulesFile();
+      String _externalModulesFile_2 = other.getExternalModulesFile();
+      boolean _equals_4 = _externalModulesFile_1.equals(_externalModulesFile_2);
+      boolean _not_4 = (!_equals_4);
+      if (_not_4) {
+        return false;
+      }
+    }
+    boolean _tripleEquals_7 = (this.runtimeVersion == null);
+    if (_tripleEquals_7) {
+      boolean _tripleNotEquals_5 = (other.runtimeVersion != null);
+      if (_tripleNotEquals_5) {
+        return false;
+      }
+    } else {
+      boolean _equals_5 = this.runtimeVersion.equals(other.runtimeVersion);
+      boolean _not_5 = (!_equals_5);
+      if (_not_5) {
+        return false;
+      }
+    }
+    boolean _tripleEquals_8 = (this.runtimeName == null);
+    if (_tripleEquals_8) {
+      boolean _tripleNotEquals_6 = (other.runtimeName != null);
+      if (_tripleNotEquals_6) {
+        return false;
+      }
+    } else {
+      boolean _equals_6 = this.runtimeName.equals(other.runtimeName);
+      boolean _not_6 = (!_equals_6);
+      if (_not_6) {
+        return false;
+      }
+    }
+    boolean _isNukeOutputOnClean = other.isNukeOutputOnClean();
+    boolean _isNukeOutputOnClean_1 = this.isNukeOutputOnClean();
+    boolean _notEquals_1 = (_isNukeOutputOnClean != _isNukeOutputOnClean_1);
+    if (_notEquals_1) {
+      return false;
+    }
+    Charset _encoding = this.getEncoding();
+    boolean _tripleEquals_9 = (_encoding == null);
+    if (_tripleEquals_9) {
+      Charset _encoding_1 = other.getEncoding();
+      boolean _tripleNotEquals_7 = (_encoding_1 != null);
+      if (_tripleNotEquals_7) {
+        return false;
+      }
+    } else {
+      Charset _encoding_2 = this.getEncoding();
+      Charset _encoding_3 = other.getEncoding();
+      boolean _equals_7 = _encoding_2.equals(_encoding_3);
+      boolean _not_7 = (!_equals_7);
+      if (_not_7) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  public String toString() {
+    String _xblockexpression = null;
+    {
+      final ToStringHelper helper = Objects.toStringHelper(this);
+      String _string = helper.toString();
+      _xblockexpression = (_string);
+    }
+    return _xblockexpression;
   }
 }
