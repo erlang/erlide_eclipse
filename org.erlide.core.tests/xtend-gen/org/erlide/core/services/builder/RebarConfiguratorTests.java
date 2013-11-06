@@ -43,10 +43,10 @@ public class RebarConfiguratorTests {
   
   @Test
   public void sourceDirectoriesShouldBeConfigured() {
-    final String input = "{erl_opts, [{src_dirs, [\"src\", \"src2\"]}]}.";
+    final String input = "{erl_opts, [{src_dirs, [\"src1\", \"src2\"]}]}.";
     final ErlangProjectProperties actual = this.configurator.decodeConfig(input);
     Collection<IPath> _sourceDirs = actual.getSourceDirs();
-    Path _path = new Path("src");
+    Path _path = new Path("src1");
     Path _path_1 = new Path("src2");
     Matcher<Iterable<? extends IPath>> _contains = Matchers.<IPath>contains(((IPath) _path), ((IPath) _path_1));
     MatcherAssert.<Collection<IPath>>assertThat(_sourceDirs, _contains);
@@ -60,5 +60,16 @@ public class RebarConfiguratorTests {
     Path _path = new Path("ebin");
     Matcher<IPath> _is = Matchers.<IPath>is(_path);
     MatcherAssert.<IPath>assertThat(_outputDir, _is);
+  }
+  
+  @Test
+  public void handleComplexInput() {
+    final String input = "something. {erl_opts, [{src_dirs, [\"src1\", \"src2\"]}]}.";
+    final ErlangProjectProperties actual = this.configurator.decodeConfig(input);
+    Collection<IPath> _sourceDirs = actual.getSourceDirs();
+    Path _path = new Path("src1");
+    Path _path_1 = new Path("src2");
+    Matcher<Iterable<? extends IPath>> _contains = Matchers.<IPath>contains(((IPath) _path), ((IPath) _path_1));
+    MatcherAssert.<Collection<IPath>>assertThat(_sourceDirs, _contains);
   }
 }

@@ -36,9 +36,9 @@ class RebarConfiguratorTests {
 
     @Test
     def void sourceDirectoriesShouldBeConfigured() {
-        val input = "{erl_opts, [{src_dirs, [\"src\", \"src2\"]}]}."
+        val input = "{erl_opts, [{src_dirs, [\"src1\", \"src2\"]}]}."
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.sourceDirs, contains(new Path("src") as IPath, new Path("src2") as IPath))
+        assertThat(actual.sourceDirs, contains(new Path("src1") as IPath, new Path("src2") as IPath))
     }
     
     @Test
@@ -46,5 +46,12 @@ class RebarConfiguratorTests {
         val input = "{erl_opts, []}."
         val actual = configurator.decodeConfig(input)
         assertThat(actual.outputDir, is(new Path("ebin")))
+    }
+    
+    @Test
+    def void handleComplexInput() {
+        val input = "something. {erl_opts, [{src_dirs, [\"src1\", \"src2\"]}]}."
+        val actual = configurator.decodeConfig(input)
+        assertThat(actual.sourceDirs, contains(new Path("src1") as IPath, new Path("src2") as IPath))
     }
 }
