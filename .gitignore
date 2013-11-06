@@ -26,4 +26,5 @@ ttb_last_config
 /tools
 /target.platform
 .sonar
+Rerun\ *.launch
 
