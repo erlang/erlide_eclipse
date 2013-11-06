@@ -16,6 +16,7 @@ import org.erlide.engine.internal.services.codeassist.ErlideContextAssist;
 import org.erlide.engine.internal.services.edoc.ErlideEdocExport;
 import org.erlide.engine.internal.services.importer.ErlideImport;
 import org.erlide.engine.internal.services.parsing.ErlParser;
+import org.erlide.engine.internal.services.parsing.ErlideParser;
 import org.erlide.engine.internal.services.parsing.ErlideScanner;
 import org.erlide.engine.internal.services.parsing.ScannerProvider;
 import org.erlide.engine.internal.services.proclist.ErlideProclist;
@@ -34,6 +35,7 @@ import org.erlide.engine.services.edoc.EdocExportService;
 import org.erlide.engine.services.importer.ImportService;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.ScannerProviderService;
+import org.erlide.engine.services.parsing.SimpleParserService;
 import org.erlide.engine.services.parsing.SimpleScannerService;
 import org.erlide.engine.services.proclist.ProclistService;
 import org.erlide.engine.services.search.ModelFindService;
@@ -210,6 +212,11 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public SimpleScannerService getSimpleScannerService() {
         return new ErlideScanner(backend);
+    }
+
+    @Override
+    public SimpleParserService getSimpleParserService() {
+        return new ErlideParser(backend);
     }
 
     @Override

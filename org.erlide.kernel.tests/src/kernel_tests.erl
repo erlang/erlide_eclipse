@@ -10,5 +10,6 @@ all_test_() ->
      erlide_parsing_tests,
      erlide_indent_tests,
      erlide_search_tests,
-     erlide_open_tests
+     erlide_open_tests,
+     erlide_parse_tests
     ].
