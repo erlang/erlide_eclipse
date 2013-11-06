@@ -880,7 +880,7 @@ public class ErlProject extends Openable implements IErlProject {
         builderConfig = config;
     }
 
-    private boolean hasConfigurationFor(final BuilderConfig config) {
+    public boolean hasConfigurationFor(final BuilderConfig config) {
         if (!exists()) {
             return false;
         }
@@ -900,7 +900,7 @@ public class ErlProject extends Openable implements IErlProject {
         return persister.getConfiguration(this);
     }
 
-    private ErlangProjectProperties getConfig() {
+    public ErlangProjectProperties getConfig() {
         return getConfig(builderConfig);
     }
 }
