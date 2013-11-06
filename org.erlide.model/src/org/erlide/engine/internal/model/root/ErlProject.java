@@ -851,7 +851,56 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     @Override
+    public void setBuilderTool(final BuilderTool tool) {
+        if (builderTool == tool) {
+            return;
+        }
+        builderTool = tool;
+        final Collection<BuilderConfig> configs = builderTool
+                .getMatchingConfigs();
+        if (configs.size() == 1) {
+            builderConfig = configs.iterator().next();
+        } else if (!configs.contains(builderConfig)) {
+            builderConfig = null;
+        }
+    }
+
+    @Override
     public BuilderConfig getBuilderConfig() {
         return builderConfig;
+    }
+
+    @Override
+    public void setBuilderConfig(final BuilderConfig config) {
+        if (!builderTool.getMatchingConfigs().contains(config)) {
+            throw new IllegalArgumentException(String.format(
+                    "Builder config %s can't be used with tool %s", config,
+                    builderTool));
+        }
+        builderConfig = config;
+    }
+
+    private boolean hasConfigurationFor(final BuilderConfig config) {
+        if (!exists()) {
+            return false;
+        }
+        return getConfig(config) != null;
+    }
+
+    /**
+     * Returns the detected configuration for the project. Returns null if
+     * impossible (project doesn't exist or files not available).
+     */
+    private ErlangProjectProperties getConfig(final BuilderConfig config) {
+        final ProjectConfigurationPersister persister = ErlangBuilder
+                .getFactory().getConfigurationPersister(config);
+        if (persister == null) {
+            return null;
+        }
+        return persister.getConfiguration(this);
+    }
+
+    private ErlangProjectProperties getConfig() {
+        return getConfig(builderConfig);
     }
 }

@@ -1,4 +1,4 @@
-package org.erlide.engine.model.erlang;
+package org.erlide.engine.model.erlang.configuration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -50,5 +50,39 @@ public class ProjectConfigurationTests {
 
         assertThat(project.getBuilderTool(), is(BuilderTool.INTERNAL));
         assertThat(project.getBuilderConfig(), is(BuilderConfig.INTERNAL));
+    }
+
+    @Test
+    public void canSetProjectConfig() throws ErlModelException {
+        final IErlangEngine engine = ErlangEngine.getInstance();
+        final IErlProject project = engine.getModel().newProject("zux", "/tmp/zux");
+
+        final ErlProject p = (ErlProject) project;
+        p.loadCoreProperties();
+
+        p.setBuilderConfig(BuilderConfig.INTERNAL);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void cantSetIncompatibleConfig() throws ErlModelException {
+        final IErlangEngine engine = ErlangEngine.getInstance();
+        final IErlProject project = engine.getModel().newProject("zux", "/tmp/zux");
+
+        final ErlProject p = (ErlProject) project;
+        p.loadCoreProperties();
+
+        p.setBuilderConfig(BuilderConfig.EMAKE);
+    }
+
+    @Test
+    public void canSetCompatibleConfig() throws ErlModelException {
+        final IErlangEngine engine = ErlangEngine.getInstance();
+        final IErlProject project = engine.getModel().newProject("zux", "/tmp/zux");
+
+        final ErlProject p = (ErlProject) project;
+        p.loadCoreProperties();
+
+        p.setBuilderTool(BuilderTool.EMAKE);
+        p.setBuilderConfig(BuilderConfig.EMAKE);
     }
 }

@@ -94,6 +94,14 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     BuilderTool getBuilderTool();
 
+    void setBuilderTool(BuilderTool tool);
+
     BuilderConfig getBuilderConfig();
+
+    /**
+     * @throws IllegalArgumentException
+     *             if config doesn't match builderTool
+     */
+    void setBuilderConfig(BuilderConfig config);
 
 }

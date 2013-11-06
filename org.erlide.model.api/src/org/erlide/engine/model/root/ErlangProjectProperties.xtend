@@ -30,23 +30,35 @@ class ErlangProjectProperties {
         runtimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
         runtimeName = null
         nukeOutputOnClean = false
-        encoding = Charsets.ISO_8859_1
+        if (runtimeVersion.isCompatible(new RuntimeVersion(18))) {
+            encoding = Charsets.UTF_8
+        } else {
+            encoding = Charsets.ISO_8859_1
+        }
     }
 
     def getIncludeDirs() {
-        Collections::unmodifiableCollection(includeDirs)
+        Collections.unmodifiableCollection(includeDirs)
     }
 
     def setIncludeDirs(Collection<IPath> includeDirs2) {
-        includeDirs = Lists::newArrayList(includeDirs2)
+        includeDirs = Lists.newArrayList(includeDirs2)
+    }
+
+    def setIncludeDirs(IPath... includeDirs2) {
+        includeDirs = Lists.newArrayList(includeDirs2)
     }
 
     def getSourceDirs() {
-        Collections::unmodifiableCollection(sourceDirs)
+        Collections.unmodifiableCollection(sourceDirs)
     }
 
     def setSourceDirs(Collection<IPath> sourceDirs2) {
-        sourceDirs = Lists::newArrayList(sourceDirs2)
+        sourceDirs = Lists.newArrayList(sourceDirs2)
+    }
+
+    def setSourceDirs(IPath... sourceDirs2) {
+        sourceDirs = Lists.newArrayList(sourceDirs2)
     }
 
     def copyFrom(ErlangProjectProperties erlangProjectProperties) {
@@ -59,17 +71,27 @@ class ErlangProjectProperties {
     }
 
     def getRuntimeInfo() {
-        val runtime = RuntimeCore::runtimeInfoCatalog.getRuntime(runtimeVersion, runtimeName)
+        val runtime = RuntimeCore.runtimeInfoCatalog.getRuntime(runtimeVersion, runtimeName)
         runtime
     }
 
     def getRuntimeVersion() {
+        // XXX ???
         val runtimeInfo = runtimeInfo
-        if(runtimeInfo !== null) runtimeInfo.version else runtimeVersion
+        if (runtimeInfo !== null) {
+            runtimeInfo.version
+        } else {
+            runtimeVersion
+        }
     }
 
     def setRuntimeVersion(RuntimeVersion runtimeVersion) {
         this.runtimeVersion = runtimeVersion
+        if (runtimeVersion.isCompatible(new RuntimeVersion(18))) {
+            encoding = Charsets.UTF_8
+        } else {
+            encoding = Charsets.ISO_8859_1
+        }
     }
 
     def getRequiredRuntimeVersion() {

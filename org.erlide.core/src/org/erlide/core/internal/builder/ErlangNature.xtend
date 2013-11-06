@@ -9,8 +9,6 @@ import org.eclipse.core.runtime.NullProgressMonitor
 import org.erlide.engine.model.builder.BuilderConfig
 import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.builder.ErlangBuilder
-import org.erlide.engine.model.root.ErlangProjectProperties
-import org.erlide.engine.model.root.IErlProject
 
 /** 
  * Erlang project nature
@@ -94,19 +92,5 @@ class ErlangNature implements IProjectNature {
         BuilderConfig.INTERNAL
     }
 
-    /**
-     * Returns the detected configuration for the project. Returns null if
-     * impossible (project doesn't exist or files not available).
-     */
-    static def ErlangProjectProperties getConfig(IErlProject project) {
-
-        // TODO detect is only for when creating project!
-        val builderConfig = detectBuilderConfig(project.workspaceProject)
-        val persister = ErlangBuilder.factory.getConfigurationPersister(builderConfig)
-        if (persister == null) {
-            return null
-        }
-        persister.getConfiguration(project)
-    }
 
 }

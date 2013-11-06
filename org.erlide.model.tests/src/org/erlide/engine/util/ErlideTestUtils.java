@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlElement;
@@ -209,20 +210,26 @@ public class ErlideTestUtils {
         }
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .newProject(name, path.toPortableString());
+        erlProject.setBuilderTool(BuilderTool.INTERNAL);
+
         final IProject project = erlProject.getWorkspaceProject();
         final ErlangProjectProperties prefs = erlProject.getProperties();
+
         final List<IPath> srcDirs = new ArrayList<IPath>();
         srcDirs.add(new Path("src"));
         prefs.setSourceDirs(srcDirs);
         buildPaths(root, project, srcDirs);
+
         final List<IPath> includeDirs = new ArrayList<IPath>();
         includeDirs.add(new Path("include"));
         buildPaths(root, project, includeDirs);
         prefs.setIncludeDirs(includeDirs);
+
         final List<IPath> ebinDirs = new ArrayList<IPath>();
         ebinDirs.add(new Path("ebin"));
         buildPaths(root, project, ebinDirs);
         prefs.setOutputDir(ebinDirs.get(0));
+
         projects.add(erlProject);
         return erlProject;
     }

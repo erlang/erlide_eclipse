@@ -1,6 +1,5 @@
 package org.erlide.core.internal.builder;
 
-import com.google.common.base.Objects;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.resources.ICommand;
@@ -19,9 +18,6 @@ import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
-import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.ProjectConfigurationPersister;
 
 /**
  * Erlang project nature
@@ -150,27 +146,6 @@ public class ErlangNature implements IProjectNature {
         return BuilderConfig.REBAR;
       }
       _xblockexpression = (BuilderConfig.INTERNAL);
-    }
-    return _xblockexpression;
-  }
-  
-  /**
-   * Returns the detected configuration for the project. Returns null if
-   * impossible (project doesn't exist or files not available).
-   */
-  public static ErlangProjectProperties getConfig(final IErlProject project) {
-    ErlangProjectProperties _xblockexpression = null;
-    {
-      IProject _workspaceProject = project.getWorkspaceProject();
-      final BuilderConfig builderConfig = ErlangNature.detectBuilderConfig(_workspaceProject);
-      IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
-      final ProjectConfigurationPersister persister = _factory.getConfigurationPersister(builderConfig);
-      boolean _equals = Objects.equal(persister, null);
-      if (_equals) {
-        return null;
-      }
-      ErlangProjectProperties _configuration = persister.getConfiguration(project);
-      _xblockexpression = (_configuration);
     }
     return _xblockexpression;
   }

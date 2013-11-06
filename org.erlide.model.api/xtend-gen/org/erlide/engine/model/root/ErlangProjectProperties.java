@@ -88,7 +88,13 @@ public class ErlangProjectProperties {
     this.runtimeVersion = _runtimeVersion;
     this.runtimeName = null;
     this.setNukeOutputOnClean(false);
-    this.setEncoding(Charsets.ISO_8859_1);
+    RuntimeVersion _runtimeVersion_1 = new RuntimeVersion(18);
+    boolean _isCompatible = this.runtimeVersion.isCompatible(_runtimeVersion_1);
+    if (_isCompatible) {
+      this.setEncoding(Charsets.UTF_8);
+    } else {
+      this.setEncoding(Charsets.ISO_8859_1);
+    }
   }
   
   public Collection<IPath> getIncludeDirs() {
@@ -102,12 +108,24 @@ public class ErlangProjectProperties {
     return _includeDirs;
   }
   
+  public Collection<IPath> setIncludeDirs(final IPath... includeDirs2) {
+    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(includeDirs2);
+    Collection<IPath> _includeDirs = this.includeDirs = _newArrayList;
+    return _includeDirs;
+  }
+  
   public Collection<IPath> getSourceDirs() {
     Collection<IPath> _unmodifiableCollection = Collections.<IPath>unmodifiableCollection(this.sourceDirs);
     return _unmodifiableCollection;
   }
   
   public Collection<IPath> setSourceDirs(final Collection<IPath> sourceDirs2) {
+    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(sourceDirs2);
+    Collection<IPath> _sourceDirs = this.sourceDirs = _newArrayList;
+    return _sourceDirs;
+  }
+  
+  public Collection<IPath> setSourceDirs(final IPath... sourceDirs2) {
     ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(sourceDirs2);
     Collection<IPath> _sourceDirs = this.sourceDirs = _newArrayList;
     return _sourceDirs;
@@ -156,9 +174,15 @@ public class ErlangProjectProperties {
     return _xblockexpression;
   }
   
-  public RuntimeVersion setRuntimeVersion(final RuntimeVersion runtimeVersion) {
-    RuntimeVersion _runtimeVersion = this.runtimeVersion = runtimeVersion;
-    return _runtimeVersion;
+  public void setRuntimeVersion(final RuntimeVersion runtimeVersion) {
+    this.runtimeVersion = runtimeVersion;
+    RuntimeVersion _runtimeVersion = new RuntimeVersion(18);
+    boolean _isCompatible = runtimeVersion.isCompatible(_runtimeVersion);
+    if (_isCompatible) {
+      this.setEncoding(Charsets.UTF_8);
+    } else {
+      this.setEncoding(Charsets.ISO_8859_1);
+    }
   }
   
   public RuntimeVersion getRequiredRuntimeVersion() {
