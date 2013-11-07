@@ -66,7 +66,7 @@ public class InternalBuilder extends ErlangBuilder {
         final long time = System.currentTimeMillis();
         final IProject project = getProject();
         if (project == null || !project.isAccessible()) {
-            return new IProject[0];
+            return null;
         }
 
         // if (BuilderHelper.isDebugging()) {
@@ -94,7 +94,7 @@ public class InternalBuilder extends ErlangBuilder {
             handleAppFile(getProject().getLocation().toPortableString() + "/" + out,
                     erlProject.getSourceDirs());
 
-            handleErlangFiles(erlProject, project, args, kind, getDelta(getProject()));
+            handleErlangFiles(erlProject, project, args, kind, getDelta(project));
 
         } catch (final OperationCanceledException e) {
             if (BuilderHelper.isDebugging()) {
@@ -196,80 +196,81 @@ public class InternalBuilder extends ErlangBuilder {
         // if (BuilderHelper.isDebugging()) {
         ErlLogger.debug("Will compile %d resource(s)", Integer.valueOf(n));
         // }
-        if (n > 0) {
-            final IBackend backend = BackendCore.getBackendManager().getBuildBackend(
-                    project);
-            if (backend == null) {
-                final String message = "No backend with the required "
-                        + "version could be found. Can't build.";
-                MarkerUtils.addProblemMarker(project, null, null, message, 0,
-                        IMarker.SEVERITY_ERROR);
-                throw new BackendException(message);
-            }
-            final IErlModel model = ErlangEngine.getInstance().getModel();
-            backend.addProjectPath(model.findProject(project));
-
-            notifier.setProgressPerCompilationUnit(1.0f / n);
-            final Map<IRpcFuture, IResource> results = new HashMap<IRpcFuture, IResource>();
-            for (final BuildResource bres : resourcesToBuild) {
-                notifier.checkCancel();
-                final IResource resource = bres.getResource();
-                MarkerUtils.deleteMarkers(resource);
-                // notifier.aboutToCompile(resource);
-                if ("erl".equals(resource.getFileExtension())) {
-                    final String outputDir = erlProject.getOutputLocation().toString();
-                    final IRpcFuture f = helper.startCompileErl(project, bres, outputDir,
-                            backend.getRpcSite(), compilerOptions,
-                            kind == IncrementalProjectBuilder.FULL_BUILD);
-                    if (f != null) {
-                        results.put(f, resource);
-                    }
-                } else if ("yrl".equals(resource.getFileExtension())) {
-                    final IRpcFuture f = helper.startCompileYrl(project, resource,
-                            backend.getRpcSite(), compilerOptions);
-                    if (f != null) {
-                        results.put(f, resource);
-                    }
-                } else {
-                    ErlLogger.warn("Don't know how to compile: %s", resource.getName());
-                }
-            }
-
-            final List<Entry<IRpcFuture, IResource>> done = Lists.newArrayList();
-            final List<Entry<IRpcFuture, IResource>> waiting = Lists.newArrayList(results
-                    .entrySet());
-
-            // TODO should use some kind of notification!
-            while (!waiting.isEmpty()) {
-                for (final Entry<IRpcFuture, IResource> result : waiting) {
-                    notifier.checkCancel();
-                    OtpErlangObject r;
-                    try {
-                        r = result.getKey().get(100, TimeUnit.MILLISECONDS);
-                    } catch (final Exception e) {
-                        r = null;
-                    }
-                    if (r != null) {
-                        final IResource resource = result.getValue();
-
-                        helper.completeCompile(project, resource, r,
-                                backend.getRpcSite(), compilerOptions);
-                        notifier.compiled(resource);
-
-                        done.add(result);
-                    }
-                }
-                waiting.removeAll(done);
-                done.clear();
-            }
-            helper.refreshOutputDir(project);
-
-            try {
-                helper.checkForClashes(backend.getRpcSite(), project);
-            } catch (final Exception e) {
-            }
-            backend.removeProjectPath(model.findProject(project));
+        if (n == 0) {
+            return;
         }
+        final IBackend backend = BackendCore.getBackendManager().getBuildBackend(project);
+        if (backend == null) {
+            final String message = "No backend with the required "
+                    + "version could be found. Can't build.";
+            MarkerUtils.addProblemMarker(project, null, null, message, 0,
+                    IMarker.SEVERITY_ERROR);
+            throw new BackendException(message);
+        }
+        final IErlModel model = ErlangEngine.getInstance().getModel();
+        backend.addProjectPath(model.findProject(project));
+
+        notifier.setProgressPerCompilationUnit(1.0f / n);
+        final Map<IRpcFuture, IResource> results = new HashMap<IRpcFuture, IResource>();
+        for (final BuildResource bres : resourcesToBuild) {
+            notifier.checkCancel();
+            final IResource resource = bres.getResource();
+            MarkerUtils.deleteMarkers(resource);
+            // notifier.aboutToCompile(resource);
+            if ("erl".equals(resource.getFileExtension())) {
+                final String outputDir = erlProject.getOutputLocation().toString();
+                final IRpcFuture f = helper.startCompileErl(project, bres, outputDir,
+                        backend.getRpcSite(), compilerOptions,
+                        kind == IncrementalProjectBuilder.FULL_BUILD);
+                if (f != null) {
+                    results.put(f, resource);
+                }
+            } else if ("yrl".equals(resource.getFileExtension())) {
+                final IRpcFuture f = helper.startCompileYrl(project, resource,
+                        backend.getRpcSite(), compilerOptions);
+                if (f != null) {
+                    results.put(f, resource);
+                }
+            } else {
+                ErlLogger.warn("Don't know how to compile: %s", resource.getName());
+            }
+        }
+
+        final List<Entry<IRpcFuture, IResource>> done = Lists.newArrayList();
+        final List<Entry<IRpcFuture, IResource>> waiting = Lists.newArrayList(results
+                .entrySet());
+
+        // TODO should use some kind of notification!
+        while (!waiting.isEmpty()) {
+            for (final Entry<IRpcFuture, IResource> result : waiting) {
+                notifier.checkCancel();
+                OtpErlangObject r;
+                try {
+                    r = result.getKey().get(100, TimeUnit.MILLISECONDS);
+                } catch (final Exception e) {
+                    r = null;
+                }
+                if (r != null) {
+                    final IResource resource = result.getValue();
+
+                    helper.completeCompile(project, resource, r, backend.getRpcSite(),
+                            compilerOptions);
+                    notifier.compiled(resource);
+
+                    done.add(result);
+                }
+            }
+            waiting.removeAll(done);
+            done.clear();
+        }
+        helper.refreshOutputDir(project);
+
+        try {
+            helper.checkForClashes(backend.getRpcSite(), project);
+        } catch (final Exception e) {
+        }
+        backend.removeProjectPath(model.findProject(project));
+
     }
 
     private void handleAppFile(final String outPath, final Collection<IPath> sources) {
