@@ -58,9 +58,7 @@ class ErlangProjectBuilderPage extends WizardPage {
             var check = new Button(composite, SWT.RADIO)
             check.text = builder.toString.toLowerCase
             check.data = builder
-            if (builder === BuilderTool.INTERNAL) {
-                check.selection = true
-            }
+            check.selection = (builder === BuilderTool.INTERNAL)
             check.addSelectionListener(listener)
             val description = new Label(composite, SWT.NONE)
             description.text = getDescription(builder)
@@ -82,9 +80,7 @@ class ErlangProjectBuilderPage extends WizardPage {
             var check = new Button(configComposite, SWT.RADIO)
             check.text = getDescription(config)
             check.data = config
-            if (config === BuilderConfig.INTERNAL) {
-                check.selection = true
-            }
+            check.selection = (config === BuilderConfig.INTERNAL)
             check.addSelectionListener(listener1)
             new Label(configComposite, SWT.NONE)
             new Label(configComposite, SWT.NONE)

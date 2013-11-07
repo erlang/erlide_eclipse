@@ -89,9 +89,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
         check.setText(_lowerCase);
         check.setData(builder);
         boolean _tripleEquals = (builder == BuilderTool.INTERNAL);
-        if (_tripleEquals) {
-          check.setSelection(true);
-        }
+        check.setSelection(_tripleEquals);
         check.addSelectionListener(listener);
         Label _label = new Label(composite, SWT.NONE);
         final Label description = _label;
@@ -124,9 +122,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
         check.setText(_description);
         check.setData(config);
         boolean _tripleEquals = (config == BuilderConfig.INTERNAL);
-        if (_tripleEquals) {
-          check.setSelection(true);
-        }
+        check.setSelection(_tripleEquals);
         check.addSelectionListener(listener1);
         new Label(ErlangProjectBuilderPage.this.configComposite, SWT.NONE);
         new Label(ErlangProjectBuilderPage.this.configComposite, SWT.NONE);

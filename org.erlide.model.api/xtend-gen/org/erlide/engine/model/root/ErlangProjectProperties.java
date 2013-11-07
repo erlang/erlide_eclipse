@@ -31,9 +31,9 @@ public class ErlangProjectProperties {
     this._outputDir = outputDir;
   }
   
-  private Collection<IPath> sourceDirs;
+  private Collection<IPath> _sourceDirs;
   
-  private Collection<IPath> includeDirs;
+  private Collection<IPath> _includeDirs;
   
   private String _externalIncludesFile;
   
@@ -55,9 +55,17 @@ public class ErlangProjectProperties {
     this._externalModulesFile = externalModulesFile;
   }
   
-  private RuntimeVersion runtimeVersion;
+  private RuntimeVersion _requiredRuntimeVersion;
   
-  private String runtimeName;
+  public RuntimeVersion getRequiredRuntimeVersion() {
+    return this._requiredRuntimeVersion;
+  }
+  
+  public void setRequiredRuntimeVersion(final RuntimeVersion requiredRuntimeVersion) {
+    this._requiredRuntimeVersion = requiredRuntimeVersion;
+  }
+  
+  private String _runtimeName;
   
   private boolean _nukeOutputOnClean;
   
@@ -81,72 +89,70 @@ public class ErlangProjectProperties {
   
   public ErlangProjectProperties() {
     Collection<IPath> _unpackList = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
-    this.sourceDirs = _unpackList;
+    this._sourceDirs = _unpackList;
     Path _path = new Path(ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
-    this.setOutputDir(_path);
+    this._outputDir = _path;
     Collection<IPath> _unpackList_1 = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
-    this.includeDirs = _unpackList_1;
-    this.setExternalIncludesFile(ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
-    this.setExternalModulesFile(ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES);
+    this._includeDirs = _unpackList_1;
+    this._externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
+    this._externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
     RuntimeVersion _runtimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
-    this.runtimeVersion = _runtimeVersion;
-    this.runtimeName = null;
-    this.setNukeOutputOnClean(false);
+    this._requiredRuntimeVersion = _runtimeVersion;
+    this._runtimeName = null;
+    this._nukeOutputOnClean = false;
     RuntimeVersion _runtimeVersion_1 = new RuntimeVersion(18);
-    boolean _isCompatible = this.runtimeVersion.isCompatible(_runtimeVersion_1);
+    boolean _isCompatible = this._requiredRuntimeVersion.isCompatible(_runtimeVersion_1);
     if (_isCompatible) {
-      this.setEncoding(Charsets.UTF_8);
+      this._encoding = Charsets.UTF_8;
     } else {
-      this.setEncoding(Charsets.ISO_8859_1);
+      this._encoding = Charsets.ISO_8859_1;
     }
   }
   
   public Collection<IPath> getIncludeDirs() {
-    Collection<IPath> _unmodifiableCollection = Collections.<IPath>unmodifiableCollection(this.includeDirs);
+    Collection<IPath> _unmodifiableCollection = Collections.<IPath>unmodifiableCollection(this._includeDirs);
     return _unmodifiableCollection;
   }
   
   public Collection<IPath> setIncludeDirs(final Collection<IPath> includeDirs2) {
     ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(includeDirs2);
-    Collection<IPath> _includeDirs = this.includeDirs = _newArrayList;
-    return _includeDirs;
+    Collection<IPath> __includeDirs = this._includeDirs = _newArrayList;
+    return __includeDirs;
   }
   
   public Collection<IPath> setIncludeDirs(final IPath... includeDirs2) {
     ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(includeDirs2);
-    Collection<IPath> _includeDirs = this.includeDirs = _newArrayList;
-    return _includeDirs;
+    Collection<IPath> __includeDirs = this._includeDirs = _newArrayList;
+    return __includeDirs;
   }
   
   public Collection<IPath> getSourceDirs() {
-    Collection<IPath> _unmodifiableCollection = Collections.<IPath>unmodifiableCollection(this.sourceDirs);
+    Collection<IPath> _unmodifiableCollection = Collections.<IPath>unmodifiableCollection(this._sourceDirs);
     return _unmodifiableCollection;
   }
   
   public Collection<IPath> setSourceDirs(final Collection<IPath> sourceDirs2) {
     ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(sourceDirs2);
-    Collection<IPath> _sourceDirs = this.sourceDirs = _newArrayList;
-    return _sourceDirs;
+    Collection<IPath> __sourceDirs = this._sourceDirs = _newArrayList;
+    return __sourceDirs;
   }
   
   public Collection<IPath> setSourceDirs(final IPath... sourceDirs2) {
     ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(sourceDirs2);
-    Collection<IPath> _sourceDirs = this.sourceDirs = _newArrayList;
-    return _sourceDirs;
+    Collection<IPath> __sourceDirs = this._sourceDirs = _newArrayList;
+    return __sourceDirs;
   }
   
   public RuntimeVersion copyFrom(final ErlangProjectProperties erlangProjectProperties) {
     RuntimeVersion _xblockexpression = null;
     {
       final ErlangProjectProperties bprefs = erlangProjectProperties;
-      this.includeDirs = bprefs.includeDirs;
-      this.sourceDirs = bprefs.sourceDirs;
-      IPath _outputDir = bprefs.getOutputDir();
-      this.setOutputDir(_outputDir);
-      this.runtimeName = bprefs.runtimeName;
-      RuntimeVersion _requiredRuntimeVersion = bprefs.getRequiredRuntimeVersion();
-      RuntimeVersion _runtimeVersion = this.runtimeVersion = _requiredRuntimeVersion;
-      _xblockexpression = (_runtimeVersion);
+      this._includeDirs = bprefs._includeDirs;
+      this._sourceDirs = bprefs._sourceDirs;
+      this._outputDir = bprefs._outputDir;
+      this._runtimeName = bprefs._runtimeName;
+      RuntimeVersion __requiredRuntimeVersion = this._requiredRuntimeVersion = bprefs._requiredRuntimeVersion;
+      _xblockexpression = (__requiredRuntimeVersion);
     }
     return _xblockexpression;
   }
@@ -155,7 +161,7 @@ public class ErlangProjectProperties {
     RuntimeInfo _xblockexpression = null;
     {
       IRuntimeInfoCatalog _runtimeInfoCatalog = RuntimeCore.getRuntimeInfoCatalog();
-      final RuntimeInfo runtime = _runtimeInfoCatalog.getRuntime(this.runtimeVersion, this.runtimeName);
+      final RuntimeInfo runtime = _runtimeInfoCatalog.getRuntime(this._requiredRuntimeVersion, this._runtimeName);
       _xblockexpression = (runtime);
     }
     return _xblockexpression;
@@ -171,37 +177,41 @@ public class ErlangProjectProperties {
         RuntimeVersion _version = runtimeInfo.getVersion();
         _xifexpression = _version;
       } else {
-        _xifexpression = this.runtimeVersion;
+        _xifexpression = this._requiredRuntimeVersion;
       }
       _xblockexpression = (_xifexpression);
     }
     return _xblockexpression;
   }
   
-  public void setRuntimeVersion(final RuntimeVersion runtimeVersion) {
-    this.runtimeVersion = runtimeVersion;
-    RuntimeVersion _runtimeVersion = new RuntimeVersion(18);
-    boolean _isCompatible = runtimeVersion.isCompatible(_runtimeVersion);
-    if (_isCompatible) {
-      this.setEncoding(Charsets.UTF_8);
-    } else {
-      this.setEncoding(Charsets.ISO_8859_1);
+  public Charset setRuntimeVersion(final RuntimeVersion runtimeVersion) {
+    Charset _xblockexpression = null;
+    {
+      this._requiredRuntimeVersion = runtimeVersion;
+      Charset _xifexpression = null;
+      RuntimeVersion _runtimeVersion = new RuntimeVersion(18);
+      boolean _isCompatible = this._requiredRuntimeVersion.isCompatible(_runtimeVersion);
+      if (_isCompatible) {
+        Charset __encoding = this._encoding = Charsets.UTF_8;
+        _xifexpression = __encoding;
+      } else {
+        Charset __encoding_1 = this._encoding = Charsets.ISO_8859_1;
+        _xifexpression = __encoding_1;
+      }
+      _xblockexpression = (_xifexpression);
     }
-  }
-  
-  public RuntimeVersion getRequiredRuntimeVersion() {
-    return this.runtimeVersion;
+    return _xblockexpression;
   }
   
   @Deprecated
   public String getRuntimeName() {
-    return this.runtimeName;
+    return this._runtimeName;
   }
   
   @Deprecated
   public String setRuntimeName(final String runtimeName) {
-    String _runtimeName = this.runtimeName = runtimeName;
-    return _runtimeName;
+    String __runtimeName = this._runtimeName = runtimeName;
+    return __runtimeName;
   }
   
   public boolean sameAs(final Object other1) {
@@ -218,61 +228,53 @@ public class ErlangProjectProperties {
       return false;
     }
     final ErlangProjectProperties other = ((ErlangProjectProperties) other1);
-    IPath _outputDir = this.getOutputDir();
-    boolean _tripleEquals_2 = (_outputDir == null);
+    boolean _tripleEquals_2 = (this._outputDir == null);
     if (_tripleEquals_2) {
-      IPath _outputDir_1 = other.getOutputDir();
-      boolean _tripleNotEquals = (_outputDir_1 != null);
+      boolean _tripleNotEquals = (other._outputDir != null);
       if (_tripleNotEquals) {
         return false;
       }
     } else {
-      IPath _outputDir_2 = this.getOutputDir();
-      IPath _outputDir_3 = other.getOutputDir();
-      boolean _equals = _outputDir_2.equals(_outputDir_3);
+      boolean _equals = this._outputDir.equals(other._outputDir);
       boolean _not_1 = (!_equals);
       if (_not_1) {
         return false;
       }
     }
-    boolean _tripleEquals_3 = (this.sourceDirs == null);
+    boolean _tripleEquals_3 = (this._sourceDirs == null);
     if (_tripleEquals_3) {
-      boolean _tripleNotEquals_1 = (other.sourceDirs != null);
+      boolean _tripleNotEquals_1 = (other._sourceDirs != null);
       if (_tripleNotEquals_1) {
         return false;
       }
     } else {
-      boolean _equals_1 = this.sourceDirs.equals(other.sourceDirs);
+      boolean _equals_1 = this._sourceDirs.equals(other._sourceDirs);
       boolean _not_2 = (!_equals_1);
       if (_not_2) {
         return false;
       }
     }
-    boolean _tripleEquals_4 = (this.includeDirs == null);
+    boolean _tripleEquals_4 = (this._includeDirs == null);
     if (_tripleEquals_4) {
-      boolean _tripleNotEquals_2 = (other.includeDirs != null);
+      boolean _tripleNotEquals_2 = (other._includeDirs != null);
       if (_tripleNotEquals_2) {
         return false;
       }
     } else {
-      boolean _equals_2 = this.includeDirs.equals(other.includeDirs);
+      boolean _equals_2 = this._includeDirs.equals(other._includeDirs);
       boolean _not_3 = (!_equals_2);
       if (_not_3) {
         return false;
       }
     }
-    String _externalIncludesFile = this.getExternalIncludesFile();
-    boolean _tripleEquals_5 = (_externalIncludesFile == null);
+    boolean _tripleEquals_5 = (this._externalIncludesFile == null);
     if (_tripleEquals_5) {
-      String _externalIncludesFile_1 = other.getExternalIncludesFile();
-      boolean _tripleNotEquals_3 = (_externalIncludesFile_1 != null);
+      boolean _tripleNotEquals_3 = (other._externalIncludesFile != null);
       if (_tripleNotEquals_3) {
         return false;
       }
     } else {
-      String _externalIncludesFile_2 = this.getExternalIncludesFile();
-      String _externalIncludesFile_3 = other.getExternalIncludesFile();
-      boolean _equals_3 = _externalIncludesFile_2.equals(_externalIncludesFile_3);
+      boolean _equals_3 = this._externalIncludesFile.equals(other._externalIncludesFile);
       boolean _not_4 = (!_equals_3);
       if (_not_4) {
         return false;
@@ -280,64 +282,55 @@ public class ErlangProjectProperties {
     }
     boolean _tripleEquals_6 = (this._externalModulesFile == null);
     if (_tripleEquals_6) {
-      String _externalModulesFile = other.getExternalModulesFile();
-      boolean _tripleNotEquals_4 = (_externalModulesFile != null);
+      boolean _tripleNotEquals_4 = (other._externalModulesFile != null);
       if (_tripleNotEquals_4) {
         return false;
       }
     } else {
-      String _externalModulesFile_1 = this.getExternalModulesFile();
-      String _externalModulesFile_2 = other.getExternalModulesFile();
-      boolean _equals_4 = _externalModulesFile_1.equals(_externalModulesFile_2);
+      boolean _equals_4 = this._externalModulesFile.equals(other._externalModulesFile);
       boolean _not_5 = (!_equals_4);
       if (_not_5) {
         return false;
       }
     }
-    boolean _tripleEquals_7 = (this.runtimeVersion == null);
+    boolean _tripleEquals_7 = (this._requiredRuntimeVersion == null);
     if (_tripleEquals_7) {
-      boolean _tripleNotEquals_5 = (other.runtimeVersion != null);
+      boolean _tripleNotEquals_5 = (other._requiredRuntimeVersion != null);
       if (_tripleNotEquals_5) {
         return false;
       }
     } else {
-      boolean _equals_5 = this.runtimeVersion.equals(other.runtimeVersion);
+      boolean _equals_5 = this._requiredRuntimeVersion.equals(other._requiredRuntimeVersion);
       boolean _not_6 = (!_equals_5);
       if (_not_6) {
         return false;
       }
     }
-    boolean _tripleEquals_8 = (this.runtimeName == null);
+    boolean _tripleEquals_8 = (this._runtimeName == null);
     if (_tripleEquals_8) {
-      boolean _tripleNotEquals_6 = (other.runtimeName != null);
+      boolean _tripleNotEquals_6 = (other._runtimeName != null);
       if (_tripleNotEquals_6) {
         return false;
       }
     } else {
-      boolean _equals_6 = this.runtimeName.equals(other.runtimeName);
+      boolean _equals_6 = this._runtimeName.equals(other._runtimeName);
       boolean _not_7 = (!_equals_6);
       if (_not_7) {
         return false;
       }
     }
-    boolean _isNukeOutputOnClean = other.isNukeOutputOnClean();
-    boolean _isNukeOutputOnClean_1 = this.isNukeOutputOnClean();
-    boolean _notEquals = (_isNukeOutputOnClean != _isNukeOutputOnClean_1);
+    boolean _notEquals = (other._nukeOutputOnClean != this._nukeOutputOnClean);
     if (_notEquals) {
       return false;
     }
-    Charset _encoding = this.getEncoding();
-    boolean _tripleEquals_9 = (_encoding == null);
+    boolean _tripleEquals_9 = (this._encoding == null);
     if (_tripleEquals_9) {
-      Charset _encoding_1 = other.getEncoding();
-      boolean _tripleNotEquals_7 = (_encoding_1 != null);
+      boolean _tripleNotEquals_7 = (other._encoding != null);
       if (_tripleNotEquals_7) {
         return false;
       }
     } else {
-      Charset _encoding_2 = this.getEncoding();
-      Charset _encoding_3 = other.getEncoding();
-      boolean _equals_7 = _encoding_2.equals(_encoding_3);
+      boolean _equals_7 = this._encoding.equals(other._encoding);
       boolean _not_8 = (!_equals_7);
       if (_not_8) {
         return false;
@@ -352,9 +345,10 @@ public class ErlangProjectProperties {
       ToStringHelper _stringHelper = Objects.toStringHelper(this);
       final Procedure1<ToStringHelper> _function = new Procedure1<ToStringHelper>() {
         public void apply(final ToStringHelper it) {
-          IPath _outputDir = ErlangProjectProperties.this.getOutputDir();
-          it.add("outputDir", _outputDir);
-          it.add("sources", ErlangProjectProperties.this.sourceDirs);
+          it.add("outputDir", ErlangProjectProperties.this._outputDir);
+          it.add("sources", ErlangProjectProperties.this._sourceDirs);
+          it.add("includes", ErlangProjectProperties.this._includeDirs);
+          it.add("runtimeVersion", ErlangProjectProperties.this._requiredRuntimeVersion);
         }
       };
       final ToStringHelper helper = ObjectExtensions.<ToStringHelper>operator_doubleArrow(_stringHelper, _function);

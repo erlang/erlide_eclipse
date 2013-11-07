@@ -12,67 +12,67 @@ import java.nio.charset.Charset
 import com.google.common.base.Objects
 
 class ErlangProjectProperties {
-    @Property var IPath outputDir
-    var Collection<IPath> sourceDirs
-    var Collection<IPath> includeDirs
-    @Property var String externalIncludesFile
-    @Property var String externalModulesFile
-    var RuntimeVersion runtimeVersion
-    var String runtimeName
-    @Property var boolean nukeOutputOnClean
-    @Property var Charset encoding
+    @Property IPath outputDir
+    @Property Collection<IPath> sourceDirs
+    @Property Collection<IPath> includeDirs
+    @Property String externalIncludesFile
+    @Property String externalModulesFile
+    @Property RuntimeVersion requiredRuntimeVersion
+    @Property String runtimeName
+    @Property boolean nukeOutputOnClean
+    @Property Charset encoding
 
     new() {
-        sourceDirs = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS)
-        outputDir = new Path(ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR)
-        includeDirs = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS)
-        externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES
-        externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES
-        runtimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
-        runtimeName = null
-        nukeOutputOnClean = false
-        if (runtimeVersion.isCompatible(new RuntimeVersion(18))) {
-            encoding = Charsets.UTF_8
+        _sourceDirs = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS)
+        _outputDir = new Path(ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR)
+        _includeDirs = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS)
+        _externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES
+        _externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES
+        _requiredRuntimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
+        _runtimeName = null
+        _nukeOutputOnClean = false
+        if (_requiredRuntimeVersion.isCompatible(new RuntimeVersion(18))) {
+            _encoding = Charsets.UTF_8
         } else {
-            encoding = Charsets.ISO_8859_1
+            _encoding = Charsets.ISO_8859_1
         }
     }
 
     def getIncludeDirs() {
-        Collections.unmodifiableCollection(includeDirs)
+        Collections.unmodifiableCollection(_includeDirs)
     }
 
     def setIncludeDirs(Collection<IPath> includeDirs2) {
-        includeDirs = Lists.newArrayList(includeDirs2)
+        _includeDirs = Lists.newArrayList(includeDirs2)
     }
 
     def setIncludeDirs(IPath... includeDirs2) {
-        includeDirs = Lists.newArrayList(includeDirs2)
+        _includeDirs = Lists.newArrayList(includeDirs2)
     }
 
     def getSourceDirs() {
-        Collections.unmodifiableCollection(sourceDirs)
+        Collections.unmodifiableCollection(_sourceDirs)
     }
 
     def setSourceDirs(Collection<IPath> sourceDirs2) {
-        sourceDirs = Lists.newArrayList(sourceDirs2)
+        _sourceDirs = Lists.newArrayList(sourceDirs2)
     }
 
     def setSourceDirs(IPath... sourceDirs2) {
-        sourceDirs = Lists.newArrayList(sourceDirs2)
+        _sourceDirs = Lists.newArrayList(sourceDirs2)
     }
 
     def copyFrom(ErlangProjectProperties erlangProjectProperties) {
         val bprefs = erlangProjectProperties
-        includeDirs = bprefs.includeDirs
-        sourceDirs = bprefs.sourceDirs
-        outputDir = bprefs.outputDir
-        runtimeName = bprefs.runtimeName
-        runtimeVersion = bprefs.requiredRuntimeVersion
+        _includeDirs = bprefs._includeDirs
+        _sourceDirs = bprefs._sourceDirs
+        _outputDir = bprefs._outputDir
+        _runtimeName = bprefs._runtimeName
+        _requiredRuntimeVersion = bprefs._requiredRuntimeVersion
     }
 
     def getRuntimeInfo() {
-        val runtime = RuntimeCore.runtimeInfoCatalog.getRuntime(runtimeVersion, runtimeName)
+        val runtime = RuntimeCore.runtimeInfoCatalog.getRuntime(_requiredRuntimeVersion, _runtimeName)
         runtime
     }
 
@@ -83,29 +83,25 @@ class ErlangProjectProperties {
         if (runtimeInfo !== null) {
             runtimeInfo.version
         } else {
-            runtimeVersion
+            _requiredRuntimeVersion
         }
     }
 
     def setRuntimeVersion(RuntimeVersion runtimeVersion) {
-        this.runtimeVersion = runtimeVersion
-        if (runtimeVersion.isCompatible(new RuntimeVersion(18))) {
-            encoding = Charsets.UTF_8
+        this._requiredRuntimeVersion = runtimeVersion
+        if (_requiredRuntimeVersion.isCompatible(new RuntimeVersion(18))) {
+            _encoding = Charsets.UTF_8
         } else {
-            encoding = Charsets.ISO_8859_1
+            _encoding = Charsets.ISO_8859_1
         }
     }
 
-    def getRequiredRuntimeVersion() {
-        runtimeVersion
-    }
-
     @Deprecated def getRuntimeName() {
-        runtimeName
+        _runtimeName
     }
 
     @Deprecated def setRuntimeName(String runtimeName) {
-        this.runtimeName = runtimeName
+        this._runtimeName = runtimeName
     }
 
     def boolean sameAs(Object other1) {
@@ -116,55 +112,57 @@ class ErlangProjectProperties {
         if (!(other1 instanceof ErlangProjectProperties))
             return false
         val other = other1 as ErlangProjectProperties
-        if (outputDir === null) {
-            if (other.outputDir !== null)
+        if (_outputDir === null) {
+            if (other._outputDir !== null)
                 return false
-        } else if (!outputDir.equals(other.outputDir))
+        } else if (!_outputDir.equals(other._outputDir))
             return false
-        if (sourceDirs === null) {
-            if (other.sourceDirs !== null)
+        if (_sourceDirs === null) {
+            if (other._sourceDirs !== null)
                 return false
-        } else if (!sourceDirs.equals(other.sourceDirs))
+        } else if (!_sourceDirs.equals(other._sourceDirs))
             return false
-        if (includeDirs === null) {
-            if (other.includeDirs !== null)
+        if (_includeDirs === null) {
+            if (other._includeDirs !== null)
                 return false
-        } else if (!includeDirs.equals(other.includeDirs))
+        } else if (!_includeDirs.equals(other._includeDirs))
             return false
-        if (externalIncludesFile === null) {
-            if (other.externalIncludesFile !== null)
+        if (_externalIncludesFile === null) {
+            if (other._externalIncludesFile !== null)
                 return false
-        } else if (!externalIncludesFile.equals(other.externalIncludesFile))
+        } else if (!_externalIncludesFile.equals(other._externalIncludesFile))
             return false
         if (_externalModulesFile === null) {
-            if (other.externalModulesFile !== null)
+            if (other._externalModulesFile !== null)
                 return false
-        } else if (!externalModulesFile.equals(other.externalModulesFile))
+        } else if (!_externalModulesFile.equals(other._externalModulesFile))
             return false
-        if (runtimeVersion === null) {
-            if (other.runtimeVersion !== null)
+        if (_requiredRuntimeVersion === null) {
+            if (other._requiredRuntimeVersion !== null)
                 return false
-        } else if (!runtimeVersion.equals(other.runtimeVersion))
+        } else if (!_requiredRuntimeVersion.equals(other._requiredRuntimeVersion))
             return false
-        if (runtimeName === null) {
-            if (other.runtimeName !== null)
+        if (_runtimeName === null) {
+            if (other._runtimeName !== null)
                 return false
-        } else if (!runtimeName.equals(other.runtimeName))
+        } else if (!_runtimeName.equals(other._runtimeName))
             return false
-        if (other.nukeOutputOnClean != nukeOutputOnClean)
+        if (other._nukeOutputOnClean != _nukeOutputOnClean)
             return false
-        if (encoding === null) {
-            if (other.encoding !== null)
+        if (_encoding === null) {
+            if (other._encoding !== null)
                 return false
-        } else if (!encoding.equals(other.encoding))
+        } else if (!_encoding.equals(other._encoding))
             return false
         return true
     }
 
     override toString() {
-        val helper = Objects.toStringHelper(this) =>[
-            add("outputDir", outputDir)
-            add("sources", sourceDirs)
+        val helper = Objects.toStringHelper(this) => [
+            add("outputDir", _outputDir)
+            add("sources", _sourceDirs)
+            add("includes", _includeDirs)
+            add("runtimeVersion", _requiredRuntimeVersion)
         ]
         helper.toString
     }
