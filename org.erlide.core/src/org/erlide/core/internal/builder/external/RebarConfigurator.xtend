@@ -7,6 +7,9 @@ import org.erlide.engine.ErlangEngine
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.ProjectConfigurator
 import org.erlide.util.erlang.ErlUtils
+import org.eclipse.core.runtime.IPath
+import java.util.List
+import java.util.ArrayList
 
 class RebarConfigurator implements ProjectConfigurator {
 
@@ -35,27 +38,39 @@ class RebarConfigurator implements ProjectConfigurator {
 
         val content = ErlangEngine.instance.simpleParserService.parse(config)
         if(content.empty) return result
-        content.forEach [
-            val bindings = ErlUtils.match("{erl_opts,Opts}", it)
-            if (bindings !== null) {
 
-                val opts = bindings.getList("Opts")
-                opts.forEach [
-                    val b = ErlUtils.match("{Tag,Arg}", it)
-                    switch b.getAtom("Tag") {
-                        case "i":
-                            // TODO can be a list!
-                            result.setIncludeDirs(new Path(b.getString("Arg")))
-                        case "src_dirs":
-                            // TODO can be a string!
-                            result.setSourceDirs(
-                                b.getList("Arg").map [
-                                    val s = (it as OtpErlangString).stringValue
-                                    new Path(s)
-                                ])
-                    }
+        content.fold(false) [ seenIncludes, erl_opts |
+            var acc0 = seenIncludes
+            val bindings = ErlUtils.match("{erl_opts,Opts}", erl_opts)
+            val opts = bindings?.getList("Opts")
+            if (opts !== null)
+                acc0 = opts.fold(acc0) [ seenIncludes1, opt |
+                    var acc = seenIncludes1
+                    val b = ErlUtils.match("{Tag,Arg}", opt)
+                    if (b !== null)
+                        switch b.getAtom("Tag") {
+                            case "i": {
+
+                                // there can be multiple instances of 'i' that need to be merged
+                                val List<IPath> incs = if (seenIncludes1)
+                                        new ArrayList(result.includeDirs)
+                                    else
+                                        newArrayList
+                                incs.add(new Path(b.getString("Arg")))
+                                result.setIncludeDirs(incs)
+                                acc = true
+                            }
+                            case "src_dirs": {
+                                result.setSourceDirs(
+                                    b.getList("Arg").map [
+                                        val s = (it as OtpErlangString).stringValue
+                                        new Path(s)
+                                    ])
+                            }
+                        }
+                    acc
                 ]
-            }
+            acc0
         // FIXME other tags
         ]
 
