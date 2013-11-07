@@ -7,9 +7,9 @@ import java.util.Map;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
 import org.erlide.engine.model.builder.BuilderConfig;
-import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.ui.wizards.EmakeProjectPreferencesWizardPage;
 import org.erlide.ui.wizards.InternalProjectPreferencesWizardPage;
+import org.erlide.ui.wizards.NewProjectData;
 import org.erlide.ui.wizards.ProjectPreferencesWizardPage;
 import org.erlide.ui.wizards.RebarProjectPreferencesWizardPage;
 
@@ -27,7 +27,7 @@ public class ProjectPreferencesWizardPageFactory {
     }
   }.apply();
   
-  public static ProjectPreferencesWizardPage create(final BuilderConfig builder, final ErlangProjectProperties info) {
+  public static ProjectPreferencesWizardPage create(final BuilderConfig builder, final NewProjectData info) {
     try {
       ProjectPreferencesWizardPage _xblockexpression = null;
       {

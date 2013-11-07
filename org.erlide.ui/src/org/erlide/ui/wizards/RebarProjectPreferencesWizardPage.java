@@ -3,12 +3,11 @@ package org.erlide.ui.wizards;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.erlide.engine.model.builder.BuilderConfig;
-import org.erlide.engine.model.root.ErlangProjectProperties;
 
 public class RebarProjectPreferencesWizardPage extends ProjectPreferencesWizardPage {
 
     public RebarProjectPreferencesWizardPage(final String pageName,
-            final ErlangProjectProperties info) {
+            final NewProjectData info) {
         super(pageName, info);
         // TODO Auto-generated constructor stub
     }
@@ -19,12 +18,13 @@ public class RebarProjectPreferencesWizardPage extends ProjectPreferencesWizardP
         final Composite composite = new Composite(parent, SWT.NONE);
         setControl(composite);
 
-        // TODO Auto-generated method stub
-
+        checkConfigFile();
+        // TODO of course, do something with it :-)
     }
 
     @Override
     protected String getBuilderDescription() {
         return "Configuration retrieved from " + BuilderConfig.REBAR.getConfigName();
     }
+
 }

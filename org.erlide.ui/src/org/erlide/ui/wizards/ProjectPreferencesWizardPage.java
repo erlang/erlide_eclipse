@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.wizards;
 
+import java.io.File;
+
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -21,7 +23,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
@@ -31,7 +33,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
  */
 public abstract class ProjectPreferencesWizardPage extends WizardPage {
 
-    protected final ErlangProjectProperties info;
+    protected final NewProjectData info;
     private Text output;
     protected Text source;
     protected Text include;
@@ -45,8 +47,7 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
      * @param info
      * @wbp.parser.constructor
      */
-    public ProjectPreferencesWizardPage(final String pageName,
-            final ErlangProjectProperties info) {
+    public ProjectPreferencesWizardPage(final String pageName, final NewProjectData info) {
         super(pageName);
         this.info = info;
 
@@ -212,4 +213,18 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
     protected String getBuilderDescription() {
         return null;
     }
+
+    protected void checkConfigFile() {
+        final File f = new File(info.getLocation()
+                .append(BuilderConfig.valueOf(info.getBuilderConfig()).getConfigName())
+                .toPortableString());
+        if (f.exists()) {
+            // TODO read config and show it
+        } else {
+            // TODO just say
+            // "after creating project, edit the file to configure"
+        }
+
+    }
+
 }
