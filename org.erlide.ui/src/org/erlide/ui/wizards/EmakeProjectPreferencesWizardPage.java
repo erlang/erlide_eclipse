@@ -2,6 +2,7 @@ package org.erlide.ui.wizards;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 
 public class EmakeProjectPreferencesWizardPage extends ProjectPreferencesWizardPage {
@@ -22,6 +23,6 @@ public class EmakeProjectPreferencesWizardPage extends ProjectPreferencesWizardP
 
     @Override
     protected String getBuilderDescription() {
-        return "Emake...";
+        return "Configuration retrieved from " + BuilderConfig.EMAKE.getConfigName();
     }
 }

@@ -2,6 +2,7 @@ package org.erlide.ui.wizards;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 
 public class RebarProjectPreferencesWizardPage extends ProjectPreferencesWizardPage {
@@ -24,6 +25,6 @@ public class RebarProjectPreferencesWizardPage extends ProjectPreferencesWizardP
 
     @Override
     protected String getBuilderDescription() {
-        return "Rebar...";
+        return "Configuration retrieved from " + BuilderConfig.REBAR.getConfigName();
     }
 }

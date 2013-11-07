@@ -39,6 +39,7 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.ErlideUIConstants;
@@ -59,7 +60,7 @@ import com.google.common.collect.Maps;
 public class NewErlangProjectWizard extends Wizard implements INewWizard {
 
     private NewProjectData info;
-    private Map<BuilderTool, ProjectPreferencesWizardPage> buildPages;
+    private Map<BuilderConfig, ProjectPreferencesWizardPage> buildPages;
     private ErlangNewProjectCreationPage mainPage;
     private ErlangProjectBuilderPage builderPage;
 
@@ -73,7 +74,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         try {
             super.addPages();
             info = new NewProjectData();
-            buildPages = Maps.newEnumMap(BuilderTool.class);
+            buildPages = Maps.newEnumMap(BuilderConfig.class);
 
             mainPage = new ErlangNewProjectCreationPage("mainPage", info);
             mainPage.setTitle(ErlideUIPlugin
@@ -93,7 +94,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
                     .getImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
             addPage(builderPage);
 
-            for (final BuilderTool builder : BuilderTool.values()) {
+            for (final BuilderConfig builder : BuilderConfig.values()) {
                 final ProjectPreferencesWizardPage buildPage = ProjectPreferencesWizardPageFactory
                         .create(builder, info);
                 buildPages.put(builder, buildPage);
@@ -280,8 +281,17 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
             return builderPage;
         }
         if (page == builderPage) {
-            final BuilderTool builder = BuilderTool.valueOf(info.getBuilderName());
-            return buildPages.get(builder);
+
+            final String configName;
+            if (info.getBuilderName().equals(BuilderTool.MAKE.name())) {
+                configName = info.getBuilderConfig();
+            } else {
+                configName = BuilderTool.valueOf(info.getBuilderName())
+                        .getMatchingConfigs().iterator().next().name();
+            }
+
+            final BuilderConfig config = BuilderConfig.valueOf(configName);
+            return buildPages.get(config);
         }
         return null;
     }

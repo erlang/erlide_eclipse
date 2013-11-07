@@ -281,6 +281,6 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
 
     @Override
     protected String getBuilderDescription() {
-        return "Internal...";
+        return "Configuration stored in the project preferences.";
     }
 }
