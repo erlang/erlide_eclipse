@@ -1,7 +1,6 @@
 package org.erlide.ui.wizards;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.erlide.engine.model.builder.BuilderConfig;
 
 public class EmakeProjectPreferencesWizardPage extends ProjectPreferencesWizardPage {
@@ -13,15 +12,12 @@ public class EmakeProjectPreferencesWizardPage extends ProjectPreferencesWizardP
     }
 
     @Override
-    public void createControl(final Composite parent) {
-        // create the composite to hold the widgets
-        final Composite composite = new Composite(parent, SWT.NONE);
-        setControl(composite);
-
+    protected String getBuilderDescription() {
+        return "Configuration retrieved from " + BuilderConfig.EMAKE.getConfigName();
     }
 
     @Override
-    protected String getBuilderDescription() {
-        return "Configuration retrieved from " + BuilderConfig.EMAKE.getConfigName();
+    public Control getControl() {
+        return super.getControl();
     }
 }

@@ -282,4 +282,9 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
     protected String getBuilderDescription() {
         return "Configuration stored in the project preferences.";
     }
+
+    @Override
+    public boolean isReadOnly() {
+        return false;
+    }
 }

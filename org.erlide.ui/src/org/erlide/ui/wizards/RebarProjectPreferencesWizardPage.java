@@ -1,7 +1,6 @@
 package org.erlide.ui.wizards;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.erlide.engine.model.builder.BuilderConfig;
 
 public class RebarProjectPreferencesWizardPage extends ProjectPreferencesWizardPage {
@@ -13,18 +12,13 @@ public class RebarProjectPreferencesWizardPage extends ProjectPreferencesWizardP
     }
 
     @Override
-    public void createControl(final Composite parent) {
-        // create the composite to hold the widgets
-        final Composite composite = new Composite(parent, SWT.NONE);
-        setControl(composite);
-
-        checkConfigFile();
-        // TODO of course, do something with it :-)
+    protected String getBuilderDescription() {
+        return "Configuration retrieved from " + BuilderConfig.REBAR.getConfigName();
     }
 
     @Override
-    protected String getBuilderDescription() {
-        return "Configuration retrieved from " + BuilderConfig.REBAR.getConfigName();
+    public Control getControl() {
+        return super.getControl();
     }
 
 }

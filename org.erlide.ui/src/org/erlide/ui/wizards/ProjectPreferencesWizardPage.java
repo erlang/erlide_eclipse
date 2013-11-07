@@ -21,6 +21,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.engine.model.builder.BuilderConfig;
@@ -181,6 +182,10 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
         }
         test.setEditable(false);
         test.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
+
+        for (final Control c : composite.getChildren()) {
+            c.setEnabled(!isReadOnly());
+        }
     }
 
     protected void enableInputWidgets(final boolean b) {
@@ -225,6 +230,10 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
             // "after creating project, edit the file to configure"
         }
 
+    }
+
+    public boolean isReadOnly() {
+        return true;
     }
 
 }
