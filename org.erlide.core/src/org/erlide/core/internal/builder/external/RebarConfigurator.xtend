@@ -10,6 +10,7 @@ import org.erlide.util.erlang.ErlUtils
 import org.eclipse.core.runtime.IPath
 import java.util.List
 import java.util.ArrayList
+import org.erlide.util.erlang.Bindings
 
 class RebarConfigurator implements ProjectConfigurator {
 
@@ -42,39 +43,42 @@ class RebarConfigurator implements ProjectConfigurator {
         content.fold(false) [ seenIncludes, erl_opts |
             var acc0 = seenIncludes
             val bindings = ErlUtils.match("{erl_opts,Opts}", erl_opts)
-            val opts = bindings?.getList("Opts")
-            if (opts !== null)
-                acc0 = opts.fold(acc0) [ seenIncludes1, opt |
-                    var acc = seenIncludes1
-                    val b = ErlUtils.match("{Tag,Arg}", opt)
-                    if (b !== null)
-                        switch b.getAtom("Tag") {
-                            case "i": {
-
-                                // there can be multiple instances of 'i' that need to be merged
-                                val List<IPath> incs = if (seenIncludes1)
-                                        new ArrayList(result.includeDirs)
-                                    else
-                                        newArrayList
-                                incs.add(new Path(b.getString("Arg")))
-                                result.setIncludeDirs(incs)
-                                acc = true
-                            }
-                            case "src_dirs": {
-                                result.setSourceDirs(
-                                    b.getList("Arg").map [
-                                        val s = (it as OtpErlangString).stringValue
-                                        new Path(s)
-                                    ])
-                            }
-                        }
-                    acc
-                ]
+            if (bindings !== null) {
+                val opts = bindings.getList("Opts")
+                if (opts !== null)
+                    acc0 = opts.fold(acc0) [ seenIncludes1, opt |
+                        var acc = seenIncludes1
+                        val b = ErlUtils.match("{Tag,Arg}", opt)
+                        if (b !== null)
+                            acc = parseOption(b, acc, result)
+                        acc
+                    ]
+            }
             acc0
-        // FIXME other tags
         ]
 
         result
     }
 
+    def parseOption(Bindings b, boolean seenIncludes, ErlangProjectProperties result) {
+        switch b.getAtom("Tag") {
+            case "i": {
+                val List<IPath> incs = if (seenIncludes)
+                        new ArrayList(result.includeDirs)
+                    else
+                        newArrayList
+                incs.add(new Path(b.getString("Arg")))
+                result.setIncludeDirs(incs)
+                true
+            }
+            case "src_dirs": {
+                result.setSourceDirs(
+                    b.getList("Arg").map [
+                        val s = (it as OtpErlangString).stringValue
+                        new Path(s)
+                    ])
+                seenIncludes
+            }
+        }
+    }
 }
