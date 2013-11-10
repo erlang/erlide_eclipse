@@ -15,6 +15,7 @@ import org.erlide.engine.model.builder.BuilderConfig
 import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
+import org.erlide.engine.model.builder.ErlangBuilder
 
 class ErlangProjectBuilderPage extends WizardPage {
 
@@ -99,9 +100,9 @@ class ErlangProjectBuilderPage extends WizardPage {
 
     def String getDescription(BuilderConfig config) {
         switch (config) {
-            case BuilderConfig.INTERNAL: '''manually'''
-            case BuilderConfig.EMAKE: '''Emakefile'''
-            case BuilderConfig.REBAR: '''rebar.config'''
+            case BuilderConfig.INTERNAL: '''manually (next page)'''
+            case BuilderConfig.EMAKE: '''in Emakefile'''
+            case BuilderConfig.REBAR: '''in rebar.config'''
         }
     }
 
@@ -114,8 +115,12 @@ class ErlangProjectBuilderPage extends WizardPage {
 
     def detectBuilderConfig() {
         val location = info.location
-        if (location != null && new File(location.toPortableString).exists) {
+        if (location !== null && new File(location.toPortableString).exists) {
+
             // TODO 
+            val config = BuilderConfig.valueOf(info.builderConfig)
+            val persister = ErlangBuilder.getFactory().getConfigurationPersister(config)
+            //val props = persister.getRawConfiguration()
         }
     }
 
@@ -139,7 +144,7 @@ class BuilderSelectionListener implements SelectionListener {
     }
 
     override widgetSelected(SelectionEvent e) {
-        if (panel != null) {
+        if (panel !== null) {
             info.builderName = (e.widget.data as BuilderTool).name
             panel.configComposite.visible = (info.builderName == BuilderTool.MAKE.name)
         } else {

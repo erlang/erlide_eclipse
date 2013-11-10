@@ -22,6 +22,9 @@ import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.builder.BuilderTool;
+import org.erlide.engine.model.builder.ErlangBuilder;
+import org.erlide.engine.model.builder.IErlangBuilderFactory;
+import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.wizards.BuilderSelectionListener;
@@ -178,7 +181,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
       if (Objects.equal(config,BuilderConfig.INTERNAL)) {
         _matched=true;
         StringConcatenation _builder = new StringConcatenation();
-        _builder.append("manually");
+        _builder.append("manually (next page)");
         _switchResult = _builder.toString();
       }
     }
@@ -186,7 +189,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
       if (Objects.equal(config,BuilderConfig.EMAKE)) {
         _matched=true;
         StringConcatenation _builder_1 = new StringConcatenation();
-        _builder_1.append("Emakefile");
+        _builder_1.append("in Emakefile");
         _switchResult = _builder_1.toString();
       }
     }
@@ -194,7 +197,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
       if (Objects.equal(config,BuilderConfig.REBAR)) {
         _matched=true;
         StringConcatenation _builder_2 = new StringConcatenation();
-        _builder_2.append("rebar.config");
+        _builder_2.append("in rebar.config");
         _switchResult = _builder_2.toString();
       }
     }
@@ -208,26 +211,23 @@ public class ErlangProjectBuilderPage extends WizardPage {
     }
   }
   
-  public Object detectBuilderConfig() {
-    Object _xblockexpression = null;
-    {
-      final IPath location = this.info.getLocation();
-      Object _xifexpression = null;
-      boolean _and = false;
-      boolean _notEquals = (!Objects.equal(location, null));
-      if (!_notEquals) {
-        _and = false;
-      } else {
-        String _portableString = location.toPortableString();
-        File _file = new File(_portableString);
-        boolean _exists = _file.exists();
-        _and = (_notEquals && _exists);
-      }
-      if (_and) {
-        _xifexpression = null;
-      }
-      _xblockexpression = (_xifexpression);
+  public void detectBuilderConfig() {
+    final IPath location = this.info.getLocation();
+    boolean _and = false;
+    boolean _tripleNotEquals = (location != null);
+    if (!_tripleNotEquals) {
+      _and = false;
+    } else {
+      String _portableString = location.toPortableString();
+      File _file = new File(_portableString);
+      boolean _exists = _file.exists();
+      _and = (_tripleNotEquals && _exists);
     }
-    return _xblockexpression;
+    if (_and) {
+      String _builderConfig = this.info.getBuilderConfig();
+      final BuilderConfig config = BuilderConfig.valueOf(_builderConfig);
+      IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
+      final ProjectConfigurationPersister persister = _factory.getConfigurationPersister(config);
+    }
   }
 }

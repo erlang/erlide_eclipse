@@ -56,7 +56,7 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
         final String configName = info.getConfigName();
         switch (info) {
         case INTERNAL:
-            return new PreferencesProjectConfigurationPersister();
+            return new PreferencesProjectConfigurationPersister(configName);
         case EMAKE:
             return new FileProjectConfigurationPersister(new EmakeConfigurator(),
                     configName);

@@ -27,8 +27,8 @@ public class BuilderSelectionListener implements SelectionListener {
   }
   
   public void widgetSelected(final SelectionEvent e) {
-    boolean _notEquals = (!Objects.equal(this.panel, null));
-    if (_notEquals) {
+    boolean _tripleNotEquals = (this.panel != null);
+    if (_tripleNotEquals) {
       Object _data = e.widget.getData();
       String _name = ((BuilderTool) _data).name();
       this.info.setBuilderName(_name);

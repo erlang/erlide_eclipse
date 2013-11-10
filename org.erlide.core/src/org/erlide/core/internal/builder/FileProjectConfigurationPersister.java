@@ -43,7 +43,13 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
         final IResource conf = getProject().findMember(fileName);
         final File confFile = new File(conf.getLocation().toString());
 
+        final ErlangProjectProperties result = getRawConfig(confFile);
+        return mergeWithDefaultConfig(result, extraPersister.getConfiguration(project));
+    }
+
+    private ErlangProjectProperties getRawConfig(final File confFile) {
         String line;
+        ErlangProjectProperties result = null;
         try {
             line = Files.readFirstLine(confFile, Charsets.ISO_8859_1);
             Charset coding = ErlangContentDescriber.detectEncoding(line);
@@ -54,24 +60,23 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
             if (confString != null) {
                 final String content = Joiner.on("\n").join(confString);
                 if (content != null) {
-                    return mergeWithExtraConfig(project,
-                            getConfigurator().decodeConfig(content));
+                    result = getConfigurator().decodeConfig(content);
                 }
             }
         } catch (final IOException e) {
             ErlLogger.error(e);
+            return null;
         }
-        return null;
+        return result;
     }
 
-    private ErlangProjectProperties mergeWithExtraConfig(final IErlProject project,
-            final ErlangProjectProperties source) {
-        final ErlangProjectProperties extra = extraPersister.getConfiguration(project);
+    private ErlangProjectProperties mergeWithDefaultConfig(
+            final ErlangProjectProperties source, final ErlangProjectProperties deflt) {
         if (source.getExternalModulesFile() == null) {
-            source.setExternalModulesFile(extra.getExternalModulesFile());
+            source.setExternalModulesFile(deflt.getExternalModulesFile());
         }
         if (source.getExternalIncludesFile() == null) {
-            source.setExternalIncludesFile(extra.getExternalIncludesFile());
+            source.setExternalIncludesFile(deflt.getExternalIncludesFile());
         }
         return source;
     }
