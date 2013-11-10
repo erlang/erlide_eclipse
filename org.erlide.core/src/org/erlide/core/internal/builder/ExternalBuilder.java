@@ -66,7 +66,7 @@ public abstract class ExternalBuilder extends ErlangBuilder {
 
             ErlLogger.trace("build", "Done " + project.getName());
 
-        } catch (final Exception e) {
+        } catch (final Error e) {
             e.printStackTrace();
             throw new CoreException(new Status(IStatus.ERROR, "org.erlide.core",
                     "builder error", e));

@@ -62,7 +62,17 @@ public class BuildersTest {
 
     @Test
     public void makeBuilderShouldWork() throws CoreException {
-        testBuilder(BuilderTool.MAKE);
+        final IFolder folder = (IFolder) prj.findMember("src");
+        final IFile app = folder.getFile("z.app.src");
+        app.create(new StringBufferInputStream(
+                "{application, builders,[{description, \"\"},{vsn, \"1\"},"
+                        + "{registered, []},{applications, [kernel,stdlib]},"
+                        + "{mod, { mod, []}},{env, []}]}."), true, null);
+        try {
+            testBuilder(BuilderTool.MAKE);
+        } finally {
+            app.delete(true, null);
+        }
     }
 
     @Test
@@ -75,7 +85,7 @@ public class BuildersTest {
         final IFolder folder = (IFolder) prj.findMember("src");
         final IFile app = folder.getFile("z.app.src");
         app.create(new StringBufferInputStream(
-                "{application, builders,{description, \"\"},{vsn, \"1\"},"
+                "{application, builders,[{description, \"\"},{vsn, \"1\"},"
                         + "{registered, []},{applications, [kernel,stdlib]},"
                         + "{mod, { mod, []}},{env, []}]}."), true, null);
         try {
@@ -92,7 +102,8 @@ public class BuildersTest {
 
     private void testBuilder(final BuilderTool builder) throws CoreException {
         ErlangNature.setErlangProjectBuilder(prj, builder);
-        final String builderId = ErlangBuilder.getFactory().getBuilder(builder).getId();
+        final String builderId = ErlangBuilder.getFactory().getBuilder(builder)
+                .getId();
         final String targetBeamPath = "ebin/mod.beam";
 
         final IResource beam0 = prj.findMember(targetBeamPath);
