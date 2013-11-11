@@ -18,7 +18,6 @@ class ErlangProjectProperties {
     @Property String externalIncludesFile
     @Property String externalModulesFile
     @Property RuntimeVersion requiredRuntimeVersion
-    @Property String runtimeName
     @Property boolean nukeOutputOnClean
     @Property Charset encoding
 
@@ -29,7 +28,6 @@ class ErlangProjectProperties {
         _externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES
         _externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES
         _requiredRuntimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
-        _runtimeName = null
         _nukeOutputOnClean = false
         if (_requiredRuntimeVersion.isCompatible(new RuntimeVersion(18))) {
             _encoding = Charsets.UTF_8
@@ -67,12 +65,11 @@ class ErlangProjectProperties {
         _includeDirs = bprefs._includeDirs
         _sourceDirs = bprefs._sourceDirs
         _outputDir = bprefs._outputDir
-        _runtimeName = bprefs._runtimeName
         _requiredRuntimeVersion = bprefs._requiredRuntimeVersion
     }
 
     def getRuntimeInfo() {
-        val runtime = RuntimeCore.runtimeInfoCatalog.getRuntime(_requiredRuntimeVersion, _runtimeName)
+        val runtime = RuntimeCore.runtimeInfoCatalog.getRuntime(_requiredRuntimeVersion, null)
         runtime
     }
 
@@ -94,14 +91,6 @@ class ErlangProjectProperties {
         } else {
             _encoding = Charsets.ISO_8859_1
         }
-    }
-
-    @Deprecated def getRuntimeName() {
-        _runtimeName
-    }
-
-    @Deprecated def setRuntimeName(String runtimeName) {
-        this._runtimeName = runtimeName
     }
 
     def boolean sameAs(Object other1) {
@@ -141,11 +130,6 @@ class ErlangProjectProperties {
             if (other._requiredRuntimeVersion !== null)
                 return false
         } else if (!_requiredRuntimeVersion.equals(other._requiredRuntimeVersion))
-            return false
-        if (_runtimeName === null) {
-            if (other._runtimeName !== null)
-                return false
-        } else if (!_runtimeName.equals(other._runtimeName))
             return false
         if (other._nukeOutputOnClean != _nukeOutputOnClean)
             return false

@@ -10,8 +10,6 @@ import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
-import org.erlide.runtime.api.RuntimeCore;
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
@@ -58,21 +56,9 @@ public class PreferencesProjectConfigurationPersister extends
         result.setOutputDir(new Path(outputDirsStr));
         result.setRuntimeVersion(new RuntimeVersion(node.get(
                 ProjectPreferencesConstants.RUNTIME_VERSION, null)));
-        result.setRuntimeName(node.get(ProjectPreferencesConstants.RUNTIME_NAME, null));
         if (!result.getRuntimeVersion().isDefined()) {
-            if (result.getRuntimeName() == null) {
-                result.setRuntimeVersion(new RuntimeVersion(
-                        ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION));
-            } else {
-                final RuntimeInfo info = RuntimeCore.getRuntimeInfoCatalog().getRuntime(
-                        result.getRuntimeName());
-                if (info != null) {
-                    result.setRuntimeVersion(new RuntimeVersion(info.getVersion()));
-                } else {
-                    result.setRuntimeVersion(new RuntimeVersion(
-                            ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION));
-                }
-            }
+            result.setRuntimeVersion(new RuntimeVersion(
+                    ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION));
         }
         result.setExternalModulesFile(node.get(
                 ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
@@ -109,11 +95,6 @@ public class PreferencesProjectConfigurationPersister extends
                     .getRuntimeVersion().asMinor().toString());
         } else {
             node.remove(ProjectPreferencesConstants.RUNTIME_VERSION);
-        }
-        if (info.getRuntimeName() != null) {
-            node.put(ProjectPreferencesConstants.RUNTIME_NAME, info.getRuntimeName());
-        } else {
-            node.remove(ProjectPreferencesConstants.RUNTIME_NAME);
         }
         node.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
                 info.getExternalModulesFile());

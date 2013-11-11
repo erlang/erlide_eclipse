@@ -65,8 +65,6 @@ public class ErlangProjectProperties {
     this._requiredRuntimeVersion = requiredRuntimeVersion;
   }
   
-  private String _runtimeName;
-  
   private boolean _nukeOutputOnClean;
   
   public boolean isNukeOutputOnClean() {
@@ -98,7 +96,6 @@ public class ErlangProjectProperties {
     this._externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
     RuntimeVersion _runtimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
     this._requiredRuntimeVersion = _runtimeVersion;
-    this._runtimeName = null;
     this._nukeOutputOnClean = false;
     RuntimeVersion _runtimeVersion_1 = new RuntimeVersion(18);
     boolean _isCompatible = this._requiredRuntimeVersion.isCompatible(_runtimeVersion_1);
@@ -150,7 +147,6 @@ public class ErlangProjectProperties {
       this._includeDirs = bprefs._includeDirs;
       this._sourceDirs = bprefs._sourceDirs;
       this._outputDir = bprefs._outputDir;
-      this._runtimeName = bprefs._runtimeName;
       RuntimeVersion __requiredRuntimeVersion = this._requiredRuntimeVersion = bprefs._requiredRuntimeVersion;
       _xblockexpression = (__requiredRuntimeVersion);
     }
@@ -161,7 +157,7 @@ public class ErlangProjectProperties {
     RuntimeInfo _xblockexpression = null;
     {
       IRuntimeInfoCatalog _runtimeInfoCatalog = RuntimeCore.getRuntimeInfoCatalog();
-      final RuntimeInfo runtime = _runtimeInfoCatalog.getRuntime(this._requiredRuntimeVersion, this._runtimeName);
+      final RuntimeInfo runtime = _runtimeInfoCatalog.getRuntime(this._requiredRuntimeVersion, null);
       _xblockexpression = (runtime);
     }
     return _xblockexpression;
@@ -201,17 +197,6 @@ public class ErlangProjectProperties {
       _xblockexpression = (_xifexpression);
     }
     return _xblockexpression;
-  }
-  
-  @Deprecated
-  public String getRuntimeName() {
-    return this._runtimeName;
-  }
-  
-  @Deprecated
-  public String setRuntimeName(final String runtimeName) {
-    String __runtimeName = this._runtimeName = runtimeName;
-    return __runtimeName;
   }
   
   public boolean sameAs(final Object other1) {
@@ -306,33 +291,20 @@ public class ErlangProjectProperties {
         return false;
       }
     }
-    boolean _tripleEquals_8 = (this._runtimeName == null);
-    if (_tripleEquals_8) {
-      boolean _tripleNotEquals_6 = (other._runtimeName != null);
-      if (_tripleNotEquals_6) {
-        return false;
-      }
-    } else {
-      boolean _equals_6 = this._runtimeName.equals(other._runtimeName);
-      boolean _not_7 = (!_equals_6);
-      if (_not_7) {
-        return false;
-      }
-    }
     boolean _notEquals = (other._nukeOutputOnClean != this._nukeOutputOnClean);
     if (_notEquals) {
       return false;
     }
-    boolean _tripleEquals_9 = (this._encoding == null);
-    if (_tripleEquals_9) {
-      boolean _tripleNotEquals_7 = (other._encoding != null);
-      if (_tripleNotEquals_7) {
+    boolean _tripleEquals_8 = (this._encoding == null);
+    if (_tripleEquals_8) {
+      boolean _tripleNotEquals_6 = (other._encoding != null);
+      if (_tripleNotEquals_6) {
         return false;
       }
     } else {
-      boolean _equals_7 = this._encoding.equals(other._encoding);
-      boolean _not_8 = (!_equals_7);
-      if (_not_8) {
+      boolean _equals_6 = this._encoding.equals(other._encoding);
+      boolean _not_7 = (!_equals_6);
+      if (_not_7) {
         return false;
       }
     }
