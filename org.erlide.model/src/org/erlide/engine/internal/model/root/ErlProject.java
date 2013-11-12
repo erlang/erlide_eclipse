@@ -64,6 +64,7 @@ import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
@@ -96,7 +97,8 @@ import com.google.common.collect.Lists;
  * 
  * @see IErlProject
  */
-public class ErlProject extends Openable implements IErlProject {
+public class ErlProject extends Openable implements IErlProject,
+        ProjectConfigurationChangeListener {
 
     /**
      * Whether the underlying file system is case sensitive.
@@ -524,8 +526,8 @@ public class ErlProject extends Openable implements IErlProject {
     @Override
     public ErlangProjectProperties getProperties() {
         if (properties == null) {
-            loadCoreProperties();
-            properties = loadProperties();
+
+            configurationChanged();
         }
         return properties;
     }
@@ -906,4 +908,11 @@ public class ErlProject extends Openable implements IErlProject {
     public ErlangProjectProperties getConfig() {
         return getConfig(builderConfig);
     }
+
+    @Override
+    public void configurationChanged() {
+        loadCoreProperties();
+        properties = loadProperties();
+    }
+
 }
