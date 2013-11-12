@@ -14,12 +14,10 @@ import org.osgi.service.prefs.BackingStoreException;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 
-public class InternalProjectConfigurationTests extends
-        AbstractProjectConfigurationTests {
+public class InternalProjectConfigurationTests extends AbstractProjectConfigurationTests {
 
     @Test
-    public void outputPathShouldFollowPropertyChange()
-            throws BackingStoreException {
+    public void outputPathShouldFollowPropertyChange() throws BackingStoreException {
         final String expected = "hello/world";
 
         final IProject wproject = project.getWorkspaceProject();
@@ -28,6 +26,7 @@ public class InternalProjectConfigurationTests extends
         node.put(ProjectPreferencesConstants.OUTPUT_DIR, expected);
         node.flush();
 
+        // ((ErlProject) project).loadProperties();
         final ErlangProjectProperties pp = project.getProperties();
         final String actual = pp.getOutputDir().toPortableString();
 
@@ -35,8 +34,7 @@ public class InternalProjectConfigurationTests extends
     }
 
     @Test
-    public void includePathsShouldFollowPropertyChange()
-            throws BackingStoreException {
+    public void includePathsShouldFollowPropertyChange() throws BackingStoreException {
         final String expected = "hello/world;a/b";
 
         final IProject wproject = project.getWorkspaceProject();
@@ -52,13 +50,11 @@ public class InternalProjectConfigurationTests extends
     }
 
     private String convertListString(final String expected) {
-        return "[" + Joiner.on(", ").join(Splitter.on(";").split(expected))
-                + "]";
+        return "[" + Joiner.on(", ").join(Splitter.on(";").split(expected)) + "]";
     }
 
     @Test
-    public void sourcePathsShouldFollowPropertyChange()
-            throws BackingStoreException {
+    public void sourcePathsShouldFollowPropertyChange() throws BackingStoreException {
         final String expected = "hello/world;a/b";
 
         final IProject wproject = project.getWorkspaceProject();

@@ -90,6 +90,10 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     IProject getWorkspaceProject();
 
+    /**
+     * Returns the project's configuration. Value must not be cached! It can be
+     * changed in the background when config file or preferences are edited.
+     */
     ErlangProjectProperties getProperties();
 
     BuilderTool getBuilderTool();
