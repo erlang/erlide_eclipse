@@ -114,7 +114,12 @@ public class RebarConfigurator implements ProjectConfigurator {
             final List<IPath> incs = _xifexpression;
             String _string = b.getString("Arg");
             Path _path = new Path(_string);
-            incs.add(_path);
+            final Path inc = _path;
+            boolean _contains = incs.contains(inc);
+            boolean _not = (!_contains);
+            if (_not) {
+              incs.add(inc);
+            }
             result.setIncludeDirs(incs);
             _xblockexpression = (true);
           }

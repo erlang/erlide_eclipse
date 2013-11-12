@@ -29,6 +29,7 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
                 .getConfigurationPersister(project.getBuilderConfig()).getConfigurator();
 
         final ErlangProjectProperties expected = new ErlangProjectProperties();
+        expected.setSourceDirs();
         final ErlangProjectProperties actual = configurator.decodeConfig("");
 
         assertThat(actual, is(ErlangProjectPropertiesMatcher.sameAs(expected)));
@@ -38,10 +39,9 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
     public void propertiesShouldFollowConfigFileChange() throws CoreException {
         project.setBuilderTool(BuilderTool.EMAKE);
         final String cfgFile = BuilderConfig.EMAKE.getConfigName();
-        final String config = getFileContent(cfgFile);
 
-        final String config1 = config + "{'src/file1',[debug_info,{i,\"myinclude\"}]}. "
-                + "{'src2/file1',[debug_info,{i,\"../myinclude\"}]}.";
+        final String config1 = "{'src/*',[debug_info,{i,\"myinclude\"}]}. "
+                + "{'src2/*',[debug_info,{i,\"myinclude\"}]}.";
         setFileContent(cfgFile, config1);
 
         final ErlangProjectProperties p2 = ((ErlProject) project).loadProperties();

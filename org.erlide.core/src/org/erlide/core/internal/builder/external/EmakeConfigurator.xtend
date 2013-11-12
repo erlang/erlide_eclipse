@@ -3,6 +3,14 @@ package org.erlide.core.internal.builder.external
 import org.eclipse.core.resources.IProject
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.ProjectConfigurator
+import org.erlide.engine.ErlangEngine
+import org.erlide.util.erlang.ErlUtils
+import org.erlide.util.erlang.Bindings
+import java.util.List
+import org.eclipse.core.runtime.IPath
+import java.util.ArrayList
+import org.eclipse.core.runtime.Path
+import com.ericsson.otp.erlang.OtpErlangAtom
 
 class EmakeConfigurator implements ProjectConfigurator {
 
@@ -21,10 +29,54 @@ class EmakeConfigurator implements ProjectConfigurator {
 
     override ErlangProjectProperties decodeConfig(String config) {
         val result = new ErlangProjectProperties()
-        
-        
-        
+        result.setSourceDirs()
+
+        val content = ErlangEngine.instance.simpleParserService.parse(config)
+        if(content.empty) return result
+
+        content.fold(false) [ seenIncludes, erl_opts |
+            var acc0 = seenIncludes
+            val bindings = ErlUtils.match("{Src,Opts}", erl_opts)
+            if (bindings !== null) {
+                val src = bindings.getAtom("Src")
+                val path = if (src.contains("/")) {
+                        src.split("/").head
+                    } else {
+                        "src"
+                    }
+                val sd = new ArrayList(result.sourceDirs)
+                sd.add(new Path(path))
+                result.setSourceDirs(sd)
+
+                val opts = bindings.getList("Opts")
+                if (opts !== null)
+                    acc0 = opts.fold(acc0) [ seenIncludes1, opt |
+                        var acc = seenIncludes1
+                        val b = ErlUtils.match("{Tag,Arg}", opt)
+                        if (b !== null)
+                            acc = parseOption(b, acc, result)
+                        acc
+                    ]
+            }
+            acc0
+        ]
+
         result
     }
 
+    def parseOption(Bindings b, boolean seenIncludes, ErlangProjectProperties result) {
+        switch b.getAtom("Tag") {
+            case "i": {
+                val List<IPath> incs = if (seenIncludes)
+                        new ArrayList(result.includeDirs)
+                    else
+                        newArrayList
+                val inc = new Path(b.getString("Arg"))
+                if (!incs.contains(inc))
+                    incs.add(inc)
+                result.setIncludeDirs(incs)
+                true
+            }
+        }
+    }
 }

@@ -1,16 +1,16 @@
 package org.erlide.core.internal.builder.external
 
 import com.ericsson.otp.erlang.OtpErlangString
+import java.util.ArrayList
+import java.util.List
 import org.eclipse.core.resources.IProject
+import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.Path
 import org.erlide.engine.ErlangEngine
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.ProjectConfigurator
-import org.erlide.util.erlang.ErlUtils
-import org.eclipse.core.runtime.IPath
-import java.util.List
-import java.util.ArrayList
 import org.erlide.util.erlang.Bindings
+import org.erlide.util.erlang.ErlUtils
 
 class RebarConfigurator implements ProjectConfigurator {
 
@@ -67,7 +67,9 @@ class RebarConfigurator implements ProjectConfigurator {
                         new ArrayList(result.includeDirs)
                     else
                         newArrayList
-                incs.add(new Path(b.getString("Arg")))
+                val inc = new Path(b.getString("Arg"))
+                if (!incs.contains(inc))
+                    incs.add(inc)
                 result.setIncludeDirs(incs)
                 true
             }
