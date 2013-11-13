@@ -1,7 +1,6 @@
 package org.erlide.core.executor;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
@@ -17,23 +16,16 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
-
-import com.google.common.collect.Lists;
 
 @SuppressWarnings("restriction")
 public class ToolExecutor {
 
     public static class ToolResults {
-        public Collection<String> output;
-        public Collection<String> error;
         public int exit;
 
         public ToolResults() {
-            output = Lists.newArrayList();
-            error = Lists.newArrayList();
             exit = -1;
         }
 
@@ -47,12 +39,12 @@ public class ToolExecutor {
 
         @Override
         public String toString() {
-            return "{{{\n  " + output + "\n  " + error + "\n  " + exit + "\n}}}";
+            return "{{{ exit=" + exit + "}}}";
         }
     }
 
     public ToolResults run(final String cmd0, final String args, final String wdir,
-            final Procedure1<String> progressCallback, final IProgressMonitor monitor) {
+            final ProgressCallback progressCallback, final IProgressMonitor monitor) {
         final String cmd = new Path(cmd0).isAbsolute() ? cmd0 : getToolLocation(cmd0);
 
         if (cmd == null) {
@@ -86,10 +78,9 @@ public class ToolExecutor {
                         public void streamAppended(final String text,
                                 final IStreamMonitor mon) {
                             final List<String> lines = Arrays.asList(text.split("\n"));
-                            result.output.addAll(lines);
                             if (progressCallback != null) {
                                 for (final String line : lines) {
-                                    progressCallback.apply(line);
+                                    progressCallback.stdout(line);
                                 }
                             }
                         }
@@ -100,7 +91,12 @@ public class ToolExecutor {
                         @Override
                         public void streamAppended(final String text,
                                 final IStreamMonitor mon) {
-                            result.error.addAll(Arrays.asList(text.split("\n")));
+                            final List<String> lines = Arrays.asList(text.split("\n"));
+                            if (progressCallback != null) {
+                                for (final String line : lines) {
+                                    progressCallback.stderr(line);
+                                }
+                            }
                         }
                     });
             boolean done = false;
@@ -155,20 +151,34 @@ public class ToolExecutor {
     }
 
     private String getUnixToolLocation(final String cmd) {
-        final ToolResults tool = run("/bin/sh", "-c \"which " + cmd + "\"", null, null);
-        if (tool.output.isEmpty()) {
-            return null;
-        }
-        return tool.output.iterator().next();
+        final ToolProgressCallback callback = new ToolProgressCallback();
+        run("/bin/sh", "-c \"which " + cmd + "\"", null, callback, null);
+        return callback.result;
     }
 
     private String getWindowsToolLocation(final String cmd) {
-        final ToolResults tool = run("c:\\Windows\\System32\\cmd.exe", "/c \"where "
-                + cmd + "\"", null, null);
-        if (tool.output.isEmpty()) {
+        final ToolProgressCallback callback = new ToolProgressCallback();
+        run("c:\\Windows\\System32\\cmd.exe", "/c \"where " + cmd + "\"", null, callback,
+                null);
+        if (callback.result == null) {
             return null;
         }
-        return tool.output.iterator().next().replace('\\', '/');
+        return callback.result.replace('\\', '/');
+    }
+
+    static class ToolProgressCallback implements ProgressCallback {
+        String result = null;
+
+        @Override
+        public void stdout(final String line) {
+            if (result == null) {
+                result = line;
+            }
+        }
+
+        @Override
+        public void stderr(final String line) {
+        }
     }
 
 }

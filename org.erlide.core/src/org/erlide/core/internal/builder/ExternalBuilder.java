@@ -1,6 +1,5 @@
 package org.erlide.core.internal.builder;
 
-import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
@@ -13,14 +12,15 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.MarkerUtils;
+import org.erlide.core.executor.ProgressCallback;
 import org.erlide.core.executor.ToolExecutor;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.util.ErlLogger;
 
-import com.google.common.base.Joiner;
-
 public abstract class ExternalBuilder extends ErlangBuilder {
+
+    protected static final boolean DEBUG = false;
 
     protected final ToolExecutor ex;
     protected final BuilderHelper helper = new BuilderHelper();
@@ -52,16 +52,40 @@ public abstract class ExternalBuilder extends ErlangBuilder {
                 project.getFolder("ebin").create(true, true, null);
             }
 
+            final ProgressCallback callback = new ProgressCallback() {
+
+                @Override
+                public void stdout(final String line) {
+                    if (DEBUG) {
+                        System.out.println("!!! " + line);
+                    }
+                    final IMessageParser parser = getMessageParser();
+                    parser.createMarkers(line);
+                }
+
+                @Override
+                public void stderr(final String line) {
+                    if (DEBUG) {
+                        System.out.println("??? " + line);
+                    }
+                }
+            };
             final ToolResults result = ex.run(getOsCommand(), getCompileTarget(), project
-                    .getLocation().toPortableString(), m);
+                    .getLocation().toPortableString(), callback, m);
 
             if (result.isCommandNotFound()) {
                 MarkerUtils.addMarker(null, project, null, "Builder command not found: "
                         + getOsCommand(), 0, IMarker.SEVERITY_ERROR,
                         MarkerUtils.PROBLEM_MARKER);
-            } else {
-                createMarkers(result);
             }
+            final boolean noMarkersOnProject = project.findMarkers(IMarker.PROBLEM, true,
+                    IResource.DEPTH_INFINITE).length == 0;
+            if (noMarkersOnProject && result.exit > 0) {
+                MarkerUtils.addMarker(null, project, null, "Builder error: "
+                        + getOsCommand(), 0, IMarker.SEVERITY_ERROR,
+                        MarkerUtils.PROBLEM_MARKER);
+            }
+
             m.worked(9);
 
             ErlLogger.trace("build", "Done " + project.getName());
@@ -86,38 +110,21 @@ public abstract class ExternalBuilder extends ErlangBuilder {
         if (getCleanTarget() == null) {
             return;
         }
-        final ToolResults result = ex.run(getOsCommand(), getCleanTarget(), project
-                .getLocation().toPortableString(), m);
-        if (result != null) {
-            createMarkers(result);
-        }
+        final ProgressCallback callback = new ProgressCallback() {
+
+            @Override
+            public void stdout(final String line) {
+                final IMessageParser parser = getMessageParser();
+                parser.createMarkers(line);
+            }
+
+            @Override
+            public void stderr(final String line) {
+            }
+        };
+        ex.run(getOsCommand(), getCleanTarget(),
+                project.getLocation().toPortableString(), callback, m);
         m.worked(9);
-    }
-
-    private void createMarkers(final ToolResults result) {
-        if (result.exit > 2) {
-            ErlLogger.error("The '" + getOsCommand() + "' builder returned error "
-                    + result.exit + "\n" + Joiner.on('\n').join(result.output)
-                    + "--------------\n" + Joiner.on('\n').join(result.error)
-                    + "--------------");
-            return;
-        }
-
-        boolean markers = false;
-        final IMessageParser parser = getMessageParser();
-        for (final String msg : result.output) {
-            markers |= parser.createMarkers(msg);
-        }
-        if (!markers && result.exit != 0) {
-            MarkerUtils.addMarker(null, getProject(), null, "Build error: "
-                    + strip(result.output), 1, IMarker.SEVERITY_ERROR, IMarker.PROBLEM);
-        }
-    }
-
-    private String strip(final Collection<String> output) {
-        String result = Joiner.on(' ').join(output);
-        result = result.replaceAll(" +", " ");
-        return result;
     }
 
     protected IMessageParser getMessageParser() {
