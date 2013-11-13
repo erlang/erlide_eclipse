@@ -22,7 +22,8 @@ public class ProjectConfigurationTests extends AbstractProjectConfigurationTests
 
     @Test(expected = IllegalArgumentException.class)
     public void canNotSetIncompatibleConfig() {
-        project.setBuilderConfig(BuilderConfig.EMAKE);
+        project.setBuilderTool(BuilderTool.EMAKE);
+        project.setBuilderConfig(BuilderConfig.REBAR);
     }
 
     @Test
@@ -38,9 +39,9 @@ public class ProjectConfigurationTests extends AbstractProjectConfigurationTests
         project.setBuilderTool(BuilderTool.REBAR);
         assertThat(project.getBuilderConfig(), is(BuilderConfig.REBAR));
         project.setBuilderTool(BuilderTool.INTERNAL);
-        assertThat(project.getBuilderConfig(), is(BuilderConfig.INTERNAL));
+        assertThat(project.getBuilderConfig(), is(BuilderConfig.REBAR));
         project.setBuilderTool(BuilderTool.MAKE);
-        assertThat(project.getBuilderConfig(), is(BuilderConfig.INTERNAL));
+        assertThat(project.getBuilderConfig(), is(BuilderConfig.REBAR));
     }
 
     @Override
