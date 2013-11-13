@@ -76,6 +76,7 @@ import org.erlide.util.ErlLogger;
 import org.erlide.util.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 /**
@@ -580,7 +581,7 @@ public class ErlProject extends Openable implements IErlProject,
         final String key = external == ExternalKind.EXTERNAL_INCLUDES ? "default_external_includes"
                 : "default_external_modules";
         String result = getExternal(external, service, key, "org.erlide.ui");
-        if ("".equals(result)) {
+        if (Strings.isNullOrEmpty(result)) {
             result = getExternal(external, service, key, "org.erlide.core");
         }
         return result;
@@ -589,11 +590,7 @@ public class ErlProject extends Openable implements IErlProject,
     private String getExternal(final ExternalKind external,
             final IPreferencesService service, final String key,
             final String pluginId) {
-        final String s = service.getString(pluginId, key, "", null);
-        if (s.length() > 0) {
-            // ErlLogger.debug("%s: '%s'", key, s);
-        }
-        final String global = s;
+        final String global = service.getString(pluginId, key, "", null);
         final ErlangProjectProperties prefs = getProperties();
         final String projprefs = external == ExternalKind.EXTERNAL_INCLUDES ? prefs
                 .getExternalIncludesFile() : prefs.getExternalModulesFile();
