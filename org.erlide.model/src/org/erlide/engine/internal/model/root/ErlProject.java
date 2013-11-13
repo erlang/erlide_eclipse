@@ -869,7 +869,8 @@ public class ErlProject extends Openable implements IErlProject,
 
     @Override
     public void setBuilderConfig(final BuilderConfig config) {
-        if (!builderTool.getMatchingConfigs().contains(config)) {
+        if (config != null
+                && !builderTool.getMatchingConfigs().contains(config)) {
             throw new IllegalArgumentException(String.format(
                     "Builder config %s can't be used with tool %s", config,
                     builderTool));
