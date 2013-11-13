@@ -8,7 +8,6 @@ public class EmakeProjectPreferencesWizardPage extends ProjectPreferencesWizardP
     public EmakeProjectPreferencesWizardPage(final String pageName,
             final NewProjectData info) {
         super(pageName, info);
-        // TODO Auto-generated constructor stub
     }
 
     @Override

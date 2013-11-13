@@ -120,7 +120,8 @@ class ErlangProjectBuilderPage extends WizardPage {
             // TODO 
             val config = BuilderConfig.valueOf(info.builderConfig)
             val persister = ErlangBuilder.getFactory().getConfigurationPersister(config)
-            //val props = persister.getRawConfiguration()
+
+        //val props = persister.getRawConfiguration()
         }
     }
 
@@ -146,7 +147,8 @@ class BuilderSelectionListener implements SelectionListener {
     override widgetSelected(SelectionEvent e) {
         if (panel !== null) {
             info.builderName = (e.widget.data as BuilderTool).name
-            panel.configComposite.visible = (info.builderName == BuilderTool.MAKE.name)
+            panel.configComposite.visible = (info.builderName == BuilderTool.MAKE.name) ||
+                (info.builderName == BuilderTool.INTERNAL.name)
         } else {
             info.builderConfig = (e.widget.data as BuilderConfig).name
         }

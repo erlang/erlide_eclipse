@@ -31,7 +31,8 @@ public enum BuilderTool {
         @Override
         public Map<BuilderTool, List<BuilderConfig>> apply() {
             final Map<BuilderTool, List<BuilderConfig>> result = Maps.newHashMap();
-            result.put(INTERNAL, Lists.newArrayList(BuilderConfig.INTERNAL));
+            result.put(INTERNAL, Lists.newArrayList(BuilderConfig.INTERNAL,
+                    BuilderConfig.EMAKE, BuilderConfig.REBAR));
             result.put(MAKE, Lists.newArrayList(BuilderConfig.INTERNAL,
                     BuilderConfig.EMAKE, BuilderConfig.REBAR));
             result.put(EMAKE, Lists.newArrayList(BuilderConfig.EMAKE));

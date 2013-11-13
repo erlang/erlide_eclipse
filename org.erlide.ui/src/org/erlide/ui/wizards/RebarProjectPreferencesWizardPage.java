@@ -8,7 +8,6 @@ public class RebarProjectPreferencesWizardPage extends ProjectPreferencesWizardP
     public RebarProjectPreferencesWizardPage(final String pageName,
             final NewProjectData info) {
         super(pageName, info);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
