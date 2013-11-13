@@ -1,16 +1,15 @@
 package org.erlide.core.internal.builder.external
 
+import java.util.ArrayList
+import java.util.List
 import org.eclipse.core.resources.IProject
+import org.eclipse.core.runtime.IPath
+import org.eclipse.core.runtime.Path
+import org.erlide.engine.ErlangEngine
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.ProjectConfigurator
-import org.erlide.engine.ErlangEngine
-import org.erlide.util.erlang.ErlUtils
 import org.erlide.util.erlang.Bindings
-import java.util.List
-import org.eclipse.core.runtime.IPath
-import java.util.ArrayList
-import org.eclipse.core.runtime.Path
-import com.ericsson.otp.erlang.OtpErlangAtom
+import org.erlide.util.erlang.ErlUtils
 
 class EmakeConfigurator implements ProjectConfigurator {
 

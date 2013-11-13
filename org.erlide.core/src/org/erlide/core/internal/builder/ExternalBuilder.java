@@ -53,7 +53,7 @@ public abstract class ExternalBuilder extends ErlangBuilder {
             }
 
             final ToolResults result = ex.run(getOsCommand(), getCompileTarget(), project
-                    .getLocation().toPortableString());
+                    .getLocation().toPortableString(), m);
 
             if (result.isCommandNotFound()) {
                 MarkerUtils.addMarker(null, project, null, "Builder command not found: "
@@ -71,6 +71,7 @@ public abstract class ExternalBuilder extends ErlangBuilder {
             throw new CoreException(new Status(IStatus.ERROR, "org.erlide.core",
                     "builder error", e));
         }
+        monitor.done();
         return null;
     }
 
@@ -86,7 +87,7 @@ public abstract class ExternalBuilder extends ErlangBuilder {
             return;
         }
         final ToolResults result = ex.run(getOsCommand(), getCleanTarget(), project
-                .getLocation().toPortableString());
+                .getLocation().toPortableString(), m);
         if (result != null) {
             createMarkers(result);
         }

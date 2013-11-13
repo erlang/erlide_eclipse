@@ -30,7 +30,7 @@ public class MakeConfigurator implements ProjectConfigurator {
         final ToolExecutor ex = new ToolExecutor();
         final ToolResults make = ex.run("/bin/bash",
                 "-c \"make -rpn | sed -n -e '/^$/ { n ; /^[^ ]*:/p }' "
-                        + "| grep -v ^.PHONY | cut -d : -f 1\"", dir);
+                        + "| grep -v ^.PHONY | cut -d : -f 1\"", dir, null);
         return make.output;
     }
 

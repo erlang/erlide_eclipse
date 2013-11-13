@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
@@ -51,7 +52,7 @@ public class ToolExecutor {
     }
 
     public ToolResults run(final String cmd0, final String args, final String wdir,
-            final Procedure1<String> progressCallback) {
+            final Procedure1<String> progressCallback, final IProgressMonitor monitor) {
         final String cmd = new Path(cmd0).isAbsolute() ? cmd0 : getToolLocation(cmd0);
 
         if (cmd == null) {
@@ -83,7 +84,7 @@ public class ToolExecutor {
 
                         @Override
                         public void streamAppended(final String text,
-                                final IStreamMonitor monitor) {
+                                final IStreamMonitor mon) {
                             final List<String> lines = Arrays.asList(text.split("\n"));
                             result.output.addAll(lines);
                             if (progressCallback != null) {
@@ -98,12 +99,12 @@ public class ToolExecutor {
 
                         @Override
                         public void streamAppended(final String text,
-                                final IStreamMonitor monitor) {
+                                final IStreamMonitor mon) {
                             result.error.addAll(Arrays.asList(text.split("\n")));
                         }
                     });
             boolean done = false;
-            while (!done) {
+            while (!done && !(monitor != null && monitor.isCanceled())) {
                 try {
                     result.exit = process.getExitValue();
                     done = true;
@@ -114,6 +115,9 @@ public class ToolExecutor {
                     }
                 }
             }
+            if (monitor != null && monitor.isCanceled()) {
+                process.terminate();
+            }
             return result;
         } catch (final CoreException e) {
             ErlLogger.error(e);
@@ -121,8 +125,9 @@ public class ToolExecutor {
         }
     }
 
-    public ToolResults run(final String cmd0, final String args, final String wdir) {
-        return run(cmd0, args, wdir, null);
+    public ToolResults run(final String cmd0, final String args, final String wdir,
+            final IProgressMonitor m) {
+        return run(cmd0, args, wdir, null, m);
     }
 
     public String getToolLocation(final String cmd) {
@@ -150,7 +155,7 @@ public class ToolExecutor {
     }
 
     private String getUnixToolLocation(final String cmd) {
-        final ToolResults tool = run("/bin/sh", "-c \"which " + cmd + "\"", null);
+        final ToolResults tool = run("/bin/sh", "-c \"which " + cmd + "\"", null, null);
         if (tool.output.isEmpty()) {
             return null;
         }
@@ -159,7 +164,7 @@ public class ToolExecutor {
 
     private String getWindowsToolLocation(final String cmd) {
         final ToolResults tool = run("c:\\Windows\\System32\\cmd.exe", "/c \"where "
-                + cmd + "\"", null);
+                + cmd + "\"", null, null);
         if (tool.output.isEmpty()) {
             return null;
         }
