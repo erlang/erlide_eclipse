@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
@@ -35,6 +36,8 @@ public class ErlangProjectBuilderPage extends WizardPage {
   private NewProjectData info;
   
   protected Composite configComposite;
+  
+  protected Composite makeConfigComposite;
   
   protected ErlangProjectBuilderPage(final String pageName, final NewProjectData info) {
     super(pageName);
@@ -134,6 +137,51 @@ public class ErlangProjectBuilderPage extends WizardPage {
     IterableExtensions.<BuilderConfig>forEach(((Iterable<BuilderConfig>)Conversions.doWrapArray(configs)), _function_3);
     String _name_1 = BuilderConfig.INTERNAL.name();
     this.info.setBuilderConfig(_name_1);
+    Composite _composite_2 = new Composite(composite, SWT.NONE);
+    this.makeConfigComposite = _composite_2;
+    GridData _gridData_1 = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
+    this.makeConfigComposite.setLayoutData(_gridData_1);
+    GridLayout _gridLayout_2 = new GridLayout(3, false);
+    this.makeConfigComposite.setLayout(_gridLayout_2);
+    this.makeConfigComposite.setVisible(false);
+    {
+      Label _label_3 = new Label(this.makeConfigComposite, SWT.NONE);
+      final Label lblNewLabel = _label_3;
+      GridData _gridData_2 = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
+      final GridData gd_lblNewLabel = _gridData_2;
+      gd_lblNewLabel.widthHint = 163;
+      lblNewLabel.setLayoutData(gd_lblNewLabel);
+      lblNewLabel.setText("Make uses these targets");
+    }
+    new Label(this.makeConfigComposite, SWT.NONE);
+    new Label(this.makeConfigComposite, SWT.NONE);
+    {
+      Label _label_3 = new Label(this.makeConfigComposite, SWT.NONE);
+      final Label lblNewLabel_1 = _label_3;
+      lblNewLabel_1.setText("- to compile project:");
+    }
+    {
+      Text _text_1 = new Text(this.makeConfigComposite, SWT.BORDER);
+      final Text txtCompile = _text_1;
+      txtCompile.setText("compile");
+      GridData _gridData_2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+      txtCompile.setLayoutData(_gridData_2);
+    }
+    new Label(this.makeConfigComposite, SWT.NONE);
+    {
+      Label _label_3 = new Label(this.makeConfigComposite, SWT.NONE);
+      final Label lblNewLabel_2 = _label_3;
+      lblNewLabel_2.setText("- to clean project:");
+    }
+    {
+      Text _text_1 = new Text(this.makeConfigComposite, SWT.BORDER);
+      final Text txtClean = _text_1;
+      txtClean.setText("clean");
+      GridData _gridData_2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+      final GridData gd_txtClean = _gridData_2;
+      gd_txtClean.widthHint = 250;
+      txtClean.setLayoutData(gd_txtClean);
+    }
   }
   
   public String getDescription(final BuilderTool builder) {

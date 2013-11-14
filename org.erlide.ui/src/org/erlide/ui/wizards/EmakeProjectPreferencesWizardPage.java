@@ -1,6 +1,5 @@
 package org.erlide.ui.wizards;
 
-import org.eclipse.swt.widgets.Control;
 import org.erlide.engine.model.builder.BuilderConfig;
 
 public class EmakeProjectPreferencesWizardPage extends ProjectPreferencesWizardPage {
@@ -15,8 +14,4 @@ public class EmakeProjectPreferencesWizardPage extends ProjectPreferencesWizardP
         return "Configuration retrieved from " + BuilderConfig.EMAKE.getConfigName();
     }
 
-    @Override
-    public Control getControl() {
-        return super.getControl();
-    }
 }

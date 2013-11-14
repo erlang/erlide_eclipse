@@ -16,11 +16,13 @@ import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
 import org.erlide.engine.model.builder.ErlangBuilder
+import org.eclipse.swt.widgets.Text
 
 class ErlangProjectBuilderPage extends WizardPage {
 
     NewProjectData info
     protected Composite configComposite
+    protected Composite makeConfigComposite
 
     protected new(String pageName, NewProjectData info) {
         super(pageName)
@@ -87,6 +89,45 @@ class ErlangProjectBuilderPage extends WizardPage {
             new Label(configComposite, SWT.NONE)
         ]
         info.builderConfig = BuilderConfig.INTERNAL.name
+
+        makeConfigComposite = new Composite(composite, SWT.NONE)
+        makeConfigComposite.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1))
+        makeConfigComposite.layout = new GridLayout(3, false)
+        makeConfigComposite.visible = false
+
+        {
+            val Label lblNewLabel = new Label(makeConfigComposite, SWT.NONE)
+            val GridData gd_lblNewLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1)
+            gd_lblNewLabel.widthHint = 163
+            lblNewLabel.setLayoutData(gd_lblNewLabel)
+            lblNewLabel.setText("Make uses these targets")
+        }
+        new Label(makeConfigComposite, SWT.NONE)
+
+        new Label(makeConfigComposite, SWT.NONE)
+        {
+            val Label lblNewLabel_1 = new Label(makeConfigComposite, SWT.NONE)
+            lblNewLabel_1.setText("- to compile project:")
+        }
+        {
+            val txtCompile = new Text(makeConfigComposite, SWT.BORDER)
+            txtCompile.setText("compile")
+            txtCompile.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1))
+        }
+
+        new Label(makeConfigComposite, SWT.NONE)
+        {
+            val Label lblNewLabel_2 = new Label(makeConfigComposite, SWT.NONE)
+            lblNewLabel_2.setText("- to clean project:")
+        }
+        {
+            val txtClean = new Text(makeConfigComposite, SWT.BORDER)
+            txtClean.setText("clean")
+            val GridData gd_txtClean = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1)
+            gd_txtClean.widthHint = 250
+            txtClean.setLayoutData(gd_txtClean)
+        }
+
     }
 
     def String getDescription(BuilderTool builder) {
@@ -109,6 +150,7 @@ class ErlangProjectBuilderPage extends WizardPage {
     override setVisible(boolean visible) {
         super.setVisible(visible)
         if (visible) {
+            // only first time, otherwise use existing values!
             detectBuilderConfig
         }
     }
@@ -130,11 +172,11 @@ class ErlangProjectBuilderPage extends WizardPage {
 class BuilderSelectionListener implements SelectionListener {
 
     NewProjectData info
-    ErlangProjectBuilderPage panel
+    ErlangProjectBuilderPage page
 
-    new(NewProjectData info, ErlangProjectBuilderPage panel) {
+    new(NewProjectData info, ErlangProjectBuilderPage page) {
         this.info = info
-        this.panel = panel
+        this.page = page
     }
 
     new(NewProjectData info) {
@@ -145,10 +187,11 @@ class BuilderSelectionListener implements SelectionListener {
     }
 
     override widgetSelected(SelectionEvent e) {
-        if (panel !== null) {
+        if (page !== null) {
             info.builderName = (e.widget.data as BuilderTool).name
-            panel.configComposite.visible = (info.builderName == BuilderTool.MAKE.name) ||
+            page.configComposite.visible = (info.builderName == BuilderTool.MAKE.name) ||
                 (info.builderName == BuilderTool.INTERNAL.name)
+            page.makeConfigComposite.visible = info.builderName == BuilderTool.MAKE.name
         } else {
             info.builderConfig = (e.widget.data as BuilderConfig).name
         }

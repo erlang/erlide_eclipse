@@ -12,11 +12,11 @@ import org.erlide.ui.wizards.NewProjectData;
 public class BuilderSelectionListener implements SelectionListener {
   private NewProjectData info;
   
-  private ErlangProjectBuilderPage panel;
+  private ErlangProjectBuilderPage page;
   
-  public BuilderSelectionListener(final NewProjectData info, final ErlangProjectBuilderPage panel) {
+  public BuilderSelectionListener(final NewProjectData info, final ErlangProjectBuilderPage page) {
     this.info = info;
-    this.panel = panel;
+    this.page = page;
   }
   
   public BuilderSelectionListener(final NewProjectData info) {
@@ -27,7 +27,7 @@ public class BuilderSelectionListener implements SelectionListener {
   }
   
   public void widgetSelected(final SelectionEvent e) {
-    boolean _tripleNotEquals = (this.panel != null);
+    boolean _tripleNotEquals = (this.page != null);
     if (_tripleNotEquals) {
       Object _data = e.widget.getData();
       String _name = ((BuilderTool) _data).name();
@@ -44,11 +44,15 @@ public class BuilderSelectionListener implements SelectionListener {
         boolean _equals_1 = Objects.equal(_builderName_1, _name_2);
         _or = (_equals || _equals_1);
       }
-      this.panel.configComposite.setVisible(_or);
+      this.page.configComposite.setVisible(_or);
+      String _builderName_2 = this.info.getBuilderName();
+      String _name_3 = BuilderTool.MAKE.name();
+      boolean _equals_2 = Objects.equal(_builderName_2, _name_3);
+      this.page.makeConfigComposite.setVisible(_equals_2);
     } else {
       Object _data_1 = e.widget.getData();
-      String _name_3 = ((BuilderConfig) _data_1).name();
-      this.info.setBuilderConfig(_name_3);
+      String _name_4 = ((BuilderConfig) _data_1).name();
+      this.info.setBuilderConfig(_name_4);
     }
   }
 }

@@ -1,6 +1,5 @@
 package org.erlide.ui.wizards;
 
-import org.eclipse.swt.widgets.Control;
 import org.erlide.engine.model.builder.BuilderConfig;
 
 public class RebarProjectPreferencesWizardPage extends ProjectPreferencesWizardPage {
@@ -13,11 +12,6 @@ public class RebarProjectPreferencesWizardPage extends ProjectPreferencesWizardP
     @Override
     protected String getBuilderDescription() {
         return "Configuration retrieved from " + BuilderConfig.REBAR.getConfigName();
-    }
-
-    @Override
-    public Control getControl() {
-        return super.getControl();
     }
 
 }
