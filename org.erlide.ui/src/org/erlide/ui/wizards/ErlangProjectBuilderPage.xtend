@@ -150,7 +150,6 @@ class ErlangProjectBuilderPage extends WizardPage {
     override setVisible(boolean visible) {
         super.setVisible(visible)
         if (visible) {
-            // only first time, otherwise use existing values!
             detectBuilderConfig
         }
     }
@@ -162,8 +161,7 @@ class ErlangProjectBuilderPage extends WizardPage {
             // TODO 
             val config = BuilderConfig.valueOf(info.builderConfig)
             val persister = ErlangBuilder.getFactory().getConfigurationPersister(config)
-
-        //val props = persister.getRawConfiguration()
+            //val props = persister.getRawConfiguration()
         }
     }
 
