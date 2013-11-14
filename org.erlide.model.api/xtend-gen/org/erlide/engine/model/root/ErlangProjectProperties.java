@@ -111,16 +111,14 @@ public class ErlangProjectProperties {
     return _unmodifiableCollection;
   }
   
-  public Collection<IPath> setIncludeDirs(final Collection<IPath> includeDirs2) {
+  public void setIncludeDirs(final Collection<IPath> includeDirs2) {
     ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(includeDirs2);
-    Collection<IPath> __includeDirs = this._includeDirs = _newArrayList;
-    return __includeDirs;
+    this._includeDirs = _newArrayList;
   }
   
-  public Collection<IPath> setIncludeDirs(final IPath... includeDirs2) {
+  public void setIncludeDirs(final IPath... includeDirs2) {
     ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(includeDirs2);
-    Collection<IPath> __includeDirs = this._includeDirs = _newArrayList;
-    return __includeDirs;
+    this._includeDirs = _newArrayList;
   }
   
   public Collection<IPath> getSourceDirs() {
@@ -128,16 +126,14 @@ public class ErlangProjectProperties {
     return _unmodifiableCollection;
   }
   
-  public Collection<IPath> setSourceDirs(final Collection<IPath> sourceDirs2) {
+  public void setSourceDirs(final Collection<IPath> sourceDirs2) {
     ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(sourceDirs2);
-    Collection<IPath> __sourceDirs = this._sourceDirs = _newArrayList;
-    return __sourceDirs;
+    this._sourceDirs = _newArrayList;
   }
   
-  public Collection<IPath> setSourceDirs(final IPath... sourceDirs2) {
+  public void setSourceDirs(final IPath... sourceDirs2) {
     ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(sourceDirs2);
-    Collection<IPath> __sourceDirs = this._sourceDirs = _newArrayList;
-    return __sourceDirs;
+    this._sourceDirs = _newArrayList;
   }
   
   public RuntimeVersion copyFrom(final ErlangProjectProperties erlangProjectProperties) {

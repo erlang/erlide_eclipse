@@ -40,11 +40,11 @@ class ErlangProjectProperties {
         Collections.unmodifiableCollection(_includeDirs)
     }
 
-    def setIncludeDirs(Collection<IPath> includeDirs2) {
+    def void setIncludeDirs(Collection<IPath> includeDirs2) {
         _includeDirs = Lists.newArrayList(includeDirs2)
     }
 
-    def setIncludeDirs(IPath... includeDirs2) {
+    def void setIncludeDirs(IPath... includeDirs2) {
         _includeDirs = Lists.newArrayList(includeDirs2)
     }
 
@@ -52,11 +52,11 @@ class ErlangProjectProperties {
         Collections.unmodifiableCollection(_sourceDirs)
     }
 
-    def setSourceDirs(Collection<IPath> sourceDirs2) {
+    def void setSourceDirs(Collection<IPath> sourceDirs2) {
         _sourceDirs = Lists.newArrayList(sourceDirs2)
     }
 
-    def setSourceDirs(IPath... sourceDirs2) {
+    def void setSourceDirs(IPath... sourceDirs2) {
         _sourceDirs = Lists.newArrayList(sourceDirs2)
     }
 
