@@ -203,7 +203,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
 
             final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                     .getErlangProject(project);
-            erlProject.setAllProperties(info);
+            erlProject.setProperties(info);
         } catch (final CoreException e) {
             ErlLogger.debug(e);
             reportError(e);

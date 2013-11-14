@@ -699,7 +699,7 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     @Override
-    public void setAllProperties(final ErlangProjectProperties properties)
+    public void setProperties(final ErlangProjectProperties properties)
             throws BackingStoreException {
         getModelCache().removeProject(this);
         final ErlangProjectProperties projectProperties = getProperties();
