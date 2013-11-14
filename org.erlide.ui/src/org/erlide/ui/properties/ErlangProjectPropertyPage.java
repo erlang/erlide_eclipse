@@ -21,6 +21,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IWorkbench;
 import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.util.ErlLogger;
@@ -42,6 +43,9 @@ public class ErlangProjectPropertyPage extends FieldEditorOverlayPage {
     @Override
     protected void createFieldEditors() {
         final IProject prj = (IProject) getElement().getAdapter(IProject.class);
+        final IErlProject erlPrj = ErlangEngine.getInstance().getModel().findProject(prj);
+        final BuilderConfig config = erlPrj.getBuilderConfig();
+        final boolean readonly = config != BuilderConfig.INTERNAL;
 
         try {
             prj.getFolder(new Path(".settings")).refreshLocal(IResource.DEPTH_ONE, null);
@@ -52,16 +56,19 @@ public class ErlangProjectPropertyPage extends FieldEditorOverlayPage {
                 ProjectPreferencesConstants.OUTPUT_DIR, "Output directory:",
                 getFieldEditorParent(), prj, false);
         addField(out);
+        out.setEnabled(!readonly, getFieldEditorParent());
 
         final ProjectPathEditor src = new ProjectPathEditor(
                 ProjectPreferencesConstants.SOURCE_DIRS, "Source directories:",
                 "Select directory:", getFieldEditorParent(), prj);
         addField(src);
+        src.setEnabled(!readonly, getFieldEditorParent());
 
         final ProjectPathEditor inc = new ProjectPathEditor(
                 ProjectPreferencesConstants.INCLUDE_DIRS, "Include directories:",
                 "Select directory:", getFieldEditorParent(), prj);
         addField(inc);
+        inc.setEnabled(!readonly, getFieldEditorParent());
 
         // IPreferenceStore ps = getPreferenceStore();
         // OldErlangProjectProperties props = new
@@ -87,9 +94,12 @@ public class ErlangProjectPropertyPage extends FieldEditorOverlayPage {
         addField(new ComboFieldEditor(ProjectPreferencesConstants.RUNTIME_VERSION,
                 "Runtime version:", versionsArray, getFieldEditorParent()));
 
-        addField(new BooleanFieldEditor(ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
-                "When cleaning, delete the whole output directories (is faster)",
-                getFieldEditorParent()));
+        if (config == BuilderConfig.INTERNAL) {
+            addField(new BooleanFieldEditor(
+                    ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
+                    "When cleaning, delete the whole output directories (is faster)",
+                    getFieldEditorParent()));
+        }
 
     }
 
