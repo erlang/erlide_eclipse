@@ -37,16 +37,15 @@ public class BackendShell implements IBackendShell {
     private OtpErlangPid server;
     private final String fId;
 
-    public BackendShell(final IBackend backend, final String id,
-            final OtpErlangPid server) {
+    public BackendShell(final IBackend backend, final String id, final OtpErlangPid server) {
         this.backend = backend;
         fId = id;
         this.server = server;
         requests = new ArrayList<IoRequest>(1000);
         listeners = new ArrayList<BackendShellListener>();
 
-        final ErlangEventHandler handler = new ConsoleEventHandler(
-                backend.getName(), this);
+        final ErlangEventHandler handler = new ConsoleEventHandler(backend.getName(),
+                this);
         backend.getRuntime().registerEventListener(handler);
     }
 
@@ -63,8 +62,8 @@ public class BackendShell implements IBackendShell {
         if (server != null) {
             backend.getRpcSite().send(
                     server,
-                    OtpErlang.mkTuple(new OtpErlangAtom("input"),
-                            new OtpErlangString(string)));
+                    OtpErlang.mkTuple(new OtpErlangAtom("input"), new OtpErlangString(
+                            string)));
         } else {
             try {
                 backend.input(string);
@@ -129,8 +128,7 @@ public class BackendShell implements IBackendShell {
         notifyListeners(makeEvent(prevLength, request));
     }
 
-    private BackendShellEvent makeEvent(final int prevLength,
-            final IoRequest request) {
+    private BackendShellEvent makeEvent(final int prevLength, final IoRequest request) {
         return new BackendShellEvent(prevLength, 0, request.getMessage());
     }
 
@@ -168,8 +166,7 @@ public class BackendShell implements IBackendShell {
     public IoRequest findAtPos(final int thePos) {
         synchronized (requests) {
             for (final IoRequest req : requests) {
-                if (req.getStart() <= thePos
-                        && req.getStart() + req.getLength() > thePos) {
+                if (req.getStart() <= thePos && req.getStart() + req.getLength() > thePos) {
                     return req;
                 }
             }
@@ -205,8 +202,7 @@ public class BackendShell implements IBackendShell {
             }
         }
         if (!requests.isEmpty()) {
-            notifyListeners(new BackendShellEvent(prevLength, 0,
-                    text.toString()));
+            notifyListeners(new BackendShellEvent(prevLength, 0, text.toString()));
         }
     }
 
@@ -217,10 +213,19 @@ public class BackendShell implements IBackendShell {
 
     @Override
     public synchronized void addListener(final BackendShellListener listener) {
+        sendEarlierRequests(listener);
         synchronized (listeners) {
             if (!listeners.contains(listener)) {
                 listeners.add(listener);
             }
+        }
+    }
+
+    private void sendEarlierRequests(final BackendShellListener listener) {
+        int length = 0;
+        for (final IoRequest request : requests) {
+            listener.changed(makeEvent(length, request));
+            length += request.getLength();
         }
     }
 
