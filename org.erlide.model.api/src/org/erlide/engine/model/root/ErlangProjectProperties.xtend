@@ -20,8 +20,10 @@ class ErlangProjectProperties {
     @Property RuntimeVersion requiredRuntimeVersion
     @Property boolean nukeOutputOnClean
     @Property Charset encoding
+    @Property Object builderData
+    @Property val ErlangProjectProperties defaults
 
-    new() {
+    val static ErlangProjectProperties defaultProperties = new ErlangProjectProperties() => [
         _sourceDirs = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS)
         _outputDir = new Path(ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR)
         _includeDirs = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS)
@@ -34,6 +36,22 @@ class ErlangProjectProperties {
         } else {
             _encoding = Charsets.ISO_8859_1
         }
+    ]
+
+    new() {
+        _sourceDirs = newArrayList()
+        _outputDir = new Path("")
+        _includeDirs = newArrayList()
+        _externalIncludesFile = ""
+        _externalModulesFile = ""
+        _requiredRuntimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
+        _nukeOutputOnClean = false
+        if (_requiredRuntimeVersion.isCompatible(new RuntimeVersion(18))) {
+            _encoding = Charsets.UTF_8
+        } else {
+            _encoding = Charsets.ISO_8859_1
+        }
+        _defaults = defaultProperties
     }
 
     def getIncludeDirs() {

@@ -29,7 +29,6 @@ import org.erlide.engine.model.root.IErlProject;
 
 public class ErlangProjectPropertyPage extends PropertyPage {
 
-    private DataBindingContext m_bindingContext;
     private final ErlangProjectProperties model;
     private Text text;
     private Text text_1;
@@ -131,7 +130,7 @@ public class ErlangProjectPropertyPage extends PropertyPage {
             text_1 = new Text(composite, SWT.BORDER);
             text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         }
-        m_bindingContext = initDataBindings();
+        initDataBindings();
         return composite;
     }
 

@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
+import org.eclipse.xtext.xbase.lib.Functions.Function0;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.root.PathSerializer;
@@ -85,15 +87,61 @@ public class ErlangProjectProperties {
     this._encoding = encoding;
   }
   
+  private Object _builderData;
+  
+  public Object getBuilderData() {
+    return this._builderData;
+  }
+  
+  public void setBuilderData(final Object builderData) {
+    this._builderData = builderData;
+  }
+  
+  private final ErlangProjectProperties _defaults;
+  
+  public ErlangProjectProperties getDefaults() {
+    return this._defaults;
+  }
+  
+  private final static ErlangProjectProperties defaultProperties = new Function0<ErlangProjectProperties>() {
+    public ErlangProjectProperties apply() {
+      ErlangProjectProperties _erlangProjectProperties = new ErlangProjectProperties();
+      final Procedure1<ErlangProjectProperties> _function = new Procedure1<ErlangProjectProperties>() {
+        public void apply(final ErlangProjectProperties it) {
+          Collection<IPath> _unpackList = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
+          it._sourceDirs = _unpackList;
+          Path _path = new Path(ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
+          it._outputDir = _path;
+          Collection<IPath> _unpackList_1 = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
+          it._includeDirs = _unpackList_1;
+          it._externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
+          it._externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
+          RuntimeVersion _runtimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+          it._requiredRuntimeVersion = _runtimeVersion;
+          it._nukeOutputOnClean = false;
+          RuntimeVersion _runtimeVersion_1 = new RuntimeVersion(18);
+          boolean _isCompatible = it._requiredRuntimeVersion.isCompatible(_runtimeVersion_1);
+          if (_isCompatible) {
+            it._encoding = Charsets.UTF_8;
+          } else {
+            it._encoding = Charsets.ISO_8859_1;
+          }
+        }
+      };
+      ErlangProjectProperties _doubleArrow = ObjectExtensions.<ErlangProjectProperties>operator_doubleArrow(_erlangProjectProperties, _function);
+      return _doubleArrow;
+    }
+  }.apply();
+  
   public ErlangProjectProperties() {
-    Collection<IPath> _unpackList = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
-    this._sourceDirs = _unpackList;
-    Path _path = new Path(ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
+    ArrayList<IPath> _newArrayList = CollectionLiterals.<IPath>newArrayList();
+    this._sourceDirs = _newArrayList;
+    Path _path = new Path("");
     this._outputDir = _path;
-    Collection<IPath> _unpackList_1 = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
-    this._includeDirs = _unpackList_1;
-    this._externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
-    this._externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
+    ArrayList<IPath> _newArrayList_1 = CollectionLiterals.<IPath>newArrayList();
+    this._includeDirs = _newArrayList_1;
+    this._externalIncludesFile = "";
+    this._externalModulesFile = "";
     RuntimeVersion _runtimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
     this._requiredRuntimeVersion = _runtimeVersion;
     this._nukeOutputOnClean = false;
@@ -104,6 +152,7 @@ public class ErlangProjectProperties {
     } else {
       this._encoding = Charsets.ISO_8859_1;
     }
+    this._defaults = ErlangProjectProperties.defaultProperties;
   }
   
   public Collection<IPath> getIncludeDirs() {

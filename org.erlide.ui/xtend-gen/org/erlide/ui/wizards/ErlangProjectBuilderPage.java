@@ -25,6 +25,7 @@ import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -276,6 +277,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
       final BuilderConfig config = BuilderConfig.valueOf(_builderConfig);
       IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
       final ProjectConfigurationPersister persister = _factory.getConfigurationPersister(config);
+      final ErlangProjectProperties props = persister.getRawConfiguration(null);
     }
   }
 }

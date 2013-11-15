@@ -37,14 +37,8 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
 
     @Override
     public ErlangProjectProperties getConfiguration(final IErlProject project) {
-        if (fileName == null) {
-            return null;
-        }
-        final IResource conf = getProject().findMember(fileName);
-        final File confFile = new File(conf.getLocation().toString());
-
-        final ErlangProjectProperties result = getRawConfig(confFile);
-        return mergeWithDefaultConfig(result, extraPersister.getConfiguration(project));
+        return mergeWithDefaultConfig(getRawConfiguration(project),
+                extraPersister.getConfiguration(project));
     }
 
     private ErlangProjectProperties getRawConfig(final File confFile) {
@@ -104,6 +98,17 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
     @Override
     public ProjectConfigurator getConfigurator() {
         return configurator;
+    }
+
+    @Override
+    public ErlangProjectProperties getRawConfiguration(final IErlProject erlProject) {
+        if (fileName == null) {
+            return null;
+        }
+        final IResource conf = getProject().findMember(fileName);
+        final File confFile = new File(conf.getLocation().toString());
+
+        return getRawConfig(confFile);
     }
 
 }
