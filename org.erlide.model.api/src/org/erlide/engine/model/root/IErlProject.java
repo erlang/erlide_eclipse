@@ -90,8 +90,22 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
     IProject getWorkspaceProject();
 
     /**
-     * Returns the project's configuration. Value must not be cached! It can be
-     * changed in the background when config file or preferences are edited.
+     * Return the properties as stored, no defaults and unresolved path
+     * variables.
+     * <p>
+     * Value must not be cached! It can be changed in the background when config
+     * file or preferences are edited.
+     * </p>
+     */
+    ErlangProjectProperties getRawProperties();
+
+    /**
+     * Returns the project's configuration, with default values and resolved
+     * path variables.
+     * <p>
+     * Value must not be cached! It can be changed in the background when config
+     * file or preferences are edited.
+     * </p>
      */
     ErlangProjectProperties getProperties();
 

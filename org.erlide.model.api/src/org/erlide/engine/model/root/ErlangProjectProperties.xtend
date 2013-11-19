@@ -21,9 +21,8 @@ class ErlangProjectProperties {
     @Property boolean nukeOutputOnClean
     @Property Charset encoding
     @Property Object builderData
-    @Property val ErlangProjectProperties defaults
 
-    val static ErlangProjectProperties defaultProperties = new ErlangProjectProperties() => [
+    val public static ErlangProjectProperties DEFAULT = new ErlangProjectProperties() => [
         _sourceDirs = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS)
         _outputDir = new Path(ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR)
         _includeDirs = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS)
@@ -51,7 +50,6 @@ class ErlangProjectProperties {
         } else {
             _encoding = Charsets.ISO_8859_1
         }
-        _defaults = defaultProperties
     }
 
     def getIncludeDirs() {
@@ -78,12 +76,13 @@ class ErlangProjectProperties {
         _sourceDirs = Lists.newArrayList(sourceDirs2)
     }
 
-    def copyFrom(ErlangProjectProperties erlangProjectProperties) {
+    def void copyFrom(ErlangProjectProperties erlangProjectProperties) {
         val bprefs = erlangProjectProperties
         _includeDirs = bprefs._includeDirs
         _sourceDirs = bprefs._sourceDirs
         _outputDir = bprefs._outputDir
         _requiredRuntimeVersion = bprefs._requiredRuntimeVersion
+        // TODO all values?
     }
 
     def getRuntimeInfo() {
@@ -165,6 +164,7 @@ class ErlangProjectProperties {
             add("sources", _sourceDirs)
             add("includes", _includeDirs)
             add("runtimeVersion", _requiredRuntimeVersion)
+            add("encoding", _encoding)
         ]
         helper.toString
     }

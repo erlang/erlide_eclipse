@@ -97,13 +97,7 @@ public class ErlangProjectProperties {
     this._builderData = builderData;
   }
   
-  private final ErlangProjectProperties _defaults;
-  
-  public ErlangProjectProperties getDefaults() {
-    return this._defaults;
-  }
-  
-  private final static ErlangProjectProperties defaultProperties = new Function0<ErlangProjectProperties>() {
+  public final static ErlangProjectProperties DEFAULT = new Function0<ErlangProjectProperties>() {
     public ErlangProjectProperties apply() {
       ErlangProjectProperties _erlangProjectProperties = new ErlangProjectProperties();
       final Procedure1<ErlangProjectProperties> _function = new Procedure1<ErlangProjectProperties>() {
@@ -152,7 +146,6 @@ public class ErlangProjectProperties {
     } else {
       this._encoding = Charsets.ISO_8859_1;
     }
-    this._defaults = ErlangProjectProperties.defaultProperties;
   }
   
   public Collection<IPath> getIncludeDirs() {
@@ -185,17 +178,12 @@ public class ErlangProjectProperties {
     this._sourceDirs = _newArrayList;
   }
   
-  public RuntimeVersion copyFrom(final ErlangProjectProperties erlangProjectProperties) {
-    RuntimeVersion _xblockexpression = null;
-    {
-      final ErlangProjectProperties bprefs = erlangProjectProperties;
-      this._includeDirs = bprefs._includeDirs;
-      this._sourceDirs = bprefs._sourceDirs;
-      this._outputDir = bprefs._outputDir;
-      RuntimeVersion __requiredRuntimeVersion = this._requiredRuntimeVersion = bprefs._requiredRuntimeVersion;
-      _xblockexpression = (__requiredRuntimeVersion);
-    }
-    return _xblockexpression;
+  public void copyFrom(final ErlangProjectProperties erlangProjectProperties) {
+    final ErlangProjectProperties bprefs = erlangProjectProperties;
+    this._includeDirs = bprefs._includeDirs;
+    this._sourceDirs = bprefs._sourceDirs;
+    this._outputDir = bprefs._outputDir;
+    this._requiredRuntimeVersion = bprefs._requiredRuntimeVersion;
   }
   
   public RuntimeInfo getRuntimeInfo() {
@@ -366,6 +354,7 @@ public class ErlangProjectProperties {
           it.add("sources", ErlangProjectProperties.this._sourceDirs);
           it.add("includes", ErlangProjectProperties.this._includeDirs);
           it.add("runtimeVersion", ErlangProjectProperties.this._requiredRuntimeVersion);
+          it.add("encoding", ErlangProjectProperties.this._encoding);
         }
       };
       final ToStringHelper helper = ObjectExtensions.<ToStringHelper>operator_doubleArrow(_stringHelper, _function);
