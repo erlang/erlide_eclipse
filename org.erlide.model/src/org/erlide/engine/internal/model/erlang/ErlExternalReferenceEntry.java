@@ -16,6 +16,7 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.services.search.OpenService;
+import org.erlide.engine.util.CommonUtils;
 import org.erlide.runtime.api.IRpcSite;
 
 import com.google.common.collect.Lists;
@@ -56,8 +57,10 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
             final List<IErlModule> children = Lists
                     .newArrayListWithCapacity(files.size());
             for (final String file : files) {
-                children.add(new ErlModule(this, getName(file), file, null,
-                        null));
+                if (CommonUtils.isErlangFileContentFileName(getName(file))) {
+                    children.add(new ErlModule(this, getName(file), file, null,
+                            null));
+                }
             }
             setChildren(children);
             return true;
