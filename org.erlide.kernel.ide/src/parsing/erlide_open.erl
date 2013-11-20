@@ -26,7 +26,7 @@
 %% Include files
 %%
 
-%% -define(DEBUG, 1).
+%%-define(DEBUG, 1).
 %%-define(IO_FORMAT_DEBUG, 1).
 
 -include("erlide.hrl").
@@ -246,6 +246,8 @@ o_tokens([#token{kind=atom, value=Function}, #token{kind='/'}, #token{kind=integ
 o_tokens([#token{kind='/'}, #token{kind=integer, value=Arity} | _],
          _, Context, [#token{kind=atom, value=Function} | _]) ->
     o_local(Function, Arity, Context);
+o_tokens([#token{kind=atom, value=Value} | _] = Tokens, Offset, _, [#token{kind='#'} | _]) ->
+    o_record(Tokens, Offset, Value);
 o_tokens([#token{kind=macro, value=Value} | _] = Tokens, Offset, _, [#token{kind='#'} | _]) ->
     o_record(Tokens, Offset, Value);
 o_tokens([#token{kind=macro, value=Value} | _], _, _, _) ->
