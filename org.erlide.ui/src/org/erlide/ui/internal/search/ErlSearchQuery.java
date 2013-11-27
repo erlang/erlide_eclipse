@@ -36,8 +36,8 @@ public class ErlSearchQuery implements ISearchQuery {
     private final String scopeDescription;
     private boolean stopped = false;
 
-    public ErlSearchQuery(final ErlangSearchPattern pattern,
-            final ErlSearchScope scope, final String scopeDescription) {
+    public ErlSearchQuery(final ErlangSearchPattern pattern, final ErlSearchScope scope,
+            final String scopeDescription) {
         this.pattern = pattern;
         this.scope = scope;
         this.scopeDescription = scopeDescription;
@@ -82,8 +82,7 @@ public class ErlSearchQuery implements ISearchQuery {
     }
 
     @Override
-    public IStatus run(final IProgressMonitor monitor)
-            throws OperationCanceledException {
+    public IStatus run(final IProgressMonitor monitor) throws OperationCanceledException {
         final Object locker = new Object();
         final IRpcResultCallback callback = new IRpcResultCallback() {
 
@@ -114,15 +113,13 @@ public class ErlSearchQuery implements ISearchQuery {
             @Override
             public void progress(final OtpErlangObject msg) {
                 final OtpErlangTuple t = (OtpErlangTuple) msg;
-                final OtpErlangPid backgroundSearchPid = (OtpErlangPid) t
-                        .elementAt(0);
+                final OtpErlangPid backgroundSearchPid = (OtpErlangPid) t.elementAt(0);
                 final OtpErlangLong progressL = (OtpErlangLong) t.elementAt(1);
                 final OtpErlangObject resultO = t.elementAt(2);
                 int progress = 1;
                 try {
                     progress = progressL.intValue();
-                    final List<ModuleLineFunctionArityRef> result = Lists
-                            .newArrayList();
+                    final List<ModuleLineFunctionArityRef> result = Lists.newArrayList();
                     SearchUtil.addSearchResult(result, resultO);
                     addMatches(result);
                 } catch (final OtpErlangRangeException e) {
@@ -144,16 +141,16 @@ public class ErlSearchQuery implements ISearchQuery {
                     .getInstance()
                     .getSearchServerService()
                     .startFindRefs(pattern, reducedScope,
-                            ErlangEngine.getInstance().getStateDir(), callback,
-                            false);
+                            ErlangEngine.getInstance().getStateDir(), callback, false);
         } catch (final RpcException e) {
-            return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
-                    "Search error", e);
+            return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, "Search error", e);
         }
         while (!stopped) {
             synchronized (locker) {
                 try {
-                    locker.wait();
+                    if (!stopped) {
+                        locker.wait();
+                    }
                 } catch (final InterruptedException e) {
                 }
             }

@@ -17,7 +17,7 @@ abstract class ErlideEvent {
 }
 
 class ErlideSessionEvent extends ErlideEvent {
-    val static SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS")
+    val SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS")
     val public int workspace
 
     new(String aWorkspace) {
