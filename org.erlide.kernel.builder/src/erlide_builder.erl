@@ -242,7 +242,6 @@ compile_app_src(Src, Dest, Sources) ->
 
 get_mods_from_dirs(Sources) ->
     Fun = fun(S) ->
-                  erlide_log:log({S, file:list_dir(S)}),
                   {ok, Files} = file:list_dir(S),
                   Mods = lists:filter(fun(X)->
                                               filename:extension(X) == ".erl"
