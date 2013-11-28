@@ -15,7 +15,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.preference.PreferencePage;
@@ -61,6 +64,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.UIJob;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.runtime.api.RuntimeCore;
@@ -775,6 +780,14 @@ public class RuntimePreferencePage extends PreferencePage implements
         if (erlideRuntime == null) {
             erlideRuntime = defaultRuntime;
         }
+
+        boolean restart = false;
+        final RuntimeInfo oldDefault = catalog.getDefaultRuntime();
+        if (oldDefault != RuntimeInfo.NO_RUNTIME_INFO
+                && !defaultRuntime.equals(oldDefault)) {
+            restart = RestartDialog.openQuestion(getShell());
+        }
+
         catalog.setRuntimes(runtimes, defaultRuntime.getName(), erlideRuntime.getName());
         final RuntimeInfoPreferencesSerializer serializer = new RuntimeInfoPreferencesSerializer();
         serializer.store(new RuntimeInfoCatalogData(runtimes, defaultRuntime.getName(),
@@ -783,6 +796,17 @@ public class RuntimePreferencePage extends PreferencePage implements
         // save column widths
         final IDialogSettings settings = ErlideUIPlugin.getDefault().getDialogSettings();
         saveColumnSettings(settings, RUNTIMES_PREFERENCE_PAGE);
+
+        if (restart) {
+            new UIJob("restart") {
+
+                @Override
+                public IStatus runInUIThread(final IProgressMonitor monitor) {
+                    PlatformUI.getWorkbench().restart();
+                    return Status.OK_STATUS;
+                }
+            }.schedule(100);
+        }
 
         return super.performOk();
     }
