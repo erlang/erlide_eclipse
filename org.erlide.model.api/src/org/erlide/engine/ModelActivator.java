@@ -27,6 +27,9 @@ public class ModelActivator implements BundleActivator {
     }
 
     private void cleanupStateDir() {
+        if (engine == null) {
+            return;
+        }
         final String ndir = engine.getStateDir();
         final File fdir = new File(ndir);
         for (final File f : fdir.listFiles()) {
