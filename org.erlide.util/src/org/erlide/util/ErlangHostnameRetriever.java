@@ -10,8 +10,11 @@ import com.google.common.collect.Lists;
 
 public class ErlangHostnameRetriever {
 
-    String otpHome;
+    final String otpHome;
     private String nodeName;
+
+    private final static boolean verbose = !SystemConfiguration
+            .hasFeatureEnabled("erlide.ericsson.user");
 
     public ErlangHostnameRetriever(final String otpHome) {
         this.otpHome = otpHome;
@@ -19,9 +22,9 @@ public class ErlangHostnameRetriever {
 
     public String checkHostName(final boolean longHost, final String hostName0) {
         nodeName = "foo" + System.currentTimeMillis();
-        final ProcessBuilder builder = new ProcessBuilder(Lists.newArrayList(
-                otpHome + "/bin/erl", longHost ? "-name" : "-sname", nodeName,
-                "-setcookie", "erlide"));
+        final ProcessBuilder builder = new ProcessBuilder(Lists.newArrayList(otpHome
+                + "/bin/erl", longHost ? "-name" : "-sname", nodeName, "-setcookie",
+                "erlide"));
         String result = null;
         try {
             final Process process = builder.start();
@@ -31,13 +34,14 @@ public class ErlangHostnameRetriever {
                 while (listener.isAlive()) {
                     try {
                         listener.join();
-                        final String hostName = hostName0 != null ? hostName0
-                                : listener.getResult();
-                        ErlLogger.debug("Test %s hostname: %s",
-                                longHost ? "long" : "short", hostName);
+                        final String hostName = hostName0 != null ? hostName0 : listener
+                                .getResult();
+                        if (verbose) {
+                            ErlLogger.debug("Test %s hostname: %s", longHost ? "long"
+                                    : "short", hostName);
+                        }
                         if (canConnect(hostName)) {
                             result = hostName;
-                            ErlLogger.debug("OK");
                         } else {
                             ErlLogger.warn("Can't use %s as %s name", hostName,
                                     longHost ? "long" : "short");
@@ -99,7 +103,6 @@ public class ErlangHostnameRetriever {
                     }
                     final Matcher matcher = pattern.matcher(line);
                     if (matcher.matches()) {
-                        ErlLogger.debug(">> " + line);
                         result = matcher.group(1);
                         return;
                     }
