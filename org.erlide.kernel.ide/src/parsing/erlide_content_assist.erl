@@ -178,6 +178,8 @@ check_record_tokens(record_want_field, [#token{kind=atom, value=V} | Rest], W, R
     check_record_tokens(record_field, Rest, W, R, V, [V | Fields], PrevR);
 check_record_tokens(no_record, [#token{kind=','} | Rest], true, R, _B, Fields, PrevR) -> % 8
     check_record_tokens(record_want_field, Rest, true, R, '', Fields, PrevR);
+check_record_tokens(record_field, [#token{kind=','} | Rest], true, R, _B, Fields, PrevR) -> % 8b
+    check_record_tokens(record_want_field, Rest, true, R, '', Fields, PrevR);
 check_record_tokens(record_field, [#token{kind='='} | Rest], W, R, _B, Fields, PrevR) -> % 9
     check_record_tokens(no_record, Rest, W, R, '', Fields, PrevR);
 check_record_tokens(_State, [_ | Rest], W, R, B, Fields, PrevR) -> % 10

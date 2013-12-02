@@ -51,6 +51,7 @@ public class ErlideIndent implements IndentService {
             final String insertedText, final int tabw, final boolean useTabs,
             final Map<String, String> prefs) throws RpcException,
             OtpErlangRangeException {
+        // ErlLogger.debug("indentLine '%s'", txt);
         final OtpErlangObject o = backend.call("erlide_indent", "indent_line",
                 "sssiox", txt, oldLine, insertedText, tabw, useTabs,
                 fixIndentPrefs(prefs));

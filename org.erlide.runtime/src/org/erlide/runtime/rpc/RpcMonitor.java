@@ -22,12 +22,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class RpcMonitor {
-    private static final boolean DISABLED = System
-            .getProperty("erlide.rpcmonitor") == null;
+    private static final boolean DISABLED = System.getProperty("erlide.rpcmonitor") == null;
     private static final int COUNT = Integer.parseInt(System.getProperty(
             "erlide.rpcmonitor.count", "50"));
-    private static final boolean FULL = System
-            .getProperty("erlide.rpcmonitor.full") != null;
+    private static final boolean FULL = System.getProperty("erlide.rpcmonitor.full") != null;
 
     private static class RpcData {
         public final long startTime;
@@ -37,9 +35,8 @@ public class RpcMonitor {
         public final SoftReference<Collection<OtpErlangObject>> args;
         public final long size;
 
-        public RpcData(final long startTime, final String node,
-                final String module, final String fun,
-                final OtpErlangObject[] args, final long size) {
+        public RpcData(final long startTime, final String node, final String module,
+                final String fun, final OtpErlangObject[] args, final long size) {
             this.startTime = startTime;
             this.node = node;
             this.module = module;
@@ -68,7 +65,7 @@ public class RpcMonitor {
             module = data.module;
             fun = data.fun;
             args = data.args;
-            argsSize = args.get().size();
+            argsSize = (args.get() == null) ? 0 : args.get().size();
             this.result = new SoftReference<OtpErlangObject>(result);
             callTime = data.startTime;
             this.answerTime = answerTime;
@@ -79,20 +76,19 @@ public class RpcMonitor {
         public void dump(final PrintStream out, final boolean full) {
             Collection<OtpErlangObject> myArgs = args.get();
             myArgs = myArgs == null ? new ArrayList<OtpErlangObject>() : myArgs;
-            final String argsString = full ? args.toString().replaceAll(
-                    "\n|\r", " ") : "...";
+            final String argsString = full ? args.toString().replaceAll("\n|\r", " ")
+                    : "...";
             OtpErlangObject val = result.get();
             val = val == null ? new OtpErlangAtom("null") : val;
-            String resultString = full ? val.toString()
-                    .replaceAll("\n|\r", " ") : "...";
+            String resultString = full ? val.toString().replaceAll("\n|\r", " ") : "...";
             if (resultString.length() > 100) {
                 resultString = new String(resultString.substring(0, 99) + "...");
             }
             out.format(
                     "%30s|%25s:%-20s/%d in=%9d, out=%9d, t=%6d, args=%s -> result=%s%n",
-                    node.substring(0, Math.min(29, node.length() - 1)), module,
-                    fun, argsSize, callSize, answerSize, answerTime - callTime,
-                    argsString, resultString);
+                    node.substring(0, Math.min(29, node.length() - 1)), module, fun,
+                    argsSize, callSize, answerSize, answerTime - callTime, argsString,
+                    resultString);
         }
     }
 
@@ -139,15 +135,15 @@ public class RpcMonitor {
         }
     }
 
-    public static OtpErlangRef recordRequest(final OtpNode node,
-            final String peer, final String module, final String fun,
-            final OtpErlangObject[] args, final long callSize) {
+    public static OtpErlangRef recordRequest(final OtpNode node, final String peer,
+            final String module, final String fun, final OtpErlangObject[] args,
+            final long callSize) {
         callCount++;
         if (DISABLED) {
             return null;
         }
-        final RpcData data = new RpcData(System.currentTimeMillis(), peer,
-                module, fun, args, callSize);
+        final RpcData data = new RpcData(System.currentTimeMillis(), peer, module, fun,
+                args, callSize);
         final OtpErlangRef ref = node.createRef();
         ongoing.put(ref, data);
         return ref;
@@ -169,8 +165,7 @@ public class RpcMonitor {
         dump(file, COUNT, full);
     }
 
-    public static void dump(final String fileName, final int n,
-            final boolean full) {
+    public static void dump(final String fileName, final int n, final boolean full) {
         try {
             dump(new PrintStream(fileName), n, full);
         } catch (final FileNotFoundException e) {
@@ -211,8 +206,7 @@ public class RpcMonitor {
         for (final File f : dir.listFiles()) {
             final long now = System.currentTimeMillis();
             final int aWeek = 7 * 24 * 3600 * 1000;
-            if (f.getName().startsWith(prefix)
-                    && now - f.lastModified() > aWeek) {
+            if (f.getName().startsWith(prefix) && now - f.lastModified() > aWeek) {
                 f.delete();
             }
         }

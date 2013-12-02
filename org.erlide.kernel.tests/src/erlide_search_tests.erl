@@ -12,7 +12,7 @@
 %%
 %% Exported Functions
 %%
-
+-compile(export_all).
 %%
 %% API Functions
 %%
@@ -58,6 +58,14 @@ external_call_after_empty_record_test_() ->
     Value2 = test_refs(S, {record_ref, x}),
     [?_assertEqual(Expected1, Value1),
      ?_assertEqual(Expected2, Value2)].
+
+find_second_field_in_record_match_test_() ->
+	%% http://www.assembla.com/spaces/erlide/tickets/1268-searching---can-t-find-fields-in-record-match---construction
+	S = "x(A, B) ->\n    #r{field1=A, field2=B}.",
+	Value = test_refs(S, {record_field_ref, r, field2}),
+	Expected = [{"xxx",x,2,"(A, B)",false,28,6,false}],
+	[?_assertEqual(Expected, Value)].
+
 
 %%
 %% Local Functions

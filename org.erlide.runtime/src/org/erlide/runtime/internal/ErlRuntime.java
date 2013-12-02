@@ -38,8 +38,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
 
-public class ErlRuntime extends AbstractExecutionThreadService implements
-        IErlRuntime {
+public class ErlRuntime extends AbstractExecutionThreadService implements IErlRuntime {
     private static final String COULD_NOT_CONNECT = "Could not connect to %s! Please check runtime settings.";
     private static final int EPMD_PORT = Integer.parseInt(System.getProperty(
             "erlide.epmd.port", "4369"));
@@ -120,8 +119,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         }
     }
 
-    private void receiveEventMessage(final OtpMbox eventBox)
-            throws OtpErlangExit {
+    private void receiveEventMessage(final OtpMbox eventBox) throws OtpErlangExit {
         OtpErlangObject msg = null;
         eventHelper = new EventParser();
         try {
@@ -129,11 +127,8 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
             final ErlEvent busEvent = eventHelper.parse(msg, this);
             if (busEvent != null) {
                 if (DEBUG) {
-                    ErlLogger.debug(
-                            "MSG: %s",
-                            "[" + busEvent.getSender() + "::"
-                                    + busEvent.getTopic() + ": "
-                                    + busEvent.getEvent() + "]");
+                    ErlLogger.debug("MSG: %s", "[" + busEvent.getSender() + "::"
+                            + busEvent.getTopic() + ": " + busEvent.getEvent() + "]");
                 }
                 eventBus.post(busEvent);
             }
@@ -220,8 +215,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
 
     private OtpNode startLocalNode() throws IOException {
         wait_for_epmd();
-        final OtpNode lNode = createOtpNode(data.getCookie(),
-                data.hasLongName());
+        final OtpNode lNode = createOtpNode(data.getCookie(), data.hasLongName());
         final OtpNodeStatus statusWatcher = new ErlideNodeStatus();
         lNode.registerStatusHandler(statusWatcher);
         return lNode;
@@ -231,8 +225,8 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         int tries = MAX_RETRIES;
         boolean ok = false;
         while (!ok && tries > 0) {
-            ok = localNode.ping(getNodeName(), RETRY_DELAY
-                    + (MAX_RETRIES - tries) * RETRY_DELAY % 3);
+            ok = localNode.ping(getNodeName(), RETRY_DELAY + (MAX_RETRIES - tries)
+                    * RETRY_DELAY % 3);
             tries--;
         }
         return ok;
@@ -269,8 +263,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
     private static void debugPrintCookie(final String cookie) {
         final int len = cookie.length();
         final String trimmed = len > 7 ? cookie.substring(0, 7) : cookie;
-        ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed, len,
-                cookie);
+        ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed, len, cookie);
     }
 
     private void connect() throws Exception {
@@ -316,8 +309,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         } while (!ok && tries > 0);
         if (!ok) {
             final String msg = "Couldn't contact epmd - erlang backend is probably not working\n"
-                    + "Your host's entry in /etc/hosts is probably wrong ("
-                    + host + ").";
+                    + "Your host's entry in /etc/hosts is probably wrong (" + host + ").";
             ErlLogger.error(msg);
             throw new RuntimeException(msg);
         }
@@ -340,14 +332,14 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
                 i--;
             } while (gotIt && i > 0);
             if (gotIt) {
-                ErlLogger.error("code server did not start in time for %s",
-                        getNodeName());
+                ErlLogger
+                        .error("code server did not start in time for %s", getNodeName());
                 return false;
             }
             return true;
         } catch (final Exception e) {
-            ErlLogger.error("error starting code server for %s: %s",
-                    getNodeName(), e.getMessage());
+            ErlLogger.error("error starting code server for %s: %s", getNodeName(),
+                    e.getMessage());
             return false;
         }
     }
@@ -358,8 +350,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
         }
 
         @Override
-        public void remoteStatus(final String node, final boolean up,
-                final Object info) {
+        public void remoteStatus(final String node, final boolean up, final Object info) {
             if (node.equals(getNodeName()) && !up) {
                 triggerCrashed();
             }
@@ -378,28 +369,32 @@ public class ErlRuntime extends AbstractExecutionThreadService implements
 
     private class ErlRuntimeListener implements Listener {
         public ErlRuntimeListener() {
-            // TODO Auto-generated constructor stub
         }
 
         @Override
         public void terminated(final State from) {
-            ErlLogger.debug(String.format(
-                    "Runtime %s terminated, exit code: %d", getNodeName(),
-                    getExitCode()));
-            if (data.isReportErrors()) {
-                reporter.reportRuntimeDown(getNodeName(), getSystemStatus());
-            }
+            ErlLogger.debug(String.format("Runtime %s terminated", getNodeName()));
+            reportDown();
         }
 
         @Override
         public void failed(final State from, final Throwable failure) {
-            ErlLogger.warn(String.format("Runtime %s crashed, exit code: %d",
-                    getNodeName(), getExitCode()));
+            final String nodeName = getNodeName();
+            final int exitCode = getExitCode();
+            ErlLogger.warn(String.format("Runtime %s crashed, exit code: %d.", nodeName,
+                    exitCode));
+            reportDown();
             try {
-                reporter.createFileReport(getNodeName(), getExitCode(),
-                        getRuntimeData().getWorkingDir(), getSystemStatus());
+                reporter.createFileReport(nodeName, exitCode, getRuntimeData()
+                        .getWorkingDir(), getSystemStatus());
             } catch (final Exception t) {
                 ErlLogger.warn(t);
+            }
+        }
+
+        private void reportDown() {
+            if (data.isReportErrors() && getExitCode() > 0) {
+                reporter.reportRuntimeDown(getNodeName(), getSystemStatus());
             }
         }
 

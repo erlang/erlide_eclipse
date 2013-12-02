@@ -40,9 +40,8 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
     }
 
     @Override
-    public synchronized void setRuntimes(
-            final Collection<RuntimeInfo> elements, final String dfltRuntime,
-            final String ideRuntime) {
+    public synchronized void setRuntimes(final Collection<RuntimeInfo> elements,
+            final String dfltRuntime, final String ideRuntime) {
         runtimes.clear();
         if (elements.isEmpty()) {
             initializeRuntimesList();
@@ -55,8 +54,8 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         if (defaultRuntimeName == null) {
             setDefaultRuntimes();
         }
-        erlideRuntime = runtimes.get(ideRuntime != null ? ideRuntime
-                : defaultRuntimeName);
+        erlideRuntime = runtimes
+                .get(ideRuntime != null ? ideRuntime : defaultRuntimeName);
         // Asserts.isNotNull(erlideRuntime);
     }
 
@@ -115,8 +114,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         defaultRuntimeName = name;
     }
 
-    private synchronized void setErlideRuntime(
-            final @NonNull RuntimeInfo runtime) {
+    private synchronized void setErlideRuntime(final @NonNull RuntimeInfo runtime) {
         final RuntimeInfo old = erlideRuntime;
         if (old == null || !old.equals(runtime)) {
             erlideRuntime = runtime;
@@ -141,8 +139,8 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
     @Override
     public RuntimeInfo getRuntime(final RuntimeVersion runtimeVersion,
             final String runtimeName) {
-        final List<RuntimeInfo> vsns = VersionLocator.locateVersion(
-                runtimeVersion, runtimes.values());
+        final List<RuntimeInfo> vsns = VersionLocator.locateVersion(runtimeVersion,
+                runtimes.values());
         if (vsns.isEmpty()) {
             return null;
         } else if (vsns.size() == 1) {
@@ -187,11 +185,11 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
      */
     @Override
     public void initializeRuntimesList() {
-        final Collection<RuntimeInfo> found = RuntimeFinder
-                .guessRuntimeLocations();
+        final Collection<RuntimeInfo> found = RuntimeFinder.guessRuntimeLocations();
         for (final RuntimeInfo info : found) {
             addRuntime(info);
         }
+        setDefaultRuntimes();
     }
 
     private void setDefaultRuntimes() {

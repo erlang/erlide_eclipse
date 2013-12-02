@@ -146,8 +146,7 @@ public class ErlangFileWizardPage extends WizardPage {
         label = new Label(filePanel, SWT.NULL);
         label.setText("&Application name:");
 
-        applications = new Combo(filePanel, SWT.BORDER | SWT.DROP_DOWN
-                | SWT.READ_ONLY);
+        applications = new Combo(filePanel, SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY);
         applications.add("None");
         gd = new GridData(SWT.FILL, SWT.CENTER, true, true);
         applications.setLayoutData(gd);
@@ -161,8 +160,7 @@ public class ErlangFileWizardPage extends WizardPage {
         label.setLayoutData(gd);
         label.setText("&Skeleton");
 
-        skeleton = new Combo(filePanel, SWT.BORDER | SWT.DROP_DOWN
-                | SWT.READ_ONLY);
+        skeleton = new Combo(filePanel, SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY);
         // skeleton.add("None");
         int i = 0, defaultSkeleton = 0;
         for (final Template element : moduleTemplates) {
@@ -202,8 +200,8 @@ public class ErlangFileWizardPage extends WizardPage {
                     container = resource.getParent();
                 }
                 final IProject project = resource.getProject();
-                final IErlProject erlProject = ErlangEngine.getInstance()
-                        .getModel().getErlangProject(project);
+                final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                        .getErlangProject(project);
                 String txt = container.getFullPath().toString();
                 final Collection<IPath> sourceDirs = erlProject.getSourceDirs();
                 if (!sourceDirs.isEmpty()) {
@@ -217,8 +215,6 @@ public class ErlangFileWizardPage extends WizardPage {
 
             }
         }
-
-        fileText.setText("new_file");
     }
 
     private IPath sourceDirWithinContainer(final Collection<IPath> sourceDirs,
@@ -243,8 +239,8 @@ public class ErlangFileWizardPage extends WizardPage {
      * the container field.
      */
     void handleBrowse() {
-        final ContainerSelectionDialog dialog = new ContainerSelectionDialog(
-                getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
+        final ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(),
+                ResourcesPlugin.getWorkspace().getRoot(), false,
                 "Select new file container");
         if (dialog.open() == Window.OK) {
             final Object[] result = dialog.getResult();
@@ -331,8 +327,7 @@ public class ErlangFileWizardPage extends WizardPage {
         return fContextType;
     }
 
-    private String parse(final Template template,
-            final TemplateContextType contextType) {
+    private String parse(final Template template, final TemplateContextType contextType) {
         String s = getFileName();
         if (ModuleKind.hasModuleExtension(s)) {
             s = SystemConfiguration.withoutExtension(s);
@@ -345,11 +340,11 @@ public class ErlangFileWizardPage extends WizardPage {
         for (int i = 0; i < functionGroup.getFunctionData().length; i++) {
             final Function fun = functionGroup.getFunctionData()[i];
             if (fun.isExported) {
-                ExportedFunctionsVariableResolver.getDefault().addFunction(
-                        fun.name, fun.arity);
+                ExportedFunctionsVariableResolver.getDefault().addFunction(fun.name,
+                        fun.arity);
             } else {
-                LocalFunctionsVariableResolver.getDefault().addFunction(
-                        fun.name, fun.arity);
+                LocalFunctionsVariableResolver.getDefault().addFunction(fun.name,
+                        fun.arity);
             }
         }
 
@@ -357,8 +352,8 @@ public class ErlangFileWizardPage extends WizardPage {
 
         try {
             final DocumentTemplateContext context = new DocumentTemplateContext(
-                    contextType, new Document(template.getPattern()), 0,
-                    template.getPattern().length());
+                    contextType, new Document(template.getPattern()), 0, template
+                            .getPattern().length());
             tb = context.evaluate(template);
         } catch (final BadLocationException e) {
             ErlLogger.warn(e);

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.core.internal.builder;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,8 +52,6 @@ import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -79,7 +79,6 @@ public class InternalBuilder extends ErlangBuilder {
             initializeBuilder(monitor);
 
             // TODO validate source and include directories
-
             final IPath out = erlProject.getOutputLocation();
             final IResource outr = project.findMember(out);
             if (outr != null) {
@@ -275,14 +274,18 @@ public class InternalBuilder extends ErlangBuilder {
 
     private void handleAppFile(final String outPath, final Collection<IPath> sources) {
 
-        final Collection<String> srcPaths = Collections2.transform(sources,
-                new Function<IPath, String>() {
-                    @Override
-                    public String apply(final IPath input) {
-                        final IFolder dir = (IFolder) getProject().findMember(input);
-                        return dir.getLocation().toPortableString();
-                    }
-                });
+        // TODO bad idea to traverse every source dir at every build!
+        // what to do instead?
+
+        // final Collection<String> srcPaths = Collections2.transform(sources,
+        // new Function<IPath, String>() {
+        // @Override
+        // public String apply(final IPath input) {
+        // final IFolder dir = (IFolder) getProject().findMember(input);
+        // return dir.getLocation().toPortableString();
+        // }
+        // });
+        final Collection<String> srcPaths = newArrayList();
         for (final IPath src : sources) {
             final IFolder dir = (IFolder) getProject().findMember(src);
             if (dir == null) {
@@ -292,10 +295,10 @@ public class InternalBuilder extends ErlangBuilder {
                 for (final IResource file : dir.members()) {
                     final String name = file.getName();
                     if (name.endsWith(".app.src")) {
-                        final String srcPath = file.getLocation().toPortableString();
+                        final String appSrc = file.getLocation().toPortableString();
                         final String destPath = outPath + "/"
                                 + name.substring(0, name.lastIndexOf('.'));
-                        fillAppFileDetails(srcPath, destPath, srcPaths);
+                        fillAppFileDetails(appSrc, destPath, srcPaths);
                     }
                 }
             } catch (final CoreException e) {
@@ -305,13 +308,13 @@ public class InternalBuilder extends ErlangBuilder {
 
     }
 
-    private void fillAppFileDetails(final String srcPath, final String destPath,
+    private void fillAppFileDetails(final String appSrc, final String destPath,
             final Collection<String> sources) {
         try {
             final IBackend backend = BackendCore.getBackendManager().getBuildBackend(
                     getProject());
             backend.getRpcSite().call("erlide_builder", "compile_app_src", "ssls",
-                    srcPath, destPath, sources);
+                    appSrc, destPath, sources);
         } catch (final Exception e) {
             ErlLogger.error(e);
         }
