@@ -25,6 +25,7 @@ import org.eclipse.swt.graphics.Point;
 import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.engine.model.erlang.IErlImport;
@@ -42,7 +43,6 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.codeassist.RecordCompletion;
 import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.OtpDocService;
-import org.erlide.engine.util.ErlangFunction;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.HoverUtil;
@@ -218,7 +218,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                             .getContextAssistService()
                             .checkRecordCompletion(
                                     BackendCore
-                                            .getBuildOrIdeBackend(workspaceProject),
+                                            .getBuildBackend(workspaceProject),
                                     before);
                 }
                 if (rc != null && rc.isNameWanted()) {
@@ -260,7 +260,6 @@ public abstract class AbstractErlContentAssistProcessor implements
                 } else {
                     pos = colonPos;
                     before = prefix;
-                    ErlLogger.debug("element %s", element);
                     if (element != null) {
                         switch (element.getKind()) {
                         case EXPORT:
@@ -338,8 +337,7 @@ public abstract class AbstractErlContentAssistProcessor implements
             throws CoreException, BadLocationException {
         final IProject workspaceProject = project == null ? null : project
                 .getWorkspaceProject();
-        final IRpcSite backend = BackendCore
-                .getBuildOrIdeBackend(workspaceProject);
+        final IRpcSite backend = BackendCore.getBuildBackend(workspaceProject);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(

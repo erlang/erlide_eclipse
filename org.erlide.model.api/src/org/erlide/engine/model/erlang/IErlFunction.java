@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.util.ErlangFunction;
 
 /**
  * 

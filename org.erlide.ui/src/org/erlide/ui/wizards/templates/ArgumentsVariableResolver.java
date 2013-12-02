@@ -15,11 +15,14 @@ import org.eclipse.jface.text.templates.TemplateVariableResolver;
 
 public class ArgumentsVariableResolver extends TemplateVariableResolver {
 
-    private static final ArgumentsVariableResolver fInstance = new ArgumentsVariableResolver();
+    private static ArgumentsVariableResolver fInstance;
 
     private int fArity;
 
     public static ArgumentsVariableResolver getDefault() {
+        if (fInstance == null) {
+            fInstance = new ArgumentsVariableResolver();
+        }
         return fInstance;
     }
 

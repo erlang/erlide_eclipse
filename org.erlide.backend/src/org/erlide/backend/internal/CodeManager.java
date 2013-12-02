@@ -94,8 +94,6 @@ public class CodeManager {
     private void loadPluginCode(final ICodeBundle p) {
 
         final Bundle b = p.getBundle();
-        ErlLogger.debug("loading plugin " + b.getSymbolicName() + " in "
-                + backendName);
 
         // TODO Do we have to also check any fragments?
         // see FindSupport.findInFragments
@@ -178,8 +176,6 @@ public class CodeManager {
             final boolean accessible = RuntimeUtils.isAccessibleDir(site,
                     externalPath);
             if (accessible) {
-                ErlLogger.debug("adding external %s to code path for %s:: %s",
-                        externalPath, site, backendName);
                 ErlangCode.addPathA(site, externalPath);
                 return;
             }
@@ -195,8 +191,6 @@ public class CodeManager {
                         localDir);
                 final boolean embedded = ErlangCode.isEmbedded(site);
                 if (accessible && !embedded) {
-                    ErlLogger.debug("adding %s to code path for @%s:: %s",
-                            localDir, site.hashCode(), backendName);
                     ErlangCode.addPathA(site, localDir);
                 } else {
                     ErlLogger.debug("loading %s for %s", p.getBundle(),
@@ -226,7 +220,6 @@ public class CodeManager {
         final Bundle b = p.getBundle();
         @SuppressWarnings("rawtypes")
         Enumeration e;
-        ErlLogger.debug("*> really unloading plugin " + p.getClass().getName());
         e = b.getEntryPaths("/ebin");
         while (e.hasMoreElements()) {
             final String s = (String) e.nextElement();

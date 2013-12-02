@@ -1,21 +1,26 @@
 package org.erlide.dialyzer.builder;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.core.ErlangCore;
-import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.util.PreferencesHelper;
-import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.io.Files;
 
 public final class DialyzerPreferences {
 
@@ -31,8 +36,7 @@ public final class DialyzerPreferences {
     private boolean noCheckPLT;
     private boolean removeWarningsOnClean;
 
-    public static DialyzerPreferences get(final IProject project)
-            throws RpcException {
+    public static DialyzerPreferences get(final IProject project) {
         final DialyzerPreferences prefs = new DialyzerPreferences();
         prefs.load();
         if (project != null) {
@@ -72,15 +76,13 @@ public final class DialyzerPreferences {
         helper.flush();
     }
 
-    private static Collection<String> getPLTPathsFromPreferences()
-            throws RpcException {
+    private static Collection<String> getPLTPathsFromPreferences() {
         final IPreferencesService service = Platform.getPreferencesService();
         final String key = "default_plt_files";
         final String pluginId = "org.erlide.ui";
         final String pltFilesString = service
                 .getString(pluginId, key, "", null);
-        return ErlideDialyze.getPltFiles(ErlangEngine.getInstance()
-                .getBackend(), pltFilesString);
+        return getPltFiles(pltFilesString);
     }
 
     public static String getAlternatePLTFileDirectoryFromPreferences() {
@@ -90,7 +92,7 @@ public final class DialyzerPreferences {
         return service.getString(pluginId, key, "", null);
     }
 
-    public void load() throws RpcException {
+    public void load() {
         pltPaths = helper.getString(DialyzerPreferencesConstants.PLT_PATHS, "");
         pltPathsFromPrefs = getPLTPathsFromPreferences();
         enabledPltPaths = helper.getString(
@@ -173,4 +175,30 @@ public final class DialyzerPreferences {
         return removeWarningsOnClean;
     }
 
+    private static Collection<String> getPltFiles(final String pltFilesString) {
+        final Iterable<String> files = Splitter.on(",").split(pltFilesString);
+        return getPltFiles(files);
+    }
+
+    private static Collection<String> getPltFiles(final Iterable<String> files) {
+        final List<String> result = Lists.newArrayList();
+        for (final String fileName : files) {
+            final File file = new File(fileName);
+            final IPath p = new Path(fileName);
+            if ("plt".equals(p.getFileExtension())) {
+                if (file.exists()) {
+                    result.add(fileName);
+                }
+            } else {
+                try {
+                    final List<String> lines = Files.readLines(file,
+                            Charsets.UTF_8);
+                    result.addAll(getPltFiles(lines));
+                } catch (final IOException e) {
+                    // ignore
+                }
+            }
+        }
+        return result;
+    }
 }

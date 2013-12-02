@@ -25,6 +25,7 @@ import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IOpenable;
 import org.erlide.engine.model.IParent;
+import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlImport;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.IErlPreprocessorDef;
@@ -34,7 +35,6 @@ import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelUtilService;
-import org.erlide.engine.util.ErlangFunction;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.TypeConverter;
@@ -81,8 +81,6 @@ public class ModelInternalUtils implements ModelUtilService {
                 .getChildrenOfKind(ErlElementKind.EXTERNAL)) {
             final IErlExternal external = (IErlExternal) i;
             final String externalName = external.getName();
-            ErlLogger
-                    .debug("externalName %s segment %s", externalName, segment);
             if (externalName.equals(segment)) {
                 return external;
             }
@@ -97,8 +95,6 @@ public class ModelInternalUtils implements ModelUtilService {
                 .split(modulePath));
         model.open(null);
         final IErlElement childNamed = model.getChildNamed(path.get(0));
-        ErlLogger.debug(">>childNamed %s", childNamed == null ? "<null>"
-                : childNamed.getName());
         if (childNamed instanceof IParent) {
             IParent parent = (IParent) childNamed;
             final int n = path.size() - 1;

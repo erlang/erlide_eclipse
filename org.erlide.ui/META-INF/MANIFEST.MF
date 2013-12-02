@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
-Bundle-Version: 0.24.0.qualifier
+Bundle-Version: 0.24.1.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.erlide.ui.internal.ErlideUIPlugin
 Bundle-Vendor: %providerName
@@ -53,7 +53,6 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.ui.prefs;x-friends:="org.erlide.dialyzer.ui",
  org.erlide.ui.prefs.plugin;x-internal:=true,
  org.erlide.ui.prefs.plugin.internal;x-internal:=true,
- org.erlide.ui.prefs.tickets;x-internal:=true,
  org.erlide.ui.properties;x-internal:=true,
  org.erlide.ui.properties.internal;x-internal:=true,
  org.erlide.ui.templates;x-internal:=true,
@@ -87,7 +86,8 @@ Require-Bundle: org.eclipse.compare,
  org.erlide.model;bundle-version="0.18.0",
  org.erlide.runtime,
  org.erlide.util,
- org.erlide.libs;bundle-version="1.1.4"
+ org.erlide.libs;bundle-version="1.1.4",
+ org.eclipse.ui.externaltools;bundle-version="3.2.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-ExtensibleAPI: true

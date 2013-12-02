@@ -20,6 +20,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
+import org.erlide.runtime.shell.BackendShellEvent;
 import org.erlide.runtime.shell.BackendShellListener;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
@@ -48,8 +49,7 @@ public final class ErlConsoleDocument extends Document implements
         assertThat(shell, is(not(nullValue())));
         this.shell = shell;
         shell.addListener(this);
-        changed();
-
+        changed(new BackendShellEvent(0, 0, get()));
         final IDocumentPartitioner partitioner = new FastPartitioner(
                 createScanner(), LEGAL_CONTENT_TYPES);
         partitioner.connect(this);
@@ -61,14 +61,14 @@ public final class ErlConsoleDocument extends Document implements
     }
 
     @Override
-    public void changed() {
-        final String text = shell.getText();
+    public void changed(final BackendShellEvent event) {
         DisplayUtils.asyncExec(new Runnable() {
 
             @Override
             public void run() {
                 try {
-                    replace(0, getLength(), text);
+                    replace(event.getOffset(), event.getRemovedLength(),
+                            event.getText());
                 } catch (final BadLocationException e) {
                     ErlLogger.error(e);
                 }

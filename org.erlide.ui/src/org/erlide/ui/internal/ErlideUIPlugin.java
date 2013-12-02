@@ -79,6 +79,7 @@ import org.erlide.ui.util.NoRuntimeHandler;
 import org.erlide.ui.util.ProblemMarkerManager;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlideEventBus;
+import org.erlide.util.HostnameUtils;
 import org.erlide.util.SystemConfiguration;
 import org.osgi.framework.BundleContext;
 
@@ -150,8 +151,30 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
      */
     @Override
     public void start(final BundleContext context) throws Exception {
-        ErlLogger.debug("Starting UI " + Thread.currentThread());
+        ErlLogger.info("Starting UI " + Thread.currentThread());
         super.start(context);
+
+        if (HostnameUtils.getErlangHostName(true) == null
+                && HostnameUtils.getErlangHostName(false) == null) {
+            PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+                @Override
+                public void run() {
+                    final Shell activeShell = PlatformUI.getWorkbench()
+                            .getActiveWorkbenchWindow().getShell();
+                    final String message = "We are sorry, but your machine's host name is not configured properly "
+                            + "and erlide can't work. You need to fix your .hosts file and restart.\n"
+                            + "\n" + "This instance will close now.";
+                    final String description = "Java and Erlang can't agree on hostnames. Please check the log "
+                            + "in <workspace>/.metadata/.log for details on which names were tried.\n\n"
+                            + "Hostnames with dots in them can't be used as short names.\n"
+                            + "Hostnames with dashes in them might not always work.\n\n"
+                            + "Try to conect two Erlang nodes manually first. Add the working hostname to .hosts.";
+                    ErrorDialog.openError(activeShell, "Erlide can't work properly",
+                            message, new Status(IStatus.ERROR, PLUGIN_ID, description));
+                    PlatformUI.getWorkbench().close();
+                }
+            });
+        }
 
         ErlideEventBus.register(new NoRuntimeHandler());
         ErlideEventBus.register(new ConsoleMessageReporter());
@@ -163,13 +186,12 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
         loadDefaultEditorColors();
 
-        ErlLogger.debug("Started UI");
+        ErlLogger.info("Started UI");
 
         erlConsoleManager = new ErlConsoleManager();
 
         erlangDebuggerBackendListener = new ErlangDebuggerBackendListener();
-        BackendCore.getBackendManager().addBackendListener(
-                erlangDebuggerBackendListener);
+        BackendCore.getBackendManager().addBackendListener(erlangDebuggerBackendListener);
 
         startPeriodicCacheCleaner();
     }
@@ -199,12 +221,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                     try {
                         final List<IEditorReference> editorRefs = getWorkbenchEditorReferences();
                         for (final IEditorReference editorRef : editorRefs) {
-                            final IEditorPart editor = editorRef
-                                    .getEditor(false);
+                            final IEditorPart editor = editorRef.getEditor(false);
                             if (editor instanceof ErlangEditor) {
                                 final ErlangEditor erlangEditor = (ErlangEditor) editor;
-                                ClearCacheAction
-                                        .resetCacheForEditor(erlangEditor);
+                                ClearCacheAction.resetCacheForEditor(erlangEditor);
                             }
                         }
                     } catch (final Exception e) {
@@ -218,12 +238,11 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
             public List<IEditorReference> getWorkbenchEditorReferences() {
                 final IWorkbench workbench = PlatformUI.getWorkbench();
-                final IWorkbenchPage[] pages = workbench
-                        .getActiveWorkbenchWindow().getPages();
+                final IWorkbenchPage[] pages = workbench.getActiveWorkbenchWindow()
+                        .getPages();
                 final List<IEditorReference> editorRefs = Lists.newArrayList();
                 for (final IWorkbenchPage page : pages) {
-                    for (final IEditorReference ref : page
-                            .getEditorReferences()) {
+                    for (final IEditorReference ref : page.getEditorReferences()) {
                         editorRefs.add(ref);
                     }
                 }
@@ -292,12 +311,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
      * @return The identified string
      */
     public static String getResourceString(final String key) {
-        final ResourceBundle bundle = ErlideUIPlugin.getDefault()
-                .getResourceBundle();
+        final ResourceBundle bundle = ErlideUIPlugin.getDefault().getResourceBundle();
         try {
 
-            final String returnString = bundle != null ? bundle.getString(key)
-                    : key;
+            final String returnString = bundle != null ? bundle.getString(key) : key;
             return returnString;
         } catch (final MissingResourceException e) {
             return key;
@@ -389,8 +406,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         createImageDescriptor(ErlideUIConstants.IMG_CONSOLE, baseURL);
         createImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD, baseURL);
         createImageDescriptor(ErlideUIConstants.IMG_PROJECT_LABEL, baseURL);
-        createImageDescriptor(ErlideUIConstants.IMG_PACKAGE_FOLDER_LABEL,
-                baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_PACKAGE_FOLDER_LABEL, baseURL);
         createImageDescriptor(ErlideUIConstants.IMG_PACKAGE_LABEL, baseURL);
         createImageDescriptor(ErlideUIConstants.IMG_FILE_LABEL, baseURL);
         createImageDescriptor(ErlideUIConstants.IMG_FOLDER_LABEL, baseURL);
@@ -401,8 +417,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         createImageDescriptor(ErlideUIConstants.IMG_DISABLED_EXPORT, baseURL);
         createImageDescriptor(ErlideUIConstants.IMG_EXPORT, baseURL);
         createImageDescriptor(ErlideUIConstants.IMG_COLLAPSEALL, baseURL);
-        createImageDescriptor(ErlideUIConstants.IMG_PROJECT_CLOSED_LABEL,
-                baseURL);
+        createImageDescriptor(ErlideUIConstants.IMG_PROJECT_CLOSED_LABEL, baseURL);
 
         createImageDescriptor(ErlideUIConstants.IMG_ERLANG_LOGO, baseURL);
     }
@@ -436,8 +451,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     public static void log(final Exception e) {
-        log(new Status(IStatus.ERROR, PLUGIN_ID,
-                ErlangStatus.INTERNAL_ERROR.getValue(), e.getMessage(), null));
+        log(new Status(IStatus.ERROR, PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
+                e.getMessage(), null));
     }
 
     public static void log(final IStatus status) {
@@ -445,8 +460,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     public static void logErrorMessage(final String message) {
-        log(new Status(IStatus.ERROR, PLUGIN_ID,
-                ErlangStatus.INTERNAL_ERROR.getValue(), message, null));
+        log(new Status(IStatus.ERROR, PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
+                message, null));
     }
 
     public static void logErrorStatus(final String message, final IStatus status) {
@@ -461,8 +476,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     public static void log(final Throwable e) {
-        log(new Status(IStatus.ERROR, PLUGIN_ID,
-                ErlangStatus.INTERNAL_ERROR.getValue(),
+        log(new Status(IStatus.ERROR, PLUGIN_ID, ErlangStatus.INTERNAL_ERROR.getValue(),
                 "Erlide internal error", e));
     }
 
@@ -490,12 +504,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             fFoldingStructureProviderRegistry = new ErlangFoldingStructureProviderRegistry();
         }
         return fFoldingStructureProviderRegistry;
-    }
-
-    public static void debug(final String message) {
-        if (getDefault().isDebugging()) {
-            ErlLogger.debug(message);
-        }
     }
 
     public static void createStandardGroups(final IMenuManager menu) {
@@ -537,8 +545,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     public static IEclipsePreferences getPrefsNode() {
         final String qualifier = ErlideUIPlugin.PLUGIN_ID;
         final IScopeContext context = InstanceScope.INSTANCE;
-        final IEclipsePreferences eclipsePreferences = context
-                .getNode(qualifier);
+        final IEclipsePreferences eclipsePreferences = context.getNode(qualifier);
         return eclipsePreferences;
     }
 
@@ -551,14 +558,12 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         // this is to avoid recursive call when fContextTypeRegistry is null
         getContextTypeRegistry();
         if (fStore == null) {
-            fStore = new ErlideContributionTemplateStore(
-                    getContextTypeRegistry(), getPreferenceStore(),
-                    CUSTOM_TEMPLATES_KEY);
+            fStore = new ErlideContributionTemplateStore(getContextTypeRegistry(),
+                    getPreferenceStore(), CUSTOM_TEMPLATES_KEY);
             try {
                 fStore.load();
             } catch (final IOException e) {
-                getLog().log(
-                        new Status(IStatus.ERROR, PLUGIN_ID, IStatus.OK, "", e)); //$NON-NLS-1$
+                getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, IStatus.OK, "", e)); //$NON-NLS-1$
             }
             ErlangSourceContextTypeModule.getDefault().addElementResolvers();
         }
@@ -596,8 +601,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             }
         } else {
             status = new Status(IStatus.ERROR, PLUGIN_ID,
-                    IDebugUIConstants.INTERNAL_ERROR,
-                    "Error within Debug UI: ", t); //$NON-NLS-1$
+                    IDebugUIConstants.INTERNAL_ERROR, "Error within Debug UI: ", t); //$NON-NLS-1$
             log(status);
         }
         ErrorDialog.openError(shell, title, message, status);

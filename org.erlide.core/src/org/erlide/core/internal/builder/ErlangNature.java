@@ -9,164 +9,92 @@
  *******************************************************************************/
 package org.erlide.core.internal.builder;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.erlide.core.ErlangCore;
-import org.erlide.util.ErlLogger;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
- * Simple project nature
- * 
+ * Erlang project nature
  * 
  * @author Eric Merritt [cyberlync at yahoo dot com]
+ * @author Vlad Dumitrescu [vladdu55 att gmail dot com]
  */
 public class ErlangNature implements IProjectNature {
 
     private IProject project;
 
-    /**
-     * Not used yet; this is like ErlangCore for a specific project.
-     * 
-     * @param project
-     *            the project we want to know about (if it is null, null is
-     *            returned)
-     * @return the erlang nature for a project (or null if it does not exist for
-     *         the project)
-     * 
-     * @note: it's synchronized because more than 1 place could call
-     *        getErlangNature at the same time and more than one nature ended up
-     *        being created from project.getNature().
-     */
-    public static synchronized ErlangNature getErlangNature(
-            final IProject project) {
-        if (project != null && project.isOpen()) {
-            try {
-                final IProjectNature n = project
-                        .getNature(ErlangCore.NATURE_ID);
-                if (n instanceof ErlangNature) {
-                    return (ErlangNature) n;
-                }
-            } catch (final CoreException e) {
-                ErlLogger.info(e);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @return all the Erlang natures available in the workspace (for opened and
-     *         existing projects)
-     */
-    public static List<ErlangNature> getAllErlangNatures() {
-        final List<ErlangNature> natures = new ArrayList<ErlangNature>();
-        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        final IProject[] projects = root.getProjects();
-        for (final IProject project : projects) {
-            final ErlangNature nature = getErlangNature(project);
-            if (nature != null) {
-                natures.add(nature);
-            }
-        }
-        return natures;
-    }
-
-    /**
-     * Configure the nature
-     * 
-     * @see org.eclipse.core.resources.IProjectNature#configure()
-     */
     @Override
     public void configure() throws CoreException {
-        final IProjectDescription description = project.getDescription();
-        if (!hasBuildSpec(description.getBuildSpec())) {
-            final ICommand[] old = description.getBuildSpec(), specs = new ICommand[old.length + 1];
-            System.arraycopy(old, 0, specs, 0, old.length);
-            final ICommand command = description.newCommand();
-            command.setBuilderName(ErlangCore.BUILDER_ID);
-            specs[old.length] = command;
-            description.setBuildSpec(specs);
-            project.setDescription(description, new NullProgressMonitor());
-        }
+        setErlangProjectBuilder(project, "internal");
     }
 
-    /**
-     * deconfigure the nature
-     * 
-     * @see org.eclipse.core.resources.IProjectNature#deconfigure()
-     */
     @Override
     public void deconfigure() throws CoreException {
-        final IProjectDescription description = project.getDescription();
-        final int count = getBuildSpecCount(description.getBuildSpec());
-        if (count != 0) {
-            final ICommand[] old = description.getBuildSpec();
-            final ICommand[] specs = new ICommand[old.length - count];
-            int i = 0;
-            int j = 0;
-            while (j < old.length) {
-                final String oldBuilderName = old[j].getBuilderName();
-                if (!ErlangCore.BUILDER_ID.equals(oldBuilderName)) {
-                    specs[i++] = old[j];
-                }
-                j++;
-            }
-            description.setBuildSpec(specs);
-            project.setDescription(description, new NullProgressMonitor());
-        }
+        unsetAllErlangBuilders(project);
     }
 
-    /**
-     * Get the project
-     * 
-     * @see org.eclipse.core.resources.IProjectNature#getProject()
-     */
     @Override
     public IProject getProject() {
         return project;
     }
 
-    /**
-     * Set the project
-     * 
-     * @see org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.resources.IProject)
-     */
     @Override
     public void setProject(final IProject lproject) {
         project = lproject;
     }
 
-    /**
-     * Test for buildspec
-     * 
-     * @param commands
-     * @return
-     */
-    private boolean hasBuildSpec(final ICommand[] commands) {
-        return getBuildSpecCount(commands) != 0;
+    private final static Collection<String> ALL_BUILDER_IDS = Lists
+            .newArrayList(ErlangCore.BUILDER_ID, ErlangCore.MAKEBUILDER_ID,
+                    ErlangCore.EMAKEBUILDER_ID, ErlangCore.REBARBUILDER_ID);
+
+    public final static Map<String, String> BUILDER_ID_MAP = Maps.newHashMap();
+    static {
+        BUILDER_ID_MAP.put("internal", ErlangCore.BUILDER_ID);
+        BUILDER_ID_MAP.put("make", ErlangCore.MAKEBUILDER_ID);
+        BUILDER_ID_MAP.put("emake", ErlangCore.EMAKEBUILDER_ID);
+        BUILDER_ID_MAP.put("rebar", ErlangCore.REBARBUILDER_ID);
     }
 
-    /**
-     * Get spec count
-     * 
-     * @param commands
-     * @return
-     */
-    private int getBuildSpecCount(final ICommand[] commands) {
-        int count = 0;
-        for (final ICommand element : commands) {
-            if (ErlangCore.BUILDER_ID.equals(element.getBuilderName())) {
-                count++;
+    public static void setErlangProjectBuilder(final IProject prj,
+            final String builderName) throws CoreException {
+        unsetAllErlangBuilders(prj);
+
+        final IProjectDescription description = prj.getDescription();
+        final ICommand[] old = description.getBuildSpec();
+        final ICommand[] specs = new ICommand[old.length + 1];
+        System.arraycopy(old, 0, specs, 0, old.length);
+        final ICommand command = description.newCommand();
+        command.setBuilderName(BUILDER_ID_MAP.get(builderName));
+        specs[old.length] = command;
+
+        description.setBuildSpec(specs);
+        prj.setDescription(description, new NullProgressMonitor());
+    }
+
+    public static void unsetAllErlangBuilders(final IProject prj)
+            throws CoreException {
+        final IProjectDescription description = prj.getDescription();
+        final ICommand[] old = description.getBuildSpec();
+        final List<ICommand> specs = Lists.newArrayList();
+        for (final ICommand cmd : old) {
+            final String oldBuilderName = cmd.getBuilderName();
+            if (!ALL_BUILDER_IDS.contains(oldBuilderName)) {
+                specs.add(cmd);
             }
         }
-        return count;
+        description.setBuildSpec(specs.toArray(new ICommand[specs.size()]));
+        prj.setDescription(description, new NullProgressMonitor());
     }
+
 }

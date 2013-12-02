@@ -12,6 +12,6 @@ package org.erlide.runtime.shell;
 
 public interface BackendShellListener {
 
-    void changed();
+    void changed(BackendShellEvent event);
 
 }

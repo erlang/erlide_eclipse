@@ -67,18 +67,6 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     String getExternalIncludesString();
 
-    void setIncludeDirs(Collection<IPath> includeDirs)
-            throws BackingStoreException;
-
-    void setSourceDirs(Collection<IPath> sourceDirs)
-            throws BackingStoreException;
-
-    void setExternalModulesFile(String absolutePath)
-            throws BackingStoreException;
-
-    void setExternalIncludesFile(String absolutePath)
-            throws BackingStoreException;
-
     Collection<IPath> getSourceDirs();
 
     Collection<IPath> getIncludeDirs();

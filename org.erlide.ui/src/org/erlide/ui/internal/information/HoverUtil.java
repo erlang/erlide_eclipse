@@ -20,7 +20,6 @@ public class HoverUtil {
             final String moduleName0, final LocationEvent event) {
         String moduleName = moduleName0;
         final String location = event.location;
-        ErlLogger.debug("eventToErlangFunction %s", location);
         final int hashPos = location.lastIndexOf('#');
         if (hashPos > 0) {
             String name = location.substring(hashPos + 1);

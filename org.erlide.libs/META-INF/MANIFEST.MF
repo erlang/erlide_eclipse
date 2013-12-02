@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
 Bundle-SymbolicName: org.erlide.libs;singleton:=true
-Bundle-Version: 1.10.4.qualifier
+Bundle-Version: 1.10.5.qualifier
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: jinterface.jar,
  hamcrest-all-1.3.jar,
  guava-14.0.1.jar,
- org.eclipse.xtend.lib-2.4.1.jar,
- org.eclipse.xtext.xbase.lib-2.4.1.jar,
+ org.eclipse.xtend.lib-2.4.3.jar,
+ org.eclipse.xtext.xbase.lib-2.4.3.jar,
  javax.inject-1.jar
 Export-Package: com.ericsson.otp.erlang,
  com.google.common.annotations;version="14.0.1",
@@ -31,6 +31,7 @@ Export-Package: com.ericsson.otp.erlang,
  org.eclipse.xtend.lib.macro,
  org.eclipse.xtend.lib.macro.declaration,
  org.eclipse.xtend.lib.macro.expression,
+ org.eclipse.xtend.lib.macro.file,
  org.eclipse.xtend.lib.macro.services,
  org.eclipse.xtend2.lib,
  org.eclipse.xtext.xbase.lib,

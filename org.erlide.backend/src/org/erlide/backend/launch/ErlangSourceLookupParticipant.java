@@ -3,7 +3,6 @@ package org.erlide.backend.launch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;
 import org.erlide.backend.debug.model.ErlangStackFrame;
-import org.erlide.util.ErlLogger;
 
 public class ErlangSourceLookupParticipant extends
         AbstractSourceLookupParticipant {
@@ -18,7 +17,6 @@ public class ErlangSourceLookupParticipant extends
             return null;
         }
         final ErlangStackFrame f = (ErlangStackFrame) object;
-        ErlLogger.debug("SOURCE for " + f.getName() + ": " + f.getModule());
         return f.getModule() + ".erl";
     }
 }

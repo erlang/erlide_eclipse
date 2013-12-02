@@ -94,7 +94,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
         debuggerDaemon = new DebuggerEventDaemon(b, this);
         debuggerDaemon.start();
-        ErlLogger.debug("debug daemon " + debuggerDaemon.getMBox());
 
         final OtpErlangPid pid = ErlideDebug.startDebug(b.getRpcSite(),
                 ErlDebugFlags.getFlag(debugFlags));

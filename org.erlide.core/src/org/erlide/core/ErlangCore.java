@@ -39,6 +39,9 @@ public final class ErlangCore {
     public static final String PLUGIN_ID = "org.erlide.core";
     public static final String NATURE_ID = PLUGIN_ID + ".erlnature";
     public static final String BUILDER_ID = PLUGIN_ID + ".erlbuilder";
+    public static final String MAKEBUILDER_ID = PLUGIN_ID + ".make.builder";
+    public static final String EMAKEBUILDER_ID = PLUGIN_ID + ".emake.builder";
+    public static final String REBARBUILDER_ID = PLUGIN_ID + ".rebar.builder";
     public static final String ERLIDE_GLOBAL_TRACE_OPTION = "org.erlide.backend/debug";
 
     private String featureVersion;
@@ -64,7 +67,7 @@ public final class ErlangCore {
     public void start() throws CoreException {
         final String version = getFeatureVersionImpl();
 
-        ErlLogger.debug("Starting CORE " + Thread.currentThread());
+        ErlLogger.info("Starting CORE " + Thread.currentThread());
         String dev = "(" + EncodingUtils.getEncoding() + ") ";
         if (SystemConfiguration.getInstance().isDeveloper()) {
             dev += " developer version ***";
@@ -80,12 +83,12 @@ public final class ErlangCore {
         workspace.addSaveParticipant(plugin.getBundle().getSymbolicName(),
                 getSaveParticipant());
 
-        ErlangDebugOptionsManager.getDefault().start();
-        ErlLogger.debug("Started CORE");
+        erlangDebugOptionsManager.start();
+        ErlLogger.info("Started CORE");
     }
 
     public void stop() {
-        ErlangDebugOptionsManager.getDefault().shutdown();
+        erlangDebugOptionsManager.shutdown();
         final String location = ResourcesPlugin.getWorkspace().getRoot()
                 .getLocation().toPortableString();
 
@@ -174,7 +177,7 @@ public final class ErlangCore {
             if (providers != null) {
                 version = findErlideFeatureVersion(providers);
             } else {
-                ErlLogger.debug("***: no bundle group providers");
+                ErlLogger.info("***: no bundle group providers");
             }
         } catch (final Exception e) {
             // ignore

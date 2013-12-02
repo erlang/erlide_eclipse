@@ -92,7 +92,7 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
                 .getFragments(Platform
                         .getBundle(org.erlide.wrangler.refactoring.Activator.PLUGIN_ID));
         if (bs.length < 1) {
-            ErlLogger.debug("Fragment is not loaded?! No C binary is run.");
+            ErlLogger.warn("Fragment is not loaded?! No C binary is run.");
             return "";
         }
         Bundle fragment = null;

@@ -15,8 +15,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.engine.internal.model.root.ErlProject;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.OldErlangProjectProperties;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.test.support.ErlideTestUtils;
@@ -96,7 +97,8 @@ public class IErlProjectTests extends ErlModelTestBase {
             aProject.open(null);
             final Collection<IErlModule> otpModules = aProject
                     .getExternalModules();
-            aProject.setExternalModulesFile(externalsFile.getAbsolutePath());
+            ((ErlProject) aProject).setExternalModulesFile(externalsFile
+                    .getAbsolutePath());
             aProject.open(null);
             // when
             // fetching all external modules
@@ -120,7 +122,8 @@ public class IErlProjectTests extends ErlModelTestBase {
             if (externalsFile != null && externalsFile.exists()) {
                 externalsFile.delete();
             }
-            aProject.setExternalModulesFile(externalModulesString);
+            ((ErlProject) aProject)
+                    .setExternalModulesFile(externalModulesString);
         }
     }
 
@@ -147,7 +150,8 @@ public class IErlProjectTests extends ErlModelTestBase {
             aProject.open(null);
             final Collection<IErlModule> otpIncludes = aProject
                     .getExternalIncludes();
-            aProject.setExternalIncludesFile(externalsFile.getAbsolutePath());
+            ((ErlProject) aProject).setExternalIncludesFile(externalsFile
+                    .getAbsolutePath());
             aProject.open(null);
             // when
             // fetching all external includes
@@ -170,7 +174,8 @@ public class IErlProjectTests extends ErlModelTestBase {
             if (externalsFile != null && externalsFile.exists()) {
                 externalsFile.delete();
             }
-            aProject.setExternalIncludesFile(externalIncludesString);
+            ((ErlProject) aProject)
+                    .setExternalIncludesFile(externalIncludesString);
         }
     }
 
@@ -194,7 +199,7 @@ public class IErlProjectTests extends ErlModelTestBase {
             final IPath absoluteDir = new Path(absolutePath)
                     .removeLastSegments(1);
             newIncludeDirs.add(absoluteDir);
-            aProject.setIncludeDirs(newIncludeDirs);
+            ((ErlProject) aProject).setIncludeDirs(newIncludeDirs);
             aProject.open(null);
             // when
             // fetching all external includes
@@ -214,7 +219,7 @@ public class IErlProjectTests extends ErlModelTestBase {
             if (externalFile != null && externalFile.exists()) {
                 externalFile.delete();
             }
-            aProject.setIncludeDirs(includeDirs);
+            ((ErlProject) aProject).setIncludeDirs(includeDirs);
         }
     }
 
@@ -226,10 +231,11 @@ public class IErlProjectTests extends ErlModelTestBase {
                 .getExternalIncludesString();
         try {
             final String s = "/hej";
-            aProject.setExternalModulesFile(s);
+            ((ErlProject) aProject).setExternalModulesFile(s);
             assertEquals(s, aProject.getExternalModulesString());
         } finally {
-            aProject.setExternalModulesFile(externalIncludesString);
+            ((ErlProject) aProject)
+                    .setExternalModulesFile(externalIncludesString);
         }
     }
 
@@ -241,10 +247,11 @@ public class IErlProjectTests extends ErlModelTestBase {
                 .getExternalIncludesString();
         try {
             final String s = "/tjo";
-            aProject.setExternalIncludesFile(s);
+            ((ErlProject) aProject).setExternalIncludesFile(s);
             assertEquals(s, aProject.getExternalIncludesString());
         } finally {
-            aProject.setExternalIncludesFile(externalIncludesString);
+            ((ErlProject) aProject)
+                    .setExternalIncludesFile(externalIncludesString);
         }
     }
 
@@ -269,7 +276,7 @@ public class IErlProjectTests extends ErlModelTestBase {
             final IPath absoluteDir = new Path(absolutePath)
                     .removeLastSegments(1);
             newIncludeDirs.add(absoluteDir);
-            aProject.setIncludeDirs(newIncludeDirs);
+            ((ErlProject) aProject).setIncludeDirs(newIncludeDirs);
             aProject.open(null);
             // when
             // fetching all external includes
@@ -289,7 +296,7 @@ public class IErlProjectTests extends ErlModelTestBase {
             if (externalFile != null && externalFile.exists()) {
                 externalFile.delete();
             }
-            aProject.setIncludeDirs(includeDirs);
+            ((ErlProject) aProject).setIncludeDirs(includeDirs);
         }
     }
 
@@ -308,10 +315,10 @@ public class IErlProjectTests extends ErlModelTestBase {
             // when
             // setting source dirs so the module is on source path
             final Collection<IErlModule> modules = aProject.getModules();
-            aProject.setSourceDirs(srcxDirs);
+            ((ErlProject) aProject).setSourceDirs(srcxDirs);
             aProject.open(null);
             final Collection<IErlModule> srcxModules = aProject.getModules();
-            aProject.setSourceDirs(sourceDirs);
+            ((ErlProject) aProject).setSourceDirs(sourceDirs);
             aProject.open(null);
             final Collection<IErlModule> modulesAgain = aProject.getModules();
             // then
@@ -322,7 +329,7 @@ public class IErlProjectTests extends ErlModelTestBase {
             assertEquals(1, modulesAgain.size());
             assertEquals(module, modulesAgain.iterator().next());
         } finally {
-            aProject.setSourceDirs(sourceDirs);
+            ((ErlProject) aProject).setSourceDirs(sourceDirs);
         }
     }
 
@@ -401,7 +408,7 @@ public class IErlProjectTests extends ErlModelTestBase {
         final IErlProject aProject = projects[0];
         final Collection<IPath> sourceDirs = aProject.getSourceDirs();
         try {
-            final OldErlangProjectProperties properties = new OldErlangProjectProperties(
+            final ErlangProjectProperties properties = new ErlangProjectProperties(
                     aProject.getWorkspaceProject());
             final IPath srcx = new Path("srcx");
             properties.setSourceDirs(Lists.newArrayList(srcx));
@@ -410,7 +417,7 @@ public class IErlProjectTests extends ErlModelTestBase {
             assertEquals(1, sourceDirs2.size());
             assertEquals(srcx, sourceDirs2.iterator().next());
         } finally {
-            aProject.setSourceDirs(sourceDirs);
+            ((ErlProject) aProject).setSourceDirs(sourceDirs);
         }
     }
 
@@ -468,10 +475,10 @@ public class IErlProjectTests extends ErlModelTestBase {
             final IErlModule nullModule3 = aProject.getModule("aA");
             final IErlModule nullModule4 = aProject.getModule("AA.erl");
             final IErlModule module4 = aProject.getModule("aa.erl");
-            aProject.setSourceDirs(srcxDirs);
+            ((ErlProject) aProject).setSourceDirs(srcxDirs);
             aProject.open(null);
             final IErlModule srcxModule = aProject.getModule("aa");
-            aProject.setSourceDirs(sourceDirs);
+            ((ErlProject) aProject).setSourceDirs(sourceDirs);
             aProject.open(null);
             final IErlModule module3 = aProject.getModule("aa");
             // then
@@ -485,7 +492,7 @@ public class IErlProjectTests extends ErlModelTestBase {
             assertEquals(aModule, module3);
             assertEquals(aModule, module4);
         } finally {
-            aProject.setSourceDirs(sourceDirs);
+            ((ErlProject) aProject).setSourceDirs(sourceDirs);
         }
     }
 

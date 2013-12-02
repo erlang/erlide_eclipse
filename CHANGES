@@ -1,3 +1,23 @@
+List of user visible changes between 0.24.0 and 0.24.1 (20131129)
+
+3ac5598 after changing runtime, ask user to restart
+04042bd fix crash in ModelActivator when no runtime is configured
+13ea996 gh134: if only one runtime, selection behaves strangely
+bdc00f1 1300 - disabled .app.src handling because of inefficiency
+d3c333d remove debug logging (gh 133)
+ebe64ab 1258 - completion: suggests module names that are regular files from src
+5a39931 1290 - detection of open targets can fail
+f0bb1c4 1278 - new erlang module: "new_file" needs to be removed manually
+581b580 (gh 129) fix code templates
+792d18a Fix a race condition in Console, resulting in empty output pane sometimes
+062a1d2 add test file for eep37 (named fun expressions)
+0f2ea6b 1267 - searching---filling-in-record-field-into-search-dialog-from-current-selection-goes-wrong
+db580c8 add error dialog when we can't connect to backends because of hostnames
+08cce55 gh124 - add manual configuration of host names
+5beddfa 1263 - value for ide runtime can be ignored
+76e6ef3 rename "add nature" menu to "mark as erlang project"; similar for remove
+990ec5c Fix of erlang compare-mode problems (Unique scanner-names for file-less modules)
+
 List of user visible changes between 0.23.2 and 0.24.0 (20130909)
 
 1a9610e Cache external OTP structure

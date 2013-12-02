@@ -89,13 +89,11 @@ public class ErtsProcess extends RuntimeProcess {
 
     @Override
     public void terminate() throws DebugException {
-        ErlLogger.debug("ErtsProcess will be terminated: %s, called from: %s",
-                getLabel(), new Throwable().getStackTrace()[1]);
         try {
             super.terminate();
         } finally {
             if (!isTerminated()) {
-                ErlLogger.debug("Could not terminate process %s", getLabel());
+                ErlLogger.warn("Could not terminate process %s", getLabel());
             }
         }
     }

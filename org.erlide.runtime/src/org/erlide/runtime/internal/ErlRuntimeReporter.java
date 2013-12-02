@@ -22,8 +22,7 @@ public class ErlRuntimeReporter {
         this.internal = internal;
     }
 
-    public String reportRuntimeDown(final String peer,
-            final ErlSystemStatus status) {
+    public String reportRuntimeDown(final String peer, final ErlSystemStatus status) {
         final String fmt = "Backend '%s' is down";
         String msg = String.format(fmt, peer);
         // TODO when to report errors?
@@ -49,13 +48,13 @@ public class ErlRuntimeReporter {
                     + user
                     + "_<timestamp>.txt' has been created in your home directory, "
                     + "please consider reporting the problem. \n"
-                    + (SystemConfiguration
-                            .hasFeatureEnabled("erlide.ericsson.user") ? ""
+                    + (SystemConfiguration.hasFeatureEnabled("erlide.ericsson.user") ? ""
                             : "http://www.assembla.com/spaces/erlide/support/tickets");
             MessageReporter.showError(msg, msg1 + "\n\n" + details);
+
+            ErlLogger.error("Last system status was:\n %s",
+                    status != null ? status.prettyPrint() : "null");
         }
-        ErlLogger.error("Last system status was:\n %s",
-                status != null ? status.prettyPrint() : "null");
         return msg;
     }
 
@@ -68,9 +67,8 @@ public class ErlRuntimeReporter {
 
     public void createFileReport(final String nodeName, final int exitCode,
             final String workingDir, final ErlSystemStatus status) {
-        final String msg = String.format(
-                "Backend '%s' terminated with exit code %d.", nodeName,
-                exitCode);
+        final String msg = String.format("Backend '%s' crashed with exit code %d.",
+                nodeName, exitCode);
 
         String report = null;
         if (shouldCreateReport(exitCode)) {
@@ -85,8 +83,7 @@ public class ErlRuntimeReporter {
                     + "An error log has been created at "
                     + report
                     + ". Please report the problem so that we can fix it.\n"
-                    + (SystemConfiguration
-                            .hasFeatureEnabled("erlide.ericsson.user") ? ""
+                    + (SystemConfiguration.hasFeatureEnabled("erlide.ericsson.user") ? ""
                             : "http://www.assembla.com/spaces/erlide/support/tickets")
                     : "";
             MessageReporter

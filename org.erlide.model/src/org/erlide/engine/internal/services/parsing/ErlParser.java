@@ -79,6 +79,7 @@ public final class ErlParser implements ParserService {
 
     private static final int FUNCTION_COMMENT_THRESHOLD = 3;
     private static final int MODULE_HEADER_COMMENT_THRESHOLD = 1;
+    private static final boolean TRACE = false;
 
     private final RuntimeHelper helper;
     private final IRpcSite backend;
@@ -117,28 +118,14 @@ public final class ErlParser implements ParserService {
         if (forms == null) {
             module.setChildren(null);
         } else {
-            final List<IErlElement> children = Lists
-                    .newArrayListWithCapacity(forms.arity());
-            for (final OtpErlangObject form : forms) {
-                final IErlMember elem = create(module, (OtpErlangTuple) form);
-                if (elem != null) {
-                    children.add(elem);
-                }
-            }
+            final List<IErlElement> children = createForms(module, forms);
             module.setChildren(children);
         }
         if (comments == null) {
             module.setComments(null);
         } else {
-            final List<IErlComment> moduleComments = Lists
-                    .newArrayListWithCapacity(comments.arity());
-            for (final OtpErlangObject comment : comments) {
-                final IErlComment c = createComment(module,
-                        (OtpErlangTuple) comment);
-                if (c != null) {
-                    moduleComments.add(c);
-                }
-            }
+            final List<IErlComment> moduleComments = createComments(module,
+                    comments);
             module.setComments(moduleComments);
         }
         fixFunctionComments(module);
@@ -150,10 +137,39 @@ public final class ErlParser implements ParserService {
                 cached = atom.atomValue();
             }
         }
-        ErlLogger.debug("Parsed %d forms and %d comments (%s)",
-                forms != null ? forms.arity() : 0,
-                comments != null ? comments.arity() : 0, cached);
+        if (TRACE) {
+            ErlLogger.debug("Parsed %d forms and %d comments (%s)",
+                    forms != null ? forms.arity() : 0,
+                    comments != null ? comments.arity() : 0, cached);
+        }
         return forms != null && comments != null;
+    }
+
+    private List<IErlComment> createComments(final IErlModule module,
+            final OtpErlangList comments) {
+        final List<IErlComment> moduleComments = Lists
+                .newArrayListWithCapacity(comments.arity());
+        for (final OtpErlangObject comment : comments) {
+            final IErlComment c = createComment(module,
+                    (OtpErlangTuple) comment);
+            if (c != null) {
+                moduleComments.add(c);
+            }
+        }
+        return moduleComments;
+    }
+
+    private List<IErlElement> createForms(final IErlModule module,
+            final OtpErlangList forms) {
+        final List<IErlElement> children = Lists.newArrayListWithCapacity(forms
+                .arity());
+        for (final OtpErlangObject form : forms) {
+            final IErlMember elem = create(module, (OtpErlangTuple) form);
+            if (elem != null) {
+                children.add(elem);
+            }
+        }
+        return children;
     }
 
     /**
@@ -206,12 +222,12 @@ public final class ErlParser implements ParserService {
         final int j = i - 1;
         if (j > 0) {
             final IErlMember member = all.get(i);
-            final IErlMember member_1 = all.get(j);
-            if (member_1 instanceof IErlComment
-                    || member_1 instanceof IErlTypespec) {
-                if (member_1.getLineEnd() + FUNCTION_COMMENT_THRESHOLD >= member
+            final IErlMember prevMember = all.get(j);
+            if (prevMember instanceof IErlComment
+                    || prevMember instanceof IErlTypespec) {
+                if (prevMember.getLineEnd() + FUNCTION_COMMENT_THRESHOLD >= member
                         .getLineStart()) {
-                    comments.addFirst(member_1);
+                    comments.addFirst(prevMember);
                 }
             } else {
                 return -1;
@@ -478,7 +494,7 @@ public final class ErlParser implements ParserService {
         OtpErlangObject o = val;
         if (o instanceof OtpErlangAtom) {
             final OtpErlangAtom u = (OtpErlangAtom) o;
-            if (u.atomValue().equals("u")) {
+            if ("u".equals(u.atomValue())) {
                 o = null;
             }
         }

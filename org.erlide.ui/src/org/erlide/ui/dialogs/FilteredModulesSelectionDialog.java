@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
@@ -514,51 +515,8 @@ public class FilteredModulesSelectionDialog extends
                 }
             }
 
-            // FIXME (JC) all this seems too much... is it really necessary?
-            // couldn't we just assume all links in external files should be
-            // matchable?
             if (project == resource && accessible) {
-                final IErlElementLocator model = ErlangEngine.getInstance()
-                        .getModel();
-                final IErlProject erlProject = model.findProject(project);
-                if (erlProject != null) {
-                    final String extMods = erlProject
-                            .getExternalModulesString();
-                    final List<String> files = new ArrayList<String>();
-                    files.addAll(PreferencesUtils.unpackList(extMods));
-                    final String extIncs = erlProject
-                            .getExternalIncludesString();
-                    files.addAll(PreferencesUtils.unpackList(extIncs));
-
-                    final IPathVariableManager pvm = ResourcesPlugin
-                            .getWorkspace().getPathVariableManager();
-                    for (final String str : files) {
-                        IResource fres;
-                        try {
-                            fres = ResourceUtil.recursiveFindNamedResource(
-                                    project, str, null);
-                        } catch (final CoreException e) {
-                            fres = null;
-                        }
-                        if (fres != null) {
-                            final List<String> lines = PreferencesUtils
-                                    .readFile(fres.getLocation().toString());
-                            for (final String pref : lines) {
-
-                                String path;
-                                final IPath p = new Path(pref);
-                                final IPath v = pvm.resolvePath(p);
-                                if (v.isAbsolute()) {
-                                    path = v.toString();
-                                } else {
-                                    path = project.getLocation().append(v)
-                                            .toString();
-                                }
-                                proxyContentProvider.add(path, moduleFilter);
-                            }
-                        }
-                    }
-                }
+                addPathFiltersToContentProvider(project);
             }
 
             if (resource.isDerived()) {
@@ -580,6 +538,57 @@ public class FilteredModulesSelectionDialog extends
             }
 
             return true;
+        }
+
+        private void addPathFiltersToContentProvider(final IProject project) {
+            // FIXME (JC) all this seems too much... is it really necessary?
+            // couldn't we just assume all links in external files should be
+            // matchable?
+            final IErlElementLocator model = ErlangEngine.getInstance()
+                    .getModel();
+            final IErlProject erlProject = model.findProject(project);
+            if (erlProject != null) {
+                final String extMods = erlProject.getExternalModulesString();
+                final List<String> files = new ArrayList<String>();
+                files.addAll(PreferencesUtils.unpackList(extMods));
+                final String extIncs = erlProject.getExternalIncludesString();
+                files.addAll(PreferencesUtils.unpackList(extIncs));
+
+                final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+                        .getPathVariableManager();
+                for (final String file : files) {
+                    IResource fres;
+                    try {
+                        fres = ResourceUtil.recursiveFindNamedResource(project,
+                                file, null);
+                    } catch (final CoreException e) {
+                        fres = null;
+                    }
+                    if (fres != null) {
+                        addfilerPathsFromFile(project, pvm, fres);
+                    }
+                }
+            }
+        }
+
+        private void addfilerPathsFromFile(final IProject project,
+                final IPathVariableManager pvm, IResource fres) {
+            final List<String> lines = PreferencesUtils
+                    .readFile(fres.getLocation().toString());
+            for (final String pref : lines) {
+
+                String path;
+                final IPath p = new Path(pref);
+                final IPath v = URIUtil.toPath(pvm
+                        .resolveURI(URIUtil.toURI(p)));
+                if (v.isAbsolute()) {
+                    path = v.toString();
+                } else {
+                    path = project.getLocation().append(v)
+                            .toString();
+                }
+                proxyContentProvider.add(path, moduleFilter);
+            }
         }
 
         private void addPaths(final IProject project) {

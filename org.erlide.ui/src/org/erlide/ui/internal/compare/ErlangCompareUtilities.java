@@ -33,23 +33,6 @@ import org.erlide.engine.model.root.IErlElement;
 
 class ErlangCompareUtilities {
 
-    static String getString(final ResourceBundle bundle, final String key,
-            final String dfltValue) {
-
-        if (bundle != null) {
-            try {
-                return bundle.getString(key);
-            } catch (final MissingResourceException x) {
-                // NeedWork
-            }
-        }
-        return dfltValue;
-    }
-
-    static String getString(final ResourceBundle bundle, final String key) {
-        return getString(bundle, key, key);
-    }
-
     static int getInteger(final ResourceBundle bundle, final String key,
             final int dfltValue) {
 

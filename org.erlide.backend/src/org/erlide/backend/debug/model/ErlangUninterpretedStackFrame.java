@@ -2,7 +2,7 @@ package org.erlide.backend.debug.model;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
-import org.erlide.engine.util.ErlangFunction;
+import org.erlide.engine.model.erlang.ErlangFunction;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 

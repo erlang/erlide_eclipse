@@ -41,7 +41,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.search.SearchCoreUtil;
+import org.erlide.core.services.search.SearchCoreUtil;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlModule;
@@ -50,6 +50,7 @@ import org.erlide.engine.services.search.ErlSearchScope;
 import org.erlide.engine.services.search.ErlangSearchPattern;
 import org.erlide.engine.services.search.LimitTo;
 import org.erlide.engine.services.search.OpenResult;
+import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.SearchFor;
 import org.erlide.engine.services.search.SearchPatternFactory;
 import org.erlide.runtime.rpc.RpcException;
@@ -625,7 +626,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             try {
                 res = ErlangEngine
                         .getInstance()
-                        .getOpenService()
+                        .getService(OpenService.class)
                         .open(module.getScannerName(),
                                 offset,
                                 ErlangEngine.getInstance()

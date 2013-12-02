@@ -15,16 +15,8 @@ import org.erlide.util.ErlLogger;
 
 public class ErlangDebugOptionsManager implements ILaunchesListener,
         IBreakpointsListener {
-    private static ErlangDebugOptionsManager fgDebugOptionsManager;
 
-    private ErlangDebugOptionsManager() {
-    }
-
-    public static ErlangDebugOptionsManager getDefault() {
-        if (fgDebugOptionsManager == null) {
-            fgDebugOptionsManager = new ErlangDebugOptionsManager();
-        }
-        return fgDebugOptionsManager;
+    public ErlangDebugOptionsManager() {
     }
 
     public void start() {

@@ -84,7 +84,7 @@ public class DialyzerUtils {
             final String fileNames = names.size() + " modules ["
                     + getFileNames(names) + "]";
             monitor.subTask(fileNames);
-            ErlLogger.debug("Dialyzing %s", fileNames);
+            ErlLogger.trace("dialyzer", "run %s", fileNames);
 
             final IRpcSite b = backend.getRpcSite();
             final IRpcFuture future = ErlideDialyze.dialyze(b, files, pltPaths,

@@ -3,7 +3,6 @@ package org.erlide.engine.internal;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.InjectionException;
@@ -111,6 +110,7 @@ public class DefaultErlangEngine implements IErlangEngine {
         implementations.put(IndentService.class, ErlideIndent.class);
         implementations.put(OtpDocService.class, ErlideDoc.class);
         implementations.put(IBeamLocator.class, BeamLocator.class);
+        implementations.put(OpenService.class, ErlideOpen.class);
     }
 
     private final IRpcSite backend;
@@ -152,11 +152,6 @@ public class DefaultErlangEngine implements IErlangEngine {
     }
 
     @Override
-    public OpenService getOpenService() {
-        return new ErlideOpen(backend, getStateDir());
-    }
-
-    @Override
     public ContextAssistService getContextAssistService() {
         return new ErlideContextAssist(backend);
     }
@@ -179,14 +174,8 @@ public class DefaultErlangEngine implements IErlangEngine {
     /**
      * <p>
      * Construct a {@link CleanUpProvider} appropriate for a particular
-     * {@link IResource}.
+     * IResource.
      * </p>
-     * 
-     * @param resource
-     *            {@link IResource} for the Erlang module to clean up
-     * 
-     * @return {@link CleanUpProvider} appropriate for the supplied
-     *         {@link IResource}
      */
     @Override
     public CleanupProvider getCleanupProvider() {

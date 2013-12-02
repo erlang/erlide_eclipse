@@ -9,6 +9,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlImport;
 import org.erlide.engine.model.erlang.IErlModule;
@@ -21,8 +22,7 @@ import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.OpenResult;
-import org.erlide.engine.util.ErlangFunction;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
 import org.erlide.ui.util.ErlModelUtils;
@@ -40,7 +40,7 @@ public class OpenUtils {
     }
 
     public void openOpenResult(final ITextEditor editor,
-            final IErlModule module, final IRpcSite backend, final int offset,
+            final IErlModule module, final int offset,
             final IErlProject erlProject, final OpenResult openResult,
             final IErlElement element) throws CoreException, ErlModelException,
             PartInitException, BadLocationException, OtpErlangRangeException,
@@ -48,8 +48,8 @@ public class OpenUtils {
         if (editor == null) {
             return;
         }
-        final Object found = findOpenResult(editor, module, backend,
-                erlProject, openResult, element);
+        final Object found = findOpenResult(editor, module, erlProject,
+                openResult, element);
         if (found instanceof IErlElement) {
             ErlModelUtils.openElement((IErlElement) found);
         } else if (found instanceof ISourceRange) {
@@ -58,10 +58,10 @@ public class OpenUtils {
     }
 
     public Object findOpenResult(final ITextEditor editor,
-            final IErlModule module, final IRpcSite backend,
-            final IErlProject project, final OpenResult openResult,
-            final IErlElement element) throws CoreException, ErlModelException,
-            OtpErlangRangeException, RpcException, BadLocationException {
+            final IErlModule module, final IErlProject project,
+            final OpenResult openResult, final IErlElement element)
+            throws CoreException, ErlModelException, OtpErlangRangeException,
+            RpcException, BadLocationException {
         final IErlElementLocator.Scope scope = NavigationPreferencePage
                 .getCheckAllProjects() ? IErlElementLocator.Scope.ALL_PROJECTS
                 : IErlElementLocator.Scope.REFERENCED_PROJECTS;
@@ -74,8 +74,7 @@ public class OpenUtils {
             found = modelFindService.findInclude(module, project, openResult,
                     model);
         } else if (openResult.isLocalCall()) {
-            found = findLocalCall(module, backend, project, openResult,
-                    element, scope);
+            found = findLocalCall(module, project, openResult, element, scope);
         } else if (openResult.isVariable()
                 && element instanceof ISourceReference) {
             final ISourceReference sref = (ISourceReference) element;
@@ -102,10 +101,9 @@ public class OpenUtils {
     }
 
     private IErlElement findLocalCall(final IErlModule module,
-            final IRpcSite backend, final IErlProject erlProject,
-            final OpenResult res, final IErlElement element,
-            final IErlElementLocator.Scope scope) throws RpcException,
-            CoreException {
+            final IErlProject erlProject, final OpenResult res,
+            final IErlElement element, final IErlElementLocator.Scope scope)
+            throws RpcException, CoreException {
         if (isTypeDefOrRecordDef(element, res)) {
             return modelFindService.findTypespec(module, res.getFun());
         }
@@ -123,7 +121,7 @@ public class OpenUtils {
             moduleName = ei.getImportModule();
             res2 = ErlangEngine
                     .getInstance()
-                    .getOpenService()
+                    .getService(OpenService.class)
                     .getSourceFromModule(model.getPathVars(), moduleName,
                             erlProject.getExternalModulesString());
         }

@@ -1,13 +1,15 @@
 package org.erlide.core.preferences;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IErlangProjectProperties;
-import org.erlide.engine.model.root.OldErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.AfterClass;
@@ -43,8 +45,7 @@ public class ProjectPropertiesTest {
                 .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.OUTPUT_DIR, expected);
 
-        final IErlangProjectProperties pp = new OldErlangProjectProperties(
-                project);
+        final IErlangProjectProperties pp = new ErlangProjectProperties(project);
         final String actual = pp.getOutputDir().toPortableString();
 
         assertEquals(expected, actual);
@@ -59,8 +60,7 @@ public class ProjectPropertiesTest {
                 .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.INCLUDE_DIRS, expected);
 
-        final IErlangProjectProperties pp = new OldErlangProjectProperties(
-                project);
+        final IErlangProjectProperties pp = new ErlangProjectProperties(project);
         final String actual = pp.getIncludeDirs().toString();
 
         assertEquals(convertListString(expected), actual);
@@ -80,10 +80,10 @@ public class ProjectPropertiesTest {
                 .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.SOURCE_DIRS, expected);
 
-        final IErlangProjectProperties pp = new OldErlangProjectProperties(
-                project);
+        final IErlangProjectProperties pp = new ErlangProjectProperties(project);
         final String actual = pp.getSourceDirs().toString();
 
-        assertEquals(convertListString(expected), actual);
+        assertThat(actual, is(convertListString(expected)));
     }
+
 }

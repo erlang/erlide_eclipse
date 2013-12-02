@@ -283,7 +283,8 @@ public class EdocView extends AbstractInfoView {
         super.createActions();
         openDeclarationAction = new OpenDeclarationAction(this);
         openDeclarationAction.setEnabled(false);
-        // fSelectAllAction = new SelectAllAction(this, selectionProvider);
+        fSelectAllAction = new SelectAllAction(getControl(),
+                new SelectionProvider(getControl()));
     }
 
     @Override
@@ -299,16 +300,8 @@ public class EdocView extends AbstractInfoView {
         tbm.add(openDeclarationAction);
     }
 
-    /*
-     * @see
-     * org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getSelectAllAction
-     * ()
-     * 
-     * @since 3.0
-     */
     @Override
     protected IAction getSelectAllAction() {
-
         return fSelectAllAction;
     }
 

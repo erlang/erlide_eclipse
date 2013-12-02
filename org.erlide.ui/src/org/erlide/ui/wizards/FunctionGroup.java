@@ -158,13 +158,11 @@ public class FunctionGroup implements SelectionListener {
 
             @Override
             public void keyPressed(final KeyEvent e) {
-                ErlLogger.debug(e.character + " was pressed.");
                 fWizPage.gettingInput = true;
             }
 
             @Override
             public void keyReleased(final KeyEvent e) {
-                ErlLogger.debug(e.character + " was released.");
                 fWizPage.gettingInput = false;
             }
         });

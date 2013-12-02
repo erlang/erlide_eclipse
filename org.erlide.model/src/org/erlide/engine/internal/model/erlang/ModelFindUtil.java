@@ -8,6 +8,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.IErlPreprocessorDef;
@@ -19,7 +20,7 @@ import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.OpenResult;
-import org.erlide.engine.util.ErlangFunction;
+import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.StringUtils;
 
@@ -37,7 +38,7 @@ public class ModelFindUtil implements ModelFindService {
     public ISourceRange findVariable(final ISourceRange range,
             final String variableName, final String elementText)
             throws OtpErlangRangeException {
-        final OtpErlangTuple res2 = ErlangEngine.getInstance().getOpenService()
+        final OtpErlangTuple res2 = ErlangEngine.getInstance().getService(OpenService.class)
                 .findFirstVar(variableName, elementText);
         if (res2 != null) {
             final int relativePos = ((OtpErlangLong) res2.elementAt(0))

@@ -26,7 +26,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.erlide.core.search.SearchCoreUtil;
+import org.erlide.core.services.search.SearchCoreUtil;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlAttribute;
@@ -38,6 +38,7 @@ import org.erlide.engine.services.search.ErlSearchScope;
 import org.erlide.engine.services.search.ErlangSearchPattern;
 import org.erlide.engine.services.search.LimitTo;
 import org.erlide.engine.services.search.OpenResult;
+import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.SearchPatternFactory;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
@@ -213,7 +214,7 @@ public abstract class FindAction extends SelectionDispatchAction {
             final int offset = textSel.getOffset();
             final OpenResult res = ErlangEngine
                     .getInstance()
-                    .getOpenService()
+                    .getService(OpenService.class)
                     .open(module.getScannerName(),
                             offset,
                             ErlangEngine.getInstance().getModelUtilService()

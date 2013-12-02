@@ -26,7 +26,7 @@
 %% Include files
 %%
 
-%% -define(DEBUG, 1).
+%%-define(DEBUG, 1).
 %%-define(IO_FORMAT_DEBUG, 1).
 
 -include("erlide.hrl").
@@ -206,6 +206,13 @@ consider_macro_def([#token{kind='('} | Rest]) ->
 consider_macro_def(_) ->
     false.
 
+consider_record_field_ref([#token{kind='{'}, #token{kind=atom, value=Record}, #token{kind='#'} | _]) ->
+	{true, Record};
+consider_record_field_ref([_ | Rest]) ->
+	consider_record_field_ref(Rest);
+consider_record_field_ref(_) ->
+	false.
+
 %% TODO: rewrite this with some kind of table, and make it possible to
 %% add new items, e.g. gen_server calls
 
@@ -239,6 +246,8 @@ o_tokens([#token{kind=atom, value=Function}, #token{kind='/'}, #token{kind=integ
 o_tokens([#token{kind='/'}, #token{kind=integer, value=Arity} | _],
          _, Context, [#token{kind=atom, value=Function} | _]) ->
     o_local(Function, Arity, Context);
+o_tokens([#token{kind=atom, value=Value} | _] = Tokens, Offset, _, [#token{kind='#'} | _]) ->
+    o_record(Tokens, Offset, Value);
 o_tokens([#token{kind=macro, value=Value} | _] = Tokens, Offset, _, [#token{kind='#'} | _]) ->
     o_record(Tokens, Offset, Value);
 o_tokens([#token{kind=macro, value=Value} | _], _, _, _) ->
@@ -253,6 +262,13 @@ o_tokens([#token{kind=atom, value=Function}, #token{kind='('} | Rest],
         false ->
             continue
     end;
+o_tokens([#token{kind=atom, value=Value} | _], _Offset, _, BeforeReversed) ->
+	case consider_record_field_ref(BeforeReversed) of
+		{true, Record} ->
+			throw({open, {field, Record, Value}});
+		false ->
+			no
+	end;
 o_tokens([#token{kind=var, value=VarName} | _], _, _, BeforeReversed) ->
     case consider_macro_def(BeforeReversed) of
         true ->

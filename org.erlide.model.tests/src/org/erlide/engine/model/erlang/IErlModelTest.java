@@ -19,12 +19,12 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IErlModelChangeListener;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.util.ErlangFunction;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.util.Util;
 import org.junit.After;
@@ -262,7 +262,7 @@ public class IErlModelTest extends ErlModelTestBase {
             final IPath p = new Path(externalIncludePath).removeLastSegments(1);
             final List<IPath> newIncludeDirs = Lists.newArrayList(includeDirs);
             newIncludeDirs.add(p);
-            myProject.setIncludeDirs(newIncludeDirs);
+            ((ErlProject) myProject).setIncludeDirs(newIncludeDirs);
             final IErlModule include = ErlideTestUtils.createInclude(myProject,
                     "yy.hrl", "-define(Y, include).\n");
             final IErlProject project1 = projects[1];
@@ -336,7 +336,7 @@ public class IErlModelTest extends ErlModelTestBase {
             if (externalIncludeFile != null && externalIncludeFile.exists()) {
                 externalIncludeFile.delete();
             }
-            myProject.setIncludeDirs(includeDirs);
+            ((ErlProject) myProject).setIncludeDirs(includeDirs);
             final IProjectDescription description = workspaceProject
                     .getDescription();
             description.setReferencedProjects(referencedProjects);
@@ -370,7 +370,8 @@ public class IErlModelTest extends ErlModelTestBase {
                     .getAbsolutePath();
             externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX,
                     externalModulePath);
-            aProject.setExternalModulesFile(externalsFile.getAbsolutePath());
+            ((ErlProject) aProject).setExternalModulesFile(externalsFile
+                    .getAbsolutePath());
             final IErlModule aModule = ErlideTestUtils.createModule(aProject,
                     "yy.erl", "-module(yy).\n");
             final IErlProject project1 = projects[1];
@@ -445,7 +446,8 @@ public class IErlModelTest extends ErlModelTestBase {
             if (externalsFile != null && externalsFile.exists()) {
                 externalsFile.delete();
             }
-            aProject.setExternalModulesFile(externalModulesString);
+            ((ErlProject) aProject)
+                    .setExternalModulesFile(externalModulesString);
             final IProjectDescription description = workspaceProject
                     .getDescription();
             description.setReferencedProjects(referencedProjects);
@@ -475,7 +477,8 @@ public class IErlModelTest extends ErlModelTestBase {
                     .getAbsolutePath();
             externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX,
                     externalModulePath);
-            aProject.setExternalModulesFile(externalsFile.getAbsolutePath());
+            ((ErlProject) aProject).setExternalModulesFile(externalsFile
+                    .getAbsolutePath());
             final IErlProject project1 = projects[1];
             final IErlModule referencedModule = ErlideTestUtils.createModule(
                     project1, zzErl, xxxContents);
@@ -525,7 +528,8 @@ public class IErlModelTest extends ErlModelTestBase {
                     .getDescription();
             description.setReferencedProjects(referencedProjects);
             workspaceProject.setDescription(description, null);
-            aProject.setExternalModulesFile(externalModulesString);
+            ((ErlProject) aProject)
+                    .setExternalModulesFile(externalModulesString);
         }
     }
 
@@ -551,7 +555,7 @@ public class IErlModelTest extends ErlModelTestBase {
             final IPath p = new Path(externalIncludePath).removeLastSegments(1);
             final List<IPath> newIncludeDirs = Lists.newArrayList(includeDirs);
             newIncludeDirs.add(p);
-            aProject.setIncludeDirs(newIncludeDirs);
+            ((ErlProject) aProject).setIncludeDirs(newIncludeDirs);
             final IErlModule include = ErlideTestUtils.createInclude(aProject,
                     "yy.hrl", "-define(Y, include).\n");
             final IErlProject project1 = projects[1];
@@ -623,7 +627,7 @@ public class IErlModelTest extends ErlModelTestBase {
             if (externalIncludeFile != null && externalIncludeFile.exists()) {
                 externalIncludeFile.delete();
             }
-            aProject.setIncludeDirs(includeDirs);
+            ((ErlProject) aProject).setIncludeDirs(includeDirs);
             final IProjectDescription description = workspaceProject
                     .getDescription();
             description.setReferencedProjects(referencedProjects);
@@ -651,7 +655,7 @@ public class IErlModelTest extends ErlModelTestBase {
             final IPath p = new Path(externalIncludePath).removeLastSegments(1);
             final List<IPath> newIncludeDirs = Lists.newArrayList(includeDirs);
             newIncludeDirs.add(p);
-            aProject.setIncludeDirs(newIncludeDirs);
+            ((ErlProject) aProject).setIncludeDirs(newIncludeDirs);
             final IErlProject project1 = projects[1];
             final IErlModule referencedInclude = ErlideTestUtils.createInclude(
                     project1, xxHrl, "-define(Z, referenced).\n");
@@ -694,7 +698,7 @@ public class IErlModelTest extends ErlModelTestBase {
             if (externalIncludeFile != null && externalIncludeFile.exists()) {
                 externalIncludeFile.delete();
             }
-            aProject.setIncludeDirs(includeDirs);
+            ((ErlProject) aProject).setIncludeDirs(includeDirs);
             final IProjectDescription description = workspaceProject
                     .getDescription();
             description.setReferencedProjects(referencedProjects);

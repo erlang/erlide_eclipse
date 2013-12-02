@@ -32,6 +32,8 @@ import org.erlide.engine.internal.util.ModelConfig;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IParent;
+import org.erlide.engine.model.erlang.ErlangFunction;
+import org.erlide.engine.model.erlang.ErlangIncludeFile;
 import org.erlide.engine.model.erlang.IErlAttribute;
 import org.erlide.engine.model.erlang.IErlComment;
 import org.erlide.engine.model.erlang.IErlExport;
@@ -51,8 +53,6 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.services.search.ModelUtilService;
-import org.erlide.engine.util.ErlangFunction;
-import org.erlide.engine.util.ErlangIncludeFile;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 import org.erlide.util.Util;
@@ -614,12 +614,23 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public String createScannerName() {
-        if (getCorrespondingResource() != null) {
-            return getCorrespondingResource().getFullPath().toPortableString()
-                    .substring(1);
+        final IResource resource = getCorrespondingResource();
+        if (resource != null) {
+            return resource.getFullPath().toPortableString().substring(1);
         }
-        final int hash = hashCode();
-        final String name = getName() != null ? getName() : "";
+        int hash;
+        if (initialText != null && !initialText.isEmpty()) {
+            // we need to use the initialText if available, to avoid that
+            // different anonymous modules get the same scanner name (which
+            // causes problems in erlang compare)
+            hash = initialText.hashCode();
+        } else {
+            hash = hashCode();
+        }
+        String name = getName();
+        if (name == null) {
+            name = "";
+        }
         return String.format("%s_%08x", name, hash);
     }
 

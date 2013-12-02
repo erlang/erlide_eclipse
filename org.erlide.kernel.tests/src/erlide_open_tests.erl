@@ -9,6 +9,8 @@
 -include_lib("eunit/include/eunit.hrl").
 -include_lib("erlide_open.hrl").
 
+-compile(export_all).
+
 %%
 %% test Functions
 %%
@@ -25,8 +27,6 @@ open_test_() ->
     [
      ?_assertEqual({record, rec},
                    open_test("-r§ecord(rec, {aa, bb}).")),
-     ?_assertEqual({field, rec, aa},
-                   open_test("-record(rec, {a§a, bb}).")),
      ?_assertEqual({local, foo, 1},
                    open_test("-module(a).\nf§oo(x)-> ok.")),
      ?_assertEqual({include, "foo"},
@@ -42,21 +42,33 @@ open_test_() ->
                    open_test("foo()-> ?HEL§LO.")),
      ?_assertEqual({variable,'AA'},
                    open_test("foo()-> A§A.")),
-     ?_assertEqual({local, aa, 0},
-                   open_test("-type a§a()::integer()."))
-    ].
+	 ?_assertEqual({variable, 'BB'},
+				   open_test("-a() -> #r{field1=A, field2=B§B}.")),
+	 ?_assertEqual({local, aa, 0},
+				   open_test("-type a§a()::integer()."))
+	].
+
+open_record_field_test_() ->
+	[
+	 ?_assertEqual({field, rec, bb},
+				   open_test("-a() -> #rec{aa, b§b}).")),
+	 ?_assertEqual({field, rec, aa},
+				   open_test("-record(rec, {a§a, bb}).")),
+	 ?_assertEqual({field, rec, bb},
+				   open_test("-record(rec, {aa, b§b}).")),
+	 ?_assertEqual({field, rec, aa},
+				   open_test("-a() -> #rec{a§a, bb}).")),
+	 ?_assertEqual({field, r, field2},
+				   open_test("-a() -> #r{field1=A, fiel§d2=B}.")),
+	 ?_assertEqual({field, r, field1},
+				   open_test("-a() -> #r{fiel§d1=A, field2=B}."))
+	].
 
 open_test(S) ->
     {S1, Offset} = split(S),
     erlide_scanner:create(test),
     erlide_scanner:initial_scan(test, "", S1, "", false, off),
-    io:format("~p~n", [erlide_scanner:get_tokens(test)]),
-%%     dbg:start(),
-%%     dbg:tracer(),
-%%     dbg:p(self(), [c]),
-%%     dbg:tpl(erlide_open,[]),
     R = erlide_open:open(test, Offset, #open_context{imports=[]}),
-%%     dbg:stop_clear(),
     erlide_scanner:dispose(test),
     R.
 

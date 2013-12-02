@@ -1,6 +1,5 @@
 package org.erlide.dialyzer.builder;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
 public class ErlideDialyze {
@@ -74,29 +72,6 @@ public class ErlideDialyze {
         }
         return backend.call(UPDATE_TIMEOUT, ERLIDE_DIALYZE,
                 "update_plt_with_additional_paths", "sls", plt, ebinDirs);
-    }
-
-    public static List<String> getPltFiles(final IRpcSite backend,
-            final String pltFiles) throws RpcException {
-        final OtpErlangObject o = backend.call(ERLIDE_DIALYZE, "get_plt_files",
-                "s", pltFiles);
-        if (Util.isOk(o)) {
-            final OtpErlangTuple t = (OtpErlangTuple) o;
-            final OtpErlangObject e1 = t.elementAt(1);
-            if (e1 instanceof OtpErlangList) {
-                final OtpErlangList l = (OtpErlangList) e1;
-                final List<String> result = Lists.newArrayListWithCapacity(l
-                        .arity());
-                for (final OtpErlangObject i : l) {
-                    final String pltFilePath = Util.stringValue(i);
-                    if (new File(pltFilePath).exists()) {
-                        result.add(pltFilePath);
-                    }
-                }
-                return result;
-            }
-        }
-        return null;
     }
 
     public static void startCheckPlt(final IRpcSite backend, final String plt,

@@ -1,6 +1,6 @@
 package org.erlide.engine.services.search;
 
-import org.erlide.engine.util.ErlangFunction;
+import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 

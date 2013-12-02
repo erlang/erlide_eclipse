@@ -13,7 +13,6 @@ import org.erlide.engine.services.proclist.ProclistService;
 import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.ModelSearcherService;
 import org.erlide.engine.services.search.ModelUtilService;
-import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.SearchServerService;
 import org.erlide.runtime.api.IRpcSite;
 
@@ -29,8 +28,6 @@ public interface IErlangEngine {
     String getStateDir();
 
     // //
-
-    OpenService getOpenService();
 
     ContextAssistService getContextAssistService();
 

@@ -27,7 +27,7 @@ import org.erlide.engine.model.erlang.ISourceReference;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenResult;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.engine.services.search.OpenService;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.util.ErlLogger;
@@ -127,7 +127,7 @@ public class OpenAction extends SelectionDispatchAction {
                 project = editor.getProject();
                 openResult = ErlangEngine
                         .getInstance()
-                        .getOpenService()
+                        .getService(OpenService.class)
                         .open(scannerName,
                                 offset,
                                 ErlangEngine.getInstance()
@@ -141,8 +141,8 @@ public class OpenAction extends SelectionDispatchAction {
                 textEditor = (ITextEditor) activeEditor;
                 final String text = textEditor.getDocumentProvider()
                         .getDocument(textEditor.getEditorInput()).get();
-                openResult = ErlangEngine.getInstance().getOpenService()
-                        .openText(text, offset);
+                openResult = ErlangEngine.getInstance()
+                        .getService(OpenService.class).openText(text, offset);
                 final IFile file = (IFile) textEditor.getEditorInput()
                         .getAdapter(IFile.class);
                 if (file != null) {
@@ -153,10 +153,8 @@ public class OpenAction extends SelectionDispatchAction {
                 }
             }
             if (openResult != null) {
-                final IRpcSite backend = ErlangEngine.getInstance()
-                        .getBackend();
-                helper.openOpenResult(textEditor, module, backend, offset,
-                        project, openResult, element);
+                helper.openOpenResult(textEditor, module, offset, project,
+                        openResult, element);
             }
         } catch (final Exception e) {
             ErlLogger.error(e);

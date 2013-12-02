@@ -329,12 +329,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
     }
 
     protected boolean hasProjectSpecificOptions(final IProject project) {
-        try {
-            final DialyzerPreferences p = DialyzerPreferences.get(project);
-            return p.hasOptionsAtLowestScope();
-        } catch (final RpcException e) {
-        }
-        return false;
+        final DialyzerPreferences p = DialyzerPreferences.get(project);
+        return p.hasOptionsAtLowestScope();
     }
 
     private boolean isProjectPreferencePage() {
@@ -667,8 +663,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 final String alternatePltFileDirectory = DialyzerPreferences
                         .getAlternatePLTFileDirectoryFromPreferences();
                 checkIfPltFilesShouldBeCopied(alternatePltFileDirectory);
-                final IRpcSite backend = BackendCore
-                        .getBuildOrIdeBackend(fProject);
+                final IRpcSite backend = BackendCore.getBuildBackend(fProject);
                 for (final String pltPath : selectedPLTPaths) {
                     checkPlt(pltPath, alternatePltFileDirectory, monitor,
                             backend);

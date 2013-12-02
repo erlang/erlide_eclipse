@@ -22,7 +22,8 @@ public class ExtensionHelper {
     public static IExtension[] getExtensions(final String type) {
         IExtension[] extensions;
         final IExtensionRegistry registry = Platform.getExtensionRegistry();
-        if (registry != null) { // we may not be in eclipse env when testing
+        // we may not be in eclipse env when testing
+        if (registry != null) {
             try {
                 final IExtensionPoint extensionPoint = registry
                         .getExtensionPoint(type);

@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
@@ -126,7 +127,11 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public IBackend getBuildBackend(final IProject project) {
+    public IBackend getBuildBackend(@Nullable final IProject project) {
+        if (project == null) {
+            // TODO not sure if this is what we really want to do in this case
+            return getIdeBackend();
+        }
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
         if (erlProject == null) {
@@ -350,7 +355,7 @@ public final class BackendManager implements IBackendManager {
                 .getProject(projectName);
         final IBackend backend = getBuildBackend(project);
         if (backend == null) {
-            ErlLogger.debug("Could not find backend for project %S", project);
+            ErlLogger.warn("Could not find backend for project %S", project);
             return null;
         }
         return backend.getRpcSite();

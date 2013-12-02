@@ -14,6 +14,8 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer {
 
+    private static final String ERLIDE_KEY = "erlide";
+    private static final String DEFAULT_KEY = "default";
     private static String rootKey = "org.erlide.core" + "/runtimes";
 
     public static IEclipsePreferences getInstanceRootNode() {
@@ -27,8 +29,7 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
     private final IEclipsePreferences defaultRootNode;
     private final IEclipsePreferences instanceRootNode;
 
-    public RuntimeInfoPreferencesSerializer(
-            final IEclipsePreferences instanceRootNode,
+    public RuntimeInfoPreferencesSerializer(final IEclipsePreferences instanceRootNode,
             final IEclipsePreferences defaultRootNode) {
         this.instanceRootNode = instanceRootNode;
         this.defaultRootNode = defaultRootNode;
@@ -50,10 +51,10 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
                 RuntimeInfoLoader.store(rt, instanceRootNode);
             }
             if (data.defaultRuntimeName != null) {
-                instanceRootNode.put("default", data.defaultRuntimeName);
+                instanceRootNode.put(DEFAULT_KEY, data.defaultRuntimeName);
             }
             if (data.erlideRuntimeName != null) {
-                instanceRootNode.put("erlide", data.erlideRuntimeName);
+                instanceRootNode.put(ERLIDE_KEY, data.erlideRuntimeName);
             }
             instanceRootNode.flush();
         } catch (final Exception e) {
@@ -67,20 +68,20 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
         data = loadPrefs(data, defaultRootNode);
         data = loadPrefs(data, instanceRootNode);
 
-        return data;
+        String dflt = null;
+        String ide = null;
+        if (data.runtimes.size() > 0) {
+            dflt = data.defaultRuntimeName != null ? data.defaultRuntimeName
+                    : data.runtimes.iterator().next().getName();
+            ide = data.erlideRuntimeName != null ? data.erlideRuntimeName : dflt;
+        }
+        return new RuntimeInfoCatalogData(data.runtimes, dflt, ide);
     }
 
     private RuntimeInfoCatalogData loadPrefs(final RuntimeInfoCatalogData data,
             final IEclipsePreferences root) {
-        final String defrt = root.get("default", null);
-        String defaultRuntimeName = null;
-        if (defrt != null) {
-            defaultRuntimeName = defrt;
-        }
-
         String[] children;
-        final Collection<RuntimeInfo> runtimes = new ArrayList<RuntimeInfo>(
-                data.runtimes);
+        final Collection<RuntimeInfo> runtimes = new ArrayList<RuntimeInfo>(data.runtimes);
         try {
             children = root.childrenNames();
             for (final String name : children) {
@@ -91,9 +92,8 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
             ErlLogger.warn(e);
         }
 
-        if (data.defaultRuntimeName == null && data.runtimes.size() > 0) {
-            defaultRuntimeName = data.runtimes.iterator().next().getName();
-        }
-        return new RuntimeInfoCatalogData(runtimes, defaultRuntimeName, null);
+        final String defaultRuntimeName = root.get(DEFAULT_KEY, data.defaultRuntimeName);
+        final String ideRuntimeName = root.get(ERLIDE_KEY, data.erlideRuntimeName);
+        return new RuntimeInfoCatalogData(runtimes, defaultRuntimeName, ideRuntimeName);
     }
 }

@@ -1,7 +1,5 @@
 package org.erlide.runtime.api;
 
-import org.erlide.util.ErlLogger;
-
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -31,7 +29,6 @@ public final class InitialCall {
     }
 
     public InitialCall(final OtpErlangTuple t) {
-        ErlLogger.debug("%s", t);
         final OtpErlangAtom m = (OtpErlangAtom) t.elementAt(0);
         final OtpErlangAtom f = (OtpErlangAtom) t.elementAt(1);
         final OtpErlangList pars = (OtpErlangList) t.elementAt(2);

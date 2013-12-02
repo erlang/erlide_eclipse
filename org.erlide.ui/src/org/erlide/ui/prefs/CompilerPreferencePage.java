@@ -31,6 +31,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -39,6 +40,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -65,9 +68,9 @@ public class CompilerPreferencePage extends PropertyPage implements
     private Link fChangeWorkspaceSettings;
     protected ControlEnableState fBlockEnableState;
     private final List<Button> optionButtons;
-    private Text text;
-    private Text text_1;
-    private Text text_2;
+    private Text includeDirsText;
+    private Text parseTransformText;
+    private Text customOptionsText;
 
     public CompilerPreferencePage() {
         super();
@@ -78,7 +81,16 @@ public class CompilerPreferencePage extends PropertyPage implements
 
     @Override
     protected Control createContents(final Composite parent) {
-        prefsComposite = new Composite(parent, SWT.NONE);
+        final Composite composite = new Composite(parent, SWT.NONE);
+        composite.setLayout(new FillLayout(SWT.HORIZONTAL));
+        final TabFolder tabFolder = new TabFolder(composite, SWT.NONE);
+
+        // /////////////////////////////////////
+        final TabItem optionsTab = new TabItem(tabFolder, SWT.NONE);
+        optionsTab.setText("Options");
+
+        prefsComposite = new Composite(tabFolder, SWT.NONE);
+        optionsTab.setControl(prefsComposite);
         final GridLayout gridLayout_1 = new GridLayout();
         gridLayout_1.numColumns = 2;
         prefsComposite.setLayout(gridLayout_1);
@@ -102,14 +114,16 @@ public class CompilerPreferencePage extends PropertyPage implements
                 false, 1, 1));
         lblNewLabel.setText(CompilerOption.INCLUDE_DIRS.getDescription());
 
-        text = new Text(prefsComposite, SWT.BORDER);
-        text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-        text.setToolTipText(CompilerOption.INCLUDE_DIRS.getTooltip());
-        text.addModifyListener(new ModifyListener() {
+        includeDirsText = new Text(prefsComposite, SWT.BORDER);
+        includeDirsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+                false, 1, 1));
+        includeDirsText
+                .setToolTipText(CompilerOption.INCLUDE_DIRS.getTooltip());
+        includeDirsText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
                 prefs.setPathOption(CompilerOption.INCLUDE_DIRS,
-                        PathsOption.fromString(text.getText()));
+                        PathsOption.fromString(includeDirsText.getText()));
             }
         });
 
@@ -133,15 +147,16 @@ public class CompilerPreferencePage extends PropertyPage implements
                 false, 1, 1));
         lblNewLabel_1.setText(CompilerOption.PARSE_TRANSFORM.getDescription());
 
-        text_1 = new Text(prefsComposite, SWT.BORDER);
-        text_1.setToolTipText(CompilerOption.PARSE_TRANSFORM.getTooltip());
-        text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-                1));
-        text_1.addModifyListener(new ModifyListener() {
+        parseTransformText = new Text(prefsComposite, SWT.BORDER);
+        parseTransformText.setToolTipText(CompilerOption.PARSE_TRANSFORM
+                .getTooltip());
+        parseTransformText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+                true, false, 1, 1));
+        parseTransformText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
                 prefs.setSimpleOption(CompilerOption.PARSE_TRANSFORM,
-                        text_1.getText());
+                        parseTransformText.getText());
             }
         });
         new Label(prefsComposite, SWT.NONE);
@@ -150,15 +165,17 @@ public class CompilerPreferencePage extends PropertyPage implements
         final Label lblNewLabel_2 = new Label(prefsComposite, SWT.NONE);
         lblNewLabel_2.setText("Custom options:");
 
-        text_2 = new Text(prefsComposite, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+        customOptionsText = new Text(prefsComposite, SWT.BORDER | SWT.WRAP
+                | SWT.MULTI);
         final GridData gd_text_2 = new GridData(SWT.FILL, SWT.CENTER, true,
                 false, 1, 1);
         gd_text_2.heightHint = 60;
-        text_2.setLayoutData(gd_text_2);
-        text_2.addModifyListener(new ModifyListener() {
+        customOptionsText.setLayoutData(gd_text_2);
+        customOptionsText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
-                prefs.setSimpleOption(CompilerOption.CUSTOM, text_2.getText());
+                prefs.setSimpleOption(CompilerOption.CUSTOM,
+                        customOptionsText.getText());
             }
         });
 
@@ -410,16 +427,16 @@ public class CompilerPreferencePage extends PropertyPage implements
         final Iterable<String> paths = prefs
                 .getPathsOption(CompilerOption.INCLUDE_DIRS);
         if (paths != null) {
-            text.setText(PathsOption.toString(paths));
+            includeDirsText.setText(PathsOption.toString(paths));
         }
         final String parseTransform = prefs
                 .getSimpleOption(CompilerOption.PARSE_TRANSFORM);
         if (parseTransform != null) {
-            text_1.setText(parseTransform);
+            parseTransformText.setText(parseTransform);
         }
         final String custom = prefs.getSimpleOption(CompilerOption.CUSTOM);
         if (custom != null) {
-            text_2.setText(custom);
+            customOptionsText.setText(custom);
         }
     }
 

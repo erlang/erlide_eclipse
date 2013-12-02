@@ -27,9 +27,7 @@ import org.eclipse.compare.ISharedDocumentAdapter;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.ResourceNode;
-import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.compare.structuremergeviewer.DocumentRangeNode;
-import org.eclipse.compare.structuremergeviewer.IDiffContainer;
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.compare.structuremergeviewer.StructureCreator;
@@ -172,27 +170,6 @@ public class ErlStructureCreator extends StructureCreator {
     }
 
     /**
-     * @see IStructureCreator#canSave
-     */
-    public boolean canSave() {
-        return true;
-    }
-
-    /**
-     * @see IStructureCreator#canRewriteTree
-     */
-    public boolean canRewriteTree() {
-        return false;
-    }
-
-    /**
-     * @see IStructureCreator#rewriteTree
-     */
-    public void rewriteTree(final Differencer differencer,
-            final IDiffContainer root) {
-    }
-
-    /**
      * @see IStructureCreator#save
      */
     @Override
@@ -258,9 +235,9 @@ public class ErlStructureCreator extends StructureCreator {
             final ISharedDocumentAdapter sharedDocumentAdapter,
             final IProgressMonitor monitor) throws CoreException {
         IErlModule module = null;
+        final IErlModel model = ErlangEngine.getInstance().getModel();
         String s = "";
         IDocument document = document0;
-        final IErlModel model = ErlangEngine.getInstance().getModel();
         if (element instanceof ResourceNode) {
             final ResourceNode rn = (ResourceNode) element;
             final IResource r = rn.getResource();

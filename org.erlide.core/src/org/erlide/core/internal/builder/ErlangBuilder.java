@@ -16,22 +16,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.builder.ErlideBuilder;
 
-public class ErlangBuilder extends IncrementalProjectBuilder {
-    @SuppressWarnings("rawtypes")
-    @Override
-    protected IProject[] build(final int kind, final Map args,
-            final IProgressMonitor monitor) throws CoreException {
-        final IProject project = getProject();
-        final ErlideBuilder builder = new ErlideBuilder(project);
-        return builder.build(kind, args, monitor, getDelta(project));
-    }
+public abstract class ErlangBuilder extends IncrementalProjectBuilder {
 
+    // make this method public
     @Override
-    protected void clean(final IProgressMonitor monitor) throws CoreException {
-        final IProject project = getProject();
-        final ErlideBuilder builder = new ErlideBuilder(project);
-        builder.clean(monitor);
-    }
+    public abstract IProject[] build(int kind, Map<String, String> args,
+            IProgressMonitor monitor) throws CoreException;
 }
