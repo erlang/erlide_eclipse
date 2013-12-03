@@ -31,4 +31,6 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
                 "org.erlide.model.api.builderFactory", IErlangBuilderFactory.class);
     }
 
+    public abstract BuildProperties getProperties();
+
 }

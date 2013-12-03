@@ -14,6 +14,7 @@ import org.erlide.core.internal.builder.ExternalBuilder;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.builder.BuildProperties;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlFolder;
 
@@ -88,5 +89,9 @@ public class RebarBuilder extends ExternalBuilder {
   public String getId() {
     String _plus = (ErlangCore.PLUGIN_ID + ".rebar.builder");
     return _plus;
+  }
+  
+  public BuildProperties getProperties() {
+    return null;
   }
 }

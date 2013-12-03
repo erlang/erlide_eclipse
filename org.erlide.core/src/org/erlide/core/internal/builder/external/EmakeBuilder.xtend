@@ -52,5 +52,9 @@ class EmakeBuilder extends ExternalBuilder {
     override getId() {
         ErlangCore.PLUGIN_ID + '.emake.builder'
     }
-   
+
+    override getProperties() {
+        null
+    }
+
 }
