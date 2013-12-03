@@ -1,5 +1,7 @@
 package org.erlide.engine.model.erlang;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -403,6 +405,14 @@ public class IErlProjectTests extends ErlModelTestBase {
             description.setReferencedProjects(new IProject[0]);
             aProject.setDescription(description, null);
         }
+    }
+
+    @Test
+    public void rawPropsWithoutVariablesShouldBeSameAsRegularProps() {
+        final IErlProject aProject = projects[0];
+        final ErlangProjectProperties p = aProject.getProperties();
+        final ErlangProjectProperties rp = aProject.getRawProperties();
+        assertThat(rp, is(ErlangProjectPropertiesMatcher.sameAs(p)));
     }
 
     public void getProjectReferences_closedProject() throws Exception {
