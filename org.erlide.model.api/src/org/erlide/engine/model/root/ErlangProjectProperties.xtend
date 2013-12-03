@@ -10,6 +10,8 @@ import org.erlide.runtime.api.RuntimeCore
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
 import java.nio.charset.Charset
 import com.google.common.base.Objects
+import org.eclipse.core.resources.ResourcesPlugin
+import java.util.List
 
 class ErlangProjectProperties {
     @Property IPath outputDir
@@ -76,13 +78,16 @@ class ErlangProjectProperties {
         _sourceDirs = Lists.newArrayList(sourceDirs2)
     }
 
-    def void copyFrom(ErlangProjectProperties erlangProjectProperties) {
-        val bprefs = erlangProjectProperties
-        _includeDirs = bprefs._includeDirs
-        _sourceDirs = bprefs._sourceDirs
-        _outputDir = bprefs._outputDir
-        _requiredRuntimeVersion = bprefs._requiredRuntimeVersion
-        // TODO all values?
+    def void copyFrom(ErlangProjectProperties props) {
+        _includeDirs = props._includeDirs
+        _sourceDirs = props._sourceDirs
+        _outputDir = props._outputDir
+        _requiredRuntimeVersion = props._requiredRuntimeVersion
+        _encoding = props._encoding
+        _externalIncludesFile = props._externalIncludesFile
+        _externalModulesFile = props._externalModulesFile
+        _nukeOutputOnClean = props._nukeOutputOnClean
+        _builderData = props._builderData
     }
 
     def getRuntimeInfo() {
@@ -167,6 +172,40 @@ class ErlangProjectProperties {
             add("encoding", _encoding)
         ]
         helper.toString
+    }
+
+    def ErlangProjectProperties resolve() {
+        val result = new ErlangProjectProperties()
+        result.copyFrom(this)
+        val dflt = ErlangProjectProperties.DEFAULT
+        if (result.getOutputDir() == null) {
+            result.setOutputDir(dflt.getOutputDir())
+        }
+        result.setOutputDir(resolvePath(result.getOutputDir()))
+        if (result.getSourceDirs() == null) {
+            result.setSourceDirs(dflt.getSourceDirs())
+        }
+        result.setSourceDirs(resolvePaths(result.getSourceDirs()))
+        if (result.getIncludeDirs() == null) {
+            result.setIncludeDirs(dflt.getIncludeDirs())
+        }
+        result.setIncludeDirs(resolvePaths(result.getIncludeDirs()))
+        return result;
+    }
+
+    def private Collection<IPath> resolvePaths(Collection<IPath> paths) {
+        val pathVariableManager = ResourcesPlugin.getWorkspace().getPathVariableManager()
+        val List<IPath> result = Lists.newArrayListWithCapacity(paths.size())
+        for (IPath path : paths) {
+            val resolvedPath = pathVariableManager.resolvePath(path)
+            result.add(resolvedPath)
+        }
+        return Collections.unmodifiableCollection(result)
+    }
+
+    def private IPath resolvePath(IPath path) {
+        val pathVariableManager = ResourcesPlugin.getWorkspace().getPathVariableManager()
+        return pathVariableManager.resolvePath(path)
     }
 
 }

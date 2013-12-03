@@ -23,7 +23,6 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -534,28 +533,7 @@ public class ErlProject extends Openable implements IErlProject,
 
     @Override
     public ErlangProjectProperties getProperties() {
-        return resolve(getRawProperties());
-    }
-
-    private ErlangProjectProperties resolve(
-            final ErlangProjectProperties rawProperties) {
-        final ErlangProjectProperties result = new ErlangProjectProperties();
-        result.copyFrom(rawProperties);
-        final ErlangProjectProperties dflt = ErlangProjectProperties.DEFAULT;
-        if (result.getOutputDir() == null) {
-            result.setOutputDir(dflt.getOutputDir());
-        }
-        result.setOutputDir(resolvePath(result.getOutputDir()));
-        if (result.getSourceDirs() == null) {
-            result.setSourceDirs(dflt.getSourceDirs());
-        }
-        result.setSourceDirs(resolvePaths(result.getSourceDirs()));
-        if (result.getIncludeDirs() == null) {
-            result.setIncludeDirs(dflt.getIncludeDirs());
-        }
-        result.setIncludeDirs(resolvePaths(result.getIncludeDirs()));
-        // TODO all properties?
-        return result;
+        return getRawProperties().resolve();
     }
 
     public IEclipsePreferences getCorePropertiesNode() {
@@ -670,26 +648,6 @@ public class ErlProject extends Openable implements IErlProject,
     @Override
     public Collection<IPath> getIncludeDirs() {
         return getProperties().getIncludeDirs();
-    }
-
-    private Collection<IPath> resolvePaths(final Collection<IPath> paths) {
-        final IPathVariableManager pathVariableManager = ResourcesPlugin
-                .getWorkspace().getPathVariableManager();
-        final List<IPath> result = Lists.newArrayListWithCapacity(paths.size());
-        for (final IPath path : paths) {
-            @SuppressWarnings("deprecation")
-            final IPath resolvedPath = pathVariableManager.resolvePath(path);
-            result.add(resolvedPath);
-        }
-        return Collections.unmodifiableCollection(result);
-    }
-
-    private IPath resolvePath(final IPath path) {
-        final IPathVariableManager pathVariableManager = ResourcesPlugin
-                .getWorkspace().getPathVariableManager();
-        @SuppressWarnings("deprecation")
-        final IPath resolvedPath = pathVariableManager.resolvePath(path);
-        return resolvedPath;
     }
 
     @Override

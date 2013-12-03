@@ -8,6 +8,10 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
@@ -178,12 +182,16 @@ public class ErlangProjectProperties {
     this._sourceDirs = _newArrayList;
   }
   
-  public void copyFrom(final ErlangProjectProperties erlangProjectProperties) {
-    final ErlangProjectProperties bprefs = erlangProjectProperties;
-    this._includeDirs = bprefs._includeDirs;
-    this._sourceDirs = bprefs._sourceDirs;
-    this._outputDir = bprefs._outputDir;
-    this._requiredRuntimeVersion = bprefs._requiredRuntimeVersion;
+  public void copyFrom(final ErlangProjectProperties props) {
+    this._includeDirs = props._includeDirs;
+    this._sourceDirs = props._sourceDirs;
+    this._outputDir = props._outputDir;
+    this._requiredRuntimeVersion = props._requiredRuntimeVersion;
+    this._encoding = props._encoding;
+    this._externalIncludesFile = props._externalIncludesFile;
+    this._externalModulesFile = props._externalModulesFile;
+    this._nukeOutputOnClean = props._nukeOutputOnClean;
+    this._builderData = props._builderData;
   }
   
   public RuntimeInfo getRuntimeInfo() {
@@ -362,5 +370,60 @@ public class ErlangProjectProperties {
       _xblockexpression = (_string);
     }
     return _xblockexpression;
+  }
+  
+  public ErlangProjectProperties resolve() {
+    ErlangProjectProperties _erlangProjectProperties = new ErlangProjectProperties();
+    final ErlangProjectProperties result = _erlangProjectProperties;
+    result.copyFrom(this);
+    final ErlangProjectProperties dflt = ErlangProjectProperties.DEFAULT;
+    IPath _outputDir = result.getOutputDir();
+    boolean _equals = Objects.equal(_outputDir, null);
+    if (_equals) {
+      IPath _outputDir_1 = dflt.getOutputDir();
+      result.setOutputDir(_outputDir_1);
+    }
+    IPath _outputDir_2 = result.getOutputDir();
+    IPath _resolvePath = this.resolvePath(_outputDir_2);
+    result.setOutputDir(_resolvePath);
+    Collection<IPath> _sourceDirs = result.getSourceDirs();
+    boolean _equals_1 = Objects.equal(_sourceDirs, null);
+    if (_equals_1) {
+      Collection<IPath> _sourceDirs_1 = dflt.getSourceDirs();
+      result.setSourceDirs(_sourceDirs_1);
+    }
+    Collection<IPath> _sourceDirs_2 = result.getSourceDirs();
+    Collection<IPath> _resolvePaths = this.resolvePaths(_sourceDirs_2);
+    result.setSourceDirs(_resolvePaths);
+    Collection<IPath> _includeDirs = result.getIncludeDirs();
+    boolean _equals_2 = Objects.equal(_includeDirs, null);
+    if (_equals_2) {
+      Collection<IPath> _includeDirs_1 = dflt.getIncludeDirs();
+      result.setIncludeDirs(_includeDirs_1);
+    }
+    Collection<IPath> _includeDirs_2 = result.getIncludeDirs();
+    Collection<IPath> _resolvePaths_1 = this.resolvePaths(_includeDirs_2);
+    result.setIncludeDirs(_resolvePaths_1);
+    return result;
+  }
+  
+  private Collection<IPath> resolvePaths(final Collection<IPath> paths) {
+    IWorkspace _workspace = ResourcesPlugin.getWorkspace();
+    final IPathVariableManager pathVariableManager = _workspace.getPathVariableManager();
+    int _size = paths.size();
+    final List<IPath> result = Lists.<IPath>newArrayListWithCapacity(_size);
+    for (final IPath path : paths) {
+      {
+        final IPath resolvedPath = pathVariableManager.resolvePath(path);
+        result.add(resolvedPath);
+      }
+    }
+    return Collections.<IPath>unmodifiableCollection(result);
+  }
+  
+  private IPath resolvePath(final IPath path) {
+    IWorkspace _workspace = ResourcesPlugin.getWorkspace();
+    final IPathVariableManager pathVariableManager = _workspace.getPathVariableManager();
+    return pathVariableManager.resolvePath(path);
   }
 }
