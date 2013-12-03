@@ -20,8 +20,8 @@ public enum BuilderTool {
     }
 
     /**
-     * The marker is a top-level file in the project that tells us to use this
-     * tool.
+     * The marker is the name of a top-level file in the project that tells us
+     * to use this tool (used mostly for auto-detection).
      */
     public String getToolMarker() {
         return toolMarker;

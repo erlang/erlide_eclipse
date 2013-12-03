@@ -277,7 +277,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
       final BuilderConfig config = BuilderConfig.valueOf(_builderConfig);
       IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
       final ProjectConfigurationPersister persister = _factory.getConfigurationPersister(config);
-      final ErlangProjectProperties props = persister.getRawConfiguration(null);
+      final ErlangProjectProperties props = persister.getConfiguration(null);
     }
   }
 }

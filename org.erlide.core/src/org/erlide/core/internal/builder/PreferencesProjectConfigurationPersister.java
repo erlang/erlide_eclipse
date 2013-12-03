@@ -113,10 +113,4 @@ public class PreferencesProjectConfigurationPersister extends
         return null;
     }
 
-    @Override
-    public ErlangProjectProperties getRawConfiguration(final IErlProject erlProject) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

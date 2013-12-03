@@ -23,7 +23,6 @@ import com.google.common.io.Files;
 public class FileProjectConfigurationPersister extends ProjectConfigurationPersister {
 
     private final String fileName;
-    private final ProjectConfigurationPersister extraPersister;
     private final ProjectConfigurator configurator;
 
     public FileProjectConfigurationPersister(
@@ -32,13 +31,17 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
         Preconditions.checkNotNull(configurator);
         this.configurator = configurator;
         this.fileName = fileName;
-        extraPersister = new PreferencesProjectConfigurationPersister();
     }
 
     @Override
     public ErlangProjectProperties getConfiguration(final IErlProject project) {
-        return mergeWithDefaultConfig(getRawConfiguration(project),
-                extraPersister.getConfiguration(project));
+        if (fileName == null) {
+            return null;
+        }
+        final IResource conf = getProject().findMember(fileName);
+        final File confFile = new File(conf.getLocation().toString());
+
+        return getRawConfig(confFile);
     }
 
     private ErlangProjectProperties getRawConfig(final File confFile) {
@@ -64,17 +67,6 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
         return result;
     }
 
-    private ErlangProjectProperties mergeWithDefaultConfig(
-            final ErlangProjectProperties source, final ErlangProjectProperties deflt) {
-        if (source.getExternalModulesFile() == null) {
-            source.setExternalModulesFile(deflt.getExternalModulesFile());
-        }
-        if (source.getExternalIncludesFile() == null) {
-            source.setExternalIncludesFile(deflt.getExternalIncludesFile());
-        }
-        return source;
-    }
-
     @Override
     public void setConfiguration(final IErlProject project,
             final ErlangProjectProperties info) {
@@ -98,17 +90,6 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
     @Override
     public ProjectConfigurator getConfigurator() {
         return configurator;
-    }
-
-    @Override
-    public ErlangProjectProperties getRawConfiguration(final IErlProject erlProject) {
-        if (fileName == null) {
-            return null;
-        }
-        final IResource conf = getProject().findMember(fileName);
-        final File confFile = new File(conf.getLocation().toString());
-
-        return getRawConfig(confFile);
     }
 
 }
