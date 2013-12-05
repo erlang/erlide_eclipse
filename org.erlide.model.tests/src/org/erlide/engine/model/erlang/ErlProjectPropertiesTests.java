@@ -30,7 +30,7 @@ public class ErlProjectPropertiesTests {
 
         final ErlangProjectProperties p2 = p1.resolve();
         assertThat(p2, is(ErlangProjectPropertiesMatcher.sameAs(p1)));
-        assertThat(p2.getSourceDirs().iterator().next(), is(((IPath) new Path("abc"))));
+        assertThat(p2.getSourceDirs().iterator().next(), is((IPath) new Path("abc")));
     }
 
     @SuppressWarnings("deprecation")
@@ -47,7 +47,7 @@ public class ErlProjectPropertiesTests {
 
         final ErlangProjectProperties p2 = p1.resolve();
         assertThat(p2.getSourceDirs().iterator().next(),
-                is(((IPath) new Path("/home/abc"))));
+                is((IPath) new Path("/home/abc")));
     }
 
     @SuppressWarnings("deprecation")
@@ -63,8 +63,7 @@ public class ErlProjectPropertiesTests {
         p1.setSourceDirs(Lists.newArrayList(p));
 
         final ErlangProjectProperties p2 = p1.resolve();
-        assertThat(p2.getSourceDirs().iterator().next(),
-                is(((IPath) new Path("ZZZ/abc"))));
+        assertThat(p2.getSourceDirs().iterator().next(), is((IPath) new Path("ZZZ/abc")));
     }
 
 }
