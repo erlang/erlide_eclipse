@@ -17,15 +17,15 @@ public class ServiceLocator {
      */
     public static <T> T get(final Class<T> interfaceClass, final Object key) {
         synchronized (interfaceClass) {
-            Object service = services.get(new Pair<Class<?>, Object>(
-                    interfaceClass, key));
+            Object service = services
+                    .get(new Pair<Class<?>, Object>(interfaceClass, key));
             if (service == null) {
-                final Provider<?> provider = providers
-                        .get(new Pair<Class<?>, Object>(interfaceClass, key));
+                final Provider<?> provider = providers.get(new Pair<Class<?>, Object>(
+                        interfaceClass, key));
                 if (provider == null) {
                     try {
-                        final Class<?> implementingClass = interfaceClass
-                                .getAnnotation(Implementor.class).value();
+                        final Class<?> implementingClass = interfaceClass.getAnnotation(
+                                Implementor.class).value();
                         service = implementingClass.newInstance();
                     } catch (final Exception e) {
                         throw new RuntimeException(e);
@@ -33,8 +33,7 @@ public class ServiceLocator {
                 } else {
                     service = provider.get();
                 }
-                services.put(new Pair<Class<?>, Object>(interfaceClass, key),
-                        service);
+                services.put(new Pair<Class<?>, Object>(interfaceClass, key), service);
             }
             return interfaceClass.cast(service);
         }
@@ -44,8 +43,8 @@ public class ServiceLocator {
     public static <T> Provider<T> getProvider(final Class<T> interfaceClass,
             final Object key) {
         synchronized (interfaceClass) {
-            final Provider<?> provider = providers
-                    .get(new Pair<Class<?>, Object>(interfaceClass, key));
+            final Provider<?> provider = providers.get(new Pair<Class<?>, Object>(
+                    interfaceClass, key));
             return (Provider<T>) provider;
         }
     }
@@ -67,16 +66,14 @@ public class ServiceLocator {
     public static <T, TI extends T> void set(final Class<T> interfaceClass,
             final Object key, final TI implementor) {
         synchronized (interfaceClass) {
-            services.put(new Pair<Class<?>, Object>(interfaceClass, key),
-                    implementor);
+            services.put(new Pair<Class<?>, Object>(interfaceClass, key), implementor);
         }
     }
 
-    public static <T> void setProvider(final Class<T> interfaceClass,
-            final Object key, final Provider<T> provider) {
+    public static <T> void setProvider(final Class<T> interfaceClass, final Object key,
+            final Provider<T> provider) {
         synchronized (interfaceClass) {
-            providers.put(new Pair<Class<?>, Object>(interfaceClass, key),
-                    provider);
+            providers.put(new Pair<Class<?>, Object>(interfaceClass, key), provider);
         }
     }
 

@@ -66,8 +66,7 @@ public class NewErlangScratchPadWizard extends Wizard implements INewWizard {
             return false;
         } catch (final InvocationTargetException e) {
             final Throwable realException = e.getTargetException();
-            MessageDialog.openError(getShell(), "Error",
-                    realException.getMessage());
+            MessageDialog.openError(getShell(), "Error", realException.getMessage());
             return false;
         }
         return true;
@@ -88,8 +87,7 @@ public class NewErlangScratchPadWizard extends Wizard implements INewWizard {
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         final IResource resource = root.findMember(containerFullPath);
         if (!resource.exists() || !(resource instanceof IContainer)) {
-            throwCoreException("Container \"" + containerFullPath
-                    + "\" does not exist.");
+            throwCoreException("Container \"" + containerFullPath + "\" does not exist.");
         }
         final IContainer container = (IContainer) resource;
         IPath path = new Path(fileName);
@@ -138,14 +136,13 @@ public class NewErlangScratchPadWizard extends Wizard implements INewWizard {
     }
 
     private void throwCoreException(final String message) throws CoreException {
-        final IStatus status = new Status(IStatus.ERROR, "Erlang_Wizard",
-                IStatus.OK, message, null);
+        final IStatus status = new Status(IStatus.ERROR, "Erlang_Wizard", IStatus.OK,
+                message, null);
         throw new CoreException(status);
     }
 
     @Override
-    public void init(final IWorkbench workbench,
-            final IStructuredSelection selection) {
+    public void init(final IWorkbench workbench, final IStructuredSelection selection) {
         fSelection = selection;
         setNeedsProgressMonitor(true);
     }

@@ -29,8 +29,8 @@ import java.util.NoSuchElementException;
  * <p>
  * The arity of the list is the number of elements it contains.
  */
-public class OtpErlangList extends OtpErlangObject implements
-        Iterable<OtpErlangObject>, Serializable, Cloneable {
+public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlangObject>,
+        Serializable, Cloneable {
     // don't change this!
     static final long serialVersionUID = 5999112769036676548L;
 
@@ -95,8 +95,8 @@ public class OtpErlangList extends OtpErlangObject implements
      * @param lastTail
      * @throws OtpErlangException
      */
-    public OtpErlangList(final OtpErlangObject[] elems,
-            final OtpErlangObject lastTail) throws OtpErlangException {
+    public OtpErlangList(final OtpErlangObject[] elems, final OtpErlangObject lastTail)
+            throws OtpErlangException {
         this(elems, 0, elems.length);
         if (elems.length == 0 && lastTail != null) {
             throw new OtpErlangException("Bad list, empty head, non-empty tail");
@@ -114,8 +114,7 @@ public class OtpErlangList extends OtpErlangObject implements
      * @param count
      *            the number of terms to insert.
      */
-    public OtpErlangList(final OtpErlangObject[] elems, final int start,
-            final int count) {
+    public OtpErlangList(final OtpErlangObject[] elems, final int start, final int count) {
         if (elems != null && count > 0) {
             this.elems = new OtpErlangObject[count];
             System.arraycopy(elems, start, this.elems, 0, count);
@@ -135,8 +134,7 @@ public class OtpErlangList extends OtpErlangObject implements
      *                if the buffer does not contain a valid external
      *                representation of an Erlang list.
      */
-    public OtpErlangList(final OtpInputStream buf)
-            throws OtpErlangDecodeException {
+    public OtpErlangList(final OtpInputStream buf) throws OtpErlangDecodeException {
         final int arity = buf.read_list_head();
         if (arity > 0) {
             elems = new OtpErlangObject[arity];
@@ -324,8 +322,8 @@ public class OtpErlangList extends OtpErlangObject implements
     @Override
     public Object clone() {
         try {
-            return new OtpErlangList(elements(),
-                    elements().length != 0 ? getLastTail() : null);
+            return new OtpErlangList(elements(), elements().length != 0 ? getLastTail()
+                    : null);
         } catch (final OtpErlangException e) {
             // can never happen
             throw new AssertionError();
@@ -502,8 +500,7 @@ public class OtpErlangList extends OtpErlangObject implements
 
         @Override
         public void remove() {
-            throw new UnsupportedOperationException(
-                    "OtpErlangList cannot be modified!");
+            throw new UnsupportedOperationException("OtpErlangList cannot be modified!");
         }
     }
 }

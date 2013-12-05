@@ -39,9 +39,8 @@ public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
     boolean onlyInFile = true;
 
     @Override
-    protected IResultParser callRefactoring()
-            throws WranglerRpcParsingException, CoreException, IOException,
-            WranglerWarningException {
+    protected IResultParser callRefactoring() throws WranglerRpcParsingException,
+            CoreException, IOException, WranglerWarningException {
 
         final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
                 .getWranglerSelection();
@@ -54,12 +53,11 @@ public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
         } else {
             functionName = "simi_expr_search_in_dirs_eclipse";
         }
-        result = backend.callWithoutParser(
-                WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName,
-                "sxxxxi", sel.getFilePath(), sel.getSelectionRange()
+        result = backend.callWithoutParser(WranglerRefactoringBackend.UNLIMITED_TIMEOUT,
+                functionName, "sxxxxi", sel.getFilePath(), sel.getSelectionRange()
                         .getStartPos(), sel.getSelectionRange().getEndPos(),
-                new OtpErlangFloat(simScore), sel.getSearchPath(),
-                GlobalParameters.getTabWidth());
+                new OtpErlangFloat(simScore), sel.getSearchPath(), GlobalParameters
+                        .getTabWidth());
 
         if (result.isOk()) {
             return new SimilarExpressionSearchParser(result.getValue());
@@ -69,11 +67,10 @@ public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
 
     @Override
     protected boolean getUserInput() {
-        final Shell shell = PlatformUI.getWorkbench().getDisplay()
-                .getActiveShell();
+        final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
 
-        final SimilarSearchInputDialog inputd = new SimilarSearchInputDialog(
-                shell, "Search for similar expressions...");
+        final SimilarSearchInputDialog inputd = new SimilarSearchInputDialog(shell,
+                "Search for similar expressions...");
         inputd.open();
         simScore = (float) inputd.getSimScore();
         onlyInFile = inputd.onlyinFile();

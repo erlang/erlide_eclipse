@@ -98,13 +98,11 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         final GridLayout topLayout = new GridLayout();
         comp.setLayout(topLayout);
 
-        distributedDebugCheck = createCheckButton(comp,
-                "Debug all connected nodes");
+        distributedDebugCheck = createCheckButton(comp, "Debug all connected nodes");
 
         final Group attachGroup = SWTUtil.createGroup(comp, "Auto Attach", 1,
                 GridData.FILL_BOTH);
-        attachGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
-                false));
+        attachGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
         attachOnFirstCallCheck = createCheckButton(attachGroup, "First &call");
         attachOnBreakpointCheck = createCheckButton(attachGroup, "&Breakpoint");
         attachOnExitCheck = createCheckButton(attachGroup, "E&xit");
@@ -115,8 +113,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         attachOnExitCheck.addSelectionListener(fBasicSelectionListener);
 
         final Group interpretedModulesGroup = new Group(comp, SWT.NONE);
-        final GridData gd_interpretedModulesGroup = new GridData(SWT.FILL,
-                SWT.CENTER, false, false, 2, 1);
+        final GridData gd_interpretedModulesGroup = new GridData(SWT.FILL, SWT.CENTER,
+                false, false, 2, 1);
         gd_interpretedModulesGroup.widthHint = 387;
         interpretedModulesGroup.setLayoutData(gd_interpretedModulesGroup);
         interpretedModulesGroup.setText("Interpreted modules");
@@ -128,8 +126,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         // anyModuleHavingLabel
         // .setText("Any module having breakpoints enabled will be dynamically added to the list.\n\nThis widget is disabled for now, it takes 100%CPU for large projects. If you need to use \"attach on first call\" or \"attach on exit\", please mark the modules by setting a dummy breakpoint in them. Sorry for the inconvenience!");
 
-        listViewer = new ListViewer(interpretedModulesGroup, SWT.BORDER
-                | SWT.MULTI);
+        listViewer = new ListViewer(interpretedModulesGroup, SWT.BORDER | SWT.MULTI);
         listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             @Override
@@ -155,8 +152,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         contentProvider = new InterpretedModuleListContentProvider();
         listViewer.setContentProvider(contentProvider);
         final Control control = listViewer.getControl();
-        final GridData gd_list = new GridData(SWT.FILL, SWT.FILL, true, true,
-                1, 3);
+        final GridData gd_list = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3);
         gd_list.minimumWidth = 250;
         gd_list.minimumHeight = 120;
         gd_list.widthHint = 256;
@@ -189,8 +185,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         });
     }
 
-    public static List<IErlModule> getModulesFromAddModulesDialog(
-            final Shell shell) {
+    public static List<IErlModule> getModulesFromAddModulesDialog(final Shell shell) {
         final List<IErlModule> result = Lists.newArrayList();
         final AddInterpretedModulesSelectionDialog dialog = new AddInterpretedModulesSelectionDialog(
                 shell);
@@ -248,14 +243,13 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             listViewer.setInput(config);
         }
 
-        final List<String> interpret = BackendData
-                .addBreakpointProjectsAndModules(null, new ArrayList<String>());
+        final List<String> interpret = BackendData.addBreakpointProjectsAndModules(null,
+                new ArrayList<String>());
         contentProvider.addModules(interpret);
 
         EnumSet<ErlDebugFlags> debugFlags;
         try {
-            final int attribute = config.getAttribute(
-                    ErlRuntimeAttributes.DEBUG_FLAGS,
+            final int attribute = config.getAttribute(ErlRuntimeAttributes.DEBUG_FLAGS,
                     ErlDebugFlags.getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS));
             debugFlags = ErlDebugFlags.makeSet(attribute);
         } catch (final CoreException e) {
@@ -271,8 +265,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         final List<String> r = new ArrayList<String>();
         for (final Object o : contentProvider.getElements(null)) {
             final IErlModule module = (IErlModule) o;
-            r.add(ErlangEngine.getInstance().getModelUtilService()
-                    .getProject(module).getName()
+            r.add(ErlangEngine.getInstance().getModelUtilService().getProject(module)
+                    .getName()
                     + ":" + module.getName());
         }
         config.setAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, r);
@@ -303,8 +297,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                 .contains(ErlDebugFlags.ATTACH_ON_FIRST_CALL));
         attachOnBreakpointCheck.setSelection(debugFlags
                 .contains(ErlDebugFlags.ATTACH_ON_BREAKPOINT));
-        attachOnExitCheck.setSelection(debugFlags
-                .contains(ErlDebugFlags.ATTACH_ON_EXIT));
+        attachOnExitCheck.setSelection(debugFlags.contains(ErlDebugFlags.ATTACH_ON_EXIT));
         distributedDebugCheck.setSelection(debugFlags
                 .contains(ErlDebugFlags.DISTRIBUTED_DEBUG));
     }
@@ -315,8 +308,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
      * @return flags as int
      */
     private EnumSet<ErlDebugFlags> getFlagCheckboxes() {
-        final EnumSet<ErlDebugFlags> result = EnumSet
-                .noneOf(ErlDebugFlags.class);
+        final EnumSet<ErlDebugFlags> result = EnumSet.noneOf(ErlDebugFlags.class);
         if (attachOnFirstCallCheck.getSelection()) {
             result.add(ErlDebugFlags.ATTACH_ON_FIRST_CALL);
         }

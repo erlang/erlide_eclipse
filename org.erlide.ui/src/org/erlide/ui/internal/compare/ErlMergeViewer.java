@@ -56,8 +56,7 @@ public class ErlMergeViewer extends TextMergeViewer {
                     handlePropertyChange(event);
                 }
             };
-            fPreferenceStore
-                    .addPropertyChangeListener(fPreferenceChangeListener);
+            fPreferenceStore.addPropertyChangeListener(fPreferenceChangeListener);
 
             fUseSystemColors = fPreferenceStore
                     .getBoolean(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT);
@@ -75,8 +74,7 @@ public class ErlMergeViewer extends TextMergeViewer {
     @Override
     protected void handleDispose(final DisposeEvent event) {
         if (fPreferenceChangeListener != null) {
-            fPreferenceStore
-                    .removePropertyChangeListener(fPreferenceChangeListener);
+            fPreferenceStore.removePropertyChangeListener(fPreferenceChangeListener);
             fPreferenceChangeListener = null;
         }
         super.handleDispose(event);
@@ -130,8 +128,7 @@ public class ErlMergeViewer extends TextMergeViewer {
      * store. Returns <code>null</code> if there is no such information
      * available.
      */
-    private static RGB createColor(final IPreferenceStore store,
-            final String key) {
+    private static RGB createColor(final IPreferenceStore store, final String key) {
         if (!store.contains(key)) {
             return null;
         }
@@ -143,8 +140,8 @@ public class ErlMergeViewer extends TextMergeViewer {
 
     private ErlangSourceViewerConfiguration getSourceViewerConfiguration() {
         if (fSourceViewerConfiguration == null) {
-            fSourceViewerConfiguration = new EditorConfiguration(
-                    fPreferenceStore, null, new ColorManager());
+            fSourceViewerConfiguration = new EditorConfiguration(fPreferenceStore, null,
+                    new ColorManager());
         }
         return fSourceViewerConfiguration;
     }
@@ -157,8 +154,7 @@ public class ErlMergeViewer extends TextMergeViewer {
     @Override
     protected void configureTextViewer(final TextViewer textViewer) {
         if (textViewer instanceof SourceViewer) {
-            ((SourceViewer) textViewer)
-                    .configure(getSourceViewerConfiguration());
+            ((SourceViewer) textViewer).configure(getSourceViewerConfiguration());
         }
     }
 

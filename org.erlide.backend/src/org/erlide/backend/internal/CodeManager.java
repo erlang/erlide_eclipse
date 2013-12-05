@@ -83,8 +83,7 @@ public class CodeManager {
      * @return boolean
      */
     private boolean loadBeam(final String moduleName, final URL beamPath) {
-        final OtpErlangBinary bin = BeamUtil
-                .getBeamBinary(moduleName, beamPath);
+        final OtpErlangBinary bin = BeamUtil.getBeamBinary(moduleName, beamPath);
         if (bin == null) {
             return false;
         }
@@ -117,16 +116,13 @@ public class CodeManager {
                 }
                 while (e.hasMoreElements()) {
                     final String s = (String) e.nextElement();
-                    final String beamModuleName = BackendUtils
-                            .getBeamModuleName(s);
+                    final String beamModuleName = BackendUtils.getBeamModuleName(s);
                     if (beamModuleName != null) {
                         // ErlLogger.debug(" " + beamModuleName);
                         try {
-                            final boolean ok = loadBeam(beamModuleName,
-                                    b.getEntry(s));
+                            final boolean ok = loadBeam(beamModuleName, b.getEntry(s));
                             if (!ok) {
-                                ErlLogger.error("Could not load %s",
-                                        beamModuleName);
+                                ErlLogger.error("Could not load %s", beamModuleName);
                             }
                         } catch (final Exception ex) {
                             ErlLogger.warn(ex);
@@ -170,37 +166,33 @@ public class CodeManager {
     }
 
     private void registerBundle(final ICodeBundle p) {
-        final String externalPath = System.getProperty(p.getBundle()
-                .getSymbolicName() + ".ebin");
+        final String externalPath = System.getProperty(p.getBundle().getSymbolicName()
+                + ".ebin");
         if (externalPath != null) {
-            final boolean accessible = RuntimeUtils.isAccessibleDir(site,
-                    externalPath);
+            final boolean accessible = RuntimeUtils.isAccessibleDir(site, externalPath);
             if (accessible) {
                 ErlangCode.addPathA(site, externalPath);
                 return;
             }
             ErlLogger.info("external code path %s for %s "
-                    + "is not accessible, using plugin code", externalPath,
-                    site, backendName);
+                    + "is not accessible, using plugin code", externalPath, site,
+                    backendName);
         }
         final Collection<String> ebinDirs = p.getEbinDirs();
         if (ebinDirs != null) {
             for (final String ebinDir : ebinDirs) {
                 final String localDir = ebinDir.replaceAll("\\\\", "/");
-                final boolean accessible = RuntimeUtils.isAccessibleDir(site,
-                        localDir);
+                final boolean accessible = RuntimeUtils.isAccessibleDir(site, localDir);
                 final boolean embedded = ErlangCode.isEmbedded(site);
                 if (accessible && !embedded) {
                     ErlangCode.addPathA(site, localDir);
                 } else {
-                    ErlLogger.debug("loading %s for %s", p.getBundle(),
-                            backendName);
+                    ErlLogger.debug("loading %s for %s", p.getBundle(), backendName);
                     loadPluginCode(p);
                 }
             }
         } else {
-            ErlLogger
-                    .warn("Could not find 'ebin' in bundle %s.", p.getBundle());
+            ErlLogger.warn("Could not find 'ebin' in bundle %s.", p.getBundle());
             loadPluginCode(p);
         }
     }

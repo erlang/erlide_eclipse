@@ -25,8 +25,7 @@ import java.io.Serializable;
  * strings whose length is not more than {@link #maxAtomLength maxAtomLength}
  * characters.
  */
-public class OtpErlangAtom extends OtpErlangObject implements Serializable,
-        Cloneable {
+public class OtpErlangAtom extends OtpErlangObject implements Serializable, Cloneable {
     // don't change this!
     static final long serialVersionUID = -3204386396807876641L;
 
@@ -68,8 +67,7 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable,
      *                if the buffer does not contain a valid external
      *                representation of an Erlang atom.
      */
-    public OtpErlangAtom(final OtpInputStream buf)
-            throws OtpErlangDecodeException {
+    public OtpErlangAtom(final OtpInputStream buf) throws OtpErlangDecodeException {
         atom = buf.read_atom();
     }
 

@@ -126,11 +126,11 @@ public final class Util {
             end = CharOperation.indexOf('{', messageWithNoDoubleQuotes, start);
             if (end > -1) {
                 output.append(messageWithNoDoubleQuotes, start, end - start);
-                if ((start = CharOperation.indexOf('}',
-                        messageWithNoDoubleQuotes, end + 1)) > -1) {
+                if ((start = CharOperation.indexOf('}', messageWithNoDoubleQuotes,
+                        end + 1)) > -1) {
                     int index = -1;
-                    final String argId = new String(messageWithNoDoubleQuotes,
-                            end + 1, start - end - 1);
+                    final String argId = new String(messageWithNoDoubleQuotes, end + 1,
+                            start - end - 1);
                     try {
                         index = Integer.parseInt(argId);
                         output.append(bindings[index]);
@@ -151,8 +151,7 @@ public final class Util {
                             }
                         }
                         if (!done) {
-                            output.append(messageWithNoDoubleQuotes, end + 1,
-                                    start - end);
+                            output.append(messageWithNoDoubleQuotes, end + 1, start - end);
                         }
                     } catch (final ArrayIndexOutOfBoundsException e) {
                         output.append("{missing " + Integer.toString(index) + "}"); //$NON-NLS-2$ //$NON-NLS-1$
@@ -278,8 +277,7 @@ public final class Util {
      * 
      * @see #concat(String, String)
      */
-    public static String concat(final String s10, final String s20,
-            final String s30) {
+    public static String concat(final String s10, final String s20, final String s30) {
         String s1 = s10;
         String s2 = s20;
         String s3 = s30;
@@ -306,8 +304,7 @@ public final class Util {
      * Returns true iff str.toLowerCase().endsWith(end.toLowerCase())
      * implementation is not creating extra strings.
      */
-    public static final boolean endsWithIgnoreCase(final String str,
-            final String end) {
+    public static final boolean endsWithIgnoreCase(final String str, final String end) {
 
         if (str == null && end == null) {
             return true;
@@ -531,8 +528,7 @@ public final class Util {
      * Separate all the arguments of a String made by
      * getProblemArgumentsForMarker
      */
-    public static String[] getProblemArgumentsFromMarker(
-            final String argumentsString) {
+    public static String[] getProblemArgumentsFromMarker(final String argumentsString) {
         if (argumentsString == null) {
             return null;
         }
@@ -548,8 +544,7 @@ public final class Util {
         } catch (final NumberFormatException e) {
             return null;
         }
-        final String argumentsString1 = argumentsString.substring(index + 1,
-                length);
+        final String argumentsString1 = argumentsString.substring(index + 1, length);
 
         String[] args = new String[length];
         int count = 0;
@@ -939,8 +934,7 @@ public final class Util {
         String displayString(Object o);
     }
 
-    public static final String LINE_SEPARATOR = System
-            .getProperty("line.separator"); //$NON-NLS-1$
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator"); //$NON-NLS-1$
 
     static final char[] LINE_SEPARATOR_CHARS = LINE_SEPARATOR.toCharArray();
 
@@ -952,8 +946,8 @@ public final class Util {
      */
     public static char[] bytesToChar(final byte[] bytes, final Charset encoding)
             throws IOException {
-        return getInputStreamAsCharArray(new ByteArrayInputStream(bytes),
-                bytes.length, encoding);
+        return getInputStreamAsCharArray(new ByteArrayInputStream(bytes), bytes.length,
+                encoding);
     }
 
     /**
@@ -985,13 +979,12 @@ public final class Util {
      * @throws IOException
      *             if a problem occured reading the file.
      */
-    public static char[] getFileCharContent(final File file,
-            final Charset encoding) throws IOException {
+    public static char[] getFileCharContent(final File file, final Charset encoding)
+            throws IOException {
         InputStream stream = null;
         try {
             stream = new BufferedInputStream(new FileInputStream(file));
-            return getInputStreamAsCharArray(stream, (int) file.length(),
-                    encoding);
+            return getInputStreamAsCharArray(stream, (int) file.length(), encoding);
         } finally {
             if (stream != null) {
                 try {
@@ -1003,8 +996,8 @@ public final class Util {
         }
     }
 
-    public static char[] getFileCharContent(final String path,
-            final Charset encoding) throws IOException {
+    public static char[] getFileCharContent(final String path, final Charset encoding)
+            throws IOException {
         InputStream stream = null;
         try {
             stream = new BufferedInputStream(new FileInputStream(path));
@@ -1057,14 +1050,12 @@ public final class Util {
 
                 // resize contents if needed
                 if (contentsLength + amountRequested > contents.length) {
-                    System.arraycopy(contents, 0,
-                            contents = new byte[contentsLength
-                                    + amountRequested], 0, contentsLength);
+                    System.arraycopy(contents, 0, contents = new byte[contentsLength
+                            + amountRequested], 0, contentsLength);
                 }
 
                 // read as many bytes as possible
-                amountRead = stream.read(contents, contentsLength,
-                        amountRequested);
+                amountRead = stream.read(contents, contentsLength, amountRequested);
 
                 if (amountRead > 0) {
                     // remember length of contents
@@ -1074,8 +1065,8 @@ public final class Util {
 
             // resize contents if necessary
             if (contentsLength < contents.length) {
-                System.arraycopy(contents, 0,
-                        contents = new byte[contentsLength], 0, contentsLength);
+                System.arraycopy(contents, 0, contents = new byte[contentsLength], 0,
+                        contentsLength);
             }
         } else {
             contents = new byte[length];
@@ -1145,8 +1136,7 @@ public final class Util {
                     }
 
                     // read as many chars as possible
-                    amountRead = reader.read(contents, contentsLength,
-                            amountRequested);
+                    amountRead = reader.read(contents, contentsLength, amountRequested);
 
                     if (amountRead > 0) {
                         // remember length of contents
@@ -1223,8 +1213,7 @@ public final class Util {
     /**
      * Converts an array of Objects into String.
      */
-    public static String toString(final Object[] objects,
-            final Displayable renderer) {
+    public static String toString(final Object[] objects, final Displayable renderer) {
         if (objects == null) {
             return ""; //$NON-NLS-1$
         }
@@ -1282,8 +1271,8 @@ public final class Util {
                 result = decode(b.binaryValue(), Charsets.ISO_8859_1);
             }
             if (result == null) {
-                ErlLogger.error("bad binary value in stringValue"
-                        + " (can't decode): " + o);
+                ErlLogger.error("bad binary value in stringValue" + " (can't decode): "
+                        + o);
             }
             return result;
         }
@@ -1353,8 +1342,7 @@ public final class Util {
         return ioListToString(o, Integer.MAX_VALUE - 1);
     }
 
-    public static String ioListToString(final OtpErlangObject o,
-            final int maxLength) {
+    public static String ioListToString(final OtpErlangObject o, final int maxLength) {
         StringBuilder sb = new StringBuilder();
         sb = ioListToStringBuilder(o, sb, maxLength);
         return sb.toString();
@@ -1416,8 +1404,7 @@ public final class Util {
         return sb;
     }
 
-    public static int getIntegerValue(final OtpErlangObject object,
-            final int defaultValue) {
+    public static int getIntegerValue(final OtpErlangObject object, final int defaultValue) {
         if (object instanceof OtpErlangLong) {
             final OtpErlangLong l = (OtpErlangLong) object;
             try {
@@ -1440,8 +1427,8 @@ public final class Util {
             return (OtpErlangList) o;
         } else if (o instanceof OtpErlangString) {
             final OtpErlangString erlangString = (OtpErlangString) o;
-            final int[] codePoints = OtpErlangString
-                    .stringToCodePoints(erlangString.stringValue());
+            final int[] codePoints = OtpErlangString.stringToCodePoints(erlangString
+                    .stringValue());
             final OtpErlangObject elements[] = new OtpErlangObject[codePoints.length];
             for (int i = 0; i < codePoints.length; i++) {
                 elements[i] = new OtpErlangLong(codePoints[i]);

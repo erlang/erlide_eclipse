@@ -34,8 +34,8 @@ public class RpcFutureImpl implements IRpcFuture {
     private final IRpcSite rpcSite;
     private final OtpErlangRef ref;
 
-    public RpcFutureImpl(final OtpErlangRef ref, final OtpMbox mbox,
-            final String env, final boolean logCalls, final IRpcSite rpcSite) {
+    public RpcFutureImpl(final OtpErlangRef ref, final OtpMbox mbox, final String env,
+            final boolean logCalls, final IRpcSite rpcSite) {
         this.ref = ref;
 
         this.mbox = mbox;
@@ -96,8 +96,8 @@ public class RpcFutureImpl implements IRpcFuture {
     @Override
     public OtpErlangObject checkedGet(final long timeout, final TimeUnit unit)
             throws TimeoutException, RpcException {
-        result = rpcSite.getRpcResult(mbox,
-                TimeUnit.MILLISECONDS.convert(timeout, unit), env);
+        result = rpcSite.getRpcResult(mbox, TimeUnit.MILLISECONDS.convert(timeout, unit),
+                env);
         if (isDone()) {
             RpcMonitor.recordResponse(ref, result);
             if (logCalls) {

@@ -52,8 +52,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     /**
      * Singleton OK object
      */
-    public static final IErlModelStatus VERIFIED_OK = new ErlModelStatus(OK,
-            OK, Util.bind("status.OK")); //$NON-NLS-1$
+    public static final IErlModelStatus VERIFIED_OK = new ErlModelStatus(OK, OK,
+            Util.bind("status.OK")); //$NON-NLS-1$
 
     private static final String PLUGIN_ID = "org.erlide.model";
 
@@ -92,8 +92,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     /**
      * Constructs an Erlang model status with no corresponding elements.
      */
-    public ErlModelStatus(final int severity, final int code,
-            final String string) {
+    public ErlModelStatus(final int severity, final int code, final String string) {
         super(severity, PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
         fElements = NO_ELEMENTS;
         fPath = null;
@@ -128,8 +127,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with the given corresponding element
      * and string
      */
-    public ErlModelStatus(final int code, final IErlElement element,
-            final String string) {
+    public ErlModelStatus(final int code, final IErlElement element, final String string) {
         this(code, new IErlElement[] { element });
         fString = string;
     }
@@ -138,8 +136,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with the given corresponding element
      * and path
      */
-    public ErlModelStatus(final int code, final IErlElement element,
-            final IPath path) {
+    public ErlModelStatus(final int code, final IErlElement element, final IPath path) {
         this(code, new IErlElement[] { element });
         fPath = path;
     }
@@ -148,8 +145,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with the given corresponding element,
      * path and string
      */
-    public ErlModelStatus(final int code, final IErlElement element,
-            final IPath path, final String string) {
+    public ErlModelStatus(final int code, final IErlElement element, final IPath path,
+            final String string) {
         this(code, new IErlElement[] { element });
         fPath = path;
         fString = string;
@@ -204,12 +201,11 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
                 return Util.bind("build.serializationError"); //$NON-NLS-1$
 
             case ErlModelStatusConstants.DEVICE_PATH:
-                return Util.bind(
-                        "status.cannotUseDeviceOnPath", getPath().toString()); //$NON-NLS-1$
+                return Util.bind("status.cannotUseDeviceOnPath", getPath().toString()); //$NON-NLS-1$
 
             case ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST:
-                return Util
-                        .bind("element.doesNotExist", fElements[0].toStringWithAncestors()); //$NON-NLS-1$
+                return Util.bind(
+                        "element.doesNotExist", fElements[0].toStringWithAncestors()); //$NON-NLS-1$
 
             case ErlModelStatusConstants.INDEX_OUT_OF_BOUNDS:
                 return Util.bind("status.indexOutOfBounds"); //$NON-NLS-1$
@@ -255,8 +251,8 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
                 if (fString != null) {
                     return Util.bind("status.invalidSibling", fString); //$NON-NLS-1$
                 }
-                return Util
-                        .bind("status.invalidSibling", fElements[0].toStringWithAncestors()); //$NON-NLS-1$
+                return Util.bind(
+                        "status.invalidSibling", fElements[0].toStringWithAncestors()); //$NON-NLS-1$
 
             case ErlModelStatusConstants.IO_EXCEPTION:
                 return Util.bind("status.IOException"); //$NON-NLS-1$
@@ -293,15 +289,13 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
                 return Util.bind("status.readOnly", name); //$NON-NLS-1$
 
             case ErlModelStatusConstants.RELATIVE_PATH:
-                return Util.bind(
-                        "operation.needAbsolutePath", getPath().toString()); //$NON-NLS-1$
+                return Util.bind("operation.needAbsolutePath", getPath().toString()); //$NON-NLS-1$
 
             case ErlModelStatusConstants.UPDATE_CONFLICT:
                 return Util.bind("status.updateConflict"); //$NON-NLS-1$
 
             case ErlModelStatusConstants.NO_LOCAL_CONTENTS:
-                return Util
-                        .bind("status.noLocalContents", getPath().toString()); //$NON-NLS-1$
+                return Util.bind("status.noLocalContents", getPath().toString()); //$NON-NLS-1$
             }
             if (fString != null) {
                 return fString;
@@ -422,8 +416,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * 
      * @see IStatus#isMultiStatus()
      */
-    public static IErlModelStatus newMultiStatus(
-            final IErlModelStatus[] children) {
+    public static IErlModelStatus newMultiStatus(final IErlModelStatus[] children) {
         final ErlModelStatus jms = new ErlModelStatus();
         jms.children = children;
         return jms;

@@ -39,8 +39,8 @@ import org.erlide.ui.internal.ErlideUIPlugin;
  * 
  * @since 3.0
  */
-abstract public class AbstractInfoView extends ViewPart implements
-        ISelectionListener, IMenuListener {
+abstract public class AbstractInfoView extends ViewPart implements ISelectionListener,
+        IMenuListener {
 
     /*
      * @see IPartListener2
@@ -157,8 +157,7 @@ abstract public class AbstractInfoView extends ViewPart implements
     public final void createPartControl(final Composite parent) {
         internalCreatePartControl(parent);
         setInfoColor();
-        getSite().getWorkbenchWindow().getPartService()
-                .addPartListener(fPartListener);
+        getSite().getWorkbenchWindow().getPartService().addPartListener(fPartListener);
         createContextMenu();
         createActions();
         fillActionBars(getViewSite().getActionBars());
@@ -268,8 +267,7 @@ abstract public class AbstractInfoView extends ViewPart implements
      * org.eclipse.jface.viewers.ISelection)
      */
     @Override
-    public void selectionChanged(final IWorkbenchPart part,
-            final ISelection selection) {
+    public void selectionChanged(final IWorkbenchPart part, final ISelection selection) {
         if (part.equals(this)) {
             return;
         }
@@ -377,8 +375,7 @@ abstract public class AbstractInfoView extends ViewPart implements
         // cancel possible running computation
         fComputeCount--;
 
-        getSite().getWorkbenchWindow().getPartService()
-                .removePartListener(fPartListener);
+        getSite().getWorkbenchWindow().getPartService().removePartListener(fPartListener);
 
         internalDispose();
     }
@@ -400,8 +397,7 @@ abstract public class AbstractInfoView extends ViewPart implements
 
         final int currentCount = ++fComputeCount;
 
-        final ISelectionProvider provider = part.getSite()
-                .getSelectionProvider();
+        final ISelectionProvider provider = part.getSite().getSelectionProvider();
         if (provider == null) {
             return;
         }
@@ -425,8 +421,7 @@ abstract public class AbstractInfoView extends ViewPart implements
 
                 if (info == null
                         || info instanceof ErlBrowserInformationControlInput
-                        && ((ErlBrowserInformationControlInput) info).getHtml()
-                                .length() == 0) {
+                        && ((ErlBrowserInformationControlInput) info).getHtml().length() == 0) {
                     return;
                 }
                 final Shell shell = getSite().getShell();

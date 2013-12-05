@@ -24,8 +24,7 @@ import java.io.Reader;
  */
 public abstract class SubstitutionTextReader extends SingleCharReader {
 
-    protected static final String LINE_DELIM = System.getProperty(
-            "line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+    protected static final String LINE_DELIM = System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private final Reader fReader;
     protected boolean fWasWhiteSpace;

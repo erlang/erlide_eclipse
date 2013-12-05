@@ -175,8 +175,7 @@ public class DialogField {
      * @param parent
      *            The parent composite
      */
-    public static Control createEmptySpace(final Composite parent,
-            final int span) {
+    public static Control createEmptySpace(final Composite parent, final int span) {
         final Label label = new Label(parent, SWT.LEFT);
         final GridData gd = new GridData();
         gd.horizontalAlignment = GridData.BEGINNING;
@@ -193,8 +192,7 @@ public class DialogField {
      * Tests is the control is not <code>null</code> and not disposed.
      */
     protected final boolean isOkToUse(final Control control) {
-        return control != null && Display.getCurrent() != null
-                && !control.isDisposed();
+        return control != null && Display.getCurrent() != null && !control.isDisposed();
     }
 
     // --------- enable / disable management

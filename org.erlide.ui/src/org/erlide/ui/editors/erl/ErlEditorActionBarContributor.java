@@ -28,8 +28,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.erlide.ui.editors.erl.actions.GotoAnnotationAction;
 
-public class ErlEditorActionBarContributor extends
-        BasicTextEditorActionContributor {
+public class ErlEditorActionBarContributor extends BasicTextEditorActionContributor {
 
     public ErlEditorActionBarContributor() {
         super();
@@ -38,8 +37,7 @@ public class ErlEditorActionBarContributor extends
         // .getResourceBundle(), "ContentAssistProposal.");
         // ErlLogger.debug("AC 1");
 
-        fPreviousAnnotation = new GotoAnnotationAction(
-                "PreviousAnnotation.", false); //$NON-NLS-1$
+        fPreviousAnnotation = new GotoAnnotationAction("PreviousAnnotation.", false); //$NON-NLS-1$
         fNextAnnotation = new GotoAnnotationAction("NextAnnotation.", true); //$NON-NLS-1$
     }
 
@@ -92,8 +90,8 @@ public class ErlEditorActionBarContributor extends
 
         final IAction showOutline = getAction(editor,
                 IErlangEditorActionDefinitionIds.SHOW_OUTLINE);
-        actionBars.setGlobalActionHandler(
-                IErlangEditorActionDefinitionIds.SHOW_OUTLINE, showOutline);
+        actionBars.setGlobalActionHandler(IErlangEditorActionDefinitionIds.SHOW_OUTLINE,
+                showOutline);
 
     }
 
@@ -104,15 +102,13 @@ public class ErlEditorActionBarContributor extends
     public void init(final IActionBars bars, final IWorkbenchPage page) {
         super.init(bars, page);
         // register actions that have a dynamic editor.
-        bars.setGlobalActionHandler(
-                ITextEditorActionDefinitionIds.GOTO_NEXT_ANNOTATION,
+        bars.setGlobalActionHandler(ITextEditorActionDefinitionIds.GOTO_NEXT_ANNOTATION,
                 fNextAnnotation);
         bars.setGlobalActionHandler(
                 ITextEditorActionDefinitionIds.GOTO_PREVIOUS_ANNOTATION,
                 fPreviousAnnotation);
         bars.setGlobalActionHandler(ActionFactory.NEXT.getId(), fNextAnnotation);
-        bars.setGlobalActionHandler(ActionFactory.PREVIOUS.getId(),
-                fPreviousAnnotation);
+        bars.setGlobalActionHandler(ActionFactory.PREVIOUS.getId(), fPreviousAnnotation);
     }
 
     public void displayMessage(final String message) {

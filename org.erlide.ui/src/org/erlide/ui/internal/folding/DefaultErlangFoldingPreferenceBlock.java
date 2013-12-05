@@ -25,8 +25,7 @@ import org.erlide.ui.util.OverlayPreferenceStore.TypeDescriptor;
 /**
  * Erlang (erlide) default folding preferences.
  */
-public class DefaultErlangFoldingPreferenceBlock implements
-        IErlangFoldingPreferenceBlock {
+public class DefaultErlangFoldingPreferenceBlock implements IErlangFoldingPreferenceBlock {
 
     private final IPreferenceStore fStore;
 
@@ -45,8 +44,7 @@ public class DefaultErlangFoldingPreferenceBlock implements
         @Override
         public void widgetSelected(final SelectionEvent e) {
             final Button button = (Button) e.widget;
-            fOverlayStore.setValue(fCheckBoxes.get(button),
-                    button.getSelection());
+            fOverlayStore.setValue(fCheckBoxes.get(button), button.getSelection());
         }
     };
 
@@ -59,17 +57,13 @@ public class DefaultErlangFoldingPreferenceBlock implements
     private OverlayKey[] createKeys() {
         final ArrayList<OverlayKey> overlayKeys = new ArrayList<OverlayKey>();
 
-        overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
-                TypeDescriptor.BOOLEAN,
+        overlayKeys.add(new OverlayPreferenceStore.OverlayKey(TypeDescriptor.BOOLEAN,
                 PreferenceConstants.EDITOR_FOLDING_CLAUSES));
-        overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
-                TypeDescriptor.BOOLEAN,
+        overlayKeys.add(new OverlayPreferenceStore.OverlayKey(TypeDescriptor.BOOLEAN,
                 PreferenceConstants.EDITOR_FOLDING_COMMENTS));
-        overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
-                TypeDescriptor.BOOLEAN,
+        overlayKeys.add(new OverlayPreferenceStore.OverlayKey(TypeDescriptor.BOOLEAN,
                 PreferenceConstants.EDITOR_FOLDING_HEADER_COMMENTS));
-        overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
-                TypeDescriptor.BOOLEAN,
+        overlayKeys.add(new OverlayPreferenceStore.OverlayKey(TypeDescriptor.BOOLEAN,
                 PreferenceConstants.EDITOR_FOLDING_TYPESPECS));
 
         return overlayKeys.toArray(new OverlayKey[overlayKeys.size()]);
@@ -89,18 +83,14 @@ public class DefaultErlangFoldingPreferenceBlock implements
         final Label label = new Label(inner, SWT.LEFT);
         label.setText(FoldingMessages.DefaultErlangFoldingPreferenceBlock_title);
 
-        addCheckBox(
-                inner,
+        addCheckBox(inner,
                 FoldingMessages.DefaultErlangFoldingPreferenceBlock_header_comments,
                 PreferenceConstants.EDITOR_FOLDING_HEADER_COMMENTS, 0);
-        addCheckBox(inner,
-                FoldingMessages.DefaultErlangFoldingPreferenceBlock_clauses,
+        addCheckBox(inner, FoldingMessages.DefaultErlangFoldingPreferenceBlock_clauses,
                 PreferenceConstants.EDITOR_FOLDING_CLAUSES, 0);
-        addCheckBox(inner,
-                FoldingMessages.DefaultErlangFoldingPreferenceBlock_comments,
+        addCheckBox(inner, FoldingMessages.DefaultErlangFoldingPreferenceBlock_comments,
                 PreferenceConstants.EDITOR_FOLDING_COMMENTS, 0);
-        addCheckBox(inner,
-                FoldingMessages.DefaultErlangFoldingPreferenceBlock_typespecs,
+        addCheckBox(inner, FoldingMessages.DefaultErlangFoldingPreferenceBlock_typespecs,
                 PreferenceConstants.EDITOR_FOLDING_TYPESPECS, 0);
 
         return inner;

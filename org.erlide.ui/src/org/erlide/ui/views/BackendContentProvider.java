@@ -33,8 +33,7 @@ public class BackendContentProvider implements IStructuredContentProvider {
 
     @Override
     public Object[] getElements(final Object inputElement) {
-        final Collection<IBackend> bs = BackendCore.getBackendManager()
-                .getAllBackends();
+        final Collection<IBackend> bs = BackendCore.getBackendManager().getAllBackends();
         return bs.toArray(new IBackend[bs.size()]);
     }
 }

@@ -48,8 +48,7 @@ public final class ChangesetMaker {
      * @return list of chars
      */
     @SuppressWarnings("boxing")
-    private static List<Character> convertArrayToArrayList(
-            final char[] charArray) {
+    private static List<Character> convertArrayToArrayList(final char[] charArray) {
         final List<Character> result = new ArrayList<Character>();
         for (final char c : charArray) {
             result.add(c);
@@ -68,14 +67,13 @@ public final class ChangesetMaker {
 
         // delete
         if (diff.getAddedEnd() == -1 && diff.getDeletedEnd() != -1) {
-            result = new DeleteEdit(diff.getDeletedStart(),
-                    diff.getDeletedEnd() - diff.getDeletedStart() + 1);
+            result = new DeleteEdit(diff.getDeletedStart(), diff.getDeletedEnd()
+                    - diff.getDeletedStart() + 1);
         }
         // replace
         else if (diff.getAddedEnd() != -1 && diff.getDeletedEnd() != -1) {
-            result = createReplaceEdit(diff.getAddedStart(),
-                    diff.getAddedEnd(), diff.getDeletedStart(),
-                    diff.getDeletedEnd());
+            result = createReplaceEdit(diff.getAddedStart(), diff.getAddedEnd(),
+                    diff.getDeletedStart(), diff.getDeletedEnd());
         }
         // insert
         else if (diff.getAddedEnd() != -1 && diff.getDeletedEnd() == -1) {
@@ -153,8 +151,8 @@ public final class ChangesetMaker {
      * @param deletedEnd
      * @return
      */
-    private static TextEdit createReplaceEdit(final int addedStart,
-            final int addedEnd, final int deletedStart, final int deletedEnd) {
+    private static TextEdit createReplaceEdit(final int addedStart, final int addedEnd,
+            final int deletedStart, final int deletedEnd) {
         final TextEdit result = new MultiTextEdit();
 
         final int addedLength = addedEnd - addedStart + 1;
@@ -162,16 +160,16 @@ public final class ChangesetMaker {
         final int minLength = Math.min(addedLength, deletedLength);
 
         if (deletedLength < addedLength) {
-            result.addChild(new InsertEdit(deletedStart + minLength, getString(
-                    addedStart + minLength, addedEnd)));
+            result.addChild(new InsertEdit(deletedStart + minLength, getString(addedStart
+                    + minLength, addedEnd)));
         }
 
-        result.addChild(new ReplaceEdit(deletedStart, minLength, getString(
-                addedStart, addedStart + minLength - 1)));
+        result.addChild(new ReplaceEdit(deletedStart, minLength, getString(addedStart,
+                addedStart + minLength - 1)));
 
         if (addedLength < deletedLength) {
-            result.addChild(new DeleteEdit(deletedStart + minLength,
-                    deletedLength - minLength));
+            result.addChild(new DeleteEdit(deletedStart + minLength, deletedLength
+                    - minLength));
         }
 
         return result;

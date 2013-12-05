@@ -29,8 +29,7 @@ public abstract class MessageReporter {
      */
     public static final int ERROR = 0x04;
 
-    abstract public void displayMessage(int severity, String message,
-            String details);
+    abstract public void displayMessage(int severity, String message, String details);
 
     public static void showError(final String message) {
         show(ERROR, message, null);
@@ -56,8 +55,7 @@ public abstract class MessageReporter {
         show(INFO, message, details);
     }
 
-    public static void show(final int severity, final String message,
-            final String details) {
+    public static void show(final int severity, final String message, final String details) {
         ErlideEventBus.post(new ErlideMessage(severity, message, details));
     }
 

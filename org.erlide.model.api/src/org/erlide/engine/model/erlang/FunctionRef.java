@@ -11,8 +11,7 @@ public class FunctionRef {
     public final String function;
     public final int arity;
 
-    public FunctionRef(final String module, final String function,
-            final int arity) {
+    public FunctionRef(final String module, final String function, final int arity) {
         this.module = module;
         this.function = function;
         this.arity = arity;

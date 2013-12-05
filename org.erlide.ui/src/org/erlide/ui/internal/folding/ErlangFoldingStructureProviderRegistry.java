@@ -37,8 +37,7 @@ public class ErlangFoldingStructureProviderRegistry {
         synchronized (this) {
             ensureRegistered();
             return fDescriptors.values().toArray(
-                    new ErlangFoldingStructureProviderDescriptor[fDescriptors
-                            .size()]);
+                    new ErlangFoldingStructureProviderDescriptor[fDescriptors.size()]);
         }
     }
 
@@ -100,9 +99,8 @@ public class ErlangFoldingStructureProviderRegistry {
         final IExtensionRegistry registry = Platform.getExtensionRegistry();
         final Map<String, ErlangFoldingStructureProviderDescriptor> map = new HashMap<String, ErlangFoldingStructureProviderDescriptor>();
 
-        final IConfigurationElement[] elements = registry
-                .getConfigurationElementsFor(ErlideUIPlugin.PLUGIN_ID,
-                        EXTENSION_POINT);
+        final IConfigurationElement[] elements = registry.getConfigurationElementsFor(
+                ErlideUIPlugin.PLUGIN_ID, EXTENSION_POINT);
         for (final IConfigurationElement element : elements) {
             final ErlangFoldingStructureProviderDescriptor desc = new ErlangFoldingStructureProviderDescriptor(
                     element);

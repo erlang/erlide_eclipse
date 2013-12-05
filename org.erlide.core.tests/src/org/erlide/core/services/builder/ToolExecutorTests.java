@@ -27,8 +27,7 @@ public class ToolExecutorTests {
 
     @Test
     public void test1() {
-        final boolean onWindows = SystemConfiguration.getInstance()
-                .isOnWindows();
+        final boolean onWindows = SystemConfiguration.getInstance().isOnWindows();
         final String cmd = onWindows ? "where" : "which";
         final String res = ex.getToolLocation(cmd);
         assertThat(res, stringContainsInOrder(Lists.newArrayList(cmd)));

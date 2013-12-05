@@ -38,8 +38,7 @@ public class HideCoverageAction extends CoverageAction {
             log.info(fs.getLineStart());
             log.info(fs.getLineEnd());
 
-            marker.removeAnnotationsFragment(name, fs.getLineStart(),
-                    fs.getLineEnd());
+            marker.removeAnnotationsFragment(name, fs.getLineStart(), fs.getLineEnd());
 
         } else {
             marker.clearAllAnnotations();

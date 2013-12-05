@@ -78,8 +78,7 @@ public class WarningView extends ViewPart implements IWarningHandler {
         }
     }
 
-    class ViewLabelProvider extends LabelProvider implements
-            ITableLabelProvider {
+    class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
         @Override
         public String getColumnText(final Object obj, final int index) {
             return getText(((WarningMessage) obj).getMessage());
@@ -99,8 +98,7 @@ public class WarningView extends ViewPart implements IWarningHandler {
 
     class NameSorter extends ViewerSorter {
         @Override
-        public int compare(final Viewer theViewer, final Object e1,
-                final Object e2) {
+        public int compare(final Viewer theViewer, final Object e1, final Object e2) {
             final WarningMessage w1 = (WarningMessage) e1;
             final WarningMessage w2 = (WarningMessage) e2;
             return -1 * w1.getTimestamp().compareTo(w2.getTimestamp());
@@ -119,14 +117,12 @@ public class WarningView extends ViewPart implements IWarningHandler {
      */
     @Override
     public void createPartControl(final Composite parent) {
-        viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-                | SWT.V_SCROLL);
+        viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         viewer.setContentProvider(new ViewContentProvider());
         viewer.setLabelProvider(new ViewLabelProvider());
         viewer.setSorter(new NameSorter());
         viewer.setInput(getViewSite());
-        final IToolBarManager mgr = getViewSite().getActionBars()
-                .getToolBarManager();
+        final IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
         mgr.add(new RemoveAction());
 
     }

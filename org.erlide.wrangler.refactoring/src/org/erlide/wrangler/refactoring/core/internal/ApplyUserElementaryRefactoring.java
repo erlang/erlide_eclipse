@@ -10,8 +10,7 @@ public class ApplyUserElementaryRefactoring extends UserElementaryRefactoring {
 
     private final String name; // name of the refactoring
 
-    public ApplyUserElementaryRefactoring(final String name,
-            final String callbackModule) {
+    public ApplyUserElementaryRefactoring(final String name, final String callbackModule) {
         this.name = name;
         setCallbackModuleName(callbackModule);
     }

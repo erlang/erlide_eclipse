@@ -43,9 +43,8 @@ public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
     boolean onlyInFile;
 
     @Override
-    protected IResultParser callRefactoring()
-            throws WranglerRpcParsingException, CoreException, IOException,
-            WranglerWarningException {
+    protected IResultParser callRefactoring() throws WranglerRpcParsingException,
+            CoreException, IOException, WranglerWarningException {
         final WranglerRefactoringBackend backend = WranglerBackendManager
                 .getRefactoringBackend();
         final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
@@ -62,9 +61,8 @@ public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
 
             result = backend.callWithoutParser(
                     WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName,
-                    "xiiiidxi", fpl, minLen, minToks, minFreq, maxNewVars,
-                    simScore, sel.getSearchPath(),
-                    GlobalParameters.getTabWidth());
+                    "xiiiidxi", fpl, minLen, minToks, minFreq, maxNewVars, simScore,
+                    sel.getSearchPath(), GlobalParameters.getTabWidth());
         } else {
             result = backend.callWithoutParser(
                     WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName,
@@ -82,8 +80,7 @@ public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
 
     @Override
     protected boolean getUserInput() {
-        final Shell shell = PlatformUI.getWorkbench().getDisplay()
-                .getActiveShell();
+        final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
 
         final SimilarCodeDetectionInputDialog inputd = new SimilarCodeDetectionInputDialog(
                 shell, "Similar code detection...");

@@ -28,13 +28,11 @@ public class DebugTraceLaunching {
                     .getLaunchConfigurationType(
                             "org.erlide.runtime.debug.launchDebugTrace");
             final String name = target.toString();
-            final ILaunchConfigurationWorkingCopy wc = lcType.newInstance(null,
-                    name);
+            final ILaunchConfigurationWorkingCopy wc = lcType.newInstance(null, name);
             final Set<String> modes = new HashSet<String>();
             modes.add(ILaunchManager.DEBUG_MODE);
             final ILaunchDelegate[] delegates = lcType.getDelegates(modes);
-            final ILaunchConfigurationDelegate delegate = delegates[0]
-                    .getDelegate();
+            final ILaunchConfigurationDelegate delegate = delegates[0].getDelegate();
             if (!(delegate instanceof DebugTraceLaunchConfigurationDelegate)) {
                 return;
             }

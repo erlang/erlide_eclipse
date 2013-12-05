@@ -30,23 +30,21 @@ public abstract class UserElementaryRefactoring extends UserRefactoring {
         final OtpErlangList pos = new OtpErlangList(new OtpErlangInt[] {
                 new OtpErlangInt(sel.getSelectionRange().getStartLine()),
                 new OtpErlangInt(sel.getSelectionRange().getStartCol()) });
-        final OtpErlangList selectionBeg = new OtpErlangList(
-                new OtpErlangInt[] {
-                        new OtpErlangInt(sel.getSelectionRange().getStartLine()),
-                        new OtpErlangInt(sel.getSelectionRange().getStartCol()) });
-        final OtpErlangList selectionEnd = new OtpErlangList(
-                new OtpErlangInt[] {
-                        new OtpErlangInt(sel.getSelectionRange().getEndLine()),
-                        new OtpErlangInt(sel.getSelectionRange().getEndCol()) });
-        final OtpErlangList selectionPos = new OtpErlangList(
-                new OtpErlangObject[] { selectionBeg, selectionEnd });
+        final OtpErlangList selectionBeg = new OtpErlangList(new OtpErlangInt[] {
+                new OtpErlangInt(sel.getSelectionRange().getStartLine()),
+                new OtpErlangInt(sel.getSelectionRange().getStartCol()) });
+        final OtpErlangList selectionEnd = new OtpErlangList(new OtpErlangInt[] {
+                new OtpErlangInt(sel.getSelectionRange().getEndLine()),
+                new OtpErlangInt(sel.getSelectionRange().getEndCol()) });
+        final OtpErlangList selectionPos = new OtpErlangList(new OtpErlangObject[] {
+                selectionBeg, selectionEnd });
         final OtpErlangList args = new OtpErlangList(new OtpErlangObject[] {
                 new OtpErlangString(sel.getFilePath()), pos, selectionPos,
                 prepareUserInput(), sel.getSearchPath(),
                 new OtpErlangInt(GlobalParameters.getTabWidth()) });
 
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "run_refac_eclipse", "sx", getCallbackModule(), args);
+        return WranglerBackendManager.getRefactoringBackend().call("run_refac_eclipse",
+                "sx", getCallbackModule(), args);
     }
 
     @Override

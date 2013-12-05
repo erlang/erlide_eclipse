@@ -35,8 +35,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public class FoldAgainstMacro extends
-        CostumWorkflowRefactoringWithPositionsSelection {
+public class FoldAgainstMacro extends CostumWorkflowRefactoringWithPositionsSelection {
     protected OtpErlangObject syntaxTree;
 
     @Override
@@ -67,19 +66,17 @@ public class FoldAgainstMacro extends
 
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
         ExpressionPosRpcMessage m = new ExpressionPosRpcMessage();
-        m = (ExpressionPosRpcMessage) WranglerBackendManager
-                .getRefactoringBackend().callWithParser(m,
-                        "fold_against_macro_eclipse", "siixi",
+        m = (ExpressionPosRpcMessage) WranglerBackendManager.getRefactoringBackend()
+                .callWithParser(m, "fold_against_macro_eclipse", "siixi",
                         sel.getFilePath(), sel.getMemberRange().getStartLine(),
-                        sel.getMemberRange().getStartCol(),
-                        sel.getSearchPath(), GlobalParameters.getTabWidth());
+                        sel.getMemberRange().getStartCol(), sel.getSearchPath(),
+                        GlobalParameters.getTabWidth());
         if (m.isSuccessful()) {
             syntaxTree = m.getSyntaxTree();
             positions = m.getPositionDefinitions(sel.getDocument());
             selectedPositions = new ArrayList<IErlRange>();
         } else {
-            return RefactoringStatus.createFatalErrorStatus(m
-                    .getMessageString());
+            return RefactoringStatus.createFatalErrorStatus(m.getMessageString());
         }
         return new RefactoringStatus();
     }
@@ -107,8 +104,7 @@ public class FoldAgainstMacro extends
             changedFiles = message.getRefactoringChangeset();
             return new RefactoringStatus();
         }
-        return RefactoringStatus.createFatalErrorStatus(message
-                .getMessageString());
+        return RefactoringStatus.createFatalErrorStatus(message.getMessageString());
     }
 
 }

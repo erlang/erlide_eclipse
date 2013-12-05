@@ -30,8 +30,7 @@ public class ErlModulePropertyPage extends PropertyPage {
 
         final IAdaptable element = getElement();
         final IFile file = (IFile) element.getAdapter(IFile.class);
-        final IErlModule module = ErlangEngine.getInstance().getModel()
-                .findModule(file);
+        final IErlModule module = ErlangEngine.getInstance().getModel().findModule(file);
         final String value = ErlangEngine.getInstance().getModelUtilService()
                 .getModuleInfo(module);
         text.setText(value);

@@ -20,8 +20,8 @@ public class ReportProblemHandler extends AbstractHandler {
 
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
-        final PreferenceDialog dlg = PreferencesUtil.createPreferenceDialogOn(
-                null, "org.erlide.ui.reporting", null, null);
+        final PreferenceDialog dlg = PreferencesUtil.createPreferenceDialogOn(null,
+                "org.erlide.ui.reporting", null, null);
         dlg.open();
         return null;
     }

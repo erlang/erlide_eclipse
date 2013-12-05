@@ -32,8 +32,7 @@ public class ErlangTracingAction implements IWorkbenchWindowActionDelegate {
     }
 
     @Override
-    public void selectionChanged(final IAction action,
-            final ISelection selection) {
+    public void selectionChanged(final IAction action, final ISelection selection) {
         fLaunch = null;
         if (selection instanceof IStructuredSelection) {
             final IStructuredSelection ss = (IStructuredSelection) selection;

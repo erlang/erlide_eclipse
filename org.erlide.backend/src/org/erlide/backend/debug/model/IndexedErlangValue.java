@@ -92,8 +92,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         } else {
             name = varName + ":" + offset;
         }
-        return new ErlangVariable(getDebugTarget(), name, true,
-                getElementAt(offset), process, moduleName, -1);
+        return new ErlangVariable(getDebugTarget(), name, true, getElementAt(offset),
+                process, moduleName, -1);
     }
 
     @Override
@@ -118,14 +118,11 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
                     pd = ErlangEngine
                             .getInstance()
                             .getModelFindService()
-                            .findPreprocessorDef(
-                                    getErlProjects(target.getProjects()),
-                                    moduleName, a.atomValue(),
-                                    ErlElementKind.RECORD_DEF);
+                            .findPreprocessorDef(getErlProjects(target.getProjects()),
+                                    moduleName, a.atomValue(), ErlElementKind.RECORD_DEF);
                     if (pd instanceof IErlRecordDef) {
                         final IErlRecordDef r = (IErlRecordDef) pd;
-                        if (r.hasChildren()
-                                && r.getChildCount() + 1 == t.arity()) {
+                        if (r.hasChildren() && r.getChildCount() + 1 == t.arity()) {
                             return r;
                         }
                     }
@@ -136,10 +133,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         return null;
     }
 
-    private Collection<IErlProject> getErlProjects(
-            final Collection<IProject> projects) {
-        final List<IErlProject> result = Lists
-                .newArrayListWithCapacity(projects.size());
+    private Collection<IErlProject> getErlProjects(final Collection<IProject> projects) {
+        final List<IErlProject> result = Lists.newArrayListWithCapacity(projects.size());
         final IErlModel model = ErlangEngine.getInstance().getModel();
         for (final IProject project : projects) {
             final IErlElement element = model.getChildWithResource(project);
@@ -170,8 +165,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         }
     }
 
-    private String getValueString(final OtpErlangObject o,
-            final boolean recordCheck) throws DebugException {
+    private String getValueString(final OtpErlangObject o, final boolean recordCheck)
+            throws DebugException {
         if (o instanceof OtpErlangBinary) {
             final OtpErlangBinary b = (OtpErlangBinary) o;
             return getBinaryValueString(b);
@@ -192,8 +187,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         }
     }
 
-    private String getRecordValueString(final IErlRecordDef r,
-            final OtpErlangObject o) {
+    private String getRecordValueString(final IErlRecordDef r, final OtpErlangObject o) {
         final StringBuilder b = new StringBuilder();
         List<IErlElement> children;
         try {
@@ -216,8 +210,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         return b.toString();
     }
 
-    private String getListValueString(final OtpErlangList l)
-            throws DebugException {
+    private String getListValueString(final OtpErlangList l) throws DebugException {
         final StringBuilder b = new StringBuilder("[");
         if (l.arity() > 0) {
             for (final OtpErlangObject o : l) {
@@ -229,8 +222,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         return b.toString();
     }
 
-    private String getTupleValueString(final OtpErlangTuple t)
-            throws DebugException {
+    private String getTupleValueString(final OtpErlangTuple t) throws DebugException {
         final StringBuilder b = new StringBuilder("{");
         if (t.arity() > 0) {
             for (final OtpErlangObject o : t.elements()) {

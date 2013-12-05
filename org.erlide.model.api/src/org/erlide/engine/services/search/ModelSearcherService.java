@@ -7,7 +7,6 @@ import org.erlide.engine.model.erlang.IErlModule;
 
 public interface ModelSearcherService {
 
-    Collection<IErlModule> findAllIncludedFiles(IErlModule module)
-            throws CoreException;
+    Collection<IErlModule> findAllIncludedFiles(IErlModule module) throws CoreException;
 
 }

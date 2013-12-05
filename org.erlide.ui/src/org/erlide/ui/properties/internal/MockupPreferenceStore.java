@@ -43,8 +43,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
      * {@inheritDoc}
      */
     @Override
-    public void removePropertyChangeListener(
-            final IPropertyChangeListener listener) {
+    public void removePropertyChangeListener(final IPropertyChangeListener listener) {
         fListeners.remove(listener);
     }
 
@@ -60,8 +59,8 @@ public class MockupPreferenceStore implements IPreferenceStore {
      * {@inheritDoc}
      */
     @Override
-    public void firePropertyChangeEvent(final String name,
-            final Object oldValue, final Object newValue) {
+    public void firePropertyChangeEvent(final String name, final Object oldValue,
+            final Object newValue) {
         firePropertyChangeEvent(this, name, oldValue, newValue);
     }
 
@@ -81,8 +80,8 @@ public class MockupPreferenceStore implements IPreferenceStore {
      */
     public void firePropertyChangeEvent(final Object source, final String name,
             final Object oldValue, final Object newValue) {
-        final PropertyChangeEvent event = new PropertyChangeEvent(source, name,
-                oldValue, newValue);
+        final PropertyChangeEvent event = new PropertyChangeEvent(source, name, oldValue,
+                newValue);
         final Object[] listeners = fListeners.getListeners();
         for (final Object element : listeners) {
             ((IPropertyChangeListener) element).propertyChange(event);

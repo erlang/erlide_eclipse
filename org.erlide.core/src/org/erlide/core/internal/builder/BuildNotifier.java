@@ -133,8 +133,7 @@ public class BuildNotifier {
                 if (fNewErrorCount == 1) {
                     buffer.append(BuilderMessages.build_oneError);
                 } else {
-                    buffer.append(NLS.bind(
-                            BuilderMessages.build_multipleErrors,
+                    buffer.append(NLS.bind(BuilderMessages.build_multipleErrors,
                             String.valueOf(fNewErrorCount)));
                 }
                 if (displayBoth || fNewWarningCount > 0) {
@@ -145,8 +144,7 @@ public class BuildNotifier {
                 if (fNewWarningCount == 1) {
                     buffer.append(BuilderMessages.build_oneWarning);
                 } else {
-                    buffer.append(NLS.bind(
-                            BuilderMessages.build_multipleWarnings,
+                    buffer.append(NLS.bind(BuilderMessages.build_multipleWarnings,
                             String.valueOf(fNewWarningCount)));
                 }
             }
@@ -168,8 +166,7 @@ public class BuildNotifier {
                     if (fFixedErrorCount == 1) {
                         buffer.append(BuilderMessages.build_oneError);
                     } else {
-                        buffer.append(NLS.bind(
-                                BuilderMessages.build_multipleErrors,
+                        buffer.append(NLS.bind(BuilderMessages.build_multipleErrors,
                                 String.valueOf(fFixedErrorCount)));
                     }
                     if (fFixedWarningCount > 0) {
@@ -180,8 +177,7 @@ public class BuildNotifier {
                     if (fFixedWarningCount == 1) {
                         buffer.append(BuilderMessages.build_oneWarning);
                     } else {
-                        buffer.append(NLS.bind(
-                                BuilderMessages.build_multipleWarnings,
+                        buffer.append(NLS.bind(BuilderMessages.build_multipleWarnings,
                                 String.valueOf(fFixedWarningCount)));
                     }
                 }
@@ -253,11 +249,9 @@ public class BuildNotifier {
                             continue; // already matched up with a new problem
                         }
                         final boolean wasError = IMarker.SEVERITY_ERROR == pb
-                                .getAttribute(IMarker.SEVERITY,
-                                        IMarker.SEVERITY_ERROR);
+                                .getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
                         if (isError == wasError
-                                && message.equals(pb.getAttribute(
-                                        IMarker.MESSAGE, ""))) { //$NON-NLS-1$
+                                && message.equals(pb.getAttribute(IMarker.MESSAGE, ""))) { //$NON-NLS-1$
                             oldProblems[j] = null;
                             continue next;
                         }
@@ -278,16 +272,14 @@ public class BuildNotifier {
                 }
                 final boolean wasError = IMarker.SEVERITY_ERROR == oldProblem
                         .getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-                final String message = oldProblem.getAttribute(IMarker.MESSAGE,
-                        ""); //$NON-NLS-1$
+                final String message = oldProblem.getAttribute(IMarker.MESSAGE, ""); //$NON-NLS-1$
 
                 if (newProblems != null) {
                     for (final IProblem pb : newProblems) {
                         if (pb.getID() == IProblem.Task) {
                             continue; // skip task
                         }
-                        if (wasError == pb.isError()
-                                && message.equals(pb.getMessage())) {
+                        if (wasError == pb.isError() && message.equals(pb.getMessage())) {
                             continue next;
                         }
                     }
@@ -310,8 +302,8 @@ public class BuildNotifier {
                     fMonitor.worked(work - fWorkDone);
                 }
                 if (BuilderHelper.isDebugging()) {
-                    ErlLogger.debug(java.text.NumberFormat.getPercentInstance()
-                            .format(percentComplete));
+                    ErlLogger.debug(java.text.NumberFormat.getPercentInstance().format(
+                            percentComplete));
                 }
                 fWorkDone = work;
             }

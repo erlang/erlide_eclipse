@@ -26,11 +26,10 @@ import org.erlide.ui.util.TypedViewerFilter;
 public class DirectorySelectUtil {
 
     public static IContainer chooseLocation(final String dialogTitle,
-            final String labelText, final IProject project2,
-            final String outputLocation, final Shell shell) {
+            final String labelText, final IProject project2, final String outputLocation,
+            final Shell shell) {
         final IWorkspaceRoot root = project2.getWorkspace().getRoot();
-        final Class<?>[] acceptedClasses = new Class[] { IProject.class,
-                IFolder.class };
+        final Class<?>[] acceptedClasses = new Class[] { IProject.class, IFolder.class };
         final IProject[] allProjects = root.getProjects();
         final List<IProject> rejectedElements = new ArrayList<IProject>(
                 allProjects.length);
@@ -50,8 +49,7 @@ public class DirectorySelectUtil {
             initSelection = root.findMember(outputLocation);
         }
 
-        final FolderSelectionDialog dialog = new FolderSelectionDialog(shell,
-                lp, cp);
+        final FolderSelectionDialog dialog = new FolderSelectionDialog(shell, lp, cp);
         dialog.setTitle(dialogTitle);
 
         final ISelectionStatusValidator validator = new ISelectionStatusValidator() {

@@ -52,8 +52,7 @@ public class DuplicatesUIManager {
      * @param root
      *            list of the duplicates
      */
-    public static void setRefactoringResults(
-            final List<DuplicatedCodeElement> root) {
+    public static void setRefactoringResults(final List<DuplicatedCodeElement> root) {
         dupDisplayer.showResult(root);
     }
 
@@ -67,8 +66,7 @@ public class DuplicatesUIManager {
         try {
 
             @SuppressWarnings("unused")
-            final IViewPart view = window.getActivePage().showView(
-                    duplicatedView);
+            final IViewPart view = window.getActivePage().showView(duplicatedView);
 
         } catch (final PartInitException e) {
             ErlLogger.error(e);

@@ -73,8 +73,7 @@ public class EscapeRule implements IPredicateRule {
     }
 
     public boolean isHexChar(final int c) {
-        return c >= '0' && c <= '7' || c >= 'a' && c <= 'f' || c >= 'A'
-                && c <= 'F';
+        return c >= '0' && c <= '7' || c >= 'a' && c <= 'f' || c >= 'A' && c <= 'F';
     }
 
     @Override

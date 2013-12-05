@@ -47,31 +47,26 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
 
     @Override
     public void launch(final ILaunchConfiguration config, final String mode,
-            final ILaunch launch, final IProgressMonitor monitor)
-            throws CoreException {
+            final ILaunch launch, final IProgressMonitor monitor) throws CoreException {
         assertThat(config, is(not(nullValue())));
 
-        RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoCatalog()
-                .getRuntime(
-                        config.getAttribute(ErlRuntimeAttributes.RUNTIME_NAME,
-                                ""));
+        RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoCatalog().getRuntime(
+                config.getAttribute(ErlRuntimeAttributes.RUNTIME_NAME, ""));
         if (runtimeInfo == null) {
-            runtimeInfo = BackendCore.getRuntimeInfoCatalog()
-                    .getDefaultRuntime();
+            runtimeInfo = BackendCore.getRuntimeInfoCatalog().getDefaultRuntime();
         }
         if (runtimeInfo == null) {
             // TODO what to do here?
             ErlLogger.error("Can't create backend without a runtime defined!");
             return;
         }
-        final String nodeName = config.getAttribute(
-                ErlRuntimeAttributes.NODE_NAME, "");
-        BackendData data = new BackendData(runtimeInfo, config, mode,
-                shouldManageNode(nodeName, BackendCore.getEpmdWatcher()));
+        final String nodeName = config.getAttribute(ErlRuntimeAttributes.NODE_NAME, "");
+        BackendData data = new BackendData(runtimeInfo, config, mode, shouldManageNode(
+                nodeName, BackendCore.getEpmdWatcher()));
         final RuntimeInfo info = data.getRuntimeInfo();
         if (info == null) {
-            ErlLogger.error("Could not find runtime '%s'", data
-                    .getRuntimeInfo().getName());
+            ErlLogger.error("Could not find runtime '%s'", data.getRuntimeInfo()
+                    .getName());
             return;
         }
 
@@ -82,8 +77,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
         }
         IErlRuntime runtime;
         if (!isErlangInternalLaunch(launch)) {
-            backend = BackendCore.getBackendManager().createExecutionBackend(
-                    data);
+            backend = BackendCore.getBackendManager().createExecutionBackend(data);
             runtime = backend.getRuntime();
         } else {
             runtime = ErlRuntimeFactory.createRuntime(data);
@@ -96,11 +90,9 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
      * Child classes override this to set specific information
      */
     protected BackendData configureBackend(final BackendData data,
-            final ILaunchConfiguration config, final String mode,
-            final ILaunch launch) {
+            final ILaunchConfiguration config, final String mode, final ILaunch launch) {
         data.setLaunch(launch);
-        data.setBeamLocator(ErlangEngine.getInstance().getService(
-                IBeamLocator.class));
+        data.setBeamLocator(ErlangEngine.getInstance().getService(IBeamLocator.class));
         return data;
     }
 
@@ -116,17 +108,15 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
         final Map<String, String> map = Maps.newHashMap();
         map.put("NodeName", data.getNodeName());
         map.put("workingDir", data.getWorkingDir());
-        final IProcess erts = DebugPlugin.newProcess(launch, process,
-                data.getNodeName(), map);
+        final IProcess erts = DebugPlugin.newProcess(launch, process, data.getNodeName(),
+                map);
 
-        ErlLogger.debug("Started erts: %s >> %s", erts.getLabel(),
-                data.getNodeName());
+        ErlLogger.debug("Started erts: %s >> %s", erts.getLabel(), data.getNodeName());
     }
 
     private void setCaptureOutput(final ILaunch launch) {
         // important, we don't want the "normal" console for the erlide backend
-        final String captureOutput = System.getProperty(
-                "erlide.console.stdout", "false");
+        final String captureOutput = System.getProperty("erlide.console.stdout", "false");
         launch.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, captureOutput);
     }
 
@@ -149,8 +139,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
             final ILaunchConfiguration cfg = aLaunch.getLaunchConfiguration();
             final ILaunchConfigurationType type = cfg.getType();
             final String id = type.getIdentifier();
-            return IErlangLaunchDelegateConstants.CONFIGURATION_TYPE_INTERNAL
-                    .equals(id);
+            return IErlangLaunchDelegateConstants.CONFIGURATION_TYPE_INTERNAL.equals(id);
         } catch (final CoreException e) {
             ErlLogger.warn(e);
             return false;

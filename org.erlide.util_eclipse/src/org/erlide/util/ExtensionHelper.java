@@ -25,8 +25,7 @@ public class ExtensionHelper {
         // we may not be in eclipse env when testing
         if (registry != null) {
             try {
-                final IExtensionPoint extensionPoint = registry
-                        .getExtensionPoint(type);
+                final IExtensionPoint extensionPoint = registry.getExtensionPoint(type);
                 extensions = extensionPoint.getExtensions();
             } catch (final Exception e) {
                 ErlLogger.error("Error getting extension for:" + type + " -- "
@@ -71,8 +70,7 @@ public class ExtensionHelper {
         // For each extension ...
         for (int i = 0; i < extensions.length; i++) {
             final IExtension extension = extensions[i];
-            final IConfigurationElement[] elements = extension
-                    .getConfigurationElements();
+            final IConfigurationElement[] elements = extension.getConfigurationElements();
             // For each member of the extension ...
             for (int j = 0; j < elements.length; j++) {
                 final IConfigurationElement element = elements[j];

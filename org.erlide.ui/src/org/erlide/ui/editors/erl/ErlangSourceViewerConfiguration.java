@@ -47,8 +47,7 @@ import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 import org.erlide.ui.util.IColorManager;
 
-public class ErlangSourceViewerConfiguration extends
-        TextSourceViewerConfiguration {
+public class ErlangSourceViewerConfiguration extends TextSourceViewerConfiguration {
 
     protected final IColorManager colorManager;
     protected ErlTokenScanner charScanner;
@@ -81,8 +80,7 @@ public class ErlangSourceViewerConfiguration extends
     }
 
     @Override
-    public String getConfiguredDocumentPartitioning(
-            final ISourceViewer sourceViewer) {
+    public String getConfiguredDocumentPartitioning(final ISourceViewer sourceViewer) {
         return IErlangPartitions.ERLANG_PARTITIONING;
     }
 
@@ -117,15 +115,14 @@ public class ErlangSourceViewerConfiguration extends
 
     public ICharacterPairMatcher getBracketMatcher() {
         if (fBracketMatcher == null) {
-            fBracketMatcher = new ErlangPairMatcher(new String[] { "(", ")",
-                    "{", "}", "[", "]", "<<", ">>" });
+            fBracketMatcher = new ErlangPairMatcher(new String[] { "(", ")", "{", "}",
+                    "[", "]", "<<", ">>" });
         }
         return fBracketMatcher;
     }
 
     public boolean affectsTextPresentation(final PropertyChangeEvent event) {
-        return event.getProperty().startsWith(
-                ColoringPreferencePage.COLORS_QUALIFIER);
+        return event.getProperty().startsWith(ColoringPreferencePage.COLORS_QUALIFIER);
     }
 
     public void handlePropertyChangeEvent(final PropertyChangeEvent event) {
@@ -138,8 +135,8 @@ public class ErlangSourceViewerConfiguration extends
         if (TokenHighlight.isColorKey(property)) {
             id = TokenHighlight.getKeyName(property);
             try {
-                color = newValue != null ? StringConverter
-                        .asRGB((String) newValue) : null;
+                color = newValue != null ? StringConverter.asRGB((String) newValue)
+                        : null;
             } catch (final Exception e) {
                 color = null;
             }
@@ -195,8 +192,7 @@ public class ErlangSourceViewerConfiguration extends
         return new IInformationControlCreator() {
 
             @Override
-            public IInformationControl createInformationControl(
-                    final Shell parent) {
+            public IInformationControl createInformationControl(final Shell parent) {
                 return new DefaultInformationControl(parent,
                         EditorsUI.getTooltipAffordanceString(),
                         new ErlInformationPresenter(true));
@@ -205,8 +201,7 @@ public class ErlangSourceViewerConfiguration extends
     }
 
     @Override
-    public IQuickAssistAssistant getQuickAssistAssistant(
-            final ISourceViewer sourceViewer) {
+    public IQuickAssistAssistant getQuickAssistAssistant(final ISourceViewer sourceViewer) {
         final IQuickAssistAssistant assistant = new QuickAssistAssistant();
         assistant.setQuickAssistProcessor(new ErlangQuickAssistProcessor());
         assistant
@@ -223,8 +218,7 @@ public class ErlangSourceViewerConfiguration extends
     private IInformationControlCreator getQuickAssistAssistantInformationControlCreator() {
         return new IInformationControlCreator() {
             @Override
-            public IInformationControl createInformationControl(
-                    final Shell parent) {
+            public IInformationControl createInformationControl(final Shell parent) {
                 final String affordance = getAdditionalInfoAffordanceString();
                 return new DefaultInformationControl(parent, affordance);
             }
@@ -251,32 +245,28 @@ public class ErlangSourceViewerConfiguration extends
     }
 
     @Override
-    public IContentAssistant getContentAssistant(
-            final ISourceViewer sourceViewer) {
+    public IContentAssistant getContentAssistant(final ISourceViewer sourceViewer) {
         final ContentAssistant contentAssistant = new ContentAssistant();
         contentAssistant
                 .setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 
         final IErlModule module = getModule();
         final IErlProject project = getProject();
-        contentAssistProcessor = new ErlContentAssistProcessor(sourceViewer,
-                module, project, contentAssistant);
+        contentAssistProcessor = new ErlContentAssistProcessor(sourceViewer, module,
+                project, contentAssistant);
         contentAssistProcessorForStrings = new ErlStringContentAssistProcessor(
                 sourceViewer, module, project, contentAssistant);
 
         contentAssistProcessor.setToPrefs();
         contentAssistant.setContentAssistProcessor(contentAssistProcessor,
                 IDocument.DEFAULT_CONTENT_TYPE);
-        contentAssistant.setContentAssistProcessor(
-                contentAssistProcessorForStrings,
+        contentAssistant.setContentAssistProcessor(contentAssistProcessorForStrings,
                 IErlangPartitions.ERLANG_STRING);
         contentAssistant.enableAutoInsert(true);
         contentAssistant.enablePrefixCompletion(false);
-        contentAssistant
-                .setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
+        contentAssistant.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
 
-        contentAssistant
-                .setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+        contentAssistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
         contentAssistant
                 .setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
         contentAssistant
@@ -302,8 +292,8 @@ public class ErlangSourceViewerConfiguration extends
     protected final static IAutoEditStrategy[] NO_AUTOEDIT = new IAutoEditStrategy[] {};
 
     @Override
-    public IAutoEditStrategy[] getAutoEditStrategies(
-            final ISourceViewer sourceViewer, final String contentType) {
+    public IAutoEditStrategy[] getAutoEditStrategies(final ISourceViewer sourceViewer,
+            final String contentType) {
         return NO_AUTOEDIT;
     }
 
@@ -313,8 +303,8 @@ public class ErlangSourceViewerConfiguration extends
         final IErlModule module = null;
         final String path = null;
         final boolean logging = false;
-        final ErlReconciler reconciler = new ErlReconciler(strategy, true,
-                true, path, module, logging, null);
+        final ErlReconciler reconciler = new ErlReconciler(strategy, true, true, path,
+                module, logging, null);
         reconciler.setProgressMonitor(new NullProgressMonitor());
         reconciler.setIsAllowedToModifyDocument(false);
         reconciler.setDelay(500);

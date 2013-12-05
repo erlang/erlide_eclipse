@@ -102,8 +102,7 @@ public class PushActionDelegate implements IViewActionDelegate {
      * .IAction, org.eclipse.jface.viewers.ISelection)
      */
     @Override
-    public void selectionChanged(final IAction action,
-            final ISelection selection) {
+    public void selectionChanged(final IAction action, final ISelection selection) {
     }
 
 }

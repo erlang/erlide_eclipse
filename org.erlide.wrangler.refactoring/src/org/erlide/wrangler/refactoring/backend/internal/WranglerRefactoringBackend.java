@@ -63,10 +63,8 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      * @return parsed RPC message
      */
     public IRpcMessage callWithParser(final IRpcMessage parser,
-            final String functionName, final String signature,
-            final Object... parameters) {
-        final RpcResult res = callWithoutParser(functionName, signature,
-                parameters);
+            final String functionName, final String signature, final Object... parameters) {
+        final RpcResult res = callWithoutParser(functionName, signature, parameters);
         parser.parse(res);
         return parser;
     }
@@ -85,8 +83,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      */
     public AbstractRefactoringRpcMessage call(final String functionName,
             final String signature, final Object... parameters) {
-        final RpcResult res = callWithoutParser(functionName, signature,
-                parameters);
+        final RpcResult res = callWithoutParser(functionName, signature, parameters);
         final AbstractRefactoringRpcMessage message = new RefactoringRpcMessage();
         message.parse(res);
         return message;
@@ -103,8 +100,8 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      *            parameters array
      * @return raw RPC result
      */
-    public RpcResult callWithoutParser(final String functionName,
-            final String signature, final Object... parameters) {
+    public RpcResult callWithoutParser(final String functionName, final String signature,
+            final Object... parameters) {
         /*
          * ErlLogger .info("Wrangler call: " + makeLogStr(functionName,
          * parameters)); RpcResultImpl res = backend.call_noexception(MODULE,
@@ -126,18 +123,15 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      *            parameters
      * @return RpcResultImpl object
      */
-    public RpcResult callWithoutParser(final int timeout,
-            final String functionName, final String signature,
-            final Object... parameters) {
-        ErlLogger
-                .info("Wrangler call: " + makeLogStr(functionName, parameters));
+    public RpcResult callWithoutParser(final int timeout, final String functionName,
+            final String signature, final Object... parameters) {
+        ErlLogger.info("Wrangler call: " + makeLogStr(functionName, parameters));
         RpcResult res;
         if (timeout < 0) {
-            res = backend.call_noexception(MODULE, functionName, signature,
-                    parameters);
+            res = backend.call_noexception(MODULE, functionName, signature, parameters);
         } else {
-            res = backend.call_noexception(timeout, MODULE, functionName,
-                    signature, parameters);
+            res = backend.call_noexception(timeout, MODULE, functionName, signature,
+                    parameters);
         }
 
         // ErlLogger.info("Warning: " + err);
@@ -165,8 +159,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
         try {
             if (res.isOk()) {
                 final OtpErlangAtom b = (OtpErlangAtom) res.getValue();
-                return b.atomValue().equals("true")
-                        || b.atomValue().equals("ok");
+                return b.atomValue().equals("true") || b.atomValue().equals("ok");
             }
         } catch (final Exception e) {
             ErlLogger.error(e);
@@ -186,8 +179,8 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      *            function parameters
      * @return RpcResultImpl wrapped result
      */
-    public RpcResult callInspection(final String functionName,
-            final String signature, final Object... parameters) {
+    public RpcResult callInspection(final String functionName, final String signature,
+            final Object... parameters) {
         ErlLogger.info("Wrangler inspection call: "
                 + makeLogStr(functionName, parameters));
         RpcResult res;
@@ -206,8 +199,8 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
         final RpcResult res = backend.call_noexception("wrangler_error_logger",
                 "get_logged_info", "");
         @SuppressWarnings("unused")
-        final RpcResult res2 = backend.call_noexception(
-                "wrangler_error_logger", "remove_all_from_logger", "");
+        final RpcResult res2 = backend.call_noexception("wrangler_error_logger",
+                "remove_all_from_logger", "");
         return res;
     }
 

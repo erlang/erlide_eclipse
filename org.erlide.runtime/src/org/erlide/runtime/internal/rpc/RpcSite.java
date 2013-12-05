@@ -40,8 +40,7 @@ public class RpcSite implements IRpcSite {
     public static final long INFINITY = Long.MAX_VALUE;
 
     // use this for debugging
-    public static final boolean CHECK_RPC = Boolean
-            .getBoolean("erlide.checkrpc");
+    public static final boolean CHECK_RPC = Boolean.getBoolean("erlide.checkrpc");
 
     public static long DEFAULT_TIMEOUT;
     {
@@ -89,13 +88,13 @@ public class RpcSite implements IRpcSite {
     }
 
     @Override
-    public IRpcFuture async_call(final OtpErlangObject gleader,
-            final String module, final String fun, final String signature,
-            final Object... args0) throws RpcException {
+    public IRpcFuture async_call(final OtpErlangObject gleader, final String module,
+            final String fun, final String signature, final Object... args0)
+            throws RpcException {
         checkConnected();
         try {
-            return sendRpcCall(localNode, nodeName, false, gleader, module,
-                    fun, signature, args0);
+            return sendRpcCall(localNode, nodeName, false, gleader, module, fun,
+                    signature, args0);
         } catch (final SignatureException e) {
             throw new RpcException(e);
         }
@@ -104,39 +103,35 @@ public class RpcSite implements IRpcSite {
     @Override
     public IRpcFuture async_call(final String module, final String fun,
             final String signature, final Object... args0) throws RpcException {
-        return async_call(USER_ATOM, module, fun, signature,
-                args0);
+        return async_call(USER_ATOM, module, fun, signature, args0);
     }
 
     @Override
     public void async_call_cb(final IRpcCallback cb, final long timeout,
             final String module, final String fun, final String signature,
             final Object... args) throws RpcException {
-        async_call_cb(cb, timeout, USER_ATOM, module, fun,
-                signature, args);
+        async_call_cb(cb, timeout, USER_ATOM, module, fun, signature, args);
     }
 
     @Override
     public void async_call_cb(final IRpcCallback cb, final long timeout,
-            final OtpErlangObject gleader, final String module,
-            final String fun, final String signature, final Object... args)
-            throws RpcException {
+            final OtpErlangObject gleader, final String module, final String fun,
+            final String signature, final Object... args) throws RpcException {
         checkConnected();
         try {
-            final IRpcFuture future = sendRpcCall(localNode, nodeName, false,
-                    gleader, module, fun, signature, args);
+            final IRpcFuture future = sendRpcCall(localNode, nodeName, false, gleader,
+                    module, fun, signature, args);
             final Runnable target = new Runnable() {
                 @Override
                 public void run() {
                     OtpErlangObject result;
                     try {
-                        result = future.checkedGet(timeout,
-                                TimeUnit.MILLISECONDS);
+                        result = future.checkedGet(timeout, TimeUnit.MILLISECONDS);
                         cb.onSuccess(result);
                     } catch (final Exception e) {
                         // TODO do we want to treat a timeout differently?
-                        ErlLogger.error("Could not execute RPC " + module + ":"
-                                + fun + " : " + e.getMessage());
+                        ErlLogger.error("Could not execute RPC " + module + ":" + fun
+                                + " : " + e.getMessage());
                         cb.onFailure(e);
                     }
                 }
@@ -149,15 +144,14 @@ public class RpcSite implements IRpcSite {
     }
 
     @Override
-    public OtpErlangObject call(final long timeout,
-            final OtpErlangObject gleader, final String module,
-            final String fun, final String signature, final Object... args0)
-            throws RpcException {
+    public OtpErlangObject call(final long timeout, final OtpErlangObject gleader,
+            final String module, final String fun, final String signature,
+            final Object... args0) throws RpcException {
         checkConnected();
         OtpErlangObject result;
         try {
-            final IRpcFuture future = sendRpcCall(localNode, nodeName, false,
-                    gleader, module, fun, signature, args0);
+            final IRpcFuture future = sendRpcCall(localNode, nodeName, false, gleader,
+                    module, fun, signature, args0);
             OtpErlangObject result1;
             result1 = future.checkedGet(timeout, TimeUnit.MILLISECONDS);
             if (CHECK_RPC) {
@@ -179,8 +173,7 @@ public class RpcSite implements IRpcSite {
     public OtpErlangObject call(final long timeout, final String module,
             final String fun, final String signature, final Object... args0)
             throws RpcException {
-        return call(timeout, USER_ATOM, module, fun, signature,
-                args0);
+        return call(timeout, USER_ATOM, module, fun, signature, args0);
     }
 
     @Override
@@ -189,16 +182,15 @@ public class RpcSite implements IRpcSite {
             throws RpcException {
         checkConnected();
         try {
-            rpcCast(localNode, nodeName, false, gleader, module, fun,
-                    signature, args0);
+            rpcCast(localNode, nodeName, false, gleader, module, fun, signature, args0);
         } catch (final SignatureException e) {
             throw new RpcException(e);
         }
     }
 
     @Override
-    public void cast(final String module, final String fun,
-            final String signature, final Object... args0) throws RpcException {
+    public void cast(final String module, final String fun, final String signature,
+            final Object... args0) throws RpcException {
         cast(USER_ATOM, module, fun, signature, args0);
     }
 
@@ -222,8 +214,7 @@ public class RpcSite implements IRpcSite {
     }
 
     @Override
-    public void send(final String fullNodeName, final String name,
-            final Object msg) {
+    public void send(final String fullNodeName, final String name, final Object msg) {
         try {
             checkConnected();
             send(localNode, fullNodeName, name, msg);
@@ -238,8 +229,8 @@ public class RpcSite implements IRpcSite {
     }
 
     @Override
-    public RpcResult call_noexception(final long timeout, final String m,
-            final String f, final String signature, final Object... args) {
+    public RpcResult call_noexception(final long timeout, final String m, final String f,
+            final String signature, final Object... args) {
         try {
             final OtpErlangObject result = call(timeout, m, f, signature, args);
             return new RpcResult(result);
@@ -249,15 +240,14 @@ public class RpcSite implements IRpcSite {
     }
 
     @Override
-    public void async_call_cb(final IRpcCallback cb, final String m,
-            final String f, final String signature, final Object... args)
-            throws RpcException {
+    public void async_call_cb(final IRpcCallback cb, final String m, final String f,
+            final String signature, final Object... args) throws RpcException {
         async_call_cb(cb, DEFAULT_TIMEOUT, m, f, signature, args);
     }
 
     @Override
-    public OtpErlangObject call(final String m, final String f,
-            final String signature, final Object... a) throws RpcException {
+    public OtpErlangObject call(final String m, final String f, final String signature,
+            final Object... a) throws RpcException {
         return call(DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
@@ -272,8 +262,8 @@ public class RpcSite implements IRpcSite {
 
     private void checkConnected() throws RpcException {
         if (!isConnected()) {
-            throw new RpcException(String.format("backend %s down",
-                    runtime.getNodeName()));
+            throw new RpcException(
+                    String.format("backend %s down", runtime.getNodeName()));
         }
     }
 
@@ -320,9 +310,8 @@ public class RpcSite implements IRpcSite {
         return false;
     }
 
-    private synchronized IRpcFuture sendRpcCall(final OtpNode node,
-            final String peer, final boolean logCalls,
-            final OtpErlangObject gleader, final String module,
+    private synchronized IRpcFuture sendRpcCall(final OtpNode node, final String peer,
+            final boolean logCalls, final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
             throws SignatureException {
         final OtpErlangObject[] args = convertArgs(signature, args0);
@@ -335,15 +324,15 @@ public class RpcSite implements IRpcSite {
             ErlLogger.debug("call -> %s:%s(%s)", args01);
         }
         //
-        final OtpErlangRef ref = RpcMonitor.recordRequest(node, peer, module,
-                fun, args, OtpErlang.sizeOf(res));
+        final OtpErlangRef ref = RpcMonitor.recordRequest(node, peer, module, fun, args,
+                OtpErlang.sizeOf(res));
         //
         mbox.send("rex", peer, res);
         if (CHECK_RPC) {
             ErlLogger.debug("RPC " + mbox.hashCode() + "=> " + res);
         }
-        return new RpcFutureImpl(ref, mbox, module + ":" + fun + "/"
-                + args0.length, logCalls, this);
+        return new RpcFutureImpl(ref, mbox, module + ":" + fun + "/" + args0.length,
+                logCalls, this);
     }
 
     private static final String SEP = ", ";
@@ -354,8 +343,8 @@ public class RpcSite implements IRpcSite {
             final String s = arg.toString();
             result.append(s).append(SEP);
         }
-        final String r = result.length() == 0 ? "" : result.substring(0,
-                result.length() - SEP.length());
+        final String r = result.length() == 0 ? "" : result.substring(0, result.length()
+                - SEP.length());
         return r;
     }
 
@@ -411,8 +400,8 @@ public class RpcSite implements IRpcSite {
     }
 
     private OtpErlangObject buildRpcCall(final OtpErlangPid pid,
-            final OtpErlangObject gleader, final String module,
-            final String fun, final OtpErlangObject[] args) {
+            final OtpErlangObject gleader, final String module, final String fun,
+            final OtpErlangObject[] args) {
         final OtpErlangObject m = new OtpErlangAtom(module);
         final OtpErlangObject f = new OtpErlangAtom(fun);
         final OtpErlangObject a = new OtpErlangList(args);
@@ -420,10 +409,9 @@ public class RpcSite implements IRpcSite {
                 OtpErlang.mkTuple(new OtpErlangAtom("call"), m, f, a, gleader));
     }
 
-    private void rpcCast(final OtpNode node, final String peer,
-            final boolean logCalls, final OtpErlangObject gleader,
-            final String module, final String fun, final String signature,
-            final Object... args0) throws SignatureException {
+    private void rpcCast(final OtpNode node, final String peer, final boolean logCalls,
+            final OtpErlangObject gleader, final String module, final String fun,
+            final String signature, final Object... args0) throws SignatureException {
         final OtpErlangObject[] args = convertArgs(signature, args0);
 
         OtpErlangObject msg = null;
@@ -438,8 +426,8 @@ public class RpcSite implements IRpcSite {
         }
     }
 
-    private OtpErlangObject[] convertArgs(final String signature,
-            final Object... args) throws SignatureException {
+    private OtpErlangObject[] convertArgs(final String signature, final Object... args)
+            throws SignatureException {
         final Object[] args0 = args == null ? new OtpErlangObject[] {} : args;
 
         Signature[] type;
@@ -451,9 +439,8 @@ public class RpcSite implements IRpcSite {
             }
         }
         if (type.length != args0.length) {
-            throw new SignatureException(
-                    "Signature doesn't match parameter number: " + type.length
-                            + "/" + args0.length);
+            throw new SignatureException("Signature doesn't match parameter number: "
+                    + type.length + "/" + args0.length);
         }
         final OtpErlangObject[] args1 = new OtpErlangObject[args0.length];
         for (int i = 0; i < args1.length; i++) {

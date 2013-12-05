@@ -5,8 +5,7 @@ import org.erlide.engine.util.PreferencesHelper;
 
 public class PerformanceTuning {
 
-    private static final String QUALIFIER = ErlangCore.PLUGIN_ID
-            + "/performance";
+    private static final String QUALIFIER = ErlangCore.PLUGIN_ID + "/performance";
     private final PreferencesHelper helper;
 
     /**
@@ -34,8 +33,7 @@ public class PerformanceTuning {
     }
 
     public void load() {
-        foldingLimit = helper.getInt(FOLDING_DISABLE_LIMIT_KEY,
-                DEFAULT_FOLDING_LIMIT);
+        foldingLimit = helper.getInt(FOLDING_DISABLE_LIMIT_KEY, DEFAULT_FOLDING_LIMIT);
     }
 
     public void store() {

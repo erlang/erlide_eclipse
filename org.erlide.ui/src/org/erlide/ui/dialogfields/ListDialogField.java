@@ -74,8 +74,7 @@ public class ListDialogField<Element> extends DialogField {
             this.fDrawLines = drawLines;
         }
 
-        public ColumnsDescription(final String[] headers,
-                final boolean drawLines) {
+        public ColumnsDescription(final String[] headers, final boolean drawLines) {
             this(createColumnWeightData(headers.length), headers, drawLines);
         }
 
@@ -83,8 +82,7 @@ public class ListDialogField<Element> extends DialogField {
             this(createColumnWeightData(nColumns), null, drawLines);
         }
 
-        private static ColumnLayoutData[] createColumnWeightData(
-                final int nColumns) {
+        private static ColumnLayoutData[] createColumnWeightData(final int nColumns) {
             final ColumnLayoutData[] data = new ColumnLayoutData[nColumns];
             for (int i = 0; i < nColumns; i++) {
                 data[i] = new ColumnWeightData(1);
@@ -328,8 +326,8 @@ public class ListDialogField<Element> extends DialogField {
                 fTableControl = tableControl;
                 tableControl.setLayout(new TableLayout());
             } else {
-                final TableLayoutComposite composite = new TableLayoutComposite(
-                        parent, SWT.NONE);
+                final TableLayoutComposite composite = new TableLayoutComposite(parent,
+                        SWT.NONE);
                 fTableControl = composite;
 
                 fTable = createTableViewer(composite);
@@ -340,8 +338,7 @@ public class ListDialogField<Element> extends DialogField {
                 final ColumnLayoutData[] columns = fTableColumns.fColumns;
                 for (int i = 0; i < columns.length; i++) {
                     composite.addColumnData(columns[i]);
-                    final TableColumn column = new TableColumn(tableControl,
-                            SWT.NONE);
+                    final TableColumn column = new TableColumn(tableControl, SWT.NONE);
                     // tableLayout.addColumnData(columns[i]);
                     if (fTableColumns.fHeaders != null) {
                         column.setText(fTableColumns.fHeaders[i]);
@@ -464,10 +461,8 @@ public class ListDialogField<Element> extends DialogField {
                 for (int i = 0; i < fButtonLabels.length; i++) {
                     final String currLabel = fButtonLabels[i];
                     if (currLabel != null) {
-                        fButtonControls[i] = createButton(contents, currLabel,
-                                listener);
-                        fButtonControls[i].setEnabled(isEnabled()
-                                && fButtonsEnabled[i]);
+                        fButtonControls[i] = createButton(contents, currLabel, listener);
+                        fButtonControls[i].setEnabled(isEnabled() && fButtonsEnabled[i]);
                     } else {
                         fButtonControls[i] = null;
                         createSeparator(contents);
@@ -502,8 +497,7 @@ public class ListDialogField<Element> extends DialogField {
     protected void handleKeyPressed(final KeyEvent event) {
         if (event.character == SWT.DEL && event.stateMask == 0) {
             if (fRemoveButtonIndex != -1
-                    && isButtonEnabled(fTable.getSelection(),
-                            fRemoveButtonIndex)) {
+                    && isButtonEnabled(fTable.getSelection(), fRemoveButtonIndex)) {
                 managedButtonPressed(fRemoveButtonIndex);
             }
         }
@@ -535,8 +529,7 @@ public class ListDialogField<Element> extends DialogField {
         }
     }
 
-    protected boolean getManagedButtonState(final ISelection sel,
-            final int index) {
+    protected boolean getManagedButtonState(final ISelection sel, final int index) {
         if (index == fRemoveButtonIndex) {
             return !sel.isEmpty();
         } else if (index == fUpButtonIndex) {
@@ -621,8 +614,7 @@ public class ListDialogField<Element> extends DialogField {
     /**
      * Replace an element.
      */
-    public void replaceElement(final Element oldElement,
-            final Element newElement) {
+    public void replaceElement(final Element oldElement, final Element newElement) {
         final int idx = fElements.indexOf(oldElement);
         if (idx != -1) {
             fElements.set(idx, newElement);
@@ -671,8 +663,7 @@ public class ListDialogField<Element> extends DialogField {
 
         if (nElements > 0) {
             // filter duplicated
-            final ArrayList<Element> elementsToAdd = new ArrayList<Element>(
-                    nElements);
+            final ArrayList<Element> elementsToAdd = new ArrayList<Element>(nElements);
 
             for (int i = 0; i < nElements; i++) {
                 final Element elem = elements.get(i);
@@ -789,8 +780,7 @@ public class ListDialogField<Element> extends DialogField {
 
     // ------- list maintenance
 
-    private List<Element> moveUp(final List<Element> elements,
-            final List<Element> move) {
+    private List<Element> moveUp(final List<Element> elements, final List<Element> move) {
         final int nElements = elements.size();
         final List<Element> res = new ArrayList<Element>(nElements);
         Element floating = null;

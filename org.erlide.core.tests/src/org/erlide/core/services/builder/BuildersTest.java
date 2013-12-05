@@ -102,8 +102,7 @@ public class BuildersTest {
 
     private void testBuilder(final BuilderTool builder) throws CoreException {
         ErlangNature.setErlangProjectBuilder(prj, builder);
-        final String builderId = ErlangBuilder.getFactory().getBuilder(builder)
-                .getId();
+        final String builderId = ErlangBuilder.getFactory().getBuilder(builder).getId();
         final String targetBeamPath = "ebin/mod.beam";
 
         final IResource beam0 = prj.findMember(targetBeamPath);

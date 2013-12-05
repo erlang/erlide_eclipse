@@ -49,8 +49,7 @@ public class NormalizeRecordExpression extends SimpleOneStepWranglerRefactoring 
         final IErlSelection sel = GlobalParameters.getWranglerSelection();
         if (sel instanceof IErlMemberSelection) {
             final SelectionKind kind = sel.getKind();
-            if (kind == SelectionKind.FUNCTION_CLAUSE
-                    || kind == SelectionKind.FUNCTION) {
+            if (kind == SelectionKind.FUNCTION_CLAUSE || kind == SelectionKind.FUNCTION) {
                 return new RefactoringStatus();
             }
         }
@@ -69,9 +68,8 @@ public class NormalizeRecordExpression extends SimpleOneStepWranglerRefactoring 
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
         return WranglerBackendManager.getRefactoringBackend().call(
                 "normalise_record_expr_eclipse", "sxxxi", sel.getFilePath(),
-                sel.getSelectionRange().getStartPos(),
-                new OtpErlangBoolean(showDefault), sel.getSearchPath(),
-                GlobalParameters.getTabWidth());
+                sel.getSelectionRange().getStartPos(), new OtpErlangBoolean(showDefault),
+                sel.getSearchPath(), GlobalParameters.getTabWidth());
 
     }
 }

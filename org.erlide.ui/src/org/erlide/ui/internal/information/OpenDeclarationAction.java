@@ -60,8 +60,8 @@ public final class OpenDeclarationAction extends Action {
                     final OpenResult or = (OpenResult) element;
                     try {
                         final AbstractErlangEditor editor = input.getEditor();
-                        new OpenUtils().openOpenResult(editor,
-                                editor.getModule(), -1, null, or, null);
+                        new OpenUtils().openOpenResult(editor, editor.getModule(), -1,
+                                null, or, null);
                     } catch (final Exception e) {
                         ErlLogger.error(e);
                     }

@@ -53,27 +53,23 @@ public class DebuggerEventFactory {
         return parseMeta(b.getPid("Meta"), b.get("Event"));
     }
 
-    private static MetaEvent parseMeta(final OtpErlangPid pid,
-            final OtpErlangObject event) {
+    private static MetaEvent parseMeta(final OtpErlangPid pid, final OtpErlangObject event) {
         try {
-            Bindings b = ErlUtils
-                    .match("{break_at, Mod:a, Line:i, Crt}", event);
+            Bindings b = ErlUtils.match("{break_at, Mod:a, Line:i, Crt}", event);
             if (b != null) {
-                return new BreakAtEvent(pid, b.getAtom("Mod"),
-                        b.getInt("Line"), b.get("Crt"));
+                return new BreakAtEvent(pid, b.getAtom("Mod"), b.getInt("Line"),
+                        b.get("Crt"));
             }
             b = ErlUtils.match("{exit_at, Pos, Reason, Le, OrigPid:p}", event);
             if (b != null) {
-                return new ExitAtEvent(pid, b.get("Pos"), b.get("Reason"),
-                        b.get("Le"), b.getPid("OrigPid"));
+                return new ExitAtEvent(pid, b.get("Pos"), b.get("Reason"), b.get("Le"),
+                        b.getPid("OrigPid"));
             }
-            b = ErlUtils.match(
-                    "{exit_at, Pos, Reason, Le, OrigPid:p, Stack:l, Binds:l}",
+            b = ErlUtils.match("{exit_at, Pos, Reason, Le, OrigPid:p, Stack:l, Binds:l}",
                     event);
             if (b != null) {
-                return new ExitAtEvent(pid, b.get("Pos"), b.get("Reason"),
-                        b.get("Le"), b.getPid("OrigPid"),
-                        (OtpErlangList) b.get("Stack"),
+                return new ExitAtEvent(pid, b.get("Pos"), b.get("Reason"), b.get("Le"),
+                        b.getPid("OrigPid"), (OtpErlangList) b.get("Stack"),
                         (OtpErlangList) b.get("Binds"));
             }
             b = ErlUtils.match("{wait_at, Mod:a, Line:i, Crt}", event);
@@ -114,8 +110,7 @@ public class DebuggerEventFactory {
                 return new IntEvent(cmds);
             }
         } catch (final Exception e) {
-            return new IntEvent(
-                    new OtpErlangObject[] { new OtpErlangAtom("nop") });
+            return new IntEvent(new OtpErlangObject[] { new OtpErlangAtom("nop") });
         }
     }
 

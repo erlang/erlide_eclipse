@@ -22,8 +22,7 @@ public class StatsViewContentProvider implements ITreeContentProvider {
     }
 
     @Override
-    public void inputChanged(final Viewer v, final Object oldInput,
-            final Object newInput) {
+    public void inputChanged(final Viewer v, final Object oldInput, final Object newInput) {
         if (newInput instanceof StatsTreeModel) {
             model = (StatsTreeModel) newInput;
         }
@@ -54,8 +53,7 @@ public class StatsViewContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getChildren(final Object parent) {
-        if (parent instanceof ICoverageObject
-                && ((ICoverageObject) parent).hasChildren()) {
+        if (parent instanceof ICoverageObject && ((ICoverageObject) parent).hasChildren()) {
             return ((ICoverageObject) parent).getChildren();
         }
         return new Object[0];

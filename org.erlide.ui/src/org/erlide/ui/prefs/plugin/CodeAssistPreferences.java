@@ -9,8 +9,7 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public class CodeAssistPreferences {
 
-    private static final String QUALIFIER = ErlangCore.PLUGIN_ID
-            + "/codeassist";
+    private static final String QUALIFIER = ErlangCore.PLUGIN_ID + "/codeassist";
 
     private final PreferencesHelper helper;
 
@@ -21,8 +20,7 @@ public class CodeAssistPreferences {
 
     public static IEclipsePreferences getNode() {
         final IScopeContext context = InstanceScope.INSTANCE;
-        final IEclipsePreferences eclipsePreferences = context
-                .getNode(QUALIFIER);
+        final IEclipsePreferences eclipsePreferences = context.getNode(QUALIFIER);
         return eclipsePreferences;
     }
 
@@ -41,26 +39,21 @@ public class CodeAssistPreferences {
     }
 
     public void store() throws BackingStoreException {
-        helper.putBoolean(CodeAssistPreferencesConstants.AUTO_ACTIVATE,
-                autoActivate);
+        helper.putBoolean(CodeAssistPreferencesConstants.AUTO_ACTIVATE, autoActivate);
         helper.putInt(CodeAssistPreferencesConstants.DELAY_IN_MS, delayInMS);
-        helper.putString(CodeAssistPreferencesConstants.ERLANG_TRIGGERS,
-                erlangTriggers);
-        helper.putString(CodeAssistPreferencesConstants.EDOC_TRIGGERS,
-                eDocTriggers);
+        helper.putString(CodeAssistPreferencesConstants.ERLANG_TRIGGERS, erlangTriggers);
+        helper.putString(CodeAssistPreferencesConstants.EDOC_TRIGGERS, eDocTriggers);
         helper.flush();
     }
 
     @SuppressWarnings("boxing")
     public void load() {
-        autoActivate = helper.getBoolean(
-                CodeAssistPreferencesConstants.AUTO_ACTIVATE, true);
-        delayInMS = helper.getInt(CodeAssistPreferencesConstants.DELAY_IN_MS,
-                50);
-        erlangTriggers = helper.getString(
-                CodeAssistPreferencesConstants.ERLANG_TRIGGERS, ":#?");
-        eDocTriggers = helper.getString(
-                CodeAssistPreferencesConstants.EDOC_TRIGGERS, "");
+        autoActivate = helper.getBoolean(CodeAssistPreferencesConstants.AUTO_ACTIVATE,
+                true);
+        delayInMS = helper.getInt(CodeAssistPreferencesConstants.DELAY_IN_MS, 50);
+        erlangTriggers = helper.getString(CodeAssistPreferencesConstants.ERLANG_TRIGGERS,
+                ":#?");
+        eDocTriggers = helper.getString(CodeAssistPreferencesConstants.EDOC_TRIGGERS, "");
     }
 
     @Override

@@ -74,8 +74,7 @@ public class ErlDirtyRegion {
      * @return
      */
     public boolean isMergable(final ErlDirtyRegion nextMerge) {
-        return getOffset() - getLength() + getTextLength() == nextMerge
-                .getOffset()
+        return getOffset() - getLength() + getTextLength() == nextMerge.getOffset()
                 || getOffset() == nextMerge.getOffset() - nextMerge.getLength()
                         + nextMerge.getTextLength();
     }

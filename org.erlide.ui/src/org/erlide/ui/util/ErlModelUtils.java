@@ -47,8 +47,7 @@ public class ErlModelUtils {
             final IErlModule module, final IErlProject project,
             final IErlElementLocator.Scope scope) throws CoreException {
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlModule module2 = ErlangEngine.getInstance()
-                .getModelFindService()
+        final IErlModule module2 = ErlangEngine.getInstance().getModelFindService()
                 .findModule(model, project, moduleName, modulePath, scope);
         if (module2 != null) {
             final IEditorPart editor = EditorUtility.openInEditor(module2);
@@ -57,8 +56,7 @@ public class ErlModelUtils {
         return false;
     }
 
-    public static void openElement(final IErlElement element)
-            throws PartInitException {
+    public static void openElement(final IErlElement element) throws PartInitException {
         final IEditorPart editor = EditorUtility.openInEditor(element);
         EditorUtility.revealInEditor(editor, element);
     }
@@ -72,9 +70,8 @@ public class ErlModelUtils {
     /**
      * Activate editor and select erlang function
      */
-    public static boolean openFunctionInEditor(
-            final ErlangFunction erlangFunction, final IEditorPart editor)
-            throws CoreException {
+    public static boolean openFunctionInEditor(final ErlangFunction erlangFunction,
+            final IEditorPart editor) throws CoreException {
         final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) editor;
         final IErlModule module = erlangEditor.getModule();
         if (module == null) {
@@ -89,16 +86,16 @@ public class ErlModelUtils {
         return true;
     }
 
-    public static boolean openTypeInEditor(final String typeName,
-            final IEditorPart editor) throws CoreException {
+    public static boolean openTypeInEditor(final String typeName, final IEditorPart editor)
+            throws CoreException {
         final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) editor;
         final IErlModule module = erlangEditor.getModule();
         if (module == null) {
             return false;
         }
         module.open(null);
-        final IErlTypespec typespec = ErlangEngine.getInstance()
-                .getModelFindService().findTypespec(module, typeName);
+        final IErlTypespec typespec = ErlangEngine.getInstance().getModelFindService()
+                .findTypespec(module, typeName);
         if (typespec == null) {
             return false;
         }
@@ -179,11 +176,10 @@ public class ErlModelUtils {
         return ResourcesPlugin.getEncoding();
     }
 
-    public static void openMFA(final String module, final String function,
-            final int arity) throws CoreException {
-        ErlModelUtils.openExternalFunction(module, new ErlangFunction(function,
-                arity), null,
-                ErlangEngine.getInstance().getModel().findModule(module), null,
+    public static void openMFA(final String module, final String function, final int arity)
+            throws CoreException {
+        ErlModelUtils.openExternalFunction(module, new ErlangFunction(function, arity),
+                null, ErlangEngine.getInstance().getModel().findModule(module), null,
                 IErlElementLocator.Scope.ALL_PROJECTS);
     }
 

@@ -60,9 +60,8 @@ import org.erlide.util.ErlLogger;
  * AbstractInfoPopupDialog
  * 
  */
-public class QuickOutlinePopupDialog extends PopupDialog implements
-        IInformationControl, IInformationControlExtension,
-        IInformationControlExtension2, DisposeListener {
+public class QuickOutlinePopupDialog extends PopupDialog implements IInformationControl,
+        IInformationControlExtension, IInformationControlExtension2, DisposeListener {
 
     TreeViewer fTreeViewer;
     private final IOutlineContentCreator fOutlineContentCreator;
@@ -79,8 +78,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
     // private ViewerComparator fTreeViewerDefaultComparator;
 
     public QuickOutlinePopupDialog(final Shell parent, final int shellStyle,
-            final AbstractErlangEditor editor,
-            final IOutlineContentCreator creator,
+            final AbstractErlangEditor editor, final IOutlineContentCreator creator,
             final IOutlineSelectionHandler handler) {
         super(parent, shellStyle, true, true, true, true, true, null, null);
         // Set outline creator
@@ -136,12 +134,10 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 	 */
     private void createUIActions() {
         // Add sort action to dialog menu
-        fSortAction = new SortAction(
-                fTreeViewer,
+        fSortAction = new SortAction(fTreeViewer,
                 ErlideUIMessages.PDEMultiPageContentOutline_SortingAction_tooltip,
                 new ErlElementSorter(ErlElementSorter.SORT_ON_NAME),
-                new ErlElementSorter(ErlElementSorter.SORT_ON_EXPORT), null,
-                false, null);
+                new ErlElementSorter(ErlElementSorter.SORT_ON_EXPORT), null, false, null);
     }
 
     @Override
@@ -176,12 +172,10 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
         fNamePatternFilter = new QuickOutlineNamePatternFilter();
         fTreeViewer.addFilter(fNamePatternFilter);
         // Set the content provider
-        fTreeContentProvider = fOutlineContentCreator
-                .createOutlineContentProvider();
+        fTreeContentProvider = fOutlineContentCreator.createOutlineContentProvider();
         fTreeViewer.setContentProvider(fTreeContentProvider);
         // Set the label provider
-        fTreeLabelProvider = fOutlineContentCreator
-                .createOutlineLabelProvider();
+        fTreeLabelProvider = fOutlineContentCreator.createOutlineLabelProvider();
         fTreeViewer.setLabelProvider(fTreeLabelProvider);
         // Create the outline sorter (to be set on the sort action)
         // fTreeViewerComparator = fOutlineContentCreator
@@ -249,8 +243,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
     void handleTreeViewerMouseUp(final Tree tree, final MouseEvent e) {
         // Ensure a selection was made, the first mouse button was
         // used and the event happened in the tree
-        if (tree.getSelectionCount() < 1 || e.button != 1
-                || !tree.equals(e.getSource())) {
+        if (tree.getSelectionCount() < 1 || e.button != 1 || !tree.equals(e.getSource())) {
             return;
         }
         // Selection is made in the selection changed listener
@@ -268,8 +261,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
         if (fTreeViewer == null) {
             return null;
         }
-        return ((IStructuredSelection) fTreeViewer.getSelection())
-                .getFirstElement();
+        return ((IStructuredSelection) fTreeViewer.getSelection()).getFirstElement();
     }
 
     @Override
@@ -296,8 +288,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
 
     @Override
     public boolean isFocusControl() {
-        if (fTreeViewer.getControl().isFocusControl()
-                || fFilterText.isFocusControl()) {
+        if (fTreeViewer.getControl().isFocusControl() || fFilterText.isFocusControl()) {
             return true;
         }
         return false;
@@ -355,8 +346,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
          * constrainShellSize in PopupDialog.open will still ensure that the
          * shell is entirely visible.
          */
-        if (!getPersistLocation() || !getPersistSize()
-                || getDialogSettings() == null) {
+        if (!getPersistLocation() || !getPersistSize() || getDialogSettings() == null) {
             getShell().setLocation(location);
         }
     }
@@ -448,8 +438,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
         }
         dispose();
         if (fEditor != null && selectedElement instanceof IErlElement) {
-            EditorUtility
-                    .revealInEditor(fEditor, (IErlElement) selectedElement);
+            EditorUtility.revealInEditor(fEditor, (IErlElement) selectedElement);
         }
     }
 

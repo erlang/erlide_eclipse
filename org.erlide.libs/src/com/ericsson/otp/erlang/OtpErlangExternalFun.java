@@ -34,8 +34,7 @@ public class OtpErlangExternalFun extends OtpErlangObject {
         this.arity = arity;
     }
 
-    public OtpErlangExternalFun(final OtpInputStream buf)
-            throws OtpErlangDecodeException {
+    public OtpErlangExternalFun(final OtpInputStream buf) throws OtpErlangDecodeException {
         final OtpErlangExternalFun f = buf.read_external_fun();
         module = f.module;
         function = f.function;
@@ -53,8 +52,7 @@ public class OtpErlangExternalFun extends OtpErlangObject {
             return false;
         }
         final OtpErlangExternalFun f = (OtpErlangExternalFun) o;
-        return module.equals(f.module) && function.equals(f.function)
-                && arity == f.arity;
+        return module.equals(f.module) && function.equals(f.function) && arity == f.arity;
     }
 
     @Override

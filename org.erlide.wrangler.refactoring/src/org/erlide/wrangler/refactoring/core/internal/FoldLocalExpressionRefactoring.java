@@ -58,19 +58,17 @@ public class FoldLocalExpressionRefactoring extends
 
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
         ExpressionPosRpcMessage m = new ExpressionPosRpcMessage();
-        m = (ExpressionPosRpcMessage) WranglerBackendManager
-                .getRefactoringBackend().callWithParser(m,
-                        "fold_expr_by_loc_eclipse", "siixi", sel.getFilePath(),
-                        sel.getMemberRange().getStartLine(),
-                        sel.getMemberRange().getStartCol(),
-                        sel.getSearchPath(), GlobalParameters.getTabWidth());
+        m = (ExpressionPosRpcMessage) WranglerBackendManager.getRefactoringBackend()
+                .callWithParser(m, "fold_expr_by_loc_eclipse", "siixi",
+                        sel.getFilePath(), sel.getMemberRange().getStartLine(),
+                        sel.getMemberRange().getStartCol(), sel.getSearchPath(),
+                        GlobalParameters.getTabWidth());
         if (m.isSuccessful()) {
             syntaxTree = m.getSyntaxTree();
             positions = m.getPositionDefinitions(sel.getDocument());
             selectedPositions = new ArrayList<IErlRange>();
         } else {
-            return RefactoringStatus.createFatalErrorStatus(m
-                    .getMessageString());
+            return RefactoringStatus.createFatalErrorStatus(m.getMessageString());
         }
         return new RefactoringStatus();
 
@@ -87,10 +85,9 @@ public class FoldLocalExpressionRefactoring extends
     @Override
     public IRefactoringRpcMessage run(final IErlSelection selection) {
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "fold_expr_1_eclipse", "sxxxi", sel.getFilePath(), syntaxTree,
-                getSelectedPos(), sel.getSearchPath(),
-                GlobalParameters.getTabWidth());
+        return WranglerBackendManager.getRefactoringBackend().call("fold_expr_1_eclipse",
+                "sxxxi", sel.getFilePath(), syntaxTree, getSelectedPos(),
+                sel.getSearchPath(), GlobalParameters.getTabWidth());
     }
 
     @Override
@@ -116,8 +113,7 @@ public class FoldLocalExpressionRefactoring extends
             changedFiles = message.getRefactoringChangeset();
             return new RefactoringStatus();
         }
-        return RefactoringStatus.createFatalErrorStatus(message
-                .getMessageString());
+        return RefactoringStatus.createFatalErrorStatus(message.getMessageString());
     }
 
 }

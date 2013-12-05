@@ -16,8 +16,8 @@ import org.erlide.util.ErlangFunctionCall;
 
 public class HoverUtil {
 
-    public static ErlangFunctionCall eventToErlangFunctionCall(
-            final String moduleName0, final LocationEvent event) {
+    public static ErlangFunctionCall eventToErlangFunctionCall(final String moduleName0,
+            final LocationEvent event) {
         String moduleName = moduleName0;
         final String location = event.location;
         final int hashPos = location.lastIndexOf('#');
@@ -73,8 +73,7 @@ public class HoverUtil {
         return null;
     }
 
-    public static URL getDocumentationURL(
-            final ErlBrowserInformationControlInput input) {
+    public static URL getDocumentationURL(final ErlBrowserInformationControlInput input) {
         final String docPath = input.getDocPath();
         final String anchor = input.getAnchor();
         if (docPath != null) {
@@ -92,15 +91,13 @@ public class HoverUtil {
         return null;
     }
 
-    public static String getDocumentationString(
-            final Collection<IErlMember> comments) {
+    public static String getDocumentationString(final Collection<IErlMember> comments) {
         final StringBuilder stringBuilder = new StringBuilder();
         for (final IErlMember member : comments) {
             try {
                 final String source = "\n" + member.getSource();
                 stringBuilder.append(source.replaceAll("\n%%%", "\n")
-                        .replaceAll("\n%%", "\n").replaceAll("\n%", "\n")
-                        .substring(1)
+                        .replaceAll("\n%%", "\n").replaceAll("\n%", "\n").substring(1)
                         .replaceAll("\n( *([-=] *)+\n)+", "\n<hr/>\n")
                         .replaceAll("^ *([-=] *)+\n", "\n")
                         .replaceAll("\n *([-=] *)+$", "\n"));

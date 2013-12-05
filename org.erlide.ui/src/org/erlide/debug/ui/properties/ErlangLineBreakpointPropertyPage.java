@@ -17,8 +17,7 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.util.ErlLogger;
 
-public class ErlangLineBreakpointPropertyPage extends
-        ErlangBreakpointPropertyPage {
+public class ErlangLineBreakpointPropertyPage extends ErlangBreakpointPropertyPage {
 
     Button fEnableConditionButton;
     private BreakpointConditionEditor fConditionEditor;
@@ -39,8 +38,7 @@ public class ErlangLineBreakpointPropertyPage extends
         final IErlangBreakpoint breakpoint = getBreakpoint();
         super.doStore();
         if (fConditionEditor != null) {
-            final boolean enableCondition = fEnableConditionButton
-                    .getSelection();
+            final boolean enableCondition = fEnableConditionButton.getSelection();
             final String condition = fConditionEditor.getCondition();
             // final boolean suspendOnTrue = fConditionIsTrue.getSelection();
             if (breakpoint.isConditionEnabled() != enableCondition) {
@@ -81,8 +79,7 @@ public class ErlangLineBreakpointPropertyPage extends
     @Override
     protected void createTypeSpecificLabels(final Composite parent) {
         createLabel(parent, "Module:");
-        final String moduleName = getBreakpoint().getMarker().getResource()
-                .getName();
+        final String moduleName = getBreakpoint().getMarker().getResource().getName();
         createText(parent, SWT.READ_ONLY, moduleName).setBackground(
                 parent.getBackground());
         // Line number
@@ -117,8 +114,7 @@ public class ErlangLineBreakpointPropertyPage extends
      * @see org.eclipse.jdt.internal.debug.ui.propertypages.JavaBreakpointPage#createTypeSpecificEditors(org.eclipse.swt.widgets.Composite)
      */
     @Override
-    protected void createTypeSpecificEditors(final Composite parent)
-            throws CoreException {
+    protected void createTypeSpecificEditors(final Composite parent) throws CoreException {
         setTitle("Line Breakpoint");
         final IErlangBreakpoint breakpoint = getBreakpoint();
         if (breakpoint.supportsCondition()) {
@@ -203,8 +199,7 @@ public class ErlangLineBreakpointPropertyPage extends
      * @throws CoreException
      *             if an exception occurs accessing the breakpoint
      */
-    private void createConditionEditor(final Composite parent)
-            throws CoreException {
+    private void createConditionEditor(final Composite parent) throws CoreException {
         final IErlangBreakpoint breakpoint = getBreakpoint();
         // String label = null;
         // if (BreakpointUtils.getType(breakpoint) != null) {
@@ -239,8 +234,7 @@ public class ErlangLineBreakpointPropertyPage extends
                 setConditionEnabled(fEnableConditionButton.getSelection());
             }
         });
-        fConditionEditor = new BreakpointConditionEditor(conditionComposite,
-                this);
+        fConditionEditor = new BreakpointConditionEditor(conditionComposite, this);
         // fSuspendWhenLabel = createLabel(conditionComposite,
         // PropertyPageMessages.JavaLineBreakpointPage_15);
         // fConditionIsTrue = createRadioButton(conditionComposite,
@@ -291,8 +285,7 @@ public class ErlangLineBreakpointPropertyPage extends
         PlatformUI
                 .getWorkbench()
                 .getHelpSystem()
-                .setHelp(
-                        getControl(),
+                .setHelp(getControl(),
                         IErlangHelpContextIds.ERLANG_LINE_BREAKPOINT_PROPERTY_PAGE);
     }
 }

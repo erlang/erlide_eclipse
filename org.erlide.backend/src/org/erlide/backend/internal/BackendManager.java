@@ -86,8 +86,8 @@ public final class BackendManager implements IBackendManager {
 
         loadCodepathExtensions();
 
-        launchListener = new BackendManagerLaunchListener(this, DebugPlugin
-                .getDefault().getLaunchManager());
+        launchListener = new BackendManagerLaunchListener(this, DebugPlugin.getDefault()
+                .getLaunchManager());
     }
 
     @SuppressWarnings("unused")
@@ -101,8 +101,8 @@ public final class BackendManager implements IBackendManager {
         // Win: $OTP/erts-$VSN/bin/epmd
         // Lin: $OTP/bin/$TARGET/epmd
         // Others: ?
-        final String[] cmdline = new String[] {
-                info.getOtpHome() + "/bin/epmd", "-daemon" };
+        final String[] cmdline = new String[] { info.getOtpHome() + "/bin/epmd",
+                "-daemon" };
         try {
             Runtime.getRuntime().exec(cmdline);
             ErlLogger.info("Epmd started.");
@@ -135,14 +135,13 @@ public final class BackendManager implements IBackendManager {
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
         if (erlProject == null) {
-            ErlLogger.warn("Project %s is not an erlang project",
-                    project.getName());
+            ErlLogger.warn("Project %s is not an erlang project", project.getName());
             return null;
         }
         final RuntimeInfo info = erlProject.getRuntimeInfo();
         if (info == null) {
-            ErlLogger.info("Project %s has no runtime info, using ide",
-                    project.getName());
+            ErlLogger
+                    .info("Project %s has no runtime info, using ide", project.getName());
             return ideBackend;
         }
         final String version = info.getVersion().asMajor().toString();
@@ -164,8 +163,7 @@ public final class BackendManager implements IBackendManager {
                 if (ideBackend == null) {
                     ideBackend = factory.createIdeBackend();
                     addBackend(ideBackend);
-                    notifyBackendChange(ideBackend, BackendEvent.ADDED, null,
-                            null);
+                    notifyBackendChange(ideBackend, BackendEvent.ADDED, null, null);
                 }
             }
         }
@@ -213,11 +211,9 @@ public final class BackendManager implements IBackendManager {
         }
     }
 
-    private void remoteNodeStatus(final String node, final boolean up,
-            final Object info) {
+    private void remoteNodeStatus(final String node, final boolean up, final Object info) {
         if (!up) {
-            for (final Entry<IProject, Set<IBackend>> e : executionBackends
-                    .entrySet()) {
+            for (final Entry<IProject, Set<IBackend>> e : executionBackends.entrySet()) {
                 for (final IBackend be : e.getValue()) {
                     final String bnode = be.getData().getQualifiedNodeName();
                     // TODO this is not very reliable
@@ -265,8 +261,7 @@ public final class BackendManager implements IBackendManager {
 
         final Map<String, CodeContext> paths = Maps.newHashMap();
         final List<Pair<String, String>> inits = Lists.newArrayList();
-        for (final IConfigurationElement el : extension
-                .getConfigurationElements()) {
+        for (final IConfigurationElement el : extension.getConfigurationElements()) {
             if ("beam_dir".equals(el.getName())) {
                 final String dir = el.getAttribute("path");
                 final String t = el.getAttribute("context").toUpperCase();
@@ -277,15 +272,13 @@ public final class BackendManager implements IBackendManager {
                 final String function = el.getAttribute("function");
                 inits.add(new Pair<String, String>(module, function));
             } else {
-                ErlLogger
-                        .error("Unknown code bundle element: %s", el.getName());
+                ErlLogger.error("Unknown code bundle element: %s", el.getName());
             }
         }
         addBundle(plugin, paths, inits);
     }
 
-    private void addBundle(final Bundle b,
-            final Map<String, CodeContext> paths,
+    private void addBundle(final Bundle b, final Map<String, CodeContext> paths,
             final Collection<Pair<String, String>> inits) {
         final ICodeBundle p = findBundle(b);
         if (p != null) {
@@ -330,8 +323,8 @@ public final class BackendManager implements IBackendManager {
 
     @Override
     public IRpcSite getByVersion(final RuntimeVersion version) {
-        final RuntimeInfo info = BackendCore.getRuntimeInfoCatalog()
-                .getRuntime(version, null);
+        final RuntimeInfo info = BackendCore.getRuntimeInfoCatalog().getRuntime(version,
+                null);
         if (info == null) {
             return null;
         }
@@ -375,8 +368,7 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public synchronized Set<IBackend> getExecutionBackends(
-            final IProject project) {
+    public synchronized Set<IBackend> getExecutionBackends(final IProject project) {
         final Set<IBackend> bs = executionBackends.get(project);
         if (bs == null) {
             return Collections.emptySet();
@@ -395,8 +387,7 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public synchronized void addExecutionBackend(final IProject project,
-            final IBackend b) {
+    public synchronized void addExecutionBackend(final IProject project, final IBackend b) {
         Set<IBackend> list = executionBackends.get(project);
         if (list == null) {
             list = Sets.newHashSet();

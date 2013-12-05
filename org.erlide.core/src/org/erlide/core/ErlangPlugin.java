@@ -69,17 +69,15 @@ public class ErlangPlugin extends Plugin {
     public void start(final BundleContext context) throws Exception {
         super.start(context);
 
-        ErlideEventTracer.getInstance().traceSession(
-                ResourcesPlugin.getWorkspace().getRoot().getLocation()
-                        .toPortableString());
+        ErlideEventTracer.getInstance()
+                .traceSession(
+                        ResourcesPlugin.getWorkspace().getRoot().getLocation()
+                                .toPortableString());
 
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        final IExtensionRegistry extensionRegistry = Platform
-                .getExtensionRegistry();
-        final String logDir = workspace.getRoot().getLocation()
-                .toPortableString();
+        final IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+        final String logDir = workspace.getRoot().getLocation().toPortableString();
         final ErlangDebugOptionsManager erlangDebugOptionsManager = new ErlangDebugOptionsManager();
-
 
         core = new ErlangCore(this, workspace, extensionRegistry, logDir,
                 erlangDebugOptionsManager);

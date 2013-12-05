@@ -108,8 +108,7 @@ public class GenericQueue {
      * @return The object at the head of the queue, or null if none arrived in
      *         time.
      */
-    public synchronized Object get(final long timeout)
-            throws InterruptedException {
+    public synchronized Object get(final long timeout) throws InterruptedException {
         if (status == closed) {
             return null;
         }

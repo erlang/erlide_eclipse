@@ -15,19 +15,17 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public interface OpenService extends ErlangService {
 
-    OtpErlangObject getSourceFromModule(final OtpErlangList pathVars,
-            final String mod, final String externalModules) throws RpcException;
+    OtpErlangObject getSourceFromModule(final OtpErlangList pathVars, final String mod,
+            final String externalModules) throws RpcException;
 
     OpenResult open(final String scannerName, final int offset,
             final List<OtpErlangObject> imports, final String externalModules,
             final OtpErlangList pathVars) throws RpcException;
 
-    OpenResult openText(final String text, final int offset)
-            throws RpcException;
+    OpenResult openText(final String text, final int offset) throws RpcException;
 
-    OtpErlangTuple mkContext(final String externalModules,
-            final String externalIncludes, final OtpErlangList pathVars,
-            final Collection<IPath> extraSourcePaths,
+    OtpErlangTuple mkContext(final String externalModules, final String externalIncludes,
+            final OtpErlangList pathVars, final Collection<IPath> extraSourcePaths,
             final Collection<OtpErlangObject> imports);
 
     OtpErlangTuple findFirstVar(final String name, final String source);
@@ -64,8 +62,8 @@ public interface OpenService extends ErlangService {
     List<ExternalTreeEntry> getExternalModuleTree(IRpcSite backend,
             final String externalModules, final OtpErlangList pathVars);
 
-    String getExternalInclude(final String filePath,
-            final String externalIncludes, final OtpErlangList pathVars);
+    String getExternalInclude(final String filePath, final String externalIncludes,
+            final OtpErlangList pathVars);
 
     List<String> getLibFiles(final String entry);
 

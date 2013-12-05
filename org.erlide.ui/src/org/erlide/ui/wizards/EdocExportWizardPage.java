@@ -44,8 +44,7 @@ public class EdocExportWizardPage extends WizardPage {
 
     private CheckboxTableViewer checkboxTableViewer;
 
-    static class TableLabelProvider extends LabelProvider implements
-            ITableLabelProvider {
+    static class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
         @Override
         public String getColumnText(final Object element, final int columnIndex) {
             return ((IProject) element).getName();
@@ -63,8 +62,8 @@ public class EdocExportWizardPage extends WizardPage {
         public Object[] getElements(final Object inputElement) {
             final java.util.List<IProject> ps = new ArrayList<IProject>();
 
-            final IProject[] projects = ResourcesPlugin.getWorkspace()
-                    .getRoot().getProjects();
+            final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
+                    .getProjects();
             for (final IProject p : projects) {
                 if (p.isAccessible()) {
                     IProjectNature n = null;
@@ -113,8 +112,7 @@ public class EdocExportWizardPage extends WizardPage {
         selectProjectsForLabel
                 .setText("Select projects for which edoc documentation will be generated:");
 
-        checkboxTableViewer = CheckboxTableViewer.newCheckList(composite,
-                SWT.BORDER);
+        checkboxTableViewer = CheckboxTableViewer.newCheckList(composite, SWT.BORDER);
         checkboxTableViewer.setContentProvider(new TableContentProvider());
         checkboxTableViewer.setLabelProvider(new TableLabelProvider());
         table = checkboxTableViewer.getTable();
@@ -125,8 +123,7 @@ public class EdocExportWizardPage extends WizardPage {
 
         final Group optionsGroup = new Group(composite, SWT.NONE);
         optionsGroup.setText("Options");
-        final GridData gd_optionsGroup = new GridData(SWT.FILL, SWT.CENTER,
-                false, false);
+        final GridData gd_optionsGroup = new GridData(SWT.FILL, SWT.CENTER, false, false);
         optionsGroup.setLayoutData(gd_optionsGroup);
         final GridLayout gridLayout_1 = new GridLayout();
         gridLayout_1.numColumns = 2;
@@ -136,8 +133,7 @@ public class EdocExportWizardPage extends WizardPage {
         selectLabel.setText("Destination (relative to each project):");
 
         destination = new Text(optionsGroup, SWT.BORDER);
-        final GridData gd_destination = new GridData(SWT.FILL, SWT.CENTER,
-                false, false);
+        final GridData gd_destination = new GridData(SWT.FILL, SWT.CENTER, false, false);
         gd_destination.widthHint = 179;
         destination.setLayoutData(gd_destination);
         destination.setText("doc");

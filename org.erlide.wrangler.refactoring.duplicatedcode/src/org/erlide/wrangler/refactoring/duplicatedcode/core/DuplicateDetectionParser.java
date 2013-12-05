@@ -97,8 +97,7 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
             OtpErlangTuple elementPair = (OtpErlangTuple) elements[i];
 
             String replicationFunction = "";
-            final OtpErlangTuple checkable = (OtpErlangTuple) elementPair
-                    .elementAt(0);
+            final OtpErlangTuple checkable = (OtpErlangTuple) elementPair.elementAt(0);
             if (checkable.elementAt(0) instanceof OtpErlangTuple) {
                 final OtpErlangString repFunStr = (OtpErlangString) elementPair
                         .elementAt(1);
@@ -106,26 +105,20 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
                 elementPair = checkable;
 
             }
-            final OtpErlangTuple firstElement = (OtpErlangTuple) elementPair
-                    .elementAt(0);
+            final OtpErlangTuple firstElement = (OtpErlangTuple) elementPair.elementAt(0);
             final OtpErlangTuple secondElement = (OtpErlangTuple) elementPair
                     .elementAt(1);
-            final OtpErlangString fileName = (OtpErlangString) firstElement
-                    .elementAt(0);
-            final OtpErlangLong startLine = (OtpErlangLong) firstElement
-                    .elementAt(1);
-            final OtpErlangLong startCol = (OtpErlangLong) firstElement
-                    .elementAt(2);
-            final OtpErlangLong endLine = (OtpErlangLong) secondElement
-                    .elementAt(1);
-            final OtpErlangLong endCol = (OtpErlangLong) secondElement
-                    .elementAt(2);
+            final OtpErlangString fileName = (OtpErlangString) firstElement.elementAt(0);
+            final OtpErlangLong startLine = (OtpErlangLong) firstElement.elementAt(1);
+            final OtpErlangLong startCol = (OtpErlangLong) firstElement.elementAt(2);
+            final OtpErlangLong endLine = (OtpErlangLong) secondElement.elementAt(1);
+            final OtpErlangLong endCol = (OtpErlangLong) secondElement.elementAt(2);
 
             final String fileNameStr = fileName.stringValue();
             final IFile file = WranglerUtils.getFileFromPath(fileNameStr);
             final DuplicatedCodeInstanceElement instance = new DuplicatedCodeInstanceElement(
-                    file, startLine.intValue(), startCol.intValue(),
-                    endLine.intValue(), endCol.intValue() + 1);
+                    file, startLine.intValue(), startCol.intValue(), endLine.intValue(),
+                    endCol.intValue() + 1);
             instance.setSuggestedCode(suggStr);
             instance.setReplicationFunction(replicationFunction);
             if (values.containsKey(file)) {
@@ -137,8 +130,8 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
             }
         }
 
-        final DuplicatedCodeElement result = new DuplicatedCodeElement(values
-                .entrySet().iterator().next().getValue().get(0));
+        final DuplicatedCodeElement result = new DuplicatedCodeElement(values.entrySet()
+                .iterator().next().getValue().get(0));
         result.setSuggestedCode(suggStr);
 
         for (final Map.Entry<IFile, List<DuplicatedCodeInstanceElement>> entry : values
@@ -146,8 +139,7 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
             final DuplicatedFileElement dupFile = new DuplicatedFileElement(
                     entry.getKey());
             dupFile.setSuggestedCode(suggStr);
-            for (final DuplicatedCodeInstanceElement instance : entry
-                    .getValue()) {
+            for (final DuplicatedCodeInstanceElement instance : entry.getValue()) {
                 dupFile.addChild(instance);
             }
 

@@ -20,8 +20,7 @@ import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
  * 
  * @since 3.4
  */
-public class ErlBrowserInformationControlInput extends
-        BrowserInformationControlInput {
+public class ErlBrowserInformationControlInput extends BrowserInformationControlInput {
 
     private final Object fElement;
     private final String fHtml;
@@ -46,9 +45,8 @@ public class ErlBrowserInformationControlInput extends
      */
     public ErlBrowserInformationControlInput(
             final ErlBrowserInformationControlInput previous,
-            final AbstractErlangEditor editor, final Object element,
-            final String html, final int leadingImageWidth,
-            final String docPath, final String anchor) {
+            final AbstractErlangEditor editor, final Object element, final String html,
+            final int leadingImageWidth, final String docPath, final String anchor) {
         super(previous);
         this.editor = editor;
         Assert.isNotNull(html);

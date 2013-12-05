@@ -51,8 +51,7 @@ public interface IParent {
      */
     boolean hasChildren();
 
-    List<IErlElement> getChildrenOfKind(ErlElementKind kind)
-            throws ErlModelException;
+    List<IErlElement> getChildrenOfKind(ErlElementKind kind) throws ErlModelException;
 
     boolean hasChildrenOfKind(ErlElementKind kind);
 

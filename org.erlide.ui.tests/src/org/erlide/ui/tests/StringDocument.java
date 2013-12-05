@@ -57,8 +57,7 @@ public class StringDocument implements IDocument {
 
     @Override
     public void replace(final int offset, final int length, final String theText) {
-        text = text.substring(0, offset) + theText
-                + text.substring(offset + length);
+        text = text.substring(0, offset) + theText + text.substring(offset + length);
     }
 
     @Override
@@ -72,14 +71,12 @@ public class StringDocument implements IDocument {
     }
 
     @Override
-    public void addPrenotifiedDocumentListener(
-            final IDocumentListener documentAdapter) {
+    public void addPrenotifiedDocumentListener(final IDocumentListener documentAdapter) {
         // defining interface method
     }
 
     @Override
-    public void removePrenotifiedDocumentListener(
-            final IDocumentListener documentAdapter) {
+    public void removePrenotifiedDocumentListener(final IDocumentListener documentAdapter) {
         // defining interface method
     }
 
@@ -155,8 +152,7 @@ public class StringDocument implements IDocument {
     }
 
     @Override
-    public void insertPositionUpdater(final IPositionUpdater updater,
-            final int index) {
+    public void insertPositionUpdater(final IPositionUpdater updater, final int index) {
         // defining interface method
     }
 

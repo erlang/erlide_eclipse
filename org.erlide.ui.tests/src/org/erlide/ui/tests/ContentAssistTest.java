@@ -71,14 +71,13 @@ public class ContentAssistTest {
         }
 
         @Override
-        public void setTextDoubleClickStrategy(
-                final ITextDoubleClickStrategy strategy,
+        public void setTextDoubleClickStrategy(final ITextDoubleClickStrategy strategy,
                 final String contentType) {
         }
 
         @Override
-        public void setTextColor(final Color color, final int offset,
-                final int length, final boolean controlRedraw) {
+        public void setTextColor(final Color color, final int offset, final int length,
+                final boolean controlRedraw) {
         }
 
         @Override
@@ -103,8 +102,8 @@ public class ContentAssistTest {
         }
 
         @Override
-        public void setDocument(final IDocument document,
-                final int modelRangeOffset, final int modelRangeLength) {
+        public void setDocument(final IDocument document, final int modelRangeOffset,
+                final int modelRangeLength) {
         }
 
         @Override
@@ -147,8 +146,7 @@ public class ContentAssistTest {
         }
 
         @Override
-        public boolean overlapsWithVisibleRegion(final int theOffset,
-                final int length) {
+        public boolean overlapsWithVisibleRegion(final int theOffset, final int length) {
             return false;
         }
 
@@ -278,8 +276,8 @@ public class ContentAssistTest {
 
         @Override
         public void setDocument(final IDocument document,
-                final IAnnotationModel annotationModel,
-                final int modelRangeOffset, final int modelRangeLength) {
+                final IAnnotationModel annotationModel, final int modelRangeOffset,
+                final int modelRangeLength) {
         }
 
         @Override
@@ -344,22 +342,18 @@ public class ContentAssistTest {
         completionTestWithoutParsing(initialText, 3, "'", 2, "'AA'");
     }
 
-    public void completionTestWithParsing(final IErlProject project,
-            final String name, final String text, final int offset,
-            final String expectedText1,
+    public void completionTestWithParsing(final IErlProject project, final String name,
+            final String text, final int offset, final String expectedText1,
             final boolean stringContentAssistProcessor) throws CoreException {
         final IDocument document = new StringDocument(text);
-        final IErlModule module = ErlideTestUtils.createModule(project, name,
-                text);
+        final IErlModule module = ErlideTestUtils.createModule(project, name, text);
         module.open(null);
-        final MockSourceViewer sourceViewer = new MockSourceViewer(document,
-                offset);
+        final MockSourceViewer sourceViewer = new MockSourceViewer(document, offset);
         final IContentAssistProcessor p = stringContentAssistProcessor ? new ErlStringContentAssistProcessor(
-                sourceViewer, module, project, null)
-                : new ErlContentAssistProcessor(sourceViewer, module, project,
-                        null);
-        final ICompletionProposal[] completionProposals = p
-                .computeCompletionProposals(sourceViewer, offset);
+                sourceViewer, module, project, null) : new ErlContentAssistProcessor(
+                sourceViewer, module, project, null);
+        final ICompletionProposal[] completionProposals = p.computeCompletionProposals(
+                sourceViewer, offset);
         Assert.assertEquals(1, completionProposals.length);
         final String displayString1 = completionProposals[0].getDisplayString();
         Assert.assertEquals(expectedText1, displayString1);
@@ -376,11 +370,11 @@ public class ContentAssistTest {
         try {
             ErlideTestUtils.createInclude(project, "a.hrl", "-define(A, a).\n");
             // check that quotes are added if needed
-            completionTestWithParsing(project, "a.erl", "-include().\n", 9,
-                    "\"a.hrl\"", false);
+            completionTestWithParsing(project, "a.erl", "-include().\n", 9, "\"a.hrl\"",
+                    false);
             // check that completion works in strings
-            completionTestWithParsing(project, "b.erl", "-include(\"\").\n",
-                    10, "a.hrl", true);
+            completionTestWithParsing(project, "b.erl", "-include(\"\").\n", 10, "a.hrl",
+                    true);
         } finally {
             ErlideTestUtils.deleteProjects();
         }
@@ -392,28 +386,23 @@ public class ContentAssistTest {
         // http://www.assembla.com/spaces/erlide/tickets/593-completion--don-t-work-records-with-quoted-names-
         final int offset = initialText.length();
         IDocument document = new StringDocument(initialText);
-        final IErlModule module = ErlideTestUtils
-                .createModuleFromText(initialText);
+        final IErlModule module = ErlideTestUtils.createModuleFromText(initialText);
         final ScannerService scanner = module.getScanner();
         try {
-            final MockSourceViewer sourceViewer = new MockSourceViewer(
-                    document, offset);
-            final IContentAssistProcessor p = new ErlContentAssistProcessor(
-                    sourceViewer, module, null, null); // null is ok since we
-                                                       // don't
-                                                       // call
-                                                       // setToPrefs
-            ICompletionProposal[] completionProposals = p
-                    .computeCompletionProposals(sourceViewer, offset);
-            Assert.assertEquals(nTotalExpectedCompletions,
-                    completionProposals.length);
+            final MockSourceViewer sourceViewer = new MockSourceViewer(document, offset);
+            final IContentAssistProcessor p = new ErlContentAssistProcessor(sourceViewer,
+                    module, null, null); // null is ok since we
+                                         // don't
+                                         // call
+                                         // setToPrefs
+            ICompletionProposal[] completionProposals = p.computeCompletionProposals(
+                    sourceViewer, offset);
+            Assert.assertEquals(nTotalExpectedCompletions, completionProposals.length);
             document = new StringDocument(initialText + completionChar);
             sourceViewer.setDocument(document);
             sourceViewer.setOffset(offset + 1);
-            completionProposals = p.computeCompletionProposals(sourceViewer,
-                    offset + 1);
-            Assert.assertEquals(nExpectedCompletions,
-                    completionProposals.length);
+            completionProposals = p.computeCompletionProposals(sourceViewer, offset + 1);
+            Assert.assertEquals(nExpectedCompletions, completionProposals.length);
             Assert.assertEquals(expectedFirstCompletion,
                     completionProposals[0].getDisplayString());
         } finally {

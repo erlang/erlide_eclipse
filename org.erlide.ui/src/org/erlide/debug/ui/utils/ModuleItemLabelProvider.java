@@ -58,8 +58,7 @@ public class ModuleItemLabelProvider extends LabelProvider implements
         }
         final String name = res.getName();
         if (showFullPath(element)) {
-            return name
-                    + " - " + res.getParent().getFullPath().makeRelative().toString(); //$NON-NLS-1$
+            return name + " - " + res.getParent().getFullPath().makeRelative().toString(); //$NON-NLS-1$
         }
         return name;
     }
@@ -73,8 +72,7 @@ public class ModuleItemLabelProvider extends LabelProvider implements
         final StyledString str = new StyledString(text);
         final int index = text.indexOf(" - ");
         if (index != -1) {
-            str.setStyle(index, text.length() - index,
-                    StyledString.QUALIFIER_STYLER);
+            str.setStyle(index, text.length() - index, StyledString.QUALIFIER_STYLER);
         }
         return str;
     }

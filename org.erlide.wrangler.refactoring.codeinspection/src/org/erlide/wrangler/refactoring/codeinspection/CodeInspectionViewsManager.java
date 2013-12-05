@@ -50,8 +50,7 @@ public class CodeInspectionViewsManager {
      */
     static public void showDotImage(final Image img, final String title,
             final String secondaryID, final File dotFile) {
-        final GraphImageView view = (GraphImageView) showView(GRAPH_VIEW,
-                secondaryID);
+        final GraphImageView view = (GraphImageView) showView(GRAPH_VIEW, secondaryID);
         view.setViewTitle(title);
         view.setImage(img);
         view.setDotFile(dotFile);
@@ -109,14 +108,13 @@ public class CodeInspectionViewsManager {
      *            view secondary id, to handle multiple instances
      * @return view object
      */
-    static public IViewPart showView(final String viewId,
-            final String secondaryID) {
+    static public IViewPart showView(final String viewId, final String secondaryID) {
         final IWorkbench workbench = PlatformUI.getWorkbench();
 
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         try {
-            final IViewPart view = window.getActivePage().showView(viewId,
-                    secondaryID, IWorkbenchPage.VIEW_ACTIVATE);
+            final IViewPart view = window.getActivePage().showView(viewId, secondaryID,
+                    IWorkbenchPage.VIEW_ACTIVATE);
             return view;
         } catch (final PartInitException e) {
             ErlLogger.error(e);
@@ -147,8 +145,8 @@ public class CodeInspectionViewsManager {
 
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         IViewPart view;
-        final IViewReference viewr = window.getActivePage().findViewReference(
-                viewId, secondaryId);
+        final IViewReference viewr = window.getActivePage().findViewReference(viewId,
+                secondaryId);
         if (viewr != null) {
             view = viewr.getView(false);
             if (view != null) {

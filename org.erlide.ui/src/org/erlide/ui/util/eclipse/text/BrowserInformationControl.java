@@ -76,8 +76,8 @@ import org.eclipse.swt.widgets.Slider;
  * 
  * @since 3.2
  */
-public class BrowserInformationControl extends AbstractInformationControl
-        implements IInformationControlExtension2, IDelayedInputChangeProvider {
+public class BrowserInformationControl extends AbstractInformationControl implements
+        IInformationControlExtension2, IDelayedInputChangeProvider {
 
     /**
      * Tells whether the SWT Browser widget and hence this information control
@@ -98,8 +98,7 @@ public class BrowserInformationControl extends AbstractInformationControl
                 final Slider sliderV = new Slider(parent, SWT.VERTICAL);
                 final Slider sliderH = new Slider(parent, SWT.HORIZONTAL);
                 final int width = sliderV.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-                final int height = sliderH
-                        .computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+                final int height = sliderH.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
                 fgScrollBarSize = new Point(width, height);
                 sliderV.dispose();
                 sliderH.dispose();
@@ -193,8 +192,8 @@ public class BrowserInformationControl extends AbstractInformationControl
      *            <code>true</code> if the control should be resizable
      * @since 3.4
      */
-    public BrowserInformationControl(final Shell parent,
-            final String symbolicFontName, final boolean resizable) {
+    public BrowserInformationControl(final Shell parent, final String symbolicFontName,
+            final boolean resizable) {
         super(parent, resizable);
         fSymbolicFontName = symbolicFontName;
         create();
@@ -212,8 +211,8 @@ public class BrowserInformationControl extends AbstractInformationControl
      *            <code>null</code> if the status field should be hidden
      * @since 3.4
      */
-    public BrowserInformationControl(final Shell parent,
-            final String symbolicFontName, final String statusFieldText) {
+    public BrowserInformationControl(final Shell parent, final String symbolicFontName,
+            final String statusFieldText) {
         super(parent, statusFieldText);
         fSymbolicFontName = symbolicFontName;
         create();
@@ -230,8 +229,8 @@ public class BrowserInformationControl extends AbstractInformationControl
      *            the manager or <code>null</code> if toolbar is not desired
      * @since 3.4
      */
-    public BrowserInformationControl(final Shell parent,
-            final String symbolicFontName, final ToolBarManager toolBarManager) {
+    public BrowserInformationControl(final Shell parent, final String symbolicFontName,
+            final ToolBarManager toolBarManager) {
         super(parent, toolBarManager);
         fSymbolicFontName = symbolicFontName;
         create();
@@ -248,10 +247,8 @@ public class BrowserInformationControl extends AbstractInformationControl
         fBrowser.setJavascriptEnabled(false);
 
         final Display display = getShell().getDisplay();
-        fBrowser.setForeground(display
-                .getSystemColor(SWT.COLOR_INFO_FOREGROUND));
-        fBrowser.setBackground(display
-                .getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+        fBrowser.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+        fBrowser.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
         fBrowser.addProgressListener(new ProgressAdapter() {
             @Override
@@ -510,15 +507,14 @@ public class BrowserInformationControl extends AbstractInformationControl
         }
 
         fTextLayout.setText(text);
-        fTextLayout.setWidth(sizeConstraints == null ? SWT.DEFAULT
-                : sizeConstraints.x - trim.width);
+        fTextLayout.setWidth(sizeConstraints == null ? SWT.DEFAULT : sizeConstraints.x
+                - trim.width);
         @SuppressWarnings("rawtypes")
         final Iterator iter = presentation.getAllStyleRangeIterator();
         while (iter.hasNext()) {
             final StyleRange sr = (StyleRange) iter.next();
             if (sr.fontStyle == SWT.BOLD) {
-                fTextLayout.setStyle(fBoldStyle, sr.start, sr.start + sr.length
-                        - 1);
+                fTextLayout.setStyle(fBoldStyle, sr.start, sr.start + sr.length - 1);
             }
         }
 
@@ -625,8 +621,7 @@ public class BrowserInformationControl extends AbstractInformationControl
      *            the listener to add
      * @since 3.4
      */
-    public void addInputChangeListener(
-            final IInputChangedListener inputChangeListener) {
+    public void addInputChangeListener(final IInputChangedListener inputChangeListener) {
         assertThat(inputChangeListener, is(not(nullValue())));
         fInputChangeListeners.add(inputChangeListener);
     }
@@ -639,8 +634,7 @@ public class BrowserInformationControl extends AbstractInformationControl
      *            the listener to remove
      * @since 3.4
      */
-    public void removeInputChangeListener(
-            final IInputChangedListener inputChangeListener) {
+    public void removeInputChangeListener(final IInputChangedListener inputChangeListener) {
         fInputChangeListeners.remove(inputChangeListener);
     }
 
@@ -705,15 +699,14 @@ public class BrowserInformationControl extends AbstractInformationControl
      * (int, int)
      */
     @Override
-    public Point computeSizeConstraints(final int widthInChars,
-            final int heightInChars) {
+    public Point computeSizeConstraints(final int widthInChars, final int heightInChars) {
         if (fSymbolicFontName == null) {
             return null;
         }
 
         final GC gc = new GC(fBrowser);
-        final Font font = fSymbolicFontName == null ? JFaceResources
-                .getDialogFont() : JFaceResources.getFont(fSymbolicFontName);
+        final Font font = fSymbolicFontName == null ? JFaceResources.getDialogFont()
+                : JFaceResources.getFont(fSymbolicFontName);
         gc.setFont(font);
         final int width = gc.getFontMetrics().getAverageCharWidth();
         final int height = gc.getFontMetrics().getHeight();

@@ -62,8 +62,7 @@ public class CoverLaunchSettings {
             break;
         case ALL:
             // new
-            if (data.getProjectAll() == null
-                    || data.getProjectAll().length() == 0) {
+            if (data.getProjectAll() == null || data.getProjectAll().length() == 0) {
                 throw new CoverException("No project name set");
             }
             config.setProject(data.getProjectAll());

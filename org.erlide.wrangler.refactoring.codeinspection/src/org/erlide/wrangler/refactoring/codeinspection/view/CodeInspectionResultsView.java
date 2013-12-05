@@ -64,8 +64,7 @@ public class CodeInspectionResultsView extends ViewPart {
         }
     }
 
-    class ViewLabelProvider extends LabelProvider implements
-            ITableLabelProvider {
+    class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
         @Override
         public String getColumnText(final Object obj, final int index) {
             final IErlElement e = (IErlElement) obj;
@@ -75,8 +74,8 @@ public class CodeInspectionResultsView extends ViewPart {
                         + e.getResource().getFullPath().toString();
             } else if (e instanceof IErlFunctionClause) {
                 final IErlFunctionClause fc = (IErlFunctionClause) e;
-                return ErlangEngine.getInstance().getModelUtilService()
-                        .getModule(fc).getModuleName()
+                return ErlangEngine.getInstance().getModelUtilService().getModule(fc)
+                        .getModuleName()
                         + ":" + fc.toString();
             }
             return e.toString();
@@ -103,8 +102,7 @@ public class CodeInspectionResultsView extends ViewPart {
 
     @Override
     public void createPartControl(final Composite parent) {
-        viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-                | SWT.V_SCROLL);
+        viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         viewer.setContentProvider(new ViewContentProvider());
         viewer.setLabelProvider(new ViewLabelProvider());
         viewer.setInput(getViewSite());

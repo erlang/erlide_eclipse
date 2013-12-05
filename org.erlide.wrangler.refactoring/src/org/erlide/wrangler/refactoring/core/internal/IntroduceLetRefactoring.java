@@ -53,11 +53,10 @@ public class IntroduceLetRefactoring extends CostumWorkflowRefactoring {
     @Override
     public IRefactoringRpcMessage run(final IErlSelection selection) {
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "new_let_eclipse", "sxxsxi", sel.getFilePath(),
-                sel.getSelectionRange().getStartPos(),
-                sel.getSelectionRange().getEndPos(), userInput,
-                sel.getSearchPath(), GlobalParameters.getTabWidth());
+        return WranglerBackendManager.getRefactoringBackend().call("new_let_eclipse",
+                "sxxsxi", sel.getFilePath(), sel.getSelectionRange().getStartPos(),
+                sel.getSelectionRange().getEndPos(), userInput, sel.getSearchPath(),
+                GlobalParameters.getTabWidth());
     }
 
     @Override
@@ -66,8 +65,7 @@ public class IntroduceLetRefactoring extends CostumWorkflowRefactoring {
 
             @Override
             public void doRefactoring() {
-                final IErlSelection sel = GlobalParameters
-                        .getWranglerSelection();
+                final IErlSelection sel = GlobalParameters.getWranglerSelection();
                 RefactoringRpcMessage message = (RefactoringRpcMessage) run(sel);
                 if (message.isSuccessful()) {
                     changedFiles = message.getRefactoringChangeset();
@@ -76,16 +74,14 @@ public class IntroduceLetRefactoring extends CostumWorkflowRefactoring {
                     if (ask("Question", message.getMessageString())) {
                         final OtpErlangTuple res = message.getResultObject();
                         expr = ((OtpErlangTuple) res.elementAt(2)).elementAt(0);
-                        parentExpr = ((OtpErlangTuple) res.elementAt(2))
-                                .elementAt(1);
+                        parentExpr = ((OtpErlangTuple) res.elementAt(2)).elementAt(1);
                         message = (RefactoringRpcMessage) runAlternative(sel);
                         if (message.isSuccessful()) {
                             status = new RefactoringStatus();
                             changedFiles = message.getRefactoringChangeset();
                         } else {
-                            status = RefactoringStatus
-                                    .createFatalErrorStatus(message
-                                            .getMessageString());
+                            status = RefactoringStatus.createFatalErrorStatus(message
+                                    .getMessageString());
                         }
                     } else {
                         status = RefactoringStatus
@@ -105,10 +101,9 @@ public class IntroduceLetRefactoring extends CostumWorkflowRefactoring {
     @Override
     public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "new_let_1_eclipse", "ssxxxi", sel.getFilePath(), userInput,
-                expr, parentExpr, sel.getSearchPath(),
-                GlobalParameters.getTabWidth());
+        return WranglerBackendManager.getRefactoringBackend().call("new_let_1_eclipse",
+                "ssxxxi", sel.getFilePath(), userInput, expr, parentExpr,
+                sel.getSearchPath(), GlobalParameters.getTabWidth());
     }
 
 }

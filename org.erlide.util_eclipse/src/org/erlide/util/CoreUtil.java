@@ -81,8 +81,8 @@ public final class CoreUtil {
      * Returns the index of the most specific argument paths which is strictly
      * enclosing the path to check
      */
-    public static int indexOfEnclosingPath(final IPath checkedPath,
-            final IPath[] paths, final int pathCount) {
+    public static int indexOfEnclosingPath(final IPath checkedPath, final IPath[] paths,
+            final int pathCount) {
 
         int bestMatch = -1, bestLength = -1;
         for (int i = 0; i < pathCount; i++) {
@@ -104,8 +104,8 @@ public final class CoreUtil {
      * Returns the index of the first argument paths which is equal to the path
      * to check
      */
-    public static int indexOfMatchingPath(final IPath checkedPath,
-            final IPath[] paths, final int pathCount) {
+    public static int indexOfMatchingPath(final IPath checkedPath, final IPath[] paths,
+            final int pathCount) {
 
         for (int i = 0; i < pathCount; i++) {
             if (paths[i].equals(checkedPath)) {
@@ -119,8 +119,8 @@ public final class CoreUtil {
      * Returns the index of the first argument paths which is strictly nested
      * inside the path to check
      */
-    public static int indexOfNestedPath(final IPath checkedPath,
-            final IPath[] paths, final int pathCount) {
+    public static int indexOfNestedPath(final IPath checkedPath, final IPath[] paths,
+            final int pathCount) {
 
         for (int i = 0; i < pathCount; i++) {
             if (checkedPath.equals(paths[i])) {

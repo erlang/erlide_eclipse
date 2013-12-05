@@ -75,8 +75,7 @@ public class CallHierarchyView extends ViewPart {
             input = newInput;
             if (newInput instanceof IErlFunction) {
                 final IErlFunction fun = (IErlFunction) newInput;
-                lblRoot.setText(fun.getModuleName() + " : "
-                        + fun.getNameWithArity());
+                lblRoot.setText(fun.getModuleName() + " : " + fun.getNameWithArity());
             } else if (input instanceof String) {
                 lblRoot.setText((String) input);
             }
@@ -109,16 +108,14 @@ public class CallHierarchyView extends ViewPart {
                                 .getInstance()
                                 .getModelUtilService()
                                 .getProject(
-                                        ErlangEngine.getInstance()
-                                                .getModelUtilService()
-                                                .getModule(parent)).getName()
-                        + ">" };
+                                        ErlangEngine.getInstance().getModelUtilService()
+                                                .getModule(parent)).getName() + ">" };
             }
             final List<IErlFunction> result = new ArrayList<IErlFunction>();
             for (final FunctionRef r : children) {
                 try {
-                    final IErlFunction fun = ErlangEngine.getInstance()
-                            .getModel().findFunction(r);
+                    final IErlFunction fun = ErlangEngine.getInstance().getModel()
+                            .findFunction(r);
                     if (fun != null) {
                         result.add(fun);
                     }
@@ -152,14 +149,14 @@ public class CallHierarchyView extends ViewPart {
             composite.setLayout(new GridLayout(2, false));
             {
                 lblRoot = new Label(composite, SWT.NONE);
-                lblRoot.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                        false, 1, 1));
+                lblRoot.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+                        1));
                 lblRoot.setText("<no function>");
             }
             {
                 final ToolBar toolBar = new ToolBar(composite, SWT.FLAT);
-                toolBar.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true,
-                        false, 1, 1));
+                toolBar.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1,
+                        1));
                 {
                     final ToolItem tltmRefresh = new ToolItem(toolBar, SWT.NONE);
                     tltmRefresh.addSelectionListener(new SelectionAdapter() {
@@ -186,15 +183,13 @@ public class CallHierarchyView extends ViewPart {
                                 : OpenStrategy.activateOnOpen();
                         try {
                             // TODO we want to find the exact place in the code
-                            EditorUtility.openElementInEditor(el,
-                                    activateOnOpen);
+                            EditorUtility.openElementInEditor(el, activateOnOpen);
                         } catch (final PartInitException e1) {
                             ErlLogger.error(e1);
                         }
                     }
                 });
-                tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
-                        true, 2, 1));
+                tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 2, 1));
             }
         }
     }

@@ -110,8 +110,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         }
 
         @Override
-        public boolean isLabelProperty(final Object element,
-                final String property) {
+        public boolean isLabelProperty(final Object element, final String property) {
             return true;
         }
 
@@ -195,8 +194,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         final Composite comp = new Composite(group, SWT.NONE);
         comp.setLayout(new GridLayout(2, false));
         removeWarningsOnCleanCheckbox = new Button(comp, SWT.CHECK);
-        removeWarningsOnCleanCheckbox
-                .setText("Remove dialyzer warning on clean project");
+        removeWarningsOnCleanCheckbox.setText("Remove dialyzer warning on clean project");
         new Label(comp, SWT.NONE);
     }
 
@@ -262,8 +260,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         gd.horizontalSpan = 2;
         l.setLayoutData(gd);
         new Label(composite, SWT.NONE);
-        fPLTTableViewer = CheckboxTableViewer.newCheckList(composite,
-                SWT.BORDER);
+        fPLTTableViewer = CheckboxTableViewer.newCheckList(composite, SWT.BORDER);
         fPLTTableViewer.setLabelProvider(new LabelProvider());
         fPLTTableViewer.setContentProvider(new ContentProvider());
         fPLTTableViewer.setInput(this);
@@ -278,8 +275,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 enableButtons();
             }
         });
-        gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING
-                | GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
+        gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL
+                | GridData.FILL_VERTICAL);
         gd.horizontalSpan = 2;
         table.setLayoutData(gd);
         gd.heightHint = convertHeightInCharsToPixels(12);
@@ -295,13 +292,12 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 addPLTFile();
             }
         });
-        fEditButton = createButton(buttons, "Change...",
-                new SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(final SelectionEvent e) {
-                        changeSelectedPLTFiles();
-                    }
-                });
+        fEditButton = createButton(buttons, "Change...", new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                changeSelectedPLTFiles();
+            }
+        });
         fRemoveButton = createButton(buttons, "Remove", new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
@@ -343,16 +339,14 @@ public class DialyzerPreferencePage extends PropertyPage implements
         return super.createDescriptionLabel(parent);
     }
 
-    protected void enableProjectSpecificSettings(
-            final boolean useProjectSpecificSettings) {
+    protected void enableProjectSpecificSettings(final boolean useProjectSpecificSettings) {
         fUseProjectSettings.setSelection(useProjectSpecificSettings);
         enablePreferenceContent(useProjectSpecificSettings);
         fChangeWorkspaceSettings.setEnabled(!useProjectSpecificSettings);
         // doStatusChanged();
     }
 
-    private void enablePreferenceContent(
-            final boolean useProjectSpecificSettings) {
+    private void enablePreferenceContent(final boolean useProjectSpecificSettings) {
         if (useProjectSpecificSettings) {
             if (fBlockEnableState != null) {
                 fBlockEnableState.restore();
@@ -365,8 +359,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         }
     }
 
-    private void createProjectSpecificSettingsCheckBoxAndLink(
-            final Composite parent) {
+    private void createProjectSpecificSettingsCheckBoxAndLink(final Composite parent) {
         if (isProjectPreferencePage()) {
             final Composite composite = new Composite(parent, SWT.NONE);
             composite.setFont(parent.getFont());
@@ -374,8 +367,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
             layout.marginHeight = 0;
             layout.marginWidth = 0;
             composite.setLayout(layout);
-            composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                    false));
+            composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
             fUseProjectSettings = new Button(composite, SWT.CHECK);
             fUseProjectSettings.setText("Enable project specific settings");
@@ -390,19 +382,19 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
             fChangeWorkspaceSettings = createLink(composite,
                     "Configure Workspace settings...");
-            fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END,
-                    SWT.CENTER, false, false));
+            fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END, SWT.CENTER,
+                    false, false));
 
             final Label horizontalLine = new Label(composite, SWT.SEPARATOR
                     | SWT.HORIZONTAL);
-            horizontalLine.setLayoutData(new GridData(GridData.FILL,
-                    GridData.FILL, true, false, 2, 1));
+            horizontalLine.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true,
+                    false, 2, 1));
             horizontalLine.setFont(composite.getFont());
         } else { // if (supportsProjectSpecificOptions() && offerLink()) {
             fChangeWorkspaceSettings = createLink(parent,
                     "Configure project specific settings..");
-            fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END,
-                    SWT.CENTER, true, false));
+            fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END, SWT.CENTER,
+                    true, false));
         }
 
     }
@@ -437,8 +429,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 }
             } catch (final ErlModelException e) {
             }
-            final ProjectSelectionDialog dialog = new ProjectSelectionDialog(
-                    getShell(), erlProjects, projectsWithSpecifics);
+            final ProjectSelectionDialog dialog = new ProjectSelectionDialog(getShell(),
+                    erlProjects, projectsWithSpecifics);
             if (dialog.open() == Window.OK) {
                 final IProject res = (IProject) dialog.getFirstResult();
                 openProjectProperties(res);
@@ -466,8 +458,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
     protected final void openWorkspacePreferences(final Object data) {
         final String id = getPreferencePageID();
-        PreferencesUtil.createPreferenceDialogOn(getShell(), id,
-                new String[] { id }, data).open();
+        PreferencesUtil.createPreferenceDialogOn(getShell(), id, new String[] { id },
+                data).open();
     }
 
     protected static String getPreferencePageID() {
@@ -491,8 +483,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
     @Override
     public boolean performOk() {
         try {
-            if (fUseProjectSettings != null
-                    && !fUseProjectSettings.getSelection()
+            if (fUseProjectSettings != null && !fUseProjectSettings.getSelection()
                     && isProjectPreferencePage()) {
                 prefs.removeAllProjectSpecificSettings();
             } else {
@@ -536,8 +527,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
             noCheckPLTCheckbox.setSelection(prefs.getNoCheckPLT());
         }
         if (removeWarningsOnCleanCheckbox != null) {
-            removeWarningsOnCleanCheckbox.setSelection(prefs
-                    .getRemoveWarningsOnClean());
+            removeWarningsOnCleanCheckbox.setSelection(prefs.getRemoveWarningsOnClean());
         }
         super.performDefaults();
     }
@@ -566,8 +556,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         dialog.setText("Select PLT file");
         dialog.setFileName(s);
         dialog.setFilterPath(s);
-        dialog.setFilterNames(new String[] { "Dialyzer PLT file (*.plt)",
-                "Any File" });
+        dialog.setFilterNames(new String[] { "Dialyzer PLT file (*.plt)", "Any File" });
         dialog.setFilterExtensions(new String[] { "*.plt", "*.*" });
         final String result = dialog.open();
         return result;
@@ -631,8 +620,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
     private List<String> getSelectedPltFiles() {
         final IStructuredSelection selection = (IStructuredSelection) fPLTTableViewer
                 .getSelection();
-        final List<String> result = Lists.newArrayListWithCapacity(selection
-                .size());
+        final List<String> result = Lists.newArrayListWithCapacity(selection.size());
         for (final Object o : selection.toList()) {
             final String s = (String) o;
             result.add(s);
@@ -645,16 +633,14 @@ public class DialyzerPreferencePage extends PropertyPage implements
         private final List<String> selectedPLTPaths, checkedPltPaths;
 
         public UpdateDialyzerPLTFileOperation(final String name,
-                final List<String> selectedPLTPaths,
-                final List<String> checkedPltPaths) {
+                final List<String> selectedPLTPaths, final List<String> checkedPltPaths) {
             super(name);
             this.selectedPLTPaths = selectedPLTPaths;
             this.checkedPltPaths = checkedPltPaths;
         }
 
         IStatus newErrorStatus(final Throwable throwable) {
-            return new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
-                    throwable.getMessage());
+            return new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID, throwable.getMessage());
         }
 
         @Override
@@ -665,8 +651,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 checkIfPltFilesShouldBeCopied(alternatePltFileDirectory);
                 final IRpcSite backend = BackendCore.getBuildBackend(fProject);
                 for (final String pltPath : selectedPLTPaths) {
-                    checkPlt(pltPath, alternatePltFileDirectory, monitor,
-                            backend);
+                    checkPlt(pltPath, alternatePltFileDirectory, monitor, backend);
                 }
             } catch (final Exception e) {
                 return newErrorStatus(e);
@@ -676,8 +661,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
             return Status.OK_STATUS;
         }
 
-        private void checkIfPltFilesShouldBeCopied(
-                final String alternatePltFileDirectory) throws IOException {
+        private void checkIfPltFilesShouldBeCopied(final String alternatePltFileDirectory)
+                throws IOException {
             if (alternatePltFileDirectory == null) {
                 return;
             }
@@ -686,8 +671,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
             for (final String pltPath : selected) {
                 final File f = new File(pltPath);
                 if (!f.canWrite()) {
-                    final String newPath = copyPltFile(pltPath,
-                            alternatePltFileDirectory);
+                    final String newPath = copyPltFile(pltPath, alternatePltFileDirectory);
                     selectedPLTPaths.remove(pltPath);
                     selectedPLTPaths.remove(newPath);
                     shownPLTFiles.remove(newPath);
@@ -706,11 +690,9 @@ public class DialyzerPreferencePage extends PropertyPage implements
                     public void run() {
                         if (!fPLTTableViewer.getControl().isDisposed()) {
                             fPLTTableViewer.refresh();
-                            fPLTTableViewer
-                                    .setSelection(new StructuredSelection(
-                                            selectedPLTPaths));
-                            fPLTTableViewer.setCheckedElements(checkedPltPaths
-                                    .toArray());
+                            fPLTTableViewer.setSelection(new StructuredSelection(
+                                    selectedPLTPaths));
+                            fPLTTableViewer.setCheckedElements(checkedPltPaths.toArray());
                         }
                     }
                 });
@@ -727,26 +709,25 @@ public class DialyzerPreferencePage extends PropertyPage implements
         }
 
         private void checkPlt(final String pltPath,
-                final String alternatePltFileDirectory,
-                final IProgressMonitor monitor, final IRpcSite backend)
-                throws DialyzerErrorException, ErlModelException, RpcException {
+                final String alternatePltFileDirectory, final IProgressMonitor monitor,
+                final IRpcSite backend) throws DialyzerErrorException, ErlModelException,
+                RpcException {
             try {
                 monitor.subTask("Checking PLT file " + pltPath);
                 List<String> ebinDirs = null;
                 if (alternatePltFileDirectory != null) {
                     ebinDirs = Lists.newArrayList();
-                    for (final IErlElement i : ErlangEngine.getInstance()
-                            .getModel()
+                    for (final IErlElement i : ErlangEngine.getInstance().getModel()
                             .getChildrenOfKind(ErlElementKind.PROJECT)) {
                         final IErlProject project = (IErlProject) i;
                         final String ebinDir = project.getWorkspaceProject()
-                                .getFolder(project.getOutputLocation())
-                                .getLocation().toString();
+                                .getFolder(project.getOutputLocation()).getLocation()
+                                .toString();
                         ebinDirs.add(ebinDir);
                     }
                 }
-                final OtpErlangObject result = ErlideDialyze.checkPlt(backend,
-                        pltPath, ebinDirs);
+                final OtpErlangObject result = ErlideDialyze.checkPlt(backend, pltPath,
+                        ebinDirs);
                 DialyzerUtils.checkDialyzeError(result);
             } finally {
                 monitor.worked(1);

@@ -56,8 +56,7 @@ public class FoldRemoteExpressionRefactoring extends
      *            the current position in the actual file, when the refactoring
      *            was started
      */
-    public FoldRemoteExpressionRefactoring(
-            final IErlFunctionClause functionClause,
+    public FoldRemoteExpressionRefactoring(final IErlFunctionClause functionClause,
             final IErlMemberSelection selection) {
         this.functionClause = functionClause;
         this.selection = selection;
@@ -69,8 +68,7 @@ public class FoldRemoteExpressionRefactoring extends
     }
 
     @Override
-    public IRefactoringRpcMessage runAlternative(
-            final IErlSelection theSelection) {
+    public IRefactoringRpcMessage runAlternative(final IErlSelection theSelection) {
         return null;
     }
 
@@ -83,25 +81,21 @@ public class FoldRemoteExpressionRefactoring extends
         }
         ExpressionPosRpcMessage m = new ExpressionPosRpcMessage();
         final String path = selection.getFilePath();
-        final String moduleName = ErlangEngine.getInstance()
-                .getModelUtilService().getModule(functionClause)
-                .getModuleName();
+        final String moduleName = ErlangEngine.getInstance().getModelUtilService()
+                .getModule(functionClause).getModuleName();
         final String functionName = functionClause.getFunctionName();
         final int arity = functionClause.getArity();
 
         int clauseIndex = 1;
         if (!(functionClause instanceof IErlFunction)) {
             // FIXME: avoid hacking!!!
-            clauseIndex = Integer
-                    .valueOf(functionClause.getName().substring(1));
+            clauseIndex = Integer.valueOf(functionClause.getName().substring(1));
         }
 
-        m = (ExpressionPosRpcMessage) WranglerBackendManager
-                .getRefactoringBackend().callWithParser(m,
-                        "fold_expr_by_name_eclipse", "sssiixi", path,
+        m = (ExpressionPosRpcMessage) WranglerBackendManager.getRefactoringBackend()
+                .callWithParser(m, "fold_expr_by_name_eclipse", "sssiixi", path,
                         moduleName, functionName, arity, clauseIndex,
-                        selection.getSearchPath(),
-                        GlobalParameters.getTabWidth());
+                        selection.getSearchPath(), GlobalParameters.getTabWidth());
 
         if (m.isSuccessful()) {
             syntaxTree = m.getSyntaxTree();
@@ -109,8 +103,7 @@ public class FoldRemoteExpressionRefactoring extends
             positions = m.getPositionDefinitions(selection.getDocument());
             selectedPositions = new ArrayList<IErlRange>();
         } else {
-            return RefactoringStatus.createFatalErrorStatus(m
-                    .getMessageString());
+            return RefactoringStatus.createFatalErrorStatus(m.getMessageString());
         }
 
         return new RefactoringStatus();
@@ -130,17 +123,15 @@ public class FoldRemoteExpressionRefactoring extends
             changedFiles = message.getRefactoringChangeset();
             return new RefactoringStatus();
         }
-        return RefactoringStatus.createFatalErrorStatus(message
-                .getMessageString());
+        return RefactoringStatus.createFatalErrorStatus(message.getMessageString());
     }
 
     @Override
     public IRefactoringRpcMessage run(final IErlSelection theSelection) {
         final IErlMemberSelection sel = (IErlMemberSelection) theSelection;
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "fold_expr_1_eclipse", "sxxxi", sel.getFilePath(), syntaxTree,
-                getSelectedPos(), sel.getSearchPath(),
-                GlobalParameters.getTabWidth());
+        return WranglerBackendManager.getRefactoringBackend().call("fold_expr_1_eclipse",
+                "sxxxi", sel.getFilePath(), syntaxTree, getSelectedPos(),
+                sel.getSearchPath(), GlobalParameters.getTabWidth());
     }
 
 }

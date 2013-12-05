@@ -17,8 +17,7 @@ import org.erlide.runtime.api.IErlRuntime;
 
 public class InternalBackend extends Backend {
 
-    public InternalBackend(final BackendData data,
-            final @NonNull IErlRuntime runtime,
+    public InternalBackend(final BackendData data, final @NonNull IErlRuntime runtime,
             final IBackendManager backendManager) {
         super(data, runtime, backendManager);
     }

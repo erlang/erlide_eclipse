@@ -34,8 +34,7 @@ public class OtpErlangFun extends OtpErlangObject implements Serializable {
     private final int arity;
     private final byte[] md5;
 
-    public OtpErlangFun(final OtpInputStream buf)
-            throws OtpErlangDecodeException {
+    public OtpErlangFun(final OtpInputStream buf) throws OtpErlangDecodeException {
         final OtpErlangFun f = buf.read_fun();
         pid = f.pid;
         module = f.module;
@@ -47,8 +46,8 @@ public class OtpErlangFun extends OtpErlangObject implements Serializable {
         freeVars = f.freeVars;
     }
 
-    public OtpErlangFun(final OtpErlangPid pid, final String module,
-            final long index, final long uniq, final OtpErlangObject[] freeVars) {
+    public OtpErlangFun(final OtpErlangPid pid, final String module, final long index,
+            final long uniq, final OtpErlangObject[] freeVars) {
         this.pid = pid;
         this.module = module;
         arity = -1;
@@ -59,9 +58,8 @@ public class OtpErlangFun extends OtpErlangObject implements Serializable {
         this.freeVars = freeVars;
     }
 
-    public OtpErlangFun(final OtpErlangPid pid, final String module,
-            final int arity, final byte[] md5, final int index,
-            final long old_index, final long uniq,
+    public OtpErlangFun(final OtpErlangPid pid, final String module, final int arity,
+            final byte[] md5, final int index, final long old_index, final long uniq,
             final OtpErlangObject[] freeVars) {
         this.pid = pid;
         this.module = module;

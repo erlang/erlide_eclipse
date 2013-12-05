@@ -108,20 +108,19 @@ public class GraphImageView extends ViewPart {
 
         @Override
         public void run() {
-            final FileDialog fileChooser = new FileDialog(
-                    imageCanvas.getShell(), SWT.SAVE);
+            final FileDialog fileChooser = new FileDialog(imageCanvas.getShell(),
+                    SWT.SAVE);
             fileChooser.setText("Save .dot file");
             fileChooser.setFilterPath("");
             fileChooser.setFilterExtensions(new String[] { "*.dot" });
-            fileChooser.setFilterNames(new String[] { "Graphviz file "
-                    + " (dot)" });
+            fileChooser.setFilterNames(new String[] { "Graphviz file " + " (dot)" });
             final String filename = fileChooser.open();
             if (filename != null) {
                 try {
                     FileUtils.copyFile(dotFile, new File(filename));
                 } catch (final IOException e) {
-                    MessageDialog.openError(imageCanvas.getShell(),
-                            "Saving error", e.getMessage());
+                    MessageDialog.openError(imageCanvas.getShell(), "Saving error",
+                            e.getMessage());
                 }
             }
         }
@@ -249,8 +248,7 @@ public class GraphImageView extends ViewPart {
     @Override
     public void createPartControl(final Composite frame) {
         imageCanvas = new SWTImageCanvas(frame);
-        final IToolBarManager mgr = getViewSite().getActionBars()
-                .getToolBarManager();
+        final IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
         mgr.add(new SaveImageAction());
         mgr.add(new SaveDOTAction());
     }

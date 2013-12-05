@@ -79,9 +79,8 @@ public class DebugTraceEvent {
             } catch (final OtpErlangRangeException e) {
                 line = -1;
             }
-            final IStackFrame sf = new ErlangStackFrame(module,
-                    (ErlangProcess) process, target, line, null, bindings,
-                    stackFrameNo);
+            final IStackFrame sf = new ErlangStackFrame(module, (ErlangProcess) process,
+                    target, line, null, bindings, stackFrameNo);
             stackFrames.add(sf);
             bindings = (OtpErlangList) t.elementAt(2);
             m = (OtpErlangAtom) ml0;

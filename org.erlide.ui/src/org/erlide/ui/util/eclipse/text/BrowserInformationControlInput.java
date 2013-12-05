@@ -36,8 +36,7 @@ public abstract class BrowserInformationControlInput extends BrowserInput {
      * @param previous
      *            the previous input or <code>null</code> if none
      */
-    public BrowserInformationControlInput(
-            final BrowserInformationControlInput previous) {
+    public BrowserInformationControlInput(final BrowserInformationControlInput previous) {
         super(previous);
     }
 

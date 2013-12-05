@@ -32,9 +32,8 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
             final DropTargetEvent dropTargetEvent, final Object target) {
         status = Status.CANCEL_STATUS;
         try {
-            final List<INavigatorDropHandler> handlers = ExtensionUtils
-                    .getExtensions(EXTENSION_POINT_ID,
-                            INavigatorDropHandler.class);
+            final List<INavigatorDropHandler> handlers = ExtensionUtils.getExtensions(
+                    EXTENSION_POINT_ID, INavigatorDropHandler.class);
             for (final INavigatorDropHandler handler : handlers) {
                 final ISafeRunnable runnable = new ISafeRunnable() {
 
@@ -45,8 +44,8 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
 
                     @Override
                     public void run() throws Exception {
-                        final IStatus theStatus = handler.handleDrop(
-                                dropAdapter, dropTargetEvent, target);
+                        final IStatus theStatus = handler.handleDrop(dropAdapter,
+                                dropTargetEvent, target);
                         setStatus(theStatus);
                     }
                 };
@@ -63,9 +62,8 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
             final TransferData transferType) {
         status = Status.CANCEL_STATUS;
         try {
-            final IConfigurationElement[] config = Platform
-                    .getExtensionRegistry().getConfigurationElementsFor(
-                            EXTENSION_POINT_ID);
+            final IConfigurationElement[] config = Platform.getExtensionRegistry()
+                    .getConfigurationElementsFor(EXTENSION_POINT_ID);
             for (final IConfigurationElement e : config) {
                 final Object o = e.createExecutableExtension("class");
                 if (o instanceof INavigatorDropHandler) {
@@ -79,8 +77,7 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
                         @Override
                         public void run() throws Exception {
                             final IStatus theStatus = ((INavigatorDropHandler) o)
-                                    .validateDrop(target, operation,
-                                            transferType);
+                                    .validateDrop(target, operation, transferType);
                             setStatus(theStatus);
                         }
                     };

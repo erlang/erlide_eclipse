@@ -142,15 +142,13 @@ public class RuntimeData {
 
     public void setNodeName(final String nodeName) {
         if (!validateNodeName(nodeName)) {
-            throw new IllegalStateException("Erlang node can't be called "
-                    + nodeName);
+            throw new IllegalStateException("Erlang node can't be called " + nodeName);
         }
         this.nodeName = nodeName;
     }
 
     public static boolean validateNodeName(final String name) {
-        return name != null
-                && name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
+        return name != null && name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
     }
 
     public boolean hasLongName() {
@@ -245,8 +243,7 @@ public class RuntimeData {
             final String nameTag = hasLongName() ? "-name" : "-sname";
             String nameOption = getNodeName();
             if (!nameOption.contains("@")) {
-                nameOption += "@"
-                        + HostnameUtils.getErlangHostName(hasLongName());
+                nameOption += "@" + HostnameUtils.getErlangHostName(hasLongName());
             }
             result.add(nameTag);
             result.add(nameOption);
@@ -285,8 +282,7 @@ public class RuntimeData {
     }
 
     public String getQualifiedNodeName() {
-        final String erlangHostName = HostnameUtils
-                .getErlangHostName(hasLongName());
+        final String erlangHostName = HostnameUtils.getErlangHostName(hasLongName());
         final String name = getNodeName();
         final boolean hasHost = name.contains("@");
         return hasHost ? name : name + "@" + erlangHostName;

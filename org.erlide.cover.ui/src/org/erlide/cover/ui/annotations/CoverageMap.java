@@ -29,8 +29,7 @@ public class CoverageMap {
      * @param lr
      * @param ann
      */
-    public void addAnnotation(final String name, final LineResult lr,
-            final Annotation ann) {
+    public void addAnnotation(final String name, final LineResult lr, final Annotation ann) {
         if (!coverage.containsKey(name)) {
             coverage.put(name, new HashMap<LineResult, Annotation>());
         }
@@ -76,8 +75,7 @@ public class CoverageMap {
      * @param type
      * @return
      */
-    public boolean checkType(final String name, final LineResult lr,
-            final String type) {
+    public boolean checkType(final String name, final LineResult lr, final String type) {
         return containsAnnotation(name, lr)
                 && coverage.get(name).get(lr).getType().equals(type);
     }

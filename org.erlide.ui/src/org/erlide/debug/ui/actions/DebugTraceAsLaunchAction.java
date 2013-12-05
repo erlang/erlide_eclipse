@@ -10,8 +10,7 @@ import org.eclipse.ui.IViewPart;
 import org.erlide.debug.ui.tracing.DebugTraceLaunching;
 import org.erlide.debug.ui.views.DebuggerTraceView;
 
-public class DebugTraceAsLaunchAction extends Action implements
-        IViewActionDelegate {
+public class DebugTraceAsLaunchAction extends Action implements IViewActionDelegate {
 
     private IDebugTarget fTarget;
     private DebuggerTraceView fView;
@@ -27,8 +26,7 @@ public class DebugTraceAsLaunchAction extends Action implements
     }
 
     @Override
-    public void selectionChanged(final IAction action,
-            final ISelection selection) {
+    public void selectionChanged(final IAction action, final ISelection selection) {
         fTarget = null;
         if (selection instanceof IStructuredSelection) {
             final IStructuredSelection ss = (IStructuredSelection) selection;

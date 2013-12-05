@@ -63,8 +63,7 @@ public class BackendFactory implements IBackendFactory {
 
     @Override
     public synchronized IBackend createBuildBackend(final RuntimeInfo info) {
-        ErlLogger.debug("Create build backend "
-                + info.getVersion().asMajor().toString());
+        ErlLogger.debug("Create build backend " + info.getVersion().asMajor().toString());
         final IBackend backend = createBackend(getBuildBackendData(info));
         setWorkDirForCoreDumps(backend.getRpcSite());
         return backend;
@@ -80,9 +79,8 @@ public class BackendFactory implements IBackendFactory {
             runtime.startAndWait();
         }
         final IBackendManager backendManager = BackendCore.getBackendManager();
-        b = data.isInternal() ? new InternalBackend(data, runtime,
-                backendManager) : new ExternalBackend(data, runtime,
-                backendManager);
+        b = data.isInternal() ? new InternalBackend(data, runtime, backendManager)
+                : new ExternalBackend(data, runtime, backendManager);
         b.initialize(backendManager.getCodeBundles().values());
         return b;
     }
@@ -95,9 +93,8 @@ public class BackendFactory implements IBackendFactory {
         result.setConsole(SystemConfiguration.getInstance().isDeveloper());
         result.setManaged(true);
         result.setRestartable(true);
-        result.setLongName(SystemConfiguration
-                .hasFeatureEnabled("erlide.shortname") ? false : HostnameUtils
-                .canUseLongNames());
+        result.setLongName(SystemConfiguration.hasFeatureEnabled("erlide.shortname") ? false
+                : HostnameUtils.canUseLongNames());
         result.setInternal(true);
         result.setReportErrors(true);
         return result;
@@ -121,8 +118,7 @@ public class BackendFactory implements IBackendFactory {
     }
 
     private RuntimeInfo getIdeRuntimeInfo() {
-        final RuntimeInfo info = new RuntimeInfo(
-                runtimeInfoCatalog.getErlideRuntime());
+        final RuntimeInfo info = new RuntimeInfo(runtimeInfoCatalog.getErlideRuntime());
         return info;
     }
 

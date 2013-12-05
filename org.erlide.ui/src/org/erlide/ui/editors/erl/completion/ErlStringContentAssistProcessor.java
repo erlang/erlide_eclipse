@@ -11,8 +11,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 
-public class ErlStringContentAssistProcessor extends
-        AbstractErlContentAssistProcessor {
+public class ErlStringContentAssistProcessor extends AbstractErlContentAssistProcessor {
 
     private static final char[] NONE = new char[] {};
 
@@ -23,8 +22,8 @@ public class ErlStringContentAssistProcessor extends
     }
 
     @Override
-    public IContextInformation[] computeContextInformation(
-            final ITextViewer viewer, final int offset) {
+    public IContextInformation[] computeContextInformation(final ITextViewer viewer,
+            final int offset) {
         // TODO Auto-generated method stub
         return null;
     }

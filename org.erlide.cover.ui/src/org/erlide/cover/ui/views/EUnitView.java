@@ -48,20 +48,17 @@ public class EUnitView extends ViewPart implements IEUnitObserver {
         containerLayout.verticalSpacing = 3;
         parent.setLayout(containerLayout);
 
-        viewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL
-                | SWT.V_SCROLL);
+        viewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
 
         viewer.setContentProvider(new TestViewContentProvider(getViewSite()));
         viewer.setLabelProvider(new TestViewLabelProvider());
-        viewer.getTree().setLayoutData(
-                new GridData(SWT.FILL, SWT.FILL, true, true));
+        viewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         viewer.getTree().setLinesVisible(true);
 
         viewer.setInput(TestTreeModel.getInstance());
 
         resultsLabel = new Label(parent, SWT.SINGLE);
-        resultsLabel
-                .setText("Passed: 0    Failed: 0   Skipped: 0   Canceled: 0");
+        resultsLabel.setText("Passed: 0    Failed: 0   Skipped: 0   Canceled: 0");
         final FontData font = new FontData();
         font.setStyle(SWT.BOLD);
         resultsLabel.setFont(new Font(Display.getCurrent(), font));
@@ -89,10 +86,10 @@ public class EUnitView extends ViewPart implements IEUnitObserver {
             @Override
             public void run() {
                 final TestTreeModel model = TestTreeModel.getInstance();
-                resultsLabel.setText(String
-                        .format("Passed: %d    Failed: %d   Skipped: %d   Canceled: %d",
-                                model.getPass(), model.getFail(),
-                                model.getSkip(), model.getCancel()));
+                resultsLabel.setText(String.format(
+                        "Passed: %d    Failed: %d   Skipped: %d   Canceled: %d",
+                        model.getPass(), model.getFail(), model.getSkip(),
+                        model.getCancel()));
             }
         });
     }

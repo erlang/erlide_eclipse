@@ -34,8 +34,8 @@ public abstract class RunnableWithProgress implements IRunnableWithProgress {
     }
 
     @Override
-    public void run(final IProgressMonitor monitor)
-            throws InvocationTargetException, InterruptedException {
+    public void run(final IProgressMonitor monitor) throws InvocationTargetException,
+            InterruptedException {
         synchronized (this) {
             monitor.beginTask(label, 0);
             doAction();

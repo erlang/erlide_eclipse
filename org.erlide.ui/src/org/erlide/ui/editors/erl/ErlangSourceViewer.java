@@ -28,10 +28,9 @@ public class ErlangSourceViewer extends ProjectionViewer implements IDisposable 
 
     private ErlangViewerBracketInserter fBracketInserter = null;
 
-    public ErlangSourceViewer(final Composite parent,
-            final IVerticalRuler ruler, final IOverviewRuler overviewRuler,
-            final boolean showsAnnotationOverview, final int styles,
-            final IBracketInserterValidator validator) {
+    public ErlangSourceViewer(final Composite parent, final IVerticalRuler ruler,
+            final IOverviewRuler overviewRuler, final boolean showsAnnotationOverview,
+            final int styles, final IBracketInserterValidator validator) {
         super(parent, ruler, overviewRuler, showsAnnotationOverview, styles);
         fBracketInserter = new ErlangViewerBracketInserter(this);
         if (validator != null) {
@@ -50,8 +49,7 @@ public class ErlangSourceViewer extends ProjectionViewer implements IDisposable 
         fBracketInserter.unconfigure();
     }
 
-    public void setBracketInserterValidator(
-            final IBracketInserterValidator validator) {
+    public void setBracketInserterValidator(final IBracketInserterValidator validator) {
         fBracketInserter.setValidator(validator);
     }
 
@@ -73,8 +71,7 @@ public class ErlangSourceViewer extends ProjectionViewer implements IDisposable 
             colors = colors0;
         }
 
-        final IPreferenceStore generalTextStore = EditorsUI
-                .getPreferenceStore();
+        final IPreferenceStore generalTextStore = EditorsUI.getPreferenceStore();
         final IPreferenceStore store = topStore == null ? new ChainedPreferenceStore(
                 new IPreferenceStore[] { generalTextStore })
                 : new ChainedPreferenceStore(new IPreferenceStore[] { topStore,
@@ -92,8 +89,7 @@ public class ErlangSourceViewer extends ProjectionViewer implements IDisposable 
                 store, colorManager, colors);
         viewer.configure(configuration);
 
-        final Font font = JFaceResources
-                .getFont(PreferenceConstants.EDITOR_TEXT_FONT);
+        final Font font = JFaceResources.getFont(PreferenceConstants.EDITOR_TEXT_FONT);
         viewer.getTextWidget().setFont(font);
         new ErlangSourceViewerUpdater(viewer, configuration, store);
         viewer.setEditable(false);

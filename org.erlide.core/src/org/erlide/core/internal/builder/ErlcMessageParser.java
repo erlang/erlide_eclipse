@@ -44,8 +44,8 @@ public class ErlcMessageParser implements IMessageParser {
             }
             final IResource resource = project.findMember(filename);
             if (resource != null) {
-                MarkerUtils.addProblemMarker(resource, null, null, message,
-                        line, severity);
+                MarkerUtils.addProblemMarker(resource, null, null, message, line,
+                        severity);
                 result = true;
             }
 

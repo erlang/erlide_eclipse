@@ -63,8 +63,7 @@ public class LineResult implements Comparable<LineResult>, Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof LineResult
-                && ((LineResult) obj).getLineNum() == lineNum) {
+        if (obj instanceof LineResult && ((LineResult) obj).getLineNum() == lineNum) {
             return true;
         }
         return false;

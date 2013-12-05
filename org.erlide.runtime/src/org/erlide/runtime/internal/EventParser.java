@@ -27,8 +27,7 @@ public class EventParser {
         try {
             final OtpErlangTuple tmsg = (OtpErlangTuple) msg;
             final OtpErlangObject el0 = tmsg.elementAt(0);
-            return ((OtpErlangAtom) el0).atomValue().equals("event")
-                    && tmsg.arity() == 4;
+            return ((OtpErlangAtom) el0).atomValue().equals("event") && tmsg.arity() == 4;
         } catch (final Exception e) {
             return false;
         }

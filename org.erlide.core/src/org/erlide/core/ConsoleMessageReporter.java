@@ -10,8 +10,8 @@ public class ConsoleMessageReporter {
     @Subscribe
     public void displayMessage(final ErlideMessage emsg) {
         if (!ErlangPlugin.getDefault().isStopping()) {
-            ErlLogger.info(emsg.getSeverity() + "::: " + emsg.getMessage()
-                    + "\n" + emsg.getDetails() + "\n------");
+            ErlLogger.info(emsg.getSeverity() + "::: " + emsg.getMessage() + "\n"
+                    + emsg.getDetails() + "\n------");
         }
     }
 }

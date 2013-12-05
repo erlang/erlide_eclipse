@@ -35,8 +35,7 @@ public class ErlInformationPresenter implements
         DefaultInformationControl.IInformationPresenter,
         DefaultInformationControl.IInformationPresenterExtension {
 
-    public static final String LINE_DELIM = System.getProperty(
-            "line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+    public static final String LINE_DELIM = System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private int fCounter;
     private final boolean fEnforceUpperLineLimit;
@@ -88,8 +87,7 @@ public class ErlInformationPresenter implements
     /**
      * Changes the @xxx bbb: things for bold
      */
-    private String makeEdocBold(final TextPresentation presentation,
-            final String str) {
+    private String makeEdocBold(final TextPresentation presentation, final String str) {
         int lastIndex = 0;
 
         // 1st, let's mark in bold the things generated in edoc.
@@ -110,8 +108,8 @@ public class ErlInformationPresenter implements
                 break;
             }
             lastIndex = end;
-            presentation.addStyleRange(new StyleRange(start, end - start, null,
-                    null, SWT.BOLD));
+            presentation.addStyleRange(new StyleRange(start, end - start, null, null,
+                    SWT.BOLD));
         }
 
         // return the input (this one doesn't change the string)
@@ -172,11 +170,10 @@ public class ErlInformationPresenter implements
 
     @Deprecated
     @Override
-    public String updatePresentation(final Display display,
-            final String hoverInfo, final TextPresentation presentation,
-            final int maxWidth, final int maxHeight) {
-        return updatePresentation((Drawable) display, hoverInfo, presentation,
-                maxWidth, maxHeight);
+    public String updatePresentation(final Display display, final String hoverInfo,
+            final TextPresentation presentation, final int maxWidth, final int maxHeight) {
+        return updatePresentation((Drawable) display, hoverInfo, presentation, maxWidth,
+                maxHeight);
     }
 
     /*
@@ -186,9 +183,8 @@ public class ErlInformationPresenter implements
      * @since 3.2
      */
     @Override
-    public String updatePresentation(final Drawable drawable,
-            final String hoverInfo, final TextPresentation presentation,
-            final int maxWidth, final int maxHeight) {
+    public String updatePresentation(final Drawable drawable, final String hoverInfo,
+            final TextPresentation presentation, final int maxWidth, final int maxHeight) {
 
         if (hoverInfo == null) {
             return null;
@@ -202,8 +198,8 @@ public class ErlInformationPresenter implements
                     / (float) gc.getFontMetrics().getHeight());
 
             fCounter = 0;
-            final LineBreakingReader reader = new LineBreakingReader(
-                    createReader(hoverInfo, presentation), gc, maxWidth);
+            final LineBreakingReader reader = new LineBreakingReader(createReader(
+                    hoverInfo, presentation), gc, maxWidth);
 
             boolean lastLineFormatted = false;
             String lastLineIndent = null;
@@ -258,8 +254,7 @@ public class ErlInformationPresenter implements
         }
     }
 
-    private String trim(final StringBuffer buffer,
-            final TextPresentation presentation) {
+    private String trim(final StringBuffer buffer, final TextPresentation presentation) {
         final int length = buffer.length();
 
         int end = length - 1;

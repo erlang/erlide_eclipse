@@ -26,8 +26,7 @@ import org.eclipse.ui.PlatformUI;
 
 public class LRUWorkingSetsList {
 
-    public static class WorkingSetsComparator implements
-            Comparator<IWorkingSet[]> {
+    public static class WorkingSetsComparator implements Comparator<IWorkingSet[]> {
         private static final Collator collator = Collator.getInstance();
 
         @Override
@@ -61,8 +60,7 @@ public class LRUWorkingSetsList {
     }
 
     public Collection<IWorkingSet[]> getSorted() {
-        final List<IWorkingSet[]> sortedList = new ArrayList<IWorkingSet[]>(
-                fLRUList);
+        final List<IWorkingSet[]> sortedList = new ArrayList<IWorkingSet[]>(fLRUList);
         Collections.sort(sortedList, fComparator);
         return sortedList;
     }
@@ -72,8 +70,8 @@ public class LRUWorkingSetsList {
     }
 
     private void removeDeletedWorkingSets() {
-        final Iterator<IWorkingSet[]> iter = new ArrayList<IWorkingSet[]>(
-                fLRUList).iterator();
+        final Iterator<IWorkingSet[]> iter = new ArrayList<IWorkingSet[]>(fLRUList)
+                .iterator();
         while (iter.hasNext()) {
             final IWorkingSet[] workingSets = iter.next();
             for (int i = 0; i < workingSets.length; i++) {

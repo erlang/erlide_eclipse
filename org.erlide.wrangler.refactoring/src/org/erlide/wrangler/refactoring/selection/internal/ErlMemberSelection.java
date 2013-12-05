@@ -53,8 +53,8 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
 
     protected int getEndCol() {
         return WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
-                .getOffset() + member.getSourceRange().getLength(),
-                getEndLine() - 1, document);
+                .getOffset() + member.getSourceRange().getLength(), getEndLine() - 1,
+                document);
     }
 
     protected int getEndLine() {
@@ -84,9 +84,8 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
     @Override
     public IErlRange getSelectionRange() {
         IErlRange range;
-        range = new ErlRange(getStartLine(), getStartCol(), getEndLine(),
-                getEndCol(), member.getSourceRange().getOffset(), member
-                        .getSourceRange().getLength());
+        range = new ErlRange(getStartLine(), getStartCol(), getEndLine(), getEndCol(),
+                member.getSourceRange().getOffset(), member.getSourceRange().getLength());
         return range;
     }
 
@@ -97,7 +96,6 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlModule getErlModule() {
-        return (IErlModule) ErlangEngine.getInstance().getModel()
-                .findElement(file);
+        return (IErlModule) ErlangEngine.getInstance().getModel().findElement(file);
     }
 }

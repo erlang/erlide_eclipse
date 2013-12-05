@@ -43,14 +43,13 @@ public class ParserDB {
                     // new File("/home/qvladum/parserDB.txt"));
                     out = System.out;
 
-                    final IErlModel model = ErlangEngine.getInstance()
-                            .getModel();
+                    final IErlModel model = ErlangEngine.getInstance().getModel();
                     final Collection<SourcePathProvider> sourcePathProviders = SourcePathUtils
                             .getSourcePathProviders();
                     final long time = System.currentTimeMillis();
                     db.run(model, sourcePathProviders, false);
-                    System.out.println(" took "
-                            + (System.currentTimeMillis() - time) / 1000);
+                    System.out.println(" took " + (System.currentTimeMillis() - time)
+                            / 1000);
                 } catch (final Exception e) {
                     ErlLogger.error(e);
                 }
@@ -72,11 +71,9 @@ public class ParserDB {
 
         final Collection<IErlProject> projects = model.getErlangProjects();
         for (final IErlProject project : projects) {
-            final Collection<IErlModule> modules = project
-                    .getModulesAndIncludes();
+            final Collection<IErlModule> modules = project.getModulesAndIncludes();
             for (final IErlModule module : modules) {
-                if (isTest(module.getResource().getLocation()
-                        .toPortableString())) {
+                if (isTest(module.getResource().getLocation().toPortableString())) {
                     test++;
                 } else {
                     normal++;
@@ -114,8 +111,7 @@ public class ParserDB {
     public void handleModule(final IErlModule module) throws ErlModelException {
         module.open(null);
         final int numForms = module.getChildCount();
-        final String path = module.getResource().getLocation()
-                .toPortableString();
+        final String path = module.getResource().getLocation().toPortableString();
         out.println(path + " " + numForms + " " + isTest(path));
         System.out.println(path + " " + numForms + " " + isTest(path));
         for (final IErlElement form : module.getChildren()) {
@@ -136,8 +132,8 @@ public class ParserDB {
                 final IErlFunction function = (IErlFunction) form;
                 int numClauses = function.getChildCount();
                 numClauses = numClauses == 0 ? 1 : numClauses;
-                out.println(fix(function.getName()) + " " + function.getArity()
-                        + " " + numClauses);
+                out.println(fix(function.getName()) + " " + function.getArity() + " "
+                        + numClauses);
             } else {
                 out.println("?? " + form.getClass().getName());
             }

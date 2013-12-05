@@ -35,8 +35,8 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public class TypeConverterTest {
 
-    private void test(final Object o, final String sig,
-            final OtpErlangObject expect) throws SignatureException {
+    private void test(final Object o, final String sig, final OtpErlangObject expect)
+            throws SignatureException {
         final OtpErlangObject result = TypeConverter.java2erlang(o, sig);
         assertTrue(expect.equals(result));
     }
@@ -65,8 +65,7 @@ public class TypeConverterTest {
 
     @Test
     public void cvtIntegerOk_3() throws SignatureException {
-        final BigInteger bigInteger = new BigInteger("39799999999999999999999",
-                10);
+        final BigInteger bigInteger = new BigInteger("39799999999999999999999", 10);
         test(bigInteger, "i", new OtpErlangLong(bigInteger));
     }
 
@@ -85,9 +84,8 @@ public class TypeConverterTest {
     @SuppressWarnings("boxing")
     @Test
     public void cvtListOk_2() throws SignatureException {
-        test(new Object[] { "a", 35 }, "lx", new OtpErlangList(
-                new OtpErlangObject[] { new OtpErlangString("a"),
-                        new OtpErlangLong(35) }));
+        test(new Object[] { "a", 35 }, "lx", new OtpErlangList(new OtpErlangObject[] {
+                new OtpErlangString("a"), new OtpErlangLong(35) }));
     }
 
     @Test(expected = SignatureException.class)
@@ -99,9 +97,8 @@ public class TypeConverterTest {
     @SuppressWarnings("boxing")
     @Test(expected = SignatureException.class)
     public void cvtListFail_2() throws SignatureException {
-        test(new Object[] { "a", 35 }, "ls", new OtpErlangList(
-                new OtpErlangObject[] { new OtpErlangString("a"),
-                        new OtpErlangLong(35) }));
+        test(new Object[] { "a", 35 }, "ls", new OtpErlangList(new OtpErlangObject[] {
+                new OtpErlangString("a"), new OtpErlangLong(35) }));
     }
 
     @Test

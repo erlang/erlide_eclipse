@@ -44,8 +44,7 @@ import org.erlide.ui.util.PixelConverter;
 
 public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock {
 
-    private static class ErrorPreferences implements
-            IErlangFoldingPreferenceBlock {
+    private static class ErrorPreferences implements IErlangFoldingPreferenceBlock {
 
         private final String fMessage;
 
@@ -118,8 +117,8 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
     }
 
     private Map<String, ErlangFoldingStructureProviderDescriptor> createListModel() {
-        final ErlangFoldingStructureProviderRegistry reg = ErlideUIPlugin
-                .getDefault().getFoldingStructureProviderRegistry();
+        final ErlangFoldingStructureProviderRegistry reg = ErlideUIPlugin.getDefault()
+                .getFoldingStructureProviderRegistry();
         reg.reloadExtensions();
         final ErlangFoldingStructureProviderDescriptor[] descs = reg
                 .getFoldingProviderDescriptors();
@@ -141,9 +140,8 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
                 OverlayPreferenceStore.TypeDescriptor.STRING,
                 PreferenceConstants.EDITOR_FOLDING_PROVIDER));
 
-        return overlayKeys
-                .toArray(new OverlayPreferenceStore.OverlayKey[overlayKeys
-                        .size()]);
+        return overlayKeys.toArray(new OverlayPreferenceStore.OverlayKey[overlayKeys
+                .size()]);
     }
 
     /**
@@ -169,8 +167,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 
         /* check box for new editors */
         fFoldingCheckbox = new Button(composite, SWT.CHECK);
-        fFoldingCheckbox
-                .setText(PreferencesMessages.FoldingConfigurationBlock_enable);
+        fFoldingCheckbox.setText(PreferencesMessages.FoldingConfigurationBlock_enable);
         gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
                 | GridData.VERTICAL_ALIGN_BEGINNING);
         fFoldingCheckbox.setLayoutData(gd);
@@ -179,8 +176,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 final boolean enabled = fFoldingCheckbox.getSelection();
-                fStore.setValue(PreferenceConstants.EDITOR_FOLDING_ENABLED,
-                        enabled);
+                fStore.setValue(PreferenceConstants.EDITOR_FOLDING_ENABLED, enabled);
                 updateCheckboxDependencies();
             }
 
@@ -190,8 +186,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
         });
 
         Label label = new Label(composite, SWT.CENTER);
-        gd = new GridData(GridData.FILL_HORIZONTAL
-                | GridData.VERTICAL_ALIGN_BEGINNING);
+        gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
         label.setLayoutData(gd);
 
         if (fProviderDescriptors.size() > 1) {
@@ -292,8 +287,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
              */
             @Override
             public String getText(final Object element) {
-                return ((ErlangFoldingStructureProviderDescriptor) element)
-                        .getName();
+                return ((ErlangFoldingStructureProviderDescriptor) element).getName();
             }
         });
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -303,8 +297,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
                 final IStructuredSelection sel = (IStructuredSelection) event
                         .getSelection();
                 if (!sel.isEmpty()) {
-                    fStore.setValue(
-                            PreferenceConstants.EDITOR_FOLDING_PROVIDER,
+                    fStore.setValue(PreferenceConstants.EDITOR_FOLDING_PROVIDER,
                             ((ErlangFoldingStructureProviderDescriptor) sel
                                     .getFirstElement()).getId());
                     updateListDependencies();
@@ -321,8 +314,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
     }
 
     void updateListDependencies() {
-        final String id = fStore
-                .getString(PreferenceConstants.EDITOR_FOLDING_PROVIDER);
+        final String id = fStore.getString(PreferenceConstants.EDITOR_FOLDING_PROVIDER);
         final ErlangFoldingStructureProviderDescriptor desc = fProviderDescriptors
                 .get(id);
         IErlangFoldingPreferenceBlock prefs;
@@ -330,8 +322,8 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
         if (desc == null) {
             // safety in case there is no such descriptor
             final String message = PreferencesMessages.FoldingConfigurationBlock_error_not_exist;
-            ErlideUIPlugin.log(new Status(IStatus.WARNING,
-                    ErlideUIPlugin.PLUGIN_ID, IStatus.OK, message, null));
+            ErlideUIPlugin.log(new Status(IStatus.WARNING, ErlideUIPlugin.PLUGIN_ID,
+                    IStatus.OK, message, null));
             prefs = new ErrorPreferences(message);
         } else {
             prefs = fProviderPreferences.get(id);
@@ -401,15 +393,13 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
         fFoldingCheckbox.setSelection(enabled);
         updateCheckboxDependencies();
 
-        final String id = fStore
-                .getString(PreferenceConstants.EDITOR_FOLDING_PROVIDER);
+        final String id = fStore.getString(PreferenceConstants.EDITOR_FOLDING_PROVIDER);
         final Object provider = fProviderDescriptors.get(id);
         if (provider != null) {
             if (fProviderViewer == null) {
                 updateListDependencies();
             } else {
-                fProviderViewer.setSelection(new StructuredSelection(provider),
-                        true);
+                fProviderViewer.setSelection(new StructuredSelection(provider), true);
             }
         }
     }

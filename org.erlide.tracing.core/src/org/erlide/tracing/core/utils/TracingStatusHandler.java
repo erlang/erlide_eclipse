@@ -29,16 +29,13 @@ public final class TracingStatusHandler {
         Status executionStatus = null;
         switch (status) {
         case ERROR:
-            final Object errorObject = TraceBackend.getInstance()
-                    .getErrorObject();
-            executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                    "Error: " + errorObject, null);
+            final Object errorObject = TraceBackend.getInstance().getErrorObject();
+            executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error: "
+                    + errorObject, null);
             break;
         case EXCEPTION_THROWN:
-            final Exception e = (Exception) TraceBackend.getInstance()
-                    .getErrorObject();
-            executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                    "Error", e);
+            final Exception e = (Exception) TraceBackend.getInstance().getErrorObject();
+            executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error", e);
             break;
         case NO_ACTIVATED_NODES:
             executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
@@ -47,8 +44,7 @@ public final class TracingStatusHandler {
         case NOT_ALL_NODES_ACTIVATED:
             final StringBuilder builder = new StringBuilder(
                     "Following nodes were not activated for tracing:\n");
-            for (final String node : TraceBackend.getInstance()
-                    .getNotActivatedNodes()) {
+            for (final String node : TraceBackend.getInstance().getNotActivatedNodes()) {
                 builder.append(node).append("\n");
             }
             executionStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID,
@@ -62,8 +58,7 @@ public final class TracingStatusHandler {
             break;
         }
         if (executionStatus != null) {
-            StatusManager.getManager().handle(executionStatus,
-                    StatusManager.SHOW);
+            StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);
         }
     }
 }

@@ -86,8 +86,7 @@ public class ChangedFile {
         final TextFileChange change = new TextFileChange(oldPath, eclipseRep);
         // change.setSaveMode(TextFileChange.FORCE_SAVE);
         final File tf = new File(oldPath);
-        final List<TextEdit> edits = ChangesetMaker.createEdits(tf,
-                newFileContent);
+        final List<TextEdit> edits = ChangesetMaker.createEdits(tf, newFileContent);
         final MultiTextEdit multiEdit = new MultiTextEdit();
         if (edits.size() != 0) {
             for (final TextEdit edit : edits) {
@@ -113,8 +112,7 @@ public class ChangedFile {
      * @throws IOException
      *             if the given path could not be found on the workspace
      */
-    private IFile findEclipseRepresentation(final String anOldPath)
-            throws IOException {
+    private IFile findEclipseRepresentation(final String anOldPath) throws IOException {
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IWorkspaceRoot root = workspace.getRoot();
         final Path p = new Path(anOldPath);

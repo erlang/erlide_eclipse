@@ -92,12 +92,10 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
         // treeViewer = new TreeViewer(container, SWT.VIRTUAL);
         treeViewer = new TreeViewer(container, SWT.SINGLE);
-        treeViewer.getTree().setLayoutData(
-                new GridData(SWT.FILL, SWT.FILL, true, true));
+        treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         // providers
-        treeViewer
-                .setContentProvider(new TreeContentProvider(treeViewer, true));
+        treeViewer.setContentProvider(new TreeContentProvider(treeViewer, true));
         treeViewer.setLabelProvider(new TreeLabelProvider());
 
         // input
@@ -115,8 +113,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
     private void createButtonsPanel(final Composite parent) {
         buttonsPanel = new Composite(parent, SWT.NONE);
-        buttonsPanel
-                .setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        buttonsPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         buttonsPanel.setLayout(new RowLayout());
 
         // "Previous" button
@@ -131,13 +128,11 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
                 task = new RunnableWithProgress("Loading trace results...") {
                     @Override
                     public void doAction() {
-                        final int limit = Activator.getDefault()
-                                .getPreferenceStore()
+                        final int limit = Activator.getDefault().getPreferenceStore()
                                 .getInt(PreferenceNames.TRACES_LOAD_LIMIT);
                         final long startIndex = Math.max(1L, index - limit);
                         final long endIndex = startIndex + limit - 1;
-                        TraceBackend.getInstance().loadDataFromFile(startIndex,
-                                endIndex);
+                        TraceBackend.getInstance().loadDataFromFile(startIndex, endIndex);
                     }
                 };
                 executeTask();
@@ -156,15 +151,13 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
                 task = new RunnableWithProgress("Loading trace results...") {
                     @Override
                     public void doAction() {
-                        final int limit = Activator.getDefault()
-                                .getPreferenceStore()
+                        final int limit = Activator.getDefault().getPreferenceStore()
                                 .getInt(PreferenceNames.TRACES_LOAD_LIMIT);
-                        final long endIndex = Math.min(index + limit * 2 - 1,
-                                TraceBackend.getInstance().getActiveResultSet()
-                                        .getSize());
+                        final long endIndex = Math
+                                .min(index + limit * 2 - 1, TraceBackend.getInstance()
+                                        .getActiveResultSet().getSize());
                         final long startIndex = endIndex - limit + 1;
-                        TraceBackend.getInstance().loadDataFromFile(startIndex,
-                                endIndex);
+                        TraceBackend.getInstance().loadDataFromFile(startIndex, endIndex);
                     }
                 };
                 executeTask();
@@ -174,8 +167,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         // "Show" button
         showButton = new Button(buttonsPanel, SWT.PUSH | SWT.CENTER);
         showButton.setToolTipText("Show selected trace set");
-        showButton.setImage(DebugUITools
-                .getImage(IDebugUIConstants.IMG_OBJS_LAUNCH_RUN));
+        showButton.setImage(DebugUITools.getImage(IDebugUIConstants.IMG_OBJS_LAUNCH_RUN));
         showButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -186,8 +178,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
         // Text field
         traceIndexField = new Text(buttonsPanel, SWT.SINGLE | SWT.BORDER);
-        traceIndexField
-                .setToolTipText("Select index of first trace event to display");
+        traceIndexField.setToolTipText("Select index of first trace event to display");
         traceIndexField.setLayoutData(new RowData(60, SWT.DEFAULT));
         traceIndexField.addListener(SWT.Modify, new Listener() {
 
@@ -198,8 +189,8 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
                     final Long value = new Long(traceIndexField.getText());
 
                     if (value >= 1
-                            && value <= TraceBackend.getInstance()
-                                    .getActiveResultSet().getSize()) {
+                            && value <= TraceBackend.getInstance().getActiveResultSet()
+                                    .getSize()) {
                         index = value;
                         showButton.setEnabled(nextButton.isEnabled()
                                 || previousButton.isEnabled());
@@ -239,8 +230,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
             public void doAction() {
                 final int limit = Activator.getDefault().getPreferenceStore()
                         .getInt(PreferenceNames.TRACES_LOAD_LIMIT);
-                TraceBackend.getInstance().loadDataFromFile(index,
-                        index + limit - 1);
+                TraceBackend.getInstance().loadDataFromFile(index, index + limit - 1);
             }
         };
         executeTask();
@@ -248,8 +238,8 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
     private void executeTask() {
         try {
-            final Shell shell = PlatformUI.getWorkbench()
-                    .getActiveWorkbenchWindow().getShell();
+            final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getShell();
             new ProgressMonitorDialog(shell).run(true, false, task);
             doAfterLoadingTraces();
         } catch (final Exception exception) {
@@ -279,9 +269,8 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
             if (resultSet.getSize() == 0) {
                 stringBuilder.append("no traces)");
             } else {
-                stringBuilder.append(index).append(" - ")
-                        .append(index + size - 1).append(" of ")
-                        .append(resultSet.getSize()).append(" traces)");
+                stringBuilder.append(index).append(" - ").append(index + size - 1)
+                        .append(" of ").append(resultSet.getSize()).append(" traces)");
             }
             label.setText(stringBuilder.toString());
         } else {
@@ -303,10 +292,8 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         try {
             if (treeNode instanceof FunctionNode) {
                 final FunctionNode functionNode = (FunctionNode) treeNode;
-                ErlModelUtils
-                        .openMFA(functionNode.getModuleName(),
-                                functionNode.getFunctionName(),
-                                functionNode.getArity());
+                ErlModelUtils.openMFA(functionNode.getModuleName(),
+                        functionNode.getFunctionName(), functionNode.getArity());
             } else if (treeNode instanceof ModuleNode) {
                 final ModuleNode moduleNode = (ModuleNode) treeNode;
                 ErlModelUtils.openModule(moduleNode.getModuleName());

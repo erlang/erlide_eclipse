@@ -30,8 +30,7 @@ public class ErlideEventBus {
 
     @Subscribe
     public void deadEvent(final DeadEvent event) {
-        ErlLogger.warn("no handler for "
-                + event.getEvent().getClass().getName());
+        ErlLogger.warn("no handler for " + event.getEvent().getClass().getName());
     }
 
 }

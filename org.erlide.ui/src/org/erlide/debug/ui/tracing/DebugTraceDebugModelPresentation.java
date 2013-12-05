@@ -18,8 +18,7 @@ public class DebugTraceDebugModelPresentation extends LabelProvider implements
     public static final String ID = "org.erlide.debug.trace.model";
 
     @Override
-    public void computeDetail(final IValue value,
-            final IValueDetailListener listener) {
+    public void computeDetail(final IValue value, final IValueDetailListener listener) {
         String detail = "";
         try {
             detail = value.getValueString();
@@ -48,8 +47,8 @@ public class DebugTraceDebugModelPresentation extends LabelProvider implements
             return new FileEditorInput((IFile) element);
         }
         if (element instanceof ILineBreakpoint) {
-            return new FileEditorInput((IFile) ((ILineBreakpoint) element)
-                    .getMarker().getResource());
+            return new FileEditorInput((IFile) ((ILineBreakpoint) element).getMarker()
+                    .getResource());
         }
         return null;
     }

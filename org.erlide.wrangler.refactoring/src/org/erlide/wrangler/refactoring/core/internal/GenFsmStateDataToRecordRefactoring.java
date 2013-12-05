@@ -25,8 +25,7 @@ import com.ericsson.otp.erlang.OtpErlangBoolean;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public class GenFsmStateDataToRecordRefactoring extends
-        QuickCheckStateRefactoring {
+public class GenFsmStateDataToRecordRefactoring extends QuickCheckStateRefactoring {
 
     @Override
     public String getName() {

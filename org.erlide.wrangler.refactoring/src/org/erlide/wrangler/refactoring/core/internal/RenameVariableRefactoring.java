@@ -41,8 +41,7 @@ public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring 
             return new RefactoringStatus();
         }
 
-        return RefactoringStatus
-                .createFatalErrorStatus("Please select a variable!");
+        return RefactoringStatus.createFatalErrorStatus("Please select a variable!");
     }
 
     @Override
@@ -53,11 +52,10 @@ public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring 
     @Override
     public IRefactoringRpcMessage run(final IErlSelection selection) {
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "rename_var_eclipse", "siisxi", sel.getFilePath(),
-                sel.getSelectionRange().getStartLine(),
-                sel.getSelectionRange().getStartCol(), userInput,
-                sel.getSearchPath(), GlobalParameters.getTabWidth());
+        return WranglerBackendManager.getRefactoringBackend().call("rename_var_eclipse",
+                "siisxi", sel.getFilePath(), sel.getSelectionRange().getStartLine(),
+                sel.getSelectionRange().getStartCol(), userInput, sel.getSearchPath(),
+                GlobalParameters.getTabWidth());
     }
 
     @Override
@@ -69,11 +67,10 @@ public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring 
         }
 
         final RpcResult res = WranglerBackendManager.getRefactoringBackend()
-                .callWithoutParser("get_var_name_eclipse", "siixi",
-                        sel.getFilePath(),
+                .callWithoutParser("get_var_name_eclipse", "siixi", sel.getFilePath(),
                         sel.getSelectionRange().getStartLine(),
-                        sel.getSelectionRange().getStartCol(),
-                        sel.getSearchPath(), GlobalParameters.getTabWidth());
+                        sel.getSelectionRange().getStartCol(), sel.getSearchPath(),
+                        GlobalParameters.getTabWidth());
 
         if (res.getValue().getClass().equals(OtpErlangString.class)) {
             return ((OtpErlangString) res.getValue()).stringValue();

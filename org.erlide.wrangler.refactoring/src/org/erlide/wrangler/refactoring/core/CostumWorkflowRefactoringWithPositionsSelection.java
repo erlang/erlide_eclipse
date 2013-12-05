@@ -62,8 +62,7 @@ public abstract class CostumWorkflowRefactoringWithPositionsSelection extends
             return new OtpErlangList();
         }
         OtpErlangList ret;
-        final OtpErlangObject[] selection = new OtpErlangObject[selectedPositions
-                .size()];
+        final OtpErlangObject[] selection = new OtpErlangObject[selectedPositions.size()];
 
         for (int i = 0; i < selectedPositions.size(); ++i) {
             selection[i] = positions.get(selectedPositions.get(i));

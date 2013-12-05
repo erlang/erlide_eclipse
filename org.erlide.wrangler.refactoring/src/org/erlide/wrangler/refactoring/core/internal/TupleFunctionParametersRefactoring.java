@@ -29,8 +29,7 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public class TupleFunctionParametersRefactoring extends
-        SimpleOneStepWranglerRefactoring {
+public class TupleFunctionParametersRefactoring extends SimpleOneStepWranglerRefactoring {
     protected int numberOfTuplingParameters = -1;
 
     @Override
@@ -39,12 +38,10 @@ public class TupleFunctionParametersRefactoring extends
         final IErlSelection sel = GlobalParameters.getWranglerSelection();
         if (sel instanceof IErlMemberSelection) {
             final SelectionKind kind = sel.getKind();
-            if (kind == SelectionKind.FUNCTION_CLAUSE
-                    || kind == SelectionKind.FUNCTION) {
+            if (kind == SelectionKind.FUNCTION_CLAUSE || kind == SelectionKind.FUNCTION) {
                 final IErlMemberSelection s = (IErlMemberSelection) sel;
                 numberOfTuplingParameters = calculateParametersNumber(WranglerUtils
-                        .getTextFromEditor(s.getSelectionRange(),
-                                s.getDocument()));
+                        .getTextFromEditor(s.getSelectionRange(), s.getDocument()));
                 if (numberOfTuplingParameters > 0) {
                     return new RefactoringStatus();
                 }

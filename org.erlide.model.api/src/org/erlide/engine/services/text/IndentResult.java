@@ -13,8 +13,7 @@ public class IndentResult {
     private boolean addNewLine;
     private String text;
 
-    public IndentResult(final String text, final int removeNext,
-            final boolean addNewLine) {
+    public IndentResult(final String text, final int removeNext, final boolean addNewLine) {
         super();
         this.text = text;
         this.removeNext = removeNext;

@@ -26,8 +26,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public abstract class AbstractRefactoringRpcMessage extends AbstractRpcMessage
-        implements IRefactoringRpcMessage {
+public abstract class AbstractRefactoringRpcMessage extends AbstractRpcMessage implements
+        IRefactoringRpcMessage {
 
     protected ArrayList<ChangedFile> changedFiles = null;
 
@@ -50,8 +50,8 @@ public abstract class AbstractRefactoringRpcMessage extends AbstractRpcMessage
             newPath = (OtpErlangString) e.elementAt(1);
             final String newContent = ErlUtils.asString(e.elementAt(2));
 
-            ret.add(new ChangedFile(oldPath.stringValue(), newPath
-                    .stringValue(), newContent));
+            ret.add(new ChangedFile(oldPath.stringValue(), newPath.stringValue(),
+                    newContent));
         }
         return ret;
     }

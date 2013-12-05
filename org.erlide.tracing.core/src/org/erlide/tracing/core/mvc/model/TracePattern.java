@@ -51,8 +51,7 @@ public class TracePattern implements Serializable {
         final TracePattern tp = (TracePattern) o;
 
         return arity == tp.arity && moduleName.equals(tp.moduleName)
-                && functionName.equals(tp.functionName)
-                && matchSpec.equals(tp.matchSpec);
+                && functionName.equals(tp.functionName) && matchSpec.equals(tp.matchSpec);
     }
 
     @Override

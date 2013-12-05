@@ -16,9 +16,8 @@ import org.erlide.util.ErlLogger;
 
 public class ExceptionUtils {
     private static final String INDENT = "\t";
-    private static List<String> _suppressedPackages = newArrayList("$Proxy",
-            "org.junit", "java.lang.reflect.Method", "sun.", "org.eclipse",
-            "org.junit");
+    private static List<String> _suppressedPackages = newArrayList("$Proxy", "org.junit",
+            "java.lang.reflect.Method", "sun.", "org.eclipse", "org.junit");
 
     public static String getFilteredStackTrace(final Throwable t) {
         return getFilteredStackTrace(t, true);
@@ -37,15 +36,14 @@ public class ExceptionUtils {
         }
     }
 
-    private static void writeCleanStackTrace(final Throwable t,
-            final PrintWriter s, final boolean wantsFilter) {
+    private static void writeCleanStackTrace(final Throwable t, final PrintWriter s,
+            final boolean wantsFilter) {
         s.print("Exception: ");
         printExceptionChain(t, s);
         final Set<String> skippedPackages = newHashSet();
         int skippedLines = 0;
         final boolean shouldFilter = wantsFilter && filtersEnabled();
-        for (final StackTraceElement traceElement : getBottomThrowable(t)
-                .getStackTrace()) {
+        for (final StackTraceElement traceElement : getBottomThrowable(t).getStackTrace()) {
             String forbiddenPackageName = null;
             if (shouldFilter) {
                 forbiddenPackageName = tryGetForbiddenPackageName(traceElement);
@@ -55,8 +53,7 @@ public class ExceptionUtils {
                 if (skippedPackages.size() > 0) {
                     // 37 lines skipped for [org.h2, org.hibernate, sun.,
                     // java.lang.reflect.Method, $Proxy]
-                    s.println(getSkippedPackagesMessage(skippedPackages,
-                            skippedLines));
+                    s.println(getSkippedPackagesMessage(skippedPackages, skippedLines));
                 }
                 // at hib.HibExample.test(HibExample.java:18)
                 s.println(INDENT + "at " + traceElement);
@@ -74,8 +71,8 @@ public class ExceptionUtils {
 
     // 37 lines skipped for [org.h2, org.hibernate, sun.,
     // java.lang.reflect.Method, $Proxy]
-    private static String getSkippedPackagesMessage(
-            final Set<String> skippedPackages, final int skippedLines) {
+    private static String getSkippedPackagesMessage(final Set<String> skippedPackages,
+            final int skippedLines) {
         return INDENT + skippedLines + " line" + (skippedLines == 1 ? "" : "s")
                 + " skipped for " + skippedPackages;
     }
@@ -95,8 +92,7 @@ public class ExceptionUtils {
         return true;
     }
 
-    private static void printExceptionChain(final Throwable t,
-            final PrintWriter s) {
+    private static void printExceptionChain(final Throwable t, final PrintWriter s) {
         s.println(t);
         if (t.getCause() != null) {
             s.print("Caused by: ");
@@ -109,8 +105,7 @@ public class ExceptionUtils {
      * returns the package name from the list of suppressed packages that
      * matches, otherwise it returns null.
      */
-    private static String tryGetForbiddenPackageName(
-            final StackTraceElement traceElement) {
+    private static String tryGetForbiddenPackageName(final StackTraceElement traceElement) {
         final String classAndMethod = traceElement.getClassName() + "."
                 + traceElement.getMethodName();
         for (final String pkg : _suppressedPackages) {

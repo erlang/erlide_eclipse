@@ -54,8 +54,8 @@ public final class ErlToken {
     }
 
     private int int24(final byte[] bytes, final int index) {
-        return (0xff & bytes[index]) << 16 | (0xff & bytes[index + 1]) << 8
-                | 0xff & bytes[index + 2];
+        return (0xff & bytes[index]) << 16 | (0xff & bytes[index + 1]) << 8 | 0xff
+                & bytes[index + 2];
     }
 
     public ErlToken(final OtpErlangTuple e) {
@@ -65,8 +65,7 @@ public final class ErlToken {
         }
 
         final OtpErlangObject[] parts = e.elements();
-        if (((OtpErlangAtom) parts[0]).atomValue().equals("token")
-                && parts.length == 8) {
+        if (((OtpErlangAtom) parts[0]).atomValue().equals("token") && parts.length == 8) {
 
             // -record(token, {kind, line, offset, length, value, text}).
             kind = KIND_OTHER;
@@ -123,8 +122,8 @@ public final class ErlToken {
               // }
               //
             if (TRACE) {
-                ErlLogger.debug("mkTok " + kind + " - " + line + "/" + offset
-                        + ":" + length);
+                ErlLogger.debug("mkTok " + kind + " - " + line + "/" + offset + ":"
+                        + length);
                 // ErlLogger.debug("mkTok " + kind + " - " + text + " " + line +
                 // "/"
                 // + offset + ": '" + text + "' ");

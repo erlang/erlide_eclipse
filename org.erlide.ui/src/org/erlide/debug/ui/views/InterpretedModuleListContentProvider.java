@@ -17,8 +17,7 @@ import org.erlide.engine.util.CommonUtils;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.util.ErlLogger;
 
-public class InterpretedModuleListContentProvider extends
-        ModuleListContentProvider {
+public class InterpretedModuleListContentProvider extends ModuleListContentProvider {
 
     @Override
     public void inputChanged(final Viewer viewer, final Object oldInput,
@@ -27,10 +26,9 @@ public class InterpretedModuleListContentProvider extends
         if (newInput instanceof ILaunchConfiguration) {
             final ILaunchConfiguration launchConfiguration = (ILaunchConfiguration) newInput;
             try {
-                final List<String> interpret = launchConfiguration
-                        .getAttribute(
-                                ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES,
-                                new ArrayList<String>());
+                final List<String> interpret = launchConfiguration.getAttribute(
+                        ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES,
+                        new ArrayList<String>());
                 addModules(interpret);
             } catch (final CoreException e) {
                 ErlLogger.warn(e);

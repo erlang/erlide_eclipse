@@ -57,8 +57,7 @@ public class ErlangConsolePartitioner implements IConsoleDocumentPartitioner {
 
             boolean updatedRange = false;
             if (!ranges.isEmpty()) {
-                final ScriptStyleRange lastRange = ranges
-                        .get(ranges.size() - 1);
+                final ScriptStyleRange lastRange = ranges.get(ranges.size() - 1);
                 if (lastRange.scriptType == r.scriptType) {
                     if (lastRange.start + lastRange.length == r.start) {
                         lastRange.length += r.length;
@@ -85,8 +84,8 @@ public class ErlangConsolePartitioner implements IConsoleDocumentPartitioner {
         final List<ScriptStyleRange> result = new ArrayList<ScriptStyleRange>();
         for (int i = ranges.size() - 1; i >= 0; i--) {
             final ScriptStyleRange r = ranges.get(i);
-            if (r.start >= offset && r.start <= offset + length
-                    || r.start < offset && r.start + r.length > offset) {
+            if (r.start >= offset && r.start <= offset + length || r.start < offset
+                    && r.start + r.length > offset) {
                 found = true;
                 // it must always be a copy because it may be changed later by
                 // the TextConsole when
@@ -109,10 +108,10 @@ public class ErlangConsolePartitioner implements IConsoleDocumentPartitioner {
             // if we haven't been able to cover the whole range, there's
             // probably something wrong (so, let's
             // leave it in gray so that we know about that).
-            final ScriptStyleRange lastPart = new ScriptStyleRange(lastOffset,
-                    offset + length - lastOffset, Display.getDefault()
-                            .getSystemColor(SWT.COLOR_GRAY), Display
-                            .getDefault().getSystemColor(SWT.COLOR_WHITE),
+            final ScriptStyleRange lastPart = new ScriptStyleRange(lastOffset, offset
+                    + length - lastOffset, Display.getDefault().getSystemColor(
+                    SWT.COLOR_GRAY),
+                    Display.getDefault().getSystemColor(SWT.COLOR_WHITE),
                     ScriptStyleRange.UNKNOWN);
             result.add(lastPart);
         }

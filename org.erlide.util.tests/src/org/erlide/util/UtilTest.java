@@ -59,8 +59,8 @@ public class UtilTest {
 
     @Test
     public void testIoListToString_small() {
-        final OtpErlangObject input = OtpErlang.mkList(new OtpErlangString(
-                "hej"), new OtpErlangString("hoj"));
+        final OtpErlangObject input = OtpErlang.mkList(new OtpErlangString("hej"),
+                new OtpErlangString("hoj"));
         final String result = Util.ioListToString(input, 10);
         final String expected = "hejhoj";
         Assert.assertEquals(expected, result);
@@ -68,8 +68,8 @@ public class UtilTest {
 
     @Test
     public void testIoListToString_large1() {
-        final OtpErlangObject input = OtpErlang.mkList(new OtpErlangString(
-                "hej"), new OtpErlangString("hoj"));
+        final OtpErlangObject input = OtpErlang.mkList(new OtpErlangString("hej"),
+                new OtpErlangString("hoj"));
         final String result = Util.ioListToString(input, 4);
         final String expected = "hejh... <truncated>";
         Assert.assertEquals(expected, result);
@@ -77,8 +77,8 @@ public class UtilTest {
 
     @Test
     public void testIoListToString_large2() {
-        final OtpErlangObject input = OtpErlang.mkList(new OtpErlangString(
-                "hej"), new OtpErlangString("hoj"));
+        final OtpErlangObject input = OtpErlang.mkList(new OtpErlangString("hej"),
+                new OtpErlangString("hoj"));
         final String result = Util.ioListToString(input, 6);
         final String expected = "hejhoj";
         Assert.assertEquals(expected, result);
@@ -122,8 +122,7 @@ public class UtilTest {
 
     @Test
     public void stringValue_1() throws TermParserException {
-        final OtpErlangObject input = TermParser.getParser().parse(
-                "\"a string\"");
+        final OtpErlangObject input = TermParser.getParser().parse("\"a string\"");
         final String expected = "a string";
         final String actual = Util.stringValue(input);
         Assert.assertEquals(expected, actual);
@@ -139,8 +138,7 @@ public class UtilTest {
 
     @Test
     public void stringValue_3() throws TermParserException {
-        final OtpErlangObject input = TermParser.getParser()
-                .parse("[51,52,53]");
+        final OtpErlangObject input = TermParser.getParser().parse("[51,52,53]");
         final String expected = "345";
         final String actual = Util.stringValue(input);
         Assert.assertEquals(expected, actual);
@@ -148,8 +146,7 @@ public class UtilTest {
 
     @Test
     public void stringValue_4() {
-        final OtpErlangObject input = new OtpErlangBinary(new byte[] { 51, 52,
-                53 });
+        final OtpErlangObject input = new OtpErlangBinary(new byte[] { 51, 52, 53 });
         final String expected = "345";
         final String actual = Util.stringValue(input);
         Assert.assertEquals(expected, actual);

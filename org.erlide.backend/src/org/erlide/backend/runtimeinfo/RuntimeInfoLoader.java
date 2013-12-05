@@ -32,9 +32,8 @@ public class RuntimeInfoLoader {
 
     public static RuntimeInfo load(final Preferences node) {
         final String path = node.get(CODE_PATH, "");
-        final RuntimeInfo info = new RuntimeInfo(node.name(), node.get(
-                HOME_DIR, ""), node.get(ARGS, ""),
-                PreferencesUtils.unpackList(path));
+        final RuntimeInfo info = new RuntimeInfo(node.name(), node.get(HOME_DIR, ""),
+                node.get(ARGS, ""), PreferencesUtils.unpackList(path));
         return info;
     }
 

@@ -47,9 +47,8 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 
     @SuppressWarnings("boxing")
     @Override
-    protected IResultParser callRefactoring()
-            throws WranglerRpcParsingException, CoreException, IOException,
-            WranglerWarningException {
+    protected IResultParser callRefactoring() throws WranglerRpcParsingException,
+            CoreException, IOException, WranglerWarningException {
         String functionName;
         RpcResult result;
 
@@ -70,14 +69,13 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
             final OtpErlangList fpl = new OtpErlangList(fpa);
 
             result = backend.callWithoutParser(
-                    WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName,
-                    "xiiis", fpl, minToks, minClones,
-                    GlobalParameters.getTabWidth(), suffixPath);
+                    WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName, "xiiis",
+                    fpl, minToks, minClones, GlobalParameters.getTabWidth(), suffixPath);
         } else {
             functionName = "duplicated_code_eclipse";
             result = backend.callWithoutParser(
-                    WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName,
-                    "xiiis", sel.getSearchPath(), minToks, minClones,
+                    WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName, "xiiis",
+                    sel.getSearchPath(), minToks, minClones,
                     GlobalParameters.getTabWidth(), suffixPath);
         }
 
@@ -88,9 +86,8 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
     }
 
     private String getSuffixPath() throws IOException {
-        final Bundle[] bs = Platform
-                .getFragments(Platform
-                        .getBundle(org.erlide.wrangler.refactoring.Activator.PLUGIN_ID));
+        final Bundle[] bs = Platform.getFragments(Platform
+                .getBundle(org.erlide.wrangler.refactoring.Activator.PLUGIN_ID));
         if (bs.length < 1) {
             ErlLogger.warn("Fragment is not loaded?! No C binary is run.");
             return "";
@@ -129,8 +126,7 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 
     @Override
     protected boolean getUserInput() {
-        final Shell shell = PlatformUI.getWorkbench().getDisplay()
-                .getActiveShell();
+        final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
 
         final DuplicateCodeDetectionInputDialog inputd = new DuplicateCodeDetectionInputDialog(
                 shell, "Identical code detection...");

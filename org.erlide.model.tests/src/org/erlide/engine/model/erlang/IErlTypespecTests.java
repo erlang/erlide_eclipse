@@ -13,14 +13,11 @@ public class IErlTypespecTests extends ErlModelTestBase {
 
     @Test
     public void getName() throws Exception {
-        final IErlModule module2 = ErlideTestUtils
-                .createModule(
-                        project,
-                        "yy.erl",
-                        "-module(yy).\n"
-                                + "-spec return_error(integer(), any()) -> no_return().\n"
-                                + "return_error(Line, Message) ->\n"
-                                + "    throw({error, {Line, ?MODULE, Message}}).");
+        final IErlModule module2 = ErlideTestUtils.createModule(project, "yy.erl",
+                "-module(yy).\n"
+                        + "-spec return_error(integer(), any()) -> no_return().\n"
+                        + "return_error(Line, Message) ->\n"
+                        + "    throw({error, {Line, ?MODULE, Message}}).");
         module2.open(null);
         final List<IErlElement> childrenOfKind = module2
                 .getChildrenOfKind(ErlElementKind.TYPESPEC);

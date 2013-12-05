@@ -25,8 +25,8 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
     private final int offset;
     private final int length;
 
-    public ErlTemplateCompletionProcessor(final IDocument doc,
-            final int offset, final int length) {
+    public ErlTemplateCompletionProcessor(final IDocument doc, final int offset,
+            final int length) {
         super();
         fDocument = doc;
         this.offset = offset;
@@ -36,11 +36,8 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
     @Override
     protected TemplateContextType getContextType(final ITextViewer viewer,
             final IRegion region) {
-        return ErlideUIPlugin
-                .getDefault()
-                .getContextTypeRegistry()
-                .getContextType(
-                        ErlangTemplateContextType.ERLANG_CONTEXT_TYPE_ID);
+        return ErlideUIPlugin.getDefault().getContextTypeRegistry()
+                .getContextType(ErlangTemplateContextType.ERLANG_CONTEXT_TYPE_ID);
     }
 
     @Override
@@ -50,15 +47,14 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
 
     @Override
     protected Template[] getTemplates(final String contextTypeId) {
-        final Template[] templates = ErlideUIPlugin.getDefault()
-                .getTemplateStore().getTemplates();
+        final Template[] templates = ErlideUIPlugin.getDefault().getTemplateStore()
+                .getTemplates();
         final TemplateContextType type = ErlideUIPlugin.getDefault()
                 .getContextTypeRegistry().getContextType(contextTypeId);
         if (type instanceof ErlangTemplateContextType) {
-            final List<Template> result = new ArrayList<Template>(
-                    templates.length);
-            final ErlangTemplateContext etc = new ErlangTemplateContext(type,
-                    fDocument, offset, length);
+            final List<Template> result = new ArrayList<Template>(templates.length);
+            final ErlangTemplateContext etc = new ErlangTemplateContext(type, fDocument,
+                    offset, length);
             for (final Template template : templates) {
                 if (etc.canEvaluate(template)) {
                     result.add(template);
@@ -71,15 +67,13 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
 
     @Override
     protected ICompletionProposal createProposal(final Template template,
-            final TemplateContext context, final IRegion region,
-            final int relevance) {
-        final ErlTemplateProposal p = new ErlTemplateProposal(template,
-                context, region, getImage(template), relevance);
+            final TemplateContext context, final IRegion region, final int relevance) {
+        final ErlTemplateProposal p = new ErlTemplateProposal(template, context, region,
+                getImage(template), relevance);
         p.setInformationControlCreator(new IInformationControlCreator() {
 
             @Override
-            public IInformationControl createInformationControl(
-                    final Shell parent) {
+            public IInformationControl createInformationControl(final Shell parent) {
                 return new SourceViewerInformationControl(parent,
                         PreferenceConstants.EDITOR_TEXT_FONT);
             }
@@ -88,13 +82,12 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
     }
 
     @Override
-    protected TemplateContext createContext(final ITextViewer viewer,
-            final IRegion region) {
+    protected TemplateContext createContext(final ITextViewer viewer, final IRegion region) {
         final TemplateContextType contextType = getContextType(viewer, region);
         if (contextType instanceof ErlangTemplateContextType) {
             final IDocument document = viewer.getDocument();
-            return new ErlangTemplateContext(contextType, document,
-                    region.getOffset(), region.getLength());
+            return new ErlangTemplateContext(contextType, document, region.getOffset(),
+                    region.getLength());
         }
         return super.createContext(viewer, region);
     }

@@ -167,8 +167,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
         return parent;
     }
 
-    private String convertToString(final List<String> patterns,
-            final String separator) {
+    private String convertToString(final List<String> patterns, final String separator) {
         return ListsUtils.packList(patterns, separator);
     }
 
@@ -198,28 +197,25 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
         // Description
         info = new Label(parent, SWT.LEFT);
         info.setText("Filter description:");
-        final Text description = new Text(parent, SWT.LEFT | SWT.WRAP
-                | SWT.MULTI | SWT.READ_ONLY | SWT.BORDER | SWT.V_SCROLL);
+        final Text description = new Text(parent, SWT.LEFT | SWT.WRAP | SWT.MULTI
+                | SWT.READ_ONLY | SWT.BORDER | SWT.V_SCROLL);
         data = new GridData(GridData.FILL_HORIZONTAL);
         data.heightHint = convertHeightInCharsToPixels(3);
         description.setLayoutData(data);
-        fCheckBoxList
-                .addSelectionChangedListener(new ISelectionChangedListener() {
-                    @Override
-                    public void selectionChanged(
-                            final SelectionChangedEvent event) {
-                        final ISelection selection = event.getSelection();
-                        if (selection instanceof IStructuredSelection) {
-                            final Object selectedElement = ((IStructuredSelection) selection)
-                                    .getFirstElement();
-                            if (selectedElement instanceof FilterDescriptor) {
-                                description
-                                        .setText(((FilterDescriptor) selectedElement)
-                                                .getDescription());
-                            }
-                        }
+        fCheckBoxList.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
+            public void selectionChanged(final SelectionChangedEvent event) {
+                final ISelection selection = event.getSelection();
+                if (selection instanceof IStructuredSelection) {
+                    final Object selectedElement = ((IStructuredSelection) selection)
+                            .getFirstElement();
+                    if (selectedElement instanceof FilterDescriptor) {
+                        description.setText(((FilterDescriptor) selectedElement)
+                                .getDescription());
                     }
-                });
+                }
+            }
+        });
         fCheckBoxList.addCheckStateListener(new ICheckStateListener() {
             /*
              * @see
@@ -234,8 +230,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
                     if (fFilterDescriptorChangeHistory.contains(element)) {
                         fFilterDescriptorChangeHistory.remove(element);
                     }
-                    fFilterDescriptorChangeHistory
-                            .push((FilterDescriptor) element);
+                    fFilterDescriptorChangeHistory.push((FilterDescriptor) element);
                 }
             }
         });
@@ -329,16 +324,14 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
         super.setResult(newResult);
         if (fUserDefinedPatterns.getText().length() > 0) {
             fEnablePatterns = fEnableUserDefinedPatterns.getSelection();
-            fPatterns = convertFromString(fUserDefinedPatterns.getText(),
-                    SEPARATOR);
+            fPatterns = convertFromString(fUserDefinedPatterns.getText(), SEPARATOR);
         } else {
             fEnablePatterns = false;
             fPatterns = Lists.newArrayList();
         }
     }
 
-    private List<String> convertFromString(final String text,
-            final String separator) {
+    private List<String> convertFromString(final String text, final String separator) {
         return ListsUtils.unpackList(text, separator);
     }
 
@@ -378,8 +371,8 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
 
     private List<FilterDescriptor> getEnabledFilterDescriptors() {
         final List<FilterDescriptor> filterDescs = fBuiltInFilters;
-        final List<FilterDescriptor> result = Lists
-                .newArrayListWithCapacity(filterDescs.size());
+        final List<FilterDescriptor> result = Lists.newArrayListWithCapacity(filterDescs
+                .size());
         for (final FilterDescriptor desc : filterDescs) {
             if (fEnabledFilterIds.contains(desc.getId())) {
                 result.add(desc);

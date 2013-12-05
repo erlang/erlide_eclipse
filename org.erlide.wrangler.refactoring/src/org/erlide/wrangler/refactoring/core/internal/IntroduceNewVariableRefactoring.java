@@ -11,8 +11,7 @@ import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
-public class IntroduceNewVariableRefactoring extends
-        SimpleOneStepWranglerRefactoring {
+public class IntroduceNewVariableRefactoring extends SimpleOneStepWranglerRefactoring {
 
     @Override
     public IRefactoringRpcMessage run(final IErlSelection selection) {
@@ -20,8 +19,8 @@ public class IntroduceNewVariableRefactoring extends
         return WranglerBackendManager.getRefactoringBackend().call(
                 "intro_new_var_eclipse", "sxxsxi", sel.getFilePath(),
                 sel.getSelectionRange().getStartPos(),
-                sel.getSelectionRange().getEndPos(), userInput,
-                sel.getSearchPath(), GlobalParameters.getTabWidth());
+                sel.getSelectionRange().getEndPos(), userInput, sel.getSearchPath(),
+                GlobalParameters.getTabWidth());
     }
 
     @Override
@@ -32,8 +31,7 @@ public class IntroduceNewVariableRefactoring extends
             return new RefactoringStatus();
         }
 
-        return RefactoringStatus
-                .createFatalErrorStatus("Please select an expression!");
+        return RefactoringStatus.createFatalErrorStatus("Please select an expression!");
     }
 
     @Override

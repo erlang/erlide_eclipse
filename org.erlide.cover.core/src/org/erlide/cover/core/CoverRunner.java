@@ -54,8 +54,7 @@ public class CoverRunner extends AbstractCoverRunner {
 
         // clear viewer
         TestTreeModel.getInstance().clear();
-        for (final IEUnitObserver obs : CoverBackend.getInstance()
-                .getEUnitListeners()) {
+        for (final IEUnitObserver obs : CoverBackend.getInstance().getEUnitListeners()) {
             obs.treeChanged();
             obs.labelChanged();
         }
@@ -68,20 +67,18 @@ public class CoverRunner extends AbstractCoverRunner {
                 .call(TestConstants.TEST_ERL_BACKEND,
                         TestConstants.FUN_START,
                         "x",
-                        new OtpErlangAtom(CoverBackend.getInstance()
-                                .getSettings().getFramework()));
+                        new OtpErlangAtom(CoverBackend.getInstance().getSettings()
+                                .getFramework()));
 
         log.info(config.getProject().getWorkspaceProject().getLocation());
-        final IPath ppath = config.getProject().getWorkspaceProject()
-                .getLocation();
+        final IPath ppath = config.getProject().getWorkspaceProject().getLocation();
         log.info(ppath.append(config.getOutputDir()));
 
         CoverBackend
                 .getInstance()
                 .getBackend()
                 .getRpcSite()
-                .call(TestConstants.TEST_ERL_BACKEND,
-                        TestConstants.FUN_OUTPUT_DIR, "s",
+                .call(TestConstants.TEST_ERL_BACKEND, TestConstants.FUN_OUTPUT_DIR, "s",
                         ppath.append(config.getOutputDir()).toString());
 
         switch (CoverBackend.getInstance().getSettings().getType()) {
@@ -96,8 +93,8 @@ public class CoverRunner extends AbstractCoverRunner {
                     .call(TestConstants.TEST_ERL_BACKEND,
                             TestConstants.FUN_TEST,
                             "ss",
-                            CoverBackend.getInstance().getSettings().getType()
-                                    .name().toLowerCase(),
+                            CoverBackend.getInstance().getSettings().getType().name()
+                                    .toLowerCase(),
                             config.getModules().iterator().next().getFilePath());
             break;
         case ALL:
@@ -120,8 +117,8 @@ public class CoverRunner extends AbstractCoverRunner {
                         .call(TestConstants.TEST_ERL_BACKEND,
                                 TestConstants.FUN_TEST,
                                 "ss",
-                                CoverBackend.getInstance().getSettings()
-                                        .getType().name().toLowerCase(), path);
+                                CoverBackend.getInstance().getSettings().getType().name()
+                                        .toLowerCase(), path);
             }
             break;
         default:

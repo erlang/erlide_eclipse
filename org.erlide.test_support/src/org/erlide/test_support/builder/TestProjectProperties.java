@@ -22,14 +22,12 @@ public class TestProjectProperties {
         try {
             prj.accept(new IResourceVisitor() {
                 @Override
-                public boolean visit(final IResource resource)
-                        throws CoreException {
+                public boolean visit(final IResource resource) throws CoreException {
                     if (resource.getName().matches(".*_SUITE.erl")) {
                         final IContainer dir = resource.getParent();
                         final IPath pdir = dir.getProjectRelativePath();
                         final String sdir = pdir.toString();
-                        if (!sdir.contains("/garbage/")
-                                && !result.contains(sdir)) {
+                        if (!sdir.contains("/garbage/") && !result.contains(sdir)) {
                             result.add(sdir);
                         }
                     }
@@ -44,8 +42,7 @@ public class TestProjectProperties {
 
     public boolean isInPath(final IResource resource, final IProject project) {
         final IPath projectPath = project.getFullPath();
-        final IPath exceptLastSegment = resource.getFullPath()
-                .removeLastSegments(1);
+        final IPath exceptLastSegment = resource.getFullPath().removeLastSegments(1);
         for (final String element : sources) {
             final IPath sp = projectPath.append(new Path(element));
             if (sp.equals(exceptLastSegment)) {

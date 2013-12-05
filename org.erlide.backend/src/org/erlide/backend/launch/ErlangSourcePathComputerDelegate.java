@@ -17,13 +17,12 @@ import org.erlide.backend.debug.model.ErlangOtpSourceContainer;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
-public class ErlangSourcePathComputerDelegate implements
-        ISourcePathComputerDelegate {
+public class ErlangSourcePathComputerDelegate implements ISourcePathComputerDelegate {
 
     @Override
     public ISourceContainer[] computeSourceContainers(
-            final ILaunchConfiguration configuration,
-            final IProgressMonitor monitor) throws CoreException {
+            final ILaunchConfiguration configuration, final IProgressMonitor monitor)
+            throws CoreException {
         final List<ISourceContainer> containers = new ArrayList<ISourceContainer>();
         final IProject[] projects = LaunchUtils
                 .getErlangLaunchConfigurationProjects(configuration);
@@ -35,10 +34,9 @@ public class ErlangSourcePathComputerDelegate implements
         }
         final String runtimeName = configuration.getAttribute(
                 ErlRuntimeAttributes.RUNTIME_NAME, "").trim();
-        final RuntimeInfo info = BackendCore.getRuntimeInfoCatalog()
-                .getRuntime(runtimeName);
-        containers
-                .add(new ErlangOtpSourceContainer(new Path(info.getOtpHome())));
+        final RuntimeInfo info = BackendCore.getRuntimeInfoCatalog().getRuntime(
+                runtimeName);
+        containers.add(new ErlangOtpSourceContainer(new Path(info.getOtpHome())));
         return containers.toArray(new ISourceContainer[containers.size()]);
     }
 

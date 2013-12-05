@@ -160,8 +160,7 @@ public class OtpMbox {
      *                if a linked {@link OtpErlangPid pid} has exited or has
      *                sent an exit signal to this mailbox.
      */
-    public OtpErlangObject receive() throws OtpErlangExit,
-            OtpErlangDecodeException {
+    public OtpErlangObject receive() throws OtpErlangExit, OtpErlangDecodeException {
         try {
             return receiveMsg().getMsg();
         } catch (final OtpErlangExit e) {
@@ -237,8 +236,8 @@ public class OtpMbox {
      *                if no message if the method times out before a message
      *                becomes available.
      */
-    public OtpInputStream receiveBuf(final long timeout)
-            throws InterruptedException, OtpErlangExit {
+    public OtpInputStream receiveBuf(final long timeout) throws InterruptedException,
+            OtpErlangExit {
         final OtpMsg m = receiveMsg(timeout);
         if (m != null) {
             return m.getMsgBuf();
@@ -374,15 +373,13 @@ public class OtpMbox {
      *            the body of the message to send.
      * 
      */
-    public void send(final String name, final String node,
-            final OtpErlangObject msg) {
+    public void send(final String name, final String node, final OtpErlangObject msg) {
         try {
             final String currentNode = home.node();
             if (node.equals(currentNode)) {
                 send(name, msg);
             } else if (node.indexOf('@', 0) < 0
-                    && node.equals(currentNode.substring(0,
-                            currentNode.indexOf('@', 0)))) {
+                    && node.equals(currentNode.substring(0, currentNode.indexOf('@', 0)))) {
                 send(name, msg);
             } else {
                 // other node
@@ -460,8 +457,7 @@ public class OtpMbox {
 
     // this function used internally when "process" dies
     // since Erlang discerns between exit and exit/2.
-    private void exit(final int arity, final OtpErlangPid to,
-            final OtpErlangObject reason) {
+    private void exit(final int arity, final OtpErlangPid to, final OtpErlangObject reason) {
         try {
             final String node = to.node();
             if (node.equals(home.node())) {

@@ -71,8 +71,7 @@ public final class ErlangCore {
         if (SystemConfiguration.getInstance().isTest()) {
             dev += " test ***";
         }
-        final String versionBanner = "*** starting Erlide v" + version
-                + " *** " + dev;
+        final String versionBanner = "*** starting Erlide v" + version + " *** " + dev;
         logger.log(Level.INFO, versionBanner);
         featureVersion = version;
 
@@ -85,11 +84,10 @@ public final class ErlangCore {
 
     public void stop() {
         erlangDebugOptionsManager.shutdown();
-        final String location = ResourcesPlugin.getWorkspace().getRoot()
-                .getLocation().toPortableString();
+        final String location = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+                .toPortableString();
 
-        final String dateNow = new SimpleDateFormat("yyyyMMdd_HHmmss")
-                .format(new Date());
+        final String dateNow = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
         RpcMonitor.cleanupOldLogs(location, "rpc_monitor");
         RpcMonitor.dump(location + "/rpc_monitor-" + dateNow + ".dump");
@@ -124,8 +122,7 @@ public final class ErlangCore {
                 }
 
                 @Override
-                public void saving(final ISaveContext context1)
-                        throws CoreException {
+                public void saving(final ISaveContext context1) throws CoreException {
                     try {
                         InstanceScope.INSTANCE.getNode(
                                 plugin.getBundle().getSymbolicName()).flush();
@@ -156,10 +153,9 @@ public final class ErlangCore {
         }
         final String globalTraceValue = Platform
                 .getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION);
-        final String value = Platform.getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION
-                + "/" + traceOption);
-        if ("true".equalsIgnoreCase(globalTraceValue)
-                && "true".equalsIgnoreCase(value)) {
+        final String value = Platform.getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION + "/"
+                + traceOption);
+        if ("true".equalsIgnoreCase(globalTraceValue) && "true".equalsIgnoreCase(value)) {
             return true;
         }
         return false;
@@ -168,8 +164,7 @@ public final class ErlangCore {
     private String getFeatureVersionImpl() {
         String version = "?";
         try {
-            final IBundleGroupProvider[] providers = Platform
-                    .getBundleGroupProviders();
+            final IBundleGroupProvider[] providers = Platform.getBundleGroupProviders();
             if (providers != null) {
                 version = findErlideFeatureVersion(providers);
             } else {
@@ -183,8 +178,7 @@ public final class ErlangCore {
         return version;
     }
 
-    private String findErlideFeatureVersion(
-            final IBundleGroupProvider[] providers) {
+    private String findErlideFeatureVersion(final IBundleGroupProvider[] providers) {
         String version = "?";
         for (final IBundleGroupProvider provider : providers) {
             final IBundleGroup[] bundleGroups = provider.getBundleGroups();

@@ -34,8 +34,7 @@ public class OpenModuleDialog extends FilteredModulesSelectionDialog {
      *            the types mask
      */
     public OpenModuleDialog(final Shell shell) {
-        super(shell, true, ResourcesPlugin.getWorkspace().getRoot(),
-                IResource.FILE, true);
+        super(shell, true, ResourcesPlugin.getWorkspace().getRoot(), IResource.FILE, true);
         setTitle("Open module");
         PlatformUI.getWorkbench().getHelpSystem()
                 .setHelp(shell, IErlangHelpContextIds.OPEN_MODULE_DIALOG);

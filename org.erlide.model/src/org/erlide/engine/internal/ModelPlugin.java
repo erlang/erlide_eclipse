@@ -1,6 +1,7 @@
 package org.erlide.engine.internal;
 
 import org.eclipse.core.runtime.Plugin;
+import org.erlide.util.ErlLogger;
 import org.osgi.framework.BundleContext;
 
 public class ModelPlugin extends Plugin {
@@ -31,9 +32,10 @@ public class ModelPlugin extends Plugin {
 
     @Override
     public void start(final BundleContext bundleContext) throws Exception {
+        ErlLogger.debug("Starting Erlang model");
         super.start(bundleContext);
         ModelPlugin.context = bundleContext;
-
+        ErlLogger.debug("Started model");
     }
 
     @Override

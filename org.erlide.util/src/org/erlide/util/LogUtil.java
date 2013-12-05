@@ -15,10 +15,8 @@ public final class LogUtil {
 
     public static String getReportFile() {
         final String s = getReportLocation();
-        final String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-                .format(new Date());
-        return s + "/" + System.getProperty("user.name") + "_" + tstamp
-                + ".txt";
+        final String tstamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        return s + "/" + System.getProperty("user.name") + "_" + tstamp + ".txt";
     }
 
     public static String getReportLocation() {
@@ -28,8 +26,7 @@ public final class LogUtil {
         }
         final File dir = new File(s);
         if (!dir.exists()) {
-            final String homeDir = SystemConfiguration.getInstance()
-                    .getHomeDir();
+            final String homeDir = SystemConfiguration.getInstance().getHomeDir();
             s = homeDir;
         }
         return s;
@@ -39,8 +36,8 @@ public final class LogUtil {
         final StringBuffer result = new StringBuffer();
         final File log = new File(ErlLogger.getInstance().getLogLocation());
         try {
-            final BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(log), "UTF-8"));
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(log), "UTF-8"));
             try {
                 for (;;) {
                     final String line = reader.readLine();
@@ -65,8 +62,8 @@ public final class LogUtil {
         final List<String> result = new ArrayList<String>();
         final File log = Platform.getLogFileLocation().toFile();
         try {
-            final BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(log), "UTF-8"));
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(log), "UTF-8"));
             try {
                 for (;;) {
                     String line = reader.readLine();
@@ -100,8 +97,8 @@ public final class LogUtil {
         final File log = new File(filename);
         if (log.exists()) {
             try {
-                final BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(new FileInputStream(log), "UTF-8"));
+                final BufferedReader reader = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(log), "UTF-8"));
                 try {
                     for (;;) {
                         String line = reader.readLine();

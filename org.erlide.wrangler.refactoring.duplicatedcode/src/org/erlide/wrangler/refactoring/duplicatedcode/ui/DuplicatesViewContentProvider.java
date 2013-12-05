@@ -32,8 +32,7 @@ public class DuplicatesViewContentProvider implements ITreeContentProvider,
     private ResultTreeRoot invisibleRoot;
 
     @Override
-    public void inputChanged(final Viewer v, final Object oldInput,
-            final Object newInput) {
+    public void inputChanged(final Viewer v, final Object oldInput, final Object newInput) {
     }
 
     @Override

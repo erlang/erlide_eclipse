@@ -73,8 +73,7 @@ import org.erlide.util.services.ExtensionUtils;
 /**
  * @author Vlad Dumitrescu
  */
-public class LiveExpressionsView extends ViewPart implements
-        IResourceChangeListener {
+public class LiveExpressionsView extends ViewPart implements IResourceChangeListener {
 
     public static final String ID = "org.erlide.ui.views.eval.LiveExpressionsView";
 
@@ -91,7 +90,7 @@ public class LiveExpressionsView extends ViewPart implements
         private final Table t;
         SourceViewerInformationControl info = null;
 
-        private ListenerImplementation(Table t) {
+        private ListenerImplementation(final Table t) {
             this.t = t;
         }
 
@@ -109,38 +108,33 @@ public class LiveExpressionsView extends ViewPart implements
                 break;
             }
             case SWT.MouseHover: {
-                final TableItem item = t
-                        .getItem(new Point(event.x, event.y));
+                final TableItem item = t.getItem(new Point(event.x, event.y));
                 if (item != null) {
                     String str = item.getText(1);
                     if (str.length() > 0) {
                         // ErlLogger.debug(str);
-                        final BackendEvalResult r = EvalHelper.eval(
-                                backend,
-                                "lists:flatten(io_lib:format(\"~p\", ["
-                                        + item.getText(1) + "])).", null);
+                        final BackendEvalResult r = EvalHelper.eval(backend,
+                                "lists:flatten(io_lib:format(\"~p\", [" + item.getText(1)
+                                        + "])).", null);
                         if (r.isOk()) {
                             str = ErlUtils.asString(r.getValue());
                         } else {
                             str = r.getErrorReason().toString();
                         }
-                        info = new SourceViewerInformationControl(
-                                t.getShell(), SWT.ON_TOP | SWT.TOOL
-                                        | SWT.RESIZE, SWT.MULTI | SWT.WRAP,
+                        info = new SourceViewerInformationControl(t.getShell(),
+                                SWT.ON_TOP | SWT.TOOL | SWT.RESIZE, SWT.MULTI | SWT.WRAP,
                                 PreferenceConstants.EDITOR_TEXT_FONT, null);
-                        info.setForegroundColor(t.getDisplay()
-                                .getSystemColor(SWT.COLOR_INFO_FOREGROUND));
-                        info.setBackgroundColor(t.getDisplay()
-                                .getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+                        info.setForegroundColor(t.getDisplay().getSystemColor(
+                                SWT.COLOR_INFO_FOREGROUND));
+                        info.setBackgroundColor(t.getDisplay().getSystemColor(
+                                SWT.COLOR_INFO_BACKGROUND));
                         info.setInformation(str);
 
                         final Rectangle rect = item.getBounds(1);
                         final int lw = t.getGridLineWidth();
-                        final Point pt = t.toDisplay(rect.x + lw, rect.y
-                                + lw);
+                        final Point pt = t.toDisplay(rect.x + lw, rect.y + lw);
                         info.setLocation(pt);
-                        info.setSize(rect.width + lw, t.getBounds().height
-                                - rect.y);
+                        info.setSize(rect.width + lw, t.getBounds().height - rect.y);
                         info.setVisible(true);
                     }
                 }
@@ -222,8 +216,7 @@ public class LiveExpressionsView extends ViewPart implements
 
     }
 
-    class ViewLabelProvider extends LabelProvider implements
-            ITableLabelProvider {
+    class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
 
         @Override
         public String getColumnText(final Object obj, final int index) {
@@ -273,8 +266,8 @@ public class LiveExpressionsView extends ViewPart implements
     @Override
     public void createPartControl(final Composite parent) {
         label = new Label(parent, SWT.NULL);
-        final Table t = new Table(parent, SWT.SINGLE | SWT.V_SCROLL
-                | SWT.FULL_SELECTION | SWT.CHECK);
+        final Table t = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.FULL_SELECTION
+                | SWT.CHECK);
         viewer = new CheckboxTableViewer(t);
 
         final GridData labelLData = new GridData();
@@ -374,8 +367,7 @@ public class LiveExpressionsView extends ViewPart implements
         final IMemento aMemento2 = aMemento.createChild("LiveExpressions");
         final Iterator<LiveExpr> iter = exprs.iterator();
         while (iter.hasNext()) {
-            aMemento2.createChild("expression").putTextData(
-                    iter.next().toString());
+            aMemento2.createChild("expression").putTextData(iter.next().toString());
         }
     }
 
@@ -422,8 +414,7 @@ public class LiveExpressionsView extends ViewPart implements
         }
 
         @Override
-        public void modify(final Object element, final String property,
-                final Object value) {
+        public void modify(final Object element, final String property, final Object value) {
             LiveExpr el;
             // get around bug in TableEditorImpl
             if (element instanceof TableItem) {
@@ -489,8 +480,8 @@ public class LiveExpressionsView extends ViewPart implements
         };
         refreshAction.setText("Refresh");
         refreshAction.setToolTipText("Refresh expressions");
-        refreshAction.setImageDescriptor(ErlideUIPlugin.getDefault()
-                .getImageDescriptor(ErlideUIConstants.IMG_REFRESH));
+        refreshAction.setImageDescriptor(ErlideUIPlugin.getDefault().getImageDescriptor(
+                ErlideUIConstants.IMG_REFRESH));
 
         fAddAction = new Action() {
 
@@ -501,8 +492,7 @@ public class LiveExpressionsView extends ViewPart implements
         };
         fAddAction.setText("Add expression");
         fAddAction.setToolTipText("Add new expression");
-        fAddAction.setImageDescriptor(PlatformUI.getWorkbench()
-                .getSharedImages()
+        fAddAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
 
         fRemoveAction = new Action() {
@@ -514,8 +504,7 @@ public class LiveExpressionsView extends ViewPart implements
         };
         fRemoveAction.setText("Delete expression");
         fRemoveAction.setToolTipText("Delete expression");
-        fRemoveAction.setImageDescriptor(PlatformUI.getWorkbench()
-                .getSharedImages()
+        fRemoveAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_TOOL_DELETE));
 
     }
@@ -580,8 +569,7 @@ public class LiveExpressionsView extends ViewPart implements
     }
 
     public void delExpr() {
-        final IStructuredSelection sel = (IStructuredSelection) viewer
-                .getSelection();
+        final IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
         final Iterator<LiveExpr> iter = sel.iterator();
         while (iter.hasNext()) {
             exprs.remove(iter.next());

@@ -48,8 +48,7 @@ public class UnfoldFunctionApplicationRefactoring extends
             return new RefactoringStatus();
         }
 
-        return RefactoringStatus
-                .createFatalErrorStatus("Please select a function!");
+        return RefactoringStatus.createFatalErrorStatus("Please select a function!");
     }
 
     @Override

@@ -40,11 +40,9 @@ public class NoRuntimeHandler implements Runnable {
                 }
                 reported = true;
 
-                final PreferenceDialog pref = PreferencesUtil
-                        .createPreferenceDialogOn(PlatformUI.getWorkbench()
-                                .getActiveWorkbenchWindow().getShell(),
-                                "org.erlide.ui.preferences.runtimes", null,
-                                null);
+                final PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "org.erlide.ui.preferences.runtimes", null, null);
                 if (pref != null) {
                     if (pref.open() == Window.OK) {
                         ErlLogger

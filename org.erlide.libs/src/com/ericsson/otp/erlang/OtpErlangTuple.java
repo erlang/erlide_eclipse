@@ -29,8 +29,7 @@ import java.io.Serializable;
  * indexed from 0 to (arity-1) and can be retrieved individually by using the
  * appropriate index.
  */
-public class OtpErlangTuple extends OtpErlangObject implements Serializable,
-        Cloneable {
+public class OtpErlangTuple extends OtpErlangObject implements Serializable, Cloneable {
     // don't change this!
     static final long serialVersionUID = 9163498658004915935L;
 
@@ -49,8 +48,7 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
      */
     public OtpErlangTuple(final OtpErlangObject elem) {
         if (elem == null) {
-            throw new java.lang.IllegalArgumentException(
-                    "Tuple element cannot be null");
+            throw new java.lang.IllegalArgumentException("Tuple element cannot be null");
         } else {
             elems = new OtpErlangObject[] { elem };
         }
@@ -82,11 +80,9 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
      * @exception java.lang.IllegalArgumentException
      *                if the array is empty (null) or contains null elements.
      */
-    public OtpErlangTuple(final OtpErlangObject[] elems, final int start,
-            final int count) {
+    public OtpErlangTuple(final OtpErlangObject[] elems, final int start, final int count) {
         if (elems == null) {
-            throw new java.lang.IllegalArgumentException(
-                    "Tuple content can't be null");
+            throw new java.lang.IllegalArgumentException("Tuple content can't be null");
         } else if (count < 1) {
             this.elems = NO_ELEMENTS;
         } else {
@@ -96,8 +92,7 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
                     this.elems[i] = elems[start + i];
                 } else {
                     throw new java.lang.IllegalArgumentException(
-                            "Tuple element cannot be null (element"
-                                    + (start + i) + ")");
+                            "Tuple element cannot be null (element" + (start + i) + ")");
                 }
             }
         }
@@ -114,8 +109,7 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
      *                if the buffer does not contain a valid external
      *                representation of an Erlang tuple.
      */
-    public OtpErlangTuple(final OtpInputStream buf)
-            throws OtpErlangDecodeException {
+    public OtpErlangTuple(final OtpInputStream buf) throws OtpErlangDecodeException {
         final int arity = buf.read_tuple_head();
 
         if (arity > 0) {

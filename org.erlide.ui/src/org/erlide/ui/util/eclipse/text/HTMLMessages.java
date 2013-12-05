@@ -54,8 +54,7 @@ final class HTMLMessages {
      *            the arguments used to format the string
      * @return the formatted string
      */
-    public static String getFormattedString(final String key,
-            final Object[] args) {
+    public static String getFormattedString(final String key, final Object[] args) {
         String format = null;
         try {
             format = fgResourceBundle.getString(key);
@@ -82,7 +81,6 @@ final class HTMLMessages {
         } catch (final MissingResourceException e) {
             return "!" + key + "!";//$NON-NLS-2$ //$NON-NLS-1$
         }
-        return MessageFormat.format(format, new Object[] { arg != null ? arg
-                : "" });
+        return MessageFormat.format(format, new Object[] { arg != null ? arg : "" });
     }
 }

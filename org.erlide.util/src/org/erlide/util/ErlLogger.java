@@ -54,8 +54,8 @@ public class ErlLogger {
     public void log(final Level kind, final String fmt, final Object... o) {
         final StackTraceElement el = getCaller();
         final String str = o.length == 0 ? fmt : String.format(fmt, o);
-        final String msg = "(" + el.getFileName() + ":" + el.getLineNumber()
-                + ") : " + str;
+        final String msg = "(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
+                + str;
         if (logger != null) {
             logger.log(kind, msg);
         }
@@ -64,15 +64,15 @@ public class ErlLogger {
     public void log(final Level kind, final Throwable exception) {
         final StackTraceElement el = getCaller();
         final String str = exception.getMessage();
-        final String msg = "(" + el.getFileName() + ":" + el.getLineNumber()
-                + ") : " + str;
+        final String msg = "(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
+                + str;
         if (logger != null) {
             logger.log(kind, msg, exception);
         }
     }
 
-    public void erlangLog(final String module, final int line,
-            final String skind, final String fmt, final Object... o) {
+    public void erlangLog(final String module, final int line, final String skind,
+            final String fmt, final Object... o) {
         final Level kind = Level.parse(skind);
         final String str = o.length == 0 ? fmt : String.format(fmt, o);
         final String msg = "(" + module + ":" + line + ") : " + str;
@@ -81,8 +81,7 @@ public class ErlLogger {
         }
     }
 
-    public static void trace(final String tag, final String fmt,
-            final Object... o) {
+    public static void trace(final String tag, final String fmt, final Object... o) {
         info("USAGE: " + tag + ": " + fmt, o);
     }
 
@@ -163,8 +162,7 @@ public class ErlLogger {
 
         private final Object[] args = new Object[1];
 
-        private final String lineSeparator = System
-                .getProperty("line.separator");
+        private final String lineSeparator = System.getProperty("line.separator");
 
         @Override
         public synchronized String format(final LogRecord record) {

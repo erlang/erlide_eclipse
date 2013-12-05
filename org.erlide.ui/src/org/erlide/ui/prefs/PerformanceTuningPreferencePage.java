@@ -37,35 +37,30 @@ public class PerformanceTuningPreferencePage extends PreferencePage implements
         panel.setLayout(new GridLayout(1, false));
 
         final Group grpLimitingFunctionalityFor = new Group(panel, SWT.NONE);
-        grpLimitingFunctionalityFor
-                .setText("Limiting functionality for large files");
+        grpLimitingFunctionalityFor.setText("Limiting functionality for large files");
         grpLimitingFunctionalityFor.setLayout(new GridLayout(3, false));
-        grpLimitingFunctionalityFor.setLayoutData(new GridData(SWT.FILL,
-                SWT.CENTER, true, false, 1, 1));
+        grpLimitingFunctionalityFor.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+                true, false, 1, 1));
 
-        final Label lblFoldingIsDisabled = new Label(
-                grpLimitingFunctionalityFor, SWT.NONE);
-        lblFoldingIsDisabled.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
-                false, false, 1, 1));
-        lblFoldingIsDisabled
-                .setText("Folding is disabled for files larger than");
+        final Label lblFoldingIsDisabled = new Label(grpLimitingFunctionalityFor,
+                SWT.NONE);
+        lblFoldingIsDisabled.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
+                false, 1, 1));
+        lblFoldingIsDisabled.setText("Folding is disabled for files larger than");
 
         foldingText = new Text(grpLimitingFunctionalityFor, SWT.BORDER);
-        final GridData gd_foldingText = new GridData(SWT.LEFT, SWT.CENTER,
-                false, false, 1, 1);
+        final GridData gd_foldingText = new GridData(SWT.LEFT, SWT.CENTER, false, false,
+                1, 1);
         gd_foldingText.widthHint = 40;
         foldingText.setLayoutData(gd_foldingText);
         foldingText.setText(Integer.toString(pt.getFoldingLimit()));
 
         final Label lblLines = new Label(grpLimitingFunctionalityFor, SWT.NONE);
-        lblLines.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false,
-                1, 1));
+        lblLines.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
         lblLines.setText("lines.");
 
-        final Label lblNewLabel = new Label(grpLimitingFunctionalityFor,
-                SWT.NONE);
-        lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-                false, 3, 1));
+        final Label lblNewLabel = new Label(grpLimitingFunctionalityFor, SWT.NONE);
+        lblNewLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
         lblNewLabel
                 .setText("In the future, we might add limits for other functions (outline, etc)");
 

@@ -67,27 +67,24 @@ public class ReportPreferencePage extends PreferencePage implements
         final Label titleLabel = new Label(panel, SWT.NONE);
         titleLabel.setAlignment(SWT.RIGHT);
         {
-            final GridData gridData = new GridData(SWT.RIGHT, SWT.CENTER,
-                    false, false, 1, 1);
+            final GridData gridData = new GridData(SWT.RIGHT, SWT.CENTER, false, false,
+                    1, 1);
             gridData.widthHint = 60;
             titleLabel.setLayoutData(gridData);
         }
         titleLabel.setText("Title:");
         ftitle = new Text(panel, SWT.BORDER);
-        ftitle.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-                1));
+        ftitle.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
         lblDescription = new Label(panel, SWT.NONE);
         lblDescription.setAlignment(SWT.RIGHT);
-        lblDescription.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false,
-                false, 1, 1));
+        lblDescription
+                .setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
         lblDescription.setText("Description:");
 
-        fbody = new Text(panel, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER
-                | SWT.WRAP);
+        fbody = new Text(panel, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.WRAP);
         {
-            final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true,
-                    false, 1, 1);
+            final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
             gridData.heightHint = 150;
             fbody.setLayoutData(gridData);
         }
@@ -96,19 +93,18 @@ public class ReportPreferencePage extends PreferencePage implements
         contactoptionalLabel.setAlignment(SWT.RIGHT);
         contactoptionalLabel.setText("Contact (email):");
         fcontact = new Text(panel, SWT.BORDER);
-        fcontact.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-                1, 1));
+        fcontact.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         fcontact.setText(System.getProperty("user.name"));
         attachTechnicalDataButton = new Button(panel, SWT.CHECK);
-        attachTechnicalDataButton.setLayoutData(new GridData(SWT.CENTER,
-                SWT.CENTER, false, false, 2, 1));
+        attachTechnicalDataButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER,
+                false, false, 2, 1));
         attachTechnicalDataButton.setSelection(true);
         attachTechnicalDataButton
                 .setText("   Attach technical data (eclipse and erlide logs)   ");
         sendButton = new Button(panel, SWT.NONE);
         {
-            final GridData gridData = new GridData(SWT.CENTER, SWT.CENTER,
-                    false, false, 2, 1);
+            final GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, false, false,
+                    2, 1);
             gridData.widthHint = 243;
             sendButton.setLayoutData(gridData);
         }
@@ -121,23 +117,22 @@ public class ReportPreferencePage extends PreferencePage implements
         sendButton.setText("Create report");
         responseLabel = new Label(panel, SWT.CENTER);
         responseLabel.setVisible(false);
-        responseLabel.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false,
-                false, 2, 1));
+        responseLabel.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 2,
+                1));
         responseLabel
                 .setText("The report was saved in the location below, you can now close this window.");
         locationLabel = new Text(panel, SWT.CENTER | SWT.WRAP | SWT.READ_ONLY);
         locationLabel.setVisible(false);
-        locationLabel.setForeground(SWTResourceManager
-                .getColor(SWT.COLOR_DARK_BLUE));
-        locationLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
-                false, 2, 1));
+        locationLabel.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_BLUE));
+        locationLabel
+                .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
         locationLabel.setBackground(Display.getCurrent().getSystemColor(
                 SWT.COLOR_WIDGET_BACKGROUND));
         locationLabel.setText("location");
         responseLabel_1 = new Label(panel, SWT.CENTER);
         responseLabel_1.setVisible(false);
-        responseLabel_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
-                false, 2, 1));
+        responseLabel_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2,
+                1));
         responseLabel_1
                 .setText("Please attach the report if you are writing a trouble ticket.");
 
@@ -162,8 +157,7 @@ public class ReportPreferencePage extends PreferencePage implements
             public IStatus run(final IProgressMonitor monitor) {
                 final String location = LogUtil.getReportFile();
 
-                final ProblemData data = gatherProblemData(attach, title,
-                        contact, body);
+                final ProblemData data = gatherProblemData(attach, title, contact, body);
                 sendToDisk(location, data);
 
                 final Job inner = new UIJob("update report ui") {
@@ -224,8 +218,8 @@ public class ReportPreferencePage extends PreferencePage implements
     public void init(final IWorkbench workbench) {
     }
 
-    public static ProblemData gatherProblemData(final boolean attach,
-            final String title, final String contact, final String body) {
+    public static ProblemData gatherProblemData(final boolean attach, final String title,
+            final String contact, final String body) {
         fetchErlangSystemInfo();
 
         String plog = "N/A";
@@ -234,15 +228,13 @@ public class ReportPreferencePage extends PreferencePage implements
             plog = LogUtil.fetchPlatformLog();
             elog = LogUtil.fetchErlideLog();
         }
-        final ProblemData data = new ProblemData(title, contact, body, plog,
-                elog);
+        final ProblemData data = new ProblemData(title, contact, body, plog, elog);
         return data;
     }
 
     public static String getSystemInfo(final IRpcSite b) {
         try {
-            final OtpErlangObject val = b.call("erlide_backend",
-                    "get_system_info", "");
+            final OtpErlangObject val = b.call("erlide_backend", "get_system_info", "");
             return ErlUtils.asString(val);
         } catch (final Exception e) {
             return "System information could not be retrieved "

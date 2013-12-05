@@ -20,8 +20,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public final class FilterDescriptor implements Comparable<Object>,
-        IPluginContribution {
+public final class FilterDescriptor implements Comparable<Object>, IPluginContribution {
 
     private static final String EXTENSION_POINT_NAME = "erlangElementFilters"; //$NON-NLS-1$
 
@@ -54,8 +53,7 @@ public final class FilterDescriptor implements Comparable<Object>,
                             EXTENSION_POINT_NAME);
             final String extensionPointID = ErlideUIPlugin.PLUGIN_ID + "."
                     + EXTENSION_POINT_NAME;
-            fgFilterDescriptors = createFilterDescriptors(elements,
-                    extensionPointID);
+            fgFilterDescriptors = createFilterDescriptors(elements, extensionPointID);
         }
         return fgFilterDescriptors;
     }
@@ -68,8 +66,7 @@ public final class FilterDescriptor implements Comparable<Object>,
      *            the target id
      * @return all contributed Erlang element filters for the given view
      */
-    public static List<FilterDescriptor> getFilterDescriptors(
-            final String targetId) {
+    public static List<FilterDescriptor> getFilterDescriptors(final String targetId) {
         final Collection<FilterDescriptor> descs = FilterDescriptor
                 .getFilterDescriptors();
         final List<FilterDescriptor> result = Lists.newArrayList();
@@ -269,8 +266,7 @@ public final class FilterDescriptor implements Comparable<Object>,
      * @return new filter descriptors
      */
     private static Collection<FilterDescriptor> createFilterDescriptors(
-            final IConfigurationElement[] elements,
-            final String extensionPointID) {
+            final IConfigurationElement[] elements, final String extensionPointID) {
         final List<FilterDescriptor> result = Lists.newArrayList();
         final Set<String> descIds = Sets.newHashSet();
         for (final IConfigurationElement element : elements) {
@@ -278,8 +274,8 @@ public final class FilterDescriptor implements Comparable<Object>,
 
                 final FilterDescriptor[] desc = new FilterDescriptor[1];
                 SafeRunner.run(new SafeRunnable(
-                        " One of the extensions for extension-point "
-                                + extensionPointID + " is incorrect.") {
+                        " One of the extensions for extension-point " + extensionPointID
+                                + " is incorrect.") {
                     @Override
                     public void run() throws Exception {
                         desc[0] = new FilterDescriptor(element);

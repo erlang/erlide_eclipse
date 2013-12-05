@@ -16,8 +16,7 @@ public abstract class ProjectConfigurationPersister {
 
     public abstract ProjectConfigurator getConfigurator();
 
-    public abstract ErlangProjectProperties getConfiguration(
-            IErlProject erlProject);
+    public abstract ErlangProjectProperties getConfiguration(IErlProject erlProject);
 
     public abstract void setConfiguration(IErlProject erlProject,
             final ErlangProjectProperties info);

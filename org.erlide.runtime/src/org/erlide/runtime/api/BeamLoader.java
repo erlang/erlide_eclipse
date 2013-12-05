@@ -13,15 +13,15 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class BeamLoader {
 
-    public static boolean loadBeam(final IRpcSite backend,
-            final String moduleName, final OtpErlangBinary bin) {
+    public static boolean loadBeam(final IRpcSite backend, final String moduleName,
+            final OtpErlangBinary bin) {
         OtpErlangObject r = null;
         try {
             r = backend.call("code", "is_sticky", "a", moduleName);
             // TODO handle sticky directories
             if (!((OtpErlangAtom) r).booleanValue()) {
-                r = backend.call("code", "load_binary", "asb", moduleName,
-                        moduleName + ".erl", bin);
+                r = backend.call("code", "load_binary", "asb", moduleName, moduleName
+                        + ".erl", bin);
             } else {
                 ErlLogger.warn("sticky:: %s", moduleName);
                 r = null;
@@ -29,10 +29,9 @@ public class BeamLoader {
         } catch (final Exception e) {
             ErlLogger.warn(e);
         }
-        if (r != null) {
+        if (r instanceof OtpErlangTuple) {
             final OtpErlangTuple t = (OtpErlangTuple) r;
-            if (((OtpErlangAtom) t.elementAt(0)).atomValue()
-                    .compareTo("module") == 0) {
+            if (((OtpErlangAtom) t.elementAt(0)).atomValue().compareTo("module") == 0) {
                 return true;
             }
             // code couldn't be loaded

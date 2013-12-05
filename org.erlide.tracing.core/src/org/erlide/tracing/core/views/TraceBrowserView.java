@@ -109,8 +109,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
                 }
             }
         };
-        loadAction.setImageDescriptor(PlatformUI.getWorkbench()
-                .getSharedImages()
+        loadAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER));
         loadAction.setToolTipText("Load results from disk...");
 
@@ -138,8 +137,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
                 .getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE_ALL));
         removeAllAction.setToolTipText("Remove all");
 
-        final IToolBarManager manager = getViewSite().getActionBars()
-                .getToolBarManager();
+        final IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
         manager.add(loadAction);
         manager.add(removeAction);
         manager.add(removeAllAction);
@@ -159,12 +157,10 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
 
         // treeViewer = new TreeViewer(container, SWT.VIRTUAL);
         treeViewer = new TreeViewer(container, SWT.SINGLE);
-        treeViewer.getTree().setLayoutData(
-                new GridData(SWT.FILL, SWT.FILL, true, true));
+        treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         // providers
-        treeViewer
-                .setContentProvider(new TreeContentProvider(treeViewer, false));
+        treeViewer.setContentProvider(new TreeContentProvider(treeViewer, false));
         treeViewer.setLabelProvider(new TreeLabelProvider());
 
         // input
@@ -195,15 +191,14 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
                 public void doAction() {
                     TraceBackend.getInstance().setActiveResultSet(
                             (TracingResultsNode) treeNode);
-                    final int limit = Activator.getDefault()
-                            .getPreferenceStore()
+                    final int limit = Activator.getDefault().getPreferenceStore()
                             .getInt(PreferenceNames.TRACES_LOAD_LIMIT);
                     TraceBackend.getInstance().loadDataFromFile(1, limit);
                 }
             };
             try {
-                final Shell shell = PlatformUI.getWorkbench()
-                        .getActiveWorkbenchWindow().getShell();
+                final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                        .getShell();
                 new ProgressMonitorDialog(shell).run(true, false, task);
                 doAfterLoadingFile();
             } catch (final Exception e) {

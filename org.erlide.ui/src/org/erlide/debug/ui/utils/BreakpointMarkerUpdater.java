@@ -96,8 +96,7 @@ public class BreakpointMarkerUpdater implements IMarkerUpdater {
             }
             if (breakpoint instanceof ErlangLineBreakpoint) {
                 final ErlangLineBreakpoint erlangLineBreakpoint = (ErlangLineBreakpoint) breakpoint;
-                final ErlangDebugTarget target = erlangLineBreakpoint
-                        .getTarget();
+                final ErlangDebugTarget target = erlangLineBreakpoint.getTarget();
                 erlangLineBreakpoint.remove(target);
                 MarkerUtilities.setLineNumber(marker, newLine);
                 erlangLineBreakpoint.install(target);
@@ -174,8 +173,7 @@ public class BreakpointMarkerUpdater implements IMarkerUpdater {
      * @since 3.4
      */
     private IErlangBreakpoint lineBreakpointExists(final IResource resource,
-            final int lineNumber, final IMarker currentmarker)
-            throws CoreException {
+            final int lineNumber, final IMarker currentmarker) throws CoreException {
         final IBreakpointManager manager = DebugPlugin.getDefault()
                 .getBreakpointManager();
         final IBreakpoint[] breakpoints = manager
@@ -187,8 +185,7 @@ public class BreakpointMarkerUpdater implements IMarkerUpdater {
             }
             final IErlangBreakpoint breakpoint = (IErlangBreakpoint) breakpoints[i];
             final IMarker marker = breakpoint.getMarker();
-            if (marker != null && marker.exists()
-                    && marker.getType().equals(markerType)
+            if (marker != null && marker.exists() && marker.getType().equals(markerType)
                     && currentmarker.getId() != marker.getId()) {
                 if (marker instanceof ErlangLineBreakpoint) {
                     final ErlangLineBreakpoint erlangLineBreakpoint = (ErlangLineBreakpoint) marker;

@@ -54,8 +54,7 @@ public class EksportReports extends Action {
     }
 
     // saves reports as a tree
-    private void treeSave(final ICoverageObject obj, final String path,
-            final String lPath) {
+    private void treeSave(final ICoverageObject obj, final String path, final String lPath) {
 
         final String pathIn = obj.getHtmlPath();
         final String pathOut = new StringBuffer(path).append(File.separator)
@@ -66,10 +65,10 @@ public class EksportReports extends Action {
                 .append(obj.getLabel()).append(".html").toString());
 
         if (!obj.getType().equals(ObjectType.MODULE)) {
-            final String linkPath = new StringBuilder(".")
-                    .append(File.separator).append(obj.getLabel()).toString();
-            final String dirPath = new StringBuilder(path)
-                    .append(File.separator).append(obj.getLabel()).toString();
+            final String linkPath = new StringBuilder(".").append(File.separator)
+                    .append(obj.getLabel()).toString();
+            final String dirPath = new StringBuilder(path).append(File.separator)
+                    .append(obj.getLabel()).toString();
             final File dir = new File(dirPath);
             dir.mkdir();
 
@@ -78,8 +77,8 @@ public class EksportReports extends Action {
             }
 
             try {
-                final String report = ReportGenerator.getInstance()
-                        .getHTMLreport(obj, true);
+                final String report = ReportGenerator.getInstance().getHTMLreport(obj,
+                        true);
                 log.info(report);
                 final FileWriter writer = new FileWriter(pathOut);
                 writer.write(report);

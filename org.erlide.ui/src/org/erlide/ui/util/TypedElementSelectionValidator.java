@@ -24,8 +24,7 @@ import org.eclipse.ui.dialogs.ISelectionStatusValidator;
  * Implementation of a <code>ISelectionValidator</code> to validate the type of
  * an element. Empty selections are not accepted.
  */
-public class TypedElementSelectionValidator implements
-        ISelectionStatusValidator {
+public class TypedElementSelectionValidator implements ISelectionStatusValidator {
 
     private final IStatus fgErrorStatus = new StatusInfo(IStatus.ERROR, ""); //$NON-NLS-1$
     private final IStatus fgOKStatus = new StatusInfo();
@@ -56,8 +55,7 @@ public class TypedElementSelectionValidator implements
      *            A list of elements that are not accepted
      */
     public TypedElementSelectionValidator(final Class<?>[] acceptedTypes,
-            final boolean allowMultipleSelection,
-            final Collection<?> rejectedElements) {
+            final boolean allowMultipleSelection, final Collection<?> rejectedElements) {
         assertThat(acceptedTypes, is(not(nullValue())));
         fAcceptedTypes = acceptedTypes;
         fAllowMultipleSelection = allowMultipleSelection;
@@ -108,8 +106,7 @@ public class TypedElementSelectionValidator implements
 
         for (int i = 0; i < selection.length; i++) {
             final Object o = selection[i];
-            if (!isOfAcceptedType(o) || isRejectedElement(o)
-                    || !isSelectedValid(o)) {
+            if (!isOfAcceptedType(o) || isRejectedElement(o) || !isSelectedValid(o)) {
                 return false;
             }
         }

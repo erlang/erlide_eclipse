@@ -83,8 +83,7 @@ public class OtpEpmd {
 
     static {
         // debug this connection?
-        final String trace = System.getProperties().getProperty(
-                "OtpConnection.trace");
+        final String trace = System.getProperties().getProperty("OtpConnection.trace");
         try {
             if (trace != null) {
                 traceLevel = Integer.valueOf(trace).intValue();
@@ -134,8 +133,7 @@ public class OtpEpmd {
      * @exception java.io.IOException
      *                if there was no response from the name server.
      */
-    public static boolean publishPort(final OtpLocalNode node)
-            throws IOException {
+    public static boolean publishPort(final OtpLocalNode node) throws IOException {
         Socket s = null;
 
         s = r4_publish(node);
@@ -167,8 +165,7 @@ public class OtpEpmd {
             obuf.writeTo(s.getOutputStream());
             // don't even wait for a response (is there one?)
             if (traceLevel >= traceThreshold) {
-                System.out.println("-> UNPUBLISH " + node + " port="
-                        + node.port());
+                System.out.println("-> UNPUBLISH " + node + " port=" + node.port());
                 System.out.println("<- OK (assumed)");
             }
         } catch (final Exception e) {/* ignore all failures */
@@ -183,8 +180,7 @@ public class OtpEpmd {
         }
     }
 
-    private static int r4_lookupPort(final AbstractNode node)
-            throws IOException {
+    private static int r4_lookupPort(final AbstractNode node) throws IOException {
         int port = 0;
         Socket s = null;
 
@@ -215,8 +211,8 @@ public class OtpEpmd {
 
             if (n < 0) {
                 s.close();
-                throw new IOException("Nameserver not responding on "
-                        + node.host() + " when looking up " + node.alive());
+                throw new IOException("Nameserver not responding on " + node.host()
+                        + " when looking up " + node.alive());
             }
 
             final OtpInputStream ibuf = new OtpInputStream(tmpbuf, 0);
@@ -273,8 +269,7 @@ public class OtpEpmd {
      * fatal. If we manage to successfully communicate with an r4 epmd, we
      * return either the socket, or null, depending on the result.
      */
-    private static Socket r4_publish(final OtpLocalNode node)
-            throws IOException {
+    private static Socket r4_publish(final OtpLocalNode node) throws IOException {
         Socket s = null;
 
         try {
@@ -300,8 +295,7 @@ public class OtpEpmd {
             obuf.writeTo(s.getOutputStream());
 
             if (traceLevel >= traceThreshold) {
-                System.out.println("-> PUBLISH (r4) " + node + " port="
-                        + node.port());
+                System.out.println("-> PUBLISH (r4) " + node + " port=" + node.port());
             }
 
             // get reply
@@ -312,8 +306,8 @@ public class OtpEpmd {
                 if (s != null) {
                     s.close();
                 }
-                throw new IOException("Nameserver not responding on "
-                        + node.host() + " when publishing " + node.alive());
+                throw new IOException("Nameserver not responding on " + node.host()
+                        + " when publishing " + node.alive());
             }
 
             final OtpInputStream ibuf = new OtpInputStream(tmpbuf, 0);
@@ -360,8 +354,7 @@ public class OtpEpmd {
         return lookupNames(InetAddress.getByName(null));
     }
 
-    public static String[] lookupNames(final InetAddress address)
-            throws IOException {
+    public static String[] lookupNames(final InetAddress address) throws IOException {
         Socket s = null;
 
         try {
@@ -409,14 +402,12 @@ public class OtpEpmd {
             if (traceLevel >= traceThreshold) {
                 System.out.println("<- (no response)");
             }
-            throw new IOException(
-                    "Nameserver not responding when requesting names");
+            throw new IOException("Nameserver not responding when requesting names");
         } catch (final OtpErlangDecodeException e) {
             if (traceLevel >= traceThreshold) {
                 System.out.println("<- (invalid response)");
             }
-            throw new IOException(
-                    "Nameserver not responding when requesting names");
+            throw new IOException("Nameserver not responding when requesting names");
         }
     }
 

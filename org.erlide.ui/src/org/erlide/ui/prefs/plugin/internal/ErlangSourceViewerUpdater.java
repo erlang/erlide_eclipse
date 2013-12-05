@@ -53,8 +53,7 @@ public class ErlangSourceViewerUpdater {
         final IPropertyChangeListener fontChangeListener = new IPropertyChangeListener() {
             @Override
             public void propertyChange(final PropertyChangeEvent event) {
-                if (PreferenceConstants.EDITOR_TEXT_FONT.equals(event
-                        .getProperty())) {
+                if (PreferenceConstants.EDITOR_TEXT_FONT.equals(event.getProperty())) {
                     final Font font = JFaceResources
                             .getFont(PreferenceConstants.EDITOR_TEXT_FONT);
                     viewer.getTextWidget().setFont(font);
@@ -73,10 +72,8 @@ public class ErlangSourceViewerUpdater {
         viewer.getTextWidget().addDisposeListener(new DisposeListener() {
             @Override
             public void widgetDisposed(final DisposeEvent e) {
-                preferenceStore
-                        .removePropertyChangeListener(propertyChangeListener);
-                JFaceResources.getFontRegistry().removeListener(
-                        fontChangeListener);
+                preferenceStore.removePropertyChangeListener(propertyChangeListener);
+                JFaceResources.getFontRegistry().removeListener(fontChangeListener);
             }
         });
         JFaceResources.getFontRegistry().addListener(fontChangeListener);

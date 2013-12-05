@@ -19,8 +19,7 @@ import org.erlide.ui.editors.erl.completion.NoCompletionsProposal;
 public class ErlangQuickAssistProcessor implements IQuickAssistProcessor {
 
     @Override
-    public boolean canAssist(
-            final IQuickAssistInvocationContext invocationContext) {
+    public boolean canAssist(final IQuickAssistInvocationContext invocationContext) {
         return false;
     }
 

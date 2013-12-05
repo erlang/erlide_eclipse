@@ -41,16 +41,14 @@ public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
             return null;
         }
         final int tokenKind = token.getKind();
-        if (tokenKind != ErlToken.KIND_ATOM
-                && tokenKind != ErlToken.KIND_STRING
-                && tokenKind != ErlToken.KIND_MACRO
-                && tokenKind != ErlToken.KIND_VAR) {
+        if (tokenKind != ErlToken.KIND_ATOM && tokenKind != ErlToken.KIND_STRING
+                && tokenKind != ErlToken.KIND_MACRO && tokenKind != ErlToken.KIND_VAR) {
             return null;
         }
         try {
             final ITypedRegion partition = doc.getPartition(offset);
-            final ErlRegion region = new ErlRegion(token.getOffset(),
-                    token.getLength(), partition.getType());
+            final ErlRegion region = new ErlRegion(token.getOffset(), token.getLength(),
+                    partition.getType());
             if (!IDocument.DEFAULT_CONTENT_TYPE.equals(region.getType())) {
                 return null;
             }
@@ -82,8 +80,7 @@ public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
         private final AbstractErlangEditor editor;
         private final ErlRegion region;
 
-        public ErlangHyperlink(final AbstractErlangEditor editor,
-                final ErlRegion partion) {
+        public ErlangHyperlink(final AbstractErlangEditor editor, final ErlRegion partion) {
             this.editor = editor;
             region = partion;
         }

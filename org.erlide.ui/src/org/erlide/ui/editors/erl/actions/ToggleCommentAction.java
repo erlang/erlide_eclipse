@@ -8,8 +8,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class ToggleCommentAction extends ErlangTextEditorAction {
 
-    public ToggleCommentAction(final ResourceBundle bundle,
-            final String prefix, final ITextEditor editor) {
+    public ToggleCommentAction(final ResourceBundle bundle, final String prefix,
+            final ITextEditor editor) {
         super(bundle, prefix, editor, "erlide_comment", "toggle_comment");
     }
 

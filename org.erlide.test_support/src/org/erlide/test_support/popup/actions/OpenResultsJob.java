@@ -26,8 +26,7 @@ public class OpenResultsJob extends UIJob {
     private final IFile report;
     private final IFile trace;
 
-    public OpenResultsJob(final String name, final IFile report,
-            final IFile trace) {
+    public OpenResultsJob(final String name, final IFile report, final IFile trace) {
         super(name);
         this.report = report;
         this.trace = trace;
@@ -50,10 +49,9 @@ public class OpenResultsJob extends UIJob {
         }
 
         final IWorkbench wbench = PlatformUI.getWorkbench();
-        final IWorkbenchPage page = wbench.getActiveWorkbenchWindow()
-                .getActivePage();
-        final IEditorDescriptor desc = PlatformUI.getWorkbench()
-                .getEditorRegistry().getDefaultEditor(file.getName());
+        final IWorkbenchPage page = wbench.getActiveWorkbenchWindow().getActivePage();
+        final IEditorDescriptor desc = PlatformUI.getWorkbench().getEditorRegistry()
+                .getDefaultEditor(file.getName());
         try {
             page.openEditor(new FileEditorInput(file), desc.getId());
         } catch (final PartInitException e) {
@@ -66,8 +64,7 @@ public class OpenResultsJob extends UIJob {
             return;
         }
         final IWorkbench wbench = PlatformUI.getWorkbench();
-        final IWorkbenchBrowserSupport browserSupport = wbench
-                .getBrowserSupport();
+        final IWorkbenchBrowserSupport browserSupport = wbench.getBrowserSupport();
         try {
             file.refreshLocal(IResource.DEPTH_ZERO, null);
         } catch (final CoreException e1) {
@@ -79,8 +76,7 @@ public class OpenResultsJob extends UIJob {
                 final String name = file.getName();
                 final String browserId = getName() + "_" + name;
                 IWebBrowser browser;
-                browser = browserSupport.createBrowser(style, browserId, name,
-                        null);
+                browser = browserSupport.createBrowser(style, browserId, name, null);
                 try {
                     browser.openURL(file.getRawLocationURI().toURL());
                 } catch (final MalformedURLException e) {

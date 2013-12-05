@@ -41,8 +41,8 @@ public class CompilerOptionsTest {
     @Test
     public void test_3() {
         final CompilerOptions prefs = new CompilerOptions();
-        prefs.setListOption(CompilerOption.DEFINE, new Pair<String, String>(
-                "Macro", null));
+        prefs.setListOption(CompilerOption.DEFINE,
+                new Pair<String, String>("Macro", null));
         final String actual = prefs.export().toString();
         final String expect = "[{d,'Macro'}," + DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
@@ -52,8 +52,8 @@ public class CompilerOptionsTest {
     @Test
     public void test_4() {
         final CompilerOptions prefs = new CompilerOptions();
-        prefs.setListOption(CompilerOption.DEFINE, new Pair<String, String>(
-                "Macro", "[value,1]"));
+        prefs.setListOption(CompilerOption.DEFINE, new Pair<String, String>("Macro",
+                "[value,1]"));
         final String actual = prefs.export().toString();
         final String expect = "[{d,'Macro',[value,1]}," + DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
@@ -81,8 +81,8 @@ public class CompilerOptionsTest {
     @Test
     public void test_7() {
         final CompilerOptions prefs = new CompilerOptions();
-        prefs.setListOption(CompilerOption.DEFINE, new Pair<String, String>(
-                "Macro", null));
+        prefs.setListOption(CompilerOption.DEFINE,
+                new Pair<String, String>("Macro", null));
         prefs.removeOption(CompilerOption.DEFINE);
         final String actual = prefs.export().toString();
         final String expect = "[" + DEF_VALUES + "]";
@@ -123,8 +123,7 @@ public class CompilerOptionsTest {
     @Test
     public void test_11() {
         final CompilerOptions prefs = new CompilerOptions();
-        prefs.setPathOption(CompilerOption.INCLUDE_DIRS,
-                parseIncludes("/tmp/x"));
+        prefs.setPathOption(CompilerOption.INCLUDE_DIRS, parseIncludes("/tmp/x"));
         final String actual = prefs.export().toString();
         final String expect = "[{i,\"/tmp/x\"}," + DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
@@ -133,11 +132,9 @@ public class CompilerOptionsTest {
     @Test
     public void test_12() {
         final CompilerOptions prefs = new CompilerOptions();
-        prefs.setPathOption(CompilerOption.INCLUDE_DIRS,
-                parseIncludes("/tmp/x,/tmp/y"));
+        prefs.setPathOption(CompilerOption.INCLUDE_DIRS, parseIncludes("/tmp/x,/tmp/y"));
         final String actual = prefs.export().toString();
-        final String expect = "[{i,\"/tmp/x\"},{i,\"/tmp/y\"}," + DEF_VALUES
-                + "]";
+        final String expect = "[{i,\"/tmp/x\"},{i,\"/tmp/y\"}," + DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
 

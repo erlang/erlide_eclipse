@@ -43,8 +43,7 @@ public class SortAction extends Action {
      * @param useMiniImage
      */
     public SortAction(final StructuredViewer viewer, final String tooltipText,
-            final ViewerComparator comparator,
-            final ViewerComparator comparator2,
+            final ViewerComparator comparator, final ViewerComparator comparator2,
             final IPropertyChangeListener listener, final boolean useMiniImage,
             final IPreferenceStore store) {
 

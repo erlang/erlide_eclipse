@@ -17,20 +17,17 @@ public class RuntimeFinder {
 
     public static Collection<RuntimeInfo> guessRuntimeLocations() {
         final List<RuntimeInfo> result = Lists.newArrayList();
-        final String[] locations = { "c:/program files",
-                "c:/program files (x86)", "c:/programs", "c:/", "c:/apps",
-                "/usr", "/usr/lib", "/usr/lib64", "/usr/local",
-                "/usr/local/lib", "/Library/Frameworks/erlang/Versions",
-                "/proj/uz/erlide",
-                SystemConfiguration.getInstance().getHomeDir(),
+        final String[] locations = { "c:/program files", "c:/program files (x86)",
+                "c:/programs", "c:/", "c:/apps", "/usr", "/usr/lib", "/usr/lib64",
+                "/usr/local", "/usr/local/lib", "/Library/Frameworks/erlang/Versions",
+                "/proj/uz/erlide", SystemConfiguration.getInstance().getHomeDir(),
                 System.getProperty("erlide.runtime") };
         final Set<String> locs = Sets.newHashSet(Arrays.asList(locations));
         for (final String loc : locs) {
             final Collection<File> roots = findRuntime(loc);
             for (final File root : roots) {
-                final RuntimeInfo rt = new RuntimeInfo.Builder()
-                        .withName(root.getName()).withHomeDir(root.getPath())
-                        .build();
+                final RuntimeInfo rt = new RuntimeInfo.Builder().withName(root.getName())
+                        .withHomeDir(root.getPath()).build();
                 result.add(rt);
             }
         }
@@ -56,8 +53,7 @@ public class RuntimeFinder {
                 final String path = pathname.getName();
                 return pathname.isDirectory()
                         && (path.startsWith("otp") || path.startsWith("erl")
-                                || path.startsWith("Erl") || path
-                                    .startsWith("R"));
+                                || path.startsWith("Erl") || path.startsWith("R"));
             }
         });
         for (final File f : candidates) {

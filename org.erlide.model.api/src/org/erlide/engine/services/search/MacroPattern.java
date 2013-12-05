@@ -11,14 +11,12 @@ public class MacroPattern extends NamePattern {
     @Override
     public OtpErlangObject getSearchObject() {
         final String name = getName();
-        return makeSPatternObject(MACRO_DEF_ATOM, MACRO_REF_ATOM, name, "?"
-                + name);
+        return makeSPatternObject(MACRO_DEF_ATOM, MACRO_REF_ATOM, name, "?" + name);
     }
 
     @Override
     public String toString() {
-        return "MacroPattern [limitTo=" + limitTo + ", getName()=" + getName()
-                + "]";
+        return "MacroPattern [limitTo=" + limitTo + ", getName()=" + getName() + "]";
     }
 
     @Override

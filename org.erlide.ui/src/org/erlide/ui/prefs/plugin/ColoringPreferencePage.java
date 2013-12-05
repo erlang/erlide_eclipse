@@ -104,8 +104,7 @@ public class ColoringPreferencePage extends PreferencePage implements
     public void init(final IWorkbench workbench) {
         fColorManager = new ColorManager();
         fOverlayStore = new OverlayPreferenceStore(ErlideUIPlugin.getDefault()
-                .getPreferenceStore(),
-                new OverlayPreferenceStore.OverlayKey[] {});
+                .getPreferenceStore(), new OverlayPreferenceStore.OverlayKey[] {});
         fOverlayStore.addKeys(createOverlayStoreKeys());
         fOverlayStore.load();
         fOverlayStore.start();
@@ -116,15 +115,12 @@ public class ColoringPreferencePage extends PreferencePage implements
     }
 
     private OverlayPreferenceStore.OverlayKey[] createOverlayStoreKeys() {
-        final List<OverlayPreferenceStore.OverlayKey> overlayKeys = Lists
-                .newArrayList();
+        final List<OverlayPreferenceStore.OverlayKey> overlayKeys = Lists.newArrayList();
         for (final TokenHighlight item : TokenHighlight.values()) {
             overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
-                    OverlayPreferenceStore.TypeDescriptor.STRING, item
-                            .getColorKey()));
+                    OverlayPreferenceStore.TypeDescriptor.STRING, item.getColorKey()));
             overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
-                    OverlayPreferenceStore.TypeDescriptor.INT, item
-                            .getStylesKey()));
+                    OverlayPreferenceStore.TypeDescriptor.INT, item.getStylesKey()));
         }
         final OverlayPreferenceStore.OverlayKey[] keys = new OverlayPreferenceStore.OverlayKey[overlayKeys
                 .size()];
@@ -203,11 +199,10 @@ public class ColoringPreferencePage extends PreferencePage implements
         fPreviewViewer.invalidateTextPresentation();
     }
 
-    public void storeHighlight(final IPreferenceStore store,
-            final TokenHighlight th, final HighlightStyle style) {
+    public void storeHighlight(final IPreferenceStore store, final TokenHighlight th,
+            final HighlightStyle style) {
         if (store != null) {
-            store.setValue(th.getColorKey(),
-                    StringConverter.asString(style.getColor()));
+            store.setValue(th.getColorKey(), StringConverter.asString(style.getColor()));
             store.setValue(th.getStylesKey(), style.getStyles());
         }
     }
@@ -265,10 +260,8 @@ public class ColoringPreferencePage extends PreferencePage implements
         fSyntaxForegroundColorEditor.setColorValue(style.getColor());
         fBoldCheckBox.setSelection(style.hasStyle(SWT.BOLD));
         fItalicCheckBox.setSelection(style.hasStyle(SWT.ITALIC));
-        fStrikethroughCheckBox.setSelection(style
-                .hasStyle(TextAttribute.STRIKETHROUGH));
-        fUnderlineCheckBox
-                .setSelection(style.hasStyle(TextAttribute.UNDERLINE));
+        fStrikethroughCheckBox.setSelection(style.hasStyle(TextAttribute.STRIKETHROUGH));
+        fUnderlineCheckBox.setSelection(style.hasStyle(TextAttribute.UNDERLINE));
 
         // if (item instanceof SemanticHighlightingColorListItem) {
         // fEnableCheckbox.setEnabled(true);
@@ -297,13 +290,12 @@ public class ColoringPreferencePage extends PreferencePage implements
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                PreferencesUtil.createPreferenceDialogOn(parent.getShell(),
-                        e.text, null, null);
+                PreferencesUtil.createPreferenceDialogOn(parent.getShell(), e.text, null,
+                        null);
             }
         });
 
-        final GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true,
-                false);
+        final GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
         gridData.widthHint = 150;
         gridData.horizontalSpan = 2;
         link.setLayoutData(gridData);
@@ -315,8 +307,7 @@ public class ColoringPreferencePage extends PreferencePage implements
         label.setText(PreferencesMessages.ErlEditorPreferencePage_coloring_element);
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        final Composite editorComposite = new Composite(colorComposite,
-                SWT.NONE);
+        final Composite editorComposite = new Composite(colorComposite, SWT.NONE);
         layout = new GridLayout();
         layout.numColumns = 2;
         layout.marginHeight = 0;
@@ -327,8 +318,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 
         fListViewer = new TreeViewer(editorComposite, SWT.SINGLE | SWT.BORDER);
         final Tree tree = fListViewer.getTree();
-        final GridData gdTree = new GridData(SWT.FILL, SWT.FILL, false, false,
-                1, 1);
+        final GridData gdTree = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
         gdTree.widthHint = 100;
         tree.setLayoutData(gdTree);
         fListViewer.setLabelProvider(new ColorListLabelProvider());
@@ -356,11 +346,10 @@ public class ColoringPreferencePage extends PreferencePage implements
         gd.heightHint = convertHeightInCharsToPixels(9);
         int maxWidth = 0;
         for (final TokenHighlight item : fColors) {
-            maxWidth = Math.max(maxWidth, convertWidthInCharsToPixels(item
-                    .getName().length()));
+            maxWidth = Math.max(maxWidth, convertWidthInCharsToPixels(item.getName()
+                    .length()));
         }
-        final ScrollBar vBar = ((Scrollable) fListViewer.getControl())
-                .getVerticalBar();
+        final ScrollBar vBar = ((Scrollable) fListViewer.getControl()).getVerticalBar();
         if (vBar != null) {
             maxWidth += vBar.getSize().x * 3; // scrollbars and tree
         }
@@ -370,8 +359,7 @@ public class ColoringPreferencePage extends PreferencePage implements
         fListViewer.getControl().setLayoutData(gd);
         fListViewer.expandAll();
 
-        final Composite stylesComposite = new Composite(editorComposite,
-                SWT.NONE);
+        final Composite stylesComposite = new Composite(editorComposite, SWT.NONE);
         layout = new GridLayout();
         layout.marginHeight = 0;
         layout.marginWidth = 0;
@@ -380,8 +368,7 @@ public class ColoringPreferencePage extends PreferencePage implements
         stylesComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         fEnableCheckbox = new Button(stylesComposite, SWT.CHECK);
-        fEnableCheckbox
-                .setText(PreferencesMessages.ErlEditorPreferencePage_enable);
+        fEnableCheckbox.setText(PreferencesMessages.ErlEditorPreferencePage_enable);
         gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalAlignment = GridData.BEGINNING;
         gd.horizontalSpan = 2;
@@ -390,15 +377,13 @@ public class ColoringPreferencePage extends PreferencePage implements
         fEnableCheckbox.setVisible(false);
 
         fColorEditorLabel = new Label(stylesComposite, SWT.LEFT);
-        fColorEditorLabel
-                .setText(PreferencesMessages.ErlEditorPreferencePage_color);
+        fColorEditorLabel.setText(PreferencesMessages.ErlEditorPreferencePage_color);
         gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         gd.horizontalIndent = 20;
         fColorEditorLabel.setLayoutData(gd);
 
         fSyntaxForegroundColorEditor = new ColorSelector(stylesComposite);
-        final Button foregroundColorButton = fSyntaxForegroundColorEditor
-                .getButton();
+        final Button foregroundColorButton = fSyntaxForegroundColorEditor.getButton();
         gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         foregroundColorButton.setLayoutData(gd);
         new Label(stylesComposite, SWT.NONE);
@@ -411,8 +396,7 @@ public class ColoringPreferencePage extends PreferencePage implements
         fBoldCheckBox.setLayoutData(gd);
 
         fItalicCheckBox = new Button(stylesComposite, SWT.CHECK);
-        fItalicCheckBox
-                .setText(PreferencesMessages.ErlEditorPreferencePage_italic);
+        fItalicCheckBox.setText(PreferencesMessages.ErlEditorPreferencePage_italic);
         gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         gd.horizontalIndent = 20;
         gd.horizontalSpan = 2;
@@ -427,8 +411,7 @@ public class ColoringPreferencePage extends PreferencePage implements
         fStrikethroughCheckBox.setLayoutData(gd);
 
         fUnderlineCheckBox = new Button(stylesComposite, SWT.CHECK);
-        fUnderlineCheckBox
-                .setText(PreferencesMessages.ErlEditorPreferencePage_underline);
+        fUnderlineCheckBox.setText(PreferencesMessages.ErlEditorPreferencePage_underline);
         gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         gd.horizontalIndent = 20;
         gd.horizontalSpan = 2;
@@ -436,8 +419,8 @@ public class ColoringPreferencePage extends PreferencePage implements
 
         final String content = loadPreviewContentFromFile(getClass(),
                 "ColorSettingPreviewCode.txt"); //$NON-NLS-1$
-        fPreviewViewer = ErlangSourceViewer.createErlangPreviewer(
-                colorComposite, fColorManager, fOverlayStore, fColors, content);
+        fPreviewViewer = ErlangSourceViewer.createErlangPreviewer(colorComposite,
+                fColorManager, fOverlayStore, fColors, content);
 
         final Control previewer = fPreviewViewer.getControl();
         gd = new GridData(GridData.FILL_BOTH);
@@ -447,15 +430,13 @@ public class ColoringPreferencePage extends PreferencePage implements
         gd.grabExcessVerticalSpace = true;
         previewer.setLayoutData(gd);
 
-        fListViewer
-                .addSelectionChangedListener(new ISelectionChangedListener() {
+        fListViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
-                    @Override
-                    public void selectionChanged(
-                            final SelectionChangedEvent event) {
-                        handleSyntaxColorListSelection();
-                    }
-                });
+            @Override
+            public void selectionChanged(final SelectionChangedEvent event) {
+                handleSyntaxColorListSelection();
+            }
+        });
 
         foregroundColorButton.addSelectionListener(new SelectionListener() {
             @Override
@@ -544,8 +525,7 @@ public class ColoringPreferencePage extends PreferencePage implements
                 if (data == null) {
                     return;
                 }
-                data.setStyle(TextAttribute.UNDERLINE,
-                        fUnderlineCheckBox.getSelection());
+                data.setStyle(TextAttribute.UNDERLINE, fUnderlineCheckBox.getSelection());
                 storeHighlight(fOverlayStore, item, data);
             }
         });

@@ -26,14 +26,14 @@ public class ExitAtEvent extends MetaEvent {
             final OtpErlangObject otpErlangObject2,
             final OtpErlangObject otpErlangObject3,
             final OtpErlangObject otpErlangObject, final OtpErlangPid pid2) {
-        this(metaPid, otpErlangObject2, otpErlangObject3, otpErlangObject,
-                pid2, null, null);
+        this(metaPid, otpErlangObject2, otpErlangObject3, otpErlangObject, pid2, null,
+                null);
     }
 
     public ExitAtEvent(final OtpErlangPid metaPid, final OtpErlangObject pos,
-            final OtpErlangObject reason,
-            final OtpErlangObject otpErlangObject, final OtpErlangPid pid2,
-            final OtpErlangList stackFrames, final OtpErlangList bindings) {
+            final OtpErlangObject reason, final OtpErlangObject otpErlangObject,
+            final OtpErlangPid pid2, final OtpErlangList stackFrames,
+            final OtpErlangList bindings) {
         super(metaPid, null);
         if (pos instanceof OtpErlangTuple) {
             final OtpErlangTuple t = (OtpErlangTuple) pos;

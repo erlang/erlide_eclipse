@@ -82,10 +82,10 @@ public class ErlProjectTest {
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         // when
         // looking for the include
-        final IErlModule include1 = model.findIncludeFromModule(module,
-                includeName, null, IErlElementLocator.Scope.PROJECT_ONLY);
-        final IErlModule include2 = model.findIncludeFromProject(project,
-                "file.hrl", null, IErlElementLocator.Scope.PROJECT_ONLY);
+        final IErlModule include1 = model.findIncludeFromModule(module, includeName,
+                null, IErlElementLocator.Scope.PROJECT_ONLY);
+        final IErlModule include2 = model.findIncludeFromProject(project, "file.hrl",
+                null, IErlElementLocator.Scope.PROJECT_ONLY);
         // then
         // it should be found
         assertEquals(include, include1);
@@ -114,14 +114,11 @@ public class ErlProjectTest {
             // ErlangEngine.getInstance().getModelUtilService().findIncludeFile(erlProject,
             // "x.hrl", "");
             project.open(null);
-            final IErlElementLocator model = ErlangEngine.getInstance()
-                    .getModel();
-            final IErlModule module = model.findIncludeFromProject(project,
-                    null, includePath,
-                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
-            final IErlModule module2 = model.findModuleFromProject(project,
-                    includeName, null,
-                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlModule module = model.findIncludeFromProject(project, null,
+                    includePath, IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IErlModule module2 = model.findModuleFromProject(project, includeName,
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             // then
             // it should be found in the model
             assertNotNull(module);
@@ -160,15 +157,14 @@ public class ErlProjectTest {
             // when
             // looking for the include file
             project.open(null);
-            final IErlElementLocator model = ErlangEngine.getInstance()
-                    .getModel();
-            final IErlModule module = model.findIncludeFromProject(project,
-                    includeName, null, IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlModule module = model.findIncludeFromProject(project, includeName,
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             // then
             // it should be found in the project defining it
             assertNotNull(module);
-            assertEquals(project2, ErlangEngine.getInstance()
-                    .getModelUtilService().getProject(module));
+            assertEquals(project2, ErlangEngine.getInstance().getModelUtilService()
+                    .getProject(module));
         } finally {
             if (project != null) {
                 ErlideTestUtils.deleteProject(project);
@@ -202,14 +198,12 @@ public class ErlProjectTest {
                             49,
                             ErlangEngine.getInstance().getModelUtilService()
                                     .getImportsAsList(moduleE),
-                            project.getExternalModulesString(),
-                            model.getPathVars());
+                            project.getExternalModulesString(), model.getPathVars());
             final IErlFunction function = ErlangEngine
                     .getInstance()
                     .getModelFindService()
-                    .findFunction(model, res.getName(), res.getFunction(),
-                            res.getPath(), project,
-                            IErlElementLocator.Scope.PROJECT_ONLY, moduleE);
+                    .findFunction(model, res.getName(), res.getFunction(), res.getPath(),
+                            project, IErlElementLocator.Scope.PROJECT_ONLY, moduleE);
             assertNotNull(function);
 
             final IErlElement module = model.findModuleFromProject(project,
@@ -219,8 +213,9 @@ public class ErlProjectTest {
             // the function should be returned and the module, in External Files
             assertNotNull(module);
             assertEquals(function.getParent(), module);
-            assertEquals(ErlangEngine.getInstance().getModelUtilService()
-                    .getProject(function), project);
+            assertEquals(
+                    ErlangEngine.getInstance().getModelUtilService().getProject(function),
+                    project);
         } finally {
             scanner.dispose();
         }
@@ -236,29 +231,25 @@ public class ErlProjectTest {
             final String projectName = "testproject";
             project = ErlideTestUtils.createTmpErlProject(projectName);
             final String externalFileName = "external.erl";
-            externalFile = ErlideTestUtils
-                    .createTmpFile(externalFileName,
-                            "-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
+            externalFile = ErlideTestUtils.createTmpFile(externalFileName,
+                    "-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
             final String absolutePath = externalFile.getAbsolutePath();
             final String externalsFileName = "x.erlidex";
-            final File externalsFile = ErlideTestUtils.createTmpFile(
-                    externalsFileName, absolutePath);
-            ((ErlProject) project).setExternalModulesFile(externalsFile
-                    .getAbsolutePath());
+            final File externalsFile = ErlideTestUtils.createTmpFile(externalsFileName,
+                    absolutePath);
+            ((ErlProject) project)
+                    .setExternalModulesFile(externalsFile.getAbsolutePath());
             project.open(null);
-            final IErlElementLocator model = ErlangEngine.getInstance()
-                    .getModel();
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             // when
             // looking for it
-            final IErlModule externalModule = model.findModuleFromProject(
-                    project, externalFileName, null,
-                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule externalModule = model.findModuleFromProject(project,
+                    externalFileName, null, IErlElementLocator.Scope.PROJECT_ONLY);
             // then
             // we should find it
             assertNotNull(externalModule);
-            assertTrue(FilePathUtils.equalFilePaths(absolutePath,
-                    externalModule.getFilePath(), EFS.getLocalFileSystem()
-                            .isCaseSensitive()));
+            assertTrue(FilePathUtils.equalFilePaths(absolutePath, externalModule
+                    .getFilePath(), EFS.getLocalFileSystem().isCaseSensitive()));
         } finally {
             if (externalFile != null && externalFile.exists()) {
                 externalFile.delete();

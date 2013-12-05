@@ -35,8 +35,7 @@ import org.erlide.ui.dialogfields.StringButtonDialogField;
 import org.erlide.ui.dialogfields.StringDialogField;
 import org.erlide.ui.util.StatusInfo;
 
-public class AddRuntimeDialog extends StatusDialog implements
-        IListAdapter<String> {
+public class AddRuntimeDialog extends StatusDialog implements IListAdapter<String> {
 
     public static class StringLabelProvider implements ILabelProvider {
 
@@ -59,8 +58,7 @@ public class AddRuntimeDialog extends StatusDialog implements
         }
 
         @Override
-        public boolean isLabelProperty(final Object element,
-                final String property) {
+        public boolean isLabelProperty(final Object element, final String property) {
             return false;
         }
 
@@ -141,12 +139,9 @@ public class AddRuntimeDialog extends StatusDialog implements
         fName = new StringDialogField();
         fName.setLabelText(RuntimePreferenceMessages.addDialog_ertsName);
 
-        final String[] buttons = new String[] {
-                RuntimePreferenceMessages.addDialog_add,
-                RuntimePreferenceMessages.addDialog_remove, "Move up",
-                "Move down" };
-        fCodePath = new ListDialogField<String>(this, buttons,
-                new StringLabelProvider());
+        final String[] buttons = new String[] { RuntimePreferenceMessages.addDialog_add,
+                RuntimePreferenceMessages.addDialog_remove, "Move up", "Move down" };
+        fCodePath = new ListDialogField<String>(this, buttons, new StringLabelProvider());
         fCodePath.setLabelText("Code path");
         // TODO enable this when it will work (#163)
         fCodePath.setEnabled(false);
@@ -204,12 +199,11 @@ public class AddRuntimeDialog extends StatusDialog implements
             status.setError("Enter the runtime's name"); //$NON-NLS-1$
         } else {
             if (fRequestor.isDuplicateName(name)
-                    && (fEditedRuntime == null || !name.equals(fEditedRuntime
-                            .getName()))) {
+                    && (fEditedRuntime == null || !name.equals(fEditedRuntime.getName()))) {
                 status.setError("The name is already used"); //$NON-NLS-1$
             } else {
-                final IStatus s = ResourcesPlugin.getWorkspace().validateName(
-                        name, IResource.FILE);
+                final IStatus s = ResourcesPlugin.getWorkspace().validateName(name,
+                        IResource.FILE);
                 if (!s.isOK()) {
                     status.setError(MessageFormat.format("Name is invalid: %s",
                             (Object[]) new String[] { s.getMessage() }));
@@ -258,9 +252,8 @@ public class AddRuntimeDialog extends StatusDialog implements
     }
 
     private void doOkPressed() {
-        final RuntimeInfo info = new RuntimeInfo(fName.getText().trim(),
-                fOtpHome.getText().trim(), fArgs.getText().trim(),
-                fCodePath.getElements());
+        final RuntimeInfo info = new RuntimeInfo(fName.getText().trim(), fOtpHome
+                .getText().trim(), fArgs.getText().trim(), fCodePath.getElements());
         fRequestor.itemAdded(info);
     }
 
@@ -335,8 +328,7 @@ public class AddRuntimeDialog extends StatusDialog implements
     }
 
     @Override
-    public void customButtonPressed(final ListDialogField<String> field,
-            final int index) {
+    public void customButtonPressed(final ListDialogField<String> field, final int index) {
         switch (index) {
         case 0:
             addPath(field);

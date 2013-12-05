@@ -52,8 +52,7 @@ public class ErlangPreferencePage extends PreferencePage implements
                 "images/erl-zen-badge-160.png"));
 
         final Group composite = new Group(panel, SWT.NONE);
-        final GridData gd_composite = new GridData(SWT.FILL, SWT.CENTER, false,
-                false);
+        final GridData gd_composite = new GridData(SWT.FILL, SWT.CENTER, false, false);
         gd_composite.widthHint = 289;
         composite.setLayoutData(gd_composite);
         composite.setLayout(new GridLayout());
@@ -66,8 +65,7 @@ public class ErlangPreferencePage extends PreferencePage implements
 
         final Label textv = new Label(composite, SWT.NONE);
         textv.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-        final String version = ErlangPlugin.getDefault().getCore()
-                .getFeatureVersion();
+        final String version = ErlangPlugin.getDefault().getCore().getFeatureVersion();
         textv.setText("    version " + version);
 
         final Link erlideorgLink = new Link(composite, SWT.NONE);
@@ -88,12 +86,11 @@ public class ErlangPreferencePage extends PreferencePage implements
         reportButton.setText("Report problems");
         new Label(panel, SWT.NONE);
 
-        txtLocalErlangNodes = new Text(panel, SWT.BORDER | SWT.READ_ONLY
-                | SWT.MULTI);
+        txtLocalErlangNodes = new Text(panel, SWT.BORDER | SWT.READ_ONLY | SWT.MULTI);
         txtLocalErlangNodes
                 .setText("This machine supports local Erlang nodes with only short names \nbecause of its hostname configuration. \n\nTo enable long names locally, make sure that the machine \nhas a proper FQDN on the network. ");
-        final GridData gd_txtLocalErlangNodes = new GridData(SWT.FILL,
-                SWT.CENTER, true, false, 1, 1);
+        final GridData gd_txtLocalErlangNodes = new GridData(SWT.FILL, SWT.CENTER, true,
+                false, 1, 1);
         gd_txtLocalErlangNodes.widthHint = 339;
         gd_txtLocalErlangNodes.heightHint = 87;
         txtLocalErlangNodes.setLayoutData(gd_txtLocalErlangNodes);

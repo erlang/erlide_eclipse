@@ -27,8 +27,7 @@ import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.ui.util.DisplayUtils;
 import org.erlide.util.ErlLogger;
 
-public final class ErlConsoleDocument extends Document implements
-        BackendShellListener {
+public final class ErlConsoleDocument extends Document implements BackendShellListener {
 
     private static String[] LEGAL_CONTENT_TYPES = null;
 
@@ -50,8 +49,8 @@ public final class ErlConsoleDocument extends Document implements
         this.shell = shell;
         shell.addListener(this);
         changed(new BackendShellEvent(0, 0, get()));
-        final IDocumentPartitioner partitioner = new FastPartitioner(
-                createScanner(), LEGAL_CONTENT_TYPES);
+        final IDocumentPartitioner partitioner = new FastPartitioner(createScanner(),
+                LEGAL_CONTENT_TYPES);
         partitioner.connect(this);
         setDocumentPartitioner(partitioner);
     }
@@ -67,8 +66,7 @@ public final class ErlConsoleDocument extends Document implements
             @Override
             public void run() {
                 try {
-                    replace(event.getOffset(), event.getRemovedLength(),
-                            event.getText());
+                    replace(event.getOffset(), event.getRemovedLength(), event.getText());
                 } catch (final BadLocationException e) {
                     ErlLogger.error(e);
                 }

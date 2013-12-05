@@ -31,8 +31,7 @@ public abstract class SingleCharReader extends Reader {
      * @see Reader#read(char[],int,int)
      */
     @Override
-    public int read(final char cbuf[], final int off, final int len)
-            throws IOException {
+    public int read(final char cbuf[], final int off, final int len) throws IOException {
         final int end = off + len;
         for (int i = off; i < end; i++) {
             final int ch = read();

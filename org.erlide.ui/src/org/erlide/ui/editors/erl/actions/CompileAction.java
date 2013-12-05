@@ -39,8 +39,8 @@ public class CompileAction extends Action {
 
     @Override
     public void run() {
-        final AbstractErlangEditor editor = (AbstractErlangEditor) getSite()
-                .getPage().getActiveEditor();
+        final AbstractErlangEditor editor = (AbstractErlangEditor) getSite().getPage()
+                .getActiveEditor();
         final IErlModule module = editor.getModule();
         if (module == null) {
             return;
@@ -49,8 +49,8 @@ public class CompileAction extends Action {
         final IResource resource = module.getResource();
         final IProject project = resource.getProject();
 
-        final IRpcSite b = BackendCore.getBackendManager()
-                .getBuildBackend(project).getRpcSite();
+        final IRpcSite b = BackendCore.getBackendManager().getBuildBackend(project)
+                .getRpcSite();
 
         final BuildResource bres = new BuildResource(resource);
         final CompilerOptions prefs = new CompilerOptions(project);
@@ -60,16 +60,15 @@ public class CompileAction extends Action {
                 .getErlangProject(project);
 
         if ("erl".equals(resource.getFileExtension())) {
-            helper.compileErl(project, bres, erlProject.getOutputLocation()
-                    .toString(), b, compilerOptions);
+            helper.compileErl(project, bres, erlProject.getOutputLocation().toString(),
+                    b, compilerOptions);
         }
         if ("yrl".equals(resource.getFileExtension())) {
             helper.compileYrl(project, bres, b, compilerOptions);
         }
         final ErlEditorActionBarContributor status = (ErlEditorActionBarContributor) editor
                 .getEditorSite().getActionBarContributor();
-        status.displayMessage(String.format("File '%s' was compiled.",
-                resource.getName()));
+        status.displayMessage(String.format("File '%s' was compiled.", resource.getName()));
     }
 
     public IWorkbenchSite getSite() {

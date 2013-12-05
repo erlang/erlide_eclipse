@@ -107,11 +107,9 @@ public class DialyzerUtilsTest {
             // putting a dialyzer warning on it
             final int lineNumber = 3;
             final String message = "test message";
-            final IErlElementLocator model = ErlangEngine.getInstance()
-                    .getModel();
-            DialyzerMarkerUtils.addDialyzerWarningMarker(model, erlModule
-                    .getResource().getLocation().toPortableString(),
-                    lineNumber, message);
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            DialyzerMarkerUtils.addDialyzerWarningMarker(model, erlModule.getResource()
+                    .getLocation().toPortableString(), lineNumber, message);
             // then
             // there should be a marker with proper file name and the proper
             // line number
@@ -145,15 +143,14 @@ public class DialyzerUtilsTest {
             final String externalFileName = "external.hrl";
             externalFile = ErlideTestUtils.createTmpFile(externalFileName,
                     "f([_ | _]=L ->\n    atom_to_list(L).\n");
-            externalInclude = ErlideTestUtils.createTmpFile(
-                    "external_includes", externalFile.getAbsolutePath());
+            externalInclude = ErlideTestUtils.createTmpFile("external_includes",
+                    externalFile.getAbsolutePath());
             DialyzerMarkerUtils.removeDialyzerMarkersFor(root);
             // when
             // putting dialyzer warning markers on the external file
             final String message = "test message";
             final int lineNumber = 2;
-            final IErlElementLocator model = ErlangEngine.getInstance()
-                    .getModel();
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             DialyzerMarkerUtils.addDialyzerWarningMarker(model,
                     externalFile.getAbsolutePath(), lineNumber, message);
             // then
@@ -171,8 +168,7 @@ public class DialyzerUtilsTest {
                         .getAttribute(DialyzerMarkerUtils.PATH_ATTRIBUTE);
                 final IPath p = new Path(path);
                 assertEquals(externalFileName, p.lastSegment());
-                assertEquals(lineNumber,
-                        marker.getAttribute(IMarker.LINE_NUMBER));
+                assertEquals(lineNumber, marker.getAttribute(IMarker.LINE_NUMBER));
                 assertEquals(message, marker.getAttribute(IMarker.MESSAGE));
             }
         } finally {
@@ -189,8 +185,8 @@ public class DialyzerUtilsTest {
         }
     }
 
-    public void dialyzePrepareFromSelection(final boolean sources,
-            final SEL select) throws Exception {
+    public void dialyzePrepareFromSelection(final boolean sources, final SEL select)
+            throws Exception {
         // http://www.assembla.com/spaces/erlide/tickets/607-dialyzer---only-dialyze-on-selection
         IErlProject erlProject = null;
         try {
@@ -200,32 +196,26 @@ public class DialyzerUtilsTest {
             erlProject = ErlideTestUtils.createTmpErlProject(projectName);
             assertNotNull(erlProject);
             final IErlModule a = ErlideTestUtils
-                    .createModule(
-                            erlProject,
-                            "a.erl",
+                    .createModule(erlProject, "a.erl",
                             "-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
             assertNotNull(a);
             final IErlModule b = ErlideTestUtils
-                    .createModule(
-                            erlProject,
-                            "b.erl",
+                    .createModule(erlProject, "b.erl",
                             "-module(b).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
             assertNotNull(b);
             ErlideTestUtils.invokeBuilderOn(erlProject);
             // when
             // collecting files to dialyze
-            final IResource selectedResource = selectResource(select,
-                    erlProject, a);
-            final Set<IErlModule> modules = DialyzerUtils
-                    .collectModulesFromResource(ErlangEngine.getInstance()
-                            .getModel(), selectedResource);
+            final IResource selectedResource = selectResource(select, erlProject, a);
+            final Set<IErlModule> modules = DialyzerUtils.collectModulesFromResource(
+                    ErlangEngine.getInstance().getModel(), selectedResource);
             final Set<IErlProject> projects = Sets.newHashSet();
             projects.add(erlProject);
             final List<String> names = new ArrayList<String>();
             final List<IPath> includeDirs = new ArrayList<IPath>();
             final List<String> files = new ArrayList<String>();
-            DialyzerUtils.collectFilesAndIncludeDirs(modules, projects, files,
-                    names, includeDirs, sources);
+            DialyzerUtils.collectFilesAndIncludeDirs(modules, projects, files, names,
+                    includeDirs, sources);
             // then
             // only selected files (or corresponding beam) should be collected
             if (select == SEL.MODULE) {
@@ -259,8 +249,8 @@ public class DialyzerUtilsTest {
         }
     }
 
-    private IResource selectResource(final SEL select,
-            final IErlProject erlProject, final IErlModule a) {
+    private IResource selectResource(final SEL select, final IErlProject erlProject,
+            final IErlModule a) {
         switch (select) {
         case MODULE:
             return a.getResource();
@@ -325,30 +315,25 @@ public class DialyzerUtilsTest {
             erlProject = ErlideTestUtils.createTmpErlProject(projectName);
             assertNotNull(erlProject);
             final IErlModule a = ErlideTestUtils
-                    .createModule(
-                            erlProject,
-                            "a.erl",
+                    .createModule(erlProject, "a.erl",
                             "-module(a).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    lists:reverse(L).\n");
             assertNotNull(a);
             final IErlModule b = ErlideTestUtils
-                    .createModule(
-                            erlProject,
-                            "b.erl",
+                    .createModule(erlProject, "b.erl",
                             "-module(b).\n-export([t/0]).\nt() ->\n    p(a).\np(L) ->\n    fel som tusan.\n");
             assertNotNull(b);
             ErlideTestUtils.invokeBuilderOn(erlProject);
             // when
             // collecting files to dialyze
-            final Set<IErlModule> modules = DialyzerUtils
-                    .collectModulesFromResource(ErlangEngine.getInstance()
-                            .getModel(), erlProject.getResource());
+            final Set<IErlModule> modules = DialyzerUtils.collectModulesFromResource(
+                    ErlangEngine.getInstance().getModel(), erlProject.getResource());
             final Set<IErlProject> projects = Sets.newHashSet();
             projects.add(erlProject);
             final List<String> names = new ArrayList<String>();
             final List<IPath> includeDirs = new ArrayList<IPath>();
             final List<String> files = new ArrayList<String>();
-            DialyzerUtils.collectFilesAndIncludeDirs(modules, projects, files,
-                    names, includeDirs, false);
+            DialyzerUtils.collectFilesAndIncludeDirs(modules, projects, files, names,
+                    includeDirs, false);
             // then
             // it should only take the existing beam files
             assertEquals(1, files.size());

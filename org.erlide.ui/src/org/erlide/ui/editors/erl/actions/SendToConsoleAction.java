@@ -32,15 +32,13 @@ import org.erlide.util.ErlLogger;
 
 public class SendToConsoleAction extends SelectionDispatchAction {
 
-    private final class ConsoleBackendShellListener implements
-            BackendShellListener {
+    private final class ConsoleBackendShellListener implements BackendShellListener {
 
         private final int offset;
         private int counter;
         private final IBackendShell shell;
 
-        public ConsoleBackendShellListener(final IBackendShell shell,
-                final int offset) {
+        public ConsoleBackendShellListener(final IBackendShell shell, final int offset) {
             this.shell = shell;
             this.offset = offset;
             counter = 0;
@@ -87,12 +85,8 @@ public class SendToConsoleAction extends SelectionDispatchAction {
         if (console == null) {
             final String message = "There is no runtime launched for this backend. Please start a runtime to send commands to.";
             final Exception x = new Exception("No runtime started");
-            ErrorDialog.openError(
-                    getShell(),
-                    "No runtime",
-                    message,
-                    new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, 0, x
-                            .getMessage(), x));
+            ErrorDialog.openError(getShell(), "No runtime", message, new Status(
+                    IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, 0, x.getMessage(), x));
 
             return;
         }
@@ -114,8 +108,7 @@ public class SendToConsoleAction extends SelectionDispatchAction {
         // send it off to the console
         if (getOutput) {
             consoleBackendShellListener = new ConsoleBackendShellListener(
-                    console.getShell(), getLineSelection(selection, true)
-                            .getOffset());
+                    console.getShell(), getLineSelection(selection, true).getOffset());
             console.getShell().addListener(consoleBackendShellListener);
         }
         consolePage.input(text);
@@ -134,8 +127,7 @@ public class SendToConsoleAction extends SelectionDispatchAction {
                     final IDocumentExtension4 documentExtension4 = (IDocumentExtension4) document;
                     nl = documentExtension4.getDefaultLineDelimiter();
                 } else {
-                    final String[] delimiters = document
-                            .getLegalLineDelimiters();
+                    final String[] delimiters = document.getLegalLineDelimiters();
                     nl = delimiters[0];
                 }
             }
@@ -162,8 +154,8 @@ public class SendToConsoleAction extends SelectionDispatchAction {
         final IDocument document = editor.getDocumentProvider().getDocument(
                 editor.getEditorInput());
         if (selection.getLength() == 0) { // don't use isEmpty()!
-            selection = ErlangTextEditorAction.extendSelectionToWholeLines(
-                    document, selection);
+            selection = ErlangTextEditorAction.extendSelectionToWholeLines(document,
+                    selection);
         }
         if (beginningOfNextLine) {
             final int endLine = selection.getEndLine();
@@ -179,9 +171,8 @@ public class SendToConsoleAction extends SelectionDispatchAction {
         return selection;
     }
 
-    public SendToConsoleAction(final IWorkbenchSite site,
-            final ResourceBundle bundle, final String prefix,
-            final ITextEditor editor, final boolean getOutput,
+    public SendToConsoleAction(final IWorkbenchSite site, final ResourceBundle bundle,
+            final String prefix, final ITextEditor editor, final boolean getOutput,
             final IErlProject project) {
         super(site);
         this.getOutput = getOutput;
@@ -192,8 +183,7 @@ public class SendToConsoleAction extends SelectionDispatchAction {
         this.editor = editor;
     }
 
-    protected static String getString(final ResourceBundle bundle,
-            final String key) {
+    protected static String getString(final ResourceBundle bundle, final String key) {
         try {
             return bundle.getString(key);
         } catch (final MissingResourceException x) {

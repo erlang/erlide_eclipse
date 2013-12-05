@@ -58,8 +58,7 @@ public class MergeForAllRefactoring extends
             changedFiles = message.getRefactoringChangeset();
             return new RefactoringStatus();
         }
-        return RefactoringStatus.createFatalErrorStatus(message
-                .getMessageString());
+        return RefactoringStatus.createFatalErrorStatus(message.getMessageString());
     }
 
     @Override
@@ -81,16 +80,14 @@ public class MergeForAllRefactoring extends
 
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
         ExpressionPosRpcMessage m = new ExpressionPosRpcMessage();
-        m = (ExpressionPosRpcMessage) WranglerBackendManager
-                .getRefactoringBackend().callWithParser(m,
-                        "merge_forall_eclipse", "sxi", sel.getFilePath(),
+        m = (ExpressionPosRpcMessage) WranglerBackendManager.getRefactoringBackend()
+                .callWithParser(m, "merge_forall_eclipse", "sxi", sel.getFilePath(),
                         sel.getSearchPath(), GlobalParameters.getTabWidth());
         if (m.isSuccessful()) {
             positions = m.getPositionDefinitions(sel.getDocument());
             selectedPositions = new ArrayList<IErlRange>();
         } else {
-            return RefactoringStatus.createFatalErrorStatus(m
-                    .getMessageString());
+            return RefactoringStatus.createFatalErrorStatus(m.getMessageString());
         }
         return new RefactoringStatus();
     }
@@ -99,8 +96,7 @@ public class MergeForAllRefactoring extends
     public IRefactoringRpcMessage run(final IErlSelection selection) {
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
         return WranglerBackendManager.getRefactoringBackend().call(
-                "merge_forall_1_eclipse", "sxxi", sel.getFilePath(),
-                getSelectedPos(), sel.getSearchPath(),
-                GlobalParameters.getTabWidth());
+                "merge_forall_1_eclipse", "sxxi", sel.getFilePath(), getSelectedPos(),
+                sel.getSearchPath(), GlobalParameters.getTabWidth());
     }
 }

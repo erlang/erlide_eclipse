@@ -27,8 +27,7 @@ import java.io.Serializable;
  * Erlang binary with a length not an integral number of bytes (8-bit). Anything
  * can be represented as a sequence of bytes can be made into an Erlang bitstr.
  */
-public class OtpErlangBitstr extends OtpErlangObject implements Serializable,
-        Cloneable {
+public class OtpErlangBitstr extends OtpErlangObject implements Serializable, Cloneable {
     // don't change this!
     static final long serialVersionUID = -3781009633593609217L;
 
@@ -65,12 +64,10 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable,
 
     private void check_bitstr(final byte[] bin, final int pad_bits) {
         if (pad_bits < 0 || 7 < pad_bits) {
-            throw new java.lang.IllegalArgumentException(
-                    "Padding must be in range 0..7");
+            throw new java.lang.IllegalArgumentException("Padding must be in range 0..7");
         }
         if (pad_bits != 0 && bin.length == 0) {
-            throw new java.lang.IllegalArgumentException(
-                    "Padding on zero length bitstr");
+            throw new java.lang.IllegalArgumentException("Padding on zero length bitstr");
         }
         if (bin.length != 0) {
             // Make sure padding is zero
@@ -89,8 +86,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable,
      *                if the buffer does not contain a valid external
      *                representation of an Erlang bitstr.
      */
-    public OtpErlangBitstr(final OtpInputStream buf)
-            throws OtpErlangDecodeException {
+    public OtpErlangBitstr(final OtpInputStream buf) throws OtpErlangDecodeException {
         final int pbs[] = { 0 }; // This is ugly just to get a value-result
         // parameter
         bin = buf.read_bitstr(pbs);
@@ -116,8 +112,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable,
         }
     }
 
-    private static byte[] toByteArray(final Object o)
-            throws java.io.IOException {
+    private static byte[] toByteArray(final Object o) throws java.io.IOException {
 
         if (o == null) {
             return null;
@@ -125,8 +120,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable,
 
         /* need to synchronize use of the shared baos */
         final java.io.ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(
-                baos);
+        final java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(baos);
 
         oos.writeObject(o);
         oos.flush();
@@ -142,8 +136,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable,
         try {
             final java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(
                     buf);
-            final java.io.ObjectInputStream ois = new java.io.ObjectInputStream(
-                    bais);
+            final java.io.ObjectInputStream ois = new java.io.ObjectInputStream(bais);
             return ois.readObject();
         } catch (final java.lang.ClassNotFoundException e) {
         } catch (final java.io.IOException e) {

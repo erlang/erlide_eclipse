@@ -36,14 +36,12 @@ public class RenameProcessRefactoring extends ProcessRelatedRefactoring {
         final IErlSelection sel = GlobalParameters.getWranglerSelection();
         if (sel instanceof IErlMemberSelection) {
             final SelectionKind kind = sel.getKind();
-            if (kind == SelectionKind.FUNCTION_CLAUSE
-                    || kind == SelectionKind.FUNCTION) {
+            if (kind == SelectionKind.FUNCTION_CLAUSE || kind == SelectionKind.FUNCTION) {
                 return new RefactoringStatus();
             }
         }
         // TODO: testing
-        return RefactoringStatus
-                .createFatalErrorStatus("Please select a process!");
+        return RefactoringStatus.createFatalErrorStatus("Please select a process!");
     }
 
     @Override
@@ -55,17 +53,15 @@ public class RenameProcessRefactoring extends ProcessRelatedRefactoring {
     @Override
     public IRefactoringRpcMessage run(final IErlSelection sel) {
         return WranglerBackendManager.getRefactoringBackend().call(
-                "rename_process_1_eclipse", "sssxi", sel.getFilePath(),
-                undecidables, userInput, sel.getSearchPath(),
-                GlobalParameters.getTabWidth());
+                "rename_process_1_eclipse", "sssxi", sel.getFilePath(), undecidables,
+                userInput, sel.getSearchPath(), GlobalParameters.getTabWidth());
     }
 
     @SuppressWarnings("boxing")
     @Override
     protected ProcessRpcMessage checkUndecidables(final IErlMemberSelection sel) {
-        return (ProcessRpcMessage) WranglerBackendManager
-                .getRefactoringBackend().callWithParser(
-                        new ProcessRpcMessage(), "rename_process_eclipse",
+        return (ProcessRpcMessage) WranglerBackendManager.getRefactoringBackend()
+                .callWithParser(new ProcessRpcMessage(), "rename_process_eclipse",
                         "siisxi", sel.getFilePath(),
                         sel.getSelectionRange().getStartLine(),
                         sel.getSelectionRange().getStartCol(), userInput,

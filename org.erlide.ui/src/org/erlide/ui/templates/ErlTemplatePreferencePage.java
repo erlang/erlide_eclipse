@@ -26,28 +26,27 @@ public class ErlTemplatePreferencePage extends TemplatePreferencePage {
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                ErlTemplateCompletionPreferences
-                        .setIndentCode(fIndentCodeCheckBox.getSelection());
+                ErlTemplateCompletionPreferences.setIndentCode(fIndentCodeCheckBox
+                        .getSelection());
             }
         });
         getPrefs();
-        fIndentCodeCheckBox.setSelection(ErlTemplateCompletionPreferences
-                .getIndentCode());
+        fIndentCodeCheckBox
+                .setSelection(ErlTemplateCompletionPreferences.getIndentCode());
         return contents;
     }
 
     public ErlTemplatePreferencePage() {
         setPreferenceStore(ErlideUIPlugin.getDefault().getPreferenceStore());
         setTemplateStore(ErlideUIPlugin.getDefault().getTemplateStore());
-        setContextTypeRegistry(ErlideUIPlugin.getDefault()
-                .getContextTypeRegistry());
+        setContextTypeRegistry(ErlideUIPlugin.getDefault().getContextTypeRegistry());
     }
 
     @Override
     protected void performDefaults() {
         ErlTemplateCompletionPreferences.getDefaults();
-        fIndentCodeCheckBox.setSelection(ErlTemplateCompletionPreferences
-                .getIndentCode());
+        fIndentCodeCheckBox
+                .setSelection(ErlTemplateCompletionPreferences.getIndentCode());
         super.performDefaults();
     }
 
@@ -83,8 +82,8 @@ public class ErlTemplatePreferencePage extends TemplatePreferencePage {
 
     @Override
     protected SourceViewer createViewer(final Composite parent) {
-        final SourceViewer viewer = ErlangSourceViewer.createErlangPreviewer(
-                parent, null, null, null, "");
+        final SourceViewer viewer = ErlangSourceViewer.createErlangPreviewer(parent,
+                null, null, null, "");
         // new SourceViewer(parent, null, null, false, SWT.BORDER | SWT.V_SCROLL
         // | SWT.H_SCROLL);
         // final SourceViewerConfiguration configuration= new

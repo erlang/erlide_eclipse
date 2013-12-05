@@ -34,8 +34,7 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
 
     public ErlangVariable(final IDebugTarget target, final String name,
             final boolean subVariable, final OtpErlangObject value,
-            final ErlangProcess process, final String moduleName,
-            final int stackFrameNo) {
+            final ErlangProcess process, final String moduleName, final int stackFrameNo) {
         super(target);
         this.name = name;
         this.subVariable = subVariable;
@@ -48,13 +47,11 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
             final OtpErlangObject avalue, final ErlangProcess aprocess,
             final String moduleName) {
         if (avalue instanceof OtpErlangList || avalue instanceof OtpErlangTuple
-                || avalue instanceof OtpErlangBinary
-                || avalue instanceof OtpErlangString) {
-            return new IndexedErlangValue(getDebugTarget(), aname, avalue,
-                    aprocess, moduleName);
+                || avalue instanceof OtpErlangBinary || avalue instanceof OtpErlangString) {
+            return new IndexedErlangValue(getDebugTarget(), aname, avalue, aprocess,
+                    moduleName);
         }
-        return new ErlangValue(getDebugTarget(), aname, avalue, aprocess,
-                moduleName);
+        return new ErlangValue(getDebugTarget(), aname, avalue, aprocess, moduleName);
     }
 
     @Override
@@ -83,19 +80,16 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
     @Override
     public void setValue(final String expression) throws DebugException {
         if (subVariable) {
-            throw new DebugException(new Status(IStatus.ERROR,
-                    BackendPlugin.PLUGIN_ID, DebugException.NOT_SUPPORTED,
+            throw new DebugException(new Status(IStatus.ERROR, BackendPlugin.PLUGIN_ID,
+                    DebugException.NOT_SUPPORTED,
                     "Can't set value of part of expression", null));
         }
         final ErlangDebugTarget edt = getErlangDebugTarget();
-        final String err = ErlideDebug.setVariableValue(edt.getBackend()
-                .getRpcSite(), name, expression, stackFrameNo, process
-                .getMeta());
+        final String err = ErlideDebug.setVariableValue(edt.getBackend().getRpcSite(),
+                name, expression, stackFrameNo, process.getMeta());
         if (err != null) {
-            throw new DebugException(new Status(IStatus.ERROR,
-                    BackendPlugin.PLUGIN_ID,
-                    DebugException.TARGET_REQUEST_FAILED, "Bad expression",
-                    null));
+            throw new DebugException(new Status(IStatus.ERROR, BackendPlugin.PLUGIN_ID,
+                    DebugException.TARGET_REQUEST_FAILED, "Bad expression", null));
         }
 
     }

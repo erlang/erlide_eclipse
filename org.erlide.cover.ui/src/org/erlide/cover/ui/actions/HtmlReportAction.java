@@ -70,10 +70,9 @@ public class HtmlReportAction extends Action {
         log.info(selection.getClass().getName());
         if (!(selection instanceof ITreeSelection)) {
             final IStatus executionStatus = new Status(IStatus.ERROR,
-                    Activator.PLUGIN_ID,
-                    "Internall error occured: bad sellection type", null);
-            StatusManager.getManager().handle(executionStatus,
-                    StatusManager.SHOW);
+                    Activator.PLUGIN_ID, "Internall error occured: bad sellection type",
+                    null);
+            StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);
             return;
         }
 
@@ -83,8 +82,7 @@ public class HtmlReportAction extends Action {
         log.info(treeSelection.getFirstElement().getClass().getName());
         log.info(treeSelection.getPaths());
 
-        final StatsTreeObject selObj = (StatsTreeObject) treeSelection
-                .getFirstElement();
+        final StatsTreeObject selObj = (StatsTreeObject) treeSelection.getFirstElement();
 
         final BrowserDialog browser = new BrowserDialog(shell);
 
@@ -108,9 +106,8 @@ public class HtmlReportAction extends Action {
         if (obj.getType().equals(ObjectType.MODULE)) {
             return;
         }
-        final String reportPath = new StringBuilder(path)
-                .append(File.separator).append(obj.getLabel()).append(".html")
-                .toString();
+        final String reportPath = new StringBuilder(path).append(File.separator)
+                .append(obj.getLabel()).append(".html").toString();
         log.info(reportPath);
 
         final String dirPath = new StringBuilder(path).append(File.separator)
@@ -123,8 +120,7 @@ public class HtmlReportAction extends Action {
         }
 
         try {
-            final String report = ReportGenerator.getInstance().getHTMLreport(
-                    obj, false);
+            final String report = ReportGenerator.getInstance().getHTMLreport(obj, false);
             log.info(report);
             final FileWriter writer = new FileWriter(reportPath);
             writer.write(report);

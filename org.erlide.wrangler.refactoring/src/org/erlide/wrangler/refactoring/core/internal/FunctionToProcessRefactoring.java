@@ -36,21 +36,18 @@ public class FunctionToProcessRefactoring extends ProcessRelatedRefactoring {
         final IErlSelection sel = GlobalParameters.getWranglerSelection();
         if (sel instanceof IErlMemberSelection) {
             final SelectionKind kind = sel.getKind();
-            if (kind == SelectionKind.FUNCTION_CLAUSE
-                    || kind == SelectionKind.FUNCTION) {
+            if (kind == SelectionKind.FUNCTION_CLAUSE || kind == SelectionKind.FUNCTION) {
                 return new RefactoringStatus();
             }
         }
         // TODO: testing
-        return RefactoringStatus
-                .createFatalErrorStatus("Please select a function!");
+        return RefactoringStatus.createFatalErrorStatus("Please select a function!");
     }
 
     @Override
     protected ProcessRpcMessage checkUndecidables(final IErlMemberSelection sel) {
-        return (ProcessRpcMessage) WranglerBackendManager
-                .getRefactoringBackend().callWithParser(
-                        new ProcessRpcMessage(), "fun_to_process_eclipse",
+        return (ProcessRpcMessage) WranglerBackendManager.getRefactoringBackend()
+                .callWithParser(new ProcessRpcMessage(), "fun_to_process_eclipse",
                         "siisxi", sel.getFilePath(),
                         sel.getSelectionRange().getStartLine(),
                         sel.getSelectionRange().getStartCol(), userInput,
@@ -72,8 +69,7 @@ public class FunctionToProcessRefactoring extends ProcessRelatedRefactoring {
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
         return WranglerBackendManager.getRefactoringBackend().call(
                 "fun_to_process_1_eclipse", "siisxi", sel.getFilePath(),
-                sel.getMemberRange().getStartLine(),
-                sel.getMemberRange().getStartCol(), userInput,
-                sel.getSearchPath(), GlobalParameters.getTabWidth());
+                sel.getMemberRange().getStartLine(), sel.getMemberRange().getStartCol(),
+                userInput, sel.getSearchPath(), GlobalParameters.getTabWidth());
     }
 }

@@ -25,8 +25,8 @@ public final class PreferencesUtils {
                 result.append(s).append(SEP);
             }
         }
-        final String r = result.length() == 0 ? "" : result.substring(0,
-                result.length() - SEP.length());
+        final String r = result.length() == 0 ? "" : result.substring(0, result.length()
+                - SEP.length());
         return r;
     }
 
@@ -37,8 +37,7 @@ public final class PreferencesUtils {
     public static List<String> readFile(final String file) {
         final List<String> res = new ArrayList<String>();
         try {
-            final BufferedReader reader = new BufferedReader(new FileReader(
-                    file));
+            final BufferedReader reader = new BufferedReader(new FileReader(file));
             try {
                 String line;
                 while ((line = reader.readLine()) != null) {

@@ -53,8 +53,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
         @Override
         public boolean visit(final IResourceDelta delta) throws CoreException {
             final IResource res = delta.getResource();
-            if (res instanceof IProject
-                    && delta.getKind() == IResourceDelta.CHANGED) {
+            if (res instanceof IProject && delta.getKind() == IResourceDelta.CHANGED) {
                 final IProject project = (IProject) res;
                 if (!project.isAccessible()) {
                     // only track open Erlang projects
@@ -65,8 +64,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
             return true;
         }
 
-        private void checkInvalidate(final IResourceDelta delta,
-                final IResource resource0) {
+        private void checkInvalidate(final IResourceDelta delta, final IResource resource0) {
             IResource resource = resource0;
             final int kind = delta.getKind();
             if ((kind == IResourceDelta.REMOVED || kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED)
@@ -91,8 +89,8 @@ public class ProblemMarkerManager implements IResourceChangeListener,
                         }
                         final int severity = markerDeltas[i].getAttribute(
                                 IMarker.SEVERITY, -1);
-                        final int newSeverity = markerDeltas[i].getMarker()
-                                .getAttribute(IMarker.SEVERITY, -1);
+                        final int newSeverity = markerDeltas[i].getMarker().getAttribute(
+                                IMarker.SEVERITY, -1);
                         if (newSeverity != severity) {
                             return true;
                         }
@@ -175,8 +173,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
         }
     }
 
-    private void fireChanges(final IResource[] changes,
-            final boolean isMarkerChange) {
+    private void fireChanges(final IResource[] changes, final boolean isMarkerChange) {
         DisplayUtils.asyncExec(new Runnable() {
             @Override
             @SuppressWarnings("synthetic-access")

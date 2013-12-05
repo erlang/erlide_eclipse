@@ -20,8 +20,7 @@ public class MetaEvent implements DebuggerEvent {
 
     @Override
     public void execute(final ErlangDebugTarget debugTarget) {
-        ErlLogger
-                .debug("unhandled meta event: %s %s", getMetaPid(), getEvent());
+        ErlLogger.debug("unhandled meta event: %s %s", getMetaPid(), getEvent());
     }
 
     public OtpErlangPid getMetaPid() {

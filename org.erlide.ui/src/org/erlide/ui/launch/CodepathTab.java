@@ -30,8 +30,8 @@ public class CodepathTab extends AbstractLaunchConfigurationTab {
         comp.setLayout(topLayout);
 
         final Label notImplementedYetLabel = new Label(comp, SWT.NONE);
-        final GridData gd_notImplementedYetLabel = new GridData(SWT.LEFT,
-                SWT.TOP, true, true);
+        final GridData gd_notImplementedYetLabel = new GridData(SWT.LEFT, SWT.TOP, true,
+                true);
         notImplementedYetLabel.setLayoutData(gd_notImplementedYetLabel);
         notImplementedYetLabel.setText("Not implemented yet...");
 

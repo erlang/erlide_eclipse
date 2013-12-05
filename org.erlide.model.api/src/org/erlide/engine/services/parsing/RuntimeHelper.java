@@ -32,8 +32,7 @@ public class RuntimeHelper {
 
         String res;
         try {
-            OtpErlangObject r = target.call(mod.atomValue(), "format_error",
-                    "x", arg);
+            OtpErlangObject r = target.call(mod.atomValue(), "format_error", "x", arg);
             r = target.call("lists", "flatten", "x", r);
             res = ((OtpErlangString) r).stringValue();
         } catch (final Exception e) {
@@ -47,14 +46,13 @@ public class RuntimeHelper {
      * @param string
      * @return
      */
-    public OtpErlangObject parseConsoleInput(final String string)
-            throws ParserException {
+    public OtpErlangObject parseConsoleInput(final String string) throws ParserException {
         OtpErlangObject r1 = null;
         try {
             r1 = target.call("erlide_backend", "parse_string", "s", string);
         } catch (final Exception e) {
-            throw new ParserException("Could not parse string \"" + string
-                    + "\": " + e.getMessage());
+            throw new ParserException("Could not parse string \"" + string + "\": "
+                    + e.getMessage());
         }
         final OtpErlangTuple t1 = (OtpErlangTuple) r1;
         if (Util.isOk(t1)) {

@@ -36,8 +36,7 @@ public class RpcResultReceiver implements Runnable {
     private final IRpcResultCallback callback;
     private final OtpMbox mbox;
 
-    public RpcResultReceiver(final OtpMbox box,
-            final IRpcResultCallback callback) {
+    public RpcResultReceiver(final OtpMbox box, final IRpcResultCallback callback) {
         this.callback = callback;
         mbox = box;
         new Thread(this, "rpc").start();

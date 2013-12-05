@@ -129,7 +129,7 @@ public class ErlModel extends Openable implements IErlModel {
         for (final IProject project : projects) {
             if (NatureUtil.hasErlangNature(project)
                     && getErlangProject(project) == null) {
-                addChild(makeErlangProject(project));
+                addChild(createErlangProject(project));
             }
         }
 
@@ -157,12 +157,12 @@ public class ErlModel extends Openable implements IErlModel {
             return (IErlProject) e;
         }
         if (NatureUtil.hasErlangNature(project)) {
-            return makeErlangProject(project);
+            return createErlangProject(project);
         }
         return null;
     }
 
-    public IErlProject makeErlangProject(final IProject project) {
+    private IErlProject createErlangProject(final IProject project) {
         final IErlProject ep = new ErlProject(project, this);
         addChild(ep);
         final ErlModelCache cache = getModelCache();
@@ -724,7 +724,7 @@ public class ErlModel extends Openable implements IErlModel {
         if (project == null) {
             return null;
         }
-        return makeErlangProject(project);
+        return createErlangProject(project);
     }
 
     /**

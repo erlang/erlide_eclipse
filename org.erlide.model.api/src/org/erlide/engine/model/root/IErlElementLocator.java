@@ -25,8 +25,7 @@ public interface IErlElementLocator {
 
     IErlModule findModule(String name) throws ErlModelException;
 
-    IErlModule findModule(String moduleName, String modulePath)
-            throws ErlModelException;
+    IErlModule findModule(String moduleName, String modulePath) throws ErlModelException;
 
     IErlModule findInclude(final String includeName, final String includePath)
             throws ErlModelException;
@@ -39,20 +38,19 @@ public interface IErlElementLocator {
      */
     IErlFunction findFunction(FunctionRef r) throws ErlModelException;
 
-    IErlModule findModuleFromProject(final IErlProject project,
-            final String moduleName, final String modulePath,
-            final IErlElementLocator.Scope scope) throws ErlModelException;
+    IErlModule findModuleFromProject(final IErlProject project, final String moduleName,
+            final String modulePath, final IErlElementLocator.Scope scope)
+            throws ErlModelException;
 
     IErlModule findIncludeFromProject(final IErlProject project,
             final String includeName, final String includePath,
             final IErlElementLocator.Scope scope) throws ErlModelException;
 
-    IErlModule findIncludeFromModule(final IErlModule module,
-            final String includeName, final String includePath,
-            final IErlElementLocator.Scope scope) throws ErlModelException;
-
-    IErlModule findModuleFromProject(IErlProject erlProject, String name,
-            String object, boolean c, IErlElementLocator.Scope projectOnly)
+    IErlModule findIncludeFromModule(final IErlModule module, final String includeName,
+            final String includePath, final IErlElementLocator.Scope scope)
             throws ErlModelException;
+
+    IErlModule findModuleFromProject(IErlProject erlProject, String name, String object,
+            boolean c, IErlElementLocator.Scope projectOnly) throws ErlModelException;
 
 }

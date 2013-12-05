@@ -86,8 +86,7 @@ public class ErlReconcilingStrategy implements IErlReconcilingStrategy,
     @Override
     public void reconcile(final ErlDirtyRegion r) {
         if (fModule != null) {
-            fModule.reconcileText(r.getOffset(), r.getLength(), r.getText(),
-                    mon);
+            fModule.reconcileText(r.getOffset(), r.getLength(), r.getText(), mon);
         } else if (fScanner != null) {
             fScanner.replaceText(r.getOffset(), r.getLength(), r.getText());
         }

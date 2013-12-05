@@ -15,8 +15,7 @@ public class TerminatedEvent implements DebuggerEvent {
     }
 
     @Override
-    public void execute(final ErlangDebugTarget debugTarget)
-            throws DebugException {
+    public void execute(final ErlangDebugTarget debugTarget) throws DebugException {
         debugTarget.terminate();
     }
 

@@ -170,6 +170,5 @@ public interface IOpenable {
      *                read-only (READ_ONLY)</li>
      *                </ul>
      */
-    void save(IProgressMonitor progress, boolean force)
-            throws ErlModelException;
+    void save(IProgressMonitor progress, boolean force) throws ErlModelException;
 }

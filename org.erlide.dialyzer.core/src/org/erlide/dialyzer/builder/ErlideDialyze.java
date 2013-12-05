@@ -31,8 +31,8 @@ public class ErlideDialyze {
         for (final IPath p : includeDirs) {
             incs.add(p.toString());
         }
-        return backend.async_call(ERLIDE_DIALYZE, "dialyze", "lslslsoo", files,
-                pltPaths, incs, fromSource, noCheckPLT);
+        return backend.async_call(ERLIDE_DIALYZE, "dialyze", "lslslsoo", files, pltPaths,
+                incs, fromSource, noCheckPLT);
     }
 
     public static void startDialyzer(final IRpcSite backend,
@@ -44,8 +44,8 @@ public class ErlideDialyze {
         for (final IPath p : includeDirs) {
             incs.add(p.toString());
         }
-        backend.async_call_result(callback, ERLIDE_DIALYZE, "start_dialyze",
-                "xlslslsoo", files, pltPaths, incs, fromSource, noCheckPLT);
+        backend.async_call_result(callback, ERLIDE_DIALYZE, "start_dialyze", "xlslslsoo",
+                files, pltPaths, incs, fromSource, noCheckPLT);
         // ErlLogger.debug("result %s", result.toString());
     }
 
@@ -53,8 +53,8 @@ public class ErlideDialyze {
             final OtpErlangList warnings) {
         final List<String> result = Lists.newArrayList();
         try {
-            final OtpErlangList l = (OtpErlangList) backend.call(
-                    ERLIDE_DIALYZE, "format_warnings", "x", warnings);
+            final OtpErlangList l = (OtpErlangList) backend.call(ERLIDE_DIALYZE,
+                    "format_warnings", "x", warnings);
             for (final OtpErlangObject o : l) {
                 result.add(Util.stringValue(o).trim());
             }
@@ -64,11 +64,10 @@ public class ErlideDialyze {
         return result;
     }
 
-    public static OtpErlangObject checkPlt(final IRpcSite backend,
-            final String plt, final List<String> ebinDirs) throws RpcException {
+    public static OtpErlangObject checkPlt(final IRpcSite backend, final String plt,
+            final List<String> ebinDirs) throws RpcException {
         if (ebinDirs == null) {
-            return backend.call(UPDATE_TIMEOUT, ERLIDE_DIALYZE, "check_plt",
-                    "s", plt);
+            return backend.call(UPDATE_TIMEOUT, ERLIDE_DIALYZE, "check_plt", "s", plt);
         }
         return backend.call(UPDATE_TIMEOUT, ERLIDE_DIALYZE,
                 "update_plt_with_additional_paths", "sls", plt, ebinDirs);

@@ -34,8 +34,8 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlangStackFrame extends ErlangDebugElement implements
-        IStackFrame, IDropToFrame {
+public class ErlangStackFrame extends ErlangDebugElement implements IStackFrame,
+        IDropToFrame {
 
     private final String fModuleName;
     private final ErlangProcess fParent;
@@ -44,10 +44,10 @@ public class ErlangStackFrame extends ErlangDebugElement implements
     int stackFrameNo;
     private String clauseHead;
 
-    public ErlangStackFrame(final String moduleName,
-            final ErlangProcess parent, final IDebugTarget target,
-            final int lineNumber0, final ErlangFunction function,
-            final OtpErlangList bindings, final int stackFrameNo) {
+    public ErlangStackFrame(final String moduleName, final ErlangProcess parent,
+            final IDebugTarget target, final int lineNumber0,
+            final ErlangFunction function, final OtpErlangList bindings,
+            final int stackFrameNo) {
         super(target);
         fParent = parent;
         fModuleName = moduleName;
@@ -59,9 +59,8 @@ public class ErlangStackFrame extends ErlangDebugElement implements
                 final OtpErlangTuple t = (OtpErlangTuple) o;
                 final OtpErlangAtom nameA = (OtpErlangAtom) t.elementAt(0);
                 final OtpErlangObject value = t.elementAt(1);
-                framesReversed.add(new ErlangVariable(target,
-                        nameA.atomValue(), false, value, parent, moduleName,
-                        stackFrameNo));
+                framesReversed.add(new ErlangVariable(target, nameA.atomValue(), false,
+                        value, parent, moduleName, stackFrameNo));
             }
         }
         final List<ErlangVariable> frames = new ArrayList<ErlangVariable>(
@@ -72,8 +71,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements
         this.bindings = frames;
         IErlModule module;
         try {
-            module = ErlangEngine.getInstance().getModel()
-                    .findModule(moduleName);
+            module = ErlangEngine.getInstance().getModel().findModule(moduleName);
         } catch (final ErlModelException e) {
             ErlLogger.error(e);
             module = null;
@@ -84,12 +82,10 @@ public class ErlangStackFrame extends ErlangDebugElement implements
             try {
                 module.open(null);
                 if (lineNumber != -1) {
-                    final IErlElement e = module
-                            .getElementAtLine(lineNumber - 1);
+                    final IErlElement e = module.getElementAtLine(lineNumber - 1);
                     if (e instanceof IErlFunctionClause) {
                         final IErlFunctionClause clause = (IErlFunctionClause) e;
-                        clauseHead = clause.getFunctionName()
-                                + clause.getHead();
+                        clauseHead = clause.getFunctionName() + clause.getHead();
                     }
                 } else if (function != null) {
                     final IErlFunction f = module.findFunction(function);

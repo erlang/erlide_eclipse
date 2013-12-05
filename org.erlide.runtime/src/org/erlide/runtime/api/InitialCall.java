@@ -12,16 +12,14 @@ public final class InitialCall {
     private final int arity;
     private final String parameters;
 
-    public InitialCall(final String module, final String function,
-            final int arity) {
+    public InitialCall(final String module, final String function, final int arity) {
         this.module = module;
         this.function = function;
         this.arity = arity;
         parameters = null;
     }
 
-    public InitialCall(final String module, final String function,
-            final String parameters) {
+    public InitialCall(final String module, final String function, final String parameters) {
         this.module = module;
         this.function = function;
         arity = -1;
