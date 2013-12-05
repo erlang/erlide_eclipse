@@ -33,8 +33,7 @@ public enum ErlDebugFlags {
     }
 
     public static EnumSet<ErlDebugFlags> makeSet(final int flags) {
-        final EnumSet<ErlDebugFlags> result = EnumSet
-                .noneOf(ErlDebugFlags.class);
+        final EnumSet<ErlDebugFlags> result = EnumSet.noneOf(ErlDebugFlags.class);
         for (final ErlDebugFlags f : ErlDebugFlags.values()) {
             if ((flags & f.getFlag()) != 0) {
                 result.add(f);

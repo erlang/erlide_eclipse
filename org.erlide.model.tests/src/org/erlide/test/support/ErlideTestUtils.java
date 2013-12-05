@@ -29,10 +29,10 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IErlangProjectProperties;
-import org.erlide.engine.model.root.ErlangProjectProperties;
 
 import com.google.common.collect.Lists;
 
@@ -46,8 +46,7 @@ public class ErlideTestUtils {
         }
 
         @Override
-        public void accept(final IResourceDeltaVisitor visitor)
-                throws CoreException {
+        public void accept(final IResourceDeltaVisitor visitor) throws CoreException {
         }
 
         @Override
@@ -56,8 +55,8 @@ public class ErlideTestUtils {
         }
 
         @Override
-        public void accept(final IResourceDeltaVisitor visitor,
-                final int memberFlags) throws CoreException {
+        public void accept(final IResourceDeltaVisitor visitor, final int memberFlags)
+                throws CoreException {
         }
 
         @Override
@@ -125,9 +124,8 @@ public class ErlideTestUtils {
     private static List<IErlModule> modulesAndIncludes;
     private static List<IErlProject> projects;
 
-    private static void buildPaths(final IWorkspaceRoot root,
-            final IProject project, final Collection<IPath> list)
-            throws CoreException {
+    private static void buildPaths(final IWorkspaceRoot root, final IProject project,
+            final Collection<IPath> list) throws CoreException {
         final IPath projectPath = project.getFullPath();
         for (final IPath pp : list) {
             // only create in-project paths
@@ -144,36 +142,30 @@ public class ErlideTestUtils {
     }
 
     public static IErlModule createModule(final IErlProject project,
-            final String moduleName, final String moduleContents)
-            throws CoreException {
+            final String moduleName, final String moduleContents) throws CoreException {
         final IFolder folder = project.getWorkspaceProject().getFolder("src");
-        final IErlModule module = createModule(moduleName, moduleContents,
-                folder);
+        final IErlModule module = createModule(moduleName, moduleContents, folder);
         modulesAndIncludes.add(module);
         return module;
     }
 
     public static IErlModule createInclude(final IErlProject project,
-            final String moduleName, final String moduleContents)
-            throws CoreException {
-        final IFolder folder = project.getWorkspaceProject().getFolder(
-                "include");
-        final IErlModule module = createModule(moduleName, moduleContents,
-                folder);
+            final String moduleName, final String moduleContents) throws CoreException {
+        final IFolder folder = project.getWorkspaceProject().getFolder("include");
+        final IErlModule module = createModule(moduleName, moduleContents, folder);
         modulesAndIncludes.add(module);
         return module;
     }
 
     public static IErlModule createModule(final String moduleName,
-            final String moduleContents, final IFolder folder)
-            throws CoreException {
+            final String moduleContents, final IFolder folder) throws CoreException {
         final IFile file = createFile(moduleName, moduleContents, folder);
         final IErlModel model = ErlangEngine.getInstance().getModel();
         IErlModule module = model.findModule(file);
         if (module == null) {
             final String path = file.getLocation().toPortableString();
-            module = model.getModuleFromFile(model, file.getName(), path,
-                    Charset.defaultCharset().name(), path);
+            module = model.getModuleFromFile(model, file.getName(), path, Charset
+                    .defaultCharset().name(), path);
         }
         return module;
     }
@@ -184,20 +176,18 @@ public class ErlideTestUtils {
         final File f = new File(file.getLocation().toOSString());
         f.delete();
         file.create(
-                new ByteArrayInputStream(contents.getBytes(Charset
-                        .defaultCharset())), true, null);
+                new ByteArrayInputStream(contents.getBytes(Charset.defaultCharset())),
+                true, null);
         return file;
     }
 
-    public static void deleteModule(final IErlModule module)
-            throws CoreException {
+    public static void deleteModule(final IErlModule module) throws CoreException {
         final String scannerName = module.getScannerName();
         final IFile file = (IFile) module.getResource();
         if (file != null) {
             file.delete(true, null);
         }
-        final IPath stateDir = new Path(ErlangEngine.getInstance()
-                .getStateDir());
+        final IPath stateDir = new Path(ErlangEngine.getInstance().getStateDir());
         // FIXME this code should not know about caches!
         final String cacheExts[] = { ".noparse", ".refs", ".scan" };
         for (final String ext : cacheExts) {
@@ -221,8 +211,7 @@ public class ErlideTestUtils {
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .newProject(name, path.toPortableString());
         final IProject project = erlProject.getWorkspaceProject();
-        final IErlangProjectProperties prefs = new ErlangProjectProperties(
-                project);
+        final IErlangProjectProperties prefs = new ErlangProjectProperties(project);
         final List<IPath> srcDirs = new ArrayList<IPath>();
         srcDirs.add(new Path("src"));
         prefs.setSourceDirs(srcDirs);
@@ -245,8 +234,7 @@ public class ErlideTestUtils {
         return ErlangEngine.getInstance().getModel().getErlangProject(project);
     }
 
-    public static void createFolderHelper(final IFolder folder)
-            throws CoreException {
+    public static void createFolderHelper(final IFolder folder) throws CoreException {
         if (!folder.exists()) {
             final IContainer parent = folder.getParent();
             if (parent instanceof IFolder) {
@@ -265,24 +253,21 @@ public class ErlideTestUtils {
         return URIUtil.toURI(getTmpPath(fileName).toPortableString());
     }
 
-    public static File createTmpFile(final String fileName,
-            final String contentString) throws IOException,
-            FileNotFoundException {
+    public static File createTmpFile(final String fileName, final String contentString)
+            throws IOException, FileNotFoundException {
         final String pathString = getTmpPath(fileName).toOSString();
         final File f = new File(pathString);
         if (f.exists()) {
             f.delete();
         }
         f.createNewFile();
-        final FileOutputStream fileOutputStream = new FileOutputStream(
-                pathString);
+        final FileOutputStream fileOutputStream = new FileOutputStream(pathString);
         fileOutputStream.write(contentString.getBytes());
         fileOutputStream.close();
         return f;
     }
 
-    public static void deleteProject(final IErlProject erlProject)
-            throws CoreException {
+    public static void deleteProject(final IErlProject erlProject) throws CoreException {
         final IProject project = erlProject.getWorkspaceProject();
         final IPath location = project.getLocation();
         project.delete(true, null);
@@ -290,27 +275,23 @@ public class ErlideTestUtils {
             new File(location.toPortableString()).delete();
         }
         if (modulesAndIncludes != null) {
-            final List<IErlModule> list = Lists
-                    .newArrayList(modulesAndIncludes);
+            final List<IErlModule> list = Lists.newArrayList(modulesAndIncludes);
             for (final IErlModule module : list) {
-                if (ErlangEngine.getInstance().getModelUtilService()
-                        .getProject(module) == erlProject) {
+                if (ErlangEngine.getInstance().getModelUtilService().getProject(module) == erlProject) {
                     deleteModule(module);
                 }
             }
         }
         erlProject.dispose();
         if (projects != null) {
-            projects.remove(ErlangEngine.getInstance().getModel()
-                    .findProject(project));
+            projects.remove(ErlangEngine.getInstance().getModel().findProject(project));
         }
         final IErlModel model = ErlangEngine.getInstance().getModel();
         model.resourceChanged(null);
         model.open(null);
     }
 
-    public static void invokeBuilderOn(final IErlProject erlProject)
-            throws CoreException {
+    public static void invokeBuilderOn(final IErlProject erlProject) throws CoreException {
         final IProject project = erlProject.getWorkspaceProject();
         project.build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
@@ -346,8 +327,8 @@ public class ErlideTestUtils {
 
     public static IErlModule createModuleFromText(final String initialText) {
         final IErlModel model = ErlangEngine.getInstance().getModel();
-        final IErlModule module = model.getModuleFromText(model, "test1",
-                initialText, "test1");
+        final IErlModule module = model.getModuleFromText(model, "test1", initialText,
+                "test1");
         modulesAndIncludes.add(module);
         return module;
     }

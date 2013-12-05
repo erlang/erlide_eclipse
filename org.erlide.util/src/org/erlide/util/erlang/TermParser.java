@@ -38,8 +38,7 @@ public class TermParser {
 
     private TermParser() {
         cache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.HOURS)
-                .maximumSize(250)
-                .build(new CacheLoader<String, OtpErlangObject>() {
+                .maximumSize(250).build(new CacheLoader<String, OtpErlangObject>() {
                     @Override
                     public OtpErlangObject load(final String key)
                             throws TermParserException {
@@ -136,8 +135,7 @@ public class TermParser {
         final Token t = tokens.get(0);
         if (t.kind == TokenKind.TUPLEEND) {
             tokens.remove(0);
-            return new OtpErlangTuple(stack.toArray(new OtpErlangObject[stack
-                    .size()]));
+            return new OtpErlangTuple(stack.toArray(new OtpErlangObject[stack.size()]));
         }
         if (t.kind == TokenKind.CONS) {
             throw new TermParserException("cons is invalid in tuple");
@@ -221,8 +219,7 @@ public class TermParser {
             if (ch == '~') {
                 result.text = result.text.substring(1);
             } else if (ch == '"' || ch == '\'') {
-                result.text = result.text
-                        .substring(1, result.text.length() - 1);
+                result.text = result.text.substring(1, result.text.length() - 1);
             }
             return result;
         }

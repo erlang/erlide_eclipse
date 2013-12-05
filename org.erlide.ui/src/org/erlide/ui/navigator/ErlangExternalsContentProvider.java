@@ -84,8 +84,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             final IErlElement elt = (IErlElement) element;
             IParent parent = elt.getParent();
             final String filePath = elt.getFilePath();
-            if (parent == ErlangEngine.getInstance().getModel()
-                    && filePath != null) {
+            if (parent == ErlangEngine.getInstance().getModel() && filePath != null) {
                 // try {
                 // FIXME shouldn't this call be assigned to something!?
                 // ErlangEngine.getInstance().getModelUtilService().findModule(null,
@@ -114,16 +113,14 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         if (element instanceof IProject) {
             final IProject project = (IProject) element;
             if (project.isOpen()) {
-                element = ErlangEngine.getInstance().getModel()
-                        .findProject(project);
+                element = ErlangEngine.getInstance().getModel().findProject(project);
             }
         }
         if (element instanceof IErlModule) {
             return erlangFileContentProvider.hasChildren(element);
         }
         if (element instanceof IParent) {
-            if (element instanceof IErlExternalRoot
-                    || element instanceof IErlProject
+            if (element instanceof IErlExternalRoot || element instanceof IErlProject
                     || element instanceof IErlModel) {
                 // we know these have children
                 return true;
@@ -137,13 +134,11 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
                 }
             }
             final IParent parent = (IParent) element;
-            final boolean result = parent
-                    .hasChildrenOfKind(ErlElementKind.EXTERNAL)
+            final boolean result = parent.hasChildrenOfKind(ErlElementKind.EXTERNAL)
                     || parent.hasChildrenOfKind(ErlElementKind.MODULE);
             if (clock.elapsed(TimeUnit.MILLISECONDS) > 100) {
-                ErlLogger.debug("TIME open " + element.getClass() + " "
-                        + element + "  " + clock.elapsed(TimeUnit.MILLISECONDS)
-                        + " ms");
+                ErlLogger.debug("TIME open " + element.getClass() + " " + element + "  "
+                        + clock.elapsed(TimeUnit.MILLISECONDS) + " ms");
             }
             return result;
         }

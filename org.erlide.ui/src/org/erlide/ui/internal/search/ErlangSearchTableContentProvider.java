@@ -6,8 +6,7 @@ package org.erlide.ui.internal.search;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 
-public class ErlangSearchTableContentProvider extends
-        ErlangSearchContentProvider {
+public class ErlangSearchTableContentProvider extends ErlangSearchContentProvider {
 
     private ErlangSearchResult fResult;
 
@@ -38,8 +37,7 @@ public class ErlangSearchTableContentProvider extends
                 if (viewer.testFindItem(updatedElements[i]) != null) {
                     viewer.update(updatedElements[i], null);
                 } else {
-                    if (!tableLimited
-                            || viewer.getTable().getItemCount() < elementLimit) {
+                    if (!tableLimited || viewer.getTable().getItemCount() < elementLimit) {
                         viewer.add(updatedElements[i]);
                     }
                 }

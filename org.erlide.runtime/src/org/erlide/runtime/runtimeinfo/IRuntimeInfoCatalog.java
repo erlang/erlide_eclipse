@@ -11,8 +11,8 @@ public interface IRuntimeInfoCatalog {
 
     Collection<RuntimeInfo> getRuntimes();
 
-    void setRuntimes(final Collection<RuntimeInfo> elements,
-            final String dfltRuntime, String ideRuntime);
+    void setRuntimes(final Collection<RuntimeInfo> elements, final String dfltRuntime,
+            String ideRuntime);
 
     void addRuntime(final RuntimeInfo rt);
 
@@ -33,8 +33,7 @@ public interface IRuntimeInfoCatalog {
 
     RuntimeInfo getDefaultRuntime();
 
-    RuntimeInfo getRuntime(final RuntimeVersion runtimeVersion,
-            final String runtimeName);
+    RuntimeInfo getRuntime(final RuntimeVersion runtimeVersion, final String runtimeName);
 
     List<String> getAllRuntimesVersions();
 

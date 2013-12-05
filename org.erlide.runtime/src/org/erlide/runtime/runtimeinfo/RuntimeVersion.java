@@ -213,8 +213,7 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
                     r &= pathname.getName().startsWith("kernel-");
                     final String canonicalPath = pathname.getCanonicalPath()
                             .toLowerCase();
-                    final String absolutePath = pathname.getAbsolutePath()
-                            .toLowerCase();
+                    final String absolutePath = pathname.getAbsolutePath().toLowerCase();
                     r &= canonicalPath.equals(absolutePath);
                     return r;
                 } catch (final IOException e) {

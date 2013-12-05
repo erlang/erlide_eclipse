@@ -66,8 +66,7 @@ public interface IWorkingCopy {
      * thrown</li>
      * </ul>
      */
-    void commit(boolean force, IProgressMonitor monitor)
-            throws ErlModelException;
+    void commit(boolean force, IProgressMonitor monitor) throws ErlModelException;
 
     /**
      * Destroys this working copy, closing its buffer and discarding its

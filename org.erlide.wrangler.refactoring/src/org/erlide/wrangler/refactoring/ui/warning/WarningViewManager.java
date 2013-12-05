@@ -69,8 +69,7 @@ public class WarningViewManager {
 
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         try {
-            final IViewPart theView = window.getActivePage().showView(
-                    warningViewID);
+            final IViewPart theView = window.getActivePage().showView(warningViewID);
             return theView;
         } catch (final PartInitException e) {
             ErlLogger.error(e);
@@ -85,8 +84,7 @@ public class WarningViewManager {
         final IWorkbench workbench = PlatformUI.getWorkbench();
 
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        final IViewPart theView = window.getActivePage()
-                .findView(warningViewID);
+        final IViewPart theView = window.getActivePage().findView(warningViewID);
         window.getActivePage().hideView(theView);
 
     }

@@ -96,8 +96,8 @@ public class OtpCookedConnection extends AbstractConnection {
      * error.
      */
     // package scope
-    OtpCookedConnection(final OtpNode self, final OtpPeer other)
-            throws IOException, OtpAuthException {
+    OtpCookedConnection(final OtpNode self, final OtpPeer other) throws IOException,
+            OtpAuthException {
         super(self, other);
         this.self = self;
         links = new Links(25);
@@ -149,8 +149,8 @@ public class OtpCookedConnection extends AbstractConnection {
     /*
      * send to pid
      */
-    void send(final OtpErlangPid from, final OtpErlangPid dest,
-            final OtpErlangObject msg) throws IOException {
+    void send(final OtpErlangPid from, final OtpErlangPid dest, final OtpErlangObject msg)
+            throws IOException {
         // encode and send the message
         sendBuf(from, dest, new OtpOutputStream(msg));
     }
@@ -159,8 +159,8 @@ public class OtpCookedConnection extends AbstractConnection {
      * send to remote name dest is recipient's registered name, the nodename is
      * implied by the choice of connection.
      */
-    void send(final OtpErlangPid from, final String dest,
-            final OtpErlangObject msg) throws IOException {
+    void send(final OtpErlangPid from, final String dest, final OtpErlangObject msg)
+            throws IOException {
         // encode and send the message
         sendBuf(from, dest, new OtpOutputStream(msg));
     }
@@ -180,8 +180,7 @@ public class OtpCookedConnection extends AbstractConnection {
     /*
      * this one called by dying/killed process
      */
-    void exit(final OtpErlangPid from, final OtpErlangPid to,
-            final OtpErlangObject reason) {
+    void exit(final OtpErlangPid from, final OtpErlangPid to, final OtpErlangObject reason) {
         try {
             super.sendExit(from, to, reason);
         } catch (final Exception e) {
@@ -236,8 +235,8 @@ public class OtpCookedConnection extends AbstractConnection {
 
                 for (int i = 0; i < len; i++) {
                     // send exit "from" remote pids to local ones
-                    self.deliver(new OtpMsg(OtpMsg.exitTag, l[i].remote(), l[i]
-                            .local(), new OtpErlangAtom("noconnection")));
+                    self.deliver(new OtpMsg(OtpMsg.exitTag, l[i].remote(), l[i].local(),
+                            new OtpErlangAtom("noconnection")));
                 }
             }
         }

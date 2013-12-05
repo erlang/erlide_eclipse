@@ -46,8 +46,8 @@ import org.erlide.util.ErlLogger;
 /**
  * @author Berthold Daum
  */
-public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
-        implements IWorkbenchPropertyPage, IWorkbenchPreferencePage {
+public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage implements
+        IWorkbenchPropertyPage, IWorkbenchPreferencePage {
 
     /**
      * * Name of resource property for the selection of workbench or project
@@ -113,8 +113,8 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
      * @param style
      *            - layout style
      */
-    public FieldEditorOverlayPage(final String title,
-            final ImageDescriptor image, final int style) {
+    public FieldEditorOverlayPage(final String title, final ImageDescriptor image,
+            final int style) {
         super(title, image, style);
         this.image = image;
     }
@@ -240,8 +240,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
         // Set workspace/project radio buttons
         try {
             final String use = ((IResource) getElement())
-                    .getPersistentProperty(new QualifiedName(pageId,
-                            USEPROJECTSETTINGS));
+                    .getPersistentProperty(new QualifiedName(pageId, USEPROJECTSETTINGS));
             if (TRUE.equals(use)) {
                 useProjectSettingsButton.setSelection(true);
                 configureButton.setEnabled(false);
@@ -268,8 +267,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
         button.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                configureButton
-                        .setEnabled(button == useWorkspaceSettingsButton);
+                configureButton.setEnabled(button == useWorkspaceSettingsButton);
                 updateFieldEditors();
             }
         });
@@ -384,13 +382,12 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
      * @param page
      *            - the preference page
      */
-    protected void showPreferencePage(final String id,
-            final IPreferencePage page) {
+    protected void showPreferencePage(final String id, final IPreferencePage page) {
         final IPreferenceNode targetNode = new PreferenceNode(id, page);
         final PreferenceManager manager = new PreferenceManager();
         manager.addToRoot(targetNode);
-        final PreferenceDialog dialog = new PreferenceDialog(getControl()
-                .getShell(), manager);
+        final PreferenceDialog dialog = new PreferenceDialog(getControl().getShell(),
+                manager);
         BusyIndicator.showWhile(getControl().getDisplay(), new Runnable() {
             @Override
             public void run() {

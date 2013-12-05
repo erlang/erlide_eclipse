@@ -13,8 +13,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.engine.model.erlang.ErlangFunction;
 
-public class ErlangSearchTreeContentProvider extends
-        ErlangSearchContentProvider implements ITreeContentProvider {
+public class ErlangSearchTreeContentProvider extends ErlangSearchContentProvider
+        implements ITreeContentProvider {
 
     private final TreeViewer fTreeViewer;
     private final Map<Object, List<Object>> childMap;
@@ -176,8 +176,7 @@ public class ErlangSearchTreeContentProvider extends
                 if (viewer.testFindItem(element) != null) {
                     toUpdate.add(element);
                 } else {
-                    if (!treeLimited
-                            || viewer.getTree().getItemCount() < elementLimit) {
+                    if (!treeLimited || viewer.getTree().getItemCount() < elementLimit) {
                         toAdd.add(element);
                     }
                 }

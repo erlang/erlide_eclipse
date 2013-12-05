@@ -41,8 +41,8 @@ public class StatsTreeObject implements ICoverageObject {
         this.parent = parent;
     }
 
-    public StatsTreeObject(final String label, final int all,
-            final int covered, final ObjectType type) {
+    public StatsTreeObject(final String label, final int all, final int covered,
+            final ObjectType type) {
         this(type);
         this.label = label;
         this.all = all;
@@ -63,8 +63,8 @@ public class StatsTreeObject implements ICoverageObject {
     public String toString() {
 
         final StringBuffer bf = new StringBuffer();
-        bf.append(label).append(" ").append(all).append(" ").append(covered)
-                .append(" ").append(getPercentage()).append('\n');
+        bf.append(label).append(" ").append(all).append(" ").append(covered).append(" ")
+                .append(getPercentage()).append('\n');
 
         for (final ICoverageObject child : children.values()) {
             bf.append('\t').append(child.toString()).append('\n');
@@ -148,8 +148,7 @@ public class StatsTreeObject implements ICoverageObject {
 
     @Override
     public String[] getStringArray() {
-        return new String[] { label, Integer.toString(all),
-                Integer.toString(covered),
+        return new String[] { label, Integer.toString(all), Integer.toString(covered),
                 String.format("%.2f", getPercentage()) };
     }
 

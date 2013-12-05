@@ -39,8 +39,7 @@ import org.erlide.engine.services.parsing.ScannerService;
  * This interface is not intended to be implemented by clients.
  * </p>
  */
-public interface IErlModule extends IErlElement, IParent, IOpenable,
-        ISourceUnit {
+public interface IErlModule extends IErlElement, IParent, IOpenable, ISourceUnit {
 
     /**
      * Returns the smallest element within this module that includes the given
@@ -76,11 +75,9 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     Collection<IErlImport> getImports();
 
-    IErlPreprocessorDef findPreprocessorDef(String definedName,
-            ErlElementKind kind);
+    IErlPreprocessorDef findPreprocessorDef(String definedName, ErlElementKind kind);
 
-    public Collection<IErlPreprocessorDef> getPreprocessorDefs(
-            final ErlElementKind kind);
+    public Collection<IErlPreprocessorDef> getPreprocessorDefs(final ErlElementKind kind);
 
     Collection<ErlangIncludeFile> getIncludeFiles() throws ErlModelException;
 
@@ -90,8 +87,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     void initialReconcile();
 
-    void reconcileText(int offset, int removeLength, String newText,
-            IProgressMonitor mon);
+    void reconcileText(int offset, int removeLength, String newText, IProgressMonitor mon);
 
     void postReconcile(IProgressMonitor mon);
 

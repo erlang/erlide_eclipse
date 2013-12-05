@@ -221,13 +221,10 @@ public class DebuggerTraceView extends AbstractDebugView implements
                     s = what;
                     break;
                 case 1:
-                    final OtpErlangTuple ieval = (OtpErlangTuple) t2
-                            .elementAt(0);
-                    final OtpErlangAtom mod = (OtpErlangAtom) ieval
-                            .elementAt(3);
+                    final OtpErlangTuple ieval = (OtpErlangTuple) t2.elementAt(0);
+                    final OtpErlangAtom mod = (OtpErlangAtom) ieval.elementAt(3);
                     final String module = mod.atomValue();
-                    final OtpErlangLong lin = (OtpErlangLong) ieval
-                            .elementAt(2);
+                    final OtpErlangLong lin = (OtpErlangLong) ieval.elementAt(2);
                     s = module;
                     try {
                         final int line = lin.intValue();
@@ -263,8 +260,8 @@ public class DebuggerTraceView extends AbstractDebugView implements
 
     @Override
     protected Viewer createViewer(final Composite parent) {
-        viewer = new TreeViewer(new Tree(parent, SWT.H_SCROLL | SWT.V_SCROLL
-                | SWT.MULTI | SWT.FULL_SELECTION));
+        viewer = new TreeViewer(new Tree(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI
+                | SWT.FULL_SELECTION));
         // setViewer(viewer);
         // super.createPartControl(parent);
         // parent.setLayout(new FillLayout());
@@ -315,8 +312,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
             public void widgetSelected(final SelectionEvent e) {
                 final Object o = getSelectedInTree();
                 final String msg = o == null ? "" : o.toString(); //$NON-NLS-1$
-                getViewSite().getActionBars().getStatusLineManager()
-                        .setMessage(msg);
+                getViewSite().getActionBars().getStatusLineManager().setMessage(msg);
 
             }
         });
@@ -329,13 +325,10 @@ public class DebuggerTraceView extends AbstractDebugView implements
                 if (o instanceof OtpErlangTuple) {
                     final OtpErlangTuple t = (OtpErlangTuple) o;
                     final OtpErlangTuple t2 = (OtpErlangTuple) t.elementAt(1);
-                    final OtpErlangTuple ieval = (OtpErlangTuple) t2
-                            .elementAt(0);
-                    final OtpErlangAtom mod = (OtpErlangAtom) ieval
-                            .elementAt(3);
+                    final OtpErlangTuple ieval = (OtpErlangTuple) t2.elementAt(0);
+                    final OtpErlangAtom mod = (OtpErlangAtom) ieval.elementAt(3);
                     final String module = mod.atomValue();
-                    final OtpErlangLong lin = (OtpErlangLong) ieval
-                            .elementAt(2);
+                    final OtpErlangLong lin = (OtpErlangLong) ieval.elementAt(2);
                     try {
                         final int line = lin.intValue();
                         gotoModuleLine(module, line);
@@ -459,8 +452,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
     // }
 
     protected void gotoModuleLine(final String moduleName, final int line) {
-        final IWorkbenchWindow window = ErlideUIPlugin
-                .getActiveWorkbenchWindow();
+        final IWorkbenchWindow window = ErlideUIPlugin.getActiveWorkbenchWindow();
         if (window == null) {
             return;
         }
@@ -565,8 +557,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
                 gc.setFont(tree.getFont());
                 final FontMetrics fontMetrics = gc.getFontMetrics();
                 gc.dispose();
-                columnWidth = Math.max(100,
-                        fontMetrics.getAverageCharWidth() * 20);
+                columnWidth = Math.max(100, fontMetrics.getAverageCharWidth() * 20);
             }
 
             // if (columnWidths != null) {
@@ -625,8 +616,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
         }
     }
 
-    private void traceChanged(final TraceChangedEventData data,
-            final Object source) {
+    private void traceChanged(final TraceChangedEventData data, final Object source) {
         if (viewer == null || viewer.getControl().isDisposed()) {
             return;
         }
@@ -660,8 +650,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
                     }
                     List<DebugTraceEvent> events = eventMap.get(node);
                     if (events == null) {
-                        events = new ArrayList<DebugTraceEvent>(data
-                                .getEvents().length);
+                        events = new ArrayList<DebugTraceEvent>(data.getEvents().length);
                         eventMap.put(node, events);
                     }
                     final OtpErlangPid pid = data.getPid();

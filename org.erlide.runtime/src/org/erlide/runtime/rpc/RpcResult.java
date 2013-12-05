@@ -18,8 +18,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class RpcResult {
 
-    private static final OtpErlangAtom UNDEFINED = new OtpErlangAtom(
-            "undefined");
+    private static final OtpErlangAtom UNDEFINED = new OtpErlangAtom("undefined");
 
     private OtpErlangObject fValue;
     private boolean fOk = true;
@@ -32,10 +31,10 @@ public class RpcResult {
     public RpcResult(final OtpErlangObject res) {
         if (res instanceof OtpErlangTuple
                 && ((OtpErlangTuple) res).elementAt(0) instanceof OtpErlangAtom
-                && ("badrpc".equals(((OtpErlangAtom) ((OtpErlangTuple) res)
-                        .elementAt(0)).atomValue()) || "EXIT"
-                        .equals(((OtpErlangAtom) ((OtpErlangTuple) res)
-                                .elementAt(0)).atomValue()))) {
+                && ("badrpc".equals(((OtpErlangAtom) ((OtpErlangTuple) res).elementAt(0))
+                        .atomValue()) || "EXIT"
+                        .equals(((OtpErlangAtom) ((OtpErlangTuple) res).elementAt(0))
+                                .atomValue()))) {
             fOk = false;
             fValue = ((OtpErlangTuple) res).elementAt(1);
         } else {
@@ -60,8 +59,7 @@ public class RpcResult {
 
     public static RpcResult error(final String msg) {
         final RpcResult r = new RpcResult(false);
-        r.fValue = OtpErlang.mkTuple(new OtpErlangAtom("error"),
-                new OtpErlangAtom(msg));
+        r.fValue = OtpErlang.mkTuple(new OtpErlangAtom("error"), new OtpErlangAtom(msg));
         return r;
     }
 }

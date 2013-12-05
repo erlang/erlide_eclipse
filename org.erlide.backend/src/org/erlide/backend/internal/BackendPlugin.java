@@ -34,8 +34,8 @@ public class BackendPlugin extends Plugin {
         final IRuntimeInfoCatalog catalog = BackendCore.getRuntimeInfoCatalog();
         final RuntimeInfo erlideRuntime = catalog.getErlideRuntime();
         final IBackendFactory backendFactory = new BackendFactory(catalog);
-        final IBackendManager backendManager = new BackendManager(
-                erlideRuntime, backendFactory);
+        final IBackendManager backendManager = new BackendManager(erlideRuntime,
+                backendFactory);
         BackendCore.init(backendManager);
     }
 

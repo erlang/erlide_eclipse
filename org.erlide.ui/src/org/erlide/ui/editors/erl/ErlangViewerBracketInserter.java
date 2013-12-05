@@ -36,8 +36,7 @@ import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.ErlLogger;
 
-class ErlangViewerBracketInserter implements VerifyKeyListener,
-        ILinkedModeListener {
+class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListener {
 
     private final ISourceViewer sourceViewer;
     IBracketInserterValidator validator;
@@ -75,13 +74,12 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
 
             final int eventOffset = event.getOffset();
             final int eventOldLength = event.getLength();
-            final int eventNewLength = event.getText() == null ? 0 : event
-                    .getText().length();
+            final int eventNewLength = event.getText() == null ? 0 : event.getText()
+                    .length();
             final int deltaLength = eventNewLength - eventOldLength;
 
             try {
-                final Position[] positions = event.getDocument().getPositions(
-                        fCategory);
+                final Position[] positions = event.getDocument().getPositions(fCategory);
 
                 for (int i = 0; i != positions.length; i++) {
 
@@ -135,8 +133,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
     private boolean fEmbraceSelection = true;
 
     private final String CATEGORY = toString();
-    private final IPositionUpdater fUpdater = new ExclusivePositionUpdater(
-            CATEGORY);
+    private final IPositionUpdater fUpdater = new ExclusivePositionUpdater(CATEGORY);
     private final Stack<BracketLevel> fBracketLevelStack = new Stack<BracketLevel>();
     private IPreferenceChangeListener fPreferenceChangeListener;
 
@@ -198,8 +195,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
         final int offset = selection.x;
         final int length = selection.y;
         try {
-            final String selStr = fEmbraceSelection ? document.get(offset,
-                    length) : "";
+            final String selStr = fEmbraceSelection ? document.get(offset, length) : "";
             if (selStr.length() == 0) {
                 final int kind = getKindOfBracket(document, offset, length);
                 // if (isStopper(kind)) {
@@ -247,8 +243,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
             }
             final char character = event.character;
             final char closingCharacter = getPeerCharacter(character);
-            updateDocument(document, offset, length, selStr, character,
-                    closingCharacter);
+            updateDocument(document, offset, length, selStr, character, closingCharacter);
 
             event.doit = false;
 
@@ -259,8 +254,8 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
         }
     }
 
-    private void updateDocumentSelection(final IDocument document,
-            final int offset, final String selStr, final char closingCharacter)
+    private void updateDocumentSelection(final IDocument document, final int offset,
+            final String selStr, final char closingCharacter)
             throws BadLocationException, BadPositionCategoryException {
         final BracketLevel level = new BracketLevel();
         fBracketLevelStack.push(level);
@@ -291,14 +286,13 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
         level.fUI.setSimpleMode(true);
         level.fUI.setExitPolicy(new ExitPolicy(closingCharacter,
                 getEscapeCharacter(closingCharacter), fBracketLevelStack));
-        level.fUI.setExitPosition(sourceViewer, offset + 2 + selStr.length(),
-                0, Integer.MAX_VALUE);
+        level.fUI.setExitPosition(sourceViewer, offset + 2 + selStr.length(), 0,
+                Integer.MAX_VALUE);
         level.fUI.setCyclingMode(LinkedModeUI.CYCLE_NEVER);
         level.fUI.enter();
 
         final IRegion newSelection = level.fUI.getSelectedRegion();
-        sourceViewer.setSelectedRange(newSelection.getOffset(),
-                newSelection.getLength());
+        sourceViewer.setSelectedRange(newSelection.getOffset(), newSelection.getLength());
     }
 
     private void updateDocument(final IDocument document, final int offset,
@@ -317,8 +311,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
 
     private int getKindOfBracket(final IDocument document, final int offset,
             final int length) throws BadLocationException {
-        final IRegion endLine = document.getLineInformationOfOffset(offset
-                + length);
+        final IRegion endLine = document.getLineInformationOfOffset(offset + length);
 
         List<ErlToken> tokens = null;
         final int getOffset = offset + length, getLength = endLine.getOffset()
@@ -367,8 +360,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
                                     && !level.fSecondPosition.isDeleted
                                     && level.fSecondPosition.offset == level.fFirstPosition.offset) {
                                 try {
-                                    document.replace(
-                                            level.fSecondPosition.offset,
+                                    document.replace(level.fSecondPosition.offset,
                                             level.fSecondPosition.length, ""); //$NON-NLS-1$
                                 } catch (final BadLocationException e) {
                                     ErlLogger.error(e);
@@ -469,8 +461,8 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
          */
         @Override
         @SuppressWarnings("synthetic-access")
-        public ExitFlags doExit(final LinkedModeModel model,
-                final VerifyEvent event, final int offset, final int length) {
+        public ExitFlags doExit(final LinkedModeModel model, final VerifyEvent event,
+                final int offset, final int length) {
 
             if (fSize == fStack.size() && !isMasked(offset)) {
                 if (event.character == fExitCharacter) {
@@ -482,8 +474,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
                     if (level.fSecondPosition.offset == offset && length == 0) {
                         // don't enter the character if if its the closing
                         // peer
-                        return new ExitFlags(ILinkedModeListener.UPDATE_CARET,
-                                false);
+                        return new ExitFlags(ILinkedModeListener.UPDATE_CARET, false);
                     }
                 }
                 // when entering an anonymous class between the parenthesis', we
@@ -493,8 +484,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
                     final IDocument document = sourceViewer.getDocument();
                     try {
                         if (document.getChar(offset - 1) == '{') {
-                            return new ExitFlags(ILinkedModeListener.EXIT_ALL,
-                                    true);
+                            return new ExitFlags(ILinkedModeListener.EXIT_ALL, true);
                         }
                     } catch (final BadLocationException e) {
                     }
@@ -534,8 +524,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
         configurePreferences();
 
         if (sourceViewer instanceof ITextViewerExtension) {
-            ((ITextViewerExtension) sourceViewer)
-                    .prependVerifyKeyListener(this);
+            ((ITextViewerExtension) sourceViewer).prependVerifyKeyListener(this);
         }
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
         node.addPreferenceChangeListener(fPreferenceChangeListener);
@@ -549,8 +538,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
         setCloseStringsEnabled(prefs.get(SmartTypingPreferencePage.STRINGS));
         setCloseBracesEnabled(prefs.get(SmartTypingPreferencePage.BRACES));
         setCloseParensEnabled(prefs.get(SmartTypingPreferencePage.PARENS));
-        setEmbraceSelectionEnabled(prefs
-                .get(SmartTypingPreferencePage.EMBRACE_SELECTION));
+        setEmbraceSelectionEnabled(prefs.get(SmartTypingPreferencePage.EMBRACE_SELECTION));
     }
 
     public void unconfigure() {

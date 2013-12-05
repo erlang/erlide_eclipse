@@ -26,8 +26,7 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public class PartitionExportsRefactoring extends
-        SimpleOneStepWranglerRefactoring {
+public class PartitionExportsRefactoring extends SimpleOneStepWranglerRefactoring {
 
     @Override
     public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)

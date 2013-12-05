@@ -71,19 +71,17 @@ public class TraceEditor extends TextEditor {
         final IAnnotationModel annotationModel = documentProvider
                 .getAnnotationModel(getEditorInput());
 
-        final ITextSelection pos = (ITextSelection) getSelectionProvider()
-                .getSelection();
-        final MarkCallLocation location = new MarkCallLocation(
-                getSourceViewer().getDocument(), pos.getStartLine());
+        final ITextSelection pos = (ITextSelection) getSelectionProvider().getSelection();
+        final MarkCallLocation location = new MarkCallLocation(getSourceViewer()
+                .getDocument(), pos.getStartLine());
 
-        final Position position = new Position(location.getOffset(),
-                location.getLength());
+        final Position position = new Position(location.getOffset(), location.getLength());
         final String description = location.getDescription();
 
         final Annotation oldAnnotation = callMatchingLine;
         if (position.getOffset() != 0) {
-            callMatchingLine = new Annotation(
-                    "org.erlide.test_support.trace.call", false, description);
+            callMatchingLine = new Annotation("org.erlide.test_support.trace.call",
+                    false, description);
         } else {
             callMatchingLine = null;
         }
@@ -108,20 +106,17 @@ public class TraceEditor extends TextEditor {
         public MarkCallLocation(final IDocument doc, final int line) {
             try {
                 final IRegion info = doc.getLineInformation(line);
-                final String lineStr = doc.get(info.getOffset(),
-                        info.getLength());
+                final String lineStr = doc.get(info.getOffset(), info.getLength());
 
                 try {
                     final String cmd = lineStr.substring(26, 32);
                     if ("return".equals(cmd)) {
-                        String ref = lineStr.substring(34,
-                                lineStr.indexOf(" ->"));
+                        String ref = lineStr.substring(34, lineStr.indexOf(" ->"));
                         ref = ref.substring(0, ref.length() - 2);
                         // find call before it
                         for (int ln = line - 1; ln > 0; ln--) {
                             final IRegion li = doc.getLineInformation(ln);
-                            final String ls = doc.get(li.getOffset(),
-                                    li.getLength());
+                            final String ls = doc.get(li.getOffset(), li.getLength());
                             if (ls.contains(ref)) {
                                 offset = li.getOffset();
                                 length = li.getLength();
@@ -130,13 +125,11 @@ public class TraceEditor extends TextEditor {
                             }
                         }
                     } else if ("  call".equals(cmd)) {
-                        final String ref = lineStr.substring(34,
-                                lineStr.indexOf('('));
+                        final String ref = lineStr.substring(34, lineStr.indexOf('('));
                         // find return after it
                         for (int ln = line + 1; ln < doc.getNumberOfLines(); ln++) {
                             final IRegion li = doc.getLineInformation(ln);
-                            final String ls = doc.get(li.getOffset(),
-                                    li.getLength());
+                            final String ls = doc.get(li.getOffset(), li.getLength());
                             if (ls.contains(ref)) {
                                 offset = li.getOffset();
                                 length = li.getLength();

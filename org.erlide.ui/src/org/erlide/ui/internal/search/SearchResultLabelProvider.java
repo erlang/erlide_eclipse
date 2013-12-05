@@ -88,8 +88,7 @@ public class SearchResultLabelProvider extends LabelProvider implements
         return "";
     }
 
-    private static String searchElementFunctionToString(
-            final ErlangSearchElement ese) {
+    private static String searchElementFunctionToString(final ErlangSearchElement ese) {
         final String a = ese.getArguments();
         if (ese.isSubClause()) {
             return ese.getName() + a;
@@ -149,9 +148,8 @@ public class SearchResultLabelProvider extends LabelProvider implements
                     module.open(null);
                 } catch (final ErlModelException e) {
                 }
-                final IErlFunction function = module
-                        .findFunction(new ErlangFunction(ese.getName(), ese
-                                .getArity()));
+                final IErlFunction function = module.findFunction(new ErlangFunction(ese
+                        .getName(), ese.getArity()));
                 if (function != null && function.isExported()) {
                     kind = ErlElementKind.EXPORTFUNCTION;
                 }
@@ -189,8 +187,7 @@ public class SearchResultLabelProvider extends LabelProvider implements
     @Override
     public StyledString getStyledText(final Object element) {
         final StyledString result = new StyledString();
-        if (fOrder == SHOW_LABEL_PATH || element instanceof String
-                && isInTree()) {
+        if (fOrder == SHOW_LABEL_PATH || element instanceof String && isInTree()) {
             result.append(getElementText(element));
             result.append(' ');
             result.append(getMatchCountText(element));

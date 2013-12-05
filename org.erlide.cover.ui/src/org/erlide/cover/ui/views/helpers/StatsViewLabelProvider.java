@@ -26,8 +26,7 @@ import org.erlide.util.ErlLogger;
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  * 
  */
-public class StatsViewLabelProvider extends LabelProvider implements
-        ITableLabelProvider {
+public class StatsViewLabelProvider extends LabelProvider implements ITableLabelProvider {
 
     @Override
     public Image getColumnImage(final Object element, final int columnIndex) {
@@ -41,8 +40,7 @@ public class StatsViewLabelProvider extends LabelProvider implements
 
             switch (type) {
             case FUNCTION:
-                img = Activator.getImageDescriptor(Images.FUNCTION)
-                        .createImage();
+                img = Activator.getImageDescriptor(Images.FUNCTION).createImage();
                 break;
             case MODULE:
                 IErlModule m;
@@ -58,8 +56,7 @@ public class StatsViewLabelProvider extends LabelProvider implements
                 break;
             case FOLDER:
                 img = PlatformUI.getWorkbench().getSharedImages()
-                        .getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER)
-                        .createImage();
+                        .getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER).createImage();
                 break;
             case PROJECT:
                 img = PlatformUI.getWorkbench().getSharedImages()
@@ -103,8 +100,7 @@ public class StatsViewLabelProvider extends LabelProvider implements
 
     private Image drawPercentage(final double percentage) {
 
-        final Image img = new Image(Display.getCurrent(), new Rectangle(2, 3,
-                20, 8));
+        final Image img = new Image(Display.getCurrent(), new Rectangle(2, 3, 20, 8));
 
         final GC graphic = new GC(img);
         graphic.setForeground(new Color(Display.getCurrent(), 60, 140, 10));

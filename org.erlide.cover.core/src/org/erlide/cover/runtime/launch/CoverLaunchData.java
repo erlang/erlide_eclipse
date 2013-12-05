@@ -19,8 +19,7 @@ public class CoverLaunchData {
     private String application;
     private final FrameworkType framework;
 
-    public CoverLaunchData(final ILaunchConfiguration config)
-            throws CoreException {
+    public CoverLaunchData(final ILaunchConfiguration config) throws CoreException {
 
         type = LaunchType.valueOf(config.getAttribute(ICoverAttributes.TYPE,
                 LaunchType.MODULE.toString()));
@@ -30,8 +29,8 @@ public class CoverLaunchData {
         file = config.getAttribute(ICoverAttributes.FILE, "");
         appProject = config.getAttribute(ICoverAttributes.APP_PROJECT, "");
 
-        framework = FrameworkType.find(config.getAttribute(
-                ICoverAttributes.COMBO, FrameworkType.EUNIT.getRepr()));
+        framework = FrameworkType.find(config.getAttribute(ICoverAttributes.COMBO,
+                FrameworkType.EUNIT.getRepr()));
 
     }
 

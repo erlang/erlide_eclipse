@@ -56,8 +56,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
      * @param title
      *            dialog title
      */
-    public SimilarCodeDetectionInputDialog(final Shell parentShell,
-            final String title) {
+    public SimilarCodeDetectionInputDialog(final Shell parentShell, final String title) {
         super(parentShell, title);
     }
 
@@ -187,13 +186,11 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
         });
 
         onlyInFileCheckBoxButton = new Button(composite, SWT.CHECK);
-        onlyInFileCheckBoxButton
-                .setText("Detect similar code snippets in the project");
+        onlyInFileCheckBoxButton.setText("Detect similar code snippets in the project");
 
-        onlyInFileCheckBoxButton.setLayoutData(new GridData(
-                GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL
-                        | GridData.HORIZONTAL_ALIGN_FILL
-                        | GridData.VERTICAL_ALIGN_CENTER));
+        onlyInFileCheckBoxButton.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
+                | GridData.VERTICAL_ALIGN_CENTER));
         onlyInFileCheckBoxButton.addSelectionListener(new SelectionListener() {
 
             @Override
@@ -213,8 +210,8 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
         errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
         errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
-        errorMessageText.setBackground(errorMessageText.getDisplay()
-                .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+        errorMessageText.setBackground(errorMessageText.getDisplay().getSystemColor(
+                SWT.COLOR_WIDGET_BACKGROUND));
 
         setErrorMessage("");
 

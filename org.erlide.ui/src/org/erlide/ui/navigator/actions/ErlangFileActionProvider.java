@@ -27,8 +27,7 @@ public class ErlangFileActionProvider extends CommonActionProvider {
         if (viewSite instanceof ICommonViewerWorkbenchSite) {
             final ICommonViewerWorkbenchSite workbenchSite = (ICommonViewerWorkbenchSite) viewSite;
             final IWorkbenchPartSite site = workbenchSite.getSite();
-            openAction = new OpenErlangAction(aSite,
-                    workbenchSite.getSelectionProvider());
+            openAction = new OpenErlangAction(aSite, workbenchSite.getSelectionProvider());
             searchActionGroup = new ErlangSearchActionGroup(site);
             final IContextService service = (IContextService) site
                     .getService(IContextService.class);
@@ -40,8 +39,7 @@ public class ErlangFileActionProvider extends CommonActionProvider {
     public void fillActionBars(final IActionBars actionBars) {
         /* Set up the property open action when enabled. */
         if (openAction.isEnabled()) {
-            actionBars.setGlobalActionHandler(ICommonActionConstants.OPEN,
-                    openAction);
+            actionBars.setGlobalActionHandler(ICommonActionConstants.OPEN, openAction);
         }
     }
 

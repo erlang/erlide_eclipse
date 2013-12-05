@@ -63,22 +63,18 @@ class MessageDialogPage extends DialogPage {
             messageComposite.setLayout(messageLayout);
             messageImageLabel = new Label(messageComposite, SWT.NONE);
 
-            final GridData imageData = new GridData(
-                    GridData.VERTICAL_ALIGN_CENTER);
+            final GridData imageData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
             final Image sizingImage = JFaceResources
                     .getImage(Dialog.DLG_IMG_MESSAGE_ERROR);
             Rectangle imageBounds;
             if (sizingImage == null) {
-                imageBounds = new Rectangle(0, 0,
-                        IDialogConstants.VERTICAL_MARGIN * 2,
+                imageBounds = new Rectangle(0, 0, IDialogConstants.VERTICAL_MARGIN * 2,
                         IDialogConstants.VERTICAL_MARGIN * 2);
             } else {
                 imageBounds = sizingImage.getBounds();
             }
-            imageData.heightHint = imageBounds.height
-                    + IDialogConstants.VERTICAL_SPACING;
-            imageData.widthHint = imageBounds.width
-                    + IDialogConstants.HORIZONTAL_SPACING;
+            imageData.heightHint = imageBounds.height + IDialogConstants.VERTICAL_SPACING;
+            imageData.widthHint = imageBounds.width + IDialogConstants.HORIZONTAL_SPACING;
             messageImageLabel.setLayoutData(imageData);
 
             messageText = new Text(messageComposite, SWT.NONE);
@@ -126,12 +122,10 @@ class MessageDialogPage extends DialogPage {
                 newImage = JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_INFO);
                 break;
             case IMessageProvider.WARNING:
-                newImage = JFaceResources
-                        .getImage(Dialog.DLG_IMG_MESSAGE_WARNING);
+                newImage = JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_WARNING);
                 break;
             case IMessageProvider.ERROR:
-                newImage = JFaceResources
-                        .getImage(Dialog.DLG_IMG_MESSAGE_ERROR);
+                newImage = JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_ERROR);
                 showingError = true;
                 break;
             }
@@ -149,12 +143,12 @@ class MessageDialogPage extends DialogPage {
             messageImageLabel.setImage(newImage);
             messageText.setText(newMessage);
             if (showingError) {
-                setMessageColors(JFaceColors
-                        .getErrorBackground(messageComposite.getDisplay()));
+                setMessageColors(JFaceColors.getErrorBackground(messageComposite
+                        .getDisplay()));
             } else {
                 lastMessageText = newMessage;
-                setMessageColors(JFaceColors
-                        .getBannerBackground(messageComposite.getDisplay()));
+                setMessageColors(JFaceColors.getBannerBackground(messageComposite
+                        .getDisplay()));
             }
 
         }

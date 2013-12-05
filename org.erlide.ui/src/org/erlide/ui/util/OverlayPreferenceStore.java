@@ -122,8 +122,8 @@ public class OverlayPreferenceStore implements IPreferenceStore {
      * @param target
      *            the preference store to which the key is propagated
      */
-    protected void propagateProperty(final IPreferenceStore orgin,
-            final OverlayKey key, final IPreferenceStore target) {
+    protected void propagateProperty(final IPreferenceStore orgin, final OverlayKey key,
+            final IPreferenceStore target) {
 
         if (orgin.isDefault(key.fKey)) {
             if (!target.isDefault(key.fKey)) {
@@ -207,9 +207,8 @@ public class OverlayPreferenceStore implements IPreferenceStore {
      *            if <code>true</code> the value in the target gets initialized
      *            before loading
      */
-    private void loadProperty(final IPreferenceStore orgin,
-            final OverlayKey key, final IPreferenceStore target,
-            final boolean forceInitialization) {
+    private void loadProperty(final IPreferenceStore orgin, final OverlayKey key,
+            final IPreferenceStore target, final boolean forceInitialization) {
         final TypeDescriptor d = key.fDescriptor;
         if (TypeDescriptor.BOOLEAN == d) {
 
@@ -325,8 +324,7 @@ public class OverlayPreferenceStore implements IPreferenceStore {
      * IPropertyChangeListener)
      */
     @Override
-    public void removePropertyChangeListener(
-            final IPropertyChangeListener listener) {
+    public void removePropertyChangeListener(final IPropertyChangeListener listener) {
         fStore.removePropertyChangeListener(listener);
     }
 
@@ -335,8 +333,8 @@ public class OverlayPreferenceStore implements IPreferenceStore {
      * java.lang.Object, java.lang.Object)
      */
     @Override
-    public void firePropertyChangeEvent(final String name,
-            final Object oldValue, final Object newValue) {
+    public void firePropertyChangeEvent(final String name, final Object oldValue,
+            final Object newValue) {
         fStore.firePropertyChangeEvent(name, oldValue, newValue);
     }
 
@@ -609,8 +607,7 @@ public class OverlayPreferenceStore implements IPreferenceStore {
      */
     public void addKeys(final OverlayKey[] keys) {
         final int overlayKeysLength = fOverlayKeys.length;
-        final OverlayKey[] result = new OverlayKey[keys.length
-                + overlayKeysLength];
+        final OverlayKey[] result = new OverlayKey[keys.length + overlayKeysLength];
 
         for (int i = 0, length = overlayKeysLength; i < length; i++) {
             result[i] = fOverlayKeys[i];

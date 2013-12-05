@@ -32,8 +32,8 @@ public class UserRefacContribution extends CompoundContributionItem {
     @Override
     protected IContributionItem[] getContributionItems() {
 
-        final List<UserRefactoringInfo> refacs = UserRefactoringsManager
-                .getInstance().getElementary();
+        final List<UserRefactoringInfo> refacs = UserRefactoringsManager.getInstance()
+                .getElementary();
         final IContributionItem[] items = new IContributionItem[refacs.size()];
 
         int i = 0;
@@ -44,11 +44,9 @@ public class UserRefacContribution extends CompoundContributionItem {
                     CommandContributionItem.STYLE_PUSH);
             param.label = info.getLabel();
             param.parameters = new HashMap();
-            param.parameters.put(
-                    "org.erlide.wrangler.refactoring.gen_refac.callback",
+            param.parameters.put("org.erlide.wrangler.refactoring.gen_refac.callback",
                     info.getCallback());
-            param.parameters.put(
-                    "org.erlide.wrangler.refactoring.gen_refac.name",
+            param.parameters.put("org.erlide.wrangler.refactoring.gen_refac.name",
                     info.getLabel());
             items[i] = new CommandContributionItem(param);
             i++;

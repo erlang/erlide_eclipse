@@ -55,17 +55,15 @@ public class OpenItemAction extends Action {
 
         if (!(selection instanceof ITreeSelection)) {
             final IStatus executionStatus = new Status(IStatus.ERROR,
-                    Activator.PLUGIN_ID,
-                    "Internall error occured: bad sellection type", null);
-            StatusManager.getManager().handle(executionStatus,
-                    StatusManager.SHOW);
+                    Activator.PLUGIN_ID, "Internall error occured: bad sellection type",
+                    null);
+            StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);
             return;
         }
 
         final ITreeSelection treeSelection = (ITreeSelection) selection;
 
-        final StatsTreeObject obj = (StatsTreeObject) treeSelection
-                .getFirstElement();
+        final StatsTreeObject obj = (StatsTreeObject) treeSelection.getFirstElement();
 
         if (obj.getClass().equals(ModuleStats.class)) {
 
@@ -75,8 +73,7 @@ public class OpenItemAction extends Action {
 
             final FunctionStats fs = (FunctionStats) obj;
 
-            final String moduleName = ((StatsTreeObject) fs.getParent())
-                    .getLabel();
+            final String moduleName = ((StatsTreeObject) fs.getParent()).getLabel();
             final IEditorPart p = openInEditor(moduleName + ".erl");
 
             if (p == null || !(p instanceof ErlangEditor)) {
@@ -87,11 +84,10 @@ public class OpenItemAction extends Action {
 
             IErlModule module;
             try {
-                module = ErlangEngine.getInstance().getModel()
-                        .findModule(moduleName);
+                module = ErlangEngine.getInstance().getModel().findModule(moduleName);
 
-                final IErlFunction f = module.findFunction(new ErlangFunction(
-                        fs.getLabel(), fs.getArity()));
+                final IErlFunction f = module.findFunction(new ErlangFunction(fs
+                        .getLabel(), fs.getArity()));
 
                 editor.setSelection(f);
 
@@ -120,10 +116,10 @@ public class OpenItemAction extends Action {
 
         final File fileToOpen = new File(module.getFilePath());
 
-        final IFileStore fileStore = EFS.getLocalFileSystem().getStore(
-                fileToOpen.toURI());
-        final IWorkbenchPage page = PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getActivePage();
+        final IFileStore fileStore = EFS.getLocalFileSystem()
+                .getStore(fileToOpen.toURI());
+        final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                .getActivePage();
 
         try {
             final IEditorPart p = IDE.openEditorOnFileStore(page, fileStore);

@@ -36,8 +36,8 @@ import org.erlide.ui.console.ErlangConsole;
  * ConsoleRemoveTerminatedAction
  */
 @SuppressWarnings("restriction")
-public class ConsoleRemoveLaunchAction extends Action implements
-        IViewActionDelegate, IConsoleListener, ILaunchesListener2 {
+public class ConsoleRemoveLaunchAction extends Action implements IViewActionDelegate,
+        IConsoleListener, ILaunchesListener2 {
 
     private ILaunch fLaunch;
     private IConsole fConsole;
@@ -70,8 +70,7 @@ public class ConsoleRemoveLaunchAction extends Action implements
 
     public void dispose() {
         DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(this);
-        ConsolePlugin.getDefault().getConsoleManager()
-                .removeConsoleListener(this);
+        ConsolePlugin.getDefault().getConsoleManager().removeConsoleListener(this);
     }
 
     public synchronized void update() {
@@ -111,8 +110,7 @@ public class ConsoleRemoveLaunchAction extends Action implements
     }
 
     @Override
-    public void selectionChanged(final IAction action,
-            final ISelection selection) {
+    public void selectionChanged(final IAction action, final ISelection selection) {
     }
 
     @Override

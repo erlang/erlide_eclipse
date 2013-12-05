@@ -70,8 +70,8 @@ public class IErlFunctionTests extends ErlModelTestBase2 {
         assertTrue(comments.isEmpty());
         assertTrue(comments2.isEmpty());
         assertFalse(comments3.isEmpty());
-        assertEquals(ErlModelTestBase2.MAKE_A_TUPLE, comments3.iterator()
-                .next().getSource());
+        assertEquals(ErlModelTestBase2.MAKE_A_TUPLE, comments3.iterator().next()
+                .getSource());
     }
 
     // String getModuleName();

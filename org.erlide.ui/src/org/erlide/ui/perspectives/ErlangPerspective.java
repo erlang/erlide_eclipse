@@ -64,13 +64,13 @@ public class ErlangPerspective implements IPerspectiveFactory {
     private void defineLayout(final IPageLayout layout) {
         final String editorArea = layout.getEditorArea();
 
-        final IFolderLayout left = layout.createFolder("left",
-                IPageLayout.LEFT, (float) 0.2, editorArea);
+        final IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT,
+                (float) 0.2, editorArea);
         // left.addView(IPageLayout.ID_RES_NAV);
         left.addView(ErlideUIConstants.NAVIGATOR_VIEW_ID);
 
-        final IFolderLayout bottom = layout.createFolder("bottom",
-                IPageLayout.BOTTOM, (float) 0.65, editorArea);
+        final IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM,
+                (float) 0.65, editorArea);
         bottom.addView(IPageLayout.ID_PROBLEM_VIEW);
         bottom.addView(IConsoleConstants.ID_CONSOLE_VIEW);
         bottom.addView(ProcessListView.ID);

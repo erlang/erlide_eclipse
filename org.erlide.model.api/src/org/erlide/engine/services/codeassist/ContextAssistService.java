@@ -16,8 +16,7 @@ public interface ContextAssistService {
 
     Collection<String> getVariables(String src, String prefix);
 
-    RecordCompletion checkRecordCompletion(IRpcSite buildBackend,
-            String substring);
+    RecordCompletion checkRecordCompletion(IRpcSite buildBackend, String substring);
 
     OtpErlangList getFunctionHead(String name, int arity);
 

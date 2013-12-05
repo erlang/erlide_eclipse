@@ -69,23 +69,20 @@ public class ExtractFunctionRefactoring extends CostumWorkflowRefactoring {
 
             @Override
             public void doRefactoring() {
-                final IErlSelection sel = GlobalParameters
-                        .getWranglerSelection();
+                final IErlSelection sel = GlobalParameters.getWranglerSelection();
                 IRefactoringRpcMessage message = run(sel);
                 if (message.isSuccessful()) {
                     changedFiles = message.getRefactoringChangeset();
                     status = new RefactoringStatus();
                 } else if (message.getRefactoringState() == RefactoringState.WARNING) {
-                    final boolean answer = !ask("Warning",
-                            message.getMessageString());
+                    final boolean answer = !ask("Warning", message.getMessageString());
                     if (answer) {
                         message = runAlternative(sel);
                         if (message.getRefactoringState() == RefactoringState.OK) {
                             status = new RefactoringStatus();
                         } else {
-                            status = RefactoringStatus
-                                    .createFatalErrorStatus(message
-                                            .getMessageString());
+                            status = RefactoringStatus.createFatalErrorStatus(message
+                                    .getMessageString());
                         }
                     } else {
                         stop();

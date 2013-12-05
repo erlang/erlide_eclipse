@@ -52,8 +52,7 @@ public class StatusUtil {
     /**
      * Applies the status to the status line of a dialog page.
      */
-    public static void applyToStatusLine(final DialogPage page,
-            final IStatus status) {
+    public static void applyToStatusLine(final DialogPage page, final IStatus status) {
         String message = status.getMessage();
         switch (status.getSeverity()) {
         case IStatus.OK:

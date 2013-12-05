@@ -29,8 +29,7 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
      *            the key into <code>store</code> where to store custom
      *            templates
      */
-    public ErlideContributionTemplateStore(final IPreferenceStore store,
-            final String key) {
+    public ErlideContributionTemplateStore(final IPreferenceStore store, final String key) {
         super(store, key);
     }
 
@@ -75,18 +74,16 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
     }
 
     private void readIncludedTemplates(
-            final Collection<TemplatePersistenceData> templates,
-            final String[] files) throws IOException {
+            final Collection<TemplatePersistenceData> templates, final String[] files)
+            throws IOException {
         for (final String file : files) {
             if (file != null) {
                 InputStream stream = null;
                 try {
-                    final InputStream input = new FileInputStream(
-                            new File(file));
+                    final InputStream input = new FileInputStream(new File(file));
                     stream = new BufferedInputStream(input);
                     final TemplateReaderWriter reader = new TemplateReaderWriter();
-                    final TemplatePersistenceData[] datas = reader.read(stream,
-                            null);
+                    final TemplatePersistenceData[] datas = reader.read(stream, null);
                     for (final TemplatePersistenceData data : datas) {
                         if (validateTemplate(data.getTemplate())) {
                             templates.add(data);
@@ -136,7 +133,6 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
      */
     private boolean contextExists(final String contextTypeId) {
         return contextTypeId != null
-                && (getRegistry() == null || getRegistry().getContextType(
-                        contextTypeId) != null);
+                && (getRegistry() == null || getRegistry().getContextType(contextTypeId) != null);
     }
 }

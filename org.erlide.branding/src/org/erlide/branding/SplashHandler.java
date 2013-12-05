@@ -30,35 +30,31 @@ public class SplashHandler extends BasicSplashHandler {
             foregroundColorString = product
                     .getProperty(IProductConstants.STARTUP_FOREGROUND_COLOR);
         }
-        final Rectangle progressRect = StringConverter.asRectangle(
-                progressRectString, new Rectangle(10, 10, 300, 15));
+        final Rectangle progressRect = StringConverter.asRectangle(progressRectString,
+                new Rectangle(10, 10, 300, 15));
         setProgressRect(progressRect);
 
-        final Rectangle messageRect = StringConverter.asRectangle(
-                messageRectString, new Rectangle(10, 35, 300, 15));
+        final Rectangle messageRect = StringConverter.asRectangle(messageRectString,
+                new Rectangle(10, 35, 300, 15));
         setMessageRect(messageRect);
 
         int foregroundColorInteger;
         try {
-            foregroundColorInteger = Integer
-                    .parseInt(foregroundColorString, 16);
+            foregroundColorInteger = Integer.parseInt(foregroundColorString, 16);
         } catch (final Exception ex) {
             foregroundColorInteger = 0xD2D7FF; // off white
         }
 
         setForeground(new RGB((foregroundColorInteger & 0xFF0000) >> 16,
-                (foregroundColorInteger & 0xFF00) >> 8,
-                foregroundColorInteger & 0xFF));
+                (foregroundColorInteger & 0xFF00) >> 8, foregroundColorInteger & 0xFF));
 
-        final String buildId = ErlangPlugin.getDefault().getCore()
-                .getFeatureVersion();
+        final String buildId = ErlangPlugin.getDefault().getCore().getFeatureVersion();
         final Point buildIdPoint;
         // hardcoded to be sensible with our current splash Graphic
         if (product != null) {
-            final String buildIdLocString = product
-                    .getProperty("buildIdLocation"); //$NON-NLS-1$
-            buildIdPoint = StringConverter.asPoint(buildIdLocString, new Point(
-                    30, splash.getSize().y - 60));
+            final String buildIdLocString = product.getProperty("buildIdLocation"); //$NON-NLS-1$
+            buildIdPoint = StringConverter.asPoint(buildIdLocString,
+                    new Point(30, splash.getSize().y - 60));
         } else {
             buildIdPoint = new Point(30, splash.getSize().y - 60);
         }

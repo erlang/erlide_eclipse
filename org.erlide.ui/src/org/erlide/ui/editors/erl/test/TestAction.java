@@ -47,15 +47,15 @@ public class TestAction extends TextEditorAction {
         }
         final ITextEditor textEditor = getTextEditor();
         {
-            final IDocument document = textEditor.getDocumentProvider()
-                    .getDocument(textEditor.getEditorInput());
+            final IDocument document = textEditor.getDocumentProvider().getDocument(
+                    textEditor.getEditorInput());
             final String text = document.get();
             final String scannerName = module.getScannerName();
             // XXX implementation detail - how to do it better?
             final InternalScanner internalScanner = (InternalScanner) ErlangEngine
                     .getInstance().getSimpleScannerService();
-            final OtpErlangObject checkAll = internalScanner.checkAll(
-                    scannerName, text, true);
+            final OtpErlangObject checkAll = internalScanner.checkAll(scannerName, text,
+                    true);
             String s;
             if (checkAll instanceof OtpErlangTuple) {
                 final OtpErlangTuple t = (OtpErlangTuple) checkAll;
@@ -97,8 +97,8 @@ public class TestAction extends TextEditorAction {
 
     private void dumpText(final String text, final String filename) {
         try {
-            final OutputStream out = new BufferedOutputStream(
-                    new FileOutputStream(new File(filename)));
+            final OutputStream out = new BufferedOutputStream(new FileOutputStream(
+                    new File(filename)));
             out.write(text.getBytes());
             out.close();
         } catch (final IOException e) {

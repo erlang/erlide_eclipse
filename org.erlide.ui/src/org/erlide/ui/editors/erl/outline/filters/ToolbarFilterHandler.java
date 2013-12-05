@@ -14,8 +14,7 @@ import org.erlide.ui.editors.erl.outline.ErlangOutlinePage;
 import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class ToolbarFilterHandler extends AbstractHandler implements
-        IElementUpdater {
+public class ToolbarFilterHandler extends AbstractHandler implements IElementUpdater {
 
     public ToolbarFilterHandler() {
         super();
@@ -45,8 +44,7 @@ public class ToolbarFilterHandler extends AbstractHandler implements
     @Override
     public void updateElement(final UIElement element, final Map parameters) {
         final IEclipsePreferences prefsNode = ErlangOutlinePage.getPrefsNode();
-        final String filterId = (String) parameters
-                .get("org.erlide.ui.filterId");
+        final String filterId = (String) parameters.get("org.erlide.ui.filterId");
         final boolean value = prefsNode.getBoolean(filterId, false);
         element.setChecked(value);
     }

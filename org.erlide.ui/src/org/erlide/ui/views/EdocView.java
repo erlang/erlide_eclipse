@@ -122,11 +122,8 @@ public class EdocView extends AbstractInfoView {
             setToolTipText("Select All");
             setDescription("Select All");
 
-            PlatformUI
-                    .getWorkbench()
-                    .getHelpSystem()
-                    .setHelp(this,
-                            IAbstractTextEditorHelpContextIds.SELECT_ALL_ACTION);
+            PlatformUI.getWorkbench().getHelpSystem()
+                    .setHelp(this, IAbstractTextEditorHelpContextIds.SELECT_ALL_ACTION);
         }
 
         /**
@@ -168,14 +165,13 @@ public class EdocView extends AbstractInfoView {
             assertThat(control, is(not(nullValue())));
             fControl = control;
             if (fControl instanceof StyledText) {
-                ((StyledText) fControl)
-                        .addSelectionListener(new SelectionAdapter() {
+                ((StyledText) fControl).addSelectionListener(new SelectionAdapter() {
 
-                            @Override
-                            public void widgetSelected(final SelectionEvent e) {
-                                fireSelectionChanged();
-                            }
-                        });
+                    @Override
+                    public void widgetSelected(final SelectionEvent e) {
+                        fireSelectionChanged();
+                    }
+                });
             } else {
                 // FIXME: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
                 // ((Browser)fControl).addSelectionListener(new
@@ -192,8 +188,7 @@ public class EdocView extends AbstractInfoView {
          */
         public void fireSelectionChanged() {
             final ISelection selection = getSelection();
-            final SelectionChangedEvent event = new SelectionChangedEvent(this,
-                    selection);
+            final SelectionChangedEvent event = new SelectionChangedEvent(this, selection);
             final Object[] selectionChangedListeners = fListeners.toArray();
             for (final Object element : selectionChangedListeners) {
                 ((ISelectionChangedListener) element).selectionChanged(event);
@@ -206,8 +201,7 @@ public class EdocView extends AbstractInfoView {
          * (org.eclipse.jface.viewers.ISelectionChangedListener)
          */
         @Override
-        public void addSelectionChangedListener(
-                final ISelectionChangedListener listener) {
+        public void addSelectionChangedListener(final ISelectionChangedListener listener) {
             fListeners.add(listener);
         }
 
@@ -283,15 +277,14 @@ public class EdocView extends AbstractInfoView {
         super.createActions();
         openDeclarationAction = new OpenDeclarationAction(this);
         openDeclarationAction.setEnabled(false);
-        fSelectAllAction = new SelectAllAction(getControl(),
-                new SelectionProvider(getControl()));
+        fSelectAllAction = new SelectAllAction(getControl(), new SelectionProvider(
+                getControl()));
     }
 
     @Override
     public void menuAboutToShow(final IMenuManager menu) {
         super.menuAboutToShow(menu);
-        menu.appendToGroup(IContextMenuConstants.GROUP_OPEN,
-                openDeclarationAction);
+        menu.appendToGroup(IContextMenuConstants.GROUP_OPEN, openDeclarationAction);
     }
 
     @Override

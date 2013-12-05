@@ -73,8 +73,8 @@ public class Range implements IRange {
             throws OtpErlangRangeException {
         this(((OtpErlangLong) startPos.elementAt(0)).intValue(),
                 ((OtpErlangLong) startPos.elementAt(1)).intValue(),
-                ((OtpErlangLong) endPos.elementAt(0)).intValue(),
-                ((OtpErlangLong) endPos.elementAt(1)).intValue());
+                ((OtpErlangLong) endPos.elementAt(0)).intValue(), ((OtpErlangLong) endPos
+                        .elementAt(1)).intValue());
     }
 
     @Override
@@ -99,14 +99,12 @@ public class Range implements IRange {
 
     @Override
     public OtpErlangTuple getStartPos() {
-        return OtpErlang.mkTuple(new OtpErlangInt(startLine), new OtpErlangInt(
-                startCol));
+        return OtpErlang.mkTuple(new OtpErlangInt(startLine), new OtpErlangInt(startCol));
     }
 
     @Override
     public OtpErlangTuple getEndPos() {
-        return OtpErlang.mkTuple(new OtpErlangInt(endLine), new OtpErlangInt(
-                endCol));
+        return OtpErlang.mkTuple(new OtpErlangInt(endLine), new OtpErlangInt(endCol));
     }
 
     @Override

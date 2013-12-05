@@ -28,8 +28,7 @@ class DebugEventHandler {
         }
     }
 
-    private void handleMessage(final OtpErlangObject message)
-            throws DebugException {
+    private void handleMessage(final OtpErlangObject message) throws DebugException {
         final DebuggerEvent event = DebuggerEventFactory.parse(message);
         event.execute(debugTarget);
     }

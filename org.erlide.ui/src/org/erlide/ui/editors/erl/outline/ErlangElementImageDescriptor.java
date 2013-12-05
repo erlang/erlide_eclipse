@@ -61,8 +61,8 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
      *            the size of the resulting image
      * @see #setAdornments(int)
      */
-    public ErlangElementImageDescriptor(final ImageDescriptor baseImage,
-            final int flags, final Point size) {
+    public ErlangElementImageDescriptor(final ImageDescriptor baseImage, final int flags,
+            final Point size) {
         fBaseImage = baseImage;
         assertThat(fBaseImage, is(not(nullValue())));
         fFlags = flags;
@@ -171,14 +171,12 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
         final Point size = getSize();
         int x = 0;
         if ((fFlags & ERROR) != 0) {
-            final ImageData data = getImageData(ErlideImage.OVR_ERROR
-                    .getDescriptor());
+            final ImageData data = getImageData(ErlideImage.OVR_ERROR.getDescriptor());
             drawImage(data, x, size.y - data.height);
             x += data.width;
         }
         if ((fFlags & WARNING) != 0) {
-            final ImageData data = getImageData(ErlideImage.OVR_WARNING
-                    .getDescriptor());
+            final ImageData data = getImageData(ErlideImage.OVR_WARNING.getDescriptor());
             drawImage(data, x, size.y - data.height);
             x += data.width;
         }

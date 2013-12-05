@@ -30,8 +30,8 @@ public class ToggleNatureAction implements IObjectActionDelegate {
     @Override
     public void run(final IAction action) {
         if (fSelection instanceof IStructuredSelection) {
-            for (final Iterator<?> it = ((IStructuredSelection) fSelection)
-                    .iterator(); it.hasNext();) {
+            for (final Iterator<?> it = ((IStructuredSelection) fSelection).iterator(); it
+                    .hasNext();) {
                 final Object element = it.next();
                 IProject project = null;
                 if (element instanceof IProject) {
@@ -48,14 +48,12 @@ public class ToggleNatureAction implements IObjectActionDelegate {
     }
 
     @Override
-    public void selectionChanged(final IAction action,
-            final ISelection selection) {
+    public void selectionChanged(final IAction action, final ISelection selection) {
         fSelection = selection;
     }
 
     @Override
-    public void setActivePart(final IAction action,
-            final IWorkbenchPart targetPart) {
+    public void setActivePart(final IAction action, final IWorkbenchPart targetPart) {
     }
 
     /**
@@ -73,8 +71,8 @@ public class ToggleNatureAction implements IObjectActionDelegate {
                     // Remove the nature
                     final String[] newNatures = new String[natures.length - 1];
                     System.arraycopy(natures, 0, newNatures, 0, i);
-                    System.arraycopy(natures, i + 1, newNatures, i,
-                            natures.length - i - 1);
+                    System.arraycopy(natures, i + 1, newNatures, i, natures.length - i
+                            - 1);
                     description.setNatureIds(newNatures);
                     project.setDescription(description, null);
 

@@ -28,8 +28,7 @@ public class DuplicatedCodeElement extends AbstractResultTreeParent {
      *            a particular element, which will be used to show the
      *            corresponding code part
      */
-    public DuplicatedCodeElement(
-            final DuplicatedCodeInstanceElement defaultInstance) {
+    public DuplicatedCodeElement(final DuplicatedCodeInstanceElement defaultInstance) {
         defaultCodePart = defaultInstance;
     }
 

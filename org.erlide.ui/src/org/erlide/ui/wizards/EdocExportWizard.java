@@ -59,11 +59,10 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
                 if (!dest.exists()) {
                     dest.create(true, true, null);
                 }
-                options.put("dir", new OtpErlangString(dest.getLocation()
-                        .toString()));
+                options.put("dir", new OtpErlangString(dest.getLocation().toString()));
                 final List<String> files = new ArrayList<String>();
-                final IErlProject erlProject = ErlangEngine.getInstance()
-                        .getModel().findProject(project);
+                final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                        .findProject(project);
                 for (final IPath dir : erlProject.getSourceDirs()) {
                     final IFolder folder = project.getFolder(dir);
                     if (folder.isAccessible()) {
@@ -73,8 +72,7 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
                                     throws CoreException {
                                 if ("erl".equals(resource.getFileExtension())) {
                                     if (resource.isAccessible()) {
-                                        files.add(resource.getLocation()
-                                                .toString());
+                                        files.add(resource.getLocation().toString());
                                     }
                                 }
                                 return true;
@@ -97,12 +95,10 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
     }
 
     @Override
-    public void init(final IWorkbench workbench,
-            final IStructuredSelection aSelection) {
+    public void init(final IWorkbench workbench, final IStructuredSelection aSelection) {
         selection = aSelection;
 
-        final List<?> selectedResources = IDE
-                .computeSelectedResources(aSelection);
+        final List<?> selectedResources = IDE.computeSelectedResources(aSelection);
         if (!selectedResources.isEmpty()) {
             selection = new StructuredSelection(selectedResources);
         }

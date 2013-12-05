@@ -80,8 +80,8 @@ public final class RuntimeInfo {
         this(name, ".", "", new ArrayList<String>());
     }
 
-    public RuntimeInfo(final String name, final String homeDir,
-            final String args, final Collection<String> codePath) {
+    public RuntimeInfo(final String name, final String homeDir, final String args,
+            final Collection<String> codePath) {
         this.name = name;
         this.homeDir = homeDir;
         this.args = args;
@@ -98,8 +98,8 @@ public final class RuntimeInfo {
 
     @Override
     public String toString() {
-        return String.format("Runtime<%s (%s) %s [%s]>", getName(),
-                getOtpHome(), getVersion(), getArgs());
+        return String.format("Runtime<%s (%s) %s [%s]>", getName(), getOtpHome(),
+                getVersion(), getArgs());
     }
 
     public String getOtpHome() {

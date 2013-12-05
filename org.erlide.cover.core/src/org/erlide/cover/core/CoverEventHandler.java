@@ -39,8 +39,7 @@ public class CoverEventHandler extends ErlangEventHandler {
     private final Logger log; // log
     private final CoverBackend coverBackend; // cover backend
 
-    public CoverEventHandler(final String backendName,
-            final CoverBackend coverBackend) {
+    public CoverEventHandler(final String backendName, final CoverBackend coverBackend) {
         super(EVENT_NAME, backendName);
         this.coverBackend = coverBackend;
         log = Activator.getDefault();
@@ -64,9 +63,8 @@ public class CoverEventHandler extends ErlangEventHandler {
             final String info = tuple.elementAt(3).toString();
 
             for (final ICoverObserver obs : coverBackend.getListeners()) {
-                obs.eventOccured(new CoverEvent(CoverStatus.ERROR,
-                        String.format("Error at %s while %s: %s\n", place,
-                                type, info)));
+                obs.eventOccured(new CoverEvent(CoverStatus.ERROR, String.format(
+                        "Error at %s while %s: %s\n", place, type, info)));
             }
         } else if (data.toString().equals(COVER_FIN)
                 && coverBackend.getAnnotationMaker() != null) {
@@ -85,22 +83,21 @@ public class CoverEventHandler extends ErlangEventHandler {
         if (msg instanceof OtpErlangTuple) {
             final OtpErlangTuple resTuple = (OtpErlangTuple) msg;
             if (resTuple.elementAt(0) instanceof OtpErlangAtom
-                    && ((OtpErlangAtom) resTuple.elementAt(0)).atomValue()
-                            .equals(COVER_RES)) {
+                    && ((OtpErlangAtom) resTuple.elementAt(0)).atomValue().equals(
+                            COVER_RES)) {
 
                 final String moduleName = resTuple.elementAt(1).toString();
 
                 String htmlPath = resTuple.elementAt(2).toString();
                 htmlPath = htmlPath.substring(1, htmlPath.length() - 1);
-                final int allLines = Integer.parseInt(resTuple.elementAt(3)
-                        .toString());
+                final int allLines = Integer.parseInt(resTuple.elementAt(3).toString());
                 final int coveredLines = Integer.parseInt(resTuple.elementAt(4)
                         .toString());
                 final double percent = Double.parseDouble(resTuple.elementAt(5)
                         .toString());
 
-                log.info(String.format("Module %s %s %d %d %f", moduleName,
-                        htmlPath, allLines, coveredLines, percent));
+                log.info(String.format("Module %s %s %d %d %f", moduleName, htmlPath,
+                        allLines, coveredLines, percent));
 
                 final ModuleStats moduleStats = new ModuleStats();
 
@@ -112,8 +109,8 @@ public class CoverEventHandler extends ErlangEventHandler {
                 // calculate md5
 
                 try {
-                    final File file = new File(ErlangEngine.getInstance()
-                            .getModel().findModule(moduleName).getFilePath());
+                    final File file = new File(ErlangEngine.getInstance().getModel()
+                            .findModule(moduleName).getFilePath());
                     moduleStats.setMd5(MD5Checksum.getMD5(file));
                 } catch (final Exception e) {
                     ErlLogger.error(e);
@@ -121,11 +118,9 @@ public class CoverEventHandler extends ErlangEventHandler {
 
                 //
 
-                prepLineResults((OtpErlangList) resTuple.elementAt(6),
-                        moduleStats);
+                prepLineResults((OtpErlangList) resTuple.elementAt(6), moduleStats);
 
-                prepFuncResults((OtpErlangList) resTuple.elementAt(7),
-                        moduleStats);
+                prepFuncResults((OtpErlangList) resTuple.elementAt(7), moduleStats);
 
                 addModuleToTree(moduleStats);
 
@@ -143,12 +138,11 @@ public class CoverEventHandler extends ErlangEventHandler {
 
         ICoverageObject root = StatsTreeModel.getInstance().getRoot();
 
-        final IConfiguration config = CoveragePerformer.getPerformer()
-                .getConfig();
+        final IConfiguration config = CoveragePerformer.getPerformer().getConfig();
 
         final String ppath = ErlangEngine.getInstance().getModelUtilService()
-                .getProject(config.getProject()).getWorkspaceProject()
-                .getLocation().toString();
+                .getProject(config.getProject()).getWorkspaceProject().getLocation()
+                .toString();
         String mpath = config.getModule(moduleStats.getLabel()).getFilePath();
         mpath = mpath.substring(ppath.length());
         log.info(ppath);
@@ -166,8 +160,7 @@ public class CoverEventHandler extends ErlangEventHandler {
                 tmp = new StatsTreeObject(ObjectType.FOLDER);
                 tmp.setLabel(parts[i]);
             }
-            tmp.setLiniesCount(tmp.getLinesCount()
-                    + moduleStats.getLinesCount());
+            tmp.setLiniesCount(tmp.getLinesCount() + moduleStats.getLinesCount());
             tmp.setCoverCount(tmp.getCoverCount() + moduleStats.getCoverCount());
             root.addChild(parts[i], tmp);
             root = tmp;
@@ -177,8 +170,7 @@ public class CoverEventHandler extends ErlangEventHandler {
 
     }
 
-    private void prepFuncResults(final OtpErlangList funcList,
-            final ModuleStats stats) {
+    private void prepFuncResults(final OtpErlangList funcList, final ModuleStats stats) {
 
         final Iterator<OtpErlangObject> it = funcList.iterator();
 
@@ -190,8 +182,7 @@ public class CoverEventHandler extends ErlangEventHandler {
             final String name = res.elementAt(1).toString();
             final int arity = Integer.parseInt(res.elementAt(2).toString());
             final int allLines = Integer.parseInt(res.elementAt(3).toString());
-            final int coveredLines = Integer.parseInt(res.elementAt(4)
-                    .toString());
+            final int coveredLines = Integer.parseInt(res.elementAt(4).toString());
 
             func.setLabel(name);
             func.setLiniesCount(allLines);
@@ -203,8 +194,7 @@ public class CoverEventHandler extends ErlangEventHandler {
 
     }
 
-    private void prepLineResults(final OtpErlangList lineList,
-            final ModuleStats stats) {
+    private void prepLineResults(final OtpErlangList lineList, final ModuleStats stats) {
 
         final Iterator<OtpErlangObject> it = lineList.iterator();
 

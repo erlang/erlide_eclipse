@@ -71,8 +71,7 @@ public class ErlangBreakpointPropertiesAction implements IObjectActionDelegate {
      * @see IActionDelegate#selectionChanged(IAction, ISelection)
      */
     @Override
-    public void selectionChanged(final IAction action,
-            final ISelection selection) {
+    public void selectionChanged(final IAction action, final ISelection selection) {
         if (selection instanceof IStructuredSelection) {
             final IStructuredSelection ss = (IStructuredSelection) selection;
             if (ss.isEmpty() || ss.size() > 1) {
@@ -100,8 +99,7 @@ public class ErlangBreakpointPropertiesAction implements IObjectActionDelegate {
      * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
      */
     @Override
-    public void setActivePart(final IAction action,
-            final IWorkbenchPart targetPart) {
+    public void setActivePart(final IAction action, final IWorkbenchPart targetPart) {
         fPart = targetPart;
     }
 }

@@ -25,10 +25,8 @@ public class ErlangFileLabelProvider extends LabelProvider implements
         if (element instanceof IErlElement) {
             final IErlElement e = (IErlElement) element;
             final ImageDescriptor desc = ErlangElementImageProvider
-                    .getErlImageDescriptor(e,
-                            ErlangElementImageProvider.SMALL_ICONS);
-            final Image img = ErlideUIPlugin.getImageDescriptorRegistry().get(
-                    desc);
+                    .getErlImageDescriptor(e, ErlangElementImageProvider.SMALL_ICONS);
+            final Image img = ErlideUIPlugin.getImageDescriptorRegistry().get(desc);
             return fProblemDecorator.decorateImage(img, e);
         }
         return null;

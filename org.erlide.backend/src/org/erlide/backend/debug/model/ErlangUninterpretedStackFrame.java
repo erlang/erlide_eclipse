@@ -13,8 +13,7 @@ public class ErlangUninterpretedStackFrame extends ErlangStackFrame {
     public ErlangUninterpretedStackFrame(final String module,
             final ErlangFunction function, final ErlangProcess erlangProcess,
             final IDebugTarget target) {
-        super(module, erlangProcess, target, -1, function, new OtpErlangList(),
-                -1);
+        super(module, erlangProcess, target, -1, function, new OtpErlangList(), -1);
         this.function = function;
     }
 

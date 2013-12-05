@@ -16,8 +16,7 @@ import org.erlide.ui.editors.erl.folding.IErlangFoldingPreferenceBlock;
  * @since 3.0
  */
 
-public class EmptyErlangFoldingPreferenceBlock implements
-        IErlangFoldingPreferenceBlock {
+public class EmptyErlangFoldingPreferenceBlock implements IErlangFoldingPreferenceBlock {
 
     @Override
     public Control createControl(final Composite composite) {

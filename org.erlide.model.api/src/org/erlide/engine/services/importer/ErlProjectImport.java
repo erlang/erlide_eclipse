@@ -48,8 +48,8 @@ public class ErlProjectImport {
         directories.add(0, ".");
     }
 
-    private static Collection<String> erlangStringList2Collection(
-            final OtpErlangList l, final Collection<String> c) {
+    private static Collection<String> erlangStringList2Collection(final OtpErlangList l,
+            final Collection<String> c) {
         for (final OtpErlangObject o : l) {
             c.add(Util.stringValue(o));
         }

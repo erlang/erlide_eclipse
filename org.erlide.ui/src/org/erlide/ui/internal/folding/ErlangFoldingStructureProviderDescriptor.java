@@ -52,8 +52,7 @@ public final class ErlangFoldingStructureProviderDescriptor {
      * @param element
      *            the configuration element to read
      */
-    public ErlangFoldingStructureProviderDescriptor(
-            final IConfigurationElement element) {
+    public ErlangFoldingStructureProviderDescriptor(final IConfigurationElement element) {
         fElement = element;
         fId = element.getAttribute(ID);
         Assert.isLegal(fId != null);
@@ -81,8 +80,7 @@ public final class ErlangFoldingStructureProviderDescriptor {
      * @throws CoreException
      *             if creation fails
      */
-    public IErlangFoldingStructureProvider createProvider()
-            throws CoreException {
+    public IErlangFoldingStructureProvider createProvider() throws CoreException {
         final IErlangFoldingStructureProvider prov = (IErlangFoldingStructureProvider) fElement
                 .createExecutableExtension(CLASS);
         return prov;
@@ -96,8 +94,7 @@ public final class ErlangFoldingStructureProviderDescriptor {
      * @throws CoreException
      *             if creation fails
      */
-    public IErlangFoldingPreferenceBlock createPreferences()
-            throws CoreException {
+    public IErlangFoldingPreferenceBlock createPreferences() throws CoreException {
         if (fHasPreferences) {
             final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) fElement
                     .createExecutableExtension(PREFERENCES_CLASS);

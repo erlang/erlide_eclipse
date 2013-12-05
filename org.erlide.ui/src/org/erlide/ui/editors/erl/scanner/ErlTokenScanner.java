@@ -67,16 +67,14 @@ public abstract class ErlTokenScanner extends BufferedRuleBasedScanner {
     // "bsl", "bsr", "or", "xor", "spec", });
 
     protected TextAttribute getTextAttribute(final TokenHighlight th) {
-        final IPreferenceStore store = ErlideUIPlugin.getDefault()
-                .getPreferenceStore();
+        final IPreferenceStore store = ErlideUIPlugin.getDefault().getPreferenceStore();
         final HighlightStyle data = th.getStyle(store);
         // load from prefsstore
         return new TextAttribute(fColorManager.getColor(data.getColor()), null,
                 data.getStyles());
     }
 
-    public void handleColorChange(final String id, final RGB newValue,
-            final int style) {
+    public void handleColorChange(final String id, final RGB newValue, final int style) {
         final Token token = getToken(id);
         fixTokenData(token, newValue, style);
     }
@@ -145,14 +143,12 @@ public abstract class ErlTokenScanner extends BufferedRuleBasedScanner {
         return t_default;
     }
 
-    private void fixTokenData(final Token token, final RGB color,
-            final int style) {
+    private void fixTokenData(final Token token, final RGB color, final int style) {
         final TextAttribute attr = (TextAttribute) token.getData();
         final int newStyle = style == -1 ? attr.getStyle() : style;
-        final Color newColor = color == null ? attr.getForeground()
-                : fColorManager.getColor(color);
-        token.setData(new TextAttribute(newColor, attr.getBackground(),
-                newStyle));
+        final Color newColor = color == null ? attr.getForeground() : fColorManager
+                .getColor(color);
+        token.setData(new TextAttribute(newColor, attr.getBackground(), newStyle));
     }
 
 }

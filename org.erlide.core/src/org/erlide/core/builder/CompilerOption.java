@@ -27,22 +27,20 @@ public abstract class CompilerOption {
             false,
             "Compress beam file",
             "The compiler will compress the generated object code, which can be useful for embedded systems");
-    public static final BooleanOption DEBUG_INFO = new BooleanOption(
-            "debug_info", false, "Debug info",
-            "Include debug info in BEAM file");
+    public static final BooleanOption DEBUG_INFO = new BooleanOption("debug_info", false,
+            "Debug info", "Include debug info in BEAM file");
     public static final BooleanOption ENCRYPT_DEBUG_INFO = new BooleanOption(
             "encrypt_debug_info", false, "Encrypt debug info",
             "Encrypt debug info, the key will be read from .erlang.crypt");
-    public static final DefineOption DEFINE = new DefineOption("d",
-            new String[] { "Name", "Value" }, "", "");
+    public static final DefineOption DEFINE = new DefineOption("d", new String[] {
+            "Name", "Value" }, "", "");
 
     public static final WarningOption WARN_UNUSED_RECORD = new WarningOption(
             "warn_unused_record", true, "Unused records", "Unused records");
     public static final WarningOption WARN_UNUSED_VARS = new WarningOption(
             "warn_unused_vars", true, "Unused variables", "Unused variables");
     public static final WarningOption WARN_UNUSED_IMPORT = new WarningOption(
-            "warn_unused_import", false, "Unused imports",
-            "Unused imported functions");
+            "warn_unused_import", false, "Unused imports", "Unused imported functions");
     public static final WarningOption WARN_OBSOLETE_GUARD = new WarningOption(
             "warn_obsolete_guard", false, "Obsolete guards",
             "Old type testing BIFs such as pid/1 and list/1");
@@ -71,9 +69,7 @@ public abstract class CompilerOption {
             "parse_transform", "Global parse transform module: ",
             "Specify a module to be used as a global parse transform");
 
-    public static final RawOption CUSTOM = new RawOption(
-            "raw",
-            "Other options: ",
+    public static final RawOption CUSTOM = new RawOption("raw", "Other options: ",
             "A list of compiler options as Erlang terms (the list brackets can be omitted).");
 
     public static class PathsOption extends CompilerOption {
@@ -96,8 +92,7 @@ public abstract class CompilerOption {
         }
 
         public static Iterable<String> fromString(final String string) {
-            return Splitter.on(',').trimResults().omitEmptyStrings()
-                    .split(string);
+            return Splitter.on(',').trimResults().omitEmptyStrings().split(string);
         }
     }
 
@@ -108,8 +103,8 @@ public abstract class CompilerOption {
         }
 
         public OtpErlangObject toTerm(final String value) {
-            return OtpErlang.mkTuple(new OtpErlangAtom(getName()),
-                    new OtpErlangAtom(value));
+            return OtpErlang.mkTuple(new OtpErlangAtom(getName()), new OtpErlangAtom(
+                    value));
         }
 
         public static String toString(final String value) {
@@ -122,8 +117,7 @@ public abstract class CompilerOption {
     }
 
     public static class RawOption extends CompilerOption {
-        public RawOption(final String name, final String description,
-                final String tooltip) {
+        public RawOption(final String name, final String description, final String tooltip) {
             super(name, description, tooltip);
         }
 
@@ -206,8 +200,7 @@ public abstract class CompilerOption {
             return fieldLabels;
         }
 
-        public OtpErlangList toTerm(
-                final Collection<Pair<String, String>> values)
+        public OtpErlangList toTerm(final Collection<Pair<String, String>> values)
                 throws TermParserException {
             final OtpErlangObject[] defines = new OtpErlangObject[values.size()];
             final int i = 0;
@@ -220,8 +213,7 @@ public abstract class CompilerOption {
                 if (Strings.isNullOrEmpty(val)) {
                     defines[i] = OtpErlang.mkTuple(tag, okey);
                 } else {
-                    final OtpErlangObject ovalue = TermParser.getParser()
-                            .parse(val);
+                    final OtpErlangObject ovalue = TermParser.getParser().parse(val);
                     defines[i] = OtpErlang.mkTuple(tag, okey, ovalue);
                 }
             }
@@ -279,8 +271,7 @@ public abstract class CompilerOption {
                 return option;
             }
         }
-        throw new IllegalArgumentException(
-                "Invalid value for compiler option: " + data);
+        throw new IllegalArgumentException("Invalid value for compiler option: " + data);
     }
 
     public String getName() {

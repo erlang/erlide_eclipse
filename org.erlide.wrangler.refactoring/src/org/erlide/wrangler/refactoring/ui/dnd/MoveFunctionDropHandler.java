@@ -52,8 +52,8 @@ public class MoveFunctionDropHandler implements INavigatorDropHandler {
     @Override
     public IStatus validateDrop(final Object target, final int operation,
             final TransferData transferType) {
-        final ISelection sel = (ISelection) LocalSelectionTransfer
-                .getTransfer().nativeToJava(transferType);
+        final ISelection sel = (ISelection) LocalSelectionTransfer.getTransfer()
+                .nativeToJava(transferType);
         final TreeSelection s = (TreeSelection) sel;
         final IErlElement e = (IErlElement) s.getFirstElement();
 
@@ -71,8 +71,8 @@ public class MoveFunctionDropHandler implements INavigatorDropHandler {
 
         // get the source data
         final TransferData td = dropAdapter.getCurrentTransfer();
-        final ISelection sel = (ISelection) LocalSelectionTransfer
-                .getTransfer().nativeToJava(td);
+        final ISelection sel = (ISelection) LocalSelectionTransfer.getTransfer()
+                .nativeToJava(td);
         final TreeSelection s = (TreeSelection) sel;
         try {
             GlobalParameters.setSelection(s);
@@ -98,8 +98,7 @@ public class MoveFunctionDropHandler implements INavigatorDropHandler {
                 refactoring, RefactoringWizard.DIALOG_BASED_USER_INTERFACE,
                 new ArrayList<WranglerPage>());
 
-        final Shell shell = PlatformUI.getWorkbench().getDisplay()
-                .getActiveShell();
+        final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
 
         final RefactoringWizardOpenOperation op = new RefactoringWizardOpenOperation(
                 wizard);

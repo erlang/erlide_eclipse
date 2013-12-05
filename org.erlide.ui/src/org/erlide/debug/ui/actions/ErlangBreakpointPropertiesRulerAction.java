@@ -17,8 +17,8 @@ import org.erlide.backend.debug.IErlangBreakpoint;
  * Presents the standard properties dialog to configure the attributes of a
  * Erlang Breakpoint from the ruler popup menu of a text editor.
  */
-public class ErlangBreakpointPropertiesRulerAction extends
-        RulerBreakpointAction implements IUpdate {
+public class ErlangBreakpointPropertiesRulerAction extends RulerBreakpointAction
+        implements IUpdate {
 
     private IBreakpoint fBreakpoint;
 
@@ -37,28 +37,28 @@ public class ErlangBreakpointPropertiesRulerAction extends
     @Override
     public void run() {
         if (getBreakpoint() != null) {
-            final PropertyDialogAction action = new PropertyDialogAction(
-                    getEditor().getEditorSite(), new ISelectionProvider() {
-                        @Override
-                        public void addSelectionChangedListener(
-                                final ISelectionChangedListener listener) {
-                        }
+            final PropertyDialogAction action = new PropertyDialogAction(getEditor()
+                    .getEditorSite(), new ISelectionProvider() {
+                @Override
+                public void addSelectionChangedListener(
+                        final ISelectionChangedListener listener) {
+                }
 
-                        @Override
-                        @SuppressWarnings("synthetic-access")
-                        public ISelection getSelection() {
-                            return new StructuredSelection(getBreakpoint());
-                        }
+                @Override
+                @SuppressWarnings("synthetic-access")
+                public ISelection getSelection() {
+                    return new StructuredSelection(getBreakpoint());
+                }
 
-                        @Override
-                        public void removeSelectionChangedListener(
-                                final ISelectionChangedListener listener) {
-                        }
+                @Override
+                public void removeSelectionChangedListener(
+                        final ISelectionChangedListener listener) {
+                }
 
-                        @Override
-                        public void setSelection(final ISelection selection) {
-                        }
-                    });
+                @Override
+                public void setSelection(final ISelection selection) {
+                }
+            });
             action.run();
         }
     }

@@ -19,33 +19,23 @@ public abstract class ErlangSearchPattern {
             "function_def");
     protected static final OtpErlangAtom FUNCTION_DEF_MOD_ATOM = new OtpErlangAtom(
             "function_def_mod");
-    static final OtpErlangAtom INCLUDE_REF_ATOM = new OtpErlangAtom(
-            "include_ref");
-    protected static final OtpErlangAtom MACRO_DEF_ATOM = new OtpErlangAtom(
-            "macro_def");
-    protected static final OtpErlangAtom MACRO_REF_ATOM = new OtpErlangAtom(
-            "macro_ref");
-    protected static final OtpErlangAtom RECORD_DEF_ATOM = new OtpErlangAtom(
-            "record_def");
-    protected static final OtpErlangAtom RECORD_REF_ATOM = new OtpErlangAtom(
-            "record_ref");
-    protected static final OtpErlangAtom TYPE_DEF_ATOM = new OtpErlangAtom(
-            "type_def");
-    protected static final OtpErlangAtom TYPE_REF_ATOM = new OtpErlangAtom(
-            "type_ref");
+    static final OtpErlangAtom INCLUDE_REF_ATOM = new OtpErlangAtom("include_ref");
+    protected static final OtpErlangAtom MACRO_DEF_ATOM = new OtpErlangAtom("macro_def");
+    protected static final OtpErlangAtom MACRO_REF_ATOM = new OtpErlangAtom("macro_ref");
+    protected static final OtpErlangAtom RECORD_DEF_ATOM = new OtpErlangAtom("record_def");
+    protected static final OtpErlangAtom RECORD_REF_ATOM = new OtpErlangAtom("record_ref");
+    protected static final OtpErlangAtom TYPE_DEF_ATOM = new OtpErlangAtom("type_def");
+    protected static final OtpErlangAtom TYPE_REF_ATOM = new OtpErlangAtom("type_ref");
     protected static final OtpErlangAtom VARIABLE_PATTERN_ATOM = new OtpErlangAtom(
             "var_pattern");
-    protected static final OtpErlangAtom VARIABLE_DEF_ATOM = new OtpErlangAtom(
-            "var_def");
-    protected static final OtpErlangAtom VARIABLE_REF_ATOM = new OtpErlangAtom(
-            "var_ref");
+    protected static final OtpErlangAtom VARIABLE_DEF_ATOM = new OtpErlangAtom("var_def");
+    protected static final OtpErlangAtom VARIABLE_REF_ATOM = new OtpErlangAtom("var_ref");
     protected static final OtpErlangAtom RECORD_FIELD_DEF_ATOM = new OtpErlangAtom(
             "record_field_def");
     protected static final OtpErlangAtom RECORD_FIELD_REF_ATOM = new OtpErlangAtom(
             "record_field_ref");
 
-    public static EnumSet<SearchFor> allSearchFor = EnumSet
-            .allOf(SearchFor.class);
+    public static EnumSet<SearchFor> allSearchFor = EnumSet.allOf(SearchFor.class);
 
     public static EnumSet<LimitTo> allLimitTo = EnumSet.allOf(LimitTo.class);
 
@@ -75,8 +65,8 @@ public abstract class ErlangSearchPattern {
     }
 
     protected OtpErlangObject makeMFAPatternObject(final OtpErlangAtom defAtom,
-            final OtpErlangAtom refAtom, final String m, final String f,
-            final int a, final boolean matchAnyFunctionDefinition) {
+            final OtpErlangAtom refAtom, final String m, final String f, final int a,
+            final boolean matchAnyFunctionDefinition) {
         OtpErlangObject refs = null, defs = null;
         if (limitTo != LimitTo.REFERENCES) {
             if (matchAnyFunctionDefinition) {
@@ -131,41 +121,37 @@ public abstract class ErlangSearchPattern {
         }
     }
 
-    private static OtpErlangTuple make2Tuple(final OtpErlangAtom atom,
-            final String s) {
-        return new OtpErlangTuple(new OtpErlangObject[] { atom,
-                new OtpErlangAtom(s) });
+    private static OtpErlangTuple make2Tuple(final OtpErlangAtom atom, final String s) {
+        return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(s) });
     }
 
-    private static final OtpErlangAtom UNDEFINED = new OtpErlangAtom(
-            "undefined");
+    private static final OtpErlangAtom UNDEFINED = new OtpErlangAtom("undefined");
 
-    private static OtpErlangObject make3Tuple(final OtpErlangAtom atom,
-            final String s, final int a) {
+    private static OtpErlangObject make3Tuple(final OtpErlangAtom atom, final String s,
+            final int a) {
         if (a >= 0) {
-            return new OtpErlangTuple(new OtpErlangObject[] { atom,
-                    new OtpErlangAtom(s), new OtpErlangLong(a) });
-        }
-        return new OtpErlangTuple(new OtpErlangObject[] { atom,
-                new OtpErlangAtom(s), UNDEFINED });
-
-    }
-
-    private static OtpErlangObject make3Tuple(final OtpErlangAtom atom,
-            final String a1, final String a2) {
-        return new OtpErlangTuple(new OtpErlangObject[] { atom,
-                new OtpErlangAtom(a1), new OtpErlangAtom(a2) });
-    }
-
-    private static OtpErlangObject make4Tuple(final OtpErlangAtom atom,
-            final String s1, final String s2, final int a) {
-        if (a >= 0) {
-            return new OtpErlangTuple(new OtpErlangObject[] { atom,
-                    new OtpErlangAtom(s1), new OtpErlangAtom(s2),
+            return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(s),
                     new OtpErlangLong(a) });
         }
-        return new OtpErlangTuple(new OtpErlangObject[] { atom,
-                new OtpErlangAtom(s1), new OtpErlangAtom(s2), UNDEFINED });
+        return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(s),
+                UNDEFINED });
+
+    }
+
+    private static OtpErlangObject make3Tuple(final OtpErlangAtom atom, final String a1,
+            final String a2) {
+        return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(a1),
+                new OtpErlangAtom(a2) });
+    }
+
+    private static OtpErlangObject make4Tuple(final OtpErlangAtom atom, final String s1,
+            final String s2, final int a) {
+        if (a >= 0) {
+            return new OtpErlangTuple(new OtpErlangObject[] { atom,
+                    new OtpErlangAtom(s1), new OtpErlangAtom(s2), new OtpErlangLong(a) });
+        }
+        return new OtpErlangTuple(new OtpErlangObject[] { atom, new OtpErlangAtom(s1),
+                new OtpErlangAtom(s2), UNDEFINED });
     }
 
     public LimitTo getLimitTo() {

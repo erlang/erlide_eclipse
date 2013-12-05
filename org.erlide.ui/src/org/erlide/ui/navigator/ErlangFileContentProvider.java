@@ -31,8 +31,8 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
 
 public class ErlangFileContentProvider implements ITreeContentProvider,
-        IResourceChangeListener, IResourceDeltaVisitor,
-        IErlModelChangeListener, IAdaptable {
+        IResourceChangeListener, IResourceDeltaVisitor, IErlModelChangeListener,
+        IAdaptable {
 
     private static final Object[] NO_CHILDREN = new Object[0];
 
@@ -168,8 +168,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
         // Commented out because it may cause problems with too many updates.
         // TODO Investigate further!
 
-        final String title = "Update Erlang Model in CommonViewer: "
-                + file.getName();
+        final String title = "Update Erlang Model in CommonViewer: " + file.getName();
         if (viewer == null) {
             return;
         }

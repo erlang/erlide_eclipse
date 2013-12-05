@@ -41,17 +41,15 @@ public class ErlCompletionProposal implements ICompletionProposal {
 
             if (event.character == fExitCharacter) {
                 if (environment.anyPositionContains(offset)) {
-                    return new LinkedModeUI.ExitFlags(
-                            ILinkedModeListener.UPDATE_CARET, false);
+                    return new LinkedModeUI.ExitFlags(ILinkedModeListener.UPDATE_CARET,
+                            false);
                 }
-                return new LinkedModeUI.ExitFlags(
-                        ILinkedModeListener.UPDATE_CARET, true);
+                return new LinkedModeUI.ExitFlags(ILinkedModeListener.UPDATE_CARET, true);
             }
 
             switch (event.character) {
             case ';':
-                return new LinkedModeUI.ExitFlags(ILinkedModeListener.NONE,
-                        true);
+                return new LinkedModeUI.ExitFlags(ILinkedModeListener.NONE, true);
             case SWT.CR:
                 return null;
             default:
@@ -99,8 +97,7 @@ public class ErlCompletionProposal implements ICompletionProposal {
             final int replacementOffset, final int replacementLength,
             final int cursorPosition, final Image image,
             final IContextInformation contextInformation,
-            final String additionalProposalInfo,
-            final ISourceViewer sourceViewer) {
+            final String additionalProposalInfo, final ISourceViewer sourceViewer) {
         this.offsetsAndLengths = offsetsAndLengths;
         this.displayString = displayString;
         this.replacementString = replacementString;
@@ -119,8 +116,7 @@ public class ErlCompletionProposal implements ICompletionProposal {
     @Override
     public void apply(final IDocument document) {
         try {
-            document.replace(replacementOffset, replacementLength,
-                    replacementString);
+            document.replace(replacementOffset, replacementLength, replacementString);
             setUpLinkedMode(document, ')', offsetsAndLengths);
         } catch (final BadLocationException x) {
             // ignore
@@ -185,16 +181,16 @@ public class ErlCompletionProposal implements ICompletionProposal {
      * @param offsetsAndLengths
      *            list of offsets and lengths for linked groups
      */
-    protected void setUpLinkedMode(final IDocument document,
-            final char closingCharacter, final List<Point> offsetsAndLengths) {
+    protected void setUpLinkedMode(final IDocument document, final char closingCharacter,
+            final List<Point> offsetsAndLengths) {
         if (sourceViewer != null && !offsetsAndLengths.isEmpty()) {
             try {
                 final LinkedModeModel model = new LinkedModeModel();
                 int last = 0, i = 0;
                 for (final Point offsetAndLength : offsetsAndLengths) {
                     final LinkedPositionGroup group = new LinkedPositionGroup();
-                    group.addPosition(new LinkedPosition(document,
-                            offsetAndLength.x, offsetAndLength.y, ++i));
+                    group.addPosition(new LinkedPosition(document, offsetAndLength.x,
+                            offsetAndLength.y, ++i));
                     model.addGroup(group);
                     final int l = offsetAndLength.x + offsetAndLength.y;
                     if (l > last) {
@@ -203,12 +199,10 @@ public class ErlCompletionProposal implements ICompletionProposal {
                 }
                 model.forceInstall();
 
-                final LinkedModeUI ui = new EditorLinkedModeUI(model,
-                        sourceViewer);
+                final LinkedModeUI ui = new EditorLinkedModeUI(model, sourceViewer);
                 // ui.setSimpleMode(true);
                 ui.setExitPolicy(new ExitPolicy(closingCharacter, document));
-                ui.setExitPosition(sourceViewer, last + 1, 0,
-                        LinkedPositionGroup.NO_STOP);
+                ui.setExitPosition(sourceViewer, last + 1, 0, LinkedPositionGroup.NO_STOP);
                 ui.setCyclingMode(LinkedModeUI.CYCLE_ALWAYS);
                 ui.enter();
             } catch (final BadLocationException x) {

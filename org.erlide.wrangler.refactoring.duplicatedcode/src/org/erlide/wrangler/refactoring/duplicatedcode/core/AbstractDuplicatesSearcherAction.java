@@ -81,8 +81,7 @@ public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
 
     protected abstract boolean getUserInput();
 
-    protected void addDuplicates(
-            final List<DuplicatedCodeElement> duplicatedCode) {
+    protected void addDuplicates(final List<DuplicatedCodeElement> duplicatedCode) {
         DuplicatesUIManager.setRefactoringResults(duplicatedCode);
     }
 
@@ -94,8 +93,8 @@ public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
      * Handles the event when a selectino is changed in the workbench
      */
     public void selectionChanged() {
-        GlobalParameters.setEditor(PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getActivePage().getActiveEditor());
+        GlobalParameters.setEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                .getActivePage().getActiveEditor());
     }
 
     /*
@@ -104,9 +103,8 @@ public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
      */
 
     void displayErrorNotification(final String errorMsg) {
-        MessageDialog.openError(PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getShell(), "Refactoring error",
-                errorMsg);
+        MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                .getShell(), "Refactoring error", errorMsg);
 
     }
 

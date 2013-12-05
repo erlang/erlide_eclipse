@@ -14,16 +14,15 @@ import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 public class ModuleInputPage extends SimpleInputPage {
 
     public ModuleInputPage(final String name, final String description,
-            final String labelText, final String inputErrorMsg,
-            final IValidator validator) {
+            final String labelText, final String inputErrorMsg, final IValidator validator) {
         super(name, description, labelText, inputErrorMsg, validator);
     }
 
     @Override
     protected boolean isInputValid() {
         if (validator.isValid(inputText.getText())) {
-            ((UserRefactoring) getRefactoring())
-                    .setCallbackModuleName(inputText.getText());
+            ((UserRefactoring) getRefactoring()).setCallbackModuleName(inputText
+                    .getText());
             setErrorMessage(null);
             setPageComplete(true);
             return true;

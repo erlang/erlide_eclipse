@@ -43,40 +43,35 @@ public class ModuleLocatorTests {
 
     @Test
     public void demoProjectsShouldBeConfiguredProperly() {
-        checkProjectDirectories(p1, new IPath[] { new Path("src") },
-                new IPath[] { new Path("include"),
-                        new Path("T_ROOT/p3/include") });
+        checkProjectDirectories(p1, new IPath[] { new Path("src") }, new IPath[] {
+                new Path("include"), new Path("T_ROOT/p3/include") });
         checkProjectDirectories(p2, new IPath[] { new Path("src") },
                 new IPath[] { new Path("include") });
     }
 
     private void checkProjectDirectories(final IErlProject project,
             final Object[] expected_sources, final Object[] expected_includes) {
-        MatcherAssert.assertThat(project.getSourceDirs().toArray(),
-                is(expected_sources));
+        MatcherAssert.assertThat(project.getSourceDirs().toArray(), is(expected_sources));
         MatcherAssert.assertThat(project.getIncludeDirs().toArray(),
                 is(expected_includes));
-        assertThat(project.getExternalModulesString(),
-                is("../external_modules"));
-        assertThat(project.getExternalIncludesString(),
-                is("../external_includes"));
+        assertThat(project.getExternalModulesString(), is("../external_modules"));
+        assertThat(project.getExternalIncludesString(), is("../external_includes"));
     }
 
     // @Test
-    public void demoProjectsShouldHaveRightExternalModules()
-            throws ErlModelException {
+    public void demoProjectsShouldHaveRightExternalModules() throws ErlModelException {
         checkExternalModules(p1, new String[] { "m11.erl" });
         checkExternalModules(p2, new String[] { "m11.erl" });
     }
 
-    private void checkExternalModules(final IErlProject project,
-            final String[] extmods) throws ErlModelException {
+    private void checkExternalModules(final IErlProject project, final String[] extmods)
+            throws ErlModelException {
         checkModuleNamesInList(extmods, project.getExternalModules());
     }
 
     @SuppressWarnings("unused")
-    private void checkExternalIncludes(final IErlProject project,
-            final String[] extincs) throws ErlModelException {
+    private void checkExternalIncludes(final IErlProject project, final String[] extincs)
+            throws ErlModelException {
         checkModuleNamesInList(extincs, project.getExternalIncludes());
     }
 
@@ -87,8 +82,7 @@ public class ModuleLocatorTests {
         }
     }
 
-    private boolean hasModWithName(final Collection<IErlModule> list,
-            final String name) {
+    private boolean hasModWithName(final Collection<IErlModule> list, final String name) {
         for (final IErlModule m : list) {
             if (m.getName().equals(name)) {
                 return true;

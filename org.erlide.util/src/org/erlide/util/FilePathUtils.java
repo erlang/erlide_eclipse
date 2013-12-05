@@ -9,8 +9,8 @@ import org.eclipse.core.runtime.Path;
 
 public class FilePathUtils {
 
-    public static boolean equalFilePaths(final String path_10,
-            final String path_20, final boolean caseSensitive) {
+    public static boolean equalFilePaths(final String path_10, final String path_20,
+            final boolean caseSensitive) {
         String path_1 = path_10;
         String path_2 = path_20;
         assertThat(path_1, is(not(nullValue())));

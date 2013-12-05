@@ -33,8 +33,7 @@ public class TestViewLabelProvider extends LabelProvider {
 
     private Image drawType(final int type) {
 
-        final Image img = new Image(Display.getCurrent(), new Rectangle(2, 3,
-                12, 12));
+        final Image img = new Image(Display.getCurrent(), new Rectangle(2, 3, 12, 12));
 
         final GC graphic = new GC(img);
 

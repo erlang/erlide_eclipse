@@ -164,8 +164,7 @@ public class ErlReconciler implements IReconciler {
                 }
             }
             if (i == 0 || isDirty) {
-                ErlLogger
-                        .debug("broke out of loop i %d isDirty %b", i, isDirty);
+                ErlLogger.debug("broke out of loop i %d isDirty %b", i, isDirty);
             }
         }
 
@@ -287,8 +286,7 @@ public class ErlReconciler implements IReconciler {
             // ErlLogger.debug("documentChanged %d %d %d", e.getOffset(),
             // e.getLength(), e.getText().length());
             if (!fThread.isDirty() && fThread.isAlive()) {
-                if (!fIsAllowedToModifyDocument
-                        && Thread.currentThread() == fThread) {
+                if (!fIsAllowedToModifyDocument && Thread.currentThread() == fThread) {
                     throw new UnsupportedOperationException(
                             "The reconciler thread is not allowed to modify the document"); //$NON-NLS-1$
                 }
@@ -300,8 +298,7 @@ public class ErlReconciler implements IReconciler {
              * changed while still inside initialProcess().
              */
             if (fProgressMonitor != null
-                    && (fThread.isActive() || fThread.isDirty()
-                            && fThread.isAlive())) {
+                    && (fThread.isActive() || fThread.isDirty() && fThread.isAlive())) {
                 fProgressMonitor.setCanceled(true);
             }
 
@@ -537,8 +534,8 @@ public class ErlReconciler implements IReconciler {
             if (text == null) {
                 text = "";
             }
-            final ErlDirtyRegion erlDirtyRegion = new ErlDirtyRegion(
-                    e.getOffset(), e.getLength(), text);
+            final ErlDirtyRegion erlDirtyRegion = new ErlDirtyRegion(e.getOffset(),
+                    e.getLength(), text);
             final boolean addDirtyRegion = fDirtyRegionQueue
                     .addDirtyRegion(erlDirtyRegion);
             fDirtyRegionQueue.notifyAll();
@@ -699,8 +696,8 @@ public class ErlReconciler implements IReconciler {
                     final IErlModule module = erlReconcilerStrategy.getModule();
                     final String scannerName = module.getScannerName();
                     final String erlFilename = module.getFilePath();
-                    final ErlDirtyRegion erlDirtyRegion = new InitialScan(
-                            getDocument().get(), scannerName, erlFilename);
+                    final ErlDirtyRegion erlDirtyRegion = new InitialScan(getDocument()
+                            .get(), scannerName, erlFilename);
                     log.add(erlDirtyRegion);
                 }
             }
@@ -728,17 +725,16 @@ public class ErlReconciler implements IReconciler {
 
     public void dumpLog(final String filename) {
         try {
-            final OutputStream out = new BufferedOutputStream(
-                    new FileOutputStream(new File(filename)));
+            final OutputStream out = new BufferedOutputStream(new FileOutputStream(
+                    new File(filename)));
             for (final ErlDirtyRegion erlDirtyRegion : log) {
                 final String text = erlFixText(erlDirtyRegion.getText());
                 String s;
                 if (erlDirtyRegion instanceof InitialScan) {
                     final InitialScan initialScan = (InitialScan) erlDirtyRegion;
                     final String spaces = "              ";
-                    s = "{initial_scan,'" + initialScan.getScannerName()
-                            + "',\n" + spaces + "\""
-                            + initialScan.getErlFilename() + "\",[],\n"
+                    s = "{initial_scan,'" + initialScan.getScannerName() + "',\n"
+                            + spaces + "\"" + initialScan.getErlFilename() + "\",[],\n"
                             + spaces + text + "}.\n";
                 } else {
                     s = "{replace_text," + erlDirtyRegion.getOffset() + ","

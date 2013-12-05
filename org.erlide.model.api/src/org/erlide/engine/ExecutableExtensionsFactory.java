@@ -29,8 +29,8 @@ import org.osgi.framework.Bundle;
  * </code>
  * </pre>
  */
-public class ExecutableExtensionsFactory implements
-        IExecutableExtensionFactory, IExecutableExtension {
+public class ExecutableExtensionsFactory implements IExecutableExtensionFactory,
+        IExecutableExtension {
 
     private String className;
     private Bundle bundle;
@@ -44,8 +44,8 @@ public class ExecutableExtensionsFactory implements
         if (data instanceof String) {
             className = (String) data;
         }
-        final String contributor = config.getDeclaringExtension()
-                .getContributor().getName();
+        final String contributor = config.getDeclaringExtension().getContributor()
+                .getName();
         bundle = Platform.getBundle(contributor);
     }
 
@@ -81,8 +81,7 @@ public class ExecutableExtensionsFactory implements
         }
     }
 
-    private void assignParameters(final Class<?>[] parameterTypes,
-            final Object[] initargs) {
+    private void assignParameters(final Class<?>[] parameterTypes, final Object[] initargs) {
         for (int i = 0; i < parameterTypes.length; i++) {
             final Class<?> paramType = parameterTypes[i];
             if (ErlangService.class.isAssignableFrom(paramType)) {
@@ -96,15 +95,13 @@ public class ExecutableExtensionsFactory implements
         }
     }
 
-    private Object injectParameter(
-            final Class<? extends ErlangService> serviceClass) {
-        final Object parameter = ErlangEngine.getInstance().getService(
-                serviceClass);
+    private Object injectParameter(final Class<? extends ErlangService> serviceClass) {
+        final Object parameter = ErlangEngine.getInstance().getService(serviceClass);
         if (parameter != null) {
             return parameter;
         }
-        throw new InjectionException("Constructor parameter "
-                + serviceClass.getName() + " could not be instantiated");
+        throw new InjectionException("Constructor parameter " + serviceClass.getName()
+                + " could not be instantiated");
 
     }
 

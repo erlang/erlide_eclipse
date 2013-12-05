@@ -12,8 +12,8 @@ public class ListsUtils {
         for (final String s : strs) {
             result.append(s).append(sep);
         }
-        return result.length() > 0 ? result.substring(0,
-                result.length() - sep.length()) : "";
+        return result.length() > 0 ? result.substring(0, result.length() - sep.length())
+                : "";
     }
 
     public static String packArray(final String[] strs, final String sep) {
@@ -21,8 +21,8 @@ public class ListsUtils {
         for (final String s : strs) {
             result.append(s).append(sep);
         }
-        return result.length() > 0 ? result.substring(0,
-                result.length() - sep.length()) : "";
+        return result.length() > 0 ? result.substring(0, result.length() - sep.length())
+                : "";
     }
 
     public static String[] unpackArray(final String str, final String sep) {

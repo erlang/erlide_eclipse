@@ -72,9 +72,8 @@ public class IErlModuleTests extends ErlModelTestBase {
     // Collection<IErlComment> getComments();
     @Test
     public void getComments() throws Exception {
-        final IErlModule commentModule = ErlideTestUtils
-                .createModule(project, "yy.erl",
-                        "-module(yy).\n% comment\n% same\nf(x) -> y.\n% last");
+        final IErlModule commentModule = ErlideTestUtils.createModule(project, "yy.erl",
+                "-module(yy).\n% comment\n% same\nf(x) -> y.\n% last");
         commentModule.open(null);
         final Collection<IErlComment> comments = commentModule.getComments();
         final String c1 = "% comment\n% same";
@@ -90,8 +89,8 @@ public class IErlModuleTests extends ErlModelTestBase {
     public void getTimestamp() throws Exception {
         module.open(null);
         final long timestamp = module.getTimestamp();
-        final IErlModule module2 = ErlideTestUtils.createModule(project,
-                "yy.erl", "-module(yy).\n");
+        final IErlModule module2 = ErlideTestUtils.createModule(project, "yy.erl",
+                "-module(yy).\n");
         module2.open(null);
         assertNotSame(IResource.NULL_STAMP, timestamp);
         assertTrue(timestamp <= module2.getTimestamp());
@@ -100,9 +99,8 @@ public class IErlModuleTests extends ErlModelTestBase {
     // IErlImport findImport(ErlangFunction function);
     @Test
     public void findImport() throws Exception {
-        final IErlModule importModule = ErlideTestUtils
-                .createModule(project, "yy.erl",
-                        "-module(yy).\n-import(lists, [reverse/1]).\nf(L) -> reverse(L).\n");
+        final IErlModule importModule = ErlideTestUtils.createModule(project, "yy.erl",
+                "-module(yy).\n-import(lists, [reverse/1]).\nf(L) -> reverse(L).\n");
         module.open(null);
         importModule.open(null);
         final ErlangFunction reverse_1 = new ErlangFunction("reverse", 1);
@@ -119,9 +117,8 @@ public class IErlModuleTests extends ErlModelTestBase {
     // Collection<IErlImport> getImports();
     @Test
     public void getImports() throws Exception {
-        final IErlModule importModule = ErlideTestUtils
-                .createModule(project, "yy.erl",
-                        "-module(yy).\n-import(lists, [reverse/1]).\nf(L) -> reverse(L).\n");
+        final IErlModule importModule = ErlideTestUtils.createModule(project, "yy.erl",
+                "-module(yy).\n-import(lists, [reverse/1]).\nf(L) -> reverse(L).\n");
         module.open(null);
         importModule.open(null);
         final Collection<IErlImport> imports = module.getImports();
@@ -133,19 +130,18 @@ public class IErlModuleTests extends ErlModelTestBase {
     // IErlPreprocessorDef findPreprocessorDef(String definedName, Kind kind);
     @Test
     public void findPreprocessorDef() throws Exception {
-        final IErlModule preprocessorDefModule = ErlideTestUtils.createModule(
-                project, "yy.erl",
-                "-module(yy).\n-define(A, hej).\n-define(B(x), x).\n"
+        final IErlModule preprocessorDefModule = ErlideTestUtils.createModule(project,
+                "yy.erl", "-module(yy).\n-define(A, hej).\n-define(B(x), x).\n"
                         + "-record(?MODULE, {a, b}).\nf(L) -> reverse(L).\n");
         preprocessorDefModule.open(null);
-        final IErlPreprocessorDef def1 = preprocessorDefModule
-                .findPreprocessorDef("A", ErlElementKind.MACRO_DEF);
-        final IErlPreprocessorDef def2 = preprocessorDefModule
-                .findPreprocessorDef("A", ErlElementKind.RECORD_DEF);
-        final IErlPreprocessorDef def3 = preprocessorDefModule
-                .findPreprocessorDef("B", ErlElementKind.MACRO_DEF);
-        final IErlPreprocessorDef def4 = preprocessorDefModule
-                .findPreprocessorDef("?MODULE", ErlElementKind.RECORD_DEF);
+        final IErlPreprocessorDef def1 = preprocessorDefModule.findPreprocessorDef("A",
+                ErlElementKind.MACRO_DEF);
+        final IErlPreprocessorDef def2 = preprocessorDefModule.findPreprocessorDef("A",
+                ErlElementKind.RECORD_DEF);
+        final IErlPreprocessorDef def3 = preprocessorDefModule.findPreprocessorDef("B",
+                ErlElementKind.MACRO_DEF);
+        final IErlPreprocessorDef def4 = preprocessorDefModule.findPreprocessorDef(
+                "?MODULE", ErlElementKind.RECORD_DEF);
         assertNotNull(def1);
         assertNull(def2);
         assertNotNull(def3);
@@ -157,9 +153,8 @@ public class IErlModuleTests extends ErlModelTestBase {
     // kind);
     @Test
     public void getPreprocessorDefs() throws Exception {
-        final IErlModule preprocessorDefModule = ErlideTestUtils.createModule(
-                project, "yy.erl",
-                "-module(yy).\n-define(A, hej).\n-define(B(x), x).\n"
+        final IErlModule preprocessorDefModule = ErlideTestUtils.createModule(project,
+                "yy.erl", "-module(yy).\n-define(A, hej).\n-define(B(x), x).\n"
                         + "-record(?MODULE, {a, b}).\nf(L) -> reverse(L).\n");
         preprocessorDefModule.open(null);
         final Collection<IErlPreprocessorDef> records = preprocessorDefModule
@@ -179,21 +174,18 @@ public class IErlModuleTests extends ErlModelTestBase {
     public void getIncludedFiles() throws Exception {
         // ErlideTestUtils.createInclude(project, "yy.hrl",
         // "-define(A, hej).\n");
-        final IErlModule includeLibModule = ErlideTestUtils
-                .createModule(project, "zz.erl",
-                        "-module(zz).\n-include_lib(\"kernel/include/file.hrl\").\nf(_) -> ok");
+        final IErlModule includeLibModule = ErlideTestUtils.createModule(project,
+                "zz.erl",
+                "-module(zz).\n-include_lib(\"kernel/include/file.hrl\").\nf(_) -> ok");
         module.open(null);
         includeLibModule.open(null);
-        final Collection<ErlangIncludeFile> includeFiles = module
-                .getIncludeFiles();
+        final Collection<ErlangIncludeFile> includeFiles = module.getIncludeFiles();
         final Collection<ErlangIncludeFile> includeFiles2 = includeLibModule
                 .getIncludeFiles();
         assertEquals(1, includeFiles.size());
-        assertEquals("yy.hrl", includeFiles.iterator().next()
-                .getFilenameLastPart());
+        assertEquals("yy.hrl", includeFiles.iterator().next().getFilenameLastPart());
         assertEquals(1, includeFiles2.size());
-        assertEquals("file.hrl", includeFiles2.iterator().next()
-                .getFilenameLastPart());
+        assertEquals("file.hrl", includeFiles2.iterator().next().getFilenameLastPart());
     }
 
     // void initialReconcile();
@@ -236,23 +228,18 @@ public class IErlModuleTests extends ErlModelTestBase {
     @Test
     public void getXDependentModules() throws Exception {
         final String yyHrl = "yy.hrl";
-        final IErlModule include = ErlideTestUtils.createInclude(project,
-                yyHrl, "-include(\"zz.hrl\").\n-define(A, hej).\n");
-        final IErlModule include2 = ErlideTestUtils.createInclude(project,
-                "zz.hrl", "-define(B(X), lists:reverse(X)).\n");
+        final IErlModule include = ErlideTestUtils.createInclude(project, yyHrl,
+                "-include(\"zz.hrl\").\n-define(A, hej).\n");
+        final IErlModule include2 = ErlideTestUtils.createInclude(project, "zz.hrl",
+                "-define(B(X), lists:reverse(X)).\n");
         module.open(null);
-        final Set<IErlModule> directDependents = module
-                .getDirectDependentModules();
+        final Set<IErlModule> directDependents = module.getDirectDependentModules();
         final Set<IErlModule> allDependents = module.getAllDependentModules();
-        final Set<IErlModule> directDependents2 = include
-                .getDirectDependentModules();
+        final Set<IErlModule> directDependents2 = include.getDirectDependentModules();
         final Set<IErlModule> allDependents2 = include.getAllDependentModules();
-        final Set<IErlModule> directDependents3 = include2
-                .getDirectDependentModules();
-        final Set<IErlModule> allDependents3 = include2
-                .getAllDependentModules();
-        final Set<IErlModule> dependentModules = module
-                .getDirectDependentModules();
+        final Set<IErlModule> directDependents3 = include2.getDirectDependentModules();
+        final Set<IErlModule> allDependents3 = include2.getAllDependentModules();
+        final Set<IErlModule> dependentModules = module.getDirectDependentModules();
         assertEquals(0, directDependents.size());
         assertEquals(0, allDependents.size());
         assertEquals(1, directDependents2.size());
@@ -279,14 +266,12 @@ public class IErlModuleTests extends ErlModelTestBase {
     public void findFunction() throws Exception {
         module.open(null);
         final String f = "f";
-        final IErlFunction function = module.findFunction(new ErlangFunction(f,
-                0));
+        final IErlFunction function = module.findFunction(new ErlangFunction(f, 0));
         final ErlangFunction f_1 = new ErlangFunction(f, 1);
         final IErlFunction function2 = module.findFunction(f_1);
-        final IErlFunction function3 = module
-                .findFunction(new ErlangFunction(f));
-        final IErlFunction function4 = module.findFunction(new ErlangFunction(
-                f, ErlangFunction.ANY_ARITY));
+        final IErlFunction function3 = module.findFunction(new ErlangFunction(f));
+        final IErlFunction function4 = module.findFunction(new ErlangFunction(f,
+                ErlangFunction.ANY_ARITY));
         assertNull(function);
         assertEquals(f_1, function2.getFunction());
         assertEquals(f_1, function3.getFunction());
@@ -297,14 +282,11 @@ public class IErlModuleTests extends ErlModelTestBase {
     // IErlTypespec findTypespec(String typeName);
     @Test
     public void findTypespec() throws Exception {
-        final IErlModule module2 = ErlideTestUtils
-                .createModule(
-                        project,
-                        "yy.erl",
-                        "-module(yy).\n"
-                                + "-spec return_error(integer(), any()) -> no_return().\n"
-                                + "return_error(Line, Message) ->\n"
-                                + "    throw({error, {Line, ?MODULE, Message}}).");
+        final IErlModule module2 = ErlideTestUtils.createModule(project, "yy.erl",
+                "-module(yy).\n"
+                        + "-spec return_error(integer(), any()) -> no_return().\n"
+                        + "return_error(Line, Message) ->\n"
+                        + "    throw({error, {Line, ?MODULE, Message}}).");
         module.open(null);
         module2.open(null);
         final String return_error = "return_error";
@@ -373,14 +355,13 @@ public class IErlModuleTests extends ErlModelTestBase {
         final Collection<IErlModule> includedFiles = ErlangEngine.getInstance()
                 .getModelSearcherService().findAllIncludedFiles(module);
         final String yyHrl = "yy.hrl";
-        final IErlModule include = ErlideTestUtils.createInclude(project,
-                yyHrl, "-include(\"zz.hrl\").\n-define(A, hej).\n");
-        final IErlModule include2 = ErlideTestUtils.createInclude(project,
-                "zz.hrl", "-define(B(X), lists:reverse(X)).\n");
+        final IErlModule include = ErlideTestUtils.createInclude(project, yyHrl,
+                "-include(\"zz.hrl\").\n-define(A, hej).\n");
+        final IErlModule include2 = ErlideTestUtils.createInclude(project, "zz.hrl",
+                "-define(B(X), lists:reverse(X)).\n");
         module.open(null);
         final List<IErlModule> includedFiles2 = Lists.newArrayList(ErlangEngine
-                .getInstance().getModelSearcherService()
-                .findAllIncludedFiles(module));
+                .getInstance().getModelSearcherService().findAllIncludedFiles(module));
         assertEquals(0, includedFiles.size());
         assertEquals(2, includedFiles2.size());
         assertEquals(include, includedFiles2.get(0));
@@ -391,21 +372,20 @@ public class IErlModuleTests extends ErlModelTestBase {
     @SuppressWarnings("unused")
     public void findAllIncludedFiles_infinite_recursion() throws Exception {
         module.open(null);
-        final IErlModule include = ErlideTestUtils.createInclude(project,
-                "yy.hrl", "-include(\"zz.hrl\").\n-define(A, hej).\n");
-        final IErlModule include2 = ErlideTestUtils.createInclude(project,
-                "zz.hrl", "-include(\"yy.hrl\").\n-define(A, hej).\n");
+        final IErlModule include = ErlideTestUtils.createInclude(project, "yy.hrl",
+                "-include(\"zz.hrl\").\n-define(A, hej).\n");
+        final IErlModule include2 = ErlideTestUtils.createInclude(project, "zz.hrl",
+                "-include(\"yy.hrl\").\n-define(A, hej).\n");
         module.open(null);
-        final Collection<IErlModule> includedFiles2 = ErlangEngine
-                .getInstance().getModelSearcherService()
-                .findAllIncludedFiles(module);
+        final Collection<IErlModule> includedFiles2 = ErlangEngine.getInstance()
+                .getModelSearcherService().findAllIncludedFiles(module);
     }
 
     // boolean isOnSourcePath();
     @Test
     public void isOnSourcePath() throws Exception {
-        final IErlModule module2 = ErlideTestUtils.createInclude(project,
-                "yy.erl", "-module(yy).\n");
+        final IErlModule module2 = ErlideTestUtils.createInclude(project, "yy.erl",
+                "-module(yy).\n");
         assertTrue(module.isOnSourcePath());
         assertFalse(module2.isOnSourcePath());
     }
@@ -413,8 +393,8 @@ public class IErlModuleTests extends ErlModelTestBase {
     // boolean isOnIncludePath();
     @Test
     public void isOnIncludePath() throws Exception {
-        final IErlModule module2 = ErlideTestUtils.createInclude(project,
-                "yy.erl", "-module(yy).\n");
+        final IErlModule module2 = ErlideTestUtils.createInclude(project, "yy.erl",
+                "-module(yy).\n");
         assertFalse(module.isOnIncludePath());
         assertTrue(module2.isOnIncludePath());
     }

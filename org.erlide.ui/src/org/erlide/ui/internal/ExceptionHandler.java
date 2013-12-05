@@ -79,8 +79,8 @@ public class ExceptionHandler {
      * @param message
      *            message to be displayed by the dialog window
      */
-    public static void handle(final InvocationTargetException e,
-            final String title, final String message) {
+    public static void handle(final InvocationTargetException e, final String title,
+            final String message) {
         handle(e, ErlideUIPlugin.getActiveWorkbenchShell(), title, message);
     }
 
@@ -96,16 +96,16 @@ public class ExceptionHandler {
      * @param message
      *            message to be displayed by the dialog window
      */
-    public static void handle(final InvocationTargetException e,
-            final Shell parent, final String title, final String message) {
+    public static void handle(final InvocationTargetException e, final Shell parent,
+            final String title, final String message) {
         fgInstance.perform(e, parent, title, message);
     }
 
     // ---- Hooks for subclasses to control exception handling
     // ------------------------------------
 
-    protected void perform(final CoreException e, final Shell shell,
-            final String title, final String message) {
+    protected void perform(final CoreException e, final Shell shell, final String title,
+            final String message) {
         final IStatus status = e.getStatus();
         ErlideUIPlugin.log(e);
         if (status != null) {
@@ -115,8 +115,8 @@ public class ExceptionHandler {
         }
     }
 
-    protected void perform(final InvocationTargetException e,
-            final Shell shell, final String title, final String message) {
+    protected void perform(final InvocationTargetException e, final Shell shell,
+            final String title, final String message) {
         final Throwable target = e.getTargetException();
         if (target instanceof CoreException) {
             perform((CoreException) target, shell, title, message);
@@ -136,14 +136,14 @@ public class ExceptionHandler {
         displayMessageDialog(e.getMessage(), shell, title, message);
     }
 
-    protected void perform(final RpcException e, final Shell shell,
-            final String title, final String message) {
+    protected void perform(final RpcException e, final Shell shell, final String title,
+            final String message) {
         ErlLogger.error(e);
         displayMessageDialog(e.getMessage(), shell, title, message);
     }
 
-    private void displayMessageDialog(final String exceptionMessage,
-            final Shell shell, final String title, final String message) {
+    private void displayMessageDialog(final String exceptionMessage, final Shell shell,
+            final String title, final String message) {
         final StringWriter msg = new StringWriter();
         if (message != null) {
             msg.write(message);

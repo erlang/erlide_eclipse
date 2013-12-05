@@ -21,8 +21,7 @@ public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
 
     @Override
     public void launch(final ILaunchConfiguration config, final String mode,
-            final ILaunch launch, final IProgressMonitor monitor)
-            throws CoreException {
+            final ILaunch launch, final IProgressMonitor monitor) throws CoreException {
 
         try {
             super.launch(config, mode, launch, monitor);
@@ -46,10 +45,8 @@ public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
 
     @Override
     protected BackendData configureBackend(final BackendData data,
-            final ILaunchConfiguration config, final String mode,
-            final ILaunch launch) {
-        final BackendData myData = super.configureBackend(data, config, mode,
-                launch);
+            final ILaunchConfiguration config, final String mode, final ILaunch launch) {
+        final BackendData myData = super.configureBackend(data, config, mode, launch);
         myData.setConsole(true);
         myData.setLongName(false);
         myData.setReportErrors(true);

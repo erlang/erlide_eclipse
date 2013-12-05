@@ -37,8 +37,8 @@ public class CallHierarchyAction extends Action {
     IErlModule module;
     private final XrefService xrefService;
 
-    public CallHierarchyAction(final ErlangEditor erlangEditor,
-            final IErlModule module, final XrefService xrefService) {
+    public CallHierarchyAction(final ErlangEditor erlangEditor, final IErlModule module,
+            final XrefService xrefService) {
         super("Call hierarchy");
         editor = erlangEditor;
         this.module = module;
@@ -50,8 +50,8 @@ public class CallHierarchyAction extends Action {
         if (module == null) {
             return;
         }
-        final IErlElement el = editor.getElementAt(editor.getViewer()
-                .getSelectedRange().x, false);
+        final IErlElement el = editor.getElementAt(
+                editor.getViewer().getSelectedRange().x, false);
         IErlFunction f = null;
         if (el instanceof IErlFunction) {
             f = (IErlFunction) el;
@@ -66,21 +66,17 @@ public class CallHierarchyAction extends Action {
         if (i > 0) {
             name = name.substring(0, i);
         }
-        final FunctionRef ref = new FunctionRef(name, f.getFunctionName(),
-                f.getArity());
+        final FunctionRef ref = new FunctionRef(name, f.getFunctionName(), f.getArity());
 
-        final IWorkbenchWindow dw = PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow();
+        final IWorkbenchWindow dw = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         final IWorkbenchPage page = dw.getActivePage();
 
-        final AsyncCaller<CallHierarchyView> ac = new AsyncCaller<CallHierarchyView>(
-                100) {
+        final AsyncCaller<CallHierarchyView> ac = new AsyncCaller<CallHierarchyView>(100) {
 
             @Override
             protected CallHierarchyView prepare() {
                 try {
-                    final IViewPart p = page
-                            .showView("org.erlide.ui.callhierarchy");
+                    final IViewPart p = page.showView("org.erlide.ui.callhierarchy");
                     final CallHierarchyView cvh = (CallHierarchyView) p
                             .getAdapter(CallHierarchyView.class);
 
@@ -97,9 +93,8 @@ public class CallHierarchyAction extends Action {
 
             @Override
             protected IRpcFuture call() throws BackendException {
-                final IRpcFuture result = xrefService
-                        .addProject(ErlangEngine.getInstance()
-                                .getModelUtilService().getProject(module));
+                final IRpcFuture result = xrefService.addProject(ErlangEngine
+                        .getInstance().getModelUtilService().getProject(module));
                 return result;
             }
 

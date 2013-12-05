@@ -122,8 +122,7 @@ public class UserRefacInputPage extends InputPage {
 
     @Override
     protected void controlWorkflow(final Shell s) {
-        ((UserRefactoring) getRefactoring()).getWorkflowController(s)
-                .doRefactoring();
+        ((UserRefactoring) getRefactoring()).getWorkflowController(s).doRefactoring();
     }
 
     @Override

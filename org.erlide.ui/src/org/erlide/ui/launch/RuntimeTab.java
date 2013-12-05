@@ -107,8 +107,8 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         nodeNameLabel.setText("Node name");
 
         nameText = new Text(comp, SWT.BORDER);
-        final GridData gd_nameText = new GridData(SWT.LEFT, SWT.CENTER, false,
-                false, 1, 1);
+        final GridData gd_nameText = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1,
+                1);
         gd_nameText.widthHint = 241;
         nameText.setLayoutData(gd_nameText);
         nameText.addModifyListener(new ModifyListener() {
@@ -124,8 +124,8 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         new Label(comp, SWT.NONE);
 
         longNameButton = new Button(comp, SWT.RADIO);
-        longNameButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-                false, 2, 1));
+        longNameButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2,
+                1));
         longNameButton.addSelectionListener(new SelectionAdapter() {
             @SuppressWarnings("synthetic-access")
             @Override
@@ -138,8 +138,8 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         new Label(comp, SWT.NONE);
 
         shortNameButton = new Button(comp, SWT.RADIO);
-        shortNameButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-                false, 2, 1));
+        shortNameButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2,
+                1));
         shortNameButton.addSelectionListener(new SelectionAdapter() {
             @SuppressWarnings("synthetic-access")
             @Override
@@ -154,8 +154,8 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         cookieLabel.setText("Cookie");
 
         cookieText = new Text(comp, SWT.BORDER);
-        final GridData gd_cookieText = new GridData(SWT.FILL, SWT.CENTER,
-                false, false, 2, 1);
+        final GridData gd_cookieText = new GridData(SWT.FILL, SWT.CENTER, false, false,
+                2, 1);
         gd_cookieText.widthHint = 232;
         cookieText.setLayoutData(gd_cookieText);
         cookieText.addModifyListener(new ModifyListener() {
@@ -168,11 +168,10 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         cookieText.setToolTipText("Leave empty to use default one");
 
         startNodeCheckbox = new Button(comp, SWT.CHECK);
-        startNodeCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-                false, false, 3, 1));
+        startNodeCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false,
+                3, 1));
         startNodeCheckbox.setSelection(true);
-        startNodeCheckbox
-                .setText("Start the Erlang node if not running already");
+        startNodeCheckbox.setText("Start the Erlang node if not running already");
         startNodeCheckbox.addSelectionListener(new SelectionAdapter() {
             @SuppressWarnings("synthetic-access")
             @Override
@@ -186,8 +185,8 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
         workingDirText = new Text(comp, SWT.BORDER);
         workingDirText.setToolTipText("may be relative to the workspace");
-        workingDirText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                false, 2, 1));
+        workingDirText
+                .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
         workingDirText.addModifyListener(new ModifyListener() {
             @Override
             @SuppressWarnings("synthetic-access")
@@ -197,14 +196,13 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         });
 
         final Label extraArgumentsLabel = new Label(comp, SWT.NONE);
-        extraArgumentsLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP,
-                false, false, 1, 1));
+        extraArgumentsLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false,
+                1, 1));
         extraArgumentsLabel.setText("Extra arguments");
 
         argsText = new Text(comp, SWT.BORDER | SWT.MULTI);
         argsText.setToolTipText("as on the command line\nBe careful about proper quoting!");
-        final GridData gd_argsText = new GridData(SWT.FILL, SWT.CENTER, true,
-                false, 2, 1);
+        final GridData gd_argsText = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
         gd_argsText.heightHint = 35;
         argsText.setLayoutData(gd_argsText);
         argsText.addModifyListener(new ModifyListener() {
@@ -217,13 +215,12 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         new Label(comp, SWT.NONE);
         final Label extraArgumentsLabel2 = new Label(comp, SWT.NONE);
         extraArgumentsLabel2.setText("(overrides runtime settings)");
-        extraArgumentsLabel2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-                true, false, 2, 1));
+        extraArgumentsLabel2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+                false, 2, 1));
         distributedLoadCheck = new Button(comp, SWT.CHECK);
-        distributedLoadCheck
-                .setText("Load project code on all connected nodes");
-        distributedLoadCheck.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-                false, false, 2, 1));
+        distributedLoadCheck.setText("Load project code on all connected nodes");
+        distributedLoadCheck.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
+                false, 2, 1));
         new Label(comp, SWT.NONE);
         distributedLoadCheck.addSelectionListener(new SelectionListener() {
             @Override
@@ -263,8 +260,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             runtimesCombo.setText("");
         }
         try {
-            final String node = config.getAttribute(
-                    ErlRuntimeAttributes.NODE_NAME, "");
+            final String node = config.getAttribute(ErlRuntimeAttributes.NODE_NAME, "");
             nameText.setText(node);
         } catch (final CoreException e) {
             nameText.setText("");
@@ -278,30 +274,27 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             nameText.setText("");
         }
         try {
-            final String cookie = config.getAttribute(
-                    ErlRuntimeAttributes.COOKIE, "");
+            final String cookie = config.getAttribute(ErlRuntimeAttributes.COOKIE, "");
             cookieText.setText(cookie);
         } catch (final CoreException e) {
             cookieText.setText("");
         }
         try {
-            final boolean startMe = config.getAttribute(
-                    ErlRuntimeAttributes.START_ME, true);
+            final boolean startMe = config.getAttribute(ErlRuntimeAttributes.START_ME,
+                    true);
             startNodeCheckbox.setSelection(startMe);
         } catch (final CoreException e) {
             startNodeCheckbox.setSelection(false);
         }
         try {
-            final String wdir = config.getAttribute(
-                    ErlRuntimeAttributes.WORKING_DIR,
+            final String wdir = config.getAttribute(ErlRuntimeAttributes.WORKING_DIR,
                     ErlRuntimeAttributes.DEFAULT_WORKING_DIR);
             workingDirText.setText(wdir);
         } catch (final CoreException e) {
             workingDirText.setText(ErlRuntimeAttributes.DEFAULT_WORKING_DIR);
         }
         try {
-            final String xtra = config.getAttribute(
-                    ErlRuntimeAttributes.EXTRA_ARGS, "");
+            final String xtra = config.getAttribute(ErlRuntimeAttributes.EXTRA_ARGS, "");
             argsText.setText(xtra);
         } catch (final CoreException e) {
             argsText.setText("");
@@ -317,20 +310,15 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
     @Override
     public void performApply(final ILaunchConfigurationWorkingCopy config) {
-        config.setAttribute(ErlRuntimeAttributes.RUNTIME_NAME,
-                runtimesCombo.getText());
+        config.setAttribute(ErlRuntimeAttributes.RUNTIME_NAME, runtimesCombo.getText());
         config.setAttribute(ErlRuntimeAttributes.START_ME,
                 startNodeCheckbox.getSelection());
-        config.setAttribute(ErlRuntimeAttributes.NODE_NAME, nameText.getText()
-                .trim());
+        config.setAttribute(ErlRuntimeAttributes.NODE_NAME, nameText.getText().trim());
         config.setAttribute(ErlRuntimeAttributes.USE_LONG_NAME,
                 longNameButton.getSelection());
-        config.setAttribute(ErlRuntimeAttributes.COOKIE, cookieText.getText()
-                .trim());
-        config.setAttribute(ErlRuntimeAttributes.WORKING_DIR,
-                workingDirText.getText());
-        config.setAttribute(ErlRuntimeAttributes.EXTRA_ARGS, argsText.getText()
-                .trim());
+        config.setAttribute(ErlRuntimeAttributes.COOKIE, cookieText.getText().trim());
+        config.setAttribute(ErlRuntimeAttributes.WORKING_DIR, workingDirText.getText());
+        config.setAttribute(ErlRuntimeAttributes.EXTRA_ARGS, argsText.getText().trim());
         config.setAttribute(ErlRuntimeAttributes.LOAD_ALL_NODES,
                 distributedLoadCheck.getSelection());
     }
@@ -352,18 +340,18 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         File d = new File(workingDir);
         if (d.isAbsolute()) {
             if (!d.exists()) {
-                setErrorMessage(String.format(
-                        "Working dir '%s' doesn't exist.", workingDir));
+                setErrorMessage(String.format("Working dir '%s' doesn't exist.",
+                        workingDir));
                 return false;
             }
         } else {
-            final String wspace = ResourcesPlugin.getWorkspace().getRoot()
-                    .getLocation().toPortableString();
+            final String wspace = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+                    .toPortableString();
             workingDir = wspace + "/" + workingDir;
             d = new File(workingDir);
             if (!d.exists()) {
-                setErrorMessage(String.format(
-                        "Working dir '%s' doesn't exist.", workingDir));
+                setErrorMessage(String.format("Working dir '%s' doesn't exist.",
+                        workingDir));
                 return false;
             }
         }
@@ -378,15 +366,12 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
     private void updateDialogStatus() {
         setMessage(null);
-        final NodeHostClassifier state = new NodeHostClassifier(nameText
-                .getText().trim());
+        final NodeHostClassifier state = new NodeHostClassifier(nameText.getText().trim());
 
         longNameButton.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE)
-                && state.host == HostnameType.NONE
-                && HostnameUtils.canUseLongNames());
+                && state.host == HostnameType.NONE && HostnameUtils.canUseLongNames());
         shortNameButton.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE)
-                && state.host == HostnameType.NONE
-                && HostnameUtils.canUseShortNames());
+                && state.host == HostnameType.NONE && HostnameUtils.canUseShortNames());
         ErlLogger.debug("state.mode=%s, state.host=%s", state.mode, state.host);
 
         switch (state.host) {
@@ -412,8 +397,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
         final boolean isLong = longNameButton.getSelection();
         if (state.host == HostnameType.NONE) {
-            nodeHostLabel
-                    .setText("@" + HostnameUtils.getErlangHostName(isLong));
+            nodeHostLabel.setText("@" + HostnameUtils.getErlangHostName(isLong));
         } else {
             nodeHostLabel.setText("");
         }
@@ -423,8 +407,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                 && startNodeCheckbox.getSelection());
         argsText.setEnabled(!(state.mode == NodeType.REMOTE)
                 && startNodeCheckbox.getSelection());
-        distributedLoadCheck
-                .setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE));
+        distributedLoadCheck.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE));
         distributedLoadCheck.setSelection(true);
 
         if (state.mode == NodeType.LOCAL_STANDALONE) {

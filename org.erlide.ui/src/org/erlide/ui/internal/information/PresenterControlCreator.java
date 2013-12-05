@@ -51,10 +51,8 @@ public final class PresenterControlCreator extends
         public BackAction(final BrowserInformationControl infoControl) {
             fInfoControl = infoControl;
             setText("Previous");
-            final ISharedImages images = PlatformUI.getWorkbench()
-                    .getSharedImages();
-            setImageDescriptor(images
-                    .getImageDescriptor(ISharedImages.IMG_TOOL_BACK));
+            final ISharedImages images = PlatformUI.getWorkbench().getSharedImages();
+            setImageDescriptor(images.getImageDescriptor(ISharedImages.IMG_TOOL_BACK));
             setDisabledImageDescriptor(images
                     .getImageDescriptor(ISharedImages.IMG_TOOL_BACK_DISABLED));
 
@@ -71,13 +69,11 @@ public final class PresenterControlCreator extends
         }
 
         public void update() {
-            final BrowserInformationControlInput current = fInfoControl
-                    .getInput();
+            final BrowserInformationControlInput current = fInfoControl.getInput();
 
             if (current != null && current.getPrevious() != null) {
                 final BrowserInput previous = current.getPrevious();
-                setToolTipText(String.format("Go back to %s",
-                        previous.getInputName()));
+                setToolTipText(String.format("Go back to %s", previous.getInputName()));
                 setEnabled(true);
             } else {
                 setToolTipText("");
@@ -95,10 +91,8 @@ public final class PresenterControlCreator extends
         public ForwardAction(final BrowserInformationControl infoControl) {
             fInfoControl = infoControl;
             setText("Next");
-            final ISharedImages images = PlatformUI.getWorkbench()
-                    .getSharedImages();
-            setImageDescriptor(images
-                    .getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
+            final ISharedImages images = PlatformUI.getWorkbench().getSharedImages();
+            setImageDescriptor(images.getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
             setDisabledImageDescriptor(images
                     .getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD_DISABLED));
 
@@ -115,8 +109,7 @@ public final class PresenterControlCreator extends
         }
 
         public void update() {
-            final BrowserInformationControlInput current = fInfoControl
-                    .getInput();
+            final BrowserInformationControlInput current = fInfoControl.getInput();
 
             if (current != null && current.getNext() != null) {
                 setToolTipText(String.format("Go to next %s", current.getNext()
@@ -146,13 +139,12 @@ public final class PresenterControlCreator extends
          */
         @Override
         public void run() {
-            final BrowserInformationControlInput input = fInfoControl
-                    .getInput();
+            final BrowserInformationControlInput input = fInfoControl.getInput();
             fInfoControl.notifyDelayedInputChange(null);
             fInfoControl.dispose();
             try {
-                final EdocView view = (EdocView) ErlideUIPlugin.getActivePage()
-                        .showView(EdocView.ID);
+                final EdocView view = (EdocView) ErlideUIPlugin.getActivePage().showView(
+                        EdocView.ID);
                 // TODO view.setInput(infoInput);
                 view.setText(input.getHtml());
             } catch (final PartInitException e) {
@@ -170,8 +162,7 @@ public final class PresenterControlCreator extends
         private final BrowserInformationControl fInfoControl;
         private final AbstractErlangEditor editor;
 
-        public OpenDeclarationAction(
-                final BrowserInformationControl infoControl,
+        public OpenDeclarationAction(final BrowserInformationControl infoControl,
                 final AbstractErlangEditor editor) {
             fInfoControl = infoControl;
             this.editor = editor;
@@ -184,8 +175,7 @@ public final class PresenterControlCreator extends
          */
         @Override
         public void run() {
-            final BrowserInformationControlInput infoInput = fInfoControl
-                    .getInput();
+            final BrowserInformationControlInput infoInput = fInfoControl.getInput();
             fInfoControl.notifyDelayedInputChange(null);
             fInfoControl.dispose();
             // TODO: add hover location to editor navigation history?
@@ -196,8 +186,8 @@ public final class PresenterControlCreator extends
                 } else if (element instanceof OpenResult) {
                     final OpenResult or = (OpenResult) element;
                     try {
-                        new OpenUtils().openOpenResult(editor,
-                                editor.getModule(), -1, null, or, null);
+                        new OpenUtils().openOpenResult(editor, editor.getModule(), -1,
+                                null, or, null);
                     } catch (final Exception e) {
                         ErlLogger.error(e);
                     }
@@ -249,8 +239,7 @@ public final class PresenterControlCreator extends
             final ImageDescriptor descriptor = ErlideImage.OBJS_EXTERNALBROWSER
                     .getDescriptor();
             openEdocInExternalBrowserAction.setImageDescriptor(descriptor);
-            openEdocInExternalBrowserAction
-                    .setDisabledImageDescriptor(descriptor);
+            openEdocInExternalBrowserAction.setDisabledImageDescriptor(descriptor);
             selectionProvider.setSelection(new StructuredSelection());
             tbm.add(openEdocInExternalBrowserAction);
 
@@ -269,8 +258,7 @@ public final class PresenterControlCreator extends
                     backAction.update();
                     forwardAction.update();
                     if (newInput == null) {
-                        selectionProvider
-                                .setSelection(new StructuredSelection());
+                        selectionProvider.setSelection(new StructuredSelection());
                     } else if (newInput instanceof BrowserInformationControlInput) {
                         final BrowserInformationControlInput input = (BrowserInformationControlInput) newInput;
                         final Object inputElement = input.getInputElement();
@@ -280,8 +268,7 @@ public final class PresenterControlCreator extends
                         showInEdocViewAction.setEnabled(hasInputElement);
                         openDeclarationAction.setEnabled(hasInputElement);
                         openEdocInExternalBrowserAction.setInput(newInput);
-                        openEdocInExternalBrowserAction
-                                .setEnabled(hasInputElement);
+                        openEdocInExternalBrowserAction.setEnabled(hasInputElement);
                     }
                 }
             };
@@ -289,13 +276,11 @@ public final class PresenterControlCreator extends
 
             tbm.update(true);
 
-            control.addLocationListener(new HandleEdocLinksLocationListener(
-                    control));
+            control.addLocationListener(new HandleEdocLinksLocationListener(control));
 
             return control;
         }
         return new DefaultInformationControl(parent,
-                EditorsUI.getTooltipAffordanceString(),
-                new ErlInformationPresenter(true));
+                EditorsUI.getTooltipAffordanceString(), new ErlInformationPresenter(true));
     }
 }

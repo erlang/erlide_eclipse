@@ -9,8 +9,7 @@ public class MacrosRecordsTypesFilter extends ErlangViewerFilter {
     @Override
     public boolean select(final Viewer viewer, final Object parentElement,
             final Object element) {
-        if (element instanceof IErlPreprocessorDef
-                || element instanceof IErlTypespec) {
+        if (element instanceof IErlPreprocessorDef || element instanceof IErlTypespec) {
             return false;
         }
         return true;

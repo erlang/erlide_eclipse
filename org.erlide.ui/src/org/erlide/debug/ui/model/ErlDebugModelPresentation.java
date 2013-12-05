@@ -72,12 +72,10 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 
     private String getErlangUninterpretedStackFrameText(
             final ErlangUninterpretedStackFrame stackFrame) {
-        return stackFrame.getModule() + ":"
-                + stackFrame.getFunction().getNameWithArity();
+        return stackFrame.getModule() + ":" + stackFrame.getFunction().getNameWithArity();
     }
 
-    private String getErlangLineBreakpointText(
-            final ErlangLineBreakpoint breakpoint) {
+    private String getErlangLineBreakpointText(final ErlangLineBreakpoint breakpoint) {
         try {
             return getErlangPositionText(breakpoint.getModule(),
                     breakpoint.getLineNumber(), breakpoint.getClauseHead());
@@ -110,8 +108,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         return sb.toString();
     }
 
-    private String getErlangProcessText(final ErlangProcess el)
-            throws DebugException {
+    private String getErlangProcessText(final ErlangProcess el) throws DebugException {
         final StringBuilder sb = new StringBuilder();
         if (el.isSystemProcess()) {
             sb.append('*');
@@ -121,8 +118,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         }
         sb.append(el.getName());
         sb.append(" [").append(el.getStatus());
-        final boolean terminated = el.getStatus().equals(
-                ErlangProcess.STATUS_TERMINATED);
+        final boolean terminated = el.getStatus().equals(ErlangProcess.STATUS_TERMINATED);
         if (terminated) {
             sb.append(", ").append(el.getExitStatus());
         }
@@ -133,14 +129,12 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         return sb.toString();
     }
 
-    private String getTargetText(final ErlangDebugTarget el)
-            throws DebugException {
+    private String getTargetText(final ErlangDebugTarget el) throws DebugException {
         return el.getName() + " (backend)";
     }
 
     @Override
-    public void computeDetail(final IValue value,
-            final IValueDetailListener listener) {
+    public void computeDetail(final IValue value, final IValueDetailListener listener) {
         String detail = "";
         try {
             detail = value.getValueString();
@@ -166,19 +160,17 @@ public class ErlDebugModelPresentation extends LabelProvider implements
             return new FileEditorInput((IFile) element);
         }
         if (element instanceof ILineBreakpoint) {
-            return new FileEditorInput((IFile) ((ILineBreakpoint) element)
-                    .getMarker().getResource());
+            return new FileEditorInput((IFile) ((ILineBreakpoint) element).getMarker()
+                    .getResource());
         }
         if (element instanceof LocalFileStorage) {
             final LocalFileStorage lfs = (LocalFileStorage) element;
             try {
-                final IErlElementLocator model = ErlangEngine.getInstance()
-                        .getModel();
+                final IErlElementLocator model = ErlangEngine.getInstance().getModel();
                 final IErlModule module = ErlangEngine
                         .getInstance()
                         .getModelFindService()
-                        .findModule(model, null, null,
-                                lfs.getFullPath().toString(),
+                        .findModule(model, null, null, lfs.getFullPath().toString(),
                                 IErlElementLocator.Scope.ALL_PROJECTS);
                 return EditorUtility.getEditorInput(module);
             } catch (final CoreException e) {

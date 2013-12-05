@@ -80,12 +80,9 @@ public class IErlFolderTests extends ErlModelTestBase {
     // boolean isSourcePathParent();
     @Test
     public void isSourcePathParent() throws Exception {
-        final IErlFolder srcFolder2 = (IErlFolder) project2
-                .getChildNamed("src");
-        final IErlFolder includeFolder2 = (IErlFolder) project2
-                .getChildNamed("include");
-        final IErlFolder ebinFolder2 = (IErlFolder) project2
-                .getChildNamed("ebin");
+        final IErlFolder srcFolder2 = (IErlFolder) project2.getChildNamed("src");
+        final IErlFolder includeFolder2 = (IErlFolder) project2.getChildNamed("include");
+        final IErlFolder ebinFolder2 = (IErlFolder) project2.getChildNamed("ebin");
         assertTrue(srcFolder2.isSourcePathParent());
         assertFalse(includeFolder2.isSourcePathParent());
         assertFalse(ebinFolder2.isSourcePathParent());
@@ -98,12 +95,11 @@ public class IErlFolderTests extends ErlModelTestBase {
         final String moduleName = module.getModuleName();
         final String name = module.getName();
         final String filePath = module.getFilePath();
-        final IErlModule include = ErlideTestUtils.createInclude(project,
-                "yy.hrl", "-define(ME, yy).\n");
+        final IErlModule include = ErlideTestUtils.createInclude(project, "yy.hrl",
+                "-define(ME, yy).\n");
         final IErlModule findModule = srcFolder.findModule(moduleName, null);
         final IErlModule findModule2 = srcFolder.findModule(null, filePath);
-        final IErlModule findModule3 = includeFolder.findModule(moduleName,
-                null);
+        final IErlModule findModule3 = includeFolder.findModule(moduleName, null);
         final IErlModule findModule4 = includeFolder.findModule(null, filePath);
         final IErlModule findModule5 = srcFolder.findModule(name, null);
         // path overrides name
@@ -127,23 +123,19 @@ public class IErlFolderTests extends ErlModelTestBase {
     // throws ErlModelException;
     @Test
     public void findInclude() throws Exception {
-        final IErlModule include = ErlideTestUtils.createInclude(project,
-                "yy.hrl", "-define(ME, yy).\n");
-        final IErlModule module2 = ErlideTestUtils.createInclude(project,
-                "zz.erl", "-module(zz).\n");
+        final IErlModule include = ErlideTestUtils.createInclude(project, "yy.hrl",
+                "-define(ME, yy).\n");
+        final IErlModule module2 = ErlideTestUtils.createInclude(project, "zz.erl",
+                "-module(zz).\n");
         final String moduleName = include.getModuleName();
         final String name = include.getName();
         final String filePath = include.getFilePath();
         final IErlModule findInclude = srcFolder.findInclude(moduleName, null);
-        final IErlModule findInclude2 = includeFolder.findInclude(moduleName,
-                null);
-        final IErlModule findInclude3 = includeFolder.findInclude(null,
-                filePath);
+        final IErlModule findInclude2 = includeFolder.findInclude(moduleName, null);
+        final IErlModule findInclude3 = includeFolder.findInclude(null, filePath);
         final IErlModule findInclude4 = includeFolder.findInclude(name, null);
-        final IErlModule findInclude5 = includeFolder.findInclude("xxaa",
-                filePath);
-        final IErlModule findInclude6 = includeFolder.findInclude("zz.erl",
-                null);
+        final IErlModule findInclude5 = includeFolder.findInclude("xxaa", filePath);
+        final IErlModule findInclude6 = includeFolder.findInclude("zz.erl", null);
         final IErlModule findInclude7 = includeFolder.findInclude("zz", null);
         assertNull(findInclude);
         assertEquals(include, findInclude2);

@@ -17,7 +17,6 @@ public interface IErlangReconcilingListener {
 
     void aboutToBeReconciled();
 
-    void reconciled(ISourceUnit ast, boolean forced,
-            IProgressMonitor progressMonitor);
+    void reconciled(ISourceUnit ast, boolean forced, IProgressMonitor progressMonitor);
 
 }

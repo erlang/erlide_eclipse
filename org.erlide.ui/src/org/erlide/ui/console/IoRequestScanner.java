@@ -36,8 +36,7 @@ public class IoRequestScanner implements IPartitionTokenScanner {
 
     @Override
     public void setPartialRange(final IDocument document, final int offset,
-            final int length, final String contentType,
-            final int partitionOffset) {
+            final int length, final String contentType, final int partitionOffset) {
         docOffset = offset;
         docLength = length;
         final IoRequest req = model.findAtPos(docOffset);
@@ -78,8 +77,7 @@ public class IoRequestScanner implements IPartitionTokenScanner {
     }
 
     @Override
-    public void setRange(final IDocument document, final int offset,
-            final int length) {
+    public void setRange(final IDocument document, final int offset, final int length) {
         docOffset = offset;
         docLength = length;
         final IoRequest req = model.findAtPos(docOffset);

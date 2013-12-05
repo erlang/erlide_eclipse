@@ -43,8 +43,8 @@ public class QuickOutlineNamePatternFilter extends ViewerFilter {
         }
         final TreeViewer treeViewer = (TreeViewer) viewer;
         // Match the pattern against the label of the given element
-        final String matchName = ((ILabelProvider) treeViewer
-                .getLabelProvider()).getText(element);
+        final String matchName = ((ILabelProvider) treeViewer.getLabelProvider())
+                .getText(element);
         // Element passes the filter if it matches the pattern
         if (matchName != null && fStringMatcher.match(matchName)) {
             return true;
@@ -58,14 +58,13 @@ public class QuickOutlineNamePatternFilter extends ViewerFilter {
      * @param element
      * @return
      */
-    private boolean hasUnfilteredChild(final TreeViewer viewer,
-            final Object element) {
+    private boolean hasUnfilteredChild(final TreeViewer viewer, final Object element) {
         // No point calling hasChildren() because the operation is the same cost
         // as getting the children
         // If the element has a child that passes the filter, then we want to
         // keep the parent around - even if it does not pass the filter itself
-        final Object[] children = ((ITreeContentProvider) viewer
-                .getContentProvider()).getChildren(element);
+        final Object[] children = ((ITreeContentProvider) viewer.getContentProvider())
+                .getChildren(element);
         for (int i = 0; i < children.length; i++) {
             if (select(viewer, element, children[i])) {
                 return true;

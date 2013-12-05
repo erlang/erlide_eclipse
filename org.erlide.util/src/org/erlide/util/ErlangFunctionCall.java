@@ -11,8 +11,7 @@ public class ErlangFunctionCall {
     private final int arity;
     private final String parameters;
 
-    public ErlangFunctionCall(final String module, final String function,
-            final int arity) {
+    public ErlangFunctionCall(final String module, final String function, final int arity) {
         this.module = module;
         this.function = function;
         this.arity = arity;

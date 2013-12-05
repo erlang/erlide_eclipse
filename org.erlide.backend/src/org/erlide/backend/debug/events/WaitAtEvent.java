@@ -11,8 +11,8 @@ public class WaitAtEvent extends MetaEvent {
     @SuppressWarnings("unused")
     private final OtpErlangPid metaPid;
 
-    public WaitAtEvent(final OtpErlangPid metaPid, final String module,
-            final int line, final OtpErlangObject otpErlangObject) {
+    public WaitAtEvent(final OtpErlangPid metaPid, final String module, final int line,
+            final OtpErlangObject otpErlangObject) {
         super(metaPid, null);
         this.module = module;
         this.line = line;

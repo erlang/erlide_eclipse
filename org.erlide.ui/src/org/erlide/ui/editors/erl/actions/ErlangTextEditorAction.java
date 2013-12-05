@@ -44,16 +44,15 @@ public class ErlangTextEditorAction extends TextEditorAction {
     final protected String fErlModule;
     final protected String fErlFunction;
 
-    public ErlangTextEditorAction(final ResourceBundle bundle,
-            final String prefix, final ITextEditor editor,
-            final String erlModule, final String erlFunction) {
+    public ErlangTextEditorAction(final ResourceBundle bundle, final String prefix,
+            final ITextEditor editor, final String erlModule, final String erlFunction) {
         super(bundle, prefix, editor);
         fErlModule = erlModule;
         fErlFunction = erlFunction;
     }
 
-    public ErlangTextEditorAction(final ResourceBundle bundle,
-            final String prefix, final ITextEditor editor) {
+    public ErlangTextEditorAction(final ResourceBundle bundle, final String prefix,
+            final ITextEditor editor) {
         this(bundle, prefix, editor, null, null);
     }
 
@@ -68,8 +67,8 @@ public class ErlangTextEditorAction extends TextEditorAction {
      * @return new {@link ITextSelection} extended to the whole lines
      *         intersected by selection
      */
-    public static ITextSelection extendSelectionToWholeLines(
-            final IDocument document, final ITextSelection selection) {
+    public static ITextSelection extendSelectionToWholeLines(final IDocument document,
+            final ITextSelection selection) {
         final int startLine = selection.getStartLine();
         final int endLine = selection.getEndLine();
         int startLineOffset;
@@ -121,19 +120,14 @@ public class ErlangTextEditorAction extends TextEditorAction {
                         } else if (e2 == null) {
                             return extendSelectionToWholeLines(
                                     document,
-                                    new TextSelection(document, offset,
-                                            selection.getLength()
-                                                    + selection.getOffset()
-                                                    - offset));
+                                    new TextSelection(document, offset, selection
+                                            .getLength() + selection.getOffset() - offset));
                         } else if (e2 instanceof ISourceReference) {
                             final ISourceReference ref2 = (ISourceReference) e2;
                             final ISourceRange r2 = ref2.getSourceRange();
-                            return extendSelectionToWholeLines(
-                                    document,
-                                    new TextSelection(document, offset, r2
-                                            .getOffset()
-                                            - offset
-                                            + r2.getLength()));
+                            return extendSelectionToWholeLines(document,
+                                    new TextSelection(document, offset, r2.getOffset()
+                                            - offset + r2.getLength()));
                         }
                     }
                 } catch (final ErlModelException e) {
@@ -192,8 +186,8 @@ public class ErlangTextEditorAction extends TextEditorAction {
     protected OtpErlangObject callErlang(final int offset, final int length,
             final String aText) throws RpcException {
         final IRpcSite b = ErlangEngine.getInstance().getBackend();
-        final OtpErlangObject r1 = BackendUtils.call(b, fErlModule,
-                fErlFunction, offset, length, aText);
+        final OtpErlangObject r1 = BackendUtils.call(b, fErlModule, fErlFunction, offset,
+                length, aText);
         return r1;
     }
 
@@ -223,17 +217,15 @@ public class ErlangTextEditorAction extends TextEditorAction {
 
     private void doIndent(final ISelection sel) {
         final ITextEditor textEditor = getTextEditor();
-        final IDocument document = textEditor.getDocumentProvider()
-                .getDocument(textEditor.getEditorInput());
+        final IDocument document = textEditor.getDocumentProvider().getDocument(
+                textEditor.getEditorInput());
         final ITextSelection selection = extendSelectionToWholeLines(document,
                 (ITextSelection) sel);
-        final ITextSelection getSelection = getTextSelection(document,
-                selection);
+        final ITextSelection getSelection = getTextSelection(document, selection);
         String text;
         OtpErlangObject r1 = null;
         try {
-            text = document.get(getSelection.getOffset(),
-                    getSelection.getLength());
+            text = document.get(getSelection.getOffset(), getSelection.getLength());
             // call erlang, with selection within text
             r1 = callErlang(selection.getOffset() - getSelection.getOffset(),
                     selection.getLength(), text);
@@ -244,18 +236,15 @@ public class ErlangTextEditorAction extends TextEditorAction {
         if (newText == null) {
             final String msg = "call to " + getClass().getSimpleName()
                     + " timed out; try a smaller selection.";
-            final Status status = new Status(IStatus.ERROR,
-                    ErlangCore.PLUGIN_ID,
+            final Status status = new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
                     ErlangStatus.INTERNAL_ERROR.getValue(), msg, null);
             ErlLogger.error("INTERNAL ERROR: " + msg);
 
             ErrorDialog.openError(textEditor.getSite().getShell(),
-                    ActionMessages.IndentAction_error_message,
-                    "Internal error", status);
+                    ActionMessages.IndentAction_error_message, "Internal error", status);
             return;
         }
-        final Display display = textEditor.getEditorSite().getShell()
-                .getDisplay();
+        final Display display = textEditor.getEditorSite().getShell().getDisplay();
         display.syncExec(new Runnable() {
             @Override
             public void run() {
@@ -267,10 +256,10 @@ public class ErlangTextEditorAction extends TextEditorAction {
                 }
                 try {
                     // ErlLogger.debug("'"+newText+"'");
-                    if (!document.get(selection.getOffset(),
-                            selection.getLength()).equals(newText)) {
-                        document.replace(selection.getOffset(),
-                                selection.getLength(), newText);
+                    if (!document.get(selection.getOffset(), selection.getLength())
+                            .equals(newText)) {
+                        document.replace(selection.getOffset(), selection.getLength(),
+                                newText);
                     }
                     selectAndReveal(selection.getOffset(), newText.length());
                 } catch (final BadLocationException e) {

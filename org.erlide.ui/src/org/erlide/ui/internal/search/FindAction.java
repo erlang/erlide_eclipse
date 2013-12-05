@@ -83,8 +83,7 @@ public abstract class FindAction extends SelectionDispatchAction {
     abstract void init();
 
     private boolean canOperateOn(final IStructuredSelection sel) {
-        return sel != null && !sel.isEmpty()
-                && canOperateOn(getErlElement(sel, true));
+        return sel != null && !sel.isEmpty() && canOperateOn(getErlElement(sel, true));
     }
 
     boolean canOperateOn(final IErlElement element) {
@@ -115,8 +114,7 @@ public abstract class FindAction extends SelectionDispatchAction {
     // }
     // }
 
-    IErlElement getErlElement(final IStructuredSelection selection,
-            final boolean silent) {
+    IErlElement getErlElement(final IStructuredSelection selection, final boolean silent) {
         if (selection.size() == 1) {
             final Object firstElement = selection.getFirstElement();
             if (firstElement instanceof IErlElement) {
@@ -222,11 +220,10 @@ public abstract class FindAction extends SelectionDispatchAction {
                             ErlangEngine.getInstance().getModel().getPathVars());
             ErlLogger.debug("find " + res);
             final ErlangSearchPattern ref = SearchUtil
-                    .getSearchPatternFromOpenResultAndLimitTo(module, offset,
-                            res, getLimitTo(), true);
+                    .getSearchPatternFromOpenResultAndLimitTo(module, offset, res,
+                            getLimitTo(), true);
             if (ref != null) {
-                SearchUtil.runQuery(ref, getScope(), getScopeDescription(),
-                        getShell());
+                SearchUtil.runQuery(ref, getScope(), getScopeDescription(), getShell());
             }
         } catch (final Exception e) {
             handleException(e);
@@ -235,8 +232,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 
     abstract LimitTo getLimitTo();
 
-    abstract protected ErlSearchScope getScope() throws ErlModelException,
-            CoreException;
+    abstract protected ErlSearchScope getScope() throws ErlModelException, CoreException;
 
     abstract protected String getScopeDescription();
 
@@ -265,20 +261,18 @@ public abstract class FindAction extends SelectionDispatchAction {
      */
     public void run(final IErlElement element) {
         try {
-            final ErlangSearchPattern pattern = new SearchPatternFactory(
-                    ErlangEngine.getInstance().getModelUtilService())
-                    .getSearchPatternFromErlElementAndLimitTo(element,
-                            getLimitTo());
-            SearchUtil.runQuery(pattern, getScope(), getScopeDescription(),
-                    getShell());
+            final ErlangSearchPattern pattern = new SearchPatternFactory(ErlangEngine
+                    .getInstance().getModelUtilService())
+                    .getSearchPatternFromErlElementAndLimitTo(element, getLimitTo());
+            SearchUtil.runQuery(pattern, getScope(), getScopeDescription(), getShell());
         } catch (final CoreException e) {
             handleException(e);
         }
     }
 
     protected void handleException(final Exception e) {
-        ExceptionHandler.handle(new InvocationTargetException(e), getShell(),
-                "Search", "Problems occurred while searching. "
+        ExceptionHandler.handle(new InvocationTargetException(e), getShell(), "Search",
+                "Problems occurred while searching. "
                         + "The affected files will be skipped.");
     }
 
@@ -302,8 +296,7 @@ public abstract class FindAction extends SelectionDispatchAction {
             }
         } else {
             final IWorkbenchSite site = getSite();
-            final ISelection selection = site.getSelectionProvider()
-                    .getSelection();
+            final ISelection selection = site.getSelectionProvider().getSelection();
             if (selection instanceof IStructuredSelection) {
                 final IStructuredSelection ss = (IStructuredSelection) selection;
                 final Collection<IProject> result = Sets.newHashSet();

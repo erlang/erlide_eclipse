@@ -36,8 +36,7 @@ class DuplicatesViewLabelProvider extends LabelProvider {
 
         erlangFileImage = getImageDescriptor("icons/erlFile.gif").createImage();
         codeSnippetImage = getImageDescriptor("icons/match.gif").createImage();
-        duplicateImage = getImageDescriptor("icons/codeSnippet.gif")
-                .createImage();
+        duplicateImage = getImageDescriptor("icons/codeSnippet.gif").createImage();
     }
 
     @Override
@@ -60,8 +59,8 @@ class DuplicatesViewLabelProvider extends LabelProvider {
 
     public static ImageDescriptor getImageDescriptor(final String name) {
 
-        final ImageDescriptor descriptor = AbstractUIPlugin
-                .imageDescriptorFromPlugin(Activator.PLUGIN_ID, name);
+        final ImageDescriptor descriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
+                Activator.PLUGIN_ID, name);
 
         return descriptor;
     }

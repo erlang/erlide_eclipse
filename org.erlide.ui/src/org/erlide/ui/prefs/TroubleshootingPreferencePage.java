@@ -70,8 +70,8 @@ public class TroubleshootingPreferencePage extends PreferencePage implements
         parent.setFont(font);
 
         final Label lblNewLabel_7 = new Label(parent, SWT.WRAP);
-        final GridData gd_lblNewLabel_7 = new GridData(SWT.FILL, SWT.CENTER,
-                false, false, 2, 1);
+        final GridData gd_lblNewLabel_7 = new GridData(SWT.FILL, SWT.CENTER, false,
+                false, 2, 1);
         gd_lblNewLabel_7.widthHint = 413;
         lblNewLabel_7.setLayoutData(gd_lblNewLabel_7);
         lblNewLabel_7
@@ -94,30 +94,27 @@ public class TroubleshootingPreferencePage extends PreferencePage implements
                 || System.getProperty("erlide.short.name") != null;
         lblWarning.setVisible(showWarning);
         lblWarning.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
-        lblWarning.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-                false, 2, 1));
+        lblWarning.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
         lblWarning
                 .setText("You have manually configured the host names! Use at your own risk!");
 
         final Label lblErlangSeesThe = new Label(parent, SWT.NONE);
-        lblErlangSeesThe.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
-                false, false, 1, 1));
+        lblErlangSeesThe.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
+                1, 1));
         lblErlangSeesThe.setText("Erlang sees these names:");
 
         final Button btnNewButton = new Button(parent, SWT.NONE);
-        btnNewButton.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false,
-                false, 1, 1));
+        btnNewButton.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false, 1, 1));
         btnNewButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final Cursor cursor = new Cursor(parent.getDisplay(),
-                        SWT.CURSOR_WAIT);
+                final Cursor cursor = new Cursor(parent.getDisplay(), SWT.CURSOR_WAIT);
                 try {
                     parent.setCursor(cursor);
                     parent.setEnabled(false);
 
-                    final RuntimeInfo runtime = BackendCore
-                            .getRuntimeInfoCatalog().getErlideRuntime();
+                    final RuntimeInfo runtime = BackendCore.getRuntimeInfoCatalog()
+                            .getErlideRuntime();
                     HostnameUtils.detectHostNames(runtime.getOtpHome());
                     updateHostNames();
                 } finally {
@@ -131,32 +128,31 @@ public class TroubleshootingPreferencePage extends PreferencePage implements
         btnNewButton.setText("Detect host names");
 
         final Label lblLongName1 = new Label(parent, SWT.NONE);
-        lblLongName1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-                false, 1, 1));
+        lblLongName1
+                .setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblLongName1.setText("Long name (-name)");
 
         longNameText = new Text(parent, SWT.BORDER);
         longNameText.setEnabled(false);
         longNameText.setEditable(false);
-        longNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                false, 1, 1));
+        longNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
         final Label lblShortName1 = new Label(parent, SWT.NONE);
-        lblShortName1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-                false, 1, 1));
+        lblShortName1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1,
+                1));
         lblShortName1.setText("Short name (-sname)");
 
         shortNameText = new Text(parent, SWT.BORDER);
         shortNameText.setEnabled(false);
         shortNameText.setEditable(false);
-        shortNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                false, 1, 1));
+        shortNameText
+                .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
         new Label(parent, SWT.NONE);
 
         final Label lblNewLabel_3 = new Label(parent, SWT.WRAP);
-        final GridData gd_lblNewLabel_3 = new GridData(SWT.FILL, SWT.CENTER,
-                false, false, 1, 1);
+        final GridData gd_lblNewLabel_3 = new GridData(SWT.FILL, SWT.CENTER, false,
+                false, 1, 1);
         gd_lblNewLabel_3.widthHint = 234;
         lblNewLabel_3.setLayoutData(gd_lblNewLabel_3);
         lblNewLabel_3
@@ -165,32 +161,32 @@ public class TroubleshootingPreferencePage extends PreferencePage implements
         new Label(parent, SWT.NONE);
 
         final Label lblNewLabel_4 = new Label(parent, SWT.NONE);
-        lblNewLabel_4.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false,
-                false, 1, 1));
+        lblNewLabel_4
+                .setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false, 1, 1));
         lblNewLabel_4.setText("Java sees these names:");
         new Label(parent, SWT.NONE);
 
         final Label lblNewLabel_6 = new Label(parent, SWT.NONE);
-        lblNewLabel_6.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-                false, 1, 1));
+        lblNewLabel_6.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1,
+                1));
         lblNewLabel_6.setText("long");
 
         javaLongNameText = new Text(parent, SWT.BORDER);
         javaLongNameText.setEnabled(false);
         javaLongNameText.setEditable(false);
-        javaLongNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                false, 1, 1));
+        javaLongNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+                1));
 
         final Label lblNewLabel_5 = new Label(parent, SWT.NONE);
-        lblNewLabel_5.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-                false, 1, 1));
+        lblNewLabel_5.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1,
+                1));
         lblNewLabel_5.setText("short");
 
         javaShortNameText = new Text(parent, SWT.BORDER);
         javaShortNameText.setEnabled(false);
         javaShortNameText.setEditable(false);
-        javaShortNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-                true, false, 1, 1));
+        javaShortNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+                1, 1));
 
         updateHostNames();
 

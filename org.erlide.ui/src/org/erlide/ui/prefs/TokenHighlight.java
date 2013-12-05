@@ -38,8 +38,7 @@ public enum TokenHighlight {
         this(color, styles, null);
     }
 
-    private TokenHighlight(final RGB color, final int styles,
-            final String displayName) {
+    private TokenHighlight(final RGB color, final int styles, final String displayName) {
         defaultStyle = new HighlightStyle(color, styles);
         this.displayName = displayName;
     }
@@ -71,16 +70,13 @@ public enum TokenHighlight {
 
     public HighlightStyle getStyle(final IPreferenceStore store) {
         final IEclipsePreferences node = InstanceScope.INSTANCE
-                .getNode(ColoringPreferencePage.OLD_COLORS_QUALIFIER + "/"
-                        + getName());
+                .getNode(ColoringPreferencePage.OLD_COLORS_QUALIFIER + "/" + getName());
         if (node != null) {
-            final String colorString = node.get(
-                    ColoringPreferencePage.COLOR_KEY, null);
+            final String colorString = node.get(ColoringPreferencePage.COLOR_KEY, null);
             if (colorString != null) {
                 store.setValue(getColorKey(), colorString);
             }
-            final int styles = node
-                    .getInt(ColoringPreferencePage.STYLE_KEY, -1);
+            final int styles = node.getInt(ColoringPreferencePage.STYLE_KEY, -1);
             if (styles != -1) {
                 store.setValue(getStylesKey(), styles);
             }
@@ -118,10 +114,8 @@ public enum TokenHighlight {
             return null;
         }
         if (key.endsWith(ColoringPreferencePage.COLOR_KEY)) {
-            return key.substring(
-                    ColoringPreferencePage.COLORS_QUALIFIER.length(),
-                    key.length() - ColoringPreferencePage.COLOR_KEY.length()
-                            - 1);
+            return key.substring(ColoringPreferencePage.COLORS_QUALIFIER.length(),
+                    key.length() - ColoringPreferencePage.COLOR_KEY.length() - 1);
         }
         return key.substring(ColoringPreferencePage.COLORS_QUALIFIER.length(),
                 key.length() - ColoringPreferencePage.STYLE_KEY.length() - 1);

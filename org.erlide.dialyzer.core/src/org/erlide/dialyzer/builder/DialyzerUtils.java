@@ -65,8 +65,7 @@ public class DialyzerUtils {
             DialyzerErrorException {
         try {
             for (final IErlModule module : modules) {
-                DialyzerMarkerUtils.removeDialyzerMarkersFor(module
-                        .getResource());
+                DialyzerMarkerUtils.removeDialyzerMarkersFor(module.getResource());
             }
 
             // TODO handle preferences from multiple projects
@@ -78,11 +77,11 @@ public class DialyzerUtils {
             final List<String> files = Lists.newArrayList();
             final List<IPath> includeDirs = Lists.newArrayList();
             final List<String> names = Lists.newArrayList();
-            collectFilesAndIncludeDirs(modules, projects, files, names,
-                    includeDirs, fromSource);
+            collectFilesAndIncludeDirs(modules, projects, files, names, includeDirs,
+                    fromSource);
 
-            final String fileNames = names.size() + " modules ["
-                    + getFileNames(names) + "]";
+            final String fileNames = names.size() + " modules [" + getFileNames(names)
+                    + "]";
             monitor.subTask(fileNames);
             ErlLogger.trace("dialyzer", "run %s", fileNames);
 
@@ -97,8 +96,8 @@ public class DialyzerUtils {
                 }
                 // check backend down
                 if (!backend.isRunning()) {
-                    throw new BackendException("Dialyzer: backend "
-                            + backend.getName() + " is down");
+                    throw new BackendException("Dialyzer: backend " + backend.getName()
+                            + " is down");
                 }
 
                 OtpErlangObject r = null;
@@ -118,8 +117,8 @@ public class DialyzerUtils {
         }
     }
 
-    private static void processResult(final IRpcSite backend,
-            final OtpErlangObject o) throws DialyzerErrorException {
+    private static void processResult(final IRpcSite backend, final OtpErlangObject o)
+            throws DialyzerErrorException {
         if (o instanceof OtpErlangTuple) {
             final OtpErlangTuple t = (OtpErlangTuple) o;
             final OtpErlangAtom whatA = (OtpErlangAtom) t.elementAt(0);
@@ -127,8 +126,8 @@ public class DialyzerUtils {
             final OtpErlangObject result = t.elementAt(1);
 
             if ("warnings".equals(what)) {
-                DialyzerMarkerUtils.addDialyzerWarningMarkersFromResultList(
-                        backend, (OtpErlangList) result);
+                DialyzerMarkerUtils.addDialyzerWarningMarkersFromResultList(backend,
+                        (OtpErlangList) result);
             } else if ("dialyzer_error".equals(what)) {
                 final String s = Util.ioListToString(result, MAX_MSG_LEN);
                 throw new DialyzerErrorException(s);
@@ -155,24 +154,22 @@ public class DialyzerUtils {
         return sb.substring(0, sb.length() - 2);
     }
 
-    public static void collectFilesAndIncludeDirs(
-            final Set<IErlModule> modules, final Set<IErlProject> projects,
-            final Collection<String> files, final Collection<String> names,
-            final Collection<IPath> includeDirs, final boolean fromSource) {
+    public static void collectFilesAndIncludeDirs(final Set<IErlModule> modules,
+            final Set<IErlProject> projects, final Collection<String> files,
+            final Collection<String> names, final Collection<IPath> includeDirs,
+            final boolean fromSource) {
         for (final IErlModule m : modules) {
             final String name = m.getName();
             final IErlProject erlProject = ErlangEngine.getInstance()
                     .getModelUtilService().getProject(m);
             final IProject project = erlProject.getWorkspaceProject();
-            final IFolder ebin = project.getFolder(erlProject
-                    .getOutputLocation());
+            final IFolder ebin = project.getFolder(erlProject.getOutputLocation());
             if (ModuleKind.hasErlExtension(name)) {
                 if (fromSource) {
                     final IResource resource = m.getResource();
                     files.add(resource.getLocation().toPortableString());
                 } else {
-                    final String moduleName = SystemConfiguration
-                            .withoutExtension(name);
+                    final String moduleName = SystemConfiguration.withoutExtension(name);
                     final String beamName = moduleName + ".beam";
                     final IResource beam = ebin.findMember(beamName);
                     if (beam != null) {
@@ -209,8 +206,7 @@ public class DialyzerUtils {
                     }
                 }
             }
-            final String s = Util.ioListToString(t.elementAt(1),
-                    MAX_MSG_LEN + 10);
+            final String s = Util.ioListToString(t.elementAt(1), MAX_MSG_LEN + 10);
             final String r = s.replaceAll("\\\\n", "\n");
             if (s.length() > MAX_MSG_LEN) {
                 ErlLogger.error("%s", s);

@@ -24,8 +24,7 @@ public class ErlangExternalEditorInputFactory implements IElementFactory {
             final ErlangExternalEditorInput input) {
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         final String externalModulePath = ErlangEngine.getInstance()
-                .getModelUtilService()
-                .getExternalModulePath(model, input.getModule());
+                .getModelUtilService().getExternalModulePath(model, input.getModule());
         memento.putString(TAG_EXTERNAL_MODULE_PATH, externalModulePath);
         final URI uri = input.getURI();
         memento.putString(TAG_URI, uri.toString());
@@ -34,8 +33,7 @@ public class ErlangExternalEditorInputFactory implements IElementFactory {
     @Override
     public IAdaptable createElement(final IMemento memento) {
         // Get the file name.
-        final String externalModulePath = memento
-                .getString(TAG_EXTERNAL_MODULE_PATH);
+        final String externalModulePath = memento.getString(TAG_EXTERNAL_MODULE_PATH);
         if (externalModulePath == null) {
             return null;
         }

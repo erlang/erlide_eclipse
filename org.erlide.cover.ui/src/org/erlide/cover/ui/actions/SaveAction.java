@@ -40,11 +40,9 @@ public class SaveAction extends Action {
     public void run() {
 
         final StringBuilder statName = new StringBuilder();
-        statName.append("cov_").append(
-                StatsTreeModel.getInstance().getTimestamp());
+        statName.append("cov_").append(StatsTreeModel.getInstance().getTimestamp());
 
-        final IPath location = Activator.getDefault().getStateLocation()
-                .append(DIR_NAME);
+        final IPath location = Activator.getDefault().getStateLocation().append(DIR_NAME);
         final File dir = location.toFile();
 
         if (!dir.exists() && !dir.mkdir()) {
@@ -54,10 +52,9 @@ public class SaveAction extends Action {
 
         // open input dialog
 
-        final InputDialog nameDialog = new InputDialog(shell,
-                "Saving coverage results",
-                "Enter the name for saving coverage results",
-                statName.toString(), new IInputValidator() {
+        final InputDialog nameDialog = new InputDialog(shell, "Saving coverage results",
+                "Enter the name for saving coverage results", statName.toString(),
+                new IInputValidator() {
 
                     @Override
                     public String isValid(final String newText) {

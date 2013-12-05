@@ -103,8 +103,7 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
             return false;
         } catch (final InvocationTargetException e) {
             final Throwable realException = e.getTargetException();
-            MessageDialog.openError(getShell(), "Error",
-                    realException.getMessage());
+            MessageDialog.openError(getShell(), "Error", realException.getMessage());
             return false;
         }
         return true;
@@ -116,8 +115,7 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
      * file.
      */
     public void doFinish(final String containerName, final String fileName,
-            final String skeleton, final IProgressMonitor monitor)
-            throws CoreException {
+            final String skeleton, final IProgressMonitor monitor) throws CoreException {
 
         // ErlLogger.debug("Generating a file with skeleton: "+skeleton);
 
@@ -126,8 +124,7 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         final IResource resource = root.findMember(new Path(containerName));
         if (!resource.exists() || !(resource instanceof IContainer)) {
-            throwCoreException("Container \"" + containerName
-                    + "\" does not exist.");
+            throwCoreException("Container \"" + containerName + "\" does not exist.");
         }
         final IContainer container = (IContainer) resource;
         IPath path = new Path(fileName);
@@ -174,8 +171,8 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
     }
 
     private void throwCoreException(final String message) throws CoreException {
-        final IStatus status = new Status(IStatus.ERROR, "Erlang_Wizard",
-                IStatus.OK, message, null);
+        final IStatus status = new Status(IStatus.ERROR, "Erlang_Wizard", IStatus.OK,
+                message, null);
         throw new CoreException(status);
     }
 
@@ -186,8 +183,7 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
      * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
      */
     @Override
-    public void init(final IWorkbench workbench,
-            final IStructuredSelection selection) {
+    public void init(final IWorkbench workbench, final IStructuredSelection selection) {
         fSelection = selection;
     }
 

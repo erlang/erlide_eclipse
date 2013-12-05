@@ -56,12 +56,10 @@ public class CoveragePerformer implements ICoveragePerformer {
         final StatsTreeModel model = StatsTreeModel.getInstance();
         model.clear();
         if (CoverBackend.getInstance().getAnnotationMaker() != null) {
-            CoverBackend.getInstance().getAnnotationMaker()
-                    .clearAllAnnotations();
+            CoverBackend.getInstance().getAnnotationMaker().clearAllAnnotations();
         }
 
-        for (final ICoverObserver obs : CoverBackend.getInstance()
-                .getListeners()) {
+        for (final ICoverObserver obs : CoverBackend.getInstance().getListeners()) {
             obs.eventOccured(new CoverEvent(CoverStatus.UPDATE));
         }
 
@@ -95,8 +93,8 @@ public class CoveragePerformer implements ICoveragePerformer {
                         .getInstance()
                         .getBackend()
                         .getRpcSite()
-                        .call(CoverConstants.COVER_ERL_BACKEND,
-                                CoverConstants.FUN_START, "x", nodesList);
+                        .call(CoverConstants.COVER_ERL_BACKEND, CoverConstants.FUN_START,
+                                "x", nodesList);
 
             } catch (final RpcException e) {
                 ErlLogger.error(e);
@@ -115,15 +113,13 @@ public class CoveragePerformer implements ICoveragePerformer {
             throws CoverException {
         config = conf;
 
-        StatsTreeModel.getInstance()
-                .setRootLabel(config.getProject().getName());
+        StatsTreeModel.getInstance().setRootLabel(config.getProject().getName());
 
-        final IPath ppath = config.getProject().getWorkspaceProject()
-                .getLocation();
+        final IPath ppath = config.getProject().getWorkspaceProject().getLocation();
 
         // set include files
-        final List<OtpErlangObject> includes = new ArrayList<OtpErlangObject>(
-                config.getModules().size());
+        final List<OtpErlangObject> includes = new ArrayList<OtpErlangObject>(config
+                .getModules().size());
         for (final IPath include : config.getIncludeDirs()) {
             log.info(ppath.append(include));
             includes.add(new OtpErlangList(ppath.append(include).toString()));
@@ -146,8 +142,8 @@ public class CoveragePerformer implements ICoveragePerformer {
 
     // cover compilation of chosen modules
     private void recompileModules() throws CoverException {
-        final List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(
-                config.getModules().size());
+        final List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(config
+                .getModules().size());
         for (final IErlModule module : config.getModules()) {
             if (module == null) {
                 final String msg = "No such module at given project. Check your configuration";
@@ -163,8 +159,8 @@ public class CoveragePerformer implements ICoveragePerformer {
                     .getInstance()
                     .getBackend()
                     .getRpcSite()
-                    .call(CoverConstants.COVER_ERL_BACKEND,
-                            CoverConstants.FUN_PREP, "x", paths);
+                    .call(CoverConstants.COVER_ERL_BACKEND, CoverConstants.FUN_PREP, "x",
+                            paths);
 
         } catch (final RpcException e) {
             ErlLogger.error(e);
@@ -178,8 +174,8 @@ public class CoveragePerformer implements ICoveragePerformer {
     @Override
     public synchronized void analyse() throws CoverException {
 
-        final List<OtpErlangObject> modules = new ArrayList<OtpErlangObject>(
-                config.getModules().size());
+        final List<OtpErlangObject> modules = new ArrayList<OtpErlangObject>(config
+                .getModules().size());
         for (final IErlModule module : config.getModules()) {
             log.info(module.getModuleName());
             modules.add(new OtpErlangList(module.getModuleName()));
@@ -190,8 +186,8 @@ public class CoveragePerformer implements ICoveragePerformer {
                     .getInstance()
                     .getBackend()
                     .getRpcSite()
-                    .call(CoverConstants.COVER_ERL_BACKEND,
-                            CoverConstants.FUN_ANALYSE, "x", modules);
+                    .call(CoverConstants.COVER_ERL_BACKEND, CoverConstants.FUN_ANALYSE,
+                            "x", modules);
 
         } catch (final RpcException e) {
             ErlLogger.error(e);

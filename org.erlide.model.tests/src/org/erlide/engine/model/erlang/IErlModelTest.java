@@ -68,10 +68,10 @@ public class IErlModelTest extends ErlModelTestBase {
                 changed.add(element);
             }
         };
-        final IErlModule module2 = ErlideTestUtils.createModule(project,
-                "zz.erl", "-module(zz).\n");
-        final IErlModule module3 = ErlideTestUtils.createModule(project,
-                "tt.erl", "-module(tt).\n");
+        final IErlModule module2 = ErlideTestUtils.createModule(project, "zz.erl",
+                "-module(zz).\n");
+        final IErlModule module3 = ErlideTestUtils.createModule(project, "tt.erl",
+                "-module(tt).\n");
         model.addModelChangeListener(listener);
         module2.open(null);
         model.removeModelChangeListener(listener);
@@ -93,8 +93,7 @@ public class IErlModelTest extends ErlModelTestBase {
                 .getCorrespondingResource());
         final IErlElement findElement3 = model.findElement(workspaceProject
                 .getFolder("no_way"));
-        final IErlElement findElement4 = model.findElement(workspaceProject
-                .getParent());
+        final IErlElement findElement4 = model.findElement(workspaceProject.getParent());
         final IErlElement parent = (IErlElement) module.getParent();
         final IFolder folder = (IFolder) parent.getResource();
         final IErlElement findElement5 = model.findElement(folder);
@@ -124,16 +123,15 @@ public class IErlModelTest extends ErlModelTestBase {
     // IErlModule findModule(IFile file);
     @Test
     public void findModule() throws Exception {
-        final IErlModule module2 = ErlideTestUtils.createModule(project,
-                "zz.erl", "-module(zz).\n");
+        final IErlModule module2 = ErlideTestUtils.createModule(project, "zz.erl",
+                "-module(zz).\n");
         final IFile file = (IFile) module2.getResource();
         final IErlModule findModule = model.findModule(file);
         final IErlElement parent = (IErlElement) module2.getParent();
         final IFolder folder = (IFolder) parent.getResource();
         IFile createFile = null;
         try {
-            createFile = ErlideTestUtils.createFile("tt.erl", "-module(tt).\n",
-                    folder);
+            createFile = ErlideTestUtils.createFile("tt.erl", "-module(tt).\n", folder);
             model.findModule(createFile);
             assertEquals(module2, findModule);
         } finally {
@@ -146,8 +144,7 @@ public class IErlModelTest extends ErlModelTestBase {
     // IErlModule findModule(String name) throws ErlModelException;
     @Test
     public void findModule_name() throws Exception {
-        ErlideTestUtils
-                .createModule(projects[1], "zz.hrl", "-define(X, zz).\n");
+        ErlideTestUtils.createModule(projects[1], "zz.hrl", "-define(X, zz).\n");
         final IErlModule findModule = model.findModule("xx");
         final IErlModule findModule2 = model.findModule("xx.erl");
         final IErlModule findModule3 = model.findModule("yy.hrl");
@@ -181,17 +178,16 @@ public class IErlModelTest extends ErlModelTestBase {
     // includePath)
     @Test
     public void findInclude() throws Exception {
-        final IErlModule module2 = ErlideTestUtils.createModule(projects[1],
-                "zz.hrl", "-define(X, zz).\n");
-        final IErlModule include = ErlideTestUtils.createInclude(projects[1],
-                "xx.hrl", "-define(X, xx).\n");
+        final IErlModule module2 = ErlideTestUtils.createModule(projects[1], "zz.hrl",
+                "-define(X, zz).\n");
+        final IErlModule include = ErlideTestUtils.createInclude(projects[1], "xx.hrl",
+                "-define(X, xx).\n");
         final IErlModule findInclude = model.findInclude("zz", null);
         final IErlModule findInclude2 = model.findInclude("xx", null);
         final String filePath = include.getFilePath();
         final IErlModule findInclude3 = model.findInclude(null, filePath);
         final IErlModule findInclude4 = model.findInclude("apa", filePath);
-        final IErlModule findInclude5 = model.findInclude(null,
-                module2.getFilePath());
+        final IErlModule findInclude5 = model.findInclude(null, module2.getFilePath());
         assertNull(findInclude);
         assertEquals(include, findInclude2);
         assertEquals(include, findInclude3);
@@ -246,8 +242,7 @@ public class IErlModelTest extends ErlModelTestBase {
         File externalIncludeFile = null;
         final IErlProject myProject = projects[0];
         final IProject workspaceProject = myProject.getWorkspaceProject();
-        final IProject[] referencedProjects = workspaceProject
-                .getReferencedProjects();
+        final IProject[] referencedProjects = workspaceProject.getReferencedProjects();
         final Collection<IPath> includeDirs = myProject.getIncludeDirs();
         // given
         // a project with an external include and an internal include and a
@@ -257,19 +252,18 @@ public class IErlModelTest extends ErlModelTestBase {
             final String xxHrl = "xx.hrl";
             externalIncludeFile = ErlideTestUtils.createTmpFile(xxHrl,
                     "-record(rec2, {field, another=def}.");
-            final String externalIncludePath = externalIncludeFile
-                    .getAbsolutePath();
+            final String externalIncludePath = externalIncludeFile.getAbsolutePath();
             final IPath p = new Path(externalIncludePath).removeLastSegments(1);
             final List<IPath> newIncludeDirs = Lists.newArrayList(includeDirs);
             newIncludeDirs.add(p);
             ((ErlProject) myProject).setIncludeDirs(newIncludeDirs);
-            final IErlModule include = ErlideTestUtils.createInclude(myProject,
-                    "yy.hrl", "-define(Y, include).\n");
+            final IErlModule include = ErlideTestUtils.createInclude(myProject, "yy.hrl",
+                    "-define(Y, include).\n");
             final IErlProject project1 = projects[1];
-            final IErlModule referencedInclude = ErlideTestUtils.createInclude(
-                    project1, "zz.hrl", "-define(Z, referenced).\n");
-            final IErlModule includeInModuleDir = ErlideTestUtils.createModule(
-                    myProject, "ww.hrl", "-define(WW, x).\n");
+            final IErlModule referencedInclude = ErlideTestUtils.createInclude(project1,
+                    "zz.hrl", "-define(Z, referenced).\n");
+            final IErlModule includeInModuleDir = ErlideTestUtils.createModule(myProject,
+                    "ww.hrl", "-define(WW, x).\n");
             myProject.open(null);
             // when
             // looking for includes
@@ -294,8 +288,7 @@ public class IErlModelTest extends ErlModelTestBase {
                     IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule z3 = model.findIncludeFromModule(module, zz, null,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
-            final IProjectDescription description = workspaceProject
-                    .getDescription();
+            final IProjectDescription description = workspaceProject.getDescription();
             description.setReferencedProjects(new IProject[] { project1
                     .getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
@@ -309,10 +302,9 @@ public class IErlModelTest extends ErlModelTestBase {
             final String ww = "ww";
             final IErlModule w1 = model.findIncludeFromModule(module, ww, null,
                     IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlElementLocator mymodel = ErlangEngine.getInstance()
-                    .getModel();
-            final IErlModule w2 = mymodel.findIncludeFromProject(myProject, ww,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlElementLocator mymodel = ErlangEngine.getInstance().getModel();
+            final IErlModule w2 = mymodel.findIncludeFromProject(myProject, ww, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
             // then
             // scope should be respected
             assertNotNull(x1);
@@ -337,8 +329,7 @@ public class IErlModelTest extends ErlModelTestBase {
                 externalIncludeFile.delete();
             }
             ((ErlProject) myProject).setIncludeDirs(includeDirs);
-            final IProjectDescription description = workspaceProject
-                    .getDescription();
+            final IProjectDescription description = workspaceProject.getDescription();
             description.setReferencedProjects(referencedProjects);
             workspaceProject.setDescription(description, null);
         }
@@ -355,70 +346,64 @@ public class IErlModelTest extends ErlModelTestBase {
         File externalsFile = null;
         final IErlProject aProject = projects[0];
         final IProject workspaceProject = aProject.getWorkspaceProject();
-        final IProject[] referencedProjects = workspaceProject
-                .getReferencedProjects();
-        final String externalModulesString = aProject
-                .getExternalModulesString();
+        final IProject[] referencedProjects = workspaceProject.getReferencedProjects();
+        final String externalModulesString = aProject.getExternalModulesString();
         // given
         // a project with an external module and an internal module and a
         // referenced project with a module
         try {
             final String xxErl = "xx.erl";
-            externalModuleFile = ErlideTestUtils.createTmpFile(xxErl,
-                    "-module(xx).\n");
-            final String externalModulePath = externalModuleFile
-                    .getAbsolutePath();
-            externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX,
-                    externalModulePath);
+            externalModuleFile = ErlideTestUtils.createTmpFile(xxErl, "-module(xx).\n");
+            final String externalModulePath = externalModuleFile.getAbsolutePath();
+            externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX, externalModulePath);
             ((ErlProject) aProject).setExternalModulesFile(externalsFile
                     .getAbsolutePath());
-            final IErlModule aModule = ErlideTestUtils.createModule(aProject,
-                    "yy.erl", "-module(yy).\n");
+            final IErlModule aModule = ErlideTestUtils.createModule(aProject, "yy.erl",
+                    "-module(yy).\n");
             final IErlProject project1 = projects[1];
-            final IErlModule referencedModule = ErlideTestUtils.createModule(
-                    project1, "zz.erl", "-module(zz).\n");
+            final IErlModule referencedModule = ErlideTestUtils.createModule(project1,
+                    "zz.erl", "-module(zz).\n");
             aProject.open(null);
             // when
             // looking for modules
             final String xx = "xx";
-            final IErlModule x1 = model.findModuleFromProject(aProject, xx,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlModule x2 = model.findModuleFromProject(aProject, xx,
-                    null, IErlElementLocator.Scope.ALL_PROJECTS);
-            final IErlModule x3 = model.findModuleFromProject(aProject, xx,
-                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IErlModule x1 = model.findModuleFromProject(aProject, xx, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule x2 = model.findModuleFromProject(aProject, xx, null,
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule x3 = model.findModuleFromProject(aProject, xx, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final String yy = "yy";
-            final IErlModule y1 = model.findModuleFromProject(aProject, yy,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlModule y2 = model.findModuleFromProject(aProject, yy,
-                    null, IErlElementLocator.Scope.ALL_PROJECTS);
-            final IErlModule y3 = model.findModuleFromProject(aProject, yy,
-                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
-            final IErlModule y4 = model.findModuleFromProject(project1, yy,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlModule y5 = model.findModuleFromProject(project1, yy,
-                    null, IErlElementLocator.Scope.ALL_PROJECTS);
-            final IErlModule y6 = model.findModuleFromProject(project1, yy,
-                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IErlModule y1 = model.findModuleFromProject(aProject, yy, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule y2 = model.findModuleFromProject(aProject, yy, null,
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule y3 = model.findModuleFromProject(aProject, yy, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IErlModule y4 = model.findModuleFromProject(project1, yy, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule y5 = model.findModuleFromProject(project1, yy, null,
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule y6 = model.findModuleFromProject(project1, yy, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final String zz = "zz";
-            final IErlModule z1 = model.findModuleFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlModule z2 = model.findModuleFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.ALL_PROJECTS);
-            final IErlModule z3 = model.findModuleFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
-            final IProjectDescription description = workspaceProject
-                    .getDescription();
+            final IErlModule z1 = model.findModuleFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule z2 = model.findModuleFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule z3 = model.findModuleFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IProjectDescription description = workspaceProject.getDescription();
             description.setReferencedProjects(new IProject[] { project1
                     .getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             aProject.open(null);
-            final IErlModule z4 = model.findModuleFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlModule z5 = model.findModuleFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.ALL_PROJECTS);
-            final IErlModule z6 = model.findModuleFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IErlModule z4 = model.findModuleFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule z5 = model.findModuleFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule z6 = model.findModuleFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             // then
             // scope should be respected
             assertNotNull(x1);
@@ -446,10 +431,8 @@ public class IErlModelTest extends ErlModelTestBase {
             if (externalsFile != null && externalsFile.exists()) {
                 externalsFile.delete();
             }
-            ((ErlProject) aProject)
-                    .setExternalModulesFile(externalModulesString);
-            final IProjectDescription description = workspaceProject
-                    .getDescription();
+            ((ErlProject) aProject).setExternalModulesFile(externalModulesString);
+            final IProjectDescription description = workspaceProject.getDescription();
             description.setReferencedProjects(referencedProjects);
             workspaceProject.setDescription(description, null);
         }
@@ -461,49 +444,43 @@ public class IErlModelTest extends ErlModelTestBase {
         File externalsFile = null;
         final IErlProject aProject = projects[0];
         final IProject workspaceProject = aProject.getWorkspaceProject();
-        final IProject[] referencedProjects = workspaceProject
-                .getReferencedProjects();
-        final String externalModulesString = aProject
-                .getExternalModulesString();
+        final IProject[] referencedProjects = workspaceProject.getReferencedProjects();
+        final String externalModulesString = aProject.getExternalModulesString();
         // given
         // a project with an external include and a
         // referenced project with an include, both have same name
         try {
             final String zzErl = "zz.erl";
             final String xxxContents = "-module(zz).\n";
-            externalModuleFile = ErlideTestUtils.createTmpFile(zzErl,
-                    xxxContents);
-            final String externalModulePath = externalModuleFile
-                    .getAbsolutePath();
-            externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX,
-                    externalModulePath);
+            externalModuleFile = ErlideTestUtils.createTmpFile(zzErl, xxxContents);
+            final String externalModulePath = externalModuleFile.getAbsolutePath();
+            externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX, externalModulePath);
             ((ErlProject) aProject).setExternalModulesFile(externalsFile
                     .getAbsolutePath());
             final IErlProject project1 = projects[1];
-            final IErlModule referencedModule = ErlideTestUtils.createModule(
-                    project1, zzErl, xxxContents);
+            final IErlModule referencedModule = ErlideTestUtils.createModule(project1,
+                    zzErl, xxxContents);
             aProject.open(null);
             // when
             // looking for module
             final String zz = "zz";
-            final IErlModule zz1 = model.findModuleFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlModule zz2 = model.findModuleFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.ALL_PROJECTS);
-            final IErlModule zz3 = model.findModuleFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
-            final IProjectDescription description = workspaceProject
-                    .getDescription();
+            final IErlModule zz1 = model.findModuleFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule zz2 = model.findModuleFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule zz3 = model.findModuleFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IProjectDescription description = workspaceProject.getDescription();
             description.setReferencedProjects(new IProject[] { project1
                     .getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             aProject.open(null);
-            final IErlModule zz4 = model.findModuleFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlModule zz5 = model.findModuleFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.ALL_PROJECTS);
-            final IErlModule zz6 = model.findModuleFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IErlModule zz4 = model.findModuleFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule zz5 = model.findModuleFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule zz6 = model.findModuleFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             // then
             // the non-external should be preferred
             assertNotNull(zz1);
@@ -524,12 +501,10 @@ public class IErlModelTest extends ErlModelTestBase {
             if (externalsFile != null && externalsFile.exists()) {
                 externalsFile.delete();
             }
-            final IProjectDescription description = workspaceProject
-                    .getDescription();
+            final IProjectDescription description = workspaceProject.getDescription();
             description.setReferencedProjects(referencedProjects);
             workspaceProject.setDescription(description, null);
-            ((ErlProject) aProject)
-                    .setExternalModulesFile(externalModulesString);
+            ((ErlProject) aProject).setExternalModulesFile(externalModulesString);
         }
     }
 
@@ -540,8 +515,7 @@ public class IErlModelTest extends ErlModelTestBase {
         File externalIncludeFile = null;
         final IErlProject aProject = projects[0];
         final IProject workspaceProject = aProject.getWorkspaceProject();
-        final IProject[] referencedProjects = workspaceProject
-                .getReferencedProjects();
+        final IProject[] referencedProjects = workspaceProject.getReferencedProjects();
         final Collection<IPath> includeDirs = aProject.getIncludeDirs();
         // given
         // a project with an external include and an internal include and a
@@ -550,59 +524,57 @@ public class IErlModelTest extends ErlModelTestBase {
             final String xxHrl = "xx.hrl";
             externalIncludeFile = ErlideTestUtils.createTmpFile(xxHrl,
                     "-record(rec2, {field, another=def}.");
-            final String externalIncludePath = externalIncludeFile
-                    .getAbsolutePath();
+            final String externalIncludePath = externalIncludeFile.getAbsolutePath();
             final IPath p = new Path(externalIncludePath).removeLastSegments(1);
             final List<IPath> newIncludeDirs = Lists.newArrayList(includeDirs);
             newIncludeDirs.add(p);
             ((ErlProject) aProject).setIncludeDirs(newIncludeDirs);
-            final IErlModule include = ErlideTestUtils.createInclude(aProject,
-                    "yy.hrl", "-define(Y, include).\n");
+            final IErlModule include = ErlideTestUtils.createInclude(aProject, "yy.hrl",
+                    "-define(Y, include).\n");
             final IErlProject project1 = projects[1];
-            final IErlModule referencedInclude = ErlideTestUtils.createInclude(
-                    project1, "zz.hrl", "-define(Z, referenced).\n");
+            final IErlModule referencedInclude = ErlideTestUtils.createInclude(project1,
+                    "zz.hrl", "-define(Z, referenced).\n");
             aProject.open(null);
             // when
             // looking for includes
             final String xx = "xx";
-            final IErlModule x1 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlModule x2 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlElementLocator.Scope.ALL_PROJECTS);
-            final IErlModule x3 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IErlModule x1 = model.findIncludeFromProject(aProject, xx, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule x2 = model.findIncludeFromProject(aProject, xx, null,
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule x3 = model.findIncludeFromProject(aProject, xx, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final String yy = "yy";
-            final IErlModule y1 = model.findIncludeFromProject(aProject, yy,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlModule y2 = model.findIncludeFromProject(aProject, yy,
-                    null, IErlElementLocator.Scope.ALL_PROJECTS);
-            final IErlModule y3 = model.findIncludeFromProject(aProject, yy,
-                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
-            final IErlModule y4 = model.findIncludeFromProject(project1, yy,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlModule y5 = model.findIncludeFromProject(project1, yy,
-                    null, IErlElementLocator.Scope.ALL_PROJECTS);
-            final IErlModule y6 = model.findIncludeFromProject(project1, yy,
-                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IErlModule y1 = model.findIncludeFromProject(aProject, yy, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule y2 = model.findIncludeFromProject(aProject, yy, null,
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule y3 = model.findIncludeFromProject(aProject, yy, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IErlModule y4 = model.findIncludeFromProject(project1, yy, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule y5 = model.findIncludeFromProject(project1, yy, null,
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule y6 = model.findIncludeFromProject(project1, yy, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final String zz = "zz";
-            final IErlModule z1 = model.findIncludeFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlModule z2 = model.findIncludeFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.ALL_PROJECTS);
-            final IErlModule z3 = model.findIncludeFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
-            final IProjectDescription description = workspaceProject
-                    .getDescription();
+            final IErlModule z1 = model.findIncludeFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule z2 = model.findIncludeFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule z3 = model.findIncludeFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IProjectDescription description = workspaceProject.getDescription();
             description.setReferencedProjects(new IProject[] { project1
                     .getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             aProject.open(null);
-            final IErlModule z4 = model.findIncludeFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlModule z5 = model.findIncludeFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.ALL_PROJECTS);
-            final IErlModule z6 = model.findIncludeFromProject(aProject, zz,
-                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IErlModule z4 = model.findIncludeFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule z5 = model.findIncludeFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule z6 = model.findIncludeFromProject(aProject, zz, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             // then
             // scope should be respected
             assertNotNull(x1);
@@ -628,8 +600,7 @@ public class IErlModelTest extends ErlModelTestBase {
                 externalIncludeFile.delete();
             }
             ((ErlProject) aProject).setIncludeDirs(includeDirs);
-            final IProjectDescription description = workspaceProject
-                    .getDescription();
+            final IProjectDescription description = workspaceProject.getDescription();
             description.setReferencedProjects(referencedProjects);
             workspaceProject.setDescription(description, null);
         }
@@ -640,8 +611,7 @@ public class IErlModelTest extends ErlModelTestBase {
         File externalIncludeFile = null;
         final IErlProject aProject = projects[0];
         final IProject workspaceProject = aProject.getWorkspaceProject();
-        final IProject[] referencedProjects = workspaceProject
-                .getReferencedProjects();
+        final IProject[] referencedProjects = workspaceProject.getReferencedProjects();
         final Collection<IPath> includeDirs = aProject.getIncludeDirs();
         // given
         // a project with an external include and a
@@ -650,37 +620,35 @@ public class IErlModelTest extends ErlModelTestBase {
             final String xxHrl = "xx.hrl";
             externalIncludeFile = ErlideTestUtils.createTmpFile(xxHrl,
                     "-record(rec2, {field, another=def}.");
-            final String externalIncludePath = externalIncludeFile
-                    .getAbsolutePath();
+            final String externalIncludePath = externalIncludeFile.getAbsolutePath();
             final IPath p = new Path(externalIncludePath).removeLastSegments(1);
             final List<IPath> newIncludeDirs = Lists.newArrayList(includeDirs);
             newIncludeDirs.add(p);
             ((ErlProject) aProject).setIncludeDirs(newIncludeDirs);
             final IErlProject project1 = projects[1];
-            final IErlModule referencedInclude = ErlideTestUtils.createInclude(
-                    project1, xxHrl, "-define(Z, referenced).\n");
+            final IErlModule referencedInclude = ErlideTestUtils.createInclude(project1,
+                    xxHrl, "-define(Z, referenced).\n");
             aProject.open(null);
             // when
             // looking for includes
             final String xx = "xx";
-            final IErlModule x1 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlModule x2 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlElementLocator.Scope.ALL_PROJECTS);
-            final IErlModule x3 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
-            final IProjectDescription description = workspaceProject
-                    .getDescription();
+            final IErlModule x1 = model.findIncludeFromProject(aProject, xx, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule x2 = model.findIncludeFromProject(aProject, xx, null,
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule x3 = model.findIncludeFromProject(aProject, xx, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IProjectDescription description = workspaceProject.getDescription();
             description.setReferencedProjects(new IProject[] { project1
                     .getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             aProject.open(null);
-            final IErlModule x4 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlModule x5 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlElementLocator.Scope.ALL_PROJECTS);
-            final IErlModule x6 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IErlModule x4 = model.findIncludeFromProject(aProject, xx, null,
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlModule x5 = model.findIncludeFromProject(aProject, xx, null,
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            final IErlModule x6 = model.findIncludeFromProject(aProject, xx, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             // then
             // the non-external should be preferred
             assertNotNull(x1);
@@ -699,8 +667,7 @@ public class IErlModelTest extends ErlModelTestBase {
                 externalIncludeFile.delete();
             }
             ((ErlProject) aProject).setIncludeDirs(includeDirs);
-            final IProjectDescription description = workspaceProject
-                    .getDescription();
+            final IProjectDescription description = workspaceProject.getDescription();
             description.setReferencedProjects(referencedProjects);
             workspaceProject.setDescription(description, null);
         }

@@ -40,8 +40,7 @@ public class FolderSelectionDialog extends ElementTreeSelectionDialog implements
     private Button fNewFolderButton;
     private IContainer fSelectedContainer;
 
-    public FolderSelectionDialog(final Shell parent,
-            final ILabelProvider labelProvider,
+    public FolderSelectionDialog(final Shell parent, final ILabelProvider labelProvider,
             final ITreeContentProvider contentProvider) {
         super(parent, labelProvider, contentProvider);
         setComparator(new ResourceComparator(ResourceComparator.NAME));
@@ -69,8 +68,7 @@ public class FolderSelectionDialog extends ElementTreeSelectionDialog implements
         PlatformUI
                 .getWorkbench()
                 .getHelpSystem()
-                .setHelp(
-                        parent,
+                .setHelp(parent,
                         IErlangHelpContextIds.BP_SELECT_DEFAULT_OUTPUT_FOLDER_DIALOG);
 
         return result;
@@ -90,8 +88,7 @@ public class FolderSelectionDialog extends ElementTreeSelectionDialog implements
     }
 
     protected void newFolderButtonPressed() {
-        final NewFolderDialog dialog = new NewFolderDialog(getShell(),
-                fSelectedContainer);
+        final NewFolderDialog dialog = new NewFolderDialog(getShell(), fSelectedContainer);
         if (dialog.open() == Window.OK) {
             final TreeViewer treeViewer = getTreeViewer();
             treeViewer.refresh(fSelectedContainer);

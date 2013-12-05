@@ -58,8 +58,7 @@ public class DirectoryTreeGroup extends Composite {
         // group.setText(title);
         final Label label = new Label(this, SWT.NONE);
         label.setText(title);
-        checkboxTableViewer = CheckboxTableViewer
-                .newCheckList(this, SWT.BORDER);
+        checkboxTableViewer = CheckboxTableViewer.newCheckList(this, SWT.BORDER);
         layoutData = new GridData(GridData.FILL_BOTH);
         layoutData.heightHint = 90;
         layoutData.widthHint = 180;

@@ -30,8 +30,7 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
     protected List<Object[]> functions = new ArrayList<Object[]>();
 
     @Override
-    public void resolve(final TemplateVariable variable,
-            final TemplateContext context) {
+    public void resolve(final TemplateVariable variable, final TemplateContext context) {
         final Iterator<TemplateVariableResolver> it = ErlangSourceContextTypeLayout
                 .getDefault().resolvers();
         FunctionNameVariableResolver name_var = null;
@@ -62,11 +61,9 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
             arg_var.setArity(((Integer) element[1]).intValue());
             name_var.setFunctionName((String) element[0]);
 
-            final Template commentTemplate = ErlangSourceContextTypeComment
-                    .getDefault()
+            final Template commentTemplate = ErlangSourceContextTypeComment.getDefault()
                     .getTemplateStore()
-                    .getTemplateData(
-                            "org.erlide.ui.erlangsource.functioncomment")
+                    .getTemplateData("org.erlide.ui.erlangsource.functioncomment")
                     .getTemplate();
 
             DocumentTemplateContext commentContext = new DocumentTemplateContext(
@@ -89,17 +86,14 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
                 buff.append(tb.getString() + "\n");
             }
 
-            final Template template = ErlangSourceContextTypeComment
-                    .getDefault()
+            final Template template = ErlangSourceContextTypeComment.getDefault()
                     .getTemplateStore()
-                    .getTemplateData(
-                            "org.erlide.ui.erlangsource.functionlayout")
+                    .getTemplateData("org.erlide.ui.erlangsource.functionlayout")
                     .getTemplate();
 
             commentContext = new DocumentTemplateContext(
                     ErlangSourceContextTypeLayout.getDefault(), new Document(
-                            template.getPattern()), 0, template.getPattern()
-                            .length());
+                            template.getPattern()), 0, template.getPattern().length());
             try {
                 tb = commentContext.evaluate(template);
             } catch (final BadLocationException e) {
@@ -107,8 +101,7 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
                 buff.append("Error: " + e.getMessage());
             } catch (final TemplateException e) {
                 ErlLogger.warn(e);
-                buff.append("Error: " + template.getName()
-                        + " could not be validated!");
+                buff.append("Error: " + template.getName() + " could not be validated!");
             }
 
             if (tb != null) {

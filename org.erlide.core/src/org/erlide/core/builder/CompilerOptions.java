@@ -72,8 +72,7 @@ public class CompilerOptions {
                 if (value != null) {
                     @SuppressWarnings("unchecked")
                     final Iterable<String> avalue = (Iterable<String>) value;
-                    helper.putString(option.getName(),
-                            PathsOption.toString(avalue));
+                    helper.putString(option.getName(), PathsOption.toString(avalue));
                 } else {
                     helper.remove(option.getName());
                 }
@@ -126,8 +125,7 @@ public class CompilerOptions {
             } else {
                 if (value != null) {
                     final String[] str = value.split(",");
-                    options.put(option,
-                            new Pair<String, String>(str[0], str[1]));
+                    options.put(option, new Pair<String, String>(str[0], str[1]));
                 }
             }
         }
@@ -155,8 +153,7 @@ public class CompilerOptions {
                     }
                 } else if (option instanceof ModuleOption) {
                     final String value = (String) optionValue;
-                    final OtpErlangObject val = ((ModuleOption) option)
-                            .toTerm(value);
+                    final OtpErlangObject val = ((ModuleOption) option).toTerm(value);
                     result.add(val);
                 } else if (option instanceof RawOption) {
                     final String value = (String) optionValue;
@@ -199,8 +196,7 @@ public class CompilerOptions {
         }
     }
 
-    public void setPathOption(final CompilerOption opt,
-            final Iterable<String> value) {
+    public void setPathOption(final CompilerOption opt, final Iterable<String> value) {
         if (value == null || !value.iterator().hasNext()) {
             removeOption(opt);
         } else {
@@ -236,8 +232,7 @@ public class CompilerOptions {
         }
     }
 
-    public void setBooleanOption(final CompilerOption opt,
-            final boolean selection) {
+    public void setBooleanOption(final CompilerOption opt, final boolean selection) {
         options.put(opt, selection);
     }
 

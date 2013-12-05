@@ -86,8 +86,7 @@ public class Signature {
         String rest;
     }
 
-    private static ParseState parseOne(final String signature)
-            throws SignatureException {
+    private static ParseState parseOne(final String signature) throws SignatureException {
         final char crt = signature.charAt(0);
         if ("xidabrjfpso".indexOf(crt) >= 0) {
             return new ParseState(new Signature(crt), signature.substring(1));
@@ -95,8 +94,7 @@ public class Signature {
             final ParseState sub = parseOne(signature.substring(1));
             return new ParseState(new Signature(crt, sub.sign), sub.rest);
         } else if ("0123456789".indexOf(crt) >= 0) {
-            final int numTupleElements = Integer.parseInt(signature.substring(
-                    0, 1));
+            final int numTupleElements = Integer.parseInt(signature.substring(0, 1));
             final Signature[] sub = new Signature[numTupleElements];
             String s = signature.substring(1);
             for (int i = 0; i < numTupleElements; i++) {

@@ -55,12 +55,10 @@ import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.PerformanceTuning;
 import org.erlide.util.ErlLogger;
 
-public class DefaultErlangFoldingStructureProvider implements
-        IProjectionListener, IErlangFoldingStructureProvider,
-        IErlangFoldingStructureProviderExtension {
+public class DefaultErlangFoldingStructureProvider implements IProjectionListener,
+        IErlangFoldingStructureProvider, IErlangFoldingStructureProviderExtension {
 
-    private static final class ErlangProjectionAnnotation extends
-            ProjectionAnnotation {
+    private static final class ErlangProjectionAnnotation extends ProjectionAnnotation {
 
         private IErlElement fErlElement;
 
@@ -136,13 +134,11 @@ public class DefaultErlangFoldingStructureProvider implements
 
     }
 
-    private static final class ErlangElementSetFilter extends
-            MatchCollapsedFilter {
+    private static final class ErlangElementSetFilter extends MatchCollapsedFilter {
 
         private final Set<IErlElement> fSet;
 
-        ErlangElementSetFilter(final Set<IErlElement> set,
-                final boolean matchCollapsed) {
+        ErlangElementSetFilter(final Set<IErlElement> set, final boolean matchCollapsed) {
             super(matchCollapsed);
             fSet = set;
         }
@@ -187,8 +183,7 @@ public class DefaultErlangFoldingStructureProvider implements
             final int contentStart = findFirstContent(sequence, prefixEnd);
 
             final int firstLine = document.getLineOfOffset(offset + prefixEnd);
-            final int captionLine = document.getLineOfOffset(offset
-                    + contentStart);
+            final int captionLine = document.getLineOfOffset(offset + contentStart);
             final int lastLine = document.getLineOfOffset(offset + length);
 
             Assert.isTrue(firstLine <= captionLine,
@@ -201,8 +196,7 @@ public class DefaultErlangFoldingStructureProvider implements
                 // preRegion= new Region(offset + prefixEnd, contentStart -
                 // prefixEnd);
                 final int preOffset = document.getLineOffset(firstLine);
-                final IRegion preEndLineInfo = document
-                        .getLineInformation(captionLine);
+                final IRegion preEndLineInfo = document.getLineInformation(captionLine);
                 final int preEnd = preEndLineInfo.getOffset();
                 preRegion = new Region(preOffset, preEnd - preOffset);
             } else {
@@ -211,8 +205,8 @@ public class DefaultErlangFoldingStructureProvider implements
 
             if (captionLine < lastLine) {
                 final int postOffset = document.getLineOffset(captionLine + 1);
-                final IRegion postRegion = new Region(postOffset, offset
-                        + length - postOffset);
+                final IRegion postRegion = new Region(postOffset, offset + length
+                        - postOffset);
 
                 if (preRegion == null) {
                     return new IRegion[] { postRegion };
@@ -237,8 +231,7 @@ public class DefaultErlangFoldingStructureProvider implements
          * @return the first index of a unicode identifier part, or zero if none
          *         can be found
          */
-        private int findFirstContent(final CharSequence content,
-                final int prefixEnd) {
+        private int findFirstContent(final CharSequence content, final int prefixEnd) {
             final int lenght = content.length();
             for (int i = prefixEnd; i < lenght; i++) {
                 if (Character.isUnicodeIdentifierPart(content.charAt(i))) {
@@ -306,8 +299,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
         private IErlMember fMember;
 
-        public ErlangElementPosition(final int off, final int len,
-                final IErlMember member) {
+        public ErlangElementPosition(final int off, final int len, final IErlMember member) {
             super(off, len);
             fMember = member;
         }
@@ -361,8 +353,7 @@ public class DefaultErlangFoldingStructureProvider implements
             IRegion preRegion;
             if (firstLine < captionLine) {
                 final int preOffset = document.getLineOffset(firstLine);
-                final IRegion preEndLineInfo = document
-                        .getLineInformation(captionLine);
+                final IRegion preEndLineInfo = document.getLineInformation(captionLine);
                 final int preEnd = preEndLineInfo.getOffset();
                 preRegion = new Region(preOffset, preEnd - preOffset);
             } else {
@@ -371,8 +362,8 @@ public class DefaultErlangFoldingStructureProvider implements
 
             if (captionLine < lastLine) {
                 final int postOffset = document.getLineOffset(captionLine + 1);
-                final IRegion postRegion = new Region(postOffset, offset
-                        + length - postOffset);
+                final IRegion postRegion = new Region(postOffset, offset + length
+                        - postOffset);
 
                 if (preRegion == null) {
                     return new IRegion[] { postRegion };
@@ -442,8 +433,7 @@ public class DefaultErlangFoldingStructureProvider implements
                     && !annotation.isMarkedDeleted()) {
                 final IErlElement element = annotation.getElement();
                 final ErlElementKind kind = element.getKind();
-                return kind == ErlElementKind.FUNCTION
-                        || kind == ErlElementKind.CLAUSE;
+                return kind == ErlElementKind.FUNCTION || kind == ErlElementKind.CLAUSE;
             }
             return false;
         }
@@ -511,8 +501,7 @@ public class DefaultErlangFoldingStructureProvider implements
             fViewer.removeProjectionListener(this);
             fViewer = null;
             fEditor = null;
-            ErlangEngine.getInstance().getModel()
-                    .removeModelChangeListener(this);
+            ErlangEngine.getInstance().getModel().removeModelChangeListener(this);
         }
     }
 
@@ -587,16 +576,12 @@ public class DefaultErlangFoldingStructureProvider implements
     }
 
     private void initializePreferences() {
-        final IPreferenceStore store = ErlideUIPlugin.getDefault()
-                .getPreferenceStore();
-        fAllowCollapsing = store
-                .getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
-        fCollapseClauses = store
-                .getBoolean(PreferenceConstants.EDITOR_FOLDING_CLAUSES);
+        final IPreferenceStore store = ErlideUIPlugin.getDefault().getPreferenceStore();
+        fAllowCollapsing = store.getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
+        fCollapseClauses = store.getBoolean(PreferenceConstants.EDITOR_FOLDING_CLAUSES);
         fCollapseHeaderComments = store
                 .getBoolean(PreferenceConstants.EDITOR_FOLDING_HEADER_COMMENTS);
-        fCollapseComments = store
-                .getBoolean(PreferenceConstants.EDITOR_FOLDING_COMMENTS);
+        fCollapseComments = store.getBoolean(PreferenceConstants.EDITOR_FOLDING_COMMENTS);
         fCollapseTypespecs = store
                 .getBoolean(PreferenceConstants.EDITOR_FOLDING_TYPESPECS);
     }
@@ -626,10 +611,8 @@ public class DefaultErlangFoldingStructureProvider implements
         }
     }
 
-    private void computeAdditions(
-            final Collection<? extends IErlElement> elements,
-            final Map<ErlangProjectionAnnotation, Position> map)
-            throws ErlModelException {
+    private void computeAdditions(final Collection<? extends IErlElement> elements,
+            final Map<ErlangProjectionAnnotation, Position> map) throws ErlModelException {
         if (elements == null) {
             return;
         }
@@ -674,12 +657,11 @@ public class DefaultErlangFoldingStructureProvider implements
         if (createProjection) {
             final IRegion region = computeProjectionRanges(element);
             if (region != null) {
-                final Position position = createProjectionPosition(region,
-                        element);
+                final Position position = createProjectionPosition(region, element);
                 if (position != null) {
                     map.put(new ErlangProjectionAnnotation(element, collapse
-                            && fFirstTimeInitialCollapse,
-                            element instanceof IErlComment), position);
+                            && fFirstTimeInitialCollapse, element instanceof IErlComment),
+                            position);
                 }
             }
         }
@@ -717,8 +699,7 @@ public class DefaultErlangFoldingStructureProvider implements
 
         try {
 
-            final int start = fCachedDocument.getLineOfOffset(region
-                    .getOffset());
+            final int start = fCachedDocument.getLineOfOffset(region.getOffset());
             final int end = fCachedDocument.getLineOfOffset(region.getOffset()
                     + region.getLength());
             if (start != end) {
@@ -736,8 +717,8 @@ public class DefaultErlangFoldingStructureProvider implements
                     return new CommentPosition(offset, endOffset - offset);
                 }
                 if (element instanceof IErlMember) {
-                    return new ErlangElementPosition(offset,
-                            endOffset - offset, (IErlMember) element);
+                    return new ErlangElementPosition(offset, endOffset - offset,
+                            (IErlMember) element);
                 }
             }
 
@@ -807,14 +788,11 @@ public class DefaultErlangFoldingStructureProvider implements
                         final Tuple tuple = x.next();
                         final ErlangProjectionAnnotation existingAnnotation = tuple.annotation;
                         final Position existingPosition = tuple.position;
-                        if (newAnnotation.isComment() == existingAnnotation
-                                .isComment()) {
+                        if (newAnnotation.isComment() == existingAnnotation.isComment()) {
                             if (existingPosition != null
                                     && !newPosition.equals(existingPosition)) {
-                                existingPosition.setOffset(newPosition
-                                        .getOffset());
-                                existingPosition.setLength(newPosition
-                                        .getLength());
+                                existingPosition.setOffset(newPosition.getOffset());
+                                existingPosition.setLength(newPosition.getLength());
                                 updates.add(existingAnnotation);
                             }
                             matched = true;
@@ -960,8 +938,7 @@ public class DefaultErlangFoldingStructureProvider implements
         return null;
     }
 
-    private Map<Object, List<Tuple>> createAnnotationMap(
-            final IAnnotationModel model) {
+    private Map<Object, List<Tuple>> createAnnotationMap(final IAnnotationModel model) {
         final Map<Object, List<Tuple>> map = new HashMap<Object, List<Tuple>>();
         final Iterator<?> e = model.getAnnotationIterator();
         while (e.hasNext()) {
@@ -1009,15 +986,13 @@ public class DefaultErlangFoldingStructureProvider implements
 
     @Override
     public void collapseElements(final IErlElement[] elements) {
-        final Set<IErlElement> set = new HashSet<IErlElement>(
-                Arrays.asList(elements));
+        final Set<IErlElement> set = new HashSet<IErlElement>(Arrays.asList(elements));
         modifyFiltered(new ErlangElementSetFilter(set, false), false);
     }
 
     @Override
     public void expandElements(final IErlElement[] elements) {
-        final Set<IErlElement> set = new HashSet<IErlElement>(
-                Arrays.asList(elements));
+        final Set<IErlElement> set = new HashSet<IErlElement>(Arrays.asList(elements));
         modifyFiltered(new ErlangElementSetFilter(set, true), true);
     }
 

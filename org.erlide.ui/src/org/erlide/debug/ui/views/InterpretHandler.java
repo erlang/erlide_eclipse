@@ -22,15 +22,14 @@ public class InterpretHandler extends AbstractHandler {
                 .getActivePart(event);
         final String commandId = event.getCommand().getId();
         if (commandId.equals(INTERPRET_COMMAND_ID)) {
-            final List<IErlModule> modules = DebugTab
-                    .getModulesFromAddModulesDialog(view.getSite().getShell());
+            final List<IErlModule> modules = DebugTab.getModulesFromAddModulesDialog(view
+                    .getSite().getShell());
             for (final IErlModule module : modules) {
                 view.interpretOrDeinterpret(module, true);
             }
         } else if (commandId.equals(DEINTERPRET_COMMAND_ID)) {
             final ISelection selection = HandlerUtil.getCurrentSelection(event);
-            if (selection instanceof IStructuredSelection
-                    && !selection.isEmpty()) {
+            if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
                 final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
                 for (final Object o : structuredSelection.toArray()) {
                     final IErlModule module = (IErlModule) o;

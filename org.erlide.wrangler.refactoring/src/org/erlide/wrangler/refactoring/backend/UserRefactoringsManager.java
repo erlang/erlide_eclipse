@@ -110,8 +110,8 @@ public class UserRefactoringsManager {
 
         final Bundle coreBundle = Platform.getBundle(Activator.CORE_ID);
 
-        final Enumeration modules = coreBundle.findEntries("wrangler/ebin",
-                "*.beam", false);
+        final Enumeration modules = coreBundle.findEntries("wrangler/ebin", "*.beam",
+                false);
 
         // modules that origin from repository
         final List<OtpErlangObject> erlModules = new LinkedList<OtpErlangObject>();
@@ -122,12 +122,9 @@ public class UserRefactoringsManager {
             erlModules.add(new OtpErlangString(module));
         }
 
-        RpcResult res = WranglerBackendManager.getRefactoringBackend()
-                .callWithoutParser(
-                        "get_user_refactorings",
-                        "x",
-                        new OtpErlangList(erlModules
-                                .toArray(new OtpErlangObject[0])));
+        RpcResult res = WranglerBackendManager.getRefactoringBackend().callWithoutParser(
+                "get_user_refactorings", "x",
+                new OtpErlangList(erlModules.toArray(new OtpErlangObject[0])));
 
         if (res.isOk() && res.getValue() instanceof OtpErlangList) {
             final OtpErlangList genRefac = (OtpErlangList) ((OtpErlangTuple) ((OtpErlangList) res
@@ -157,8 +154,7 @@ public class UserRefactoringsManager {
         // user's own composite refactorings
         final Enumeration userCompositeModules = coreBundle.findEntries(
                 "wrangler/ebin/my_gen_composite_refac", "*.beam", false);
-        while (userCompositeModules != null
-                && userCompositeModules.hasMoreElements()) {
+        while (userCompositeModules != null && userCompositeModules.hasMoreElements()) {
             final String next = userCompositeModules.nextElement().toString();
             myCompositeRefacs.add(new UserRefactoringInfo(next.substring(
                     next.lastIndexOf('/') + 1, next.lastIndexOf('.'))));

@@ -60,10 +60,10 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
         final IErlRange memberRange = sel.getSelectionRange();
 
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "rename_fun_eclipse", "siisxi", sel.getFilePath(),
-                memberRange.getStartLine(), memberRange.getStartCol(),
-                userInput, sel.getSearchPath(), GlobalParameters.getTabWidth());
+        return WranglerBackendManager.getRefactoringBackend().call("rename_fun_eclipse",
+                "siisxi", sel.getFilePath(), memberRange.getStartLine(),
+                memberRange.getStartCol(), userInput, sel.getSearchPath(),
+                GlobalParameters.getTabWidth());
     }
 
     @Override
@@ -73,8 +73,8 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 
         return WranglerBackendManager.getRefactoringBackend().call(
                 "rename_fun_1_eclipse", "siisxi", sel.getFilePath(),
-                memberRange.getStartLine(), memberRange.getStartCol(),
-                userInput, sel.getSearchPath(), GlobalParameters.getTabWidth());
+                memberRange.getStartLine(), memberRange.getStartCol(), userInput,
+                sel.getSearchPath(), GlobalParameters.getTabWidth());
     }
 
     @Override
@@ -83,8 +83,7 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 
             @Override
             public void doRefactoring() {
-                final IErlSelection sel = GlobalParameters
-                        .getWranglerSelection();
+                final IErlSelection sel = GlobalParameters.getWranglerSelection();
                 IRefactoringRpcMessage message = run(sel);
                 if (message.isSuccessful()) {
                     changedFiles = message.getRefactoringChangeset();
@@ -95,9 +94,8 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
                         if (message.getRefactoringState() == RefactoringState.OK) {
                             status = new RefactoringStatus();
                         } else {
-                            status = RefactoringStatus
-                                    .createFatalErrorStatus(message
-                                            .getMessageString());
+                            status = RefactoringStatus.createFatalErrorStatus(message
+                                    .getMessageString());
                         }
                     } else {
                         stop();
@@ -120,11 +118,10 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
         }
 
         final RpcResult res = WranglerBackendManager.getRefactoringBackend()
-                .callWithoutParser("get_fun_name_eclipse", "siixi",
-                        sel.getFilePath(),
+                .callWithoutParser("get_fun_name_eclipse", "siixi", sel.getFilePath(),
                         sel.getSelectionRange().getStartLine(),
-                        sel.getSelectionRange().getStartCol(),
-                        sel.getSearchPath(), GlobalParameters.getTabWidth());
+                        sel.getSelectionRange().getStartCol(), sel.getSearchPath(),
+                        GlobalParameters.getTabWidth());
 
         if (res.getValue().getClass().equals(OtpErlangString.class)) {
             return ((OtpErlangString) res.getValue()).stringValue();

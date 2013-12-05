@@ -108,8 +108,7 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
         // create message
 
         final Label minTokslabel = new Label(composite, SWT.WRAP);
-        minTokslabel
-                .setText("Minimal numbers of tokens a code clone should have:");
+        minTokslabel.setText("Minimal numbers of tokens a code clone should have:");
         final GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_CENTER);
@@ -150,8 +149,8 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
 
         onlyInFileCheckBoxButton = new Button(composite, SWT.CHECK);
         onlyInFileCheckBoxButton.setText("Detect duplicates in the project");
-        onlyInFileCheckBoxButton.setLayoutData(new GridData(
-                GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+        onlyInFileCheckBoxButton.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.HORIZONTAL_ALIGN_FILL));
         onlyInFileCheckBoxButton.addSelectionListener(new SelectionListener() {
 
             @Override
@@ -168,8 +167,8 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
         errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
         errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
-        errorMessageText.setBackground(errorMessageText.getDisplay()
-                .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+        errorMessageText.setBackground(errorMessageText.getDisplay().getSystemColor(
+                SWT.COLOR_WIDGET_BACKGROUND));
 
         setErrorMessage("Please use only integers!");
 

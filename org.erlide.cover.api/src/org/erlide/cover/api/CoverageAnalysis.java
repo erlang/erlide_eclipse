@@ -102,8 +102,7 @@ public class CoverageAnalysis {
                         "There should be only one CoveragePerformerProxy implementation");
             }
             try {
-                proxy = (ICoveragePerformerProxy) ce
-                        .createExecutableExtension("class");
+                proxy = (ICoveragePerformerProxy) ce.createExecutableExtension("class");
             } catch (final CoreException e) {
                 ErlLogger.error(e);
                 throw new CoverException(e);
@@ -112,8 +111,7 @@ public class CoverageAnalysis {
         return proxy != null ? proxy.getBackend() : null;
     }
 
-    private static ICoveragePerformer getCoveragePerformerOrThrow()
-            throws CoreException {
+    private static ICoveragePerformer getCoveragePerformerOrThrow() throws CoreException {
         final ICoveragePerformer result = getCoveragePerformer();
         if (result == null) {
             throw new UnsupportedOperationException();
@@ -121,8 +119,7 @@ public class CoverageAnalysis {
         return result;
     }
 
-    private static ICoveragePerformer getCoveragePerformer()
-            throws CoreException {
+    private static ICoveragePerformer getCoveragePerformer() throws CoreException {
         final IConfigurationElement[] conf = Platform.getExtensionRegistry()
                 .getConfigurationElementsFor(ICoveragePerformerProxy.ID);
         ICoveragePerformerProxy proxy = null;
@@ -131,8 +128,7 @@ public class CoverageAnalysis {
                 throw new RuntimeException(
                         "There should be only one CoveragePerformerProxy implementation");
             }
-            proxy = (ICoveragePerformerProxy) ce
-                    .createExecutableExtension("class");
+            proxy = (ICoveragePerformerProxy) ce.createExecutableExtension("class");
         }
         return proxy != null ? proxy.getPerformer() : null;
     }

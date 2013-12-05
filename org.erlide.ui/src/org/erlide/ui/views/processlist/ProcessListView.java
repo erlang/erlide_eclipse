@@ -82,8 +82,8 @@ public class ProcessListView extends ViewPart {
      */
     class ViewContentProvider implements IStructuredContentProvider {
 
-        private final ProcessEventHandler handler = new ProcessEventHandler(
-                getBackend().getName());
+        private final ProcessEventHandler handler = new ProcessEventHandler(getBackend()
+                .getName());
 
         public ViewContentProvider() {
             getBackend().getRuntime().registerEventListener(handler);
@@ -105,8 +105,8 @@ public class ProcessListView extends ViewPart {
                 return new OtpErlangObject[] {};
             }
 
-            final OtpErlangList r = ErlangEngine.getInstance()
-                    .getProclistService().getProcessList(backend);
+            final OtpErlangList r = ErlangEngine.getInstance().getProclistService()
+                    .getProcessList(backend);
             if (r == null || r.arity() == 0) {
                 return new OtpErlangObject[] {};
             }
@@ -143,8 +143,7 @@ public class ProcessListView extends ViewPart {
         }
     }
 
-    static class ViewLabelProvider extends LabelProvider implements
-            ITableLabelProvider {
+    static class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
 
         @Override
         public String getColumnText(final Object obj, final int index) {
@@ -196,18 +195,15 @@ public class ProcessListView extends ViewPart {
 
         backends = new ComboViewer(container, SWT.SINGLE | SWT.V_SCROLL);
         final Combo combo = backends.getCombo();
-        combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-                1));
-        backends.getControl().setSize(
-                new org.eclipse.swt.graphics.Point(319, 18));
+        combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        backends.getControl().setSize(new org.eclipse.swt.graphics.Point(319, 18));
         backends.setContentProvider(new BackendContentProvider());
         backends.setLabelProvider(new BackendLabelProvider());
         backends.setInput(BackendCore.getBackendManager());
         viewer = new TableViewer(container, SWT.SINGLE | SWT.V_SCROLL
                 | SWT.FULL_SELECTION);
         final Table table = viewer.getTable();
-        final GridData layoutData = new GridData(SWT.FILL, SWT.FILL, false,
-                true, 2, 1);
+        final GridData layoutData = new GridData(SWT.FILL, SWT.FILL, false, true, 2, 1);
         table.setLayoutData(layoutData);
         final Table t = (Table) viewer.getControl();
         final TableColumn colPid = new TableColumn(t, SWT.LEAD);
@@ -246,14 +242,13 @@ public class ProcessListView extends ViewPart {
 
     private void initErlangService() {
         // TODO this is wrong - all backends should be inited
-        BackendCore.getBackendManager().forEachBackend(
-                new Procedure1<IBackend>() {
-                    @Override
-                    public void apply(final IBackend b) {
-                        ErlangEngine.getInstance().getProclistService()
-                                .processListInit(b.getRpcSite());
-                    }
-                });
+        BackendCore.getBackendManager().forEachBackend(new Procedure1<IBackend>() {
+            @Override
+            public void apply(final IBackend b) {
+                ErlangEngine.getInstance().getProclistService()
+                        .processListInit(b.getRpcSite());
+            }
+        });
     }
 
     private void hookContextMenu() {
@@ -302,8 +297,7 @@ public class ProcessListView extends ViewPart {
         };
         refreshAction.setText("Refresh");
         refreshAction.setToolTipText("Refresh process list");
-        refreshAction.setImageDescriptor(PlatformUI.getWorkbench()
-                .getSharedImages()
+        refreshAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 
         doubleClickAction = new Action() {
@@ -311,8 +305,7 @@ public class ProcessListView extends ViewPart {
             @Override
             public void run() {
                 final ISelection selection = viewer.getSelection();
-                final Object obj = ((IStructuredSelection) selection)
-                        .getFirstElement();
+                final Object obj = ((IStructuredSelection) selection).getFirstElement();
 
                 if (obj == null) {
                     return;
@@ -321,23 +314,19 @@ public class ProcessListView extends ViewPart {
                 final OtpErlangPid pid = (OtpErlangPid) ((OtpErlangTuple) obj)
                         .elementAt(0);
 
-                final OtpErlangObject r = ErlangEngine.getInstance()
-                        .getProclistService()
+                final OtpErlangObject r = ErlangEngine.getInstance().getProclistService()
                         .getProcessInfo(getBackend().getRpcSite(), pid);
                 if (r instanceof OtpErlangList) {
                     final OtpErlangList l = (OtpErlangList) r;
                     final StringBuilder s = new StringBuilder();
                     for (int i = 0; i < l.arity(); i++) {
-                        final OtpErlangTuple e = (OtpErlangTuple) l
-                                .elementAt(i);
-                        s.append(' ').append(e.elementAt(0).toString())
-                                .append("\t= ")
+                        final OtpErlangTuple e = (OtpErlangTuple) l.elementAt(i);
+                        s.append(' ').append(e.elementAt(0).toString()).append("\t= ")
                                 .append(e.elementAt(1).toString()).append('\n');
                     }
                     showMessage(s.toString());
                 } else {
-                    showMessage("Process "
-                            + pid.toString()
+                    showMessage("Process " + pid.toString()
                             + " is probably dead.\nPlease refresh process list.");
                 }
             }
@@ -361,8 +350,7 @@ public class ProcessListView extends ViewPart {
     }
 
     public IBackend getBackend() {
-        final IStructuredSelection sel = (IStructuredSelection) backends
-                .getSelection();
+        final IStructuredSelection sel = (IStructuredSelection) backends.getSelection();
         if (sel.getFirstElement() != null) {
             final IBackend b = (IBackend) sel.getFirstElement();
             return b;

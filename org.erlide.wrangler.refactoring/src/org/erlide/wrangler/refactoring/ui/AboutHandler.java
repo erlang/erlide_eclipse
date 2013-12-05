@@ -23,8 +23,7 @@ public class AboutHandler extends AbstractHandler {
             super(parentShell);
         }
 
-        public MyMessageDialog(final Shell shell, final String title,
-                final String message) {
+        public MyMessageDialog(final Shell shell, final String title, final String message) {
             super(shell);
             this.title = title;
             this.message = message;
@@ -34,8 +33,7 @@ public class AboutHandler extends AbstractHandler {
         @Override
         protected void createButtonsForButtonBar(final Composite parent) {
             // create OK and Cancel buttons by default
-            createButton(parent, IDialogConstants.OK_ID,
-                    IDialogConstants.OK_LABEL, true);
+            createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
         }
 
         @Override
@@ -46,8 +44,7 @@ public class AboutHandler extends AbstractHandler {
 
         @Override
         protected Control createDialogArea(final Composite parent) {
-            final Composite composite = (Composite) super
-                    .createDialogArea(parent);
+            final Composite composite = (Composite) super.createDialogArea(parent);
 
             final Link url1 = new Link(composite, SWT.BORDER);
             url1.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL

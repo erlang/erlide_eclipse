@@ -94,14 +94,12 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
                 final IStatus executionStatus = new Status(IStatus.ERROR,
                         Activator.PLUGIN_ID,
                         "Internall error occured: bad sellection type", null);
-                StatusManager.getManager().handle(executionStatus,
-                        StatusManager.SHOW);
+                StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);
                 return;
             }
 
             final ITreeSelection treeSelection = (ITreeSelection) selection;
-            final ICoverageObject obj = (ICoverageObject) treeSelection
-                    .getFirstElement();
+            final ICoverageObject obj = (ICoverageObject) treeSelection.getFirstElement();
 
             if (obj == null) {
                 return;
@@ -166,15 +164,13 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         containerLayout.verticalSpacing = 3;
         parent.setLayout(containerLayout);
 
-        viewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL
-                | SWT.V_SCROLL);
+        viewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
         drillDownAdapter = new DrillDownAdapter(viewer);
         viewer.setContentProvider(new StatsViewContentProvider(getViewSite()));
         viewer.setLabelProvider(new StatsViewLabelProvider());
         viewer.setSorter(new StatsNameSorter());
         viewer.setInput(getViewSite());
-        viewer.getTree().setLayoutData(
-                new GridData(SWT.FILL, SWT.FILL, true, true));
+        viewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         viewer.addSelectionChangedListener(viewerSelectionChanged);
 
         createTableTree();
@@ -282,8 +278,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         showCoverage = new ShowCoverageAction(viewer);
         showCoverage.setText("Show coverage");
         showCoverage.setToolTipText("Shows item's coverage");
-        showCoverage.setImageDescriptor(PlatformUI.getWorkbench()
-                .getSharedImages()
+        showCoverage.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
     }
 
@@ -291,8 +286,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         hideCoverage = new HideCoverageAction(viewer);
         hideCoverage.setText("Hide coverage");
         hideCoverage.setToolTipText("Hides item's coverage");
-        hideCoverage.setImageDescriptor(PlatformUI.getWorkbench()
-                .getSharedImages()
+        hideCoverage.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
     }
 
@@ -337,8 +331,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     private void makeRefreshAction() {
         eksportHTML = new EksportReports(viewer.getControl().getShell());
         // TODO change image
-        eksportHTML.setImageDescriptor(PlatformUI.getWorkbench()
-                .getSharedImages()
+        eksportHTML.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_TOOL_UP));
         eksportHTML.setToolTipText("Eksport coverage reports in HTML format.");
     }
@@ -381,8 +374,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         case ERROR:
             final IStatus executionStatus = new Status(IStatus.ERROR,
                     Activator.PLUGIN_ID, e.getInfo(), null);
-            StatusManager.getManager().handle(executionStatus,
-                    StatusManager.SHOW);
+            StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);
             break;
         default:
             break;

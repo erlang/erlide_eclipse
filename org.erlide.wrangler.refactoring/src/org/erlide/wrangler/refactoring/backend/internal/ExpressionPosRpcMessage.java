@@ -60,8 +60,7 @@ public class ExpressionPosRpcMessage extends AbstractRpcMessage {
                 final OtpErlangObject[] elements = posDefList.elements();
                 for (final OtpErlangObject o : elements) {
                     final OtpErlangTuple value = (OtpErlangTuple) o;
-                    final OtpErlangTuple pos = (OtpErlangTuple) value
-                            .elementAt(0);
+                    final OtpErlangTuple pos = (OtpErlangTuple) value.elementAt(0);
                     try {
                         positionDefs.put(new Range(pos), value);
                     } catch (final OtpErlangRangeException e) {
@@ -98,8 +97,7 @@ public class ExpressionPosRpcMessage extends AbstractRpcMessage {
      *            the document which containing the module
      * @return selections
      */
-    public HashMap<IErlRange, OtpErlangTuple> getPositionDefinitions(
-            final IDocument doc) {
+    public HashMap<IErlRange, OtpErlangTuple> getPositionDefinitions(final IDocument doc) {
         final HashMap<IErlRange, OtpErlangTuple> ret = new HashMap<IErlRange, OtpErlangTuple>();
         for (final Entry<IRange, OtpErlangTuple> r : positionDefs.entrySet()) {
             ret.put(new ErlRange(r.getKey(), doc), r.getValue());

@@ -138,27 +138,23 @@ public class GeneraliseFunctionRefactoring extends
         if (state == State.error) {
             return RefactoringStatus.createFatalErrorStatus(errorMessage);
         } else if (state == State.multi_instance) {
-            positions = createPositionList((OtpErlangList) message
-                    .getParameters().get(GenFunReturnParameterName.dupsInFun));
+            positions = createPositionList((OtpErlangList) message.getParameters().get(
+                    GenFunReturnParameterName.dupsInFun));
         } else if (state == State.more_than_one_clause) {
             if (onlyInClause) {
-                positions = createPositionList((OtpErlangList) message
-                        .getParameters().get(
-                                GenFunReturnParameterName.dupsInClause));
+                positions = createPositionList((OtpErlangList) message.getParameters()
+                        .get(GenFunReturnParameterName.dupsInClause));
             } else {
-                positions = createPositionList((OtpErlangList) message
-                        .getParameters().get(
-                                GenFunReturnParameterName.dupsInFun));
+                positions = createPositionList((OtpErlangList) message.getParameters()
+                        .get(GenFunReturnParameterName.dupsInFun));
             }
         } else if (state == State.unknown_side_effect) {
             if (onlyInClause) {
-                positions = createPositionList((OtpErlangList) message
-                        .getParameters().get(
-                                GenFunReturnParameterName.dupsInClause));
+                positions = createPositionList((OtpErlangList) message.getParameters()
+                        .get(GenFunReturnParameterName.dupsInClause));
             } else {
-                positions = createPositionList((OtpErlangList) message
-                        .getParameters().get(
-                                GenFunReturnParameterName.dupsInFun));
+                positions = createPositionList((OtpErlangList) message.getParameters()
+                        .get(GenFunReturnParameterName.dupsInFun));
             }
         }
         return new RefactoringStatus();
@@ -216,36 +212,34 @@ public class GeneraliseFunctionRefactoring extends
             if (state == State.multi_instance) {
                 return WranglerBackendManager.getRefactoringBackend().call(
                         "gen_fun_1_eclipse", "xsxxxxxxxix", sideEffectPar,
-                        sel.getFilePath(), parName, funName, arity, funDefPos,
-                        exp, getSelectedPos(), sel.getSearchPath(),
+                        sel.getFilePath(), parName, funName, arity, funDefPos, exp,
+                        getSelectedPos(), sel.getSearchPath(),
                         GlobalParameters.getTabWidth(), logCmd);
             } else if (state == State.unknown_side_effect) {
                 if (onlyInClause) {
                     return WranglerBackendManager.getRefactoringBackend().call(
-                            "gen_fun_clause_eclipse", "sxxxxxixxx",
-                            sel.getFilePath(), parName, funName, arity,
-                            funDefPos, exp, GlobalParameters.getTabWidth(),
-                            new OtpErlangBoolean(sideEffect), getSelectedPos(),
-                            logCmd);
+                            "gen_fun_clause_eclipse", "sxxxxxixxx", sel.getFilePath(),
+                            parName, funName, arity, funDefPos, exp,
+                            GlobalParameters.getTabWidth(),
+                            new OtpErlangBoolean(sideEffect), getSelectedPos(), logCmd);
                 }
                 return WranglerBackendManager.getRefactoringBackend().call(
                         "gen_fun_1_eclipse", "xsxxxxxxxix",
-                        new OtpErlangBoolean(sideEffect), sel.getFilePath(),
-                        parName, funName, arity, funDefPos, exp,
-                        getSelectedPos(), sel.getSearchPath(),
-                        GlobalParameters.getTabWidth(), logCmd);
+                        new OtpErlangBoolean(sideEffect), sel.getFilePath(), parName,
+                        funName, arity, funDefPos, exp, getSelectedPos(),
+                        sel.getSearchPath(), GlobalParameters.getTabWidth(), logCmd);
             } else if (state == State.more_than_one_clause) {
                 if (onlyInClause) {
                     return WranglerBackendManager.getRefactoringBackend().call(
-                            "gen_fun_clause_eclipse", "sxxxxxixxx",
-                            sel.getFilePath(), parName, funName, arity,
-                            funDefPos, exp, GlobalParameters.getTabWidth(),
-                            sideEffectPar, getSelectedPos(), logCmd);
+                            "gen_fun_clause_eclipse", "sxxxxxixxx", sel.getFilePath(),
+                            parName, funName, arity, funDefPos, exp,
+                            GlobalParameters.getTabWidth(), sideEffectPar,
+                            getSelectedPos(), logCmd);
                 }
                 return WranglerBackendManager.getRefactoringBackend().call(
                         "gen_fun_1_eclipse", "xsxxxxxxxix", sideEffectPar,
-                        sel.getFilePath(), parName, funName, arity, funDefPos,
-                        exp, getSelectedPos(), sel.getSearchPath(),
+                        sel.getFilePath(), parName, funName, arity, funDefPos, exp,
+                        getSelectedPos(), sel.getSearchPath(),
                         GlobalParameters.getTabWidth(), logCmd);
             }
         }
@@ -263,8 +257,7 @@ public class GeneraliseFunctionRefactoring extends
             changedFiles = theMessage.getRefactoringChangeset();
             return new RefactoringStatus();
         }
-        return RefactoringStatus.createFatalErrorStatus(theMessage
-                .getMessageString());
+        return RefactoringStatus.createFatalErrorStatus(theMessage.getMessageString());
     }
 
     @Override

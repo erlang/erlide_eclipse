@@ -75,8 +75,7 @@ public class Diff<Type> {
     /**
      * Constructs the Diff object for the two lists, using the given comparator.
      */
-    public Diff(final List<Type> a, final List<Type> b,
-            final Comparator<Type> comp) {
+    public Diff(final List<Type> a, final List<Type> b, final Comparator<Type> comp) {
         this.a = a;
         this.b = b;
         this.comparator = comp;
@@ -258,13 +257,11 @@ public class Diff<Type> {
 
         final TreeMap<Integer, Integer> matches = new TreeMap<Integer, Integer>();
 
-        while (aStart <= aEnd && bStart <= bEnd
-                && equals(a.get(aStart), b.get(bStart))) {
+        while (aStart <= aEnd && bStart <= bEnd && equals(a.get(aStart), b.get(bStart))) {
             matches.put(aStart++, bStart++);
         }
 
-        while (aStart <= aEnd && bStart <= bEnd
-                && equals(a.get(aEnd), b.get(bEnd))) {
+        while (aStart <= aEnd && bStart <= bEnd && equals(a.get(aEnd), b.get(bEnd))) {
             matches.put(aEnd--, bEnd--);
         }
 

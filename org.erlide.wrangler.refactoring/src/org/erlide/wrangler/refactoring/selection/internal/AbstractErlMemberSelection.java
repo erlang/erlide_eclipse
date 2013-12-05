@@ -24,8 +24,8 @@ import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public abstract class AbstractErlMemberSelection extends AbstractErlSelection
-        implements IErlMemberSelection {
+public abstract class AbstractErlMemberSelection extends AbstractErlSelection implements
+        IErlMemberSelection {
 
     protected ITextSelection textSelection;
 
@@ -49,10 +49,9 @@ public abstract class AbstractErlMemberSelection extends AbstractErlSelection
      *            the erlang editor which is used to get the current selection
      */
     public AbstractErlMemberSelection(final ITextEditor editor) {
-        final ITextSelection selection = (ITextSelection) editor
-                .getSelectionProvider().getSelection();
-        final IFileEditorInput input = (IFileEditorInput) editor
-                .getEditorInput();
+        final ITextSelection selection = (ITextSelection) editor.getSelectionProvider()
+                .getSelection();
+        final IFileEditorInput input = (IFileEditorInput) editor.getEditorInput();
         document = editor.getDocumentProvider().getDocument(input);
         final IFile afile = input.getFile();
         store(selection, afile, document);

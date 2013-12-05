@@ -145,13 +145,11 @@ public class DebugTraceTarget extends DebugTraceElement implements IDebugTarget 
     }
 
     @Override
-    public void breakpointChanged(final IBreakpoint breakpoint,
-            final IMarkerDelta delta) {
+    public void breakpointChanged(final IBreakpoint breakpoint, final IMarkerDelta delta) {
     }
 
     @Override
-    public void breakpointRemoved(final IBreakpoint breakpoint,
-            final IMarkerDelta delta) {
+    public void breakpointRemoved(final IBreakpoint breakpoint, final IMarkerDelta delta) {
     }
 
     @Override
@@ -169,8 +167,8 @@ public class DebugTraceTarget extends DebugTraceElement implements IDebugTarget 
     }
 
     @Override
-    public IMemoryBlock getMemoryBlock(final long startAddress,
-            final long length) throws DebugException {
+    public IMemoryBlock getMemoryBlock(final long startAddress, final long length)
+            throws DebugException {
         return null;
     }
 

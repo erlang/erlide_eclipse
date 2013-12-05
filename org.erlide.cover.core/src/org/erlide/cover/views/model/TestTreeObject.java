@@ -24,8 +24,8 @@ public class TestTreeObject {
 
     public TestTreeObject(final String name, final int type) {
         this.name = name;
-        description = name.replace("\"", "").replace("\\'", "'")
-                .replaceFirst("^'", "").replaceFirst("'$", "");
+        description = name.replace("\"", "").replace("\\'", "'").replaceFirst("^'", "")
+                .replaceFirst("'$", "");
         this.type = type;
     }
 
@@ -43,8 +43,7 @@ public class TestTreeObject {
      * @param time
      */
     public void setTime(final int time) {
-        description = String
-                .format("%s     [%.3f]", description, time / 1000.0);
+        description = String.format("%s     [%.3f]", description, time / 1000.0);
     }
 
     public void addChild(final TestTreeObject child) {

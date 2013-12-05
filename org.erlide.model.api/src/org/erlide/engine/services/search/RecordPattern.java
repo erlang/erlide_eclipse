@@ -15,8 +15,7 @@ public class RecordPattern extends NamePattern {
 
     @Override
     public String toString() {
-        return "RecordPattern [limitTo=" + limitTo + ", getName()=" + getName()
-                + "]";
+        return "RecordPattern [limitTo=" + limitTo + ", getName()=" + getName() + "]";
     }
 
     @Override

@@ -71,8 +71,7 @@ public class ConsoleOutputScanner implements ITokenScanner {
     }
 
     @Override
-    public void setRange(final IDocument document, final int offset,
-            final int length) {
+    public void setRange(final IDocument document, final int offset, final int length) {
         this.offset = offset;
         if (document instanceof ErlConsoleDocument) {
             // ErlConsoleDocument doc = (ErlConsoleDocument) document;

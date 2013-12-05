@@ -47,18 +47,12 @@ public class IErlElementTest extends ErlModelTestBase {
     public void getAncestorOfKind() throws Exception {
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
-        final IErlElement ancestor = element
-                .getAncestorOfKind(ErlElementKind.FUNCTION);
-        final IErlElement ancestor2 = element
-                .getAncestorOfKind(ErlElementKind.MODULE);
-        final IErlElement ancestor3 = element
-                .getAncestorOfKind(ErlElementKind.FOLDER);
-        final IErlElement ancestor4 = element
-                .getAncestorOfKind(ErlElementKind.PROJECT);
-        final IErlElement ancestor5 = element
-                .getAncestorOfKind(ErlElementKind.MODEL);
-        final IErlElement ancestor6 = element
-                .getAncestorOfKind(ErlElementKind.TYPESPEC);
+        final IErlElement ancestor = element.getAncestorOfKind(ErlElementKind.FUNCTION);
+        final IErlElement ancestor2 = element.getAncestorOfKind(ErlElementKind.MODULE);
+        final IErlElement ancestor3 = element.getAncestorOfKind(ErlElementKind.FOLDER);
+        final IErlElement ancestor4 = element.getAncestorOfKind(ErlElementKind.PROJECT);
+        final IErlElement ancestor5 = element.getAncestorOfKind(ErlElementKind.MODEL);
+        final IErlElement ancestor6 = element.getAncestorOfKind(ErlElementKind.TYPESPEC);
         assertNotNull(ancestor);
         assertTrue(ancestor instanceof IErlFunction);
         assertEquals(ErlElementKind.FUNCTION, ancestor.getKind());
@@ -67,10 +61,8 @@ public class IErlElementTest extends ErlModelTestBase {
         assertEquals(ErlElementKind.FOLDER, ancestor3.getKind());
         assertEquals(ErlElementKind.PROJECT, ancestor4.getKind());
         assertEquals(ErlElementKind.MODEL, ancestor5.getKind());
-        assertEquals(ancestor3,
-                ancestor2.getAncestorOfKind(ErlElementKind.FOLDER));
-        assertEquals(ancestor4,
-                ancestor2.getAncestorOfKind(ErlElementKind.PROJECT));
+        assertEquals(ancestor3, ancestor2.getAncestorOfKind(ErlElementKind.FOLDER));
+        assertEquals(ancestor4, ancestor2.getAncestorOfKind(ErlElementKind.PROJECT));
         assertNull(ancestor6);
     }
 
@@ -92,8 +84,8 @@ public class IErlElementTest extends ErlModelTestBase {
     public void getModule() throws Exception {
         module.open(null);
         final IErlMember element = module.getElementAtLine(3);
-        assertEquals(module, ErlangEngine.getInstance().getModelUtilService()
-                .getModule(element));
+        assertEquals(module,
+                ErlangEngine.getInstance().getModelUtilService().getModule(element));
     }
 
     // IResource getCorrespondingResource();
@@ -104,8 +96,8 @@ public class IErlElementTest extends ErlModelTestBase {
         final IFolder srcFolder = workspaceProject.getFolder("src");
         final IFile file = srcFolder.getFile("xx.erl");
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlModule otpFile = model.findModuleFromProject(project,
-                "file.erl", null, IErlElementLocator.Scope.PROJECT_ONLY);
+        final IErlModule otpFile = model.findModuleFromProject(project, "file.erl", null,
+                IErlElementLocator.Scope.PROJECT_ONLY);
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
         assertEquals(file, module.getCorrespondingResource());
@@ -135,8 +127,8 @@ public class IErlElementTest extends ErlModelTestBase {
         assertEquals(ErlElementKind.PROJECT, project.getKind());
         assertEquals(ErlElementKind.FUNCTION, element.getKind());
         assertEquals(ErlElementKind.ATTRIBUTE, element2.getKind());
-        assertEquals(ErlElementKind.MODEL, ErlangEngine.getInstance()
-                .getModel().getKind());
+        assertEquals(ErlElementKind.MODEL, ErlangEngine.getInstance().getModel()
+                .getKind());
     }
 
     // IErlModel getModel();
@@ -167,8 +159,8 @@ public class IErlElementTest extends ErlModelTestBase {
         final IFolder srcFolder = workspaceProject.getFolder("src");
         final IFile file = srcFolder.getFile("xx.erl");
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlModule otpFile = model.findModuleFromProject(project,
-                "file.erl", null, IErlElementLocator.Scope.PROJECT_ONLY);
+        final IErlModule otpFile = model.findModuleFromProject(project, "file.erl", null,
+                IErlElementLocator.Scope.PROJECT_ONLY);
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
         assertEquals(file, module.getResource());
@@ -181,8 +173,8 @@ public class IErlElementTest extends ErlModelTestBase {
     public void getSchedulingRule() throws Exception {
         project.open(null);
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlModule otpFile = model.findModuleFromProject(project,
-                "file.erl", null, IErlElementLocator.Scope.PROJECT_ONLY);
+        final IErlModule otpFile = model.findModuleFromProject(project, "file.erl", null,
+                IErlElementLocator.Scope.PROJECT_ONLY);
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
         // TODO more testing here
@@ -211,13 +203,12 @@ public class IErlElementTest extends ErlModelTestBase {
         module.open(null);
         final boolean structureKnown4 = module.isStructureKnown();
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlModule otpFile = model.findModuleFromProject(project,
-                "file.erl", null, IErlElementLocator.Scope.PROJECT_ONLY);
+        final IErlModule otpFile = model.findModuleFromProject(project, "file.erl", null,
+                IErlElementLocator.Scope.PROJECT_ONLY);
         final IErlExternal external = (IErlExternal) otpFile.getParent();
         final boolean structureKnown5 = external.isStructureKnown();
-        final IErlModule module2 = ErlideTestUtils
-                .createModule(project, "yy.erl",
-                        "-module(yy).\n% comment\n% same\nf(x) -> y.\n% last");
+        final IErlModule module2 = ErlideTestUtils.createModule(project, "yy.erl",
+                "-module(yy).\n% comment\n% same\nf(x) -> y.\n% last");
         final boolean structureKnown6 = module2.isStructureKnown();
         module2.open(null);
         final boolean structureKnown7 = module2.isStructureKnown();
@@ -252,8 +243,7 @@ public class IErlElementTest extends ErlModelTestBase {
         final IErlElementVisitor visitor = new IErlElementVisitor() {
 
             @Override
-            public boolean visit(final IErlElement element)
-                    throws ErlModelException {
+            public boolean visit(final IErlElement element) throws ErlModelException {
                 if (element instanceof IErlExternal) {
                     return false; // avoid digging through otp
                 }
@@ -270,8 +260,7 @@ public class IErlElementTest extends ErlModelTestBase {
         };
         final EnumSet<AcceptFlags> noneOf = EnumSet.noneOf(AcceptFlags.class);
         project.accept(visitor, noneOf, ErlElementKind.MODULE);
-        final List<IErlElement> kindModuleElementsVisited = Lists
-                .newArrayList(elements);
+        final List<IErlElement> kindModuleElementsVisited = Lists.newArrayList(elements);
         elements.clear();
         project.accept(visitor, noneOf, ErlElementKind.FUNCTION);
         final List<IErlElement> kindFunctionElementsVisited = Lists
@@ -281,8 +270,7 @@ public class IErlElementTest extends ErlModelTestBase {
                 ErlElementKind.MODULE);
         final List<IErlElement> childrenFirst = Lists.newArrayList(elements);
         elements.clear();
-        project.accept(visitor, EnumSet.of(AcceptFlags.LEAFS_ONLY),
-                ErlElementKind.MODULE);
+        project.accept(visitor, EnumSet.of(AcceptFlags.LEAFS_ONLY), ErlElementKind.MODULE);
         final List<IErlElement> leafsOnly = Lists.newArrayList(elements);
         elements.clear();
         // assertEquals(4, kindModuleElementsVisited.size());

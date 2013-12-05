@@ -47,8 +47,8 @@ import org.erlide.util.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
-public class ErlangDebugTarget extends ErlangDebugElement implements
-        IDebugTarget, IErlangDebugNode {
+public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarget,
+        IErlangDebugNode {
 
     private static final OtpErlangAtom PARENT_ATOM = new OtpErlangAtom("parent");
 
@@ -80,8 +80,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     // private final WaitingForDebuggerListener waiter;
 
     public ErlangDebugTarget(final ILaunch launch, final IBackend b,
-            final Collection<IProject> projects,
-            final EnumSet<ErlDebugFlags> debugFlags) throws DebugException {
+            final Collection<IProject> projects, final EnumSet<ErlDebugFlags> debugFlags)
+            throws DebugException {
         super(null);
         fBackend = b;
         fNodeName = b.getName();
@@ -101,8 +101,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         fBackend.getRpcSite().send(pid,
                 OtpErlang.mkTuple(PARENT_ATOM, debuggerDaemon.getMBox()));
 
-        DebugPlugin.getDefault().getBreakpointManager()
-                .addBreakpointListener(this);
+        DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
     }
 
     @Override
@@ -143,8 +142,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         // TODO we should ask the Erlang debugger too...
         if (!isTerminated()
                 && breakpoint.getModelIdentifier().equals(getModelIdentifier())) {
-            final IProject bpProject = breakpoint.getMarker().getResource()
-                    .getProject();
+            final IProject bpProject = breakpoint.getMarker().getResource().getProject();
             for (final IProject p : projects) {
                 if (p == bpProject) {
                     return true;
@@ -208,8 +206,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
      * manager.
      */
     public void installDeferredBreakpoints() {
-        final IBreakpoint[] breakpoints = DebugPlugin.getDefault()
-                .getBreakpointManager().getBreakpoints(getModelIdentifier());
+        final IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager()
+                .getBreakpoints(getModelIdentifier());
         for (int i = 0; i < breakpoints.length; i++) {
             breakpointAdded(breakpoints[i]);
         }
@@ -243,8 +241,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         if (supportsBreakpoint(breakpoint)) {
             try {
                 if (breakpoint.isEnabled()
-                        && DebugPlugin.getDefault().getBreakpointManager()
-                                .isEnabled() || !breakpoint.isRegistered()) {
+                        && DebugPlugin.getDefault().getBreakpointManager().isEnabled()
+                        || !breakpoint.isRegistered()) {
                     final ErlangLineBreakpoint erlangLineBreakpoint = (ErlangLineBreakpoint) breakpoint;
                     erlangLineBreakpoint.install(this);
                 }
@@ -256,11 +254,9 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     }
 
     @Override
-    public void breakpointRemoved(final IBreakpoint breakpoint,
-            final IMarkerDelta delta) {
+    public void breakpointRemoved(final IBreakpoint breakpoint, final IMarkerDelta delta) {
         try {
-            ErlLogger.debug("breakpointRemoved "
-                    + breakpoint.getMarker().toString()
+            ErlLogger.debug("breakpointRemoved " + breakpoint.getMarker().toString()
                     + breakpoint.getMarker().getAttribute(IMarker.LINE_NUMBER));
         } catch (final CoreException e) {
         }
@@ -271,13 +267,11 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     }
 
     @Override
-    public void breakpointChanged(final IBreakpoint breakpoint,
-            final IMarkerDelta delta) {
+    public void breakpointChanged(final IBreakpoint breakpoint, final IMarkerDelta delta) {
         if (supportsBreakpoint(breakpoint)) {
             try {
                 if (breakpoint.isEnabled()
-                        && DebugPlugin.getDefault().getBreakpointManager()
-                                .isEnabled()) {
+                        && DebugPlugin.getDefault().getBreakpointManager().isEnabled()) {
                     breakpointAdded(breakpoint);
                 } else {
                     breakpointRemoved(breakpoint, null);
@@ -310,8 +304,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     }
 
     @Override
-    public IMemoryBlock getMemoryBlock(final long startAddress,
-            final long length) throws DebugException {
+    public IMemoryBlock getMemoryBlock(final long startAddress, final long length)
+            throws DebugException {
         return null;
     }
 
@@ -455,14 +449,13 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
                 if (beam.exists()) {
                     final String de = interpret ? "" : "de";
                     ErlLogger.debug(de + "interpret " + beam.getLocation());
-                    boolean b = ErlideDebug.interpret(fBackend.getRpcSite(),
-                            beam.getLocation().toString(), distributed,
-                            interpret);
+                    boolean b = ErlideDebug.interpret(fBackend.getRpcSite(), beam
+                            .getLocation().toString(), distributed, interpret);
                     b = !b;
                 } else {
                     ErlLogger.debug("IGNORED MISSING interpret "
-                            + (project == null ? "null" : project.getName())
-                            + ":" + moduleName);
+                            + (project == null ? "null" : project.getName()) + ":"
+                            + moduleName);
                 }
             } else {
                 ErlLogger.debug("IGNORED NULL interpret "

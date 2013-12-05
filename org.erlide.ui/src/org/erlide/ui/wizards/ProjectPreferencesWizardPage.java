@@ -36,8 +36,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
-import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.IErlangProjectProperties;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -79,8 +79,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
      * @param title
      * @param titleImage
      */
-    public ProjectPreferencesWizardPage(final String pageName,
-            final String title, final ImageDescriptor titleImage) {
+    public ProjectPreferencesWizardPage(final String pageName, final String title,
+            final ImageDescriptor titleImage) {
         super(pageName, title, titleImage);
     }
 
@@ -90,8 +90,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
     @Override
     public void createControl(final Composite parent) {
         prefs = new ErlangProjectProperties();
-        prefs.setRuntimeVersion(BackendCore.getRuntimeInfoCatalog()
-                .getDefaultRuntime().getVersion());
+        prefs.setRuntimeVersion(BackendCore.getRuntimeInfoCatalog().getDefaultRuntime()
+                .getVersion());
 
         // create the composite to hold the widgets
         final Composite composite = new Composite(parent, SWT.NONE);
@@ -128,8 +128,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         setControl(composite);
 
         final Label label = new Label(composite, SWT.NONE);
-        label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-                1, 1));
+        label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 
         final Label l1 = new Label(composite, SWT.NONE);
         l1.setText(resourceString2 + ":");
@@ -165,8 +164,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         final Button discoverBtn = new Button(composite, SWT.PUSH);
         discoverBtn
                 .setToolTipText("Tries to guess the project's configuration \nby finding all erl and hrl files");
-        final GridData gd_discoverBtn = new GridData(SWT.RIGHT, SWT.FILL,
-                false, false);
+        final GridData gd_discoverBtn = new GridData(SWT.RIGHT, SWT.FILL, false, false);
         gd_discoverBtn.heightHint = 26;
         discoverBtn.setLayoutData(gd_discoverBtn);
         discoverBtn.setText("Discover paths...");
@@ -183,8 +181,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         nodeNameLabel.setText("Backend version");
 
         runtimeVersion = new Combo(composite, SWT.READ_ONLY);
-        final GridData gd_backendName = new GridData(SWT.LEFT, SWT.CENTER,
-                true, false);
+        final GridData gd_backendName = new GridData(SWT.LEFT, SWT.CENTER, true, false);
         gd_backendName.widthHint = 62;
         runtimeVersion.setLayoutData(gd_backendName);
         final String[] runtimeVersions = getAllRuntimeVersions();
@@ -245,12 +242,10 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         return search(ext, file, new ArrayList<String>());
     }
 
-    private List<String> search(final String ext, final File file,
-            final List<String> list) {
+    private List<String> search(final String ext, final File file, final List<String> list) {
         if (file.isFile()) {
             final IPath path = new Path(file.getPath());
-            if (path.getFileExtension() != null
-                    && path.getFileExtension().equals(ext)) {
+            if (path.getFileExtension() != null && path.getFileExtension().equals(ext)) {
                 list.add(file.getPath());
             }
         } else if (file.isDirectory()) {
@@ -264,16 +259,14 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
     protected boolean testPageComplete() {
         if (null != output
-                && (output.getText() == null || output.getText().trim()
-                        .length() == 0)) {
+                && (output.getText() == null || output.getText().trim().length() == 0)) {
             setErrorMessage(ErlideUIPlugin
                     .getResourceString("wizards.errors.outputrequired"));
             return false;
         }
 
         if (null != source
-                && (source.getText() == null || source.getText().trim()
-                        .length() == 0)) {
+                && (source.getText() == null || source.getText().trim().length() == 0)) {
             setErrorMessage(ErlideUIPlugin
                     .getResourceString("wizards.errors.sourcerequired"));
             return false;
@@ -291,8 +284,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             prefs.setOutputDir(new Path(output.getText()));
             prefs.setSourceDirs(PathSerializer.unpackList(source.getText()));
             prefs.setIncludeDirs(PathSerializer.unpackList(include.getText()));
-            final RuntimeVersion rv = new RuntimeVersion(
-                    runtimeVersion.getText());
+            final RuntimeVersion rv = new RuntimeVersion(runtimeVersion.getText());
             prefs.setRuntimeVersion(rv);
             if (externalModules != null) {
                 prefs.setExternalModulesFile(externalModules.getText());

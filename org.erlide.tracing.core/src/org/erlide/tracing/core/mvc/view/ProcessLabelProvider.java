@@ -8,8 +8,7 @@ import org.erlide.tracing.core.Images;
 import org.erlide.tracing.core.ProcessFlag;
 import org.erlide.tracing.core.mvc.model.TracedProcess;
 
-public class ProcessLabelProvider extends LabelProvider implements
-        ITableLabelProvider {
+public class ProcessLabelProvider extends LabelProvider implements ITableLabelProvider {
 
     @Override
     public Image getColumnImage(final Object element, final int columnIndex) {

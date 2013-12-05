@@ -31,8 +31,7 @@ public class ToggleDebugTracingAction implements IWorkbenchWindowActionDelegate 
     }
 
     @Override
-    public void selectionChanged(final IAction action,
-            final ISelection selection) {
+    public void selectionChanged(final IAction action, final ISelection selection) {
         fSelection = selection;
     }
 

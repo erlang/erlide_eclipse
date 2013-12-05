@@ -81,16 +81,14 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             GlobalParameters.setSelection(PlatformUI.getWorkbench()
                     .getActiveWorkbenchWindow().getActivePage().getSelection());
         } catch (final WranglerException e) {
-            MessageDialog.openError(PlatformUI.getWorkbench()
-                    .getActiveWorkbenchWindow().getShell(), "Error",
-                    e.getMessage());
+            MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getShell(), "Error", e.getMessage());
             return null;
         }
 
-        final IErlSelection wranglerSelection = GlobalParameters
-                .getWranglerSelection();
-        final Shell shell = PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getShell();
+        final IErlSelection wranglerSelection = GlobalParameters.getWranglerSelection();
+        final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                .getShell();
 
         if (actionId
                 .equals("org.erlide.wrangler.refactoring.codeinspection.largemodules")) {
@@ -130,37 +128,34 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
         try {
             CodeInspectionViewsManager.hideView(LONG_FUNCTIONS);
             // call inputdialog
-            final InputDialogWithCheckbox dialog = new InputDialogWithCheckbox(
-                    shell, "Search for long functions", "Number of lines:",
+            final InputDialogWithCheckbox dialog = new InputDialogWithCheckbox(shell,
+                    "Search for long functions", "Number of lines:",
                     "Search in the project", "", new IntegerInputValidator());
             if (Window.OK == dialog.open()) {
                 final int linesVal = Integer.parseInt(dialog.getValue());
                 final boolean inProject = dialog.isCheckBoxChecked();
                 RpcResult res = null;
                 if (inProject) {
-                    res = WranglerBackendManager.getRefactoringBackend()
-                            .callInspection("long_functions_in_dirs_eclipse",
-                                    "ixi", linesVal,
-                                    wranglerSelection.getSearchPath(),
-                                    GlobalParameters.getTabWidth());
+                    res = WranglerBackendManager.getRefactoringBackend().callInspection(
+                            "long_functions_in_dirs_eclipse", "ixi", linesVal,
+                            wranglerSelection.getSearchPath(),
+                            GlobalParameters.getTabWidth());
                 } else {
-                    res = WranglerBackendManager.getRefactoringBackend()
-                            .callInspection("long_functions_in_file_eclipse",
-                                    "sixi", wranglerSelection.getFilePath(),
-                                    linesVal,
-                                    wranglerSelection.getSearchPath(),
-                                    GlobalParameters.getTabWidth());
+                    res = WranglerBackendManager.getRefactoringBackend().callInspection(
+                            "long_functions_in_file_eclipse", "sixi",
+                            wranglerSelection.getFilePath(), linesVal,
+                            wranglerSelection.getSearchPath(),
+                            GlobalParameters.getTabWidth());
                 }
                 // handle rpc
-                final ArrayList<IErlElement> elements = processFunctionResult(
-                        shell, res);
+                final ArrayList<IErlElement> elements = processFunctionResult(shell, res);
                 if (elements == null) {
                     return;
                 }
                 // show result
                 if (!elements.isEmpty()) {
-                    CodeInspectionViewsManager.showErlElements(
-                            "Long functions", elements, LONG_FUNCTIONS);
+                    CodeInspectionViewsManager.showErlElements("Long functions",
+                            elements, LONG_FUNCTIONS);
                 } else {
                     MessageDialog.openInformation(shell, "No result",
                             "Could not found any function which is longer, than "
@@ -174,49 +169,43 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
 
     }
 
-    private void handleNested(final IErlSelection wranglerSelection,
-            final Shell shell, final String type) {
+    private void handleNested(final IErlSelection wranglerSelection, final Shell shell,
+            final String type) {
         try {
             CodeInspectionViewsManager.hideView(NESTED_EXPRESSIONS + type);
             // call inputdialog
-            final InputDialogWithCheckbox dialog = new InputDialogWithCheckbox(
-                    shell, "Search for nested expression", "Nest level:",
+            final InputDialogWithCheckbox dialog = new InputDialogWithCheckbox(shell,
+                    "Search for nested expression", "Nest level:",
                     "Search in the project", "", new IntegerInputValidator());
             if (Window.OK == dialog.open()) {
                 final int nestedVal = Integer.parseInt(dialog.getValue());
                 final boolean inProject = dialog.isCheckBoxChecked();
                 RpcResult res = null;
                 if (inProject) {
-                    res = WranglerBackendManager.getRefactoringBackend()
-                            .callInspection("nested_exprs_in_dirs_eclipse",
-                                    "iaxi", nestedVal, type,
-                                    wranglerSelection.getSearchPath(),
-                                    GlobalParameters.getTabWidth());
+                    res = WranglerBackendManager.getRefactoringBackend().callInspection(
+                            "nested_exprs_in_dirs_eclipse", "iaxi", nestedVal, type,
+                            wranglerSelection.getSearchPath(),
+                            GlobalParameters.getTabWidth());
                 } else {
-                    res = WranglerBackendManager.getRefactoringBackend()
-                            .callInspection("nested_exprs_in_file_eclipse",
-                                    "siaxi", wranglerSelection.getFilePath(),
-                                    nestedVal, type,
-                                    wranglerSelection.getSearchPath(),
-                                    GlobalParameters.getTabWidth());
+                    res = WranglerBackendManager.getRefactoringBackend().callInspection(
+                            "nested_exprs_in_file_eclipse", "siaxi",
+                            wranglerSelection.getFilePath(), nestedVal, type,
+                            wranglerSelection.getSearchPath(),
+                            GlobalParameters.getTabWidth());
                 }
                 // handle rpc
-                final ArrayList<IErlElement> elements = processFunctionResult(
-                        shell, res);
+                final ArrayList<IErlElement> elements = processFunctionResult(shell, res);
                 if (elements == null) {
                     return;
                 }
                 // show result
                 if (!elements.isEmpty()) {
                     CodeInspectionViewsManager.showErlElements("Nested " + type
-                            + " expressions", elements, NESTED_EXPRESSIONS
-                            + type);
+                            + " expressions", elements, NESTED_EXPRESSIONS + type);
                 } else {
-                    MessageDialog
-                            .openInformation(shell, "No result",
-                                    "Could not found any " + nestedVal
-                                            + " levels nested " + type
-                                            + " expression!");
+                    MessageDialog.openInformation(shell, "No result",
+                            "Could not found any " + nestedVal + " levels nested " + type
+                                    + " expression!");
                 }
 
             }
@@ -226,8 +215,8 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
 
     }
 
-    private void handleNotFlushUnknownMessages(
-            final IErlSelection wranglerSelection, final Shell shell) {
+    private void handleNotFlushUnknownMessages(final IErlSelection wranglerSelection,
+            final Shell shell) {
         final String inFile = "not_flush_unknown_messages_in_file_eclipse";
         final String inProject = "not_flush_unknown_messages_in_dirs_eclipse";
         CodeInspectionViewsManager.hideView(NOT_FLUSH_UNKNOWN_MESSAGES);
@@ -239,29 +228,25 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             String function = "";
             if (answer) {
                 function = inProject;
-                result = WranglerBackendManager.getRefactoringBackend()
-                        .callInspection(function, "xi",
-                                wranglerSelection.getSearchPath(),
-                                GlobalParameters.getTabWidth());
+                result = WranglerBackendManager.getRefactoringBackend().callInspection(
+                        function, "xi", wranglerSelection.getSearchPath(),
+                        GlobalParameters.getTabWidth());
             } else {
                 function = inFile;
                 result = WranglerBackendManager.getRefactoringBackend()
-                        .callInspection(function, "sxi",
-                                wranglerSelection.getFilePath(),
+                        .callInspection(function, "sxi", wranglerSelection.getFilePath(),
                                 wranglerSelection.getSearchPath(),
                                 GlobalParameters.getTabWidth());
             }
 
-            final ArrayList<IErlElement> elements = processFunctionResult(
-                    shell, result);
+            final ArrayList<IErlElement> elements = processFunctionResult(shell, result);
 
             if (elements == null) {
                 return;
             }
             if (!elements.isEmpty()) {
-                CodeInspectionViewsManager.showErlElements(
-                        "Incomplete receive patterns", elements,
-                        NOT_FLUSH_UNKNOWN_MESSAGES);
+                CodeInspectionViewsManager.showErlElements("Incomplete receive patterns",
+                        elements, NOT_FLUSH_UNKNOWN_MESSAGES);
             } else {
                 MessageDialog.openInformation(shell, "No result",
                         "Could not found any incomplete receive patterns!");
@@ -276,8 +261,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
         final ArrayList<IErlElement> elements = new ArrayList<IErlElement>();
         final OtpErlangObject obj = result.getValue();
         final OtpErlangTuple restuple = (OtpErlangTuple) obj;
-        final OtpErlangAtom resindicator = (OtpErlangAtom) restuple
-                .elementAt(0);
+        final OtpErlangAtom resindicator = (OtpErlangAtom) restuple.elementAt(0);
         if (resindicator.atomValue().equals("ok")) {
             final OtpErlangList erlangFunctionList = (OtpErlangList) restuple
                     .elementAt(1);
@@ -299,8 +283,8 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
         return elements;
     }
 
-    private void handleNonTailRecursiveCall(
-            final IErlSelection wranglerSelection, final Shell shell) {
+    private void handleNonTailRecursiveCall(final IErlSelection wranglerSelection,
+            final Shell shell) {
         CodeInspectionViewsManager.hideView(NON_TAIL_RECURSIVE_VIEW_ID);
 
         try {
@@ -314,28 +298,24 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             if (!answer) {
                 function = inFile;
                 res = WranglerBackendManager.getRefactoringBackend()
-                        .callInspection(function, "sxi",
-                                wranglerSelection.getFilePath(),
+                        .callInspection(function, "sxi", wranglerSelection.getFilePath(),
                                 wranglerSelection.getSearchPath(),
                                 GlobalParameters.getTabWidth());
             } else {
                 function = inProject;
-                res = WranglerBackendManager.getRefactoringBackend()
-                        .callInspection(function, "xi",
-                                wranglerSelection.getSearchPath(),
-                                GlobalParameters.getTabWidth());
+                res = WranglerBackendManager.getRefactoringBackend().callInspection(
+                        function, "xi", wranglerSelection.getSearchPath(),
+                        GlobalParameters.getTabWidth());
             }
 
-            final ArrayList<IErlElement> elements = processFunctionResult(
-                    shell, res);
+            final ArrayList<IErlElement> elements = processFunctionResult(shell, res);
 
             if (elements == null) {
                 return;
             }
             if (!elements.isEmpty()) {
-                CodeInspectionViewsManager.showErlElements(
-                        "Non tail recursive servers", elements,
-                        NON_TAIL_RECURSIVE_VIEW_ID);
+                CodeInspectionViewsManager.showErlElements("Non tail recursive servers",
+                        elements, NON_TAIL_RECURSIVE_VIEW_ID);
             } else {
                 MessageDialog.openInformation(shell, "No result",
                         "Could not found any non tail recursive server!");
@@ -349,14 +329,10 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
     private IErlFunctionClause extractFunction(final OtpErlangTuple fTuple)
             throws OtpErlangRangeException, ErlModelException {
         final IErlModule mod = extractModule(fTuple.elementAt(0));
-        final String function = ((OtpErlangAtom) fTuple.elementAt(1))
-                .atomValue();
+        final String function = ((OtpErlangAtom) fTuple.elementAt(1)).atomValue();
         final int arity = ((OtpErlangLong) fTuple.elementAt(2)).intValue();
-        final IErlFunctionClause f = ErlangEngine
-                .getInstance()
-                .getModel()
-                .findFunction(
-                        new FunctionRef(mod.getModuleName(), function, arity));
+        final IErlFunctionClause f = ErlangEngine.getInstance().getModel()
+                .findFunction(new FunctionRef(mod.getModuleName(), function, arity));
         return f;
     }
 
@@ -364,17 +340,14 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             final Shell shell) {
         // hiding the views
         CodeInspectionViewsManager.hideView(
-                CodeInspectionViewsManager.CODE_INSPECTION_VIEW,
-                DEPENECIES_1_VIEW_ID);
+                CodeInspectionViewsManager.CODE_INSPECTION_VIEW, DEPENECIES_1_VIEW_ID);
         CodeInspectionViewsManager.hideView(
-                CodeInspectionViewsManager.CODE_INSPECTION_VIEW,
-                DEPENECIES_2_VIEW_ID);
+                CodeInspectionViewsManager.CODE_INSPECTION_VIEW, DEPENECIES_2_VIEW_ID);
 
         // run the rpc
         try {
-            final RpcResult res = WranglerBackendManager
-                    .getRefactoringBackend().callInspection(
-                            "dependencies_of_a_module_eclipse", "sx",
+            final RpcResult res = WranglerBackendManager.getRefactoringBackend()
+                    .callInspection("dependencies_of_a_module_eclipse", "sx",
                             wranglerSelection.getFilePath(),
                             wranglerSelection.getSearchPath());
 
@@ -383,20 +356,15 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
 
             final OtpErlangObject obj = res.getValue();
             final OtpErlangTuple restuple = (OtpErlangTuple) obj;
-            final OtpErlangAtom resindicator = (OtpErlangAtom) restuple
-                    .elementAt(0);
+            final OtpErlangAtom resindicator = (OtpErlangAtom) restuple.elementAt(0);
             if (resindicator.atomValue().equals("ok")) {
-                final OtpErlangTuple listtuple = (OtpErlangTuple) restuple
-                        .elementAt(1);
-                final OtpErlangList modList1 = (OtpErlangList) listtuple
-                        .elementAt(0);
-                final OtpErlangList modList2 = (OtpErlangList) listtuple
-                        .elementAt(1);
+                final OtpErlangTuple listtuple = (OtpErlangTuple) restuple.elementAt(1);
+                final OtpErlangList modList1 = (OtpErlangList) listtuple.elementAt(0);
+                final OtpErlangList modList2 = (OtpErlangList) listtuple.elementAt(1);
                 modules1 = createErlModuleList(modList1);
                 modules2 = createErlModuleList(modList2);
             } else {
-                final OtpErlangString s = (OtpErlangString) restuple
-                        .elementAt(1);
+                final OtpErlangString s = (OtpErlangString) restuple.elementAt(1);
                 MessageDialog.openError(shell, "Error", s.stringValue());
                 return;
             }
@@ -404,34 +372,27 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             if (!modules1.isEmpty()) {
                 CodeInspectionViewsManager.showErlElements(
                         "Modules which depends on "
-                                + wranglerSelection
-                                        .getErlElement()
-                                        .getAncestorOfKind(
-                                                ErlElementKind.MODULE)
-                                        .getName(), modules1,
-                        DEPENECIES_1_VIEW_ID);
+                                + wranglerSelection.getErlElement()
+                                        .getAncestorOfKind(ErlElementKind.MODULE)
+                                        .getName(), modules1, DEPENECIES_1_VIEW_ID);
             }
             if (!modules2.isEmpty()) {
                 CodeInspectionViewsManager.showErlElements(
                         "Modules, on which "
-                                + wranglerSelection
-                                        .getErlElement()
-                                        .getAncestorOfKind(
-                                                ErlElementKind.MODULE)
+                                + wranglerSelection.getErlElement()
+                                        .getAncestorOfKind(ErlElementKind.MODULE)
                                         .getName() + " depends", modules2,
                         DEPENECIES_2_VIEW_ID);
             } else {
-                MessageDialog
-                        .openInformation(shell, "No result",
-                                "There is no large module with the specified parameter!");
+                MessageDialog.openInformation(shell, "No result",
+                        "There is no large module with the specified parameter!");
             }
         } catch (final Exception e) {
             ErlLogger.error(e);
         }
     }
 
-    private ArrayList<IErlElement> createErlModuleList(
-            final OtpErlangList modList) {
+    private ArrayList<IErlElement> createErlModuleList(final OtpErlangList modList) {
         final ArrayList<IErlElement> modules = new ArrayList<IErlElement>();
         for (int i = 0; i < modList.arity(); ++i) {
             IErlModule m;
@@ -444,8 +405,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
         return modules;
     }
 
-    private IErlModule extractModule(final OtpErlangObject m)
-            throws ErlModelException {
+    private IErlModule extractModule(final OtpErlangObject m) throws ErlModelException {
         String name = "";
         if (m instanceof OtpErlangString) {
             final OtpErlangString element = (OtpErlangString) m;
@@ -463,36 +423,31 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
     private void handleLargeModulesCall(final IErlSelection wranglerSelection,
             final Shell shell) {
         CodeInspectionViewsManager.hideView(
-                CodeInspectionViewsManager.CODE_INSPECTION_VIEW,
-                LARGE_MODULES_VIEW_ID);
+                CodeInspectionViewsManager.CODE_INSPECTION_VIEW, LARGE_MODULES_VIEW_ID);
 
-        final InputDialog dialog = new InputDialog(shell,
-                "Lines of a large module", "Lines of a large module:", "",
-                new IntegerInputValidator());
+        final InputDialog dialog = new InputDialog(shell, "Lines of a large module",
+                "Lines of a large module:", "", new IntegerInputValidator());
         final int ret = dialog.open();
         if (ret == Window.CANCEL) {
             return;
         }
         final int lines = Integer.parseInt(dialog.getValue());
-        final RpcResult res = WranglerBackendManager.getRefactoringBackend()
+        final RpcResult res = WranglerBackendManager
+                .getRefactoringBackend()
                 .callInspection("large_modules_eclipse", "ixi", lines,
-                        wranglerSelection.getSearchPath(),
-                        GlobalParameters.getTabWidth());
+                        wranglerSelection.getSearchPath(), GlobalParameters.getTabWidth());
 
         ArrayList<IErlElement> modules = new ArrayList<IErlElement>();
         try {
             final OtpErlangObject obj = res.getValue();
             final OtpErlangTuple restuple = (OtpErlangTuple) obj;
-            final OtpErlangAtom resindicator = (OtpErlangAtom) restuple
-                    .elementAt(0);
+            final OtpErlangAtom resindicator = (OtpErlangAtom) restuple.elementAt(0);
             if (resindicator.atomValue().equals("ok")) {
 
-                final OtpErlangList modList = (OtpErlangList) restuple
-                        .elementAt(1);
+                final OtpErlangList modList = (OtpErlangList) restuple.elementAt(1);
                 modules = createErlModuleList(modList);
             } else {
-                final OtpErlangString s = (OtpErlangString) restuple
-                        .elementAt(1);
+                final OtpErlangString s = (OtpErlangString) restuple.elementAt(1);
                 MessageDialog.openError(shell, "Error", s.stringValue());
                 return;
             }
@@ -500,8 +455,8 @@ public class SimpleCodeInspectionHandler extends AbstractHandler {
             ErlLogger.error(e);
         }
         if (!modules.isEmpty()) {
-            CodeInspectionViewsManager.showErlElements("Large modules",
-                    modules, LARGE_MODULES_VIEW_ID);
+            CodeInspectionViewsManager.showErlElements("Large modules", modules,
+                    LARGE_MODULES_VIEW_ID);
         } else {
             MessageDialog.openInformation(shell, "No result",
                     "There is no large module with the specified parameter!");

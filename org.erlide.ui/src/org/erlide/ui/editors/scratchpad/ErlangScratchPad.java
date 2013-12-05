@@ -32,8 +32,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
-public class ErlangScratchPad extends AbstractErlangEditor implements
-        ISaveablePart2 {
+public class ErlangScratchPad extends AbstractErlangEditor implements ISaveablePart2 {
 
     private ColorManager colorManager;
     private IErlangFoldingStructureProvider fProjectionModelUpdater;
@@ -99,19 +98,16 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
         if (file != null) {
             final IProject project = file.getProject();
             if (project != null) {
-                return ErlangEngine.getInstance().getModel()
-                        .findProject(project);
+                return ErlangEngine.getInstance().getModel().findProject(project);
             }
         }
         return null;
     }
 
     public static ChainedPreferenceStore getErlangEditorPreferenceStore() {
-        final IPreferenceStore generalTextStore = EditorsUI
-                .getPreferenceStore();
+        final IPreferenceStore generalTextStore = EditorsUI.getPreferenceStore();
         return new ChainedPreferenceStore(new IPreferenceStore[] {
-                ErlideUIPlugin.getDefault().getPreferenceStore(),
-                generalTextStore });
+                ErlideUIPlugin.getDefault().getPreferenceStore(), generalTextStore });
     }
 
     @Override

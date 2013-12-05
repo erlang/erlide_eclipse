@@ -46,8 +46,7 @@ public class TermParserTest {
 
     @Test
     public void var_1() throws TermParserException {
-        final OtpPatternVariable r = (OtpPatternVariable) termParser
-                .parse("Hello");
+        final OtpPatternVariable r = (OtpPatternVariable) termParser.parse("Hello");
         Assert.assertEquals(r.getName(), "Hello");
     }
 
@@ -59,22 +58,19 @@ public class TermParserTest {
 
     @Test
     public void string_1() throws TermParserException {
-        final OtpErlangString r = (OtpErlangString) termParser
-                .parse("\"Hello\"");
+        final OtpErlangString r = (OtpErlangString) termParser.parse("\"Hello\"");
         Assert.assertEquals(r.stringValue(), "Hello");
     }
 
     @Test
     public void string_2() throws TermParserException {
-        final OtpErlangString r = (OtpErlangString) termParser
-                .parse("\"Hello world!\"");
+        final OtpErlangString r = (OtpErlangString) termParser.parse("\"Hello world!\"");
         Assert.assertEquals(r.stringValue(), "Hello world!");
     }
 
     @Test
     public void placeholder_1() throws TermParserException {
-        final OtpFormatPlaceholder r = (OtpFormatPlaceholder) termParser
-                .parse("~hello");
+        final OtpFormatPlaceholder r = (OtpFormatPlaceholder) termParser.parse("~hello");
         Assert.assertEquals(r.getName(), "hello");
     }
 

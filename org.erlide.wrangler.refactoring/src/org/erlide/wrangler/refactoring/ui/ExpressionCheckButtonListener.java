@@ -39,11 +39,9 @@ public class ExpressionCheckButtonListener implements MouseTrackListener {
      * @param checkButtons
      *            Elements which should be monitored
      */
-    public ExpressionCheckButtonListener(
-            final HashMap<Button, IErlRange> checkButtons) {
+    public ExpressionCheckButtonListener(final HashMap<Button, IErlRange> checkButtons) {
         this.checkButtons = checkButtons;
-        selection = (IErlMemberSelection) GlobalParameters
-                .getWranglerSelection();
+        selection = (IErlMemberSelection) GlobalParameters.getWranglerSelection();
     }
 
     @Override
@@ -68,8 +66,7 @@ public class ExpressionCheckButtonListener implements MouseTrackListener {
     }
 
     private void resetHighlight() {
-        WranglerUtils.highlightSelection(selection.getSelectionRange()
-                .getOffset(), selection.getSelectionRange().getLength(),
-                selection);
+        WranglerUtils.highlightSelection(selection.getSelectionRange().getOffset(),
+                selection.getSelectionRange().getLength(), selection);
     }
 }

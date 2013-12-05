@@ -25,8 +25,7 @@ import java.io.Serializable;
  * refs, old style (one id value) and new style (array of id values). This class
  * manages both types.
  */
-public class OtpErlangRef extends OtpErlangObject implements Serializable,
-        Cloneable {
+public class OtpErlangRef extends OtpErlangObject implements Serializable, Cloneable {
     // don't change this!
     static final long serialVersionUID = -7022666480768586521L;
 
@@ -65,8 +64,7 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable,
      *                if the buffer does not contain a valid external
      *                representation of an Erlang ref.
      */
-    public OtpErlangRef(final OtpInputStream buf)
-            throws OtpErlangDecodeException {
+    public OtpErlangRef(final OtpInputStream buf) throws OtpErlangDecodeException {
         final OtpErlangRef r = buf.read_ref();
 
         node = r.node();
@@ -230,8 +228,7 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable,
         }
 
         if (isNewRef() && ref.isNewRef()) {
-            return ids[0] == ref.ids[0] && ids[1] == ref.ids[1]
-                    && ids[2] == ref.ids[2];
+            return ids[0] == ref.ids[0] && ids[1] == ref.ids[1] && ids[2] == ref.ids[2];
         }
         return ids[0] == ref.ids[0];
     }

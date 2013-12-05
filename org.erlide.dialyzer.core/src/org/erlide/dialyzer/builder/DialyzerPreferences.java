@@ -40,8 +40,7 @@ public final class DialyzerPreferences {
         final DialyzerPreferences prefs = new DialyzerPreferences();
         prefs.load();
         if (project != null) {
-            final DialyzerPreferences projectPrefs = new DialyzerPreferences(
-                    project);
+            final DialyzerPreferences projectPrefs = new DialyzerPreferences(project);
             projectPrefs.load();
             projectPrefs.pltPaths = prefs.pltPaths;
             return projectPrefs;
@@ -63,15 +62,12 @@ public final class DialyzerPreferences {
 
     public void store() throws BackingStoreException {
         helper.putString(DialyzerPreferencesConstants.PLT_PATHS, pltPaths);
-        helper.putString(DialyzerPreferencesConstants.ENABLED_PLT_PATHS,
-                enabledPltPaths);
-        helper.putBoolean(DialyzerPreferencesConstants.FROM_SOURCE,
-                getFromSource());
+        helper.putString(DialyzerPreferencesConstants.ENABLED_PLT_PATHS, enabledPltPaths);
+        helper.putBoolean(DialyzerPreferencesConstants.FROM_SOURCE, getFromSource());
         helper.putBoolean(DialyzerPreferencesConstants.DIALYZE_ON_COMPILE,
                 getDialyzeOnCompile());
         helper.putBoolean(DialyzerPreferencesConstants.NO_CHECK_PLT, noCheckPLT);
-        helper.putBoolean(
-                DialyzerPreferencesConstants.REMOVE_WARNINGS_ON_CLEAN,
+        helper.putBoolean(DialyzerPreferencesConstants.REMOVE_WARNINGS_ON_CLEAN,
                 removeWarningsOnClean);
         helper.flush();
     }
@@ -80,8 +76,7 @@ public final class DialyzerPreferences {
         final IPreferencesService service = Platform.getPreferencesService();
         final String key = "default_plt_files";
         final String pluginId = "org.erlide.ui";
-        final String pltFilesString = service
-                .getString(pluginId, key, "", null);
+        final String pltFilesString = service.getString(pluginId, key, "", null);
         return getPltFiles(pltFilesString);
     }
 
@@ -97,12 +92,10 @@ public final class DialyzerPreferences {
         pltPathsFromPrefs = getPLTPathsFromPreferences();
         enabledPltPaths = helper.getString(
                 DialyzerPreferencesConstants.ENABLED_PLT_PATHS, pltPaths);
-        setFromSource(helper.getBoolean(
-                DialyzerPreferencesConstants.FROM_SOURCE, true));
+        setFromSource(helper.getBoolean(DialyzerPreferencesConstants.FROM_SOURCE, true));
         setDialyzeOnCompile(helper.getBoolean(
                 DialyzerPreferencesConstants.DIALYZE_ON_COMPILE, false));
-        noCheckPLT = helper.getBoolean(
-                DialyzerPreferencesConstants.NO_CHECK_PLT, true);
+        noCheckPLT = helper.getBoolean(DialyzerPreferencesConstants.NO_CHECK_PLT, true);
         removeWarningsOnClean = helper.getBoolean(
                 DialyzerPreferencesConstants.REMOVE_WARNINGS_ON_CLEAN, true);
     }
@@ -191,8 +184,7 @@ public final class DialyzerPreferences {
                 }
             } else {
                 try {
-                    final List<String> lines = Files.readLines(file,
-                            Charsets.UTF_8);
+                    final List<String> lines = Files.readLines(file, Charsets.UTF_8);
                     result.addAll(getPltFiles(lines));
                 } catch (final IOException e) {
                     // ignore

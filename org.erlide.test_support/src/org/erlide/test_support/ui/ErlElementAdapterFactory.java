@@ -6,8 +6,7 @@ import org.eclipse.debug.ui.actions.ILaunchable;
 public class ErlElementAdapterFactory implements IAdapterFactory {
 
     @Override
-    public Object getAdapter(final Object adaptableObject,
-            final Class adapterType) {
+    public Object getAdapter(final Object adaptableObject, final Class adapterType) {
         // we don't use this, just need it for menu enablement
         return null;
     }

@@ -121,8 +121,8 @@ public class EpmdView extends ViewPart implements IEpmdListener {
     }
 
     @Override
-    public void updateNodeStatus(final String host,
-            final Collection<String> started, final Collection<String> stopped) {
+    public void updateNodeStatus(final String host, final Collection<String> started,
+            final Collection<String> stopped) {
         model = epmdWatcher.getData();
         DisplayUtils.asyncExec(new Runnable() {
             @Override

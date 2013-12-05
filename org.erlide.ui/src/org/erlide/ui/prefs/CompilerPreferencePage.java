@@ -97,8 +97,8 @@ public class CompilerPreferencePage extends PropertyPage implements
 
         final Group optionsGroup = new Group(prefsComposite, SWT.NONE);
         {
-            final GridData gd_optionsGroup = new GridData(SWT.FILL, SWT.CENTER,
-                    false, false, 2, 1);
+            final GridData gd_optionsGroup = new GridData(SWT.FILL, SWT.CENTER, false,
+                    false, 2, 1);
             gd_optionsGroup.widthHint = 400;
             optionsGroup.setLayoutData(gd_optionsGroup);
         }
@@ -110,15 +110,14 @@ public class CompilerPreferencePage extends PropertyPage implements
         newCheckButton(optionsGroup, CompilerOption.COMPRESSED);
 
         final Label lblNewLabel = new Label(prefsComposite, SWT.NONE);
-        lblNewLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-                false, 1, 1));
+        lblNewLabel
+                .setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         lblNewLabel.setText(CompilerOption.INCLUDE_DIRS.getDescription());
 
         includeDirsText = new Text(prefsComposite, SWT.BORDER);
-        includeDirsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                false, 1, 1));
-        includeDirsText
-                .setToolTipText(CompilerOption.INCLUDE_DIRS.getTooltip());
+        includeDirsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+                1));
+        includeDirsText.setToolTipText(CompilerOption.INCLUDE_DIRS.getTooltip());
         includeDirsText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
@@ -129,8 +128,7 @@ public class CompilerPreferencePage extends PropertyPage implements
 
         final Group warningsGroup = new Group(prefsComposite, SWT.NONE);
         {
-            final GridData gridData = new GridData(SWT.FILL, SWT.FILL, false,
-                    false, 2, 1);
+            final GridData gridData = new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1);
             gridData.widthHint = 400;
             warningsGroup.setLayoutData(gridData);
         }
@@ -143,15 +141,14 @@ public class CompilerPreferencePage extends PropertyPage implements
         new Label(optionsGroup, SWT.NONE);
 
         final Label lblNewLabel_1 = new Label(prefsComposite, SWT.NONE);
-        lblNewLabel_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-                false, 1, 1));
+        lblNewLabel_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1,
+                1));
         lblNewLabel_1.setText(CompilerOption.PARSE_TRANSFORM.getDescription());
 
         parseTransformText = new Text(prefsComposite, SWT.BORDER);
-        parseTransformText.setToolTipText(CompilerOption.PARSE_TRANSFORM
-                .getTooltip());
-        parseTransformText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-                true, false, 1, 1));
+        parseTransformText.setToolTipText(CompilerOption.PARSE_TRANSFORM.getTooltip());
+        parseTransformText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+                1, 1));
         parseTransformText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
@@ -165,17 +162,14 @@ public class CompilerPreferencePage extends PropertyPage implements
         final Label lblNewLabel_2 = new Label(prefsComposite, SWT.NONE);
         lblNewLabel_2.setText("Custom options:");
 
-        customOptionsText = new Text(prefsComposite, SWT.BORDER | SWT.WRAP
-                | SWT.MULTI);
-        final GridData gd_text_2 = new GridData(SWT.FILL, SWT.CENTER, true,
-                false, 1, 1);
+        customOptionsText = new Text(prefsComposite, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+        final GridData gd_text_2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
         gd_text_2.heightHint = 60;
         customOptionsText.setLayoutData(gd_text_2);
         customOptionsText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
-                prefs.setSimpleOption(CompilerOption.CUSTOM,
-                        customOptionsText.getText());
+                prefs.setSimpleOption(CompilerOption.CUSTOM, customOptionsText.getText());
             }
         });
 
@@ -214,21 +208,18 @@ public class CompilerPreferencePage extends PropertyPage implements
         final Label lblSelectTheCompiler = super.createDescriptionLabel(parent);
         final String suffix = isProjectPreferencePage() ? "in this project."
                 : "by default.";
-        lblSelectTheCompiler.setText("Select the compiler options to be used "
-                + suffix);
+        lblSelectTheCompiler.setText("Select the compiler options to be used " + suffix);
         return lblSelectTheCompiler;
     }
 
-    protected void enableProjectSpecificSettings(
-            final boolean useProjectSpecificSettings) {
+    protected void enableProjectSpecificSettings(final boolean useProjectSpecificSettings) {
         fUseProjectSettings.setSelection(useProjectSpecificSettings);
         enablePreferenceContent(useProjectSpecificSettings);
         fChangeWorkspaceSettings.setEnabled(!useProjectSpecificSettings);
         // doStatusChanged();
     }
 
-    private void enablePreferenceContent(
-            final boolean useProjectSpecificSettings) {
+    private void enablePreferenceContent(final boolean useProjectSpecificSettings) {
         if (useProjectSpecificSettings) {
             if (fBlockEnableState != null) {
                 fBlockEnableState.restore();
@@ -241,8 +232,7 @@ public class CompilerPreferencePage extends PropertyPage implements
         }
     }
 
-    private void createProjectSpecificSettingsCheckBoxAndLink(
-            final Composite parent) {
+    private void createProjectSpecificSettingsCheckBoxAndLink(final Composite parent) {
         if (isProjectPreferencePage()) {
             final Composite composite = new Composite(parent, SWT.NONE);
             composite.setFont(parent.getFont());
@@ -250,8 +240,7 @@ public class CompilerPreferencePage extends PropertyPage implements
             layout.marginHeight = 0;
             layout.marginWidth = 0;
             composite.setLayout(layout);
-            composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                    false));
+            composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
             // final IDialogFieldListener listener = new IDialogFieldListener()
             // {
@@ -285,8 +274,8 @@ public class CompilerPreferencePage extends PropertyPage implements
             if (true) { // if (offerLink()) {
                 fChangeWorkspaceSettings = createLink(composite,
                         "Configure Workspace settings...");
-                fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END,
-                        SWT.CENTER, false, false));
+                fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END, SWT.CENTER,
+                        false, false));
             }
             // else {
             // LayoutUtil.setHorizontalSpan(fUseProjectSettings
@@ -295,14 +284,14 @@ public class CompilerPreferencePage extends PropertyPage implements
 
             final Label horizontalLine = new Label(composite, SWT.SEPARATOR
                     | SWT.HORIZONTAL);
-            horizontalLine.setLayoutData(new GridData(GridData.FILL,
-                    GridData.FILL, true, false, 2, 1));
+            horizontalLine.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true,
+                    false, 2, 1));
             horizontalLine.setFont(composite.getFont());
         } else { // if (supportsProjectSpecificOptions() && offerLink()) {
             fChangeWorkspaceSettings = createLink(parent,
                     "Configure project specific settings..");
-            fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END,
-                    SWT.CENTER, true, false));
+            fChangeWorkspaceSettings.setLayoutData(new GridData(SWT.END, SWT.CENTER,
+                    true, false));
         }
 
     }
@@ -342,8 +331,8 @@ public class CompilerPreferencePage extends PropertyPage implements
                 }
             } catch (final ErlModelException e) {
             }
-            final ProjectSelectionDialog dialog = new ProjectSelectionDialog(
-                    getShell(), erlProjects, projectsWithSpecifics);
+            final ProjectSelectionDialog dialog = new ProjectSelectionDialog(getShell(),
+                    erlProjects, projectsWithSpecifics);
             if (dialog.open() == Window.OK) {
                 final IProject res = (IProject) dialog.getFirstResult();
                 openProjectProperties(res);
@@ -361,8 +350,8 @@ public class CompilerPreferencePage extends PropertyPage implements
 
     protected final void openWorkspacePreferences(final Object data) {
         final String id = getPreferencePageID();
-        PreferencesUtil.createPreferenceDialogOn(getShell(), id,
-                new String[] { id }, data).open();
+        PreferencesUtil.createPreferenceDialogOn(getShell(), id, new String[] { id },
+                data).open();
     }
 
     protected String getPreferencePageID() {
@@ -373,8 +362,7 @@ public class CompilerPreferencePage extends PropertyPage implements
         return "org.erlide.ui.properties.compilerPreferencePage";
     }
 
-    private Button newCheckButton(final Composite parent,
-            final CompilerOption option) {
+    private Button newCheckButton(final Composite parent, final CompilerOption option) {
         final Button b = new Button(parent, SWT.CHECK);
         b.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         b.setText(option.getDescription());
@@ -395,8 +383,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     @Override
     public boolean performOk() {
         try {
-            if (fUseProjectSettings != null
-                    && !fUseProjectSettings.getSelection()
+            if (fUseProjectSettings != null && !fUseProjectSettings.getSelection()
                     && isProjectPreferencePage()) {
                 prefs.removeAllProjectSpecificSettings();
             } else {
@@ -424,8 +411,7 @@ public class CompilerPreferencePage extends PropertyPage implements
             final CompilerOption key = (CompilerOption) b.getData();
             b.setSelection(prefs.getBooleanOption(key));
         }
-        final Iterable<String> paths = prefs
-                .getPathsOption(CompilerOption.INCLUDE_DIRS);
+        final Iterable<String> paths = prefs.getPathsOption(CompilerOption.INCLUDE_DIRS);
         if (paths != null) {
             includeDirsText.setText(PathsOption.toString(paths));
         }
@@ -452,8 +438,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     @SuppressWarnings("unused")
-    private static class MacrosTableContentProvider implements
-            IStructuredContentProvider {
+    private static class MacrosTableContentProvider implements IStructuredContentProvider {
         @Override
         public Object[] getElements(final Object inputElement) {
             return new Object[] { "aaa", "vvv" };

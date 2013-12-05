@@ -44,8 +44,7 @@ public class TestViewContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getChildren(final Object parent) {
-        if (parent instanceof TestTreeObject
-                && ((TestTreeObject) parent).hasChildren()) {
+        if (parent instanceof TestTreeObject && ((TestTreeObject) parent).hasChildren()) {
             return ((TestTreeObject) parent).getChildren().toArray();
         }
         return new Object[0];

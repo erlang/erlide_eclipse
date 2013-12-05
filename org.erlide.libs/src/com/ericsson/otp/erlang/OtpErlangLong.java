@@ -30,8 +30,7 @@ import java.math.BigInteger;
  * {@link OtpErlangUShort} are provided for Corba compatibility. See the
  * documentation for IC for more information.
  */
-public class OtpErlangLong extends OtpErlangObject implements Serializable,
-        Cloneable {
+public class OtpErlangLong extends OtpErlangObject implements Serializable, Cloneable {
     // don't change this!
     static final long serialVersionUID = 1610466859236755096L;
 
@@ -76,8 +75,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
      *                if the buffer does not contain a valid external
      *                representation of an Erlang integer.
      */
-    public OtpErlangLong(final OtpInputStream buf)
-            throws OtpErlangDecodeException {
+    public OtpErlangLong(final OtpInputStream buf) throws OtpErlangDecodeException {
         final byte[] b = buf.read_integer_byte_array();
         try {
             val = OtpInputStream.byte_array_to_long(b, false);
@@ -262,8 +260,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
         final short i = (short) l;
 
         if (i != l) {
-            throw new OtpErlangRangeException("Value too large for short: "
-                    + val);
+            throw new OtpErlangRangeException("Value too large for short: " + val);
         }
 
         return i;
@@ -283,8 +280,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
         final short i = (short) l;
 
         if (i != l) {
-            throw new OtpErlangRangeException("Value too large for short: "
-                    + val);
+            throw new OtpErlangRangeException("Value too large for short: " + val);
         } else if (i < 0) {
             throw new OtpErlangRangeException("Value not positive: " + val);
         }
@@ -305,8 +301,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
         final char i = (char) l;
 
         if (i != l) {
-            throw new OtpErlangRangeException("Value too large for char: "
-                    + val);
+            throw new OtpErlangRangeException("Value too large for char: " + val);
         }
 
         return i;
@@ -325,8 +320,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable,
         final byte i = (byte) l;
 
         if (i != l) {
-            throw new OtpErlangRangeException("Value too large for byte: "
-                    + val);
+            throw new OtpErlangRangeException("Value too large for byte: " + val);
         }
 
         return i;

@@ -91,8 +91,7 @@ public final class SWTUtil {
         final PixelConverter converter = new PixelConverter(button);
         final int widthHint = converter
                 .convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-        return Math.max(widthHint,
-                button.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+        return Math.max(widthHint, button.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
     }
 
     /**
@@ -133,8 +132,8 @@ public final class SWTUtil {
      * 
      * @return a new push button
      */
-    public static Button createPushButton(final Composite parent,
-            final String label, final Image image) {
+    public static Button createPushButton(final Composite parent, final String label,
+            final Image image) {
         final Button button = createButton(parent, label, SWT.PUSH);
         if (image != null) {
             button.setImage(image);
@@ -152,8 +151,7 @@ public final class SWTUtil {
      * 
      * @return a new radio button
      */
-    public static Button createRadioButton(final Composite parent,
-            final String label) {
+    public static Button createRadioButton(final Composite parent, final String label) {
         final Button button = createButton(parent, label, SWT.RADIO);
         return button;
     }
@@ -164,8 +162,8 @@ public final class SWTUtil {
      * @param style
      * @return
      */
-    private static Button createButton(final Composite parent,
-            final String label, final int style) {
+    private static Button createButton(final Composite parent, final String label,
+            final int style) {
         final Button button = new Button(parent, style);
         button.setFont(parent.getFont());
         if (label != null) {
@@ -182,8 +180,7 @@ public final class SWTUtil {
      * @param label
      * @return
      */
-    public static Button createCheckButton(final Composite parent,
-            final String label) {
+    public static Button createCheckButton(final Composite parent, final String label) {
         return createButton(parent, label, SWT.CHECK);
     }
 

@@ -57,10 +57,8 @@ public class TracePatternCellModifier implements ICellModifier {
     }
 
     @Override
-    public void modify(final Object element, final String property,
-            final Object value) {
-        final TracePattern pattern = (TracePattern) ((TableItem) element)
-                .getData();
+    public void modify(final Object element, final String property, final Object value) {
+        final TracePattern pattern = (TracePattern) ((TableItem) element).getData();
         switch (TracePatternColumn.valueOf(property)) {
         case ENABLED:
             pattern.setEnabled((Boolean) value);

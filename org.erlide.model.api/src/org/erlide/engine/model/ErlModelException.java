@@ -44,8 +44,7 @@ public class ErlModelException extends CoreException {
      * @param exception
      *            the <code>CoreException</code>
      */
-    public ErlModelException(final CoreException exception,
-            final IErlModelStatus status) {
+    public ErlModelException(final CoreException exception, final IErlModelStatus status) {
         super(status);
         nestedCoreException = exception;
     }

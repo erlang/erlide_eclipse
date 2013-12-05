@@ -29,13 +29,12 @@ public class DialyzerMarkerUtils {
     public static final String PROBLEM_MARKER = "org.erlide.dialyzer.core"
             + ".problemmarker";
 
-    public static void addDialyzerWarningMarkersFromResultList(
-            final IRpcSite backend, final OtpErlangList result) {
+    public static void addDialyzerWarningMarkersFromResultList(final IRpcSite backend,
+            final OtpErlangList result) {
         if (result == null) {
             return;
         }
-        final List<String> warnings = ErlideDialyze.formatWarnings(backend,
-                result);
+        final List<String> warnings = ErlideDialyze.formatWarnings(backend, result);
         for (int i = 0; i < warnings.size(); i++) {
             final OtpErlangTuple t = (OtpErlangTuple) result.elementAt(i);
             final OtpErlangTuple fileLine = (OtpErlangTuple) t.elementAt(1);
@@ -57,8 +56,7 @@ public class DialyzerMarkerUtils {
                 if (j != -1) {
                     msg = msg.substring(j + 1);
                 }
-                final IErlElementLocator model = ErlangEngine.getInstance()
-                        .getModel();
+                final IErlElementLocator model = ErlangEngine.getInstance().getModel();
                 addDialyzerWarningMarker(model, filename, line, msg);
             }
         }
@@ -111,8 +109,8 @@ public class DialyzerMarkerUtils {
     public static boolean haveDialyzerMarkers(final IResource resource) {
         try {
             if (resource.isAccessible()) {
-                final IMarker[] markers = resource.findMarkers(
-                        DIALYZE_WARNING_MARKER, true, IResource.DEPTH_INFINITE);
+                final IMarker[] markers = resource.findMarkers(DIALYZE_WARNING_MARKER,
+                        true, IResource.DEPTH_INFINITE);
                 return markers != null && markers.length > 0;
             }
         } catch (final CoreException e) {
@@ -121,8 +119,7 @@ public class DialyzerMarkerUtils {
         return false;
     }
 
-    private static void removeMarkersFor(final IResource resource,
-            final String type) {
+    private static void removeMarkersFor(final IResource resource, final String type) {
         try {
             if (resource != null && resource.exists()) {
                 resource.deleteMarkers(type, false, IResource.DEPTH_INFINITE);
@@ -133,15 +130,14 @@ public class DialyzerMarkerUtils {
     }
 
     public static void addMarker(final IResource file, final String path,
-            final IResource compiledFile, final String errorDesc,
-            final int lineNumber, final int severity, final String errorVar) {
-        addProblemMarker(file, path, compiledFile, errorDesc, lineNumber,
-                severity);
+            final IResource compiledFile, final String errorDesc, final int lineNumber,
+            final int severity, final String errorVar) {
+        addProblemMarker(file, path, compiledFile, errorDesc, lineNumber, severity);
     }
 
-    public static void addProblemMarker(final IResource resource,
-            final String path, final IResource compiledFile,
-            final String message, final int lineNumber, final int severity) {
+    public static void addProblemMarker(final IResource resource, final String path,
+            final IResource compiledFile, final String message, final int lineNumber,
+            final int severity) {
         try {
             final IMarker marker = resource.createMarker(PROBLEM_MARKER);
             marker.setAttribute(IMarker.MESSAGE, message);
@@ -150,11 +146,10 @@ public class DialyzerMarkerUtils {
                 marker.setAttribute(MarkerUtils.PATH_ATTRIBUTE, path);
             }
             if (compiledFile != null) {
-                marker.setAttribute(IMarker.SOURCE_ID, compiledFile
-                        .getFullPath().toString());
+                marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath()
+                        .toString());
             }
-            marker.setAttribute(IMarker.LINE_NUMBER,
-                    lineNumber != -1 ? lineNumber : 1);
+            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber != -1 ? lineNumber : 1);
         } catch (final CoreException e) {
         }
     }

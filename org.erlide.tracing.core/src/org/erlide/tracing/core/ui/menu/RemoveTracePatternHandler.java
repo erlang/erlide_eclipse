@@ -15,21 +15,19 @@ public class RemoveTracePatternHandler extends AbstractHandler {
 
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
-        final ISelection selection = PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getActivePage().getSelection();
+        final ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                .getActivePage().getSelection();
 
         if (selection instanceof ITreeSelection) {
 
-            final Object firstElement = ((ITreeSelection) selection)
-                    .getFirstElement();
+            final Object firstElement = ((ITreeSelection) selection).getFirstElement();
 
             if (firstElement instanceof IErlFunction) {
                 final IErlFunction function = (IErlFunction) firstElement;
                 final TracePattern tracePattern = new TracePattern(true);
                 tracePattern.setFunctionName(function.getFunctionName());
                 tracePattern.setModuleName(ErlangEngine.getInstance()
-                        .getModelUtilService().getModule(function)
-                        .getModuleName());
+                        .getModelUtilService().getModule(function).getModuleName());
                 tracePattern.setArity(function.getArity());
                 TraceBackend.getInstance().removeTracePattern(tracePattern);
             }

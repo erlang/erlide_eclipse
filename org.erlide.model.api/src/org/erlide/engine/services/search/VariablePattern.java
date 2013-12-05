@@ -16,9 +16,8 @@ public class VariablePattern extends ErlangSearchPattern {
     private final String name;
     private final IErlModule module;
 
-    public VariablePattern(final String functionName, final int arity,
-            final String head, final String name, final LimitTo limitTo,
-            final IErlModule module) {
+    public VariablePattern(final String functionName, final int arity, final String head,
+            final String name, final LimitTo limitTo, final IErlModule module) {
         super(limitTo);
         this.functionName = functionName;
         this.arity = arity;
@@ -31,9 +30,9 @@ public class VariablePattern extends ErlangSearchPattern {
     public OtpErlangObject getSearchObject() {
         final OtpErlangObject t = makeSPatternObject(VARIABLE_DEF_ATOM,
                 VARIABLE_REF_ATOM, name);
-        return new OtpErlangTuple(new OtpErlangObject[] {
-                VARIABLE_PATTERN_ATOM, t, new OtpErlangAtom(functionName),
-                new OtpErlangLong(arity), new OtpErlangString(head) });
+        return new OtpErlangTuple(new OtpErlangObject[] { VARIABLE_PATTERN_ATOM, t,
+                new OtpErlangAtom(functionName), new OtpErlangLong(arity),
+                new OtpErlangString(head) });
     }
 
     @Override

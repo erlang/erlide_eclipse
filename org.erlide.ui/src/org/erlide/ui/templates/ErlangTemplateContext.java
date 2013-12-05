@@ -20,14 +20,13 @@ public class ErlangTemplateContext extends DocumentTemplateContext {
     }
 
     @Override
-    public TemplateBuffer evaluate(final Template template)
-            throws BadLocationException, TemplateException {
+    public TemplateBuffer evaluate(final Template template) throws BadLocationException,
+            TemplateException {
         return evaluate(template, false);
     }
 
-    public TemplateBuffer evaluate(final Template template0,
-            final boolean indentFrom0) throws BadLocationException,
-            TemplateException {
+    public TemplateBuffer evaluate(final Template template0, final boolean indentFrom0)
+            throws BadLocationException, TemplateException {
         Template template = template0;
         if (!canEvaluate(template)) {
             return null;
@@ -49,24 +48,20 @@ public class ErlangTemplateContext extends DocumentTemplateContext {
     public boolean canEvaluate(final Template template) {
         final String key = getKey();
         return key.length() != 0
-                && template.getName().toLowerCase()
-                        .startsWith(key.toLowerCase());
+                && template.getName().toLowerCase().startsWith(key.toLowerCase());
     }
 
     private Template indentTemplatePattern(final Template template,
             final boolean indentFrom0) {
         String pattern = template.getPattern();
-        final String whiteSpacePrefix = indentFrom0 ? ""
-                : getWhiteSpacePrefix();
+        final String whiteSpacePrefix = indentFrom0 ? "" : getWhiteSpacePrefix();
         try {
-            pattern = IndentAction.indentLines(0, 0, pattern, true,
-                    whiteSpacePrefix);
+            pattern = IndentAction.indentLines(0, 0, pattern, true, whiteSpacePrefix);
         } catch (final RpcException e) {
             ErlLogger.error(e);
         }
         return new Template(template.getName(), template.getDescription(),
-                template.getContextTypeId(), pattern,
-                template.isAutoInsertable());
+                template.getContextTypeId(), pattern, template.isAutoInsertable());
     }
 
     private String getWhiteSpacePrefix() {

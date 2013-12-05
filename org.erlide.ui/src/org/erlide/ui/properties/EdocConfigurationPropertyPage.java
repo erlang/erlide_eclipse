@@ -49,8 +49,7 @@ public class EdocConfigurationPropertyPage extends PropertyPage implements
 
     @Override
     protected IPreferenceStore doGetPreferenceStore() {
-        final IPreferenceStore store = ErlideUIPlugin.getDefault()
-                .getPreferenceStore();
+        final IPreferenceStore store = ErlideUIPlugin.getDefault().getPreferenceStore();
         store.addPropertyChangeListener(this);
         return store;
     }
@@ -76,8 +75,8 @@ public class EdocConfigurationPropertyPage extends PropertyPage implements
     protected Control createContents(final Composite parent) {
         fInitialLocation = null;
         // TODO must use the project's backend
-        final String s = ErlangEngine.getInstance()
-                .getService(OtpDocService.class).getOtpDocLocation(null);
+        final String s = ErlangEngine.getInstance().getService(OtpDocService.class)
+                .getOtpDocLocation(null);
         try {
             fInitialLocation = new URL("file", null, s);
         } catch (final MalformedURLException e) {

@@ -66,15 +66,13 @@ public class ManagedErlRuntime extends ErlRuntime {
             final Process aProcess = builder.start();
             return aProcess;
         } catch (final IOException e) {
-            ErlLogger.error("Could not create runtime: %s",
-                    Arrays.toString(cmds));
+            ErlLogger.error("Could not create runtime: %s", Arrays.toString(cmds));
             ErlLogger.error(e);
             return null;
         }
     }
 
-    private void setEnvironment(final RuntimeData data,
-            final ProcessBuilder builder) {
+    private void setEnvironment(final RuntimeData data, final ProcessBuilder builder) {
         final Map<String, String> env = builder.environment();
         if (!SystemConfiguration.getInstance().isOnWindows()
                 && SystemConfiguration.getInstance().hasSpecialTclLib()) {
@@ -100,17 +98,15 @@ public class ManagedErlRuntime extends ErlRuntime {
                 }
                 if (exitCode > 0) {
                     throw new ErlRuntimeException(String.format(
-                            "Runtime %s died with exit code %d", getNodeName(),
-                            exitCode));
+                            "Runtime %s died with exit code %d", getNodeName(), exitCode));
                 }
             }
             if (exitCode < 0) {
-                ErlLogger
-                        .warn("Runtime %s died, but process is still running; killing it",
-                                getNodeName());
-                throw new ErlRuntimeException(
-                        String.format("Runtime %s died with exit code unknown",
-                                getNodeName()));
+                ErlLogger.warn(
+                        "Runtime %s died, but process is still running; killing it",
+                        getNodeName());
+                throw new ErlRuntimeException(String.format(
+                        "Runtime %s died with exit code unknown", getNodeName()));
             }
         }
     }

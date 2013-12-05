@@ -86,8 +86,7 @@ public class SelectionInputPage extends InputPage {
                 .getWranglerSelection()).getDocument();
         for (final IErlRange r : refactoring.getPositions()) {
             b = new Button(composite, SWT.CHECK);
-            b.setText(WranglerUtils.getTextFromEditor(r, doc) + " at "
-                    + r.toString());
+            b.setText(WranglerUtils.getTextFromEditor(r, doc) + " at " + r.toString());
 
             gd = new GridData();
             gd.horizontalAlignment = GridData.FILL;

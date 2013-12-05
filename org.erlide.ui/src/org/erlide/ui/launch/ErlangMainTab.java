@@ -71,8 +71,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
         Collection<IErlProject> projects;
         try {
-            projects = ErlangEngine.getInstance().getModel()
-                    .getErlangProjects();
+            projects = ErlangEngine.getInstance().getModel().getErlangProjects();
             final List<String> ps = new ArrayList<String>();
             for (final IErlProject p : projects) {
                 ps.add(p.getName());
@@ -114,30 +113,25 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
     private void createStartGroup(final Composite comp) {
         final Group startGroup = new Group(comp, SWT.NONE);
         startGroup.setText("Start");
-        final GridData gd_startGroup = new GridData(SWT.FILL, SWT.CENTER,
-                false, false);
+        final GridData gd_startGroup = new GridData(SWT.FILL, SWT.CENTER, false, false);
         startGroup.setLayoutData(gd_startGroup);
         final GridLayout gridLayout_1 = new GridLayout();
         gridLayout_1.numColumns = 4;
         startGroup.setLayout(gridLayout_1);
 
-        moduleText = textWithLabel(startGroup, "Module", 114,
-                fBasicModifyListener);
-        funcText = textWithLabel(startGroup, "Function", 107,
-                fBasicModifyListener);
-        argsText = textWithLabel(startGroup, "Arguments", 3,
-                fBasicModifyListener);
+        moduleText = textWithLabel(startGroup, "Module", 114, fBasicModifyListener);
+        funcText = textWithLabel(startGroup, "Function", 107, fBasicModifyListener);
+        argsText = textWithLabel(startGroup, "Arguments", 3, fBasicModifyListener);
 
         new Label(startGroup, SWT.NONE);
 
         final Label infoLabel = new Label(startGroup, SWT.NONE);
-        final GridData gd_infoLabel = new GridData(SWT.LEFT, SWT.CENTER, false,
-                false, 3, 1);
+        final GridData gd_infoLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 3,
+                1);
         infoLabel.setLayoutData(gd_infoLabel);
-        infoLabel
-                .setText("Start function takes no arguments or a single string.\n"
-                        + "It's similar to using '-s mod fun args' on the command line.\n"
-                        + "Use it for system initialization/startup.");
+        infoLabel.setText("Start function takes no arguments or a single string.\n"
+                + "It's similar to using '-s mod fun args' on the command line.\n"
+                + "Use it for system initialization/startup.");
     }
 
     private Text textWithLabel(final Group startGroup, final String labelText,
@@ -149,8 +143,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
         final Text text = new Text(startGroup, SWT.SINGLE | SWT.BORDER);
         final GridData gd;
         if (textWidthHint < 10) {
-            gd = new GridData(SWT.FILL, SWT.CENTER, false, false,
-                    textWidthHint, 1);
+            gd = new GridData(SWT.FILL, SWT.CENTER, false, false, textWidthHint, 1);
         } else {
             gd = new GridData(SWT.FILL, SWT.CENTER, false, false);
             gd.widthHint = textWidthHint;
@@ -170,8 +163,8 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
         public Object[] getElements(final Object inputElement) {
             final java.util.List<String> ps = new ArrayList<String>();
 
-            final IProject[] projects = ResourcesPlugin.getWorkspace()
-                    .getRoot().getProjects();
+            final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
+                    .getProjects();
             for (final IProject p : projects) {
                 if (p.isAccessible()) {
                     IProjectNature n = null;
@@ -225,8 +218,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
         }
 
         @Override
-        public boolean isLabelProperty(final Object element,
-                final String property) {
+        public boolean isLabelProperty(final Object element, final String property) {
             return false;
         }
 
@@ -271,22 +263,21 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
         }
 
         try {
-            final String attribute = config.getAttribute(
-                    ErlRuntimeAttributes.MODULE, "");
+            final String attribute = config.getAttribute(ErlRuntimeAttributes.MODULE, "");
             moduleText.setText(attribute);
         } catch (final CoreException e) {
             moduleText.setText("");
         }
         try {
-            final String attribute = config.getAttribute(
-                    ErlRuntimeAttributes.FUNCTION, "");
+            final String attribute = config.getAttribute(ErlRuntimeAttributes.FUNCTION,
+                    "");
             funcText.setText(attribute);
         } catch (final CoreException e) {
             funcText.setText("");
         }
         try {
-            final String attribute = config.getAttribute(
-                    ErlRuntimeAttributes.ARGUMENTS, "");
+            final String attribute = config.getAttribute(ErlRuntimeAttributes.ARGUMENTS,
+                    "");
             argsText.setText(attribute);
         } catch (final CoreException e) {
             argsText.setText("");
@@ -305,8 +296,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
         if (projectNames.length() > 0) {
             projectNames.setLength(projectNames.length() - 1);
         }
-        config.setAttribute(ErlRuntimeAttributes.PROJECTS,
-                projectNames.toString());
+        config.setAttribute(ErlRuntimeAttributes.PROJECTS, projectNames.toString());
 
         config.setAttribute(ErlRuntimeAttributes.MODULE, moduleText.getText());
         config.setAttribute(ErlRuntimeAttributes.FUNCTION, funcText.getText());

@@ -28,8 +28,8 @@ public class UserRefactoringInfo {
     private String prepareLabel(final String module) {
         final StringBuffer buf = new StringBuffer();
         for (final String part : module.split("_")) {
-            buf.append(Character.toUpperCase(part.charAt(0)))
-                    .append(part.substring(1)).append(" ");
+            buf.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1))
+                    .append(" ");
         }
         return buf.toString().trim();
     }

@@ -28,13 +28,12 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     // Pattern.compile("#![.]*escript");
 
     @Override
-    public int describe(final InputStream input,
-            final IContentDescription description) throws IOException {
+    public int describe(final InputStream input, final IContentDescription description)
+            throws IOException {
         return describe2(input, description, new HashMap<String, Object>());
     }
 
-    int describe2(final InputStream input,
-            final IContentDescription description,
+    int describe2(final InputStream input, final IContentDescription description,
             final Map<String, Object> properties) throws IOException {
         if (!isProcessed(properties)) {
             fillContentProperties(input, description, properties);
@@ -43,8 +42,8 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     }
 
     @Override
-    public int describe(final Reader input,
-            final IContentDescription description) throws IOException {
+    public int describe(final Reader input, final IContentDescription description)
+            throws IOException {
         return describe2(input, description, new HashMap<String, Object>());
     }
 
@@ -65,16 +64,14 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     }
 
     private void fillContentProperties(final InputStream input,
-            final IContentDescription description,
-            final Map<String, Object> properties) throws IOException {
+            final IContentDescription description, final Map<String, Object> properties)
+            throws IOException {
         final String encoding = "UTF-8"; //$NON-NLS-1$
-        fillContentProperties(readEncoding(input, encoding), description,
-                properties);
+        fillContentProperties(readEncoding(input, encoding), description, properties);
     }
 
     private void fillContentProperties(final String charset,
-            final IContentDescription description,
-            final Map<String, Object> properties) {
+            final IContentDescription description, final Map<String, Object> properties) {
         if (charset != null) {
             properties.put(CHARSET, charset);
         }
@@ -93,8 +90,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
             }
             final String charsetName = realCharsetName(charset);
             if (charsetName != null) {
-                description.setProperty(IContentDescription.CHARSET,
-                        charsetName);
+                description.setProperty(IContentDescription.CHARSET, charsetName);
             } else {
                 // keep the default setting, as in the
             }

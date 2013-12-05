@@ -41,37 +41,31 @@ public final class MarkerUtils {
     private static final String FIXME = "FIXME";
     private static final String XXX = "XXX";
     private static final String TODO = "TODO";
-    private static final String TODO_XXX_FIXME_PATTERN = "^[^%]*%+[ \t]*("
-            + TODO + "|" + XXX + "|" + FIXME + ").*";
+    private static final String TODO_XXX_FIXME_PATTERN = "^[^%]*%+[ \t]*(" + TODO + "|"
+            + XXX + "|" + FIXME + ").*";
     // Copied from org.eclipse.ui.ide (since we don't want ui code in core)
     public static final String PATH_ATTRIBUTE = "org.eclipse.ui.views.markers.path";//$NON-NLS-1$
 
     private MarkerUtils() {
     }
 
-    public static final String PROBLEM_MARKER = ErlangCore.PLUGIN_ID
-            + ".problemmarker";
-    public static final String TASK_MARKER = ErlangCore.PLUGIN_ID
-            + ".taskmarker";
+    public static final String PROBLEM_MARKER = ErlangCore.PLUGIN_ID + ".problemmarker";
+    public static final String TASK_MARKER = ErlangCore.PLUGIN_ID + ".taskmarker";
 
     public static void addMarker(final IResource file, final String path,
-            final IResource compiledFile, final String errorDesc,
-            final int lineNumber, final int severity, final String errorVar) {
-        addProblemMarker(file, path, compiledFile, errorDesc, lineNumber,
-                severity);
+            final IResource compiledFile, final String errorDesc, final int lineNumber,
+            final int severity, final String errorVar) {
+        addProblemMarker(file, path, compiledFile, errorDesc, lineNumber, severity);
     }
 
-    public static void addTaskMarker(final IResource file,
-            final IResource compiledFile, final String message,
-            final int lineNumber, final int priority) {
+    public static void addTaskMarker(final IResource file, final IResource compiledFile,
+            final String message, final int lineNumber, final int priority) {
         try {
             final IMarker marker = file.createMarker(TASK_MARKER);
             marker.setAttribute(IMarker.MESSAGE, message);
             marker.setAttribute(IMarker.PRIORITY, priority);
-            marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath()
-                    .toString());
-            marker.setAttribute(IMarker.LINE_NUMBER,
-                    lineNumber != -1 ? lineNumber : 1);
+            marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath().toString());
+            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber != -1 ? lineNumber : 1);
         } catch (final CoreException e) {
         } catch (final Exception e) {
             ErlLogger.warn(e);
@@ -89,11 +83,9 @@ public final class MarkerUtils {
         final OtpErlangObject[] messages = errorList.elements();
         final Map<String, List<OtpErlangTuple>> groupedMessages = groupMessagesByFile(messages);
 
-        for (final Entry<String, List<OtpErlangTuple>> entry : groupedMessages
-                .entrySet()) {
+        for (final Entry<String, List<OtpErlangTuple>> entry : groupedMessages.entrySet()) {
             final String fileName = entry.getKey();
-            final IResource res = findResourceForFileName(resource, entry,
-                    fileName);
+            final IResource res = findResourceForFileName(resource, entry, fileName);
 
             for (final OtpErlangTuple data : entry.getValue()) {
                 addAnnotationForMessage(resource, fileName, res, data);
@@ -102,8 +94,7 @@ public final class MarkerUtils {
     }
 
     private static IResource findResourceForFileName(final IResource resource,
-            final Entry<String, List<OtpErlangTuple>> entry,
-            final String fileName) {
+            final Entry<String, List<OtpErlangTuple>> entry, final String fileName) {
         IResource res = resource;
         if (!ResourceUtil.samePath(resource.getLocation().toString(), fileName)) {
             final IProject project = resource.getProject();
@@ -114,12 +105,9 @@ public final class MarkerUtils {
                             .getModel();
                     final IErlProject erlProject = model.findProject(project);
                     if (erlProject != null) {
-                        final IErlModule includeFile = model
-                                .findIncludeFromProject(
-                                        erlProject,
-                                        fileName,
-                                        fileName,
-                                        IErlElementLocator.Scope.REFERENCED_PROJECTS);
+                        final IErlModule includeFile = model.findIncludeFromProject(
+                                erlProject, fileName, fileName,
+                                IErlElementLocator.Scope.REFERENCED_PROJECTS);
                         // ErlLogger.debug("inc::" + fileName + " "
                         // + resource.getName() + " "
                         // + erlProject.getName());
@@ -142,8 +130,7 @@ public final class MarkerUtils {
     }
 
     private static void addAnnotationForMessage(final IResource resource,
-            final String fileName, final IResource res,
-            final OtpErlangTuple data) {
+            final String fileName, final IResource res, final OtpErlangTuple data) {
         int line = 0;
         if (data.elementAt(0) instanceof OtpErlangLong) {
             try {
@@ -171,12 +158,11 @@ public final class MarkerUtils {
         if (msg.length() > 1000) {
             msg = msg.substring(0, 1000) + "...";
         }
-        final IMarker marker = addMarker(res, resource.getProject(), fileName,
-                msg, line, sev, PROBLEM_MARKER);
+        final IMarker marker = addMarker(res, resource.getProject(), fileName, msg, line,
+                sev, PROBLEM_MARKER);
         if (marker != null) {
             try {
-                marker.setAttribute(IMarker.SOURCE_ID, resource.getLocation()
-                        .toString());
+                marker.setAttribute(IMarker.SOURCE_ID, resource.getLocation().toString());
             } catch (final CoreException e) {
             }
         }
@@ -203,9 +189,9 @@ public final class MarkerUtils {
         list.add(tuple);
     }
 
-    public static void addProblemMarker(final IResource resource,
-            final String path, final IResource compiledFile,
-            final String message, final int lineNumber, final int severity) {
+    public static void addProblemMarker(final IResource resource, final String path,
+            final IResource compiledFile, final String message, final int lineNumber,
+            final int severity) {
         try {
             final IMarker marker = resource.createMarker(PROBLEM_MARKER);
             marker.setAttribute(IMarker.MESSAGE, message);
@@ -214,11 +200,10 @@ public final class MarkerUtils {
                 marker.setAttribute(MarkerUtils.PATH_ATTRIBUTE, path);
             }
             if (compiledFile != null) {
-                marker.setAttribute(IMarker.SOURCE_ID, compiledFile
-                        .getFullPath().toString());
+                marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath()
+                        .toString());
             }
-            marker.setAttribute(IMarker.LINE_NUMBER,
-                    lineNumber != -1 ? lineNumber : 1);
+            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber != -1 ? lineNumber : 1);
         } catch (final CoreException e) {
         }
     }
@@ -231,12 +216,10 @@ public final class MarkerUtils {
         return getMarkersFor(resource, TASK_MARKER);
     }
 
-    private static IMarker[] getMarkersFor(final IResource resource,
-            final String type) {
+    private static IMarker[] getMarkersFor(final IResource resource, final String type) {
         try {
             if (resource != null && resource.exists()) {
-                return resource.findMarkers(type, false,
-                        IResource.DEPTH_INFINITE);
+                return resource.findMarkers(type, false, IResource.DEPTH_INFINITE);
             }
         } catch (final CoreException e) {
             // assume there are no tasks
@@ -252,8 +235,7 @@ public final class MarkerUtils {
         removeMarkersFor(resource, TASK_MARKER);
     }
 
-    private static void removeMarkersFor(final IResource resource,
-            final String type) {
+    private static void removeMarkersFor(final IResource resource, final String type) {
         try {
             if (resource != null && resource.exists()) {
                 resource.deleteMarkers(type, false, IResource.DEPTH_INFINITE);
@@ -266,8 +248,7 @@ public final class MarkerUtils {
     public static void deleteMarkers(final IResource resource) {
         removeProblemMarkersFor(resource);
         if (resource instanceof IFile) {
-            deleteMarkersWithCompiledFile(resource.getProject(),
-                    (IFile) resource);
+            deleteMarkersWithCompiledFile(resource.getProject(), (IFile) resource);
             // should we delete markers for dependent hrl files?
         }
     }
@@ -296,25 +277,22 @@ public final class MarkerUtils {
     }
 
     public void createProblemMarkerFor(final IResource resource,
-            final IErlFunction erlElement, final String message,
-            final int problemSeverity) throws CoreException {
+            final IErlFunction erlElement, final String message, final int problemSeverity)
+            throws CoreException {
         final IMarker marker = resource.createMarker(PROBLEM_MARKER);
         final int severity = problemSeverity;
 
-        final ISourceRange range = erlElement == null ? null : erlElement
-                .getNameRange();
+        final ISourceRange range = erlElement == null ? null : erlElement.getNameRange();
         final int start = range == null ? 0 : range.getOffset();
         final int end = range == null ? 1 : start + range.getLength();
-        marker.setAttributes(
-                new String[] { IMarker.MESSAGE, IMarker.SEVERITY,
-                        IMarker.CHAR_START, IMarker.CHAR_END },
+        marker.setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY,
+                IMarker.CHAR_START, IMarker.CHAR_END },
                 new Object[] { message, Integer.valueOf(severity),
                         Integer.valueOf(start), Integer.valueOf(end) });
     }
 
     public static IMarker createSearchResultMarker(final IErlModule module,
-            final String type, final int offset, final int length)
-            throws CoreException {
+            final String type, final int offset, final int length) throws CoreException {
         boolean setPath = false;
         IResource resource = module.getCorrespondingResource();
         if (resource == null) {
@@ -330,9 +308,9 @@ public final class MarkerUtils {
         return marker;
     }
 
-    public static IMarker addMarker(final IResource file,
-            final IProject project, final String path, final String message,
-            final int lineNumber, final int severity, final String markerKind) {
+    public static IMarker addMarker(final IResource file, final IProject project,
+            final String path, final String message, final int lineNumber,
+            final int severity, final String markerKind) {
         try {
             IResource resource;
             if (file != null) {
@@ -345,8 +323,7 @@ public final class MarkerUtils {
             final IMarker marker = resource.createMarker(markerKind);
             marker.setAttribute(IMarker.MESSAGE, message);
             marker.setAttribute(IMarker.SEVERITY, severity);
-            marker.setAttribute(IMarker.LINE_NUMBER,
-                    lineNumber != -1 ? lineNumber : 1);
+            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber != -1 ? lineNumber : 1);
             marker.setAttribute(PATH_ATTRIBUTE, path);
             return marker;
         } catch (final CoreException e) {
@@ -363,8 +340,8 @@ public final class MarkerUtils {
 
     public static void getScanMarkersFor(final IResource resource) {
         try {
-            final BufferedReader reader = new BufferedReader(new FileReader(
-                    resource.getLocation().toPortableString()));
+            final BufferedReader reader = new BufferedReader(new FileReader(resource
+                    .getLocation().toPortableString()));
             try {
                 String line = reader.readLine();
                 final List<Pair<String, Integer>> cl = new ArrayList<Pair<String, Integer>>();
@@ -378,12 +355,12 @@ public final class MarkerUtils {
                 }
 
                 for (final Pair<String, Integer> c : cl) {
-                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(),
-                            TODO, IMarker.PRIORITY_NORMAL);
-                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(),
-                            XXX, IMarker.PRIORITY_NORMAL);
-                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(),
-                            FIXME, IMarker.PRIORITY_HIGH);
+                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(), TODO,
+                            IMarker.PRIORITY_NORMAL);
+                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(), XXX,
+                            IMarker.PRIORITY_NORMAL);
+                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(), FIXME,
+                            IMarker.PRIORITY_HIGH);
                 }
             } finally {
                 reader.close();
@@ -392,8 +369,8 @@ public final class MarkerUtils {
         }
     }
 
-    private static void createTaskMarkerAtText(final IResource resource,
-            final int line, final String text, final String tag, final int prio) {
+    private static void createTaskMarkerAtText(final IResource resource, final int line,
+            final String text, final String tag, final int prio) {
         if (text.contains(tag)) {
             final int ix = text.indexOf(tag);
             final String msg = text.substring(ix);

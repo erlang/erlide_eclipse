@@ -119,11 +119,9 @@ public class IParentTests extends ErlModelTestBase {
         final IErlElement childWithResource = model
                 .getChildWithResource(workspaceProject);
         final IResource resource = module.getResource();
-        final IErlElement childWithResource2 = model
-                .getChildWithResource(resource);
+        final IErlElement childWithResource2 = model.getChildWithResource(resource);
         final IErlFolder folder = (IErlFolder) project.getChildNamed("src");
-        final IErlElement childWithResource3 = folder
-                .getChildWithResource(resource);
+        final IErlElement childWithResource3 = folder.getChildWithResource(resource);
         assertEquals(project, childWithResource);
         assertNull(childWithResource2);
         assertEquals(module, childWithResource3);
@@ -135,8 +133,7 @@ public class IParentTests extends ErlModelTestBase {
         module.open(null);
         final int childCount = module.getChildCount();
         final String aname = "test_a";
-        final IErlAttribute attribute = new ErlAttribute(module, aname, null,
-                "test");
+        final IErlAttribute attribute = new ErlAttribute(module, aname, null, "test");
         module.addChild(attribute);
         final int childCount2 = module.getChildCount();
         final IErlElement childNamed = module.getChildNamed(aname);
@@ -151,8 +148,7 @@ public class IParentTests extends ErlModelTestBase {
         module.open(null);
         final List<IErlElement> children = module.getChildren();
         final String aname = "test_a";
-        final IErlAttribute attribute = new ErlAttribute(module, aname, null,
-                "test");
+        final IErlAttribute attribute = new ErlAttribute(module, aname, null, "test");
         module.setChildren(Lists.newArrayList(attribute));
         final int childCount = module.getChildCount();
         final List<IErlElement> children2 = module.getChildren();
@@ -167,8 +163,8 @@ public class IParentTests extends ErlModelTestBase {
     public void removeChild() throws Exception {
         module.open(null);
         final int childCount = module.getChildCount();
-        final IErlElement element = module
-                .getChildrenOfKind(ErlElementKind.ATTRIBUTE).iterator().next();
+        final IErlElement element = module.getChildrenOfKind(ErlElementKind.ATTRIBUTE)
+                .iterator().next();
         final IErlElement childNamed = module.getChildNamed(element.getName());
         module.removeChild(element);
         final int childCount2 = module.getChildCount();

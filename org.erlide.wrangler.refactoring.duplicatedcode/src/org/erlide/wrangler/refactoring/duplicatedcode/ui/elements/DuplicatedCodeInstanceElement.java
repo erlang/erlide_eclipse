@@ -47,9 +47,8 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
      * @param endColumn
      *            ending column of the selection
      */
-    public DuplicatedCodeInstanceElement(final IFile containingFile,
-            final int startLine, final int startColumn, final int endLine,
-            final int endColumn) {
+    public DuplicatedCodeInstanceElement(final IFile containingFile, final int startLine,
+            final int startColumn, final int endLine, final int endColumn) {
 
         this.containingFile = containingFile;
         this.startLine = startLine;
@@ -57,10 +56,9 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
         try {
             startOffset = WranglerUtils.calculateOffsetFromPosition(startLine,
                     startColumn, doc);
-            endOffset = WranglerUtils.calculateOffsetFromPosition(endLine,
-                    endColumn, doc);
-            codePartString = WranglerUtils.getTextSegment(startOffset,
-                    endOffset, doc);
+            endOffset = WranglerUtils
+                    .calculateOffsetFromPosition(endLine, endColumn, doc);
+            codePartString = WranglerUtils.getTextSegment(startOffset, endOffset, doc);
         } catch (final BadLocationException e) {
             ErlLogger.error(e);
         }

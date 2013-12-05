@@ -58,13 +58,12 @@ public class OpenBrowserUtil {
         });
     }
 
-    private static void internalOpen(final URL url,
-            final boolean useExternalBrowser) {
+    private static void internalOpen(final URL url, final boolean useExternalBrowser) {
         BusyIndicator.showWhile(null, new Runnable() {
             @Override
             public void run() {
-                final URL helpSystemUrl = PlatformUI.getWorkbench()
-                        .getHelpSystem().resolve(url.toExternalForm(), true);
+                final URL helpSystemUrl = PlatformUI.getWorkbench().getHelpSystem()
+                        .resolve(url.toExternalForm(), true);
                 try {
                     final IWorkbenchBrowserSupport browserSupport = PlatformUI
                             .getWorkbench().getBrowserSupport();
@@ -95,8 +94,7 @@ public class OpenBrowserUtil {
      * @deprecated As of 3.6, replaced by {@link #open(URL, Display)}
      */
     @Deprecated
-    public static void open(final URL url, final Display display,
-            final String title) {
+    public static void open(final URL url, final Display display, final String title) {
         open(url, display);
     }
 

@@ -25,8 +25,7 @@ import com.ericsson.otp.erlang.OtpErlangBoolean;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public class EqcStatemStateDataToRecordRefactoring extends
-        QuickCheckStateRefactoring {
+public class EqcStatemStateDataToRecordRefactoring extends QuickCheckStateRefactoring {
 
     @Override
     public String getName() {
@@ -49,8 +48,7 @@ public class EqcStatemStateDataToRecordRefactoring extends
 
         return (StateDataToRecordRpcMessage) WranglerBackendManager
                 .getRefactoringBackend().callWithParser(parser,
-                        "eqc_statem_to_record_eclipse", "sxi",
-                        sel.getFilePath(), sel.getSearchPath(),
-                        GlobalParameters.getTabWidth());
+                        "eqc_statem_to_record_eclipse", "sxi", sel.getFilePath(),
+                        sel.getSearchPath(), GlobalParameters.getTabWidth());
     }
 }

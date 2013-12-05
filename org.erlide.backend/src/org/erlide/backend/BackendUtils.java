@@ -25,10 +25,9 @@ public class BackendUtils {
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         final String location = root.getLocation().toPortableString();
         final String user = System.getProperty("user.name");
-        final String timestamp = Long
-                .toHexString(System.currentTimeMillis() & 0xFFFFFF);
-        fUniqueId = Long.toHexString(location.hashCode() & 0xFFFFF) + "_"
-                + user + "_" + timestamp;
+        final String timestamp = Long.toHexString(System.currentTimeMillis() & 0xFFFFFF);
+        fUniqueId = Long.toHexString(location.hashCode() & 0xFFFFF) + "_" + user + "_"
+                + timestamp;
         return fUniqueId.replaceAll("[^a-zA-Z0-9_-]", "");
     }
 
@@ -37,8 +36,7 @@ public class BackendUtils {
     }
 
     public static String getBeamModuleName(final IPath path) {
-        if (path.getFileExtension() != null
-                && "beam".equals(path.getFileExtension())) {
+        if (path.getFileExtension() != null && "beam".equals(path.getFileExtension())) {
             return path.removeFileExtension().lastSegment();
         }
         return null;
@@ -63,8 +61,7 @@ public class BackendUtils {
 
     public static IConfigurationElement[] getCodepathConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(BackendPlugin.PLUGIN_ID,
-                "codepath");
+        return reg.getConfigurationElementsFor(BackendPlugin.PLUGIN_ID, "codepath");
     }
 
     public static IExtensionPoint getCodepathExtension() {
@@ -74,11 +71,9 @@ public class BackendUtils {
 
     @SuppressWarnings("boxing")
     public static OtpErlangObject call(final IRpcSite b, final String module,
-            final String fun, final int offset, final int length,
-            final String text) {
+            final String fun, final int offset, final int length, final String text) {
         try {
-            final OtpErlangObject r1 = b.call(module, fun, "sii", text, offset,
-                    length);
+            final OtpErlangObject r1 = b.call(module, fun, "sii", text, offset, length);
             return r1;
         } catch (final RpcException e) {
             return new OtpErlangString("");

@@ -57,8 +57,8 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
     @Override
     public void createControl(final Composite parent) {
-        final ScrolledComposite scrolled = new ScrolledComposite(parent,
-                SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+        final ScrolledComposite scrolled = new ScrolledComposite(parent, SWT.BORDER
+                | SWT.V_SCROLL | SWT.H_SCROLL);
         final Composite comp = new Composite(scrolled, SWT.NONE);
         scrolled.setContent(comp);
         scrolled.setExpandVertical(true);
@@ -100,8 +100,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
         Collection<IErlProject> projects;
         try {
-            projects = ErlangEngine.getInstance().getModel()
-                    .getErlangProjects();
+            projects = ErlangEngine.getInstance().getModel().getErlangProjects();
             final List<String> ps = new ArrayList<String>();
             for (final IErlProject p : projects) {
                 ps.add(p.getName());
@@ -126,8 +125,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
         try {
 
-            final String projectName = config.getAttribute(
-                    ICoverAttributes.PROJECT, "");
+            final String projectName = config.getAttribute(ICoverAttributes.PROJECT, "");
 
             projectMBr.setText(projectName);
 
@@ -288,13 +286,10 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
                     .getModel().getErlangProjects();
 
             for (final IErlProject p : projects) {
-                final ProjectElement elem = new ProjectElement(p.getName(),
-                        PlatformUI
-                                .getWorkbench()
-                                .getSharedImages()
-                                .getImageDescriptor(
-                                        IDE.SharedImages.IMG_OBJ_PROJECT)
-                                .createImage());
+                final ProjectElement elem = new ProjectElement(p.getName(), PlatformUI
+                        .getWorkbench().getSharedImages()
+                        .getImageDescriptor(IDE.SharedImages.IMG_OBJ_PROJECT)
+                        .createImage());
 
                 res.add(elem);
             }
@@ -317,8 +312,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
             for (final IErlModule m : modules) {
                 final ProjectElement elem = new ProjectElement(m.getName(),
                         ErlangElementImageProvider.getErlImageDescriptor(m,
-                                ErlangElementImageProvider.SMALL_ICONS)
-                                .createImage());
+                                ErlangElementImageProvider.SMALL_ICONS).createImage());
                 res.add(elem);
             }
             array = res.toArray();
@@ -347,8 +341,8 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         fileBr.addModifyListener(basicModifyListener);
     }
 
-    private ItemBrowser browserWithLabel(final Composite comp,
-            final String text, final SelectionDialog dialog) {
+    private ItemBrowser browserWithLabel(final Composite comp, final String text,
+            final SelectionDialog dialog) {
 
         final GridData gData = new GridData();
 
@@ -356,8 +350,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         label.setLayoutData(gData);
         label.setText(text);
 
-        final ItemBrowser browser = new ItemBrowser(comp, SWT.SINGLE
-                | SWT.BORDER, dialog);
+        final ItemBrowser browser = new ItemBrowser(comp, SWT.SINGLE | SWT.BORDER, dialog);
 
         return browser;
     }

@@ -31,12 +31,10 @@ public class OpenResult {
             return; // not a call, ignore
         }
         final OtpErlangTuple openTuple = (OtpErlangTuple) res;
-        final String kind = ((OtpErlangAtom) openTuple.elementAt(0))
-                .atomValue();
+        final String kind = ((OtpErlangAtom) openTuple.elementAt(0)).atomValue();
         try {
             if ("external".equals(kind)) {
-                final OtpErlangAtom element = (OtpErlangAtom) openTuple
-                        .elementAt(1);
+                final OtpErlangAtom element = (OtpErlangAtom) openTuple.elementAt(1);
                 externalCall = true;
                 name = element.atomValue();
                 fun = ((OtpErlangAtom) openTuple.elementAt(2)).atomValue();
@@ -44,8 +42,7 @@ public class OpenResult {
                 path = null;
                 if (openTuple.arity() > 4
                         && openTuple.elementAt(4) instanceof OtpErlangString) {
-                    path = ((OtpErlangString) openTuple.elementAt(4))
-                            .stringValue();
+                    path = ((OtpErlangString) openTuple.elementAt(4)).stringValue();
                 }
             } else if ("include".equals(kind)) {
                 include = true;
@@ -56,8 +53,7 @@ public class OpenResult {
                 path = Util.stringValue(openTuple.elementAt(2));
             } else if ("local".equals(kind)) { // local call
                 localCall = true;
-                final OtpErlangAtom element = (OtpErlangAtom) openTuple
-                        .elementAt(1);
+                final OtpErlangAtom element = (OtpErlangAtom) openTuple.elementAt(1);
                 fun = element.atomValue();
                 arity = ((OtpErlangLong) openTuple.elementAt(2)).intValue();
                 // } else if (external.equals("variable")) {
@@ -67,8 +63,7 @@ public class OpenResult {
                 macro = kind.startsWith("macro");
                 record = kind.startsWith("record");
                 define = kind.endsWith("_def");
-                final OtpErlangAtom element = (OtpErlangAtom) openTuple
-                        .elementAt(1);
+                final OtpErlangAtom element = (OtpErlangAtom) openTuple.elementAt(1);
                 name = element.toString();
                 if (macro) {
                     name = removeQuestionMark(name);
@@ -86,11 +81,9 @@ public class OpenResult {
                 }
             } else if ("field".equals(kind)) {
                 field = true;
-                final OtpErlangAtom recordNameA = (OtpErlangAtom) openTuple
-                        .elementAt(1);
+                final OtpErlangAtom recordNameA = (OtpErlangAtom) openTuple.elementAt(1);
                 fun = recordNameA.atomValue();
-                final OtpErlangAtom fieldNameA = (OtpErlangAtom) openTuple
-                        .elementAt(2);
+                final OtpErlangAtom fieldNameA = (OtpErlangAtom) openTuple.elementAt(2);
                 name = fieldNameA.atomValue();
             }
         } catch (final Exception e) {

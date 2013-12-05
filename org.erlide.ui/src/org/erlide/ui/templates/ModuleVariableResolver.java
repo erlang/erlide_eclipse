@@ -36,8 +36,7 @@ public class ModuleVariableResolver extends TemplateVariableResolver {
     }
 
     @Override
-    public void resolve(final TemplateVariable variable,
-            final TemplateContext theContext) {
+    public void resolve(final TemplateVariable variable, final TemplateContext theContext) {
         variable.setValue(fModule);
     }
 

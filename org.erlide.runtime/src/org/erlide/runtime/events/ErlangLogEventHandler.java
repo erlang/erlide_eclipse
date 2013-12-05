@@ -28,8 +28,7 @@ public class ErlangLogEventHandler extends ErlangEventHandler {
         String ss = "";
         if (t.arity() == 5) {
             final OtpErlangTuple backtrace_0 = (OtpErlangTuple) t.elementAt(4);
-            final OtpErlangBinary backtrace = (OtpErlangBinary) backtrace_0
-                    .elementAt(1);
+            final OtpErlangBinary backtrace = (OtpErlangBinary) backtrace_0.elementAt(1);
             ss = new String(backtrace.binaryValue());
         }
         try {

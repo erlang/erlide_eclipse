@@ -33,8 +33,7 @@ public class RegressionResultsView extends ViewPart {
         control.setLayout(new GridLayout(1, false));
 
         label = new Label(control, SWT.NONE);
-        label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-                1));
+        label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         label.setText("");
 
         tableViewer = new TableViewer(control, SWT.H_SCROLL | SWT.V_SCROLL);

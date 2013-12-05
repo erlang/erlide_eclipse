@@ -8,14 +8,13 @@ public class TypeRefPattern extends ErlangSearchPattern {
 
     @Override
     public String toString() {
-        return "TypeRefPattern [module=" + module + ", name=" + name
-                + ", limitTo=" + limitTo + "]";
+        return "TypeRefPattern [module=" + module + ", name=" + name + ", limitTo="
+                + limitTo + "]";
     }
 
     private final String name;
 
-    public TypeRefPattern(final String module, final String name,
-            final LimitTo limitTo) {
+    public TypeRefPattern(final String module, final String name, final LimitTo limitTo) {
         super(limitTo);
         this.module = module;
         this.name = name;
@@ -23,8 +22,8 @@ public class TypeRefPattern extends ErlangSearchPattern {
 
     @Override
     public OtpErlangObject getSearchObject() {
-        return makeSSPatternObject(TYPE_DEF_ATOM, TYPE_REF_ATOM,
-                module == null ? "_" : module, name);
+        return makeSSPatternObject(TYPE_DEF_ATOM, TYPE_REF_ATOM, module == null ? "_"
+                : module, name);
     }
 
     @Override

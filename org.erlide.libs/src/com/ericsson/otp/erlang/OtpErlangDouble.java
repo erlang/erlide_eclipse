@@ -26,8 +26,7 @@ import java.io.Serializable;
  * {@link OtpErlangFloat} are used to provide representations corresponding to
  * the Java types Double and Float.
  */
-public class OtpErlangDouble extends OtpErlangObject implements Serializable,
-        Cloneable {
+public class OtpErlangDouble extends OtpErlangObject implements Serializable, Cloneable {
     // don't change this!
     static final long serialVersionUID = 132947104811974021L;
 
@@ -51,8 +50,7 @@ public class OtpErlangDouble extends OtpErlangObject implements Serializable,
      *                if the buffer does not contain a valid external
      *                representation of an Erlang float.
      */
-    public OtpErlangDouble(final OtpInputStream buf)
-            throws OtpErlangDecodeException {
+    public OtpErlangDouble(final OtpInputStream buf) throws OtpErlangDecodeException {
         d = buf.read_double();
     }
 

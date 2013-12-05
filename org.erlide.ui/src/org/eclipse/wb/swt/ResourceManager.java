@@ -79,8 +79,7 @@ public class ResourceManager extends SWTResourceManager {
      */
     public static ImageDescriptor getImageDescriptor(final String path) {
         try {
-            return ImageDescriptor
-                    .createFromURL(new File(path).toURI().toURL());
+            return ImageDescriptor.createFromURL(new File(path).toURI().toURL());
         } catch (final MalformedURLException e) {
             return null;
         }
@@ -121,8 +120,7 @@ public class ResourceManager extends SWTResourceManager {
      *            the {@link Image} to decorate the base image.
      * @return {@link Image} The resulting decorated image.
      */
-    public static Image decorateImage(final Image baseImage,
-            final Image decorator) {
+    public static Image decorateImage(final Image baseImage, final Image decorator) {
         return decorateImage(baseImage, decorator, BOTTOM_RIGHT);
     }
 
@@ -138,8 +136,8 @@ public class ResourceManager extends SWTResourceManager {
      *            the corner to place decorator image.
      * @return the resulting decorated {@link Image}.
      */
-    public static Image decorateImage(final Image baseImage,
-            final Image decorator, final int corner) {
+    public static Image decorateImage(final Image baseImage, final Image decorator,
+            final int corner) {
         if (corner <= 0 || corner >= LAST_CORNER_KEY) {
             throw new IllegalArgumentException("Wrong decorate corner");
         }
@@ -161,20 +159,17 @@ public class ResourceManager extends SWTResourceManager {
             final Point baseImageSize = new Point(bib.width, bib.height);
             final CompositeImageDescriptor compositImageDesc = new CompositeImageDescriptor() {
                 @Override
-                protected void drawCompositeImage(final int width,
-                        final int height) {
+                protected void drawCompositeImage(final int width, final int height) {
                     drawImage(baseImage.getImageData(), 0, 0);
                     if (corner == TOP_LEFT) {
                         drawImage(decorator.getImageData(), 0, 0);
                     } else if (corner == TOP_RIGHT) {
-                        drawImage(decorator.getImageData(), bib.width
-                                - dib.width, 0);
+                        drawImage(decorator.getImageData(), bib.width - dib.width, 0);
                     } else if (corner == BOTTOM_LEFT) {
-                        drawImage(decorator.getImageData(), 0, bib.height
-                                - dib.height);
+                        drawImage(decorator.getImageData(), 0, bib.height - dib.height);
                     } else if (corner == BOTTOM_RIGHT) {
-                        drawImage(decorator.getImageData(), bib.width
-                                - dib.width, bib.height - dib.height);
+                        drawImage(decorator.getImageData(), bib.width - dib.width,
+                                bib.height - dib.height);
                     }
                 }
 
@@ -197,8 +192,8 @@ public class ResourceManager extends SWTResourceManager {
         SWTResourceManager.disposeImages();
         // dispose ImageDescriptor images
         {
-            for (final Iterator<Image> I = descriptorImageMap.values()
-                    .iterator(); I.hasNext();) {
+            for (final Iterator<Image> I = descriptorImageMap.values().iterator(); I
+                    .hasNext();) {
                 I.next().dispose();
             }
             descriptorImageMap.clear();
@@ -219,8 +214,7 @@ public class ResourceManager extends SWTResourceManager {
         }
         // dispose plugin images
         {
-            for (final Iterator<Image> I = m_URLImageMap.values().iterator(); I
-                    .hasNext();) {
+            for (final Iterator<Image> I = m_URLImageMap.values().iterator(); I.hasNext();) {
                 I.next().dispose();
             }
             m_URLImageMap.clear();
@@ -284,8 +278,7 @@ public class ResourceManager extends SWTResourceManager {
      *            the path of the resource entry.
      * @return the {@link Image} stored in the file at the specified path.
      */
-    public static Image getPluginImage(final String symbolicName,
-            final String path) {
+    public static Image getPluginImage(final String symbolicName, final String path) {
         try {
             final URL url = getPluginImageURL(symbolicName, path);
             if (url != null) {
@@ -360,8 +353,8 @@ public class ResourceManager extends SWTResourceManager {
      * @return the {@link ImageDescriptor} based on a {@link Bundle} and
      *         resource entry path.
      */
-    public static ImageDescriptor getPluginImageDescriptor(
-            final String symbolicName, final String path) {
+    public static ImageDescriptor getPluginImageDescriptor(final String symbolicName,
+            final String path) {
         try {
             final URL url = getPluginImageURL(symbolicName, path);
             if (url != null) {
@@ -376,8 +369,7 @@ public class ResourceManager extends SWTResourceManager {
     /**
      * Returns an {@link URL} based on a {@link Bundle} and resource entry path.
      */
-    private static URL getPluginImageURL(final String symbolicName,
-            final String path) {
+    private static URL getPluginImageURL(final String symbolicName, final String path) {
         // try runtime plugins
         {
             final Bundle bundle = Platform.getBundle(symbolicName);
@@ -387,8 +379,7 @@ public class ResourceManager extends SWTResourceManager {
         }
         // try design time provider
         if (m_designTimePluginResourceProvider != null) {
-            return m_designTimePluginResourceProvider.getEntry(symbolicName,
-                    path);
+            return m_designTimePluginResourceProvider.getEntry(symbolicName, path);
         }
         // no such resource
         return null;
@@ -408,22 +399,18 @@ public class ResourceManager extends SWTResourceManager {
             throws Exception {
         // try to work with 'plugin' as with OSGI BundleContext
         try {
-            final Class<?> bundleClass = Class
-                    .forName("org.osgi.framework.Bundle"); //$NON-NLS-1$
+            final Class<?> bundleClass = Class.forName("org.osgi.framework.Bundle"); //$NON-NLS-1$
             final Class<?> BundleContextClass = Class
                     .forName("org.osgi.framework.BundleContext"); //$NON-NLS-1$
             if (BundleContextClass.isAssignableFrom(plugin.getClass())) {
                 final Method getBundleMethod = BundleContextClass.getMethod(
                         "getBundle", new Class[0]); //$NON-NLS-1$
-                final Object bundle = getBundleMethod.invoke(plugin,
-                        new Object[0]);
+                final Object bundle = getBundleMethod.invoke(plugin, new Object[0]);
                 //
-                final Class<?> PathClass = Class
-                        .forName("org.eclipse.core.runtime.Path"); //$NON-NLS-1$
+                final Class<?> PathClass = Class.forName("org.eclipse.core.runtime.Path"); //$NON-NLS-1$
                 final Constructor<?> pathConstructor = PathClass
                         .getConstructor(new Class[] { String.class });
-                final Object path = pathConstructor
-                        .newInstance(new Object[] { name });
+                final Object path = pathConstructor.newInstance(new Object[] { name });
                 //
                 final Class<?> IPathClass = Class
                         .forName("org.eclipse.core.runtime.IPath"); //$NON-NLS-1$
@@ -431,24 +418,20 @@ public class ResourceManager extends SWTResourceManager {
                         .forName("org.eclipse.core.runtime.Platform"); //$NON-NLS-1$
                 final Method findMethod = PlatformClass.getMethod(
                         "find", new Class[] { bundleClass, IPathClass }); //$NON-NLS-1$
-                return (URL) findMethod.invoke(null, new Object[] { bundle,
-                        path });
+                return (URL) findMethod.invoke(null, new Object[] { bundle, path });
             }
         } catch (final Throwable e) {
             // Ignore any exceptions
         }
         // else work with 'plugin' as with usual Eclipse plugin
         {
-            final Class<?> pluginClass = Class
-                    .forName("org.eclipse.core.runtime.Plugin"); //$NON-NLS-1$
+            final Class<?> pluginClass = Class.forName("org.eclipse.core.runtime.Plugin"); //$NON-NLS-1$
             if (pluginClass.isAssignableFrom(plugin.getClass())) {
                 //
-                final Class<?> pathClass = Class
-                        .forName("org.eclipse.core.runtime.Path"); //$NON-NLS-1$
+                final Class<?> pathClass = Class.forName("org.eclipse.core.runtime.Path"); //$NON-NLS-1$
                 final Constructor<?> pathConstructor = pathClass
                         .getConstructor(new Class[] { String.class });
-                final Object path = pathConstructor
-                        .newInstance(new Object[] { name });
+                final Object path = pathConstructor.newInstance(new Object[] { name });
                 //
                 final Class<?> iPathClass = Class
                         .forName("org.eclipse.core.runtime.IPath"); //$NON-NLS-1$

@@ -53,8 +53,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
      */
     public void resetSelection() {
         WranglerUtils.highlightSelection(initianlSelection.getSelectionRange()
-                .getOffset(),
-                initianlSelection.getSelectionRange().getLength(),
+                .getOffset(), initianlSelection.getSelectionRange().getLength(),
                 initianlSelection);
     }
 
@@ -66,8 +65,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
      * @param title
      *            Dialog title
      */
-    public RemoteFunctionClauseDialog(final Shell parentShell,
-            final String title) {
+    public RemoteFunctionClauseDialog(final Shell parentShell, final String title) {
         super(parentShell, title);
     }
 
@@ -96,12 +94,10 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
         functionClausesTree.setLayoutData(treeData);
 
         try {
-            final Collection<IErlModule> erlmodules = ErlangEngine
-                    .getInstance()
+            final Collection<IErlModule> erlmodules = ErlangEngine.getInstance()
                     .getModelUtilService()
-                    .getProject(
-                            GlobalParameters.getWranglerSelection()
-                                    .getErlElement()).getModules();
+                    .getProject(GlobalParameters.getWranglerSelection().getErlElement())
+                    .getModules();
 
             for (final IErlModule m : erlmodules) {
                 // must refresh the scanner!
@@ -113,8 +109,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
                 final TreeItem moduleName = new TreeItem(functionClausesTree, 0);
                 moduleName.setText(m.getModuleName());
                 moduleName.setData(m);
-                final List<IErlFunction> functions = filterFunctions(m
-                        .getChildren());
+                final List<IErlFunction> functions = filterFunctions(m.getChildren());
                 for (final IErlFunction f : functions) {
                     final TreeItem functionName = new TreeItem(moduleName, 0);
                     functionName.setText(f.getNameWithArity());
@@ -122,8 +117,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
                             .getChildren());
                     functionName.setData(f);
                     for (final IErlFunctionClause c : clauses) {
-                        final TreeItem clauseName = new TreeItem(functionName,
-                                0);
+                        final TreeItem clauseName = new TreeItem(functionName, 0);
                         clauseName.setText(String.valueOf(c.getName()));
                         clauseName.setData(c);
                     }
@@ -143,8 +137,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
                 @Override
                 public void widgetSelected(final SelectionEvent e) {
 
-                    final TreeItem[] selectedItems = functionClausesTree
-                            .getSelection();
+                    final TreeItem[] selectedItems = functionClausesTree.getSelection();
 
                     if (selectedItems.length > 0) {
                         final TreeItem treeItem = selectedItems[0];
@@ -154,8 +147,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
                             okButton.setEnabled(true);
 
                             // highlight
-                            WranglerUtils
-                                    .highlightSelection((IErlFunctionClause) data);
+                            WranglerUtils.highlightSelection((IErlFunctionClause) data);
 
                             // store
                             functionClause = (IErlFunctionClause) data;
@@ -186,8 +178,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
         return clauses;
     }
 
-    protected List<IErlFunction> filterFunctions(
-            final Collection<IErlElement> elements) {
+    protected List<IErlFunction> filterFunctions(final Collection<IErlElement> elements) {
         final ArrayList<IErlFunction> functions = new ArrayList<IErlFunction>();
         for (final IErlElement e : elements) {
             if (e instanceof IErlFunction) {

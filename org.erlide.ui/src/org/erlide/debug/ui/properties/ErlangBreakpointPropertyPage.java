@@ -72,11 +72,10 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     public boolean performOk() {
         final IWorkspaceRunnable wr = new IWorkspaceRunnable() {
             @Override
-            public void run(final IProgressMonitor monitor)
-                    throws CoreException {
+            public void run(final IProgressMonitor monitor) throws CoreException {
                 final IErlangBreakpoint breakpoint = getBreakpoint();
-                final boolean delOnCancel = breakpoint.getMarker()
-                        .getAttribute(ATTR_DELETE_ON_CANCEL) != null;
+                final boolean delOnCancel = breakpoint.getMarker().getAttribute(
+                        ATTR_DELETE_ON_CANCEL) != null;
                 if (delOnCancel) {
                     // if this breakpoint is being created, remove the
                     // "delete on cancel" attribute
@@ -151,8 +150,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
      * @throws CoreException
      *             if an exception occurs while setting the enabled state
      */
-    private void storeEnabled(final IErlangBreakpoint breakpoint)
-            throws CoreException {
+    private void storeEnabled(final IErlangBreakpoint breakpoint) throws CoreException {
         breakpoint.setEnabled(fEnabledButton.getSelection());
     }
 
@@ -227,8 +225,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
                     @Override
                     public void shellActivated(final ShellEvent e) {
                         final Shell shell = (Shell) e.getSource();
-                        shell.setText(MessageFormat.format(
-                                "Create Breakpoint for {0}",
+                        shell.setText(MessageFormat.format("Create Breakpoint for {0}",
                                 new Object[] { getName(getBreakpoint()) }));
                         shell.removeShellListener(this);
                     }
@@ -366,8 +363,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
      * @param parent
      * @throws CoreException
      */
-    protected void createEnabledButton(final Composite parent)
-            throws CoreException {
+    protected void createEnabledButton(final Composite parent) throws CoreException {
         fEnabledButton = createCheckButton(parent, "&Enabled");
         fEnabledButton.setSelection(getBreakpoint().isEnabled());
     }
@@ -397,8 +393,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
      * @param parent
      * @throws CoreException
      */
-    protected void createTypeSpecificEditors(final Composite parent)
-            throws CoreException {
+    protected void createTypeSpecificEditors(final Composite parent) throws CoreException {
     }
 
     /**
@@ -430,8 +425,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
      * @param numColumns
      * @return the configured composite
      */
-    protected Composite createComposite(final Composite parent,
-            final int numColumns) {
+    protected Composite createComposite(final Composite parent, final int numColumns) {
         final Composite g = new Composite(parent, SWT.NONE);
         final GridLayout layout = new GridLayout(numColumns, false);
         layout.marginWidth = 0;

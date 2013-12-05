@@ -11,8 +11,7 @@ public class ToggleMarkOccurrencesHandler extends AbstractHandler {
 
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
-        final boolean oldValue = HandlerUtil.toggleCommandState(event
-                .getCommand());
+        final boolean oldValue = HandlerUtil.toggleCommandState(event.getCommand());
         final IEclipsePreferences prefsNode = ErlideUIPlugin.getPrefsNode();
         prefsNode.putBoolean("markingOccurences", !oldValue);
         return null;

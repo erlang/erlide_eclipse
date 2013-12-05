@@ -26,18 +26,15 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 public class ExpressionSearchAction extends AbstractDuplicatesSearcherAction {
 
     @Override
-    protected IResultParser callRefactoring()
-            throws WranglerRpcParsingException {
+    protected IResultParser callRefactoring() throws WranglerRpcParsingException {
         final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
                 .getWranglerSelection();
         final WranglerRefactoringBackend backend = WranglerBackendManager
                 .getRefactoringBackend();
         final RpcResult result = backend.callWithoutParser(
-                WranglerRefactoringBackend.UNLIMITED_TIMEOUT,
-                "expr_search_eclipse", "sxxi", sel.getFilePath(), sel
-                        .getSelectionRange().getStartPos(), sel
-                        .getSelectionRange().getEndPos(), GlobalParameters
-                        .getTabWidth());
+                WranglerRefactoringBackend.UNLIMITED_TIMEOUT, "expr_search_eclipse",
+                "sxxi", sel.getFilePath(), sel.getSelectionRange().getStartPos(), sel
+                        .getSelectionRange().getEndPos(), GlobalParameters.getTabWidth());
         if (result.isOk()) {
             return new ExpressionSearchParser(result.getValue());
         }

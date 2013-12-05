@@ -72,9 +72,8 @@ public class MarkOccurencesHandler {
         private final boolean fHasChanged;
         private final IErlModule module;
 
-        public OccurrencesFinderJob(final IDocument document,
-                final IErlModule module, final ITextSelection selection,
-                final boolean hasChanged) {
+        public OccurrencesFinderJob(final IDocument document, final IErlModule module,
+                final ITextSelection selection, final boolean hasChanged) {
             super("OccurrencesFinderJob");
             fDocument = document;
             this.selection = selection;
@@ -103,15 +102,12 @@ public class MarkOccurencesHandler {
                         .getService(OpenService.class)
                         .open(theModule.getScannerName(),
                                 offset,
-                                ErlangEngine.getInstance()
-                                        .getModelUtilService()
-                                        .getImportsAsList(theModule),
-                                "",
-                                ErlangEngine.getInstance().getModel()
-                                        .getPathVars());
+                                ErlangEngine.getInstance().getModelUtilService()
+                                        .getImportsAsList(theModule), "",
+                                ErlangEngine.getInstance().getModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
-                        .getSearchPatternFromOpenResultAndLimitTo(theModule,
-                                offset, res, LimitTo.ALL_OCCURRENCES, false);
+                        .getSearchPatternFromOpenResultAndLimitTo(theModule, offset, res,
+                                LimitTo.ALL_OCCURRENCES, false);
                 if (fCanceled) {
                     return;
                 }
@@ -126,12 +122,11 @@ public class MarkOccurencesHandler {
                             .getInstance()
                             .getSearchServerService()
                             .findRefs(pattern, scope,
-                                    ErlangEngine.getInstance().getStateDir(),
-                                    true);
+                                    ErlangEngine.getInstance().getStateDir(), true);
                     if (refs != null) {
                         SearchUtil.addSearchResult(findRefs, refs);
-                        fRefs = erlangEditor.markOccurencesHandler
-                                .getErlangRefs(theModule, findRefs);
+                        fRefs = erlangEditor.markOccurencesHandler.getErlangRefs(
+                                theModule, findRefs);
                     }
                 }
             } catch (final RpcTimeoutException e) {
@@ -145,11 +140,9 @@ public class MarkOccurencesHandler {
             }
             if (fRefs == null) {
                 if (!erlangEditor.markOccurencesHandler.fStickyOccurrenceAnnotations) {
-                    erlangEditor.markOccurencesHandler
-                            .removeOccurrenceAnnotations();
+                    erlangEditor.markOccurencesHandler.removeOccurrenceAnnotations();
                 } else if (hasChanged) {
-                    erlangEditor.markOccurencesHandler
-                            .removeOccurrenceAnnotations();
+                    erlangEditor.markOccurencesHandler.removeOccurrenceAnnotations();
                 }
             }
         }
@@ -192,8 +185,7 @@ public class MarkOccurencesHandler {
                 return Status.CANCEL_STATUS;
             }
 
-            final IDocumentProvider documentProvider = erlangEditor
-                    .getDocumentProvider();
+            final IDocumentProvider documentProvider = erlangEditor.getDocumentProvider();
             if (documentProvider == null) {
                 return Status.CANCEL_STATUS;
             }
@@ -212,15 +204,14 @@ public class MarkOccurencesHandler {
                     return Status.CANCEL_STATUS;
                 }
 
-                final Position position = new Position(ref.getOffset(),
-                        ref.getLength());
+                final Position position = new Position(ref.getOffset(), ref.getLength());
 
                 final String description = ref.getDescription();
                 final String annotationType = ref.isDef() ? "org.erlide.ui.occurrences.definition" //$NON-NLS-1$
                         : "org.erlide.ui.occurrences";
 
-                annotationMap.put(new Annotation(annotationType, false,
-                        description), position);
+                annotationMap.put(new Annotation(annotationType, false, description),
+                        position);
             }
 
             if (isCanceled(progressMonitor)) {
@@ -229,13 +220,11 @@ public class MarkOccurencesHandler {
 
             synchronized (erlangEditor.getLockObject(annotationModel)) {
                 if (annotationModel instanceof IAnnotationModelExtension) {
-                    ((IAnnotationModelExtension) annotationModel)
-                            .replaceAnnotations(
-                                    erlangEditor.markOccurencesHandler.fOccurrenceAnnotations,
-                                    annotationMap);
+                    ((IAnnotationModelExtension) annotationModel).replaceAnnotations(
+                            erlangEditor.markOccurencesHandler.fOccurrenceAnnotations,
+                            annotationMap);
                 } else {
-                    erlangEditor.markOccurencesHandler
-                            .removeOccurrenceAnnotations();
+                    erlangEditor.markOccurencesHandler.removeOccurrenceAnnotations();
                     for (final Map.Entry<Annotation, Position> mapEntry : annotationMap
                             .entrySet()) {
                         annotationModel.addAnnotation(mapEntry.getKey(),
@@ -243,8 +232,7 @@ public class MarkOccurencesHandler {
                     }
                 }
                 erlangEditor.markOccurencesHandler.fOccurrenceAnnotations = annotationMap
-                        .keySet().toArray(
-                                new Annotation[annotationMap.keySet().size()]);
+                        .keySet().toArray(new Annotation[annotationMap.keySet().size()]);
             }
 
             return Status.OK_STATUS;
@@ -256,8 +244,7 @@ public class MarkOccurencesHandler {
      * 
      * @since 3.0
      */
-    class OccurrencesFinderJobCanceler implements IDocumentListener,
-            ITextInputListener {
+    class OccurrencesFinderJobCanceler implements IDocumentListener, ITextInputListener {
 
         public void install() {
             final ISourceViewer sourceViewer = erlangEditor.getViewer();
@@ -284,11 +271,10 @@ public class MarkOccurencesHandler {
                 sourceViewer.removeTextInputListener(this);
             }
 
-            final IDocumentProvider documentProvider = erlangEditor
-                    .getDocumentProvider();
+            final IDocumentProvider documentProvider = erlangEditor.getDocumentProvider();
             if (documentProvider != null) {
-                final IDocument document = documentProvider
-                        .getDocument(erlangEditor.getEditorInput());
+                final IDocument document = documentProvider.getDocument(erlangEditor
+                        .getEditorInput());
                 if (document != null) {
                     document.removeDocumentListener(this);
                 }
@@ -303,8 +289,7 @@ public class MarkOccurencesHandler {
         @Override
         public void documentAboutToBeChanged(final DocumentEvent event) {
             if (erlangEditor.markOccurencesHandler.fOccurrencesFinderJob != null) {
-                erlangEditor.markOccurencesHandler.fOccurrencesFinderJob
-                        .doCancel();
+                erlangEditor.markOccurencesHandler.fOccurrencesFinderJob.doCancel();
             }
         }
 
@@ -469,21 +454,17 @@ public class MarkOccurencesHandler {
                         (ITextSelection) selection, erlangEditor.getModule());
             }
         };
-        final ISelectionProvider selectionProvider = erlangEditor
-                .getSelectionProvider();
+        final ISelectionProvider selectionProvider = erlangEditor.getSelectionProvider();
         if (selectionProvider != null) {
             ((IPostSelectionProvider) selectionProvider)
                     .addPostSelectionChangedListener(fPostSelectionListener);
 
             if (forceUpdate) {
-                fForcedMarkOccurrencesSelection = selectionProvider
-                        .getSelection();
+                fForcedMarkOccurrencesSelection = selectionProvider.getSelection();
                 final IErlModule module = erlangEditor.getModule();
                 if (module != null) {
-                    erlangEditor.markOccurencesHandler
-                            .updateOccurrenceAnnotations(
-                                    (ITextSelection) fForcedMarkOccurrencesSelection,
-                                    module);
+                    erlangEditor.markOccurencesHandler.updateOccurrenceAnnotations(
+                            (ITextSelection) fForcedMarkOccurrencesSelection, module);
                 }
             }
         }
@@ -565,16 +546,16 @@ public class MarkOccurencesHandler {
                     return;
                 }
             }
-            fMarkOccurrenceTargetRegion = ErlangWordFinder.findWord(module,
-                    erlangEditor, offset);
+            fMarkOccurrenceTargetRegion = ErlangWordFinder.findWord(module, erlangEditor,
+                    offset);
             fMarkOccurrenceModificationStamp = currentModificationStamp;
         }
 
         if (fOccurrencesFinderJob != null) {
             fOccurrencesFinderJob.cancel();
         }
-        fOccurrencesFinderJob = new OccurrencesFinderJob(document, module,
-                selection, hasChanged);
+        fOccurrencesFinderJob = new OccurrencesFinderJob(document, module, selection,
+                hasChanged);
         fOccurrencesFinderJob.setPriority(Job.DECORATE);
         fOccurrencesFinderJob.setSystem(true);
         fOccurrencesFinderJob.schedule();
@@ -585,8 +566,7 @@ public class MarkOccurencesHandler {
         fMarkOccurrenceModificationStamp = IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP;
         fMarkOccurrenceTargetRegion = null;
 
-        final IDocumentProvider documentProvider = erlangEditor
-                .getDocumentProvider();
+        final IDocumentProvider documentProvider = erlangEditor.getDocumentProvider();
         if (documentProvider == null) {
             return;
         }
@@ -599,8 +579,8 @@ public class MarkOccurencesHandler {
 
         synchronized (erlangEditor.getLockObject(annotationModel)) {
             if (annotationModel instanceof IAnnotationModelExtension) {
-                ((IAnnotationModelExtension) annotationModel)
-                        .replaceAnnotations(fOccurrenceAnnotations, null);
+                ((IAnnotationModelExtension) annotationModel).replaceAnnotations(
+                        fOccurrenceAnnotations, null);
             } else {
                 for (int i = 0, length = fOccurrenceAnnotations.length; i < length; i++) {
                     annotationModel.removeAnnotation(fOccurrenceAnnotations[i]);
@@ -610,15 +590,14 @@ public class MarkOccurencesHandler {
         }
     }
 
-    List<MarkOccurencesHandler.ErlangRef> getErlangRefs(
-            final IErlModule module,
+    List<MarkOccurencesHandler.ErlangRef> getErlangRefs(final IErlModule module,
             final List<ModuleLineFunctionArityRef> findRefs) {
         final List<MarkOccurencesHandler.ErlangRef> result = new ArrayList<MarkOccurencesHandler.ErlangRef>(
                 findRefs.size());
         for (final ModuleLineFunctionArityRef ref : findRefs) {
             result.add(new MarkOccurencesHandler.ErlangRef(SearchUtil
-                    .createSearchElement(ref, module), ref.getOffset(), ref
-                    .getLength(), ref.isDef()));
+                    .createSearchElement(ref, module), ref.getOffset(), ref.getLength(),
+                    ref.isDef()));
         }
         return result;
     }

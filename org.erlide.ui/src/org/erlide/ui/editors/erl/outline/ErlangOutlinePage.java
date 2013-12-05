@@ -172,9 +172,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         if (!userFiltersEnabled) {
             userDefinedPatterns.clear();
         }
-        OutlineFilterUtils.updateViewerFilters(getTreeViewer(), emptyList,
-                emptySet, userDefinedPatterns, enabledFilterIDs,
-                getPatternFilter());
+        OutlineFilterUtils.updateViewerFilters(getTreeViewer(), emptyList, emptySet,
+                userDefinedPatterns, enabledFilterIDs, getPatternFilter());
     }
 
     public void refresh() {
@@ -203,13 +202,11 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         fOutlineViewer = new TreeViewer(tree);
         fOutlineViewer.setAutoExpandLevel(0);
         fOutlineViewer.setUseHashlookup(true);
-        fOutlineViewer.setContentProvider(fEditor
-                .createOutlineContentProvider());
+        fOutlineViewer.setContentProvider(fEditor.createOutlineContentProvider());
         fOutlineViewer.setLabelProvider(fEditor.createOutlineLabelProvider());
         fOutlineViewer.addPostSelectionChangedListener(this);
         fOutlineViewer.setInput(fModule);
-        fOpenAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(
-                fOutlineViewer) {
+        fOpenAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(fOutlineViewer) {
 
             @Override
             protected void activate(final ISelection selection) {
@@ -223,8 +220,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             }
 
             @Override
-            protected void open(final ISelection selection,
-                    final boolean activate) {
+            protected void open(final ISelection selection, final boolean activate) {
                 fEditor.doSelectionChanged(selection);
                 if (activate) {
                     getSite().getPage().activate(fEditor);
@@ -302,8 +298,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         fActionGroups.fillContextMenu(menu);
     }
 
-    public static class NoModuleElement extends WorkbenchAdapter implements
-            IAdaptable {
+    public static class NoModuleElement extends WorkbenchAdapter implements IAdaptable {
 
         /*
          * 
@@ -366,10 +361,10 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
      */
     private void registerToolbarActions(final IActionBars actionBars) {
         final IToolBarManager toolBarManager = actionBars.getToolBarManager();
-        fSortAction = new SortAction(getTreeViewer(), "Sort",
-                new ErlElementSorter(ErlElementSorter.SORT_ON_NAME),
-                new ErlElementSorter(ErlElementSorter.SORT_ON_EXPORT), null,
-                false, ErlideUIPlugin.getDefault().getPreferenceStore());
+        fSortAction = new SortAction(getTreeViewer(), "Sort", new ErlElementSorter(
+                ErlElementSorter.SORT_ON_NAME), new ErlElementSorter(
+                ErlElementSorter.SORT_ON_EXPORT), null, false, ErlideUIPlugin
+                .getDefault().getPreferenceStore());
         toolBarManager.add(fSortAction);
 
         final IMenuManager viewMenuManager = actionBars.getMenuManager();
@@ -387,8 +382,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     public static IEclipsePreferences getPrefsNode() {
         final String qualifier = ErlideUIPlugin.PLUGIN_ID;
         final IScopeContext context = InstanceScope.INSTANCE;
-        final IEclipsePreferences eclipsePreferences = context
-                .getNode(qualifier);
+        final IEclipsePreferences eclipsePreferences = context.getNode(qualifier);
         return eclipsePreferences;
     }
 
@@ -410,8 +404,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             ErlideImage.setLocalImageDescriptors(this, "synced.gif");
             PlatformUI.getWorkbench().getHelpSystem()
                     .setHelp(this, IErlangHelpContextIds.LINK_EDITOR_ACTION);
-            final IEclipsePreferences prefsNode = ErlangOutlinePage
-                    .getPrefsNode();
+            final IEclipsePreferences prefsNode = ErlangOutlinePage.getPrefsNode();
             final boolean isLinkingEnabled = prefsNode.getBoolean(
                     PreferenceConstants.ERLANG_OUTLINE_LINK_WITH_EDITOR, true);
             setChecked(isLinkingEnabled);
@@ -423,11 +416,9 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
          */
         @Override
         public void run() {
-            final IEclipsePreferences prefsNode = ErlangOutlinePage
-                    .getPrefsNode();
+            final IEclipsePreferences prefsNode = ErlangOutlinePage.getPrefsNode();
             final boolean isChecked = isChecked();
-            prefsNode.putBoolean(
-                    PreferenceConstants.ERLANG_OUTLINE_LINK_WITH_EDITOR,
+            prefsNode.putBoolean(PreferenceConstants.ERLANG_OUTLINE_LINK_WITH_EDITOR,
                     isChecked);
             if (isChecked && fEditor != null) {
                 getTreeViewer().refresh();

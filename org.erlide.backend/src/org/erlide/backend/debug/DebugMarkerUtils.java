@@ -17,17 +17,15 @@ import org.eclipse.debug.core.model.IBreakpoint;
 
 public class DebugMarkerUtils {
 
-    public static IMarker createErlangLineBreakpointMarker(
-            final IResource resource, final int lineNumber,
-            final String modelIdentifier) throws CoreException {
+    public static IMarker createErlangLineBreakpointMarker(final IResource resource,
+            final int lineNumber, final String modelIdentifier) throws CoreException {
         final IMarker marker = resource
                 .createMarker(ErlangLineBreakpoint.ERLANG_LINE_BREAKPOINT_MARKER_TYPE);
         marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
         marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
         marker.setAttribute(IBreakpoint.ID, modelIdentifier);
-        marker.setAttribute(IMarker.MESSAGE,
-                "Line Breakpoint: " + resource.getName() + " [line: "
-                        + lineNumber + "]");
+        marker.setAttribute(IMarker.MESSAGE, "Line Breakpoint: " + resource.getName()
+                + " [line: " + lineNumber + "]");
         return marker;
     }
 

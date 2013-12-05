@@ -49,8 +49,7 @@ public final class StringUtils {
         return len;
     }
 
-    private static String stripFromRigthCharOnwards(final String input,
-            final char ch) {
+    private static String stripFromRigthCharOnwards(final String input, final char ch) {
         final int len = rFind(input, ch);
         if (len == -1) {
             return input;
@@ -269,8 +268,7 @@ public final class StringUtils {
 
     }
 
-    public static String replaceNewLines(final String message0,
-            final String string) {
+    public static String replaceNewLines(final String message0, final String string) {
         String message = message0.replaceAll("\r\n", string);
         message = message.replaceAll("\r", string);
         message = message.replaceAll("\n", string);

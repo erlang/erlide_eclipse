@@ -99,8 +99,7 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
             } else {
                 if (slash < 0) {
                     final int pos = function.indexOf('(');
-                    arity = countArgs(function.substring(pos + 1,
-                            function.length() - 1));
+                    arity = countArgs(function.substring(pos + 1, function.length() - 1));
                     function = function.substring(0, pos);
                 } else {
                     final String args = function.substring(slash + 1);
@@ -112,8 +111,7 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
             try {
                 ErlModelUtils.openMFA(module, function, arity);
             } catch (final CoreException e) {
-                ErlLogger.warn("Could not open %s:%s/%d", module, function,
-                        arity);
+                ErlLogger.warn("Could not open %s:%s/%d", module, function, arity);
             }
         }
 
@@ -124,8 +122,7 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
             return countArgs(args, 0, 1, 0);
         }
 
-        private int countArgs(final String args, final int i0, final int n,
-                final int p) {
+        private int countArgs(final String args, final int i0, final int n, final int p) {
             int i = i0;
             if (args.length() == i) {
                 return n;

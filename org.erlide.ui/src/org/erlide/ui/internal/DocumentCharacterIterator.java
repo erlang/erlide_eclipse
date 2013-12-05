@@ -6,8 +6,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
-public class DocumentCharacterIterator implements CharacterIterator,
-        CharSequence {
+public class DocumentCharacterIterator implements CharacterIterator, CharSequence {
 
     private int fIndex = -1;
 
@@ -66,12 +65,10 @@ public class DocumentCharacterIterator implements CharacterIterator,
             throw new IllegalArgumentException("document can't be null");
         }
         if (first < 0 || first > last) {
-            throw new IllegalArgumentException(
-                    "iterating outside document bounds");
+            throw new IllegalArgumentException("iterating outside document bounds");
         }
         if (last > document.getLength()) {
-            throw new IllegalArgumentException(
-                    "iterating outside document bounds");
+            throw new IllegalArgumentException("iterating outside document bounds");
         }
         fDocument = document;
         fFirst = first;
@@ -231,7 +228,7 @@ public class DocumentCharacterIterator implements CharacterIterator,
         if (end > length()) {
             throw new IndexOutOfBoundsException();
         }
-        return new DocumentCharacterIterator(fDocument,
-                getBeginIndex() + start, getBeginIndex() + end);
+        return new DocumentCharacterIterator(fDocument, getBeginIndex() + start,
+                getBeginIndex() + end);
     }
 }

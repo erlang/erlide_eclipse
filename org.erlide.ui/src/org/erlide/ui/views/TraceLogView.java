@@ -192,8 +192,7 @@ public class TraceLogView extends ViewPart {
             if (obj instanceof TreeParent) {
                 imageKey = ISharedImages.IMG_OBJ_FOLDER;
             }
-            return PlatformUI.getWorkbench().getSharedImages()
-                    .getImage(imageKey);
+            return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
         }
     }
 
@@ -315,8 +314,7 @@ public class TraceLogView extends ViewPart {
             @Override
             public void run() {
                 final ISelection selection = viewer.getSelection();
-                final Object obj = ((IStructuredSelection) selection)
-                        .getFirstElement();
+                final Object obj = ((IStructuredSelection) selection).getFirstElement();
                 showMessage("Double-click detected on " + obj.toString());
             }
         };
@@ -333,8 +331,8 @@ public class TraceLogView extends ViewPart {
     }
 
     void showMessage(final String message) {
-        MessageDialog.openInformation(viewer.getControl().getShell(),
-                "Trace Log View", message);
+        MessageDialog.openInformation(viewer.getControl().getShell(), "Trace Log View",
+                message);
     }
 
     /**

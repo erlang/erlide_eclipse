@@ -55,8 +55,7 @@ public class OtpNodeStatus {
      *            be null).
      * 
      */
-    public void remoteStatus(final String node, final boolean up,
-            final Object info) {
+    public void remoteStatus(final String node, final boolean up, final Object info) {
     }
 
     /**
@@ -73,8 +72,7 @@ public class OtpNodeStatus {
      *            exception that was raised causing the event in question (may
      *            be null).
      */
-    public void localStatus(final String node, final boolean up,
-            final Object info) {
+    public void localStatus(final String node, final boolean up, final Object info) {
     }
 
     /**
@@ -92,7 +90,6 @@ public class OtpNodeStatus {
      *            exception that was raised causing the event in question (may
      *            be null).
      */
-    public void connAttempt(final String node, final boolean incoming,
-            final Object info) {
+    public void connAttempt(final String node, final boolean incoming, final Object info) {
     }
 }

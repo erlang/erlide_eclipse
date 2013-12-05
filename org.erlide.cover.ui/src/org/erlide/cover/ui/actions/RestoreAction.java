@@ -121,8 +121,7 @@ public class RestoreAction extends Action {
     }
 
     // creates module set used to prepare annotations map
-    private void createModuleSet(final ModuleSet mSet,
-            final ICoverageObject object) {
+    private void createModuleSet(final ModuleSet mSet, final ICoverageObject object) {
         if (object.getType().equals(ObjectType.MODULE)) {
             ModuleSet.add((ModuleStats) object);
         }
@@ -154,8 +153,7 @@ public class RestoreAction extends Action {
         @Override
         public Image getImage(final Object element) {
 
-            final Image img = Activator.getImageDescriptor(Images.RAW_FILE)
-                    .createImage();
+            final Image img = Activator.getImageDescriptor(Images.RAW_FILE).createImage();
             return img;
         }
 
@@ -166,16 +164,14 @@ public class RestoreAction extends Action {
             }
             final File f = (File) element;
 
-            final SimpleDateFormat df = new SimpleDateFormat(
-                    "yyyy.MM.dd HH:mm:ss");
+            final SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
             final Date d = new Date();
             d.setTime(f.lastModified());
 
             log.info(df.format(d));
 
             final StringBuffer buf = new StringBuffer();
-            buf.append(f.getName()).append(" (").append(df.format(d))
-                    .append(")");
+            buf.append(f.getName()).append(" (").append(df.format(d)).append(")");
             return buf.toString();
         }
 

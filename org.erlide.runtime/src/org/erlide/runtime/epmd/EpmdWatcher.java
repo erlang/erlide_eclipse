@@ -63,8 +63,7 @@ public final class EpmdWatcher {
                 final String host = entry.getKey();
                 final List<String> nodes = entry.getValue();
 
-                final String[] names = OtpEpmd.lookupNames(InetAddress
-                        .getByName(host));
+                final String[] names = OtpEpmd.lookupNames(InetAddress.getByName(host));
                 final List<String> labels = clean(Arrays.asList(names));
 
                 final List<String> started = getDiff(labels, nodes);
@@ -147,8 +146,7 @@ public final class EpmdWatcher {
         return result;
     }
 
-    private List<String> getDiff(final List<String> list1,
-            final List<String> list2) {
+    private List<String> getDiff(final List<String> list1, final List<String> list2) {
         final List<String> result = new ArrayList<String>(list1);
         result.removeAll(list2);
         return result;
@@ -182,8 +180,7 @@ public final class EpmdWatcher {
      * @param node
      * @param monitor
      */
-    public void removeNodeMonitor(final String node,
-            final IErlNodeMonitor monitor) {
+    public void removeNodeMonitor(final String node, final IErlNodeMonitor monitor) {
         final List<IErlNodeMonitor> mons = monitors.get(node);
         if (mons == null) {
             return;
@@ -196,8 +193,7 @@ public final class EpmdWatcher {
 
     public boolean hasLocalNode(final String nodeName) {
         try {
-            final String[] names = OtpEpmd.lookupNames(InetAddress
-                    .getByName(null));
+            final String[] names = OtpEpmd.lookupNames(InetAddress.getByName(null));
             final List<String> labels = EpmdWatcher.clean(Arrays.asList(names));
             return labels.contains(nodeName);
         } catch (final IOException e) {

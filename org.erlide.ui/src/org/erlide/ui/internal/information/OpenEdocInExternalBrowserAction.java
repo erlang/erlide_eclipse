@@ -78,8 +78,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
         this(editor.getEditorSite(), null);
         this.editor = editor;
         final ITextSelection selection = (ITextSelection) editor.getSelection();
-        final IErlElement element = editor.getElementAt(selection.getOffset(),
-                false);
+        final IErlElement element = editor.getElementAt(selection.getOffset(), false);
         setEnabled(element != null);
     }
 
@@ -121,8 +120,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
      */
     @Override
     public void run(final ITextSelection selection) {
-        final IErlElement element = editor.getElementAt(selection.getOffset(),
-                true);
+        final IErlElement element = editor.getElementAt(selection.getOffset(), true);
 
         if (element != null) {
             run(element);

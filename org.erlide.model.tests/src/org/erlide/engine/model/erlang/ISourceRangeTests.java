@@ -44,11 +44,9 @@ public class ISourceRangeTests extends ErlModelTestBase {
     @Test
     public void hasPosition() throws Exception {
         assertTrue(sourceRange.hasPosition(0));
-        final int offset = sourceRange.getOffset() + sourceRange.getLength()
-                - 1;
+        final int offset = sourceRange.getOffset() + sourceRange.getLength() - 1;
         final int offset2 = sourceRange.getOffset() + sourceRange.getLength();
-        final int offset3 = sourceRange.getOffset() + sourceRange.getLength()
-                + 1;
+        final int offset3 = sourceRange.getOffset() + sourceRange.getLength() + 1;
         assertTrue(sourceRange.hasPosition(offset));
         assertTrue(sourceRange.hasPosition(offset2));
         assertFalse(sourceRange.hasPosition(offset3));

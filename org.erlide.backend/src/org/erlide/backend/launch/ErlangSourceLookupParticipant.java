@@ -4,8 +4,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;
 import org.erlide.backend.debug.model.ErlangStackFrame;
 
-public class ErlangSourceLookupParticipant extends
-        AbstractSourceLookupParticipant {
+public class ErlangSourceLookupParticipant extends AbstractSourceLookupParticipant {
 
     public ErlangSourceLookupParticipant() {
         super();

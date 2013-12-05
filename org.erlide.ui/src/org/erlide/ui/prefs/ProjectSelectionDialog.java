@@ -56,8 +56,7 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
         }
 
         @Override
-        public boolean isLabelProperty(final Object element,
-                final String property) {
+        public boolean isLabelProperty(final Object element, final String property) {
             return true;
         }
 
@@ -106,8 +105,8 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
         fProjectsWithSpecifics = projectsWithSpecifics;
         fFilter = new ViewerFilter() {
             @Override
-            public boolean select(final Viewer viewer,
-                    final Object parentElement, final Object element) {
+            public boolean select(final Viewer viewer, final Object parentElement,
+                    final Object element) {
                 return fProjectsWithSpecifics.contains(element);
             }
         };
@@ -125,15 +124,13 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
 
         fTableViewer = new TableViewer(composite, SWT.H_SCROLL | SWT.V_SCROLL
                 | SWT.BORDER);
-        fTableViewer
-                .addSelectionChangedListener(new ISelectionChangedListener() {
-                    @Override
-                    public void selectionChanged(
-                            final SelectionChangedEvent event) {
-                        doSelectionChanged(((IStructuredSelection) event
-                                .getSelection()).toArray());
-                    }
-                });
+        fTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
+            public void selectionChanged(final SelectionChangedEvent event) {
+                doSelectionChanged(((IStructuredSelection) event.getSelection())
+                        .toArray());
+            }
+        });
         fTableViewer.addDoubleClickListener(new IDoubleClickListener() {
             @Override
             public void doubleClick(final DoubleClickEvent event) {
@@ -152,8 +149,7 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
 
         final Button checkbox = new Button(composite, SWT.CHECK);
         checkbox.setText("Show only &projects with project specific settings");
-        checkbox.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true,
-                false));
+        checkbox.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false));
         checkbox.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
@@ -167,8 +163,7 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
         });
         final IDialogSettings dialogSettings = ErlideUIPlugin.getDefault()
                 .getDialogSettingsSection(DIALOG_SETTINGS);
-        final boolean doFilter = !dialogSettings
-                .getBoolean(DIALOG_SETTINGS_SHOW_ALL)
+        final boolean doFilter = !dialogSettings.getBoolean(DIALOG_SETTINGS_SHOW_ALL)
                 && !fProjectsWithSpecifics.isEmpty();
         checkbox.setSelection(doFilter);
         updateFilter(doFilter);

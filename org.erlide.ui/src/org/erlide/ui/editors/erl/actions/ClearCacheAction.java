@@ -42,8 +42,8 @@ public class ClearCacheAction extends TextEditorAction {
             return;
         }
         for (final String suffix : suffixes) {
-            final String cacheFileOSPath = ErlangEngine.getInstance()
-                    .getStateDir() + module.getScannerName() + suffix;
+            final String cacheFileOSPath = ErlangEngine.getInstance().getStateDir()
+                    + module.getScannerName() + suffix;
             final File cacheFile = new File(cacheFileOSPath);
             cacheFile.delete();
         }

@@ -153,8 +153,8 @@ public class BrowserDialog extends Dialog {
         @Override
         public void widgetSelected(final SelectionEvent e) {
             if (object.getParent() != null) {
-                final ICoverageObject sib = object.getParent()
-                        .getPrevSiblingTo(object.getLabel());
+                final ICoverageObject sib = object.getParent().getPrevSiblingTo(
+                        object.getLabel());
                 if (sib == null) {
                     return;
                 }
@@ -179,8 +179,8 @@ public class BrowserDialog extends Dialog {
         @Override
         public void widgetSelected(final SelectionEvent e) {
             if (object.getParent() != null) {
-                final ICoverageObject sib = object.getParent()
-                        .getNextSiblingTo(object.getLabel());
+                final ICoverageObject sib = object.getParent().getNextSiblingTo(
+                        object.getLabel());
                 if (sib == null) {
                     return;
                 }
@@ -253,9 +253,8 @@ public class BrowserDialog extends Dialog {
             }
             log.info(event.getSource());
             final String newUrl = browser.getUrl();
-            String name = newUrl
-                    .substring(newUrl.lastIndexOf(File.separator) + 1,
-                            newUrl.length() - 5);
+            String name = newUrl.substring(newUrl.lastIndexOf(File.separator) + 1,
+                    newUrl.length() - 5);
             log.info(name);
             if (name.startsWith("mod_")) {
                 name = name.substring(4);

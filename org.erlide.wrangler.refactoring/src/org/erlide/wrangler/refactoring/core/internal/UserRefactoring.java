@@ -74,10 +74,9 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
         }
 
         final RpcResult res = WranglerBackendManager.getRefactoringBackend()
-                .callWithoutParser("input_par_prompts_eclipse", "s",
-                        callbackModule);
-        final OtpErlangList params = (OtpErlangList) ((OtpErlangTuple) res
-                .getValue()).elementAt(1);
+                .callWithoutParser("input_par_prompts_eclipse", "s", callbackModule);
+        final OtpErlangList params = (OtpErlangList) ((OtpErlangTuple) res.getValue())
+                .elementAt(1);
         parPrompts.clear();
         for (final OtpErlangObject obj : params.elements()) {
             parPrompts.add(obj.toString().replace("\"", ""));
@@ -152,8 +151,7 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
 
             @Override
             public void doRefactoring() {
-                final IErlSelection sel = GlobalParameters
-                        .getWranglerSelection();
+                final IErlSelection sel = GlobalParameters.getWranglerSelection();
                 final IRefactoringRpcMessage message = run(sel);
                 if (message.isSuccessful()) {
                     changedFiles = message.getRefactoringChangeset();

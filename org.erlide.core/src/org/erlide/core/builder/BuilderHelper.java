@@ -77,12 +77,10 @@ public final class BuilderHelper {
     }
 
     public Collection<IPath> getAllIncludeDirs(final IProject project) {
-        Collection<IPath> includeDirs = getIncludeDirs(project,
-                new ArrayList<IPath>());
+        Collection<IPath> includeDirs = getIncludeDirs(project, new ArrayList<IPath>());
 
         try {
-            final IProject[] referencedProjects = project
-                    .getReferencedProjects();
+            final IProject[] referencedProjects = project.getReferencedProjects();
             for (final IProject p : referencedProjects) {
                 if (p.isAccessible()) {
                     includeDirs = getIncludeDirs(p, includeDirs);
@@ -100,13 +98,11 @@ public final class BuilderHelper {
         if (erlProject == null) {
             return includeDirs;
         }
-        final Collection<IPath> projectIncludeDirs = erlProject
-                .getIncludeDirs();
+        final Collection<IPath> projectIncludeDirs = erlProject.getIncludeDirs();
         final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
                 .getPathVariableManager();
         for (final IPath inc : projectIncludeDirs) {
-            final IPath incPath = URIUtil.toPath(pvm.resolveURI(URIUtil
-                    .toURI(inc)));
+            final IPath incPath = URIUtil.toPath(pvm.resolveURI(URIUtil.toURI(inc)));
             if (incPath.isAbsolute()) {
                 includeDirs.add(incPath);
             } else {
@@ -127,8 +123,7 @@ public final class BuilderHelper {
     boolean isInCodePath(final IResource resource, final IErlProject erlProject) {
         final IPath projectPath = resource.getProject().getFullPath();
         final Collection<IPath> srcs = erlProject.getSourceDirs();
-        final IPath exceptLastSegment = resource.getFullPath()
-                .removeLastSegments(1);
+        final IPath exceptLastSegment = resource.getFullPath().removeLastSegments(1);
         for (final IPath element : srcs) {
             final IPath sp = projectPath.append(element);
             if (sp.equals(exceptLastSegment)) {
@@ -139,9 +134,8 @@ public final class BuilderHelper {
         return false;
     }
 
-    public void addDependents(final IResource resource,
-            final IProject my_project, final Set<BuildResource> result)
-            throws ErlModelException {
+    public void addDependents(final IResource resource, final IProject my_project,
+            final Set<BuildResource> result) throws ErlModelException {
         final IErlProject eprj = ErlangEngine.getInstance().getModel()
                 .findProject(my_project);
         if (eprj != null) {
@@ -149,11 +143,9 @@ public final class BuilderHelper {
             for (final IErlModule m : ms) {
                 final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
                 for (final ErlangIncludeFile ifile : incs) {
-                    if (ResourceUtil.samePath(ifile.getFilename(),
-                            resource.getName())) {
+                    if (ResourceUtil.samePath(ifile.getFilename(), resource.getName())) {
                         if (m.getModuleKind() == ModuleKind.ERL) {
-                            final BuildResource bres = new BuildResource(
-                                    m.getResource());
+                            final BuildResource bres = new BuildResource(m.getResource());
                             result.add(bres);
                         }
                         break;
@@ -164,18 +156,16 @@ public final class BuilderHelper {
     }
 
     public Set<BuildResource> getAffectedResources(
-            @SuppressWarnings("rawtypes") final Map args,
-            final IProject project, final IProgressMonitor monitor)
-            throws CoreException {
+            @SuppressWarnings("rawtypes") final Map args, final IProject project,
+            final IProgressMonitor monitor) throws CoreException {
         final Set<BuildResource> result = Sets.newHashSet();
         project.accept(new BuilderVisitor(result, monitor, this));
         return result;
     }
 
     public Set<BuildResource> getAffectedResources(
-            @SuppressWarnings("rawtypes") final Map args,
-            final IResourceDelta delta, final IProgressMonitor monitor)
-            throws CoreException {
+            @SuppressWarnings("rawtypes") final Map args, final IResourceDelta delta,
+            final IProgressMonitor monitor) throws CoreException {
         final Set<BuildResource> result = Sets.newHashSet();
         if (delta != null) {
             delta.accept(new BuilderVisitor(result, monitor, this));
@@ -191,22 +181,19 @@ public final class BuilderHelper {
     private void createMarkersForDuplicateModuleNames(final IRpcSite backend,
             final IProject project) {
         try {
-            final IErlProject erlProject = ErlangEngine.getInstance()
-                    .getModel().getErlangProject(project);
+            final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                    .getErlangProject(project);
             final Collection<IPath> sd = erlProject.getSourceDirs();
             final String[] dirList = new String[sd.size()];
             int j = 0;
             for (final IPath sp : sd) {
-                dirList[j++] = project.getLocation().toPortableString() + "/"
-                        + sp;
+                dirList[j++] = project.getLocation().toPortableString() + "/" + sp;
             }
             final OtpErlangList res = getSourceClashes(backend, dirList);
             for (int i = 0; i < res.arity(); i++) {
                 final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
-                final String f1 = ((OtpErlangString) t.elementAt(0))
-                        .stringValue();
-                final String f2 = ((OtpErlangString) t.elementAt(1))
-                        .stringValue();
+                final String f1 = ((OtpErlangString) t.elementAt(0)).stringValue();
+                final String f2 = ((OtpErlangString) t.elementAt(1)).stringValue();
                 MarkerUtils.addMarker(project, null, project,
                         "Duplicated module name in " + f1 + " and " + f2, 0,
                         IMarker.SEVERITY_WARNING, "");
@@ -222,18 +209,15 @@ public final class BuilderHelper {
             final OtpErlangList res = BuilderHelper.getCodeClashes(backend);
             for (final OtpErlangObject elem : res) {
                 final OtpErlangTuple t = (OtpErlangTuple) elem;
-                final String f1 = ((OtpErlangString) t.elementAt(0))
-                        .stringValue();
-                final String f2 = ((OtpErlangString) t.elementAt(1))
-                        .stringValue();
+                final String f1 = ((OtpErlangString) t.elementAt(0)).stringValue();
+                final String f2 = ((OtpErlangString) t.elementAt(1)).stringValue();
 
                 // add marker only for modules belonging to this project!
                 final IResource r1 = project.findMember(f1);
                 final IResource r2 = project.findMember(f2);
                 if (r1 != null || r2 != null) {
-                    MarkerUtils.addMarker(project, null, project,
-                            "Code clash between " + f1 + " and " + f2, 0,
-                            IMarker.SEVERITY_WARNING, "");
+                    MarkerUtils.addMarker(project, null, project, "Code clash between "
+                            + f1 + " and " + f2, 0, IMarker.SEVERITY_WARNING, "");
                 }
             }
 
@@ -261,41 +245,37 @@ public final class BuilderHelper {
         }
     }
 
-    public boolean shouldCompile(final IProject project,
-            final IResource source, final IResource beam)
-            throws ErlModelException {
+    public boolean shouldCompile(final IProject project, final IResource source,
+            final IResource beam) throws ErlModelException {
         boolean shouldCompile = beam == null;
 
         if (beam != null) {
             final IErlProject eprj = ErlangEngine.getInstance().getModel()
                     .findProject(project);
             if (eprj != null) {
-                shouldCompile = shouldCompileModule(project, source, beam,
-                        shouldCompile, eprj);
+                shouldCompile = shouldCompileModule(project, source, beam, shouldCompile,
+                        eprj);
             }
         }
 
         if (beam != null) {
-            shouldCompile |= beam.getLocalTimeStamp() < source
-                    .getLocalTimeStamp();
+            shouldCompile |= beam.getLocalTimeStamp() < source.getLocalTimeStamp();
         }
         return shouldCompile;
     }
 
-    private boolean shouldCompileModule(final IProject project,
-            final IResource source, final IResource beam,
-            final boolean shouldCompile0, final IErlProject eprj)
+    private boolean shouldCompileModule(final IProject project, final IResource source,
+            final IResource beam, final boolean shouldCompile0, final IErlProject eprj)
             throws ErlModelException {
         boolean shouldCompile = shouldCompile0;
         final IErlModule m = eprj.getModule(source.getName());
         if (m != null) {
             final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
             for (final ErlangIncludeFile ifile : incs) {
-                final IResource rifile = ResourceUtil.findResourceByName(
-                        project, ifile.getFilename());
+                final IResource rifile = ResourceUtil.findResourceByName(project,
+                        ifile.getFilename());
                 if (rifile != null
-                        && rifile.getLocalTimeStamp() > beam
-                                .getLocalTimeStamp()) {
+                        && rifile.getLocalTimeStamp() > beam.getLocalTimeStamp()) {
                     shouldCompile = true;
                     break;
                 }
@@ -318,15 +298,14 @@ public final class BuilderHelper {
             final OtpErlangObject compilationResult, final IRpcSite backend,
             final OtpErlangList compilerOptions) {
         if (compilationResult == null) {
-            MarkerUtils.addProblemMarker(source, null, null,
-                    "Could not compile file", 0, IMarker.SEVERITY_ERROR);
+            MarkerUtils.addProblemMarker(source, null, null, "Could not compile file", 0,
+                    IMarker.SEVERITY_ERROR);
             return;
         }
         final OtpErlangTuple t = (OtpErlangTuple) compilationResult;
 
         if ("ok".equals(((OtpErlangAtom) t.elementAt(0)).atomValue())) {
-            final String beamf = source.getFullPath().removeFileExtension()
-                    .lastSegment();
+            final String beamf = source.getFullPath().removeFileExtension().lastSegment();
             BuilderHelper.loadModule(project, beamf);
             refreshDirs(project, t.elementAt(2));
         }
@@ -342,8 +321,7 @@ public final class BuilderHelper {
         completeCompileForYrl(project, source, backend, compilerOptions);
     }
 
-    private void refreshDirs(final IProject project,
-            final OtpErlangObject element) {
+    private void refreshDirs(final IProject project, final OtpErlangObject element) {
         final OtpErlangList list = (OtpErlangList) element;
         for (final OtpErlangObject ebeam : list) {
             final OtpErlangString beam = (OtpErlangString) ebeam;
@@ -353,8 +331,8 @@ public final class BuilderHelper {
             final String projectName = project.getName();
             // FIXME hardcoded "_erl" suffix
             if (projectName.endsWith("_erl")) {
-                final String linkname = projectName.substring(0,
-                        projectName.length() - 4);
+                final String linkname = projectName
+                        .substring(0, projectName.length() - 4);
                 p = new Path(linkname).append(p);
             }
             final IResource dir = project.findMember(p);
@@ -367,9 +345,8 @@ public final class BuilderHelper {
         }
     }
 
-    private void completeCompileForYrl(final IProject project,
-            final IResource source, final IRpcSite backend,
-            final OtpErlangList compilerOptions) {
+    private void completeCompileForYrl(final IProject project, final IResource source,
+            final IRpcSite backend, final OtpErlangList compilerOptions) {
         final IPath erl = getErlForYrl(source);
         if (erl != null) {
             try {
@@ -379,10 +356,10 @@ public final class BuilderHelper {
                     br.setDerived(true, null);
                     final BuildResource bbr = new BuildResource(br);
                     // br.touch() doesn't work...
-                    final IErlProject erlProject = ErlangEngine.getInstance()
-                            .getModel().getErlangProject(project);
-                    compileErl(project, bbr, erlProject.getOutputLocation()
-                            .toString(), backend, compilerOptions);
+                    final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                            .getErlangProject(project);
+                    compileErl(project, bbr, erlProject.getOutputLocation().toString(),
+                            backend, compilerOptions);
                 }
             } catch (final CoreException e) {
                 ErlLogger.warn(e);
@@ -390,10 +367,9 @@ public final class BuilderHelper {
         }
     }
 
-    public IRpcFuture startCompileErl(final IProject project,
-            final BuildResource bres, final String outputDir0,
-            final IRpcSite backend, final OtpErlangList compilerOptions,
-            final boolean force) {
+    public IRpcFuture startCompileErl(final IProject project, final BuildResource bres,
+            final String outputDir0, final IRpcSite backend,
+            final OtpErlangList compilerOptions, final boolean force) {
         final IPath projectPath = project.getLocation();
         final IResource res = bres.getResource();
         final String s = res.getFileExtension();
@@ -413,8 +389,7 @@ public final class BuilderHelper {
         final IResource beam = project.findMember(beamPath);
 
         try {
-            final boolean shouldCompile = force
-                    || shouldCompile(project, res, beam);
+            final boolean shouldCompile = force || shouldCompile(project, res, beam);
 
             if (shouldCompile) {
                 if (beam != null) {
@@ -429,8 +404,8 @@ public final class BuilderHelper {
                 }
 
                 createTaskMarkers(project, res);
-                return BuilderHelper.compileErl(backend, res.getLocation(),
-                        outputDir, includeDirs, compilerOptions);
+                return BuilderHelper.compileErl(backend, res.getLocation(), outputDir,
+                        includeDirs, compilerOptions);
 
             }
             return null;
@@ -440,8 +415,8 @@ public final class BuilderHelper {
         }
     }
 
-    private String getRealOutputDir(final BuildResource bres,
-            final String outputDir0, final IPath projectPath) {
+    private String getRealOutputDir(final BuildResource bres, final String outputDir0,
+            final IPath projectPath) {
         String outputDir;
         final String bout = bres.getOutput();
         if (bout == null) {
@@ -455,8 +430,7 @@ public final class BuilderHelper {
     }
 
     private void createTaskMarkers(final IProject project, final IResource res) {
-        BuildQueueProcessor.getInstance().addWork(
-                new BuildWorkerInfo(project, res));
+        BuildQueueProcessor.getInstance().addWork(new BuildWorkerInfo(project, res));
     }
 
     private IPath getBeamForErl(final IResource source) {
@@ -472,9 +446,8 @@ public final class BuilderHelper {
         return beamPath;
     }
 
-    public IRpcFuture startCompileYrl(final IProject project,
-            final IResource resource, final IRpcSite backend,
-            final OtpErlangList compilerOptions) {
+    public IRpcFuture startCompileYrl(final IProject project, final IResource resource,
+            final IRpcSite backend, final OtpErlangList compilerOptions) {
         MarkerUtils.deleteMarkers(resource);
         // try {
         // resource.deleteMarkers(PROBLEM_MARKER, true,
@@ -498,8 +471,7 @@ public final class BuilderHelper {
             }
 
             final String input = resource.getLocation().toString();
-            final String output = resource.getLocation().removeFileExtension()
-                    .toString();
+            final String output = resource.getLocation().removeFileExtension().toString();
             return BuilderHelper.compileYrl(backend, input, output);
         } catch (final Exception e) {
             ErlLogger.error(e);
@@ -518,9 +490,8 @@ public final class BuilderHelper {
         return erl;
     }
 
-    public void compileErl(final IProject project,
-            final BuildResource resource, final String outputDir,
-            final IRpcSite b, final OtpErlangList compilerOptions) {
+    public void compileErl(final IProject project, final BuildResource resource,
+            final String outputDir, final IRpcSite b, final OtpErlangList compilerOptions) {
         final IRpcFuture res = startCompileErl(project, resource, outputDir, b,
                 compilerOptions, true);
         if (res == null) {
@@ -530,26 +501,24 @@ public final class BuilderHelper {
         }
         try {
             final OtpErlangObject result = res.checkedGet();
-            completeCompile(project, resource.getResource(), result, b,
-                    compilerOptions);
+            completeCompile(project, resource.getResource(), result, b, compilerOptions);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
     }
 
-    public void compileYrl(final IProject project,
-            final BuildResource resource, final IRpcSite b,
-            final OtpErlangList compilerOptions) {
-        final IRpcFuture res = startCompileYrl(project, resource.getResource(),
-                b, compilerOptions);
+    public void compileYrl(final IProject project, final BuildResource resource,
+            final IRpcSite b, final OtpErlangList compilerOptions) {
+        final IRpcFuture res = startCompileYrl(project, resource.getResource(), b,
+                compilerOptions);
         if (res == null) {
             ErlLogger.warn("error compiling yrl file: "
                     + resource.getResource().getProjectRelativePath());
             return;
         }
         try {
-            completeCompile(project, resource.getResource(), res.checkedGet(),
-                    b, compilerOptions);
+            completeCompile(project, resource.getResource(), res.checkedGet(), b,
+                    compilerOptions);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
@@ -563,19 +532,18 @@ public final class BuilderHelper {
             incs.add(p.toString());
         }
         try {
-            return backend.async_call(ERLIDE_BUILDER, "compile", "sslsx",
-                    fn.toString(), outputdir, incs, compilerOptions);
+            return backend.async_call(ERLIDE_BUILDER, "compile", "sslsx", fn.toString(),
+                    outputdir, incs, compilerOptions);
         } catch (final Exception e) {
             ErlLogger.debug(e);
             return null;
         }
     }
 
-    public static IRpcFuture compileYrl(final IRpcSite backend,
-            final String fn, final String output) {
+    public static IRpcFuture compileYrl(final IRpcSite backend, final String fn,
+            final String output) {
         try {
-            return backend.async_call(ERLIDE_BUILDER, "compile_yrl", "ss", fn,
-                    output);
+            return backend.async_call(ERLIDE_BUILDER, "compile_yrl", "ss", fn, output);
         } catch (final Exception e) {
             ErlLogger.debug(e);
             return null;
@@ -584,10 +552,8 @@ public final class BuilderHelper {
 
     public static void loadModule(final IProject project, final String module) {
         try {
-            final IBackendManager backendManager = BackendCore
-                    .getBackendManager();
-            for (final IBackend b : backendManager
-                    .getExecutionBackends(project)) {
+            final IBackendManager backendManager = BackendCore.getBackendManager();
+            for (final IBackend b : backendManager.getExecutionBackends(project)) {
                 ErlLogger.debug(":: loading %s in %s", module, b.getName());
                 b.getRpcSite().call(ERLIDE_BUILDER, "load", "ao", module,
                         b.getData().shouldLoadOnAllNodes());
@@ -600,19 +566,17 @@ public final class BuilderHelper {
 
     public static OtpErlangList getSourceClashes(final IRpcSite backend,
             final String[] dirList) throws RpcException {
-        final OtpErlangObject res = backend.call(ERLIDE_BUILDER,
-                "source_clash", "ls", (Object) dirList);
+        final OtpErlangObject res = backend.call(ERLIDE_BUILDER, "source_clash", "ls",
+                (Object) dirList);
         if (res instanceof OtpErlangList) {
             return (OtpErlangList) res;
         }
-        throw new RpcException("bad result from erlide_builder:source_clash: "
-                + res);
+        throw new RpcException("bad result from erlide_builder:source_clash: " + res);
     }
 
-    public static OtpErlangList getCodeClashes(final IRpcSite b)
-            throws RpcException {
-        final OtpErlangList res = (OtpErlangList) b.call(ERLIDE_BUILDER,
-                "code_clash", null);
+    public static OtpErlangList getCodeClashes(final IRpcSite b) throws RpcException {
+        final OtpErlangList res = (OtpErlangList) b.call(ERLIDE_BUILDER, "code_clash",
+                null);
         return res;
     }
 
@@ -634,8 +598,8 @@ public final class BuilderHelper {
             if (getResult() != null) {
                 return false;
             }
-            final IErlProject erlProject = ErlangEngine.getInstance()
-                    .getModel().getErlangProject(resource.getProject());
+            final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                    .getErlangProject(resource.getProject());
             if (resource.getType() == IResource.FILE
                     && resource.getFileExtension() != null
                     && ERL.equals(resource.getFileExtension())
@@ -789,8 +753,7 @@ public final class BuilderHelper {
             case IResourceDelta.CHANGED:
                 final int n = result.size();
                 if (!fullBuild) {
-                    helper.addDependents(resource, resource.getProject(),
-                            result);
+                    helper.addDependents(resource, resource.getProject(), result);
                 }
                 monitor.worked(result.size() - n);
                 break;

@@ -32,8 +32,7 @@ class Links {
         count = 0;
     }
 
-    synchronized void addLink(final OtpErlangPid local,
-            final OtpErlangPid remote) {
+    synchronized void addLink(final OtpErlangPid local, final OtpErlangPid remote) {
         if (find(local, remote) == -1) {
             if (count >= links.length) {
                 final Link[] tmp = new Link[count * 2];
@@ -44,8 +43,7 @@ class Links {
         }
     }
 
-    synchronized void removeLink(final OtpErlangPid local,
-            final OtpErlangPid remote) {
+    synchronized void removeLink(final OtpErlangPid local, final OtpErlangPid remote) {
         int i;
 
         if ((i = find(local, remote)) != -1) {
@@ -55,8 +53,7 @@ class Links {
         }
     }
 
-    synchronized boolean exists(final OtpErlangPid local,
-            final OtpErlangPid remote) {
+    synchronized boolean exists(final OtpErlangPid local, final OtpErlangPid remote) {
         return find(local, remote) != -1;
     }
 

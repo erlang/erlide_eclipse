@@ -17,8 +17,8 @@ public class ProblemData {
     public String platformLog;
     public String erlideLog;
 
-    public ProblemData(final String title, final String body,
-            final String contact, final String plog, final String elog) {
+    public ProblemData(final String title, final String body, final String contact,
+            final String plog, final String elog) {
         summary = title;
         reporter = contact;
         description = body;

@@ -53,9 +53,9 @@ public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler {
         final Set<String> oldEnabledFilterIDs = Sets.newHashSet();
         final boolean oldAreUserDefinedPatternsEnabled = OutlineFilterUtils
                 .loadViewDefaults(oldUserDefinedPatterns, oldEnabledFilterIDs);
-        final CustomOutlineFiltersDialog dialog = new CustomOutlineFiltersDialog(
-                shell, targetId, oldAreUserDefinedPatternsEnabled,
-                oldUserDefinedPatterns, oldEnabledFilterIDs);
+        final CustomOutlineFiltersDialog dialog = new CustomOutlineFiltersDialog(shell,
+                targetId, oldAreUserDefinedPatternsEnabled, oldUserDefinedPatterns,
+                oldEnabledFilterIDs);
         if (!oldAreUserDefinedPatternsEnabled) {
             oldUserDefinedPatterns = Lists.newArrayList();
         }
@@ -71,9 +71,9 @@ public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler {
             if (!areUserDefinedPatternsEnabled) {
                 userDefinedPatterns = Lists.newArrayList();
             }
-            OutlineFilterUtils.updateViewerFilters(viewer,
-                    oldUserDefinedPatterns, oldEnabledFilterIDs,
-                    userDefinedPatterns, enabledFilterIDs, patternFilter);
+            OutlineFilterUtils.updateViewerFilters(viewer, oldUserDefinedPatterns,
+                    oldEnabledFilterIDs, userDefinedPatterns, enabledFilterIDs,
+                    patternFilter);
         }
         return null;
     }

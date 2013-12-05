@@ -66,8 +66,8 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     }
 
     @Override
-    public IAutoEditStrategy[] getAutoEditStrategies(
-            final ISourceViewer sourceViewer, final String contentType) {
+    public IAutoEditStrategy[] getAutoEditStrategies(final ISourceViewer sourceViewer,
+            final String contentType) {
         if (contentType.equals(IDocument.DEFAULT_CONTENT_TYPE)) {
             return new IAutoEditStrategy[] { new AutoIndentStrategy(editor) };
         }
@@ -91,13 +91,12 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 
     @Override
     public IReconciler getReconciler(final ISourceViewer sourceViewer) {
-        final ErlReconcilingStrategy strategy = new ErlReconcilingStrategy(
-                editor);
+        final ErlReconcilingStrategy strategy = new ErlReconcilingStrategy(editor);
         final IErlModule module = editor != null ? editor.getModule() : null;
         final String path = module != null ? module.getFilePath() : null;
         final boolean logging = module != null ? module.getLogging() : false;
-        reconciler = new ErlReconciler(strategy, true, true, path, module,
-                logging, getEditor());
+        reconciler = new ErlReconciler(strategy, true, true, path, module, logging,
+                getEditor());
         reconciler.setProgressMonitor(new NullProgressMonitor());
         reconciler.setIsAllowedToModifyDocument(false);
         reconciler.setDelay(500);
@@ -106,8 +105,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 
     @Override
     protected IErlProject getProject() {
-        return ErlangEngine.getInstance().getModelUtilService()
-                .getProject(getModule());
+        return ErlangEngine.getInstance().getModelUtilService().getProject(getModule());
     }
 
     @Override
@@ -130,8 +128,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         return new IInformationControlCreator() {
 
             @Override
-            public IInformationControl createInformationControl(
-                    final Shell parent) {
+            public IInformationControl createInformationControl(final Shell parent) {
                 if (parent.getText().length() == 0
                         && BrowserInformationControl.isAvailable(parent)) {
                     final BrowserInformationControl info = new BrowserInformationControl(

@@ -23,16 +23,14 @@ public class CodeAssistTest {
         final Collection<String> result = ErlangEngine.getInstance()
                 .getContextAssistService()
                 .getVariables("a(X)-> XY=-X, {Z, W}=XY, X.", "");
-        final Collection<String> expected = Sets
-                .newHashSet("X", "XY", "Z", "W");
+        final Collection<String> expected = Sets.newHashSet("X", "XY", "Z", "W");
         MatcherAssert.assertThat(result, Matchers.is(expected));
     }
 
     @Test
     public void getVariables_2() {
         final Collection<String> result = ErlangEngine.getInstance()
-                .getContextAssistService()
-                .getVariables("a(X)-> XY=-X, Z=XY, X.", "X");
+                .getContextAssistService().getVariables("a(X)-> XY=-X, Z=XY, X.", "X");
         final Collection<String> expected = Sets.newHashSet("X", "XY");
         MatcherAssert.assertThat(result, Matchers.is(expected));
     }

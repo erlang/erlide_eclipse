@@ -27,8 +27,7 @@ public class HandleEdocLinksLocationListener implements LocationListener {
     private final BrowserInformationControl control;
     private final EdocView edocView;
 
-    public HandleEdocLinksLocationListener(
-            final BrowserInformationControl control) {
+    public HandleEdocLinksLocationListener(final BrowserInformationControl control) {
         this.control = control;
         edocView = null;
     }
@@ -57,21 +56,19 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                 final OpenResult or = (OpenResult) inputElement;
                 moduleName = or.getName();
             }
-            final ErlangFunctionCall functionCall = HoverUtil
-                    .eventToErlangFunctionCall(moduleName, event);
+            final ErlangFunctionCall functionCall = HoverUtil.eventToErlangFunctionCall(
+                    moduleName, event);
             if (functionCall != null) {
-                final IProject project = ErlangEngine.getInstance()
-                        .getModelUtilService().getProject(editor.getModule())
-                        .getWorkspaceProject();
-                final IBackendManager backendManager = BackendCore
-                        .getBackendManager();
-                final IRpcSite backend = backendManager
-                        .getBuildBackend(project).getRpcSite();
+                final IProject project = ErlangEngine.getInstance().getModelUtilService()
+                        .getProject(editor.getModule()).getWorkspaceProject();
+                final IBackendManager backendManager = BackendCore.getBackendManager();
+                final IRpcSite backend = backendManager.getBuildBackend(project)
+                        .getRpcSite();
 
-                final String stateDir = ErlideUIPlugin.getDefault()
-                        .getStateLocation().toString();
-                final OtpErlangTuple otpDoc = (OtpErlangTuple) ErlangEngine
-                        .getInstance().getService(OtpDocService.class)
+                final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
+                        .toString();
+                final OtpErlangTuple otpDoc = (OtpErlangTuple) ErlangEngine.getInstance()
+                        .getService(OtpDocService.class)
                         .getOtpDoc(backend, functionCall, stateDir);
                 if (Util.isOk(otpDoc)) {
                     final String docStr = Util.stringValue(otpDoc.elementAt(1));
@@ -83,12 +80,10 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                         anchor = Util.stringValue(otpDoc.elementAt(4));
                     }
                     if (result.length() > 0) {
-                        final String html = HoverUtil
-                                .getHTMLAndReplaceJSLinks(result);
-                        final Object element = new OpenResult(
-                                otpDoc.elementAt(2));
-                        input = new ErlBrowserInformationControlInput(input,
-                                editor, element, html, 20, docPath, anchor);
+                        final String html = HoverUtil.getHTMLAndReplaceJSLinks(result);
+                        final Object element = new OpenResult(otpDoc.elementAt(2));
+                        input = new ErlBrowserInformationControlInput(input, editor,
+                                element, html, 20, docPath, anchor);
                     }
                 }
             }

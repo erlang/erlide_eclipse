@@ -37,8 +37,8 @@ class DoubleClickListener implements IDoubleClickListener {
     }
 
     public void higlightCodePart(final DuplicatedCodeInstanceElement codePart) {
-        final ITextEditor textEditor = (ITextEditor) WranglerUtils
-                .openFile(codePart.getContainingFile());
+        final ITextEditor textEditor = (ITextEditor) WranglerUtils.openFile(codePart
+                .getContainingFile());
         WranglerUtils.highlightOffsetSelection(codePart.getStartOffset(),
                 codePart.getEndOffset(), textEditor);
     }

@@ -87,12 +87,11 @@ public class ErlangFunction {
     }
 
     public OtpErlangTuple getNameArityTuple() {
-        return new OtpErlangTuple(new OtpErlangObject[] {
-                new OtpErlangAtom(name), new OtpErlangLong(arity) });
+        return new OtpErlangTuple(new OtpErlangObject[] { new OtpErlangAtom(name),
+                new OtpErlangLong(arity) });
     }
 
-    public static String getNameWithParameters(final String name,
-            final int arity) {
+    public static String getNameWithParameters(final String name, final int arity) {
         final StringBuilder b = new StringBuilder();
         b.append(name).append('(');
         for (int i = 0; i < arity; i++) {

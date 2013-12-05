@@ -255,8 +255,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
      * 
      * @see ILabelProviderListener#labelProviderChanged
      */
-    protected void fireLabelProviderChanged(
-            final LabelProviderChangedEvent event) {
+    protected void fireLabelProviderChanged(final LabelProviderChangedEvent event) {
         final Object[] listeners = fListeners.getListeners();
         for (final Object element : listeners) {
             final ILabelProviderListener l = (ILabelProviderListener) element;

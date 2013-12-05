@@ -16,8 +16,7 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 public class ErlBreakpointAdapterFactory implements IAdapterFactory {
 
     @Override
-    public Object getAdapter(final Object adaptableObject,
-            final Class adapterType) {
+    public Object getAdapter(final Object adaptableObject, final Class adapterType) {
         if (adaptableObject instanceof ErlangEditor) {
             final AbstractErlangEditor editorPart = (AbstractErlangEditor) adaptableObject;
             final IResource resource = (IResource) editorPart.getEditorInput()
