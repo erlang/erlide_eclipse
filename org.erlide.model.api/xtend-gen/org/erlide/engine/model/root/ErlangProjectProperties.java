@@ -39,7 +39,15 @@ public class ErlangProjectProperties {
   
   private Collection<IPath> _sourceDirs;
   
+  public Collection<IPath> getSourceDirs() {
+    return this._sourceDirs;
+  }
+  
   private Collection<IPath> _includeDirs;
+  
+  public Collection<IPath> getIncludeDirs() {
+    return this._includeDirs;
+  }
   
   private String _externalIncludesFile;
   
@@ -152,33 +160,23 @@ public class ErlangProjectProperties {
     }
   }
   
-  public Collection<IPath> getIncludeDirs() {
-    Collection<IPath> _unmodifiableCollection = Collections.<IPath>unmodifiableCollection(this._includeDirs);
-    return _unmodifiableCollection;
-  }
-  
-  public void setIncludeDirs(final Collection<IPath> includeDirs2) {
-    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(includeDirs2);
+  public void setIncludeDirs(final Collection<IPath> dirs) {
+    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(dirs);
     this._includeDirs = _newArrayList;
   }
   
-  public void setIncludeDirs(final IPath... includeDirs2) {
-    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(includeDirs2);
+  public void setIncludeDirs(final IPath... dirs) {
+    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(dirs);
     this._includeDirs = _newArrayList;
   }
   
-  public Collection<IPath> getSourceDirs() {
-    Collection<IPath> _unmodifiableCollection = Collections.<IPath>unmodifiableCollection(this._sourceDirs);
-    return _unmodifiableCollection;
-  }
-  
-  public void setSourceDirs(final Collection<IPath> sourceDirs2) {
-    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(sourceDirs2);
+  public void setSourceDirs(final Collection<IPath> dirs) {
+    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(dirs);
     this._sourceDirs = _newArrayList;
   }
   
-  public void setSourceDirs(final IPath... sourceDirs2) {
-    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(sourceDirs2);
+  public void setSourceDirs(final IPath... dirs) {
+    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(dirs);
     this._sourceDirs = _newArrayList;
   }
   

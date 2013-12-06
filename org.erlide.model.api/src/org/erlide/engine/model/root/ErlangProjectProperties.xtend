@@ -54,28 +54,20 @@ class ErlangProjectProperties {
         }
     }
 
-    def getIncludeDirs() {
-        Collections.unmodifiableCollection(_includeDirs)
+    def void setIncludeDirs(Collection<IPath> dirs) {
+        _includeDirs = Lists.newArrayList(dirs)
     }
 
-    def void setIncludeDirs(Collection<IPath> includeDirs2) {
-        _includeDirs = Lists.newArrayList(includeDirs2)
+    def void setIncludeDirs(IPath... dirs) {
+        _includeDirs = Lists.newArrayList(dirs)
     }
 
-    def void setIncludeDirs(IPath... includeDirs2) {
-        _includeDirs = Lists.newArrayList(includeDirs2)
+    def void setSourceDirs(Collection<IPath> dirs) {
+        _sourceDirs = Lists.newArrayList(dirs)
     }
 
-    def getSourceDirs() {
-        Collections.unmodifiableCollection(_sourceDirs)
-    }
-
-    def void setSourceDirs(Collection<IPath> sourceDirs2) {
-        _sourceDirs = Lists.newArrayList(sourceDirs2)
-    }
-
-    def void setSourceDirs(IPath... sourceDirs2) {
-        _sourceDirs = Lists.newArrayList(sourceDirs2)
+    def void setSourceDirs(IPath... dirs) {
+        _sourceDirs = Lists.newArrayList(dirs)
     }
 
     def void copyFrom(ErlangProjectProperties props) {

@@ -171,8 +171,8 @@ class ErlangProjectBuilderPage extends WizardPage {
 
 class BuilderSelectionListener implements SelectionListener {
 
-    NewProjectData info
-    ErlangProjectBuilderPage page
+    val NewProjectData info
+    val ErlangProjectBuilderPage page
 
     new(NewProjectData info, ErlangProjectBuilderPage page) {
         this.info = info

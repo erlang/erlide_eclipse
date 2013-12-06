@@ -10,9 +10,9 @@ import org.erlide.ui.wizards.NewProjectData;
 
 @SuppressWarnings("all")
 public class BuilderSelectionListener implements SelectionListener {
-  private NewProjectData info;
+  private final NewProjectData info;
   
-  private ErlangProjectBuilderPage page;
+  private final ErlangProjectBuilderPage page;
   
   public BuilderSelectionListener(final NewProjectData info, final ErlangProjectBuilderPage page) {
     this.info = info;
