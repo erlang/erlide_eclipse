@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.internal.util.ErlideUtil;
 import org.erlide.engine.model.IErlModelChangeListener;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
@@ -30,7 +29,8 @@ public class ErlModelCache implements IDisposable {
     // TODO make a more educated guess here...
     // private static final int NAME_CACHE_SIZE = 300;
 
-    private static final boolean disabled = ErlideUtil.isCacheDisabled();
+    private static final boolean disabled = Boolean.valueOf(System
+            .getProperty("erlide.noModelCache"));
     private static final ErlModelCache fgInstance = disabled ? new DisabledErlModelCache()
             : new ErlModelCache();
 
