@@ -24,10 +24,8 @@ import com.google.common.collect.Sets;
 
 public class ErlModelCache implements IDisposable {
 
-    private static final int CACHE_SIZE = 100;
+    private static final int CACHE_SIZE = 200;
     private static final int CACHE_TIME_MINUTES = 15;
-    // TODO make a more educated guess here...
-    // private static final int NAME_CACHE_SIZE = 300;
 
     private static final boolean disabled = Boolean.valueOf(System
             .getProperty("erlide.noModelCache"));
