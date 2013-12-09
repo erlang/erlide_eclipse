@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -108,14 +107,12 @@ public class ErlProject extends Openable implements IErlProject,
 
     protected IProject fProject;
     private ErlangProjectProperties properties;
-    private Collection<IResource> nonErlangResources;
     private BuilderTool builderTool;
     private BuilderConfig builderConfig;
 
     public ErlProject(final IProject project, final ErlElement parent) {
         super(parent, project.getName());
         fProject = project;
-        nonErlangResources = null;
     }
 
     /**
@@ -278,13 +275,6 @@ public class ErlProject extends Openable implements IErlProject,
     @Override
     public ErlElementKind getKind() {
         return ErlElementKind.PROJECT;
-    }
-
-    /**
-     * Returns an array of non-Erlang resources contained in the receiver.
-     */
-    public Collection<IResource> getNonErlangResources() {
-        return getNonErlangResources(this);
     }
 
     /**
@@ -495,18 +485,6 @@ public class ErlProject extends Openable implements IErlProject,
             result = result.setDevice(null);
         }
         return result;
-    }
-
-    /**
-     * Returns an array of non-Erlang resources contained in the receiver.
-     */
-    private Collection<IResource> getNonErlangResources(
-            final IErlProject project) {
-
-        if (nonErlangResources == null) {
-            nonErlangResources = Lists.newArrayList();
-        }
-        return Collections.unmodifiableCollection(nonErlangResources);
     }
 
     @Override
