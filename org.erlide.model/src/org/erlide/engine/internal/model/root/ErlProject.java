@@ -673,25 +673,6 @@ public class ErlProject extends Openable implements IErlProject,
         return getProperties().getRequiredRuntimeVersion();
     }
 
-    private final static IPath DOT_PATH = new Path(".");
-
-    @Override
-    public boolean hasSourceDir(final IPath path) {
-        if (path.equals(DOT_PATH)) {
-            return true;
-        }
-        final IPath f = path.removeFirstSegments(1);
-        for (final IPath s : getSourceDirs()) {
-            if (s.equals(f)) {
-                return true;
-            }
-            // if (fullPath.segmentCount() == 1 && s.toString().equals(".")) {
-            // return true;
-            // }
-        }
-        return false;
-    }
-
     @Override
     public void setProperties(final ErlangProjectProperties properties)
             throws BackingStoreException {

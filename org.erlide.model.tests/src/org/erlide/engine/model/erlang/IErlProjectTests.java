@@ -3,7 +3,6 @@ package org.erlide.engine.model.erlang;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -356,21 +355,6 @@ public class IErlProjectTests extends ErlModelTestBase {
         assertTrue(major.startsWith("R"));
         final int majorVersion = Integer.valueOf(major.substring(1)).intValue();
         assertTrue(majorVersion >= 12);
-    }
-
-    // boolean hasSourceDir(IPath fullPath);
-    @Test
-    public void hasSourceDir() throws Exception {
-        final IErlProject aProject = projects[0];
-        final IPath dot = new Path(".");
-        assertTrue(aProject.hasSourceDir(dot));
-        final IPath projectPath = aProject.getWorkspaceProject().getFullPath();
-        final IPath src = projectPath.append("src");
-        assertTrue(aProject.hasSourceDir(src));
-        final IPath srcx = projectPath.append("srcx");
-        assertFalse(aProject.hasSourceDir(srcx));
-        final IPath include = projectPath.append("include");
-        assertFalse(aProject.hasSourceDir(include));
     }
 
     // TODO check more properties than source dirs property

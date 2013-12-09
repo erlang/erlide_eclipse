@@ -79,8 +79,6 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     RuntimeVersion getRuntimeVersion();
 
-    boolean hasSourceDir(IPath path);
-
     void setProperties(ErlangProjectProperties properties) throws BackingStoreException;
 
     Collection<IErlProject> getReferencedProjects() throws ErlModelException;
