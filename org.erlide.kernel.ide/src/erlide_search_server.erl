@@ -146,7 +146,9 @@ loop(State) ->
             reply(stop, From, stopped);
         {Cmd, From, Args} ->
             NewState = cmd(Cmd, From, Args, State),
-            ?MODULE:loop(NewState)
+            ?MODULE:loop(NewState);
+        _ ->
+            ?MODULE:loop(State)
     end.
 
 cmd(Cmd, From, Args, State) ->
@@ -197,15 +199,17 @@ do_cmd(modules, _, #state{modules=Modules} = State) ->
 
 do_start_find_refs(Pattern, Modules, JPid, StateDir, UpdateSearchServer, State) ->
     ?D({do_start_find_refs, Pattern, JPid}),
-    Pid = spawn_link(fun() ->
-                             ModuleChunks = chunkify(Modules, 3),
-                             ?D({JPid, length(ModuleChunks)}),
-                             JPid ! {start, length(ModuleChunks)},
-                             ?D({JPid, length(ModuleChunks)}),
-                             R = do_background_find_refs(ModuleChunks, Pattern, JPid, StateDir, UpdateSearchServer, State),
-                             ?D({stop, R}),
-                             JPid ! {stop, R}
-                     end),
+    Pid = spawn(fun() ->
+                        ModuleChunks = chunkify(Modules, 3),
+                        JPid ! {start, length(ModuleChunks)},
+                        R = try 
+                                do_background_find_refs(ModuleChunks, Pattern, JPid, StateDir, UpdateSearchServer, State)
+                            catch
+                                _:_ ->
+                                    crashed
+                            end,
+                        JPid ! {stop, R}
+                end),
     {Pid, State}.
 
 do_background_find_refs([], _Pattern, _JPid, _StateDir, _UpdateSearchServer, _State) ->
