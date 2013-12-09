@@ -6,7 +6,7 @@ import org.erlide.engine.model.root.ErlangProjectProperties
 class NewProjectData extends ErlangProjectProperties {
     
     @Property String builderName
-    @Property String builderConfig
+    @Property String builderConfigName
     @Property String name
     @Property IPath location
     

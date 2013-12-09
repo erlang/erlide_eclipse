@@ -220,9 +220,10 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
     }
 
     protected void checkConfigFile() {
-        final File f = new File(info.getLocation()
-                .append(BuilderConfig.valueOf(info.getBuilderConfig()).getConfigName())
-                .toPortableString());
+        final File f = new File(info
+                .getLocation()
+                .append(BuilderConfig.valueOf(info.getBuilderConfigName())
+                        .getConfigName()).toPortableString());
         if (f.exists()) {
             // TODO read config and show it
         } else {

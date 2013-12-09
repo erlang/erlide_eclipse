@@ -212,7 +212,7 @@ public class ErlideTestUtils {
         }
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .newProject(name, path.toPortableString());
-        erlProject.setBuilderTool(BuilderTool.INTERNAL);
+        erlProject.getProperties().setBuilderTool(BuilderTool.INTERNAL);
 
         final IProject project = erlProject.getWorkspaceProject();
         final ErlangProjectProperties prefs = erlProject.getProperties();

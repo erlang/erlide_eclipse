@@ -15,14 +15,14 @@ public class NewProjectData extends ErlangProjectProperties {
     this._builderName = builderName;
   }
   
-  private String _builderConfig;
+  private String _builderConfigName;
   
-  public String getBuilderConfig() {
-    return this._builderConfig;
+  public String getBuilderConfigName() {
+    return this._builderConfigName;
   }
   
-  public void setBuilderConfig(final String builderConfig) {
-    this._builderConfig = builderConfig;
+  public void setBuilderConfigName(final String builderConfigName) {
+    this._builderConfigName = builderConfigName;
   }
   
   private String _name;

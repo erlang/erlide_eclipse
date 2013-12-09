@@ -12,10 +12,14 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
+import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
+import org.erlide.engine.model.builder.BuilderConfig;
+import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -42,6 +46,18 @@ public class ErlangProjectProperties {
   
   public Collection<IPath> getIncludeDirs() {
     return this._includeDirs;
+  }
+  
+  private BuilderTool _builderTool;
+  
+  public BuilderTool getBuilderTool() {
+    return this._builderTool;
+  }
+  
+  private BuilderConfig _builderConfig;
+  
+  public BuilderConfig getBuilderConfig() {
+    return this._builderConfig;
   }
   
   private String _externalIncludesFile;
@@ -305,5 +321,52 @@ public class ErlangProjectProperties {
     IWorkspace _workspace = ResourcesPlugin.getWorkspace();
     final IPathVariableManager pathVariableManager = _workspace.getPathVariableManager();
     return pathVariableManager.resolvePath(path);
+  }
+  
+  public void setBuilderTool(final BuilderTool tool) {
+    boolean _equals = Objects.equal(this._builderTool, tool);
+    if (_equals) {
+      return;
+    }
+    this._builderTool = tool;
+    BuilderTool _builderTool = this.getBuilderTool();
+    final Collection<BuilderConfig> configs = _builderTool.getMatchingConfigs();
+    int _size = configs.size();
+    boolean _equals_1 = (_size == 1);
+    if (_equals_1) {
+      BuilderConfig _head = IterableExtensions.<BuilderConfig>head(configs);
+      this.setBuilderConfig(_head);
+    } else {
+      boolean _contains = configs.contains(this._builderConfig);
+      boolean _not = (!_contains);
+      if (_not) {
+        this.setBuilderConfig(null);
+      }
+    }
+  }
+  
+  public void setBuilderConfig(final BuilderConfig config) {
+    boolean _and = false;
+    boolean _notEquals = (!Objects.equal(config, null));
+    if (!_notEquals) {
+      _and = false;
+    } else {
+      BuilderTool _builderTool = this.getBuilderTool();
+      Collection<BuilderConfig> _matchingConfigs = _builderTool.getMatchingConfigs();
+      boolean _contains = _matchingConfigs.contains(config);
+      boolean _not = (!_contains);
+      _and = (_notEquals && _not);
+    }
+    if (_and) {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("Builder config ");
+      _builder.append(config, "");
+      _builder.append(" can\'t be used with tool ");
+      BuilderTool _builderTool_1 = this.getBuilderTool();
+      _builder.append(_builderTool_1, "");
+      IllegalArgumentException _illegalArgumentException = new IllegalArgumentException(_builder.toString());
+      throw _illegalArgumentException;
+    }
+    this._builderConfig = config;
   }
 }

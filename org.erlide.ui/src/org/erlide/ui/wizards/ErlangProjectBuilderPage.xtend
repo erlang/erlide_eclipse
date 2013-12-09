@@ -88,7 +88,7 @@ class ErlangProjectBuilderPage extends WizardPage {
             new Label(configComposite, SWT.NONE)
             new Label(configComposite, SWT.NONE)
         ]
-        info.builderConfig = BuilderConfig.INTERNAL.name
+        info.builderConfigName = BuilderConfig.INTERNAL.name
 
         makeConfigComposite = new Composite(composite, SWT.NONE)
         makeConfigComposite.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1))
@@ -159,7 +159,7 @@ class ErlangProjectBuilderPage extends WizardPage {
         if (location !== null && new File(location.toPortableString).exists) {
 
             // TODO 
-            val config = BuilderConfig.valueOf(info.builderConfig)
+            val config = BuilderConfig.valueOf(info.builderConfigName)
             val persister = ErlangBuilder.getFactory().getConfigurationPersister(config)
             
             // TODO we need to get config without a project! it is not created yet
@@ -193,7 +193,7 @@ class BuilderSelectionListener implements SelectionListener {
                 (info.builderName == BuilderTool.INTERNAL.name)
             page.makeConfigComposite.visible = info.builderName == BuilderTool.MAKE.name
         } else {
-            info.builderConfig = (e.widget.data as BuilderConfig).name
+            info.builderConfigName = (e.widget.data as BuilderConfig).name
         }
     }
 

@@ -137,7 +137,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
     };
     IterableExtensions.<BuilderConfig>forEach(((Iterable<BuilderConfig>)Conversions.doWrapArray(configs)), _function_3);
     String _name_1 = BuilderConfig.INTERNAL.name();
-    this.info.setBuilderConfig(_name_1);
+    this.info.setBuilderConfigName(_name_1);
     Composite _composite_2 = new Composite(composite, SWT.NONE);
     this.makeConfigComposite = _composite_2;
     GridData _gridData_1 = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
@@ -273,8 +273,8 @@ public class ErlangProjectBuilderPage extends WizardPage {
       _and = (_tripleNotEquals && _exists);
     }
     if (_and) {
-      String _builderConfig = this.info.getBuilderConfig();
-      final BuilderConfig config = BuilderConfig.valueOf(_builderConfig);
+      String _builderConfigName = this.info.getBuilderConfigName();
+      final BuilderConfig config = BuilderConfig.valueOf(_builderConfigName);
       IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
       final ProjectConfigurationPersister persister = _factory.getConfigurationPersister(config);
       final ErlangProjectProperties props = persister.getConfiguration(null);

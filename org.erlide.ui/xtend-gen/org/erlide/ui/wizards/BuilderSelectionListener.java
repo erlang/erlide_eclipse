@@ -52,7 +52,7 @@ public class BuilderSelectionListener implements SelectionListener {
     } else {
       Object _data_1 = e.widget.getData();
       String _name_4 = ((BuilderConfig) _data_1).name();
-      this.info.setBuilderConfig(_name_4);
+      this.info.setBuilderConfigName(_name_4);
     }
   }
 }

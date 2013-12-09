@@ -765,47 +765,6 @@ public class ErlProject extends Openable implements IErlProject,
         }
     }
 
-    @Override
-    public BuilderTool getBuilderTool() {
-        return builderTool;
-    }
-
-    @Override
-    public void setBuilderTool(final BuilderTool tool) {
-        if (builderTool == tool) {
-            return;
-        }
-        builderTool = tool;
-        final Collection<BuilderConfig> configs = builderTool
-                .getMatchingConfigs();
-        if (configs.size() == 1) {
-            setBuilderConfig(configs.iterator().next());
-        } else if (!configs.contains(builderConfig)) {
-            setBuilderConfig(null);
-        }
-    }
-
-    @Override
-    public BuilderConfig getBuilderConfig() {
-        return builderConfig;
-    }
-
-    @Override
-    public void setBuilderConfig(final BuilderConfig config) {
-        if (config != null
-                && !builderTool.getMatchingConfigs().contains(config)) {
-            throw new IllegalArgumentException(String.format(
-                    "Builder config %s can't be used with tool %s", config,
-                    builderTool));
-        }
-
-        // TODO unsubscribe from notifications from old config
-
-        builderConfig = config;
-
-        // TODO subscribe to notifications from new config
-    }
-
     public boolean hasConfigurationFor(final BuilderConfig config) {
         if (!exists()) {
             return false;
