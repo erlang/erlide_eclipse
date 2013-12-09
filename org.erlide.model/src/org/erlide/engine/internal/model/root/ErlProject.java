@@ -21,7 +21,6 @@ import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -41,12 +40,10 @@ import org.erlide.engine.internal.ModelPlugin;
 import org.erlide.engine.internal.model.cache.ErlModelCache;
 import org.erlide.engine.internal.model.erlang.ErlExternalReferenceEntryList;
 import org.erlide.engine.internal.model.erlang.ErlOtpExternalReferenceEntryList;
-import org.erlide.engine.internal.util.ModelConfig;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.ErlModelStatus;
 import org.erlide.engine.model.ErlModelStatusConstants;
 import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.IErlModelMarker;
 import org.erlide.engine.model.IOpenable;
 import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.builder.BuilderTool;
@@ -115,9 +112,6 @@ public class ErlProject extends Openable implements IErlProject,
         fProject = project;
     }
 
-    /**
-     * @see Openable
-     */
     @Override
     public boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
@@ -243,30 +237,6 @@ public class ErlProject extends Openable implements IErlProject,
     @Override
     public boolean exists() {
         return NatureUtil.hasErlangNature(fProject);
-    }
-
-    /**
-     * Remove all markers denoting classpath problems
-     */
-    protected void flushCodepathProblemMarkers(final boolean flushCycleMarkers,
-            final boolean flushCodepathFormatMarkers) {
-        try {
-            if (fProject.isAccessible()) {
-                final IMarker[] markers = fProject.findMarkers(
-                        IErlModelMarker.BUILDPATH_PROBLEM_MARKER, false,
-                        IResource.DEPTH_ZERO);
-                for (final IMarker marker : markers) {
-                    if (flushCycleMarkers && flushCodepathFormatMarkers) {
-                        marker.delete();
-                    }
-                }
-            }
-        } catch (final CoreException e) {
-            // could not flush markers: not much we can do
-            if (ModelConfig.verbose) {
-                ErlLogger.warn(e);
-            }
-        }
     }
 
     /**
