@@ -54,10 +54,10 @@ public class PreferencesProjectConfigurationPersister extends
         final String outputDirsStr = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
                 ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
         result.setOutputDir(new Path(outputDirsStr));
-        result.setRuntimeVersion(new RuntimeVersion(node.get(
+        result.setRequiredRuntimeVersion(new RuntimeVersion(node.get(
                 ProjectPreferencesConstants.RUNTIME_VERSION, null)));
-        if (!result.getRuntimeVersion().isDefined()) {
-            result.setRuntimeVersion(new RuntimeVersion(
+        if (!result.getRequiredRuntimeVersion().isDefined()) {
+            result.setRequiredRuntimeVersion(new RuntimeVersion(
                     ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION));
         }
         result.setExternalModulesFile(node.get(
@@ -66,8 +66,8 @@ public class PreferencesProjectConfigurationPersister extends
         result.setExternalIncludesFile(node.get(
                 ProjectPreferencesConstants.EXTERNAL_INCLUDES,
                 ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES));
-        result.setNukeOutputOnClean(node.getBoolean(
-                ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN, false));
+        // result.setNukeOutputOnClean(node.getBoolean(
+        // ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN, false));
         return result;
     }
 
@@ -90,16 +90,16 @@ public class PreferencesProjectConfigurationPersister extends
                 .toPortableString());
         node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
                 info.getExternalIncludesFile());
-        if (info.getRuntimeVersion().isDefined()) {
+        if (info.getRequiredRuntimeVersion().isDefined()) {
             node.put(ProjectPreferencesConstants.RUNTIME_VERSION, info
-                    .getRuntimeVersion().asMinor().toString());
+                    .getRequiredRuntimeVersion().asMinor().toString());
         } else {
             node.remove(ProjectPreferencesConstants.RUNTIME_VERSION);
         }
         node.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
                 info.getExternalModulesFile());
-        node.putBoolean(ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
-                info.isNukeOutputOnClean());
+        // node.putBoolean(ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
+        // info.isNukeOutputOnClean());
 
         try {
             node.flush();

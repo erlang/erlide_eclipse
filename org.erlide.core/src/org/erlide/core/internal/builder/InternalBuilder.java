@@ -137,8 +137,8 @@ public class InternalBuilder extends ErlangBuilder {
                     .getErlangProject(currentProject);
             final IFolder bf = currentProject.getFolder(erlProject.getOutputLocation());
             if (bf.exists()) {
-                final boolean nukeOutput = erlProject.getProperties()
-                        .isNukeOutputOnClean();
+                final boolean nukeOutput = false;
+                // erlProject.getProperties().isNukeOutputOnClean();
                 if (nukeOutput) {
                     bf.delete(true, monitor);
                 } else {

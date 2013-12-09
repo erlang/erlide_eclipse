@@ -69,6 +69,7 @@ import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
 import org.erlide.engine.util.SourcePathUtils;
+import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
@@ -171,8 +172,7 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     private void addOtpExternals(final List<IErlElement> children) {
-        final String name = "OTP "
-                + getProperties().getRuntimeVersion().toString();
+        final String name = "OTP " + getRuntimeVersion().toString();
         final IErlExternalRoot external = new ErlOtpExternalReferenceEntryList(
                 this, name);
         children.add(external);
@@ -657,12 +657,20 @@ public class ErlProject extends Openable implements IErlProject,
 
     @Override
     public RuntimeInfo getRuntimeInfo() {
-        return getProperties().getRuntimeInfo();
+        final RuntimeVersion requiredRuntimeVersion = getProperties()
+                .getRequiredRuntimeVersion();
+        return RuntimeCore.getRuntimeInfoCatalog().getRuntime(
+                requiredRuntimeVersion, null);
     }
 
     @Override
     public RuntimeVersion getRuntimeVersion() {
-        return getProperties().getRuntimeVersion();
+        final RuntimeInfo runtimeInfo = getRuntimeInfo();
+        if (runtimeInfo != null) {
+            return runtimeInfo.getVersion();
+        }
+        // TODO or null?
+        return getProperties().getRequiredRuntimeVersion();
     }
 
     private final static IPath DOT_PATH = new Path(".");

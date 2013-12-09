@@ -70,13 +70,13 @@ public class ErlangProjectBuilderPage extends WizardPage {
       public void modifyText(final ModifyEvent it) {
         String _text = version.getText();
         RuntimeVersion _runtimeVersion = new RuntimeVersion(_text);
-        ErlangProjectBuilderPage.this.info.setRuntimeVersion(_runtimeVersion);
+        ErlangProjectBuilderPage.this.info.setRequiredRuntimeVersion(_runtimeVersion);
       }
     };
     version.addModifyListener(_function_1);
     String _text = version.getText();
     RuntimeVersion _runtimeVersion = new RuntimeVersion(_text);
-    this.info.setRuntimeVersion(_runtimeVersion);
+    this.info.setRequiredRuntimeVersion(_runtimeVersion);
     new Label(composite, SWT.NONE);
     new Label(composite, SWT.NONE);
     new Label(composite, SWT.NONE);

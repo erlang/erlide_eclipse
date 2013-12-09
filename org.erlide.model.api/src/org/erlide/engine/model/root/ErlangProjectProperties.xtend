@@ -1,28 +1,24 @@
 package org.erlide.engine.model.root
 
-import com.google.common.base.Charsets
+import com.google.common.base.Objects
 import com.google.common.collect.Lists
 import java.util.Collection
 import java.util.Collections
+import java.util.List
+import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.Path
-import org.erlide.runtime.api.RuntimeCore
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
-import java.nio.charset.Charset
-import com.google.common.base.Objects
-import org.eclipse.core.resources.ResourcesPlugin
-import java.util.List
 
 class ErlangProjectProperties {
+
     @Property IPath outputDir
     @Property Collection<IPath> sourceDirs
     @Property Collection<IPath> includeDirs
+
     @Property String externalIncludesFile
     @Property String externalModulesFile
     @Property RuntimeVersion requiredRuntimeVersion
-    @Property boolean nukeOutputOnClean
-    @Property Charset encoding
-    @Property Object builderData
 
     val public static ErlangProjectProperties DEFAULT = new ErlangProjectProperties() => [
         _sourceDirs = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS)
@@ -31,12 +27,6 @@ class ErlangProjectProperties {
         _externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES
         _externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES
         _requiredRuntimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
-        _nukeOutputOnClean = false
-        if (_requiredRuntimeVersion.isCompatible(new RuntimeVersion(18))) {
-            _encoding = Charsets.UTF_8
-        } else {
-            _encoding = Charsets.ISO_8859_1
-        }
     ]
 
     new() {
@@ -46,12 +36,6 @@ class ErlangProjectProperties {
         _externalIncludesFile = ""
         _externalModulesFile = ""
         _requiredRuntimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
-        _nukeOutputOnClean = false
-        if (_requiredRuntimeVersion.isCompatible(new RuntimeVersion(18))) {
-            _encoding = Charsets.UTF_8
-        } else {
-            _encoding = Charsets.ISO_8859_1
-        }
     }
 
     def void setIncludeDirs(Collection<IPath> dirs) {
@@ -75,36 +59,8 @@ class ErlangProjectProperties {
         _sourceDirs = props._sourceDirs
         _outputDir = props._outputDir
         _requiredRuntimeVersion = props._requiredRuntimeVersion
-        _encoding = props._encoding
         _externalIncludesFile = props._externalIncludesFile
         _externalModulesFile = props._externalModulesFile
-        _nukeOutputOnClean = props._nukeOutputOnClean
-        _builderData = props._builderData
-    }
-
-    def getRuntimeInfo() {
-        val runtime = RuntimeCore.runtimeInfoCatalog.getRuntime(_requiredRuntimeVersion, null)
-        runtime
-    }
-
-    def getRuntimeVersion() {
-
-        // XXX ???
-        val runtimeInfo = runtimeInfo
-        if (runtimeInfo !== null) {
-            runtimeInfo.version
-        } else {
-            _requiredRuntimeVersion
-        }
-    }
-
-    def setRuntimeVersion(RuntimeVersion runtimeVersion) {
-        this._requiredRuntimeVersion = runtimeVersion
-        if (_requiredRuntimeVersion.isCompatible(new RuntimeVersion(18))) {
-            _encoding = Charsets.UTF_8
-        } else {
-            _encoding = Charsets.ISO_8859_1
-        }
     }
 
     def boolean sameAs(Object other1) {
@@ -145,13 +101,6 @@ class ErlangProjectProperties {
                 return false
         } else if (!_requiredRuntimeVersion.equals(other._requiredRuntimeVersion))
             return false
-        if (other._nukeOutputOnClean != _nukeOutputOnClean)
-            return false
-        if (_encoding === null) {
-            if (other._encoding !== null)
-                return false
-        } else if (!_encoding.equals(other._encoding))
-            return false
         return true
     }
 
@@ -161,7 +110,6 @@ class ErlangProjectProperties {
             add("sources", _sourceDirs)
             add("includes", _includeDirs)
             add("runtimeVersion", _requiredRuntimeVersion)
-            add("encoding", _encoding)
         ]
         helper.toString
     }

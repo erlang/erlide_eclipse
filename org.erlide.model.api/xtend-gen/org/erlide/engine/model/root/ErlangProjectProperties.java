@@ -1,10 +1,8 @@
 package org.erlide.engine.model.root;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
 import com.google.common.collect.Lists;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,9 +18,6 @@ import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
-import org.erlide.runtime.api.RuntimeCore;
-import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 
 @SuppressWarnings("all")
@@ -79,36 +74,6 @@ public class ErlangProjectProperties {
     this._requiredRuntimeVersion = requiredRuntimeVersion;
   }
   
-  private boolean _nukeOutputOnClean;
-  
-  public boolean isNukeOutputOnClean() {
-    return this._nukeOutputOnClean;
-  }
-  
-  public void setNukeOutputOnClean(final boolean nukeOutputOnClean) {
-    this._nukeOutputOnClean = nukeOutputOnClean;
-  }
-  
-  private Charset _encoding;
-  
-  public Charset getEncoding() {
-    return this._encoding;
-  }
-  
-  public void setEncoding(final Charset encoding) {
-    this._encoding = encoding;
-  }
-  
-  private Object _builderData;
-  
-  public Object getBuilderData() {
-    return this._builderData;
-  }
-  
-  public void setBuilderData(final Object builderData) {
-    this._builderData = builderData;
-  }
-  
   public final static ErlangProjectProperties DEFAULT = new Function0<ErlangProjectProperties>() {
     public ErlangProjectProperties apply() {
       ErlangProjectProperties _erlangProjectProperties = new ErlangProjectProperties();
@@ -124,14 +89,6 @@ public class ErlangProjectProperties {
           it._externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
           RuntimeVersion _runtimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
           it._requiredRuntimeVersion = _runtimeVersion;
-          it._nukeOutputOnClean = false;
-          RuntimeVersion _runtimeVersion_1 = new RuntimeVersion(18);
-          boolean _isCompatible = it._requiredRuntimeVersion.isCompatible(_runtimeVersion_1);
-          if (_isCompatible) {
-            it._encoding = Charsets.UTF_8;
-          } else {
-            it._encoding = Charsets.ISO_8859_1;
-          }
         }
       };
       ErlangProjectProperties _doubleArrow = ObjectExtensions.<ErlangProjectProperties>operator_doubleArrow(_erlangProjectProperties, _function);
@@ -150,14 +107,6 @@ public class ErlangProjectProperties {
     this._externalModulesFile = "";
     RuntimeVersion _runtimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
     this._requiredRuntimeVersion = _runtimeVersion;
-    this._nukeOutputOnClean = false;
-    RuntimeVersion _runtimeVersion_1 = new RuntimeVersion(18);
-    boolean _isCompatible = this._requiredRuntimeVersion.isCompatible(_runtimeVersion_1);
-    if (_isCompatible) {
-      this._encoding = Charsets.UTF_8;
-    } else {
-      this._encoding = Charsets.ISO_8859_1;
-    }
   }
   
   public void setIncludeDirs(final Collection<IPath> dirs) {
@@ -185,57 +134,8 @@ public class ErlangProjectProperties {
     this._sourceDirs = props._sourceDirs;
     this._outputDir = props._outputDir;
     this._requiredRuntimeVersion = props._requiredRuntimeVersion;
-    this._encoding = props._encoding;
     this._externalIncludesFile = props._externalIncludesFile;
     this._externalModulesFile = props._externalModulesFile;
-    this._nukeOutputOnClean = props._nukeOutputOnClean;
-    this._builderData = props._builderData;
-  }
-  
-  public RuntimeInfo getRuntimeInfo() {
-    RuntimeInfo _xblockexpression = null;
-    {
-      IRuntimeInfoCatalog _runtimeInfoCatalog = RuntimeCore.getRuntimeInfoCatalog();
-      final RuntimeInfo runtime = _runtimeInfoCatalog.getRuntime(this._requiredRuntimeVersion, null);
-      _xblockexpression = (runtime);
-    }
-    return _xblockexpression;
-  }
-  
-  public RuntimeVersion getRuntimeVersion() {
-    RuntimeVersion _xblockexpression = null;
-    {
-      final RuntimeInfo runtimeInfo = this.getRuntimeInfo();
-      RuntimeVersion _xifexpression = null;
-      boolean _tripleNotEquals = (runtimeInfo != null);
-      if (_tripleNotEquals) {
-        RuntimeVersion _version = runtimeInfo.getVersion();
-        _xifexpression = _version;
-      } else {
-        _xifexpression = this._requiredRuntimeVersion;
-      }
-      _xblockexpression = (_xifexpression);
-    }
-    return _xblockexpression;
-  }
-  
-  public Charset setRuntimeVersion(final RuntimeVersion runtimeVersion) {
-    Charset _xblockexpression = null;
-    {
-      this._requiredRuntimeVersion = runtimeVersion;
-      Charset _xifexpression = null;
-      RuntimeVersion _runtimeVersion = new RuntimeVersion(18);
-      boolean _isCompatible = this._requiredRuntimeVersion.isCompatible(_runtimeVersion);
-      if (_isCompatible) {
-        Charset __encoding = this._encoding = Charsets.UTF_8;
-        _xifexpression = __encoding;
-      } else {
-        Charset __encoding_1 = this._encoding = Charsets.ISO_8859_1;
-        _xifexpression = __encoding_1;
-      }
-      _xblockexpression = (_xifexpression);
-    }
-    return _xblockexpression;
   }
   
   public boolean sameAs(final Object other1) {
@@ -330,23 +230,6 @@ public class ErlangProjectProperties {
         return false;
       }
     }
-    boolean _notEquals = (other._nukeOutputOnClean != this._nukeOutputOnClean);
-    if (_notEquals) {
-      return false;
-    }
-    boolean _tripleEquals_8 = (this._encoding == null);
-    if (_tripleEquals_8) {
-      boolean _tripleNotEquals_6 = (other._encoding != null);
-      if (_tripleNotEquals_6) {
-        return false;
-      }
-    } else {
-      boolean _equals_6 = this._encoding.equals(other._encoding);
-      boolean _not_7 = (!_equals_6);
-      if (_not_7) {
-        return false;
-      }
-    }
     return true;
   }
   
@@ -360,7 +243,6 @@ public class ErlangProjectProperties {
           it.add("sources", ErlangProjectProperties.this._sourceDirs);
           it.add("includes", ErlangProjectProperties.this._includeDirs);
           it.add("runtimeVersion", ErlangProjectProperties.this._requiredRuntimeVersion);
-          it.add("encoding", ErlangProjectProperties.this._encoding);
         }
       };
       final ToStringHelper helper = ObjectExtensions.<ToStringHelper>operator_doubleArrow(_stringHelper, _function);

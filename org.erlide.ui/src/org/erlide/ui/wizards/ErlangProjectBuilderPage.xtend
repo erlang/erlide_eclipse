@@ -42,9 +42,9 @@ class ErlangProjectBuilderPage extends WizardPage {
         version.setItems(runtimeVersions.map[toString])
         version.setText(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
         version.addModifyListener [
-            info.runtimeVersion = new RuntimeVersion(version.text)
+            info.requiredRuntimeVersion = new RuntimeVersion(version.text)
         ]
-        info.runtimeVersion = new RuntimeVersion(version.text)
+        info.requiredRuntimeVersion = new RuntimeVersion(version.text)
 
         new Label(composite, SWT.NONE)
 
