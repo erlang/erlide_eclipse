@@ -26,7 +26,7 @@ public class BuilderProperties {
   /**
    * The tool that is used to build the project.
    */
-  private BuilderTool _builderTool;
+  private BuilderTool _builderTool = BuilderTool.INTERNAL;
   
   /**
    * The tool that is used to build the project.
@@ -45,7 +45,7 @@ public class BuilderProperties {
   /**
    * Full build target name.
    */
-  private String _buildTarget;
+  private String _buildTarget = "rebuild";
   
   /**
    * Full build target name.
@@ -64,7 +64,7 @@ public class BuilderProperties {
   /**
    * Incremental build target name.
    */
-  private String _compileTarget;
+  private String _compileTarget = "compile";
   
   /**
    * Incremental build target name.
@@ -83,7 +83,7 @@ public class BuilderProperties {
   /**
    * Clean target name.
    */
-  private String _cleanTarget;
+  private String _cleanTarget = "clean";
   
   /**
    * Clean target name.

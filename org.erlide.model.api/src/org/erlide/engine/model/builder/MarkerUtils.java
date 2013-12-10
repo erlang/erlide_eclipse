@@ -1,4 +1,4 @@
-package org.erlide.core.builder;
+package org.erlide.engine.model.builder;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -16,7 +16,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtext.xbase.lib.Pair;
-import org.erlide.core.ErlangCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlModule;
@@ -49,8 +48,8 @@ public final class MarkerUtils {
     private MarkerUtils() {
     }
 
-    public static final String PROBLEM_MARKER = ErlangCore.PLUGIN_ID + ".problemmarker";
-    public static final String TASK_MARKER = ErlangCore.PLUGIN_ID + ".taskmarker";
+    public static final String PROBLEM_MARKER = "org.erlide.core.problemmarker";
+    public static final String TASK_MARKER = "org.erlide.core.taskmarker";
 
     public static void addMarker(final IResource file, final String path,
             final IResource compiledFile, final String errorDesc, final int lineNumber,

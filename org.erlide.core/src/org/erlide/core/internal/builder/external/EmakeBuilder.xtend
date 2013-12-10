@@ -5,11 +5,11 @@ import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.Path
 import org.erlide.backend.BackendCore
 import org.erlide.core.ErlangCore
-import org.erlide.core.builder.MarkerUtils
 import org.erlide.core.internal.builder.ExternalBuilder
 import org.erlide.engine.ErlangEngine
 import org.erlide.util.ErlLogger
 import org.erlide.util.SystemConfiguration
+import org.erlide.engine.model.builder.MarkerUtils
 
 @SuppressWarnings('deprecation')
 class EmakeBuilder extends ExternalBuilder {

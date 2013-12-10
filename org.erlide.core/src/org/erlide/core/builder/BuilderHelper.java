@@ -41,6 +41,7 @@ import org.erlide.core.internal.builder.BuildQueueProcessor;
 import org.erlide.core.internal.builder.BuildWorkerInfo;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
+import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.erlang.ErlangIncludeFile;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;

@@ -21,30 +21,6 @@ public class ProjectConfigurationTests extends AbstractProjectConfigurationTests
         project.setBuilderConfig(BuilderConfig.INTERNAL);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void canNotSetIncompatibleConfig() {
-        project.getBuilderProperties().setBuilderTool(BuilderTool.EMAKE);
-        project.setBuilderConfig(BuilderConfig.REBAR);
-    }
-
-    @Test
-    public void canSetCompatibleConfig() {
-        project.getBuilderProperties().setBuilderTool(BuilderTool.EMAKE);
-        project.setBuilderConfig(BuilderConfig.EMAKE);
-    }
-
-    @Test
-    public void configFollowsTool() throws Exception {
-        project.getBuilderProperties().setBuilderTool(BuilderTool.EMAKE);
-        assertThat(project.getBuilderConfig(), is(BuilderConfig.EMAKE));
-        project.getBuilderProperties().setBuilderTool(BuilderTool.REBAR);
-        assertThat(project.getBuilderConfig(), is(BuilderConfig.REBAR));
-        project.getBuilderProperties().setBuilderTool(BuilderTool.INTERNAL);
-        assertThat(project.getBuilderConfig(), is(BuilderConfig.REBAR));
-        project.getBuilderProperties().setBuilderTool(BuilderTool.MAKE);
-        assertThat(project.getBuilderConfig(), is(BuilderConfig.REBAR));
-    }
-
     @Override
     public void configCanBeParsed() {
         // not relevant

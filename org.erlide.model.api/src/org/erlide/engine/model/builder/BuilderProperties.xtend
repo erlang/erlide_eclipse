@@ -6,13 +6,13 @@ class BuilderProperties {
     @Property boolean nukeOutputOnClean = false
     
     /** The tool that is used to build the project. */
-    @Property BuilderTool builderTool
+    @Property BuilderTool builderTool = BuilderTool.INTERNAL
     
     /** Full build target name. */
-    @Property String buildTarget
+    @Property String buildTarget = "rebuild"
     /** Incremental build target name. */
-    @Property String compileTarget
+    @Property String compileTarget = "compile"
     /** Clean target name. */
-    @Property String cleanTarget
+    @Property String cleanTarget = "clean"
     
 }

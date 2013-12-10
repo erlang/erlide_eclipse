@@ -42,11 +42,11 @@ import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.BuilderHelper.SearchVisitor;
 import org.erlide.core.builder.CompilerOptions;
-import org.erlide.core.builder.MarkerUtils;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.ErlangBuilder;
+import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.util.ErlLogger;
@@ -64,6 +64,9 @@ public class InternalBuilder extends ErlangBuilder {
     @Override
     public IProject[] build(final int kind, final Map<String, String> args,
             final IProgressMonitor monitor) throws CoreException {
+
+        super.build(kind, args, monitor);
+
         final long time = System.currentTimeMillis();
         final IProject project = getProject();
         if (project == null || !project.isAccessible()) {

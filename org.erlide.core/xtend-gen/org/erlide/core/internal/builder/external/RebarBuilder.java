@@ -9,12 +9,12 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.builder.MarkerUtils;
 import org.erlide.core.internal.builder.ExternalBuilder;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.builder.BuilderProperties;
+import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlFolder;
 
@@ -78,7 +78,7 @@ public class RebarBuilder extends ExternalBuilder {
         IProject _project_1 = this.getProject();
         int _minus = (-1);
         IMarker _addMarker = MarkerUtils.addMarker(null, _project_1, null, "No .app.src file found, can\'t compile with rebar", _minus, 
-          IMarker.SEVERITY_ERROR, IMarker.PROBLEM);
+          IMarker.SEVERITY_WARNING, IMarker.PROBLEM);
         _xifexpression = _addMarker;
       }
       _xblockexpression = (_xifexpression);

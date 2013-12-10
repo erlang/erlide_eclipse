@@ -5,10 +5,10 @@ import org.eclipse.core.resources.IMarker
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
 import org.erlide.core.ErlangCore
-import org.erlide.core.builder.MarkerUtils
 import org.erlide.core.internal.builder.ExternalBuilder
 import org.erlide.engine.ErlangEngine
 import org.erlide.engine.model.root.IErlFolder
+import org.erlide.engine.model.builder.MarkerUtils
 
 class RebarBuilder extends ExternalBuilder {
     override getOsCommand() {
@@ -35,8 +35,9 @@ class RebarBuilder extends ExternalBuilder {
             !foundAppSrc
         ]
         if (! foundAppSrc) {
+            // TODO rebar has configuration for this 
             MarkerUtils.addMarker(null, project, null, "No .app.src file found, can't compile with rebar", -1,
-                IMarker.SEVERITY_ERROR, IMarker.PROBLEM)
+                IMarker.SEVERITY_WARNING, IMarker.PROBLEM)
         }
     }
 

@@ -12,10 +12,13 @@ package org.erlide.engine.model.builder;
 
 import java.util.Map;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.services.ExtensionUtils;
 
 public abstract class ErlangBuilder extends IncrementalProjectBuilder {
@@ -23,8 +26,36 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
     public abstract String getId();
 
     @Override
-    public abstract IProject[] build(int kind, Map<String, String> args,
-            IProgressMonitor monitor) throws CoreException;
+    public IProject[] build(final int kind, final Map<String, String> args,
+            final IProgressMonitor monitor) throws CoreException {
+
+        final IProject project = getProject();
+        if (project == null || !project.isAccessible()) {
+            return null;
+        }
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                .getErlangProject(project);
+
+        if (validateBuildConfiguration(erlProject)) {
+            monitor.setCanceled(true);
+        }
+
+        return null;
+    }
+
+    private boolean validateBuildConfiguration(final IErlProject erlProject) {
+        final BuilderConfig config = erlProject.getBuilderConfig();
+        final BuilderTool tool = erlProject.getBuilderProperties().getBuilderTool();
+        if (!config.matchTool(tool)) {
+            final String msg = String.format(
+                    "Project's builder tool %s and configuration %s don't match", tool,
+                    config);
+            MarkerUtils.addProblemMarker(erlProject.getWorkspaceProject(), null, null,
+                    msg, 0, IMarker.SEVERITY_WARNING);
+            return false;
+        }
+        return true;
+    }
 
     public static IErlangBuilderFactory getFactory() {
         return ExtensionUtils.getSingletonExtension(

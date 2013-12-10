@@ -11,11 +11,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.erlide.core.builder.BuilderHelper;
-import org.erlide.core.builder.MarkerUtils;
 import org.erlide.core.executor.ProgressCallback;
 import org.erlide.core.executor.ToolExecutor;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
 import org.erlide.engine.model.builder.ErlangBuilder;
+import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.util.ErlLogger;
 
 public abstract class ExternalBuilder extends ErlangBuilder {
@@ -34,6 +34,9 @@ public abstract class ExternalBuilder extends ErlangBuilder {
     @Override
     public IProject[] build(final int kind, final Map<String, String> args,
             final IProgressMonitor monitor) throws CoreException {
+
+        super.build(kind, args, monitor);
+
         final SubMonitor m = SubMonitor.convert(monitor, 10);
         final IProject project = getProject();
 

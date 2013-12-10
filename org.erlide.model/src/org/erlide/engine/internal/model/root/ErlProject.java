@@ -104,7 +104,7 @@ public class ErlProject extends Openable implements IErlProject,
     private static final boolean IS_CASE_SENSITIVE = !new File("Temp").equals(new File("temp")); //$NON-NLS-1$ //$NON-NLS-2$
 
     protected IProject fProject;
-    private BuilderConfig builderConfig;
+    private BuilderConfig builderConfig = BuilderConfig.INTERNAL;
     private ErlangProjectProperties properties;
     private BuilderProperties builderProperties;
 
@@ -733,8 +733,9 @@ public class ErlProject extends Openable implements IErlProject,
 
     public void loadCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        setBuilderConfig(BuilderConfig.valueOf(node.get("builderConfig",
-                BuilderConfig.INTERNAL.name())));
+        final String name = node.get("builderConfig",
+                BuilderConfig.INTERNAL.name());
+        setBuilderConfig(BuilderConfig.valueOf(name));
     }
 
     public void saveCoreProperties() {
@@ -807,15 +808,13 @@ public class ErlProject extends Openable implements IErlProject,
 
     private void loadBuilderProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        getBuilderProperties().setBuilderTool(
-                BuilderTool.valueOf(node.get("builderTool",
-                        BuilderTool.INTERNAL.name())));
+        final String name = node
+                .get("builderTool", BuilderTool.INTERNAL.name());
+        getBuilderProperties().setBuilderTool(BuilderTool.valueOf(name));
     }
 
     private boolean validateBuilderTool(final BuilderTool tool) {
-        final Collection<BuilderTool> tools = getBuilderConfig()
-                .getMatchingTools();
-        return tools.contains(builderProperties.getBuilderTool());
+        return getBuilderConfig().matchTool(builderProperties.getBuilderTool());
     }
 
     @Override
