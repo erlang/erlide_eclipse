@@ -45,7 +45,7 @@ import org.erlide.core.builder.CompilerOptions;
 import org.erlide.core.builder.MarkerUtils;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.builder.BuildProperties;
+import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.rpc.IRpcFuture;
@@ -370,7 +370,7 @@ public class InternalBuilder extends ErlangBuilder {
     }
 
     @Override
-    public BuildProperties getProperties() {
+    public BuilderProperties getProperties() {
         return null;
     }
 

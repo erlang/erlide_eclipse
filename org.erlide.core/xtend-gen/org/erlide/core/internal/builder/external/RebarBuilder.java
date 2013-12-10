@@ -14,7 +14,7 @@ import org.erlide.core.internal.builder.ExternalBuilder;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.builder.BuildProperties;
+import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlFolder;
 
@@ -91,7 +91,7 @@ public class RebarBuilder extends ExternalBuilder {
     return _plus;
   }
   
-  public BuildProperties getProperties() {
+  public BuilderProperties getProperties() {
     return null;
   }
 }

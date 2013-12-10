@@ -11,37 +11,38 @@ public class ProjectConfigurationTests extends AbstractProjectConfigurationTests
 
     @Test
     public void defaultProjectBuilderShouldBeInternal() {
-        assertThat(props.getBuilderTool(), is(BuilderTool.INTERNAL));
-        assertThat(props.getBuilderConfig(), is(BuilderConfig.INTERNAL));
+        assertThat(project.getBuilderProperties().getBuilderTool(),
+                is(BuilderTool.INTERNAL));
+        assertThat(project.getBuilderConfig(), is(BuilderConfig.INTERNAL));
     }
 
     @Test
     public void canSetProjectConfig() {
-        props.setBuilderConfig(BuilderConfig.INTERNAL);
+        project.setBuilderConfig(BuilderConfig.INTERNAL);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void canNotSetIncompatibleConfig() {
-        props.setBuilderTool(BuilderTool.EMAKE);
-        props.setBuilderConfig(BuilderConfig.REBAR);
+        project.getBuilderProperties().setBuilderTool(BuilderTool.EMAKE);
+        project.setBuilderConfig(BuilderConfig.REBAR);
     }
 
     @Test
     public void canSetCompatibleConfig() {
-        props.setBuilderTool(BuilderTool.EMAKE);
-        props.setBuilderConfig(BuilderConfig.EMAKE);
+        project.getBuilderProperties().setBuilderTool(BuilderTool.EMAKE);
+        project.setBuilderConfig(BuilderConfig.EMAKE);
     }
 
     @Test
     public void configFollowsTool() throws Exception {
-        props.setBuilderTool(BuilderTool.EMAKE);
-        assertThat(props.getBuilderConfig(), is(BuilderConfig.EMAKE));
-        props.setBuilderTool(BuilderTool.REBAR);
-        assertThat(props.getBuilderConfig(), is(BuilderConfig.REBAR));
-        props.setBuilderTool(BuilderTool.INTERNAL);
-        assertThat(props.getBuilderConfig(), is(BuilderConfig.REBAR));
-        props.setBuilderTool(BuilderTool.MAKE);
-        assertThat(props.getBuilderConfig(), is(BuilderConfig.REBAR));
+        project.getBuilderProperties().setBuilderTool(BuilderTool.EMAKE);
+        assertThat(project.getBuilderConfig(), is(BuilderConfig.EMAKE));
+        project.getBuilderProperties().setBuilderTool(BuilderTool.REBAR);
+        assertThat(project.getBuilderConfig(), is(BuilderConfig.REBAR));
+        project.getBuilderProperties().setBuilderTool(BuilderTool.INTERNAL);
+        assertThat(project.getBuilderConfig(), is(BuilderConfig.REBAR));
+        project.getBuilderProperties().setBuilderTool(BuilderTool.MAKE);
+        assertThat(project.getBuilderConfig(), is(BuilderConfig.REBAR));
     }
 
     @Override

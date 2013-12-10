@@ -9,8 +9,6 @@ import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.Path
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
-import org.erlide.engine.model.builder.BuilderTool
-import org.erlide.engine.model.builder.BuilderConfig
 
 class ErlangProjectProperties {
 
@@ -18,12 +16,10 @@ class ErlangProjectProperties {
     @Property Collection<IPath> sourceDirs
     @Property Collection<IPath> includeDirs
 
-    @Property BuilderTool builderTool
-    @Property BuilderConfig builderConfig
+    @Property RuntimeVersion requiredRuntimeVersion
 
     @Property String externalIncludesFile
     @Property String externalModulesFile
-    @Property RuntimeVersion requiredRuntimeVersion
 
     val public static ErlangProjectProperties DEFAULT = new ErlangProjectProperties() => [
         _sourceDirs = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS)
@@ -33,7 +29,7 @@ class ErlangProjectProperties {
         _externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES
         _requiredRuntimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
     ]
-
+    
     new() {
         _sourceDirs = newArrayList()
         _outputDir = new Path("")
@@ -151,31 +147,6 @@ class ErlangProjectProperties {
     def private IPath resolvePath(IPath path) {
         val pathVariableManager = ResourcesPlugin.getWorkspace().getPathVariableManager()
         return pathVariableManager.resolvePath(path)
-    }
-
-    def void setBuilderTool(BuilderTool tool) {
-        if (_builderTool == tool) {
-            return
-        }
-        _builderTool = tool
-        val Collection<BuilderConfig> configs = builderTool.matchingConfigs
-        if (configs.size() == 1) {
-            setBuilderConfig(configs.head)
-        } else if (!configs.contains(_builderConfig)) {
-            setBuilderConfig(null)
-        }
-    }
-
-    def void setBuilderConfig(BuilderConfig config) {
-        if (config != null && !builderTool.matchingConfigs.contains(config)) {
-            throw new IllegalArgumentException(
-                '''Builder config «config» can't be used with tool «builderTool»''')
-        }
-
-        // TODO unsubscribe from notifications from old config
-        _builderConfig = config;
-
-    // TODO subscribe to notifications from new config
     }
 
 }

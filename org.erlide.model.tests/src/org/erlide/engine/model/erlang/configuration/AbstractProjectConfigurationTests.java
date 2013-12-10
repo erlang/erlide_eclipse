@@ -23,7 +23,7 @@ public abstract class AbstractProjectConfigurationTests {
         final String name = "testproject3";
         project = ErlideTestUtils.createProject(ErlideTestUtils.getTmpPath(name), name);
         final ErlProject p = (ErlProject) project;
-        p.loadCoreProperties();
+        p.configurationChanged();
         props = project.getProperties();
     }
 

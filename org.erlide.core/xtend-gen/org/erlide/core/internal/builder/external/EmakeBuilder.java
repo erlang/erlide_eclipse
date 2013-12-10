@@ -21,7 +21,7 @@ import org.erlide.core.internal.builder.ExternalBuilder;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.builder.BuildProperties;
+import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
@@ -108,7 +108,7 @@ public class EmakeBuilder extends ExternalBuilder {
     return _plus;
   }
   
-  public BuildProperties getProperties() {
+  public BuilderProperties getProperties() {
     return null;
   }
 }

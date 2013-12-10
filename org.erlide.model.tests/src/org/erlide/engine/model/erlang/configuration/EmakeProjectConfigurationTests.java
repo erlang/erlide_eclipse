@@ -24,10 +24,9 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
     @Override
     @Test
     public void configCanBeParsed() throws CoreException {
-        project.getProperties().setBuilderTool(BuilderTool.EMAKE);
+        project.getBuilderProperties().setBuilderTool(BuilderTool.EMAKE);
         final ProjectConfigurator configurator = ErlangBuilder.getFactory()
-                .getConfigurationPersister(project.getProperties().getBuilderConfig())
-                .getConfigurator();
+                .getConfigurationPersister(project.getBuilderConfig()).getConfigurator();
 
         final ErlangProjectProperties expected = new ErlangProjectProperties();
         expected.setSourceDirs();
@@ -38,7 +37,7 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
 
     @Test
     public void propertiesShouldFollowConfigFileChange() throws CoreException {
-        project.getProperties().setBuilderTool(BuilderTool.EMAKE);
+        project.getBuilderProperties().setBuilderTool(BuilderTool.EMAKE);
         final String cfgFile = BuilderConfig.EMAKE.getConfigName();
 
         final String config1 = "{'src/*',[debug_info,{i,\"myinclude\"}]}. "

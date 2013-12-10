@@ -46,6 +46,7 @@ import org.erlide.engine.model.ErlModelStatusConstants;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IOpenable;
 import org.erlide.engine.model.builder.BuilderConfig;
+import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.IErlModule;
@@ -103,9 +104,9 @@ public class ErlProject extends Openable implements IErlProject,
     private static final boolean IS_CASE_SENSITIVE = !new File("Temp").equals(new File("temp")); //$NON-NLS-1$ //$NON-NLS-2$
 
     protected IProject fProject;
-    private ErlangProjectProperties properties;
-    private BuilderTool builderTool;
     private BuilderConfig builderConfig;
+    private ErlangProjectProperties properties;
+    private BuilderProperties builderProperties;
 
     public ErlProject(final IProject project, final ErlElement parent) {
         super(parent, project.getName());
@@ -732,16 +733,14 @@ public class ErlProject extends Openable implements IErlProject,
 
     public void loadCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        builderTool = BuilderTool.valueOf(node.get("builderTool",
-                BuilderTool.INTERNAL.name()));
-        builderConfig = BuilderConfig.valueOf(node.get("builderConfig",
-                BuilderConfig.INTERNAL.name()));
+        setBuilderConfig(BuilderConfig.valueOf(node.get("builderConfig",
+                BuilderConfig.INTERNAL.name())));
     }
 
     public void saveCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        node.put("builderTool", builderTool.name());
-        node.put("builderConfig", builderConfig.name());
+        node.put("builderConfig", getBuilderConfig().name());
+        node.put("builderTool", builderProperties.getBuilderTool().name());
         try {
             node.flush();
         } catch (final BackingStoreException e) {
@@ -749,16 +748,26 @@ public class ErlProject extends Openable implements IErlProject,
         }
     }
 
+    @Override
+    public void setBuilderConfig(final BuilderConfig config) {
+        builderConfig = config;
+    }
+
+    @Override
+    public BuilderConfig getBuilderConfig() {
+        return builderConfig;
+    }
+
     public ErlangProjectProperties loadProperties() {
         final ProjectConfigurationPersister persister = ErlangBuilder
-                .getFactory().getConfigurationPersister(builderConfig);
+                .getFactory().getConfigurationPersister(getBuilderConfig());
         persister.setProject(getWorkspaceProject());
         return persister.getConfiguration(this);
     }
 
     private void storeProperties() {
         final ProjectConfigurationPersister persister = ErlangBuilder
-                .getFactory().getConfigurationPersister(builderConfig);
+                .getFactory().getConfigurationPersister(getBuilderConfig());
         persister.setProject(getWorkspaceProject());
         if (properties != null) {
             persister.setConfiguration(this, properties);
@@ -786,13 +795,35 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     public ErlangProjectProperties getConfig() {
-        return getConfig(builderConfig);
+        return getConfig(getBuilderConfig());
     }
 
     @Override
     public void configurationChanged() {
         loadCoreProperties();
+        loadBuilderProperties();
         properties = loadProperties();
+    }
+
+    private void loadBuilderProperties() {
+        final IEclipsePreferences node = getCorePropertiesNode();
+        getBuilderProperties().setBuilderTool(
+                BuilderTool.valueOf(node.get("builderTool",
+                        BuilderTool.INTERNAL.name())));
+    }
+
+    private boolean validateBuilderTool(final BuilderTool tool) {
+        final Collection<BuilderTool> tools = getBuilderConfig()
+                .getMatchingTools();
+        return tools.contains(builderProperties.getBuilderTool());
+    }
+
+    @Override
+    public BuilderProperties getBuilderProperties() {
+        if (builderProperties == null) {
+            builderProperties = new BuilderProperties();
+        }
+        return builderProperties;
     }
 
 }

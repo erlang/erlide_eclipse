@@ -2,13 +2,13 @@ package org.erlide.engine.model.builder;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.xtext.xbase.lib.Functions;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public enum BuilderTool {
     INTERNAL(null), MAKE("Makefile"), EMAKE("Emakefile"), REBAR("rebar.config");
@@ -27,16 +27,16 @@ public enum BuilderTool {
         return toolMarker;
     }
 
-    private static Map<BuilderTool, List<BuilderConfig>> toolConfigsMap = new Functions.Function0<Map<BuilderTool, List<BuilderConfig>>>() {
+    public static final Map<BuilderTool, Set<BuilderConfig>> toolConfigsMap = new Functions.Function0<Map<BuilderTool, Set<BuilderConfig>>>() {
         @Override
-        public Map<BuilderTool, List<BuilderConfig>> apply() {
-            final Map<BuilderTool, List<BuilderConfig>> result = Maps.newHashMap();
-            result.put(INTERNAL, Lists.newArrayList(BuilderConfig.INTERNAL,
+        public Map<BuilderTool, Set<BuilderConfig>> apply() {
+            final Map<BuilderTool, Set<BuilderConfig>> result = Maps.newHashMap();
+            result.put(INTERNAL, Sets.newHashSet(BuilderConfig.INTERNAL,
                     BuilderConfig.EMAKE, BuilderConfig.REBAR));
-            result.put(MAKE, Lists.newArrayList(BuilderConfig.INTERNAL,
-                    BuilderConfig.EMAKE, BuilderConfig.REBAR));
-            result.put(EMAKE, Lists.newArrayList(BuilderConfig.EMAKE));
-            result.put(REBAR, Lists.newArrayList(BuilderConfig.REBAR));
+            result.put(MAKE, Sets.newHashSet(BuilderConfig.INTERNAL, BuilderConfig.EMAKE,
+                    BuilderConfig.REBAR));
+            result.put(EMAKE, Sets.newHashSet(BuilderConfig.EMAKE));
+            result.put(REBAR, Sets.newHashSet(BuilderConfig.REBAR));
             return Maps.newEnumMap(result);
         }
     }.apply();
@@ -46,6 +46,10 @@ public enum BuilderTool {
      */
     public Collection<BuilderConfig> getMatchingConfigs() {
         return Collections.unmodifiableCollection(toolConfigsMap.get(this));
+    }
+
+    public boolean matchConfig(final BuilderConfig config) {
+        return toolConfigsMap.get(this).contains(config);
     }
 
 }
