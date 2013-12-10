@@ -36,8 +36,8 @@ class RebarBuilder extends ExternalBuilder {
         ]
         if (! foundAppSrc) {
             // TODO rebar has configuration for this 
-            MarkerUtils.addMarker(null, project, null, "No .app.src file found, can't compile with rebar", -1,
-                IMarker.SEVERITY_WARNING, IMarker.PROBLEM)
+            MarkerUtils.addMarker(project, project, null, "No .app.src file found, can't compile with rebar", -1,
+                IMarker.SEVERITY_WARNING, MarkerUtils.PROBLEM_MARKER)
         }
     }
 

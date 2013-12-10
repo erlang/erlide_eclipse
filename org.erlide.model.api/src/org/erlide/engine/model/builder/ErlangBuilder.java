@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.services.ExtensionUtils;
 
 public abstract class ErlangBuilder extends IncrementalProjectBuilder {
@@ -36,7 +37,11 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
 
-        if (validateBuildConfiguration(erlProject)) {
+        if (!validateBuildConfiguration(erlProject)) {
+            final BuilderConfig config = erlProject.getBuilderConfig();
+            final BuilderTool tool = erlProject.getBuilderProperties().getBuilderTool();
+            ErlLogger.warn("Builder tool and config mismatch: " + tool + " " + config);
+
             monitor.setCanceled(true);
         }
 

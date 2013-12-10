@@ -237,7 +237,7 @@ public final class MarkerUtils {
     private static void removeMarkersFor(final IResource resource, final String type) {
         try {
             if (resource != null && resource.exists()) {
-                resource.deleteMarkers(type, false, IResource.DEPTH_INFINITE);
+                resource.deleteMarkers(type, true, IResource.DEPTH_INFINITE);
             }
         } catch (final CoreException e) {
             // assume there were no problems

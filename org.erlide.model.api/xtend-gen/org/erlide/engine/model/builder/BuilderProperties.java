@@ -2,6 +2,11 @@ package org.erlide.engine.model.builder;
 
 import org.erlide.engine.model.builder.BuilderTool;
 
+/**
+ * TODO there should be specific properties for each builder tool
+ * but we wait until we see if there are many properties that are only
+ * relevant for a single tool
+ */
 @SuppressWarnings("all")
 public class BuilderProperties {
   /**
@@ -97,5 +102,24 @@ public class BuilderProperties {
    */
   public void setCleanTarget(final String cleanTarget) {
     this._cleanTarget = cleanTarget;
+  }
+  
+  /**
+   * Test target name.
+   */
+  private String _testTarget = "test";
+  
+  /**
+   * Test target name.
+   */
+  public String getTestTarget() {
+    return this._testTarget;
+  }
+  
+  /**
+   * Test target name.
+   */
+  public void setTestTarget(final String testTarget) {
+    this._testTarget = testTarget;
   }
 }
