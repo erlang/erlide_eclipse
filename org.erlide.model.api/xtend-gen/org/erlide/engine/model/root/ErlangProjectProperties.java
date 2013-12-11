@@ -256,8 +256,8 @@ public class ErlangProjectProperties {
     result.copyFrom(this);
     final ErlangProjectProperties dflt = ErlangProjectProperties.DEFAULT;
     IPath _outputDir = result.getOutputDir();
-    boolean _equals = Objects.equal(_outputDir, null);
-    if (_equals) {
+    boolean _tripleEquals = (_outputDir == null);
+    if (_tripleEquals) {
       IPath _outputDir_1 = dflt.getOutputDir();
       result.setOutputDir(_outputDir_1);
     }
@@ -265,8 +265,8 @@ public class ErlangProjectProperties {
     IPath _resolvePath = this.resolvePath(_outputDir_2);
     result.setOutputDir(_resolvePath);
     Collection<IPath> _sourceDirs = result.getSourceDirs();
-    boolean _equals_1 = Objects.equal(_sourceDirs, null);
-    if (_equals_1) {
+    boolean _tripleEquals_1 = (_sourceDirs == null);
+    if (_tripleEquals_1) {
       Collection<IPath> _sourceDirs_1 = dflt.getSourceDirs();
       result.setSourceDirs(_sourceDirs_1);
     }
@@ -274,8 +274,8 @@ public class ErlangProjectProperties {
     Collection<IPath> _resolvePaths = this.resolvePaths(_sourceDirs_2);
     result.setSourceDirs(_resolvePaths);
     Collection<IPath> _includeDirs = result.getIncludeDirs();
-    boolean _equals_2 = Objects.equal(_includeDirs, null);
-    if (_equals_2) {
+    boolean _tripleEquals_2 = (_includeDirs == null);
+    if (_tripleEquals_2) {
       Collection<IPath> _includeDirs_1 = dflt.getIncludeDirs();
       result.setIncludeDirs(_includeDirs_1);
     }

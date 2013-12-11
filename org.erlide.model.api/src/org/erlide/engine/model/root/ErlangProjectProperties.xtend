@@ -119,15 +119,15 @@ class ErlangProjectProperties {
         val result = new ErlangProjectProperties()
         result.copyFrom(this)
         val dflt = ErlangProjectProperties.DEFAULT
-        if (result.getOutputDir() == null) {
+        if (result.getOutputDir() === null) {
             result.setOutputDir(dflt.getOutputDir())
         }
         result.setOutputDir(resolvePath(result.getOutputDir()))
-        if (result.getSourceDirs() == null) {
+        if (result.getSourceDirs() === null) {
             result.setSourceDirs(dflt.getSourceDirs())
         }
         result.setSourceDirs(resolvePaths(result.getSourceDirs()))
-        if (result.getIncludeDirs() == null) {
+        if (result.getIncludeDirs() === null) {
             result.setIncludeDirs(dflt.getIncludeDirs())
         }
         result.setIncludeDirs(resolvePaths(result.getIncludeDirs()))
