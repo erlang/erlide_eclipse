@@ -27,6 +27,8 @@ public class EmakeConfiguratorTests {
   public void emptyInputshouldReturnDefaultConfig() {
     ErlangProjectProperties _erlangProjectProperties = new ErlangProjectProperties();
     final ErlangProjectProperties expected = _erlangProjectProperties;
+    Path _path = new Path("ebin");
+    expected.setOutputDir(_path);
     expected.setSourceDirs();
     final ErlangProjectProperties actual = this.configurator.decodeConfig("");
     Matcher<ErlangProjectProperties> _sameAs = ErlangProjectPropertiesMatcher.<Object>sameAs(expected);

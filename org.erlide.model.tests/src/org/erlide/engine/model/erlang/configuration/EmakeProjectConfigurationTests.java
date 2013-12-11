@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.Collection;
 
@@ -12,7 +13,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.builder.BuilderConfig;
-import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
@@ -21,14 +21,24 @@ import org.junit.Test;
 
 public class EmakeProjectConfigurationTests extends AbstractProjectConfigurationTests {
 
+    @Test
+    public void configuratorExists() {
+        project.setBuilderConfig(BuilderConfig.EMAKE);
+        final ProjectConfigurator configurator = ErlangBuilder.getFactory()
+                .getConfigurationPersister(project.getBuilderConfig()).getConfigurator();
+
+        assertThat(configurator, is(notNullValue()));
+    }
+
     @Override
     @Test
     public void configCanBeParsed() throws CoreException {
-        project.getBuilderProperties().setBuilderTool(BuilderTool.EMAKE);
+        project.setBuilderConfig(BuilderConfig.EMAKE);
         final ProjectConfigurator configurator = ErlangBuilder.getFactory()
                 .getConfigurationPersister(project.getBuilderConfig()).getConfigurator();
 
         final ErlangProjectProperties expected = new ErlangProjectProperties();
+        expected.setOutputDir(new Path("ebin"));
         expected.setSourceDirs();
         final ErlangProjectProperties actual = configurator.decodeConfig("");
 
@@ -37,7 +47,7 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
 
     @Test
     public void propertiesShouldFollowConfigFileChange() throws CoreException {
-        project.getBuilderProperties().setBuilderTool(BuilderTool.EMAKE);
+        project.setBuilderConfig(BuilderConfig.EMAKE);
         final String cfgFile = BuilderConfig.EMAKE.getConfigName();
 
         final String config1 = "{'src/*',[debug_info,{i,\"myinclude\"}]}. "

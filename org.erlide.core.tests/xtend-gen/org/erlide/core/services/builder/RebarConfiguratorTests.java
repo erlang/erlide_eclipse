@@ -24,9 +24,11 @@ public class RebarConfiguratorTests {
   }
   
   @Test
-  public void emptyInputshouldReturnDefaultConfig() {
+  public void emptyInputShouldReturnDefaultConfig() {
     ErlangProjectProperties _erlangProjectProperties = new ErlangProjectProperties();
     final ErlangProjectProperties expected = _erlangProjectProperties;
+    Path _path = new Path("ebin");
+    expected.setOutputDir(_path);
     final ErlangProjectProperties actual = this.configurator.decodeConfig("");
     Matcher<ErlangProjectProperties> _sameAs = ErlangProjectPropertiesMatcher.<Object>sameAs(expected);
     MatcherAssert.<ErlangProjectProperties>assertThat(actual, _sameAs);

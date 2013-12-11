@@ -36,6 +36,7 @@ class RebarConfigurator implements ProjectConfigurator {
 
     override decodeConfig(String config) {
         val result = new ErlangProjectProperties()
+        result.setOutputDir(new Path("ebin"))
 
         val content = ErlangEngine.instance.simpleParserService.parse(config)
         if(content.empty) return result

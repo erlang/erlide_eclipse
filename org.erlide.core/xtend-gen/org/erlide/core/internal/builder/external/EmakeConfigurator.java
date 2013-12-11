@@ -32,6 +32,8 @@ public class EmakeConfigurator implements ProjectConfigurator {
     {
       ErlangProjectProperties _erlangProjectProperties = new ErlangProjectProperties();
       final ErlangProjectProperties result = _erlangProjectProperties;
+      Path _path = new Path("ebin");
+      result.setOutputDir(_path);
       result.setSourceDirs();
       IErlangEngine _instance = ErlangEngine.getInstance();
       SimpleParserService _simpleParserService = _instance.getSimpleParserService();

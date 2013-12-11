@@ -34,6 +34,8 @@ public class RebarConfigurator implements ProjectConfigurator {
     {
       ErlangProjectProperties _erlangProjectProperties = new ErlangProjectProperties();
       final ErlangProjectProperties result = _erlangProjectProperties;
+      Path _path = new Path("ebin");
+      result.setOutputDir(_path);
       IErlangEngine _instance = ErlangEngine.getInstance();
       SimpleParserService _simpleParserService = _instance.getSimpleParserService();
       final List<OtpErlangObject> content = _simpleParserService.parse(config);

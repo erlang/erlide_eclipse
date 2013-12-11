@@ -12,7 +12,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.builder.BuilderConfig;
-import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
@@ -24,11 +23,12 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
     @Override
     @Test
     public void configCanBeParsed() throws CoreException {
-        project.getBuilderProperties().setBuilderTool(BuilderTool.REBAR);
+        project.setBuilderConfig(BuilderConfig.REBAR);
         final ProjectConfigurator configurator = ErlangBuilder.getFactory()
                 .getConfigurationPersister(project.getBuilderConfig()).getConfigurator();
 
         final ErlangProjectProperties expected = new ErlangProjectProperties();
+        expected.setOutputDir(new Path("ebin"));
         final ErlangProjectProperties actual = configurator.decodeConfig("");
 
         assertThat(actual, is(ErlangProjectPropertiesMatcher.sameAs(expected)));
@@ -36,7 +36,7 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
 
     @Test
     public void propertiesShouldFollowConfigFileChange() throws CoreException {
-        project.getBuilderProperties().setBuilderTool(BuilderTool.REBAR);
+        project.setBuilderConfig(BuilderConfig.REBAR);
         final String cfgFile = BuilderConfig.REBAR.getConfigName();
         final String config = getFileContent(cfgFile);
 

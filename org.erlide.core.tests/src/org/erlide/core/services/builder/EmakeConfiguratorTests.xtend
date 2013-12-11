@@ -23,6 +23,7 @@ class EmakeConfiguratorTests {
     @Test
     def void emptyInputshouldReturnDefaultConfig() {
         val expected = new ErlangProjectProperties
+        expected.setOutputDir(new Path("ebin"))
         expected.setSourceDirs()
         val actual = configurator.decodeConfig("")
         assertThat(actual, sameAs(expected))

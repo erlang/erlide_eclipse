@@ -563,28 +563,28 @@ public class ErlProject extends Openable implements IErlProject,
 
     public void setIncludeDirs(final Collection<IPath> includeDirs) {
         getModelCache().removeProject(this);
-        getProperties().setIncludeDirs(includeDirs);
+        properties.setIncludeDirs(includeDirs);
         storeProperties();
         setStructureKnown(false);
     }
 
     public void setSourceDirs(final Collection<IPath> sourceDirs) {
         getModelCache().removeProject(this);
-        getProperties().setSourceDirs(sourceDirs);
+        properties.setSourceDirs(sourceDirs);
         storeProperties();
         setStructureKnown(false);
     }
 
     public void setExternalModulesFile(final String absolutePath) {
         getModelCache().removeProject(this);
-        getProperties().setExternalModulesFile(absolutePath);
+        properties.setExternalModulesFile(absolutePath);
         storeProperties();
         setStructureKnown(false);
     }
 
     public void setExternalIncludesFile(final String absolutePath) {
         getModelCache().removeProject(this);
-        getProperties().setExternalIncludesFile(absolutePath);
+        properties.setExternalIncludesFile(absolutePath);
         storeProperties();
         setStructureKnown(false);
     }
@@ -626,7 +626,7 @@ public class ErlProject extends Openable implements IErlProject,
     public void setProperties(final ErlangProjectProperties properties)
             throws BackingStoreException {
         getModelCache().removeProject(this);
-        final ErlangProjectProperties projectProperties = getProperties();
+        final ErlangProjectProperties projectProperties = getRawProperties();
         projectProperties.copyFrom(properties);
         storeProperties();
     }

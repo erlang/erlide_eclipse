@@ -21,8 +21,9 @@ class RebarConfiguratorTests {
     }
 
     @Test
-    def void emptyInputshouldReturnDefaultConfig() {
+    def void emptyInputShouldReturnDefaultConfig() {
         val expected = new ErlangProjectProperties
+        expected.setOutputDir(new Path("ebin"))
         val actual = configurator.decodeConfig("")
         assertThat(actual, sameAs(expected))
     }

@@ -28,6 +28,7 @@ class EmakeConfigurator implements ProjectConfigurator {
 
     override ErlangProjectProperties decodeConfig(String config) {
         val result = new ErlangProjectProperties()
+        result.setOutputDir(new Path("ebin"))
         result.setSourceDirs()
 
         val content = ErlangEngine.instance.simpleParserService.parse(config)
