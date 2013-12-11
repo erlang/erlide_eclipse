@@ -77,16 +77,16 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 /**
- * Handle for an Erlang Project.
+ * Handle for an Erlang project.
  * 
  * <p>
  * A Erlang Project internally maintains a devpath that corresponds to the
  * project's classpath. The classpath may include source folders from the
- * current project; jars in the current project, other projects, and the local
- * file system; and binary folders (output location) of other projects. The
- * Erlang Model presents source elements corresponding to output .class files in
- * other projects, and thus uses the devpath rather than the classpath (which is
- * really a compilation path). The devpath mimics the classpath, except has
+ * current project; archives in the current project, other projects, and the
+ * local file system; and binary folders (output location) of other projects.
+ * The Erlang Model presents source elements corresponding to output .beam files
+ * in other projects, and thus uses the devpath rather than the classpath (which
+ * is really a compilation path). The devpath mimics the classpath, except has
  * source folder entries in place of output locations in external projects.
  * 
  * <p>
@@ -107,6 +107,7 @@ public class ErlProject extends Openable implements IErlProject,
     private BuilderConfig builderConfig = BuilderConfig.INTERNAL;
     private ErlangProjectProperties properties;
     private BuilderProperties builderProperties;
+    private ProjectConfigurationPersister persister;
 
     public ErlProject(final IProject project, final ErlElement parent) {
         super(parent, project.getName());
@@ -126,6 +127,9 @@ public class ErlProject extends Openable implements IErlProject,
             throw new ErlModelException(new ErlModelStatus(
                     ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
         }
+
+        addConfigurationChangeListeners();
+
         try {
             final IContainer c = (IContainer) r;
             final IResource[] elems = c.members();
@@ -703,6 +707,7 @@ public class ErlProject extends Openable implements IErlProject,
 
     @Override
     public void dispose() {
+        removeConfigurationChangeListeners();
         clearCaches();
         try {
             accept(new IErlElementVisitor() {
@@ -720,6 +725,14 @@ public class ErlProject extends Openable implements IErlProject,
         super.dispose();
     }
 
+    private void addConfigurationChangeListeners() {
+        // TODO listen for changes to config files/prefs -- config specific??
+    }
+
+    private void removeConfigurationChangeListeners() {
+        // TODO remove listeners above
+    }
+
     @Override
     public IProject getWorkspaceProject() {
         return fProject;
@@ -731,14 +744,17 @@ public class ErlProject extends Openable implements IErlProject,
         super.close();
     }
 
-    public void loadCoreProperties() {
+    private void loadCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
         final String name = node.get("builderConfig",
                 BuilderConfig.INTERNAL.name());
         setBuilderConfig(BuilderConfig.valueOf(name));
+        persister = ErlangBuilder.getFactory().getConfigurationPersister(
+                getBuilderConfig());
+
     }
 
-    public void saveCoreProperties() {
+    private void storeCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
         node.put("builderConfig", getBuilderConfig().name());
         node.put("builderTool", builderProperties.getBuilderTool().name());
@@ -759,16 +775,12 @@ public class ErlProject extends Openable implements IErlProject,
         return builderConfig;
     }
 
-    public ErlangProjectProperties loadProperties() {
-        final ProjectConfigurationPersister persister = ErlangBuilder
-                .getFactory().getConfigurationPersister(getBuilderConfig());
+    private ErlangProjectProperties loadProperties() {
         persister.setProject(getWorkspaceProject());
         return persister.getConfiguration(this);
     }
 
     private void storeProperties() {
-        final ProjectConfigurationPersister persister = ErlangBuilder
-                .getFactory().getConfigurationPersister(getBuilderConfig());
         persister.setProject(getWorkspaceProject());
         if (properties != null) {
             persister.setConfiguration(this, properties);
@@ -801,6 +813,9 @@ public class ErlProject extends Openable implements IErlProject,
 
     @Override
     public void configurationChanged() {
+
+        System.out.println("CONFIG CHANGED!");
+
         loadCoreProperties();
         loadBuilderProperties();
         properties = loadProperties();

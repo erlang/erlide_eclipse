@@ -11,7 +11,6 @@ import java.util.Collection;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
@@ -54,7 +53,7 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
                 + "{'src2/*',[debug_info,{i,\"myinclude\"}]}.";
         setFileContent(cfgFile, config1);
 
-        final ErlangProjectProperties p2 = ((ErlProject) project).loadProperties();
+        final ErlangProjectProperties p2 = project.getProperties();
 
         final Collection<IPath> actualSources = p2.getSourceDirs();
         assertThat(actualSources, hasSize(2));

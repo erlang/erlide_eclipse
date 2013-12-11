@@ -26,7 +26,6 @@ public class InternalProjectConfigurationTests extends AbstractProjectConfigurat
         node.put(ProjectPreferencesConstants.OUTPUT_DIR, expected);
         node.flush();
 
-        // ((ErlProject) project).loadProperties();
         final ErlangProjectProperties pp = project.getProperties();
         final String actual = pp.getOutputDir().toPortableString();
 

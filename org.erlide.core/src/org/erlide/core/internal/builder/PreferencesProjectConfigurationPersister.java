@@ -45,6 +45,8 @@ public class PreferencesProjectConfigurationPersister extends
             return null;
         }
 
+        // TODO node.addListener(project);
+
         final String sourceDirsStr = node.get(ProjectPreferencesConstants.SOURCE_DIRS,
                 ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
         result.setSourceDirs(PathSerializer.unpackList(sourceDirsStr));

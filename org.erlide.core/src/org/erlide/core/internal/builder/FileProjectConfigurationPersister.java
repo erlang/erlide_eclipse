@@ -39,6 +39,7 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
             return null;
         }
         final IResource conf = getProject().findMember(fileName);
+        // TODO conf.addListenre(project)
         final File confFile = new File(conf.getLocation().toString());
 
         return getRawConfig(confFile);
