@@ -21,7 +21,7 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-import org.erlide.engine.model.builder.BuilderConfig;
+import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
@@ -120,23 +120,23 @@ public class ErlangProjectBuilderPage extends WizardPage {
     label1.setText("The directory layout is described");
     BuilderSelectionListener _builderSelectionListener_1 = new BuilderSelectionListener(this.info);
     final BuilderSelectionListener listener1 = _builderSelectionListener_1;
-    final BuilderConfig[] configs = BuilderConfig.values();
-    final Procedure1<BuilderConfig> _function_3 = new Procedure1<BuilderConfig>() {
-      public void apply(final BuilderConfig config) {
+    final BuilderConfigType[] configs = BuilderConfigType.values();
+    final Procedure1<BuilderConfigType> _function_3 = new Procedure1<BuilderConfigType>() {
+      public void apply(final BuilderConfigType config) {
         Button _button = new Button(ErlangProjectBuilderPage.this.configComposite, SWT.RADIO);
         Button check = _button;
         String _description = ErlangProjectBuilderPage.this.getDescription(config);
         check.setText(_description);
         check.setData(config);
-        boolean _tripleEquals = (config == BuilderConfig.INTERNAL);
+        boolean _tripleEquals = (config == BuilderConfigType.INTERNAL);
         check.setSelection(_tripleEquals);
         check.addSelectionListener(listener1);
         new Label(ErlangProjectBuilderPage.this.configComposite, SWT.NONE);
         new Label(ErlangProjectBuilderPage.this.configComposite, SWT.NONE);
       }
     };
-    IterableExtensions.<BuilderConfig>forEach(((Iterable<BuilderConfig>)Conversions.doWrapArray(configs)), _function_3);
-    String _name_1 = BuilderConfig.INTERNAL.name();
+    IterableExtensions.<BuilderConfigType>forEach(((Iterable<BuilderConfigType>)Conversions.doWrapArray(configs)), _function_3);
+    String _name_1 = BuilderConfigType.INTERNAL.name();
     this.info.setBuilderConfigName(_name_1);
     Composite _composite_2 = new Composite(composite, SWT.NONE);
     this.makeConfigComposite = _composite_2;
@@ -223,11 +223,11 @@ public class ErlangProjectBuilderPage extends WizardPage {
     return _switchResult;
   }
   
-  public String getDescription(final BuilderConfig config) {
+  public String getDescription(final BuilderConfigType config) {
     String _switchResult = null;
     boolean _matched = false;
     if (!_matched) {
-      if (Objects.equal(config,BuilderConfig.INTERNAL)) {
+      if (Objects.equal(config,BuilderConfigType.INTERNAL)) {
         _matched=true;
         StringConcatenation _builder = new StringConcatenation();
         _builder.append("manually (next page)");
@@ -235,7 +235,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
       }
     }
     if (!_matched) {
-      if (Objects.equal(config,BuilderConfig.EMAKE)) {
+      if (Objects.equal(config,BuilderConfigType.EMAKE)) {
         _matched=true;
         StringConcatenation _builder_1 = new StringConcatenation();
         _builder_1.append("in Emakefile");
@@ -243,7 +243,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
       }
     }
     if (!_matched) {
-      if (Objects.equal(config,BuilderConfig.REBAR)) {
+      if (Objects.equal(config,BuilderConfigType.REBAR)) {
         _matched=true;
         StringConcatenation _builder_2 = new StringConcatenation();
         _builder_2.append("in rebar.config");
@@ -274,7 +274,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
     }
     if (_and) {
       String _builderConfigName = this.info.getBuilderConfigName();
-      final BuilderConfig config = BuilderConfig.valueOf(_builderConfigName);
+      final BuilderConfigType config = BuilderConfigType.valueOf(_builderConfigName);
       IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
       final ProjectConfigurationPersister persister = _factory.getConfigurationPersister(config);
       final ErlangProjectProperties props = persister.getConfiguration(null);

@@ -11,7 +11,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.engine.model.builder.BuilderConfig;
+import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
@@ -22,7 +22,7 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
 
     @Test
     public void configuratorExists() {
-        project.setBuilderConfig(BuilderConfig.EMAKE);
+        project.setBuilderConfig(BuilderConfigType.EMAKE);
         final ProjectConfigurator configurator = ErlangBuilder.getFactory()
                 .getConfigurationPersister(project.getBuilderConfig()).getConfigurator();
 
@@ -32,7 +32,7 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
     @Override
     @Test
     public void configCanBeParsed() throws CoreException {
-        project.setBuilderConfig(BuilderConfig.EMAKE);
+        project.setBuilderConfig(BuilderConfigType.EMAKE);
         final ProjectConfigurator configurator = ErlangBuilder.getFactory()
                 .getConfigurationPersister(project.getBuilderConfig()).getConfigurator();
 
@@ -46,8 +46,8 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
 
     @Test
     public void propertiesShouldFollowConfigFileChange() throws CoreException {
-        project.setBuilderConfig(BuilderConfig.EMAKE);
-        final String cfgFile = BuilderConfig.EMAKE.getConfigName();
+        project.setBuilderConfig(BuilderConfigType.EMAKE);
+        final String cfgFile = BuilderConfigType.EMAKE.getConfigName();
 
         final String config1 = "{'src/*',[debug_info,{i,\"myinclude\"}]}. "
                 + "{'src2/*',[debug_info,{i,\"myinclude\"}]}.";

@@ -11,12 +11,12 @@ import org.eclipse.swt.widgets.Button
 import org.eclipse.swt.widgets.Combo
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Label
-import org.erlide.engine.model.builder.BuilderConfig
 import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
 import org.erlide.engine.model.builder.ErlangBuilder
 import org.eclipse.swt.widgets.Text
+import org.erlide.engine.model.builder.BuilderConfigType
 
 class ErlangProjectBuilderPage extends WizardPage {
 
@@ -78,17 +78,17 @@ class ErlangProjectBuilderPage extends WizardPage {
         label1.text = 'The directory layout is described'
 
         val listener1 = new BuilderSelectionListener(info)
-        val configs = BuilderConfig.values
+        val configs = BuilderConfigType.values
         configs.forEach [ config |
             var check = new Button(configComposite, SWT.RADIO)
             check.text = getDescription(config)
             check.data = config
-            check.selection = (config === BuilderConfig.INTERNAL)
+            check.selection = (config === BuilderConfigType.INTERNAL)
             check.addSelectionListener(listener1)
             new Label(configComposite, SWT.NONE)
             new Label(configComposite, SWT.NONE)
         ]
-        info.builderConfigName = BuilderConfig.INTERNAL.name
+        info.builderConfigName = BuilderConfigType.INTERNAL.name
 
         makeConfigComposite = new Composite(composite, SWT.NONE)
         makeConfigComposite.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1))
@@ -139,11 +139,11 @@ class ErlangProjectBuilderPage extends WizardPage {
         }
     }
 
-    def String getDescription(BuilderConfig config) {
+    def String getDescription(BuilderConfigType config) {
         switch (config) {
-            case BuilderConfig.INTERNAL: '''manually (next page)'''
-            case BuilderConfig.EMAKE: '''in Emakefile'''
-            case BuilderConfig.REBAR: '''in rebar.config'''
+            case BuilderConfigType.INTERNAL: '''manually (next page)'''
+            case BuilderConfigType.EMAKE: '''in Emakefile'''
+            case BuilderConfigType.REBAR: '''in rebar.config'''
         }
     }
 
@@ -159,7 +159,7 @@ class ErlangProjectBuilderPage extends WizardPage {
         if (location !== null && new File(location.toPortableString).exists) {
 
             // TODO 
-            val config = BuilderConfig.valueOf(info.builderConfigName)
+            val config = BuilderConfigType.valueOf(info.builderConfigName)
             val persister = ErlangBuilder.getFactory().getConfigurationPersister(config)
             
             // TODO we need to get config without a project! it is not created yet
@@ -193,7 +193,7 @@ class BuilderSelectionListener implements SelectionListener {
                 (info.builderName == BuilderTool.INTERNAL.name)
             page.makeConfigComposite.visible = info.builderName == BuilderTool.MAKE.name
         } else {
-            info.builderConfigName = (e.widget.data as BuilderConfig).name
+            info.builderConfigName = (e.widget.data as BuilderConfigType).name
         }
     }
 

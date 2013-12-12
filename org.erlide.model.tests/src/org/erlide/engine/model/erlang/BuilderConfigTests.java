@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.is;
 import java.util.Map;
 import java.util.Set;
 
-import org.erlide.engine.model.builder.BuilderConfig;
+import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.junit.Test;
 
@@ -14,8 +14,8 @@ public class BuilderConfigTests {
 
     @Test
     public void configMapMatchesToolMap() {
-        final Map<BuilderTool, Set<BuilderConfig>> map = BuilderTool.toolConfigsMap;
-        final Map<BuilderConfig, Set<BuilderTool>> inverse = MapUtils.inverseSet(map);
-        assertThat(BuilderConfig.configToolsMap, is(inverse));
+        final Map<BuilderTool, Set<BuilderConfigType>> map = BuilderTool.toolConfigsMap;
+        final Map<BuilderConfigType, Set<BuilderTool>> inverse = MapUtils.inverseSet(map);
+        assertThat(BuilderConfigType.configToolsMap, is(inverse));
     }
 }

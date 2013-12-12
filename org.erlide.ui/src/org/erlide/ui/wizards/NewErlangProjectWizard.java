@@ -39,7 +39,7 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.builder.BuilderConfig;
+import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.ErlideUIConstants;
@@ -60,7 +60,7 @@ import com.google.common.collect.Maps;
 public class NewErlangProjectWizard extends Wizard implements INewWizard {
 
     private NewProjectData info;
-    private Map<BuilderConfig, ProjectPreferencesWizardPage> buildPages;
+    private Map<BuilderConfigType, ProjectPreferencesWizardPage> buildPages;
     private ErlangNewProjectCreationPage mainPage;
     private ErlangProjectBuilderPage builderPage;
 
@@ -74,7 +74,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         try {
             super.addPages();
             info = new NewProjectData();
-            buildPages = Maps.newEnumMap(BuilderConfig.class);
+            buildPages = Maps.newEnumMap(BuilderConfigType.class);
 
             mainPage = new ErlangNewProjectCreationPage("mainPage", info);
             mainPage.setTitle(ErlideUIPlugin
@@ -94,7 +94,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
                     .getImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
             addPage(builderPage);
 
-            for (final BuilderConfig builder : BuilderConfig.values()) {
+            for (final BuilderConfigType builder : BuilderConfigType.values()) {
                 final ProjectPreferencesWizardPage buildPage = ProjectPreferencesWizardPageFactory
                         .create(builder, info);
                 buildPages.put(builder, buildPage);
@@ -290,7 +290,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
                         .getMatchingConfigs().iterator().next().name();
             }
 
-            final BuilderConfig config = BuilderConfig.valueOf(configName);
+            final BuilderConfigType config = BuilderConfigType.valueOf(configName);
             return buildPages.get(config);
         }
         return null;

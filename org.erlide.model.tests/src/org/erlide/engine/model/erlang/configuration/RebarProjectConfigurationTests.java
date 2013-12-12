@@ -10,7 +10,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.engine.model.builder.BuilderConfig;
+import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
@@ -22,7 +22,7 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
     @Override
     @Test
     public void configCanBeParsed() throws CoreException {
-        project.setBuilderConfig(BuilderConfig.REBAR);
+        project.setBuilderConfig(BuilderConfigType.REBAR);
         final ProjectConfigurator configurator = ErlangBuilder.getFactory()
                 .getConfigurationPersister(project.getBuilderConfig()).getConfigurator();
 
@@ -35,8 +35,8 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
 
     @Test
     public void propertiesShouldFollowConfigFileChange() throws CoreException {
-        project.setBuilderConfig(BuilderConfig.REBAR);
-        final String cfgFile = BuilderConfig.REBAR.getConfigName();
+        project.setBuilderConfig(BuilderConfigType.REBAR);
+        final String cfgFile = BuilderConfigType.REBAR.getConfigName();
         final String config = getFileContent(cfgFile);
 
         final String config1 = config + "{erl_opts, [{i, \"myinclude\"}, "

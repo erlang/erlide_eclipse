@@ -8,7 +8,7 @@ import org.erlide.core.internal.builder.external.EmakeConfigurator;
 import org.erlide.core.internal.builder.external.MakeBuilder;
 import org.erlide.core.internal.builder.external.RebarBuilder;
 import org.erlide.core.internal.builder.external.RebarConfigurator;
-import org.erlide.engine.model.builder.BuilderConfig;
+import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
@@ -49,7 +49,7 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
 
     @Override
     public ProjectConfigurationPersister getConfigurationPersister(
-            final BuilderConfig info) {
+            final BuilderConfigType info) {
         if (info == null) {
             return null;
         }

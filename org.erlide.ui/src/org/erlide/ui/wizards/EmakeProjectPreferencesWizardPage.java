@@ -1,6 +1,6 @@
 package org.erlide.ui.wizards;
 
-import org.erlide.engine.model.builder.BuilderConfig;
+import org.erlide.engine.model.builder.BuilderConfigType;
 
 public class EmakeProjectPreferencesWizardPage extends ProjectPreferencesWizardPage {
 
@@ -11,7 +11,7 @@ public class EmakeProjectPreferencesWizardPage extends ProjectPreferencesWizardP
 
     @Override
     protected String getBuilderDescription() {
-        return "Configuration retrieved from " + BuilderConfig.EMAKE.getConfigName();
+        return "Configuration retrieved from " + BuilderConfigType.EMAKE.getConfigName();
     }
 
 }

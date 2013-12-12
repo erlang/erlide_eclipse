@@ -10,12 +10,12 @@ import org.eclipse.xtext.xbase.lib.Functions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public enum BuilderConfig {
+public enum BuilderConfigType {
     INTERNAL("org.erlide.core"), EMAKE("Emakefile"), REBAR("rebar.config");
 
     private final String configName;
 
-    BuilderConfig(final String configName) {
+    BuilderConfigType(final String configName) {
         this.configName = configName;
     }
 
@@ -28,10 +28,10 @@ public enum BuilderConfig {
         return configName;
     }
 
-    public static final Map<BuilderConfig, Set<BuilderTool>> configToolsMap = new Functions.Function0<Map<BuilderConfig, Set<BuilderTool>>>() {
+    public static final Map<BuilderConfigType, Set<BuilderTool>> configToolsMap = new Functions.Function0<Map<BuilderConfigType, Set<BuilderTool>>>() {
         @Override
-        public Map<BuilderConfig, Set<BuilderTool>> apply() {
-            final Map<BuilderConfig, Set<BuilderTool>> result = Maps.newHashMap();
+        public Map<BuilderConfigType, Set<BuilderTool>> apply() {
+            final Map<BuilderConfigType, Set<BuilderTool>> result = Maps.newHashMap();
             result.put(INTERNAL, Sets.newHashSet(BuilderTool.INTERNAL, BuilderTool.MAKE));
             result.put(EMAKE, Sets.newHashSet(BuilderTool.EMAKE, BuilderTool.MAKE,
                     BuilderTool.INTERNAL));

@@ -6,6 +6,6 @@ public interface IErlangBuilderFactory {
 
     ErlangBuilder getBuilder(BuilderTool tool);
 
-    ProjectConfigurationPersister getConfigurationPersister(BuilderConfig info);
+    ProjectConfigurationPersister getConfigurationPersister(BuilderConfigType info);
 
 }

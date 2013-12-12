@@ -27,16 +27,16 @@ public enum BuilderTool {
         return toolMarker;
     }
 
-    public static final Map<BuilderTool, Set<BuilderConfig>> toolConfigsMap = new Functions.Function0<Map<BuilderTool, Set<BuilderConfig>>>() {
+    public static final Map<BuilderTool, Set<BuilderConfigType>> toolConfigsMap = new Functions.Function0<Map<BuilderTool, Set<BuilderConfigType>>>() {
         @Override
-        public Map<BuilderTool, Set<BuilderConfig>> apply() {
-            final Map<BuilderTool, Set<BuilderConfig>> result = Maps.newHashMap();
-            result.put(INTERNAL, Sets.newHashSet(BuilderConfig.INTERNAL,
-                    BuilderConfig.EMAKE, BuilderConfig.REBAR));
-            result.put(MAKE, Sets.newHashSet(BuilderConfig.INTERNAL, BuilderConfig.EMAKE,
-                    BuilderConfig.REBAR));
-            result.put(EMAKE, Sets.newHashSet(BuilderConfig.EMAKE));
-            result.put(REBAR, Sets.newHashSet(BuilderConfig.REBAR));
+        public Map<BuilderTool, Set<BuilderConfigType>> apply() {
+            final Map<BuilderTool, Set<BuilderConfigType>> result = Maps.newHashMap();
+            result.put(INTERNAL, Sets.newHashSet(BuilderConfigType.INTERNAL,
+                    BuilderConfigType.EMAKE, BuilderConfigType.REBAR));
+            result.put(MAKE, Sets.newHashSet(BuilderConfigType.INTERNAL, BuilderConfigType.EMAKE,
+                    BuilderConfigType.REBAR));
+            result.put(EMAKE, Sets.newHashSet(BuilderConfigType.EMAKE));
+            result.put(REBAR, Sets.newHashSet(BuilderConfigType.REBAR));
             return Maps.newEnumMap(result);
         }
     }.apply();
@@ -44,11 +44,11 @@ public enum BuilderTool {
     /**
      * @return the list of BuilderConfigs that can be used with this tool
      */
-    public Collection<BuilderConfig> getMatchingConfigs() {
+    public Collection<BuilderConfigType> getMatchingConfigs() {
         return Collections.unmodifiableCollection(toolConfigsMap.get(this));
     }
 
-    public boolean matchConfig(final BuilderConfig config) {
+    public boolean matchConfig(final BuilderConfigType config) {
         return toolConfigsMap.get(this).contains(config);
     }
 

@@ -6,9 +6,9 @@ import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IProjectNature
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.NullProgressMonitor
-import org.erlide.engine.model.builder.BuilderConfig
 import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.builder.ErlangBuilder
+import org.erlide.engine.model.builder.BuilderConfigType
 
 /** 
  * Erlang project nature
@@ -79,17 +79,17 @@ class ErlangNature implements IProjectNature {
         BuilderTool.INTERNAL
     }
 
-    static def BuilderConfig detectBuilderConfig(IContainer folder) {
+    static def BuilderConfigType detectBuilderConfig(IContainer folder) {
         if (!folder.exists) {
             return null
         }
         if (folder.findMember(BuilderTool.EMAKE.getToolMarker) !== null) {
-            return BuilderConfig.EMAKE
+            return BuilderConfigType.EMAKE
         }
         if (folder.findMember(BuilderTool.REBAR.getToolMarker) !== null) {
-            return BuilderConfig.REBAR
+            return BuilderConfigType.REBAR
         }
-        BuilderConfig.INTERNAL
+        BuilderConfigType.INTERNAL
     }
 
 

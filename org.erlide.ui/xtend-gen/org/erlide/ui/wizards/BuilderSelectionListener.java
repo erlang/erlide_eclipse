@@ -3,7 +3,7 @@ package org.erlide.ui.wizards;
 import com.google.common.base.Objects;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.erlide.engine.model.builder.BuilderConfig;
+import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.ui.wizards.ErlangProjectBuilderPage;
 import org.erlide.ui.wizards.NewProjectData;
@@ -51,7 +51,7 @@ public class BuilderSelectionListener implements SelectionListener {
       this.page.makeConfigComposite.setVisible(_equals_2);
     } else {
       Object _data_1 = e.widget.getData();
-      String _name_4 = ((BuilderConfig) _data_1).name();
+      String _name_4 = ((BuilderConfigType) _data_1).name();
       this.info.setBuilderConfigName(_name_4);
     }
   }

@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IOpenable;
 import org.erlide.engine.model.IParent;
-import org.erlide.engine.model.builder.BuilderConfig;
+import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -109,8 +109,8 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     BuilderProperties getBuilderProperties();
 
-    BuilderConfig getBuilderConfig();
+    BuilderConfigType getBuilderConfig();
 
-    void setBuilderConfig(BuilderConfig config);
+    void setBuilderConfig(BuilderConfigType config);
 
 }

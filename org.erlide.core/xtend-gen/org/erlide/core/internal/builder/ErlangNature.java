@@ -14,7 +14,7 @@ import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
-import org.erlide.engine.model.builder.BuilderConfig;
+import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
@@ -125,8 +125,8 @@ public class ErlangNature implements IProjectNature {
     return _xblockexpression;
   }
   
-  public static BuilderConfig detectBuilderConfig(final IContainer folder) {
-    BuilderConfig _xblockexpression = null;
+  public static BuilderConfigType detectBuilderConfig(final IContainer folder) {
+    BuilderConfigType _xblockexpression = null;
     {
       boolean _exists = folder.exists();
       boolean _not = (!_exists);
@@ -137,15 +137,15 @@ public class ErlangNature implements IProjectNature {
       IResource _findMember = folder.findMember(_toolMarker);
       boolean _tripleNotEquals = (_findMember != null);
       if (_tripleNotEquals) {
-        return BuilderConfig.EMAKE;
+        return BuilderConfigType.EMAKE;
       }
       String _toolMarker_1 = BuilderTool.REBAR.getToolMarker();
       IResource _findMember_1 = folder.findMember(_toolMarker_1);
       boolean _tripleNotEquals_1 = (_findMember_1 != null);
       if (_tripleNotEquals_1) {
-        return BuilderConfig.REBAR;
+        return BuilderConfigType.REBAR;
       }
-      _xblockexpression = (BuilderConfig.INTERNAL);
+      _xblockexpression = (BuilderConfigType.INTERNAL);
     }
     return _xblockexpression;
   }
