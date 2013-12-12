@@ -13,12 +13,12 @@ public class ProjectConfigurationTests extends AbstractProjectConfigurationTests
     public void defaultProjectBuilderShouldBeInternal() {
         assertThat(project.getBuilderProperties().getBuilderTool(),
                 is(BuilderTool.INTERNAL));
-        assertThat(project.getBuilderConfig(), is(BuilderConfigType.INTERNAL));
+        assertThat(project.getBuilderConfigType(), is(BuilderConfigType.INTERNAL));
     }
 
     @Test
     public void canSetProjectConfig() {
-        project.setBuilderConfig(BuilderConfigType.INTERNAL);
+        project.setBuilderConfigType(BuilderConfigType.INTERNAL);
     }
 
     @Override

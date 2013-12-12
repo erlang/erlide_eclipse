@@ -7,10 +7,8 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.core.content.ErlangContentDescriber;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.util.ErlLogger;
@@ -25,8 +23,8 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
     private final String fileName;
     private final ProjectConfigurator configurator;
 
-    public FileProjectConfigurationPersister(
-            @NonNull final ProjectConfigurator configurator, final String fileName) {
+    public FileProjectConfigurationPersister(final ProjectConfigurator configurator,
+            final String fileName) {
         Preconditions.checkNotNull(fileName);
         Preconditions.checkNotNull(configurator);
         this.configurator = configurator;
@@ -34,11 +32,11 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
     }
 
     @Override
-    public ErlangProjectProperties getConfiguration(final IErlProject project) {
+    public ErlangProjectProperties getConfiguration() {
         if (fileName == null) {
             return null;
         }
-        final IResource conf = getProject().findMember(fileName);
+        final IResource conf = getProject().getWorkspaceProject().findMember(fileName);
         // TODO conf.addListenre(project)
         final File confFile = new File(conf.getLocation().toString());
 
@@ -69,9 +67,8 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
     }
 
     @Override
-    public void setConfiguration(final IErlProject project,
-            final ErlangProjectProperties info) {
-        final IProject aProject = getProject();
+    public void setConfiguration(final ErlangProjectProperties info) {
+        final IProject aProject = getProject().getWorkspaceProject();
         if (aProject == null) {
             return;
         }

@@ -22,9 +22,9 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
     @Override
     @Test
     public void configCanBeParsed() throws CoreException {
-        project.setBuilderConfig(BuilderConfigType.REBAR);
+        project.setBuilderConfigType(BuilderConfigType.REBAR);
         final ProjectConfigurator configurator = ErlangBuilder.getFactory()
-                .getConfigurationPersister(project.getBuilderConfig()).getConfigurator();
+                .getConfig(project.getBuilderConfigType(), project).getConfigurator();
 
         final ErlangProjectProperties expected = new ErlangProjectProperties();
         expected.setOutputDir(new Path("ebin"));
@@ -35,7 +35,7 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
 
     @Test
     public void propertiesShouldFollowConfigFileChange() throws CoreException {
-        project.setBuilderConfig(BuilderConfigType.REBAR);
+        project.setBuilderConfigType(BuilderConfigType.REBAR);
         final String cfgFile = BuilderConfigType.REBAR.getConfigName();
         final String config = getFileContent(cfgFile);
 

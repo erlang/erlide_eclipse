@@ -4,15 +4,14 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import org.erlide.core.internal.builder.external.EmakeBuilder;
-import org.erlide.core.internal.builder.external.EmakeConfigurator;
 import org.erlide.core.internal.builder.external.MakeBuilder;
 import org.erlide.core.internal.builder.external.RebarBuilder;
-import org.erlide.core.internal.builder.external.RebarConfigurator;
+import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
-import org.erlide.engine.model.root.ProjectConfigurationPersister;
+import org.erlide.engine.model.root.IErlProject;
 
 public class ErlangBuilderFactory implements IErlangBuilderFactory {
 
@@ -48,24 +47,21 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
     }
 
     @Override
-    public ProjectConfigurationPersister getConfigurationPersister(
-            final BuilderConfigType info) {
-        if (info == null) {
-            return null;
-        }
-        final String configName = info.getConfigName();
-        switch (info) {
+    public BuilderConfig getConfig(final BuilderConfigType config,
+            final IErlProject project) {
+        BuilderConfig result = null;
+        switch (config) {
         case INTERNAL:
-            return new PreferencesProjectConfigurationPersister(configName);
-        case EMAKE:
-            return new FileProjectConfigurationPersister(new EmakeConfigurator(),
-                    configName);
+            result = new InternalBuilderConfig(project);
+            break;
         case REBAR:
-            return new FileProjectConfigurationPersister(new RebarConfigurator(),
-                    configName);
+            result = new RebarBuilderConfig(project);
+            break;
+        case EMAKE:
+            result = new EmakeBuilderConfig(project);
+            break;
         }
-        // doesn't happen
-        throw new IllegalArgumentException("Illegal Erlang builder: " + info.toString());
+        return result;
     }
 
 }

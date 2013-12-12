@@ -5,7 +5,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.model.root.ProjectConfigurator;
@@ -31,12 +30,11 @@ public class PreferencesProjectConfigurationPersister extends
     }
 
     private IEclipsePreferences getNode() {
-        return new ProjectScope(getProject()).getNode(nodeKey);
+        return new ProjectScope(getProject().getWorkspaceProject()).getNode(nodeKey);
     }
 
     @Override
-    public ErlangProjectProperties getConfiguration(final IErlProject project) {
-        setProject(project.getWorkspaceProject());
+    public ErlangProjectProperties getConfiguration() {
         final ErlangProjectProperties result = new ErlangProjectProperties();
         final IEclipsePreferences node = getNode();
         if (node == null) {
@@ -74,9 +72,7 @@ public class PreferencesProjectConfigurationPersister extends
     }
 
     @Override
-    public void setConfiguration(final IErlProject project,
-            final ErlangProjectProperties info) {
-        setProject(project.getWorkspaceProject());
+    public void setConfiguration(final ErlangProjectProperties info) {
         final IEclipsePreferences node = getNode();
         if (node == null) {
             ErlLogger.warn("Could not store project preferences for "
