@@ -21,12 +21,7 @@ import org.erlide.util.event_tracer.ErlideSessionEvent;
 
 @SuppressWarnings("all")
 public class ErlideEventTracerHandler implements IDisposable {
-  protected String user = new Function0<String>() {
-    public String apply() {
-      String _property = System.getProperty("user.name");
-      return _property;
-    }
-  }.apply();
+  protected String user = System.getProperty("user.name");
   
   protected String machine = new Function0<String>() {
     public String apply() {
@@ -77,8 +72,7 @@ public class ErlideEventTracerHandler implements IDisposable {
     final String sdate = this.formatter.format(date);
     String _hexString = Integer.toHexString(event.workspace);
     IPath _append = this.storagePath.append(_hexString);
-    String _plus = (sdate + ".log");
-    IPath _append_1 = _append.append(_plus);
+    IPath _append_1 = _append.append((sdate + ".log"));
     final String name = _append_1.toPortableString();
     try {
       FileWriter _fileWriter = new FileWriter(name, false);

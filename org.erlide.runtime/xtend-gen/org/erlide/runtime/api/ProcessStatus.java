@@ -76,7 +76,7 @@ public class ProcessStatus {
           if (Objects.equal(key,"name")) {
             _matched=true;
             if ((value instanceof OtpErlangAtom)) {
-              String _atomValue = ((OtpErlangAtom) value).atomValue();
+              String _atomValue = ((OtpErlangAtom)value).atomValue();
               this.registered_name = _atomValue;
             } else {
               this.registered_name = "";
@@ -98,8 +98,7 @@ public class ProcessStatus {
       } catch (final Throwable _t) {
         if (_t instanceof Exception) {
           final Exception e = (Exception)_t;
-          String _plus = (">>>>>>> bad term in system status: " + input);
-          ErlLogger.error(_plus);
+          ErlLogger.error((">>>>>>> bad term in system status: " + input));
         } else {
           throw Exceptions.sneakyThrow(_t);
         }
