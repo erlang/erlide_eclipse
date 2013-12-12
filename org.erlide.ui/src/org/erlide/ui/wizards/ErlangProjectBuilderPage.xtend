@@ -160,7 +160,7 @@ class ErlangProjectBuilderPage extends WizardPage {
 
             // TODO 
             val config = BuilderConfigType.valueOf(info.builderConfigName)
-            val persister = ErlangBuilder.getFactory().getConfig(config, null).persister
+            val persister = ErlangBuilder.factory.getConfig(config, null).persister
             
             // TODO we need to get config without a project! it is not created yet
             val props = persister.getConfiguration()

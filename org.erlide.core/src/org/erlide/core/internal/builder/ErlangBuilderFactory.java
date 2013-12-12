@@ -52,13 +52,13 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
         BuilderConfig result = null;
         switch (config) {
         case INTERNAL:
-            result = new InternalBuilderConfig(project);
+            result = new InternalBuilderConfig();
             break;
         case REBAR:
-            result = new RebarBuilderConfig(project);
+            result = new RebarBuilderConfig();
             break;
         case EMAKE:
-            result = new EmakeBuilderConfig(project);
+            result = new EmakeBuilderConfig();
             break;
         }
         return result;
