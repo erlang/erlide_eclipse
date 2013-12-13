@@ -9,8 +9,6 @@
 -include_lib("eunit/include/eunit.hrl").
 -include_lib("erlide_open.hrl").
 
--compile(export_all).
-
 %%
 %% test Functions
 %%
