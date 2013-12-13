@@ -10,25 +10,6 @@ import org.erlide.engine.model.builder.BuilderTool;
 @SuppressWarnings("all")
 public class BuilderProperties {
   /**
-   * TODO is this necessary?
-   */
-  private boolean _nukeOutputOnClean = false;
-  
-  /**
-   * TODO is this necessary?
-   */
-  public boolean isNukeOutputOnClean() {
-    return this._nukeOutputOnClean;
-  }
-  
-  /**
-   * TODO is this necessary?
-   */
-  public void setNukeOutputOnClean(final boolean nukeOutputOnClean) {
-    this._nukeOutputOnClean = nukeOutputOnClean;
-  }
-  
-  /**
    * The tool that is used to build the project.
    */
   private BuilderTool _builderTool = BuilderTool.INTERNAL;

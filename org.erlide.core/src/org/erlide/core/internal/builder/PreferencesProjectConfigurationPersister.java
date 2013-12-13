@@ -66,8 +66,6 @@ public class PreferencesProjectConfigurationPersister extends
         result.setExternalIncludesFile(node.get(
                 ProjectPreferencesConstants.EXTERNAL_INCLUDES,
                 ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES));
-        // result.setNukeOutputOnClean(node.getBoolean(
-        // ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN, false));
         return result;
     }
 
@@ -96,8 +94,6 @@ public class PreferencesProjectConfigurationPersister extends
         }
         node.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
                 info.getExternalModulesFile());
-        // node.putBoolean(ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
-        // info.isNukeOutputOnClean());
 
         try {
             node.flush();

@@ -96,13 +96,6 @@ public class ErlangProjectPropertyPage extends PropertyPage {
         // addField(new
         // ComboFieldEditor(ProjectPreferencesConstants.RUNTIME_VERSION,
         // "Runtime version:", versionsArray, getFieldEditorParent()));
-        //
-        // if (config == BuilderConfig.INTERNAL) {
-        // addField(new BooleanFieldEditor(
-        // ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
-        // "When cleaning, delete the whole output directories (is faster)",
-        // getFieldEditorParent()));
-        // }
 
     }
 

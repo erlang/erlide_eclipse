@@ -44,7 +44,6 @@ public final class ProjectPreferencesConstants {
     public static final String PROJECT_EXTERNAL_MODULES = "external_modules";
     public static final String DEFAULT_EXTERNAL_MODULES = "";
 
-    public static final String NUKE_OUTPUT_ON_CLEAN = "nukeOutputOnClean";
     public static final String BUILDER = "builder";
     public static final String BUILDER_COMPILE_TARGET = "builderCompileTarget";
     public static final String BUILDER_CLEAN_TARGET = "builderCleanTarget";
