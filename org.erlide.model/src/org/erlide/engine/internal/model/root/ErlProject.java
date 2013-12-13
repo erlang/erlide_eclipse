@@ -624,8 +624,8 @@ public class ErlProject extends Openable implements IErlProject,
         if (runtimeInfo != null) {
             return runtimeInfo.getVersion();
         }
-        // TODO or null?
-        return getProperties().getRequiredRuntimeVersion();
+        // should not happen
+        return null;
     }
 
     @Override
@@ -655,7 +655,7 @@ public class ErlProject extends Openable implements IErlProject,
                 }
             }
         } catch (final CoreException e) {
-            // throw new ErlModelException(e);
+            throw new ErlModelException(e);
         }
         return result;
     }

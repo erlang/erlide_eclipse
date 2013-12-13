@@ -56,6 +56,10 @@ public class ErlModelException extends CoreException {
         this(null, status);
     }
 
+    public ErlModelException(final CoreException e) {
+        this(e, new ErlModelStatus(e));
+    }
+
     /**
      * Returns the underlying <code>Throwable</code> that caused the failure.
      * 
