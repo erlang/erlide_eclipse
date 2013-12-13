@@ -24,7 +24,8 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
     public void configCanBeParsed() throws CoreException {
         project.setBuilderConfigType(BuilderConfigType.REBAR);
         final ProjectConfigurator configurator = ErlangBuilder.getFactory()
-                .getConfig(project.getBuilderConfigType(), project).getConfigurator();
+                .getConfig(project.getBuilderConfigType(), project).getPersister()
+                .getConfigurator();
 
         final ErlangProjectProperties expected = new ErlangProjectProperties();
         expected.setOutputDir(new Path("ebin"));

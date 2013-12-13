@@ -22,11 +22,11 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
     private final ProjectConfigurator configurator;
 
     public FileProjectConfigurationPersister(final ProjectConfigurator configurator,
-            final String fileName) {
-        Preconditions.checkNotNull(fileName);
+            final String filePath) {
+        Preconditions.checkNotNull(filePath);
         Preconditions.checkNotNull(configurator);
         this.configurator = configurator;
-        this.filePath = fileName;
+        this.filePath = filePath;
     }
 
     @Override

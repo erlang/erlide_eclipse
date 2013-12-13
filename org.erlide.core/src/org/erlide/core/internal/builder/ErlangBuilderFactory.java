@@ -3,15 +3,21 @@ package org.erlide.core.internal.builder;
 import java.util.EnumMap;
 import java.util.Map;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.core.internal.builder.external.EmakeBuilder;
+import org.erlide.core.internal.builder.external.EmakeConfigurator;
 import org.erlide.core.internal.builder.external.MakeBuilder;
 import org.erlide.core.internal.builder.external.RebarBuilder;
+import org.erlide.core.internal.builder.external.RebarConfigurator;
 import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.ProjectConfigurationPersister;
 
 public class ErlangBuilderFactory implements IErlangBuilderFactory {
 
@@ -50,18 +56,38 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
     public BuilderConfig getConfig(final BuilderConfigType config,
             final IErlProject project) {
         BuilderConfig result = null;
+        ProjectConfigurationPersister persister;
+        String path;
+        final String qualifier = config.getConfigName();
+        final IResource resource = project.getWorkspaceProject().findMember(qualifier);
         switch (config) {
         case INTERNAL:
-            result = new InternalBuilderConfig();
+            final IEclipsePreferences node = new ProjectScope(
+                    project.getWorkspaceProject()).getNode(qualifier);
+            persister = new PreferencesProjectConfigurationPersister(node);
+            result = new BuilderConfig(persister);
             break;
         case REBAR:
-            result = new RebarBuilderConfig();
+            if (resource == null) {
+                System.out.println("Not found: " + qualifier + " in " + project);
+                return null;
+            }
+            path = resource.getLocation().toPortableString();
+            persister = new FileProjectConfigurationPersister(new RebarConfigurator(),
+                    path);
+            result = new BuilderConfig(persister);
             break;
         case EMAKE:
-            result = new EmakeBuilderConfig();
+            if (resource == null) {
+                System.out.println("Not found: " + qualifier + " in " + project);
+                return null;
+            }
+            path = resource.getLocation().toPortableString();
+            persister = new FileProjectConfigurationPersister(new EmakeConfigurator(),
+                    path);
+            result = new BuilderConfig(persister);
             break;
         }
         return result;
     }
-
 }
