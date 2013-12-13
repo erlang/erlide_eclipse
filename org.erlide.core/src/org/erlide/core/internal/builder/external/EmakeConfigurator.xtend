@@ -2,7 +2,6 @@ package org.erlide.core.internal.builder.external
 
 import java.util.ArrayList
 import java.util.List
-import org.eclipse.core.resources.IProject
 import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.Path
 import org.erlide.engine.ErlangEngine
@@ -13,7 +12,7 @@ import org.erlide.util.erlang.ErlUtils
 
 class EmakeConfigurator implements ProjectConfigurator {
 
-    override String encodeConfig(IProject project, ErlangProjectProperties info) {
+    override String encodeConfig(ErlangProjectProperties info) {
 
         // TODO do nothing at the moment, will be implemented in step 2
         null

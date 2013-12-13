@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.erlide.core.content.ErlangContentDescriber;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
@@ -20,7 +18,7 @@ import com.google.common.io.Files;
 
 public class FileProjectConfigurationPersister extends ProjectConfigurationPersister {
 
-    private final String fileName;
+    private final String filePath;
     private final ProjectConfigurator configurator;
 
     public FileProjectConfigurationPersister(final ProjectConfigurator configurator,
@@ -28,19 +26,16 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
         Preconditions.checkNotNull(fileName);
         Preconditions.checkNotNull(configurator);
         this.configurator = configurator;
-        this.fileName = fileName;
+        this.filePath = fileName;
     }
 
     @Override
     public ErlangProjectProperties getConfiguration() {
-        if (fileName == null) {
+        if (filePath == null) {
             return null;
         }
-        final IResource conf = getProject().getWorkspaceProject().findMember(fileName);
-        // TODO conf.addListenre(project)
-        final File confFile = new File(conf.getLocation().toString());
 
-        return getRawConfig(confFile);
+        return getRawConfig(new File(filePath));
     }
 
     private ErlangProjectProperties getRawConfig(final File confFile) {
@@ -68,13 +63,8 @@ public class FileProjectConfigurationPersister extends ProjectConfigurationPersi
 
     @Override
     public void setConfiguration(final ErlangProjectProperties info) {
-        final IProject aProject = getProject().getWorkspaceProject();
-        if (aProject == null) {
-            return;
-        }
-        final IResource conf = aProject.findMember(fileName);
-        final File confFile = new File(conf.getLocation().toString());
-        final String confString = getConfigurator().encodeConfig(aProject, info);
+        final File confFile = new File(filePath);
+        final String confString = getConfigurator().encodeConfig(info);
         if (confString != null) {
             final String content = "%% coding: UTF-8\n" + confString;
             try {

@@ -5,7 +5,6 @@ import com.google.common.base.Objects;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
@@ -23,7 +22,7 @@ import org.erlide.util.erlang.ErlUtils;
 
 @SuppressWarnings("all")
 public class EmakeConfigurator implements ProjectConfigurator {
-  public String encodeConfig(final IProject project, final ErlangProjectProperties info) {
+  public String encodeConfig(final ErlangProjectProperties info) {
     return null;
   }
   

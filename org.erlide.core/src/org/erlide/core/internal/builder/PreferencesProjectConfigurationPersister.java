@@ -1,9 +1,7 @@
 package org.erlide.core.internal.builder;
 
-import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
@@ -18,28 +16,24 @@ import com.google.common.base.Preconditions;
 public class PreferencesProjectConfigurationPersister extends
         ProjectConfigurationPersister {
 
-    private final String nodeKey;
+    private final IEclipsePreferences node;
 
-    public PreferencesProjectConfigurationPersister(final String nodeKey) {
-        Preconditions.checkNotNull(nodeKey);
-        this.nodeKey = nodeKey;
+    public PreferencesProjectConfigurationPersister(final IEclipsePreferences node) {
+        Preconditions.checkNotNull(node);
+        this.node = node;
     }
 
     public PreferencesProjectConfigurationPersister() {
-        this(BuilderConfigType.INTERNAL.getConfigName());
-    }
-
-    private IEclipsePreferences getNode() {
-        return new ProjectScope(getProject().getWorkspaceProject()).getNode(nodeKey);
+        this(null);
+        // TODO this(BuilderConfigType.INTERNAL.getConfigName());
     }
 
     @Override
     public ErlangProjectProperties getConfiguration() {
         final ErlangProjectProperties result = new ErlangProjectProperties();
-        final IEclipsePreferences node = getNode();
         if (node == null) {
-            ErlLogger.warn("Could not load project preferences for "
-                    + getProject().getName());
+            ErlLogger.warn("Could not load project preferences from "
+                    + node.absolutePath());
             return null;
         }
 
@@ -71,10 +65,9 @@ public class PreferencesProjectConfigurationPersister extends
 
     @Override
     public void setConfiguration(final ErlangProjectProperties info) {
-        final IEclipsePreferences node = getNode();
         if (node == null) {
-            ErlLogger.warn("Could not store project preferences for "
-                    + getProject().getName());
+            ErlLogger.warn("Could not store project preferences to "
+                    + node.absolutePath());
             return;
         }
 

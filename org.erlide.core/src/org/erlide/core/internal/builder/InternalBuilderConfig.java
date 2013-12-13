@@ -12,7 +12,8 @@ public class InternalBuilderConfig extends BuilderConfig {
 
     @Override
     public ProjectConfigurationPersister getPersister() {
-        return new PreferencesProjectConfigurationPersister(getType().getConfigName());
+        return new PreferencesProjectConfigurationPersister(null);
+        // TODO getType().getConfigName()
     }
 
 }
