@@ -18,12 +18,7 @@ public class ErlideSessionEvent extends ErlideEvent {
   public final int workspace;
   
   public ErlideSessionEvent(final String aWorkspace) {
-    super(new Function0<Long>() {
-      public Long apply() {
-        long _currentTimeMillis = System.currentTimeMillis();
-        return _currentTimeMillis;
-      }
-    }.apply());
+    super(System.currentTimeMillis());
     int _hashCode = aWorkspace.hashCode();
     this.workspace = _hashCode;
   }

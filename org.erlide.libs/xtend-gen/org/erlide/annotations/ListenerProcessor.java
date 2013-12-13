@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import org.eclipse.xtend.lib.macro.AbstractFieldProcessor;
 import org.eclipse.xtend.lib.macro.TransformationContext;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
-import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy.CompilationContext;
 import org.eclipse.xtend.lib.macro.declaration.MutableFieldDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableMethodDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableTypeDeclaration;
@@ -42,7 +41,7 @@ public class ListenerProcessor extends AbstractFieldProcessor {
     final TypeReference initFieldType = context.newTypeReference(Function0.class, _list);
     final TypeReference initListType = context.newTypeReference(ArrayList.class, lamdaType);
     final CompilationStrategy _function = new CompilationStrategy() {
-      public CharSequence compile(final CompilationContext it) {
+      public CharSequence compile(final CompilationStrategy.CompilationContext it) {
         StringConcatenation _builder = new StringConcatenation();
         _builder.append("new ");
         String _javaCode = it.toJavaCode(initFieldType);
@@ -84,7 +83,7 @@ public class ListenerProcessor extends AbstractFieldProcessor {
         it.setVisibility(Visibility.PUBLIC);
         it.addParameter("listener", lamdaType);
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("this.");
             String _simpleName = field.getSimpleName();
@@ -106,7 +105,7 @@ public class ListenerProcessor extends AbstractFieldProcessor {
         it.setVisibility(Visibility.PUBLIC);
         it.addParameter("event", eventType);
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("for (");
             String _javaCode = it.toJavaCode(lamdaType);

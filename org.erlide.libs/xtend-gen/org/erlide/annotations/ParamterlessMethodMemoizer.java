@@ -1,7 +1,7 @@
 package org.erlide.annotations;
 
 import org.eclipse.xtend.lib.macro.TransformationContext;
-import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy.CompilationContext;
+import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
 import org.eclipse.xtend.lib.macro.declaration.MutableMethodDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableTypeDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.TypeReference;
@@ -15,7 +15,7 @@ public class ParamterlessMethodMemoizer extends MethodMemoizer {
     super(method, context, index);
   }
   
-  protected CharSequence cacheCall(@Extension final CompilationContext context) {
+  protected CharSequence cacheCall(@Extension final CompilationStrategy.CompilationContext context) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("if (");
     String _cacheFieldName = this.cacheFieldName();
@@ -63,7 +63,7 @@ public class ParamterlessMethodMemoizer extends MethodMemoizer {
     return _wrappedReturnType;
   }
   
-  protected CharSequence cacheFieldInit(final CompilationContext context) {
+  protected CharSequence cacheFieldInit(final CompilationStrategy.CompilationContext context) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("null");
     return _builder;

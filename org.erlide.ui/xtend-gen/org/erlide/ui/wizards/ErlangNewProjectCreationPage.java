@@ -15,8 +15,7 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
   
   public void setVisible(final boolean visible) {
     super.setVisible(visible);
-    boolean _not = (!visible);
-    if (_not) {
+    if ((!visible)) {
       String _projectName = this.getProjectName();
       this.info.setName(_projectName);
       IPath _locationPath = this.getLocationPath();

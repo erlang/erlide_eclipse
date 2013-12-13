@@ -18,8 +18,8 @@ public class MemoizeProcessor implements TransformationParticipant<MutableMethod
   public void doTransform(final List<? extends MutableMethodDeclaration> methods, @Extension final TransformationContext context) {
     final Procedure1<MutableMethodDeclaration> _function = new Procedure1<MutableMethodDeclaration>() {
       public void apply(final MutableMethodDeclaration it) {
-        List<MutableParameterDeclaration> _parameters = it.getParameters();
-        int _size = _parameters.size();
+        Iterable<? extends MutableParameterDeclaration> _parameters = it.getParameters();
+        int _size = IterableExtensions.size(_parameters);
         final int _switchValue = _size;
         boolean _matched = false;
         if (!_matched) {

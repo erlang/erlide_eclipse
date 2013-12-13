@@ -1,9 +1,7 @@
 package org.erlide.annotations;
 
-import java.util.List;
 import org.eclipse.xtend.lib.macro.TransformationContext;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
-import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy.CompilationContext;
 import org.eclipse.xtend.lib.macro.declaration.MutableFieldDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableMethodDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableParameterDeclaration;
@@ -47,7 +45,7 @@ public abstract class MethodMemoizer {
               init.setVisibility(Visibility.PRIVATE);
               TypeReference _wrappedReturnType = MethodMemoizer.this.wrappedReturnType();
               init.setReturnType(_wrappedReturnType);
-              List<MutableParameterDeclaration> _parameters = MethodMemoizer.this.method.getParameters();
+              Iterable<? extends MutableParameterDeclaration> _parameters = MethodMemoizer.this.method.getParameters();
               final Procedure1<MutableParameterDeclaration> _function = new Procedure1<MutableParameterDeclaration>() {
                 public void apply(final MutableParameterDeclaration it) {
                   String _simpleName = it.getSimpleName();
@@ -55,8 +53,8 @@ public abstract class MethodMemoizer {
                   init.addParameter(_simpleName, _type);
                 }
               };
-              IterableExtensions.<MutableParameterDeclaration>forEach(_parameters, _function);
-              List<TypeReference> _exceptions = MethodMemoizer.this.method.getExceptions();
+              IterableExtensions.forEach(_parameters, _function);
+              Iterable<? extends TypeReference> _exceptions = MethodMemoizer.this.method.getExceptions();
               init.setExceptions(((TypeReference[])Conversions.unwrapArray(_exceptions, TypeReference.class)));
               Expression _body = MethodMemoizer.this.method.getBody();
               init.setBody(_body);
@@ -71,7 +69,7 @@ public abstract class MethodMemoizer {
               TypeReference _cacheFieldType = MethodMemoizer.this.cacheFieldType();
               it.setType(_cacheFieldType);
               final CompilationStrategy _function = new CompilationStrategy() {
-                public CharSequence compile(final CompilationContext it) {
+                public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                   CharSequence _cacheFieldInit = MethodMemoizer.this.cacheFieldInit(it);
                   return _cacheFieldInit;
                 }
@@ -86,7 +84,7 @@ public abstract class MethodMemoizer {
       final Procedure1<MutableMethodDeclaration> _function_1 = new Procedure1<MutableMethodDeclaration>() {
         public void apply(final MutableMethodDeclaration it) {
           final CompilationStrategy _function = new CompilationStrategy() {
-            public CharSequence compile(final CompilationContext it) {
+            public CharSequence compile(final CompilationStrategy.CompilationContext it) {
               CharSequence _cacheCall = MethodMemoizer.this.cacheCall(it);
               return _cacheCall;
             }
@@ -125,9 +123,9 @@ public abstract class MethodMemoizer {
     return _builder.toString();
   }
   
-  protected abstract CharSequence cacheCall(final CompilationContext context);
+  protected abstract CharSequence cacheCall(final CompilationStrategy.CompilationContext context);
   
   protected abstract TypeReference cacheFieldType();
   
-  protected abstract CharSequence cacheFieldInit(final CompilationContext context);
+  protected abstract CharSequence cacheFieldInit(final CompilationStrategy.CompilationContext context);
 }

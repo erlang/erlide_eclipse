@@ -65,20 +65,17 @@ public class RebarBuilder extends ExternalBuilder {
                 RebarBuilder.this.foundAppSrc = true;
               }
             }
-            boolean _not = (!RebarBuilder.this.foundAppSrc);
-            _xblockexpression = (_not);
+            _xblockexpression = ((!RebarBuilder.this.foundAppSrc));
           }
           return _xblockexpression;
         }
       };
       _project.accept(_function);
       IMarker _xifexpression = null;
-      boolean _not = (!this.foundAppSrc);
-      if (_not) {
+      if ((!this.foundAppSrc)) {
         IProject _project_1 = this.getProject();
         IProject _project_2 = this.getProject();
-        int _minus = (-1);
-        IMarker _addMarker = MarkerUtils.addMarker(_project_1, _project_2, null, "No .app.src file found, can\'t compile with rebar", _minus, 
+        IMarker _addMarker = MarkerUtils.addMarker(_project_1, _project_2, null, "No .app.src file found, can\'t compile with rebar", (-1), 
           IMarker.SEVERITY_WARNING, MarkerUtils.PROBLEM_MARKER);
         _xifexpression = _addMarker;
       }
@@ -88,8 +85,7 @@ public class RebarBuilder extends ExternalBuilder {
   }
   
   public String getId() {
-    String _plus = (ErlangCore.PLUGIN_ID + ".rebar.builder");
-    return _plus;
+    return (ErlangCore.PLUGIN_ID + ".rebar.builder");
   }
   
   public BuilderProperties getProperties() {

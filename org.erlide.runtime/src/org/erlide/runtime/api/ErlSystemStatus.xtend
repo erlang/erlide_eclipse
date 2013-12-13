@@ -144,7 +144,7 @@ class ProcessStatus {
             binary = value
           case "name":
             if (value instanceof OtpErlangAtom) {
-              registered_name = (value as OtpErlangAtom).atomValue()
+              registered_name = value.atomValue()
             } else {
               registered_name = ""
             }

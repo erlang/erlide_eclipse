@@ -4,7 +4,6 @@ import com.google.common.base.Objects;
 import org.eclipse.xtend.lib.macro.AbstractClassProcessor;
 import org.eclipse.xtend.lib.macro.TransformationContext;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
-import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy.CompilationContext;
 import org.eclipse.xtend.lib.macro.declaration.MutableClassDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableFieldDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableMethodDeclaration;
@@ -24,7 +23,7 @@ public class EqualsAndHashCodeProcessor extends AbstractClassProcessor {
         TypeReference _newTypeReference = context.newTypeReference(Integer.TYPE);
         it.setReturnType(_newTypeReference);
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("final int prime = 31;");
             _builder.newLine();
@@ -161,7 +160,7 @@ public class EqualsAndHashCodeProcessor extends AbstractClassProcessor {
     final Procedure1<MutableMethodDeclaration> _function_1 = new Procedure1<MutableMethodDeclaration>() {
       public void apply(final MutableMethodDeclaration it) {
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("if (this == obj)");
             _builder.newLine();

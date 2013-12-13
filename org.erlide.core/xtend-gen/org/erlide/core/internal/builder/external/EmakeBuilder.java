@@ -104,8 +104,7 @@ public class EmakeBuilder extends ExternalBuilder {
   }
   
   public String getId() {
-    String _plus = (ErlangCore.PLUGIN_ID + ".emake.builder");
-    return _plus;
+    return (ErlangCore.PLUGIN_ID + ".emake.builder");
   }
   
   public BuilderProperties getProperties() {

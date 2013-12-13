@@ -80,8 +80,8 @@ public class EmakeConfigurator implements ProjectConfigurator {
                           final Bindings b = ErlUtils.match("{Tag,Arg}", opt);
                           boolean _tripleNotEquals = (b != null);
                           if (_tripleNotEquals) {
-                            Boolean _parseOption = EmakeConfigurator.this.parseOption(b, (acc).booleanValue(), result);
-                            acc = _parseOption;
+                            boolean _parseOption = EmakeConfigurator.this.parseOption(b, (acc).booleanValue(), result);
+                            acc = Boolean.valueOf(_parseOption);
                           }
                           _xblockexpression = (acc);
                         }
@@ -109,9 +109,9 @@ public class EmakeConfigurator implements ProjectConfigurator {
     return _xblockexpression;
   }
   
-  public Boolean parseOption(final Bindings b, final boolean seenIncludes, final ErlangProjectProperties result) {
+  public boolean parseOption(final Bindings b, final boolean seenIncludes, final ErlangProjectProperties result) {
     try {
-      Boolean _switchResult = null;
+      boolean _switchResult = false;
       String _atom = b.getAtom("Tag");
       final String _switchValue = _atom;
       boolean _matched = false;
@@ -141,7 +141,7 @@ public class EmakeConfigurator implements ProjectConfigurator {
             result.setIncludeDirs(incs);
             _xblockexpression = (true);
           }
-          _switchResult = Boolean.valueOf(_xblockexpression);
+          _switchResult = _xblockexpression;
         }
       }
       return _switchResult;

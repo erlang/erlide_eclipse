@@ -6,7 +6,6 @@ import org.eclipse.xtend.lib.macro.RegisterGlobalsContext;
 import org.eclipse.xtend.lib.macro.TransformationContext;
 import org.eclipse.xtend.lib.macro.declaration.ClassDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
-import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy.CompilationContext;
 import org.eclipse.xtend.lib.macro.declaration.MutableClassDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableConstructorDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableFieldDeclaration;
@@ -46,7 +45,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
             TypeReference _newTypeReference = context.newTypeReference(cls);
             it.setReturnType(_newTypeReference);
             final CompilationStrategy _function = new CompilationStrategy() {
-              public CharSequence compile(final CompilationContext it) {
+              public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                 StringConcatenation _builder = new StringConcatenation();
                 _builder.append("return new ");
                 String _simpleName = cls.getSimpleName();
@@ -83,7 +82,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
                 TypeReference _newTypeReference = context.newTypeReference(_builderClassName);
                 it.setReturnType(_newTypeReference);
                 final CompilationStrategy _function = new CompilationStrategy() {
-                  public CharSequence compile(final CompilationContext it) {
+                  public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                     StringConcatenation _builder = new StringConcatenation();
                     _builder.append("this.");
                     String _simpleName = field.getSimpleName();
@@ -125,7 +124,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         TypeReference _newTypeReference_2 = context.newTypeReference(Procedure1.class, _newTypeReference_1);
         it.addParameter("init", _newTypeReference_2);
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             String _builderClassName = ImmutableProcessor.this.builderClassName(cls);
             _builder.append(_builderClassName, "");
@@ -149,7 +148,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         it.setReturnType(_newTypeReference);
         it.setStatic(true);
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("return new ");
             String _builderClassName = ImmutableProcessor.this.builderClassName(cls);
@@ -175,7 +174,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         };
         IterableExtensions.forEach(_dataFields, _function);
         final CompilationStrategy _function_1 = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             {
               Iterable<? extends MutableFieldDeclaration> _dataFields = ImmutableProcessor.this.dataFields(cls);
@@ -226,7 +225,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
             TypeReference _type = field.getType();
             it.setReturnType(_type);
             final CompilationStrategy _function = new CompilationStrategy() {
-              public CharSequence compile(final CompilationContext it) {
+              public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                 StringConcatenation _builder = new StringConcatenation();
                 _builder.append("return ");
                 String _simpleName = field.getSimpleName();
@@ -250,7 +249,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         TypeReference _object = context.getObject();
         it.addParameter("o", _object);
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("if (o instanceof ");
             String _simpleName = cls.getSimpleName();
@@ -303,7 +302,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         TypeReference _primitiveInt = context.getPrimitiveInt();
         it.setReturnType(_primitiveInt);
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("return ");
             String _objects = ImmutableProcessor.this.objects();
@@ -331,7 +330,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         TypeReference _string = context.getString();
         it.setReturnType(_string);
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("return new org.eclipse.xtext.xbase.lib.util.ToStringHelper().toString(this);");
             return _builder;

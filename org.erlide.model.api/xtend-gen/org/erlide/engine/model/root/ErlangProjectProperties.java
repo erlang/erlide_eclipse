@@ -1,7 +1,6 @@
 package org.erlide.engine.model.root;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Objects.ToStringHelper;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -147,8 +146,7 @@ public class ErlangProjectProperties {
     if (_tripleEquals_1) {
       return false;
     }
-    boolean _not = (!(other1 instanceof ErlangProjectProperties));
-    if (_not) {
+    if ((!(other1 instanceof ErlangProjectProperties))) {
       return false;
     }
     final ErlangProjectProperties other = ((ErlangProjectProperties) other1);
@@ -160,8 +158,8 @@ public class ErlangProjectProperties {
       }
     } else {
       boolean _equals = this._outputDir.equals(other._outputDir);
-      boolean _not_1 = (!_equals);
-      if (_not_1) {
+      boolean _not = (!_equals);
+      if (_not) {
         return false;
       }
     }
@@ -173,8 +171,8 @@ public class ErlangProjectProperties {
       }
     } else {
       boolean _equals_1 = this._sourceDirs.equals(other._sourceDirs);
-      boolean _not_2 = (!_equals_1);
-      if (_not_2) {
+      boolean _not_1 = (!_equals_1);
+      if (_not_1) {
         return false;
       }
     }
@@ -186,8 +184,8 @@ public class ErlangProjectProperties {
       }
     } else {
       boolean _equals_2 = this._includeDirs.equals(other._includeDirs);
-      boolean _not_3 = (!_equals_2);
-      if (_not_3) {
+      boolean _not_2 = (!_equals_2);
+      if (_not_2) {
         return false;
       }
     }
@@ -199,8 +197,8 @@ public class ErlangProjectProperties {
       }
     } else {
       boolean _equals_3 = this._externalIncludesFile.equals(other._externalIncludesFile);
-      boolean _not_4 = (!_equals_3);
-      if (_not_4) {
+      boolean _not_3 = (!_equals_3);
+      if (_not_3) {
         return false;
       }
     }
@@ -212,8 +210,8 @@ public class ErlangProjectProperties {
       }
     } else {
       boolean _equals_4 = this._externalModulesFile.equals(other._externalModulesFile);
-      boolean _not_5 = (!_equals_4);
-      if (_not_5) {
+      boolean _not_4 = (!_equals_4);
+      if (_not_4) {
         return false;
       }
     }
@@ -225,8 +223,8 @@ public class ErlangProjectProperties {
       }
     } else {
       boolean _equals_5 = this._requiredRuntimeVersion.equals(other._requiredRuntimeVersion);
-      boolean _not_6 = (!_equals_5);
-      if (_not_6) {
+      boolean _not_5 = (!_equals_5);
+      if (_not_5) {
         return false;
       }
     }
@@ -236,16 +234,16 @@ public class ErlangProjectProperties {
   public String toString() {
     String _xblockexpression = null;
     {
-      ToStringHelper _stringHelper = Objects.toStringHelper(this);
-      final Procedure1<ToStringHelper> _function = new Procedure1<ToStringHelper>() {
-        public void apply(final ToStringHelper it) {
+      Objects.ToStringHelper _stringHelper = Objects.toStringHelper(this);
+      final Procedure1<Objects.ToStringHelper> _function = new Procedure1<Objects.ToStringHelper>() {
+        public void apply(final Objects.ToStringHelper it) {
           it.add("outputDir", ErlangProjectProperties.this._outputDir);
           it.add("sources", ErlangProjectProperties.this._sourceDirs);
           it.add("includes", ErlangProjectProperties.this._includeDirs);
           it.add("runtimeVersion", ErlangProjectProperties.this._requiredRuntimeVersion);
         }
       };
-      final ToStringHelper helper = ObjectExtensions.<ToStringHelper>operator_doubleArrow(_stringHelper, _function);
+      final Objects.ToStringHelper helper = ObjectExtensions.<Objects.ToStringHelper>operator_doubleArrow(_stringHelper, _function);
       String _string = helper.toString();
       _xblockexpression = (_string);
     }

@@ -79,7 +79,7 @@ class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclaration>,
     }
 
     private def getAcceptMethodBody(MutableMethodDeclaration it) {
-        '''«IF !returnType.void»return «ENDIF»«parameters.head.simpleName».visit«declaringType.simpleName»(this«parameters.
+        '''«IF !returnType.void»return «ENDIF»«parameters.head.simpleName».visit«declaringType.simpleName»(this«parameters.toList.
             subList(1, parameters.size).join(', ', ', ', '')[simpleName]»);'''
     }
 

@@ -3,7 +3,6 @@ package org.erlide.util;
 import com.google.common.base.Splitter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
@@ -34,8 +33,8 @@ public class MapCodec {
   public static String encode(final Map<String,String> map) {
     StringConcatenation _builder = new StringConcatenation();
     {
-      Set<Entry<String,String>> _entrySet = map.entrySet();
-      for(final Entry<String, String> e : _entrySet) {
+      Set<Map.Entry<String,String>> _entrySet = map.entrySet();
+      for(final Map.Entry<String, String> e : _entrySet) {
         String _key = e.getKey();
         _builder.append(_key, "");
         _builder.append(":!");

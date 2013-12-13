@@ -10,7 +10,6 @@ package org.erlide.annotations;
 import org.eclipse.xtend.lib.macro.AbstractFieldProcessor;
 import org.eclipse.xtend.lib.macro.TransformationContext;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
-import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy.CompilationContext;
 import org.eclipse.xtend.lib.macro.declaration.MutableFieldDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableMethodDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableTypeDeclaration;
@@ -57,7 +56,7 @@ public class LazyProcessor extends AbstractFieldProcessor {
         TypeReference _type = field.getType();
         it.setReturnType(_type);
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("if (");
             String _simpleName = field.getSimpleName();

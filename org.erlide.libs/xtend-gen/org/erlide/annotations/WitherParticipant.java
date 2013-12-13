@@ -6,7 +6,6 @@ import org.eclipse.xtend.lib.macro.AbstractClassProcessor;
 import org.eclipse.xtend.lib.macro.TransformationContext;
 import org.eclipse.xtend.lib.macro.declaration.AnnotationTypeDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
-import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy.CompilationContext;
 import org.eclipse.xtend.lib.macro.declaration.MutableAnnotationReference;
 import org.eclipse.xtend.lib.macro.declaration.MutableClassDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableFieldDeclaration;
@@ -33,8 +32,7 @@ public class WitherParticipant extends AbstractClassProcessor {
       }
     };
     final boolean dataClass = IterableExtensions.exists(_annotations, _function);
-    boolean _not = (!dataClass);
-    if (_not) {
+    if ((!dataClass)) {
       context.addError(annotatedClass, "Class needs to be annotated with @Data to be able to use @Wither");
       return;
     }
@@ -71,7 +69,7 @@ public class WitherParticipant extends AbstractClassProcessor {
               TypeReference _newTypeReference = context.newTypeReference(annotatedClass);
               it.setReturnType(_newTypeReference);
               final CompilationStrategy _function = new CompilationStrategy() {
-                public CharSequence compile(final CompilationContext it) {
+                public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                   StringConcatenation _builder = new StringConcatenation();
                   _builder.append("return new ");
                   String _simpleName = annotatedClass.getSimpleName();

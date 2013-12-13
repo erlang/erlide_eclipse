@@ -185,7 +185,7 @@ class MultipleParameterMethodMemoizer extends ParametrizedMethodMemoizer {
     override protected cacheKeyToParameters(extension CompilationContext context) {
         (method.parameters).join("", ",", "")[
             '''
-                («type.toJavaCode») key.getParameters()[«method.parameters.indexOf(it)»]
+        («type.toJavaCode») key.getParameters()[«method.parameters.toList.indexOf(it)»]
             ''']
     }
 
