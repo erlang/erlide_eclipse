@@ -38,7 +38,6 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
     public InternalProjectPreferencesWizardPage(final String pageName,
             final NewProjectData info) {
         super(pageName, info);
-        // TODO Auto-generated constructor stub
     }
 
     /**

@@ -44,7 +44,6 @@ public class InterpretHandler extends AbstractHandler {
 
     @Override
     public void setEnabled(final Object evaluationContext) {
-        // TODO Auto-generated method stub
         super.setEnabled(evaluationContext);
     }
 }

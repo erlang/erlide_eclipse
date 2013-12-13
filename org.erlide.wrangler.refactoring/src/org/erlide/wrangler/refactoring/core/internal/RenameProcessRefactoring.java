@@ -40,7 +40,6 @@ public class RenameProcessRefactoring extends ProcessRelatedRefactoring {
                 return new RefactoringStatus();
             }
         }
-        // TODO: testing
         return RefactoringStatus.createFatalErrorStatus("Please select a process!");
     }
 

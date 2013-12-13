@@ -29,7 +29,6 @@ public class DebugTraceDebugModelPresentation extends LabelProvider implements
 
     @Override
     public void setAttribute(final String attribute, final Object value) {
-        // TODO Auto-generated method stub
     }
 
     @Override

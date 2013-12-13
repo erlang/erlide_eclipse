@@ -12,8 +12,6 @@ public class NewBreakEvent extends IntEvent {
 
     @Override
     public void execute(final ErlangDebugTarget debugTarget) {
-        // TODO Auto-generated method stub
-
     }
 
 }

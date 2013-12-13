@@ -186,14 +186,6 @@ public class FunctionGroup implements SelectionListener {
 
     }
 
-    /**
-     * TODO Write description of addFunction in FunctionGroup.
-     * 
-     * @param name
-     * @param arity
-     * @param type
-     * @param exported
-     */
     void addFunction(final String name, final int arity, final int type,
             final boolean exported) {
         final TableItem item = fEditingItem != null ? fEditingItem : new TableItem(
@@ -208,12 +200,6 @@ public class FunctionGroup implements SelectionListener {
         }
     }
 
-    /**
-     * TODO Write description of getPostfix in FunctionGroup.
-     * 
-     * @param type
-     * @return
-     */
     private String getPostfix(final int type) {
         switch (type) {
         case FunctionGroup.FSM:
@@ -223,10 +209,6 @@ public class FunctionGroup implements SelectionListener {
         }
     }
 
-    /**
-     * TODO Write description of dialogChanged in FunctionGroup.
-     * 
-     */
     void dialogChanged() {
         if (functionNameText.getText().length() != 0) {
             final TableItem[] allTableItems = fTable.getItems();

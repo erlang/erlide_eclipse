@@ -34,20 +34,14 @@ public class ErlangDebugOptionsManager implements ILaunchesListener, IBreakpoint
 
     @Override
     public void launchesRemoved(final ILaunch[] launches) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void launchesAdded(final ILaunch[] launches) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void launchesChanged(final ILaunch[] launches) {
-        // TODO Auto-generated method stub
-
     }
 
     /**

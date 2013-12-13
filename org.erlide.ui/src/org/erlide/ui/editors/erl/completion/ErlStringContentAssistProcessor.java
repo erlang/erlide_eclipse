@@ -24,7 +24,6 @@ public class ErlStringContentAssistProcessor extends AbstractErlContentAssistPro
     @Override
     public IContextInformation[] computeContextInformation(final ITextViewer viewer,
             final int offset) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -35,19 +34,16 @@ public class ErlStringContentAssistProcessor extends AbstractErlContentAssistPro
 
     @Override
     public char[] getContextInformationAutoActivationCharacters() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public String getErrorMessage() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public IContextInformationValidator getContextInformationValidator() {
-        // TODO Auto-generated method stub
         return null;
     }
 

@@ -40,13 +40,11 @@ public class ProjectTreeContentProvider implements ITreeContentProvider {
 
     @Override
     public Object getParent(final Object element) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public boolean hasChildren(final Object element) {
-        // TODO Auto-generated method stub
         return false;
     }
 

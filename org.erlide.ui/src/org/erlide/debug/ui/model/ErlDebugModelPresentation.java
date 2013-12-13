@@ -46,8 +46,6 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 
     @Override
     public void setAttribute(final String attribute, final Object value) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -145,8 +143,6 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 
     @Override
     public void dispose() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override

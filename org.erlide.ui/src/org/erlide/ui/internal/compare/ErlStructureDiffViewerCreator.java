@@ -21,7 +21,6 @@ public class ErlStructureDiffViewerCreator implements IViewerCreator {
 
     private static class ErlViewerComparator extends ViewerComparator {
         public ErlViewerComparator() {
-            // TODO Auto-generated constructor stub
         }
 
         @Override
