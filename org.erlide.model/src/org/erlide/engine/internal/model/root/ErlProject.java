@@ -806,7 +806,7 @@ public class ErlProject extends Openable implements IErlProject,
     @Override
     public void configurationChanged() {
 
-        System.out.println("CONFIG CHANGED!");
+        System.out.println("CONFIG CHANGED! " + getName());
 
         loadCoreProperties();
         loadBuilderProperties();

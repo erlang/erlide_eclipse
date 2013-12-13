@@ -24,5 +24,8 @@ class BuilderProperties {
 
     /** Test target name. */
     @Property String testTarget = "test"
+    
+    /** Any extra flags required, as they would be specified on the command line. */
+    @Property String extraFlags = ""
 
 }

@@ -122,4 +122,23 @@ public class BuilderProperties {
   public void setTestTarget(final String testTarget) {
     this._testTarget = testTarget;
   }
+  
+  /**
+   * Any extra flags required, as they would be specified on the command line.
+   */
+  private String _extraFlags = "";
+  
+  /**
+   * Any extra flags required, as they would be specified on the command line.
+   */
+  public String getExtraFlags() {
+    return this._extraFlags;
+  }
+  
+  /**
+   * Any extra flags required, as they would be specified on the command line.
+   */
+  public void setExtraFlags(final String extraFlags) {
+    this._extraFlags = extraFlags;
+  }
 }
