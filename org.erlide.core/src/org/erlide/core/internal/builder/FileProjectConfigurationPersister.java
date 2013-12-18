@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.core.content.ErlangContentDescriber;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfigurationPersister;
@@ -19,6 +20,7 @@ import com.google.common.io.Files;
 public class FileProjectConfigurationPersister extends ProjectConfigurationPersister {
 
     private final String filePath;
+    @NonNull
     private final ProjectConfigurator configurator;
 
     public FileProjectConfigurationPersister(final ProjectConfigurator configurator,
