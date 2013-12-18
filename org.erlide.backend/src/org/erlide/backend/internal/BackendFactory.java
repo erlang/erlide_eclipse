@@ -118,8 +118,20 @@ public class BackendFactory implements IBackendFactory {
     }
 
     private RuntimeInfo getIdeRuntimeInfo() {
-        final RuntimeInfo info = new RuntimeInfo(runtimeInfoCatalog.getErlideRuntime());
-        return info;
+        final RuntimeInfo runtime = runtimeInfoCatalog.getErlideRuntime();
+        if (runtimeHomeDirExists(runtime)) {
+            return new RuntimeInfo(runtime);
+        }
+        for (final RuntimeInfo aruntime : runtimeInfoCatalog.getRuntimes()) {
+            if (runtimeHomeDirExists(aruntime) && aruntime != null) {
+                return new RuntimeInfo(aruntime);
+            }
+        }
+        return null;
+    }
+
+    private boolean runtimeHomeDirExists(final RuntimeInfo runtime) {
+        return new File(runtime.getOtpHome()).exists();
     }
 
     private String getIdeNodeName() {
