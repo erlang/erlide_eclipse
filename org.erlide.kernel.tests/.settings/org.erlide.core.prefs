@@ -1,5 +1,4 @@
 backend_version=R14B
-compiler/warn_export_all=false
 eclipse.preferences.version=1
 external_includes=
 external_modules=
