@@ -104,10 +104,10 @@ class MemoryStatus {
               atom: «String::format("%,10d", atom)»
          atom_used: «String::format("%,10d", atom_used)»
        binary: «String::format("%,10d", binary)»
-         code: «String::format("%,10d", code)»
-          ets: «String::format("%,10d", ets)»
-          low: «String::format("%,10d", low)»
-           maximum: «String::format("%,10d", maximum)»
+      code: «String::format("%,10d", code)»
+     ets: «String::format("%,10d", ets)»
+     low: «String::format("%,10d", low)»
+      maximum: «String::format("%,10d", maximum)»
   '''
 
 }
@@ -122,9 +122,7 @@ class ProcessStatus {
   String registered_name
   OtpErlangObject stacktrace
 
-  new(
-    OtpErlangTuple input
-  ) {
+  new(OtpErlangTuple input) {
     for (item : input.elements()) {
       try {
         val bind = ErlUtils::match("{K:a, V}", item);
@@ -164,7 +162,7 @@ class ProcessStatus {
       heap_size: «String::format("%,10d", heap_size)»
      stack_size: «String::format("%,10d", stack_size)»
      total_heap: «String::format("%,10d", total_heap_size)»
-         binary: «binary»
+       binary: «binary»
      stacktrace: «stacktrace»
   '''
 
