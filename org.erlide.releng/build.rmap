@@ -6,7 +6,7 @@
     <rm:property key="eclipse.download" value="http://download.eclipse.org" />
     <rm:property key="eclipse.target.platform" value="${eclipse.download}/releases/${eclipse.release}" />
     <rm:property key="eclipse.orbit" value="${eclipse.download}/tools/orbit/downloads/drops/R20130517111416/repository" />
-    <rm:property key="graphviz" value="http://shibumi.erlide.org/updates/graphviz" />
+    <rm:property key="graphviz" value="http://download.erlide.org/update/graphviz" />
  
     <rm:locator pattern="^org\.erlide(?:\..+)?$"
         searchPathRef="localsources" />
