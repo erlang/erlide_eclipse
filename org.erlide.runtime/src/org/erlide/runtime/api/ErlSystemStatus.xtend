@@ -123,9 +123,7 @@ class ProcessStatus {
   String registered_name
   OtpErlangObject stacktrace
 
-  new(
-    OtpErlangTuple input
-  ) {
+  new(OtpErlangTuple input) {
     for (item : input.elements()) {
       try {
         val bind = ErlUtils.match("{K:a, V}", item);

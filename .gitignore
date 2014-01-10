@@ -2,8 +2,8 @@
 *.beam
 *.class
 workspaces
-bin/
-ebin/*.app
+**/bin/
+**/ebin/
 *.orig
 *.rej
 hs_err*.log
@@ -23,9 +23,11 @@ ttb_last_config
 .~lock.*
 .recommenders
 *._trace
-/buildroot
-/tools
-/target.platform
 .sonar
 Rerun\ *.launch
-
+.eunit
+deps
+*.o
+*.beam
+*.plt
+erl_crash.dump
