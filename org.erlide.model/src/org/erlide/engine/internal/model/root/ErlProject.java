@@ -45,7 +45,6 @@ import org.erlide.engine.model.ErlModelStatus;
 import org.erlide.engine.model.ErlModelStatusConstants;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IOpenable;
-import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.BuilderTool;
@@ -62,7 +61,7 @@ import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
-import org.erlide.engine.model.root.ProjectConfigurationPersister;
+import org.erlide.engine.model.root.BuilderConfig;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
@@ -776,16 +775,12 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     private ErlangProjectProperties loadProperties() {
-        final ProjectConfigurationPersister persister = builderConfig
-                .getPersister();
-        return persister.getConfiguration();
+        return builderConfig.getConfiguration();
     }
 
     private void storeProperties() {
-        final ProjectConfigurationPersister persister = builderConfig
-                .getPersister();
         if (properties != null) {
-            persister.setConfiguration(properties);
+            builderConfig.setConfiguration(properties);
         }
     }
 
@@ -798,7 +793,7 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     public ErlangProjectProperties getConfig() {
-        return builderConfig.getPersister().getConfiguration();
+        return builderConfig.getConfiguration();
     }
 
     @Override

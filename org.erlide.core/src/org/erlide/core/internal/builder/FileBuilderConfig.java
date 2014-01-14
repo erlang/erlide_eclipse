@@ -8,7 +8,7 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.core.content.ErlangContentDescriber;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.ProjectConfigurationPersister;
+import org.erlide.engine.model.root.BuilderConfig;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.util.ErlLogger;
 
@@ -17,13 +17,13 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 
-public class FileProjectConfigurationPersister extends ProjectConfigurationPersister {
+public class FileBuilderConfig extends BuilderConfig {
 
     private final String filePath;
     @NonNull
     private final ProjectConfigurator configurator;
 
-    public FileProjectConfigurationPersister(final ProjectConfigurator configurator,
+    public FileBuilderConfig(final ProjectConfigurator configurator,
             final String filePath) {
         Preconditions.checkNotNull(filePath);
         Preconditions.checkNotNull(configurator);

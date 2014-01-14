@@ -11,13 +11,12 @@ import org.erlide.core.internal.builder.external.EmakeConfigurator;
 import org.erlide.core.internal.builder.external.MakeBuilder;
 import org.erlide.core.internal.builder.external.RebarBuilder;
 import org.erlide.core.internal.builder.external.RebarConfigurator;
-import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.ProjectConfigurationPersister;
+import org.erlide.engine.model.root.BuilderConfig;
 
 public class ErlangBuilderFactory implements IErlangBuilderFactory {
 
@@ -56,7 +55,6 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
     public BuilderConfig getConfig(final BuilderConfigType config,
             final IErlProject project) {
         BuilderConfig result = null;
-        ProjectConfigurationPersister persister;
         String path;
         final String qualifier = config.getConfigName();
         final IResource resource = project.getWorkspaceProject().findMember(qualifier);
@@ -64,8 +62,7 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
         case INTERNAL:
             final IEclipsePreferences node = new ProjectScope(
                     project.getWorkspaceProject()).getNode(qualifier);
-            persister = new PreferencesProjectConfigurationPersister(node);
-            result = new BuilderConfig(persister);
+            result = new PreferencesBuilderConfig(node);
             break;
         case REBAR:
             if (resource == null) {
@@ -73,9 +70,7 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
                 return null;
             }
             path = resource.getLocation().toPortableString();
-            persister = new FileProjectConfigurationPersister(new RebarConfigurator(),
-                    path);
-            result = new BuilderConfig(persister);
+            result = new FileBuilderConfig(new RebarConfigurator(), path);
             break;
         case EMAKE:
             if (resource == null) {
@@ -83,9 +78,7 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
                 return null;
             }
             path = resource.getLocation().toPortableString();
-            persister = new FileProjectConfigurationPersister(new EmakeConfigurator(),
-                    path);
-            result = new BuilderConfig(persister);
+            result = new FileBuilderConfig(new EmakeConfigurator(), path);
             break;
         }
         return result;

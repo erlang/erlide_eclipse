@@ -21,13 +21,12 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-import org.erlide.engine.model.builder.BuilderConfig;
 import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
+import org.erlide.engine.model.root.BuilderConfig;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.ProjectConfigurationPersister;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.wizards.BuilderSelectionListener;
@@ -277,8 +276,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
       String _builderConfigName = this.info.getBuilderConfigName();
       final BuilderConfigType config = BuilderConfigType.valueOf(_builderConfigName);
       IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
-      BuilderConfig _config = _factory.getConfig(config, null);
-      final ProjectConfigurationPersister persister = _config.getPersister();
+      final BuilderConfig persister = _factory.getConfig(config, null);
       final ErlangProjectProperties props = persister.getConfiguration();
     }
   }

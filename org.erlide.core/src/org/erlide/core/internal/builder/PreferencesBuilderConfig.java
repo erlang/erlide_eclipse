@@ -4,7 +4,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.PathSerializer;
-import org.erlide.engine.model.root.ProjectConfigurationPersister;
+import org.erlide.engine.model.root.BuilderConfig;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -13,17 +13,17 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.base.Preconditions;
 
-public class PreferencesProjectConfigurationPersister extends
-        ProjectConfigurationPersister {
+public class PreferencesBuilderConfig extends
+        BuilderConfig {
 
     private final IEclipsePreferences node;
 
-    public PreferencesProjectConfigurationPersister(final IEclipsePreferences node) {
+    public PreferencesBuilderConfig(final IEclipsePreferences node) {
         Preconditions.checkNotNull(node);
         this.node = node;
     }
 
-    public PreferencesProjectConfigurationPersister() {
+    public PreferencesBuilderConfig() {
         this(null);
         // TODO this(BuilderConfigType.INTERNAL.getConfigName());
     }

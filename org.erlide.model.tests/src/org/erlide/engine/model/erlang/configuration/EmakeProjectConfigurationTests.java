@@ -24,8 +24,7 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
     public void configuratorExists() {
         project.setBuilderConfigType(BuilderConfigType.EMAKE);
         final ProjectConfigurator configurator = ErlangBuilder.getFactory()
-                .getConfig(project.getBuilderConfigType(), project).getPersister()
-                .getConfigurator();
+                .getConfig(project.getBuilderConfigType(), project).getConfigurator();
 
         assertThat(configurator, is(notNullValue()));
     }
@@ -35,8 +34,7 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
     public void configCanBeParsed() throws CoreException {
         project.setBuilderConfigType(BuilderConfigType.EMAKE);
         final ProjectConfigurator configurator = ErlangBuilder.getFactory()
-                .getConfig(project.getBuilderConfigType(), project).getPersister()
-                .getConfigurator();
+                .getConfig(project.getBuilderConfigType(), project).getConfigurator();
 
         final ErlangProjectProperties expected = new ErlangProjectProperties();
         expected.setOutputDir(new Path("ebin"));
