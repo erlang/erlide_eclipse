@@ -1,6 +1,6 @@
 package org.erlide.engine.model.root;
 
-public abstract class BuilderConfig {
+public abstract class ProjectConfig {
 
     public abstract ProjectConfigurator getConfigurator();
 

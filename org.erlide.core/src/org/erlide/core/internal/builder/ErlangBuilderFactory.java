@@ -16,7 +16,7 @@ import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.BuilderConfig;
+import org.erlide.engine.model.root.ProjectConfig;
 
 public class ErlangBuilderFactory implements IErlangBuilderFactory {
 
@@ -52,9 +52,9 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
     }
 
     @Override
-    public BuilderConfig getConfig(final BuilderConfigType config,
+    public ProjectConfig getConfig(final BuilderConfigType config,
             final IErlProject project) {
-        BuilderConfig result = null;
+        ProjectConfig result = null;
         String path;
         final String qualifier = config.getConfigName();
         final IResource resource = project.getWorkspaceProject().findMember(qualifier);

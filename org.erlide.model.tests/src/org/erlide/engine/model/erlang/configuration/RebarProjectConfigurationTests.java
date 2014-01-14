@@ -14,7 +14,7 @@ import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.BuilderConfig;
+import org.erlide.engine.model.root.ProjectConfig;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.junit.Test;
 
@@ -26,7 +26,7 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
         project.setBuilderConfigType(BuilderConfigType.REBAR);
         setFileContent(project.getWorkspaceProject().getLocation().toPortableString()
                 + "/" + BuilderConfigType.REBAR.getConfigName(), "");
-        final BuilderConfig persister = ErlangBuilder.getFactory()
+        final ProjectConfig persister = ErlangBuilder.getFactory()
                 .getConfig(project.getBuilderConfigType(), project);
         final ProjectConfigurator configurator = persister.getConfigurator();
 

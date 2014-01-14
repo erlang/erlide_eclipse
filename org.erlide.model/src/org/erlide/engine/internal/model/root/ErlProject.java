@@ -61,7 +61,7 @@ import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
-import org.erlide.engine.model.root.BuilderConfig;
+import org.erlide.engine.model.root.ProjectConfig;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
@@ -108,7 +108,7 @@ public class ErlProject extends Openable implements IErlProject,
     private ErlangProjectProperties properties;
     private BuilderProperties builderProperties;
 
-    private BuilderConfig builderConfig;
+    private ProjectConfig builderConfig;
 
     public ErlProject(final IProject project, final ErlElement parent) {
         super(parent, project.getName());
@@ -827,7 +827,7 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     @Override
-    public BuilderConfig getBuilderConfig() {
+    public ProjectConfig getBuilderConfig() {
         return builderConfig;
     }
 
