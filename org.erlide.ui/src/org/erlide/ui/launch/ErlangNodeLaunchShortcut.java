@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
@@ -178,7 +179,8 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         wc.setAttribute(ErlRuntimeAttributes.INTERNAL, false);
         wc.setAttribute(ErlRuntimeAttributes.LOAD_ALL_NODES, false);
         wc.setAttribute(ErlRuntimeAttributes.COOKIE, "erlide");
-        wc.setAttribute("org.eclipse.debug.core.environmentVariables", Maps.newHashMap());
+        final Map<String, String> map = Maps.newHashMap();
+        wc.setAttribute("org.eclipse.debug.core.environmentVariables", map);
         if ("debug".equals(mode)) {
             final List<String> moduleNames = getProjectAndModuleNames(projects);
             wc.setAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, moduleNames);
