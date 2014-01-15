@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Label
 import org.eclipse.swt.widgets.Text
 import org.erlide.engine.model.builder.BuilderConfigType
 import org.erlide.engine.model.builder.BuilderTool
+import org.erlide.engine.model.builder.ErlangBuilder
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
 
@@ -60,8 +61,8 @@ class ErlangProjectBuilderPage extends WizardPage {
             var check = new Button(composite, SWT.RADIO)
             check.text = builder.toString.toLowerCase
             check.data = builder
-            check.selection = (builder === BuilderTool.INTERNAL)
             check.addSelectionListener(listener)
+            check.selection = (builder === BuilderTool.INTERNAL)
             val description = new Label(composite, SWT.NONE)
             description.text = getDescription(builder)
             new Label(composite, SWT.NONE)
@@ -74,16 +75,16 @@ class ErlangProjectBuilderPage extends WizardPage {
         configComposite.visible = false
 
         val label1 = new Label(configComposite, SWT.NONE)
-        label1.text = 'The directory layout is described'
+        label1.text = 'The directory layout and the build \nconfiguration are described'
 
-        val listener1 = new BuilderSelectionListener(info)
+        val listener1 = new ConfigSelectionListener(info)
         val configs = BuilderConfigType.values
         configs.forEach [ config |
             var check = new Button(configComposite, SWT.RADIO)
             check.text = getDescription(config)
             check.data = config
-            check.selection = (config === BuilderConfigType.INTERNAL)
             check.addSelectionListener(listener1)
+            check.selection = (config === BuilderConfigType.INTERNAL)
             new Label(configComposite, SWT.NONE)
             new Label(configComposite, SWT.NONE)
         ]
@@ -140,7 +141,7 @@ class ErlangProjectBuilderPage extends WizardPage {
 
     def String getDescription(BuilderConfigType config) {
         switch (config) {
-            case BuilderConfigType.INTERNAL: '''manually (next page)'''
+            case BuilderConfigType.INTERNAL: '''manually (on next page)'''
             case BuilderConfigType.EMAKE: '''in Emakefile'''
             case BuilderConfigType.REBAR: '''in rebar.config'''
         }
@@ -155,15 +156,32 @@ class ErlangProjectBuilderPage extends WizardPage {
 
     def detectBuilderConfig() {
         val location = info.location
-        if (location !== null && new File(location.toPortableString).exists) {
-
-            // TODO
-            val config = BuilderConfigType.valueOf(info.builderConfigName)
-            //val persister = ErlangBuilder.factory.getConfig(config, null)
-
-            // TODO we need to get config without a project! it is not created yet
-            //val props = persister.getConfiguration()
+        if (location !== null) {
+            val directory = new File(location.toPortableString)
+            if (directory.directory && directory.exists) {
+                val config = BuilderConfigType.valueOf(info.builderConfigName)
+                val persister = ErlangBuilder.factory.getConfig(config, directory)
+                val props = persister.getConfiguration()
+                println("PROPS: " + props)
+            }
         }
+    }
+
+}
+
+class ConfigSelectionListener implements SelectionListener {
+
+    val NewProjectData info
+
+    new(NewProjectData info) {
+        this.info = info
+    }
+
+    override widgetDefaultSelected(SelectionEvent e) {
+    }
+
+    override widgetSelected(SelectionEvent e) {
+        info.builderConfigName = (e.widget.data as BuilderConfigType).name
     }
 
 }
@@ -178,22 +196,14 @@ class BuilderSelectionListener implements SelectionListener {
         this.page = page
     }
 
-    new(NewProjectData info) {
-        this(info, null)
-    }
-
     override widgetDefaultSelected(SelectionEvent e) {
     }
 
     override widgetSelected(SelectionEvent e) {
-        if (page !== null) {
-            info.builderName = (e.widget.data as BuilderTool).name
-            page.configComposite.visible = (info.builderName == BuilderTool.MAKE.name) ||
-                (info.builderName == BuilderTool.INTERNAL.name)
-            page.makeConfigComposite.visible = info.builderName == BuilderTool.MAKE.name
-        } else {
-            info.builderConfigName = (e.widget.data as BuilderConfigType).name
-        }
+        info.builderName = (e.widget.data as BuilderTool).name
+        page.configComposite.visible = (info.builderName == BuilderTool.MAKE.name) ||
+            (info.builderName == BuilderTool.INTERNAL.name)
+        page.makeConfigComposite.visible = info.builderName == BuilderTool.MAKE.name
     }
 
 }

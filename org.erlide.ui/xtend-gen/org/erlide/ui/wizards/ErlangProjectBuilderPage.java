@@ -18,14 +18,20 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
+import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
+import org.erlide.engine.model.builder.ErlangBuilder;
+import org.erlide.engine.model.builder.IErlangBuilderFactory;
+import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.ProjectConfig;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.wizards.BuilderSelectionListener;
+import org.erlide.ui.wizards.ConfigSelectionListener;
 import org.erlide.ui.wizards.NewProjectData;
 
 @SuppressWarnings("all")
@@ -91,9 +97,9 @@ public class ErlangProjectBuilderPage extends WizardPage {
         String _lowerCase = _string.toLowerCase();
         check.setText(_lowerCase);
         check.setData(builder);
+        check.addSelectionListener(listener);
         boolean _tripleEquals = (builder == BuilderTool.INTERNAL);
         check.setSelection(_tripleEquals);
-        check.addSelectionListener(listener);
         Label _label = new Label(composite, SWT.NONE);
         final Label description = _label;
         String _description = ErlangProjectBuilderPage.this.getDescription(builder);
@@ -113,9 +119,9 @@ public class ErlangProjectBuilderPage extends WizardPage {
     this.configComposite.setVisible(false);
     Label _label_2 = new Label(this.configComposite, SWT.NONE);
     final Label label1 = _label_2;
-    label1.setText("The directory layout is described");
-    BuilderSelectionListener _builderSelectionListener_1 = new BuilderSelectionListener(this.info);
-    final BuilderSelectionListener listener1 = _builderSelectionListener_1;
+    label1.setText("The directory layout and the build \nconfiguration are described");
+    ConfigSelectionListener _configSelectionListener = new ConfigSelectionListener(this.info);
+    final ConfigSelectionListener listener1 = _configSelectionListener;
     final BuilderConfigType[] configs = BuilderConfigType.values();
     final Procedure1<BuilderConfigType> _function_3 = new Procedure1<BuilderConfigType>() {
       public void apply(final BuilderConfigType config) {
@@ -124,9 +130,9 @@ public class ErlangProjectBuilderPage extends WizardPage {
         String _description = ErlangProjectBuilderPage.this.getDescription(config);
         check.setText(_description);
         check.setData(config);
+        check.addSelectionListener(listener1);
         boolean _tripleEquals = (config == BuilderConfigType.INTERNAL);
         check.setSelection(_tripleEquals);
-        check.addSelectionListener(listener1);
         new Label(ErlangProjectBuilderPage.this.configComposite, SWT.NONE);
         new Label(ErlangProjectBuilderPage.this.configComposite, SWT.NONE);
       }
@@ -226,7 +232,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
       if (Objects.equal(config,BuilderConfigType.INTERNAL)) {
         _matched=true;
         StringConcatenation _builder = new StringConcatenation();
-        _builder.append("manually (next page)");
+        _builder.append("manually (on next page)");
         _switchResult = _builder.toString();
       }
     }
@@ -256,21 +262,46 @@ public class ErlangProjectBuilderPage extends WizardPage {
     }
   }
   
-  public void detectBuilderConfig() {
-    final IPath location = this.info.getLocation();
-    boolean _and = false;
-    boolean _tripleNotEquals = (location != null);
-    if (!_tripleNotEquals) {
-      _and = false;
-    } else {
-      String _portableString = location.toPortableString();
-      File _file = new File(_portableString);
-      boolean _exists = _file.exists();
-      _and = (_tripleNotEquals && _exists);
+  public String detectBuilderConfig() {
+    String _xblockexpression = null;
+    {
+      final IPath location = this.info.getLocation();
+      String _xifexpression = null;
+      boolean _tripleNotEquals = (location != null);
+      if (_tripleNotEquals) {
+        String _xblockexpression_1 = null;
+        {
+          String _portableString = location.toPortableString();
+          File _file = new File(_portableString);
+          final File directory = _file;
+          String _xifexpression_1 = null;
+          boolean _and = false;
+          boolean _isDirectory = directory.isDirectory();
+          if (!_isDirectory) {
+            _and = false;
+          } else {
+            boolean _exists = directory.exists();
+            _and = (_isDirectory && _exists);
+          }
+          if (_and) {
+            String _xblockexpression_2 = null;
+            {
+              String _builderConfigName = this.info.getBuilderConfigName();
+              final BuilderConfigType config = BuilderConfigType.valueOf(_builderConfigName);
+              IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
+              final ProjectConfig persister = _factory.getConfig(config, directory);
+              final ErlangProjectProperties props = persister.getConfiguration();
+              String _println = InputOutput.<String>println(("PROPS: " + props));
+              _xblockexpression_2 = (_println);
+            }
+            _xifexpression_1 = _xblockexpression_2;
+          }
+          _xblockexpression_1 = (_xifexpression_1);
+        }
+        _xifexpression = _xblockexpression_1;
+      }
+      _xblockexpression = (_xifexpression);
     }
-    if (_and) {
-      String _builderConfigName = this.info.getBuilderConfigName();
-      final BuilderConfigType config = BuilderConfigType.valueOf(_builderConfigName);
-    }
+    return _xblockexpression;
   }
 }

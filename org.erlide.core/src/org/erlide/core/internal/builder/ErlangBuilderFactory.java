@@ -1,5 +1,7 @@
 package org.erlide.core.internal.builder;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -67,7 +69,6 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
         }
         switch (config) {
         case INTERNAL:
-            // TODO when project is not created yet, what do we do?
             final IEclipsePreferences node = new ProjectScope(workspaceProject)
                     .getNode(qualifier);
             result = new PreferencesBuilderConfig(node);
@@ -86,6 +87,35 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
                 return null;
             }
             path = resource.getLocation().toPortableString();
+            result = new FileBuilderConfig(new EmakeConfigurator(), path);
+            break;
+        }
+        return result;
+    }
+
+    @Override
+    public ProjectConfig getConfig(final BuilderConfigType config, final File directory) {
+        ProjectConfig result = null;
+        final String qualifier = config.getConfigName();
+        final String[] resources = directory.list(new FilenameFilter() {
+            @Override
+            public boolean accept(final File dir, final String name) {
+                return dir.equals(directory) && name.equals(qualifier);
+            }
+        });
+        if (resources.length != 1) {
+            System.out.println("Not found: " + qualifier + " in " + directory);
+            return null;
+        }
+        final String path = directory.getAbsolutePath() + "/" + resources[0];
+        switch (config) {
+        case INTERNAL:
+            result = new PreferencesBuilderConfig(null);
+            break;
+        case REBAR:
+            result = new FileBuilderConfig(new RebarConfigurator(), path);
+            break;
+        case EMAKE:
             result = new FileBuilderConfig(new EmakeConfigurator(), path);
             break;
         }
