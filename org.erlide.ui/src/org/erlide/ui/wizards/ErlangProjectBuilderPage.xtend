@@ -11,12 +11,11 @@ import org.eclipse.swt.widgets.Button
 import org.eclipse.swt.widgets.Combo
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Label
+import org.eclipse.swt.widgets.Text
+import org.erlide.engine.model.builder.BuilderConfigType
 import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
-import org.erlide.engine.model.builder.ErlangBuilder
-import org.eclipse.swt.widgets.Text
-import org.erlide.engine.model.builder.BuilderConfigType
 
 class ErlangProjectBuilderPage extends WizardPage {
 
@@ -160,10 +159,10 @@ class ErlangProjectBuilderPage extends WizardPage {
 
             // TODO
             val config = BuilderConfigType.valueOf(info.builderConfigName)
-            val persister = ErlangBuilder.factory.getConfig(config, null)
+            //val persister = ErlangBuilder.factory.getConfig(config, null)
 
             // TODO we need to get config without a project! it is not created yet
-            val props = persister.getConfiguration()
+            //val props = persister.getConfiguration()
         }
     }
 

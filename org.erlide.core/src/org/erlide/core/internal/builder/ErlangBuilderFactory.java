@@ -3,6 +3,7 @@ package org.erlide.core.internal.builder;
 import java.util.EnumMap;
 import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -57,11 +58,18 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
         ProjectConfig result = null;
         String path;
         final String qualifier = config.getConfigName();
-        final IResource resource = project.getWorkspaceProject().findMember(qualifier);
+        final IProject workspaceProject = project.getWorkspaceProject();
+        IResource resource = null;
+        if (workspaceProject != null) {
+            resource = workspaceProject.findMember(qualifier);
+        } else {
+            // TODO use file system directly, we should know the location here
+        }
         switch (config) {
         case INTERNAL:
-            final IEclipsePreferences node = new ProjectScope(
-                    project.getWorkspaceProject()).getNode(qualifier);
+            // TODO when project is not created yet, what do we do?
+            final IEclipsePreferences node = new ProjectScope(workspaceProject)
+                    .getNode(qualifier);
             result = new PreferencesBuilderConfig(node);
             break;
         case REBAR:

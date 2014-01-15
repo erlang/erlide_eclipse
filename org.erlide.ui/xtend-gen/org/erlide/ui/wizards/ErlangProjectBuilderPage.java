@@ -23,10 +23,6 @@ import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
-import org.erlide.engine.model.builder.ErlangBuilder;
-import org.erlide.engine.model.builder.IErlangBuilderFactory;
-import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.ProjectConfig;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.wizards.BuilderSelectionListener;
@@ -275,9 +271,6 @@ public class ErlangProjectBuilderPage extends WizardPage {
     if (_and) {
       String _builderConfigName = this.info.getBuilderConfigName();
       final BuilderConfigType config = BuilderConfigType.valueOf(_builderConfigName);
-      IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
-      final ProjectConfig persister = _factory.getConfig(config, null);
-      final ErlangProjectProperties props = persister.getConfiguration();
     }
   }
 }

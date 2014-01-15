@@ -28,10 +28,6 @@ import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
-/**
- * 
- * @author Eric Merritt [cyberlync at yahoo dot com]
- */
 public abstract class ProjectPreferencesWizardPage extends WizardPage {
 
     protected final NewProjectData info;
@@ -52,7 +48,7 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
         super(pageName);
         this.info = info;
 
-        setTitle("Builder preferences");
+        setTitle("Project layout configuration");
         setDescription(getBuilderDescription());
     }
 

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2004 Eric Merritt and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eric Merritt
+ *     Vlad Dumitrescu
+ *******************************************************************************/
 package org.erlide.core.internal.builder
 
 import org.eclipse.core.resources.ICommand
@@ -10,11 +20,6 @@ import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.builder.ErlangBuilder
 import org.erlide.engine.model.builder.BuilderConfigType
 
-/** 
- * Erlang project nature
- * @author Eric Merritt [cyberlync at yahoo dot com]
- * @author Vlad Dumitrescu [vladdu55 att gmail dot com]
- */
 class ErlangNature implements IProjectNature {
     var IProject project
 
