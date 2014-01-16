@@ -22,10 +22,11 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.util.PreferencesUtils;
 import org.erlide.util.SystemConfiguration;
+
+import com.google.common.collect.Lists;
 
 public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWizardPage {
 
@@ -62,14 +63,13 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
                 + "by finding all erl and hrl files");
         discoverBtn.setText("Discover paths...");
         discoverBtn.addListener(SWT.Selection, new Listener() {
-
             @Override
             public void handleEvent(final Event event) {
                 discoverPaths();
             }
         });
 
-        // fd_discoverBtn.top = new FormAttachment(test, 26);
+        discoverBtn.setEnabled(projectExists(info));
 
         if (SystemConfiguration.getInstance().isTest()) {
             createExternalModuleEditor(composite);
@@ -78,29 +78,33 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
 
     }
 
+    private boolean projectExists(final NewProjectData someInfo) {
+        final IPath loc = someInfo.getLocation();
+        if (loc == null || someInfo.getName().isEmpty()) {
+            return false;
+        }
+        final File dir = loc.toFile();
+        return dir.exists();
+    }
+
     @Override
     protected void enableInputWidgets(final boolean b) {
-        discoverBtn.setEnabled(b);
         super.enableInputWidgets(b);
+        discoverBtn.setEnabled(projectExists(info));
     }
 
     protected void fillDirWidgetsFromConfig(final String builder) {
-        final WizardNewProjectCreationPage prev = (WizardNewProjectCreationPage) getPreviousPage();
-        final IPath loc = prev.getLocationPath();
-        final File dir = loc.toFile();
-
-        if (!prev.getProjectName().isEmpty() && dir.exists()) {
+        if (projectExists(info)) {
             // TODO autodiscover project settings
 
         }
     }
 
     protected void discoverPaths() {
-        final WizardNewProjectCreationPage prev = (WizardNewProjectCreationPage) getPreviousPage();
-        final IPath loc = prev.getLocationPath();
-        final File dir = loc.toFile();
+        if (projectExists(info)) {
+            final IPath loc = info.getLocation();
+            final File dir = loc.toFile();
 
-        if (dir.exists()) {
             final List<String> src = search("erl", dir);
             final String[] srcs = dirs(src, loc);
 
@@ -114,7 +118,7 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
 
     private String[] dirs(final List<String> list, final IPath ref) {
         final int n = ref.segmentCount();
-        final List<String> res = new ArrayList<String>(10);
+        final List<String> res = Lists.newArrayList();
         for (final Iterator<String> iter = list.iterator(); iter.hasNext();) {
             final String element = iter.next();
             IPath p = new Path(element);

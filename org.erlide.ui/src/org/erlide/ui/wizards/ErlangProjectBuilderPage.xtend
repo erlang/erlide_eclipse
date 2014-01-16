@@ -154,8 +154,10 @@ class ErlangProjectBuilderPage extends WizardPage {
       if (directory.directory && directory.exists) {
         val config = BuilderConfigType.valueOf(info.builderConfigName)
         val persister = ErlangBuilder.factory.getConfig(config, directory)
-        val props = persister.getConfiguration()
-        println("PROPS: " + props)
+        if (persister !== null) {
+          val props = persister.getConfiguration()
+          println("detected PROPS: " + props)
+        }
       }
     }
   }

@@ -1,6 +1,7 @@
 package org.erlide.ui.wizards;
 
-import org.eclipse.core.runtime.IPath;
+import java.net.URI;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.ui.wizards.NewProjectData;
 
@@ -18,8 +19,10 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
     if ((!visible)) {
       String _projectName = this.getProjectName();
       this.info.setName(_projectName);
-      IPath _locationPath = this.getLocationPath();
-      this.info.setLocation(_locationPath);
+      URI _locationURI = this.getLocationURI();
+      String _path = _locationURI.getPath();
+      Path _path_1 = new Path(_path);
+      this.info.setLocation(_path_1);
     }
   }
 }

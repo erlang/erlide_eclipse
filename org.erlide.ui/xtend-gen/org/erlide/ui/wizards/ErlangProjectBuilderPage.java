@@ -392,9 +392,18 @@ public class ErlangProjectBuilderPage extends WizardPage {
               final BuilderConfigType config = BuilderConfigType.valueOf(_builderConfigName);
               IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
               final ProjectConfig persister = _factory.getConfig(config, directory);
-              final ErlangProjectProperties props = persister.getConfiguration();
-              String _println = InputOutput.<String>println(("PROPS: " + props));
-              _xblockexpression_2 = (_println);
+              String _xifexpression_2 = null;
+              boolean _tripleNotEquals_1 = (persister != null);
+              if (_tripleNotEquals_1) {
+                String _xblockexpression_3 = null;
+                {
+                  final ErlangProjectProperties props = persister.getConfiguration();
+                  String _println = InputOutput.<String>println(("detected PROPS: " + props));
+                  _xblockexpression_3 = (_println);
+                }
+                _xifexpression_2 = _xblockexpression_3;
+              }
+              _xblockexpression_2 = (_xifexpression_2);
             }
             _xifexpression_1 = _xblockexpression_2;
           }

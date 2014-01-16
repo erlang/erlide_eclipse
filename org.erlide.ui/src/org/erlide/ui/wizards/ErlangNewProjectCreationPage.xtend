@@ -1,21 +1,22 @@
 package org.erlide.ui.wizards
 
+import org.eclipse.core.runtime.Path
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage
 
 class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
-    val NewProjectData info
+  val NewProjectData info
 
-    new(String name, NewProjectData info) {
-        super(name);
-        this.info = info
-    }
+  new(String name, NewProjectData info) {
+    super(name);
+    this.info = info
+  }
 
-    override setVisible(boolean visible) {
-        super.setVisible(visible)
-        if (!visible) {
-            info.name = projectName
-            info.location = locationPath
-        }
+  override setVisible(boolean visible) {
+    super.setVisible(visible)
+    if (!visible) {
+      info.name = projectName
+      info.location = new Path(locationURI.path)
     }
+  }
 
 }
