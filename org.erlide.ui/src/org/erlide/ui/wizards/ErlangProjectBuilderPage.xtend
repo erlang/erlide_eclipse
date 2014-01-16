@@ -17,193 +17,186 @@ import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.builder.ErlangBuilder
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
+import static extension org.erlide.ui.util.XtendSWTLib.*
 
 class ErlangProjectBuilderPage extends WizardPage {
 
-    NewProjectData info
-    protected Composite configComposite
-    protected Composite makeConfigComposite
+  NewProjectData info
+  protected Composite configComposite
+  protected Composite makeConfigComposite
 
-    protected new(String pageName, NewProjectData info) {
-        super(pageName)
-        this.info = info;
-    }
+  protected new(String pageName, NewProjectData info) {
+    super(pageName)
+    this.info = info;
+  }
 
-    override createControl(Composite parent) {
-        val composite = new Composite(parent, SWT.NONE)
-        setControl(composite);
-        composite.layout = new GridLayout(3, false)
-
-        val label2 = new Label(composite, SWT.NONE)
-        label2.text = 'Minimum Erlang version:'
-
-        val version = new Combo(composite, SWT.READ_ONLY)
+  override createControl(Composite parent) {
+    val composite = newControl(parent, Composite, SWT.NONE) [
+      layout = new GridLayout(3, false)
+      newControl(Label, SWT.NONE) [
+        text = 'Minimum Erlang version:'
+      ]
+      newControl(Combo, SWT.READ_ONLY) [
         val runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS
-        version.setItems(runtimeVersions.map[toString])
-        version.setText(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
-        version.addModifyListener [
-            info.requiredRuntimeVersion = new RuntimeVersion(version.text)
+        setItems(runtimeVersions.map[toString])
+        setText(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
+        val theText = text
+        addModifyListener [
+          info.requiredRuntimeVersion = new RuntimeVersion(theText)
         ]
-        info.requiredRuntimeVersion = new RuntimeVersion(version.text)
-
-        new Label(composite, SWT.NONE)
-
-        new Label(composite, SWT.NONE)
-        new Label(composite, SWT.NONE)
-        new Label(composite, SWT.NONE)
-
-        val label = new Label(composite, SWT.NONE)
-        label.text = 'Build system to be used:'
-
-        val listener = new BuilderSelectionListener(info, this)
-        val builders = BuilderTool.values
-        builders.forEach [ builder |
-            var check = new Button(composite, SWT.RADIO)
-            check.text = builder.toString.toLowerCase
-            check.data = builder
-            check.addSelectionListener(listener)
-            check.selection = (builder === BuilderTool.INTERNAL)
-            val description = new Label(composite, SWT.NONE)
-            description.text = getDescription(builder)
-            new Label(composite, SWT.NONE)
+        info.requiredRuntimeVersion = new RuntimeVersion(theText)
+      ]
+      newControl(Label, SWT.NONE)[]
+      newControl(Label, SWT.NONE)[]
+      newControl(Label, SWT.NONE)[]
+      newControl(Label, SWT.NONE)[]
+      newControl(Label, SWT.NONE) [
+        text = 'Build system to be used:'
+      ]
+      val builderListener = new BuilderSelectionListener(info, this)
+      val builders = BuilderTool.values
+      builders.forEach [ builder |
+        newControl(Button, SWT.RADIO) [
+          text = builder.toString.toLowerCase
+          data = builder
+          addSelectionListener(builderListener)
+          selection = (builder === BuilderTool.INTERNAL)
         ]
-        info.builderName = BuilderTool.INTERNAL.name
-
-        configComposite = new Composite(composite, SWT.NONE)
-        configComposite.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1))
-        configComposite.layout = new GridLayout(3, false)
-        configComposite.visible = false
-
-        val label1 = new Label(configComposite, SWT.NONE)
-        label1.text = 'The directory layout and the build \nconfiguration are described'
-
-        val listener1 = new ConfigSelectionListener(info)
+        newControl(Label, SWT.NONE) [
+          text = getDescription(builder)
+        ]
+        newControl(Label, SWT.NONE)[]
+      ]
+      info.builderName = BuilderTool.INTERNAL.name
+      configComposite = newControl(Composite, SWT.NONE) [
+        layoutData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1)
+        layout = new GridLayout(3, false)
+        visible = false
+        newControl(Label, SWT.NONE) [
+          text = 'The directory layout and the build \nconfiguration are described'
+        ]
+        val configListener = new ConfigSelectionListener(info)
         val configs = BuilderConfigType.values
         configs.forEach [ config |
-            var check = new Button(configComposite, SWT.RADIO)
-            check.text = getDescription(config)
-            check.data = config
-            check.addSelectionListener(listener1)
-            check.selection = (config === BuilderConfigType.INTERNAL)
-            new Label(configComposite, SWT.NONE)
-            new Label(configComposite, SWT.NONE)
+          newControl(Button, SWT.RADIO) [
+            text = getDescription(config)
+            data = config
+            addSelectionListener(configListener)
+            selection = (config === BuilderConfigType.INTERNAL)
+          ]
+          newControl(Label, SWT.NONE)[]
+          newControl(Label, SWT.NONE)[]
         ]
-        info.builderConfigName = BuilderConfigType.INTERNAL.name
+      ]
+      info.builderConfigName = BuilderConfigType.INTERNAL.name
+      makeConfigComposite = newControl(Composite, SWT.NONE) [
+        layoutData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1)
+        layout = new GridLayout(3, false)
+        visible = false
+        newControl(Label, SWT.NONE) [
+          val gd = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1)
+          gd.widthHint = 163
+          layoutData = gd
+          setText("Make uses these targets")
+        ]
+        newControl(Label, SWT.NONE)[]
+        newControl(Label, SWT.NONE)[]
+        newControl(Label, SWT.NONE) [
+          setText("- to compile project:")
+        ]
+        newControl(Text, SWT.BORDER) [
+          setText("compile")
+          layoutData = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1)
+        ]
+        newControl(Label, SWT.NONE)[]
+        newControl(Label, SWT.NONE) [
+          setText("- to clean project:")
+        ]
+        newControl(Text, SWT.BORDER) [
+          setText("clean")
+          val gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1)
+          gd.widthHint = 250
+          layoutData = gd
+        ]
+      ]
+    ]
+    control = composite;
+  }
 
-        makeConfigComposite = new Composite(composite, SWT.NONE)
-        makeConfigComposite.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1))
-        makeConfigComposite.layout = new GridLayout(3, false)
-        makeConfigComposite.visible = false
-
-        {
-            val Label lblNewLabel = new Label(makeConfigComposite, SWT.NONE)
-            val GridData gd_lblNewLabel = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1)
-            gd_lblNewLabel.widthHint = 163
-            lblNewLabel.setLayoutData(gd_lblNewLabel)
-            lblNewLabel.setText("Make uses these targets")
-        }
-        new Label(makeConfigComposite, SWT.NONE)
-
-        new Label(makeConfigComposite, SWT.NONE)
-        {
-            val Label lblNewLabel_1 = new Label(makeConfigComposite, SWT.NONE)
-            lblNewLabel_1.setText("- to compile project:")
-        }
-        {
-            val txtCompile = new Text(makeConfigComposite, SWT.BORDER)
-            txtCompile.setText("compile")
-            txtCompile.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1))
-        }
-
-        new Label(makeConfigComposite, SWT.NONE)
-        {
-            val Label lblNewLabel_2 = new Label(makeConfigComposite, SWT.NONE)
-            lblNewLabel_2.setText("- to clean project:")
-        }
-        {
-            val txtClean = new Text(makeConfigComposite, SWT.BORDER)
-            txtClean.setText("clean")
-            val GridData gd_txtClean = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1)
-            gd_txtClean.widthHint = 250
-            txtClean.setLayoutData(gd_txtClean)
-        }
-
+  def String getDescription(BuilderTool builder) {
+    switch (builder) {
+      case BuilderTool.INTERNAL: ''': let erlide do the compiling.'''
+      case BuilderTool.MAKE: ''': choose this if there is a Makefile (even if it calls rebar or emake).'''
+      case BuilderTool.EMAKE: ''': straight Emake.'''
+      case BuilderTool.REBAR: ''': straight rebar.'''
     }
+  }
 
-    def String getDescription(BuilderTool builder) {
-        switch (builder) {
-            case BuilderTool.INTERNAL: ''': let erlide do the compiling.'''
-            case BuilderTool.MAKE: ''': choose this if there is a Makefile (even if it calls rebar or emake).'''
-            case BuilderTool.EMAKE: ''': straight Emake.'''
-            case BuilderTool.REBAR: ''': straight rebar.'''
-        }
+  def String getDescription(BuilderConfigType config) {
+    switch (config) {
+      case BuilderConfigType.INTERNAL: '''manually (on next page)'''
+      case BuilderConfigType.EMAKE: '''in Emakefile'''
+      case BuilderConfigType.REBAR: '''in rebar.config'''
     }
+  }
 
-    def String getDescription(BuilderConfigType config) {
-        switch (config) {
-            case BuilderConfigType.INTERNAL: '''manually (on next page)'''
-            case BuilderConfigType.EMAKE: '''in Emakefile'''
-            case BuilderConfigType.REBAR: '''in rebar.config'''
-        }
+  override setVisible(boolean visible) {
+    super.setVisible(visible)
+    if (visible) {
+      detectBuilderConfig
     }
+  }
 
-    override setVisible(boolean visible) {
-        super.setVisible(visible)
-        if (visible) {
-            detectBuilderConfig
-        }
+  def detectBuilderConfig() {
+    val location = info.location
+    if (location !== null) {
+      val directory = new File(location.toPortableString)
+      if (directory.directory && directory.exists) {
+        val config = BuilderConfigType.valueOf(info.builderConfigName)
+        val persister = ErlangBuilder.factory.getConfig(config, directory)
+        val props = persister.getConfiguration()
+        println("PROPS: " + props)
+      }
     }
-
-    def detectBuilderConfig() {
-        val location = info.location
-        if (location !== null) {
-            val directory = new File(location.toPortableString)
-            if (directory.directory && directory.exists) {
-                val config = BuilderConfigType.valueOf(info.builderConfigName)
-                val persister = ErlangBuilder.factory.getConfig(config, directory)
-                val props = persister.getConfiguration()
-                println("PROPS: " + props)
-            }
-        }
-    }
+  }
 
 }
 
 class ConfigSelectionListener implements SelectionListener {
 
-    val NewProjectData info
+  val NewProjectData info
 
-    new(NewProjectData info) {
-        this.info = info
-    }
+  new(NewProjectData info) {
+    this.info = info
+  }
 
-    override widgetDefaultSelected(SelectionEvent e) {
-    }
+  override widgetDefaultSelected(SelectionEvent e) {
+  }
 
-    override widgetSelected(SelectionEvent e) {
-        info.builderConfigName = (e.widget.data as BuilderConfigType).name
-    }
+  override widgetSelected(SelectionEvent e) {
+    info.builderConfigName = (e.widget.data as BuilderConfigType).name
+  }
 
 }
 
 class BuilderSelectionListener implements SelectionListener {
 
-    val NewProjectData info
-    val ErlangProjectBuilderPage page
+  val NewProjectData info
+  val ErlangProjectBuilderPage page
 
-    new(NewProjectData info, ErlangProjectBuilderPage page) {
-        this.info = info
-        this.page = page
-    }
+  new(NewProjectData info, ErlangProjectBuilderPage page) {
+    this.info = info
+    this.page = page
+  }
 
-    override widgetDefaultSelected(SelectionEvent e) {
-    }
+  override widgetDefaultSelected(SelectionEvent e) {
+  }
 
-    override widgetSelected(SelectionEvent e) {
-        info.builderName = (e.widget.data as BuilderTool).name
-        page.configComposite.visible = (info.builderName == BuilderTool.MAKE.name) ||
-            (info.builderName == BuilderTool.INTERNAL.name)
-        page.makeConfigComposite.visible = info.builderName == BuilderTool.MAKE.name
-    }
+  override widgetSelected(SelectionEvent e) {
+    info.builderName = (e.widget.data as BuilderTool).name
+    page.configComposite.visible = (info.builderName == BuilderTool.MAKE.name) ||
+      (info.builderName == BuilderTool.INTERNAL.name)
+    page.makeConfigComposite.visible = info.builderName == BuilderTool.MAKE.name
+  }
 
 }

@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Conversions;
+import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
@@ -30,6 +31,7 @@ import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfig;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
+import org.erlide.ui.util.XtendSWTLib;
 import org.erlide.ui.wizards.BuilderSelectionListener;
 import org.erlide.ui.wizards.ConfigSelectionListener;
 import org.erlide.ui.wizards.NewProjectData;
@@ -48,142 +50,242 @@ public class ErlangProjectBuilderPage extends WizardPage {
   }
   
   public void createControl(final Composite parent) {
-    Composite _composite = new Composite(parent, SWT.NONE);
-    final Composite composite = _composite;
-    this.setControl(composite);
-    GridLayout _gridLayout = new GridLayout(3, false);
-    composite.setLayout(_gridLayout);
-    Label _label = new Label(composite, SWT.NONE);
-    final Label label2 = _label;
-    label2.setText("Minimum Erlang version:");
-    Combo _combo = new Combo(composite, SWT.READ_ONLY);
-    final Combo version = _combo;
-    final RuntimeVersion[] runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS;
-    final Function1<RuntimeVersion,String> _function = new Function1<RuntimeVersion,String>() {
-      public String apply(final RuntimeVersion it) {
-        String _string = it.toString();
-        return _string;
-      }
-    };
-    List<String> _map = ListExtensions.<RuntimeVersion, String>map(((List<RuntimeVersion>)Conversions.doWrapArray(runtimeVersions)), _function);
-    version.setItems(((String[])Conversions.unwrapArray(_map, String.class)));
-    version.setText(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
-    final ModifyListener _function_1 = new ModifyListener() {
-      public void modifyText(final ModifyEvent it) {
-        String _text = version.getText();
-        RuntimeVersion _runtimeVersion = new RuntimeVersion(_text);
-        ErlangProjectBuilderPage.this.info.setRequiredRuntimeVersion(_runtimeVersion);
-      }
-    };
-    version.addModifyListener(_function_1);
-    String _text = version.getText();
-    RuntimeVersion _runtimeVersion = new RuntimeVersion(_text);
-    this.info.setRequiredRuntimeVersion(_runtimeVersion);
-    new Label(composite, SWT.NONE);
-    new Label(composite, SWT.NONE);
-    new Label(composite, SWT.NONE);
-    new Label(composite, SWT.NONE);
-    Label _label_1 = new Label(composite, SWT.NONE);
-    final Label label = _label_1;
-    label.setText("Build system to be used:");
-    BuilderSelectionListener _builderSelectionListener = new BuilderSelectionListener(this.info, this);
-    final BuilderSelectionListener listener = _builderSelectionListener;
-    final BuilderTool[] builders = BuilderTool.values();
-    final Procedure1<BuilderTool> _function_2 = new Procedure1<BuilderTool>() {
-      public void apply(final BuilderTool builder) {
-        Button _button = new Button(composite, SWT.RADIO);
-        Button check = _button;
-        String _string = builder.toString();
-        String _lowerCase = _string.toLowerCase();
-        check.setText(_lowerCase);
-        check.setData(builder);
-        check.addSelectionListener(listener);
-        boolean _tripleEquals = (builder == BuilderTool.INTERNAL);
-        check.setSelection(_tripleEquals);
-        Label _label = new Label(composite, SWT.NONE);
-        final Label description = _label;
-        String _description = ErlangProjectBuilderPage.this.getDescription(builder);
-        description.setText(_description);
-        new Label(composite, SWT.NONE);
-      }
-    };
-    IterableExtensions.<BuilderTool>forEach(((Iterable<BuilderTool>)Conversions.doWrapArray(builders)), _function_2);
-    String _name = BuilderTool.INTERNAL.name();
-    this.info.setBuilderName(_name);
-    Composite _composite_1 = new Composite(composite, SWT.NONE);
-    this.configComposite = _composite_1;
-    GridData _gridData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
-    this.configComposite.setLayoutData(_gridData);
-    GridLayout _gridLayout_1 = new GridLayout(3, false);
-    this.configComposite.setLayout(_gridLayout_1);
-    this.configComposite.setVisible(false);
-    Label _label_2 = new Label(this.configComposite, SWT.NONE);
-    final Label label1 = _label_2;
-    label1.setText("The directory layout and the build \nconfiguration are described");
-    ConfigSelectionListener _configSelectionListener = new ConfigSelectionListener(this.info);
-    final ConfigSelectionListener listener1 = _configSelectionListener;
-    final BuilderConfigType[] configs = BuilderConfigType.values();
-    final Procedure1<BuilderConfigType> _function_3 = new Procedure1<BuilderConfigType>() {
-      public void apply(final BuilderConfigType config) {
-        Button _button = new Button(ErlangProjectBuilderPage.this.configComposite, SWT.RADIO);
-        Button check = _button;
-        String _description = ErlangProjectBuilderPage.this.getDescription(config);
-        check.setText(_description);
-        check.setData(config);
-        check.addSelectionListener(listener1);
-        boolean _tripleEquals = (config == BuilderConfigType.INTERNAL);
-        check.setSelection(_tripleEquals);
-        new Label(ErlangProjectBuilderPage.this.configComposite, SWT.NONE);
-        new Label(ErlangProjectBuilderPage.this.configComposite, SWT.NONE);
-      }
-    };
-    IterableExtensions.<BuilderConfigType>forEach(((Iterable<BuilderConfigType>)Conversions.doWrapArray(configs)), _function_3);
-    String _name_1 = BuilderConfigType.INTERNAL.name();
-    this.info.setBuilderConfigName(_name_1);
-    Composite _composite_2 = new Composite(composite, SWT.NONE);
-    this.makeConfigComposite = _composite_2;
-    GridData _gridData_1 = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
-    this.makeConfigComposite.setLayoutData(_gridData_1);
-    GridLayout _gridLayout_2 = new GridLayout(3, false);
-    this.makeConfigComposite.setLayout(_gridLayout_2);
-    this.makeConfigComposite.setVisible(false);
-    {
-      Label _label_3 = new Label(this.makeConfigComposite, SWT.NONE);
-      final Label lblNewLabel = _label_3;
-      GridData _gridData_2 = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
-      final GridData gd_lblNewLabel = _gridData_2;
-      gd_lblNewLabel.widthHint = 163;
-      lblNewLabel.setLayoutData(gd_lblNewLabel);
-      lblNewLabel.setText("Make uses these targets");
-    }
-    new Label(this.makeConfigComposite, SWT.NONE);
-    new Label(this.makeConfigComposite, SWT.NONE);
-    {
-      Label _label_3 = new Label(this.makeConfigComposite, SWT.NONE);
-      final Label lblNewLabel_1 = _label_3;
-      lblNewLabel_1.setText("- to compile project:");
-    }
-    {
-      Text _text_1 = new Text(this.makeConfigComposite, SWT.BORDER);
-      final Text txtCompile = _text_1;
-      txtCompile.setText("compile");
-      GridData _gridData_2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-      txtCompile.setLayoutData(_gridData_2);
-    }
-    new Label(this.makeConfigComposite, SWT.NONE);
-    {
-      Label _label_3 = new Label(this.makeConfigComposite, SWT.NONE);
-      final Label lblNewLabel_2 = _label_3;
-      lblNewLabel_2.setText("- to clean project:");
-    }
-    {
-      Text _text_1 = new Text(this.makeConfigComposite, SWT.BORDER);
-      final Text txtClean = _text_1;
-      txtClean.setText("clean");
-      GridData _gridData_2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-      final GridData gd_txtClean = _gridData_2;
-      gd_txtClean.widthHint = 250;
-      txtClean.setLayoutData(gd_txtClean);
+    try {
+      final Procedure1<Composite> _function = new Procedure1<Composite>() {
+        public void apply(final Composite it) {
+          try {
+            GridLayout _gridLayout = new GridLayout(3, false);
+            it.setLayout(_gridLayout);
+            final Procedure1<Label> _function = new Procedure1<Label>() {
+              public void apply(final Label it) {
+                it.setText("Minimum Erlang version:");
+              }
+            };
+            XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function);
+            final Procedure1<Combo> _function_1 = new Procedure1<Combo>() {
+              public void apply(final Combo it) {
+                final RuntimeVersion[] runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS;
+                final Function1<RuntimeVersion,String> _function = new Function1<RuntimeVersion,String>() {
+                  public String apply(final RuntimeVersion it) {
+                    String _string = it.toString();
+                    return _string;
+                  }
+                };
+                List<String> _map = ListExtensions.<RuntimeVersion, String>map(((List<RuntimeVersion>)Conversions.doWrapArray(runtimeVersions)), _function);
+                it.setItems(((String[])Conversions.unwrapArray(_map, String.class)));
+                it.setText(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+                final String theText = it.getText();
+                final ModifyListener _function_1 = new ModifyListener() {
+                  public void modifyText(final ModifyEvent it) {
+                    RuntimeVersion _runtimeVersion = new RuntimeVersion(theText);
+                    ErlangProjectBuilderPage.this.info.setRequiredRuntimeVersion(_runtimeVersion);
+                  }
+                };
+                it.addModifyListener(_function_1);
+                RuntimeVersion _runtimeVersion = new RuntimeVersion(theText);
+                ErlangProjectBuilderPage.this.info.setRequiredRuntimeVersion(_runtimeVersion);
+              }
+            };
+            XtendSWTLib.<Combo>newControl(it, Combo.class, SWT.READ_ONLY, _function_1);
+            final Procedure1<Label> _function_2 = new Procedure1<Label>() {
+              public void apply(final Label it) {
+              }
+            };
+            XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_2);
+            final Procedure1<Label> _function_3 = new Procedure1<Label>() {
+              public void apply(final Label it) {
+              }
+            };
+            XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_3);
+            final Procedure1<Label> _function_4 = new Procedure1<Label>() {
+              public void apply(final Label it) {
+              }
+            };
+            XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_4);
+            final Procedure1<Label> _function_5 = new Procedure1<Label>() {
+              public void apply(final Label it) {
+              }
+            };
+            XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_5);
+            final Procedure1<Label> _function_6 = new Procedure1<Label>() {
+              public void apply(final Label it) {
+                it.setText("Build system to be used:");
+              }
+            };
+            XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_6);
+            BuilderSelectionListener _builderSelectionListener = new BuilderSelectionListener(ErlangProjectBuilderPage.this.info, ErlangProjectBuilderPage.this);
+            final BuilderSelectionListener builderListener = _builderSelectionListener;
+            final BuilderTool[] builders = BuilderTool.values();
+            final Procedure1<BuilderTool> _function_7 = new Procedure1<BuilderTool>() {
+              public void apply(final BuilderTool builder) {
+                try {
+                  final Procedure1<Button> _function = new Procedure1<Button>() {
+                    public void apply(final Button it) {
+                      String _string = builder.toString();
+                      String _lowerCase = _string.toLowerCase();
+                      it.setText(_lowerCase);
+                      it.setData(builder);
+                      it.addSelectionListener(builderListener);
+                      boolean _tripleEquals = (builder == BuilderTool.INTERNAL);
+                      it.setSelection(_tripleEquals);
+                    }
+                  };
+                  XtendSWTLib.<Button>newControl(it, Button.class, SWT.RADIO, _function);
+                  final Procedure1<Label> _function_1 = new Procedure1<Label>() {
+                    public void apply(final Label it) {
+                      String _description = ErlangProjectBuilderPage.this.getDescription(builder);
+                      it.setText(_description);
+                    }
+                  };
+                  XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_1);
+                  final Procedure1<Label> _function_2 = new Procedure1<Label>() {
+                    public void apply(final Label it) {
+                    }
+                  };
+                  XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_2);
+                } catch (Throwable _e) {
+                  throw Exceptions.sneakyThrow(_e);
+                }
+              }
+            };
+            IterableExtensions.<BuilderTool>forEach(((Iterable<BuilderTool>)Conversions.doWrapArray(builders)), _function_7);
+            String _name = BuilderTool.INTERNAL.name();
+            ErlangProjectBuilderPage.this.info.setBuilderName(_name);
+            final Procedure1<Composite> _function_8 = new Procedure1<Composite>() {
+              public void apply(final Composite it) {
+                try {
+                  GridData _gridData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
+                  it.setLayoutData(_gridData);
+                  GridLayout _gridLayout = new GridLayout(3, false);
+                  it.setLayout(_gridLayout);
+                  it.setVisible(false);
+                  final Procedure1<Label> _function = new Procedure1<Label>() {
+                    public void apply(final Label it) {
+                      it.setText("The directory layout and the build \nconfiguration are described");
+                    }
+                  };
+                  XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function);
+                  ConfigSelectionListener _configSelectionListener = new ConfigSelectionListener(ErlangProjectBuilderPage.this.info);
+                  final ConfigSelectionListener configListener = _configSelectionListener;
+                  final BuilderConfigType[] configs = BuilderConfigType.values();
+                  final Procedure1<BuilderConfigType> _function_1 = new Procedure1<BuilderConfigType>() {
+                    public void apply(final BuilderConfigType config) {
+                      try {
+                        final Procedure1<Button> _function = new Procedure1<Button>() {
+                          public void apply(final Button it) {
+                            String _description = ErlangProjectBuilderPage.this.getDescription(config);
+                            it.setText(_description);
+                            it.setData(config);
+                            it.addSelectionListener(configListener);
+                            boolean _tripleEquals = (config == BuilderConfigType.INTERNAL);
+                            it.setSelection(_tripleEquals);
+                          }
+                        };
+                        XtendSWTLib.<Button>newControl(it, Button.class, SWT.RADIO, _function);
+                        final Procedure1<Label> _function_1 = new Procedure1<Label>() {
+                          public void apply(final Label it) {
+                          }
+                        };
+                        XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_1);
+                        final Procedure1<Label> _function_2 = new Procedure1<Label>() {
+                          public void apply(final Label it) {
+                          }
+                        };
+                        XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_2);
+                      } catch (Throwable _e) {
+                        throw Exceptions.sneakyThrow(_e);
+                      }
+                    }
+                  };
+                  IterableExtensions.<BuilderConfigType>forEach(((Iterable<BuilderConfigType>)Conversions.doWrapArray(configs)), _function_1);
+                } catch (Throwable _e) {
+                  throw Exceptions.sneakyThrow(_e);
+                }
+              }
+            };
+            Composite _newControl = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_8);
+            ErlangProjectBuilderPage.this.configComposite = _newControl;
+            String _name_1 = BuilderConfigType.INTERNAL.name();
+            ErlangProjectBuilderPage.this.info.setBuilderConfigName(_name_1);
+            final Procedure1<Composite> _function_9 = new Procedure1<Composite>() {
+              public void apply(final Composite it) {
+                try {
+                  GridData _gridData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
+                  it.setLayoutData(_gridData);
+                  GridLayout _gridLayout = new GridLayout(3, false);
+                  it.setLayout(_gridLayout);
+                  it.setVisible(false);
+                  final Procedure1<Label> _function = new Procedure1<Label>() {
+                    public void apply(final Label it) {
+                      GridData _gridData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
+                      final GridData gd = _gridData;
+                      gd.widthHint = 163;
+                      it.setLayoutData(gd);
+                      it.setText("Make uses these targets");
+                    }
+                  };
+                  XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function);
+                  final Procedure1<Label> _function_1 = new Procedure1<Label>() {
+                    public void apply(final Label it) {
+                    }
+                  };
+                  XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_1);
+                  final Procedure1<Label> _function_2 = new Procedure1<Label>() {
+                    public void apply(final Label it) {
+                    }
+                  };
+                  XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_2);
+                  final Procedure1<Label> _function_3 = new Procedure1<Label>() {
+                    public void apply(final Label it) {
+                      it.setText("- to compile project:");
+                    }
+                  };
+                  XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_3);
+                  final Procedure1<Text> _function_4 = new Procedure1<Text>() {
+                    public void apply(final Text it) {
+                      it.setText("compile");
+                      GridData _gridData = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+                      it.setLayoutData(_gridData);
+                    }
+                  };
+                  XtendSWTLib.<Text>newControl(it, Text.class, SWT.BORDER, _function_4);
+                  final Procedure1<Label> _function_5 = new Procedure1<Label>() {
+                    public void apply(final Label it) {
+                    }
+                  };
+                  XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_5);
+                  final Procedure1<Label> _function_6 = new Procedure1<Label>() {
+                    public void apply(final Label it) {
+                      it.setText("- to clean project:");
+                    }
+                  };
+                  XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_6);
+                  final Procedure1<Text> _function_7 = new Procedure1<Text>() {
+                    public void apply(final Text it) {
+                      it.setText("clean");
+                      GridData _gridData = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+                      final GridData gd = _gridData;
+                      gd.widthHint = 250;
+                      it.setLayoutData(gd);
+                    }
+                  };
+                  XtendSWTLib.<Text>newControl(it, Text.class, SWT.BORDER, _function_7);
+                } catch (Throwable _e) {
+                  throw Exceptions.sneakyThrow(_e);
+                }
+              }
+            };
+            Composite _newControl_1 = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_9);
+            ErlangProjectBuilderPage.this.makeConfigComposite = _newControl_1;
+          } catch (Throwable _e) {
+            throw Exceptions.sneakyThrow(_e);
+          }
+        }
+      };
+      final Composite composite = XtendSWTLib.<Composite>newControl(parent, Composite.class, SWT.NONE, _function);
+      this.setControl(composite);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
     }
   }
   
