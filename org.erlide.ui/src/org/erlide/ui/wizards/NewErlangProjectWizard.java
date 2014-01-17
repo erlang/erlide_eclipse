@@ -281,7 +281,8 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         }
         if (page == builderPage) {
             final BuilderConfigType config;
-            if (info.getBuilder().equals(BuilderTool.MAKE.name())) {
+            if (info.getBuilder().equals(BuilderTool.MAKE)
+                    || info.getBuilder().equals(BuilderTool.INTERNAL)) {
                 config = info.getBuilderConfig();
             } else {
                 config = info.getBuilder().getMatchingConfigs().iterator().next();

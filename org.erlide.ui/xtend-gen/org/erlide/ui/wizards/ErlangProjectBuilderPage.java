@@ -3,6 +3,7 @@ package org.erlide.ui.wizards;
 import com.google.common.base.Objects;
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -73,7 +74,8 @@ public class ErlangProjectBuilderPage extends WizardPage {
                 };
                 List<String> _map = ListExtensions.<RuntimeVersion, String>map(((List<RuntimeVersion>)Conversions.doWrapArray(runtimeVersions)), _function);
                 it.setItems(((String[])Conversions.unwrapArray(_map, String.class)));
-                it.setText(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+                String _string = ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION.toString();
+                it.setText(_string);
                 final String theText = it.getText();
                 final ModifyListener _function_1 = new ModifyListener() {
                   public void modifyText(final ModifyEvent it) {
@@ -157,7 +159,6 @@ public class ErlangProjectBuilderPage extends WizardPage {
                   it.setLayoutData(_gridData);
                   GridLayout _gridLayout = new GridLayout(3, false);
                   it.setLayout(_gridLayout);
-                  it.setVisible(false);
                   final Procedure1<Label> _function = new Procedure1<Label>() {
                     public void apply(final Label it) {
                       it.setText("The directory layout and the build \nconfiguration are described");
@@ -241,9 +242,17 @@ public class ErlangProjectBuilderPage extends WizardPage {
                   XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_3);
                   final Procedure1<Text> _function_4 = new Procedure1<Text>() {
                     public void apply(final Text it) {
-                      it.setText("compile");
                       GridData _gridData = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
                       it.setLayoutData(_gridData);
+                      final ModifyListener _function = new ModifyListener() {
+                        public void modifyText(final ModifyEvent l) {
+                          Map<String,String> _builderData = ErlangProjectBuilderPage.this.info.getBuilderData();
+                          String _text = it.getText();
+                          _builderData.put("compile", _text);
+                        }
+                      };
+                      it.addModifyListener(_function);
+                      it.setText("compile");
                     }
                   };
                   XtendSWTLib.<Text>newControl(it, Text.class, SWT.BORDER, _function_4);
@@ -260,11 +269,19 @@ public class ErlangProjectBuilderPage extends WizardPage {
                   XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_6);
                   final Procedure1<Text> _function_7 = new Procedure1<Text>() {
                     public void apply(final Text it) {
-                      it.setText("clean");
                       GridData _gridData = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
                       final GridData gd = _gridData;
                       gd.widthHint = 250;
                       it.setLayoutData(gd);
+                      final ModifyListener _function = new ModifyListener() {
+                        public void modifyText(final ModifyEvent l) {
+                          Map<String,String> _builderData = ErlangProjectBuilderPage.this.info.getBuilderData();
+                          String _text = it.getText();
+                          _builderData.put("clean", _text);
+                        }
+                      };
+                      it.addModifyListener(_function);
+                      it.setText("clean");
                     }
                   };
                   XtendSWTLib.<Text>newControl(it, Text.class, SWT.BORDER, _function_7);
@@ -356,21 +373,30 @@ public class ErlangProjectBuilderPage extends WizardPage {
   }
   
   public void setVisible(final boolean visible) {
-    super.setVisible(visible);
+    InputOutput.<String>println(((("!!!! " + Boolean.valueOf(visible)) + " -- ") + this.info));
     if (visible) {
-      this.detectBuilderConfig();
+      boolean _isLocationChanged = this.info.isLocationChanged();
+      if (_isLocationChanged) {
+        InputOutput.<String>println("???");
+        this.detectBuilderConfig();
+      }
+    } else {
+      this.info.setLocationChanged(false);
     }
+    super.setVisible(visible);
   }
   
   public String detectBuilderConfig() {
     String _xblockexpression = null;
     {
+      InputOutput.<String>println("TRYYYYY DETECT builder config");
       final IPath location = this.info.getLocation();
       String _xifexpression = null;
       boolean _tripleNotEquals = (location != null);
       if (_tripleNotEquals) {
         String _xblockexpression_1 = null;
         {
+          InputOutput.<String>println("DETECT builder config");
           String _portableString = location.toPortableString();
           File _file = new File(_portableString);
           final File directory = _file;
@@ -389,6 +415,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
               final BuilderConfigType config = this.info.getBuilderConfig();
               IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
               final ProjectConfig persister = _factory.getConfig(config, directory);
+              InputOutput.<String>println(("PERSISTER " + persister));
               String _xifexpression_2 = null;
               boolean _tripleNotEquals_1 = (persister != null);
               if (_tripleNotEquals_1) {

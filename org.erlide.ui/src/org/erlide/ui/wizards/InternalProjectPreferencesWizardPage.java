@@ -14,7 +14,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -23,6 +22,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.util.PreferencesUtils;
 import org.erlide.util.SystemConfiguration;
 
@@ -39,6 +39,7 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
     public InternalProjectPreferencesWizardPage(final String pageName,
             final NewProjectData info) {
         super(pageName, info);
+        configType = BuilderConfigType.INTERNAL;
     }
 
     /**
@@ -49,7 +50,7 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         super.createControl(parent);
         final Composite composite = (Composite) getControl();
 
-        composite.setLayout(new FormLayout());
+        // composite.setLayout(new FormLayout());
 
         discoverBtn = new Button(composite, SWT.PUSH);
         FormData fd_discoverBtn;
@@ -69,8 +70,6 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
             }
         });
 
-        discoverBtn.setEnabled(projectExists(info));
-
         if (SystemConfiguration.getInstance().isTest()) {
             createExternalModuleEditor(composite);
             createExternalIncludeEditor(composite);
@@ -78,30 +77,21 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
 
     }
 
-    private boolean projectExists(final NewProjectData someInfo) {
-        final IPath loc = someInfo.getLocation();
-        if (loc == null || someInfo.getName().isEmpty()) {
-            return false;
-        }
-        final File dir = loc.toFile();
-        return dir.exists();
-    }
-
-    @Override
-    protected void enableInputWidgets(final boolean b) {
-        super.enableInputWidgets(b);
-        discoverBtn.setEnabled(projectExists(info));
-    }
+    // @Override
+    // protected void enableInputWidgets(final boolean b) {
+    // super.enableInputWidgets(b);
+    // discoverBtn.setEnabled(projectExists(info));
+    // }
 
     protected void fillDirWidgetsFromConfig(final String builder) {
-        if (projectExists(info)) {
+        if (info.isExistingProject()) {
             // TODO autodiscover project settings
 
         }
     }
 
     protected void discoverPaths() {
-        if (projectExists(info)) {
+        if (info.isExistingProject()) {
             final IPath loc = info.getLocation();
             final File dir = loc.toFile();
 
@@ -289,5 +279,13 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
     @Override
     public boolean isReadOnly() {
         return false;
+    }
+
+    @Override
+    public void setVisible(final boolean visible) {
+        super.setVisible(visible);
+        if (visible) {
+            discoverBtn.setEnabled(info.isExistingProject());
+        }
     }
 }

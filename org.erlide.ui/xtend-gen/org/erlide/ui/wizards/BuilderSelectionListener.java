@@ -26,20 +26,17 @@ public class BuilderSelectionListener implements SelectionListener {
     this.info.setBuilder(((BuilderTool) _data));
     boolean _or = false;
     BuilderTool _builder = this.info.getBuilder();
-    String _name = BuilderTool.MAKE.name();
-    boolean _equals = Objects.equal(_builder, _name);
+    boolean _equals = Objects.equal(_builder, BuilderTool.MAKE);
     if (_equals) {
       _or = true;
     } else {
       BuilderTool _builder_1 = this.info.getBuilder();
-      String _name_1 = BuilderTool.INTERNAL.name();
-      boolean _equals_1 = Objects.equal(_builder_1, _name_1);
+      boolean _equals_1 = Objects.equal(_builder_1, BuilderTool.INTERNAL);
       _or = (_equals || _equals_1);
     }
     this.page.configComposite.setVisible(_or);
     BuilderTool _builder_2 = this.info.getBuilder();
-    String _name_2 = BuilderTool.MAKE.name();
-    boolean _equals_2 = Objects.equal(_builder_2, _name_2);
+    boolean _equals_2 = Objects.equal(_builder_2, BuilderTool.MAKE);
     this.page.makeConfigComposite.setVisible(_equals_2);
   }
 }

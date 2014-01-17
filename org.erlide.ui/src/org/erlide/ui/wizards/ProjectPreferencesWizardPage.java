@@ -13,6 +13,7 @@ package org.erlide.ui.wizards;
 import java.io.File;
 
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -21,15 +22,17 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 public abstract class ProjectPreferencesWizardPage extends WizardPage {
 
     protected final NewProjectData info;
+    protected BuilderConfigType configType;
+
     private Text output;
     protected Text source;
     protected Text include;
@@ -178,17 +181,17 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
         test.setEditable(false);
         test.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
 
-        for (final Control c : composite.getChildren()) {
-            c.setEnabled(!isReadOnly());
-        }
+        // for (final Control c : composite.getChildren()) {
+        // c.setEnabled(!isReadOnly());
+        // }
     }
 
-    protected void enableInputWidgets(final boolean b) {
-        output.setEnabled(b);
-        source.setEnabled(b);
-        include.setEnabled(b);
-        test.setEnabled(b);
-    }
+    // protected void enableInputWidgets(final boolean b) {
+    // output.setEnabled(b);
+    // source.setEnabled(b);
+    // include.setEnabled(b);
+    // test.setEnabled(b);
+    // }
 
     protected boolean testPageComplete() {
         if (null != output
@@ -211,7 +214,10 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
     }
 
     protected String getBuilderDescription() {
-        return null;
+        if (configType == BuilderConfigType.INTERNAL) {
+            return null;
+        }
+        return "Configuration retrieved from " + configType.getConfigName();
     }
 
     protected void checkConfigFile() {
@@ -228,6 +234,16 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
 
     public boolean isReadOnly() {
         return true;
+    }
+
+    @Override
+    public void setVisible(final boolean visible) {
+        super.setVisible(visible);
+        // if (!projectExists())
+        setMessage(
+                "Configure the project by editing "
+                        + BuilderConfigType.REBAR.getConfigName(),
+                IMessageProvider.INFORMATION);
     }
 
 }

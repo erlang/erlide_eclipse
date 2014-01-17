@@ -39,7 +39,7 @@ class ErlangProjectBuilderPage extends WizardPage {
             newControl(Combo, SWT.READ_ONLY) [
                 val runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS
                 setItems(runtimeVersions.map[toString])
-                setText(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
+                setText(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION.toString)
                 val theText = text
                 addModifyListener [
                     info.requiredRuntimeVersion = new RuntimeVersion(theText)
@@ -71,7 +71,6 @@ class ErlangProjectBuilderPage extends WizardPage {
             configComposite = newControl(Composite, SWT.NONE) [
                 layoutData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1)
                 layout = new GridLayout(3, false)
-                visible = false
                 newControl(Label, SWT.NONE) [
                     text = 'The directory layout and the build \nconfiguration are described'
                 ]
@@ -105,18 +104,24 @@ class ErlangProjectBuilderPage extends WizardPage {
                     setText("- to compile project:")
                 ]
                 newControl(Text, SWT.BORDER) [
-                    setText("compile")
                     layoutData = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1)
+                    addModifyListener [ l |
+                        info.builderData.put("compile", text)
+                    ]
+                    text = "compile"
                 ]
                 newControl(Label, SWT.NONE)[]
                 newControl(Label, SWT.NONE) [
                     setText("- to clean project:")
                 ]
                 newControl(Text, SWT.BORDER) [
-                    setText("clean")
                     val gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1)
                     gd.widthHint = 250
                     layoutData = gd
+                    addModifyListener [ l |
+                        info.builderData.put("clean", text)
+                    ]
+                    text = "clean"
                 ]
             ]
         ]
@@ -141,19 +146,28 @@ class ErlangProjectBuilderPage extends WizardPage {
     }
 
     override setVisible(boolean visible) {
-        super.setVisible(visible)
+        println("!!!! "+visible+" -- "+info)
         if (visible) {
-            detectBuilderConfig
+            if (info.locationChanged) {
+                println("???")
+                detectBuilderConfig
+            }
+        } else {
+            info.locationChanged = false
         }
+        super.setVisible(visible)
     }
 
     def detectBuilderConfig() {
+        println("TRYYYYY DETECT builder config")
         val location = info.location
         if (location !== null) {
+            println("DETECT builder config")
             val directory = new File(location.toPortableString)
             if (directory.directory && directory.exists) {
                 val config = info.builderConfig
                 val persister = ErlangBuilder.factory.getConfig(config, directory)
+                println("PERSISTER " + persister)
                 if (persister !== null) {
                     val props = persister.getConfiguration()
                     println("detected PROPS: " + props)
@@ -196,9 +210,9 @@ class BuilderSelectionListener implements SelectionListener {
 
     override widgetSelected(SelectionEvent e) {
         info.builder = e.widget.data as BuilderTool
-        page.configComposite.visible = (info.builder == BuilderTool.MAKE.name) ||
-            (info.builder == BuilderTool.INTERNAL.name)
-        page.makeConfigComposite.visible = info.builder == BuilderTool.MAKE.name
+        page.configComposite.visible = (info.builder == BuilderTool.MAKE) ||
+            (info.builder == BuilderTool.INTERNAL)
+        page.makeConfigComposite.visible = info.builder == BuilderTool.MAKE
     }
 
 }

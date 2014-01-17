@@ -7,11 +7,7 @@ public class RebarProjectPreferencesWizardPage extends ProjectPreferencesWizardP
     public RebarProjectPreferencesWizardPage(final String pageName,
             final NewProjectData info) {
         super(pageName, info);
-    }
-
-    @Override
-    protected String getBuilderDescription() {
-        return "Configuration retrieved from " + BuilderConfigType.REBAR.getConfigName();
+        configType = BuilderConfigType.REBAR;
     }
 
 }
