@@ -35,7 +35,8 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
         boolean _notEquals_1 = (!Objects.equal(_location, projectPath));
         _or = (_notEquals || _notEquals_1);
       }
-      this.info.setLocationChanged(_or);
+      if (_or) {
+      }
       String _projectName_1 = this.getProjectName();
       this.info.setName(_projectName_1);
       this.info.setLocation(projectPath);

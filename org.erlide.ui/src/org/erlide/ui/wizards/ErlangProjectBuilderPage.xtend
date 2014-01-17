@@ -148,12 +148,10 @@ class ErlangProjectBuilderPage extends WizardPage {
     override setVisible(boolean visible) {
         println("!!!! "+visible+" -- "+info)
         if (visible) {
-            if (info.locationChanged) {
+            if (info.existingProject) {
                 println("???")
                 detectBuilderConfig
             }
-        } else {
-            info.locationChanged = false
         }
         super.setVisible(visible)
     }

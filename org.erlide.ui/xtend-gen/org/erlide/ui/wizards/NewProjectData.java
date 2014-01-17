@@ -32,16 +32,6 @@ public class NewProjectData extends ErlangProjectProperties {
     this._location = location;
   }
   
-  private boolean _locationChanged = false;
-  
-  public boolean isLocationChanged() {
-    return this._locationChanged;
-  }
-  
-  public void setLocationChanged(final boolean locationChanged) {
-    this._locationChanged = locationChanged;
-  }
-  
   private boolean _existingProject = false;
   
   public boolean isExistingProject() {
@@ -90,7 +80,6 @@ public class NewProjectData extends ErlangProjectProperties {
         public void apply(final Objects.ToStringHelper it) {
           it.add("name", NewProjectData.this._name);
           it.add("location", NewProjectData.this._location);
-          it.add("locationChanged", NewProjectData.this._locationChanged);
           it.add("existingProject", NewProjectData.this._existingProject);
           it.add("builder", NewProjectData.this._builder);
           it.add("builderConfig", NewProjectData.this._builderConfig);

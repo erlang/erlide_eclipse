@@ -11,7 +11,6 @@ class NewProjectData extends ErlangProjectProperties {
 
     @Property String name = null
     @Property IPath location = null
-    @Property boolean locationChanged = false //??
     @Property boolean existingProject = false
 
     @Property BuilderTool builder = BuilderTool.INTERNAL
@@ -24,7 +23,6 @@ class NewProjectData extends ErlangProjectProperties {
         val helper = Objects.toStringHelper(this) => [
             add("name", _name)
             add("location", _location)
-            add("locationChanged", _locationChanged)
             add("existingProject", _existingProject)
             add("builder", _builder)
             add("builderConfig", _builderConfig)

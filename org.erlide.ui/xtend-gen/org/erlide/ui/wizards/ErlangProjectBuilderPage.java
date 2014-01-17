@@ -375,13 +375,11 @@ public class ErlangProjectBuilderPage extends WizardPage {
   public void setVisible(final boolean visible) {
     InputOutput.<String>println(((("!!!! " + Boolean.valueOf(visible)) + " -- ") + this.info));
     if (visible) {
-      boolean _isLocationChanged = this.info.isLocationChanged();
-      if (_isLocationChanged) {
+      boolean _isExistingProject = this.info.isExistingProject();
+      if (_isExistingProject) {
         InputOutput.<String>println("???");
         this.detectBuilderConfig();
       }
-    } else {
-      this.info.setLocationChanged(false);
     }
     super.setVisible(visible);
   }
