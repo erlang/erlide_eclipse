@@ -18,7 +18,6 @@ public class ConfigSelectionListener implements SelectionListener {
   
   public void widgetSelected(final SelectionEvent e) {
     Object _data = e.widget.getData();
-    String _name = ((BuilderConfigType) _data).name();
-    this.info.setBuilderConfigName(_name);
+    this.info.setBuilderConfig(((BuilderConfigType) _data));
   }
 }

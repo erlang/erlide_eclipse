@@ -187,10 +187,9 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
             description = project.getDescription();
             description.setNatureIds(new String[] { ErlangCore.NATURE_ID });
             project.setDescription(description, new SubProgressMonitor(monitor, 10));
-            if (info.getBuilderName() != null) {
-                ErlangNature.setErlangProjectBuilder(project,
-                        BuilderTool.valueOf(info.getBuilderName()));
-                createBuilderConfig(info.getBuilderName());
+            if (info.getBuilder() != null) {
+                ErlangNature.setErlangProjectBuilder(project, info.getBuilder());
+                createBuilderConfig(info.getBuilder());
             }
 
             monitor.worked(10);
@@ -215,7 +214,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         }
     }
 
-    private void createBuilderConfig(final String builderName) {
+    private void createBuilderConfig(final BuilderTool builderTool) {
         // BuilderInfo.valueOf(builderName).getBuilder().setConfiguration(info);
     }
 
@@ -281,16 +280,12 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
             return builderPage;
         }
         if (page == builderPage) {
-
-            final String configName;
-            if (info.getBuilderName().equals(BuilderTool.MAKE.name())) {
-                configName = info.getBuilderConfigName();
+            final BuilderConfigType config;
+            if (info.getBuilder().equals(BuilderTool.MAKE.name())) {
+                config = info.getBuilderConfig();
             } else {
-                configName = BuilderTool.valueOf(info.getBuilderName())
-                        .getMatchingConfigs().iterator().next().name();
+                config = info.getBuilder().getMatchingConfigs().iterator().next();
             }
-
-            final BuilderConfigType config = BuilderConfigType.valueOf(configName);
             return buildPages.get(config);
         }
         return null;

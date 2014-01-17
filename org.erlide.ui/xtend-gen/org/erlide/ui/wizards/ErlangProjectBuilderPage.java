@@ -149,8 +149,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
               }
             };
             IterableExtensions.<BuilderTool>forEach(((Iterable<BuilderTool>)Conversions.doWrapArray(builders)), _function_7);
-            String _name = BuilderTool.INTERNAL.name();
-            ErlangProjectBuilderPage.this.info.setBuilderName(_name);
+            ErlangProjectBuilderPage.this.info.setBuilder(BuilderTool.INTERNAL);
             final Procedure1<Composite> _function_8 = new Procedure1<Composite>() {
               public void apply(final Composite it) {
                 try {
@@ -205,8 +204,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
             };
             Composite _newControl = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_8);
             ErlangProjectBuilderPage.this.configComposite = _newControl;
-            String _name_1 = BuilderConfigType.INTERNAL.name();
-            ErlangProjectBuilderPage.this.info.setBuilderConfigName(_name_1);
+            ErlangProjectBuilderPage.this.info.setBuilderConfig(BuilderConfigType.INTERNAL);
             final Procedure1<Composite> _function_9 = new Procedure1<Composite>() {
               public void apply(final Composite it) {
                 try {
@@ -388,8 +386,7 @@ public class ErlangProjectBuilderPage extends WizardPage {
           if (_and) {
             String _xblockexpression_2 = null;
             {
-              String _builderConfigName = this.info.getBuilderConfigName();
-              final BuilderConfigType config = BuilderConfigType.valueOf(_builderConfigName);
+              final BuilderConfigType config = this.info.getBuilderConfig();
               IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
               final ProjectConfig persister = _factory.getConfig(config, directory);
               String _xifexpression_2 = null;

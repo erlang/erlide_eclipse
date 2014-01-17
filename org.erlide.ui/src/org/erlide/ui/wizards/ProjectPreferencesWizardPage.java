@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
@@ -216,10 +215,8 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
     }
 
     protected void checkConfigFile() {
-        final File f = new File(info
-                .getLocation()
-                .append(BuilderConfigType.valueOf(info.getBuilderConfigName())
-                        .getConfigName()).toPortableString());
+        final File f = new File(info.getLocation()
+                .append(info.getBuilderConfig().getConfigName()).toPortableString());
         if (f.exists()) {
             // TODO read config and show it
         } else {

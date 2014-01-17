@@ -23,24 +23,23 @@ public class BuilderSelectionListener implements SelectionListener {
   
   public void widgetSelected(final SelectionEvent e) {
     Object _data = e.widget.getData();
-    String _name = ((BuilderTool) _data).name();
-    this.info.setBuilderName(_name);
+    this.info.setBuilder(((BuilderTool) _data));
     boolean _or = false;
-    String _builderName = this.info.getBuilderName();
-    String _name_1 = BuilderTool.MAKE.name();
-    boolean _equals = Objects.equal(_builderName, _name_1);
+    BuilderTool _builder = this.info.getBuilder();
+    String _name = BuilderTool.MAKE.name();
+    boolean _equals = Objects.equal(_builder, _name);
     if (_equals) {
       _or = true;
     } else {
-      String _builderName_1 = this.info.getBuilderName();
-      String _name_2 = BuilderTool.INTERNAL.name();
-      boolean _equals_1 = Objects.equal(_builderName_1, _name_2);
+      BuilderTool _builder_1 = this.info.getBuilder();
+      String _name_1 = BuilderTool.INTERNAL.name();
+      boolean _equals_1 = Objects.equal(_builder_1, _name_1);
       _or = (_equals || _equals_1);
     }
     this.page.configComposite.setVisible(_or);
-    String _builderName_2 = this.info.getBuilderName();
-    String _name_3 = BuilderTool.MAKE.name();
-    boolean _equals_2 = Objects.equal(_builderName_2, _name_3);
+    BuilderTool _builder_2 = this.info.getBuilder();
+    String _name_2 = BuilderTool.MAKE.name();
+    boolean _equals_2 = Objects.equal(_builder_2, _name_2);
     this.page.makeConfigComposite.setVisible(_equals_2);
   }
 }
