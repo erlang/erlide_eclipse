@@ -150,7 +150,7 @@ public class ErlLogger {
         int i = 2;
         do {
             el = st[i++];
-        } while (el.getClassName().equals(ErlLogger.class.getName()));
+        } while (el.getClassName().contains("Logger"));
         return el;
     }
 
