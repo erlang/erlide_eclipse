@@ -28,7 +28,7 @@ class ErlangProjectProperties {
 		_includeDirs = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS)
 		_externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES
 		_externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES
-		_requiredRuntimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
+		_requiredRuntimeVersion = ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION
 	]
 
 	new() {
@@ -37,7 +37,7 @@ class ErlangProjectProperties {
 		_includeDirs = newArrayList()
 		_externalIncludesFile = ""
 		_externalModulesFile = ""
-		_requiredRuntimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION)
+		_requiredRuntimeVersion = ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION
 	}
 
 	def void setIncludeDirs(Collection<IPath> dirs) {

@@ -50,7 +50,6 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
         this.info = info;
 
         setTitle("Project layout configuration");
-        setDescription(getBuilderDescription());
     }
 
     /**
@@ -58,7 +57,8 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
      */
     @Override
     public void createControl(final Composite parent) {
-        // create the composite to hold the widgets
+        setDescription(getBuilderDescription());
+
         final Composite composite = new Composite(parent, SWT.NONE);
         setControl(composite);
 

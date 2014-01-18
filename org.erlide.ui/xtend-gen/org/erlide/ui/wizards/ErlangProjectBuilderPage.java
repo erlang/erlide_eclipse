@@ -48,6 +48,8 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
   
   protected Composite makeConfigComposite;
   
+  private Combo runtimeCombo;
+  
   protected ErlangProjectBuilderPage(final String pageName, final NewProjectData info) {
     super(pageName);
     this.info = info;
@@ -78,21 +80,17 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                 List<String> _map = ListExtensions.<RuntimeVersion, String>map(((List<RuntimeVersion>)Conversions.doWrapArray(runtimeVersions)), _function);
                 it.setItems(((String[])Conversions.unwrapArray(_map, String.class)));
                 RuntimeInfo _bestRuntime = ErlangProjectBuilderPage.this.bestRuntime();
-                String _string = _bestRuntime.toString();
+                RuntimeVersion _version = _bestRuntime.getVersion();
+                RuntimeVersion _asMajor = _version.asMajor();
+                String _string = _asMajor.toString();
                 it.setText(_string);
-                final String theText = it.getText();
-                final ModifyListener _function_1 = new ModifyListener() {
-                  public void modifyText(final ModifyEvent it) {
-                    RuntimeVersion _runtimeVersion = new RuntimeVersion(theText);
-                    ErlangProjectBuilderPage.this.info.setRequiredRuntimeVersion(_runtimeVersion);
-                  }
-                };
-                it.addModifyListener(_function_1);
-                RuntimeVersion _runtimeVersion = new RuntimeVersion(theText);
+                String _text = it.getText();
+                RuntimeVersion _runtimeVersion = new RuntimeVersion(_text);
                 ErlangProjectBuilderPage.this.info.setRequiredRuntimeVersion(_runtimeVersion);
               }
             };
-            XtendSWTLib.<Combo>newControl(it, Combo.class, SWT.READ_ONLY, _function_1);
+            Combo _newControl = XtendSWTLib.<Combo>newControl(it, Combo.class, SWT.READ_ONLY, _function_1);
+            ErlangProjectBuilderPage.this.runtimeCombo = _newControl;
             final Procedure1<Label> _function_2 = new Procedure1<Label>() {
               public void apply(final Label it) {
               }
@@ -207,8 +205,8 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                 }
               }
             };
-            Composite _newControl = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_8);
-            ErlangProjectBuilderPage.this.configComposite = _newControl;
+            Composite _newControl_1 = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_8);
+            ErlangProjectBuilderPage.this.configComposite = _newControl_1;
             ErlangProjectBuilderPage.this.info.setBuilderConfig(BuilderConfigType.INTERNAL);
             final Procedure1<Composite> _function_9 = new Procedure1<Composite>() {
               public void apply(final Composite it) {
@@ -294,8 +292,8 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                 }
               }
             };
-            Composite _newControl_1 = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_9);
-            ErlangProjectBuilderPage.this.makeConfigComposite = _newControl_1;
+            Composite _newControl_2 = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_9);
+            ErlangProjectBuilderPage.this.makeConfigComposite = _newControl_2;
           } catch (Throwable _e) {
             throw Exceptions.sneakyThrow(_e);
           }
@@ -379,12 +377,14 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
   protected void onEntry() {
     boolean _isExistingProject = this.info.isExistingProject();
     if (_isExistingProject) {
-      InputOutput.<String>println("???");
       this.detectBuilderConfig();
     }
   }
   
   protected void onExit() {
+    String _text = this.runtimeCombo.getText();
+    RuntimeVersion _runtimeVersion = new RuntimeVersion(_text);
+    this.info.setRequiredRuntimeVersion(_runtimeVersion);
   }
   
   public String detectBuilderConfig() {

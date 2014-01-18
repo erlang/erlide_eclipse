@@ -27,6 +27,8 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
     protected Composite configComposite
     protected Composite makeConfigComposite
 
+    Combo runtimeCombo
+
     protected new(String pageName, NewProjectData info) {
         super(pageName)
         this.info = info;
@@ -38,15 +40,11 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
             newControl(Label, SWT.NONE) [
                 text = 'Minimum Erlang version:'
             ]
-            newControl(Combo, SWT.READ_ONLY) [
+            runtimeCombo = newControl(Combo, SWT.READ_ONLY) [
                 val runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS
-                setItems(runtimeVersions.map[toString])
-                setText(bestRuntime.toString)
-                val theText = text
-                addModifyListener [
-                    info.requiredRuntimeVersion = new RuntimeVersion(theText)
-                ]
-                info.requiredRuntimeVersion = new RuntimeVersion(theText)
+                items = runtimeVersions.map[toString]
+                text = bestRuntime.version.asMajor.toString
+                info.requiredRuntimeVersion = new RuntimeVersion(text)
             ]
             newControl(Label, SWT.NONE)[]
             newControl(Label, SWT.NONE)[]
@@ -149,12 +147,12 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
 
     override protected onEntry() {
         if (info.existingProject) {
-            println("???")
             detectBuilderConfig
         }
     }
 
     override protected onExit() {
+        info.requiredRuntimeVersion = new RuntimeVersion(runtimeCombo.text)
     }
 
     def detectBuilderConfig() {

@@ -86,8 +86,7 @@ public class ErlangProjectProperties {
           it._includeDirs = _unpackList_1;
           it._externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
           it._externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
-          RuntimeVersion _runtimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
-          it._requiredRuntimeVersion = _runtimeVersion;
+          it._requiredRuntimeVersion = ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION;
         }
       };
       ErlangProjectProperties _doubleArrow = ObjectExtensions.<ErlangProjectProperties>operator_doubleArrow(_erlangProjectProperties, _function);
@@ -104,8 +103,7 @@ public class ErlangProjectProperties {
     this._includeDirs = _newArrayList_1;
     this._externalIncludesFile = "";
     this._externalModulesFile = "";
-    RuntimeVersion _runtimeVersion = new RuntimeVersion(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
-    this._requiredRuntimeVersion = _runtimeVersion;
+    this._requiredRuntimeVersion = ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION;
   }
   
   public void setIncludeDirs(final Collection<IPath> dirs) {

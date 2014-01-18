@@ -13,8 +13,7 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.base.Preconditions;
 
-public class PreferencesBuilderConfig extends
-        ProjectConfig {
+public class PreferencesBuilderConfig extends ProjectConfig {
 
     private final IEclipsePreferences node;
 
@@ -51,8 +50,7 @@ public class PreferencesBuilderConfig extends
         result.setRequiredRuntimeVersion(new RuntimeVersion(node.get(
                 ProjectPreferencesConstants.RUNTIME_VERSION, null)));
         if (!result.getRequiredRuntimeVersion().isDefined()) {
-            result.setRequiredRuntimeVersion(new RuntimeVersion(
-                    ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION));
+            result.setRequiredRuntimeVersion(ProjectPreferencesConstants.FALLBACK_RUNTIME_VERSION);
         }
         result.setExternalModulesFile(node.get(
                 ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
