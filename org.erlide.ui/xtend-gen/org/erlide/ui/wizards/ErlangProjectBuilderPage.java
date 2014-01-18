@@ -30,6 +30,9 @@ import org.erlide.engine.model.builder.IErlangBuilderFactory;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfig;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
+import org.erlide.runtime.api.RuntimeCore;
+import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.util.XtendSWTLib;
 import org.erlide.ui.wizards.BuilderSelectionListener;
@@ -74,7 +77,8 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                 };
                 List<String> _map = ListExtensions.<RuntimeVersion, String>map(((List<RuntimeVersion>)Conversions.doWrapArray(runtimeVersions)), _function);
                 it.setItems(((String[])Conversions.unwrapArray(_map, String.class)));
-                String _string = ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION.toString();
+                RuntimeInfo _bestRuntime = ErlangProjectBuilderPage.this.bestRuntime();
+                String _string = _bestRuntime.toString();
                 it.setText(_string);
                 final String theText = it.getText();
                 final ModifyListener _function_1 = new ModifyListener() {
@@ -372,7 +376,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
     return _switchResult;
   }
   
-  public void onEntry() {
+  protected void onEntry() {
     boolean _isExistingProject = this.info.isExistingProject();
     if (_isExistingProject) {
       InputOutput.<String>println("???");
@@ -380,7 +384,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
     }
   }
   
-  public void onExit() {
+  protected void onExit() {
   }
   
   public String detectBuilderConfig() {
@@ -431,6 +435,26 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
           _xblockexpression_1 = (_xifexpression_1);
         }
         _xifexpression = _xblockexpression_1;
+      }
+      _xblockexpression = (_xifexpression);
+    }
+    return _xblockexpression;
+  }
+  
+  private RuntimeInfo bestRuntime() {
+    RuntimeInfo _xblockexpression = null;
+    {
+      IRuntimeInfoCatalog _runtimeInfoCatalog = RuntimeCore.getRuntimeInfoCatalog();
+      final RuntimeInfo defaultRuntime = _runtimeInfoCatalog.getRuntime(
+        ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION, null);
+      RuntimeInfo _xifexpression = null;
+      boolean _tripleNotEquals = (defaultRuntime != null);
+      if (_tripleNotEquals) {
+        _xifexpression = defaultRuntime;
+      } else {
+        IRuntimeInfoCatalog _runtimeInfoCatalog_1 = RuntimeCore.getRuntimeInfoCatalog();
+        RuntimeInfo _defaultRuntime = _runtimeInfoCatalog_1.getDefaultRuntime();
+        _xifexpression = _defaultRuntime;
       }
       _xblockexpression = (_xifexpression);
     }

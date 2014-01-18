@@ -18,6 +18,8 @@ import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
 
 import static extension org.erlide.ui.util.XtendSWTLib.*
+import org.erlide.runtime.api.RuntimeCore
+import org.erlide.runtime.runtimeinfo.RuntimeInfo
 
 class ErlangProjectBuilderPage extends ErlangWizardPage {
 
@@ -39,7 +41,7 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
             newControl(Combo, SWT.READ_ONLY) [
                 val runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS
                 setItems(runtimeVersions.map[toString])
-                setText(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION.toString)
+                setText(bestRuntime.toString)
                 val theText = text
                 addModifyListener [
                     info.requiredRuntimeVersion = new RuntimeVersion(theText)
@@ -145,14 +147,14 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
         }
     }
 
-    override onEntry() {
+    override protected onEntry() {
         if (info.existingProject) {
             println("???")
             detectBuilderConfig
         }
     }
 
-    override onExit() {
+    override protected onExit() {
     }
 
     def detectBuilderConfig() {
@@ -171,6 +173,15 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
                 }
             }
         }
+    }
+
+    def private RuntimeInfo bestRuntime() {
+        val defaultRuntime = RuntimeCore.getRuntimeInfoCatalog().getRuntime(
+            ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION, null)
+        if (defaultRuntime !== null)
+            defaultRuntime
+        else
+            RuntimeCore.getRuntimeInfoCatalog().defaultRuntime
     }
 
 }

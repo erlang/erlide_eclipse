@@ -23,10 +23,10 @@ class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
         }
     }
 
-    def private void onEntry() {
+    def protected void onEntry() {
     }
 
-    def private void onExit() {
+    def protected void onExit() {
         val projectPath = new Path(locationURI.path)
         if (info.name != projectName || info.location != projectPath) {
             // clear info? or nothing?

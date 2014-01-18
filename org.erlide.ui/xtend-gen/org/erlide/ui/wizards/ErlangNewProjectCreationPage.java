@@ -26,10 +26,10 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
     }
   }
   
-  private void onEntry() {
+  protected void onEntry() {
   }
   
-  private void onExit() {
+  protected void onExit() {
     URI _locationURI = this.getLocationURI();
     String _path = _locationURI.getPath();
     Path _path_1 = new Path(_path);
