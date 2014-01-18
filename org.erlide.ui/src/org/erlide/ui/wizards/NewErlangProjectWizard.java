@@ -34,7 +34,6 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.builder.ErlangNature;
@@ -44,7 +43,6 @@ import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.ui.perspectives.ErlangPerspective;
 import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -52,7 +50,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
- * Creates a new erlide project in the Eclipse workbench.
+ * Creates a new erlang project in the Eclipse workbench.
  * 
  * @author Eric Merritt [cyberlync at yahoo dot com]
  * @author Vlad Dumitrescu
@@ -108,12 +106,6 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         }
     }
 
-    /**
-     * User has clicked "Finish", we create the project. In practice, it calls
-     * the createProject() method in the appropriate thread.
-     * 
-     * @see org.eclipse.jface.wizard.IWizard#performFinish()
-     */
     @Override
     public boolean performFinish() {
         if (!validateFinish()) {
@@ -127,33 +119,20 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
                 protected void execute(final IProgressMonitor monitor)
                         throws InvocationTargetException {
                     createProject(monitor != null ? monitor : new NullProgressMonitor());
-
-                    try {
-                        final IWorkbench workbench = ErlideUIPlugin.getDefault()
-                                .getWorkbench();
-                        workbench.showPerspective(ErlangPerspective.ID,
-                                workbench.getActiveWorkbenchWindow());
-                    } catch (final WorkbenchException we) {
-                        // ignore
-                    }
+                    ErlideUIPlugin.getDefault().showErlangPerspective();
                 }
             });
         } catch (final InvocationTargetException x) {
             reportError(x);
             return false;
         } catch (final InterruptedException x) {
-            reportError(x);
+            // operation was cancelled
             return false;
         }
 
         return true;
     }
 
-    /**
-     * Validate finish
-     * 
-     * @return
-     */
     private boolean validateFinish() {
         if (info.getOutputDir().isEmpty()) {
             reportError(ErlideUIPlugin.getResourceString("wizard.errors.buildpath"));
@@ -218,9 +197,6 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         // BuilderInfo.valueOf(builderName).getBuilder().setConfiguration(info);
     }
 
-    /**
-     * Builds the path from the specified path list.
-     */
     private void createFolders(final IProject project, final Collection<IPath> pathList,
             final IProgressMonitor monitor) throws CoreException {
         // Some paths are optional (include): If we do not specify it, we get a

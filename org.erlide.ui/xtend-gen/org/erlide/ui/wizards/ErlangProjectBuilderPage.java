@@ -5,7 +5,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -35,10 +34,11 @@ import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.util.XtendSWTLib;
 import org.erlide.ui.wizards.BuilderSelectionListener;
 import org.erlide.ui.wizards.ConfigSelectionListener;
+import org.erlide.ui.wizards.ErlangWizardPage;
 import org.erlide.ui.wizards.NewProjectData;
 
 @SuppressWarnings("all")
-public class ErlangProjectBuilderPage extends WizardPage {
+public class ErlangProjectBuilderPage extends ErlangWizardPage {
   private NewProjectData info;
   
   protected Composite configComposite;
@@ -372,16 +372,15 @@ public class ErlangProjectBuilderPage extends WizardPage {
     return _switchResult;
   }
   
-  public void setVisible(final boolean visible) {
-    InputOutput.<String>println(((("!!!! " + Boolean.valueOf(visible)) + " -- ") + this.info));
-    if (visible) {
-      boolean _isExistingProject = this.info.isExistingProject();
-      if (_isExistingProject) {
-        InputOutput.<String>println("???");
-        this.detectBuilderConfig();
-      }
+  public void onEntry() {
+    boolean _isExistingProject = this.info.isExistingProject();
+    if (_isExistingProject) {
+      InputOutput.<String>println("???");
+      this.detectBuilderConfig();
     }
-    super.setVisible(visible);
+  }
+  
+  public void onExit() {
   }
   
   public String detectBuilderConfig() {

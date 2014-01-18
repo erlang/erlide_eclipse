@@ -14,7 +14,6 @@ import java.io.File;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -28,7 +27,7 @@ import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
-public abstract class ProjectPreferencesWizardPage extends WizardPage {
+public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
 
     protected final NewProjectData info;
     protected BuilderConfigType configType;
@@ -237,8 +236,7 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
     }
 
     @Override
-    public void setVisible(final boolean visible) {
-        super.setVisible(visible);
+    protected void onEntry() {
         // if (!projectExists())
         setMessage(
                 "Configure the project by editing "
@@ -246,4 +244,7 @@ public abstract class ProjectPreferencesWizardPage extends WizardPage {
                 IMessageProvider.INFORMATION);
     }
 
+    @Override
+    protected void onExit() {
+    }
 }

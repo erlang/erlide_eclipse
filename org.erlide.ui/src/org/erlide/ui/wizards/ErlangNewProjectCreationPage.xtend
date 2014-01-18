@@ -16,15 +16,24 @@ class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
 
     override setVisible(boolean visible) {
         super.setVisible(visible)
-        if (!visible) {
-            val projectPath = new Path(locationURI.path)
-            if(info.name != projectName || info.location != projectPath){
-                // clear info? or nothing?
-            }
-            info.name = projectName
-            info.location = projectPath
-            info.existingProject = projectExists()
+        if (visible) {
+            onEntry
+        } else {
+            onExit
         }
+    }
+
+    def private void onEntry() {
+    }
+
+    def private void onExit() {
+        val projectPath = new Path(locationURI.path)
+        if (info.name != projectName || info.location != projectPath) {
+            // clear info? or nothing?
+        }
+        info.name = projectName
+        info.location = projectPath
+        info.existingProject = projectExists()
     }
 
     def private boolean projectExists() {

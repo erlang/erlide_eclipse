@@ -1,7 +1,6 @@
 package org.erlide.ui.wizards
 
 import java.io.File
-import org.eclipse.jface.wizard.WizardPage
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.events.SelectionListener
@@ -17,9 +16,10 @@ import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.builder.ErlangBuilder
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
+
 import static extension org.erlide.ui.util.XtendSWTLib.*
 
-class ErlangProjectBuilderPage extends WizardPage {
+class ErlangProjectBuilderPage extends ErlangWizardPage {
 
     NewProjectData info
     protected Composite configComposite
@@ -145,15 +145,14 @@ class ErlangProjectBuilderPage extends WizardPage {
         }
     }
 
-    override setVisible(boolean visible) {
-        println("!!!! "+visible+" -- "+info)
-        if (visible) {
-            if (info.existingProject) {
-                println("???")
-                detectBuilderConfig
-            }
+    override onEntry() {
+        if (info.existingProject) {
+            println("???")
+            detectBuilderConfig
         }
-        super.setVisible(visible)
+    }
+
+    override onExit() {
     }
 
     def detectBuilderConfig() {

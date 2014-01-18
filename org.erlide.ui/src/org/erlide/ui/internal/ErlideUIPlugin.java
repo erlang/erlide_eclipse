@@ -50,6 +50,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -66,6 +67,7 @@ import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.actions.ClearCacheAction;
 import org.erlide.ui.internal.folding.ErlangFoldingStructureProviderRegistry;
+import org.erlide.ui.perspectives.ErlangPerspective;
 import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
@@ -605,5 +607,14 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             log(status);
         }
         ErrorDialog.openError(shell, title, message, status);
+    }
+
+    public void showErlangPerspective() {
+        try {
+            getWorkbench().showPerspective(ErlangPerspective.ID,
+                    getWorkbench().getActiveWorkbenchWindow());
+        } catch (final WorkbenchException we) {
+            // ignore
+        }
     }
 }

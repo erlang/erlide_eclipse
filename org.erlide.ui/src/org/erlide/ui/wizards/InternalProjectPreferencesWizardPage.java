@@ -282,10 +282,8 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
     }
 
     @Override
-    public void setVisible(final boolean visible) {
-        super.setVisible(visible);
-        if (visible) {
-            discoverBtn.setEnabled(info.isExistingProject());
-        }
+    protected void onEntry() {
+        discoverBtn.setEnabled(info.isExistingProject());
     }
+
 }
