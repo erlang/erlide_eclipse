@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.wizards;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
 
@@ -24,8 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -34,12 +31,12 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -72,6 +69,8 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         try {
             super.addPages();
             info = new NewProjectData();
+            info.copyFrom(ErlangProjectProperties.DEFAULT);
+
             buildPages = Maps.newEnumMap(BuilderConfigType.class);
 
             mainPage = new ErlangNewProjectCreationPage("mainPage", info);
@@ -112,23 +111,25 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
             return false;
         }
 
-        try {
-            getContainer().run(false, true, new WorkspaceModifyOperation() {
+        System.out.println("CREATE " + info);
 
-                @Override
-                protected void execute(final IProgressMonitor monitor)
-                        throws InvocationTargetException {
-                    createProject(monitor != null ? monitor : new NullProgressMonitor());
-                    ErlideUIPlugin.getDefault().showErlangPerspective();
-                }
-            });
-        } catch (final InvocationTargetException x) {
-            reportError(x);
-            return false;
-        } catch (final InterruptedException x) {
-            // operation was cancelled
-            return false;
-        }
+        // try {
+        // getContainer().run(false, true, new WorkspaceModifyOperation() {
+        //
+        // @Override
+        // protected void execute(final IProgressMonitor monitor)
+        // throws InvocationTargetException {
+        // createProject(monitor != null ? monitor : new NullProgressMonitor());
+        // ErlideUIPlugin.getDefault().showErlangPerspective();
+        // }
+        // });
+        // } catch (final InvocationTargetException x) {
+        // reportError(x);
+        // return false;
+        // } catch (final InterruptedException x) {
+        // // operation was cancelled
+        // return false;
+        // }
 
         return true;
     }
@@ -156,9 +157,8 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
             final IProject project = root.getProject(info.getName());
             IProjectDescription description = ResourcesPlugin.getWorkspace()
                     .newProjectDescription(project.getName());
-            if (!Platform.getLocation().equals(info.getLocation())) {
-                description.setLocation(info.getLocation());
-            }
+            description.setLocation(info.getLocation());
+            System.out.println("CREATE PROJECT " + project);
             project.create(description, monitor);
             monitor.worked(10);
             project.open(monitor);

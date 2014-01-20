@@ -24,7 +24,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.engine.model.builder.BuilderConfigType;
+import org.erlide.engine.model.builder.ErlangBuilder;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.PathSerializer;
+import org.erlide.engine.model.root.ProjectConfig;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
@@ -32,10 +35,10 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
     protected final NewProjectData info;
     protected BuilderConfigType configType;
 
-    private Text output;
+    protected Text output;
     protected Text source;
     protected Text include;
-    private Text test;
+    protected Text test;
 
     /**
      * Constructor inherited from parent
@@ -86,6 +89,7 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
             output.setLayoutData(fd_output);
         }
         output.setText(info.getOutputDir().toString());
+        output.setEnabled(false);
         output.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
@@ -116,6 +120,7 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
         }
         source.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
         source.setText(PathSerializer.packList(info.getSourceDirs()));
+        source.setEnabled(false);
         source.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
@@ -146,6 +151,7 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
         }
         include.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
         include.setText(PathSerializer.packList(info.getIncludeDirs()));
+        include.setEnabled(false);
         include.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
@@ -178,6 +184,7 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
             test.setLayoutData(fd_test);
         }
         test.setEditable(false);
+        test.setEnabled(false);
         test.setToolTipText("enter a list of folders, using / in paths and ; as list separator");
 
         // for (final Control c : composite.getChildren()) {
@@ -219,32 +226,35 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
         return "Configuration retrieved from " + configType.getConfigName();
     }
 
-    protected void checkConfigFile() {
+    protected void loadConfig() {
         final File f = new File(info.getLocation()
                 .append(info.getBuilderConfig().getConfigName()).toPortableString());
         if (f.exists()) {
-            // TODO read config and show it
-        } else {
-            // TODO just say
-            // "after creating project, edit the file to configure"
+            System.out.println(">>> LOAD " + f.getAbsolutePath());
+            final ProjectConfig config = ErlangBuilder.getFactory().getConfig(
+                    info.getBuilderConfig(),
+                    new File(info.getLocation().toPortableString()));
+            final ErlangProjectProperties props = config.getConfiguration();
+            info.setOutputDir(props.getOutputDir());
+            info.setSourceDirs(info.getSourceDirs());
+            info.setIncludeDirs(props.getIncludeDirs());
+            info.setTestDirs(props.getTestDirs());
         }
 
     }
 
-    public boolean isReadOnly() {
-        return true;
-    }
-
     @Override
     protected void onEntry() {
-        // if (!projectExists())
-        setMessage(
-                "Configure the project by editing "
-                        + BuilderConfigType.REBAR.getConfigName(),
-                IMessageProvider.INFORMATION);
+        if (info.getBuilderConfig() != BuilderConfigType.INTERNAL) {
+            final String op = info.isExistingProject() ? "editing" : "creating";
+            setMessage("Please configure the project by " + op + " "
+                    + info.getBuilderConfig().getConfigName(),
+                    IMessageProvider.INFORMATION);
+        }
+        loadConfig();
+        output.setText(info.getOutputDir().toPortableString());
+        source.setText(PathSerializer.packList(info.getSourceDirs()));
+        include.setText(PathSerializer.packList(info.getIncludeDirs()));
     }
 
-    @Override
-    protected void onExit() {
-    }
 }

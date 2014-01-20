@@ -1,6 +1,5 @@
 package org.erlide.ui.wizards;
 
-import com.google.common.base.Objects;
 import java.io.File;
 import java.net.URI;
 import org.eclipse.core.runtime.IPath;
@@ -30,26 +29,12 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
   }
   
   protected void onExit() {
+    String _projectName = this.getProjectName();
+    this.info.setName(_projectName);
     URI _locationURI = this.getLocationURI();
     String _path = _locationURI.getPath();
     Path _path_1 = new Path(_path);
-    final Path projectPath = _path_1;
-    boolean _or = false;
-    String _name = this.info.getName();
-    String _projectName = this.getProjectName();
-    boolean _notEquals = (!Objects.equal(_name, _projectName));
-    if (_notEquals) {
-      _or = true;
-    } else {
-      IPath _location = this.info.getLocation();
-      boolean _notEquals_1 = (!Objects.equal(_location, projectPath));
-      _or = (_notEquals || _notEquals_1);
-    }
-    if (_or) {
-    }
-    String _projectName_1 = this.getProjectName();
-    this.info.setName(_projectName_1);
-    this.info.setLocation(projectPath);
+    this.info.setLocation(_path_1);
     boolean _projectExists = this.projectExists();
     this.info.setExistingProject(_projectExists);
   }

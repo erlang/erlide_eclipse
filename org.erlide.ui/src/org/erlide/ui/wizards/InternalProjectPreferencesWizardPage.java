@@ -50,7 +50,10 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
         super.createControl(parent);
         final Composite composite = (Composite) getControl();
 
-        // composite.setLayout(new FormLayout());
+        output.setEnabled(true);
+        source.setEnabled(true);
+        include.setEnabled(true);
+        test.setEnabled(false); // TODO fix when testing works
 
         discoverBtn = new Button(composite, SWT.PUSH);
         FormData fd_discoverBtn;
@@ -77,25 +80,19 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
 
     }
 
-    // @Override
-    // protected void enableInputWidgets(final boolean b) {
-    // super.enableInputWidgets(b);
-    // discoverBtn.setEnabled(projectExists(info));
-    // }
-
-    protected void fillDirWidgetsFromConfig(final String builder) {
-        if (info.isExistingProject()) {
-            // TODO autodiscover project settings
-
-        }
-    }
-
     protected void discoverPaths() {
         if (info.isExistingProject()) {
             final IPath loc = info.getLocation();
             final File dir = loc.toFile();
 
             final List<String> src = search("erl", dir);
+            System.out.println("SRC==" + src);
+            if (src.contains("test")) {
+                src.remove("test");
+                final List<String> tst = Lists.newArrayList("test");
+                final String[] tsts = dirs(tst, loc);
+                test.setText(PreferencesUtils.packArray(tsts));
+            }
             final String[] srcs = dirs(src, loc);
 
             final List<String> inc = search("hrl", dir);
@@ -277,13 +274,20 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
     }
 
     @Override
-    public boolean isReadOnly() {
-        return false;
+    protected void onEntry() {
+        super.onEntry();
+        discoverBtn.setEnabled(info.isExistingProject());
     }
 
     @Override
-    protected void onEntry() {
-        discoverBtn.setEnabled(info.isExistingProject());
+    protected void onExit() {
+    }
+
+    @Override
+    protected void loadConfig() {
+        if (info.isExistingProject()) {
+            // TODO we need to read directly from .settings!
+        }
     }
 
 }

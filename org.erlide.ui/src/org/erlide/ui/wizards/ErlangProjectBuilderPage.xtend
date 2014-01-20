@@ -148,7 +148,9 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
     override protected onEntry() {
         if (info.existingProject) {
             detectBuilderConfig
+            // TODO disable selecting different config
         }
+        // TODO set fields from info
     }
 
     override protected onExit() {
