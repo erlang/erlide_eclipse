@@ -43,6 +43,12 @@ public class ErlangProjectProperties {
     return this._includeDirs;
   }
   
+  private Collection<IPath> _testDirs;
+  
+  public Collection<IPath> getTestDirs() {
+    return this._testDirs;
+  }
+  
   private RuntimeVersion _requiredRuntimeVersion;
   
   public RuntimeVersion getRequiredRuntimeVersion() {
@@ -84,6 +90,8 @@ public class ErlangProjectProperties {
           it._outputDir = _path;
           Collection<IPath> _unpackList_1 = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
           it._includeDirs = _unpackList_1;
+          Collection<IPath> _unpackList_2 = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_TEST_DIRS);
+          it._testDirs = _unpackList_2;
           it._externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
           it._externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
           it._requiredRuntimeVersion = ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION;
@@ -101,19 +109,11 @@ public class ErlangProjectProperties {
     this._outputDir = _path;
     ArrayList<IPath> _newArrayList_1 = CollectionLiterals.<IPath>newArrayList();
     this._includeDirs = _newArrayList_1;
+    ArrayList<IPath> _newArrayList_2 = CollectionLiterals.<IPath>newArrayList();
+    this._testDirs = _newArrayList_2;
     this._externalIncludesFile = "";
     this._externalModulesFile = "";
     this._requiredRuntimeVersion = ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION;
-  }
-  
-  public void setIncludeDirs(final Collection<IPath> dirs) {
-    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(dirs);
-    this._includeDirs = _newArrayList;
-  }
-  
-  public void setIncludeDirs(final IPath... dirs) {
-    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(dirs);
-    this._includeDirs = _newArrayList;
   }
   
   public void setSourceDirs(final Collection<IPath> dirs) {
@@ -126,8 +126,29 @@ public class ErlangProjectProperties {
     this._sourceDirs = _newArrayList;
   }
   
+  public void setIncludeDirs(final Collection<IPath> dirs) {
+    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(dirs);
+    this._includeDirs = _newArrayList;
+  }
+  
+  public void setIncludeDirs(final IPath... dirs) {
+    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(dirs);
+    this._includeDirs = _newArrayList;
+  }
+  
+  public void setTestDirs(final Collection<IPath> dirs) {
+    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(dirs);
+    this._testDirs = _newArrayList;
+  }
+  
+  public void setTestDirs(final IPath... dirs) {
+    ArrayList<IPath> _newArrayList = Lists.<IPath>newArrayList(dirs);
+    this._testDirs = _newArrayList;
+  }
+  
   public void copyFrom(final ErlangProjectProperties props) {
     this._includeDirs = props._includeDirs;
+    this._testDirs = props._testDirs;
     this._sourceDirs = props._sourceDirs;
     this._outputDir = props._outputDir;
     this._requiredRuntimeVersion = props._requiredRuntimeVersion;
@@ -187,42 +208,55 @@ public class ErlangProjectProperties {
         return false;
       }
     }
-    boolean _tripleEquals_5 = (this._externalIncludesFile == null);
+    boolean _tripleEquals_5 = (this._testDirs == null);
     if (_tripleEquals_5) {
-      boolean _tripleNotEquals_3 = (other._externalIncludesFile != null);
+      boolean _tripleNotEquals_3 = (other._testDirs != null);
       if (_tripleNotEquals_3) {
         return false;
       }
     } else {
-      boolean _equals_3 = this._externalIncludesFile.equals(other._externalIncludesFile);
+      boolean _equals_3 = this._testDirs.equals(other._testDirs);
       boolean _not_3 = (!_equals_3);
       if (_not_3) {
         return false;
       }
     }
-    boolean _tripleEquals_6 = (this._externalModulesFile == null);
+    boolean _tripleEquals_6 = (this._externalIncludesFile == null);
     if (_tripleEquals_6) {
-      boolean _tripleNotEquals_4 = (other._externalModulesFile != null);
+      boolean _tripleNotEquals_4 = (other._externalIncludesFile != null);
       if (_tripleNotEquals_4) {
         return false;
       }
     } else {
-      boolean _equals_4 = this._externalModulesFile.equals(other._externalModulesFile);
+      boolean _equals_4 = this._externalIncludesFile.equals(other._externalIncludesFile);
       boolean _not_4 = (!_equals_4);
       if (_not_4) {
         return false;
       }
     }
-    boolean _tripleEquals_7 = (this._requiredRuntimeVersion == null);
+    boolean _tripleEquals_7 = (this._externalModulesFile == null);
     if (_tripleEquals_7) {
-      boolean _tripleNotEquals_5 = (other._requiredRuntimeVersion != null);
+      boolean _tripleNotEquals_5 = (other._externalModulesFile != null);
       if (_tripleNotEquals_5) {
         return false;
       }
     } else {
-      boolean _equals_5 = this._requiredRuntimeVersion.equals(other._requiredRuntimeVersion);
+      boolean _equals_5 = this._externalModulesFile.equals(other._externalModulesFile);
       boolean _not_5 = (!_equals_5);
       if (_not_5) {
+        return false;
+      }
+    }
+    boolean _tripleEquals_8 = (this._requiredRuntimeVersion == null);
+    if (_tripleEquals_8) {
+      boolean _tripleNotEquals_6 = (other._requiredRuntimeVersion != null);
+      if (_tripleNotEquals_6) {
+        return false;
+      }
+    } else {
+      boolean _equals_6 = this._requiredRuntimeVersion.equals(other._requiredRuntimeVersion);
+      boolean _not_6 = (!_equals_6);
+      if (_not_6) {
         return false;
       }
     }
@@ -238,6 +272,7 @@ public class ErlangProjectProperties {
           it.add("outputDir", ErlangProjectProperties.this._outputDir);
           it.add("sources", ErlangProjectProperties.this._sourceDirs);
           it.add("includes", ErlangProjectProperties.this._includeDirs);
+          it.add("tests", ErlangProjectProperties.this._testDirs);
           it.add("runtimeVersion", ErlangProjectProperties.this._requiredRuntimeVersion);
         }
       };
@@ -282,6 +317,15 @@ public class ErlangProjectProperties {
         Collection<IPath> _includeDirs_2 = it.getIncludeDirs();
         Collection<IPath> _resolvePaths_1 = it.resolvePaths(_includeDirs_2);
         it.setIncludeDirs(_resolvePaths_1);
+        Collection<IPath> _testDirs = it.getTestDirs();
+        boolean _tripleEquals_3 = (_testDirs == null);
+        if (_tripleEquals_3) {
+          Collection<IPath> _testDirs_1 = dflt.getTestDirs();
+          it.setTestDirs(_testDirs_1);
+        }
+        Collection<IPath> _testDirs_2 = it.getTestDirs();
+        Collection<IPath> _resolvePaths_2 = it.resolvePaths(_testDirs_2);
+        it.setTestDirs(_resolvePaths_2);
       }
     };
     ObjectExtensions.<ErlangProjectProperties>operator_doubleArrow(result, _function);

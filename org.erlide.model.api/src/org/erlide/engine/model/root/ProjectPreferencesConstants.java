@@ -24,7 +24,7 @@ public final class ProjectPreferencesConstants {
     public static final String DEFAULT_SOURCE_DIRS = "src";
 
     public static final String TEST_DIRS = "test_dirs";
-    public static final String DEFAULT_TEST_DIRS = "";
+    public static final String DEFAULT_TEST_DIRS = "test";
 
     public static final String INCLUDE_DIRS = "include_dirs";
     public static final String DEFAULT_INCLUDE_DIRS = "include";
