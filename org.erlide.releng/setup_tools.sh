@@ -64,10 +64,10 @@ fi
 
 # erlang R15
 if [ ! -d otp15 ] ; then
-  if [ ! -f otp_src_R15B03.tar.gz ] ; then
+  if [ ! -f otp_src_R15B03-1.tar.gz ] ; then
     wget http://download.erlide.org/tools/otp_src_R15B03.tar.gz
   fi
-  tar zxvf otp_src_R15B03.tar.gz
+  tar zxvf otp_src_R15B03-1.tar.gz
 
   # build erlang
   # prerequisites:
@@ -80,7 +80,7 @@ if [ ! -d otp15 ] ; then
   make
   popd
 
-  ln -s otp_src_R14B04 otp15
+  ln -s otp_src_R15B03 otp15
 fi
 
 echo "add links to path"
