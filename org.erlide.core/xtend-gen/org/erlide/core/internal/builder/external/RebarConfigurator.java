@@ -47,38 +47,48 @@ public class RebarConfigurator implements ProjectConfigurator {
           try {
             Boolean _xblockexpression = null;
             {
-              Boolean acc0 = seenIncludes;
               final Bindings bindings = ErlUtils.match("{erl_opts,Opts}", erl_opts);
+              Boolean _xifexpression = null;
               boolean _tripleNotEquals = (bindings != null);
               if (_tripleNotEquals) {
-                final Collection<OtpErlangObject> opts = bindings.getList("Opts");
-                boolean _tripleNotEquals_1 = (opts != null);
-                if (_tripleNotEquals_1) {
-                  final Function2<Boolean,OtpErlangObject,Boolean> _function = new Function2<Boolean,OtpErlangObject,Boolean>() {
-                    public Boolean apply(final Boolean seenIncludes1, final OtpErlangObject opt) {
-                      try {
-                        Boolean _xblockexpression = null;
-                        {
-                          Boolean acc = seenIncludes1;
-                          final Bindings b = ErlUtils.match("{Tag,Arg}", opt);
-                          boolean _tripleNotEquals = (b != null);
-                          if (_tripleNotEquals) {
-                            boolean _parseOption = RebarConfigurator.this.parseOption(b, (acc).booleanValue(), result);
-                            acc = Boolean.valueOf(_parseOption);
+                Boolean _xblockexpression_1 = null;
+                {
+                  final Collection<OtpErlangObject> opts = bindings.getList("Opts");
+                  Boolean _xifexpression_1 = null;
+                  boolean _tripleNotEquals_1 = (opts != null);
+                  if (_tripleNotEquals_1) {
+                    final Function2<Boolean,OtpErlangObject,Boolean> _function = new Function2<Boolean,OtpErlangObject,Boolean>() {
+                      public Boolean apply(final Boolean seenIncludes_1, final OtpErlangObject opt) {
+                        try {
+                          boolean _xblockexpression = false;
+                          {
+                            final Bindings b = ErlUtils.match("{Tag,Arg}", opt);
+                            boolean _xifexpression = false;
+                            boolean _tripleNotEquals = (b != null);
+                            if (_tripleNotEquals) {
+                              boolean _parseOption = RebarConfigurator.this.parseOption(result, b, (seenIncludes_1).booleanValue());
+                              _xifexpression = _parseOption;
+                            } else {
+                              _xifexpression = (seenIncludes_1).booleanValue();
+                            }
+                            _xblockexpression = (_xifexpression);
                           }
-                          _xblockexpression = (acc);
+                          return Boolean.valueOf(_xblockexpression);
+                        } catch (Throwable _e) {
+                          throw Exceptions.sneakyThrow(_e);
                         }
-                        return _xblockexpression;
-                      } catch (Throwable _e) {
-                        throw Exceptions.sneakyThrow(_e);
                       }
-                    }
-                  };
-                  Boolean _fold = IterableExtensions.<OtpErlangObject, Boolean>fold(opts, acc0, _function);
-                  acc0 = _fold;
+                    };
+                    Boolean _fold = IterableExtensions.<OtpErlangObject, Boolean>fold(opts, seenIncludes, _function);
+                    _xifexpression_1 = _fold;
+                  }
+                  _xblockexpression_1 = (_xifexpression_1);
                 }
+                _xifexpression = _xblockexpression_1;
+              } else {
+                _xifexpression = seenIncludes;
               }
-              _xblockexpression = (acc0);
+              _xblockexpression = (_xifexpression);
             }
             return _xblockexpression;
           } catch (Throwable _e) {
@@ -92,7 +102,7 @@ public class RebarConfigurator implements ProjectConfigurator {
     return _xblockexpression;
   }
   
-  public boolean parseOption(final Bindings b, final boolean seenIncludes, final ErlangProjectProperties result) {
+  public boolean parseOption(final ErlangProjectProperties result, final Bindings b, final boolean seenIncludes) {
     try {
       boolean _switchResult = false;
       String _atom = b.getAtom("Tag");
@@ -106,11 +116,11 @@ public class RebarConfigurator implements ProjectConfigurator {
             ArrayList<IPath> _xifexpression = null;
             if (seenIncludes) {
               Collection<IPath> _includeDirs = result.getIncludeDirs();
-              ArrayList<IPath> _arrayList = new ArrayList<IPath>(_includeDirs);
-              _xifexpression = _arrayList;
-            } else {
-              ArrayList<IPath> _newArrayList = CollectionLiterals.<IPath>newArrayList();
+              ArrayList<IPath> _newArrayList = CollectionLiterals.<IPath>newArrayList(((IPath[])Conversions.unwrapArray(_includeDirs, IPath.class)));
               _xifexpression = _newArrayList;
+            } else {
+              ArrayList<IPath> _newArrayList_1 = CollectionLiterals.<IPath>newArrayList();
+              _xifexpression = _newArrayList_1;
             }
             final List<IPath> incs = _xifexpression;
             String _string = b.getString("Arg");
