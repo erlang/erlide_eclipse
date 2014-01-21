@@ -60,8 +60,8 @@ import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
 import org.erlide.engine.model.root.ProjectConfig;
+import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
@@ -609,12 +609,19 @@ public class ErlProject extends Openable implements IErlProject,
         return getProperties().getOutputDir();
     }
 
+    RuntimeVersion cachedRuntimeVersion;
+    RuntimeInfo cachedRuntimeInfo;
+
     @Override
     public RuntimeInfo getRuntimeInfo() {
         final RuntimeVersion requiredRuntimeVersion = getProperties()
                 .getRequiredRuntimeVersion();
-        return RuntimeCore.getRuntimeInfoCatalog().getRuntime(
-                requiredRuntimeVersion, null);
+        if (requiredRuntimeVersion != cachedRuntimeVersion) {
+            cachedRuntimeVersion = requiredRuntimeVersion;
+            cachedRuntimeInfo = RuntimeCore.getRuntimeInfoCatalog().getRuntime(
+                    requiredRuntimeVersion, null);
+        }
+        return cachedRuntimeInfo;
     }
 
     @Override
