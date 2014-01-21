@@ -286,7 +286,7 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
     @Override
     protected void loadConfig() {
         if (info.isExistingProject()) {
-            // TODO we need to read directly from .settings!
+            // TODO ZZZ we need to read directly from .settings!
         }
     }
 

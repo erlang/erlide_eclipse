@@ -112,7 +112,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         }
 
         System.out.println("CREATE " + info);
-
+        // TODO ZZZ
         // try {
         // getContainer().run(false, true, new WorkspaceModifyOperation() {
         //
