@@ -616,6 +616,8 @@ public class ErlProject extends Openable implements IErlProject,
     public RuntimeInfo getRuntimeInfo() {
         final RuntimeVersion requiredRuntimeVersion = getProperties()
                 .getRequiredRuntimeVersion();
+        System.out.println("Reqd version=" + requiredRuntimeVersion + " "
+                + cachedRuntimeVersion);
         if (requiredRuntimeVersion != cachedRuntimeVersion) {
             cachedRuntimeVersion = requiredRuntimeVersion;
             cachedRuntimeInfo = RuntimeCore.getRuntimeInfoCatalog().getRuntime(
@@ -630,6 +632,7 @@ public class ErlProject extends Openable implements IErlProject,
         if (runtimeInfo != null) {
             return runtimeInfo.getVersion();
         }
+        System.out.println("runtime version is null !? rinfo=" + runtimeInfo);
         // should not happen
         return null;
     }
