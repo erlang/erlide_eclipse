@@ -62,6 +62,27 @@ if [ ! -d otp ] ; then
   ln -s otp_src_R14B04 otp
 fi
 
+# erlang R15
+if [ ! -d otp15 ] ; then
+  if [ ! -f otp_src_R15B03-1.tar.gz ] ; then
+    wget http://download.erlide.org/tools/otp_src_R15B03.tar.gz
+  fi
+  tar zxvf otp_src_R15B03-1.tar.gz
+
+  # build erlang
+  # prerequisites:
+  #    sudo apt-get update
+  #    sudo apt-get install build-essential make perl gcc sed m4 ncurses-dev
+
+  pushd otp_src_R15B03
+  export LANG=C
+  ./configure
+  make
+  popd
+
+  ln -s otp_src_R15B03 otp15
+fi
+
 echo "add links to path"
 mkdir bin
 ln -s `pwd`/ant/bin/ant bin/ant

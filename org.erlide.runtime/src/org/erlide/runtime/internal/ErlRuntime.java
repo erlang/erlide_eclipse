@@ -194,7 +194,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
 
     @Override
     public IRpcSite getRpcSite() {
-        startAndWait();
+        awaitRunning();
         return rpcSite;
     }
 
@@ -366,7 +366,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         crashed = true;
     }
 
-    private class ErlRuntimeListener implements Listener {
+    private class ErlRuntimeListener extends Listener {
         public ErlRuntimeListener() {
         }
 

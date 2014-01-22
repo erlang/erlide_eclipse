@@ -123,7 +123,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
                 // we know these have children
                 return true;
             }
-            final Stopwatch clock = new Stopwatch().start();
+            final Stopwatch clock = Stopwatch.createStarted();
             if (element instanceof IOpenable) {
                 final IOpenable openable = (IOpenable) element;
                 try {

@@ -110,7 +110,7 @@ public class ErlideOpen implements OpenService {
             final IRpcSite backend, final String externalModules,
             final OtpErlangList pathVars) {
         ErlLogger.debug("open:external_module_tree -> " + externalModules);
-        final Stopwatch stopwatch = new Stopwatch().start();
+        final Stopwatch stopwatch = Stopwatch.createStarted();
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
                     "get_external_module_tree", "x",
