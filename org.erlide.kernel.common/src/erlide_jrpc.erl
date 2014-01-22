@@ -9,7 +9,7 @@
          add_service/2,
          get_service_listeners/1,
          notify/2,
-         
+
          event/2
         ]).
 
@@ -28,14 +28,14 @@ init(JPid) ->
         _ ->
             ok
     end,
-    
+
     add_service(log, JPid),
     add_service(erlang_log, JPid),
     add_service(io_server, JPid),
-    
+
     %% catch_all handler
     add_service(generic_catchall, JPid),
-    
+
     ok.
 
 
@@ -89,7 +89,7 @@ notify(Service, Message) when is_atom(Service) ->
             L0 ->
                 L0
         end,
-    [Pid ! Message || Pid <- L],
+    [catch (Pid ! Message) || Pid <- L],
     ok.
 
 keytake(Key, N, L) when is_integer(N), N > 0 ->
