@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 import java.util.Collection;
 
@@ -15,7 +15,7 @@ import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.ProjectConfigurator;
+import org.erlide.engine.model.root.ProjectConfig;
 import org.junit.Test;
 
 public class EmakeProjectConfigurationTests extends AbstractProjectConfigurationTests {
@@ -23,23 +23,24 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
     @Test
     public void configuratorExists() {
         project.setBuilderConfigType(BuilderConfigType.EMAKE);
-        final ProjectConfigurator configurator = ErlangBuilder.getFactory()
-                .getConfig(project.getBuilderConfigType(), project).getConfigurator();
 
-        assertThat(configurator, is(notNullValue()));
+        final ProjectConfig config = ErlangBuilder.getFactory().getConfig(
+                project.getBuilderConfigType(), project);
+        assertThat(config, is(notNullValue()));
+
+        // final ProjectConfigurator configurator = config.getConfigurator();
+        // assertThat(configurator, is(notNullValue()));
     }
 
     @Override
     @Test
     public void configCanBeParsed() throws CoreException {
         project.setBuilderConfigType(BuilderConfigType.EMAKE);
-        final ProjectConfigurator configurator = ErlangBuilder.getFactory()
-                .getConfig(project.getBuilderConfigType(), project).getConfigurator();
+        final ProjectConfig config = ErlangBuilder.getFactory().getConfig(
+                project.getBuilderConfigType(), project);
 
-        final ErlangProjectProperties expected = new ErlangProjectProperties();
-        expected.setOutputDir(new Path("ebin"));
-        expected.setSourceDirs();
-        final ErlangProjectProperties actual = configurator.decodeConfig("");
+        final ErlangProjectProperties expected = ErlangProjectProperties.DEFAULT;
+        final ErlangProjectProperties actual = config.getConfiguration();
 
         assertThat(actual, is(ErlangProjectPropertiesMatcher.sameAs(expected)));
     }

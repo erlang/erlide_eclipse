@@ -480,7 +480,7 @@ public class ErlProject extends Openable implements IErlProject,
     @Override
     public ErlangProjectProperties getRawProperties() {
         if (properties == null) {
-            configurationChanged();
+        configurationChanged();
         }
         return properties;
     }
@@ -616,8 +616,6 @@ public class ErlProject extends Openable implements IErlProject,
     public RuntimeInfo getRuntimeInfo() {
         final RuntimeVersion requiredRuntimeVersion = getProperties()
                 .getRequiredRuntimeVersion();
-        System.out.println("Reqd version=" + requiredRuntimeVersion + " "
-                + cachedRuntimeVersion);
         if (requiredRuntimeVersion != cachedRuntimeVersion) {
             cachedRuntimeVersion = requiredRuntimeVersion;
             cachedRuntimeInfo = RuntimeCore.getRuntimeInfoCatalog().getRuntime(

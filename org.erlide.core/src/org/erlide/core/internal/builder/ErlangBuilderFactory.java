@@ -19,6 +19,7 @@ import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.OTPProjectConfig;
 import org.erlide.engine.model.root.ProjectConfig;
 
 public class ErlangBuilderFactory implements IErlangBuilderFactory {
@@ -75,16 +76,14 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
             break;
         case REBAR:
             if (resource == null) {
-                System.out.println("Not found: " + qualifier + " in " + project);
-                return null;
+                return new OTPProjectConfig();
             }
             path = resource.getLocation().toPortableString();
             result = new FileBuilderConfig(new RebarConfigurator(), path);
             break;
         case EMAKE:
             if (resource == null) {
-                System.out.println("Not found: " + qualifier + " in " + project);
-                return null;
+                return new OTPProjectConfig();
             }
             path = resource.getLocation().toPortableString();
             result = new FileBuilderConfig(new EmakeConfigurator(), path);
