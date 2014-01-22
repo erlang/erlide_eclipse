@@ -55,7 +55,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         // ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
         // externalName);
 
-        final Stopwatch stopwatch = new Stopwatch().start();
+        final Stopwatch stopwatch = Stopwatch.createStarted();
 
         final IErlProject project = ErlangEngine.getInstance()
                 .getModelUtilService().getProject(this);

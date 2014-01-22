@@ -44,7 +44,7 @@ public class ManagedErlRuntime extends ErlRuntime {
 
     @Override
     public Process getProcess() {
-        startAndWait();
+        awaitRunning();
         return process;
     }
 
