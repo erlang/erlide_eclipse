@@ -8,6 +8,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 
 import java.util.Collection;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -53,6 +54,7 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
         final String config1 = "{'src/*',[debug_info,{i,\"myinclude\"}]}. "
                 + "{'src2/*',[debug_info,{i,\"myinclude\"}]}.";
         setFileContent(cfgFile, config1);
+        project.getWorkspaceProject().refreshLocal(IResource.DEPTH_ONE, null);
 
         final ErlangProjectProperties p2 = project.getProperties();
 

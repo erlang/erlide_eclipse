@@ -5,30 +5,41 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.core.content.ErlangContentDescriber;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfig;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.IDisposable;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 
-public class FileBuilderConfig extends ProjectConfig {
+public class FileBuilderConfig extends ProjectConfig implements IResourceChangeListener,
+        IDisposable {
 
     private final String filePath;
     @NonNull
     private final ProjectConfigurator configurator;
 
-    public FileBuilderConfig(final ProjectConfigurator configurator,
-            final String filePath) {
+    public FileBuilderConfig(final ProjectConfigurator configurator, final String filePath) {
         Preconditions.checkNotNull(filePath);
         Preconditions.checkNotNull(configurator);
         this.configurator = configurator;
         this.filePath = filePath;
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
+                IResourceChangeEvent.POST_CHANGE);
     }
 
     @Override
@@ -80,6 +91,32 @@ public class FileBuilderConfig extends ProjectConfig {
     @Override
     public ProjectConfigurator getConfigurator() {
         return configurator;
+    }
+
+    @Override
+    public void resourceChanged(final IResourceChangeEvent event) {
+        final IResourceDelta delta = event.getDelta();
+        try {
+            delta.accept(new IResourceDeltaVisitor() {
+
+                @Override
+                public boolean visit(final IResourceDelta delta) throws CoreException {
+                    final IResource res = delta.getResource();
+                    if (res.getLocation().equals(new Path(filePath))) {
+                        System.out.println("DETECTED " + delta.getKind() + " " + res);
+                    }
+                    return false;
+
+                }
+            });
+        } catch (final CoreException e) {
+            ErlLogger.error(e);
+        }
+    }
+
+    @Override
+    public void dispose() {
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
     }
 
 }
