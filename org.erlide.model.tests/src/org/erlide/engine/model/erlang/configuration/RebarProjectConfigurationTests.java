@@ -14,8 +14,8 @@ import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.model.root.ProjectConfigurationSerializer;
+import org.erlide.engine.model.root.ProjectConfigurator;
 import org.junit.Test;
 
 public class RebarProjectConfigurationTests extends AbstractProjectConfigurationTests {
@@ -24,10 +24,9 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
     @Test
     public void configCanBeParsed() throws CoreException {
         project.setBuilderConfigType(BuilderConfigType.REBAR);
-        setFileContent(project.getWorkspaceProject().getLocation().toPortableString()
-                + "/" + BuilderConfigType.REBAR.getConfigName(), "");
-        final ProjectConfigurator persister = ErlangBuilder.getFactory()
-                .getConfig(project.getBuilderConfigType(), project);
+        setFileContent(BuilderConfigType.REBAR.getConfigName(), "");
+        final ProjectConfigurator persister = ErlangBuilder.getFactory().getConfig(
+                project.getBuilderConfigType(), project);
         final ProjectConfigurationSerializer configurator = persister.getConfigurator();
 
         final ErlangProjectProperties expected = new ErlangProjectProperties();
