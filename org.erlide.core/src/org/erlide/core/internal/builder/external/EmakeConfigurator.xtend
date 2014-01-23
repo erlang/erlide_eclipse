@@ -6,11 +6,11 @@ import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.Path
 import org.erlide.engine.ErlangEngine
 import org.erlide.engine.model.root.ErlangProjectProperties
-import org.erlide.engine.model.root.ProjectConfigurator
 import org.erlide.util.erlang.Bindings
 import org.erlide.util.erlang.ErlUtils
+import org.erlide.engine.model.root.ProjectConfigurationSerializer
 
-class EmakeConfigurator implements ProjectConfigurator {
+class EmakeConfigurator implements ProjectConfigurationSerializer {
 
     override String encodeConfig(ErlangProjectProperties info) {
 

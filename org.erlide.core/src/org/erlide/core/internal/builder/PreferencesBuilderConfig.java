@@ -4,7 +4,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.PathSerializer;
-import org.erlide.engine.model.root.ProjectConfig;
+import org.erlide.engine.model.root.ProjectConfigurationSerializer;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -13,7 +13,7 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.base.Preconditions;
 
-public class PreferencesBuilderConfig extends ProjectConfig {
+public class PreferencesBuilderConfig implements ProjectConfigurator {
 
     private final IEclipsePreferences node;
 
@@ -94,7 +94,7 @@ public class PreferencesBuilderConfig extends ProjectConfig {
     }
 
     @Override
-    public ProjectConfigurator getConfigurator() {
+    public ProjectConfigurationSerializer getConfigurator() {
         return null;
     }
 

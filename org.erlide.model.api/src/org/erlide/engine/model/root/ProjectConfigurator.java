@@ -1,21 +1,11 @@
 package org.erlide.engine.model.root;
 
-
 public interface ProjectConfigurator {
 
-    /**
-     * Encode the project properties in a string (as it would look like in the
-     * config file).
-     */
-    String encodeConfig(ErlangProjectProperties info);
+    ProjectConfigurationSerializer getConfigurator();
 
-    /**
-     * Decode project properties from string (as read from config file).
-     * 
-     * TODO: store encoding
-     * 
-     * TODO: store config text as template to use for encoding
-     */
-    ErlangProjectProperties decodeConfig(String config);
+    ErlangProjectProperties getConfiguration();
+
+    void setConfiguration(final ErlangProjectProperties info);
 
 }

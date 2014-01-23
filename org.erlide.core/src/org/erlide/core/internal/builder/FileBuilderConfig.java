@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.core.content.ErlangContentDescriber;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.ProjectConfig;
+import org.erlide.engine.model.root.ProjectConfigurationSerializer;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.IDisposable;
@@ -26,14 +26,15 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 
-public class FileBuilderConfig extends ProjectConfig implements IResourceChangeListener,
+public class FileBuilderConfig implements ProjectConfigurator, IResourceChangeListener,
         IDisposable {
 
     private final String filePath;
     @NonNull
-    private final ProjectConfigurator configurator;
+    private final ProjectConfigurationSerializer configurator;
 
-    public FileBuilderConfig(final ProjectConfigurator configurator, final String filePath) {
+    public FileBuilderConfig(final ProjectConfigurationSerializer configurator,
+            final String filePath) {
         Preconditions.checkNotNull(filePath);
         Preconditions.checkNotNull(configurator);
         this.configurator = configurator;
@@ -89,7 +90,7 @@ public class FileBuilderConfig extends ProjectConfig implements IResourceChangeL
     }
 
     @Override
-    public ProjectConfigurator getConfigurator() {
+    public ProjectConfigurationSerializer getConfigurator() {
         return configurator;
     }
 

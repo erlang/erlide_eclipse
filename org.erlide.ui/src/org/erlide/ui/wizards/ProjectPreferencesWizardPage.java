@@ -27,7 +27,7 @@ import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.PathSerializer;
-import org.erlide.engine.model.root.ProjectConfig;
+import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
@@ -231,7 +231,7 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
                 .append(info.getBuilderConfig().getConfigName()).toPortableString());
         if (f.exists()) {
             System.out.println(">>> LOAD " + f.getAbsolutePath());
-            final ProjectConfig config = ErlangBuilder.getFactory().getConfig(
+            final ProjectConfigurator config = ErlangBuilder.getFactory().getConfig(
                     info.getBuilderConfig(),
                     new File(info.getLocation().toPortableString()));
             final ErlangProjectProperties props = config.getConfiguration();

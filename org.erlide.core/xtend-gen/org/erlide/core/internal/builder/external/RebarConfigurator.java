@@ -17,13 +17,13 @@ import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.ProjectConfigurator;
+import org.erlide.engine.model.root.ProjectConfigurationSerializer;
 import org.erlide.engine.services.parsing.SimpleParserService;
 import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.ErlUtils;
 
 @SuppressWarnings("all")
-public class RebarConfigurator implements ProjectConfigurator {
+public class RebarConfigurator implements ProjectConfigurationSerializer {
   public String encodeConfig(final ErlangProjectProperties info) {
     return null;
   }

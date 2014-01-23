@@ -15,13 +15,13 @@ import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.ProjectConfigurator;
+import org.erlide.engine.model.root.ProjectConfigurationSerializer;
 import org.erlide.engine.services.parsing.SimpleParserService;
 import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.ErlUtils;
 
 @SuppressWarnings("all")
-public class EmakeConfigurator implements ProjectConfigurator {
+public class EmakeConfigurator implements ProjectConfigurationSerializer {
   public String encodeConfig(final ErlangProjectProperties info) {
     return null;
   }

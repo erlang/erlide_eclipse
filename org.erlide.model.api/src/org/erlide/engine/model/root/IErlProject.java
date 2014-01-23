@@ -113,6 +113,6 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     void setBuilderConfigType(BuilderConfigType config);
 
-    ProjectConfig getBuilderConfig();
+    ProjectConfigurator getBuilderConfig();
 
 }

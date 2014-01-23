@@ -20,7 +20,7 @@ import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.OTPProjectConfig;
-import org.erlide.engine.model.root.ProjectConfig;
+import org.erlide.engine.model.root.ProjectConfigurator;
 
 public class ErlangBuilderFactory implements IErlangBuilderFactory {
 
@@ -56,9 +56,9 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
     }
 
     @Override
-    public ProjectConfig getConfig(final BuilderConfigType config,
+    public ProjectConfigurator getConfig(final BuilderConfigType config,
             final IErlProject project) {
-        ProjectConfig result = null;
+        ProjectConfigurator result = null;
         String path;
         final String qualifier = config.getConfigName();
         final IProject workspaceProject = project.getWorkspaceProject();
@@ -93,8 +93,8 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
     }
 
     @Override
-    public ProjectConfig getConfig(final BuilderConfigType config, final File directory) {
-        ProjectConfig result = null;
+    public ProjectConfigurator getConfig(final BuilderConfigType config, final File directory) {
+        ProjectConfigurator result = null;
         final String qualifier = config.getConfigName();
         final String[] resources = directory.list(new FilenameFilter() {
             @Override

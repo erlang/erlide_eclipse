@@ -1,9 +1,9 @@
 package org.erlide.engine.model.root;
 
-public class OTPProjectConfig extends ProjectConfig {
+public class OTPProjectConfig implements ProjectConfigurator {
 
     @Override
-    public ProjectConfigurator getConfigurator() {
+    public ProjectConfigurationSerializer getConfigurator() {
         return null;
     }
 

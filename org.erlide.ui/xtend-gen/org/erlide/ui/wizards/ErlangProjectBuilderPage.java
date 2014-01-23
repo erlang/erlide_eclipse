@@ -1,10 +1,8 @@
 package org.erlide.ui.wizards;
 
 import com.google.common.base.Objects;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -19,16 +17,11 @@ import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
-import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
-import org.erlide.engine.model.builder.ErlangBuilder;
-import org.erlide.engine.model.builder.IErlangBuilderFactory;
-import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.ProjectConfig;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
@@ -388,57 +381,9 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
   }
   
   public String detectBuilderConfig() {
-    String _xblockexpression = null;
-    {
-      InputOutput.<String>println("TRYYYYY DETECT builder config");
-      final IPath location = this.info.getLocation();
-      String _xifexpression = null;
-      boolean _tripleNotEquals = (location != null);
-      if (_tripleNotEquals) {
-        String _xblockexpression_1 = null;
-        {
-          InputOutput.<String>println("DETECT builder config");
-          String _portableString = location.toPortableString();
-          File _file = new File(_portableString);
-          final File directory = _file;
-          String _xifexpression_1 = null;
-          boolean _and = false;
-          boolean _isDirectory = directory.isDirectory();
-          if (!_isDirectory) {
-            _and = false;
-          } else {
-            boolean _exists = directory.exists();
-            _and = (_isDirectory && _exists);
-          }
-          if (_and) {
-            String _xblockexpression_2 = null;
-            {
-              final BuilderConfigType config = this.info.getBuilderConfig();
-              IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
-              final ProjectConfig persister = _factory.getConfig(config, directory);
-              InputOutput.<String>println(("PERSISTER " + persister));
-              String _xifexpression_2 = null;
-              boolean _tripleNotEquals_1 = (persister != null);
-              if (_tripleNotEquals_1) {
-                String _xblockexpression_3 = null;
-                {
-                  final ErlangProjectProperties props = persister.getConfiguration();
-                  String _println = InputOutput.<String>println(("detected PROPS: " + props));
-                  _xblockexpression_3 = (_println);
-                }
-                _xifexpression_2 = _xblockexpression_3;
-              }
-              _xblockexpression_2 = (_xifexpression_2);
-            }
-            _xifexpression_1 = _xblockexpression_2;
-          }
-          _xblockexpression_1 = (_xifexpression_1);
-        }
-        _xifexpression = _xblockexpression_1;
-      }
-      _xblockexpression = (_xifexpression);
-    }
-    return _xblockexpression;
+    throw new Error("Unresolved compilation problems:"
+      + "\n!== cannot be resolved"
+      + "\ngetConfiguration cannot be resolved");
   }
   
   private RuntimeInfo bestRuntime() {
