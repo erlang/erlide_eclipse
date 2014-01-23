@@ -2,7 +2,6 @@ package org.erlide.core.services.builder
 
 import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.Path
-import org.erlide.core.internal.builder.external.EmakeConfigurator
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.junit.Before
 import org.junit.Test
@@ -10,14 +9,15 @@ import org.junit.Test
 import static org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher.*
 import static org.hamcrest.MatcherAssert.*
 import static org.hamcrest.Matchers.*
+import org.erlide.core.internal.builder.external.EmakeConfigurationSerializer
 
 class EmakeConfiguratorTests {
 
-    EmakeConfigurator configurator
+    EmakeConfigurationSerializer configurator
 
     @Before
     def void init() {
-        configurator = new EmakeConfigurator
+        configurator = new EmakeConfigurationSerializer
     }
 
     @Test

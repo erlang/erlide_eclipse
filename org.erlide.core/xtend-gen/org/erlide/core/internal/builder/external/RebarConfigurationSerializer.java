@@ -23,7 +23,7 @@ import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.ErlUtils;
 
 @SuppressWarnings("all")
-public class RebarConfigurator implements ProjectConfigurationSerializer {
+public class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
   public String encodeConfig(final ErlangProjectProperties info) {
     return null;
   }
@@ -66,7 +66,7 @@ public class RebarConfigurator implements ProjectConfigurationSerializer {
                             boolean _xifexpression = false;
                             boolean _tripleNotEquals = (b != null);
                             if (_tripleNotEquals) {
-                              boolean _parseOption = RebarConfigurator.this.parseOption(result, b, (seenIncludes_1).booleanValue());
+                              boolean _parseOption = RebarConfigurationSerializer.this.parseOption(result, b, (seenIncludes_1).booleanValue());
                               _xifexpression = _parseOption;
                             } else {
                               _xifexpression = (seenIncludes_1).booleanValue();

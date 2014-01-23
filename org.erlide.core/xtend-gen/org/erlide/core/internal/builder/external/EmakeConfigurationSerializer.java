@@ -21,7 +21,7 @@ import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.ErlUtils;
 
 @SuppressWarnings("all")
-public class EmakeConfigurator implements ProjectConfigurationSerializer {
+public class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
   public String encodeConfig(final ErlangProjectProperties info) {
     return null;
   }
@@ -79,7 +79,7 @@ public class EmakeConfigurator implements ProjectConfigurationSerializer {
                           final Bindings b = ErlUtils.match("{Tag,Arg}", opt);
                           boolean _tripleNotEquals = (b != null);
                           if (_tripleNotEquals) {
-                            boolean _parseOption = EmakeConfigurator.this.parseOption(b, (acc).booleanValue(), result);
+                            boolean _parseOption = EmakeConfigurationSerializer.this.parseOption(b, (acc).booleanValue(), result);
                             acc = Boolean.valueOf(_parseOption);
                           }
                           _xblockexpression = (acc);

@@ -13,16 +13,16 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.base.Preconditions;
 
-public class PreferencesBuilderConfig implements ProjectConfigurator {
+public class PreferencesBuilderConfigurator implements ProjectConfigurator {
 
     private final IEclipsePreferences node;
 
-    public PreferencesBuilderConfig(final IEclipsePreferences node) {
+    public PreferencesBuilderConfigurator(final IEclipsePreferences node) {
         Preconditions.checkNotNull(node);
         this.node = node;
     }
 
-    public PreferencesBuilderConfig() {
+    public PreferencesBuilderConfigurator() {
         this(null);
         // TODO this(BuilderConfigType.INTERNAL.getConfigName());
     }
@@ -94,7 +94,7 @@ public class PreferencesBuilderConfig implements ProjectConfigurator {
     }
 
     @Override
-    public ProjectConfigurationSerializer getConfigurator() {
+    public ProjectConfigurationSerializer getSerializer() {
         return null;
     }
 

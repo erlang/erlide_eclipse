@@ -10,16 +10,16 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.core.internal.builder.external.EmakeBuilder;
-import org.erlide.core.internal.builder.external.EmakeConfigurator;
+import org.erlide.core.internal.builder.external.EmakeConfigurationSerializer;
 import org.erlide.core.internal.builder.external.MakeBuilder;
 import org.erlide.core.internal.builder.external.RebarBuilder;
-import org.erlide.core.internal.builder.external.RebarConfigurator;
+import org.erlide.core.internal.builder.external.RebarConfigurationSerializer;
 import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.OTPProjectConfig;
+import org.erlide.engine.model.root.OTPProjectConfigurator;
 import org.erlide.engine.model.root.ProjectConfigurator;
 
 public class ErlangBuilderFactory implements IErlangBuilderFactory {
@@ -72,21 +72,21 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
         case INTERNAL:
             final IEclipsePreferences node = new ProjectScope(workspaceProject)
                     .getNode(qualifier);
-            result = new PreferencesBuilderConfig(node);
+            result = new PreferencesBuilderConfigurator(node);
             break;
         case REBAR:
             if (resource == null) {
-                return new OTPProjectConfig();
+                return new OTPProjectConfigurator();
             }
             path = resource.getLocation().toPortableString();
-            result = new FileBuilderConfig(new RebarConfigurator(), path);
+            result = new FileBuilderConfigurator(new RebarConfigurationSerializer(), path);
             break;
         case EMAKE:
             if (resource == null) {
-                return new OTPProjectConfig();
+                return new OTPProjectConfigurator();
             }
             path = resource.getLocation().toPortableString();
-            result = new FileBuilderConfig(new EmakeConfigurator(), path);
+            result = new FileBuilderConfigurator(new EmakeConfigurationSerializer(), path);
             break;
         }
         return result;
@@ -109,13 +109,13 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
         final String path = directory.getAbsolutePath() + "/" + resources[0];
         switch (config) {
         case INTERNAL:
-            result = new PreferencesBuilderConfig(null);
+            result = new PreferencesBuilderConfigurator(null);
             break;
         case REBAR:
-            result = new FileBuilderConfig(new RebarConfigurator(), path);
+            result = new FileBuilderConfigurator(new RebarConfigurationSerializer(), path);
             break;
         case EMAKE:
-            result = new FileBuilderConfig(new EmakeConfigurator(), path);
+            result = new FileBuilderConfigurator(new EmakeConfigurationSerializer(), path);
             break;
         }
         return result;

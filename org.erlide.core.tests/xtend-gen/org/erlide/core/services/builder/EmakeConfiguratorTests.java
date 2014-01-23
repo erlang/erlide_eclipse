@@ -4,7 +4,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtend2.lib.StringConcatenation;
-import org.erlide.core.internal.builder.external.EmakeConfigurator;
+import org.erlide.core.internal.builder.external.EmakeConfigurationSerializer;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.hamcrest.Matcher;
@@ -15,12 +15,12 @@ import org.junit.Test;
 
 @SuppressWarnings("all")
 public class EmakeConfiguratorTests {
-  private EmakeConfigurator configurator;
+  private EmakeConfigurationSerializer configurator;
   
   @Before
   public void init() {
-    EmakeConfigurator _emakeConfigurator = new EmakeConfigurator();
-    this.configurator = _emakeConfigurator;
+    EmakeConfigurationSerializer _emakeConfigurationSerializer = new EmakeConfigurationSerializer();
+    this.configurator = _emakeConfigurationSerializer;
   }
   
   @Test

@@ -4,7 +4,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtend2.lib.StringConcatenation;
-import org.erlide.core.internal.builder.external.RebarConfigurator;
+import org.erlide.core.internal.builder.external.RebarConfigurationSerializer;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.hamcrest.Matcher;
@@ -15,12 +15,12 @@ import org.junit.Test;
 
 @SuppressWarnings("all")
 public class RebarConfiguratorTests {
-  private RebarConfigurator configurator;
+  private RebarConfigurationSerializer configurator;
   
   @Before
   public void init() {
-    RebarConfigurator _rebarConfigurator = new RebarConfigurator();
-    this.configurator = _rebarConfigurator;
+    RebarConfigurationSerializer _rebarConfigurationSerializer = new RebarConfigurationSerializer();
+    this.configurator = _rebarConfigurationSerializer;
   }
   
   @Test

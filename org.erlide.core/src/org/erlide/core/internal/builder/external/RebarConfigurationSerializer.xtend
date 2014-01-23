@@ -10,7 +10,7 @@ import org.erlide.util.erlang.Bindings
 import org.erlide.util.erlang.ErlUtils
 import org.erlide.engine.model.root.ProjectConfigurationSerializer
 
-class RebarConfigurator implements ProjectConfigurationSerializer {
+class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
 
   override encodeConfig(ErlangProjectProperties info) {
 

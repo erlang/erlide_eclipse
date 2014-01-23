@@ -27,7 +27,7 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
         setFileContent(BuilderConfigType.REBAR.getConfigName(), "");
         final ProjectConfigurator persister = ErlangBuilder.getFactory().getConfig(
                 project.getBuilderConfigType(), project);
-        final ProjectConfigurationSerializer configurator = persister.getConfigurator();
+        final ProjectConfigurationSerializer configurator = persister.getSerializer();
 
         final ErlangProjectProperties expected = new ErlangProjectProperties();
         expected.setOutputDir(new Path("ebin"));

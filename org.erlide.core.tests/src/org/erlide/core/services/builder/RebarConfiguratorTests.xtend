@@ -1,6 +1,5 @@
 package org.erlide.core.services.builder
 
-import org.erlide.core.internal.builder.external.RebarConfigurator
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.junit.Before
 import org.junit.Test
@@ -10,14 +9,15 @@ import static org.hamcrest.Matchers.*
 import static org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher.*
 import org.eclipse.core.runtime.Path
 import org.eclipse.core.runtime.IPath
+import org.erlide.core.internal.builder.external.RebarConfigurationSerializer
 
 class RebarConfiguratorTests {
 
-    RebarConfigurator configurator
+    RebarConfigurationSerializer configurator
 
     @Before
     def void init() {
-        configurator = new RebarConfigurator
+        configurator = new RebarConfigurationSerializer
     }
 
     @Test

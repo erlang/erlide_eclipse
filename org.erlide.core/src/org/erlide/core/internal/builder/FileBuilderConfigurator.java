@@ -26,18 +26,18 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 
-public class FileBuilderConfig implements ProjectConfigurator, IResourceChangeListener,
-        IDisposable {
+public class FileBuilderConfigurator implements ProjectConfigurator,
+        IResourceChangeListener, IDisposable {
 
     private final String filePath;
     @NonNull
-    private final ProjectConfigurationSerializer configurator;
+    private final ProjectConfigurationSerializer serializer;
 
-    public FileBuilderConfig(final ProjectConfigurationSerializer configurator,
+    public FileBuilderConfigurator(final ProjectConfigurationSerializer serializer,
             final String filePath) {
         Preconditions.checkNotNull(filePath);
-        Preconditions.checkNotNull(configurator);
-        this.configurator = configurator;
+        Preconditions.checkNotNull(serializer);
+        this.serializer = serializer;
         this.filePath = filePath;
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
                 IResourceChangeEvent.POST_CHANGE);
@@ -65,7 +65,7 @@ public class FileBuilderConfig implements ProjectConfigurator, IResourceChangeLi
             if (confString != null) {
                 final String content = Joiner.on("\n").join(confString);
                 if (content != null) {
-                    result = getConfigurator().decodeConfig(content);
+                    result = getSerializer().decodeConfig(content);
                 }
             }
         } catch (final IOException e) {
@@ -78,7 +78,7 @@ public class FileBuilderConfig implements ProjectConfigurator, IResourceChangeLi
     @Override
     public void setConfiguration(final ErlangProjectProperties info) {
         final File confFile = new File(filePath);
-        final String confString = getConfigurator().encodeConfig(info);
+        final String confString = getSerializer().encodeConfig(info);
         if (confString != null) {
             final String content = "%% coding: UTF-8\n" + confString;
             try {
@@ -90,8 +90,8 @@ public class FileBuilderConfig implements ProjectConfigurator, IResourceChangeLi
     }
 
     @Override
-    public ProjectConfigurationSerializer getConfigurator() {
-        return configurator;
+    public ProjectConfigurationSerializer getSerializer() {
+        return serializer;
     }
 
     @Override

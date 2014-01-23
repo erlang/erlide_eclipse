@@ -2,7 +2,7 @@ package org.erlide.engine.model.root;
 
 public interface ProjectConfigurator {
 
-    ProjectConfigurationSerializer getConfigurator();
+    ProjectConfigurationSerializer getSerializer();
 
     ErlangProjectProperties getConfiguration();
 

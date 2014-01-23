@@ -10,7 +10,7 @@ import org.erlide.util.erlang.Bindings
 import org.erlide.util.erlang.ErlUtils
 import org.erlide.engine.model.root.ProjectConfigurationSerializer
 
-class EmakeConfigurator implements ProjectConfigurationSerializer {
+class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
 
     override String encodeConfig(ErlangProjectProperties info) {
 

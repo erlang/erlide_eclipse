@@ -60,8 +60,8 @@ import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
+import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
@@ -480,7 +480,7 @@ public class ErlProject extends Openable implements IErlProject,
     @Override
     public ErlangProjectProperties getRawProperties() {
         if (properties == null) {
-        configurationChanged();
+            configurationChanged();
         }
         return properties;
     }
