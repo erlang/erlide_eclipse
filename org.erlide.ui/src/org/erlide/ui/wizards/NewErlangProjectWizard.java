@@ -34,11 +34,11 @@ import org.eclipse.ui.IWorkbench;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.NewProjectData;
+import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.ErlLogger;
@@ -56,7 +56,7 @@ import com.google.common.collect.Maps;
 public class NewErlangProjectWizard extends Wizard implements INewWizard {
 
     private NewProjectData info;
-    private Map<BuilderConfigType, ProjectPreferencesWizardPage> buildPages;
+    private Map<ProjectConfigType, ProjectPreferencesWizardPage> buildPages;
     private ErlangNewProjectCreationPage mainPage;
     private ErlangProjectBuilderPage builderPage;
 
@@ -72,7 +72,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
             info = new NewProjectData();
             info.copyFrom(ErlangProjectProperties.DEFAULT);
 
-            buildPages = Maps.newEnumMap(BuilderConfigType.class);
+            buildPages = Maps.newEnumMap(ProjectConfigType.class);
 
             mainPage = new ErlangNewProjectCreationPage("mainPage", info);
             mainPage.setTitle(ErlideUIPlugin
@@ -92,7 +92,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
                     .getImageDescriptor(ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
             addPage(builderPage);
 
-            for (final BuilderConfigType builder : BuilderConfigType.values()) {
+            for (final ProjectConfigType builder : ProjectConfigType.values()) {
                 final ProjectPreferencesWizardPage buildPage = ProjectPreferencesWizardPageFactory
                         .create(builder, info);
                 buildPages.put(builder, buildPage);
@@ -257,7 +257,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
             return builderPage;
         }
         if (page == builderPage) {
-            final BuilderConfigType config;
+            final ProjectConfigType config;
             if (info.getBuilder().equals(BuilderTool.MAKE)
                     || info.getBuilder().equals(BuilderTool.INTERNAL)) {
                 config = info.getBuilderConfig();

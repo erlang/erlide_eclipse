@@ -6,16 +6,16 @@ import static org.hamcrest.Matchers.is;
 import java.util.Map;
 import java.util.Set;
 
-import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
+import org.erlide.engine.model.root.ProjectConfigType;
 import org.junit.Test;
 
 public class BuilderToolTests {
 
     @Test
     public void toolsMapMatchesConfigMap() {
-        final Map<BuilderConfigType, Set<BuilderTool>> map = BuilderConfigType.configToolsMap;
-        final Map<BuilderTool, Set<BuilderConfigType>> inverse = MapUtils.inverseSet(map);
+        final Map<ProjectConfigType, Set<BuilderTool>> map = ProjectConfigType.configToolsMap;
+        final Map<BuilderTool, Set<ProjectConfigType>> inverse = MapUtils.inverseSet(map);
         assertThat(BuilderTool.toolConfigsMap, is(inverse));
     }
 }

@@ -1,11 +1,9 @@
 package org.erlide.engine.model.root
 
-import org.eclipse.core.runtime.IPath
-import org.erlide.engine.model.root.ErlangProjectProperties
-import org.erlide.engine.model.builder.BuilderTool
-import org.erlide.engine.model.builder.BuilderConfigType
 import com.google.common.base.Objects
 import java.util.Map
+import org.eclipse.core.runtime.IPath
+import org.erlide.engine.model.builder.BuilderTool
 
 class NewProjectData extends ErlangProjectProperties {
 
@@ -14,7 +12,7 @@ class NewProjectData extends ErlangProjectProperties {
     @Property boolean existingProject = false
 
     @Property BuilderTool builder = BuilderTool.INTERNAL
-    @Property BuilderConfigType builderConfig = BuilderConfigType.INTERNAL
+    @Property ProjectConfigType builderConfig = ProjectConfigType.INTERNAL
 
     // TODO build targets?
     @Property Map<String, String> builderData = newHashMap

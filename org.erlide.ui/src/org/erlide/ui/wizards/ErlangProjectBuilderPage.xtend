@@ -11,16 +11,16 @@ import org.eclipse.swt.widgets.Combo
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Label
 import org.eclipse.swt.widgets.Text
-import org.erlide.engine.model.builder.BuilderConfigType
 import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.builder.ErlangBuilder
+import org.erlide.engine.model.root.NewProjectData
+import org.erlide.engine.model.root.ProjectConfigType
 import org.erlide.engine.model.root.ProjectPreferencesConstants
+import org.erlide.runtime.api.RuntimeCore
+import org.erlide.runtime.runtimeinfo.RuntimeInfo
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
 
 import static extension org.erlide.ui.util.XtendSWTLib.*
-import org.erlide.runtime.api.RuntimeCore
-import org.erlide.runtime.runtimeinfo.RuntimeInfo
-import org.erlide.engine.model.root.NewProjectData
 
 class ErlangProjectBuilderPage extends ErlangWizardPage {
 
@@ -76,19 +76,19 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
                     text = 'The directory layout and the build \nconfiguration are described'
                 ]
                 val configListener = new ConfigSelectionListener(info)
-                val configs = BuilderConfigType.values
+                val configs = ProjectConfigType.values
                 configs.forEach [ config |
                     newControl(Button, SWT.RADIO) [
                         text = getDescription(config)
                         data = config
                         addSelectionListener(configListener)
-                        selection = (config === BuilderConfigType.INTERNAL)
+                        selection = (config === ProjectConfigType.INTERNAL)
                     ]
                     newControl(Label, SWT.NONE)[]
                     newControl(Label, SWT.NONE)[]
                 ]
             ]
-            info.builderConfig = BuilderConfigType.INTERNAL
+            info.builderConfig = ProjectConfigType.INTERNAL
             makeConfigComposite = newControl(Composite, SWT.NONE) [
                 layoutData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1)
                 layout = new GridLayout(3, false)
@@ -138,11 +138,11 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
         }
     }
 
-    def String getDescription(BuilderConfigType config) {
+    def String getDescription(ProjectConfigType config) {
         switch (config) {
-            case BuilderConfigType.INTERNAL: '''manually (on next page)'''
-            case BuilderConfigType.EMAKE: '''in Emakefile'''
-            case BuilderConfigType.REBAR: '''in rebar.config'''
+            case ProjectConfigType.INTERNAL: '''manually (on next page)'''
+            case ProjectConfigType.EMAKE: '''in Emakefile'''
+            case ProjectConfigType.REBAR: '''in rebar.config'''
         }
     }
 
@@ -199,7 +199,7 @@ class ConfigSelectionListener implements SelectionListener {
     }
 
     override widgetSelected(SelectionEvent e) {
-        info.builderConfig = e.widget.data as BuilderConfigType
+        info.builderConfig = e.widget.data as ProjectConfigType
     }
 
 }

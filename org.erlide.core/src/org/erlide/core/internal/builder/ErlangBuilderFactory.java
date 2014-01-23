@@ -14,12 +14,12 @@ import org.erlide.core.internal.builder.external.EmakeConfigurationSerializer;
 import org.erlide.core.internal.builder.external.MakeBuilder;
 import org.erlide.core.internal.builder.external.RebarBuilder;
 import org.erlide.core.internal.builder.external.RebarConfigurationSerializer;
-import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.OTPProjectConfigurator;
+import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectConfigurator;
 
 public class ErlangBuilderFactory implements IErlangBuilderFactory {
@@ -56,7 +56,7 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
     }
 
     @Override
-    public ProjectConfigurator getConfig(final BuilderConfigType config,
+    public ProjectConfigurator getConfig(final ProjectConfigType config,
             final IErlProject project) {
         ProjectConfigurator result = null;
         String path;
@@ -93,7 +93,7 @@ public class ErlangBuilderFactory implements IErlangBuilderFactory {
     }
 
     @Override
-    public ProjectConfigurator getConfig(final BuilderConfigType config, final File directory) {
+    public ProjectConfigurator getConfig(final ProjectConfigType config, final File directory) {
         ProjectConfigurator result = null;
         final String qualifier = config.getConfigName();
         final String[] resources = directory.list(new FilenameFilter() {

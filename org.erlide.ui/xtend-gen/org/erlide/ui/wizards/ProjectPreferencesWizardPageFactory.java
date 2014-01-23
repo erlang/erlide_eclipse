@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.Map;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
-import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.root.NewProjectData;
+import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.ui.wizards.EmakeProjectPreferencesWizardPage;
 import org.erlide.ui.wizards.InternalProjectPreferencesWizardPage;
 import org.erlide.ui.wizards.ProjectPreferencesWizardPage;
@@ -15,19 +15,19 @@ import org.erlide.ui.wizards.RebarProjectPreferencesWizardPage;
 
 @SuppressWarnings("all")
 public class ProjectPreferencesWizardPageFactory {
-  private final static Map<BuilderConfigType,Class<? extends ProjectPreferencesWizardPage>> PAGES = new Function0<Map<BuilderConfigType,Class<? extends ProjectPreferencesWizardPage>>>() {
-    public Map<BuilderConfigType,Class<? extends ProjectPreferencesWizardPage>> apply() {
-      Map<BuilderConfigType,Class<? extends ProjectPreferencesWizardPage>> _xsetliteral = null;
-      Map<BuilderConfigType,Class<? extends ProjectPreferencesWizardPage>> _tempMap = Maps.<BuilderConfigType, Class<? extends ProjectPreferencesWizardPage>>newHashMap();
-      _tempMap.put(BuilderConfigType.INTERNAL, InternalProjectPreferencesWizardPage.class);
-      _tempMap.put(BuilderConfigType.EMAKE, EmakeProjectPreferencesWizardPage.class);
-      _tempMap.put(BuilderConfigType.REBAR, RebarProjectPreferencesWizardPage.class);
-      _xsetliteral = Collections.<BuilderConfigType, Class<? extends ProjectPreferencesWizardPage>>unmodifiableMap(_tempMap);
+  private final static Map<ProjectConfigType,Class<? extends ProjectPreferencesWizardPage>> PAGES = new Function0<Map<ProjectConfigType,Class<? extends ProjectPreferencesWizardPage>>>() {
+    public Map<ProjectConfigType,Class<? extends ProjectPreferencesWizardPage>> apply() {
+      Map<ProjectConfigType,Class<? extends ProjectPreferencesWizardPage>> _xsetliteral = null;
+      Map<ProjectConfigType,Class<? extends ProjectPreferencesWizardPage>> _tempMap = Maps.<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>>newHashMap();
+      _tempMap.put(ProjectConfigType.INTERNAL, InternalProjectPreferencesWizardPage.class);
+      _tempMap.put(ProjectConfigType.EMAKE, EmakeProjectPreferencesWizardPage.class);
+      _tempMap.put(ProjectConfigType.REBAR, RebarProjectPreferencesWizardPage.class);
+      _xsetliteral = Collections.<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>>unmodifiableMap(_tempMap);
       return _xsetliteral;
     }
   }.apply();
   
-  public static ProjectPreferencesWizardPage create(final BuilderConfigType builder, final NewProjectData info) {
+  public static ProjectPreferencesWizardPage create(final ProjectConfigType builder, final NewProjectData info) {
     try {
       ProjectPreferencesWizardPage _xblockexpression = null;
       {

@@ -23,12 +23,12 @@ import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.IErlangBuilderFactory;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.NewProjectData;
+import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.api.RuntimeCore;
@@ -169,9 +169,9 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                   XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function);
                   ConfigSelectionListener _configSelectionListener = new ConfigSelectionListener(ErlangProjectBuilderPage.this.info);
                   final ConfigSelectionListener configListener = _configSelectionListener;
-                  final BuilderConfigType[] configs = BuilderConfigType.values();
-                  final Procedure1<BuilderConfigType> _function_1 = new Procedure1<BuilderConfigType>() {
-                    public void apply(final BuilderConfigType config) {
+                  final ProjectConfigType[] configs = ProjectConfigType.values();
+                  final Procedure1<ProjectConfigType> _function_1 = new Procedure1<ProjectConfigType>() {
+                    public void apply(final ProjectConfigType config) {
                       try {
                         final Procedure1<Button> _function = new Procedure1<Button>() {
                           public void apply(final Button it) {
@@ -179,7 +179,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                             it.setText(_description);
                             it.setData(config);
                             it.addSelectionListener(configListener);
-                            boolean _tripleEquals = (config == BuilderConfigType.INTERNAL);
+                            boolean _tripleEquals = (config == ProjectConfigType.INTERNAL);
                             it.setSelection(_tripleEquals);
                           }
                         };
@@ -199,7 +199,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                       }
                     }
                   };
-                  IterableExtensions.<BuilderConfigType>forEach(((Iterable<BuilderConfigType>)Conversions.doWrapArray(configs)), _function_1);
+                  IterableExtensions.<ProjectConfigType>forEach(((Iterable<ProjectConfigType>)Conversions.doWrapArray(configs)), _function_1);
                 } catch (Throwable _e) {
                   throw Exceptions.sneakyThrow(_e);
                 }
@@ -207,7 +207,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
             };
             Composite _newControl_1 = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_8);
             ErlangProjectBuilderPage.this.configComposite = _newControl_1;
-            ErlangProjectBuilderPage.this.info.setBuilderConfig(BuilderConfigType.INTERNAL);
+            ErlangProjectBuilderPage.this.info.setBuilderConfig(ProjectConfigType.INTERNAL);
             final Procedure1<Composite> _function_9 = new Procedure1<Composite>() {
               public void apply(final Composite it) {
                 try {
@@ -344,11 +344,11 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
     return _switchResult;
   }
   
-  public String getDescription(final BuilderConfigType config) {
+  public String getDescription(final ProjectConfigType config) {
     String _switchResult = null;
     boolean _matched = false;
     if (!_matched) {
-      if (Objects.equal(config,BuilderConfigType.INTERNAL)) {
+      if (Objects.equal(config,ProjectConfigType.INTERNAL)) {
         _matched=true;
         StringConcatenation _builder = new StringConcatenation();
         _builder.append("manually (on next page)");
@@ -356,7 +356,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
       }
     }
     if (!_matched) {
-      if (Objects.equal(config,BuilderConfigType.EMAKE)) {
+      if (Objects.equal(config,ProjectConfigType.EMAKE)) {
         _matched=true;
         StringConcatenation _builder_1 = new StringConcatenation();
         _builder_1.append("in Emakefile");
@@ -364,7 +364,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
       }
     }
     if (!_matched) {
-      if (Objects.equal(config,BuilderConfigType.REBAR)) {
+      if (Objects.equal(config,ProjectConfigType.REBAR)) {
         _matched=true;
         StringConcatenation _builder_2 = new StringConcatenation();
         _builder_2.append("in rebar.config");
@@ -413,7 +413,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
           if (_and) {
             String _xblockexpression_2 = null;
             {
-              final BuilderConfigType config = this.info.getBuilderConfig();
+              final ProjectConfigType config = this.info.getBuilderConfig();
               IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
               final ProjectConfigurator persister = _factory.getConfig(config, directory);
               InputOutput.<String>println(("PERSISTER " + persister));

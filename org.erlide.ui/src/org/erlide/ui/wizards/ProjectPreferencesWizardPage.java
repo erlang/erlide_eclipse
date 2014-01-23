@@ -23,18 +23,18 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.engine.model.root.PathSerializer;
+import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
 
     protected final NewProjectData info;
-    protected BuilderConfigType configType;
+    protected ProjectConfigType configType;
 
     protected Text output;
     protected Text source;
@@ -221,7 +221,7 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
     }
 
     protected String getBuilderDescription() {
-        if (configType == BuilderConfigType.INTERNAL) {
+        if (configType == ProjectConfigType.INTERNAL) {
             return null;
         }
         return "Configuration retrieved from " + configType.getConfigName();
@@ -246,7 +246,7 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
 
     @Override
     protected void onEntry() {
-        if (info.getBuilderConfig() != BuilderConfigType.INTERNAL) {
+        if (info.getBuilderConfig() != ProjectConfigType.INTERNAL) {
             final String op = info.isExistingProject() ? "editing" : "creating";
             setMessage("Please configure the project by " + op + " "
                     + info.getBuilderConfig().getConfigName(),

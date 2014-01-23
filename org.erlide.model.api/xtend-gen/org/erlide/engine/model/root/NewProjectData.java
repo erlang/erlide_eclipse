@@ -6,9 +6,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.ProjectConfigType;
 
 @SuppressWarnings("all")
 public class NewProjectData extends ErlangProjectProperties {
@@ -52,13 +52,13 @@ public class NewProjectData extends ErlangProjectProperties {
     this._builder = builder;
   }
   
-  private BuilderConfigType _builderConfig = BuilderConfigType.INTERNAL;
+  private ProjectConfigType _builderConfig = ProjectConfigType.INTERNAL;
   
-  public BuilderConfigType getBuilderConfig() {
+  public ProjectConfigType getBuilderConfig() {
     return this._builderConfig;
   }
   
-  public void setBuilderConfig(final BuilderConfigType builderConfig) {
+  public void setBuilderConfig(final ProjectConfigType builderConfig) {
     this._builderConfig = builderConfig;
   }
   

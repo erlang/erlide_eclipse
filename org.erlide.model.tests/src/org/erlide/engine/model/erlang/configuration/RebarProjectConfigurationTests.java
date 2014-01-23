@@ -10,10 +10,10 @@ import java.util.Collection;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectConfigurationSerializer;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.junit.Test;
@@ -23,8 +23,8 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
     @Override
     @Test
     public void configCanBeParsed() throws CoreException {
-        project.setBuilderConfigType(BuilderConfigType.REBAR);
-        setFileContent(BuilderConfigType.REBAR.getConfigName(), "");
+        project.setBuilderConfigType(ProjectConfigType.REBAR);
+        setFileContent(ProjectConfigType.REBAR.getConfigName(), "");
         final ProjectConfigurator persister = ErlangBuilder.getFactory().getConfig(
                 project.getBuilderConfigType(), project);
         final ProjectConfigurationSerializer configurator = persister.getSerializer();
@@ -38,8 +38,8 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
 
     @Test
     public void propertiesShouldFollowConfigFileChange() throws CoreException {
-        project.setBuilderConfigType(BuilderConfigType.REBAR);
-        final String cfgFile = BuilderConfigType.REBAR.getConfigName();
+        project.setBuilderConfigType(ProjectConfigType.REBAR);
+        final String cfgFile = ProjectConfigType.REBAR.getConfigName();
         final String config = getFileContent(cfgFile);
 
         final String config1 = config + "{erl_opts, [{i, \"myinclude\"}, "

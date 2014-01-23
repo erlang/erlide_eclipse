@@ -1,4 +1,4 @@
-package org.erlide.engine.model.builder;
+package org.erlide.engine.model.root;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -6,16 +6,17 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.xtext.xbase.lib.Functions;
+import org.erlide.engine.model.builder.BuilderTool;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public enum BuilderConfigType {
+public enum ProjectConfigType {
     INTERNAL("org.erlide.core"), EMAKE("Emakefile"), REBAR("rebar.config");
 
     private final String configName;
 
-    BuilderConfigType(final String configName) {
+    ProjectConfigType(final String configName) {
         this.configName = configName;
     }
 
@@ -28,10 +29,10 @@ public enum BuilderConfigType {
         return configName;
     }
 
-    public static final Map<BuilderConfigType, Set<BuilderTool>> configToolsMap = new Functions.Function0<Map<BuilderConfigType, Set<BuilderTool>>>() {
+    public static final Map<ProjectConfigType, Set<BuilderTool>> configToolsMap = new Functions.Function0<Map<ProjectConfigType, Set<BuilderTool>>>() {
         @Override
-        public Map<BuilderConfigType, Set<BuilderTool>> apply() {
-            final Map<BuilderConfigType, Set<BuilderTool>> result = Maps.newHashMap();
+        public Map<ProjectConfigType, Set<BuilderTool>> apply() {
+            final Map<ProjectConfigType, Set<BuilderTool>> result = Maps.newHashMap();
             result.put(INTERNAL, Sets.newHashSet(BuilderTool.INTERNAL, BuilderTool.MAKE));
             result.put(EMAKE, Sets.newHashSet(BuilderTool.EMAKE, BuilderTool.MAKE,
                     BuilderTool.INTERNAL));

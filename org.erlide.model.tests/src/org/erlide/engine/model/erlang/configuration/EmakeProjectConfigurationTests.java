@@ -12,10 +12,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
 
     @Test
     public void configuratorExists() {
-        project.setBuilderConfigType(BuilderConfigType.EMAKE);
+        project.setBuilderConfigType(ProjectConfigType.EMAKE);
 
         final ProjectConfigurator config = ErlangBuilder.getFactory().getConfig(
                 project.getBuilderConfigType(), project);
@@ -36,7 +36,7 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
     @Override
     @Test
     public void configCanBeParsed() throws CoreException {
-        project.setBuilderConfigType(BuilderConfigType.EMAKE);
+        project.setBuilderConfigType(ProjectConfigType.EMAKE);
         final ProjectConfigurator config = ErlangBuilder.getFactory().getConfig(
                 project.getBuilderConfigType(), project);
 
@@ -48,8 +48,8 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
 
     @Test
     public void propertiesShouldFollowConfigFileChange() throws CoreException {
-        project.setBuilderConfigType(BuilderConfigType.EMAKE);
-        final String cfgFile = BuilderConfigType.EMAKE.getConfigName();
+        project.setBuilderConfigType(ProjectConfigType.EMAKE);
+        final String cfgFile = ProjectConfigType.EMAKE.getConfigName();
 
         final String config1 = "{'src/*',[debug_info,{i,\"myinclude\"}]}. "
                 + "{'src2/*',[debug_info,{i,\"myinclude\"}]}.";

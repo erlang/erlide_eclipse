@@ -45,7 +45,6 @@ import org.erlide.engine.model.ErlModelStatus;
 import org.erlide.engine.model.ErlModelStatusConstants;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IOpenable;
-import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
@@ -60,6 +59,7 @@ import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.services.search.OpenService;
@@ -104,7 +104,7 @@ public class ErlProject extends Openable implements IErlProject,
     private static final boolean IS_CASE_SENSITIVE = !new File("Temp").equals(new File("temp")); //$NON-NLS-1$ //$NON-NLS-2$
 
     protected IProject fProject;
-    private BuilderConfigType builderConfigType = BuilderConfigType.INTERNAL;
+    private ProjectConfigType builderConfigType = ProjectConfigType.INTERNAL;
     private ErlangProjectProperties properties;
     private BuilderProperties builderProperties;
 
@@ -756,8 +756,8 @@ public class ErlProject extends Openable implements IErlProject,
     private void loadCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
         final String name = node.get("builderConfig",
-                BuilderConfigType.INTERNAL.name());
-        setBuilderConfigType(BuilderConfigType.valueOf(name));
+                ProjectConfigType.INTERNAL.name());
+        setBuilderConfigType(ProjectConfigType.valueOf(name));
     }
 
     private void storeCoreProperties() {
@@ -772,13 +772,13 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     @Override
-    public void setBuilderConfigType(final BuilderConfigType config) {
+    public void setBuilderConfigType(final ProjectConfigType config) {
         builderConfigType = config;
         builderConfig = ErlangBuilder.getFactory().getConfig(config, this);
     }
 
     @Override
-    public BuilderConfigType getBuilderConfigType() {
+    public ProjectConfigType getBuilderConfigType() {
         return builderConfigType;
     }
 
@@ -792,7 +792,7 @@ public class ErlProject extends Openable implements IErlProject,
         }
     }
 
-    public boolean hasConfigurationFor(final BuilderConfigType config) {
+    public boolean hasConfigurationFor(final ProjectConfigType config) {
         if (!exists()) {
             return false;
         }

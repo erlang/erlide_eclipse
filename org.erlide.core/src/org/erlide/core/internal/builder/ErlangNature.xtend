@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.NullProgressMonitor
 import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.builder.ErlangBuilder
-import org.erlide.engine.model.builder.BuilderConfigType
+import org.erlide.engine.model.root.ProjectConfigType
 
 class ErlangNature implements IProjectNature {
     var IProject project
@@ -84,17 +84,17 @@ class ErlangNature implements IProjectNature {
         BuilderTool.INTERNAL
     }
 
-    static def BuilderConfigType detectBuilderConfig(IContainer folder) {
+    static def ProjectConfigType detectBuilderConfig(IContainer folder) {
         if (!folder.exists) {
             return null
         }
         if (folder.findMember(BuilderTool.EMAKE.getToolMarker) !== null) {
-            return BuilderConfigType.EMAKE
+            return ProjectConfigType.EMAKE
         }
         if (folder.findMember(BuilderTool.REBAR.getToolMarker) !== null) {
-            return BuilderConfigType.REBAR
+            return ProjectConfigType.REBAR
         }
-        BuilderConfigType.INTERNAL
+        ProjectConfigType.INTERNAL
     }
 
 
