@@ -101,10 +101,10 @@ public class FileBuilderConfig implements ProjectConfigurator, IResourceChangeLi
             delta.accept(new IResourceDeltaVisitor() {
 
                 @Override
-                public boolean visit(final IResourceDelta delta) throws CoreException {
-                    final IResource res = delta.getResource();
+                public boolean visit(final IResourceDelta aDelta) throws CoreException {
+                    final IResource res = aDelta.getResource();
                     if (res.getLocation().equals(new Path(filePath))) {
-                        System.out.println("DETECTED " + delta.getKind() + " " + res);
+                        System.out.println("DETECTED " + aDelta.getKind() + " " + res);
                     }
                     return false;
 
