@@ -3,7 +3,7 @@ package org.erlide.ui.wizards;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.erlide.engine.model.builder.BuilderConfigType;
-import org.erlide.ui.wizards.NewProjectData;
+import org.erlide.engine.model.root.NewProjectData;
 
 @SuppressWarnings("all")
 public class ConfigSelectionListener implements SelectionListener {

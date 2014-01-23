@@ -1,4 +1,4 @@
-package org.erlide.ui.wizards;
+package org.erlide.engine.model.root;
 
 import com.google.common.base.Objects;
 import java.util.Map;

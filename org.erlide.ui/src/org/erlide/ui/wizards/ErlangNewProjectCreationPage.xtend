@@ -4,6 +4,7 @@ import org.eclipse.core.runtime.Path
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage
 import org.eclipse.core.runtime.IPath
 import java.io.File
+import org.erlide.engine.model.root.NewProjectData
 
 class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
 

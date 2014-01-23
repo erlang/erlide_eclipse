@@ -4,8 +4,8 @@ import com.google.common.base.Objects;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.erlide.engine.model.builder.BuilderTool;
+import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.ui.wizards.ErlangProjectBuilderPage;
-import org.erlide.ui.wizards.NewProjectData;
 
 @SuppressWarnings("all")
 public class BuilderSelectionListener implements SelectionListener {

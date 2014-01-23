@@ -7,9 +7,9 @@ import java.util.Map;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
 import org.erlide.engine.model.builder.BuilderConfigType;
+import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.ui.wizards.EmakeProjectPreferencesWizardPage;
 import org.erlide.ui.wizards.InternalProjectPreferencesWizardPage;
-import org.erlide.ui.wizards.NewProjectData;
 import org.erlide.ui.wizards.ProjectPreferencesWizardPage;
 import org.erlide.ui.wizards.RebarProjectPreferencesWizardPage;
 

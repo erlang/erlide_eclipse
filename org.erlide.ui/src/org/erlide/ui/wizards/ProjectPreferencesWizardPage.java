@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Text;
 import org.erlide.engine.model.builder.BuilderConfigType;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.ui.internal.ErlideUIPlugin;

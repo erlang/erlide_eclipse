@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.engine.model.builder.BuilderConfigType;
+import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.util.PreferencesUtils;
 import org.erlide.util.SystemConfiguration;
 

@@ -1,6 +1,7 @@
 package org.erlide.ui.wizards;
 
 import org.erlide.engine.model.builder.BuilderConfigType;
+import org.erlide.engine.model.root.NewProjectData;
 
 public class EmakeProjectPreferencesWizardPage extends ProjectPreferencesWizardPage {
 

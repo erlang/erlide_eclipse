@@ -20,6 +20,7 @@ import org.erlide.runtime.runtimeinfo.RuntimeVersion
 import static extension org.erlide.ui.util.XtendSWTLib.*
 import org.erlide.runtime.api.RuntimeCore
 import org.erlide.runtime.runtimeinfo.RuntimeInfo
+import org.erlide.engine.model.root.NewProjectData
 
 class ErlangProjectBuilderPage extends ErlangWizardPage {
 

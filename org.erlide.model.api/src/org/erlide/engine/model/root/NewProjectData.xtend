@@ -1,4 +1,4 @@
-package org.erlide.ui.wizards
+package org.erlide.engine.model.root
 
 import org.eclipse.core.runtime.IPath
 import org.erlide.engine.model.root.ErlangProjectProperties
@@ -15,7 +15,7 @@ class NewProjectData extends ErlangProjectProperties {
 
     @Property BuilderTool builder = BuilderTool.INTERNAL
     @Property BuilderConfigType builderConfig = BuilderConfigType.INTERNAL
-    
+
     // TODO build targets?
     @Property Map<String, String> builderData = newHashMap
 

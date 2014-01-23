@@ -2,6 +2,7 @@ package org.erlide.ui.wizards
 
 import java.util.Map
 import org.erlide.engine.model.builder.BuilderConfigType
+import org.erlide.engine.model.root.NewProjectData
 
 class ProjectPreferencesWizardPageFactory {
 
