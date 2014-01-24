@@ -87,7 +87,6 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
             final File dir = loc.toFile();
 
             final List<String> src = search("erl", dir);
-            System.out.println("SRC==" + src);
             if (src.contains("test")) {
                 src.remove("test");
                 final List<String> tst = Lists.newArrayList("test");
@@ -282,13 +281,6 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
 
     @Override
     protected void onExit() {
-    }
-
-    @Override
-    protected void loadConfig() {
-        if (info.isExistingProject()) {
-            // TODO ZZZ we need to read directly from .settings!
-        }
     }
 
 }

@@ -1,10 +1,10 @@
-package org.erlide.core.services.builder;
+package org.erlide.engine.model.erlang.configuration;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtend2.lib.StringConcatenation;
-import org.erlide.core.internal.builder.external.RebarConfigurationSerializer;
+import org.erlide.engine.internal.model.root.RebarConfigurationSerializer;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.hamcrest.Matcher;
@@ -96,7 +96,7 @@ public class RebarConfiguratorTests {
   @Test
   public void handleComplexInput() {
     StringConcatenation _builder = new StringConcatenation();
-    _builder.append("something. ");
+    _builder.append("something.");
     _builder.newLine();
     _builder.append("{erl_opts, [{src_dirs, [\"src1\", \"src2\"]}]}.");
     _builder.newLine();
@@ -114,11 +114,11 @@ public class RebarConfiguratorTests {
   @Test
   public void handleMultipleOptions() {
     StringConcatenation _builder = new StringConcatenation();
-    _builder.append("{erl_opts, [{i, \"inc1\"}]}. ");
+    _builder.append("{erl_opts, [{i, \"inc1\"}]}.");
     _builder.newLine();
     _builder.append("{erl_opts, [{src_dirs, [\"src1\", \"src2\"]}]}.");
     _builder.newLine();
-    _builder.append("{erl_opts, [{i, \"inc2\"}]}. ");
+    _builder.append("{erl_opts, [{i, \"inc2\"}]}.");
     _builder.newLine();
     _builder.append("{erl_opts, [{src_dirs, [\"src3\", \"src4\"]}]}.");
     _builder.newLine();

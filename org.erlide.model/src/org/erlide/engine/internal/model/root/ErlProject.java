@@ -47,7 +47,6 @@ import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IOpenable;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.BuilderTool;
-import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;
 import org.erlide.engine.model.root.ErlElementKind;
@@ -630,7 +629,6 @@ public class ErlProject extends Openable implements IErlProject,
         if (runtimeInfo != null) {
             return runtimeInfo.getVersion();
         }
-        System.out.println("runtime version is null !? rinfo=" + runtimeInfo);
         // should not happen
         return null;
     }
@@ -774,7 +772,8 @@ public class ErlProject extends Openable implements IErlProject,
     @Override
     public void setBuilderConfigType(final ProjectConfigType config) {
         builderConfigType = config;
-        builderConfig = ErlangBuilder.getFactory().getConfig(config, this);
+        builderConfig = ProjectConfiguratorFactory.getDefault().getConfig(
+                config, this);
     }
 
     @Override

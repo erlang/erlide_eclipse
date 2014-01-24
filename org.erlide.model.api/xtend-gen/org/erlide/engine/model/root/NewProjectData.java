@@ -1,14 +1,23 @@
 package org.erlide.engine.model.root;
 
 import com.google.common.base.Objects;
+import java.io.File;
+import java.util.Collection;
 import java.util.Map;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
+import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.model.root.ProjectConfigType;
+import org.erlide.engine.model.root.ProjectConfigurator;
+import org.erlide.engine.model.root.ProjectPreferencesConstants;
+import org.erlide.runtime.api.RuntimeCore;
+import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 @SuppressWarnings("all")
 public class NewProjectData extends ErlangProjectProperties {
@@ -52,14 +61,14 @@ public class NewProjectData extends ErlangProjectProperties {
     this._builder = builder;
   }
   
-  private ProjectConfigType _builderConfig = ProjectConfigType.INTERNAL;
+  private ProjectConfigType _configType = ProjectConfigType.INTERNAL;
   
-  public ProjectConfigType getBuilderConfig() {
-    return this._builderConfig;
+  public ProjectConfigType getConfigType() {
+    return this._configType;
   }
   
-  public void setBuilderConfig(final ProjectConfigType builderConfig) {
-    this._builderConfig = builderConfig;
+  public void setConfigType(final ProjectConfigType configType) {
+    this._configType = configType;
   }
   
   private Map<String,String> _builderData = CollectionLiterals.<String, String>newHashMap();
@@ -72,6 +81,12 @@ public class NewProjectData extends ErlangProjectProperties {
     this._builderData = builderData;
   }
   
+  private final IProjectConfiguratorFactory factory;
+  
+  public NewProjectData(final IProjectConfiguratorFactory factory) {
+    this.factory = factory;
+  }
+  
   public String toString() {
     String _xblockexpression = null;
     {
@@ -81,8 +96,8 @@ public class NewProjectData extends ErlangProjectProperties {
           it.add("name", NewProjectData.this._name);
           it.add("location", NewProjectData.this._location);
           it.add("existingProject", NewProjectData.this._existingProject);
+          it.add("configType", NewProjectData.this._configType);
           it.add("builder", NewProjectData.this._builder);
-          it.add("builderConfig", NewProjectData.this._builderConfig);
           it.add("builderData", NewProjectData.this._builderData);
           String _string = NewProjectData.super.toString();
           it.add("super", _string);
@@ -93,5 +108,95 @@ public class NewProjectData extends ErlangProjectProperties {
       _xblockexpression = (_string);
     }
     return _xblockexpression;
+  }
+  
+  public void loadFromFile() {
+    IPath _location = this.getLocation();
+    ProjectConfigType _configType = this.getConfigType();
+    String _configName = _configType.getConfigName();
+    IPath _append = _location.append(_configName);
+    String _portableString = _append.toPortableString();
+    File _file = new File(_portableString);
+    final File f = _file;
+    boolean _exists = f.exists();
+    if (_exists) {
+      String _absolutePath = f.getAbsolutePath();
+      String _plus = (">>> LOAD " + _absolutePath);
+      System.out.println(_plus);
+      ProjectConfigType _configType_1 = this.getConfigType();
+      IPath _location_1 = this.getLocation();
+      String _portableString_1 = _location_1.toPortableString();
+      File _file_1 = new File(_portableString_1);
+      final ProjectConfigurator config = this.factory.getConfig(_configType_1, _file_1);
+      final ErlangProjectProperties props = config.getConfiguration();
+      IPath _outputDir = props.getOutputDir();
+      this.setOutputDir(_outputDir);
+      Collection<IPath> _sourceDirs = props.getSourceDirs();
+      this.setSourceDirs(_sourceDirs);
+      Collection<IPath> _includeDirs = props.getIncludeDirs();
+      this.setIncludeDirs(_includeDirs);
+      Collection<IPath> _testDirs = props.getTestDirs();
+      this.setTestDirs(_testDirs);
+    }
+  }
+  
+  public String detectProjectConfig() {
+    String _xblockexpression = null;
+    {
+      InputOutput.<String>println(">>>DETECT builder config");
+      String _xifexpression = null;
+      IPath _location = this.getLocation();
+      boolean _tripleNotEquals = (_location != null);
+      if (_tripleNotEquals) {
+        String _xblockexpression_1 = null;
+        {
+          InputOutput.<String>println("DETECT builder config");
+          IPath _location_1 = this.getLocation();
+          String _portableString = _location_1.toPortableString();
+          File _file = new File(_portableString);
+          final File directory = _file;
+          String _xifexpression_1 = null;
+          boolean _and = false;
+          boolean _isDirectory = directory.isDirectory();
+          if (!_isDirectory) {
+            _and = false;
+          } else {
+            boolean _exists = directory.exists();
+            _and = (_isDirectory && _exists);
+          }
+          if (_and) {
+            String _xblockexpression_2 = null;
+            {
+              ProjectConfigType _configType = this.getConfigType();
+              final ProjectConfigurator persister = this.factory.getConfig(_configType, directory);
+              InputOutput.<String>println(("PERSISTER " + persister));
+              String _xifexpression_2 = null;
+              boolean _tripleNotEquals_1 = (persister != null);
+              if (_tripleNotEquals_1) {
+                String _xblockexpression_3 = null;
+                {
+                  final ErlangProjectProperties props = persister.getConfiguration();
+                  String _println = InputOutput.<String>println(("detected PROPS: " + props));
+                  _xblockexpression_3 = (_println);
+                }
+                _xifexpression_2 = _xblockexpression_3;
+              }
+              _xblockexpression_2 = (_xifexpression_2);
+            }
+            _xifexpression_1 = _xblockexpression_2;
+          }
+          _xblockexpression_1 = (_xifexpression_1);
+        }
+        _xifexpression = _xblockexpression_1;
+      }
+      _xblockexpression = (_xifexpression);
+    }
+    return _xblockexpression;
+  }
+  
+  public RuntimeInfo bestRuntime() {
+    IRuntimeInfoCatalog _runtimeInfoCatalog = RuntimeCore.getRuntimeInfoCatalog();
+    RuntimeInfo _runtime = _runtimeInfoCatalog.getRuntime(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION, null);
+    return _runtime;
   }
 }

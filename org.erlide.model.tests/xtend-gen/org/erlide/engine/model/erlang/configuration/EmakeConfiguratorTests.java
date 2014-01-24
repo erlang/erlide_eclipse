@@ -1,10 +1,10 @@
-package org.erlide.core.services.builder;
+package org.erlide.engine.model.erlang.configuration;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtend2.lib.StringConcatenation;
-import org.erlide.core.internal.builder.external.EmakeConfigurationSerializer;
+import org.erlide.engine.internal.model.root.EmakeConfigurationSerializer;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.hamcrest.Matcher;

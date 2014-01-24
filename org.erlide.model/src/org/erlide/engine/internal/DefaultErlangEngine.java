@@ -11,6 +11,7 @@ import org.erlide.engine.internal.model.BeamLocator;
 import org.erlide.engine.internal.model.ErlModel;
 import org.erlide.engine.internal.model.erlang.ModelFindUtil;
 import org.erlide.engine.internal.model.erlang.ModelInternalUtils;
+import org.erlide.engine.internal.model.root.ProjectConfiguratorFactory;
 import org.erlide.engine.internal.services.cleanup.ErlTidyCleanupProvider;
 import org.erlide.engine.internal.services.codeassist.ErlideContextAssist;
 import org.erlide.engine.internal.services.edoc.ErlideEdocExport;
@@ -28,6 +29,7 @@ import org.erlide.engine.internal.services.search.ModelSearcher;
 import org.erlide.engine.internal.services.text.ErlideIndent;
 import org.erlide.engine.model.IBeamLocator;
 import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.services.ErlangService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
 import org.erlide.engine.services.codeassist.ContextAssistService;
@@ -222,6 +224,11 @@ public class DefaultErlangEngine implements IErlangEngine {
     @Override
     public ModelSearcherService getModelSearcherService() {
         return new ModelSearcher();
+    }
+
+    @Override
+    public IProjectConfiguratorFactory getProjectConfiguratorFactory() {
+        return ProjectConfiguratorFactory.getDefault();
     }
 
 }

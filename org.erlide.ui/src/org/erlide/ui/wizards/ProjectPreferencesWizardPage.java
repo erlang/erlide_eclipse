@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.wizards;
 
-import java.io.File;
-
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
@@ -23,12 +21,9 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.engine.model.builder.ErlangBuilder;
-import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.engine.model.root.ProjectConfigType;
-import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
@@ -227,32 +222,15 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
         return "Configuration retrieved from " + configType.getConfigName();
     }
 
-    protected void loadConfig() {
-        final File f = new File(info.getLocation()
-                .append(info.getBuilderConfig().getConfigName()).toPortableString());
-        if (f.exists()) {
-            System.out.println(">>> LOAD " + f.getAbsolutePath());
-            final ProjectConfigurator config = ErlangBuilder.getFactory().getConfig(
-                    info.getBuilderConfig(),
-                    new File(info.getLocation().toPortableString()));
-            final ErlangProjectProperties props = config.getConfiguration();
-            info.setOutputDir(props.getOutputDir());
-            info.setSourceDirs(info.getSourceDirs());
-            info.setIncludeDirs(props.getIncludeDirs());
-            info.setTestDirs(props.getTestDirs());
-        }
-
-    }
-
     @Override
     protected void onEntry() {
-        if (info.getBuilderConfig() != ProjectConfigType.INTERNAL) {
+        if (info.getConfigType() != ProjectConfigType.INTERNAL) {
             final String op = info.isExistingProject() ? "editing" : "creating";
             setMessage("Please configure the project by " + op + " "
-                    + info.getBuilderConfig().getConfigName(),
+                    + info.getConfigType().getConfigName(),
                     IMessageProvider.INFORMATION);
         }
-        loadConfig();
+        info.loadFromFile();
         output.setText(info.getOutputDir().toPortableString());
         source.setText(PathSerializer.packList(info.getSourceDirs()));
         include.setText(PathSerializer.packList(info.getIncludeDirs()));

@@ -57,13 +57,13 @@
       <content-type
             base-type="org.eclipse.core.runtime.text"
             default-charset="ISO-8859-1"
-            describer="org.erlide.core.content.ErlangContentDescriber"
+            describer="org.erlide.engine.model.root.ErlangContentDescriber"
             file-extensions="erl,hrl,yrl,escript"
             id="org.erlide.core.content.erlang"
             name="Erlang source file"
             priority="normal">
          <describer
-               class="org.erlide.core.content.ErlangContentDescriber">
+               class="org.erlide.engine.model.root.ErlangContentDescriber">
          </describer>
       </content-type>
    </extension>

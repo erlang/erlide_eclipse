@@ -1,4 +1,4 @@
-package org.erlide.core.internal.builder;
+package org.erlide.engine.internal.model.root;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.annotation.NonNull;
-import org.erlide.core.content.ErlangContentDescriber;
+import org.erlide.engine.model.root.ErlangContentDescriber;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfigurationSerializer;
 import org.erlide.engine.model.root.ProjectConfigurator;
@@ -26,14 +26,15 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 
-public class FileBuilderConfigurator implements ProjectConfigurator,
+public class FileProjectConfigurator implements ProjectConfigurator,
         IResourceChangeListener, IDisposable {
 
     private final String filePath;
     @NonNull
     private final ProjectConfigurationSerializer serializer;
 
-    public FileBuilderConfigurator(final ProjectConfigurationSerializer serializer,
+    public FileProjectConfigurator(
+            final ProjectConfigurationSerializer serializer,
             final String filePath) {
         Preconditions.checkNotNull(filePath);
         Preconditions.checkNotNull(serializer);
@@ -89,7 +90,6 @@ public class FileBuilderConfigurator implements ProjectConfigurator,
         }
     }
 
-    @Override
     public ProjectConfigurationSerializer getSerializer() {
         return serializer;
     }
@@ -101,10 +101,12 @@ public class FileBuilderConfigurator implements ProjectConfigurator,
             delta.accept(new IResourceDeltaVisitor() {
 
                 @Override
-                public boolean visit(final IResourceDelta aDelta) throws CoreException {
+                public boolean visit(final IResourceDelta aDelta)
+                        throws CoreException {
                     final IResource res = aDelta.getResource();
                     if (res.getLocation().equals(new Path(filePath))) {
-                        System.out.println("DETECTED " + aDelta.getKind() + " " + res);
+                        System.out.println("DETECTED " + aDelta.getKind() + " "
+                                + res);
                     }
                     return false;
 

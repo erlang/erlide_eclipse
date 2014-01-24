@@ -52,4 +52,5 @@ public enum ProjectConfigType {
     public boolean matchTool(final BuilderTool tool) {
         return configToolsMap.get(this).contains(tool);
     }
+
 }

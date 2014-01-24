@@ -1,7 +1,8 @@
-package org.erlide.core.services.builder
+package org.erlide.engine.model.erlang.configuration
 
 import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.Path
+import org.erlide.engine.internal.model.root.EmakeConfigurationSerializer
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.junit.Before
 import org.junit.Test
@@ -9,7 +10,6 @@ import org.junit.Test
 import static org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher.*
 import static org.hamcrest.MatcherAssert.*
 import static org.hamcrest.Matchers.*
-import org.erlide.core.internal.builder.external.EmakeConfigurationSerializer
 
 class EmakeConfiguratorTests {
 
@@ -35,7 +35,7 @@ class EmakeConfiguratorTests {
             {'src1/*',[debug_info,{i,"myinclude"}]}.
         '''
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.includeDirs,
+        assertThat(actual.getIncludeDirs,
             contains(
                 new Path("myinclude") as IPath
             ))
@@ -47,7 +47,7 @@ class EmakeConfiguratorTests {
             {'src1/*',[debug_info,{i, "myinclude"}, {i, "myinclude2"}]}.
         '''
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.includeDirs,
+        assertThat(actual.getIncludeDirs,
             contains(
                 new Path("myinclude") as IPath,
                 new Path("myinclude2") as IPath
@@ -61,7 +61,7 @@ class EmakeConfiguratorTests {
             {'src2/*',[debug_info]}.
         '''
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.sourceDirs,
+        assertThat(actual.getSourceDirs,
             contains(
                 new Path("src1") as IPath,
                 new Path("src2") as IPath
@@ -74,7 +74,7 @@ class EmakeConfiguratorTests {
             {'src/*',[]}.
         '''
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.outputDir, is(new Path("ebin")))
+        assertThat(actual.getOutputDir, is(new Path("ebin")))
     }
 
 }

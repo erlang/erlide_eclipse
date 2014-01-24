@@ -1,4 +1,4 @@
-package org.erlide.core.content;
+package org.erlide.engine.model.root;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,9 +19,9 @@ import com.google.common.base.Charsets;
 public class ErlangContentDescriber implements ITextContentDescriber {
     private static final QualifiedName[] SUPPORTED_OPTIONS = new QualifiedName[] { IContentDescription.CHARSET };
     private static final Pattern LATIN1 = Pattern.compile(
-            "%+[ *-]+coding: *latin-1 .*", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
+            "%+[ *-]+coding: *latin-1.*", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
     private static final Pattern UTF8 = Pattern.compile(
-            "%+[ *-]+coding: *utf-8 .*", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
+            "%+[ *-]+coding: *utf-8.*", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
     private static final String CHARSET = "ErlangContentDescriber.charset"; //$NON-NLS-1$
     private static final String RESULT = "ErlangContentDescriber.processed"; //$NON-NLS-1$
 

@@ -1,10 +1,8 @@
 package org.erlide.ui.wizards;
 
 import com.google.common.base.Objects;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -19,20 +17,13 @@ import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
-import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.builder.BuilderTool;
-import org.erlide.engine.model.builder.ErlangBuilder;
-import org.erlide.engine.model.builder.IErlangBuilderFactory;
-import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.engine.model.root.ProjectConfigType;
-import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
-import org.erlide.runtime.api.RuntimeCore;
-import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.ui.util.XtendSWTLib;
@@ -79,7 +70,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                 };
                 List<String> _map = ListExtensions.<RuntimeVersion, String>map(((List<RuntimeVersion>)Conversions.doWrapArray(runtimeVersions)), _function);
                 it.setItems(((String[])Conversions.unwrapArray(_map, String.class)));
-                RuntimeInfo _bestRuntime = ErlangProjectBuilderPage.this.bestRuntime();
+                RuntimeInfo _bestRuntime = ErlangProjectBuilderPage.this.info.bestRuntime();
                 RuntimeVersion _version = _bestRuntime.getVersion();
                 RuntimeVersion _asMajor = _version.asMajor();
                 String _string = _asMajor.toString();
@@ -207,7 +198,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
             };
             Composite _newControl_1 = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_8);
             ErlangProjectBuilderPage.this.configComposite = _newControl_1;
-            ErlangProjectBuilderPage.this.info.setBuilderConfig(ProjectConfigType.INTERNAL);
+            ErlangProjectBuilderPage.this.info.setConfigType(ProjectConfigType.INTERNAL);
             final Procedure1<Composite> _function_9 = new Procedure1<Composite>() {
               public void apply(final Composite it) {
                 try {
@@ -377,7 +368,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
   protected void onEntry() {
     boolean _isExistingProject = this.info.isExistingProject();
     if (_isExistingProject) {
-      this.detectBuilderConfig();
+      this.info.detectProjectConfig();
     }
   }
   
@@ -385,79 +376,5 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
     String _text = this.runtimeCombo.getText();
     RuntimeVersion _runtimeVersion = new RuntimeVersion(_text);
     this.info.setRequiredRuntimeVersion(_runtimeVersion);
-  }
-  
-  public String detectBuilderConfig() {
-    String _xblockexpression = null;
-    {
-      InputOutput.<String>println("TRYYYYY DETECT builder config");
-      final IPath location = this.info.getLocation();
-      String _xifexpression = null;
-      boolean _tripleNotEquals = (location != null);
-      if (_tripleNotEquals) {
-        String _xblockexpression_1 = null;
-        {
-          InputOutput.<String>println("DETECT builder config");
-          String _portableString = location.toPortableString();
-          File _file = new File(_portableString);
-          final File directory = _file;
-          String _xifexpression_1 = null;
-          boolean _and = false;
-          boolean _isDirectory = directory.isDirectory();
-          if (!_isDirectory) {
-            _and = false;
-          } else {
-            boolean _exists = directory.exists();
-            _and = (_isDirectory && _exists);
-          }
-          if (_and) {
-            String _xblockexpression_2 = null;
-            {
-              final ProjectConfigType config = this.info.getBuilderConfig();
-              IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
-              final ProjectConfigurator persister = _factory.getConfig(config, directory);
-              InputOutput.<String>println(("PERSISTER " + persister));
-              String _xifexpression_2 = null;
-              boolean _tripleNotEquals_1 = (persister != null);
-              if (_tripleNotEquals_1) {
-                String _xblockexpression_3 = null;
-                {
-                  final ErlangProjectProperties props = persister.getConfiguration();
-                  String _println = InputOutput.<String>println(("detected PROPS: " + props));
-                  _xblockexpression_3 = (_println);
-                }
-                _xifexpression_2 = _xblockexpression_3;
-              }
-              _xblockexpression_2 = (_xifexpression_2);
-            }
-            _xifexpression_1 = _xblockexpression_2;
-          }
-          _xblockexpression_1 = (_xifexpression_1);
-        }
-        _xifexpression = _xblockexpression_1;
-      }
-      _xblockexpression = (_xifexpression);
-    }
-    return _xblockexpression;
-  }
-  
-  private RuntimeInfo bestRuntime() {
-    RuntimeInfo _xblockexpression = null;
-    {
-      IRuntimeInfoCatalog _runtimeInfoCatalog = RuntimeCore.getRuntimeInfoCatalog();
-      final RuntimeInfo defaultRuntime = _runtimeInfoCatalog.getRuntime(
-        ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION, null);
-      RuntimeInfo _xifexpression = null;
-      boolean _tripleNotEquals = (defaultRuntime != null);
-      if (_tripleNotEquals) {
-        _xifexpression = defaultRuntime;
-      } else {
-        IRuntimeInfoCatalog _runtimeInfoCatalog_1 = RuntimeCore.getRuntimeInfoCatalog();
-        RuntimeInfo _defaultRuntime = _runtimeInfoCatalog_1.getDefaultRuntime();
-        _xifexpression = _defaultRuntime;
-      }
-      _xblockexpression = (_xifexpression);
-    }
-    return _xblockexpression;
   }
 }

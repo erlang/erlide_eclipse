@@ -69,7 +69,8 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     public void addPages() {
         try {
             super.addPages();
-            info = new NewProjectData();
+            info = new NewProjectData(ErlangEngine.getInstance()
+                    .getProjectConfiguratorFactory());
             info.copyFrom(ErlangProjectProperties.DEFAULT);
 
             buildPages = Maps.newEnumMap(ProjectConfigType.class);
@@ -260,7 +261,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
             final ProjectConfigType config;
             if (info.getBuilder().equals(BuilderTool.MAKE)
                     || info.getBuilder().equals(BuilderTool.INTERNAL)) {
-                config = info.getBuilderConfig();
+                config = info.getConfigType();
             } else {
                 config = info.getBuilder().getMatchingConfigs().iterator().next();
             }

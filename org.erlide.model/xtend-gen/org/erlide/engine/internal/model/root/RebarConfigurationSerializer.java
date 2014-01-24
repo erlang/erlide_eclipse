@@ -1,4 +1,4 @@
-package org.erlide.core.internal.builder.external;
+package org.erlide.engine.internal.model.root;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;

@@ -1,28 +1,25 @@
-package org.erlide.core.internal.builder;
+package org.erlide.engine.internal.model.root;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.OTPProjectConfigurator;
 import org.erlide.engine.model.root.PathSerializer;
-import org.erlide.engine.model.root.ProjectConfigurationSerializer;
 import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
-import com.google.common.base.Preconditions;
-
-public class PreferencesBuilderConfigurator implements ProjectConfigurator {
+public class PreferencesProjectConfigurator implements ProjectConfigurator {
 
     private final IEclipsePreferences node;
 
-    public PreferencesBuilderConfigurator(final IEclipsePreferences node) {
-        Preconditions.checkNotNull(node);
+    public PreferencesProjectConfigurator(final IEclipsePreferences node) {
         this.node = node;
     }
 
-    public PreferencesBuilderConfigurator() {
+    public PreferencesProjectConfigurator() {
         this(null);
         // TODO this(BuilderConfigType.INTERNAL.getConfigName());
     }
@@ -31,20 +28,23 @@ public class PreferencesBuilderConfigurator implements ProjectConfigurator {
     public ErlangProjectProperties getConfiguration() {
         final ErlangProjectProperties result = new ErlangProjectProperties();
         if (node == null) {
-            ErlLogger.warn("Could not load project preferences from "
-                    + node.absolutePath());
-            return null;
+            ErlLogger
+                    .warn("Could not load project preferences from 'null', returning default values. ");
+            return new OTPProjectConfigurator().getConfiguration();
         }
 
         // TODO node.addListener(project);
 
-        final String sourceDirsStr = node.get(ProjectPreferencesConstants.SOURCE_DIRS,
+        final String sourceDirsStr = node.get(
+                ProjectPreferencesConstants.SOURCE_DIRS,
                 ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
         result.setSourceDirs(PathSerializer.unpackList(sourceDirsStr));
-        final String includeDirsStr = node.get(ProjectPreferencesConstants.INCLUDE_DIRS,
+        final String includeDirsStr = node.get(
+                ProjectPreferencesConstants.INCLUDE_DIRS,
                 ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
         result.setIncludeDirs(PathSerializer.unpackList(includeDirsStr));
-        final String outputDirsStr = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
+        final String outputDirsStr = node.get(
+                ProjectPreferencesConstants.OUTPUT_DIR,
                 ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
         result.setOutputDir(new Path(outputDirsStr));
         result.setRequiredRuntimeVersion(new RuntimeVersion(node.get(
@@ -64,8 +64,7 @@ public class PreferencesBuilderConfigurator implements ProjectConfigurator {
     @Override
     public void setConfiguration(final ErlangProjectProperties info) {
         if (node == null) {
-            ErlLogger.warn("Could not store project preferences to "
-                    + node.absolutePath());
+            ErlLogger.warn("Could not store project preferences to 'null'");
             return;
         }
 
@@ -92,10 +91,4 @@ public class PreferencesBuilderConfigurator implements ProjectConfigurator {
             ErlLogger.warn(e);
         }
     }
-
-    @Override
-    public ProjectConfigurationSerializer getSerializer() {
-        return null;
-    }
-
 }

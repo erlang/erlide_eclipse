@@ -1,6 +1,7 @@
 package org.erlide.engine;
 
 import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.services.ErlangService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
 import org.erlide.engine.services.codeassist.ContextAssistService;
@@ -55,5 +56,7 @@ public interface IErlangEngine {
     ModelFindService getModelFindService();
 
     ModelSearcherService getModelSearcherService();
+
+    IProjectConfiguratorFactory getProjectConfiguratorFactory();
 
 }

@@ -8,7 +8,6 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.erlide.core,
  org.erlide.core.builder,
- org.erlide.core.content,
  org.erlide.core.engine,
  org.erlide.core.executor,
  org.erlide.core.internal.builder;x-friends:="org.erlide.ui.tests,org.erlide.ui",

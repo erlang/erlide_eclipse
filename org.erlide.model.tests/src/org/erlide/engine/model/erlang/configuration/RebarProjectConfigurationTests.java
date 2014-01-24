@@ -10,7 +10,8 @@ import java.util.Collection;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.engine.model.builder.ErlangBuilder;
+import org.erlide.engine.internal.model.root.FileProjectConfigurator;
+import org.erlide.engine.internal.model.root.ProjectConfiguratorFactory;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfigType;
@@ -25,9 +26,10 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
     public void configCanBeParsed() throws CoreException {
         project.setBuilderConfigType(ProjectConfigType.REBAR);
         setFileContent(ProjectConfigType.REBAR.getConfigName(), "");
-        final ProjectConfigurator persister = ErlangBuilder.getFactory().getConfig(
-                project.getBuilderConfigType(), project);
-        final ProjectConfigurationSerializer configurator = persister.getSerializer();
+        final ProjectConfigurator persister = ProjectConfiguratorFactory.getDefault()
+                .getConfig(project.getBuilderConfigType(), project);
+        final ProjectConfigurationSerializer configurator = ((FileProjectConfigurator) persister)
+                .getSerializer();
 
         final ErlangProjectProperties expected = new ErlangProjectProperties();
         expected.setOutputDir(new Path("ebin"));

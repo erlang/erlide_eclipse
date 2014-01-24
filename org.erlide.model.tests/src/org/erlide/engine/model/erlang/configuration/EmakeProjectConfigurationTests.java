@@ -12,7 +12,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.engine.model.builder.ErlangBuilder;
+import org.erlide.engine.internal.model.root.ProjectConfiguratorFactory;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfigType;
@@ -25,8 +25,8 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
     public void configuratorExists() {
         project.setBuilderConfigType(ProjectConfigType.EMAKE);
 
-        final ProjectConfigurator config = ErlangBuilder.getFactory().getConfig(
-                project.getBuilderConfigType(), project);
+        final ProjectConfigurator config = ProjectConfiguratorFactory.getDefault()
+                .getConfig(project.getBuilderConfigType(), project);
         assertThat(config, is(notNullValue()));
 
         // final ProjectConfigurator configurator = config.getConfigurator();
@@ -37,8 +37,8 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
     @Test
     public void configCanBeParsed() throws CoreException {
         project.setBuilderConfigType(ProjectConfigType.EMAKE);
-        final ProjectConfigurator config = ErlangBuilder.getFactory().getConfig(
-                project.getBuilderConfigType(), project);
+        final ProjectConfigurator config = ProjectConfiguratorFactory.getDefault()
+                .getConfig(project.getBuilderConfigType(), project);
 
         final ErlangProjectProperties expected = ErlangProjectProperties.DEFAULT;
         final ErlangProjectProperties actual = config.getConfiguration();

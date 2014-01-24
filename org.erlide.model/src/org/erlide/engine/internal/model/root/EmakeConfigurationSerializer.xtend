@@ -1,4 +1,4 @@
-package org.erlide.core.internal.builder.external
+package org.erlide.engine.internal.model.root
 
 import java.util.ArrayList
 import java.util.List
@@ -43,7 +43,7 @@ class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
                     } else {
                         "src"
                     }
-                val sd = new ArrayList(result.sourceDirs)
+                val sd = new ArrayList(result.getSourceDirs)
                 sd.add(new Path(path))
                 result.setSourceDirs(sd)
 
@@ -67,7 +67,7 @@ class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
         switch b.getAtom("Tag") {
             case "i": {
                 val List<IPath> incs = if (seenIncludes)
-                        new ArrayList(result.includeDirs)
+                        new ArrayList(result.getIncludeDirs)
                     else
                         newArrayList
                 val inc = new Path(b.getString("Arg"))

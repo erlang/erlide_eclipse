@@ -1,4 +1,4 @@
-package org.erlide.core.internal.builder.external
+package org.erlide.engine.internal.model.root
 
 import com.ericsson.otp.erlang.OtpErlangString
 import java.util.List
@@ -63,7 +63,7 @@ class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
     switch b.getAtom("Tag") {
       case "i": {
         val List<IPath> incs = if (seenIncludes)
-            newArrayList(result.includeDirs)
+            newArrayList(result.getIncludeDirs)
           else
             newArrayList
         val inc = new Path(b.getString("Arg"))

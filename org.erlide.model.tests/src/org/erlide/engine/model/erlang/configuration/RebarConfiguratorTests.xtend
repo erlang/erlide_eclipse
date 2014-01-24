@@ -1,4 +1,4 @@
-package org.erlide.core.services.builder
+package org.erlide.engine.model.erlang.configuration
 
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.junit.Before
@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.*
 import static org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher.*
 import org.eclipse.core.runtime.Path
 import org.eclipse.core.runtime.IPath
-import org.erlide.core.internal.builder.external.RebarConfigurationSerializer
+import org.erlide.engine.internal.model.root.RebarConfigurationSerializer
 
 class RebarConfiguratorTests {
 
@@ -34,7 +34,7 @@ class RebarConfiguratorTests {
             {erl_opts, [{i, "myinclude"}]}.
         '''
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.includeDirs,
+        assertThat(actual.getIncludeDirs,
             contains(
                 new Path("myinclude") as IPath
             ))
@@ -46,7 +46,7 @@ class RebarConfiguratorTests {
             {erl_opts, [{i, "myinclude"},foo,{i, "myinclude2"}]}.
         '''
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.includeDirs,
+        assertThat(actual.getIncludeDirs,
             contains(
                 new Path("myinclude") as IPath,
                 new Path("myinclude2") as IPath
@@ -59,7 +59,7 @@ class RebarConfiguratorTests {
             {erl_opts, [{src_dirs, ["src1", "src2"]}]}.
         '''
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.sourceDirs,
+        assertThat(actual.getSourceDirs,
             contains(
                 new Path("src1") as IPath,
                 new Path("src2") as IPath
@@ -70,19 +70,19 @@ class RebarConfiguratorTests {
     def void outputPathShouldBeConfigured() {
         val input = '''
             {erl_opts, []}.
-        ''' 
+        '''
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.outputDir, is(new Path("ebin")))
+        assertThat(actual.getOutputDir, is(new Path("ebin")))
     }
 
     @Test
     def void handleComplexInput() {
         val input = '''
-            something. 
+            something.
             {erl_opts, [{src_dirs, ["src1", "src2"]}]}.
         '''
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.sourceDirs,
+        assertThat(actual.getSourceDirs,
             contains(
                 new Path("src1") as IPath,
                 new Path("src2") as IPath
@@ -92,18 +92,18 @@ class RebarConfiguratorTests {
     @Test
     def void handleMultipleOptions() {
         val input = '''
-            {erl_opts, [{i, "inc1"}]}. 
+            {erl_opts, [{i, "inc1"}]}.
             {erl_opts, [{src_dirs, ["src1", "src2"]}]}.
-            {erl_opts, [{i, "inc2"}]}. 
+            {erl_opts, [{i, "inc2"}]}.
             {erl_opts, [{src_dirs, ["src3", "src4"]}]}.
         '''
         val actual = configurator.decodeConfig(input)
-        assertThat(actual.includeDirs,
+        assertThat(actual.getIncludeDirs,
             contains(
                 new Path("inc1") as IPath,
                 new Path("inc2") as IPath
             ))
-        assertThat(actual.sourceDirs,
+        assertThat(actual.getSourceDirs,
             contains(
                 new Path("src3") as IPath,
                 new Path("src4") as IPath

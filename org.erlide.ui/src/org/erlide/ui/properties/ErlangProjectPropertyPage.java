@@ -101,9 +101,6 @@ public class ErlangProjectPropertyPage extends PropertyPage {
 
     @Override
     public boolean performOk() {
-
-        System.out.println(model);
-
         final IProject project = (IProject) getElement().getAdapter(IProject.class);
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
