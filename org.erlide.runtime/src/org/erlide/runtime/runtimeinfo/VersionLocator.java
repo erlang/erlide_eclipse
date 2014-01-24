@@ -6,19 +6,14 @@ import java.util.Collections;
 import java.util.List;
 
 public class VersionLocator {
-    /**
-     * Locate runtimes with this version or newer. If exact matches exists, they
-     * are first in the result list. A null or empty version returns all
-     * runtimes.
-     */
-    public static List<RuntimeInfo> locateVersion(final String version,
-            final Collection<RuntimeInfo> runtimes) {
-        final RuntimeVersion vsn = new RuntimeVersion(version, null);
-        return locateVersion(vsn, runtimes);
-    }
 
+    /**
+     * Locate runtimes with this version. If exact matches exist, they are first
+     * in the result list. If strict, only this version or newer are returned,
+     * otherwise all. A null or empty version returns all runtimes.
+     */
     public static List<RuntimeInfo> locateVersion(final RuntimeVersion vsn,
-            final Collection<RuntimeInfo> runtimes) {
+            final Collection<RuntimeInfo> runtimes, final boolean strict) {
         final List<RuntimeInfo> result = new ArrayList<RuntimeInfo>();
         for (final RuntimeInfo info : runtimes) {
             final RuntimeVersion v = info.getVersion();
@@ -27,11 +22,19 @@ public class VersionLocator {
             }
         }
         Collections.reverse(result);
-        // add even newer versions, but at the end
+        // at the end, first newer versions
         for (final RuntimeInfo info : runtimes) {
             final RuntimeVersion v = info.getVersion();
             if (!result.contains(info) && v.compareTo(vsn) > 0) {
                 result.add(info);
+            }
+        }
+        // and if necessary, older versions
+        if (!strict) {
+            for (final RuntimeInfo info : runtimes) {
+                if (!result.contains(info)) {
+                    result.add(info);
+                }
             }
         }
         return result;

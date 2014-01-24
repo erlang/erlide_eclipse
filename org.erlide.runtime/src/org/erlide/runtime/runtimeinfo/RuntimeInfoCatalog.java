@@ -140,7 +140,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
     public RuntimeInfo getRuntime(final RuntimeVersion runtimeVersion,
             final String runtimeName) {
         final List<RuntimeInfo> vsns = VersionLocator.locateVersion(runtimeVersion,
-                runtimes.values());
+                runtimes.values(), false);
         if (vsns.isEmpty()) {
             return null;
         } else if (vsns.size() == 1) {
