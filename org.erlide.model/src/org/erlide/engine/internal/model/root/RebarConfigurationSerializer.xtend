@@ -39,38 +39,31 @@ class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
     val content = ErlangEngine.instance.simpleParserService.parse(config)
     if (content.empty) return result
 
-    content.fold(false) [ seenIncludes, erl_opts |
+    content.forEach [ erl_opts |
       val bindings = ErlUtils.match("{erl_opts,Opts}", erl_opts)
       if (bindings !== null) {
         val opts = bindings.getList("Opts")
         if (opts !== null)
-          opts.fold(seenIncludes) [ seenIncludes_1, opt |
+          opts.forEach [ opt |
             val b = ErlUtils.match("{Tag,Arg}", opt)
             if (b !== null)
-              result.parseOption(b, seenIncludes_1)
-            else
-              seenIncludes_1
+              result.parseOption(b)
           ]
-      } else
-        seenIncludes
+      }
     ]
 
     result
   }
 
   // TODO this is not efficient, a new list is created for every "i" tag
-  def parseOption(ErlangProjectProperties result, Bindings b, boolean seenIncludes) {
+  def void parseOption(ErlangProjectProperties result, Bindings b) {
     switch b.getAtom("Tag") {
       case "i": {
-        val List<IPath> incs = if (seenIncludes)
-            newArrayList(result.getIncludeDirs)
-          else
-            newArrayList
+        val List<IPath> incs = newArrayList(result.getIncludeDirs)
         val inc = new Path(b.getString("Arg"))
         if (!incs.contains(inc))
           incs.add(inc)
         result.setIncludeDirs(incs)
-        true
       }
       case "src_dirs": {
         result.setSourceDirs(
@@ -78,7 +71,6 @@ class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
             val s = (it as OtpErlangString).stringValue
             new Path(s)
           ])
-        seenIncludes
       }
     }
   }

@@ -54,7 +54,7 @@ class NewProjectData extends ErlangProjectProperties {
   }
 
   def detectProjectConfig() {
-    println(">>>DETECT builder config")
+    println(">>> DETECT builder config")
     if (location !== null) {
       println("DETECT builder config")
       val directory = new File(location.toPortableString)

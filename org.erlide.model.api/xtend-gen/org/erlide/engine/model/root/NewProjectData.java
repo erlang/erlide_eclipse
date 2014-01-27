@@ -143,7 +143,7 @@ public class NewProjectData extends ErlangProjectProperties {
   public String detectProjectConfig() {
     String _xblockexpression = null;
     {
-      InputOutput.<String>println(">>>DETECT builder config");
+      InputOutput.<String>println(">>> DETECT builder config");
       String _xifexpression = null;
       IPath _location = this.getLocation();
       boolean _tripleNotEquals = (_location != null);
