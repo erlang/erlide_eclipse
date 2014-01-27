@@ -756,7 +756,6 @@ public class ErlProject extends Openable implements IErlProject,
     private void storeCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
         node.put("builderConfig", getBuilderConfigType().name());
-        node.put("builderTool", builderProperties.getBuilderTool().name());
         try {
             node.flush();
         } catch (final BackingStoreException e) {
@@ -786,21 +785,8 @@ public class ErlProject extends Openable implements IErlProject,
         }
     }
 
-    public boolean hasConfigurationFor(final ProjectConfigType config) {
-        if (!exists()) {
-            return false;
-        }
-        // TODO return getConfig(config) != null;
-        return false;
-    }
-
-    public ErlangProjectProperties getConfig() {
-        return builderConfig.getConfiguration();
-    }
-
     @Override
     public void configurationChanged() {
-
         System.out.println("CONFIG CHANGED! " + getName());
 
         loadCoreProperties();
@@ -813,6 +799,17 @@ public class ErlProject extends Openable implements IErlProject,
         final String name = node
                 .get("builderTool", BuilderTool.INTERNAL.name());
         getBuilderProperties().setBuilderTool(BuilderTool.valueOf(name));
+        // TODO more
+    }
+
+    private void storeBuilderProperties() {
+        final IEclipsePreferences node = getCorePropertiesNode();
+        node.put("builderTool", builderProperties.getBuilderTool().name());
+        try {
+            node.flush();
+        } catch (final BackingStoreException e) {
+            // ignore?
+        }
     }
 
     private boolean validateBuilderTool(final BuilderTool tool) {

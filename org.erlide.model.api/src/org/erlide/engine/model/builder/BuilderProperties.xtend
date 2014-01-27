@@ -1,8 +1,8 @@
 package org.erlide.engine.model.builder
 
 /*
- * TODO there should be specific properties for each builder tool 
- * but we wait until we see if there are many properties that are only 
+ * TODO there should be specific properties for each builder tool
+ * but we wait until we see if there are many properties that are only
  * relevant for a single tool
  */
 class BuilderProperties {
@@ -21,7 +21,7 @@ class BuilderProperties {
 
     /** Test target name. */
     @Property String testTarget = "test"
-    
+
     /** Any extra flags required, as they would be specified on the command line. */
     @Property String extraFlags = ""
 

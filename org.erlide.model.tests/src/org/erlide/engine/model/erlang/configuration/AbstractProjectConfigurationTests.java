@@ -4,7 +4,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.engine.internal.model.root.ErlProject;
-import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.After;
@@ -15,7 +14,6 @@ import com.google.common.base.Charsets;
 public abstract class AbstractProjectConfigurationTests {
 
     protected IErlProject project;
-    protected ErlangProjectProperties props;
 
     @Before
     public void setUp() throws Exception {
@@ -24,7 +22,6 @@ public abstract class AbstractProjectConfigurationTests {
         project = ErlideTestUtils.createProject(ErlideTestUtils.getTmpPath(name), name);
         final ErlProject p = (ErlProject) project;
         p.configurationChanged();
-        props = project.getProperties();
     }
 
     @After

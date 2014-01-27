@@ -42,8 +42,7 @@ public class InternalProjectConfigurationTests extends AbstractProjectConfigurat
         node.put(ProjectPreferencesConstants.INCLUDE_DIRS, expected);
         node.flush();
 
-        final ErlangProjectProperties pp = project.getProperties();
-        final String actual = pp.getIncludeDirs().toString();
+        final String actual = project.getIncludeDirs().toString();
 
         assertThat(actual, is(convertListString(expected)));
     }
@@ -62,8 +61,7 @@ public class InternalProjectConfigurationTests extends AbstractProjectConfigurat
         node.put(ProjectPreferencesConstants.SOURCE_DIRS, expected);
         node.flush();
 
-        final ErlangProjectProperties pp = project.getProperties();
-        final String actual = pp.getSourceDirs().toString();
+        final String actual = project.getSourceDirs().toString();
 
         assertThat(actual, is(convertListString(expected)));
     }
