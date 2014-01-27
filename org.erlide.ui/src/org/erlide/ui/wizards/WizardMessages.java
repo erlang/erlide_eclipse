@@ -142,6 +142,13 @@ public class WizardMessages extends NLS {
     public static String WizardExportPage_internalErrorTitle;
     public static String WizardExportPage_options;
 
+    public static String NewProject_referenceDescription;
+    public static String NewProject_referenceTitle;
+    public static String NewProject_windowTitle;
+    public static String NewProject_errorMessage;
+    public static String NewProject_internalError;
+    public static String NewProject_caseVariantExistsError;
+
     static {
         // load message values from bundle file
         NLS.initializeMessages(BUNDLE_NAME, WizardMessages.class);

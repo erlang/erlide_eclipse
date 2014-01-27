@@ -10,27 +10,48 @@
  *******************************************************************************/
 package org.erlide.ui.wizards;
 
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.dialogs.WizardNewProjectReferencePage;
+import org.eclipse.ui.ide.undo.CreateProjectOperation;
+import org.eclipse.ui.ide.undo.WorkspaceUndoUtil;
+import org.eclipse.ui.part.ISetSelectionTarget;
+import org.eclipse.ui.statushandlers.IStatusAdapterConstants;
+import org.eclipse.ui.statushandlers.StatusAdapter;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.ErlangEngine;
@@ -55,13 +76,19 @@ import com.google.common.collect.Maps;
  */
 public class NewErlangProjectWizard extends Wizard implements INewWizard {
 
+    private IWorkbench workbench;
+
     private NewProjectData info;
     private Map<ProjectConfigType, ProjectPreferencesWizardPage> buildPages;
     private ErlangNewProjectCreationPage mainPage;
     private ErlangProjectBuilderPage builderPage;
+    private WizardNewProjectReferencePage referencePage;
+
+    private IWizardPage prevPage;
 
     @Override
-    public void init(final IWorkbench workbench, final IStructuredSelection selection) {
+    public void init(final IWorkbench aWorkbench, final IStructuredSelection selection) {
+        this.workbench = aWorkbench;
         setNeedsProgressMonitor(true);
     }
 
@@ -102,6 +129,17 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
                 addPage(buildPage);
 
             }
+
+            // only add page if there are already projects in the workspace
+            if (ResourcesPlugin.getWorkspace().getRoot().getProjects().length > 0) {
+                referencePage = new WizardNewProjectReferencePage(
+                        "basicReferenceProjectPage");//$NON-NLS-1$
+                referencePage.setTitle(WizardMessages.NewProject_referenceTitle);
+                referencePage
+                        .setDescription(WizardMessages.NewProject_referenceDescription);
+                this.addPage(referencePage);
+            }
+
         } catch (final Exception x) {
             reportError(x);
         }
@@ -109,109 +147,162 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
 
     @Override
     public boolean performFinish() {
-        if (!validateFinish()) {
-            return false;
-        }
-
         System.out.println("CREATE " + info);
-        // TODO ZZZ
-        // try {
-        // getContainer().run(false, true, new WorkspaceModifyOperation() {
-        //
-        // @Override
-        // protected void execute(final IProgressMonitor monitor)
-        // throws InvocationTargetException {
-        // createProject(monitor != null ? monitor : new NullProgressMonitor());
-        // ErlideUIPlugin.getDefault().showErlangPerspective();
-        // }
-        // });
-        // } catch (final InvocationTargetException x) {
-        // reportError(x);
-        // return false;
-        // } catch (final InterruptedException x) {
-        // // operation was cancelled
-        // return false;
-        // }
+        final IProject newProject = createNewProject();
+
+        if (newProject == null) {
+            return false;
+        }
+
+        updatePerspective();
+        selectAndReveal(newProject);
 
         return true;
     }
 
-    private boolean validateFinish() {
-        if (info.getOutputDir().isEmpty()) {
-            reportError(ErlideUIPlugin.getResourceString("wizard.errors.buildpath"));
-            return false;
+    private IProject createNewProject() {
+        // get a project handle
+        final IProject newProjectHandle = mainPage.getProjectHandle();
+
+        // get a project descriptor
+        URI location = null;
+        if (!mainPage.useDefaults()) {
+            location = mainPage.getLocationURI();
         }
 
-        if (info.getSourceDirs().isEmpty()) {
-            reportError(ErlideUIPlugin.getResourceString("wizards.errors.sourcepath"));
-            return false;
-        }
-        return true;
-    }
+        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        final IProjectDescription description = workspace
+                .newProjectDescription(newProjectHandle.getName());
+        description.setLocationURI(location);
 
-    protected void createProject(final IProgressMonitor monitor) {
-        monitor.beginTask(
-                ErlideUIPlugin.getResourceString("wizards.messages.creatingproject"), 50);
+        // // update the referenced project if provided
+        if (referencePage != null) {
+            final IProject[] refProjects = referencePage.getReferencedProjects();
+            if (refProjects.length > 0) {
+                description.setReferencedProjects(refProjects);
+            }
+        }
+
+        // create the new project operation
+        final IRunnableWithProgress op = new IRunnableWithProgress() {
+            @Override
+            public void run(final IProgressMonitor monitor)
+                    throws InvocationTargetException {
+                final CreateProjectOperation op1 = new CreateProjectOperation(
+                        description, WizardMessages.NewProject_windowTitle);
+                try {
+                    // see bug
+                    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=219901
+                    // directly execute the operation so that the undo state is
+                    // not preserved. Making this undoable resulted in too many
+                    // accidental file deletions.
+                    op1.execute(monitor, WorkspaceUndoUtil.getUIInfoAdapter(getShell()));
+                } catch (final ExecutionException e) {
+                    throw new InvocationTargetException(e);
+                }
+            }
+        };
+
+        // run the new project creation operation
         try {
-            final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-            monitor.subTask(ErlideUIPlugin
-                    .getResourceString("wizards.messages.creatingdirectories"));
-            final IProject project = root.getProject(info.getName());
-            IProjectDescription description = ResourcesPlugin.getWorkspace()
-                    .newProjectDescription(project.getName());
-            description.setLocation(info.getLocation());
-            System.out.println("CREATE PROJECT " + project);
-            project.create(description, monitor);
-            monitor.worked(10);
-            project.open(monitor);
+            getContainer().run(true, true, op);
+        } catch (final InterruptedException e) {
+            return null;
+        } catch (final InvocationTargetException e) {
+            final Throwable t = e.getTargetException();
+            if (t instanceof ExecutionException && t.getCause() instanceof CoreException) {
+                final CoreException cause = (CoreException) t.getCause();
+                StatusAdapter status;
+                if (cause.getStatus().getCode() == IResourceStatus.CASE_VARIANT_EXISTS) {
+                    status = new StatusAdapter(newStatus(IStatus.WARNING, NLS.bind(
+                            WizardMessages.NewProject_caseVariantExistsError,
+                            newProjectHandle.getName()), cause));
+                } else {
+                    status = new StatusAdapter(newStatus(cause.getStatus().getSeverity(),
+                            WizardMessages.NewProject_errorMessage, cause));
+                }
+                status.setProperty(IStatusAdapterConstants.TITLE_PROPERTY,
+                        WizardMessages.NewProject_errorMessage);
+                StatusManager.getManager().handle(status, StatusManager.BLOCK);
+            } else {
+                final StatusAdapter status = new StatusAdapter(new Status(
+                        IStatus.WARNING, ErlideUIPlugin.PLUGIN_ID, 0, NLS.bind(
+                                WizardMessages.NewProject_internalError, t.getMessage()),
+                        t));
+                status.setProperty(IStatusAdapterConstants.TITLE_PROPERTY,
+                        WizardMessages.NewProject_errorMessage);
+                StatusManager.getManager().handle(status,
+                        StatusManager.LOG | StatusManager.BLOCK);
+            }
+            return null;
+        }
 
-            description = project.getDescription();
+        try {
+            newProjectHandle.open(null);
+
+            // description = newProjectHandle.getDescription();
             description.setNatureIds(new String[] { ErlangCore.NATURE_ID });
-            project.setDescription(description, new SubProgressMonitor(monitor, 10));
+            newProjectHandle.setDescription(description, null);
             if (info.getBuilder() != null) {
-                ErlangNature.setErlangProjectBuilder(project, info.getBuilder());
+                ErlangNature.setErlangProjectBuilder(newProjectHandle, info.getBuilder());
                 createBuilderConfig(info.getBuilder());
             }
 
-            monitor.worked(10);
-            monitor.subTask(ErlideUIPlugin
-                    .getResourceString("wizards.messages.creatingfiles"));
+            createFolders(newProjectHandle, Lists.newArrayList(info.getOutputDir()), null);
+            createFolders(newProjectHandle, info.getSourceDirs(), null);
+            createFolders(newProjectHandle, info.getIncludeDirs(), null);
 
-            createFolders(project, Lists.newArrayList(info.getOutputDir()), monitor);
-            createFolders(project, info.getSourceDirs(), monitor);
-            createFolders(project, info.getIncludeDirs(), monitor);
+            // create
 
             final IErlProject erlProject = ErlangEngine.getInstance().getModel()
-                    .getErlangProject(project);
+                    .getErlangProject(newProjectHandle);
             erlProject.setProperties(info);
         } catch (final CoreException e) {
-            ErlLogger.debug(e);
-            reportError(e);
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         } catch (final BackingStoreException e) {
-            ErlLogger.debug(e);
-            reportError(e);
-        } finally {
-            monitor.done();
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+
+        return newProjectHandle;
+    }
+
+    private static IStatus newStatus(final int severity, final String message,
+            final Throwable exception) {
+
+        String statusMessage = message;
+        if (message == null || message.trim().length() == 0) {
+            if (exception == null) {
+                throw new IllegalArgumentException();
+            } else if (exception.getMessage() == null) {
+                statusMessage = exception.toString();
+            } else {
+                statusMessage = exception.getMessage();
+            }
+        }
+
+        return new Status(severity, ErlideUIPlugin.PLUGIN_ID, severity, statusMessage,
+                exception);
     }
 
     private void createBuilderConfig(final BuilderTool builderTool) {
-        // BuilderInfo.valueOf(builderName).getBuilder().setConfiguration(info);
+        System.out.println("TODO: create builder config " + builderTool);
     }
 
     private void createFolders(final IProject project, final Collection<IPath> pathList,
             final IProgressMonitor monitor) throws CoreException {
-        // Some paths are optional (include): If we do not specify it, we get a
-        // null string and we do not need to create the directory
-        if (pathList != null) {
-            for (final IPath path : pathList) {
-                // only create in-project paths
-                if (!path.isAbsolute() && !path.toString().equals(".") && !path.isEmpty()) {
-                    final IFolder folder = project.getFolder(path);
-                    createFolderHelper(folder, monitor);
-                }
+        if (pathList == null) {
+            return;
+        }
+        for (final IPath path : pathList) {
+            // only create in-project paths
+            if (!path.isAbsolute() && !path.toString().equals(".") && !path.isEmpty()) {
+                final IFolder folder = project.getFolder(path);
+                createFolderHelper(folder, monitor);
             }
         }
+
     }
 
     private void reportError(final Exception x) {
@@ -267,6 +358,112 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
             }
             return buildPages.get(config);
         }
+        if (buildPages.containsValue(page)) {
+            prevPage = page;
+            return referencePage;
+        }
         return null;
     }
+
+    @Override
+    public IWizardPage getPreviousPage(final IWizardPage page) {
+        if (page == builderPage) {
+            return mainPage;
+        }
+        if (page == referencePage) {
+            return prevPage;
+        }
+        if (buildPages.containsValue(page)) {
+            return builderPage;
+        }
+        return null;
+    }
+
+    /**
+     * Selects and reveals the newly added resource in all parts of the active
+     * workbench window's active page.
+     * 
+     * @see ISetSelectionTarget
+     */
+    protected void selectAndReveal(final IResource newResource) {
+        selectAndReveal(newResource, getWorkbench().getActiveWorkbenchWindow());
+    }
+
+    /**
+     * Attempts to select and reveal the specified resource in all parts within
+     * the supplied workbench window's active page.
+     * <p>
+     * Checks all parts in the active page to see if they implement
+     * <code>ISetSelectionTarget</code>, either directly or as an adapter. If
+     * so, tells the part to select and reveal the specified resource.
+     * </p>
+     * 
+     * @param resource
+     *            the resource to be selected and revealed
+     * @param window
+     *            the workbench window to select and reveal the resource
+     * 
+     * @see ISetSelectionTarget
+     */
+    public static void selectAndReveal(final IResource resource,
+            final IWorkbenchWindow window) {
+        // validate the input
+        if (window == null || resource == null) {
+            return;
+        }
+        final IWorkbenchPage page = window.getActivePage();
+        if (page == null) {
+            return;
+        }
+
+        // get all the view and editor parts
+        final List<IWorkbenchPart> parts = Lists.newArrayList();
+        IWorkbenchPartReference refs[] = page.getViewReferences();
+        for (int i = 0; i < refs.length; i++) {
+            final IWorkbenchPart part = refs[i].getPart(false);
+            if (part != null) {
+                parts.add(part);
+            }
+        }
+        refs = page.getEditorReferences();
+        for (int i = 0; i < refs.length; i++) {
+            if (refs[i].getPart(false) != null) {
+                parts.add(refs[i].getPart(false));
+            }
+        }
+
+        final ISelection selection = new StructuredSelection(resource);
+        final Iterator<IWorkbenchPart> itr = parts.iterator();
+        while (itr.hasNext()) {
+            final IWorkbenchPart part = itr.next();
+
+            // get the part's ISetSelectionTarget implementation
+            ISetSelectionTarget target = null;
+            if (part instanceof ISetSelectionTarget) {
+                target = (ISetSelectionTarget) part;
+            } else {
+                target = (ISetSelectionTarget) part.getAdapter(ISetSelectionTarget.class);
+            }
+
+            if (target != null) {
+                // select and reveal resource
+                final ISetSelectionTarget finalTarget = target;
+                window.getShell().getDisplay().asyncExec(new Runnable() {
+                    @Override
+                    public void run() {
+                        finalTarget.selectReveal(selection);
+                    }
+                });
+            }
+        }
+    }
+
+    public IWorkbench getWorkbench() {
+        return workbench;
+    }
+
+    protected void updatePerspective() {
+        ErlideUIPlugin.getDefault().showErlangPerspective();
+    }
+
 }
