@@ -3,9 +3,6 @@ package org.erlide.engine.model.root
 import com.google.common.base.Objects
 import com.google.common.collect.Lists
 import java.util.Collection
-import java.util.Collections
-import java.util.List
-import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.Path
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
@@ -132,46 +129,6 @@ class ErlangProjectProperties {
       add("runtimeVersion", _requiredRuntimeVersion)
     ]
     helper.toString
-  }
-
-  def ErlangProjectProperties resolve() {
-    val result = new ErlangProjectProperties()
-    val dflt = ErlangProjectProperties.DEFAULT
-    result => [
-      copyFrom(this)
-      if (getOutputDir() === null) {
-        setOutputDir(dflt.getOutputDir())
-      }
-      setOutputDir(resolvePath(getOutputDir()))
-      if (getSourceDirs() === null) {
-        setSourceDirs(dflt.getSourceDirs())
-      }
-      setSourceDirs(resolvePaths(getSourceDirs()))
-      if (getIncludeDirs() === null) {
-        setIncludeDirs(dflt.getIncludeDirs())
-      }
-      setIncludeDirs(resolvePaths(getIncludeDirs()))
-      if (getTestDirs() === null) {
-        setTestDirs(dflt.getTestDirs())
-      }
-      setTestDirs(resolvePaths(getTestDirs()))
-    ]
-    return result;
-  }
-
-  def private Collection<IPath> resolvePaths(Collection<IPath> paths) {
-    val pathVariableManager = ResourcesPlugin.getWorkspace().getPathVariableManager()
-    val List<IPath> result = Lists.newArrayListWithCapacity(paths.size())
-    for (IPath path : paths) {
-      val resolvedPath = pathVariableManager.resolvePath(path)
-      result.add(resolvedPath)
-    }
-    return Collections.unmodifiableCollection(result)
-  }
-
-  def private IPath resolvePath(IPath path) {
-    val pathVariableManager = ResourcesPlugin.getWorkspace().getPathVariableManager()
-    return pathVariableManager.resolvePath(path)
   }
 
 }

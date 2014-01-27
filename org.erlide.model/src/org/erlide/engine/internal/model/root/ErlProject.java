@@ -477,16 +477,11 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     @Override
-    public ErlangProjectProperties getRawProperties() {
+    public ErlangProjectProperties getProperties() {
         if (properties == null) {
             configurationChanged();
         }
         return properties;
-    }
-
-    @Override
-    public ErlangProjectProperties getProperties() {
-        return getRawProperties().resolve();
     }
 
     public IEclipsePreferences getCorePropertiesNode() {
@@ -637,7 +632,7 @@ public class ErlProject extends Openable implements IErlProject,
     public void setProperties(final ErlangProjectProperties properties)
             throws BackingStoreException {
         getModelCache().removeProject(this);
-        final ErlangProjectProperties projectProperties = getRawProperties();
+        final ErlangProjectProperties projectProperties = getProperties();
         projectProperties.copyFrom(properties);
         storeProperties();
     }

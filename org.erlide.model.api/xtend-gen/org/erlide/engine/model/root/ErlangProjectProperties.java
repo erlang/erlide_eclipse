@@ -4,11 +4,6 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import org.eclipse.core.resources.IPathVariableManager;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
@@ -281,74 +276,5 @@ public class ErlangProjectProperties {
       _xblockexpression = (_string);
     }
     return _xblockexpression;
-  }
-  
-  public ErlangProjectProperties resolve() {
-    ErlangProjectProperties _erlangProjectProperties = new ErlangProjectProperties();
-    final ErlangProjectProperties result = _erlangProjectProperties;
-    final ErlangProjectProperties dflt = ErlangProjectProperties.DEFAULT;
-    final Procedure1<ErlangProjectProperties> _function = new Procedure1<ErlangProjectProperties>() {
-      public void apply(final ErlangProjectProperties it) {
-        it.copyFrom(ErlangProjectProperties.this);
-        IPath _outputDir = it.getOutputDir();
-        boolean _tripleEquals = (_outputDir == null);
-        if (_tripleEquals) {
-          IPath _outputDir_1 = dflt.getOutputDir();
-          it.setOutputDir(_outputDir_1);
-        }
-        IPath _outputDir_2 = it.getOutputDir();
-        IPath _resolvePath = it.resolvePath(_outputDir_2);
-        it.setOutputDir(_resolvePath);
-        Collection<IPath> _sourceDirs = it.getSourceDirs();
-        boolean _tripleEquals_1 = (_sourceDirs == null);
-        if (_tripleEquals_1) {
-          Collection<IPath> _sourceDirs_1 = dflt.getSourceDirs();
-          it.setSourceDirs(_sourceDirs_1);
-        }
-        Collection<IPath> _sourceDirs_2 = it.getSourceDirs();
-        Collection<IPath> _resolvePaths = it.resolvePaths(_sourceDirs_2);
-        it.setSourceDirs(_resolvePaths);
-        Collection<IPath> _includeDirs = it.getIncludeDirs();
-        boolean _tripleEquals_2 = (_includeDirs == null);
-        if (_tripleEquals_2) {
-          Collection<IPath> _includeDirs_1 = dflt.getIncludeDirs();
-          it.setIncludeDirs(_includeDirs_1);
-        }
-        Collection<IPath> _includeDirs_2 = it.getIncludeDirs();
-        Collection<IPath> _resolvePaths_1 = it.resolvePaths(_includeDirs_2);
-        it.setIncludeDirs(_resolvePaths_1);
-        Collection<IPath> _testDirs = it.getTestDirs();
-        boolean _tripleEquals_3 = (_testDirs == null);
-        if (_tripleEquals_3) {
-          Collection<IPath> _testDirs_1 = dflt.getTestDirs();
-          it.setTestDirs(_testDirs_1);
-        }
-        Collection<IPath> _testDirs_2 = it.getTestDirs();
-        Collection<IPath> _resolvePaths_2 = it.resolvePaths(_testDirs_2);
-        it.setTestDirs(_resolvePaths_2);
-      }
-    };
-    ObjectExtensions.<ErlangProjectProperties>operator_doubleArrow(result, _function);
-    return result;
-  }
-  
-  private Collection<IPath> resolvePaths(final Collection<IPath> paths) {
-    IWorkspace _workspace = ResourcesPlugin.getWorkspace();
-    final IPathVariableManager pathVariableManager = _workspace.getPathVariableManager();
-    int _size = paths.size();
-    final List<IPath> result = Lists.<IPath>newArrayListWithCapacity(_size);
-    for (final IPath path : paths) {
-      {
-        final IPath resolvedPath = pathVariableManager.resolvePath(path);
-        result.add(resolvedPath);
-      }
-    }
-    return Collections.<IPath>unmodifiableCollection(result);
-  }
-  
-  private IPath resolvePath(final IPath path) {
-    IWorkspace _workspace = ResourcesPlugin.getWorkspace();
-    final IPathVariableManager pathVariableManager = _workspace.getPathVariableManager();
-    return pathVariableManager.resolvePath(path);
   }
 }
