@@ -478,9 +478,7 @@ public class ErlProject extends Openable implements IErlProject,
 
     @Override
     public ErlangProjectProperties getProperties() {
-        if (properties == null) {
-            configurationChanged();
-        }
+        configurationChanged();
         return properties;
     }
 
@@ -789,22 +787,31 @@ public class ErlProject extends Openable implements IErlProject,
     public void configurationChanged() {
         System.out.println("CONFIG CHANGED! " + getName());
 
+        loadAllProperties();
+    }
+
+    private void loadAllProperties() {
         loadCoreProperties();
         loadBuilderProperties();
         properties = loadProperties();
     }
 
+    private void storeAllProperties() {
+        storeCoreProperties();
+        storeBuilderProperties();
+        storeProperties();
+    }
+
     private void loadBuilderProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        final String name = node
-                .get("builderTool", BuilderTool.INTERNAL.name());
-        getBuilderProperties().setBuilderTool(BuilderTool.valueOf(name));
+        final String data = node.get("builderData", "");
+        getBuilderProperties().fromString(data);
         // TODO more
     }
 
     private void storeBuilderProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        node.put("builderTool", builderProperties.getBuilderTool().name());
+        node.put("builderData", builderProperties.toString());
         try {
             node.flush();
         } catch (final BackingStoreException e) {

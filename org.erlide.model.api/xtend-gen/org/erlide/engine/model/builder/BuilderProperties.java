@@ -1,5 +1,7 @@
 package org.erlide.engine.model.builder;
 
+import org.eclipse.xtend2.lib.StringConcatenation;
+import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.erlide.engine.model.builder.BuilderTool;
 
 /**
@@ -121,5 +123,49 @@ public class BuilderProperties {
    */
   public void setExtraFlags(final String extraFlags) {
     this._extraFlags = extraFlags;
+  }
+  
+  public void fromString(final String data) {
+    final String[] parts = data.split("§");
+    try {
+      String _get = parts[0];
+      final BuilderTool bt = BuilderTool.valueOf(_get);
+      final String b = parts[1];
+      final String c = parts[2];
+      final String l = parts[3];
+      final String t = parts[4];
+      this.setBuilderTool(bt);
+      this.setBuildTarget(b);
+      this.setCompileTarget(c);
+      this.setCleanTarget(l);
+      this.setTestTarget(t);
+    } catch (final Throwable _t) {
+      if (_t instanceof Exception) {
+        final Exception e = (Exception)_t;
+        return;
+      } else {
+        throw Exceptions.sneakyThrow(_t);
+      }
+    }
+  }
+  
+  public String toString() {
+    StringConcatenation _builder = new StringConcatenation();
+    BuilderTool _builderTool = this.getBuilderTool();
+    _builder.append(_builderTool, "");
+    _builder.append("§");
+    String _compileTarget = this.getCompileTarget();
+    _builder.append(_compileTarget, "");
+    _builder.append("§");
+    String _cleanTarget = this.getCleanTarget();
+    _builder.append(_cleanTarget, "");
+    _builder.append("§");
+    String _testTarget = this.getTestTarget();
+    _builder.append(_testTarget, "");
+    _builder.append("§");
+    String _extraFlags = this.getExtraFlags();
+    _builder.append(_extraFlags, "");
+    _builder.newLineIfNotEmpty();
+    return _builder.toString();
   }
 }
