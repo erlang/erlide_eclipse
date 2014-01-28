@@ -17,7 +17,6 @@ import org.eclipse.core.resources.IProjectNature
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.NullProgressMonitor
 import org.erlide.engine.model.builder.BuilderTool
-import org.erlide.engine.model.builder.ErlangBuilder
 import org.erlide.engine.model.root.ProjectConfigType
 
 class ErlangNature implements IProjectNature {
@@ -46,7 +45,7 @@ class ErlangNature implements IProjectNature {
         val ICommand[] specs = newArrayOfSize(old.length + 1)
         System.arraycopy(old, 0, specs, 0, old.length)
         val command = description.newCommand
-        command.builderName = ErlangBuilder.factory.getBuilder(builder).id
+        command.builderName = builder.id
         specs.set(old.length, command)
         description.buildSpec = specs
         prj.setDescription(description, new NullProgressMonitor())
@@ -55,7 +54,7 @@ class ErlangNature implements IProjectNature {
     static def unsetAllErlangBuilders(IProject prj) throws CoreException {
         val description = prj.description
         val old = description.buildSpec
-        val allIds = BuilderTool.values.map[ErlangBuilder.factory.getBuilder(it).id]
+        val allIds = BuilderTool.values.map[id]
 
         val specs = newArrayList
         for (cmd : old) {

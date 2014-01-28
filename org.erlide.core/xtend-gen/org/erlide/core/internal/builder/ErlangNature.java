@@ -25,8 +25,6 @@ import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.erlide.engine.model.builder.BuilderTool;
-import org.erlide.engine.model.builder.ErlangBuilder;
-import org.erlide.engine.model.builder.IErlangBuilderFactory;
 import org.erlide.engine.model.root.ProjectConfigType;
 
 @SuppressWarnings("all")
@@ -59,9 +57,7 @@ public class ErlangNature implements IProjectNature {
     int _length_1 = old.length;
     System.arraycopy(old, 0, specs, 0, _length_1);
     final ICommand command = description.newCommand();
-    IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
-    ErlangBuilder _builder = _factory.getBuilder(builder);
-    String _id = _builder.getId();
+    String _id = builder.getId();
     command.setBuilderName(_id);
     int _length_2 = old.length;
     specs[_length_2] = command;
@@ -76,9 +72,7 @@ public class ErlangNature implements IProjectNature {
     BuilderTool[] _values = BuilderTool.values();
     final Function1<BuilderTool,String> _function = new Function1<BuilderTool,String>() {
       public String apply(final BuilderTool it) {
-        IErlangBuilderFactory _factory = ErlangBuilder.getFactory();
-        ErlangBuilder _builder = _factory.getBuilder(it);
-        String _id = _builder.getId();
+        String _id = it.getId();
         return _id;
       }
     };

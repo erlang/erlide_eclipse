@@ -12,15 +12,21 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public enum BuilderTool {
-    INTERNAL(null, null), MAKE("Makefile", "make"), EMAKE("Emakefile", null), REBAR(
-            "rebar.config", "rebar");
+    // @formatter:off
+    INTERNAL(null, null, ".erlbuilder"),
+    MAKE("Makefile", "make", ".make.builder"),
+    EMAKE("Emakefile", null, ".emake.builder"),
+    REBAR("rebar.config", "rebar", ".rebar.builder");
+    // @formatter:on
 
     private final String toolMarker;
     private final String osCommand;
+    private final String id;
 
-    BuilderTool(final String toolMarker, final String osCommand) {
+    BuilderTool(final String toolMarker, final String osCommand, final String id) {
         this.toolMarker = toolMarker;
         this.osCommand = osCommand;
+        this.id = id;
     }
 
     /**
@@ -58,5 +64,10 @@ public enum BuilderTool {
 
     public String getOsCommand() {
         return osCommand;
+    }
+
+    public String getId() {
+        // ErlangCore.PLUGIN_ID
+        return "org.erlide.core" + id;
     }
 }

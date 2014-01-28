@@ -8,7 +8,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.builder.ExternalBuilder;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
@@ -83,10 +82,6 @@ public class RebarBuilder extends ExternalBuilder {
       _xblockexpression = (_xifexpression);
     }
     return _xblockexpression;
-  }
-  
-  public String getId() {
-    return (ErlangCore.PLUGIN_ID + ".rebar.builder");
   }
   
   public BuilderProperties getProperties() {

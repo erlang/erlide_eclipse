@@ -21,11 +21,8 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.services.ExtensionUtils;
 
 public abstract class ErlangBuilder extends IncrementalProjectBuilder {
-
-    public abstract String getId();
 
     @Override
     public IProject[] build(final int kind, final Map<String, String> args,
@@ -61,11 +58,6 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
             return false;
         }
         return true;
-    }
-
-    public static IErlangBuilderFactory getFactory() {
-        return ExtensionUtils.getSingletonExtension(
-                "org.erlide.model.api.builderFactory", IErlangBuilderFactory.class);
     }
 
     public abstract BuilderProperties getProperties();

@@ -4,7 +4,6 @@ import java.util.Map
 import org.eclipse.core.resources.IMarker
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
-import org.erlide.core.ErlangCore
 import org.erlide.core.internal.builder.ExternalBuilder
 import org.erlide.engine.ErlangEngine
 import org.erlide.engine.model.builder.BuilderTool
@@ -42,10 +41,6 @@ class RebarBuilder extends ExternalBuilder {
       MarkerUtils.addMarker(project, project, null, "No .app.src file found, can't compile with rebar", -1,
         IMarker.SEVERITY_WARNING, MarkerUtils.PROBLEM_MARKER)
     }
-  }
-
-  override getId() {
-    ErlangCore.PLUGIN_ID + '.rebar.builder'
   }
 
   override getProperties() {

@@ -15,7 +15,6 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.builder.ExternalBuilder;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
@@ -106,10 +105,6 @@ public class EmakeBuilder extends ExternalBuilder {
       }
     };
     ObjectExtensions.<IFolder>operator_doubleArrow(bf, _function);
-  }
-  
-  public String getId() {
-    return (ErlangCore.PLUGIN_ID + ".emake.builder");
   }
   
   public BuilderProperties getProperties() {

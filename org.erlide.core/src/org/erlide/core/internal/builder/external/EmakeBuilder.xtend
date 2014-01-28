@@ -4,7 +4,6 @@ import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.Path
 import org.erlide.backend.BackendCore
-import org.erlide.core.ErlangCore
 import org.erlide.core.internal.builder.ExternalBuilder
 import org.erlide.engine.ErlangEngine
 import org.erlide.engine.model.builder.BuilderTool
@@ -52,10 +51,6 @@ class EmakeBuilder extends ExternalBuilder {
                 ]
             }
         ]
-    }
-
-    override getId() {
-        ErlangCore.PLUGIN_ID + '.emake.builder'
     }
 
     override getProperties() {
