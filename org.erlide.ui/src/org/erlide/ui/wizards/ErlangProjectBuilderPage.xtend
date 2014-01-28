@@ -1,5 +1,6 @@
 package org.erlide.ui.wizards
 
+import org.eclipse.jface.dialogs.DialogPage
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.events.SelectionListener
@@ -10,6 +11,7 @@ import org.eclipse.swt.widgets.Combo
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Label
 import org.eclipse.swt.widgets.Text
+import org.erlide.core.executor.ToolExecutor
 import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.root.NewProjectData
 import org.erlide.engine.model.root.ProjectConfigType
@@ -17,8 +19,6 @@ import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
 
 import static extension org.erlide.ui.util.XtendSWTLib.*
-import org.erlide.core.executor.ToolExecutor
-import org.eclipse.jface.dialogs.DialogPage
 
 class ErlangProjectBuilderPage extends ErlangWizardPage {
 
@@ -104,6 +104,7 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
         ]
         newControl(Text, SWT.BORDER) [
           layoutData = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1)
+          enabled = false
           addModifyListener [ l |
             info.builderData.put("compile", text)
           ]
@@ -117,6 +118,7 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
           val gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1)
           gd.widthHint = 250
           layoutData = gd
+          enabled = false
           addModifyListener [ l |
             info.builderData.put("clean", text)
           ]

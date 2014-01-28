@@ -237,6 +237,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                     public void apply(final Text it) {
                       GridData _gridData = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
                       it.setLayoutData(_gridData);
+                      it.setEnabled(false);
                       final ModifyListener _function = new ModifyListener() {
                         public void modifyText(final ModifyEvent l) {
                           Map<String,String> _builderData = ErlangProjectBuilderPage.this.info.getBuilderData();
@@ -266,6 +267,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                       final GridData gd = _gridData;
                       gd.widthHint = 250;
                       it.setLayoutData(gd);
+                      it.setEnabled(false);
                       final ModifyListener _function = new ModifyListener() {
                         public void modifyText(final ModifyEvent l) {
                           Map<String,String> _builderData = ErlangProjectBuilderPage.this.info.getBuilderData();
