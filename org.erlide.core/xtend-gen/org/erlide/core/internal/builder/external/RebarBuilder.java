@@ -14,14 +14,15 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.builder.BuilderProperties;
+import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlFolder;
 
 @SuppressWarnings("all")
 public class RebarBuilder extends ExternalBuilder {
-  public String getOsCommand() {
-    return "rebar";
+  public RebarBuilder() {
+    super(BuilderTool.REBAR);
   }
   
   public IProject[] build(final int kind, final Map<String,String> args, final IProgressMonitor monitor) throws CoreException {

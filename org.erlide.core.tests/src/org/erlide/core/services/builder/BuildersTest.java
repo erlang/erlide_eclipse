@@ -109,36 +109,25 @@ public class BuildersTest {
         assertThat("beam existed before test", beam0, nullValue());
 
         prj.build(IncrementalProjectBuilder.FULL_BUILD, builderId, null, null);
-        waitBuildToFinish();
+        waitJobsToFinish(ResourcesPlugin.FAMILY_MANUAL_BUILD);
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
-        waitRefreshToFinish();
+        waitJobsToFinish(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 
         final IResource beam = prj.findMember(targetBeamPath);
         assertThat("beam was not created", beam, notNullValue());
 
         prj.build(IncrementalProjectBuilder.CLEAN_BUILD, builderId, null, null);
-        waitBuildToFinish();
+        waitJobsToFinish(ResourcesPlugin.FAMILY_MANUAL_BUILD);
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
-        waitRefreshToFinish();
+        waitJobsToFinish(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 
         final IResource beam2 = prj.findMember(targetBeamPath);
         assertThat("beam was not removed", beam2, nullValue());
     }
 
-    private void waitRefreshToFinish() {
+    private void waitJobsToFinish(final Object family) {
         final IJobManager jobMan = Job.getJobManager();
-        final Job[] build = jobMan.find(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
-        if (build.length == 1) {
-            try {
-                build[0].join();
-            } catch (final InterruptedException e) {
-            }
-        }
-    }
-
-    private void waitBuildToFinish() {
-        final IJobManager jobMan = Job.getJobManager();
-        final Job[] build = jobMan.find(ResourcesPlugin.FAMILY_MANUAL_BUILD);
+        final Job[] build = jobMan.find(family);
         if (build.length == 1) {
             try {
                 build[0].join();

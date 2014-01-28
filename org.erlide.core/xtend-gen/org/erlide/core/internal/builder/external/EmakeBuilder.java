@@ -21,6 +21,7 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.builder.BuilderProperties;
+import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -29,6 +30,10 @@ import org.erlide.util.SystemConfiguration;
 
 @SuppressWarnings("all")
 public class EmakeBuilder extends ExternalBuilder {
+  public EmakeBuilder() {
+    super(BuilderTool.EMAKE);
+  }
+  
   public String getOsCommand() {
     String _xblockexpression = null;
     {

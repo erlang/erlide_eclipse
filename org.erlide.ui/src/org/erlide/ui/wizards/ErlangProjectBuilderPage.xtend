@@ -17,6 +17,8 @@ import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
 
 import static extension org.erlide.ui.util.XtendSWTLib.*
+import org.erlide.core.executor.ToolExecutor
+import org.eclipse.jface.dialogs.DialogPage
 
 class ErlangProjectBuilderPage extends ErlangWizardPage {
 
@@ -190,8 +192,18 @@ class BuilderSelectionListener implements SelectionListener {
 
   override widgetSelected(SelectionEvent e) {
     info.builder = e.widget.data as BuilderTool
-    page.configComposite.visible = (info.builder == BuilderTool.MAKE) ||
-      (info.builder == BuilderTool.INTERNAL)
+
+    page.message = null
+    val toolExists = info.builder.osCommand === null ||
+      ToolExecutor.getToolLocation(info.builder.osCommand) !== null
+    if (!toolExists) {
+      page.setMessage(
+        '''The tool '«info.builder.osCommand»' can't be found on your system's $PATH''',
+        DialogPage.WARNING
+      )
+    }
+
+    page.configComposite.visible = (info.builder == BuilderTool.MAKE) || (info.builder == BuilderTool.INTERNAL)
     page.makeConfigComposite.visible = info.builder == BuilderTool.MAKE
   }
 

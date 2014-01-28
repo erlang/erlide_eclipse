@@ -1,8 +1,11 @@
 package org.erlide.ui.wizards;
 
 import com.google.common.base.Objects;
+import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.xtend2.lib.StringConcatenation;
+import org.erlide.core.executor.ToolExecutor;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.ui.wizards.ErlangProjectBuilderPage;
@@ -24,19 +27,44 @@ public class BuilderSelectionListener implements SelectionListener {
   public void widgetSelected(final SelectionEvent e) {
     Object _data = e.widget.getData();
     this.info.setBuilder(((BuilderTool) _data));
+    this.page.setMessage(null);
     boolean _or = false;
     BuilderTool _builder = this.info.getBuilder();
-    boolean _equals = Objects.equal(_builder, BuilderTool.MAKE);
-    if (_equals) {
+    String _osCommand = _builder.getOsCommand();
+    boolean _tripleEquals = (_osCommand == null);
+    if (_tripleEquals) {
       _or = true;
     } else {
       BuilderTool _builder_1 = this.info.getBuilder();
-      boolean _equals_1 = Objects.equal(_builder_1, BuilderTool.INTERNAL);
-      _or = (_equals || _equals_1);
+      String _osCommand_1 = _builder_1.getOsCommand();
+      String _toolLocation = ToolExecutor.getToolLocation(_osCommand_1);
+      boolean _tripleNotEquals = (_toolLocation != null);
+      _or = (_tripleEquals || _tripleNotEquals);
     }
-    this.page.configComposite.setVisible(_or);
-    BuilderTool _builder_2 = this.info.getBuilder();
-    boolean _equals_2 = Objects.equal(_builder_2, BuilderTool.MAKE);
+    final boolean toolExists = _or;
+    if ((!toolExists)) {
+      StringConcatenation _builder_2 = new StringConcatenation();
+      _builder_2.append("The tool \'");
+      BuilderTool _builder_3 = this.info.getBuilder();
+      String _osCommand_2 = _builder_3.getOsCommand();
+      _builder_2.append(_osCommand_2, "");
+      _builder_2.append("\' can\'t be found on your system\'s $PATH");
+      this.page.setMessage(_builder_2.toString(), 
+        DialogPage.WARNING);
+    }
+    boolean _or_1 = false;
+    BuilderTool _builder_4 = this.info.getBuilder();
+    boolean _equals = Objects.equal(_builder_4, BuilderTool.MAKE);
+    if (_equals) {
+      _or_1 = true;
+    } else {
+      BuilderTool _builder_5 = this.info.getBuilder();
+      boolean _equals_1 = Objects.equal(_builder_5, BuilderTool.INTERNAL);
+      _or_1 = (_equals || _equals_1);
+    }
+    this.page.configComposite.setVisible(_or_1);
+    BuilderTool _builder_6 = this.info.getBuilder();
+    boolean _equals_2 = Objects.equal(_builder_6, BuilderTool.MAKE);
     this.page.makeConfigComposite.setVisible(_equals_2);
   }
 }

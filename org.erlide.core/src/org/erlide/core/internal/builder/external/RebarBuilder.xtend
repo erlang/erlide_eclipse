@@ -7,45 +7,48 @@ import org.eclipse.core.runtime.IProgressMonitor
 import org.erlide.core.ErlangCore
 import org.erlide.core.internal.builder.ExternalBuilder
 import org.erlide.engine.ErlangEngine
-import org.erlide.engine.model.root.IErlFolder
+import org.erlide.engine.model.builder.BuilderTool
 import org.erlide.engine.model.builder.MarkerUtils
+import org.erlide.engine.model.root.IErlFolder
 
 class RebarBuilder extends ExternalBuilder {
-    override getOsCommand() {
-        'rebar'
-    }
 
-    override build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
-        val result = super.build(kind, args, monitor)
-        checkIfProjectHasAppFile
-        result
-    }
+  new() {
+    super(BuilderTool.REBAR)
+  }
 
-    var boolean foundAppSrc
+  override build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
+    val result = super.build(kind, args, monitor)
+    checkIfProjectHasAppFile
+    result
+  }
 
-    private def checkIfProjectHasAppFile() throws CoreException {
-        foundAppSrc = false
-        project.accept [ resource |
-            if (resource.name.endsWith('.app.src')) {
-                val folder = (ErlangEngine.instance.model.findElement(resource.parent) as IErlFolder)
-                if (folder !== null && folder.onSourcePath) {
-                    foundAppSrc = true
-                }
-            }
-            !foundAppSrc
-        ]
-        if (! foundAppSrc) {
-            // TODO rebar has configuration for this 
-            MarkerUtils.addMarker(project, project, null, "No .app.src file found, can't compile with rebar", -1,
-                IMarker.SEVERITY_WARNING, MarkerUtils.PROBLEM_MARKER)
+  var boolean foundAppSrc
+
+  private def checkIfProjectHasAppFile() throws CoreException {
+    foundAppSrc = false
+    project.accept [ resource |
+      if (resource.name.endsWith('.app.src')) {
+        val folder = (ErlangEngine.instance.model.findElement(resource.parent) as IErlFolder)
+        if (folder !== null && folder.onSourcePath) {
+          foundAppSrc = true
         }
-    }
+      }
+      !foundAppSrc
+    ]
+    if (! foundAppSrc) {
 
-    override getId() {
-        ErlangCore.PLUGIN_ID + '.rebar.builder'
+      // TODO rebar has configuration for this
+      MarkerUtils.addMarker(project, project, null, "No .app.src file found, can't compile with rebar", -1,
+        IMarker.SEVERITY_WARNING, MarkerUtils.PROBLEM_MARKER)
     }
-    
-    override getProperties() {
-        null
-    }
+  }
+
+  override getId() {
+    ErlangCore.PLUGIN_ID + '.rebar.builder'
+  }
+
+  override getProperties() {
+    null
+  }
 }

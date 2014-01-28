@@ -7,14 +7,19 @@ import org.erlide.backend.BackendCore
 import org.erlide.core.ErlangCore
 import org.erlide.core.internal.builder.ExternalBuilder
 import org.erlide.engine.ErlangEngine
+import org.erlide.engine.model.builder.BuilderTool
+import org.erlide.engine.model.builder.MarkerUtils
 import org.erlide.util.ErlLogger
 import org.erlide.util.SystemConfiguration
-import org.erlide.engine.model.builder.MarkerUtils
 
 @SuppressWarnings('deprecation')
 class EmakeBuilder extends ExternalBuilder {
 
-    override getOsCommand() {
+  new() {
+    super(BuilderTool.EMAKE)
+  }
+
+  override getOsCommand() {
         val backend = BackendCore.backendManager.getBuildBackend(project)
         val path = new Path(backend.runtimeInfo.otpHome).append('bin/erl')
         if (SystemConfiguration.instance.onWindows)

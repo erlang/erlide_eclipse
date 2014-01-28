@@ -14,6 +14,7 @@ import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.executor.ProgressCallback;
 import org.erlide.core.executor.ToolExecutor;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
+import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.util.ErlLogger;
@@ -24,17 +25,20 @@ public abstract class ExternalBuilder extends ErlangBuilder {
 
     protected final ToolExecutor ex;
     protected final BuilderHelper helper = new BuilderHelper();
+    protected final BuilderTool info;
 
-    public ExternalBuilder() {
+    public ExternalBuilder(final BuilderTool info) {
+        this.info = info;
         ex = new ToolExecutor();
     }
 
-    public abstract String getOsCommand();
+    public String getOsCommand() {
+        return info.getOsCommand();
+    }
 
     @Override
     public IProject[] build(final int kind, final Map<String, String> args,
             final IProgressMonitor monitor) throws CoreException {
-
         super.build(kind, args, monitor);
 
         final SubMonitor m = SubMonitor.convert(monitor, 10);

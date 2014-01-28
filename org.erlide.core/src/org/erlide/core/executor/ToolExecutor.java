@@ -48,6 +48,7 @@ public class ToolExecutor {
         final String cmd = new Path(cmd0).isAbsolute() ? cmd0 : getToolLocation(cmd0);
 
         if (cmd == null) {
+            ErlLogger.warn("Tool '" + cmd0 + "' can't be found in $PATH");
             return new ToolResults();
         }
 
@@ -126,7 +127,7 @@ public class ToolExecutor {
         return run(cmd0, args, wdir, null, m);
     }
 
-    public String getToolLocation(final String cmd) {
+    public static String getToolLocation(final String cmd) {
         // hack because sometimes first call returns an empty value
         String result;
         final int MAX_TRIES = 5;
@@ -137,29 +138,27 @@ public class ToolExecutor {
             }
         }
         result = getToolLocation_1(cmd);
-        if (result == null) {
-            ErlLogger.warn("Tool '%s' not found in $PATH!", cmd);
-        }
         return result;
     }
 
-    private String getToolLocation_1(final String cmd) {
+    private static String getToolLocation_1(final String cmd) {
         if (SystemConfiguration.getInstance().isOnWindows()) {
             return getWindowsToolLocation(cmd);
         }
         return getUnixToolLocation(cmd);
     }
 
-    private String getUnixToolLocation(final String cmd) {
+    private static String getUnixToolLocation(final String cmd) {
         final ToolProgressCallback callback = new ToolProgressCallback();
-        run("/bin/sh", "-c \"which " + cmd + "\"", null, callback, null);
+        new ToolExecutor().run("/bin/sh", "-c \"which " + cmd + "\"", null, callback,
+                null);
         return callback.result;
     }
 
-    private String getWindowsToolLocation(final String cmd) {
+    private static String getWindowsToolLocation(final String cmd) {
         final ToolProgressCallback callback = new ToolProgressCallback();
-        run("c:\\Windows\\System32\\cmd.exe", "/c \"where " + cmd + "\"", null, callback,
-                null);
+        new ToolExecutor().run("c:\\Windows\\System32\\cmd.exe", "/c \"where " + cmd
+                + "\"", null, callback, null);
         if (callback.result == null) {
             return null;
         }

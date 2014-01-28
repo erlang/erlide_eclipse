@@ -12,12 +12,15 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public enum BuilderTool {
-    INTERNAL(null), MAKE("Makefile"), EMAKE("Emakefile"), REBAR("rebar.config");
+    INTERNAL(null, null), MAKE("Makefile", "make"), EMAKE("Emakefile", null), REBAR(
+            "rebar.config", "rebar");
 
     private final String toolMarker;
+    private final String osCommand;
 
-    BuilderTool(final String toolMarker) {
+    BuilderTool(final String toolMarker, final String osCommand) {
         this.toolMarker = toolMarker;
+        this.osCommand = osCommand;
     }
 
     /**
@@ -34,8 +37,8 @@ public enum BuilderTool {
             final Map<BuilderTool, Set<ProjectConfigType>> result = Maps.newHashMap();
             result.put(INTERNAL, Sets.newHashSet(ProjectConfigType.INTERNAL,
                     ProjectConfigType.EMAKE, ProjectConfigType.REBAR));
-            result.put(MAKE, Sets.newHashSet(ProjectConfigType.INTERNAL, ProjectConfigType.EMAKE,
-                    ProjectConfigType.REBAR));
+            result.put(MAKE, Sets.newHashSet(ProjectConfigType.INTERNAL,
+                    ProjectConfigType.EMAKE, ProjectConfigType.REBAR));
             result.put(EMAKE, Sets.newHashSet(ProjectConfigType.EMAKE));
             result.put(REBAR, Sets.newHashSet(ProjectConfigType.REBAR));
             return Maps.newEnumMap(result);
@@ -53,4 +56,7 @@ public enum BuilderTool {
         return toolConfigsMap.get(this).contains(config);
     }
 
+    public String getOsCommand() {
+        return osCommand;
+    }
 }

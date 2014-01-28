@@ -3,12 +3,12 @@ package org.erlide.core.internal.builder.external;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.builder.ExternalBuilder;
 import org.erlide.engine.model.builder.BuilderProperties;
+import org.erlide.engine.model.builder.BuilderTool;
 
 public class MakeBuilder extends ExternalBuilder {
 
-    @Override
-    public String getOsCommand() {
-        return "make";
+    public MakeBuilder() {
+        super(BuilderTool.MAKE);
     }
 
     @Override
