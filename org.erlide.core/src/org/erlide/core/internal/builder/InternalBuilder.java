@@ -46,6 +46,7 @@ import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.MarkerUtils;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.util.ErlLogger;
@@ -82,7 +83,8 @@ public class InternalBuilder extends ErlangBuilder {
             initializeBuilder(monitor);
 
             // TODO validate source and include directories
-            final IPath out = erlProject.getProperties().getOutputDir();
+            ErlangProjectProperties properties = erlProject.getProperties();
+            final IPath out = properties.getOutputDir();
             final IResource outr = project.findMember(out);
             if (outr != null) {
                 try {
@@ -94,7 +96,7 @@ public class InternalBuilder extends ErlangBuilder {
             }
 
             handleAppFile(getProject().getLocation().toPortableString() + "/" + out,
-                    erlProject.getProperties().getSourceDirs());
+                    properties.getSourceDirs());
 
             handleErlangFiles(erlProject, project, args, kind, getDelta(project));
 

@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,11 +50,14 @@ public class ModuleLocatorTests {
 
     private void checkProjectDirectories(final IErlProject project,
             final Object[] expectedSources, final Object[] expectedIncludes) {
-        assertThat(project.getProperties().getSourceDirs().toArray(), is(expectedSources));
-        assertThat(project.getProperties().getIncludeDirs().toArray(),
+        ErlangProjectProperties properties = project.getProperties();
+        assertThat(properties.getSourceDirs().toArray(), is(expectedSources));
+        assertThat(properties.getIncludeDirs().toArray(),
                 is(expectedIncludes));
-        assertThat(project.getExternalModulesString(), is("../external_modules"));
-        assertThat(project.getExternalIncludesString(), is("../external_includes"));
+        assertThat(properties.getExternalModules(),
+                is("../external_modules"));
+        assertThat(properties.getExternalIncludes(),
+                is("../external_includes"));
     }
 
     // @Test

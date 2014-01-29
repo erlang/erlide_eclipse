@@ -347,7 +347,8 @@ public class IErlModelTest extends ErlModelTestBase {
         final IErlProject aProject = projects[0];
         final IProject workspaceProject = aProject.getWorkspaceProject();
         final IProject[] referencedProjects = workspaceProject.getReferencedProjects();
-        final String externalModulesString = aProject.getExternalModulesString();
+        final String externalModulesString = aProject.getProperties()
+                .getExternalModules();
         // given
         // a project with an external module and an internal module and a
         // referenced project with a module
@@ -445,7 +446,8 @@ public class IErlModelTest extends ErlModelTestBase {
         final IErlProject aProject = projects[0];
         final IProject workspaceProject = aProject.getWorkspaceProject();
         final IProject[] referencedProjects = workspaceProject.getReferencedProjects();
-        final String externalModulesString = aProject.getExternalModulesString();
+        final String externalModulesString = aProject.getProperties()
+                .getExternalModules();
         // given
         // a project with an external include and a
         // referenced project with an include, both have same name

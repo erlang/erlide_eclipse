@@ -32,9 +32,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.ModelPlugin;
 import org.erlide.engine.internal.model.cache.ErlModelCache;
@@ -69,10 +67,8 @@ import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 /**
@@ -173,9 +169,10 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     private void addExternals(final List<IErlElement> children) {
-        final String externalIncludes = getExternalIncludesString();
-        final String externalModules = getExternalModulesString();
-        final Collection<IPath> includeDirs = getProperties().getIncludeDirs();
+        final ErlangProjectProperties myProperties = getProperties();
+        final String externalIncludes = myProperties.getExternalIncludes();
+        final String externalModules = myProperties.getExternalModules();
+        final Collection<IPath> includeDirs = myProperties.getIncludeDirs();
         final List<String> projectIncludes = Lists.newArrayList();
         for (final IPath path : includeDirs) {
             if (path.isAbsolute() && !fProject.getLocation().isPrefixOf(path)) {
@@ -525,63 +522,30 @@ public class ErlProject extends Openable implements IErlProject,
         }
     }
 
-    private String getExternal(final ExternalKind external) {
-        final IPreferencesService service = Platform.getPreferencesService();
-        final String key = external == ExternalKind.EXTERNAL_INCLUDES ? "default_external_includes"
-                : "default_external_modules";
-        String result = getExternal(external, service, key, "org.erlide.ui");
-        if (Strings.isNullOrEmpty(result)) {
-            result = getExternal(external, service, key, "org.erlide.core");
-        }
-        return result;
-    }
-
-    private String getExternal(final ExternalKind external,
-            final IPreferencesService service, final String key,
-            final String pluginId) {
-        final String global = service.getString(pluginId, key, "", null);
-        final ErlangProjectProperties prefs = getProperties();
-        final String projprefs = external == ExternalKind.EXTERNAL_INCLUDES ? prefs
-                .getExternalIncludesFile() : prefs.getExternalModulesFile();
-        return PreferencesUtils.packArray(new String[] { projprefs, global });
-    }
-
-    @Override
-    public String getExternalModulesString() {
-        final String externalModulesString = getExternal(ExternalKind.EXTERNAL_MODULES);
-        return externalModulesString;
-    }
-
-    @Override
-    public String getExternalIncludesString() {
-        final String externalIncludesString = getExternal(ExternalKind.EXTERNAL_INCLUDES);
-        return externalIncludesString;
-    }
-
     public void setIncludeDirs(final Collection<IPath> includeDirs) {
         getModelCache().removeProject(this);
-        properties.setIncludeDirs(includeDirs);
+        getProperties().setIncludeDirs(includeDirs);
         storeProperties();
         setStructureKnown(false);
     }
 
     public void setSourceDirs(final Collection<IPath> sourceDirs) {
         getModelCache().removeProject(this);
-        properties.setSourceDirs(sourceDirs);
+        getProperties().setSourceDirs(sourceDirs);
         storeProperties();
         setStructureKnown(false);
     }
 
     public void setExternalModulesFile(final String absolutePath) {
         getModelCache().removeProject(this);
-        properties.setExternalModulesFile(absolutePath);
+        getProperties().setExternalModulesFile(absolutePath);
         storeProperties();
         setStructureKnown(false);
     }
 
     public void setExternalIncludesFile(final String absolutePath) {
         getModelCache().removeProject(this);
-        properties.setExternalIncludesFile(absolutePath);
+        getProperties().setExternalIncludesFile(absolutePath);
         storeProperties();
         setStructureKnown(false);
     }
@@ -775,8 +739,6 @@ public class ErlProject extends Openable implements IErlProject,
 
     @Override
     public void configurationChanged() {
-        System.out.println("CONFIG CHANGED! " + getName());
-
         loadAllProperties();
     }
 

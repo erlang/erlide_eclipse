@@ -1,18 +1,23 @@
 package org.erlide.engine.model.root;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Functions.Function0;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
+import org.erlide.engine.model.root.ExternalKind;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
+import org.erlide.util.PreferencesUtils;
 
 @SuppressWarnings("all")
 public class ErlangProjectProperties {
@@ -276,5 +281,49 @@ public class ErlangProjectProperties {
       _xblockexpression = (_string);
     }
     return _xblockexpression;
+  }
+  
+  public String getExternalIncludes() {
+    final String externalIncludesString = this.getExternal(ExternalKind.EXTERNAL_INCLUDES);
+    return externalIncludesString;
+  }
+  
+  public String getExternalModules() {
+    final String externalModulesString = this.getExternal(ExternalKind.EXTERNAL_MODULES);
+    return externalModulesString;
+  }
+  
+  private String getExternal(final ExternalKind external, final IPreferencesService service, final String key, final String pluginId) {
+    final String global = service.getString(pluginId, key, "", null);
+    String _xifexpression = null;
+    boolean _equals = Objects.equal(external, ExternalKind.EXTERNAL_INCLUDES);
+    if (_equals) {
+      String _externalIncludesFile = this.getExternalIncludesFile();
+      _xifexpression = _externalIncludesFile;
+    } else {
+      String _externalModulesFile = this.getExternalModulesFile();
+      _xifexpression = _externalModulesFile;
+    }
+    final String projprefs = _xifexpression;
+    return PreferencesUtils.packArray(new String[] { projprefs, global });
+  }
+  
+  private String getExternal(final ExternalKind external) {
+    final IPreferencesService service = Platform.getPreferencesService();
+    String _xifexpression = null;
+    boolean _equals = Objects.equal(external, ExternalKind.EXTERNAL_INCLUDES);
+    if (_equals) {
+      _xifexpression = "default_external_includes";
+    } else {
+      _xifexpression = "default_external_modules";
+    }
+    final String key = _xifexpression;
+    String result = this.getExternal(external, service, key, "org.erlide.ui");
+    boolean _isNullOrEmpty = Strings.isNullOrEmpty(result);
+    if (_isNullOrEmpty) {
+      String _external = this.getExternal(external, service, key, "org.erlide.core");
+      result = _external;
+    }
+    return result;
   }
 }

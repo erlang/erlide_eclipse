@@ -76,7 +76,8 @@ public class IErlProjectTests extends ErlModelTestBase {
         File externalFile = null;
         File externalsFile = null;
         final IErlProject aProject = projects[0];
-        final String externalModulesString = aProject.getExternalModulesString();
+        final String externalModulesString = aProject.getProperties()
+                .getExternalModules();
         try {
             // given
             // an erlang project and an external file not in any project
@@ -121,7 +122,8 @@ public class IErlProjectTests extends ErlModelTestBase {
         File externalFile = null;
         File externalsFile = null;
         final IErlProject aProject = projects[0];
-        final String externalIncludesString = aProject.getExternalIncludesString();
+        final String externalIncludesString = aProject.getProperties()
+                .getExternalIncludes();
         try {
             // given
             // an erlang project and an external file not in any project
@@ -205,11 +207,12 @@ public class IErlProjectTests extends ErlModelTestBase {
     @Test
     public void getExternalModulesString() throws Exception {
         final IErlProject aProject = projects[0];
-        final String externalIncludesString = aProject.getExternalIncludesString();
+        final String externalIncludesString = aProject.getProperties()
+                .getExternalIncludes();
         try {
             final String s = "/hej";
             ((ErlProject) aProject).setExternalModulesFile(s);
-            assertEquals(s, aProject.getExternalModulesString());
+            assertEquals(s, aProject.getProperties().getExternalModules());
         } finally {
             ((ErlProject) aProject).setExternalModulesFile(externalIncludesString);
         }
@@ -219,11 +222,12 @@ public class IErlProjectTests extends ErlModelTestBase {
     @Test
     public void getExternalIncludesString() throws Exception {
         final IErlProject aProject = projects[0];
-        final String externalIncludesString = aProject.getExternalIncludesString();
+        final String externalIncludesString = aProject.getProperties()
+                .getExternalIncludes();
         try {
             final String s = "/tjo";
             ((ErlProject) aProject).setExternalIncludesFile(s);
-            assertEquals(s, aProject.getExternalIncludesString());
+            assertEquals(s, aProject.getProperties().getExternalIncludes());
         } finally {
             ((ErlProject) aProject).setExternalIncludesFile(externalIncludesString);
         }

@@ -45,6 +45,7 @@ import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.erlang.ErlangIncludeFile;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ResourceUtil;
 import org.erlide.runtime.api.IRpcSite;
@@ -666,7 +667,8 @@ public final class BuilderHelper {
 
             final IPath path = resource.getParent().getProjectRelativePath();
             final String ext = resource.getFileExtension();
-            if (erlProject.getProperties().getSourceDirs().contains(path)) {
+            ErlangProjectProperties properties = erlProject.getProperties();
+            if (properties.getSourceDirs().contains(path)) {
                 if (ERL.equals(ext)) {
                     handleErlFile(kind, resource);
                     return false;
@@ -676,7 +678,7 @@ public final class BuilderHelper {
                     return false;
                 }
             }
-            if (erlProject.getProperties().getIncludeDirs().contains(path)
+            if (properties.getIncludeDirs().contains(path)
                     && HRL.equals(ext)) {
                 try {
                     handleHrlFile(kind, resource, fullBuild);
@@ -685,7 +687,7 @@ public final class BuilderHelper {
                 }
                 return false;
             }
-            if (erlProject.getProperties().getOutputDir().equals(path)
+            if (properties.getOutputDir().equals(path)
                     && BEAM.equals(ext)) {
                 try {
                     handleBeamFile(kind, resource);

@@ -6,6 +6,10 @@ import java.util.Collection
 import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.Path
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
+import org.eclipse.core.runtime.preferences.IPreferencesService
+import org.erlide.util.PreferencesUtils
+import com.google.common.base.Strings
+import org.eclipse.core.runtime.Platform
 
 class ErlangProjectProperties {
 
@@ -129,6 +133,36 @@ class ErlangProjectProperties {
       add("runtimeVersion", _requiredRuntimeVersion)
     ]
     helper.toString
+  }
+
+  def String getExternalIncludes() {
+    val externalIncludesString = getExternal(ExternalKind.EXTERNAL_INCLUDES);
+    return externalIncludesString;
+  }
+
+  def String getExternalModules() {
+    val externalModulesString = getExternal(ExternalKind.EXTERNAL_MODULES);
+    return externalModulesString;
+
+  }
+
+  def private String getExternal(ExternalKind external, IPreferencesService service, String key, String pluginId) {
+    val String global = service.getString(pluginId, key, "", null)
+    val String projprefs = if (external == ExternalKind.EXTERNAL_INCLUDES)
+        getExternalIncludesFile()
+      else
+        getExternalModulesFile()
+    return PreferencesUtils.packArray(#[projprefs, global])
+  }
+
+  def private String getExternal(ExternalKind external) {
+    val IPreferencesService service = Platform.getPreferencesService()
+    val String key = if (external == ExternalKind.EXTERNAL_INCLUDES) "default_external_includes" else "default_external_modules"
+    var String result = getExternal(external, service, key, "org.erlide.ui")
+    if (Strings.isNullOrEmpty(result)) {
+      result = getExternal(external, service, key, "org.erlide.core")
+    }
+    return result
   }
 
 }

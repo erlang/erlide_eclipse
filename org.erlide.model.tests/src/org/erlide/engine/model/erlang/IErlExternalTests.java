@@ -26,7 +26,7 @@ public class IErlExternalTests extends ErlModelTestBase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        externalModulesString = project.getExternalModulesString();
+        externalModulesString = project.getProperties().getExternalModules();
         final String externalFileName = "external.erl";
         externalFile = ErlideTestUtils.createTmpFile(externalFileName,
                 "-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");

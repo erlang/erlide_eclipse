@@ -63,10 +63,6 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     Collection<IErlModule> getExternalIncludes() throws ErlModelException;
 
-    String getExternalModulesString();
-
-    String getExternalIncludesString();
-
     RuntimeInfo getRuntimeInfo();
 
     RuntimeVersion getRuntimeVersion();

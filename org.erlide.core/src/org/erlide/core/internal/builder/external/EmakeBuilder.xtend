@@ -39,7 +39,7 @@ class EmakeBuilder extends ExternalBuilder {
         val project = project
         MarkerUtils.removeProblemMarkersFor(project)
         val erlProject = ErlangEngine.instance.model.getErlangProject(project)
-        val bf = project.getFolder(erlProject.getProperties().getOutputDir())
+        val bf = project.getFolder(erlProject.properties.outputDir)
         bf => [
             if (exists) {
                 members.forEach [
