@@ -475,7 +475,9 @@ public class ErlProject extends Openable implements IErlProject,
 
     @Override
     public ErlangProjectProperties getProperties() {
-        configurationChanged();
+        if (properties == null) {
+            configurationChanged();
+        }
         return properties;
     }
 
