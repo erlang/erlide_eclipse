@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -45,7 +45,7 @@ public abstract class AbstractErlSelection implements IErlSelection {
         final IErlProject actualProject = model.getErlangProject(project);
         final IPath projectLocation = actualProject.getWorkspaceProject().getLocation();
 
-        final Collection<IPath> sourcDirs = actualProject.getSourceDirs();
+        final Collection<IPath> sourcDirs = actualProject.getProperties().getSourceDirs();
         final OtpErlangString[] searchPath = new OtpErlangString[sourcDirs.size()];
         int i = 0;
         for (final IPath src : sourcDirs) {

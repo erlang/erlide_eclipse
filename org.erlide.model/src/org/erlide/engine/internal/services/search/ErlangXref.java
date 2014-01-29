@@ -49,7 +49,8 @@ public class ErlangXref implements XrefService {
     public IRpcFuture addProject(final IErlProject project) {
         try {
             final IPath outputLocation = project.getWorkspaceProject()
-                    .getFolder(project.getOutputLocation()).getLocation();
+                    .getFolder(project.getProperties().getOutputDir())
+                    .getLocation();
             final String loc = outputLocation.toString();
             return backend.async_call(ERLIDE_XREF, "add_project", "s", loc);
         } catch (final Exception e) {

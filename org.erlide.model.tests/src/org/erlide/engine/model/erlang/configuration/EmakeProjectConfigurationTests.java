@@ -56,11 +56,11 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
         setFileContent(cfgFile, config1);
         project.getWorkspaceProject().refreshLocal(IResource.DEPTH_ONE, null);
 
-        final Collection<IPath> actualSources = project.getSourceDirs();
+        final Collection<IPath> actualSources = project.getProperties().getSourceDirs();
         assertThat(actualSources, hasSize(2));
         assertThat(actualSources, hasItem(new Path("src2")));
 
-        final Collection<IPath> actualIncludes = project.getIncludeDirs();
+        final Collection<IPath> actualIncludes = project.getProperties().getIncludeDirs();
         assertThat(actualIncludes, hasSize(1));
         assertThat(actualIncludes, hasItem(new Path("myinclude")));
     }

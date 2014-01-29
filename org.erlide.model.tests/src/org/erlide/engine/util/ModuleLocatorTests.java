@@ -49,8 +49,9 @@ public class ModuleLocatorTests {
 
     private void checkProjectDirectories(final IErlProject project,
             final Object[] expectedSources, final Object[] expectedIncludes) {
-        assertThat(project.getSourceDirs().toArray(), is(expectedSources));
-        assertThat(project.getIncludeDirs().toArray(), is(expectedIncludes));
+        assertThat(project.getProperties().getSourceDirs().toArray(), is(expectedSources));
+        assertThat(project.getProperties().getIncludeDirs().toArray(),
+                is(expectedIncludes));
         assertThat(project.getExternalModulesString(), is("../external_modules"));
         assertThat(project.getExternalIncludesString(), is("../external_includes"));
     }

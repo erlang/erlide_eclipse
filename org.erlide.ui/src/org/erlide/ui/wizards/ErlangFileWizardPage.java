@@ -203,7 +203,8 @@ public class ErlangFileWizardPage extends WizardPage {
                 final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                         .getErlangProject(project);
                 String txt = container.getFullPath().toString();
-                final Collection<IPath> sourceDirs = erlProject.getSourceDirs();
+                final Collection<IPath> sourceDirs = erlProject.getProperties()
+                        .getSourceDirs();
                 if (!sourceDirs.isEmpty()) {
                     final IPath sourceDirWithinContainer = sourceDirWithinContainer(
                             sourceDirs, container);

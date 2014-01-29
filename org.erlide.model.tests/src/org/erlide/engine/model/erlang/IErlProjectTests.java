@@ -165,7 +165,7 @@ public class IErlProjectTests extends ErlModelTestBase {
     public void getExternalIncludes_includeDirs() throws Exception {
         File externalFile = null;
         final IErlProject aProject = projects[0];
-        final Collection<IPath> includeDirs = aProject.getIncludeDirs();
+        final Collection<IPath> includeDirs = aProject.getProperties().getIncludeDirs();
         try {
             // given
             // an erlang project and an external file not in any project, but on
@@ -235,7 +235,7 @@ public class IErlProjectTests extends ErlModelTestBase {
     public void setIncludeDirs() throws Exception {
         File externalFile = null;
         final IErlProject aProject = projects[0];
-        final Collection<IPath> includeDirs = aProject.getIncludeDirs();
+        final Collection<IPath> includeDirs = aProject.getProperties().getIncludeDirs();
         try {
             // given
             // an erlang project and an external file not in any project
@@ -276,7 +276,7 @@ public class IErlProjectTests extends ErlModelTestBase {
     @Test
     public void setSourceDirs() throws Exception {
         final IErlProject aProject = projects[0];
-        final Collection<IPath> sourceDirs = aProject.getSourceDirs();
+        final Collection<IPath> sourceDirs = aProject.getProperties().getSourceDirs();
         try {
             // given
             // an Erlang project and a module
@@ -307,7 +307,7 @@ public class IErlProjectTests extends ErlModelTestBase {
     // Collection<IPath> getSourceDirs();
     @Test
     public void getSourceDirs() throws Exception {
-        final Collection<IPath> sourceDirs = projects[0].getSourceDirs();
+        final Collection<IPath> sourceDirs = projects[0].getProperties().getSourceDirs();
         assertEquals(1, sourceDirs.size());
         final IPath path = new Path("src");
         assertEquals(path, sourceDirs.iterator().next());
@@ -316,7 +316,8 @@ public class IErlProjectTests extends ErlModelTestBase {
     // Collection<IPath> getIncludeDirs();
     @Test
     public void getIncludeDirs() throws Exception {
-        final Collection<IPath> includeDirs = projects[0].getIncludeDirs();
+        final Collection<IPath> includeDirs = projects[0].getProperties()
+                .getIncludeDirs();
         assertEquals(1, includeDirs.size());
         final IPath path = new Path("include");
         assertEquals(path, includeDirs.iterator().next());
@@ -325,7 +326,7 @@ public class IErlProjectTests extends ErlModelTestBase {
     // IPath getOutputLocation();
     @Test
     public void getOutputLocation() throws Exception {
-        final IPath outputLocation = projects[0].getOutputLocation();
+        final IPath outputLocation = projects[0].getProperties().getOutputDir();
         assertEquals(new Path("ebin"), outputLocation);
     }
 
@@ -359,13 +360,14 @@ public class IErlProjectTests extends ErlModelTestBase {
     @Test
     public void setProperties() throws Exception {
         final IErlProject aProject = projects[0];
-        final Collection<IPath> sourceDirs = aProject.getSourceDirs();
+        final Collection<IPath> sourceDirs = aProject.getProperties().getSourceDirs();
         try {
             final ErlangProjectProperties properties = aProject.getProperties();
             final IPath srcx = new Path("srcx");
             properties.setSourceDirs(Lists.newArrayList(srcx));
             aProject.setProperties(properties);
-            final Collection<IPath> sourceDirs2 = aProject.getSourceDirs();
+            final Collection<IPath> sourceDirs2 = aProject.getProperties()
+                    .getSourceDirs();
             assertEquals(1, sourceDirs2.size());
             assertEquals(srcx, sourceDirs2.iterator().next());
         } finally {
@@ -406,7 +408,7 @@ public class IErlProjectTests extends ErlModelTestBase {
     @Test
     public void getModule() throws Exception {
         final IErlProject aProject = projects[0];
-        final Collection<IPath> sourceDirs = aProject.getSourceDirs();
+        final Collection<IPath> sourceDirs = aProject.getProperties().getSourceDirs();
         try {
             // given
             // an Erlang project and a module

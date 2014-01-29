@@ -22,6 +22,7 @@ import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.MarkerUtils;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
@@ -73,8 +74,9 @@ public class EmakeBuilder extends ExternalBuilder {
     IErlangEngine _instance = ErlangEngine.getInstance();
     IErlModel _model = _instance.getModel();
     final IErlProject erlProject = _model.getErlangProject(project);
-    IPath _outputLocation = erlProject.getOutputLocation();
-    final IFolder bf = project.getFolder(_outputLocation);
+    ErlangProjectProperties _properties = erlProject.getProperties();
+    IPath _outputDir = _properties.getOutputDir();
+    final IFolder bf = project.getFolder(_outputDir);
     final Procedure1<IFolder> _function = new Procedure1<IFolder>() {
       public void apply(final IFolder it) {
         try {

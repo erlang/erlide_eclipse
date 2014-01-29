@@ -189,7 +189,7 @@ public class IErlElementTest extends ErlModelTestBase {
     // boolean isStructureKnown() throws ErlModelException;
     @Test
     public void isStructureKnown() throws Exception {
-        ((ErlProject) project).setSourceDirs(project.getSourceDirs());
+        ((ErlProject) project).setSourceDirs(project.getProperties().getSourceDirs());
         // this sets structureKnown to false
 
         final boolean structureKnown = project.isStructureKnown();

@@ -579,8 +579,10 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
             final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                     .getErlangProject(project);
             if (erlProject != null) {
-                validPaths.addAll(getFullPaths(project, erlProject.getIncludeDirs()));
-                validPaths.addAll(getFullPaths(project, erlProject.getSourceDirs()));
+                validPaths.addAll(getFullPaths(project, erlProject.getProperties()
+                        .getIncludeDirs()));
+                validPaths.addAll(getFullPaths(project, erlProject.getProperties()
+                        .getSourceDirs()));
                 final Collection<IPath> extras = Lists.newArrayList();
                 for (final IPath p : SourcePathUtils.getExtraSourcePathsForModel(project)) {
                     extras.add(p);

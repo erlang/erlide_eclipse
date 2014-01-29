@@ -335,7 +335,7 @@ public class ModelInternalUtils implements ModelUtilService {
         }
 
         final IErlProject project = getProject(module);
-        final IPath beamPath = project.getOutputLocation()
+        final IPath beamPath = project.getProperties().getOutputDir()
                 .append(module.getModuleName()).addFileExtension("beam");
         final IFile beam = project.getWorkspaceProject().getFile(beamPath);
 

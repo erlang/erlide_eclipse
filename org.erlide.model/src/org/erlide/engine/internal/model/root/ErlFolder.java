@@ -98,21 +98,22 @@ public class ErlFolder extends Openable implements IErlFolder {
     public boolean isOnSourcePath() {
         final IErlProject project = modelUtilService.getProject(this);
         return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
-                project.getSourceDirs());
+                project.getProperties().getSourceDirs());
     }
 
     @Override
     public boolean isOnIncludePath() {
         final IErlProject project = modelUtilService.getProject(this);
         return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
-                project.getIncludeDirs());
+                project.getProperties().getIncludeDirs());
     }
 
     @Override
     public boolean isSourcePathParent() {
         final IProject project = folder.getProject();
         final IErlProject erlProject = modelUtilService.getProject(this);
-        final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
+        final Collection<IPath> sourcePaths = erlProject.getProperties()
+                .getSourceDirs();
         final IPath path = folder.getFullPath();
         for (final IPath i : sourcePaths) {
             if (path.isPrefixOf(project.getFolder(i).getFullPath())) {

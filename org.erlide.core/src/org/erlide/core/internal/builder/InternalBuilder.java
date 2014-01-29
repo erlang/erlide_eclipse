@@ -82,7 +82,7 @@ public class InternalBuilder extends ErlangBuilder {
             initializeBuilder(monitor);
 
             // TODO validate source and include directories
-            final IPath out = erlProject.getOutputLocation();
+            final IPath out = erlProject.getProperties().getOutputDir();
             final IResource outr = project.findMember(out);
             if (outr != null) {
                 try {
@@ -94,7 +94,7 @@ public class InternalBuilder extends ErlangBuilder {
             }
 
             handleAppFile(getProject().getLocation().toPortableString() + "/" + out,
-                    erlProject.getSourceDirs());
+                    erlProject.getProperties().getSourceDirs());
 
             handleErlangFiles(erlProject, project, args, kind, getDelta(project));
 
@@ -137,7 +137,8 @@ public class InternalBuilder extends ErlangBuilder {
             MarkerUtils.removeProblemMarkersFor(currentProject);
             final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                     .getErlangProject(currentProject);
-            final IFolder bf = currentProject.getFolder(erlProject.getOutputLocation());
+            final IFolder bf = currentProject.getFolder(erlProject.getProperties()
+                    .getOutputDir());
             if (bf.exists()) {
                 cleanupOutput(bf, monitor);
             }
@@ -214,7 +215,8 @@ public class InternalBuilder extends ErlangBuilder {
             MarkerUtils.deleteMarkers(resource);
             // notifier.aboutToCompile(resource);
             if ("erl".equals(resource.getFileExtension())) {
-                final String outputDir = erlProject.getOutputLocation().toString();
+                final String outputDir = erlProject.getProperties().getOutputDir()
+                        .toString();
                 final IRpcFuture f = helper.startCompileErl(project, bres, outputDir,
                         backend.getRpcSite(), compilerOptions,
                         kind == IncrementalProjectBuilder.FULL_BUILD);

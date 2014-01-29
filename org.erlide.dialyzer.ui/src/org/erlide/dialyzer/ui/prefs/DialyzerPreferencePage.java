@@ -721,8 +721,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
                             .getChildrenOfKind(ErlElementKind.PROJECT)) {
                         final IErlProject project = (IErlProject) i;
                         final String ebinDir = project.getWorkspaceProject()
-                                .getFolder(project.getOutputLocation()).getLocation()
-                                .toString();
+                                .getFolder(project.getProperties().getOutputDir())
+                                .getLocation().toString();
                         ebinDirs.add(ebinDir);
                     }
                 }

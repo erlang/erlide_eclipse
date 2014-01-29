@@ -221,8 +221,8 @@ public abstract class Backend implements IStreamListener, IBackend {
             return;
         }
         final IProject project = eproject.getWorkspaceProject();
-        final String outDir = project.getLocation().append(eproject.getOutputLocation())
-                .toOSString();
+        final String outDir = project.getLocation()
+                .append(eproject.getProperties().getOutputDir()).toOSString();
         if (outDir.length() > 0) {
             final boolean accessible = RuntimeUtils.isAccessibleDir(getRpcSite(), outDir);
             if (accessible) {
@@ -242,7 +242,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         try {
             final IProject project = eproject.getWorkspaceProject();
             final String outDir = project.getLocation()
-                    .append(eproject.getOutputLocation()).toOSString();
+                    .append(eproject.getProperties().getOutputDir()).toOSString();
             if (outDir.length() > 0) {
                 removePath(outDir);
                 // TODO unloadBeamsFromDir(outDir); ?

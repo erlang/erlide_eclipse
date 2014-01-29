@@ -89,17 +89,17 @@ public class Configuration implements IConfiguration {
 
     @Override
     public IPath getOutputDir() {
-        return project.getOutputLocation();
+        return project.getProperties().getOutputDir();
     }
 
     @Override
     public Collection<IPath> getSourceDirs() {
-        return project.getSourceDirs();
+        return project.getProperties().getSourceDirs();
     }
 
     @Override
     public Collection<IPath> getIncludeDirs() {
-        return project.getIncludeDirs();
+        return project.getProperties().getIncludeDirs();
     }
 
     @Override

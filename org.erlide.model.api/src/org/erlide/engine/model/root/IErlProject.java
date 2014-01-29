@@ -14,7 +14,6 @@ package org.erlide.engine.model.root;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IOpenable;
 import org.erlide.engine.model.IParent;
@@ -68,23 +67,9 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     String getExternalIncludesString();
 
-    Collection<IPath> getSourceDirs();
-
-    Collection<IPath> getIncludeDirs();
-
-    IPath getOutputLocation();
-
     RuntimeInfo getRuntimeInfo();
 
     RuntimeVersion getRuntimeVersion();
-
-    void setProperties(ErlangProjectProperties properties) throws BackingStoreException;
-
-    Collection<IErlProject> getReferencedProjects() throws ErlModelException;
-
-    IErlModule getModule(String name) throws ErlModelException;
-
-    IProject getWorkspaceProject();
 
     /**
      * Returns the project's current configuration.
@@ -95,12 +80,18 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
      */
     ErlangProjectProperties getProperties();
 
+    void setProperties(ErlangProjectProperties properties) throws BackingStoreException;
+
+    Collection<IErlProject> getReferencedProjects() throws ErlModelException;
+
+    IErlModule getModule(String name) throws ErlModelException;
+
+    IProject getWorkspaceProject();
+
     BuilderProperties getBuilderProperties();
 
     ProjectConfigType getBuilderConfigType();
 
     void setBuilderConfigType(ProjectConfigType config);
-
-    ProjectConfigurator getBuilderConfig();
 
 }

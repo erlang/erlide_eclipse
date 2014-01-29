@@ -42,7 +42,7 @@ public class InternalProjectConfigurationTests extends AbstractProjectConfigurat
         node.put(ProjectPreferencesConstants.INCLUDE_DIRS, expected);
         node.flush();
 
-        final String actual = project.getIncludeDirs().toString();
+        final String actual = project.getProperties().getIncludeDirs().toString();
 
         assertThat(actual, is(convertListString(expected)));
     }
@@ -61,7 +61,7 @@ public class InternalProjectConfigurationTests extends AbstractProjectConfigurat
         node.put(ProjectPreferencesConstants.SOURCE_DIRS, expected);
         node.flush();
 
-        final String actual = project.getSourceDirs().toString();
+        final String actual = project.getProperties().getSourceDirs().toString();
 
         assertThat(actual, is(convertListString(expected)));
     }

@@ -562,7 +562,8 @@ public class ErlModule extends Openable implements IErlModule {
             final IErlFolder folder = (IErlFolder) parent;
             return folder.isOnSourcePath();
         }
-        if (checkPath(modelUtilService.getProject(this).getSourceDirs())) {
+        if (checkPath(modelUtilService.getProject(this).getProperties()
+                .getSourceDirs())) {
             return true;
         }
         return false;
@@ -575,7 +576,8 @@ public class ErlModule extends Openable implements IErlModule {
             final IErlFolder folder = (IErlFolder) parent;
             return folder.isOnIncludePath();
         }
-        if (checkPath(modelUtilService.getProject(this).getIncludeDirs())) {
+        if (checkPath(modelUtilService.getProject(this).getProperties()
+                .getIncludeDirs())) {
             return true;
         }
         return false;

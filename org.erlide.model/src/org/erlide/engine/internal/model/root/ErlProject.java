@@ -107,8 +107,6 @@ public class ErlProject extends Openable implements IErlProject,
     private ErlangProjectProperties properties;
     private BuilderProperties builderProperties;
 
-    private ProjectConfigurator builderConfig;
-
     public ErlProject(final IProject project, final ErlElement parent) {
         super(parent, project.getName());
         fProject = project;
@@ -177,7 +175,7 @@ public class ErlProject extends Openable implements IErlProject,
     private void addExternals(final List<IErlElement> children) {
         final String externalIncludes = getExternalIncludesString();
         final String externalModules = getExternalModulesString();
-        final Collection<IPath> includeDirs = getIncludeDirs();
+        final Collection<IPath> includeDirs = getProperties().getIncludeDirs();
         final List<String> projectIncludes = Lists.newArrayList();
         for (final IPath path : includeDirs) {
             if (path.isAbsolute() && !fProject.getLocation().isPrefixOf(path)) {
@@ -312,7 +310,8 @@ public class ErlProject extends Openable implements IErlProject,
             return modulesForProject;
         }
         final List<IErlModule> result = new ArrayList<IErlModule>();
-        final List<IPath> sourceDirs = Lists.newArrayList(getSourceDirs());
+        final List<IPath> sourceDirs = Lists.newArrayList(getProperties()
+                .getSourceDirs());
         for (final IPath s : SourcePathUtils
                 .getExtraSourcePathsForModel(fProject)) {
             sourceDirs.add(s);
@@ -369,7 +368,7 @@ public class ErlProject extends Openable implements IErlProject,
                     .getModel();
             if (cached == null) {
                 final List<IErlModule> modules = getModulesOrIncludes(fProject,
-                        model, getSourceDirs(), true);
+                        model, getProperties().getSourceDirs(), true);
                 result.addAll(modules);
             } else {
                 result.addAll(cached);
@@ -389,7 +388,8 @@ public class ErlProject extends Openable implements IErlProject,
             return cached;
         }
         final List<IErlModule> includes = getModulesOrIncludes(fProject,
-                ErlangEngine.getInstance().getModel(), getIncludeDirs(), false);
+                ErlangEngine.getInstance().getModel(), getProperties()
+                        .getIncludeDirs(), false);
         erlModelCache.putIncludesForProject(this, includes);
         return includes;
     }
@@ -586,21 +586,6 @@ public class ErlProject extends Openable implements IErlProject,
         setStructureKnown(false);
     }
 
-    @Override
-    public Collection<IPath> getSourceDirs() {
-        return getProperties().getSourceDirs();
-    }
-
-    @Override
-    public Collection<IPath> getIncludeDirs() {
-        return getProperties().getIncludeDirs();
-    }
-
-    @Override
-    public IPath getOutputLocation() {
-        return getProperties().getOutputDir();
-    }
-
     RuntimeVersion cachedRuntimeVersion;
     RuntimeInfo cachedRuntimeInfo;
 
@@ -764,8 +749,6 @@ public class ErlProject extends Openable implements IErlProject,
     @Override
     public void setBuilderConfigType(final ProjectConfigType config) {
         builderConfigType = config;
-        builderConfig = ProjectConfiguratorFactory.getDefault().getConfig(
-                config, this);
     }
 
     @Override
@@ -774,11 +757,18 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     private ErlangProjectProperties loadProperties() {
+        final ProjectConfigurator builderConfig = getBuilderConfig();
         return builderConfig.getConfiguration();
+    }
+
+    private ProjectConfigurator getBuilderConfig() {
+        return ProjectConfiguratorFactory.getDefault().getConfig(
+                getBuilderConfigType(), this);
     }
 
     private void storeProperties() {
         if (properties != null) {
+            final ProjectConfigurator builderConfig = getBuilderConfig();
             builderConfig.setConfiguration(properties);
         }
     }
@@ -830,11 +820,6 @@ public class ErlProject extends Openable implements IErlProject,
             builderProperties = new BuilderProperties();
         }
         return builderProperties;
-    }
-
-    @Override
-    public ProjectConfigurator getBuilderConfig() {
-        return builderConfig;
     }
 
 }
