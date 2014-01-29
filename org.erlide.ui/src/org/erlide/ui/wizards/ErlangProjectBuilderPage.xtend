@@ -160,6 +160,12 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
     info.requiredRuntimeVersion = new RuntimeVersion(runtimeCombo.text)
   }
 
+  def selectConfig(ProjectConfigType type) {
+    configComposite.children.forEach [
+      (it as Button).selection = type.equals(data)
+    ]
+  }
+
 }
 
 class ConfigSelectionListener implements SelectionListener {
@@ -194,6 +200,10 @@ class BuilderSelectionListener implements SelectionListener {
 
   override widgetSelected(SelectionEvent e) {
     info.builder = e.widget.data as BuilderTool
+    val cfgs = info.builder.matchingConfigs
+    if (!cfgs.contains(info.configType)) {
+      page.selectConfig(cfgs.head)
+    }
 
     page.message = null
     val toolExists = info.builder.osCommand === null ||

@@ -11,6 +11,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.xtend2.lib.StringConcatenation;
@@ -378,5 +379,17 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
     String _text = this.runtimeCombo.getText();
     RuntimeVersion _runtimeVersion = new RuntimeVersion(_text);
     this.info.setRequiredRuntimeVersion(_runtimeVersion);
+  }
+  
+  public void selectConfig(final ProjectConfigType type) {
+    Control[] _children = this.configComposite.getChildren();
+    final Procedure1<Control> _function = new Procedure1<Control>() {
+      public void apply(final Control it) {
+        Object _data = it.getData();
+        boolean _equals = type.equals(_data);
+        ((Button) it).setSelection(_equals);
+      }
+    };
+    IterableExtensions.<Control>forEach(((Iterable<Control>)Conversions.doWrapArray(_children)), _function);
   }
 }
