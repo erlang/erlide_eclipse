@@ -32,6 +32,13 @@ public class RuntimeVersionTest {
     }
 
     @Test
+    public void toString_4() {
+        final String expect = "R16B03-1";
+        final RuntimeVersion test = new RuntimeVersion(expect);
+        assertThat(test.toString(), is(expect));
+    }
+
+    @Test
     public void compare_2() {
         final RuntimeVersion test1 = new RuntimeVersion("R12");
         final RuntimeVersion test2 = new RuntimeVersion("R12A");
@@ -91,6 +98,13 @@ public class RuntimeVersionTest {
     public void compare_5a() {
         final RuntimeVersion test1 = new RuntimeVersion("R13A03");
         final RuntimeVersion test2 = new RuntimeVersion("R13B01");
+        assertThat(test1.compareTo(test2), is(lessThan(0)));
+    }
+
+    @Test
+    public void compare_6a() {
+        final RuntimeVersion test1 = new RuntimeVersion("R16B03");
+        final RuntimeVersion test2 = new RuntimeVersion("R16B03-1");
         assertThat(test1.compareTo(test2), is(lessThan(0)));
     }
 
