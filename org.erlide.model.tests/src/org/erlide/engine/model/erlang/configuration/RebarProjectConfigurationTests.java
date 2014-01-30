@@ -25,7 +25,9 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
     @Test
     public void configCanBeParsed() throws CoreException {
         project.setConfigType(ProjectConfigType.REBAR);
+        project.storeAllProperties();
         setFileContent(ProjectConfigType.REBAR.getConfigName(), "");
+
         final ProjectConfigurator persister = ProjectConfiguratorFactory.getDefault()
                 .getConfig(project.getConfigType(), project);
         final ProjectConfigurationSerializer configurator = ((FileProjectConfigurator) persister)

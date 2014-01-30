@@ -93,15 +93,19 @@ import com.google.common.collect.Lists;
 public class ErlProject extends Openable implements IErlProject,
         ProjectConfigurationChangeListener {
 
+    private static final String CONFIG_TYPE_TAG = "configType";
+
     /**
      * Whether the underlying file system is case sensitive.
      */
     private static final boolean IS_CASE_SENSITIVE = !new File("Temp").equals(new File("temp")); //$NON-NLS-1$ //$NON-NLS-2$
 
     protected IProject fProject;
-    private ProjectConfigType builderConfigType = ProjectConfigType.INTERNAL;
+    private ProjectConfigType configType = ProjectConfigType.INTERNAL;
     private ErlangProjectProperties properties;
     private BuilderProperties builderProperties;
+
+    private volatile boolean configuring = false;
 
     public ErlProject(final IProject project, final ErlElement parent) {
         super(parent, project.getName());
@@ -526,34 +530,36 @@ public class ErlProject extends Openable implements IErlProject,
 
     public void setIncludeDirs(final Collection<IPath> includeDirs) {
         getModelCache().removeProject(this);
-        getProperties().setIncludeDirs(includeDirs);
+        properties.setIncludeDirs(includeDirs);
         storeProperties();
         setStructureKnown(false);
     }
 
     public void setSourceDirs(final Collection<IPath> sourceDirs) {
         getModelCache().removeProject(this);
-        getProperties().setSourceDirs(sourceDirs);
+        properties.setSourceDirs(sourceDirs);
         storeProperties();
         setStructureKnown(false);
     }
 
     public void setExternalModulesFile(final String absolutePath) {
         getModelCache().removeProject(this);
-        getProperties().setExternalModulesFile(absolutePath);
+        properties.setExternalModulesFile(absolutePath);
         storeProperties();
         setStructureKnown(false);
     }
 
     public void setExternalIncludesFile(final String absolutePath) {
         getModelCache().removeProject(this);
-        getProperties().setExternalIncludesFile(absolutePath);
+        properties.setExternalIncludesFile(absolutePath);
         storeProperties();
         setStructureKnown(false);
     }
 
     RuntimeVersion cachedRuntimeVersion;
     RuntimeInfo cachedRuntimeInfo;
+
+    private boolean storing;
 
     @Override
     public RuntimeInfo getRuntimeInfo() {
@@ -578,12 +584,10 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     @Override
-    public void setProperties(final ErlangProjectProperties properties) {
+    public void setProperties(final ErlangProjectProperties newProperties) {
         getModelCache().removeProject(this);
-        final ErlangProjectProperties projectProperties = getProperties();
-        projectProperties.copyFrom(properties);
+        properties.copyFrom(newProperties);
         storeAllProperties();
-        configurationChanged();
     }
 
     @Override
@@ -697,14 +701,14 @@ public class ErlProject extends Openable implements IErlProject,
 
     private void loadCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        final String name = node.get("builderConfig",
+        final String name = node.get(CONFIG_TYPE_TAG,
                 ProjectConfigType.INTERNAL.name());
         setConfigType(ProjectConfigType.valueOf(name));
     }
 
     private void storeCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        node.put("builderConfig", getConfigType().name());
+        node.put(CONFIG_TYPE_TAG, getConfigType().name());
         try {
             node.flush();
         } catch (final BackingStoreException e) {
@@ -714,12 +718,13 @@ public class ErlProject extends Openable implements IErlProject,
 
     @Override
     public void setConfigType(final ProjectConfigType config) {
-        builderConfigType = config;
+        configType = config;
+        storeCoreProperties();
     }
 
     @Override
     public ProjectConfigType getConfigType() {
-        return builderConfigType;
+        return configType;
     }
 
     private ErlangProjectProperties loadProperties() {
@@ -741,7 +746,15 @@ public class ErlProject extends Openable implements IErlProject,
 
     @Override
     public void configurationChanged() {
-        loadAllProperties();
+        if (configuring || storing) {
+            return;
+        }
+        try {
+            configuring = true;
+            loadAllProperties();
+        } finally {
+            configuring = false;
+        }
     }
 
     private void loadAllProperties() {
@@ -752,9 +765,17 @@ public class ErlProject extends Openable implements IErlProject,
 
     @Override
     public void storeAllProperties() {
-        storeCoreProperties();
-        storeBuilderProperties();
-        storeProperties();
+        if (storing) {
+            return;
+        }
+        try {
+            storing = true;
+            storeCoreProperties();
+            storeBuilderProperties();
+            storeProperties();
+        } finally {
+            storing = false;
+        }
     }
 
     private void loadBuilderProperties() {
