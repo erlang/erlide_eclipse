@@ -28,28 +28,36 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
     private final int major;
     private final int minor;
     private int micro;
+    private int update_level;
 
     public RuntimeVersion(final RuntimeVersion other) {
         major = other.major;
         minor = other.minor;
         micro = other.micro;
+        update_level = other.update_level;
     }
 
-    public RuntimeVersion(final int major, final int minor, final int micro) {
+    public RuntimeVersion(final int major, final int minor, final int micro, final int update_level) {
         // Assert.isTrue(major >= UNUSED);
         // Assert.isTrue(minor >= UNUSED);
         // Assert.isTrue(micro >= UNUSED);
+        // Assert.isTrue(update_level >= UNUSED);
         this.major = major;
         this.minor = minor;
         this.micro = micro;
+        this.update_level = update_level;
+    }
+
+    public RuntimeVersion(final int major, final int minor, final int micro) {
+        this(major, minor, micro, UNUSED);
     }
 
     public RuntimeVersion(final int major, final int minor) {
-        this(major, minor, UNUSED);
+        this(major, minor, UNUSED, UNUSED);
     }
 
     public RuntimeVersion(final int major) {
-        this(major, UNUSED, UNUSED);
+        this(major, UNUSED, UNUSED, UNUSED);
     }
 
     public RuntimeVersion(final String version) {
@@ -61,6 +69,7 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
             major = UNUSED;
             minor = UNUSED;
             micro = UNUSED;
+            update_level = UNUSED;
             return;
         }
         // Assert.isTrue(version.charAt(0) == 'R');
@@ -80,11 +89,20 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
             i++;
             if (major >= 13) {
                 if (i < version.length()) {
-                    micro = Integer.parseInt(version.substring(i));
+                    final int n = version.indexOf('-');
+                    if (n == -1) {
+                        micro = Integer.parseInt(version.substring(i));
+                        update_level = UNUSED;
+                    } else {
+                        micro = Integer.parseInt(version.substring(i, n));
+                        update_level = Integer.parseInt(version.substring(n + 1));
+                    }
                 } else {
                     micro = 0;
+                    update_level = UNUSED;
                 }
             } else {
+                update_level = UNUSED;
                 if (aMicro != null) {
                     micro = Integer.parseInt(aMicro);
                 } else {
@@ -99,10 +117,12 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
         } else {
             minor = UNUSED;
             micro = UNUSED;
+            update_level = UNUSED;
         }
         // Assert.isTrue(major >= UNUSED);
         // Assert.isTrue(minor >= UNUSED);
         // Assert.isTrue(micro >= UNUSED);
+        // Assert.isTrue(update_level >= UNUSED);
     }
 
     @Override
@@ -123,6 +143,10 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
                             m = "0" + m;
                         }
                         result += m;
+                        if (update_level != UNUSED) {
+                            String n = Integer.toString(update_level);
+                            result += "-" + n;
+                        }
                     }
                 }
             }
@@ -144,7 +168,10 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
         if (major == o.major) {
             if (minor == o.minor) {
                 if (micro == o.micro) {
-                    return 0;
+                    if (update_level == o.update_level) {
+                        return 0;
+                    }
+                    return update_level - o.update_level;
                 }
                 return micro - o.micro;
             }
