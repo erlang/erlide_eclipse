@@ -126,7 +126,7 @@ public class BuilderProperties {
   }
   
   public void fromString(final String data) {
-    final String[] parts = data.split("§");
+    final String[] parts = data.split("|");
     try {
       String _get = parts[0];
       final BuilderTool bt = BuilderTool.valueOf(_get);
@@ -153,19 +153,18 @@ public class BuilderProperties {
     StringConcatenation _builder = new StringConcatenation();
     BuilderTool _builderTool = this.getBuilderTool();
     _builder.append(_builderTool, "");
-    _builder.append("§");
+    _builder.append("|");
     String _compileTarget = this.getCompileTarget();
     _builder.append(_compileTarget, "");
-    _builder.append("§");
+    _builder.append("|");
     String _cleanTarget = this.getCleanTarget();
     _builder.append(_cleanTarget, "");
-    _builder.append("§");
+    _builder.append("|");
     String _testTarget = this.getTestTarget();
     _builder.append(_testTarget, "");
-    _builder.append("§");
+    _builder.append("|");
     String _extraFlags = this.getExtraFlags();
     _builder.append(_extraFlags, "");
-    _builder.newLineIfNotEmpty();
     return _builder.toString();
   }
 }

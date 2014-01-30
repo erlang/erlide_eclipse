@@ -36,7 +36,7 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
                 .getErlangProject(project);
 
         if (!validateBuildConfiguration(erlProject)) {
-            final ProjectConfigType config = erlProject.getBuilderConfigType();
+            final ProjectConfigType config = erlProject.getConfigType();
             final BuilderTool tool = erlProject.getBuilderProperties().getBuilderTool();
             ErlLogger.warn("Builder tool and config mismatch: " + tool + " " + config);
 
@@ -47,7 +47,7 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
     }
 
     private boolean validateBuildConfiguration(final IErlProject erlProject) {
-        final ProjectConfigType config = erlProject.getBuilderConfigType();
+        final ProjectConfigType config = erlProject.getConfigType();
         final BuilderTool tool = erlProject.getBuilderProperties().getBuilderTool();
         if (!config.matchTool(tool)) {
             final String msg = String.format(

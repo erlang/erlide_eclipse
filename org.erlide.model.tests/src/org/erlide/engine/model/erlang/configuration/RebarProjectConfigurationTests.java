@@ -24,10 +24,10 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
     @Override
     @Test
     public void configCanBeParsed() throws CoreException {
-        project.setBuilderConfigType(ProjectConfigType.REBAR);
+        project.setConfigType(ProjectConfigType.REBAR);
         setFileContent(ProjectConfigType.REBAR.getConfigName(), "");
         final ProjectConfigurator persister = ProjectConfiguratorFactory.getDefault()
-                .getConfig(project.getBuilderConfigType(), project);
+                .getConfig(project.getConfigType(), project);
         final ProjectConfigurationSerializer configurator = ((FileProjectConfigurator) persister)
                 .getSerializer();
 
@@ -40,7 +40,7 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
 
     @Test
     public void propertiesShouldFollowConfigFileChange() throws CoreException {
-        project.setBuilderConfigType(ProjectConfigType.REBAR);
+        project.setConfigType(ProjectConfigType.REBAR);
         final String cfgFile = ProjectConfigType.REBAR.getConfigName();
         final String config = getFileContent(cfgFile);
 

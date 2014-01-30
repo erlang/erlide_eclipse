@@ -26,7 +26,7 @@ class BuilderProperties {
   @Property String extraFlags = ""
 
   def void fromString(String data) {
-    val parts = data.split("§")
+    val parts = data.split("|")
     try {
       val bt = BuilderTool.valueOf(parts.get(0))
       val b = parts.get(1)
@@ -45,9 +45,7 @@ class BuilderProperties {
   }
 
   override toString() {
-    '''
-      «builderTool»§«compileTarget»§«cleanTarget»§«testTarget»§«extraFlags»
-    '''
+    '''«builderTool»|«compileTarget»|«cleanTarget»|«testTarget»|«extraFlags»'''
   }
 
 }

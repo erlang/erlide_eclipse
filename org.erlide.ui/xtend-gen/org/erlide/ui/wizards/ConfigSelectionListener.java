@@ -2,6 +2,7 @@ package org.erlide.ui.wizards;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.engine.model.root.ProjectConfigType;
 
@@ -19,5 +20,8 @@ public class ConfigSelectionListener implements SelectionListener {
   public void widgetSelected(final SelectionEvent e) {
     Object _data = e.widget.getData();
     this.info.setConfigType(((ProjectConfigType) _data));
+    ProjectConfigType _configType = this.info.getConfigType();
+    String _plus = ("ws: " + _configType);
+    InputOutput.<String>println(_plus);
   }
 }

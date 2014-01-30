@@ -21,7 +21,6 @@ import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
-import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * An Erlang project represents a view of a project resource in terms of Erlang
@@ -76,7 +75,7 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
      */
     ErlangProjectProperties getProperties();
 
-    void setProperties(ErlangProjectProperties properties) throws BackingStoreException;
+    void setProperties(ErlangProjectProperties properties);
 
     Collection<IErlProject> getReferencedProjects() throws ErlModelException;
 
@@ -86,8 +85,10 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     BuilderProperties getBuilderProperties();
 
-    ProjectConfigType getBuilderConfigType();
+    ProjectConfigType getConfigType();
 
-    void setBuilderConfigType(ProjectConfigType config);
+    void setConfigType(ProjectConfigType config);
+
+    void storeAllProperties();
 
 }

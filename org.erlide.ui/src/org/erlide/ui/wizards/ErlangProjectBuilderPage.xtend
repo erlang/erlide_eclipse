@@ -9,6 +9,7 @@ import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Button
 import org.eclipse.swt.widgets.Combo
 import org.eclipse.swt.widgets.Composite
+import org.eclipse.swt.widgets.Event
 import org.eclipse.swt.widgets.Label
 import org.eclipse.swt.widgets.Text
 import org.erlide.core.executor.ToolExecutor
@@ -162,7 +163,12 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
 
   def selectConfig(ProjectConfigType type) {
     configComposite.children.forEach [
-      (it as Button).selection = type.equals(data)
+      if (it instanceof Button)
+        if (type.equals(data)) {
+          val event = new Event()
+          event.widget = it
+          notifyListeners(SWT.Selection, event)
+        }
     ]
   }
 
@@ -181,6 +187,7 @@ class ConfigSelectionListener implements SelectionListener {
 
   override widgetSelected(SelectionEvent e) {
     info.configType = e.widget.data as ProjectConfigType
+    println("ws: " + info.configType)
   }
 
 }

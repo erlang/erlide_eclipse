@@ -578,12 +578,12 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     @Override
-    public void setProperties(final ErlangProjectProperties properties)
-            throws BackingStoreException {
+    public void setProperties(final ErlangProjectProperties properties) {
         getModelCache().removeProject(this);
         final ErlangProjectProperties projectProperties = getProperties();
         projectProperties.copyFrom(properties);
-        storeProperties();
+        storeAllProperties();
+        configurationChanged();
     }
 
     @Override
@@ -699,12 +699,12 @@ public class ErlProject extends Openable implements IErlProject,
         final IEclipsePreferences node = getCorePropertiesNode();
         final String name = node.get("builderConfig",
                 ProjectConfigType.INTERNAL.name());
-        setBuilderConfigType(ProjectConfigType.valueOf(name));
+        setConfigType(ProjectConfigType.valueOf(name));
     }
 
     private void storeCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        node.put("builderConfig", getBuilderConfigType().name());
+        node.put("builderConfig", getConfigType().name());
         try {
             node.flush();
         } catch (final BackingStoreException e) {
@@ -713,28 +713,28 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     @Override
-    public void setBuilderConfigType(final ProjectConfigType config) {
+    public void setConfigType(final ProjectConfigType config) {
         builderConfigType = config;
     }
 
     @Override
-    public ProjectConfigType getBuilderConfigType() {
+    public ProjectConfigType getConfigType() {
         return builderConfigType;
     }
 
     private ErlangProjectProperties loadProperties() {
-        final ProjectConfigurator builderConfig = getBuilderConfig();
+        final ProjectConfigurator builderConfig = getConfig();
         return builderConfig.getConfiguration();
     }
 
-    private ProjectConfigurator getBuilderConfig() {
+    private ProjectConfigurator getConfig() {
         return ProjectConfiguratorFactory.getDefault().getConfig(
-                getBuilderConfigType(), this);
+                getConfigType(), this);
     }
 
     private void storeProperties() {
         if (properties != null) {
-            final ProjectConfigurator builderConfig = getBuilderConfig();
+            final ProjectConfigurator builderConfig = getConfig();
             builderConfig.setConfiguration(properties);
         }
     }
@@ -750,7 +750,8 @@ public class ErlProject extends Openable implements IErlProject,
         properties = loadProperties();
     }
 
-    private void storeAllProperties() {
+    @Override
+    public void storeAllProperties() {
         storeCoreProperties();
         storeBuilderProperties();
         storeProperties();
@@ -774,8 +775,7 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     private boolean validateBuilderTool(final BuilderTool tool) {
-        return getBuilderConfigType().matchTool(
-                builderProperties.getBuilderTool());
+        return getConfigType().matchTool(builderProperties.getBuilderTool());
     }
 
     @Override

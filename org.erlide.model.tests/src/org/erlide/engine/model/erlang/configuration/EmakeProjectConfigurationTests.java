@@ -23,10 +23,10 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
 
     @Test
     public void configuratorExists() {
-        project.setBuilderConfigType(ProjectConfigType.EMAKE);
+        project.setConfigType(ProjectConfigType.EMAKE);
 
         final ProjectConfigurator config = ProjectConfiguratorFactory.getDefault()
-                .getConfig(project.getBuilderConfigType(), project);
+                .getConfig(project.getConfigType(), project);
         assertThat(config, is(notNullValue()));
 
         // final ProjectConfigurator configurator = config.getConfigurator();
@@ -36,9 +36,9 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
     @Override
     @Test
     public void configCanBeParsed() throws CoreException {
-        project.setBuilderConfigType(ProjectConfigType.EMAKE);
+        project.setConfigType(ProjectConfigType.EMAKE);
         final ProjectConfigurator config = ProjectConfiguratorFactory.getDefault()
-                .getConfig(project.getBuilderConfigType(), project);
+                .getConfig(project.getConfigType(), project);
 
         final ErlangProjectProperties expected = ErlangProjectProperties.DEFAULT;
         final ErlangProjectProperties actual = config.getConfiguration();
@@ -48,7 +48,7 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
 
     @Test
     public void propertiesShouldFollowConfigFileChange() throws CoreException {
-        project.setBuilderConfigType(ProjectConfigType.EMAKE);
+        project.setConfigType(ProjectConfigType.EMAKE);
         final String cfgFile = ProjectConfigType.EMAKE.getConfigName();
 
         final String config1 = "{'src/*',[debug_info,{i,\"myinclude\"}]}. "

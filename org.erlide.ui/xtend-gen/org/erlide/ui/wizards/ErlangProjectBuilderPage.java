@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.xtend2.lib.StringConcatenation;
@@ -385,9 +386,16 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
     Control[] _children = this.configComposite.getChildren();
     final Procedure1<Control> _function = new Procedure1<Control>() {
       public void apply(final Control it) {
-        Object _data = it.getData();
-        boolean _equals = type.equals(_data);
-        ((Button) it).setSelection(_equals);
+        if ((it instanceof Button)) {
+          Object _data = ((Button)it).getData();
+          boolean _equals = type.equals(_data);
+          if (_equals) {
+            Event _event = new Event();
+            final Event event = _event;
+            event.widget = it;
+            ((Button)it).notifyListeners(SWT.Selection, event);
+          }
+        }
       }
     };
     IterableExtensions.<Control>forEach(((Iterable<Control>)Conversions.doWrapArray(_children)), _function);

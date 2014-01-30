@@ -220,6 +220,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
 
                     final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                             .getErlangProject(newProjectHandle);
+                    erlProject.setConfigType(info.getConfigType());
                     erlProject.setProperties(info);
 
                 } catch (final Exception e) {

@@ -49,6 +49,9 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     }
 
     public static Charset detectEncoding(final String s) {
+        if (s == null) {
+            return Charsets.ISO_8859_1;
+        }
         final String line = s.trim();
         Matcher matcher = LATIN1.matcher(line);
         if (matcher.matches()) {

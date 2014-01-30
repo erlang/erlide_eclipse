@@ -32,10 +32,10 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.PathSerializer;
+import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.SystemConfiguration;
-import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlangProjectPropertyPage extends PropertyPage {
 
@@ -63,11 +63,7 @@ public class ErlangProjectPropertyPage extends PropertyPage {
             return false;
         }
         erlProject.clearCaches();
-        try {
-            erlProject.setProperties(model);
-        } catch (final BackingStoreException e) {
-            e.printStackTrace();
-        }
+        erlProject.setProperties(model);
         return super.performOk();
     }
 
@@ -82,7 +78,8 @@ public class ErlangProjectPropertyPage extends PropertyPage {
         boolean ok = true;
         ok &= !outputText.getText().isEmpty();
         ok &= !sourcesText.getText().isEmpty();
-        return ok && super.isValid();
+        return (erlProject.getConfigType() != ProjectConfigType.INTERNAL || ok)
+                && super.isValid();
     }
 
     @Override
@@ -92,6 +89,15 @@ public class ErlangProjectPropertyPage extends PropertyPage {
         model = erlProject.getProperties();
 
         final Composite composite = new Composite(parent, SWT.NONE);
+
+        boolean globalEnable = true;
+        final ProjectConfigType configType = erlProject.getConfigType();
+        if (configType != ProjectConfigType.INTERNAL) {
+            globalEnable = false;
+            setMessage("Please edit " + configType.getConfigName()
+                    + " to change settings for this project");
+        }
+
         composite.setLayout(new GridLayout(2, false));
         {
             final Label lblRequiredErlangVersion = new Label(composite, SWT.NONE);
@@ -105,6 +111,7 @@ public class ErlangProjectPropertyPage extends PropertyPage {
                     1);
             gd_combo.widthHint = 83;
             runtimeCombo.setLayoutData(gd_combo);
+            runtimeCombo.setEnabled(globalEnable);
             final RuntimeVersion[] runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS;
             runtimeCombo.setItems(ListExtensions.map(Arrays.asList(runtimeVersions),
                     new Functions.Function1<RuntimeVersion, String>() {
@@ -139,6 +146,7 @@ public class ErlangProjectPropertyPage extends PropertyPage {
             outputText = new Text(composite, SWT.BORDER);
             outputText
                     .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+            outputText.setEnabled(globalEnable);
             outputText.setText(model.getOutputDir().toPortableString());
             outputText.addModifyListener(new ModifyListener() {
 
@@ -158,7 +166,7 @@ public class ErlangProjectPropertyPage extends PropertyPage {
             sourcesText = new Text(composite, SWT.BORDER);
             sourcesText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
                     1));
-            System.out.println(PathSerializer.packList(model.getSourceDirs()));
+            sourcesText.setEnabled(globalEnable);
             sourcesText.setText(PathSerializer.packList(model.getSourceDirs()));
             sourcesText.addModifyListener(new ModifyListener() {
 
@@ -178,7 +186,7 @@ public class ErlangProjectPropertyPage extends PropertyPage {
             includesText = new Text(composite, SWT.BORDER);
             includesText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
                     1));
-            System.out.println(PathSerializer.packList(model.getIncludeDirs()));
+            includesText.setEnabled(globalEnable);
             includesText.setText(PathSerializer.packList(model.getIncludeDirs()));
             includesText.addModifyListener(new ModifyListener() {
 
@@ -197,7 +205,7 @@ public class ErlangProjectPropertyPage extends PropertyPage {
         }
         {
             testsText = new Text(composite, SWT.BORDER);
-            testsText.setEnabled(false);
+            testsText.setEnabled(globalEnable && false);
             testsText
                     .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
             testsText.setText(PathSerializer.packList(model.getTestDirs()));
@@ -217,15 +225,14 @@ public class ErlangProjectPropertyPage extends PropertyPage {
             lblExternalModules.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
                     false, 1, 1));
             lblExternalModules.setText("External modules");
-            lblExternalModules
-                    .setEnabled(SystemConfiguration.getInstance().isDeveloper());
         }
         {
             extModsText = new Text(composite, SWT.BORDER);
             extModsText.setEditable(false);
             extModsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
                     1));
-            extModsText.setEnabled(SystemConfiguration.getInstance().isDeveloper());
+            extModsText.setEnabled(globalEnable
+                    && SystemConfiguration.getInstance().isDeveloper());
             extModsText.setText(model.getExternalModulesFile());
         }
         {
@@ -233,15 +240,14 @@ public class ErlangProjectPropertyPage extends PropertyPage {
             lblExternalIncludes.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
                     false, 1, 1));
             lblExternalIncludes.setText("External includes");
-            lblExternalIncludes.setEnabled(SystemConfiguration.getInstance()
-                    .isDeveloper());
         }
         {
             extIncsText = new Text(composite, SWT.BORDER);
             extIncsText.setEditable(false);
             extIncsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
                     1));
-            extIncsText.setEnabled(SystemConfiguration.getInstance().isDeveloper());
+            extIncsText.setEnabled(globalEnable
+                    && SystemConfiguration.getInstance().isDeveloper());
             extIncsText.setText(model.getExternalIncludesFile());
         }
         return composite;
