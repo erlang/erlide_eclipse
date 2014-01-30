@@ -9,14 +9,15 @@
  *******************************************************************************/
 package org.erlide.ui.properties;
 
-import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.UpdateValueStrategy;
-import org.eclipse.core.databinding.beans.PojoProperties;
-import org.eclipse.core.databinding.observable.value.IObservableValue;
+import java.util.Arrays;
+
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -25,21 +26,30 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.eclipse.xtext.xbase.lib.Functions;
+import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.PathSerializer;
+import org.erlide.engine.model.root.ProjectPreferencesConstants;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.SystemConfiguration;
+import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlangProjectPropertyPage extends PropertyPage {
 
-    private final ErlangProjectProperties model;
-    private Text text;
-    private Text text_1;
-    private Text text_2;
-    private Text text_3;
-    private Combo combo;
-    private Text text_4;
-    private Text text_5;
+    private Text outputText;
+    private Text sourcesText;
+    private Text includesText;
+    private Text testsText;
+    private Combo runtimeCombo;
+    private Text extModsText;
+    private Text extIncsText;
+
+    private IErlProject erlProject;
+
+    private ErlangProjectProperties model;
 
     public ErlangProjectPropertyPage() {
         super();
@@ -47,77 +57,40 @@ public class ErlangProjectPropertyPage extends PropertyPage {
         model = new ErlangProjectProperties();
     }
 
-    protected void createFieldEditors() {
-        // final IProject prj = (IProject)
-        // getElement().getAdapter(IProject.class);
-        // final IErlProject erlPrj =
-        // ErlangEngine.getInstance().getModel().findProject(prj);
-        // final BuilderConfig config = erlPrj.getBuilderConfig();
-        // final boolean readonly = config != BuilderConfig.INTERNAL;
-        //
-        // try {
-        // prj.getFolder(new
-        // Path(".settings")).refreshLocal(IResource.DEPTH_ONE, null);
-        // } catch (final CoreException e) {
-        // }
-
-        // final ProjectDirectoryFieldEditor out = new
-        // ProjectDirectoryFieldEditor(
-        // ProjectPreferencesConstants.OUTPUT_DIR, "Output directory:",
-        // getFieldEditorParent(), prj, false);
-        // addField(out);
-        // out.setEnabled(!readonly, getFieldEditorParent());
-        //
-        // final ProjectPathEditor src = new ProjectPathEditor(
-        // ProjectPreferencesConstants.SOURCE_DIRS, "Source directories:",
-        // "Select directory:", getFieldEditorParent(), prj);
-        // addField(src);
-        // src.setEnabled(!readonly, getFieldEditorParent());
-        //
-        // final ProjectPathEditor inc = new ProjectPathEditor(
-        // ProjectPreferencesConstants.INCLUDE_DIRS, "Include directories:",
-        // "Select directory:", getFieldEditorParent(), prj);
-        // addField(inc);
-        // inc.setEnabled(!readonly, getFieldEditorParent());
-        //
-        // // IPreferenceStore ps = getPreferenceStore();
-        // // OldErlangProjectProperties props = new
-        // // OldErlangProjectProperties(prj);
-        // // List<String> tstDirs = props.getTestDirs();
-        // // String tstStr = PreferencesUtils.packList(tstDirs);
-        // // ps.setValue(ProjectPreferencesConstants.TEST_DIRS, tstStr);
-        // //
-        // // ProjectPathEditor tst = new ProjectPathEditor(
-        // // ProjectPreferencesConstants.TEST_DIRS,
-        // // "Test source directories:", "Select directory:",
-        // // fieldEditorParent, prj);
-        // // tst.setEnabled(false, fieldEditorParent);
-        // // addField(tst);
-        //
-        // final List<String> versions = BackendCore.getRuntimeInfoCatalog()
-        // .getAllRuntimesVersions();
-        // final String[][] versionsArray = new String[versions.size()][2];
-        // for (int i = 0; i < versionsArray.length; i++) {
-        // versionsArray[i][0] = versions.get(i);
-        // versionsArray[i][1] = versionsArray[i][0];
-        // }
-        // addField(new
-        // ComboFieldEditor(ProjectPreferencesConstants.RUNTIME_VERSION,
-        // "Runtime version:", versionsArray, getFieldEditorParent()));
-
-    }
-
     @Override
     public boolean performOk() {
-        final IProject project = (IProject) getElement().getAdapter(IProject.class);
-        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
-                .getErlangProject(project);
+        if (!isValid()) {
+            return false;
+        }
         erlProject.clearCaches();
+        try {
+            erlProject.setProperties(model);
+        } catch (final BackingStoreException e) {
+            e.printStackTrace();
+        }
         return super.performOk();
     }
 
     @Override
+    protected void performDefaults() {
+        model = erlProject.getProperties();
+        super.performDefaults();
+    }
+
+    @Override
+    public boolean isValid() {
+        boolean ok = true;
+        ok &= !outputText.getText().isEmpty();
+        ok &= !sourcesText.getText().isEmpty();
+        return ok && super.isValid();
+    }
+
+    @Override
     protected Control createContents(final Composite parent) {
+        final IProject project = (IProject) getElement().getAdapter(IProject.class);
+        erlProject = ErlangEngine.getInstance().getModel().getErlangProject(project);
+        model = erlProject.getProperties();
+
         final Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(2, false));
         {
@@ -127,15 +100,34 @@ public class ErlangProjectPropertyPage extends PropertyPage {
             lblRequiredErlangVersion.setText("Required Erlang version");
         }
         {
-            combo = new Combo(composite, SWT.NONE);
+            runtimeCombo = new Combo(composite, SWT.NONE);
             final GridData gd_combo = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1,
                     1);
             gd_combo.widthHint = 83;
-            combo.setLayoutData(gd_combo);
+            runtimeCombo.setLayoutData(gd_combo);
+            final RuntimeVersion[] runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS;
+            runtimeCombo.setItems(ListExtensions.map(Arrays.asList(runtimeVersions),
+                    new Functions.Function1<RuntimeVersion, String>() {
+                        @Override
+                        public String apply(final RuntimeVersion p) {
+                            return p.toString();
+                        }
+                    }).toArray(new String[] {}));
+            runtimeCombo.setText(model.getRequiredRuntimeVersion().asMajor().toString());
+            runtimeCombo.addSelectionListener(new SelectionListener() {
+
+                @Override
+                public void widgetSelected(final SelectionEvent e) {
+                    model.setRequiredRuntimeVersion(new RuntimeVersion(runtimeCombo
+                            .getText()));
+                }
+
+                @Override
+                public void widgetDefaultSelected(final SelectionEvent e) {
+                }
+            });
         }
-        {
-            new Label(composite, SWT.NONE);
-        }
+        new Label(composite, SWT.NONE);
         new Label(composite, SWT.NONE);
         {
             final Label lblNewLabel = new Label(composite, SWT.NONE);
@@ -144,8 +136,17 @@ public class ErlangProjectPropertyPage extends PropertyPage {
             lblNewLabel.setText("Output directory");
         }
         {
-            text = new Text(composite, SWT.BORDER);
-            text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+            outputText = new Text(composite, SWT.BORDER);
+            outputText
+                    .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+            outputText.setText(model.getOutputDir().toPortableString());
+            outputText.addModifyListener(new ModifyListener() {
+
+                @Override
+                public void modifyText(final ModifyEvent e) {
+                    model.setOutputDir(new Path(outputText.getText()));
+                }
+            });
         }
         {
             final Label lblNewLabel = new Label(composite, SWT.NONE);
@@ -154,8 +155,18 @@ public class ErlangProjectPropertyPage extends PropertyPage {
             lblNewLabel.setText("Source directories");
         }
         {
-            text_1 = new Text(composite, SWT.BORDER);
-            text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+            sourcesText = new Text(composite, SWT.BORDER);
+            sourcesText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+                    1));
+            System.out.println(PathSerializer.packList(model.getSourceDirs()));
+            sourcesText.setText(PathSerializer.packList(model.getSourceDirs()));
+            sourcesText.addModifyListener(new ModifyListener() {
+
+                @Override
+                public void modifyText(final ModifyEvent e) {
+                    model.setSourceDirs(PathSerializer.unpackList(sourcesText.getText()));
+                }
+            });
         }
         {
             final Label lblNewLabel = new Label(composite, SWT.NONE);
@@ -164,20 +175,39 @@ public class ErlangProjectPropertyPage extends PropertyPage {
             lblNewLabel.setText("Include directories");
         }
         {
-            text_2 = new Text(composite, SWT.BORDER);
-            text_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+            includesText = new Text(composite, SWT.BORDER);
+            includesText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+                    1));
+            System.out.println(PathSerializer.packList(model.getIncludeDirs()));
+            includesText.setText(PathSerializer.packList(model.getIncludeDirs()));
+            includesText.addModifyListener(new ModifyListener() {
+
+                @Override
+                public void modifyText(final ModifyEvent e) {
+                    model.setIncludeDirs(PathSerializer.unpackList(includesText.getText()));
+                }
+            });
         }
         {
-            final Label lblNewLabel_3 = new Label(composite, SWT.NONE);
-            lblNewLabel_3.setEnabled(false);
-            lblNewLabel_3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
+            final Label lblNewLabel = new Label(composite, SWT.NONE);
+            lblNewLabel.setEnabled(false);
+            lblNewLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
                     1, 1));
-            lblNewLabel_3.setText("Test directories");
+            lblNewLabel.setText("Test directories");
         }
         {
-            text_3 = new Text(composite, SWT.BORDER);
-            text_3.setEnabled(false);
-            text_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+            testsText = new Text(composite, SWT.BORDER);
+            testsText.setEnabled(false);
+            testsText
+                    .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+            testsText.setText(PathSerializer.packList(model.getTestDirs()));
+            testsText.addModifyListener(new ModifyListener() {
+
+                @Override
+                public void modifyText(final ModifyEvent e) {
+                    model.setTestDirs(PathSerializer.unpackList(testsText.getText()));
+                }
+            });
         }
         new Label(composite, SWT.NONE);
         new Label(composite, SWT.NONE);
@@ -191,10 +221,12 @@ public class ErlangProjectPropertyPage extends PropertyPage {
                     .setEnabled(SystemConfiguration.getInstance().isDeveloper());
         }
         {
-            text_4 = new Text(composite, SWT.BORDER);
-            text_4.setEditable(false);
-            text_4.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-            text_4.setEnabled(SystemConfiguration.getInstance().isDeveloper());
+            extModsText = new Text(composite, SWT.BORDER);
+            extModsText.setEditable(false);
+            extModsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+                    1));
+            extModsText.setEnabled(SystemConfiguration.getInstance().isDeveloper());
+            extModsText.setText(model.getExternalModulesFile());
         }
         {
             final Label lblExternalIncludes = new Label(composite, SWT.NONE);
@@ -205,36 +237,14 @@ public class ErlangProjectPropertyPage extends PropertyPage {
                     .isDeveloper());
         }
         {
-            text_5 = new Text(composite, SWT.BORDER);
-            text_5.setEditable(false);
-            text_5.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-            text_5.setEnabled(SystemConfiguration.getInstance().isDeveloper());
+            extIncsText = new Text(composite, SWT.BORDER);
+            extIncsText.setEditable(false);
+            extIncsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+                    1));
+            extIncsText.setEnabled(SystemConfiguration.getInstance().isDeveloper());
+            extIncsText.setText(model.getExternalIncludesFile());
         }
-        initDataBindings();
         return composite;
     }
 
-    protected DataBindingContext initDataBindings() {
-        final DataBindingContext bindingContext = new DataBindingContext();
-        //
-        final IObservableValue observeTextTextObserveWidget = SWTObservables.observeText(
-                text, SWT.Modify);
-        final IObservableValue outputDirModelObserveValue = PojoProperties.value(
-                "outputDir").observe(model);
-        final UpdateValueStrategy strategy = new UpdateValueStrategy();
-        strategy.setConverter(new StringToIPathConverter());
-        bindingContext.bindValue(observeTextTextObserveWidget,
-                outputDirModelObserveValue, strategy, null);
-        //
-        final IObservableValue observeTextText_1ObserveWidget = WidgetProperties.text(
-                SWT.Modify).observe(text_1);
-        final IObservableValue sourceDirsModelObserveValue = PojoProperties.value(
-                "sourceDirs").observe(model);
-        final UpdateValueStrategy strategy1 = new UpdateValueStrategy();
-        strategy1.setConverter(new StringToIPathListConverter());
-        bindingContext.bindValue(observeTextText_1ObserveWidget,
-                sourceDirsModelObserveValue, strategy1, null);
-        //
-        return bindingContext;
-    }
 }
