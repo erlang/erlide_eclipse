@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.erlide.util;singleton:=true
 Bundle-Version: 0.24.1.qualifier
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.core.runtime,
- org.erlide.libs;bundle-version="1.12.0"
+ org.erlide.libs;bundle-version="1.12.0",
+ org.eclipse.core.resources;bundle-version="3.7.101"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.util,

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.wizards;
 
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.Collection;
@@ -58,6 +59,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
@@ -68,6 +70,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.StatusUtil;
 import org.erlide.util.ErlLogger;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -221,6 +224,12 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
                     final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                             .getErlangProject(newProjectHandle);
                     erlProject.setConfigType(info.getConfigType());
+                    final BuilderProperties builderProperties = new BuilderProperties();
+                    builderProperties.setBuilderTool(info.getBuilder());
+                    builderProperties.setCompileTarget(info.getBuilderData().get(
+                            "compile"));
+                    builderProperties.setCleanTarget(info.getBuilderData().get("clean"));
+                    erlProject.setBuilderProperties(builderProperties);
                     erlProject.setProperties(info);
 
                 } catch (final Exception e) {
@@ -275,15 +284,28 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         case REBAR:
         case EMAKE:
             final IFile cfg = newProjectHandle.getFile(configType.getConfigName());
-            final CreateFileOperation fop = new CreateFileOperation(cfg, null, null,
+            final String contents = getConfigContent(info, configType);
+            final CreateFileOperation fop = new CreateFileOperation(cfg, null,
+                    new ByteArrayInputStream(contents.getBytes(Charsets.ISO_8859_1)),
                     "creating file " + cfg.getName());
-            System.out.println("create file " + cfg.getName());
             fop.execute(monitor, WorkspaceUndoUtil.getUIInfoAdapter(getShell()));
             break;
         case INTERNAL:
             break;
         default:
             break;
+        }
+    }
+
+    private String getConfigContent(final NewProjectData info2,
+            final ProjectConfigType configType) {
+        switch (configType) {
+        case EMAKE:
+            return "";
+        case REBAR:
+            return "";
+        default:
+            return "";
         }
     }
 

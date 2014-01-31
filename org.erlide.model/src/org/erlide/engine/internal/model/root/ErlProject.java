@@ -781,7 +781,8 @@ public class ErlProject extends Openable implements IErlProject,
     private void loadBuilderProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
         final String data = node.get("builderData", "");
-        getBuilderProperties().fromString(data);
+        builderProperties = new BuilderProperties();
+        builderProperties.fromString(data);
         // TODO more
     }
 
@@ -802,9 +803,14 @@ public class ErlProject extends Openable implements IErlProject,
     @Override
     public BuilderProperties getBuilderProperties() {
         if (builderProperties == null) {
-            builderProperties = new BuilderProperties();
+            loadBuilderProperties();
         }
         return builderProperties;
+    }
+
+    @Override
+    public void setBuilderProperties(final BuilderProperties props) {
+        builderProperties = props;
     }
 
 }

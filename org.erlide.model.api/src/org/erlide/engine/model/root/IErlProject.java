@@ -83,12 +83,14 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     IProject getWorkspaceProject();
 
-    BuilderProperties getBuilderProperties();
-
     ProjectConfigType getConfigType();
 
     void setConfigType(ProjectConfigType config);
 
     void storeAllProperties();
+
+    BuilderProperties getBuilderProperties();
+
+    void setBuilderProperties(BuilderProperties props);
 
 }

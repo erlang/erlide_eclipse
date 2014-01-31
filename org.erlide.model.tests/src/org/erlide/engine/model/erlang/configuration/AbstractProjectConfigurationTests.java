@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ErlideTestUtils;
+import org.erlide.util.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 
@@ -32,8 +33,7 @@ public abstract class AbstractProjectConfigurationTests {
     protected void setFileContent(final String name, final String content)
             throws CoreException {
         final IProject wproject = project.getWorkspaceProject();
-        ErlideTestUtils.createFileInProjectAt(wproject, name, content,
-                Charsets.ISO_8859_1);
+        FileUtils.createFileInProjectAt(wproject, name, content, Charsets.ISO_8859_1);
     }
 
     protected String getFileContent(final String name) throws CoreException {
@@ -42,8 +42,7 @@ public abstract class AbstractProjectConfigurationTests {
         if (!res.exists()) {
             return "";
         }
-        return ErlideTestUtils.convertStreamToString(res.getContents(),
-                Charsets.ISO_8859_1);
+        return FileUtils.convertStreamToString(res.getContents(), Charsets.ISO_8859_1);
     }
 
     public abstract void configCanBeParsed() throws CoreException;
