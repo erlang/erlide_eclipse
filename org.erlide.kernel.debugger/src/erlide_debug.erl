@@ -73,16 +73,16 @@ local_global(_) ->
 
 start_debug(Flags) ->
     group_leader(whereis(init), self()),
-    {ok, Pid} = erlide_dbg_mon:start(local_global(Flags), fix_flags(Flags)),
+    {ok, Pid} = dbg_mon:start(local_global(Flags), fix_flags(Flags)),
     Pid.
 
 send_started(JPid) ->
-    JPid ! {started, whereis(erlide_dbg_mon)}.
+    JPid ! {started, whereis(dbg_mon)}.
 
 attached(Pid, JPid) ->
-    %% We can't use erlide_int:attached here, because we want
+    %% We can't use int:attached here, because we want
     %% to use the JPid as meta-cmd receiver
-    erlide_dbg_iserver:call({attached, JPid, Pid}).
+    dbg_iserver:call({attached, JPid, Pid}).
 
 processes(ShowSys, ShowErlide) ->
     L = erlang:processes(),
@@ -118,49 +118,49 @@ get_dist(true) -> distributed;
 get_dist(false) -> local.
 
 interpret(File, Dist, Interpret) ->
-    erlide_dbg_mon:interpret(File, get_dist(Dist), Interpret).
+    dbg_mon:interpret(File, get_dist(Dist), Interpret).
 
 line_breakpoint(File, Line, Action) ->
     ModuleName = filename:rootname(filename:basename(File)),
     Module = list_to_atom(ModuleName),
-    Res = erlide_dbg_mon:line_breakpoint(Module, Line, Action),
+    Res = dbg_mon:line_breakpoint(Module, Line, Action),
     Res.
 
 suspend(MetaPid) ->
-    erlide_dbg_mon:suspend(MetaPid).
+    dbg_mon:suspend(MetaPid).
 
 resume(MetaPid) ->
-    erlide_dbg_mon:resume(MetaPid).
+    dbg_mon:resume(MetaPid).
 
 bindings(MetaPid) ->
-    erlide_dbg_mon:bindings(MetaPid).
+    dbg_mon:bindings(MetaPid).
 
 eval(Expr, MetaPid) ->
-    erlide_dbg_mon:eval(Expr, MetaPid).
+    dbg_mon:eval(Expr, MetaPid).
 
 all_stack_frames(MetaPid) ->
-    erlide_dbg_mon:all_stack_frames(MetaPid).
+    dbg_mon:all_stack_frames(MetaPid).
 
 all_modules_on_stack(MetaPid) ->
-    erlide_dbg_mon:all_modules_on_stack(MetaPid).
+    dbg_mon:all_modules_on_stack(MetaPid).
 
 tracing(Bool, MetaPid) ->
-    erlide_dbg_mon:tracing(Bool, MetaPid).
+    dbg_mon:tracing(Bool, MetaPid).
 
 step_over(MetaPid) ->
-    erlide_dbg_mon:step_over(MetaPid).
+    dbg_mon:step_over(MetaPid).
 
 step_into(MetaPid) ->
-    erlide_dbg_mon:step_into(MetaPid).
+    dbg_mon:step_into(MetaPid).
 
 step_return(MetaPid) ->
-    erlide_dbg_mon:step_return(MetaPid).
+    dbg_mon:step_return(MetaPid).
 
 drop_to_frame(MetaPid, FrameNum) ->
-    erlide_dbg_mon:drop_to_frame(MetaPid, FrameNum).
+    dbg_mon:drop_to_frame(MetaPid, FrameNum).
 
 set_variable_value(Variable, Value, SP, MetaPid) ->
-    erlide_dbg_mon:set_variable_value(Variable, Value, SP, MetaPid).
+    dbg_mon:set_variable_value(Variable, Value, SP, MetaPid).
 
 distribute_debugger_code(Modules) ->
     [{rpc:multicall(code, purge, [Module]),
@@ -183,9 +183,9 @@ unload_my_debugger_code(Modules) ->
 nodes() ->
     [node() | erlang:nodes()].
 
-%%     DebuggerModules = [erlide_dbg_debugged, erlide_dbg_icmd, erlide_dbg_idb,
-%%                        erlide_dbg_ieval, erlide_dbg_iload, erlide_dbg_iserver,
-%%                        erlide_int, int],
+%%     DebuggerModules = [dbg_debugged, dbg_icmd, dbg_idb,
+%%                        dbg_ieval, dbg_iload, dbg_iserver,
+%%                        int, int],
 %%     lists:foreach(fun(Module) ->
 %%                           {_Module, Binary, Filename} =
 %%                               code:get_object_code(Module),

@@ -16,14 +16,14 @@
 %% 
 %% %CopyrightEnd%
 %%
--module(erlide_dbg_ieval).
+-module(dbg_ieval).
 
 -export([eval/3,exit_info/5]).
 -export([eval_expr/3]).
 -export([check_exit_msg/3,exception/4]).
 -export([all_frames/0]).
 
--include("erlide_dbg_ieval.hrl").
+-include("dbg_ieval.hrl").
 
 %%====================================================================
 %% External exports
@@ -36,15 +36,15 @@
 %%   MFA = {Mod,Func,Args} | {Mod,Func,Arity} | {Fun,Args}
 %%   Arity = integer()
 %%   Meta = pid()
-%% Entry point from debugged process (erlide_dbg_debugged).
+%% Entry point from debugged process (dbg_debugged).
 %% Immediately returns the pid for the meta process.
 %% The evaluated value will later be sent as a message to
 %% the calling process.
 %%--------------------------------------------------------------------
 eval(Mod, Func, Args) ->
     Debugged = self(),
-    Int = erlide_dbg_iserver:find(),
-    case erlide_dbg_iserver:call(Int, {get_meta,Debugged}) of
+    Int = dbg_iserver:find(),
+    case dbg_iserver:call(Int, {get_meta,Debugged}) of
 	{ok,Meta} ->
 	    Meta ! {re_entry, Debugged, {eval,{Mod,Func,Args}}},
 	    Meta;
@@ -60,29 +60,29 @@ eval(Mod, Func, Args) ->
 %%  Reason = term()
 %%  ExitInfo = {{Mod,Line}, Bs, Stack} | {}
 %% Meta process started when attaching to a terminated process.
-%% Spawned (by erlide_dbg_iserver) in response to user request.
+%% Spawned (by dbg_iserver) in response to user request.
 %%--------------------------------------------------------------------
 exit_info(Int, AttPid, OrigPid, Reason, ExitInfo) ->
     put(int, Int),
     put(attached, AttPid),
-    put(breakpoints, erlide_dbg_iserver:call(Int, all_breaks)),
+    put(breakpoints, dbg_iserver:call(Int, all_breaks)),
     put(self, OrigPid),
     put(exit_info, ExitInfo),
     
     case ExitInfo of
 	{{Mod,Line},Bs,S} ->
-	    erlide_dbg_istk:from_external(S),
-	    Le = erlide_dbg_istk:stack_level(),
-	    erlide_dbg_icmd:tell_attached({exit_at, {Mod, Line}, Reason, Le, OrigPid, erlide_dbg_istk:all_frames(S), Bs}),
+	    dbg_istk:from_external(S),
+	    Le = dbg_istk:stack_level(),
+	    dbg_icmd:tell_attached({exit_at, {Mod, Line}, Reason, Le, OrigPid, dbg_istk:all_frames(S), Bs}),
 	    exit_loop(OrigPid, Reason, Bs,#ieval{module=Mod,line=Line});
 	{} ->
-	    erlide_dbg_istk:init(),
-            erlide_dbg_icmd:tell_attached({exit_at, null, Reason, 1, OrigPid}),
+	    dbg_istk:init(),
+            dbg_icmd:tell_attached({exit_at, null, Reason, 1, OrigPid}),
 	    exit_loop(OrigPid, Reason, erl_eval:new_bindings(),#ieval{})
     end.
 
 all_frames() ->
-    {erlide_dbg_istk:all_frames(), saved_frames()}.
+    {dbg_istk:all_frames(), saved_frames()}.
 
 saved_frames() ->
     Debugged = get(self),
@@ -96,7 +96,7 @@ saved_frames() ->
 %% eval_expr(Expr, Bs, Ieval) -> {value, Value, Bs}
 %%
 %% Evalute a shell expression in the real process.
-%% Called (erlide_dbg_icmd) in response to a user request.
+%% Called (dbg_icmd) in response to a user request.
 %%--------------------------------------------------------------------
 eval_expr(Expr, Bs, Ieval) ->
 
@@ -152,14 +152,14 @@ check_exit_msg({'DOWN',_,_,_,Reason}, Bs,
 	    undefined when Le =:= 1 -> % died outside interpreted code
 		{};
 	    undefined when Le > 1 ->
-		StackExternal = (erlide_dbg_istk:delayed_to_external())(),
+		StackExternal = (dbg_istk:delayed_to_external())(),
 		{{Mod, Li}, Bs, StackExternal};
 
 	    %% Debugged has terminated due to an exception
 	    ExitInfo0 when is_function(ExitInfo0, 0) ->
 		ExitInfo0()
 	end,
-    erlide_dbg_iserver:cast(get(int), {set_exit_info,self(),ExitInfo}),
+    dbg_iserver:cast(get(int), {set_exit_info,self(),ExitInfo}),
 
    if
 	Le =:= 1 ->
@@ -184,15 +184,15 @@ exception(Class, Reason, Bs, Ieval) ->
 
 exception(Class, Reason, Bs, Ieval, false) ->
     do_exception(Class, Reason,
-		 erlide_dbg_istk:delayed_stacktrace(no_args, Ieval),
+		 dbg_istk:delayed_stacktrace(no_args, Ieval),
 		 Bs, Ieval);
 exception(Class, Reason, Bs, Ieval, true) ->
     do_exception(Class, Reason,
-		 erlide_dbg_istk:delayed_stacktrace(include_args, Ieval),
+		 dbg_istk:delayed_stacktrace(include_args, Ieval),
 		 Bs, Ieval).
 
 do_exception(Class, Reason, Stacktrace, Bs, #ieval{module=M, line=Line}) ->
-    StackFun = erlide_dbg_istk:delayed_to_external(),
+    StackFun = dbg_istk:delayed_to_external(),
     ExitInfo = fun() ->
 		       {{M,Line},Bs,StackFun()}
 	       end,
@@ -211,29 +211,29 @@ meta(Int, Debugged, M, F, As) ->
     process_flag(trap_exit, true),
     erlang:monitor(process, Debugged),
 
-    %% Inform erlide_dbg_iserver, get the initial status in return
+    %% Inform dbg_iserver, get the initial status in return
     Pargs = case {M, F} of
 		%% If it's a fun we're evaluating, show a text
 		%% representation of the fun and its arguments,
-		%% not erlide_dbg_ieval:eval_fun(...)
+		%% not dbg_ieval:eval_fun(...)
 		{dbg_ieval, eval_fun} ->
 		    {Mx, Fx} = lists:last(As),
 		    {Mx, Fx, lists:nth(2, As)};
 		_ ->
 		    {M, F, As}
 	    end,
-    Status = erlide_dbg_iserver:call(Int, {new_process,Debugged,self(),Pargs}),
+    Status = dbg_iserver:call(Int, {new_process,Debugged,self(),Pargs}),
     
     %% Initiate process dictionary
     put(int, Int),           % pid() dbg_iserver
     put(attached, undefined),% pid() attached process
-    put(breakpoints, erlide_dbg_iserver:call(Int, all_breaks)),
+    put(breakpoints, dbg_iserver:call(Int, all_breaks)),
     put(cache, []),
     put(next_break, Status), % break | running (other values later)
     put(self, Debugged),     % pid() interpreted process
-    erlide_dbg_istk:init(),
+    dbg_istk:init(),
     put(stacktrace, []),
-    put(trace_stack, erlide_dbg_iserver:call(Int, get_stack_trace)),
+    put(trace_stack, dbg_iserver:call(Int, get_stack_trace)),
     put(trace, false),       % bool() Trace on/off
     put(user_eval, []),
 
@@ -242,8 +242,8 @@ meta(Int, Debugged, M, F, As) ->
     Ieval = #ieval{},
     Debugged ! {sys, self(), eval_mfa(Debugged,M,F,As,Ieval)},
 
-    erlide_dbg_iserver:cast(Int, {set_status, self(), idle, {}}),
-    erlide_dbg_icmd:tell_attached(idle),
+    dbg_iserver:cast(Int, {set_status, self(), idle, {}}),
+    dbg_icmd:tell_attached(idle),
 
     meta_loop(Debugged, erl_eval:new_bindings(), Ieval).
 
@@ -267,7 +267,7 @@ meta_loop(Debugged, Bs, #ieval{level=Le} = Ieval) ->
 
 		%% Error occurred outside of interpreted code.
 		undefined ->
-		    MakeStk0 = erlide_dbg_istk:delayed_stacktrace(),
+		    MakeStk0 = dbg_istk:delayed_stacktrace(),
 		    MakeStk = fun(Depth0) ->
 				      Depth = max(0, Depth0 - length(Stk)),
 				      Stk ++ MakeStk0(Depth)
@@ -285,21 +285,21 @@ meta_loop(Debugged, Bs, #ieval{level=Le} = Ieval) ->
 	    %% Reset process dictionary
 	    %% This is really only necessary if the process left
 	    %% interpreted code at a call level > 1
-	    erlide_dbg_istk:init(),
+	    dbg_istk:init(),
 	    put(stacktrace, []),
 	    put(exit_info, undefined),
 	    
-	    erlide_dbg_iserver:cast(get(int), {set_status,self(),running,{}}),
-	    erlide_dbg_icmd:tell_attached(running),
+	    dbg_iserver:cast(get(int), {set_status,self(),running,{}}),
+	    dbg_icmd:tell_attached(running),
 
 	    %% Tell attached process(es) to update source code.
-	    erlide_dbg_icmd:tell_attached({re_entry,M,F}),
+	    dbg_icmd:tell_attached({re_entry,M,F}),
 
 	    %% Send the result of the meta process
 	    Debugged ! {sys,self(),eval_mfa(Debugged,M,F,As,Ieval)},
 
-	    erlide_dbg_iserver:cast(get(int), {set_status,self(),idle,{}}),
-	    erlide_dbg_icmd:tell_attached(idle),
+	    dbg_iserver:cast(get(int), {set_status,self(),idle,{}}),
+	    dbg_icmd:tell_attached(idle),
 	    meta_loop(Debugged, Bs, Ieval);
 
 	%% Evaluation in Debugged results in call to interpreted
@@ -311,7 +311,7 @@ meta_loop(Debugged, Bs, #ieval{level=Le} = Ieval) ->
 
 	Msg ->
 	    check_exit_msg(Msg, Bs, Ieval),
-	    erlide_dbg_icmd:handle_msg(Msg, idle, Bs, Ieval),
+	    dbg_icmd:handle_msg(Msg, idle, Bs, Ieval),
 	    meta_loop(Debugged, Bs, Ieval)
     end.
 
@@ -319,7 +319,7 @@ exit_loop(OrigPid, Reason, Bs, Ieval) ->
     receive
 	Msg ->
 	    check_exit_msg(Msg, Bs, Ieval),
-	    erlide_dbg_icmd:handle_msg(Msg, exit_at, Bs, Ieval),
+	    dbg_icmd:handle_msg(Msg, exit_at, Bs, Ieval),
 	    exit_loop(OrigPid, Reason, Bs, Ieval)
     end.
 
@@ -377,7 +377,7 @@ trace(What, Args, true) ->
 		  io_lib:format("++ (~w) <~w> ~w:~w~s~n",
 				[Le, Li, M, F, format_args(As)])
 	  end,
-    erlide_dbg_icmd:tell_attached({trace_output, Str});
+    dbg_icmd:tell_attached({trace_output, Str});
 trace(_What, _Args, false) ->
     ignore.
 
@@ -430,9 +430,9 @@ eval_function(Mod, Name, As, Bs, Called, Ieval0, Lc) ->
     Tail = Lc andalso get(trace_stack) =:= no_tail,
     case Tail of
 	false ->
-	    Ieval = erlide_dbg_istk:push(Bs, Ieval0, Lc),
+	    Ieval = dbg_istk:push(Bs, Ieval0, Lc),
 	    {value,Val,_} = do_eval_function(Mod, Name, As, Bs, Called, Ieval),
-	    erlide_dbg_istk:pop(),
+	    dbg_istk:pop(),
 	    trace(return, {Ieval#ieval.level,Val}),
 	    {value,Val,Bs};
 	true ->
@@ -523,7 +523,7 @@ get_function(Mod, Name, Args, local) ->
     case cached(Key) of
 	false ->
 	    DbRef = db_ref(Mod),
-	    case erlide_dbg_idb:match_object(DbRef, {{Mod,Name,Arity,'_'},'_'}) of
+	    case dbg_idb:match_object(DbRef, {{Mod,Name,Arity,'_'},'_'}) of
 		[{{Mod,Name,Arity,Exp},Clauses}] ->
 		    cache(Key, {Exp,Clauses}),
 		    Clauses;
@@ -539,12 +539,12 @@ get_function(Mod, Name, Args, extern) ->
 	    case db_ref(Mod) of
 		not_found -> not_interpreted;
 		DbRef ->
-		    case erlide_dbg_idb:lookup(DbRef, {Mod,Name,Arity,true}) of
+		    case dbg_idb:lookup(DbRef, {Mod,Name,Arity,true}) of
 			{ok,Data} ->
 			    cache(Key, {true,Data}),
 			    Data;
 			not_found ->
-			    case erlide_dbg_idb:lookup(DbRef, module) of
+			    case dbg_idb:lookup(DbRef, module) of
 				{ok,_} -> undef;
 				not_found -> not_interpreted
 			    end
@@ -557,7 +557,7 @@ get_function(Mod, Name, Args, extern) ->
 db_ref(Mod) ->
     case get([Mod|db]) of
 	undefined ->
-	    case erlide_dbg_iserver:call(get(int),
+	    case dbg_iserver:call(get(int),
 				  {get_module_db, Mod, get(self)}) of
 		not_found ->
 		    not_found;
@@ -602,14 +602,14 @@ fnk_clauses([], _As, Bs, Ieval) ->
     exception(error, function_clause, Bs, Ieval, true).
 
 seq([E], Bs0, Ieval) ->
-    case erlide_dbg_icmd:cmd(E, Bs0, Ieval) of
+    case dbg_icmd:cmd(E, Bs0, Ieval) of
 	{skip,Bs} ->
 	    {value,skipped,Bs};
 	Bs ->
 	    expr(E, Bs, Ieval)
     end;
 seq([E|Es], Bs0, Ieval) ->
-    case erlide_dbg_icmd:cmd(E, Bs0, Ieval) of
+    case dbg_icmd:cmd(E, Bs0, Ieval) of
 	{skip,Bs} ->
 	    seq(Es, Bs, Ieval);
 	Bs1 ->
@@ -656,7 +656,7 @@ expr({'catch',Line,Expr}, Bs0, Ieval) ->
 	Class:Reason ->
 	    %% Exception caught, reset exit info
 	    put(exit_info, undefined),
-	    erlide_dbg_istk:pop(Ieval#ieval.level),
+	    dbg_istk:pop(Ieval#ieval.level),
 	    Value = catch_value(Class, Reason),
 	    trace(return, {Ieval#ieval.level,Value}),
 	    {value, Value, Bs0}
@@ -789,7 +789,7 @@ expr({make_ext_fun,Line,MFA0}, Bs0, Ieval0) ->
     catch
 	error:badarg ->
 	    Ieval1 = Ieval0#ieval{line=Line},
-	    Ieval2 = erlide_dbg_istk:push(Bs0, Ieval1, false),
+	    Ieval2 = dbg_istk:push(Bs0, Ieval1, false),
 	    Ieval = Ieval2#ieval{module=erlang,function=make_fun,
 				 arguments=[M,F,A],line=-1},
 	    exception(error, badarg, Bs, Ieval, true)
@@ -863,11 +863,11 @@ expr({safe_bif,Line,M,F,As0}, Bs0, #ieval{level=Le}=Ieval0) ->
     Ieval1 = Ieval0#ieval{line=Line},
     {As,Bs} = eval_list(As0, Bs0, Ieval1),
     trace(bif, {Le,Line,M,F,As}),
-    Ieval2 = erlide_dbg_istk:push(Bs0, Ieval1, false),
+    Ieval2 = dbg_istk:push(Bs0, Ieval1, false),
     Ieval = Ieval2#ieval{module=M,function=F,arguments=As,line=-1},
     {_,Value,_} = Res = safe_bif(M, F, As, Bs, Ieval),
     trace(return, {Le,Value}),
-    erlide_dbg_istk:pop(),
+    dbg_istk:pop(),
     Res;
 
 %% Call to a BIF that must be evaluated in the correct process
@@ -875,11 +875,11 @@ expr({bif,Line,M,F,As0}, Bs0, #ieval{level=Le}=Ieval0) ->
     Ieval1 = Ieval0#ieval{line=Line},
     {As,Bs} = eval_list(As0, Bs0, Ieval1),
     trace(bif, {Le,Line,M,F,As}),
-    Ieval2 = erlide_dbg_istk:push(Bs0, Ieval1, false),
+    Ieval2 = dbg_istk:push(Bs0, Ieval1, false),
     Ieval = Ieval2#ieval{module=M,function=F,arguments=As,line=-1},
     {_,Value,_} = Res = debugged_cmd({apply,M,F,As}, Bs, Ieval),
     trace(return, {Le,Value}),
-    erlide_dbg_istk:pop(),
+    dbg_istk:pop(),
     Res;
 
 %% Call to an operation
@@ -970,7 +970,7 @@ expr(E, _Bs, _Ieval) ->
 
 %% Interpreted fun() called from uninterpreted module, recurse
 eval_fun(Cs, As, Bs, Info) ->
-    erlide_dbg_debugged:eval(?MODULE, eval_fun, [Cs,As,Bs,Info]).
+    dbg_debugged:eval(?MODULE, eval_fun, [Cs,As,Bs,Info]).
 
 %% eval_lc(Expr,[Qualifier],Bindings,IevalState) ->
 %%	{value,Value,Bindings}.
@@ -1094,8 +1094,8 @@ eval_receive(Debugged, Cs, Bs0,
     {_,Msgs} = erlang:process_info(Debugged,messages),
     case receive_clauses(Cs, Bs0, Msgs) of
 	nomatch ->
-	    erlide_dbg_iserver:cast(get(int), {set_status, self(),waiting,{}}),
-	    erlide_dbg_icmd:tell_attached({wait_at,M,Line,Le}),
+	    dbg_iserver:cast(get(int), {set_status, self(),waiting,{}}),
+	    dbg_icmd:tell_attached({wait_at,M,Line,Le}),
 	    eval_receive1(Debugged, Cs, Bs0, Ieval);
 	{eval,B,Bs,Msg} ->
 	    rec_mess(Debugged, Msg, Bs, Ieval),
@@ -1109,8 +1109,8 @@ eval_receive1(Debugged, Cs, Bs0, Ieval) ->
 	    eval_receive1(Debugged, Cs, Bs0, Ieval);
 	{eval,B,Bs,Msg} ->
 	    rec_mess(Debugged, Msg, Bs0, Ieval),
-	    erlide_dbg_iserver:cast(get(int), {set_status, self(),running,{}}),
-	    erlide_dbg_icmd:tell_attached(running),
+	    dbg_iserver:cast(get(int), {set_status, self(),running,{}}),
+	    dbg_icmd:tell_attached(running),
 	    seq(B, Bs, Ieval)
     end.
 
@@ -1137,8 +1137,8 @@ eval_receive(Debugged, Cs, ToVal, ToExprs, ToBs, Bs0,
     case receive_clauses(Cs, Bs0, Msgs) of
 	nomatch ->
 	    {Stamp1,Time1} = newtime(Stamp,ToVal),
-	    erlide_dbg_iserver:cast(get(int), {set_status, self(),waiting,{}}),
-	    erlide_dbg_icmd:tell_attached({wait_after_at,M,Line,Le}),
+	    dbg_iserver:cast(get(int), {set_status, self(),waiting,{}}),
+	    dbg_icmd:tell_attached({wait_after_at,M,Line,Le}),
 	    eval_receive(Debugged, Cs, Time1, ToExprs, ToBs, Bs0,
 			 infinity,Stamp1, Ieval);
 	{eval,B,Bs,Msg} ->
@@ -1151,8 +1151,8 @@ eval_receive(Debugged, Cs, ToVal, ToExprs, ToBs, Bs0,
 	timeout ->
 	    trace(received,null),
 	    rec_mess(Debugged),
-	    erlide_dbg_iserver:cast(get(int), {set_status, self(),running,{}}),
-	    erlide_dbg_icmd:tell_attached(running),
+	    dbg_iserver:cast(get(int), {set_status, self(),running,{}}),
+	    dbg_icmd:tell_attached(running),
 	    seq(ToExprs, ToBs, Ieval);
 	Msgs ->
 	    case receive_clauses(Cs, Bs0, Msgs) of
@@ -1162,9 +1162,9 @@ eval_receive(Debugged, Cs, ToVal, ToExprs, ToBs, Bs0,
 				 Bs0, infinity,Stamp1, Ieval);
 		{eval,B,Bs,Msg} ->
 		    rec_mess(Debugged, Msg, Bs0, Ieval),
-		    erlide_dbg_iserver:cast(get(int),
+		    dbg_iserver:cast(get(int),
 				     {set_status, self(), running, {}}),
-		    erlide_dbg_icmd:tell_attached(running),
+		    dbg_icmd:tell_attached(running),
 		    seq(B, Bs, Ieval)
 	    end
     end.
@@ -1175,7 +1175,7 @@ do_receive(Debugged, Bs, Ieval) ->
 	    [Msg];
 	Msg ->
 	    check_exit_msg(Msg, Bs, Ieval),
-	    erlide_dbg_icmd:handle_msg(Msg, wait_at, Bs, Ieval),
+	    dbg_icmd:handle_msg(Msg, wait_at, Bs, Ieval),
 	    do_receive(Debugged, Bs, Ieval)
     end.
 
@@ -1187,7 +1187,7 @@ do_receive(Debugged, Time, Stamp, Bs, Ieval) ->
 	    timeout;
 	Msg ->
 	    check_exit_msg(Msg, Bs, Ieval),
-	    erlide_dbg_icmd:handle_msg(Msg, wait_after_at, Bs, Ieval),
+	    dbg_icmd:handle_msg(Msg, wait_after_at, Bs, Ieval),
 	    {Stamp1,Time1} = newtime(Stamp,Time),
 	    do_receive(Debugged, Time1, Stamp1, Bs, Ieval)
     after Time ->
@@ -1285,7 +1285,7 @@ catch_clauses(Exception, [{clause,_,[P],G,B}|CatchCs], Bs0, Ieval) ->
 		true ->
 		    %% Exception caught, reset exit info
 		    put(exit_info, undefined),
-		    erlide_dbg_istk:pop(Ieval#ieval.level),
+		    dbg_istk:pop(Ieval#ieval.level),
 		    seq(B, Bs, Ieval);
 		false ->
 		    catch_clauses(Exception, CatchCs, Bs0, Ieval)

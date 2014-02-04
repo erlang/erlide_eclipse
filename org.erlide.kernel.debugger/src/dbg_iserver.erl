@@ -16,7 +16,7 @@
 %% 
 %% %CopyrightEnd%
 %%
--module(erlide_dbg_iserver).
+-module(dbg_iserver).
 -behaviour(gen_server).
 
 %% External exports
@@ -93,7 +93,7 @@ ensure_started() ->
 %% {Mod, refs}                [ModDb]
 %% ModDb                      [pid()]
 %%
-%% In each ModDb, the following information is saved by erlide_dbg_iload:
+%% In each ModDb, the following information is saved by dbg_iload:
 %%
 %% Key                        Value
 %% ---                        -----
@@ -127,7 +127,7 @@ handle_call({attached, AttPid, Pid}, _From, State) ->
 		    Args = [self(),
 			    AttPid,Pid,Proc#proc.info,
 			    Proc#proc.exit_info],
-		    Meta = spawn_link(erlide_dbg_ieval, exit_info, Args),
+		    Meta = spawn_link(dbg_ieval, exit_info, Args),
 		    Proc2 = Proc#proc{meta=Meta, attpid=AttPid},
 		    Procs = lists:keyreplace(Pid, #proc.pid,
 					     State#state.procs, Proc2),
@@ -225,7 +225,7 @@ handle_call({load, Mod, Src, Bin}, _From, State) ->
     ets:insert(Db, {ModDb, []}),
 
     %% Load the code
-    {ok, Mod} = erlide_dbg_iload:load_mod(Mod, Src, Bin, ModDb),
+    {ok, Mod} = dbg_iload:load_mod(Mod, Src, Bin, ModDb),
 
     %% Inform all subscribers and attached processes
     send_all([subscriber, attached], {interpret, Mod}, State),
@@ -465,7 +465,7 @@ handle_info({'EXIT',Who,Why}, State) ->
 	    %% if so a new meta process should be started
 	    Meta = case Proc#proc.attpid of
 		       AttPid when is_pid(AttPid) ->
-			   spawn_link(erlide_dbg_ieval, exit_info, 
+			   spawn_link(dbg_ieval, exit_info, 
 				      [self(),AttPid,Pid,Why,ExitInfo]);
 		       undefined ->
 			   %% Otherwise, auto attach if necessary

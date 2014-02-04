@@ -169,7 +169,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
         }
         fTerminated = true;
 
-        fBackend.getRpcSite().send("erlide_dbg_mon", new OtpErlangAtom("stop"));
+        fBackend.getRpcSite().send("dbg_mon", new OtpErlangAtom("stop"));
         final DebugPlugin dbgPlugin = DebugPlugin.getDefault();
         if (dbgPlugin != null) {
             dbgPlugin.getBreakpointManager().removeBreakpointListener(this);

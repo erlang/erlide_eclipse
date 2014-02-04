@@ -16,7 +16,7 @@
 %%
 %% %CopyrightEnd%
 %%
--module(erlide_dbg_iload).
+-module(dbg_iload).
 
 -export([load_mod/4]).
 
@@ -35,7 +35,7 @@
 %% We want the loading of a module to be synchronous so that no other
 %% process tries to interpret code in a module not being completely
 %% loaded. This is achieved as this function is called from
-%% erlide_dbg_iserver. We are suspended until the module has been loaded.
+%% dbg_iserver. We are suspended until the module has been loaded.
 %%--------------------------------------------------------------------
 -spec load_mod(Mod, file:filename(), binary(), ets:tid()) ->
         {'ok', Mod} when is_subtype(Mod, atom()).
@@ -71,8 +71,8 @@ store_module(Mod, File, Binary, Db) ->
 		    {_,_,Forms0,_} = sys_pre_expand:module(Code, []),
 		    Forms0
 	    end,
-    erlide_dbg_idb:insert(Db, mod_file, File),
-    erlide_dbg_idb:insert(Db, defs, []),
+    dbg_idb:insert(Db, mod_file, File),
+    dbg_idb:insert(Db, defs, []),
 
     put(vcount, 0),
     put(fun_count, 0),
@@ -87,8 +87,8 @@ store_module(Mod, File, Binary, Db) ->
     erase(fun_count),
     
     NewBinary = store_mod_line_no(Mod, Db, binary_to_list(Src)),
-    erlide_dbg_idb:insert(Db, mod_bin, NewBinary),
-    erlide_dbg_idb:insert(Db, mod_raw, <<Src/binary,0:8>>). %% Add eos
+    dbg_idb:insert(Db, mod_bin, NewBinary),
+    dbg_idb:insert(Db, mod_raw, <<Src/binary,0:8>>). %% Add eos
 
 %% Adjust line numbers using the file/2 attribute. 
 %% Also take the absolute value of line numbers.
@@ -106,8 +106,8 @@ abstr(Term) -> Term.
 %     store_funs_1(get(funs), Db, Mod).
 
 % store_funs_1([{Name,Index,Uniq,_,_,Arity,Cs}|Fs], Db, Mod) ->
-%     erlide_dbg_idb:insert(Db, {Mod,Name,Arity,false}, Cs),
-%     erlide_dbg_idb:insert(Db, {'fun',Mod,Index,Uniq}, {Name,Arity,Cs}),
+%     dbg_idb:insert(Db, {Mod,Name,Arity,false}, Cs),
+%     dbg_idb:insert(Db, {'fun',Mod,Index,Uniq}, {Name,Arity,Cs}),
 %     store_funs_1(Fs, Db, Mod);
 % store_funs_1([], _, _) -> ok.
 
@@ -116,7 +116,7 @@ store_forms([{function,_,Name,Arity,Cs0}|Fs], Mod, Db, Exp) ->
     put(current_function, FA),
     Cs = clauses(Cs0),
     Exported = lists:member(FA, Exp),
-    erlide_dbg_idb:insert(Db, {Mod,Name,Arity,Exported}, Cs),
+    dbg_idb:insert(Db, {Mod,Name,Arity,Exported}, Cs),
     store_forms(Fs, Mod, Db, Exp);
 store_forms([{attribute,_,_Name,_Val}|Fs], Mod, Db, Exp) ->
     store_forms(Fs, Mod, Db, Exp);
@@ -136,7 +136,7 @@ store_mod_line_no(Mod, Db, Contents, LineNo, Pos, NewCont) when is_integer(LineN
 
 store_line(_, Db, Contents, LineNo, Pos, NewCont) ->
     {ContHead,ContTail,PosNL} = get_nl(Contents,Pos+8,[]),
-    erlide_dbg_idb:insert(Db,LineNo,{Pos+8,PosNL}),
+    dbg_idb:insert(Db,LineNo,{Pos+8,PosNL}),
     {ContTail,PosNL+1,[make_lineno(LineNo, 8, ContHead)|NewCont]}.
 
 make_lineno(N, P, Acc) ->

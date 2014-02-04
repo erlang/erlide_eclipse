@@ -16,7 +16,7 @@
 %%
 %% %CopyrightEnd%
 %%
--module(erlide_dbg_debugged).
+-module(dbg_debugged).
 
 %% External exports
 %% Avoid warning for local function demonitor/1 clashing with autoimported BIF.
@@ -37,7 +37,7 @@
 eval(Mod, Func, Args) ->
     SaveStacktrace = erlang:get_stacktrace(),
     put(ss2, get_ss2()),
-    Meta = erlide_dbg_ieval:eval(Mod, Func, Args),
+    Meta = dbg_ieval:eval(Mod, Func, Args),
     Mref = erlang:monitor(process, Meta),
     msg_loop(Meta, Mref, SaveStacktrace).
 
