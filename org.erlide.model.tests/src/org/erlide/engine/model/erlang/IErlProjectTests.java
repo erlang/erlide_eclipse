@@ -348,9 +348,7 @@ public class IErlProjectTests extends ErlModelTestBase {
         final IErlProject aProject = projects[0];
         final RuntimeVersion version = aProject.getRuntimeVersion();
         assertNotNull(version);
-        final String major = version.asMajor().toString();
-        assertTrue(major.startsWith("R"));
-        final int majorVersion = Integer.valueOf(major.substring(1)).intValue();
+        final int majorVersion = version.getMajor();
         assertTrue(majorVersion >= 12);
     }
 

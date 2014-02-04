@@ -47,7 +47,7 @@ public abstract class ExternalBuilder extends ErlangBuilder {
         final ToolResults result = ex.run(getOsCommand(), getCompileTarget(), project
                 .getLocation().toPortableString());
 
-        if (result.isCommandNotFound()) {
+        if (result == null || result.isCommandNotFound()) {
             MarkerUtils.addMarker(null, project, null, "Builder command not found: "
                     + getOsCommand(), 0, IMarker.SEVERITY_ERROR,
                     MarkerUtils.PROBLEM_MARKER);

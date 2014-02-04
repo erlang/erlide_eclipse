@@ -39,8 +39,8 @@ public final class ErlangProjectProperties implements IPreferenceChangeListener,
             .unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
     private String externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
     private String externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
-    private RuntimeVersion runtimeVersion = new RuntimeVersion(
-            ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+    private RuntimeVersion runtimeVersion = RuntimeVersion.Serializer
+            .parse(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
     private String runtimeName = null;
 
     private boolean nukeOutputOnClean = false;
@@ -79,21 +79,21 @@ public final class ErlangProjectProperties implements IPreferenceChangeListener,
         final String outputDirsStr = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
                 ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
         outputDirs = PathSerializer.unpackList(outputDirsStr);
-        runtimeVersion = new RuntimeVersion(node.get(
+        runtimeVersion = RuntimeVersion.Serializer.parse(node.get(
                 ProjectPreferencesConstants.RUNTIME_VERSION, null));
         runtimeName = node.get(ProjectPreferencesConstants.RUNTIME_NAME, null);
         if (!runtimeVersion.isDefined()) {
             if (runtimeName == null) {
-                runtimeVersion = new RuntimeVersion(
-                        ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+                runtimeVersion = RuntimeVersion.Serializer
+                        .parse(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
             } else {
                 final RuntimeInfo info = RuntimeCore.getRuntimeInfoCatalog().getRuntime(
                         runtimeName);
                 if (info != null) {
                     runtimeVersion = new RuntimeVersion(info.getVersion());
                 } else {
-                    runtimeVersion = new RuntimeVersion(
-                            ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+                    runtimeVersion = RuntimeVersion.Serializer
+                            .parse(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
                 }
             }
         }

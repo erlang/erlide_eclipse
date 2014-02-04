@@ -10,23 +10,19 @@
  *******************************************************************************/
 package org.erlide.runtime.runtimeinfo;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 
-public final class RuntimeVersion implements Comparable<RuntimeVersion> {
+import com.google.common.base.Preconditions;
 
-    public static final int UNUSED = -1;
+public class RuntimeVersion implements Comparable<RuntimeVersion> {
 
-    private static final char[] minorMap = new char[] { 'A', 'B', 'C' };
+    public static final int UNUSED = Integer.MIN_VALUE;
+    public static final RuntimeVersion NO_VERSION = new RuntimeVersion(UNUSED);
 
     private final int major;
     private final int minor;
-    private int micro;
-    private int update_level;
+    private final int micro;
+    private final int update_level;
 
     public RuntimeVersion(final RuntimeVersion other) {
         major = other.major;
@@ -35,11 +31,8 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
         update_level = other.update_level;
     }
 
-    public RuntimeVersion(final int major, final int minor, final int micro, final int update_level) {
-        // Assert.isTrue(major >= UNUSED);
-        // Assert.isTrue(minor >= UNUSED);
-        // Assert.isTrue(micro >= UNUSED);
-        // Assert.isTrue(update_level >= UNUSED);
+    public RuntimeVersion(final int major, final int minor, final int micro,
+            final int update_level) {
         this.major = major;
         this.minor = minor;
         this.micro = micro;
@@ -58,69 +51,133 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
         this(major, UNUSED, UNUSED, UNUSED);
     }
 
-    public RuntimeVersion(final String version) {
-        this(version, null);
-    }
+    public static class Serializer {
 
-    public RuntimeVersion(final String version, final String aMicro) {
-        if (version == null || version.length() == 0) {
-            major = UNUSED;
-            minor = UNUSED;
-            micro = UNUSED;
-            update_level = UNUSED;
-            return;
+        private static final char[] minorMap = new char[] { 'A', 'B', 'C' };
+
+        public static RuntimeVersion parse(final String version) {
+            return parse(version, null);
         }
-        // Assert.isTrue(version.charAt(0) == 'R');
-        int i = 1;
-        char c;
-        do {
-            c = version.charAt(i);
-            if (c >= '0' && c <= '9') {
+
+        public static RuntimeVersion parseOld(final String version, final String aMicro) {
+            int major;
+            int minor = UNUSED;
+            int micro = UNUSED;
+            int update_level = UNUSED;
+
+            Preconditions.checkArgument(version.charAt(0) == 'R');
+            int i = 1;
+            char c;
+            do {
+                c = version.charAt(i);
+                if (c >= '0' && c <= '9') {
+                    i++;
+                }
+            } while (c >= '0' && c <= '9' && i < version.length());
+            final String substring = version.substring(1, i);
+            major = Integer.parseInt(substring);
+            if (i < version.length()) {
+                c = version.charAt(i);
+                minor = Arrays.binarySearch(minorMap, c);
                 i++;
-            }
-        } while (c >= '0' && c <= '9' && i < version.length());
-        final String substring = version.substring(1, i);
-        major = Integer.parseInt(substring);
-        if (i < version.length()) {
-            c = version.charAt(i);
-            minor = Arrays.binarySearch(minorMap, c);
-            i++;
-            if (major >= 13) {
                 if (i < version.length()) {
                     final int n = version.indexOf('-');
                     if (n == -1) {
                         micro = Integer.parseInt(version.substring(i));
-                        update_level = UNUSED;
                     } else {
                         micro = Integer.parseInt(version.substring(i, n));
                         update_level = Integer.parseInt(version.substring(n + 1));
                     }
                 } else {
                     micro = 0;
-                    update_level = UNUSED;
                 }
-            } else {
-                update_level = UNUSED;
-                if (aMicro != null) {
-                    micro = Integer.parseInt(aMicro);
+            }
+            return new RuntimeVersion(major, minor, micro, update_level);
+        }
+
+        public static RuntimeVersion parseNew(final String version, final String aMicro) {
+            final int major;
+            int minor = 0;
+            int micro = 0;
+            int update_level = UNUSED;
+
+            final String[] parts = version.split("\\.");
+            major = Integer.parseInt(parts[0]);
+            if (parts.length > 1) {
+                minor = Integer.parseInt(parts[1]);
+            }
+            if (parts.length > 2) {
+                final int pos = parts[2].indexOf('-');
+                if (pos < 0) {
+                    micro = Integer.parseInt(parts[2]);
                 } else {
-                    final int n = version.indexOf('-');
-                    if (n == -1) {
-                        micro = UNUSED;
+                    micro = Integer.parseInt(parts[2].substring(0, pos));
+
+                    final String extra = parts[2].substring(pos + 1);
+                    if (extra.startsWith("rc")) {
+                        update_level = -Integer.parseInt(extra.substring(2));
                     } else {
-                        micro = Integer.parseInt(version.substring(n + 1));
+                        try {
+                            update_level = Integer.parseInt(extra);
+                        } catch (final Exception e) {
+                            update_level = UNUSED;
+                        }
                     }
                 }
             }
-        } else {
-            minor = UNUSED;
-            micro = UNUSED;
-            update_level = UNUSED;
+            return new RuntimeVersion(major, minor, micro, update_level);
         }
-        // Assert.isTrue(major >= UNUSED);
-        // Assert.isTrue(minor >= UNUSED);
-        // Assert.isTrue(micro >= UNUSED);
-        // Assert.isTrue(update_level >= UNUSED);
+
+        public static RuntimeVersion parse(final String version, final String aMicro) {
+            if (version == null || version.length() == 0) {
+                return NO_VERSION;
+            }
+
+            if (version.charAt(0) == 'R') {
+                return parseOld(version, aMicro);
+            }
+            return parseNew(version, aMicro);
+        }
+
+        public static String toStringOld(final RuntimeVersion version) {
+            String result = "R" + Integer.toString(version.major);
+            if (version.minor != UNUSED) {
+                result += minorMap[version.minor];
+                if (version.micro != UNUSED) {
+                    String m = Integer.toString(version.micro);
+                    if (version.micro != 0) {
+                        if (m.length() == 1) {
+                            m = "0" + m;
+                        }
+                        result += m;
+                        if (version.update_level != UNUSED) {
+                            final String n = Integer.toString(version.update_level);
+                            result += "-" + n;
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public static String toStringNew(final RuntimeVersion version) {
+            String result = Integer.toString(version.major);
+            if (version.minor != UNUSED) {
+                result += "." + Integer.toString(version.minor);
+            }
+            if (version.micro != UNUSED) {
+                result += "." + Integer.toString(version.micro);
+            }
+            if (version.update_level != UNUSED) {
+                if (version.update_level < 0) {
+                    result += "-rc" + Integer.toString(-version.update_level);
+                } else {
+                    result += "-" + Integer.toString(version.update_level);
+                }
+            }
+            return result;
+        }
+
     }
 
     @Override
@@ -128,28 +185,10 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
         if (major == UNUSED) {
             return "";
         }
-        String result = "R" + Integer.toString(major);
-        if (minor != UNUSED) {
-            result += minorMap[minor];
-            if (micro != UNUSED) {
-                String m = Integer.toString(micro);
-                if (major < 13) {
-                    result += "-" + m;
-                } else {
-                    if (micro != 0) {
-                        if (m.length() == 1) {
-                            m = "0" + m;
-                        }
-                        result += m;
-                        if (update_level != UNUSED) {
-                            String n = Integer.toString(update_level);
-                            result += "-" + n;
-                        }
-                    }
-                }
-            }
+        if (major < 17) {
+            return Serializer.toStringOld(this);
         }
-        return result;
+        return Serializer.toStringNew(this);
     }
 
     @Override
@@ -164,12 +203,19 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
     @Override
     public int compareTo(final RuntimeVersion o) {
         if (major == o.major) {
+            final int isNew = major >= 17 ? -1 : 1;
             if (minor == o.minor) {
                 if (micro == o.micro) {
                     if (update_level == o.update_level) {
                         return 0;
                     }
-                    return update_level - o.update_level;
+                    if (update_level == UNUSED) {
+                        return -1 * isNew;
+                    }
+                    if (o.update_level == UNUSED) {
+                        return 1 * isNew;
+                    }
+                    return (update_level - o.update_level) * isNew;
                 }
                 return micro - o.micro;
             }
@@ -183,7 +229,7 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
     }
 
     public boolean isCompatible(final RuntimeVersion other) {
-        return compareTo(other) >= 0;
+        return major >= other.major;
     }
 
     public boolean isReleaseCompatible(final RuntimeVersion other) {
@@ -204,99 +250,20 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
         return super.hashCode();
     }
 
-    public static String getRuntimeVersion(final String path) {
-        if (path == null) {
-            return null;
-        }
-        String result = null;
-        final File boot = new File(path + "/bin/start.boot");
-        try {
-            final FileInputStream is = new FileInputStream(boot);
-            try {
-                is.skip(14);
-                readstring(is);
-                result = readstring(is);
-            } finally {
-                is.close();
-            }
-        } catch (final IOException e) {
-        }
-        return result;
-    }
-
-    public static String getMicroRuntimeVersion(final String path) {
-        if (path == null) {
-            return null;
-        }
-        String result = null;
-
-        // now get micro version from kernel's minor version
-        final File lib = new File(path + "/lib");
-        final File[] kernels = lib.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(final File pathname) {
-                try {
-                    boolean r = pathname.isDirectory();
-                    r &= pathname.getName().startsWith("kernel-");
-                    final String canonicalPath = pathname.getCanonicalPath()
-                            .toLowerCase();
-                    final String absolutePath = pathname.getAbsolutePath().toLowerCase();
-                    r &= canonicalPath.equals(absolutePath);
-                    return r;
-                } catch (final IOException e) {
-                    return false;
-                }
-            }
-        });
-        if (kernels != null && kernels.length > 0) {
-            final int[] krnls = new int[kernels.length];
-            for (int i = 0; i < kernels.length; i++) {
-                final String k = kernels[i].getName();
-                try {
-                    int p = k.indexOf('.');
-                    if (p < 0) {
-                        krnls[i] = 0;
-                    } else {
-                        p = k.indexOf('.', p + 1);
-                        if (p < 0) {
-                            krnls[i] = 0;
-                        } else {
-                            krnls[i] = Integer.parseInt(k.substring(p + 1));
-                        }
-                    }
-                } catch (final Exception e) {
-                    krnls[i] = 0;
-                }
-            }
-            Arrays.sort(krnls);
-            result = Integer.toString(krnls[krnls.length - 1]);
-        }
-        return result;
-    }
-
-    public static RuntimeVersion getVersion(final String homeDir) {
-        final String label = RuntimeVersion.getRuntimeVersion(homeDir);
-        final String micro = RuntimeVersion.getMicroRuntimeVersion(homeDir);
-        return new RuntimeVersion(label, micro);
-    }
-
-    static String readstring(final InputStream is) {
-        try {
-            is.read();
-            byte[] b = new byte[2];
-            is.read(b);
-            final int len = b[0] * 256 + b[1];
-            b = new byte[len];
-            is.read(b);
-            final String s = new String(b);
-            return s;
-        } catch (final IOException e) {
-            return null;
-        }
-    }
-
     public boolean isStable() {
         return minor > 0;
+    }
+
+    public int getMajor() {
+        return major;
+    }
+
+    public int getMinor() {
+        return major;
+    }
+
+    public int getMicro() {
+        return major;
     }
 
 }

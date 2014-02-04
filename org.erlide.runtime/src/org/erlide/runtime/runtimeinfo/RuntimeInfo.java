@@ -11,7 +11,12 @@
 package org.erlide.runtime.runtimeinfo;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -115,7 +120,7 @@ public final class RuntimeInfo {
     }
 
     public static boolean validateLocation(final String path) {
-        final String v = RuntimeVersion.getRuntimeVersion(path);
+        final String v = getRuntimeVersion(path);
         return v != null;
     }
 
@@ -178,9 +183,100 @@ public final class RuntimeInfo {
 
     public RuntimeVersion getVersion() {
         if (version_cached == null) {
-            version_cached = RuntimeVersion.getVersion(homeDir);
+            version_cached = getVersion(homeDir);
         }
         return version_cached;
+    }
+
+    public static RuntimeVersion getVersion(final String homeDir) {
+        final String label = getRuntimeVersion(homeDir);
+        final String micro = getMicroRuntimeVersion(homeDir);
+        return RuntimeVersion.Serializer.parse(label, micro);
+    }
+
+    public static String getRuntimeVersion(final String path) {
+        if (path == null) {
+            return null;
+        }
+        String result = null;
+        final File boot = new File(path + "/bin/start.boot");
+        try {
+            final FileInputStream is = new FileInputStream(boot);
+            try {
+                is.skip(14);
+                readstring(is);
+                result = readstring(is);
+            } finally {
+                is.close();
+            }
+        } catch (final IOException e) {
+        }
+        return result;
+    }
+
+    public static String getMicroRuntimeVersion(final String path) {
+        if (path == null) {
+            return null;
+        }
+        String result = null;
+
+        // now get micro version from kernel's minor version
+        final File lib = new File(path + "/lib");
+        final File[] kernels = lib.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(final File pathname) {
+                try {
+                    boolean r = pathname.isDirectory();
+                    r &= pathname.getName().startsWith("kernel-");
+                    final String canonicalPath = pathname.getCanonicalPath()
+                            .toLowerCase();
+                    final String absolutePath = pathname.getAbsolutePath().toLowerCase();
+                    r &= canonicalPath.equals(absolutePath);
+                    return r;
+                } catch (final IOException e) {
+                    return false;
+                }
+            }
+        });
+        if (kernels != null && kernels.length > 0) {
+            final int[] krnls = new int[kernels.length];
+            for (int i = 0; i < kernels.length; i++) {
+                final String k = kernels[i].getName();
+                try {
+                    int p = k.indexOf('.');
+                    if (p < 0) {
+                        krnls[i] = 0;
+                    } else {
+                        p = k.indexOf('.', p + 1);
+                        if (p < 0) {
+                            krnls[i] = 0;
+                        } else {
+                            krnls[i] = Integer.parseInt(k.substring(p + 1));
+                        }
+                    }
+                } catch (final Exception e) {
+                    krnls[i] = 0;
+                }
+            }
+            Arrays.sort(krnls);
+            result = Integer.toString(krnls[krnls.length - 1]);
+        }
+        return result;
+    }
+
+    static String readstring(final InputStream is) {
+        try {
+            is.read();
+            byte[] b = new byte[2];
+            is.read(b);
+            final int len = b[0] * 256 + b[1];
+            b = new byte[len];
+            is.read(b);
+            final String s = new String(b);
+            return s;
+        } catch (final IOException e) {
+            return null;
+        }
     }
 
 }

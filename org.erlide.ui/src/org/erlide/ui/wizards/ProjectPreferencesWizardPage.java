@@ -284,7 +284,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
             prefs.setOutputDir(new Path(output.getText()));
             prefs.setSourceDirs(PathSerializer.unpackList(source.getText()));
             prefs.setIncludeDirs(PathSerializer.unpackList(include.getText()));
-            final RuntimeVersion rv = new RuntimeVersion(runtimeVersion.getText());
+            final RuntimeVersion rv = RuntimeVersion.Serializer.parse(runtimeVersion
+                    .getText());
             prefs.setRuntimeVersion(rv);
             if (externalModules != null) {
                 prefs.setExternalModulesFile(externalModules.getText());
