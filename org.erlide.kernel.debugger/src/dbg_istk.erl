@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2011. All Rights Reserved.
+%% Copyright Ericsson AB 2011-2013. All Rights Reserved.
 %%
 %% The contents of this file are subject to the Erlang Public License,
 %% Version 1.1, (the "License"); you may not use this file except in
@@ -22,8 +22,6 @@
 	 delayed_stacktrace/0,delayed_stacktrace/2,
 	 bindings/1,stack_frame/2,backtrace/2,
 	 in_use_p/2]).
-
--export([all_frames/0, all_frames/1, all_modules_on_stack/0]).
 
 -include("dbg_ieval.hrl").
 
@@ -49,30 +47,6 @@ from_external({stack,Stk}) ->
 
 init(Stack) ->
     put(?STACK, Stack).
-
-all_frames() ->
-    all_frames(get(?STACK)).
-
-all_frames(Stack) -> 
-    [erlide_frame(E) || E <- Stack].
-
-erlide_frame(#e{mfa={M, F, As}, line=Wh, bindings=Bs, level=Lvl}) ->
-    {{M, F, args2arity(As)}, Wh, erl_eval:bindings(Bs), Lvl};
-erlide_frame(#e{mfa={F, As}, line=Wh, bindings=Bs, level=Lvl}) ->
-    {{F, args2arity(As)}, Wh, erl_eval:binding(Bs), Lvl};
-erlide_frame(E) ->
-    E.
-
-all_modules_on_stack() ->
-    all_modules_on_stack(get(stack)).
-
-all_modules_on_stack(Stack) ->
-    [M || {_X, {{M, _F, _As}, _Wh, _Bs}} <- Stack].
-
-args2arity(As) when is_list(As) ->
-    length(As).
-
-
 
 %% We keep track of a call stack that is used for
 %%  1) saving stack frames that can be inspected from an Attached
@@ -104,7 +78,7 @@ push(Bs, #ieval{level=Le,module=Mod,function=Name,
 pop() ->
     case get(trace_stack) of
 	false -> ignore;
-	_ -> % all ¦ no_tail
+	_ -> % all | no_tail
 	    case get(?STACK) of
 		[_Entry|Entries] ->
 		    put(?STACK, Entries);

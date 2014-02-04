@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %% 
-%% Copyright Ericsson AB 1998-2011. All Rights Reserved.
+%% Copyright Ericsson AB 1998-2013. All Rights Reserved.
 %% 
 %% The contents of this file are subject to the Erlang Public License,
 %% Version 1.1, (the "License"); you may not use this file except in
@@ -21,7 +21,6 @@
 -export([eval/3,exit_info/5]).
 -export([eval_expr/3]).
 -export([check_exit_msg/3,exception/4]).
--export([all_frames/0]).
 
 -include("dbg_ieval.hrl").
 
@@ -73,23 +72,12 @@ exit_info(Int, AttPid, OrigPid, Reason, ExitInfo) ->
 	{{Mod,Line},Bs,S} ->
 	    dbg_istk:from_external(S),
 	    Le = dbg_istk:stack_level(),
-	    dbg_icmd:tell_attached({exit_at, {Mod, Line}, Reason, Le, OrigPid, dbg_istk:all_frames(S), Bs}),
+	    dbg_icmd:tell_attached({exit_at, {Mod, Line}, Reason, Le}),
 	    exit_loop(OrigPid, Reason, Bs,#ieval{module=Mod,line=Line});
 	{} ->
 	    dbg_istk:init(),
-            dbg_icmd:tell_attached({exit_at, null, Reason, 1, OrigPid}),
+	    dbg_icmd:tell_attached({exit_at, null, Reason, 1}),
 	    exit_loop(OrigPid, Reason, erl_eval:new_bindings(),#ieval{})
-    end.
-
-all_frames() ->
-    {dbg_istk:all_frames(), saved_frames()}.
-
-saved_frames() ->
-    Debugged = get(self),
-    Debugged ! {sys, self(), get_saved_stacktrace},
-    receive
-        {sys, Debugged, M} ->
-            M
     end.
 
 %%--------------------------------------------------------------------
@@ -261,7 +249,7 @@ meta_loop(Debugged, Bs, #ieval{level=Le} = Ieval) ->
 	{sys, Debugged, {value,Val}} ->
 	    {value, Val, Bs};
 	{sys, Debugged, {value,Val,Bs2}} ->
-	    {value, Val, Bs2};
+	    {value, Val, merge_bindings(Bs2, Bs, Ieval)};
 	{sys, Debugged, {exception,{Class,Reason,Stk}}} ->
 	    case get(exit_info) of
 
@@ -336,61 +324,64 @@ trace(What, Args) ->
 trace(return, {_Le,{dbg_apply,_,_,_}}, _Bool) ->
     ignore;
 trace(What, Args, true) ->
-    Str = case What of
-	      send ->
-		  {To,Msg} = Args,
-		  io_lib:format("==> ~w : ~p~n", [To, Msg]);
-	      receivex ->
-		  {Le, TimeoutP} = Args,
-		  Tail = case TimeoutP of
-			     true -> "with timeout~n";
-			     false -> "~n"
-			 end,
-		  io_lib:format("   (~w) receive " ++ Tail, [Le]);
-		      
-	      received when Args =:= null ->
-		  io_lib:format("~n", []);
-	      received -> % Args=Msg
-		  io_lib:format("~n<== ~p~n", [Args]);
-		      
-	      call ->
-		  {Called, {Le,Li,M,F,As}} = Args,
-		  case Called of
-		      extern ->
-			  io_lib:format("++ (~w) <~w> ~w:~w~s~n",
-					[Le,Li,M,F,format_args(As)]);
-		      local ->
-			  io_lib:format("++ (~w) <~w> ~w~s~n",
-					[Le,Li,F,format_args(As)])
-		  end;
-	      call_fun ->
-		  {Le,Li,F,As} = Args,
-		  io_lib:format("++ (~w) <~w> ~w~s~n",
-				[Le, Li, F, format_args(As)]);
-	      return ->
-		  {Le,Val} = Args,
-		  io_lib:format("-- (~w) ~p~n", [Le, Val]);
-		      
-		      
-	      bif ->
-		  {Le,Li,M,F,As} = Args,
-		  io_lib:format("++ (~w) <~w> ~w:~w~s~n",
-				[Le, Li, M, F, format_args(As)])
-	  end,
-    dbg_icmd:tell_attached({trace_output, Str});
+    Fun = fun(P) -> format_trace(What, Args, P) end,
+    dbg_icmd:tell_attached({trace_output, Fun});
 trace(_What, _Args, false) ->
     ignore.
 
-format_args(As) when is_list(As) ->
-    [$(,format_args1(As),$)];
-format_args(A) ->
-    [$/,io_lib:format("~p", [A])].
+format_trace(What, Args, P) ->
+    case What of
+        send ->
+            {To,Msg} = Args,
+            io_lib:format("==> ~w : "++P++"~n", [To, Msg]);
+        receivex ->
+            {Le, TimeoutP} = Args,
+            Tail = case TimeoutP of
+                       true -> "with timeout~n";
+                       false -> "~n"
+                   end,
+            io_lib:format("   (~w) receive " ++ Tail, [Le]);
 
-format_args1([A]) ->
-    [io_lib:format("~p", [A])];
-format_args1([A|As]) ->
-    [io_lib:format("~p", [A]),$,|format_args1(As)];
-format_args1([]) ->
+        received when Args =:= null ->
+            io_lib:format("~n", []);
+        received -> % Args=Msg
+            io_lib:format("~n<== "++P++"~n", [Args]);
+
+        call ->
+            {Called, {Le,Li,M,F,As}} = Args,
+            case Called of
+                extern ->	
+                    io_lib:format("++ (~w) <~w> ~w:~w~ts~n",
+                                  [Le,Li,M,F,format_args(As, P)]);
+                local ->
+                    io_lib:format("++ (~w) <~w> ~w~ts~n",
+                                  [Le,Li,F,format_args(As, P)])
+            end;
+        call_fun ->
+            {Le,Li,F,As} = Args,
+            io_lib:format("++ (~w) <~w> ~w~ts~n",
+                          [Le, Li, F, format_args(As, P)]);
+        return ->
+            {Le,Val} = Args,
+            io_lib:format("-- (~w) "++P++"~n", [Le, Val]);
+
+
+        bif ->
+            {Le,Li,M,F,As} = Args,
+            io_lib:format("++ (~w) <~w> ~w:~w~ts~n",
+                          [Le, Li, M, F, format_args(As, P)])
+    end.
+
+format_args(As, P) when is_list(As) ->
+    [$(,format_args1(As, P),$)];
+format_args(A, P) ->
+    [$/,io_lib:format(P, [A])].
+
+format_args1([A], P) ->
+    [io_lib:format(P, [A])];
+format_args1([A|As], P) ->
+    [io_lib:format(P, [A]),$,|format_args1(As, P)];
+format_args1([], _) ->
     [].
 
 %%--Other useful functions--------------------------------------------
@@ -1260,7 +1251,7 @@ if_clauses([], Bs, Ieval) ->
     exception(error, if_clause, Bs, Ieval).
 
 %% case_clauses(Value, Clauses, Bindings, Error, Ieval)
-%%   Error = try_clause ¦ case_clause
+%%   Error = try_clause | case_clause
 case_clauses(Val, [{clause,_,[P],G,B}|Cs], Bs0, Error, Ieval) ->
     case match(P, Val, Bs0) of
 	{match,Bs} ->

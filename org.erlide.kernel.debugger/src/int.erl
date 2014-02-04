@@ -1,32 +1,33 @@
-%% ``The contents of this file are subject to the Erlang Public License,
+%%
+%% %CopyrightBegin%
+%% 
+%% Copyright Ericsson AB 1998-2013. All Rights Reserved.
+%% 
+%% The contents of this file are subject to the Erlang Public License,
 %% Version 1.1, (the "License"); you may not use this file except in
 %% compliance with the License. You should have received a copy of the
 %% Erlang Public License along with this software. If not, it can be
-%% retrieved via the world wide web at http://www.erlang.org/.
-%%
+%% retrieved online at http://www.erlang.org/.
+%% 
 %% Software distributed under the License is distributed on an "AS IS"
 %% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
 %% the License for the specific language governing rights and limitations
 %% under the License.
-%%
-%% The Initial Developer of the Original Code is Ericsson Utvecklings AB.
-%% Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
-%% AB. All Rights Reserved.''
-%%
-%%     $Id$
+%% 
+%% %CopyrightEnd%
 %%
 -module(int).
 
 %% External exports
--export([i/1, i/2, ni/1, ni/2, n/1, nn/1, n2/2, interpreted/0, file/1,
-   interpretable/1, interpret_beam/2]).
+-export([i/1, i/2, ni/1, ni/2, n/1, nn/1, interpreted/0, file/1,
+	 interpretable/1]).
 -export([auto_attach/0, auto_attach/1, auto_attach/2,
-   stack_trace/0, stack_trace/1]).
+	 stack_trace/0, stack_trace/1]).
 -export([break/2, delete_break/2, break_in/3, del_break_in/3,
-   no_break/0, no_break/1,
-   disable_break/2, enable_break/2,
-   action_at_break/3, test_at_break/3, get_binding/2,
-   all_breaks/0, all_breaks/1]).
+	 no_break/0, no_break/1,
+	 disable_break/2, enable_break/2,
+	 action_at_break/3, test_at_break/3, get_binding/2,
+	 all_breaks/0, all_breaks/1]).
 -export([snapshot/0, clear/0]).
 -export([continue/1, continue/3]).
 
@@ -39,6 +40,8 @@
 
 %% External export only to be used by error_handler
 -export([eval/3]).
+
+-include_lib("kernel/include/file.hrl").
 
 %%==Erlang Interpreter================================================
 %%
@@ -81,7 +84,7 @@
 %% ---------
 %% Code for interpreting a module.
 %%====================================================================
-
+ 
 %%====================================================================
 %% External exports
 %%====================================================================
@@ -94,29 +97,24 @@
 %%     Mod = atom()
 %%     Options = term() ignored
 %%--------------------------------------------------------------------
-i(AbsMods) -> i2(AbsMods, local).
-i(AbsMods, _Options) -> i2(AbsMods, local).
-ni(AbsMods) -> i2(AbsMods, distributed).
-ni(AbsMods, _Options) -> i2(AbsMods, distributed).
-
-i2([AbsMod|AbsMods], Dist) when is_atom(AbsMod); is_list(AbsMod) ->
-    int_mod(AbsMod, Dist),
-    i2(AbsMods, Dist);
-i2([AbsMod], Dist) when is_atom(AbsMod); is_list(AbsMod) ->
-    int_mod(AbsMod, Dist);
-i2([], _Dist) ->
-    ok;
-i2(AbsMod, Dist) when is_atom(AbsMod); is_list(AbsMod) ->
+i(AbsMods) -> i2(AbsMods, local, ok).
+i(AbsMods, _Options) -> i2(AbsMods, local, ok).
+ni(AbsMods) -> i2(AbsMods, distributed, ok).
+ni(AbsMods, _Options) -> i2(AbsMods, distributed, ok).
+    
+i2([AbsMod|AbsMods], Dist, Acc)
+  when is_atom(AbsMod); is_list(AbsMod); is_tuple(AbsMod) -> 
+    Res = int_mod(AbsMod, Dist),
+    case Acc of
+	error ->
+	    i2(AbsMods, Dist, Acc);
+	_ ->
+	    i2(AbsMods, Dist, Res)
+    end;
+i2([], _Dist, Acc) ->
+    Acc;
+i2(AbsMod, Dist, _Acc) when is_atom(AbsMod); is_list(AbsMod); is_tuple(AbsMod) ->
     int_mod(AbsMod, Dist).
-
-interpret_beam(AbsBeam, Dist) ->
-    case check_beam(AbsBeam) of
-        {ok, Exp, Abst} ->
-            Mod = list_to_atom(filename:basename(AbsBeam, ".beam")),
-            load({Mod, AbsBeam, Exp, Abst}, Dist);
-        Error ->
-            Error
-    end.
 
 %%--------------------------------------------------------------------
 %% n(AbsMods) -> ok
@@ -156,8 +154,8 @@ file(Mod) when is_atom(Mod) ->
 %%--------------------------------------------------------------------
 interpretable(AbsMod) ->
     case check(AbsMod) of
-  {ok, _Res} -> true;
-  Error -> Error
+	{ok, _Res} -> true;
+	Error -> Error
     end.
 
 %%--------------------------------------------------------------------
@@ -238,33 +236,40 @@ check_flag(false) -> true.
 %%--------------------------------------------------------------------
 break(Mod, Line) when is_atom(Mod), is_integer(Line) ->
     dbg_iserver:safe_call({new_break, {Mod, Line},
-         [active, enable, null, null]}).
+			   [active, enable, null, null]}).
 
 delete_break(Mod, Line) when is_atom(Mod), is_integer(Line) ->
     dbg_iserver:safe_cast({delete_break, {Mod, Line}}).
 
 break_in(Mod, Func, Arity) when is_atom(Mod), is_atom(Func), is_integer(Arity) ->
     case dbg_iserver:safe_call({is_interpreted, Mod, Func, Arity}) of
-  {true, Clauses} ->
-      Lines = first_lines(Clauses),
-      lists:foreach(fun(Line) -> break(Mod, Line) end, Lines);
-  false ->
-      {error, function_not_found}
+	{true, Clauses} ->
+	    Lines = first_lines(Clauses),
+	    lists:foreach(fun(Line) -> break(Mod, Line) end, Lines);
+	false ->
+	    {error, function_not_found}
     end.
 
 del_break_in(Mod, Func, Arity) when is_atom(Mod), is_atom(Func), is_integer(Arity) ->
     case dbg_iserver:safe_call({is_interpreted, Mod, Func, Arity}) of
-  {true, Clauses} ->
-      Lines = first_lines(Clauses),
-      lists:foreach(fun(Line) -> delete_break(Mod, Line) end,
-        Lines);
-  false ->
-      {error, function_not_found}
+	{true, Clauses} ->
+	    Lines = first_lines(Clauses),
+	    lists:foreach(fun(Line) -> delete_break(Mod, Line) end,
+			  Lines);
+	false ->
+	    {error, function_not_found}
     end.
 
 first_lines(Clauses) ->
-    lists:map(fun(Clause) -> element(2, hd(element(5, Clause))) end,
-        Clauses).
+    [first_line(Clause) || Clause <- Clauses].
+
+first_line({clause,_L,_Vars,_,Exprs}) ->
+    first_line(Exprs);
+%% Common Test adaptation
+first_line([{call_remote,0,ct_line,line,_As}|Exprs]) ->
+    first_line(Exprs);
+first_line([Expr|_Exprs]) -> % Expr = {Op, Line, ..varying no of args..}
+    element(2, Expr).
 
 no_break() ->
     dbg_iserver:safe_cast(no_break).
@@ -274,7 +279,7 @@ no_break(Mod) when is_atom(Mod) ->
 
 disable_break(Mod, Line) when is_atom(Mod), is_integer(Line) ->
     dbg_iserver:safe_cast({break_option, {Mod, Line}, status, inactive}).
-
+    
 enable_break(Mod, Line) when is_atom(Mod), is_integer(Line) ->
     dbg_iserver:safe_cast({break_option, {Mod, Line}, status, active}).
 
@@ -318,20 +323,20 @@ snapshot() ->
 %%--------------------------------------------------------------------
 clear() ->
     dbg_iserver:safe_cast(clear).
-
+    
 %%--------------------------------------------------------------------
 %% continue(Pid) -> ok | {error, not_interpreted}
 %% continue(X, Y, Z) -> ok | {error, not_interpreted}
 %%--------------------------------------------------------------------
 continue(Pid) when is_pid(Pid) ->
     case dbg_iserver:safe_call({get_meta, Pid}) of
-  {ok, Meta} when is_pid(Meta) ->
-      dbg_icmd:continue(Meta),
-      ok;
-  Error ->
-      Error
+	{ok, Meta} when is_pid(Meta) ->
+	    dbg_icmd:continue(Meta),
+	    ok;
+	Error ->
+	    Error
     end.
-
+    
 continue(X, Y, Z) when is_integer(X), is_integer(Y), is_integer(Z) ->
     continue(c:pid(X, Y, Z)).
 
@@ -349,10 +354,10 @@ start() -> dbg_iserver:start().
 stop() ->
     lists:foreach(
       fun(Mod) ->
-        everywhere(distributed,
-       fun() ->
-         erts_debug:breakpoint({Mod,'_','_'}, false)
-       end)
+	      everywhere(distributed,
+			 fun() ->
+				 erts_debug:breakpoint({Mod,'_','_'}, false)
+			 end)
       end,
       interpreted()),
     dbg_iserver:stop().
@@ -464,10 +469,10 @@ contents(Mod, Pid) ->
 %%   Arity = integer()
 %%--------------------------------------------------------------------
 functions(Mod) ->
-    lists:filter(fun([module_info, _Arity]) -> false;
-        (_Func) -> true
-     end,
-     dbg_iserver:call({functions, Mod})).
+    [F || F <- dbg_iserver:call({functions, Mod}), functions_1(F)].
+
+functions_1([module_info, _Arity]) -> false;
+functions_1(_Func) -> true.
 
 
 %%====================================================================
@@ -484,114 +489,123 @@ eval(Mod, Func, Args) ->
 
 %%--Interpreting modules----------------------------------------------
 
-int_mod(AbsMod, Dist) ->
+int_mod({Mod, Src, Beam, BeamBin}, Dist)
+  when is_atom(Mod), is_list(Src), is_list(Beam), is_binary(BeamBin) ->
+    try
+	case is_file(Src) of
+	    true ->
+		check_application(Src),
+		case check_beam(BeamBin) of
+		    {ok, Exp, Abst, _BeamBin} ->
+			load({Mod, Src, Beam, BeamBin, Exp, Abst}, Dist);
+		    error -> 
+			error
+		end;
+	    false ->
+		error
+	end
+    catch
+	throw:Reason ->
+	    Reason
+    end;
+int_mod(AbsMod, Dist) when is_atom(AbsMod); is_list(AbsMod) ->
     case check(AbsMod) of
-  {ok, Res} -> load(Res, Dist);
-  {error, {app, App}} ->
-      io:format("** Cannot interpret ~p module: ~p~n",
-          [App, AbsMod]),
-      error;
-  _Error ->
-      io:format("** Invalid beam file or no abstract code: ~p\n",
-          [AbsMod]),
-      error
+	{ok, Res} -> 
+	    load(Res, Dist);
+	{error, {app, App}} ->
+	    io:format("** Cannot interpret ~p module: ~p~n",
+		      [App, AbsMod]),
+	    error;
+	_Error ->
+	    io:format("** Invalid beam file or no abstract code: ~tp\n",
+		      [AbsMod]),
+	    error
     end.
 
 check(Mod) when is_atom(Mod) -> catch check_module(Mod);
 check(File) when is_list(File) -> catch check_file(File).
 
-load({Mod, Src, Beam, Exp, Abst}, Dist) ->
+load({Mod, Src, Beam, BeamBin, Exp, Abst}, Dist) ->
     everywhere(Dist,
-         fun() ->
-           code:purge(Mod),
-           erts_debug:breakpoint({Mod,'_','_'}, false),
-                       %%erlang:display({load, Mod, node()}),
-           {module,Mod} = code:load_abs(filename:rootname(Beam),
-                Mod)
-         end),
-    {ok, SrcBin} = file:read_file(Src),
-    {ok, BeamBin} = file:read_file(Beam),
-    MD5 = code:module_md5(BeamBin),
-    Bin = term_to_binary({interpreter_module,Exp,Abst,SrcBin,MD5}),
-    {module, Mod} = dbg_iserver:safe_call({load, Mod, Src, Bin}),
-    everywhere(Dist,
-         fun() ->
-           true = erts_debug:breakpoint({Mod,'_','_'}, true) > 0
-         end),
-    {module, Mod};
-load({Mod, Beam, Exp, Abst}, Dist) ->
-    %%X = everywhere(Dist, fun() -> erlang:display({lo2, node(), is_alive()}) end),
-    %%erlang:display({x, X}),
-    everywhere(Dist,
-               fun() ->
-                       code:purge(Mod),
-                       erts_debug:breakpoint({Mod,'_','_'}, false),
-                       {module,Mod} = code:load_abs(filename:rootname(Beam),
-                                                    Mod),
-                       %%erlang:display({load2, Mod, node()}),
-                       {module,Mod}
-               end),
-    {ok, BeamBin} = file:read_file(Beam),
-    MD5 = code:module_md5(BeamBin),
-    Bin = term_to_binary({interpreter_module,Exp,Abst,<<>>,MD5}),
-    {module, Mod} = dbg_iserver:safe_call({load, Mod, no_source, Bin}),
-    everywhere(Dist,
-         fun() ->
-           true = erts_debug:breakpoint({Mod,'_','_'}, true) > 0
-         end),
-    {module, Mod}.
+	       fun() ->
+		       code:purge(Mod),
+		       erts_debug:breakpoint({Mod,'_','_'}, false),
+		       {module,Mod} = code:load_binary(Mod, Beam, BeamBin)
+	       end),
+    case erl_prim_loader:get_file(filename:absname(Src)) of
+	{ok, SrcBin, _} ->
+	    MD5 = code:module_md5(BeamBin),
+	    Bin = term_to_binary({interpreter_module,Exp,Abst,SrcBin,MD5}),
+	    {module, Mod} = dbg_iserver:safe_call({load, Mod, Src, Bin}),
+	    everywhere(Dist,
+		       fun() ->
+			       true = erts_debug:breakpoint({Mod,'_','_'}, true) > 0
+		       end),
+	    {module, Mod};
+	error ->
+	    error
+    end.
 
 check_module(Mod) ->
     case code:which(Mod) of
-  Beam when is_list(Beam) ->
-      case find_src(Beam) of
-    Src when is_list(Src) ->
-        check_application(Src),
-        case check_beam(Beam) of
-      {ok, Exp, Abst} ->
-          {ok, {Mod, Src, Beam, Exp, Abst}};
-      {error, Other} -> {error, Other}
-        end;
-    error -> {error, no_src}
-      end;
-  _ -> {error, badarg}
+	Beam when is_list(Beam) ->
+	    case find_src(Beam) of
+		Src when is_list(Src) ->
+		    check_application(Src),
+		    case check_beam(Beam) of
+			{ok, Exp, Abst, BeamBin} ->
+			    {ok, {Mod, Src, Beam, BeamBin, Exp, Abst}};
+			error -> 
+			    {error, no_debug_info}
+		    end;
+		error ->
+		    {error, no_src}
+	    end;
+	_ -> 
+	    {error, badarg}
     end.
 
 check_file(Name0) ->
-    Src = case is_file(Name0) of
-        true -> Name0;
-        false ->
-      Name = Name0 ++ ".erl",
-      case is_file(Name) of
-          true -> Name;
-          false -> error
-      end
-    end,
+    Src =
+	case is_file(Name0) of
+	    true -> 
+		Name0;
+	    false ->
+		Name = Name0 ++ ".erl",
+		case is_file(Name) of
+		    true -> Name;
+		    false -> error
+		end
+	end,
     if
-  is_list(Src) ->
-      check_application(Src),
-      Mod = scan_module_name(Src),
-      case find_beam(Mod, Src) of
-    Beam when is_list(Beam) ->
-        case check_beam(Beam) of
-      {ok, Exp, Abst} ->
-          {ok, {Mod, Src, Beam, Exp, Abst}};
-      {error, Other} -> {error, Other}
-        end;
-    error -> {error, no_beam}
-      end;
-  true -> {error, badarg}
+	is_list(Src) ->
+	    check_application(Src),
+	    Mod = scan_module_name(Src),
+	    case find_beam(Mod, Src) of
+		Beam when is_list(Beam) ->
+		    case check_beam(Beam) of
+			{ok, Exp, Abst, BeamBin} ->
+			    {ok, {Mod, Src, Beam, BeamBin, Exp, Abst}};
+			error ->
+			    {error, no_debug_info}
+		    end;
+		error ->
+		    {error, no_beam}
+	    end;
+	true ->
+	    {error, badarg}
     end.
 
 %% Try to avoid interpreting a kernel, stdlib, gs or debugger module.
 check_application(Src) ->
     case lists:reverse(filename:split(filename:absname(Src))) of
-  [_Mod,"src",AppS|_] ->
-      check_application2(AppS);
-  _ -> ok
+	[_Mod,"src",AppS|_] ->
+	    check_application2(AppS);
+	_ -> ok
     end.
 check_application2("kernel-"++_) -> throw({error,{app,kernel}});
 check_application2("stdlib-"++_) -> throw({error,{app,stdlib}});
+check_application2("erts-"++_) -> throw({error,{app,erts}});
 check_application2("gs-"++_) -> throw({error,{app,gs}});
 check_application2("debugger-"++_) -> throw({error,{app,debugger}});
 check_application2(_) -> ok.
@@ -599,125 +613,125 @@ check_application2(_) -> ok.
 find_src(Beam) ->
     Src0 = filename:rootname(Beam) ++ ".erl",
     case is_file(Src0) of
-  true -> Src0;
-  false ->
-      EbinDir = filename:dirname(Beam),
-      Src = filename:join([filename:dirname(EbinDir), "src",
-         filename:basename(Src0)]),
-      case is_file(Src) of
-    true -> Src;
-    false -> error
-      end
+	true -> Src0;
+	false ->
+	    EbinDir = filename:dirname(Beam),
+	    Src = filename:join([filename:dirname(EbinDir), "src",
+				 filename:basename(Src0)]),
+	    case is_file(Src) of
+		true -> Src;
+		false -> error
+	    end
     end.
 
 find_beam(Mod, Src) ->
     SrcDir = filename:dirname(Src),
-    BeamFile = packages:last(Mod) ++ code_aux:objfile_extension(),
+    BeamFile = atom_to_list(Mod) ++ code:objfile_extension(),
     File = filename:join(SrcDir, BeamFile),
     case is_file(File) of
-  true -> File;
-  false -> find_beam_1(Mod, SrcDir)
+	true -> File;
+	false -> find_beam_1(Mod, BeamFile, SrcDir)
     end.
 
-find_beam_1(Mod, SrcDir) ->
-    RootDir = find_root_dir(SrcDir, packages:first(Mod)),
+find_beam_1(Mod, BeamFile, SrcDir) ->
+    RootDir = filename:dirname(SrcDir),
     EbinDir = filename:join(RootDir, "ebin"),
     CodePath = [EbinDir | code:get_path()],
-    BeamFile = code_aux:to_path(Mod) ++ code_aux:objfile_extension(),
+    BeamFile = atom_to_list(Mod) ++ code:objfile_extension(),
     lists:foldl(fun(_, Beam) when is_list(Beam) -> Beam;
-       (Dir, error) ->
-      File = filename:join(Dir, BeamFile),
-      case is_file(File) of
-          true -> File;
-          false -> error
-      end
-    end,
-    error,
-    CodePath).
+		   (Dir, error) ->
+			File = filename:join(Dir, BeamFile),
+			case is_file(File) of
+			    true -> File;
+			    false -> error
+			end
+		end,
+		error,
+		CodePath).
 
-find_root_dir(Dir, [_|Ss]) ->
-    find_root_dir(filename:dirname(Dir), Ss);
-find_root_dir(Dir, []) ->
-    filename:dirname(Dir).
-
-check_beam(Beam) ->
-    case beam_lib:chunks(Beam, [abstract_code,exports]) of
-  {ok,{Mod,[{abstract_code,no_abstract_code}|_]}} ->
-      {error, no_abstract_code, Mod};
-  {ok,{_Mod,[{abstract_code,Abst},{exports,Exp}]}} ->
-      {ok,Exp,Abst};
-  Other -> {error, Other}
-    end.
+check_beam(BeamBin) when is_binary(BeamBin) ->
+    case beam_lib:chunks(BeamBin, [abstract_code,exports]) of
+	{ok,{_Mod,[{abstract_code,no_abstract_code}|_]}} ->
+	    error;
+	{ok,{_Mod,[{abstract_code,Abst},{exports,Exp}]}} ->
+	    {ok,Exp,Abst, BeamBin};
+	_ -> 
+	    error
+    end;
+check_beam(Beam) when is_list(Beam) ->
+    {ok, Bin, _FullPath} = erl_prim_loader:get_file(filename:absname(Beam)),
+    check_beam(Bin).
 
 is_file(Name) ->
-    case filelib:is_file(Name) of
-  true ->
-      not filelib:is_dir(Name);
-  false ->
-      false
-    end.
+    filelib:is_regular(filename:absname(Name), erl_prim_loader).
 
 everywhere(distributed, Fun) ->
     case is_alive() of
-  true -> rpc:multicall(erlang, apply, [Fun,[]]);
-  false -> Fun()
+	true -> rpc:multicall(erlang, apply, [Fun,[]]);
+	false -> Fun()
     end;
 everywhere(local, Fun) ->
     Fun().
 
 scan_module_name(File) ->
-    case file:open(File, [read]) of
-  {ok, FD} ->
-      R = (catch {ok, scan_module_name_1(FD)}),
-      file:close(FD),
-      case R of
-    {ok, A} when is_atom(A) -> A;
-    _ -> error
-      end;
-  _ ->
-      error
+    try
+        {ok, Bin, _FullPath} =
+            erl_prim_loader:get_file(filename:absname(File)),
+        scan_module_name_1([], <<>>, Bin, enc(Bin))
+    catch
+        _:_ ->
+            throw({error, no_beam})
     end.
 
-scan_module_name_1(FD) ->
-    case io:scan_erl_form(FD, "") of
-  {ok, Ts, _} ->
-      scan_module_name_2(Ts, FD);
-  _ ->
-      error
+scan_module_name_1(Cont0, B0, Bin0, Enc) ->
+    N = min(100, byte_size(Bin0)),
+    {Bin1, Bin} = erlang:split_binary(Bin0, N),
+    {Chars, B1} =
+        case unicode:characters_to_list(list_to_binary([B0, Bin1]), Enc) of
+            {incomplete, List, Binary} ->
+                {List, Binary};
+            List when is_list(List), List =/= [] ->
+                {List, <<>>}
+        end,
+    scan_module_name_2(Cont0, Chars, B1, Bin, Enc).
+
+scan_module_name_2(Cont0, Chars, B1, Bin, Enc) ->
+    case erl_scan:tokens(Cont0, Chars, _AnyLine = 1) of
+        {done, {ok, Ts, _}, Rest} ->
+            scan_module_name_3(Ts, Rest, B1, Bin, Enc);
+        {more, Cont} ->
+            scan_module_name_1(Cont, B1, Bin, Enc)
     end.
 
-scan_module_name_2([{'-',_},{atom,_,module},{'(',_} | _]=Ts, _FD) ->
-    scan_module_name_3(Ts);
-scan_module_name_2([{'-',_},{atom,_,_} | _], FD) ->
-    scan_module_name_1(FD);
-scan_module_name_2(_, _) ->
-    error.
+scan_module_name_3([{'-',_},{atom,_,module},{'(',_} | _]=Ts,
+                   _Chars, _B1, _Bin, _Enc) ->
+    scan_module_name_4(Ts);
+scan_module_name_3([{'-',_},{atom,_,_} | _], Chars, B1, Bin, Enc) ->
+    scan_module_name_2("", Chars, B1, Bin, Enc).
 
-scan_module_name_3(Ts) ->
-    case erl_parse:parse_form(Ts) of
-  {ok, {attribute,_,module,{M,_}}} -> module_atom(M);
-  {ok, {attribute,_,module,M}} -> module_atom(M);
-  _ -> error
+scan_module_name_4(Ts) ->
+    {ok, {attribute,_,module,M}} = erl_parse:parse_form(Ts),
+    true = is_atom(M),
+    M.
+
+enc(Bin) ->
+    case epp:read_encoding_from_binary(Bin) of
+        none -> epp:default_encoding();
+        Encoding -> Encoding
     end.
-
-module_atom(A) when is_atom(A) -> A;
-module_atom(L) when is_list(L) -> list_to_atom(packages:concat(L)).
 
 %%--Stop interpreting modules-----------------------------------------
 
 del_mod(AbsMod, Dist) ->
     Mod = if
-        is_atom(AbsMod) -> AbsMod;
-        is_list(AbsMod) ->
-      list_to_atom(filename:basename(AbsMod, ".beam"))
-    end,
+	      is_atom(AbsMod) -> AbsMod;
+	      is_list(AbsMod) ->
+		  list_to_atom(filename:basename(AbsMod,".erl"))
+	  end,
     dbg_iserver:safe_cast({delete, Mod}),
     everywhere(Dist,
-         fun() ->
-           erts_debug:breakpoint({Mod,'_','_'}, false),
-           erlang:yield()
-         end),
+	       fun() ->
+		       erts_debug:breakpoint({Mod,'_','_'}, false),
+		       erlang:yield()
+	       end),
     ok.
-
-
-
