@@ -54,8 +54,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
                 Iterable<? extends MutableFieldDeclaration> _dataFields = ImmutableProcessor.this.dataFields(cls);
                 final Function1<MutableFieldDeclaration,String> _function = new Function1<MutableFieldDeclaration,String>() {
                   public String apply(final MutableFieldDeclaration it) {
-                    String _simpleName = it.getSimpleName();
-                    return _simpleName;
+                    return it.getSimpleName();
                   }
                 };
                 String _join = IterableExtensions.join(_dataFields, ",", _function);
@@ -209,7 +208,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         } else {
           Type _type = fieldType.getType();
           boolean _equals_1 = Objects.equal(_type, Boolean.class);
-          _or = (_equals || _equals_1);
+          _or = _equals_1;
         }
         if (_or) {
           _xifexpression = "is";
@@ -311,8 +310,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
             Iterable<? extends MutableFieldDeclaration> _dataFields = ImmutableProcessor.this.dataFields(cls);
             final Function1<MutableFieldDeclaration,String> _function = new Function1<MutableFieldDeclaration,String>() {
               public String apply(final MutableFieldDeclaration it) {
-                String _simpleName = it.getSimpleName();
-                return _simpleName;
+                return it.getSimpleName();
               }
             };
             String _join = IterableExtensions.join(_dataFields, ",", _function);
@@ -347,18 +345,15 @@ public class ImmutableProcessor extends AbstractClassProcessor {
     final Function1<MutableFieldDeclaration,Boolean> _function = new Function1<MutableFieldDeclaration,Boolean>() {
       public Boolean apply(final MutableFieldDeclaration it) {
         boolean _isStatic = it.isStatic();
-        boolean _equals = (_isStatic == false);
-        return Boolean.valueOf(_equals);
+        return Boolean.valueOf((_isStatic == false));
       }
     };
-    Iterable<? extends MutableFieldDeclaration> _filter = IterableExtensions.filter(_declaredFields, _function);
-    return _filter;
+    return IterableExtensions.filter(_declaredFields, _function);
   }
   
   public String builderClassName(final ClassDeclaration cls) {
     String _qualifiedName = cls.getQualifiedName();
-    String _plus = (_qualifiedName + "Builder");
-    return _plus;
+    return (_qualifiedName + "Builder");
   }
   
   public String objects() {

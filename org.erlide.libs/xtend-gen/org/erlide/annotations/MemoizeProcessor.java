@@ -1,6 +1,5 @@
 package org.erlide.annotations;
 
-import com.google.common.base.Objects;
 import java.util.List;
 import org.eclipse.xtend.lib.macro.TransformationContext;
 import org.eclipse.xtend.lib.macro.TransformationParticipant;
@@ -20,28 +19,22 @@ public class MemoizeProcessor implements TransformationParticipant<MutableMethod
       public void apply(final MutableMethodDeclaration it) {
         Iterable<? extends MutableParameterDeclaration> _parameters = it.getParameters();
         int _size = IterableExtensions.size(_parameters);
-        final int _switchValue = _size;
-        boolean _matched = false;
-        if (!_matched) {
-          if (Objects.equal(_switchValue,0)) {
-            _matched=true;
+        switch (_size) {
+          case 0:
             int _indexOf = methods.indexOf(it);
             ParamterlessMethodMemoizer _paramterlessMethodMemoizer = new ParamterlessMethodMemoizer(it, context, _indexOf);
             _paramterlessMethodMemoizer.generate();
-          }
-        }
-        if (!_matched) {
-          if (Objects.equal(_switchValue,1)) {
-            _matched=true;
+            break;
+          case 1:
             int _indexOf_1 = methods.indexOf(it);
             SingleParameterMethodMemoizer _singleParameterMethodMemoizer = new SingleParameterMethodMemoizer(it, context, _indexOf_1);
             _singleParameterMethodMemoizer.generate();
-          }
-        }
-        if (!_matched) {
-          int _indexOf_2 = methods.indexOf(it);
-          MultipleParameterMethodMemoizer _multipleParameterMethodMemoizer = new MultipleParameterMethodMemoizer(it, context, _indexOf_2);
-          _multipleParameterMethodMemoizer.generate();
+            break;
+          default:
+            int _indexOf_2 = methods.indexOf(it);
+            MultipleParameterMethodMemoizer _multipleParameterMethodMemoizer = new MultipleParameterMethodMemoizer(it, context, _indexOf_2);
+            _multipleParameterMethodMemoizer.generate();
+            break;
         }
       }
     };

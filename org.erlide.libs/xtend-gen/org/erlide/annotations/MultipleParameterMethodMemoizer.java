@@ -38,8 +38,7 @@ public class MultipleParameterMethodMemoizer extends ParametrizedMethodMemoizer 
         return _builder.toString();
       }
     };
-    String _join = IterableExtensions.join(_parameters, "", ",", "", _function);
-    return _join;
+    return IterableExtensions.join(_parameters, "", ",", "", _function);
   }
   
   protected CharSequence parametersToCacheKey(@Extension final CompilationStrategy.CompilationContext context) {
@@ -52,8 +51,7 @@ public class MultipleParameterMethodMemoizer extends ParametrizedMethodMemoizer 
     Iterable<? extends MutableParameterDeclaration> _parameters = this.method.getParameters();
     final Function1<MutableParameterDeclaration,String> _function = new Function1<MutableParameterDeclaration,String>() {
       public String apply(final MutableParameterDeclaration it) {
-        String _simpleName = it.getSimpleName();
-        return _simpleName;
+        return it.getSimpleName();
       }
     };
     String _join = IterableExtensions.join(_parameters, "", ",", "", _function);
@@ -64,7 +62,6 @@ public class MultipleParameterMethodMemoizer extends ParametrizedMethodMemoizer 
   }
   
   protected TypeReference cacheKeyType() {
-    TypeReference _newTypeReference = this.context.newTypeReference(CacheKey.class);
-    return _newTypeReference;
+    return this.context.newTypeReference(CacheKey.class);
   }
 }

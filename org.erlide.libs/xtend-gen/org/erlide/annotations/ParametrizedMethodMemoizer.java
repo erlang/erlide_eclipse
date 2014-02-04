@@ -87,9 +87,8 @@ public abstract class ParametrizedMethodMemoizer extends MethodMemoizer {
   protected final TypeReference cacheFieldType() {
     TypeReference _cacheKeyType = this.cacheKeyType();
     TypeReference _wrappedReturnType = this.wrappedReturnType();
-    TypeReference _newTypeReference = this.context.newTypeReference(
+    return this.context.newTypeReference(
       "com.google.common.cache.LoadingCache", _cacheKeyType, _wrappedReturnType);
-    return _newTypeReference;
   }
   
   protected final CharSequence cacheCall(@Extension final CompilationStrategy.CompilationContext context) {

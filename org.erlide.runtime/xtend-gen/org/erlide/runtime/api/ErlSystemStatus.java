@@ -38,8 +38,7 @@ public class ErlSystemStatus {
     OtpErlangObject[] _elements = ((OtpErlangList) _elementAt_2).elements();
     final Function1<OtpErlangObject,String> _function = new Function1<OtpErlangObject,String>() {
       public String apply(final OtpErlangObject it) {
-        String _atomValue = ((OtpErlangAtom) it).atomValue();
-        return _atomValue;
+        return ((OtpErlangAtom) it).atomValue();
       }
     };
     List<String> _map = ListExtensions.<OtpErlangObject, String>map(((List<OtpErlangObject>)Conversions.doWrapArray(_elements)), _function);
