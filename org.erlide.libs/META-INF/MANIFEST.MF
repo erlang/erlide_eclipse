@@ -7,7 +7,7 @@ Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: jinterface.jar,
  hamcrest-all-1.3.jar,
- guava-16.0.jar,
+ guava-16.0.1.jar,
  javax.inject-1.jar,
  org.eclipse.xtend.lib-2.5.1.jar,
  org.eclipse.xtext.xbase.lib-2.5.1.jar
