@@ -27,8 +27,7 @@ public class WitherParticipant extends AbstractClassProcessor {
         String _canonicalName = Data.class.getCanonicalName();
         AnnotationTypeDeclaration _annotationTypeDeclaration = it.getAnnotationTypeDeclaration();
         String _qualifiedName = _annotationTypeDeclaration.getQualifiedName();
-        boolean _equals = Objects.equal(_canonicalName, _qualifiedName);
-        return Boolean.valueOf(_equals);
+        return Boolean.valueOf(Objects.equal(_canonicalName, _qualifiedName));
       }
     };
     final boolean dataClass = IterableExtensions.exists(_annotations, _function);
@@ -40,8 +39,7 @@ public class WitherParticipant extends AbstractClassProcessor {
     final Function1<MutableFieldDeclaration,Boolean> _function_1 = new Function1<MutableFieldDeclaration,Boolean>() {
       public Boolean apply(final MutableFieldDeclaration it) {
         boolean _isStatic = it.isStatic();
-        boolean _not = (!_isStatic);
-        return Boolean.valueOf(_not);
+        return Boolean.valueOf((!_isStatic));
       }
     };
     final Iterable<? extends MutableFieldDeclaration> fields = IterableExtensions.filter(_declaredFields, _function_1);
@@ -55,8 +53,7 @@ public class WitherParticipant extends AbstractClassProcessor {
         final Function1<MutableMethodDeclaration,Boolean> _function = new Function1<MutableMethodDeclaration,Boolean>() {
           public Boolean apply(final MutableMethodDeclaration it) {
             String _simpleName = it.getSimpleName();
-            boolean _equals = Objects.equal(_simpleName, methodName);
-            return Boolean.valueOf(_equals);
+            return Boolean.valueOf(Objects.equal(_simpleName, methodName));
           }
         };
         boolean _exists = IterableExtensions.exists(_declaredMethods, _function);

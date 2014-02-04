@@ -70,8 +70,7 @@ public abstract class MethodMemoizer {
               it.setType(_cacheFieldType);
               final CompilationStrategy _function = new CompilationStrategy() {
                 public CharSequence compile(final CompilationStrategy.CompilationContext it) {
-                  CharSequence _cacheFieldInit = MethodMemoizer.this.cacheFieldInit(it);
-                  return _cacheFieldInit;
+                  return MethodMemoizer.this.cacheFieldInit(it);
                 }
               };
               it.setInitializer(_function);
@@ -85,8 +84,7 @@ public abstract class MethodMemoizer {
         public void apply(final MutableMethodDeclaration it) {
           final CompilationStrategy _function = new CompilationStrategy() {
             public CharSequence compile(final CompilationStrategy.CompilationContext it) {
-              CharSequence _cacheCall = MethodMemoizer.this.cacheCall(it);
-              return _cacheCall;
+              return MethodMemoizer.this.cacheCall(it);
             }
           };
           it.setBody(_function);
@@ -94,23 +92,20 @@ public abstract class MethodMemoizer {
           it.setReturnType(_wrappedReturnType);
         }
       };
-      MutableMethodDeclaration _doubleArrow = ObjectExtensions.<MutableMethodDeclaration>operator_doubleArrow(
-        this.method, _function_1);
-      _xblockexpression = (_doubleArrow);
+      _xblockexpression = (ObjectExtensions.<MutableMethodDeclaration>operator_doubleArrow(
+        this.method, _function_1));
     }
     return _xblockexpression;
   }
   
   protected final TypeReference wrappedReturnType() {
     TypeReference _returnType = this.method.getReturnType();
-    TypeReference _wrapperIfPrimitive = _returnType.getWrapperIfPrimitive();
-    return _wrapperIfPrimitive;
+    return _returnType.getWrapperIfPrimitive();
   }
   
   protected final String initMethodName() {
     String _simpleName = this.method.getSimpleName();
-    String _plus = (_simpleName + "_init");
-    return _plus;
+    return (_simpleName + "_init");
   }
   
   protected final String cacheFieldName() {

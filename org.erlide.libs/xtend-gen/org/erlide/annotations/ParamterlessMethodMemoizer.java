@@ -59,8 +59,7 @@ public class ParamterlessMethodMemoizer extends MethodMemoizer {
   }
   
   protected TypeReference cacheFieldType() {
-    TypeReference _wrappedReturnType = this.wrappedReturnType();
-    return _wrappedReturnType;
+    return this.wrappedReturnType();
   }
   
   protected CharSequence cacheFieldInit(final CompilationStrategy.CompilationContext context) {

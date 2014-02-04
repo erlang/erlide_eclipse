@@ -39,12 +39,7 @@ public class ErlideEventTracerHandler implements IDisposable {
   
   private PrintWriter file;
   
-  private final SimpleDateFormat formatter = new Function0<SimpleDateFormat>() {
-    public SimpleDateFormat apply() {
-      SimpleDateFormat _simpleDateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS");
-      return _simpleDateFormat;
-    }
-  }.apply();
+  private final SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS");
   
   public ErlideEventTracerHandler(final String path) {
     boolean _tripleEquals = (path == null);
@@ -67,8 +62,7 @@ public class ErlideEventTracerHandler implements IDisposable {
       return;
     }
     long _timestamp = event.getTimestamp();
-    Date _date = new Date(_timestamp);
-    final Date date = _date;
+    final Date date = new Date(_timestamp);
     final String sdate = this.formatter.format(date);
     String _hexString = Integer.toHexString(event.workspace);
     IPath _append = this.storagePath.append(_hexString);

@@ -23,20 +23,17 @@ public class SingleParameterMethodMemoizer extends ParametrizedMethodMemoizer {
   
   protected CharSequence parametersToCacheKey(final CompilationStrategy.CompilationContext context) {
     MutableParameterDeclaration _parameter = this.parameter();
-    String _simpleName = _parameter.getSimpleName();
-    return _simpleName;
+    return _parameter.getSimpleName();
   }
   
   protected TypeReference cacheKeyType() {
     MutableParameterDeclaration _parameter = this.parameter();
     TypeReference _type = _parameter.getType();
-    TypeReference _wrapperIfPrimitive = _type.getWrapperIfPrimitive();
-    return _wrapperIfPrimitive;
+    return _type.getWrapperIfPrimitive();
   }
   
   private MutableParameterDeclaration parameter() {
     Iterable<? extends MutableParameterDeclaration> _parameters = this.method.getParameters();
-    MutableParameterDeclaration _head = IterableExtensions.head(_parameters);
-    return _head;
+    return IterableExtensions.head(_parameters);
   }
 }

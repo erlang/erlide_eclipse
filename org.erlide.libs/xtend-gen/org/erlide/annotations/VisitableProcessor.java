@@ -64,13 +64,12 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
           Iterable<? extends ParameterDeclaration> _parameters = it.getParameters();
           int _size = IterableExtensions.size(_parameters);
           boolean _greaterEqualsThan = (_size >= 1);
-          _and = (_startsWith && _greaterEqualsThan);
+          _and = _greaterEqualsThan;
         }
         return Boolean.valueOf(_and);
       }
     };
-    Iterable<MethodDeclaration> _filter_1 = IterableExtensions.<MethodDeclaration>filter(_filter, _function);
-    return _filter_1;
+    return IterableExtensions.<MethodDeclaration>filter(_filter, _function);
   }
   
   private String getVisitorName(final MethodDeclaration it) {
@@ -78,8 +77,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
     ParameterDeclaration _head = IterableExtensions.head(_parameters);
     TypeReference _type = _head.getType();
     Type _type_1 = _type.getType();
-    String _qualifiedName = _type_1.getQualifiedName();
-    return _qualifiedName;
+    return _type_1.getQualifiedName();
   }
   
   public void doTransform(final List<? extends MutableTypeDeclaration> types, @Extension final TransformationContext context) {
@@ -107,8 +105,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
                 Iterable<? extends ParameterDeclaration> _parameters = method.getParameters();
                 final Function1<ParameterDeclaration,TypeReference> _function = new Function1<ParameterDeclaration,TypeReference>() {
                   public TypeReference apply(final ParameterDeclaration it) {
-                    TypeReference _type = it.getType();
-                    return _type;
+                    return it.getType();
                   }
                 };
                 Iterable<TypeReference> _map = IterableExtensions.map(_parameters, _function);
@@ -131,8 +128,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
                       IterableExtensions.forEach(_parameters, _function);
                       final CompilationStrategy _function_1 = new CompilationStrategy() {
                         public CharSequence compile(final CompilationStrategy.CompilationContext it) {
-                          CharSequence _acceptMethodBody = VisitableProcessor.this.getAcceptMethodBody(newMethod);
-                          return _acceptMethodBody;
+                          return VisitableProcessor.this.getAcceptMethodBody(newMethod);
                         }
                       };
                       newMethod.setBody(_function_1);
@@ -148,8 +144,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
                         it.setAbstract(false);
                         final CompilationStrategy _function = new CompilationStrategy() {
                           public CharSequence compile(final CompilationStrategy.CompilationContext cu) {
-                            CharSequence _acceptMethodBody = VisitableProcessor.this.getAcceptMethodBody(it);
-                            return _acceptMethodBody;
+                            return VisitableProcessor.this.getAcceptMethodBody(it);
                           }
                         };
                         it.setBody(_function);
@@ -195,8 +190,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
     List<? extends MutableParameterDeclaration> _subList = _list.subList(1, _size);
     final Function1<MutableParameterDeclaration,String> _function = new Function1<MutableParameterDeclaration,String>() {
       public String apply(final MutableParameterDeclaration it) {
-        String _simpleName = it.getSimpleName();
-        return _simpleName;
+        return it.getSimpleName();
       }
     };
     String _join = IterableExtensions.join(_subList, ", ", ", ", "", _function);
@@ -234,7 +228,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
             } else {
               TypeReference _extendedClass = inheritor.getExtendedClass();
               boolean _tripleEquals = (_extendedClass == null);
-              _or = (_equals || _tripleEquals);
+              _or = _tripleEquals;
             }
             if (_or) {
               Expression _body = original.getBody();
@@ -273,8 +267,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
                   Iterable<? extends MutableParameterDeclaration> _parameters = method.getParameters();
                   final Function1<MutableParameterDeclaration,String> _function = new Function1<MutableParameterDeclaration,String>() {
                     public String apply(final MutableParameterDeclaration it) {
-                      String _simpleName = it.getSimpleName();
-                      return _simpleName;
+                      return it.getSimpleName();
                     }
                   };
                   Iterable<String> _map = IterableExtensions.map(_parameters, _function);
@@ -299,13 +292,11 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
     final Function1<TypeDeclaration,Boolean> _function = new Function1<TypeDeclaration,Boolean>() {
       public Boolean apply(final TypeDeclaration it) {
         TypeReference _newTypeReference = context.newTypeReference(it);
-        boolean _isAssignableFrom = typeReference.isAssignableFrom(_newTypeReference);
-        return Boolean.valueOf(_isAssignableFrom);
+        return Boolean.valueOf(typeReference.isAssignableFrom(_newTypeReference));
       }
     };
     Iterable<? extends TypeDeclaration> _filter = IterableExtensions.filter(_sourceTypeDeclarations, _function);
     Iterable<ClassDeclaration> _filter_1 = Iterables.<ClassDeclaration>filter(_filter, ClassDeclaration.class);
-    Set<ClassDeclaration> _set = IterableExtensions.<ClassDeclaration>toSet(_filter_1);
-    return _set;
+    return IterableExtensions.<ClassDeclaration>toSet(_filter_1);
   }
 }
