@@ -633,7 +633,7 @@ find_beam(Mod, Src) ->
   false -> find_beam_1(Mod, BeamFile, SrcDir)
     end.
 
-find_beam_1(Mod, BeamFile, SrcDir) ->
+find_beam_1(_Mod, BeamFile, SrcDir) ->
     RootDir = filename:dirname(SrcDir),
     EbinDir = filename:join(RootDir, "ebin"),
     CodePath = [EbinDir | code:get_path()],
