@@ -804,75 +804,75 @@ expr({make_fun,Line,Name,Cs}, Bs, #ieval{module=Module}=Ieval) ->
     {value,Fun,Bs};
 
 %% Construct a fun
-expr({make_named_fun,Line,Name,FName,Cs}, Bs, #ieval{module=Module}=Ieval) ->
-    Arity = length(element(3,hd(Cs))),
-    Info = {{Module,Name},Bs,Cs,FName},
-    Fun =
-	case Arity of
-	    0 -> fun RF() -> eval_named_fun([], RF, Info) end;
-	    1 -> fun RF(A) -> eval_named_fun([A], RF, Info) end;
-	    2 -> fun RF(A,B) ->
-			 eval_named_fun([A,B], RF, Info) end;
-	    3 -> fun RF(A,B,C) ->
-			 eval_named_fun([A,B,C], RF, Info) end;
-	    4 -> fun RF(A,B,C,D) ->
-			 eval_named_fun([A,B,C,D], RF, Info) end;
-	    5 -> fun RF(A,B,C,D,E) ->
-			 eval_named_fun([A,B,C,D,E],
-					RF, Info) end;
-	    6 -> fun RF(A,B,C,D,E,F) ->
-			 eval_named_fun([A,B,C,D,E,F],
-					RF, Info) end;
-	    7 -> fun RF(A,B,C,D,E,F,G) ->
-			 eval_named_fun([A,B,C,D,E,F,G],
-					RF, Info) end;
-	    8 -> fun RF(A,B,C,D,E,F,G,H) ->
-			 eval_named_fun([A,B,C,D,E,F,G,H],
-					RF, Info) end;
-	    9 -> fun RF(A,B,C,D,E,F,G,H,I) ->
-			 eval_named_fun([A,B,C,D,E,F,G,H,I],
-					RF, Info) end;
-	    10 -> fun RF(A,B,C,D,E,F,G,H,I,J) ->
-			 eval_named_fun([A,B,C,D,E,F,G,H,I,J],
-					RF, Info) end;
-	    11 -> fun RF(A,B,C,D,E,F,G,H,I,J,K) ->
-			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K],
-					RF, Info) end;
-	    12 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L) ->
-			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L],
-					RF, Info) end;
-	    13 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M) ->
-			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M],
-					RF, Info) end;
-	    14 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M,N) ->
-			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M,N],
-					RF, Info) end;
-	    15 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O) ->
-			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M,N,O],
-					RF, Info) end;
-	    16 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P) ->
-			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P],
-					RF, Info) end;
-	    17 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q) ->
-			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q],
-					RF, Info) end;
-	    18 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R) ->
-			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,
-					     R],
-					RF, Info) end;
-	    19 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S) ->
-			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,
-					     R,S],
-					RF, Info) end;
-	    20 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T) ->
-			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,
-					     R,S,T],
-					RF, Info) end;
-	    _Other ->
-		exception(error, {'argument_limit',{named_fun,FName,Cs}}, Bs,
-        Ieval#ieval{line=Line})
-  end,
-    {value,Fun,Bs};
+%% expr({make_named_fun,Line,Name,FName,Cs}, Bs, #ieval{module=Module}=Ieval) ->
+%%     Arity = length(element(3,hd(Cs))),
+%%     Info = {{Module,Name},Bs,Cs,FName},
+%%     Fun =
+%% 	case Arity of
+%% 	    0 -> fun RF() -> eval_named_fun([], RF, Info) end;
+%% 	    1 -> fun RF(A) -> eval_named_fun([A], RF, Info) end;
+%% 	    2 -> fun RF(A,B) ->
+%% 			 eval_named_fun([A,B], RF, Info) end;
+%% 	    3 -> fun RF(A,B,C) ->
+%% 			 eval_named_fun([A,B,C], RF, Info) end;
+%% 	    4 -> fun RF(A,B,C,D) ->
+%% 			 eval_named_fun([A,B,C,D], RF, Info) end;
+%% 	    5 -> fun RF(A,B,C,D,E) ->
+%% 			 eval_named_fun([A,B,C,D,E],
+%% 					RF, Info) end;
+%% 	    6 -> fun RF(A,B,C,D,E,F) ->
+%% 			 eval_named_fun([A,B,C,D,E,F],
+%% 					RF, Info) end;
+%% 	    7 -> fun RF(A,B,C,D,E,F,G) ->
+%% 			 eval_named_fun([A,B,C,D,E,F,G],
+%% 					RF, Info) end;
+%% 	    8 -> fun RF(A,B,C,D,E,F,G,H) ->
+%% 			 eval_named_fun([A,B,C,D,E,F,G,H],
+%% 					RF, Info) end;
+%% 	    9 -> fun RF(A,B,C,D,E,F,G,H,I) ->
+%% 			 eval_named_fun([A,B,C,D,E,F,G,H,I],
+%% 					RF, Info) end;
+%% 	    10 -> fun RF(A,B,C,D,E,F,G,H,I,J) ->
+%% 			 eval_named_fun([A,B,C,D,E,F,G,H,I,J],
+%% 					RF, Info) end;
+%% 	    11 -> fun RF(A,B,C,D,E,F,G,H,I,J,K) ->
+%% 			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K],
+%% 					RF, Info) end;
+%% 	    12 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L) ->
+%% 			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L],
+%% 					RF, Info) end;
+%% 	    13 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M) ->
+%% 			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M],
+%% 					RF, Info) end;
+%% 	    14 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M,N) ->
+%% 			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M,N],
+%% 					RF, Info) end;
+%% 	    15 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O) ->
+%% 			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M,N,O],
+%% 					RF, Info) end;
+%% 	    16 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P) ->
+%% 			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P],
+%% 					RF, Info) end;
+%% 	    17 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q) ->
+%% 			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q],
+%% 					RF, Info) end;
+%% 	    18 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R) ->
+%% 			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,
+%% 					     R],
+%% 					RF, Info) end;
+%% 	    19 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S) ->
+%% 			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,
+%% 					     R,S],
+%% 					RF, Info) end;
+%% 	    20 -> fun RF(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T) ->
+%% 			 eval_named_fun([A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,
+%% 					     R,S,T],
+%% 					RF, Info) end;
+%% 	    _Other ->
+%% 		exception(error, {'argument_limit',{named_fun,FName,Cs}}, Bs,
+%%         Ieval#ieval{line=Line})
+%%   end,
+%%     {value,Fun,Bs};
 
 %% Construct an external fun.
 expr({make_ext_fun,Line,MFA0}, Bs0, Ieval0) ->
