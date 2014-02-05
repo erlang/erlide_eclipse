@@ -371,6 +371,9 @@ public class ErlideDebug {
 
     public static void unloadDebuggerCode(final IRpcSite backend,
             final List<String> modules) {
+        if (backend == null) {
+            return;
+        }
         try {
             backend.cast(ERLIDE_DEBUG, "unload_debugger_code", "la", modules);
         } catch (final RpcException e) {
