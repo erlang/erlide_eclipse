@@ -519,10 +519,10 @@ lambda(Fun, As) when is_function(Fun) ->
   {module, ?MODULE} ->
       {Mod,Name,Bs, Cs} =
 		case erlang:fun_info(Fun, env) of
-        {env,[{{M,F},Bs0,Cs0}]} ->
-      {M,F,Bs0, Cs0};
-        {env,[{{M,F},Bs0,Cs0,FName}]} ->
-      {M,F,add_binding(FName, Fun, Bs0), Cs0}
+            {env,[{{M,F},Bs0,Cs0}]} ->
+                {M,F,Bs0, Cs0};
+            {env,[{{M,F},Bs0,Cs0,FName}]} ->
+                {M,F,add_binding(FName, Fun, Bs0), Cs0}
 		end,
       {arity, Arity} = erlang:fun_info(Fun, arity),
       if
