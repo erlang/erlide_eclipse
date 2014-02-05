@@ -117,8 +117,8 @@ is_erlide_process(Pid) -> % when is_pid(Pid)->
 get_dist(true) -> distributed;
 get_dist(false) -> local.
 
-interpret(File, Dist, Interpret) ->
-    dbg_mon:interpret(File, get_dist(Dist), Interpret).
+interpret(Module, Dist, Interpret) ->
+    dbg_mon:interpret(Module, get_dist(Dist), Interpret).
 
 line_breakpoint(File, Line, Action) ->
     ModuleName = filename:rootname(filename:basename(File)),

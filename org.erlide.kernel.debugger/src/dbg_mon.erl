@@ -32,8 +32,7 @@
 %% Internal exports
 -export([send_attached_to_java/2]).
 
-%% TODO vi behver inget state! detta r mest till fr otp-debuggern,
-%% s den sparar sig mellan varven...
+%% TODO we don't really need the state, this is used by the OTP debugger
 
 -record(state, {parent, %pid() remote
                 mode,      % local | global
@@ -62,20 +61,20 @@
 %%--------------------------------------------------------------------
 start(Mode, Flags) ->
     case whereis(?SERVER) of
-	undefined ->
-	    CallingPid = self(),
-	    Pid = spawn(fun () ->
-				 ?SAVE_CALLS,
-				 init(CallingPid, Mode, Flags)
-			end),
-	    receive
-		{initialization_complete, Pid} ->
-		    {ok, Pid};
-		Error ->
-		    Error
-	    end;
-	Pid ->
-	    {error, {already_started,Pid}}
+  undefined ->
+      CallingPid = self(),
+      Pid = spawn(fun () ->
+         ?SAVE_CALLS,
+         init(CallingPid, Mode, Flags)
+      end),
+      receive
+    {initialization_complete, Pid} ->
+        {ok, Pid};
+    Error ->
+        Error
+      end;
+  Pid ->
+      {error, {already_started,Pid}}
     end.
 
 %%--------------------------------------------------------------------
@@ -185,8 +184,8 @@ gui_cmd(ignore, State) ->
     {ok, State};
 gui_cmd(stopped, State) ->
     if
-	State#state.starter==true -> int:stop();
-	true -> int:auto_attach(false)
+  State#state.starter==true -> int:stop();
+  true -> int:auto_attach(false)
     end,
     exit(stop);
 
@@ -194,46 +193,52 @@ gui_cmd(refresh, State) ->
     int:clear(),
     State2 = State#state{pinfos=[]},
     lists:foldl(fun(PidTuple, S) ->
-			int_cmd({new_process,PidTuple}, S)
-		end,
-		State2,
-		int:snapshot());
+      int_cmd({new_process,PidTuple}, S)
+    end,
+    State2,
+    int:snapshot());
 
 gui_cmd({attach, Jproc, Dproc}, State) ->
-	int:attach(Dproc, {dbg, start, [Jproc, Dproc]}),
-	State;
+  int:attach(Dproc, {dbg, start, [Jproc, Dproc]}),
+  State;
 
 gui_cmd(kill_all_processes, State) ->
     lists:foreach(fun(PInfo) ->
-			  case PInfo#pinfo.status of
-			      exit -> ignore;
-			      _Status -> exit(PInfo#pinfo.pid, kill)
-			  end
-		  end,
-		  State#state.pinfos),
+        case PInfo#pinfo.status of
+            exit -> ignore;
+            _Status -> exit(PInfo#pinfo.pid, kill)
+        end
+      end,
+      State#state.pinfos),
     State;
 
-gui_cmd({interpret, {AbsBeam, Dist, true}}, State) ->
-    Res = int:interpret_beam(AbsBeam, Dist),
+gui_cmd({interpret, {Mod, local, true}}, State) ->
+  Res = int:i(Mod),
     {Res, State};
-gui_cmd({interpret, {AbsBeam, Dist, false}}, State) ->
-    Res = int:n2(AbsBeam, Dist),
+gui_cmd({interpret, {Mod, distributed, true}}, State) ->
+  Res = int:ni(Mod),
+    {Res, State};
+gui_cmd({interpret, {Mod, local, false}}, State) ->
+    Res = int:n(Mod),
+    {Res, State};
+gui_cmd({interpret, {Mod, distributed, false}}, State) ->
+    Res = int:nn(Mod),
     {Res, State};
 gui_cmd(delete_all, State) ->
     lists:foreach(fun(Mod) -> int:nn(Mod) end, int:interpreted()),
     {ok, State};
 gui_cmd({module, Mod, What}, State) ->
     case What of
-	delete -> int:nn(Mod)
+  delete -> int:nn(Mod)
     end,
     State;
 
 gui_cmd(enable_all_breaks, State) ->
     Breaks = int:all_breaks(),
     lists:foreach(fun ({{Mod, Line}, _Options}) ->
-			  int:enable_break(Mod, Line)
-		  end,
-		  Breaks),
+        int:enable_break(Mod, Line)
+      end,
+      Breaks),
     State;
 gui_cmd(disable_all_breaks, State) ->
     Breaks = int:all_breaks(),
@@ -299,14 +304,14 @@ gui_cmd({drop_to_frame, {MetaPid, StackFrameNum}}, State) ->
 %% Options Commands
 gui_cmd({trace, JPid}, State) ->
     case State#state.attach of
-	false -> ignore;
-	{Flags, {dbg, start, [JPid, StartFlags]}} ->
-	    case trace_function(JPid, State) of
-		{_, _, StartFlags} -> ignore;
-		NewFunction -> % {_, _, NewStartFlags}
-		    int:auto_attach(Flags, NewFunction)
-	    end;
-	_AutoAttach -> ignore
+  false -> ignore;
+  {Flags, {dbg, start, [JPid, StartFlags]}} ->
+      case trace_function(JPid, State) of
+    {_, _, StartFlags} -> ignore;
+    NewFunction -> % {_, _, NewStartFlags}
+        int:auto_attach(Flags, NewFunction)
+      end;
+  _AutoAttach -> ignore
     end,
     State;
 gui_cmd({auto_attach, Flags}, State) ->
@@ -320,14 +325,14 @@ gui_cmd(backtrace_size, State) ->
 
 gui_cmd({focus, Pid, _Win}, State) ->
     {value, PInfo} =
-	lists:keysearch(Pid, #pinfo.pid, State#state.pinfos),
+  lists:keysearch(Pid, #pinfo.pid, State#state.pinfos),
     State#state{focus=PInfo};
 gui_cmd(default, State) ->
-	State;
+  State;
 
 gui_cmd(_Cmd, State) ->
-	%% io:format("@ dbg_mon: unknown ~p~n",[_Cmd]),
-	State.
+  %% io:format("@ dbg_mon: unknown ~p~n",[_Cmd]),
+  State.
 
 %%--Commands from the interpreter-------------------------------------
 
@@ -357,10 +362,10 @@ int_cmd({new_status, Pid, Status, _Info}, State) ->
     State2 = State#state{pinfos=PInfos2},
 
     case State2#state.focus of
-	#pinfo{pid=Pid} ->
-	    State2#state{focus=PInfo2};
-	_ ->
-	    State2
+  #pinfo{pid=Pid} ->
+      State2#state{focus=PInfo2};
+  _ ->
+      State2
     end;
 
 int_cmd({new_break, _Break}, State) ->
@@ -380,7 +385,7 @@ int_cmd({stack_trace, _Flag}, State) ->
     State;
 
 int_cmd(_Other, State) ->
-	State.
+  State.
 
 
 %%====================================================================
@@ -524,24 +529,24 @@ registered_name(Pid) ->
 
     Node = node(Pid),
     if
-	Node==node() ->
-	    case erlang:process_info(Pid, registered_name) of
-		{registered_name, Name} -> Name;
-		_ -> undefined
-	    end;
-	true ->
-	    case rpc:call(Node,erlang,process_info,
-			  [Pid,registered_name]) of
-		{registered_name, Name} -> Name;
-		_ -> undefined
-	    end
+  Node==node() ->
+      case erlang:process_info(Pid, registered_name) of
+    {registered_name, Name} -> Name;
+    _ -> undefined
+      end;
+  true ->
+      case rpc:call(Node,erlang,process_info,
+        [Pid,registered_name]) of
+    {registered_name, Name} -> Name;
+    _ -> undefined
+      end
     end.
 
 trace_function(Jpid, State) ->
     {dbg, start, [Jpid, State#state.backtrace]}.
 
 msg(Pid, Msg) ->
-	%% Pid may be 'undefined'
+  %% Pid may be 'undefined'
 %% 	io:format("SEND:: ~p~n", [Msg]),
     _Res = (catch(Pid ! Msg)),
     ok.

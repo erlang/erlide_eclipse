@@ -1,19 +1,19 @@
 %%
 %% %CopyrightBegin%
-%% 
+%%
 %% Copyright Ericsson AB 1998-2013. All Rights Reserved.
-%% 
+%%
 %% The contents of this file are subject to the Erlang Public License,
 %% Version 1.1, (the "License"); you may not use this file except in
 %% compliance with the License. You should have received a copy of the
 %% Erlang Public License along with this software. If not, it can be
 %% retrieved online at http://www.erlang.org/.
-%% 
+%%
 %% Software distributed under the License is distributed on an "AS IS"
 %% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
 %% the License for the specific language governing rights and limitations
 %% under the License.
-%% 
+%%
 %% %CopyrightEnd%
 %%
 -module(dbg_debugged).
@@ -32,6 +32,7 @@
 %%--------------------------------------------------------------------
 eval(Mod, Func, Args) ->
     SaveStacktrace = erlang:get_stacktrace(),
+    put(ss2, get_ss2()),
     Meta = dbg_ieval:eval(Mod, Func, Args),
     Mref = erlang:monitor(process, Meta),
     msg_loop(Meta, Mref, SaveStacktrace).
@@ -43,61 +44,73 @@ eval(Mod, Func, Args) ->
 msg_loop(Meta, Mref, SaveStacktrace) ->
     receive
 
-	%% Evaluated function has returned a value
-	{sys, Meta, {ready, Val}} ->
+  %% Evaluated function has returned a value
+  {sys, Meta, {ready, Val}} ->
 	    erlang:demonitor(Mref, [flush]),
 
-	    %% Restore original stacktrace and return the value
-	    try erlang:raise(throw, stack, SaveStacktrace)
-	    catch
-		throw:stack ->
-		    case Val of
-			{dbg_apply,M,F,A} ->
-			    apply(M, F, A);
-			_ ->
-			    Val
-		    end
-	    end;
+      %% Restore original stacktrace and return the value
+      try erlang:raise(throw, stack, SaveStacktrace)
+      catch
+    throw:stack ->
+        case Val of
+      {dbg_apply,M,F,A} ->
+          apply(M, F, A);
+      _ ->
+          Val
+        end
+      end;
 
-	%% Evaluated function raised an (uncaught) exception
-	{sys, Meta, {exception,{Class,Reason,Stacktrace}}} ->
+  %% Evaluated function raised an (uncaught) exception
+  {sys, Meta, {exception,{Class,Reason,Stacktrace}}} ->
 	    erlang:demonitor(Mref, [flush]),
 
-	    %% ...raise the same exception
-	    erlang:error(erlang:raise(Class, Reason, Stacktrace), 
-			 [Class,Reason,Stacktrace]);
+      %% ...raise the same exception
+      erlang:error(erlang:raise(Class, Reason, Stacktrace),
+       [Class,Reason,Stacktrace]);
 
-	%% Meta is evaluating a receive, must be done within context
-	%% of real (=this) process
-	{sys, Meta, {'receive',Msg}} ->
-	    receive Msg -> Meta ! {self(), rec_acked} end,
-	    msg_loop(Meta, Mref, SaveStacktrace);
+  %% Meta is evaluating a receive, must be done within context
+  %% of real (=this) process
+  {sys, Meta, {'receive',Msg}} ->
+      receive Msg -> Meta ! {self(), rec_acked} end,
+      msg_loop(Meta, Mref, SaveStacktrace);
 
-	%% Meta needs something evaluated within context of real process
-	{sys, Meta, {command,Command}} ->
-	    Reply = handle_command(Command),
-	    Meta ! {sys, self(), Reply},
-	    msg_loop(Meta, Mref, SaveStacktrace);
+  %% Meta needs something evaluated within context of real process
+  {sys, Meta, {command,Command}} ->
+      Reply = handle_command(Command),
+      Meta ! {sys, self(), Reply},
+      msg_loop(Meta, Mref, SaveStacktrace);
 
-	%% Meta has terminated
-	%% Must be due to int:stop() (or -heaven forbid- a debugger bug)
-	{'DOWN', Mref, _, _, Reason} ->
+        %% Fetch saved stack trace
+        {sys, Meta, get_saved_stacktrace} ->
+            Meta ! {sys, self(), {saved_stacktrace, SaveStacktrace, get(ss2)}},
+            msg_loop(Meta, Mref, SaveStacktrace);
 
-	    %% Restore original stacktrace and return a dummy value
-	    try erlang:raise(throw, stack, SaveStacktrace)
-	    catch
-		throw:stack ->
-		    {interpreter_terminated, Reason}
-	    end
+  %% Meta has terminated
+  %% Must be due to int:stop() (or -heaven forbid- a debugger bug)
+  {'DOWN', Mref, _, _, Reason} ->
+
+      %% Restore original stacktrace and return a dummy value
+      try erlang:raise(throw, stack, SaveStacktrace)
+      catch
+    throw:stack ->
+        {interpreter_terminated, Reason}
+      end
     end.
 
 handle_command(Command) ->
     try
-	reply(Command)
+  reply(Command)
     catch Class:Reason ->
-	    Stacktrace = stacktrace_f(erlang:get_stacktrace()),
-	    {exception,{Class,Reason,Stacktrace}}
+      Stacktrace = stacktrace_f(erlang:get_stacktrace()),
+      {exception,{Class,Reason,Stacktrace}}
     end.
+
+%% Get stacktrace, should work in several layers, but doesn't yet...
+get_ss2() ->
+    _SS = (catch 1 / zero()). % avoid compiler warning
+
+zero() ->
+    0.
 
 reply({apply,M,F,As}) ->
     {value, erlang:apply(M,F,As)};
