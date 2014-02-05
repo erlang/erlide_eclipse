@@ -16,7 +16,7 @@
 %% 
 %% %CopyrightEnd%
 %%
--module(erlide_dbg_icmd).
+-module(dbg_icmd).
 
 %% Internal command receiver/handler
 -export([cmd/3]).
@@ -35,7 +35,7 @@
 %% get_binding/2
 -export([get_binding/2]).
 
--include("erlide_dbg_ieval.hrl").
+-include("dbg_ieval.hrl").
 
 %%====================================================================
 %% Internal command receiver/handler
@@ -43,7 +43,7 @@
 
 %%--------------------------------------------------------------------
 %% cmd(Expr, Bs, Ieval) -> {skip, Bs} | Bs
-%% This function is called from erlide_dbg_ieval before evaluating any
+%% This function is called from dbg_ieval before evaluating any
 %% expression to give the user the chance to inspect variables etc.
 %% get(next_break) => break | running
 %%                  | Le
@@ -108,13 +108,13 @@ break_p(Mod, Line, Le, Bs) ->
 			    case Action of
 				enable -> ignore;
 				disable ->
-				    erlide_dbg_iserver:cast(get(int),
+				    dbg_iserver:cast(get(int),
 						     {break_option,
 						      {Mod, Line},
 						      status,
 						      inactive});
 				delete ->
-				    erlide_dbg_iserver:cast(get(int),
+				    dbg_iserver:cast(get(int),
 						     {delete_break,
 						      {Mod, Line}})
 			    end;
@@ -127,10 +127,10 @@ break_p(Mod, Line, Le, Bs) ->
     end.
 
 %% Called whenever evaluation enters break mode, informs attached
-%% process and erlide_dbg_iserver
+%% process and dbg_iserver
 break(Expr, Bs, #ieval{level=Le,module=M}=Ieval) ->
     Line = element(2, Expr),
-    erlide_dbg_iserver:cast(get(int), {set_status,self(),break,{M,Line}}),
+    dbg_iserver:cast(get(int), {set_status,self(),break,{M,Line}}),
     tell_attached({break_at,M,Line,Le}),
     handle_cmd(Bs, break, Ieval#ieval{line=Line}).
 
@@ -144,7 +144,7 @@ break(Expr, Bs, #ieval{level=Le,module=M}=Ieval) ->
 handle_cmd(Bs, break, #ieval{level=Le}=Ieval) ->
     receive
 	{user, {cmd, Cmd}} ->
-	    erlide_dbg_iserver:cast(get(int), {set_status,self(),running,{}}),
+	    dbg_iserver:cast(get(int), {set_status,self(),running,{}}),
 	    tell_attached(running),
 	    case Cmd of
 		step -> Bs;
@@ -157,14 +157,14 @@ handle_cmd(Bs, break, #ieval{level=Le}=Ieval) ->
 	    Bs1 = eval_nonrestricted(Cmd, Bs, Ieval),
 	    handle_cmd(Bs1, break, Ieval);
 	Msg ->
-	    erlide_dbg_ieval:check_exit_msg(Msg, Bs, Ieval),
+	    dbg_ieval:check_exit_msg(Msg, Bs, Ieval),
 	    handle_msg(Msg, break, Bs, Ieval),
 	    handle_cmd(Bs, break, Ieval)
     end;
 handle_cmd(Bs, Status, Ieval) ->
     receive
 	Msg ->
-	    erlide_dbg_ieval:check_exit_msg(Msg, Bs, Ieval),
+	    dbg_ieval:check_exit_msg(Msg, Bs, Ieval),
 	    handle_msg(Msg, Status, Bs, Ieval),
 	    handle_cmd(Bs, Status, Ieval)
     after 0 -> 
@@ -246,7 +246,7 @@ handle_msg(Msg, Status, Bs, Ieval) ->
 %%       | {break_options, {Break, Options}}
 %%       | no_break | {no_break, Mod}
 %%       | stop (only when Status==exit_at, means AttPid has terminated)
-%% Interpreter internal messages (from erlide_dbg_iserver)
+%% Interpreter internal messages (from dbg_iserver)
 handle_int_msg({attached, AttPid}, Status, _Bs, 
 	       #ieval{level=Le,module=M,line=Line}) ->
 
@@ -284,12 +284,12 @@ handle_int_msg({old_code,Mod}, Status, Bs,
 	    erase([Mod|db]),
 	    put(cache, []);
 	true ->
-	    case erlide_dbg_istk:in_use_p(Mod, M) of
+	    case dbg_istk:in_use_p(Mod, M) of
 		true ->
 		    %% A call to Mod is on the stack (or might be),
 		    %% so we must terminate.
 		    exit(get(self), kill),
-		    erlide_dbg_ieval:exception(exit, old_code, Bs, Ieval);
+		    dbg_ieval:exception(exit, old_code, Bs, Ieval);
 		false ->
 		    erase([Mod|db]),
 		    put(cache, [])
@@ -318,7 +318,7 @@ handle_int_msg(stop, exit_at, _Bs, _Ieval) ->
 %% Msg = {cmd, Cmd}, Cmd /= stop, can only be received in break mode,
 %% handled in handle_cmd/3
 %% Msg = timeout is handled when needed (when evaluating receive..after)
-%% in erlide_dbg_ieval:do_receive/5 when Status==wait_after_at
+%% in dbg_ieval:do_receive/5 when Status==wait_after_at
 %% For all other Status, it should be ignored
 handle_user_msg({cmd, stop}, Status, _Bs, _Ieval) ->
     case lists:member(Status, [running, wait_at, wait_after_at]) of
@@ -357,19 +357,17 @@ handle_user_msg({get, all_modules_on_stack, From, _}, _Status, _Bs, _Ieval) ->
 handle_user_msg({get,bindings,From,SP}, _Status, Bs, _Ieval) ->
     reply(From, bindings, bindings(Bs, SP));
 handle_user_msg({get,stack_frame,From,{Dir,SP}}, _Status, _Bs,_Ieval) ->
-    reply(From, stack_frame, erlide_dbg_istk:stack_frame(Dir, SP));
+    reply(From, stack_frame, dbg_istk:stack_frame(Dir, SP));
 handle_user_msg({get,messages,From,_}, _Status, _Bs, _Ieval) ->
     reply(From, messages, messages());
 handle_user_msg({get,backtrace,From,N}, _Status, _Bs, Ieval) ->
-    reply(From, backtrace, erlide_dbg_istk:backtrace(N, Ieval));
-handle_user_msg(A, _, _, _) ->
-    erlang:display({handle_user_msg, A}).
+    reply(From, backtrace, dbg_istk:backtrace(N, Ieval)).
 
 all_modules_on_stack() ->
-    erlide_dbg_istk:all_modules_on_stack().
+    dbg_istk:all_modules_on_stack().
 
 all_frames() ->
-    erlide_dbg_ieval:all_frames().
+    dbg_ieval:all_frames().
 
 set_stack_trace(true) ->
     set_stack_trace(all);
@@ -389,11 +387,11 @@ reply(From, Tag, Reply) ->
 bindings(Bs, nostack) ->
     Bs;
 bindings(Bs, SP) ->
-    case erlide_dbg_istk:stack_level() of
+    case dbg_istk:stack_level() of
 	Le when SP > Le ->
 	    Bs;
 	_ ->
-	    erlide_dbg_istk:bindings(SP)
+	    dbg_istk:bindings(SP)
     end.
 
 messages() ->
@@ -445,7 +443,7 @@ eval_nonrestricted({From, _Mod, Cmd, _SP}, Bs,
 
 eval_nonrestricted_1({match,_,{var,_,Var},Expr}, Bs, Ieval) ->
     {value,Res,Bs2} = 
-	erlide_dbg_ieval:eval_expr(Expr, Bs, Ieval#ieval{top=false}),
+	dbg_ieval:eval_expr(Expr, Bs, Ieval#ieval{top=false}),
     Bs3 = case lists:keyfind(Var, 1, Bs) of
 	      {Var,_Value} ->
 		  lists:keyreplace(Var, 1, Bs2, {Var,Res});
@@ -460,20 +458,20 @@ eval_nonrestricted_1({var,_,Var}, Bs, _Ieval) ->
     {Res,Bs};
 eval_nonrestricted_1(Expr, Bs, Ieval) ->
     {value,Res,Bs2} = 
-	erlide_dbg_ieval:eval_expr(Expr, Bs, Ieval#ieval{top=false}),
+	dbg_ieval:eval_expr(Expr, Bs, Ieval#ieval{top=false}),
     {Res,Bs2}.
 
 mark_running(LineNo, Le) ->
     put(next_break, running),
     put(user_eval, [{LineNo, Le} | get(user_eval)]),
-    erlide_dbg_iserver:cast(get(int), {set_status, self(), running, {}}),
+    dbg_iserver:cast(get(int), {set_status, self(), running, {}}),
     tell_attached(running).
 
 mark_break(Cm, LineNo, Le) ->
     put(next_break, break),
     put(user_eval, tl(get(user_eval))),
     tell_attached({break_at, Cm, LineNo, Le}),
-    erlide_dbg_iserver:cast(get(int), {set_status,self(),break,{Cm,LineNo}}).
+    dbg_iserver:cast(get(int), {set_status,self(),break,{Cm,LineNo}}).
 
 parse_cmd(Cmd, LineNo) ->
     {ok,Tokens,_} = erl_scan:string(Cmd, LineNo),

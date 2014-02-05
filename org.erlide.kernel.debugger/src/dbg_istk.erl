@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 2011. All Rights Reserved.
+%% Copyright Ericsson AB 2011-2013. All Rights Reserved.
 %%
 %% The contents of this file are subject to the Erlang Public License,
 %% Version 1.1, (the "License"); you may not use this file except in
@@ -16,7 +16,7 @@
 %%
 %% %CopyrightEnd%
 %%
--module(erlide_dbg_istk).
+-module(dbg_istk).
 -export([init/0,delayed_to_external/0,from_external/1,
 	 push/3,pop/0,pop/1,stack_level/0,
 	 delayed_stacktrace/0,delayed_stacktrace/2,
@@ -25,7 +25,7 @@
 
 -export([all_frames/0, all_frames/1, all_modules_on_stack/0]).
 
--include("erlide_dbg_ieval.hrl").
+-include("dbg_ieval.hrl").
 
 -define(STACK, ?MODULE).
 
@@ -72,11 +72,9 @@ all_modules_on_stack(Stack) ->
 args2arity(As) when is_list(As) ->
     length(As).
 
-
-
 %% We keep track of a call stack that is used for
 %%  1) saving stack frames that can be inspected from an Attached
-%%     Process GUI (using erlide_dbg_icmd:get(Meta, stack_frame, {Dir, SP})
+%%     Process GUI (using dbg_icmd:get(Meta, stack_frame, {Dir, SP})
 %%  2) generate an approximation of regular stacktrace -- sent to
 %%     Debugged when it should raise an exception or evaluate a
 %%     function (since it might possible raise an exception)
@@ -104,7 +102,7 @@ push(Bs, #ieval{level=Le,module=Mod,function=Name,
 pop() ->
     case get(trace_stack) of
 	false -> ignore;
-	_ -> % all ¦ no_tail
+	_ -> % all | no_tail
 	    case get(?STACK) of
 		[_Entry|Entries] ->
 		    put(?STACK, Entries);

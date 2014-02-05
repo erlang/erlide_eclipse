@@ -1,7 +1,7 @@
 %%
 %% %CopyrightBegin%
 %%
-%% Copyright Ericsson AB 1998-2011. All Rights Reserved.
+%% Copyright Ericsson AB 1998-2013. All Rights Reserved.
 %%
 %% The contents of this file are subject to the Erlang Public License,
 %% Version 1.1, (the "License"); you may not use this file except in
@@ -16,14 +16,10 @@
 %%
 %% %CopyrightEnd%
 %%
--module(erlide_dbg_debugged).
+-module(dbg_debugged).
 
 %% External exports
-%% Avoid warning for local function demonitor/1 clashing with autoimported BIF.
--compile({no_auto_import,[demonitor/1]}).
 -export([eval/3]).
-
--compile({no_auto_import, [demonitor/1]}).
 
 %%====================================================================
 %% External exports
@@ -37,7 +33,7 @@
 eval(Mod, Func, Args) ->
     SaveStacktrace = erlang:get_stacktrace(),
     put(ss2, get_ss2()),
-    Meta = erlide_dbg_ieval:eval(Mod, Func, Args),
+    Meta = dbg_ieval:eval(Mod, Func, Args),
     Mref = erlang:monitor(process, Meta),
     msg_loop(Meta, Mref, SaveStacktrace).
 
@@ -50,7 +46,7 @@ msg_loop(Meta, Mref, SaveStacktrace) ->
 
   %% Evaluated function has returned a value
   {sys, Meta, {ready, Val}} ->
-      demonitor(Mref),
+	    erlang:demonitor(Mref, [flush]),
 
       %% Restore original stacktrace and return the value
       try erlang:raise(throw, stack, SaveStacktrace)
@@ -66,7 +62,7 @@ msg_loop(Meta, Mref, SaveStacktrace) ->
 
   %% Evaluated function raised an (uncaught) exception
   {sys, Meta, {exception,{Class,Reason,Stacktrace}}} ->
-      demonitor(Mref),
+	    erlang:demonitor(Mref, [flush]),
 
       %% ...raise the same exception
       erlang:error(erlang:raise(Class, Reason, Stacktrace),
@@ -119,15 +115,8 @@ zero() ->
 reply({apply,M,F,As}) ->
     {value, erlang:apply(M,F,As)};
 reply({eval,Expr,Bs}) ->
-    erl_eval:expr(Expr, Bs). % {value, Value, Bs2}
-
-%% Demonitor and delete message from inbox
-%%
-demonitor(Mref) ->
-    erlang:demonitor(Mref),
-    receive {'DOWN',Mref,_,_,_} -> ok
-    after 0 -> ok
-    end.
+    %% Bindings is an orddict (sort them)
+    erl_eval:expr(Expr, lists:sort(Bs)). % {value, Value, Bs2}
 
 %% Fix stacktrace - keep all above call to this module.
 %%

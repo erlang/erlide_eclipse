@@ -16,7 +16,7 @@
 %% 
 %% %CopyrightEnd%
 %%
--module(erlide_dbg_idb).
+-module(dbg_idb).
 
 %% External exports
 -export([insert/3, lookup/2, match_object/2]).
