@@ -48,7 +48,7 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
     } else {
       String _name = this.info.getName();
       boolean _isEmpty = _name.isEmpty();
-      _or = (_tripleEquals || _isEmpty);
+      _or = _isEmpty;
     }
     if (_or) {
       return false;

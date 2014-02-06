@@ -1,6 +1,5 @@
 package org.erlide.ui.wizards;
 
-import com.google.common.base.Objects;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.swt.SWT;
@@ -66,8 +65,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                 final RuntimeVersion[] runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS;
                 final Function1<RuntimeVersion,String> _function = new Function1<RuntimeVersion,String>() {
                   public String apply(final RuntimeVersion it) {
-                    String _string = it.toString();
-                    return _string;
+                    return it.toString();
                   }
                 };
                 List<String> _map = ListExtensions.<RuntimeVersion, String>map(((List<RuntimeVersion>)Conversions.doWrapArray(runtimeVersions)), _function);
@@ -78,8 +76,8 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                 String _string = _asMajor.toString();
                 it.setText(_string);
                 String _text = it.getText();
-                RuntimeVersion _runtimeVersion = new RuntimeVersion(_text);
-                ErlangProjectBuilderPage.this.info.setRequiredRuntimeVersion(_runtimeVersion);
+                RuntimeVersion _parse = RuntimeVersion.Serializer.parse(_text);
+                ErlangProjectBuilderPage.this.info.setRequiredRuntimeVersion(_parse);
               }
             };
             Combo _newControl = XtendSWTLib.<Combo>newControl(it, Combo.class, SWT.READ_ONLY, _function_1);
@@ -110,8 +108,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
               }
             };
             XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_6);
-            BuilderSelectionListener _builderSelectionListener = new BuilderSelectionListener(ErlangProjectBuilderPage.this.info, ErlangProjectBuilderPage.this);
-            final BuilderSelectionListener builderListener = _builderSelectionListener;
+            final BuilderSelectionListener builderListener = new BuilderSelectionListener(ErlangProjectBuilderPage.this.info, ErlangProjectBuilderPage.this);
             final BuilderTool[] builders = BuilderTool.values();
             final Procedure1<BuilderTool> _function_7 = new Procedure1<BuilderTool>() {
               public void apply(final BuilderTool builder) {
@@ -160,8 +157,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                     }
                   };
                   XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function);
-                  ConfigSelectionListener _configSelectionListener = new ConfigSelectionListener(ErlangProjectBuilderPage.this.info);
-                  final ConfigSelectionListener configListener = _configSelectionListener;
+                  final ConfigSelectionListener configListener = new ConfigSelectionListener(ErlangProjectBuilderPage.this.info);
                   final ProjectConfigType[] configs = ProjectConfigType.values();
                   final Procedure1<ProjectConfigType> _function_1 = new Procedure1<ProjectConfigType>() {
                     public void apply(final ProjectConfigType config) {
@@ -211,8 +207,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                   it.setVisible(false);
                   final Procedure1<Label> _function = new Procedure1<Label>() {
                     public void apply(final Label it) {
-                      GridData _gridData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
-                      final GridData gd = _gridData;
+                      final GridData gd = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
                       gd.widthHint = 163;
                       it.setLayoutData(gd);
                       it.setText("Make uses these targets");
@@ -265,8 +260,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                   XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_6);
                   final Procedure1<Text> _function_7 = new Procedure1<Text>() {
                     public void apply(final Text it) {
-                      GridData _gridData = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-                      final GridData gd = _gridData;
+                      final GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
                       gd.widthHint = 250;
                       it.setLayoutData(gd);
                       it.setEnabled(false);
@@ -303,68 +297,53 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
   
   public String getDescription(final BuilderTool builder) {
     String _switchResult = null;
-    boolean _matched = false;
-    if (!_matched) {
-      if (Objects.equal(builder,BuilderTool.INTERNAL)) {
-        _matched=true;
+    switch (builder) {
+      case INTERNAL:
         StringConcatenation _builder = new StringConcatenation();
         _builder.append(": let erlide do the compiling.");
         _switchResult = _builder.toString();
-      }
-    }
-    if (!_matched) {
-      if (Objects.equal(builder,BuilderTool.MAKE)) {
-        _matched=true;
+        break;
+      case MAKE:
         StringConcatenation _builder_1 = new StringConcatenation();
         _builder_1.append(": choose this if there is a Makefile (even if it calls rebar or emake).");
         _switchResult = _builder_1.toString();
-      }
-    }
-    if (!_matched) {
-      if (Objects.equal(builder,BuilderTool.EMAKE)) {
-        _matched=true;
+        break;
+      case EMAKE:
         StringConcatenation _builder_2 = new StringConcatenation();
         _builder_2.append(": straight Emake.");
         _switchResult = _builder_2.toString();
-      }
-    }
-    if (!_matched) {
-      if (Objects.equal(builder,BuilderTool.REBAR)) {
-        _matched=true;
+        break;
+      case REBAR:
         StringConcatenation _builder_3 = new StringConcatenation();
         _builder_3.append(": straight rebar.");
         _switchResult = _builder_3.toString();
-      }
+        break;
+      default:
+        break;
     }
     return _switchResult;
   }
   
   public String getDescription(final ProjectConfigType config) {
     String _switchResult = null;
-    boolean _matched = false;
-    if (!_matched) {
-      if (Objects.equal(config,ProjectConfigType.INTERNAL)) {
-        _matched=true;
+    switch (config) {
+      case INTERNAL:
         StringConcatenation _builder = new StringConcatenation();
         _builder.append("manually (on next page)");
         _switchResult = _builder.toString();
-      }
-    }
-    if (!_matched) {
-      if (Objects.equal(config,ProjectConfigType.EMAKE)) {
-        _matched=true;
+        break;
+      case EMAKE:
         StringConcatenation _builder_1 = new StringConcatenation();
         _builder_1.append("in Emakefile");
         _switchResult = _builder_1.toString();
-      }
-    }
-    if (!_matched) {
-      if (Objects.equal(config,ProjectConfigType.REBAR)) {
-        _matched=true;
+        break;
+      case REBAR:
         StringConcatenation _builder_2 = new StringConcatenation();
         _builder_2.append("in rebar.config");
         _switchResult = _builder_2.toString();
-      }
+        break;
+      default:
+        break;
     }
     return _switchResult;
   }
@@ -378,8 +357,8 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
   
   protected void onExit() {
     String _text = this.runtimeCombo.getText();
-    RuntimeVersion _runtimeVersion = new RuntimeVersion(_text);
-    this.info.setRequiredRuntimeVersion(_runtimeVersion);
+    RuntimeVersion _parse = RuntimeVersion.Serializer.parse(_text);
+    this.info.setRequiredRuntimeVersion(_parse);
   }
   
   public void selectConfig(final ProjectConfigType type) {
@@ -390,8 +369,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
           Object _data = ((Button)it).getData();
           boolean _equals = type.equals(_data);
           if (_equals) {
-            Event _event = new Event();
-            final Event event = _event;
+            final Event event = new Event();
             event.widget = it;
             ((Button)it).notifyListeners(SWT.Selection, event);
           }

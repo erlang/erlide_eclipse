@@ -104,8 +104,7 @@ public class NewProjectData extends ErlangProjectProperties {
         }
       };
       final Objects.ToStringHelper helper = ObjectExtensions.<Objects.ToStringHelper>operator_doubleArrow(_stringHelper, _function);
-      String _string = helper.toString();
-      _xblockexpression = (_string);
+      _xblockexpression = (helper.toString());
     }
     return _xblockexpression;
   }
@@ -116,8 +115,7 @@ public class NewProjectData extends ErlangProjectProperties {
     String _configName = _configType.getConfigName();
     IPath _append = _location.append(_configName);
     String _portableString = _append.toPortableString();
-    File _file = new File(_portableString);
-    final File f = _file;
+    final File f = new File(_portableString);
     boolean _exists = f.exists();
     if (_exists) {
       String _absolutePath = f.getAbsolutePath();
@@ -126,8 +124,8 @@ public class NewProjectData extends ErlangProjectProperties {
       ProjectConfigType _configType_1 = this.getConfigType();
       IPath _location_1 = this.getLocation();
       String _portableString_1 = _location_1.toPortableString();
-      File _file_1 = new File(_portableString_1);
-      final ProjectConfigurator config = this.factory.getConfig(_configType_1, _file_1);
+      File _file = new File(_portableString_1);
+      final ProjectConfigurator config = this.factory.getConfig(_configType_1, _file);
       final ErlangProjectProperties props = config.getConfiguration();
       IPath _outputDir = props.getOutputDir();
       this.setOutputDir(_outputDir);
@@ -153,8 +151,7 @@ public class NewProjectData extends ErlangProjectProperties {
           InputOutput.<String>println("DETECT builder config");
           IPath _location_1 = this.getLocation();
           String _portableString = _location_1.toPortableString();
-          File _file = new File(_portableString);
-          final File directory = _file;
+          final File directory = new File(_portableString);
           String _xifexpression_1 = null;
           boolean _and = false;
           boolean _isDirectory = directory.isDirectory();
@@ -162,7 +159,7 @@ public class NewProjectData extends ErlangProjectProperties {
             _and = false;
           } else {
             boolean _exists = directory.exists();
-            _and = (_isDirectory && _exists);
+            _and = _exists;
           }
           if (_and) {
             String _xblockexpression_2 = null;
@@ -176,8 +173,7 @@ public class NewProjectData extends ErlangProjectProperties {
                 String _xblockexpression_3 = null;
                 {
                   final ErlangProjectProperties props = persister.getConfiguration();
-                  String _println = InputOutput.<String>println(("detected PROPS: " + props));
-                  _xblockexpression_3 = (_println);
+                  _xblockexpression_3 = (InputOutput.<String>println(("detected PROPS: " + props)));
                 }
                 _xifexpression_2 = _xblockexpression_3;
               }
@@ -196,7 +192,6 @@ public class NewProjectData extends ErlangProjectProperties {
   
   public RuntimeInfo bestRuntime() {
     IRuntimeInfoCatalog _runtimeInfoCatalog = RuntimeCore.getRuntimeInfoCatalog();
-    RuntimeInfo _runtime = _runtimeInfoCatalog.getRuntime(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION, null);
-    return _runtime;
+    return _runtimeInfoCatalog.getRuntime(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION, null);
   }
 }

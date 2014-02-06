@@ -34,8 +34,7 @@ public class EqualsAndHashCodeProcessor extends AbstractClassProcessor {
               final Function1<MutableFieldDeclaration,Boolean> _function = new Function1<MutableFieldDeclaration,Boolean>() {
                 public Boolean apply(final MutableFieldDeclaration it) {
                   boolean _isStatic = it.isStatic();
-                  boolean _not = (!_isStatic);
-                  return Boolean.valueOf(_not);
+                  return Boolean.valueOf((!_isStatic));
                 }
               };
               Iterable<? extends MutableFieldDeclaration> _filter = IterableExtensions.filter(_declaredFields, _function);
@@ -66,7 +65,7 @@ public class EqualsAndHashCodeProcessor extends AbstractClassProcessor {
                       TypeReference _type_2 = f.getType();
                       String _simpleName_3 = _type_2.getSimpleName();
                       boolean _equals_2 = Objects.equal(_name_2, _simpleName_3);
-                      _or_2 = (_equals_1 || _equals_2);
+                      _or_2 = _equals_2;
                     }
                     if (_or_2) {
                       _or_1 = true;
@@ -75,7 +74,7 @@ public class EqualsAndHashCodeProcessor extends AbstractClassProcessor {
                       TypeReference _type_3 = f.getType();
                       String _simpleName_4 = _type_3.getSimpleName();
                       boolean _equals_3 = Objects.equal(_name_3, _simpleName_4);
-                      _or_1 = (_or_2 || _equals_3);
+                      _or_1 = _equals_3;
                     }
                     if (_or_1) {
                       _or = true;
@@ -84,7 +83,7 @@ public class EqualsAndHashCodeProcessor extends AbstractClassProcessor {
                       TypeReference _type_4 = f.getType();
                       String _simpleName_5 = _type_4.getSimpleName();
                       boolean _equals_4 = Objects.equal(_name_4, _simpleName_5);
-                      _or = (_or_1 || _equals_4);
+                      _or = _equals_4;
                     }
                     if (_or) {
                       _builder.append("result = prime * result + ");

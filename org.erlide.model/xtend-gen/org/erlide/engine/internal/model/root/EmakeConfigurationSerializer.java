@@ -28,8 +28,7 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
   public ErlangProjectProperties decodeConfig(final String config) {
     ErlangProjectProperties _xblockexpression = null;
     {
-      ErlangProjectProperties _erlangProjectProperties = new ErlangProjectProperties();
-      final ErlangProjectProperties result = _erlangProjectProperties;
+      final ErlangProjectProperties result = new ErlangProjectProperties();
       Path _path = new Path("ebin");
       result.setOutputDir(_path);
       result.setSourceDirs();
@@ -51,15 +50,13 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
               boolean _contains = src.contains("/");
               if (_contains) {
                 String[] _split = src.split("/");
-                String _head = IterableExtensions.<String>head(((Iterable<String>)Conversions.doWrapArray(_split)));
-                _xifexpression = _head;
+                _xifexpression = IterableExtensions.<String>head(((Iterable<String>)Conversions.doWrapArray(_split)));
               } else {
                 _xifexpression = "src";
               }
               final String path = _xifexpression;
               Collection<IPath> _sourceDirs = result.getSourceDirs();
-              ArrayList<IPath> _arrayList = new ArrayList<IPath>(_sourceDirs);
-              final ArrayList<IPath> sd = _arrayList;
+              final ArrayList<IPath> sd = new ArrayList<IPath>(_sourceDirs);
               Path _path = new Path(path);
               sd.add(_path);
               result.setSourceDirs(sd);
@@ -96,17 +93,14 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
   public void parseOption(final Bindings b, final ErlangProjectProperties result) {
     try {
       String _atom = b.getAtom("Tag");
-      final String _switchValue = _atom;
       boolean _matched = false;
       if (!_matched) {
-        if (Objects.equal(_switchValue,"i")) {
+        if (Objects.equal(_atom,"i")) {
           _matched=true;
           Collection<IPath> _includeDirs = result.getIncludeDirs();
-          ArrayList<IPath> _arrayList = new ArrayList<IPath>(_includeDirs);
-          final List<IPath> incs = _arrayList;
+          final List<IPath> incs = new ArrayList<IPath>(_includeDirs);
           String _string = b.getString("Arg");
-          Path _path = new Path(_string);
-          final Path inc = _path;
+          final Path inc = new Path(_string);
           boolean _contains = incs.contains(inc);
           boolean _not = (!_contains);
           if (_not) {

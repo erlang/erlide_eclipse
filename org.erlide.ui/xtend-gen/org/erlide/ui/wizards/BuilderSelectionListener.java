@@ -51,7 +51,7 @@ public class BuilderSelectionListener implements SelectionListener {
       String _osCommand_1 = _builder_2.getOsCommand();
       String _toolLocation = ToolExecutor.getToolLocation(_osCommand_1);
       boolean _tripleNotEquals = (_toolLocation != null);
-      _or = (_tripleEquals || _tripleNotEquals);
+      _or = _tripleNotEquals;
     }
     final boolean toolExists = _or;
     if ((!toolExists)) {
@@ -72,7 +72,7 @@ public class BuilderSelectionListener implements SelectionListener {
     } else {
       BuilderTool _builder_6 = this.info.getBuilder();
       boolean _equals_1 = Objects.equal(_builder_6, BuilderTool.INTERNAL);
-      _or_1 = (_equals || _equals_1);
+      _or_1 = _equals_1;
     }
     this.page.configComposite.setVisible(_or_1);
     BuilderTool _builder_7 = this.info.getBuilder();

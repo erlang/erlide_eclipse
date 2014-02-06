@@ -125,8 +125,8 @@ public class ErlangProjectPropertyPage extends PropertyPage {
 
                 @Override
                 public void widgetSelected(final SelectionEvent e) {
-                    model.setRequiredRuntimeVersion(new RuntimeVersion(runtimeCombo
-                            .getText()));
+                    model.setRequiredRuntimeVersion(RuntimeVersion.Serializer
+                            .parse(runtimeCombo.getText()));
                 }
 
                 @Override

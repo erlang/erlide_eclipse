@@ -10,7 +10,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
-import org.eclipse.xtext.xbase.lib.Functions.Function0;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.root.ExternalKind;
@@ -79,28 +78,21 @@ public class ErlangProjectProperties {
     this._externalModulesFile = externalModulesFile;
   }
   
-  public final static ErlangProjectProperties DEFAULT = new Function0<ErlangProjectProperties>() {
-    public ErlangProjectProperties apply() {
-      ErlangProjectProperties _erlangProjectProperties = new ErlangProjectProperties();
-      final Procedure1<ErlangProjectProperties> _function = new Procedure1<ErlangProjectProperties>() {
-        public void apply(final ErlangProjectProperties it) {
-          Collection<IPath> _unpackList = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
-          it._sourceDirs = _unpackList;
-          Path _path = new Path(ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
-          it._outputDir = _path;
-          Collection<IPath> _unpackList_1 = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
-          it._includeDirs = _unpackList_1;
-          Collection<IPath> _unpackList_2 = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_TEST_DIRS);
-          it._testDirs = _unpackList_2;
-          it._externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
-          it._externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
-          it._requiredRuntimeVersion = ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION;
-        }
-      };
-      ErlangProjectProperties _doubleArrow = ObjectExtensions.<ErlangProjectProperties>operator_doubleArrow(_erlangProjectProperties, _function);
-      return _doubleArrow;
+  public final static ErlangProjectProperties DEFAULT = ObjectExtensions.<ErlangProjectProperties>operator_doubleArrow(new ErlangProjectProperties(), new Procedure1<ErlangProjectProperties>() {
+    public void apply(final ErlangProjectProperties it) {
+      Collection<IPath> _unpackList = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
+      it._sourceDirs = _unpackList;
+      Path _path = new Path(ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
+      it._outputDir = _path;
+      Collection<IPath> _unpackList_1 = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
+      it._includeDirs = _unpackList_1;
+      Collection<IPath> _unpackList_2 = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_TEST_DIRS);
+      it._testDirs = _unpackList_2;
+      it._externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
+      it._externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
+      it._requiredRuntimeVersion = ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION;
     }
-  }.apply();
+  });
   
   public ErlangProjectProperties() {
     ArrayList<IPath> _newArrayList = CollectionLiterals.<IPath>newArrayList();
@@ -277,8 +269,7 @@ public class ErlangProjectProperties {
         }
       };
       final Objects.ToStringHelper helper = ObjectExtensions.<Objects.ToStringHelper>operator_doubleArrow(_stringHelper, _function);
-      String _string = helper.toString();
-      _xblockexpression = (_string);
+      _xblockexpression = (helper.toString());
     }
     return _xblockexpression;
   }
@@ -298,11 +289,9 @@ public class ErlangProjectProperties {
     String _xifexpression = null;
     boolean _equals = Objects.equal(external, ExternalKind.EXTERNAL_INCLUDES);
     if (_equals) {
-      String _externalIncludesFile = this.getExternalIncludesFile();
-      _xifexpression = _externalIncludesFile;
+      _xifexpression = this.getExternalIncludesFile();
     } else {
-      String _externalModulesFile = this.getExternalModulesFile();
-      _xifexpression = _externalModulesFile;
+      _xifexpression = this.getExternalModulesFile();
     }
     final String projprefs = _xifexpression;
     return PreferencesUtils.packArray(new String[] { projprefs, global });

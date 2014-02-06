@@ -30,8 +30,7 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
   public ErlangProjectProperties decodeConfig(final String config) {
     ErlangProjectProperties _xblockexpression = null;
     {
-      ErlangProjectProperties _erlangProjectProperties = new ErlangProjectProperties();
-      final ErlangProjectProperties result = _erlangProjectProperties;
+      final ErlangProjectProperties result = new ErlangProjectProperties();
       Path _path = new Path("ebin");
       result.setOutputDir(_path);
       IErlangEngine _instance = ErlangEngine.getInstance();
@@ -80,16 +79,14 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
   public void parseOption(final ErlangProjectProperties result, final Bindings b) {
     try {
       String _atom = b.getAtom("Tag");
-      final String _switchValue = _atom;
       boolean _matched = false;
       if (!_matched) {
-        if (Objects.equal(_switchValue,"i")) {
+        if (Objects.equal(_atom,"i")) {
           _matched=true;
           Collection<IPath> _includeDirs = result.getIncludeDirs();
           final List<IPath> incs = CollectionLiterals.<IPath>newArrayList(((IPath[])Conversions.unwrapArray(_includeDirs, IPath.class)));
           String _string = b.getString("Arg");
-          Path _path = new Path(_string);
-          final Path inc = _path;
+          final Path inc = new Path(_string);
           boolean _contains = incs.contains(inc);
           boolean _not = (!_contains);
           if (_not) {
@@ -99,7 +96,7 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
         }
       }
       if (!_matched) {
-        if (Objects.equal(_switchValue,"src_dirs")) {
+        if (Objects.equal(_atom,"src_dirs")) {
           _matched=true;
           Collection<OtpErlangObject> _list = b.getList("Arg");
           final Function1<OtpErlangObject,Path> _function = new Function1<OtpErlangObject,Path>() {
@@ -107,8 +104,7 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
               Path _xblockexpression = null;
               {
                 final String s = ((OtpErlangString) it).stringValue();
-                Path _path = new Path(s);
-                _xblockexpression = (_path);
+                _xblockexpression = (new Path(s));
               }
               return _xblockexpression;
             }

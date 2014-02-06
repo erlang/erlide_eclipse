@@ -14,7 +14,7 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 public class DebuggerEventFactory {
 
     public static DebuggerEvent parse(final OtpErlangObject message) {
-        // TODO More events from erlide_dbg_mon...
+        // TODO More events from dbg_mon...
         try {
             Bindings b = ErlUtils.match("{started, Pid:p}", message);
             if (b != null) {

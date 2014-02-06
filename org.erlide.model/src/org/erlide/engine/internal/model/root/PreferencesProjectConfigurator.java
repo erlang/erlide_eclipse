@@ -47,8 +47,8 @@ public class PreferencesProjectConfigurator implements ProjectConfigurator {
                 ProjectPreferencesConstants.OUTPUT_DIR,
                 ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
         result.setOutputDir(new Path(outputDirsStr));
-        result.setRequiredRuntimeVersion(new RuntimeVersion(node.get(
-                ProjectPreferencesConstants.RUNTIME_VERSION, null)));
+        result.setRequiredRuntimeVersion(RuntimeVersion.Serializer.parse(node
+                .get(ProjectPreferencesConstants.RUNTIME_VERSION, null)));
         if (!result.getRequiredRuntimeVersion().isDefined()) {
             result.setRequiredRuntimeVersion(ProjectPreferencesConstants.FALLBACK_RUNTIME_VERSION);
         }

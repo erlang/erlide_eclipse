@@ -72,8 +72,7 @@ public class ErlangNature implements IProjectNature {
     BuilderTool[] _values = BuilderTool.values();
     final Function1<BuilderTool,String> _function = new Function1<BuilderTool,String>() {
       public String apply(final BuilderTool it) {
-        String _id = it.getId();
-        return _id;
+        return it.getId();
       }
     };
     final List<String> allIds = ListExtensions.<BuilderTool, String>map(((List<BuilderTool>)Conversions.doWrapArray(_values)), _function);

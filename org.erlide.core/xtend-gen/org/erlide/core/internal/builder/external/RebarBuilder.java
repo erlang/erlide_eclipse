@@ -59,7 +59,7 @@ public class RebarBuilder extends ExternalBuilder {
                 _and = false;
               } else {
                 boolean _isOnSourcePath = folder.isOnSourcePath();
-                _and = (_tripleNotEquals && _isOnSourcePath);
+                _and = _isOnSourcePath;
               }
               if (_and) {
                 RebarBuilder.this.foundAppSrc = true;
@@ -75,9 +75,8 @@ public class RebarBuilder extends ExternalBuilder {
       if ((!this.foundAppSrc)) {
         IProject _project_1 = this.getProject();
         IProject _project_2 = this.getProject();
-        IMarker _addMarker = MarkerUtils.addMarker(_project_1, _project_2, null, "No .app.src file found, can\'t compile with rebar", (-1), 
+        _xifexpression = MarkerUtils.addMarker(_project_1, _project_2, null, "No .app.src file found, can\'t compile with rebar", (-1), 
           IMarker.SEVERITY_WARNING, MarkerUtils.PROBLEM_MARKER);
-        _xifexpression = _addMarker;
       }
       _xblockexpression = (_xifexpression);
     }

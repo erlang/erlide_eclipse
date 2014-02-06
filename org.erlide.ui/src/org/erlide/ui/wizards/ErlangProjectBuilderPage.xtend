@@ -44,7 +44,7 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
         val runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS
         items = runtimeVersions.map[toString]
         text = info.bestRuntime.version.asMajor.toString
-        info.requiredRuntimeVersion = new RuntimeVersion(text)
+        info.requiredRuntimeVersion = RuntimeVersion.Serializer.parse(text)
       ]
       newControl(Label, SWT.NONE)[]
       newControl(Label, SWT.NONE)[]
@@ -158,7 +158,7 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
   }
 
   override protected onExit() {
-    info.requiredRuntimeVersion = new RuntimeVersion(runtimeCombo.text)
+    info.requiredRuntimeVersion = RuntimeVersion.Serializer.parse(runtimeCombo.text)
   }
 
   def selectConfig(ProjectConfigType type) {

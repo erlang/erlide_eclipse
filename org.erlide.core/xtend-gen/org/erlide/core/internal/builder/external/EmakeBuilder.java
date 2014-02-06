@@ -49,11 +49,9 @@ public class EmakeBuilder extends ExternalBuilder {
       boolean _isOnWindows = _instance.isOnWindows();
       if (_isOnWindows) {
         String _portableString = path.toPortableString();
-        String _plus = (_portableString + ".exe");
-        _xifexpression = _plus;
+        _xifexpression = (_portableString + ".exe");
       } else {
-        String _portableString_1 = path.toPortableString();
-        _xifexpression = _portableString_1;
+        _xifexpression = path.toPortableString();
       }
       _xblockexpression = (_xifexpression);
     }
