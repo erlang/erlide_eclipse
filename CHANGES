@@ -1,3 +1,17 @@
+List of user visible changes between 0.24.2 and 0.25.0 (20140207)
+
+4d499fa debugger update; not all r17 stuff is in yet (maps, named funs)
+c221785 update guava to 16.0.1
+d310969 add support for r17-style version numbers
+4f064ba update to xtend 2.5.1
+907ff3f fix RuntimeVersion to support OTP R16B03-1
+e220203 let VersionLocator return even older versions (lowest priority)
+83176d4 fix content describer
+386886f guard agains problems in jrpc notifications
+2f91752 improve logging output
+9fa66d7 gh150: fix detection of file encoding
+1e1dde1 when ide runtime points to inexistent install, search for a useable one
+
 List of user visible changes between 0.24.1 and 0.24.2 (20131209)
 
 ec17b68 fix hanging search when parser crashes
@@ -72,11 +86,11 @@ b6d6e7c 1131 - long delay at startup; not sure this is enough
 9f353d6 gh107: templates invalid
 abd2767 fix ctrl-space completion in console
 5ede309 console: fix completion docs and remove esc command
-0b577ec 1200 - searching - selecting record name in declaration searches for record field 
+0b577ec 1200 - searching - selecting record name in declaration searches for record field
 9e065a0 rpcs fail faster now if backend is down (no timeout, just throw exception directly)
 641811d 1183 - update .app files with current info from the project
-405534a 1187 - search references: skip searching outside the module if the function is not exported 
-        1192 - search: the search window (ctrl-h) doesn't work for variables 
+405534a 1187 - search references: skip searching outside the module if the function is not exported
+        1192 - search: the search window (ctrl-h) doesn't work for variables
 
 List of user visible changes between 0.21.0 and 0.22.0 (20130418)
 
@@ -195,10 +209,10 @@ c0aa677 1096: search_server kills VM because of too much memory usage
 List of user visible changes between 0.17.4 and 0.17.5 (20121126)
 
 9df0f09 content describer: accept case insensitive encoding tags
-fcf5a30 1077 hover: show -spec information 
+fcf5a30 1077 hover: show -spec information
 a0262de Merge branch 'hover' into pu
 c76efca 1097 hover: add preference to disable showing it
-e1cadc5 1092 default folder for new module is wrong 
+e1cadc5 1092 default folder for new module is wrong
 4d555a4 1078 completion: quoted record names not shown after the first quote
 0cb107a Links in hover and external browser
 e39f128 1083-indentation--bad-after--spec-with-when-clause
@@ -305,7 +319,7 @@ c5ff4ac 64: Compiler can't be configured
 List of user visible changes between 0.14.0 and 0.15.0 (20120130)
 
         834: searching: still problems with search on function call
-c87d14b 956-compare-view-(structure)-shows-wrong-diff 
+c87d14b 956-compare-view-(structure)-shows-wrong-diff
         955-editor-doesn-t-support-a-resource-s-history-versions
 6193e6c 989: Dialyzer failing
 adf4a8f 983: include wrangler.codeinspection fragment; requires Graphviz plugin
@@ -437,7 +451,7 @@ d0273d1 http://www.assembla.com/spaces/erlide/tickets/844-regression--f3-doesn-t
 
 List of user visible changes between 0.12.0 and 0.13.0 (20110517)
 
-* There are again some large refactorings of the API code, and we're not yet close to something stable. 
+* There are again some large refactorings of the API code, and we're not yet close to something stable.
 
 943bb65 http://www.assembla.com/spaces/erlide/tickets/838-dialyzer---implement-plt-copy-feature
 fe3244b 814-npe-in--open-module--dialog
@@ -450,7 +464,7 @@ List of user visible changes between 0.11.1 and 0.12.0 (20110503)
 
 2510907 826-launch---quick-launch-does-not-work-on-windows-some-times
 6b836bc Fix so that debugger handles arguments with small integers (they are given as OtpErlangString)
-a3d4a8d http://www.assembla.com/spaces/erlide/tickets/797-model---the-splitting-into-function-clauses-is-too-simple--causing-bad-code-formatting 
+a3d4a8d http://www.assembla.com/spaces/erlide/tickets/797-model---the-splitting-into-function-clauses-is-too-simple--causing-bad-code-formatting
 359dd6c http://www.assembla.com/spaces/erlide/tickets/824-outline---sometimes-no-text
 a2b71ea http://www.assembla.com/spaces/erlide/tickets/549-open-module-dialog---too-slow revisited.
 0fcb0b5 http://www.assembla.com/spaces/erlide/tickets/819-searching--cancel-search
@@ -534,19 +548,19 @@ df10484 https://github.com/erlide/erlide/issues/#issue/5 Fix problem to open fil
 a75a087 fix #726: strings larger than 64k are encoded as OtpErlangList, not OtpErlangString
 c56ea0f 682-dialyzer---multiple-plt-files (preliminary but well working GUI)
 
-655     eunit: create basic EUnit runner   
-659     navigator: double click on project should open it  
-687     eunit: no live feedback from runner    
-713     dialyzer - specify functionality and use cases 
-725     files with other extensions cannot be opened in erlang editor  
-727     dialyzer - better gui for multiple plt files   
+655     eunit: create basic EUnit runner
+659     navigator: double click on project should open it
+687     eunit: no live feedback from runner
+713     dialyzer - specify functionality and use cases
+725     files with other extensions cannot be opened in erlang editor
+727     dialyzer - better gui for multiple plt files
 745     navigation---use-include-path-for-external-includes
 
 List of user visible changes between 0.9.4 and 0.9.5 (20110122)
 
 8146742 702 externals: make external reference faster and less memory-hungry
 6fd25fb updated lambdaj to 2.3.2
-0503ee7 669-dialyzer---add-plt-to-project-settings 
+0503ee7 669-dialyzer---add-plt-to-project-settings
 290df20 659-navigator--double-click-on-project-should-open-it
 36ee402 652-searching--support-record-fields
 58fc001 224-variables-from-the--environment--tab-in-launch-config-are-not-set-in-the-started-process
@@ -556,7 +570,7 @@ b1d3e44 NPE in open when there are macro-defined function names
 b40ba63 680-searching--wrong-display-in-result-header
 da95208 618-dialyzer--remove-warnings-for-project use command framework
 ea799e3 651-navigation--support-record-fields 653-hover--support-record-fields
-fd1f9fa 625-debugger---should-present-terminate--continue--restart-when-reloading-code 
+fd1f9fa 625-debugger---should-present-terminate--continue--restart-when-reloading-code
 		386-debugger--modifying-code-disables-breakpoints
         668 indentation confused by -spec directives
         653 hover: support record fields
@@ -606,7 +620,7 @@ List of user visible changes between 0.8.8 and 0.9.0 (20101004)
 
 * new feature: tracing (ttb) integration (thanks to Piotr Dorobisz)
 * added unit tests for our code
-3f7525a Updated Wrangler to the latest version (r1573) 
+3f7525a Updated Wrangler to the latest version (r1573)
 0fce314 602-parser-can-t-handle-record-definitions-in-defines
 cad4802 added jinterface from R14B
 588a82b 562-building-slow
@@ -653,7 +667,7 @@ e1ebe54 added junit to bucky build
 List of user visible changes between 0.8.2 and 0.8.6 (20100823)
 
 - now supporting Eclipse 3.5+ and Erlang R12+
-- build process updated 
+- build process updated
 b865b6e provides folding for non-resource module editors 591-opening-erl-files-in-non-erlang-projects-fails
 428810f Fix of deadlock (eclipse hangs) with big files in erlang editor
 
@@ -679,7 +693,7 @@ List of user visible changes between 0.8.0 and 0.8.1 (20100520)
 
 43e47a2 merge latest wrangler codebase update r1483
 8fa6512 fix #384 #418 #540 #542
-4f266b4 Merge branch '549-open-module-dialog---too-slow' 
+4f266b4 Merge branch '549-open-module-dialog---too-slow'
 9d4026b 533-code-completion---record-fields-after---doesn-t-work
 
 List of user-visible changes between 0.7.5 and 0.8.0 (20100427)
@@ -768,46 +782,46 @@ List of user visible changes between 0.6.5 and 0.7.0 (20091103)
 	306-hover-documentation-with-non-edoc-comments-is-ugly
 	added option to start internal backends with short name
 	some console improvements (more to follow, it's not perfect yet!)
-		- no more ide console, use run/debug to start   
+		- no more ide console, use run/debug to start
 		- stdout is captured (#221)
-	147   	Debugger - interpret and un-interpret modules   	 
-	243 	debugger: show the current stack even outside interpreted code 	
-	355 	debugger - terminated processes with stack look like they're running 	
-	390 	scanner and parser - should only update caches on save etc 	
-	402 	overriden 'int' module lacks functionality of the original one 	
+	147   	Debugger - interpret and un-interpret modules
+	243 	debugger: show the current stack even outside interpreted code
+	355 	debugger - terminated processes with stack look like they're running
+	390 	scanner and parser - should only update caches on save etc
+	402 	overriden 'int' module lacks functionality of the original one
 	426 	start backend on a standalone node.  Only start+console+codeloading are supported
-	441 	add "system info" functionality 	
-	451 	ErlFolder.getModules(IParent) is very slow 	
-	457 	builder: scan for TODO without a full scan 	
+	441 	add "system info" functionality
+	451 	ErlFolder.getModules(IParent) is very slow
+	457 	builder: scan for TODO without a full scan
 
 List of user visible changes between 0.6.2 and 0.6.5 (r2877)
 
 	The wrangler UI is completely revamped, offering much better user experience.
 	55-Erlang-Console-slowdown
-	57-Honoring--file%28%29-attribute 
+	57-Honoring--file%28%29-attribute
 	198--go-to-definition---if-no-match-was-found-based-on---args--use-first-matching-function-name \u2014 jakobc / detail
 	371-indent--error-after---MODULE \u2014 jakobc / detail
-	191-After-renaming-a-module-file--it-s-still-compiled-to-a-beam-with-the-old-name 
-	229-Allow-----to-be-a-valid-source-directory-%28i-e-the-project-root%29 
+	191-After-renaming-a-module-file--it-s-still-compiled-to-a-beam-with-the-old-name
+	229-Allow-----to-be-a-valid-source-directory-%28i-e-the-project-root%29
 	277-add-a--open-module--dialog-and-key-shortcut
 		Ctrl-Shift-M and Alt-Ctrl-Shift-M
-	307-code-completion-and-otp-documentation-is-fetched-from-the-ide-backend--not-the-build-one 
+	307-code-completion-and-otp-documentation-is-fetched-from-the-ide-backend--not-the-build-one
 	348-No-error-when--module-entry-doesn-t-match-filename
 	388-Change-key-binding-for--Reset-Outline-and-Cache-
-	382-annotation-hover-should-use-default-viewer--not-the-html-one 
-	389-Navigates-to-External-Files-rather-than-internal-project 
+	382-annotation-hover-should-use-default-viewer--not-the-html-one
+	389-Navigates-to-External-Files-rather-than-internal-project
 	390-scanner-and-parser---should-only-update-caches-on-save-etc
-	393-add-Run-Debug-settings--working-directory----mnesia-dir- 
-	395-Expose-the-setting-to-use-%E2%80%93sname-instead-of-%E2%80%93name-in-the-erl-runtime-config 
-	397-problems-on-R11B5 
-	403-view-module_info-data-on-property-page-for-module 
-	406-ErlangEditor-getModule-can-return-null--not-all-call-sites-handle-that-case 
-	408--record%28-MODULE--%7B%7D%29-shown-incorrectly-in-outline 
-	414-console---ctrl-arrows-work-strangely 
+	393-add-Run-Debug-settings--working-directory----mnesia-dir-
+	395-Expose-the-setting-to-use-%E2%80%93sname-instead-of-%E2%80%93name-in-the-erl-runtime-config
+	397-problems-on-R11B5
+	403-view-module_info-data-on-property-page-for-module
+	406-ErlangEditor-getModule-can-return-null--not-all-call-sites-handle-that-case
+	408--record%28-MODULE--%7B%7D%29-shown-incorrectly-in-outline
+	414-console---ctrl-arrows-work-strangely
 	nicer-looking console
 	allow paths with unicode chars in them
-	renamed external files project to External_Files (clearcase has problems with name with space in it) 
-	filter illegal characters from node name 
+	renamed external files project to External_Files (clearcase has problems with name with space in it)
+	filter illegal characters from node name
 	http://code.google.com/p/wranglerintegration/issues/detail?id=4 is fixed \u2014 oroszgy / detail
 	http://code.google.com/p/wranglerintegration/issues/detail?id=3 is fixed \u2014 oroszgy / detail
 	added option to start erlang with -noshell (on by default)
@@ -825,7 +839,7 @@ List of user visible changes between 0.6.0 and 0.6.2 (r2723)
 	369-command-to-reset-scanner-and-parser-caches
 	367-completion---better-layout-of-documentation
 	Added null-test for scanner (can get null scanner from reconciler and builder when deleting resources)
-	better looking edoc 
+	better looking edoc
 	added support for setting debug_info and export_all options on Compiler
 	376-call-hierarchy--proof-of-concept: added a simplistic call hierarchy view, bound to Ctrl-Alt-H; more work required.
 
@@ -850,7 +864,7 @@ List of user visible changes between 0.5.2 and 0.5.3 (r2525)
 	work on 349-Improve-console-view
 	improved layout of ReportPreferencePage, hopefully better on OSX
 	Major problems with scanner/noparser and synch, hopefully fixed:
- 
+
 
 List of user visible changes between 0.5.1 and 0.5.2 (r2484)
 
@@ -887,7 +901,7 @@ List of user visible changes between 0.5.0 and 0.5.1 (r2365)
 
 	Experimental refactoring support: Wrangler
 	added automated problem report if backend dies with exit code != 0
-	at startup, if no runtime is defined, search "obvious" locations and add all found runtimes. The newest will be set as default. 
+	at startup, if no runtime is defined, search "obvious" locations and add all found runtimes. The newest will be set as default.
 	ensuring that the ide backend exists (else print error messages as soon as possible)
 	OTP R13-version of JInterface
 	275-Indent----end--and-indent-after-newline
@@ -931,7 +945,7 @@ List of user visible changes between 0.4.3 and 0.5.0
 		cleaned up a bit
 	fixes around backend startup and ide backend
     Fixed autocompletion so that external modules can be completed
- 
+
     Fixed a slight oversight when accessing external files (it should be
 	created and have the erlang nature)
 	Added error marker if a file could not be compiled at all
@@ -962,11 +976,11 @@ List of user visible changes between 0.4.3 and 0.5.0
 	  a runtime name (that are user specific)
 	127-Goto-variable-definition
 	184-Show-parameter-names-for-code-completed-functions
-	beautified edoc display and removed classes that were copied from jface 
+	beautified edoc display and removed classes that were copied from jface
 	197--go-to-definition--should-detect-even-M-F-N-constructs
 	196-New-project-wizard---exception-if-include-field-is-empty
 	122-Add-support-for-R12--type-and--spec-annotations
-  
+
 Handles 'after' in 'try'. (Part of http://erlide.assembla.com/spaces/erlide/tickets/251-indent---more-bugs
 	259-completion-problem
 	251-indent---more-bugs
