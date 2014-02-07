@@ -40,10 +40,9 @@ public abstract class CoverageAction extends Action {
 
         if (!(selection instanceof ITreeSelection)) {
             final IStatus executionStatus = new Status(IStatus.ERROR,
-                    Activator.PLUGIN_ID,
-                    "Internall error occured: bad sellection type", null);
-            StatusManager.getManager().handle(executionStatus,
-                    StatusManager.SHOW);
+                    Activator.PLUGIN_ID, "Internall error occured: bad sellection type",
+                    null);
+            StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);
             return;
         }
 

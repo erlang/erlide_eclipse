@@ -12,6 +12,8 @@ package org.erlide.runtime.internal;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.runtime.api.IErlRuntime;
@@ -194,8 +196,13 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
 
     @Override
     public IRpcSite getRpcSite() {
-        startAndWait();
-        return rpcSite;
+        try {
+            awaitTerminated(1, TimeUnit.MILLISECONDS);
+            return null;
+        } catch (final TimeoutException e) {
+            awaitRunning();
+            return rpcSite;
+        }
     }
 
     @Override
@@ -368,7 +375,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         crashed = true;
     }
 
-    private class ErlRuntimeListener implements Listener {
+    private class ErlRuntimeListener extends Listener {
         public ErlRuntimeListener() {
         }
 

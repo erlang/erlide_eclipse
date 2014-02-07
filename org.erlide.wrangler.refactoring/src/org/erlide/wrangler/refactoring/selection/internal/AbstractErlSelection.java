@@ -43,12 +43,10 @@ public abstract class AbstractErlSelection implements IErlSelection {
         final IProject project = file.getProject();
         final IErlModel model = ErlangEngine.getInstance().getModel();
         final IErlProject actualProject = model.getErlangProject(project);
-        final IPath projectLocation = actualProject.getWorkspaceProject()
-                .getLocation();
+        final IPath projectLocation = actualProject.getWorkspaceProject().getLocation();
 
         final Collection<IPath> sourcDirs = actualProject.getSourceDirs();
-        final OtpErlangString[] searchPath = new OtpErlangString[sourcDirs
-                .size()];
+        final OtpErlangString[] searchPath = new OtpErlangString[sourcDirs.size()];
         int i = 0;
         for (final IPath src : sourcDirs) {
             searchPath[i++] = new OtpErlangString(projectLocation.append(src)

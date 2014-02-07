@@ -32,8 +32,8 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
 
     @Override
     protected IProject[] build(final int kind,
-            @SuppressWarnings("rawtypes") final Map args,
-            final IProgressMonitor monitor) throws CoreException {
+            @SuppressWarnings("rawtypes") final Map args, final IProgressMonitor monitor)
+            throws CoreException {
         final IProject project = getProject();
         DialyzerPreferences prefs = null;
         prefs = DialyzerPreferences.get(project);
@@ -41,24 +41,23 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
             return null;
         }
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final Set<IErlModule> modules = DialyzerUtils
-                .collectModulesFromResource(model, project);
+        final Set<IErlModule> modules = DialyzerUtils.collectModulesFromResource(model,
+                project);
         final Set<IErlProject> projects = Sets.newHashSet();
         projects.add(model.findProject(project));
         if (!modules.isEmpty()) {
             try {
-                final IBackend backend = BackendCore.getBackendManager()
-                        .getBuildBackend(project);
+                final IBackend backend = BackendCore.getBackendManager().getBuildBackend(
+                        project);
                 DialyzerUtils.doDialyze(monitor, modules, projects, backend);
             } catch (final InvocationTargetException e) {
                 ErlLogger.error(e);
             } catch (final DialyzerErrorException e) {
                 ErlLogger.error(e);
-                final String msg = NLS.bind(
-                        BuilderMessages.build_dialyzerProblem,
+                final String msg = NLS.bind(BuilderMessages.build_dialyzerProblem,
                         e.getLocalizedMessage());
-                DialyzerMarkerUtils.addProblemMarker(project, null, null, msg,
-                        0, IMarker.SEVERITY_ERROR);
+                DialyzerMarkerUtils.addProblemMarker(project, null, null, msg, 0,
+                        IMarker.SEVERITY_ERROR);
             }
         }
         monitor.done();

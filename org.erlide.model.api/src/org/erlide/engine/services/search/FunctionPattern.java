@@ -14,10 +14,9 @@ public class FunctionPattern extends ErlangSearchPattern {
     private final boolean local;
     private final IErlModule module;
 
-    public FunctionPattern(final String moduleName, final String name,
-            final int arity, final LimitTo limitTo,
-            final boolean matchAnyFunctionDefinition, final IErlModule module,
-            final boolean local) {
+    public FunctionPattern(final String moduleName, final String name, final int arity,
+            final LimitTo limitTo, final boolean matchAnyFunctionDefinition,
+            final IErlModule module, final boolean local) {
         super(limitTo);
         this.moduleName = moduleName;
         this.name = name;
@@ -30,13 +29,12 @@ public class FunctionPattern extends ErlangSearchPattern {
     @Override
     public OtpErlangObject getSearchObject() {
         if (moduleName == null || moduleName.length() == 0) {
-            return makeFAPatternObject(FUNCTION_DEF_ATOM, FUNCTION_CALL_ATOM,
-                    name, arity);
+            return makeFAPatternObject(FUNCTION_DEF_ATOM, FUNCTION_CALL_ATOM, name, arity);
         }
         final OtpErlangAtom defA = matchAnyFunctionDefinition ? FUNCTION_DEF_ATOM
                 : FUNCTION_DEF_MOD_ATOM;
-        return makeMFAPatternObject(defA, EXTERNAL_CALL_ATOM, moduleName, name,
-                arity, matchAnyFunctionDefinition);
+        return makeMFAPatternObject(defA, EXTERNAL_CALL_ATOM, moduleName, name, arity,
+                matchAnyFunctionDefinition);
     }
 
     @Override

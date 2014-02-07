@@ -109,8 +109,7 @@ public class OpenAction extends SelectionDispatchAction {
     @Override
     public void run(final ITextSelection selection) {
         try {
-            final IEditorPart activeEditor = getSite().getPage()
-                    .getActiveEditor();
+            final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
             final int offset = selection.getOffset();
             ITextEditor textEditor = null;
             OpenResult openResult = null;
@@ -130,21 +129,19 @@ public class OpenAction extends SelectionDispatchAction {
                         .getService(OpenService.class)
                         .open(scannerName,
                                 offset,
-                                ErlangEngine.getInstance()
-                                        .getModelUtilService()
+                                ErlangEngine.getInstance().getModelUtilService()
                                         .getImportsAsList(module),
-                                project.getExternalModulesString(),
-                                model.getPathVars());
+                                project.getExternalModulesString(), model.getPathVars());
                 ErlLogger.debug("open " + openResult);
                 element = editor.getElementAt(offset, true);
             } else if (activeEditor instanceof ITextEditor) {
                 textEditor = (ITextEditor) activeEditor;
                 final String text = textEditor.getDocumentProvider()
                         .getDocument(textEditor.getEditorInput()).get();
-                openResult = ErlangEngine.getInstance()
-                        .getService(OpenService.class).openText(text, offset);
-                final IFile file = (IFile) textEditor.getEditorInput()
-                        .getAdapter(IFile.class);
+                openResult = ErlangEngine.getInstance().getService(OpenService.class)
+                        .openText(text, offset);
+                final IFile file = (IFile) textEditor.getEditorInput().getAdapter(
+                        IFile.class);
                 if (file != null) {
                     final IProject p = file.getProject();
                     if (p != null) {
@@ -153,8 +150,8 @@ public class OpenAction extends SelectionDispatchAction {
                 }
             }
             if (openResult != null) {
-                helper.openOpenResult(textEditor, module, offset, project,
-                        openResult, element);
+                helper.openOpenResult(textEditor, module, offset, project, openResult,
+                        element);
             }
         } catch (final Exception e) {
             ErlLogger.error(e);

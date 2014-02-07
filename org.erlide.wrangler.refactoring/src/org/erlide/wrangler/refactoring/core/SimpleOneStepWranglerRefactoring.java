@@ -25,8 +25,7 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public abstract class SimpleOneStepWranglerRefactoring extends
-        SimpleWranglerRefactoring {
+public abstract class SimpleOneStepWranglerRefactoring extends SimpleWranglerRefactoring {
 
     /**
      * If the refactoring returns with a warning message, wrangler should know
@@ -49,7 +48,6 @@ public abstract class SimpleOneStepWranglerRefactoring extends
             // return RefactoringStatus.createWarningStatus(message
             // .getMessageString());
         }
-        return RefactoringStatus.createFatalErrorStatus(message
-                .getMessageString());
+        return RefactoringStatus.createFatalErrorStatus(message.getMessageString());
     }
 }

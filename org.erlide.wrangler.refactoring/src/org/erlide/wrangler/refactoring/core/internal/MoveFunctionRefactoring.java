@@ -52,9 +52,8 @@ public class MoveFunctionRefactoring extends SimpleOneStepWranglerRefactoring {
     @Override
     public IRefactoringRpcMessage run(final IErlSelection selection) {
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "move_fun_eclipse", "siisxi", sel.getFilePath(),
-                sel.getSelectionRange().getStartLine(),
+        return WranglerBackendManager.getRefactoringBackend().call("move_fun_eclipse",
+                "siisxi", sel.getFilePath(), sel.getSelectionRange().getStartLine(),
                 sel.getSelectionRange().getStartCol(), userInput,
                 /* new OtpErlangBoolean(false), */sel.getSearchPath(),
                 GlobalParameters.getTabWidth());
@@ -69,9 +68,8 @@ public class MoveFunctionRefactoring extends SimpleOneStepWranglerRefactoring {
      */
     public IRefactoringRpcMessage run2(final IErlSelection selection) {
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "move_fun_1_eclipse", "siisxxi", sel.getFilePath(),
-                sel.getSelectionRange().getStartLine(),
+        return WranglerBackendManager.getRefactoringBackend().call("move_fun_1_eclipse",
+                "siisxxi", sel.getFilePath(), sel.getSelectionRange().getStartLine(),
                 sel.getSelectionRange().getStartCol(), userInput,
                 /* new OtpErlangBoolean(false), */sel.getSearchPath(),
                 GlobalParameters.getTabWidth());
@@ -91,11 +89,9 @@ public class MoveFunctionRefactoring extends SimpleOneStepWranglerRefactoring {
                 changedFiles = message.getRefactoringChangeset();
                 return new RefactoringStatus();
             }
-            return RefactoringStatus.createFatalErrorStatus(message
-                    .getMessageString());
+            return RefactoringStatus.createFatalErrorStatus(message.getMessageString());
         } else {
-            return RefactoringStatus.createFatalErrorStatus(message
-                    .getMessageString());
+            return RefactoringStatus.createFatalErrorStatus(message.getMessageString());
         }
     }
 }

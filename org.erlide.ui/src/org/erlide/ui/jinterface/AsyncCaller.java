@@ -65,8 +65,7 @@ public abstract class AsyncCaller<T> implements Runnable {
                     if (monitor.isCanceled()) {
                         return Status.CANCEL_STATUS;
                     }
-                    return new Status(IStatus.OK, ErlideUIPlugin.PLUGIN_ID,
-                            "done");
+                    return new Status(IStatus.OK, ErlideUIPlugin.PLUGIN_ID, "done");
                 }
             };
             job.schedule(interval);

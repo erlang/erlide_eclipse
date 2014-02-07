@@ -4,7 +4,6 @@ import java.util.List;
 
 public interface SimpleScannerService {
 
-    List<ErlToken> lightScanString(String string, int offset)
-            throws ScannerException;
+    List<ErlToken> lightScanString(String string, int offset) throws ScannerException;
 
 }

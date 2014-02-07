@@ -38,8 +38,7 @@ public final class DialogUtil {
         if (nestedException != null) {
             // Open an error dialog and include the extra
             // status information from the nested CoreException
-            ErrorDialog.openError(parent, title, message,
-                    nestedException.getStatus());
+            ErrorDialog.openError(parent, title, message, nestedException.getStatus());
         } else {
             // Open a regular error dialog since there is no
             // extra information to display
@@ -61,8 +60,7 @@ public final class DialogUtil {
 
             // If there is more than one character it is not an accelerator
             if (endBracket - startBracket == 3) {
-                return label.substring(0, startBracket)
-                        + label.substring(endBracket + 1);
+                return label.substring(0, startBracket) + label.substring(endBracket + 1);
             }
         }
 

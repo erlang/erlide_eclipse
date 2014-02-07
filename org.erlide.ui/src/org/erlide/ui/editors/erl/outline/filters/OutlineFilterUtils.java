@@ -24,31 +24,25 @@ public class OutlineFilterUtils {
 
     private static final String SEPARATOR = ",";
 
-    public static boolean loadViewDefaults(
-            final List<String> userDefinedPatterns,
+    public static boolean loadViewDefaults(final List<String> userDefinedPatterns,
             final Set<String> enabledFilterIDs) {
         final IEclipsePreferences prefsNode = ErlangOutlinePage.getPrefsNode();
         final boolean areUserDefinedPatternsEnabled = prefsNode.getBoolean(
-                PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS_ENABLED,
-                false);
+                PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS_ENABLED, false);
         final String userDefinedPatternsString = prefsNode.get(
                 PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS, "");
-        userDefinedPatterns.addAll(ListsUtils.unpackList(
-                userDefinedPatternsString, SEPARATOR));
+        userDefinedPatterns.addAll(ListsUtils.unpackList(userDefinedPatternsString,
+                SEPARATOR));
         final String enabledFilterIDsString = prefsNode.get(
                 PreferenceConstants.OUTLINE_ENABLED_FILTERS, "");
-        enabledFilterIDs.addAll(ListsUtils.unpackList(enabledFilterIDsString,
-                SEPARATOR));
+        enabledFilterIDs.addAll(ListsUtils.unpackList(enabledFilterIDsString, SEPARATOR));
         return areUserDefinedPatternsEnabled;
     }
 
-    public static void storeViewDefaults(
-            final boolean areUserDefinedPatternsEnabled,
-            final List<String> userDefinedPatterns,
-            final Set<String> enabledFilterIDs) {
+    public static void storeViewDefaults(final boolean areUserDefinedPatternsEnabled,
+            final List<String> userDefinedPatterns, final Set<String> enabledFilterIDs) {
         final IEclipsePreferences prefsNode = ErlangOutlinePage.getPrefsNode();
-        prefsNode.putBoolean(
-                PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS_ENABLED,
+        prefsNode.putBoolean(PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS_ENABLED,
                 areUserDefinedPatternsEnabled);
         prefsNode.put(PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS,
                 ListsUtils.packList(userDefinedPatterns, SEPARATOR));
@@ -64,21 +58,17 @@ public class OutlineFilterUtils {
     public static void updateViewerFilters(final StructuredViewer viewer,
             final List<String> oldUserDefinedPatterns,
             final Set<String> oldEnabledFilterIDs,
-            final List<String> userDefinedPatterns,
-            final Set<String> enabledFilterIDs,
+            final List<String> userDefinedPatterns, final Set<String> enabledFilterIDs,
             final PatternFilter patternFilter) {
         SetView<String> intersection = Sets.intersection(oldEnabledFilterIDs,
                 enabledFilterIDs);
-        SetView<String> difference = Sets.difference(enabledFilterIDs,
-                intersection);
-        SetView<String> oldDifference = Sets.difference(oldEnabledFilterIDs,
-                intersection);
-        final HashSet<String> oldPatterns = Sets
-                .newHashSet(oldUserDefinedPatterns);
+        SetView<String> difference = Sets.difference(enabledFilterIDs, intersection);
+        SetView<String> oldDifference = Sets
+                .difference(oldEnabledFilterIDs, intersection);
+        final HashSet<String> oldPatterns = Sets.newHashSet(oldUserDefinedPatterns);
         final HashSet<String> patterns = Sets.newHashSet(userDefinedPatterns);
         for (final String id : oldDifference) {
-            final FilterDescriptor desc = FilterDescriptor
-                    .getFilterDescriptor(id);
+            final FilterDescriptor desc = FilterDescriptor.getFilterDescriptor(id);
             if (desc.isClassFilter()) {
                 viewer.removeFilter(desc.getViewerFilter());
             } else {
@@ -86,8 +76,7 @@ public class OutlineFilterUtils {
             }
         }
         for (final String id : difference) {
-            final FilterDescriptor desc = FilterDescriptor
-                    .getFilterDescriptor(id);
+            final FilterDescriptor desc = FilterDescriptor.getFilterDescriptor(id);
             if (desc.isClassFilter()) {
                 final ViewerFilter createViewerFilter = desc.getViewerFilter();
                 viewer.addFilter(createViewerFilter);
@@ -117,8 +106,7 @@ public class OutlineFilterUtils {
 
     public static void addFilter(final String filterId, final boolean value,
             final Object activePart) {
-        final FilterDescriptor desc = FilterDescriptor
-                .getFilterDescriptor(filterId);
+        final FilterDescriptor desc = FilterDescriptor.getFilterDescriptor(filterId);
         final ViewerFilter filter = desc.getViewerFilter();
         if (filter == null) {
             return;
@@ -142,11 +130,10 @@ public class OutlineFilterUtils {
         }
     }
 
-    public static void setFilters(
-            final Collection<FilterDescriptor> filterDescs,
+    public static void setFilters(final Collection<FilterDescriptor> filterDescs,
             final Object activePart) {
-        final List<ViewerFilter> filters = Lists
-                .newArrayListWithCapacity(filterDescs.size());
+        final List<ViewerFilter> filters = Lists.newArrayListWithCapacity(filterDescs
+                .size());
         for (final FilterDescriptor desc : filterDescs) {
             final ViewerFilter filter = desc.getViewerFilter();
             if (filter == null) {

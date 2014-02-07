@@ -52,8 +52,7 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
             // create line breakpoint (doc line numbers start at 0)
             final ErlangLineBreakpoint lineBreakpoint = new ErlangLineBreakpoint();
             lineBreakpoint.createMarker(resource, lineNumber + 1);
-            DebugPlugin.getDefault().getBreakpointManager()
-                    .addBreakpoint(lineBreakpoint);
+            DebugPlugin.getDefault().getBreakpointManager().addBreakpoint(lineBreakpoint);
         }
     }
 
@@ -91,8 +90,8 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
     }
 
     @Override
-    public void toggleWatchpoints(final IWorkbenchPart part,
-            final ISelection selection) throws CoreException {
+    public void toggleWatchpoints(final IWorkbenchPart part, final ISelection selection)
+            throws CoreException {
     }
 
     @Override

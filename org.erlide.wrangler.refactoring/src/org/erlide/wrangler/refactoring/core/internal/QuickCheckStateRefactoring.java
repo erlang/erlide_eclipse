@@ -32,8 +32,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public abstract class QuickCheckStateRefactoring extends
-        SimpleOneStepWranglerRefactoring {
+public abstract class QuickCheckStateRefactoring extends SimpleOneStepWranglerRefactoring {
 
     protected OtpErlangObject stateFuns;
     protected int fieldCount = 0;
@@ -48,8 +47,7 @@ public abstract class QuickCheckStateRefactoring extends
                 .getWranglerSelection();
         final StateDataToRecordRpcMessage message = runFirst(sel);
         if (!message.isSuccessful()) {
-            return RefactoringStatus.createFatalErrorStatus(message
-                    .getMessageString());
+            return RefactoringStatus.createFatalErrorStatus(message.getMessageString());
         }
         fieldCount = message.getFieldCount();
         stateFuns = message.getStateFuns();
@@ -59,8 +57,7 @@ public abstract class QuickCheckStateRefactoring extends
     /**
      * @noreference This method is not intended to be referenced by clients.
      */
-    protected abstract StateDataToRecordRpcMessage runFirst(
-            IErlMemberSelection sel);
+    protected abstract StateDataToRecordRpcMessage runFirst(IErlMemberSelection sel);
 
     /**
      * Returns the count of fields which a new record may need

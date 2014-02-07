@@ -94,8 +94,8 @@ public final class ConfigurationManager {
      *         otherwise
      */
     public static boolean saveNodesConfig(final String configName) {
-        return saveConfiguration(configName, NODES_DIR, TraceBackend
-                .getInstance().getTracedNodesArray());
+        return saveConfiguration(configName, NODES_DIR, TraceBackend.getInstance()
+                .getTracedNodesArray());
     }
 
     /**
@@ -143,8 +143,8 @@ public final class ConfigurationManager {
     private static Object[] loadConfiguration(final String configName,
             final String dirName) {
 
-        final IPath location = Activator.getDefault().getStateLocation()
-                .append(dirName).append(configName);
+        final IPath location = Activator.getDefault().getStateLocation().append(dirName)
+                .append(configName);
         final File file = location.toFile();
 
         if (file.exists() && file.isFile()) {
@@ -181,8 +181,8 @@ public final class ConfigurationManager {
                 return false;
             }
 
-            final FileOutputStream out = new FileOutputStream(location.append(
-                    configName).toFile());
+            final FileOutputStream out = new FileOutputStream(location.append(configName)
+                    .toFile());
             objectOutputStream = new ObjectOutputStream(out);
             objectOutputStream.writeObject(configuration);
             return true;
@@ -202,8 +202,8 @@ public final class ConfigurationManager {
 
     private static boolean removeConfiguration(final String configName,
             final String dirName) {
-        final IPath location = Activator.getDefault().getStateLocation()
-                .append(dirName).append(configName);
+        final IPath location = Activator.getDefault().getStateLocation().append(dirName)
+                .append(configName);
         final File file = location.toFile();
         if (file.exists() && file.isFile()) {
             return file.delete();
@@ -214,8 +214,7 @@ public final class ConfigurationManager {
     private static String[] getConfigurationsList(final String dirName) {
         final ArrayList<String> configNames = new ArrayList<String>();
 
-        final IPath location = Activator.getDefault().getStateLocation()
-                .append(dirName);
+        final IPath location = Activator.getDefault().getStateLocation().append(dirName);
         final File dir = location.toFile();
         if (dir.exists()) {
             for (final File file : dir.listFiles()) {

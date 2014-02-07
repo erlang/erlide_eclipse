@@ -46,10 +46,9 @@ public class IntroduceMacroRefactoring extends SimpleOneStepWranglerRefactoring 
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
         // TODO: extend it
 
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "new_macro_eclipse", "sxxsxi", sel.getFilePath(),
-                sel.getSelectionRange().getStartPos(),
-                sel.getSelectionRange().getEndPos(), userInput,
-                sel.getSearchPath(), GlobalParameters.getTabWidth());
+        return WranglerBackendManager.getRefactoringBackend().call("new_macro_eclipse",
+                "sxxsxi", sel.getFilePath(), sel.getSelectionRange().getStartPos(),
+                sel.getSelectionRange().getEndPos(), userInput, sel.getSearchPath(),
+                GlobalParameters.getTabWidth());
     }
 }

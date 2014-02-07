@@ -8,7 +8,7 @@
 	<xsl:template match="repository/properties">
 		<properties size='{@size+2}'>
 			<xsl:copy-of select="property"/>
-			<property name='p2.statsURI' value='http://shibumi.erlide.org/stats'/>
+			<property name='p2.statsURI' value='http://download.erlide.org/stats'/>
 			<xsl:element name="property">
 				<xsl:attribute name="name">p2.mirrorsURL</xsl:attribute>
 				<xsl:attribute name="value"><xsl:value-of select="$mirrorsURL"/></xsl:attribute>

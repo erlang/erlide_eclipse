@@ -23,8 +23,7 @@ import java.io.Serializable;
 /**
  * Provides a Java representation of Erlang floats and doubles.
  */
-public class OtpErlangFloat extends OtpErlangDouble implements Serializable,
-        Cloneable {
+public class OtpErlangFloat extends OtpErlangDouble implements Serializable, Cloneable {
     // don't change this!
     static final long serialVersionUID = -2231546377289456934L;
 
@@ -49,8 +48,8 @@ public class OtpErlangFloat extends OtpErlangDouble implements Serializable,
      * @exception OtpErlangRangeException
      *                if the value cannot be represented as a Java float.
      */
-    public OtpErlangFloat(final OtpInputStream buf)
-            throws OtpErlangDecodeException, OtpErlangRangeException {
+    public OtpErlangFloat(final OtpInputStream buf) throws OtpErlangDecodeException,
+            OtpErlangRangeException {
         super(buf);
 
         final float f = floatValue();

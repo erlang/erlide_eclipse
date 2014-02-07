@@ -17,9 +17,8 @@ public class PathSerializerTest {
     @Test
     public void shouldFilterOutEmptyPaths() {
         final String input = ";a;b;;c;;;d;";
-        final Collection<IPath> expected = Lists.newArrayList((IPath) new Path(
-                "a"), (IPath) new Path("b"), (IPath) new Path("c"),
-                (IPath) new Path("d"));
+        final Collection<IPath> expected = Lists.newArrayList((IPath) new Path("a"),
+                (IPath) new Path("b"), (IPath) new Path("c"), (IPath) new Path("d"));
         final Collection<IPath> actual = PathSerializer.unpackList(input);
         assertThat(actual.toArray(), is(expected.toArray()));
     }

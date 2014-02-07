@@ -115,8 +115,7 @@ public class StringMatcher {
      *         position of "abc" is returned. For a pattern like"*??*" in text
      *         "abcdf", (1,3) is returned
      */
-    public StringMatcher.Position find(final String text, final int start0,
-            final int end0) {
+    public StringMatcher.Position find(final String text, final int start0, final int end0) {
         int end = end0;
         int start = start0;
         if (text == null) {
@@ -206,8 +205,7 @@ public class StringMatcher {
 
         if (fIgnoreWildCards) {
             return end - start == fLength
-                    && fPattern.regionMatches(fIgnoreCase, 0, text, start,
-                            fLength);
+                    && fPattern.regionMatches(fIgnoreCase, 0, text, start, fLength);
         }
         final int segCount = fSegments.length;
         if (segCount == 0 && (fHasLeadingStar || fHasTrailingStar)) {
@@ -401,8 +399,8 @@ public class StringMatcher {
      * @return the starting index in the text of the pattern , or -1 if not
      *         found
      */
-    protected int regExpPosIn(final String text, final int start,
-            final int end, final String p) {
+    protected int regExpPosIn(final String text, final int start, final int end,
+            final String p) {
         final int plen = p.length();
 
         final int max = end - plen;
@@ -447,15 +445,13 @@ public class StringMatcher {
                 continue;
             }
             if (fIgnoreCase) {
-                if (Character.toUpperCase(tchar) == Character
-                        .toUpperCase(pchar)) {
+                if (Character.toUpperCase(tchar) == Character.toUpperCase(pchar)) {
                     continue;
                 }
                 // comparing after converting to upper case doesn't handle all
                 // cases;
                 // also compare after converting to lower case
-                if (Character.toLowerCase(tchar) == Character
-                        .toLowerCase(pchar)) {
+                if (Character.toLowerCase(tchar) == Character.toLowerCase(pchar)) {
                     continue;
                 }
             }

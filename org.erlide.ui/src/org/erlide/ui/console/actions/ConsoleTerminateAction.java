@@ -71,8 +71,7 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
                 setEnabled(false);
                 fConsole.stop();
             }
-            if (!backend
-                    .equals(BackendCore.getBackendManager().getIdeBackend())) {
+            if (!backend.equals(BackendCore.getBackendManager().getIdeBackend())) {
                 backend.dispose();
             }
         } catch (final DebugException e) {

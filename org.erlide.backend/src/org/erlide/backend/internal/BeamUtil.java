@@ -48,8 +48,7 @@ public class BeamUtil {
     public static OtpErlangBinary getBeamBinary(final String moduleName,
             final IPath beamPath) {
         try {
-            final FileInputStream s = new FileInputStream(
-                    beamPath.toPortableString());
+            final FileInputStream s = new FileInputStream(beamPath.toPortableString());
             final int sz = (int) s.getChannel().size();
             final byte[] buf = new byte[sz];
             try {
@@ -96,8 +95,7 @@ public class BeamUtil {
         try {
             connection = entry.openConnection();
             if (connection instanceof BundleURLConnection) {
-                final URL fileURL = ((BundleURLConnection) connection)
-                        .getFileURL();
+                final URL fileURL = ((BundleURLConnection) connection).getFileURL();
                 final URI uri = new URI(fileURL.toString().replace(" ", "%20"));
                 final String path = new File(uri).getAbsolutePath();
                 return path;
@@ -118,8 +116,7 @@ public class BeamUtil {
      */
     public static void unpackBeamFiles(final Bundle b, final String location) {
         if (location == null) {
-            ErlLogger.warn("Could not find 'ebin' in bundle %s.",
-                    b.getSymbolicName());
+            ErlLogger.warn("Could not find 'ebin' in bundle %s.", b.getSymbolicName());
             return;
         }
         final File ebinDir = new File(location + "/ebin");
@@ -143,26 +140,22 @@ public class BeamUtil {
                 final String dirPath = el.getAttribute("path");
                 final Enumeration<?> e = b.getEntryPaths(dirPath);
                 if (e == null) {
-                    ErlLogger.debug("* !!! error loading plugin "
-                            + b.getSymbolicName());
+                    ErlLogger.debug("* !!! error loading plugin " + b.getSymbolicName());
                     return;
                 }
                 while (e.hasMoreElements()) {
                     final String s = (String) e.nextElement();
-                    final String beamModuleName = BackendUtils
-                            .getBeamModuleName(s);
+                    final String beamModuleName = BackendUtils.getBeamModuleName(s);
                     if (beamModuleName != null) {
                         final URL url = b.getEntry(s);
                         ErlLogger.debug(" unpack: " + beamModuleName);
-                        final File beam = new File(ebinDir, beamModuleName
-                                + ".beam");
+                        final File beam = new File(ebinDir, beamModuleName + ".beam");
                         try {
                             beam.createNewFile();
-                            final FileOutputStream fs = new FileOutputStream(
-                                    beam);
+                            final FileOutputStream fs = new FileOutputStream(beam);
                             try {
-                                final OtpErlangBinary bin = getBeamBinary(
-                                        beamModuleName, url);
+                                final OtpErlangBinary bin = getBeamBinary(beamModuleName,
+                                        url);
                                 fs.write(bin.binaryValue());
                             } finally {
                                 fs.close();

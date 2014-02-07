@@ -123,8 +123,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
             IWorkingSet[] workingSets = null;
             if (wsIds != null && wsIds.length > 0) {
-                final IWorkingSetManager workingSetManager = PlatformUI
-                        .getWorkbench().getWorkingSetManager();
+                final IWorkingSetManager workingSetManager = PlatformUI.getWorkbench()
+                        .getWorkingSetManager();
                 workingSets = new IWorkingSet[wsIds.length];
                 for (int i = 0; workingSets != null && i < wsIds.length; i++) {
                     workingSets[i] = workingSetManager.getWorkingSet(wsIds[i]);
@@ -149,8 +149,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                     searchFor = SearchFor.FUNCTION;
                 }
                 final int includeMask = settings.getInt("includeMask"); //$NON-NLS-1$
-                return new SearchPatternData(pattern, scope, limitTo,
-                        searchFor, workingSets, includeMask);
+                return new SearchPatternData(pattern, scope, limitTo, searchFor,
+                        workingSets, includeMask);
 
             } catch (final NumberFormatException e) {
             }
@@ -207,8 +207,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         } catch (final CoreException e) {
             ErrorDialog.openError(getShell(), "Search",
                     "Problems occurred while searching. "
-                            + "The affected files will be skipped.",
-                    e.getStatus());
+                            + "The affected files will be skipped.", e.getStatus());
             return false;
         }
     }
@@ -226,50 +225,44 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         switch (selectedScope) {
         case ISearchPageContainer.WORKSPACE_SCOPE:
             if (searchSources) {
-                scope = SearchCoreUtil.getWorkspaceScope(searchExternals,
-                        searchOtp);
+                scope = SearchCoreUtil.getWorkspaceScope(searchExternals, searchOtp);
             }
             scopeDescription = SearchUtil.getWorkspaceScopeDescription();
             break;
         case ISearchPageContainer.SELECTED_PROJECTS_SCOPE:
-            final String[] projectNames = getContainer()
-                    .getSelectedProjectNames();
+            final String[] projectNames = getContainer().getSelectedProjectNames();
             if (searchSources) {
                 scope = SearchCoreUtil.getProjectsScope(
-                        SearchCoreUtil.getProjects(projectNames),
-                        searchExternals, searchOtp);
+                        SearchCoreUtil.getProjects(projectNames), searchExternals,
+                        searchOtp);
             }
-            scopeDescription = SearchUtil
-                    .getProjectScopeDescription(SearchCoreUtil
-                            .getProjects(projectNames));
+            scopeDescription = SearchUtil.getProjectScopeDescription(SearchCoreUtil
+                    .getProjects(projectNames));
             break;
         case ISearchPageContainer.SELECTION_SCOPE:
             if (searchSources) {
-                scope = SearchUtil.getSelectionScope(getContainer()
-                        .getSelection(), searchExternals, searchOtp);
+                scope = SearchUtil.getSelectionScope(getContainer().getSelection(),
+                        searchExternals, searchOtp);
             }
-            scopeDescription = SearchUtil
-                    .getSelectionScopeDescription(getContainer().getSelection());
+            scopeDescription = SearchUtil.getSelectionScopeDescription(getContainer()
+                    .getSelection());
             break;
         case ISearchPageContainer.WORKING_SET_SCOPE: {
-            final IWorkingSet[] workingSets = getContainer()
-                    .getSelectedWorkingSets();
+            final IWorkingSet[] workingSets = getContainer().getSelectedWorkingSets();
             // should not happen - just to be sure
             if (workingSets == null || workingSets.length < 1) {
                 return false;
             }
-            scopeDescription = SearchUtil
-                    .getWorkingSetsScopeDescription(workingSets);
+            scopeDescription = SearchUtil.getWorkingSetsScopeDescription(workingSets);
             if (searchSources) {
-                scope = SearchUtil.getWorkingSetsScope(workingSets,
-                        searchExternals, searchOtp);
+                scope = SearchUtil.getWorkingSetsScope(workingSets, searchExternals,
+                        searchOtp);
             }
             SearchUtil.updateLRUWorkingSets(workingSets);
         }
         }
-        final ErlangSearchPattern searchPattern = SearchUtil
-                .getSearchPattern(null, data.getSearchFor(), data.getPattern(),
-                        data.getLimitTo());
+        final ErlangSearchPattern searchPattern = SearchUtil.getSearchPattern(null,
+                data.getSearchFor(), data.getPattern(), data.getLimitTo());
         SearchUtil.runQuery(searchPattern, scope, scopeDescription, getShell());
         return true;
     }
@@ -309,9 +302,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         if (match != null) {
             fPreviousSearchPatterns.remove(match);
         }
-        match = new SearchPatternData(pattern, getContainer()
-                .getSelectedScope(), getLimitTo(), getSearchFor(),
-                getContainer().getSelectedWorkingSets(), getIncludeMask());
+        match = new SearchPatternData(pattern, getContainer().getSelectedScope(),
+                getLimitTo(), getSearchFor(), getContainer().getSelectedWorkingSets(),
+                getIncludeMask());
 
         fPreviousSearchPatterns.add(0, match); // insert on top
         return match;
@@ -356,27 +349,27 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         result.setLayout(layout);
 
         final Control expressionComposite = createExpression(result);
-        expressionComposite.setLayoutData(new GridData(GridData.FILL,
-                GridData.CENTER, true, false, 2, 1));
+        expressionComposite.setLayoutData(new GridData(GridData.FILL, GridData.CENTER,
+                true, false, 2, 1));
 
         final Label separator = new Label(result, SWT.NONE);
         separator.setVisible(false);
-        final GridData data = new GridData(GridData.FILL, GridData.FILL, false,
-                false, 2, 1);
+        final GridData data = new GridData(GridData.FILL, GridData.FILL, false, false, 2,
+                1);
         data.heightHint = convertHeightInCharsToPixels(1) / 3;
         separator.setLayoutData(data);
 
         final Control searchFor = createSearchFor(result);
-        searchFor.setLayoutData(new GridData(GridData.FILL, GridData.FILL,
-                true, false, 1, 1));
+        searchFor.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false,
+                1, 1));
 
         final Control limitTo = createLimitTo(result);
-        limitTo.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true,
-                false, 1, 1));
+        limitTo.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false, 1,
+                1));
 
         final Control includeMask = createIncludeMask(result);
-        includeMask.setLayoutData(new GridData(GridData.FILL, GridData.FILL,
-                true, false, 2, 1));
+        includeMask.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false,
+                2, 1));
 
         setControl(result);
 
@@ -387,15 +380,13 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
     private Control createIncludeMask(final Composite parent) {
         final Group result = new Group(parent, SWT.NONE);
-        result.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2,
-                1));
+        result.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
         result.setText("Search In");
         result.setLayout(new GridLayout(3, false));
         fIncludeMasks = new Button[] {
-                createCheckButton(result, "Sourc&es",
-                        SearchUtil.SEARCH_IN_SOURCES, true),
-                createCheckButton(result, "E&xternals",
-                        SearchUtil.SEARCH_IN_EXTERNALS, false),
+                createCheckButton(result, "Sourc&es", SearchUtil.SEARCH_IN_SOURCES, true),
+                createCheckButton(result, "E&xternals", SearchUtil.SEARCH_IN_EXTERNALS,
+                        false),
                 createCheckButton(result, "&OTP libraries",
                         SearchUtil.SEARCH_IN_OTP_LIBRARIES, false) };
         return result;
@@ -412,8 +403,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         final Label label = new Label(result, SWT.LEFT);
         label.setText("Expression"); // SearchMessages.SearchPage_expression_label
         // );
-        label.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false,
-                false, 2, 1));
+        label.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false, 2, 1));
 
         // Pattern combo
         fPattern = new Combo(result, SWT.SINGLE | SWT.BORDER);
@@ -435,8 +425,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             }
         });
         // TextFieldNavigationHandler.install(fPattern);
-        final GridData data = new GridData(GridData.FILL, GridData.FILL, true,
-                false, 1, 1);
+        final GridData data = new GridData(GridData.FILL, GridData.FILL, true, false, 1,
+                1);
         data.widthHint = convertWidthInCharsToPixels(50);
         fPattern.setLayoutData(data);
 
@@ -463,20 +453,17 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     }
 
     private void doPatternModified() {
-        if (fInitialData != null
-                && getPattern().equals(fInitialData.getPattern())) {
+        if (fInitialData != null && getPattern().equals(fInitialData.getPattern())) {
         }
     }
 
     private void handlePatternSelected() {
         final int selectionIndex = fPattern.getSelectionIndex();
-        if (selectionIndex < 0
-                || selectionIndex >= fPreviousSearchPatterns.size()) {
+        if (selectionIndex < 0 || selectionIndex >= fPreviousSearchPatterns.size()) {
             return;
         }
 
-        final SearchPatternData initialData = fPreviousSearchPatterns
-                .get(selectionIndex);
+        final SearchPatternData initialData = fPreviousSearchPatterns.get(selectionIndex);
 
         setSearchFor(initialData.getSearchFor());
         setIncludeMask(initialData.getIncludeMask());
@@ -536,15 +523,13 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                 createRadioButton(result, "Macro", SearchFor.MACRO),
                 createRadioButton(result, "Type", SearchFor.TYPE),
                 createRadioButton(result, "Include", SearchFor.INCLUDE),
-                createRadioButton(result, "Record field",
-                        SearchFor.RECORD_FIELD),
+                createRadioButton(result, "Record field", SearchFor.RECORD_FIELD),
                 createRadioButton(result, "Variable", SearchFor.VARIABLE) };
 
         // Fill with dummy radio buttons
         final Label filler = new Label(result, SWT.NONE);
         filler.setVisible(false);
-        filler.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1,
-                1));
+        filler.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 
         return result;
     }
@@ -555,10 +540,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         result.setLayout(new GridLayout(2, true));
         fLimitTo = new Button[] {
                 createRadioButton(result, "Definitions", LimitTo.DEFINITIONS),
-                createRadioButton(result, "References", LimitTo.REFERENCES,
-                        true),
-                createRadioButton(result, "All occurrences",
-                        LimitTo.ALL_OCCURRENCES) };
+                createRadioButton(result, "References", LimitTo.REFERENCES, true),
+                createRadioButton(result, "All occurrences", LimitTo.ALL_OCCURRENCES) };
         return result;
     }
 
@@ -611,15 +594,14 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         setSearchFor(initData.getSearchFor());
     }
 
-    public SearchPatternData tryErlangTextSelection(
-            final SearchPatternData initData0, final IEditorPart activePart)
-            throws ErlModelException {
+    public SearchPatternData tryErlangTextSelection(final SearchPatternData initData0,
+            final IEditorPart activePart) throws ErlModelException {
         final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) activePart;
         final IErlModule module = erlangEditor.getModule();
         SearchPatternData initData = initData0;
         if (module != null) {
-            final ISelection ssel = erlangEditor.getSite()
-                    .getSelectionProvider().getSelection();
+            final ISelection ssel = erlangEditor.getSite().getSelectionProvider()
+                    .getSelection();
             final ITextSelection textSel = (ITextSelection) ssel;
             final int offset = textSel.getOffset();
             OpenResult res;
@@ -629,12 +611,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                         .getService(OpenService.class)
                         .open(module.getScannerName(),
                                 offset,
-                                ErlangEngine.getInstance()
-                                        .getModelUtilService()
-                                        .getImportsAsList(module),
-                                "",
-                                ErlangEngine.getInstance().getModel()
-                                        .getPathVars());
+                                ErlangEngine.getInstance().getModelUtilService()
+                                        .getImportsAsList(module), "",
+                                ErlangEngine.getInstance().getModel().getPathVars());
             } catch (final RpcException e) {
                 res = null;
             }
@@ -644,8 +623,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         return initData;
     }
 
-    private SearchPatternData tryStructuredSelection(
-            final IStructuredSelection selection) {
+    private SearchPatternData tryStructuredSelection(final IStructuredSelection selection) {
         if (selection == null || selection.size() > 1) {
             return null;
         }
@@ -699,20 +677,18 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         final ErlangSearchPattern pattern = SearchUtil
                 .getSearchPatternFromOpenResultAndLimitTo(module, offset, res,
                         LimitTo.REFERENCES, true);
-        final String patternString = pattern == null ? "" : pattern
-                .patternString();
-        final SearchFor searchFor = pattern == null ? SearchFor.FUNCTION
-                : pattern.getSearchFor();
-        final SearchPatternData searchPatternData = new SearchPatternData(
-                patternString, ISearchPageContainer.WORKSPACE_SCOPE,
-                LimitTo.REFERENCES, searchFor, null,
-                SearchUtil.SEARCH_IN_SOURCES);
+        final String patternString = pattern == null ? "" : pattern.patternString();
+        final SearchFor searchFor = pattern == null ? SearchFor.FUNCTION : pattern
+                .getSearchFor();
+        final SearchPatternData searchPatternData = new SearchPatternData(patternString,
+                ISearchPageContainer.WORKSPACE_SCOPE, LimitTo.REFERENCES, searchFor,
+                null, SearchUtil.SEARCH_IN_SOURCES);
         return searchPatternData;
     }
 
     private SearchPatternData determineInitValuesFrom(final IErlElement e) {
-        final ErlangSearchPattern pattern = new SearchPatternFactory(
-                ErlangEngine.getInstance().getModelUtilService())
+        final ErlangSearchPattern pattern = new SearchPatternFactory(ErlangEngine
+                .getInstance().getModelUtilService())
                 .getSearchPatternFromErlElementAndLimitTo(e, getLimitTo());
         if (pattern == null) {
             return null;
@@ -722,23 +698,20 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                 pattern.getSearchFor(), null, getLastIncludeMask());
     }
 
-    private SearchPatternData trySimpleTextSelection(
-            final ITextSelection selection) {
+    private SearchPatternData trySimpleTextSelection(final ITextSelection selection) {
         final String selectedText = selection.getText();
         if (selectedText != null && selectedText.length() > 0) {
             int i = 0;
             while (i < selectedText.length()
-                    && !SearchCoreUtil.isLineDelimiterChar(selectedText
-                            .charAt(i))) {
+                    && !SearchCoreUtil.isLineDelimiterChar(selectedText.charAt(i))) {
                 i++;
             }
             if (i > 0) {
                 final String s = selectedText.substring(0, i);
                 // FIXME find the module from the editor somehow
-                return new SearchPatternData(s, getContainer()
-                        .getSelectedScope(), getLimitTo(), getSearchFor(),
-                        getContainer().getSelectedWorkingSets(),
-                        getLastIncludeMask());
+                return new SearchPatternData(s, getContainer().getSelectedScope(),
+                        getLimitTo(), getSearchFor(), getContainer()
+                                .getSelectedWorkingSets(), getLastIncludeMask());
             }
         }
         return null;
@@ -788,8 +761,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
      */
     private IDialogSettings getDialogSettings() {
         if (fDialogSettings == null) {
-            fDialogSettings = ErlideUIPlugin.getDefault()
-                    .getDialogSettingsSection(PAGE_NAME);
+            fDialogSettings = ErlideUIPlugin.getDefault().getDialogSettingsSection(
+                    PAGE_NAME);
         }
         return fDialogSettings;
     }
@@ -803,11 +776,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         try {
             final int historySize = s.getInt(STORE_HISTORY_SIZE);
             for (int i = 0; i < historySize; i++) {
-                final IDialogSettings histSettings = s.getSection(STORE_HISTORY
-                        + i);
+                final IDialogSettings histSettings = s.getSection(STORE_HISTORY + i);
                 if (histSettings != null) {
-                    final SearchPatternData data = SearchPatternData
-                            .create(histSettings);
+                    final SearchPatternData data = SearchPatternData.create(histSettings);
                     if (data != null) {
                         fPreviousSearchPatterns.add(data);
                     }
@@ -824,12 +795,10 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     private void writeConfiguration() {
         final IDialogSettings s = getDialogSettings();
 
-        final int historySize = Math.min(fPreviousSearchPatterns.size(),
-                HISTORY_SIZE);
+        final int historySize = Math.min(fPreviousSearchPatterns.size(), HISTORY_SIZE);
         s.put(STORE_HISTORY_SIZE, historySize);
         for (int i = 0; i < historySize; i++) {
-            final IDialogSettings histSettings = s.addNewSection(STORE_HISTORY
-                    + i);
+            final IDialogSettings histSettings = s.addNewSection(STORE_HISTORY + i);
             final SearchPatternData data = fPreviousSearchPatterns.get(i);
             data.store(histSettings);
         }

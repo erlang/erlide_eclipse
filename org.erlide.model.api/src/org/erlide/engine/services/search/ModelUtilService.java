@@ -34,15 +34,14 @@ public interface ModelUtilService {
 
     List<OtpErlangObject> getImportsAsList(final IErlModule mod);
 
-    List<String> findUnitsWithPrefix(final String prefix,
-            final IErlProject project, final boolean checkExternals,
-            final boolean includes) throws ErlModelException;
+    List<String> findUnitsWithPrefix(final String prefix, final IErlProject project,
+            final boolean checkExternals, final boolean includes)
+            throws ErlModelException;
 
     IErlModule getModuleFromExternalModulePath(final IErlModel model,
             final String modulePath) throws ErlModelException;
 
-    String getExternalModulePath(final IErlElementLocator model,
-            final IErlModule module);
+    String getExternalModulePath(final IErlElementLocator model, final IErlModule module);
 
     String getModuleInfo(IErlModule module);
 

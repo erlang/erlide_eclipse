@@ -12,9 +12,8 @@ public class ProjectDirectoryFieldEditor extends DirectoryFieldEditor {
     private String fOutputLocation;
     private final boolean mustExist;
 
-    public ProjectDirectoryFieldEditor(final String name,
-            final String labelText, final Composite parent,
-            final IProject project, final boolean mustExist) {
+    public ProjectDirectoryFieldEditor(final String name, final String labelText,
+            final Composite parent, final IProject project, final boolean mustExist) {
         super(name, labelText, parent);
         this.project = project;
         this.mustExist = mustExist;
@@ -22,9 +21,8 @@ public class ProjectDirectoryFieldEditor extends DirectoryFieldEditor {
 
     @Override
     protected String changePressed() {
-        final IContainer container = DirectorySelectUtil.chooseLocation(
-                "Choose folder", getLabelText(), project, fOutputLocation,
-                getShell());
+        final IContainer container = DirectorySelectUtil.chooseLocation("Choose folder",
+                getLabelText(), project, fOutputLocation, getShell());
         if (container != null) {
             return container.getProjectRelativePath().toString();
         }

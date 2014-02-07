@@ -38,8 +38,7 @@ import org.erlide.engine.model.IErlModelChangeListener;
  * @author jakob
  * 
  */
-public interface IErlangFoldingStructureProvider extends
-        IErlModelChangeListener {
+public interface IErlangFoldingStructureProvider extends IErlModelChangeListener {
 
     /**
      * Installs this structure provider on the given editor and viewer.

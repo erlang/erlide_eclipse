@@ -96,8 +96,7 @@ public class SWTImageCanvas extends Canvas {
     private void paint(final GC gc) {
         final Rectangle clientRect = getClientArea(); /* Canvas' painting area */
         if (sourceImage != null) {
-            Rectangle imageRect = SWT2Dutil.inverseTransformRect(transform,
-                    clientRect);
+            Rectangle imageRect = SWT2Dutil.inverseTransformRect(transform, clientRect);
             final int gap = 2; /* find a better start point to render */
             imageRect.x -= gap;
             imageRect.y -= gap;
@@ -106,19 +105,17 @@ public class SWTImageCanvas extends Canvas {
 
             final Rectangle imageBound = sourceImage.getBounds();
             imageRect = imageRect.intersection(imageBound);
-            final Rectangle destRect = SWT2Dutil.transformRect(transform,
-                    imageRect);
+            final Rectangle destRect = SWT2Dutil.transformRect(transform, imageRect);
 
             if (screenImage != null) {
                 screenImage.dispose();
             }
-            screenImage = new Image(getDisplay(), clientRect.width,
-                    clientRect.height);
+            screenImage = new Image(getDisplay(), clientRect.width, clientRect.height);
             final GC newGC = new GC(screenImage);
             newGC.setClipping(clientRect);
-            newGC.drawImage(sourceImage, imageRect.x, imageRect.y,
-                    imageRect.width, imageRect.height, destRect.x, destRect.y,
-                    destRect.width, destRect.height);
+            newGC.drawImage(sourceImage, imageRect.x, imageRect.y, imageRect.width,
+                    imageRect.height, destRect.x, destRect.y, destRect.width,
+                    destRect.height);
             newGC.dispose();
 
             gc.drawImage(screenImage, 0, 0);
@@ -285,8 +282,7 @@ public class SWTImageCanvas extends Canvas {
         fileChooser.setText("Save image file");
         fileChooser.setFilterPath(currentDir);
         fileChooser.setFilterExtensions(new String[] { "*.jpg;*.png" });
-        fileChooser.setFilterNames(new String[] { "Image file "
-                + " (jpeg, png)" });
+        fileChooser.setFilterNames(new String[] { "Image file " + " (jpeg, png)" });
         final String filename = fileChooser.open();
         if (filename != null) {
             final ImageLoader imageLoader = new ImageLoader();
@@ -388,8 +384,8 @@ public class SWTImageCanvas extends Canvas {
      * @param af
      *            original affinetransform
      */
-    public void centerZoom(final double dx, final double dy,
-            final double scale, final AffineTransform af) {
+    public void centerZoom(final double dx, final double dy, final double scale,
+            final AffineTransform af) {
         af.preConcatenate(AffineTransform.getTranslateInstance(-dx, -dy));
         af.preConcatenate(AffineTransform.getScaleInstance(scale, scale));
         af.preConcatenate(AffineTransform.getTranslateInstance(dx, dy));

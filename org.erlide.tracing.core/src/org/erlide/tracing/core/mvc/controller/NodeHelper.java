@@ -49,8 +49,7 @@ public class NodeHelper {
      *            if nodes should be omitted
      * @return list of backends
      */
-    public static Collection<? extends IBackend> getBackends(
-            final boolean ignore) {
+    public static Collection<? extends IBackend> getBackends(final boolean ignore) {
         if (!ignore) {
             return BackendCore.getBackendManager().getAllBackends();
         }

@@ -36,9 +36,8 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
     private final ErlElementKind kind;
     private final String name;
 
-    private ErlNode(final ErlNode parent, final ErlElementKind kind,
-            final String name, final String id, final IDocument doc,
-            final int start, final int length) {
+    private ErlNode(final ErlNode parent, final ErlElementKind kind, final String name,
+            final String id, final IDocument doc, final int start, final int length) {
         super(kind.hashCode(), id, doc, start, length);
         fParent = parent;
         this.kind = kind;
@@ -46,8 +45,8 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
         parent.addChild(this);
     }
 
-    public static ErlNode createErlNode(final ErlNode parent,
-            final IErlElement element, final IDocument doc) {
+    public static ErlNode createErlNode(final ErlNode parent, final IErlElement element,
+            final IDocument doc) {
         ErlLogger.info("created node " + element + " (parent " + parent + ")");
         int start = 0, length = 0;
         String name = element.toString();
@@ -62,13 +61,11 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
             length = sr.getLength();
         }
         return new ErlNode(parent, element.getKind(), name,
-                ErlangCompareUtilities.getErlElementID(element), doc, start,
-                length);
+                ErlangCompareUtilities.getErlElementID(element), doc, start, length);
     }
 
     public ErlNode(final IDocument doc) {
-        super(ErlElementKind.MODEL.hashCode(), "<root>", doc, 0, doc
-                .getLength());
+        super(ErlElementKind.MODEL.hashCode(), "<root>", doc, 0, doc.getLength());
         fParent = null;
         kind = ErlElementKind.MODEL;
         name = "<root>";
@@ -92,8 +89,7 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
 
     private Position rangeUnion(final Position a, final Position b) {
         final int offsetA = a.getOffset(), offsetB = b.getOffset();
-        final int endA = offsetA + a.getLength(), endB = offsetB
-                + b.getLength();
+        final int endA = offsetA + a.getLength(), endB = offsetB + b.getLength();
         final int end = Math.max(endA, endB);
         final int offset = Math.min(offsetA, offsetB);
         return new Position(offset, end - offset);

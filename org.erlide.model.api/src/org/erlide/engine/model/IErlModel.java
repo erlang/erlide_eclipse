@@ -38,8 +38,7 @@ import com.google.common.base.Predicate;
  * 
  * @see ErlangCore#create(org.eclipse.core.resources.IWorkspaceRoot)
  */
-public interface IErlModel extends IErlElement, IOpenable, IParent,
-        IErlElementLocator {
+public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementLocator {
 
     /**
      * Returns the Erlang project with the given name. This is a handle-only
@@ -66,13 +65,11 @@ public interface IErlModel extends IErlElement, IOpenable, IParent,
 
     void removeModelChangeListener(IErlModelChangeListener listener);
 
-    IErlElement innermostThat(final IErlElement el,
-            final Predicate<IErlElement> firstThat);
+    IErlElement innermostThat(final IErlElement el, final Predicate<IErlElement> firstThat);
 
     OtpErlangList getPathVars();
 
-    IErlProject newProject(final String name, final String path)
-            throws ErlModelException;
+    IErlProject newProject(final String name, final String path) throws ErlModelException;
 
     void notifyChange(IErlElement element);
 
@@ -120,8 +117,7 @@ public interface IErlModel extends IErlElement, IOpenable, IParent,
      * @see ElementChangedEvent
      * @see #removeElementChangedListener(IElementChangedListener)
      */
-    void addElementChangedListener(IElementChangedListener listener,
-            int eventMask);
+    void addElementChangedListener(IElementChangedListener listener, int eventMask);
 
     /**
      * Removes the given element changed listener. Has no affect if an identical
@@ -150,11 +146,11 @@ public interface IErlModel extends IErlElement, IOpenable, IParent,
 
     void registerModelDelta(IErlElementDelta delta);
 
-    IErlModule getModuleFromFile(IParent parent, String name,
-            String initialText, String path, String key);
+    IErlModule getModuleFromFile(IParent parent, String name, String initialText,
+            String path, String key);
 
-    IErlModule getModuleFromText(IParent parent, String name,
-            String initialText, String key);
+    IErlModule getModuleFromText(IParent parent, String name, String initialText,
+            String key);
 
     public void removeModule(final IErlModule module);
 

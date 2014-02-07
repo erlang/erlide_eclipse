@@ -27,8 +27,8 @@ public class ProjectPropertiesTest {
         ErlideTestUtils.initProjects();
         // We set up projects here, it's quite costly
         final String name1 = "testproject1";
-        erlProject = ErlideTestUtils.createProject(
-                ErlideTestUtils.getTmpPath(name1), name1);
+        erlProject = ErlideTestUtils.createProject(ErlideTestUtils.getTmpPath(name1),
+                name1);
     }
 
     @AfterClass
@@ -67,8 +67,7 @@ public class ProjectPropertiesTest {
     }
 
     private String convertListString(final String expected) {
-        return "[" + Joiner.on(", ").join(Splitter.on(";").split(expected))
-                + "]";
+        return "[" + Joiner.on(", ").join(Splitter.on(";").split(expected)) + "]";
     }
 
     @Test

@@ -32,9 +32,8 @@ import com.google.common.collect.Sets;
 
 public class SearchCoreUtil {
 
-    static public ErlSearchScope getProjectsScope(
-            final Collection<IProject> projects, final boolean addExternals,
-            final boolean addOtp) throws CoreException {
+    static public ErlSearchScope getProjectsScope(final Collection<IProject> projects,
+            final boolean addExternals, final boolean addOtp) throws CoreException {
         final ErlSearchScope result = new ErlSearchScope();
         final Set<String> externalModulePaths = new HashSet<String>();
         final IErlModel model = ErlangEngine.getInstance().getModel();
@@ -42,15 +41,15 @@ public class SearchCoreUtil {
             SearchCoreUtil.addProjectToScope(project, result);
             if (NatureUtil.hasErlangNature(project)) {
                 final IErlProject erlProject = model.getErlangProject(project);
-                addExternalModules(erlProject, result, externalModulePaths,
-                        addExternals, addOtp);
+                addExternalModules(erlProject, result, externalModulePaths, addExternals,
+                        addOtp);
             }
         }
         return result;
     }
 
-    static void addProjectToScope(final IProject project,
-            final ErlSearchScope result) throws CoreException {
+    static void addProjectToScope(final IProject project, final ErlSearchScope result)
+            throws CoreException {
         if (project == null) {
             return;
         }
@@ -65,8 +64,8 @@ public class SearchCoreUtil {
         }
     }
 
-    static void addFolderToScope(final IFolder folder,
-            final ErlSearchScope result) throws CoreException {
+    static void addFolderToScope(final IFolder folder, final ErlSearchScope result)
+            throws CoreException {
         if (folder != null) {
             for (final IResource r : folder.members()) {
                 if (r instanceof IFile) {
@@ -87,8 +86,7 @@ public class SearchCoreUtil {
 
     public static void addExternalModules(final IParent element,
             final ErlSearchScope result, final Set<String> externalModulePaths,
-            final boolean addExternals, final boolean addOtp)
-            throws ErlModelException {
+            final boolean addExternals, final boolean addOtp) throws ErlModelException {
         final Collection<IErlElement> externals = element
                 .getChildrenOfKind(ErlElementKind.EXTERNAL);
         for (final IErlElement external : externals) {
@@ -122,8 +120,8 @@ public class SearchCoreUtil {
         }
     }
 
-    public static void addResourceToScope(final ErlSearchScope result,
-            final IResource r) throws CoreException {
+    public static void addResourceToScope(final ErlSearchScope result, final IResource r)
+            throws CoreException {
         if (r instanceof IProject) {
             final IProject project = (IProject) r;
             addProjectToScope(project, result);
@@ -139,8 +137,8 @@ public class SearchCoreUtil {
     public static ErlSearchScope getWorkspaceScope(final boolean addExternals,
             final boolean addOtp) throws ErlModelException {
         final ErlSearchScope result = new ErlSearchScope();
-        final Collection<IErlProject> erlangProjects = ErlangEngine
-                .getInstance().getModel().getErlangProjects();
+        final Collection<IErlProject> erlangProjects = ErlangEngine.getInstance()
+                .getModel().getErlangProjects();
         for (final IErlProject i : erlangProjects) {
             final Collection<IErlModule> modules = i.getModulesAndIncludes();
             for (final IErlModule j : modules) {
@@ -150,8 +148,7 @@ public class SearchCoreUtil {
         }
         final Set<String> externalModulePaths = new HashSet<String>();
         for (final IErlProject project : erlangProjects) {
-            addExternalModules(project, result, externalModulePaths,
-                    addExternals, addOtp);
+            addExternalModules(project, result, externalModulePaths, addExternals, addOtp);
         }
         return result;
     }

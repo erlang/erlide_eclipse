@@ -111,23 +111,20 @@ public class GlobalParameters {
      * @param selection
      *            Erlang selection
      */
-    public static void setSelection(final ISelection selection)
-            throws WranglerException {
+    public static void setSelection(final ISelection selection) throws WranglerException {
         // TODO:: if the module is selected it is not handled
         try {
             if (editor == null) {
                 final IWorkbench instance = PlatformUI.getWorkbench();
                 final IWorkbenchWindow activeWorkbenchWindow = instance
                         .getActiveWorkbenchWindow();
-                editor = activeWorkbenchWindow.getActivePage()
-                        .getActiveEditor();
+                editor = activeWorkbenchWindow.getActivePage().getActiveEditor();
             }
             if (selection instanceof ITextSelection) {
                 final IWorkbench instance = PlatformUI.getWorkbench();
                 final IWorkbenchWindow activeWorkbenchWindow = instance
                         .getActiveWorkbenchWindow();
-                editor = activeWorkbenchWindow.getActivePage()
-                        .getActiveEditor();
+                editor = activeWorkbenchWindow.getActivePage().getActiveEditor();
 
                 wranglerSelection = new ErlTextMemberSelection(
                         (ITextSelection) selection, (ITextEditor) editor);
@@ -141,13 +138,12 @@ public class GlobalParameters {
                             WranglerUtils.getDocument(file));
                 } else if (firstElement instanceof IFile) {
                     final IFile file = (IFile) firstElement;
-                    final IErlModule module = ErlangEngine.getInstance()
-                            .getModel().findModule(file);
+                    final IErlModule module = ErlangEngine.getInstance().getModel()
+                            .findModule(file);
                     wranglerSelection = new ErlModuleSelection(module, file);
                 } else {
                     wranglerSelection = null;
-                    throw new WranglerException(
-                            "Please select an Erlang element!");
+                    throw new WranglerException("Please select an Erlang element!");
                 }
             } else {
                 wranglerSelection = null;
@@ -178,12 +174,11 @@ public class GlobalParameters {
      *            dilaog box title
      * @return true if the answer is yes, else false
      */
-    public static boolean showDecidableQuestion(final Shell s,
-            final String question, final String title) {
+    public static boolean showDecidableQuestion(final Shell s, final String question,
+            final String title) {
         boolean b;
         try {
-            final MessageBox mb = new MessageBox(s, SWT.ICON_WARNING | SWT.YES
-                    | SWT.NO);
+            final MessageBox mb = new MessageBox(s, SWT.ICON_WARNING | SWT.YES | SWT.NO);
             mb.setMessage(question);
             mb.setText(title);
             final int response = mb.open();

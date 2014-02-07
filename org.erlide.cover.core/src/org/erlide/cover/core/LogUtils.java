@@ -12,8 +12,8 @@ import org.eclipse.core.runtime.Status;
  */
 public class LogUtils {
 
-    public static void log(final Plugin plugin, final int severity,
-            final Object obj, final int depth) {
+    public static void log(final Plugin plugin, final int severity, final Object obj,
+            final int depth) {
         if (severity < IStatus.WARNING) {
             return;
         }
@@ -30,8 +30,7 @@ public class LogUtils {
         }
         final StackTraceElement caller = stackTrace[depth];
         return String.format("\n%s.%s(...)\n%s:%s", caller.getClassName(),
-                caller.getMethodName(), caller.getFileName(),
-                caller.getLineNumber());
+                caller.getMethodName(), caller.getFileName(), caller.getLineNumber());
     }
 
 }

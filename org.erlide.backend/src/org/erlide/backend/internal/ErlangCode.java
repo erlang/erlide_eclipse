@@ -39,8 +39,8 @@ public final class ErlangCode {
         try {
             // workaround for bug in code:del_path
             try {
-                final OtpErlangObject rr = backend.call("filename", "join",
-                        "x", new OtpErlangList(new OtpErlangString(path)));
+                final OtpErlangObject rr = backend.call("filename", "join", "x",
+                        new OtpErlangList(new OtpErlangString(path)));
                 path = ((OtpErlangString) rr).stringValue();
             } catch (final Exception e) {
                 // ignore
@@ -50,8 +50,8 @@ public final class ErlangCode {
         }
     }
 
-    public static OtpErlangObject loadBinary(final IRpcSite b,
-            final String beamf, final OtpErlangBinary code) throws RpcException {
+    public static OtpErlangObject loadBinary(final IRpcSite b, final String beamf,
+            final OtpErlangBinary code) throws RpcException {
         OtpErlangObject result;
         result = b.call(CODE, "load_binary", "asb", beamf, beamf, code);
         return result;

@@ -32,8 +32,7 @@ public class ErlangToolExtensions {
       final Function1<IResource,Boolean> _function = new Function1<IResource,Boolean>() {
         public Boolean apply(final IResource it) {
           String _name = it.getName();
-          boolean _equals = Objects.equal(_name, filename);
-          return Boolean.valueOf(_equals);
+          return Boolean.valueOf(Objects.equal(_name, filename));
         }
       };
       return IterableExtensions.<IResource>findFirst(((Iterable<IResource>)Conversions.doWrapArray(_members)), _function);
@@ -67,8 +66,7 @@ public class ErlangToolExtensions {
         }
         IFileStore _store = EFS.getStore(uri);
         NullProgressMonitor _nullProgressMonitor = new NullProgressMonitor();
-        File _localFile = _store.toLocalFile(0, _nullProgressMonitor);
-        _xblockexpression = (_localFile);
+        _xblockexpression = (_store.toLocalFile(0, _nullProgressMonitor));
       }
       return _xblockexpression;
     } catch (Throwable _e) {
@@ -88,8 +86,7 @@ public class ErlangToolExtensions {
             boolean _hasTarget = ErlangToolExtensions.hasTarget(it);
             if (_hasTarget) {
               String[] _split = it.split(":");
-              String _head = IterableExtensions.<String>head(((Iterable<String>)Conversions.doWrapArray(_split)));
-              _xifexpression = _head;
+              _xifexpression = IterableExtensions.<String>head(((Iterable<String>)Conversions.doWrapArray(_split)));
             } else {
               _xifexpression = null;
             }
@@ -97,8 +94,7 @@ public class ErlangToolExtensions {
           }
         };
         List<String> _map = ListExtensions.<String, String>map(lines, _function);
-        Iterable<String> _filterNull = IterableExtensions.<String>filterNull(_map);
-        _xblockexpression = (_filterNull);
+        _xblockexpression = (IterableExtensions.<String>filterNull(_map));
       }
       return _xblockexpression;
     } catch (Throwable _e) {
@@ -107,8 +103,7 @@ public class ErlangToolExtensions {
   }
   
   private static boolean hasTarget(final String line) {
-    boolean _matches = line.matches("[a-z0-9_-]+:.*");
-    return _matches;
+    return line.matches("[a-z0-9_-]+:.*");
   }
   
   public static boolean buildsWithMake(final IProject project) {
@@ -118,7 +113,7 @@ public class ErlangToolExtensions {
       _and = false;
     } else {
       boolean _hasMakeBuilderEnabled = ErlangToolExtensions.hasMakeBuilderEnabled(project);
-      _and = (_hasTopFile && _hasMakeBuilderEnabled);
+      _and = _hasMakeBuilderEnabled;
     }
     return _and;
   }
@@ -130,7 +125,7 @@ public class ErlangToolExtensions {
       _and = false;
     } else {
       boolean _hasEmakeBuilderEnabled = ErlangToolExtensions.hasEmakeBuilderEnabled(project);
-      _and = (_hasTopFile && _hasEmakeBuilderEnabled);
+      _and = _hasEmakeBuilderEnabled;
     }
     return _and;
   }
@@ -142,7 +137,7 @@ public class ErlangToolExtensions {
       _and = false;
     } else {
       boolean _hasRebarBuilderEnabled = ErlangToolExtensions.hasRebarBuilderEnabled(project);
-      _and = (_hasTopFile && _hasRebarBuilderEnabled);
+      _and = _hasRebarBuilderEnabled;
     }
     return _and;
   }

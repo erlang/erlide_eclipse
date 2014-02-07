@@ -51,8 +51,7 @@ public class ReportGenerator {
         return instance;
     }
 
-    public String getHTMLreport(final ICoverageObject obj,
-            final boolean relative) {
+    public String getHTMLreport(final ICoverageObject obj, final boolean relative) {
         // organize data
 
         final String date = Calendar.getInstance().getTime().toString();
@@ -62,8 +61,8 @@ public class ReportGenerator {
             final URL bundleRoot = Platform.getBundle(
                     org.erlide.cover.ui.Activator.PLUGIN_ID).getEntry(
                     "/templates/reports.css");
-            final BufferedReader stream = new BufferedReader(
-                    new InputStreamReader(bundleRoot.openStream()));
+            final BufferedReader stream = new BufferedReader(new InputStreamReader(
+                    bundleRoot.openStream()));
             final StringBuilder sb = new StringBuilder();
             String line;
             while ((line = stream.readLine()) != null) {
@@ -86,8 +85,8 @@ public class ReportGenerator {
 
         try {
             final String templText = getTemplateFromJar(relative);
-            StringResourceLoader.getRepository().putStringResource(
-                    "my_template", templText);
+            StringResourceLoader.getRepository().putStringResource("my_template",
+                    templText);
             final Template t = ve.getTemplate("my_template");
 
             final StringWriter writer = new StringWriter();
@@ -102,17 +101,14 @@ public class ReportGenerator {
     }
 
     // obtain templates
-    private String getTemplateFromJar(final boolean relative)
-            throws IOException {
+    private String getTemplateFromJar(final boolean relative) throws IOException {
         URL bundleRoot;
         if (relative) {
-            bundleRoot = Platform.getBundle(
-                    org.erlide.cover.ui.Activator.PLUGIN_ID).getEntry(
-                    "/templates/reportRel.vm");
+            bundleRoot = Platform.getBundle(org.erlide.cover.ui.Activator.PLUGIN_ID)
+                    .getEntry("/templates/reportRel.vm");
         } else {
-            bundleRoot = Platform.getBundle(
-                    org.erlide.cover.ui.Activator.PLUGIN_ID).getEntry(
-                    "/templates/report.vm");
+            bundleRoot = Platform.getBundle(org.erlide.cover.ui.Activator.PLUGIN_ID)
+                    .getEntry("/templates/report.vm");
         }
 
         final BufferedReader stream = new BufferedReader(new InputStreamReader(

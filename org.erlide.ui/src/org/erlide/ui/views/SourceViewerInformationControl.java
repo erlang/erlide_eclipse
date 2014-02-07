@@ -108,9 +108,8 @@ public class SourceViewerInformationControl implements IInformationControl,
      *            the text to be used in the optional status field or
      *            <code>null</code> if the status field should be hidden
      */
-    public SourceViewerInformationControl(final Shell parent,
-            final int shellStyle, final int style,
-            final String symbolicFontName, final String statusFieldText) {
+    public SourceViewerInformationControl(final Shell parent, final int shellStyle,
+            final int style, final String symbolicFontName, final String statusFieldText) {
         GridLayout layout;
         GridData gd;
 
@@ -135,10 +134,8 @@ public class SourceViewerInformationControl implements IInformationControl,
             composite.setLayout(layout);
             gd = new GridData(GridData.FILL_BOTH);
             composite.setLayoutData(gd);
-            composite.setForeground(display
-                    .getSystemColor(SWT.COLOR_INFO_FOREGROUND));
-            composite.setBackground(display
-                    .getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+            composite.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+            composite.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
         }
 
         // Source viewer
@@ -150,10 +147,8 @@ public class SourceViewerInformationControl implements IInformationControl,
         fText = fViewer.getTextWidget();
         gd = new GridData(GridData.BEGINNING | GridData.FILL_BOTH);
         fText.setLayoutData(gd);
-        fText.setForeground(parent.getDisplay().getSystemColor(
-                SWT.COLOR_INFO_FOREGROUND));
-        fText.setBackground(parent.getDisplay().getSystemColor(
-                SWT.COLOR_INFO_BACKGROUND));
+        fText.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+        fText.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
         fText.setFont(JFaceResources.getFont(symbolicFontName));
 
         fText.addKeyListener(new KeyListener() {
@@ -189,16 +184,14 @@ public class SourceViewerInformationControl implements IInformationControl,
             fStatusTextFont = new Font(fStatusField.getDisplay(), fontDatas);
             fStatusField.setFont(fStatusTextFont);
             final GridData gd2 = new GridData(GridData.FILL_VERTICAL
-                    | GridData.FILL_HORIZONTAL
-                    | GridData.HORIZONTAL_ALIGN_BEGINNING
+                    | GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_BEGINNING
                     | GridData.VERTICAL_ALIGN_BEGINNING);
             fStatusField.setLayoutData(gd2);
 
             fStatusField.setForeground(display
                     .getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
 
-            fStatusField.setBackground(display
-                    .getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+            fStatusField.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
         }
 
         addDisposeListener(this);
@@ -274,12 +267,11 @@ public class SourceViewerInformationControl implements IInformationControl,
     public void setSize(final int width, final int height) {
 
         if (fStatusField != null) {
-            final GridData gd = (GridData) fViewer.getTextWidget()
-                    .getLayoutData();
-            final Point statusSize = fStatusField.computeSize(SWT.DEFAULT,
-                    SWT.DEFAULT, true);
-            final Point separatorSize = fSeparator.computeSize(SWT.DEFAULT,
-                    SWT.DEFAULT, true);
+            final GridData gd = (GridData) fViewer.getTextWidget().getLayoutData();
+            final Point statusSize = fStatusField.computeSize(SWT.DEFAULT, SWT.DEFAULT,
+                    true);
+            final Point separatorSize = fSeparator.computeSize(SWT.DEFAULT, SWT.DEFAULT,
+                    true);
             gd.heightHint = height - statusSize.y - separatorSize.y;
         }
         fShell.setSize(width, height);

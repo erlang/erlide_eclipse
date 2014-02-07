@@ -106,9 +106,8 @@ public class RefactoringHandler extends AbstractHandler {
                     .getActiveWorkbenchWindow().getActivePage().getSelection());
         } catch (final WranglerException e1) {
 
-            MessageDialog.openError(PlatformUI.getWorkbench()
-                    .getActiveWorkbenchWindow().getShell(), "Error",
-                    e1.getMessage());
+            MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getShell(), "Error", e1.getMessage());
             return null;
         }
 
@@ -124,8 +123,7 @@ public class RefactoringHandler extends AbstractHandler {
 
         // apply ad hoc refactoring
         if (actionId.equals("org.erlide.wrangler.refactoring.adhoc")) {
-            final InputDialog dialog = getModuleInput(
-                    "Apply ad hoc refactoring",
+            final InputDialog dialog = getModuleInput("Apply ad hoc refactoring",
                     "Please type the gen_refac module name!");
 
             dialog.open();
@@ -138,8 +136,7 @@ public class RefactoringHandler extends AbstractHandler {
 
             pages.add(new UserRefacInputPage("Apply ad hoc refactoring",
                     "Please type input arguments for this refactoring",
-                    "Arguments should not be empty!",
-                    new NonEmptyStringValidator()));
+                    "Arguments should not be empty!", new NonEmptyStringValidator()));
             refactoring = new ApplyAdhocElemRefactoring();
 
             ((ApplyAdhocElemRefactoring) refactoring)
@@ -148,8 +145,7 @@ public class RefactoringHandler extends AbstractHandler {
             if (!((ApplyAdhocElemRefactoring) refactoring).fetchParPrompts()) {
                 MessageDialog.openError(PlatformUI.getWorkbench()
                         .getActiveWorkbenchWindow().getShell(),
-                        "Elementary refactoring error",
-                        "Can not load callback module");
+                        "Elementary refactoring error", "Can not load callback module");
                 return null;
             }
 
@@ -162,22 +158,18 @@ public class RefactoringHandler extends AbstractHandler {
 
             pages.add(new UserRefacInputPage(name,
                     "Please type input arguments for this refactoring",
-                    "Arguments should not be empty!",
-                    new NonEmptyStringValidator()));
-            refactoring = new ApplyUserElementaryRefactoring(name,
-                    callbackModule);
+                    "Arguments should not be empty!", new NonEmptyStringValidator()));
+            refactoring = new ApplyUserElementaryRefactoring(name, callbackModule);
 
-            if (!((ApplyUserElementaryRefactoring) refactoring)
-                    .fetchParPrompts()) {
+            if (!((ApplyUserElementaryRefactoring) refactoring).fetchParPrompts()) {
                 MessageDialog.openError(PlatformUI.getWorkbench()
-                        .getActiveWorkbenchWindow().getShell(),
-                        "Refactoring error", "Can not find callback module");
+                        .getActiveWorkbenchWindow().getShell(), "Refactoring error",
+                        "Can not find callback module");
                 return null;
             }
 
             // run rename variable refactoring
-        } else if (actionId
-                .equals("org.erlide.wrangler.refactoring.renamevariable")) {
+        } else if (actionId.equals("org.erlide.wrangler.refactoring.renamevariable")) {
             refactoring = new RenameVariableRefactoring();
             final SimpleInputPage page = new SimpleInputPage("Rename variable",
                     "Please type the new variable name!", "New variable name:",
@@ -196,32 +188,27 @@ public class RefactoringHandler extends AbstractHandler {
             refactoring = new IntroduceNewVariableRefactoring();
 
             // run rename function refactoring
-        } else if (actionId
-                .equals("org.erlide.wrangler.refactoring.renamefunction")) {
+        } else if (actionId.equals("org.erlide.wrangler.refactoring.renamefunction")) {
             refactoring = new RenameFunctionRefactoring();
             final CostumworkFlowInputPage page = new CostumworkFlowInputPage(
                     "Rename function", "Please type the new function name!",
-                    "New function name:",
-                    "New name must be a valid Erlang atom!",
+                    "New function name:", "New name must be a valid Erlang atom!",
                     new AtomValidator());
             page.setInput(refactoring.getDefaultValue());
             pages.add(page);
 
             // run extract function refactoring
-        } else if (actionId
-                .equals("org.erlide.wrangler.refactoring.extractfunction")) {
+        } else if (actionId.equals("org.erlide.wrangler.refactoring.extractfunction")) {
             pages.add(new CostumworkFlowInputPage("Extract function",
                     "Please type a function name!", "Function name:",
-                    "Function name must be a valid Erlang atom!",
-                    new AtomValidator()));
+                    "Function name must be a valid Erlang atom!", new AtomValidator()));
             refactoring = new ExtractFunctionRefactoring();
 
             // run rename module refactoring
-        } else if (actionId
-                .equals("org.erlide.wrangler.refactoring.renamemodule")) {
+        } else if (actionId.equals("org.erlide.wrangler.refactoring.renamemodule")) {
             final boolean answer = MessageDialog
-                    .openQuestion(PlatformUI.getWorkbench()
-                            .getActiveWorkbenchWindow().getShell(), "Warning!",
+                    .openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                            .getShell(), "Warning!",
                             "The requested operation cannot be undone. Would you like to continue?");
 
             if (!answer) {
@@ -231,41 +218,33 @@ public class RefactoringHandler extends AbstractHandler {
             refactoring = new RenameModuleRefactoring();
             final CostumworkFlowInputPage page = new CostumworkFlowInputPage(
                     "Rename module", "Please type the new module name!",
-                    "New module name:",
-                    "New module name must be a valid Erlang atom!",
+                    "New module name:", "New module name must be a valid Erlang atom!",
                     new AtomValidator());
             page.setInput(refactoring.getDefaultValue());
             pages.add(page);
 
             // run move function refactoring
-        } else if (actionId
-                .equals("org.erlide.wrangler.refactoring.movefunction")) {
+        } else if (actionId.equals("org.erlide.wrangler.refactoring.movefunction")) {
 
-            final IProject project = ErlangEngine
-                    .getInstance()
-                    .getModelUtilService()
-                    .getProject(
-                            GlobalParameters.getWranglerSelection()
-                                    .getErlElement()).getWorkspaceProject();
-            final ArrayList<String> moduleList = WranglerUtils
-                    .getModuleNames(project);
+            final IProject project = ErlangEngine.getInstance().getModelUtilService()
+                    .getProject(GlobalParameters.getWranglerSelection().getErlElement())
+                    .getWorkspaceProject();
+            final ArrayList<String> moduleList = WranglerUtils.getModuleNames(project);
             final String moduleName = GlobalParameters.getWranglerSelection()
                     .getErlElement().getResource().getName();
             moduleList.remove(WranglerUtils.removeExtension(moduleName));
 
             pages.add(new ComboInputPage("Move function",
-                    "Please select the destination module",
-                    "Destination module:", moduleList));
+                    "Please select the destination module", "Destination module:",
+                    moduleList));
             refactoring = new MoveFunctionRefactoring();
 
             // run fold expression against a local function
-        } else if (actionId
-                .equals("org.erlide.wrangler.refactoring.foldlocalexpression")) {
+        } else if (actionId.equals("org.erlide.wrangler.refactoring.foldlocalexpression")) {
 
             refactoring = new FoldLocalExpressionRefactoring();
 
-            pages.add(new SelectionInputPage(
-                    "Fold expression",
+            pages.add(new SelectionInputPage("Fold expression",
                     "Please select expression which should be fold!",
                     "Select expressions which should be folded!",
                     (CostumWorkflowRefactoringWithPositionsSelection) refactoring));
@@ -274,8 +253,7 @@ public class RefactoringHandler extends AbstractHandler {
         } else {
             final Shell activeShell = PlatformUI.getWorkbench().getDisplay()
                     .getActiveShell();
-            if (actionId
-                    .equals("org.erlide.wrangler.refactoring.foldremoteexpression")) {
+            if (actionId.equals("org.erlide.wrangler.refactoring.foldremoteexpression")) {
 
                 // must store the selection, because, the user through the
                 // dialog
@@ -290,12 +268,9 @@ public class RefactoringHandler extends AbstractHandler {
                 dialog.resetSelection();
 
                 if (dialog.isFinished()) {
-                    final IErlFunctionClause functionClause = dialog
-                            .getFunctionClause();
-                    refactoring = new FoldRemoteExpressionRefactoring(
-                            functionClause, sel);
-                    pages.add(new SelectionInputPage(
-                            "Fold expression",
+                    final IErlFunctionClause functionClause = dialog.getFunctionClause();
+                    refactoring = new FoldRemoteExpressionRefactoring(functionClause, sel);
+                    pages.add(new SelectionInputPage("Fold expression",
                             "Please select expression which should be fold!",
                             "Select expressions which should be folded!",
                             (CostumWorkflowRefactoringWithPositionsSelection) refactoring));
@@ -305,32 +280,25 @@ public class RefactoringHandler extends AbstractHandler {
                 }
 
                 // run introduce macro refactoring
-            } else if (actionId
-                    .equals("org.erlide.wrangler.refactoring.introducemacro")) {
+            } else if (actionId.equals("org.erlide.wrangler.refactoring.introducemacro")) {
                 refactoring = new IntroduceMacroRefactoring();
                 pages.add(new SimpleInputPage("Introduce macro definition",
                         "Please type the new macro name!", "New macro name:",
-                        "Macro name cannot be empty!",
-                        new NonEmptyStringValidator()));
+                        "Macro name cannot be empty!", new NonEmptyStringValidator()));
                 // run rename process refactoring
-            } else if (actionId
-                    .equals("org.erlide.wrangler.refactoring.renameprocess")) {
+            } else if (actionId.equals("org.erlide.wrangler.refactoring.renameprocess")) {
                 refactoring = new RenameProcessRefactoring();
                 pages.add(new SimpleInputPage("Rename process",
-                        "Please type the new process name!",
-                        "New process name:",
-                        "New process name must be an Erlang atom!",
-                        new AtomValidator()));
+                        "Please type the new process name!", "New process name:",
+                        "New process name must be an Erlang atom!", new AtomValidator()));
 
                 // run function to process refactoring
             } else if (actionId
                     .equals("org.erlide.wrangler.refactoring.functiontoprocess")) {
                 refactoring = new FunctionToProcessRefactoring();
                 pages.add(new SimpleInputPage("Convert function to process",
-                        "Please type the new process name!",
-                        "New process name:",
-                        "New process name must be an Erlang atom!",
-                        new AtomValidator()));
+                        "Please type the new process name!", "New process name:",
+                        "New process name must be an Erlang atom!", new AtomValidator()));
 
                 // run tuple function parameters refactoring
             } else if (actionId
@@ -338,8 +306,7 @@ public class RefactoringHandler extends AbstractHandler {
                 refactoring = new TupleFunctionParametersRefactoring();
 
                 // run generalise function refactoring
-            } else if (actionId
-                    .equals("org.erlide.wrangler.refactoring.generalise")) {
+            } else if (actionId.equals("org.erlide.wrangler.refactoring.generalise")) {
                 /*
                  * pages.add(new CostumworkFlowInputPage("Generalise function",
                  * "Please type the new parameter name!", "New parameter name:",
@@ -362,8 +329,7 @@ public class RefactoringHandler extends AbstractHandler {
                     .equals("org.erlide.wrangler.refactoring.foldagainstmacro")) {
                 refactoring = new FoldAgainstMacro();
 
-                pages.add(new SelectionInputPage(
-                        "Fold against macro definition",
+                pages.add(new SelectionInputPage("Fold against macro definition",
                         "Please select expression which should be fold!",
                         "Select expressions which should be folded!",
                         (CostumWorkflowRefactoringWithPositionsSelection) refactoring));
@@ -371,12 +337,10 @@ public class RefactoringHandler extends AbstractHandler {
                 // normalize record expression
             } else if (actionId
                     .equals("org.erlide.wrangler.refactoring.normalizerecordexpression")) {
-                final boolean showDefaultFields = MessageDialog.openQuestion(
-                        activeShell, "Showing defaults",
-                        "Show record fields with default values?");
+                final boolean showDefaultFields = MessageDialog.openQuestion(activeShell,
+                        "Showing defaults", "Show record fields with default values?");
                 refactoring = new NormalizeRecordExpression(showDefaultFields);
-            } else if (actionId
-                    .equals("org.erlide.wrangler.refactoring.introducelet")) {
+            } else if (actionId.equals("org.erlide.wrangler.refactoring.introducelet")) {
 
                 pages.add(new CostumworkFlowInputPage("Introduce ?LET",
                         "Please type the pattern variable name!",
@@ -384,19 +348,15 @@ public class RefactoringHandler extends AbstractHandler {
                         "New name must be a valid Erlang atom!",
                         new VariableNameValidator()));
                 refactoring = new IntroduceLetRefactoring();
-            } else if (actionId
-                    .equals("org.erlide.wrangler.refactoring.mergelet")) {
+            } else if (actionId.equals("org.erlide.wrangler.refactoring.mergelet")) {
                 refactoring = new MergeLetRefactoring();
-                pages.add(new SelectionInputPage(
-                        "Merge ?LET expressions",
+                pages.add(new SelectionInputPage("Merge ?LET expressions",
                         "Please select expressions which whould be merged!",
                         "Select expressions which should be merged",
                         (CostumWorkflowRefactoringWithPositionsSelection) refactoring));
-            } else if (actionId
-                    .equals("org.erlide.wrangler.refactoring.mergeforall")) {
+            } else if (actionId.equals("org.erlide.wrangler.refactoring.mergeforall")) {
                 refactoring = new MergeForAllRefactoring();
-                pages.add(new SelectionInputPage(
-                        "Merge ?FORALL expressions",
+                pages.add(new SelectionInputPage("Merge ?FORALL expressions",
                         "Please select expressions which should be merged!",
                         "Select expressions which should be merged",
                         (CostumWorkflowRefactoringWithPositionsSelection) refactoring));
@@ -404,20 +364,15 @@ public class RefactoringHandler extends AbstractHandler {
             } else if (actionId
                     .equals("org.erlide.wrangler.refactoring.eqc_statemtorecord")) {
                 refactoring = new EqcStatemStateDataToRecordRefactoring();
-                pages.add(new RecordDataInputPage(
-                        "eqc_statem State Data To Record"));
+                pages.add(new RecordDataInputPage("eqc_statem State Data To Record"));
 
-            } else if (actionId
-                    .equals("org.erlide.wrangler.refactoring.eqc_fsmtorecord")) {
+            } else if (actionId.equals("org.erlide.wrangler.refactoring.eqc_fsmtorecord")) {
                 refactoring = new EqcFsmStateDataToRecordRefactoring();
-                pages.add(new RecordDataInputPage(
-                        "eqc_fsm State Data To Record"));
+                pages.add(new RecordDataInputPage("eqc_fsm State Data To Record"));
 
-            } else if (actionId
-                    .equals("org.erlide.wrangler.refactoring.gen_fsmtorecord")) {
+            } else if (actionId.equals("org.erlide.wrangler.refactoring.gen_fsmtorecord")) {
                 refactoring = new GenFsmStateDataToRecordRefactoring();
-                pages.add(new RecordDataInputPage(
-                        "gen_fsm State Data To Record"));
+                pages.add(new RecordDataInputPage("gen_fsm State Data To Record"));
 
             } else if (actionId
                     .equals("org.erlide.wrangler.refactoring.unfoldfunctionapplication")) {
@@ -426,11 +381,9 @@ public class RefactoringHandler extends AbstractHandler {
             } else if (actionId
                     .equals("org.erlide.wrangler.refactoring.partitionexports")) {
                 refactoring = new PartitionExportsRefactoring();
-                final SimpleInputPage page = new SimpleInputPage(
-                        "Partition exports",
+                final SimpleInputPage page = new SimpleInputPage("Partition exports",
                         "Please input the the distance treshould between 0.1 and 1.0",
-                        "Distance treshold",
-                        "The value must be between 0.1 and 1.0",
+                        "Distance treshold", "The value must be between 0.1 and 1.0",
                         new NormalDoulbeValidator());
                 page.setInput("0.8");
                 pages.add(page);
@@ -464,20 +417,19 @@ public class RefactoringHandler extends AbstractHandler {
     }
 
     private InputDialog getModuleInput(final String name, final String mesg) {
-        return new InputDialog(PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getShell(), name, mesg, "",
-                new IInputValidator() {
+        return new InputDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                .getShell(), name, mesg, "", new IInputValidator() {
 
-                    public IValidator internalV = new ModuleNameValidator();
+            public IValidator internalV = new ModuleNameValidator();
 
-                    @Override
-                    public String isValid(final String newText) {
-                        if (internalV.isValid(newText)) {
-                            return null;
-                        }
-                        return "Please type a correct module name!";
-                    }
-                });
+            @Override
+            public String isValid(final String newText) {
+                if (internalV.isValid(newText)) {
+                    return null;
+                }
+                return "Please type a correct module name!";
+            }
+        });
     }
 
     private boolean checkForDirtyEditors() {
@@ -486,8 +438,8 @@ public class RefactoringHandler extends AbstractHandler {
         if (dirtyEditors.length > 0) {
             final Boolean answer = MessageDialog
                     .openQuestion(
-                            PlatformUI.getWorkbench()
-                                    .getActiveWorkbenchWindow().getShell(),
+                            PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                                    .getShell(),
                             "Unsaved changes",
                             "For running Wrangler refactorings, all Erlang files need to be saved. Would you like to continue with saving files?");
             if (answer) {
@@ -515,8 +467,8 @@ public class RefactoringHandler extends AbstractHandler {
      */
     protected void checkWarningMessages() {
         try {
-            final RpcResult res = WranglerBackendManager
-                    .getRefactoringBackend().getLoggedInfo();
+            final RpcResult res = WranglerBackendManager.getRefactoringBackend()
+                    .getLoggedInfo();
 
             if (res.isOk()) {
                 final OtpErlangObject resobj = res.getValue();
@@ -581,9 +533,8 @@ public class RefactoringHandler extends AbstractHandler {
 
         // call initial RPC
         final GenFunRefactoringMessage m = (GenFunRefactoringMessage) WranglerBackendManager
-                .getRefactoringBackend().callWithParser(
-                        new GenFunRefactoringMessage(), "generalise_eclipse",
-                        "sxxsxi", sel.getFilePath(),
+                .getRefactoringBackend().callWithParser(new GenFunRefactoringMessage(),
+                        "generalise_eclipse", "sxxsxi", sel.getFilePath(),
                         sel.getSelectionRange().getStartPos(),
                         sel.getSelectionRange().getEndPos(), newParamName,
                         sel.getSearchPath(), GlobalParameters.getTabWidth());
@@ -594,28 +545,23 @@ public class RefactoringHandler extends AbstractHandler {
 
         } else if (m.getRefactoringState() == RefactoringState.MULTI_INSTANCES) {
 
-            refactoring = new GeneraliseFunctionRefactoring(
-                    State.multi_instance, m);
+            refactoring = new GeneraliseFunctionRefactoring(State.multi_instance, m);
 
-            pages.add(new SelectionInputPage(
-                    "Generalise expression",
+            pages.add(new SelectionInputPage("Generalise expression",
                     "Please select which of them should be generalised!",
                     "Select one of them, which should be folded!",
                     (CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 
         } else if (m.getRefactoringState() == RefactoringState.MORE_THAN_ONE_CLAUSE) {
-            final boolean selectedClauseOnly = MessageDialog
-                    .openQuestion(
-                            activeShell,
-                            "Multiple clauses",
-                            "The function selected has multiple clauses, would you like"
-                                    + " to generalise the function clause selected only?");
-            refactoring = new GeneraliseFunctionRefactoring(
-                    State.more_than_one_clause, m, selectedClauseOnly);
+            final boolean selectedClauseOnly = MessageDialog.openQuestion(activeShell,
+                    "Multiple clauses",
+                    "The function selected has multiple clauses, would you like"
+                            + " to generalise the function clause selected only?");
+            refactoring = new GeneraliseFunctionRefactoring(State.more_than_one_clause,
+                    m, selectedClauseOnly);
             if (((OtpErlangList) m.getParameters().get(
                     GenFunReturnParameterName.dupsInClause)).arity() > 0) {
-                pages.add(new SelectionInputPage(
-                        "Generalise expression",
+                pages.add(new SelectionInputPage("Generalise expression",
                         "Please select which of them should be generalised!",
                         "Select one of them, which should be folded!",
                         (CostumWorkflowRefactoringWithPositionsSelection) refactoring));
@@ -623,32 +569,25 @@ public class RefactoringHandler extends AbstractHandler {
 
         } else if (m.getRefactoringState() == RefactoringState.UNKNOWN_SIDE_EFFECT) {
             final boolean sideEffect = MessageDialog.openQuestion(activeShell,
-                    "Side effect",
-                    "Does the expression selected has side effect?");
+                    "Side effect", "Does the expression selected has side effect?");
 
             final OtpErlangObject noOfClausesPar = m.getParameters().get(
                     GenFunReturnParameterName.noOfClauses);
-            if (noOfClausesPar != null
-                    && ((OtpErlangLong) noOfClausesPar).intValue() > 1) {
-                final boolean selectedClauseOnly = MessageDialog
-                        .openQuestion(
-                                activeShell,
-                                "Multiple clauses",
-                                "The function selected has multiple clauses, would you like"
-                                        + " to generalise the function clause selected only?");
+            if (noOfClausesPar != null && ((OtpErlangLong) noOfClausesPar).intValue() > 1) {
+                final boolean selectedClauseOnly = MessageDialog.openQuestion(
+                        activeShell, "Multiple clauses",
+                        "The function selected has multiple clauses, would you like"
+                                + " to generalise the function clause selected only?");
                 refactoring = new GeneraliseFunctionRefactoring(
-                        State.unknown_side_effect, m, selectedClauseOnly,
-                        sideEffect);
+                        State.unknown_side_effect, m, selectedClauseOnly, sideEffect);
 
                 if (!selectedClauseOnly
                         && ((OtpErlangList) m.getParameters().get(
                                 GenFunReturnParameterName.dupsInFun)).arity() > 0
                         || selectedClauseOnly
                         && ((OtpErlangList) m.getParameters().get(
-                                GenFunReturnParameterName.dupsInClause))
-                                .arity() > 0) {
-                    pages.add(new SelectionInputPage(
-                            "Generalise expression",
+                                GenFunReturnParameterName.dupsInClause)).arity() > 0) {
+                    pages.add(new SelectionInputPage("Generalise expression",
                             "Please select which of them should be generalised!",
                             "Select one of them, which should be folded!",
                             (CostumWorkflowRefactoringWithPositionsSelection) refactoring));
@@ -657,8 +596,7 @@ public class RefactoringHandler extends AbstractHandler {
             } else {
                 refactoring = new GeneraliseFunctionRefactoring(
                         State.unknown_side_effect, m, true, sideEffect);
-                pages.add(new SelectionInputPage(
-                        "Generalise expression",
+                pages.add(new SelectionInputPage("Generalise expression",
                         "Please select which of them should be generalised!",
                         "Select one of them, which should be folded!",
                         (CostumWorkflowRefactoringWithPositionsSelection) refactoring));

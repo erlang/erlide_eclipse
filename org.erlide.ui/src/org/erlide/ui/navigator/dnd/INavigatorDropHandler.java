@@ -31,8 +31,7 @@ public interface INavigatorDropHandler {
      * @param transferType
      * @return
      */
-    public IStatus validateDrop(Object target, int operation,
-            TransferData transferType);
+    public IStatus validateDrop(Object target, int operation, TransferData transferType);
 
     /*
      * public boolean setDragData(final DragSourceEvent anEvent, final

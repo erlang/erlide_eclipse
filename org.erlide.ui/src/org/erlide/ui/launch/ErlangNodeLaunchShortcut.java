@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
@@ -70,10 +71,10 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             if (!(element instanceof IResource)) {
                 return;
             }
-            final IErlElement erlElement = ErlangEngine.getInstance()
-                    .getModel().findElement((IResource) element);
-            final IErlProject project = ErlangEngine.getInstance()
-                    .getModelUtilService().getProject(erlElement);
+            final IErlElement erlElement = ErlangEngine.getInstance().getModel()
+                    .findElement((IResource) element);
+            final IErlProject project = ErlangEngine.getInstance().getModelUtilService()
+                    .getProject(erlElement);
             if (project != null) {
                 projects.add(project);
             }
@@ -98,8 +99,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         }
     }
 
-    private Collection<IErlProject> getDependentProjects(
-            final Set<IErlProject> projects) {
+    private Collection<IErlProject> getDependentProjects(final Set<IErlProject> projects) {
         final Set<IErlProject> depProjects = Sets.newHashSet();
         for (final IErlProject project : projects) {
             try {
@@ -121,19 +121,17 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
                     doLaunch(mode, Lists.newArrayList(project));
                 } catch (final CoreException e) {
                     final IWorkbench workbench = PlatformUI.getWorkbench();
-                    final Shell shell = workbench.getActiveWorkbenchWindow()
-                            .getShell();
-                    MessageDialog.openError(shell, "Error", e.getStatus()
-                            .getMessage());
+                    final Shell shell = workbench.getActiveWorkbenchWindow().getShell();
+                    MessageDialog.openError(shell, "Error", e.getStatus().getMessage());
                 }
             }
         }
     }
 
-    private void doLaunch(final String mode,
-            final Collection<IErlProject> projects) throws CoreException {
-        final ILaunchConfiguration launchConfiguration = getLaunchConfiguration(
-                projects, mode);
+    private void doLaunch(final String mode, final Collection<IErlProject> projects)
+            throws CoreException {
+        final ILaunchConfiguration launchConfiguration = getLaunchConfiguration(projects,
+                mode);
         bringConsoleViewToFront();
         launchConfiguration.launch(mode, null);
     }
@@ -147,13 +145,12 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
     private ILaunchConfiguration getLaunchConfiguration(
             final Collection<IErlProject> projects, final String mode)
             throws CoreException {
-        final ILaunchManager launchManager = DebugPlugin.getDefault()
-                .getLaunchManager();
+        final ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
         final List<String> projectNames = getProjectNames(projects);
         String name = ListsUtils.packList(projectNames, "_");
         if (name.length() > 15) {
-            name = ListsUtils.packList(
-                    StringUtils.removeCommonPrefixes(projectNames), "_");
+            name = ListsUtils.packList(StringUtils.removeCommonPrefixes(projectNames),
+                    "_");
         }
         // try and find one
         final ILaunchConfiguration[] launchConfigurations = launchManager
@@ -173,8 +170,8 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         wc = launchConfigurationType.newInstance(null, name);
         wc.setAttribute(ErlRuntimeAttributes.PROJECTS,
                 ListsUtils.packList(projectNames, PROJECT_NAME_SEPARATOR));
-        wc.setAttribute(ErlRuntimeAttributes.RUNTIME_NAME, projects.iterator()
-                .next().getRuntimeInfo().getName());
+        wc.setAttribute(ErlRuntimeAttributes.RUNTIME_NAME, projects.iterator().next()
+                .getRuntimeInfo().getName());
         wc.setAttribute(ErlRuntimeAttributes.NODE_NAME, name);
         wc.setAttribute(ErlRuntimeAttributes.USE_LONG_NAME,
                 !HostnameUtils.canUseShortNames()); // prefer short names
@@ -182,21 +179,18 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         wc.setAttribute(ErlRuntimeAttributes.INTERNAL, false);
         wc.setAttribute(ErlRuntimeAttributes.LOAD_ALL_NODES, false);
         wc.setAttribute(ErlRuntimeAttributes.COOKIE, "erlide");
-        wc.setAttribute("org.eclipse.debug.core.environmentVariables",
-                Maps.newHashMap());
+        final Map<String, String> map = Maps.newHashMap();
+        wc.setAttribute("org.eclipse.debug.core.environmentVariables", map);
         if ("debug".equals(mode)) {
             final List<String> moduleNames = getProjectAndModuleNames(projects);
-            wc.setAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES,
-                    moduleNames);
+            wc.setAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, moduleNames);
         }
         wc.setMappedResources(getProjectResources(projects));
         return wc.doSave();
     }
 
-    private IResource[] getProjectResources(
-            final Collection<IErlProject> projects) {
-        final List<IResource> result = Lists.newArrayListWithCapacity(projects
-                .size());
+    private IResource[] getProjectResources(final Collection<IErlProject> projects) {
+        final List<IResource> result = Lists.newArrayListWithCapacity(projects.size());
         for (final IErlProject project : projects) {
             result.add(project.getResource());
         }
@@ -204,16 +198,19 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
     }
 
     private List<String> getProjectNames(final Collection<IErlProject> projects) {
-        final List<String> result = Lists.newArrayListWithCapacity(projects
-                .size());
+        final List<String> result = Lists.newArrayListWithCapacity(projects.size());
         for (final IErlProject project : projects) {
-            result.add(project.getName());
+            String name = project.getName();
+            if (name.startsWith("org.erlide.")) {
+                name = name.substring("org.erlide.".length());
+            }
+            result.add(name.replaceAll("\\.", ""));
         }
         return result;
     }
 
-    private List<String> getProjectAndModuleNames(
-            final Collection<IErlProject> projects) throws ErlModelException {
+    private List<String> getProjectAndModuleNames(final Collection<IErlProject> projects)
+            throws ErlModelException {
         final List<String> moduleNames = Lists.newArrayList();
         for (final IErlProject project : projects) {
             final Collection<IErlModule> modules = project.getModules();
@@ -227,13 +224,10 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
 
     private ILaunchConfiguration addInterpretedModules(
             final Collection<IErlProject> projects,
-            final ILaunchConfiguration launchConfiguration)
-            throws CoreException {
+            final ILaunchConfiguration launchConfiguration) throws CoreException {
         final List<String> moduleNames = getProjectAndModuleNames(projects);
-        final ILaunchConfigurationWorkingCopy wc = launchConfiguration
-                .getWorkingCopy();
-        wc.setAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES,
-                moduleNames);
+        final ILaunchConfigurationWorkingCopy wc = launchConfiguration.getWorkingCopy();
+        wc.setAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, moduleNames);
         return wc.doSave();
     }
 

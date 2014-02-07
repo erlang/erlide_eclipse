@@ -42,8 +42,7 @@ public class LineBreakingReader {
      * @param maxLineWidth
      *            The max width (pixels) where the text has to fit in
      */
-    public LineBreakingReader(final Reader reader, final GC gc,
-            final int maxLineWidth) {
+    public LineBreakingReader(final Reader reader, final GC gc, final int maxLineWidth) {
         fReader = new BufferedReader(reader);
         fGC = gc;
         fMaxWidth = maxLineWidth;
@@ -132,8 +131,7 @@ public class LineBreakingReader {
 
     private int findWordBegin(final int idx0) {
         int idx = idx0;
-        while (idx < fLine.length()
-                && Character.isWhitespace(fLine.charAt(idx))) {
+        while (idx < fLine.length() && Character.isWhitespace(fLine.charAt(idx))) {
             idx++;
         }
         return idx;

@@ -49,8 +49,7 @@ public class ShowCoverageAction extends CoverageAction {
                 log.info(fs.getLineStart());
                 log.info(fs.getLineEnd());
                 module.couldBeMarked = true;
-                marker.addAnnotationsFragment(name, fs.getLineStart(),
-                        fs.getLineEnd());
+                marker.addAnnotationsFragment(name, fs.getLineStart(), fs.getLineEnd());
             }
 
         } else if (selection.equals(StatsTreeModel.getInstance().getRoot())) {

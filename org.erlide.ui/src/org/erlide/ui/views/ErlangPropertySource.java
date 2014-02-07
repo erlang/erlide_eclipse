@@ -39,8 +39,7 @@ public class ErlangPropertySource implements IPropertySource {
      */
     @Override
     public IPropertyDescriptor[] getPropertyDescriptors() {
-        return new IPropertyDescriptor[] { new PropertyDescriptor("hello",
-                "balh") };
+        return new IPropertyDescriptor[] { new PropertyDescriptor("hello", "balh") };
     }
 
     /**

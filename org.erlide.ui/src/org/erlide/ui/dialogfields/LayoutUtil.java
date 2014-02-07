@@ -56,8 +56,8 @@ public final class LayoutUtil {
      *            The margin height to be used by the composite
      */
     public static void doDefaultLayout(final Composite parent,
-            final DialogField[] editors, final boolean labelOnTop,
-            final int marginWidth, final int marginHeight) {
+            final DialogField[] editors, final boolean labelOnTop, final int marginWidth,
+            final int marginHeight) {
         int nColumns = getNumberOfColumns(editors);
         final Control[][] controls = new Control[editors.length][];
         for (int i = 0; i < editors.length; i++) {
@@ -83,8 +83,7 @@ public final class LayoutUtil {
         parent.setLayout(layout);
     }
 
-    private static void modifyLabelSpans(final Control[][] controls,
-            final int nCulumns) {
+    private static void modifyLabelSpans(final Control[][] controls, final int nCulumns) {
         for (final Control[] element : controls) {
             setHorizontalSpan(element[0], nCulumns);
         }

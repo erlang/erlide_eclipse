@@ -147,8 +147,7 @@ public class OtpConnection extends AbstractConnection {
      *                if the remote node sends a message containing an invalid
      *                cookie.
      */
-    public OtpErlangObject receive() throws IOException, OtpErlangExit,
-            OtpAuthException {
+    public OtpErlangObject receive() throws IOException, OtpErlangExit, OtpAuthException {
         try {
             return receiveMsg().getMsg();
         } catch (final OtpErlangDecodeException e) {
@@ -188,9 +187,8 @@ public class OtpConnection extends AbstractConnection {
      *                if no message if the method times out before a message
      *                becomes available.
      */
-    public OtpErlangObject receive(final long timeout)
-            throws InterruptedException, IOException, OtpErlangExit,
-            OtpAuthException {
+    public OtpErlangObject receive(final long timeout) throws InterruptedException,
+            IOException, OtpErlangExit, OtpAuthException {
         try {
             return receiveMsg(timeout).getMsg();
         } catch (final OtpErlangDecodeException e) {
@@ -257,9 +255,8 @@ public class OtpConnection extends AbstractConnection {
      *                if no message if the method times out before a message
      *                becomes available.
      */
-    public OtpInputStream receiveBuf(final long timeout)
-            throws InterruptedException, IOException, OtpErlangExit,
-            OtpAuthException {
+    public OtpInputStream receiveBuf(final long timeout) throws InterruptedException,
+            IOException, OtpErlangExit, OtpAuthException {
         return receiveMsg(timeout).getMsgBuf();
     }
 
@@ -281,8 +278,7 @@ public class OtpConnection extends AbstractConnection {
      *                if the remote node sends a message containing an invalid
      *                cookie.
      */
-    public OtpMsg receiveMsg() throws IOException, OtpErlangExit,
-            OtpAuthException {
+    public OtpMsg receiveMsg() throws IOException, OtpErlangExit, OtpAuthException {
         final Object o = queue.get();
 
         if (o instanceof OtpMsg) {
@@ -372,8 +368,7 @@ public class OtpConnection extends AbstractConnection {
      *                if the connection is not active or a communication error
      *                occurs.
      */
-    public void send(final String dest, final OtpErlangObject msg)
-            throws IOException {
+    public void send(final String dest, final OtpErlangObject msg) throws IOException {
         // encode and send the message
         super.sendBuf(self.pid(), dest, new OtpOutputStream(msg));
     }
@@ -438,8 +433,8 @@ public class OtpConnection extends AbstractConnection {
      *                if the connection is not active or a communication error
      *                occurs.
      */
-    public void sendRPC(final String mod, final String fun,
-            final OtpErlangObject[] args) throws IOException {
+    public void sendRPC(final String mod, final String fun, final OtpErlangObject[] args)
+            throws IOException {
         sendRPC(mod, fun, new OtpErlangList(args));
     }
 
@@ -469,8 +464,8 @@ public class OtpConnection extends AbstractConnection {
      *                if the connection is not active or a communication error
      *                occurs.
      */
-    public void sendRPC(final String mod, final String fun,
-            final OtpErlangList args) throws IOException {
+    public void sendRPC(final String mod, final String fun, final OtpErlangList args)
+            throws IOException {
         final OtpErlangObject[] rpc = new OtpErlangObject[2];
         final OtpErlangObject[] call = new OtpErlangObject[5];
 

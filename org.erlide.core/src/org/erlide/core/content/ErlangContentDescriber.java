@@ -18,9 +18,9 @@ import com.google.common.base.Charsets;
 public class ErlangContentDescriber implements ITextContentDescriber {
     private static final QualifiedName[] SUPPORTED_OPTIONS = new QualifiedName[] { IContentDescription.CHARSET };
     private static final Pattern LATIN1 = Pattern.compile(
-            "%+[ *-]+coding: *latin-1", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
+            "%+[ *-]+coding: *latin-1.*", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
     private static final Pattern UTF8 = Pattern.compile(
-            "%+[ *-]+coding: *utf-8", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
+            "%+[ *-]+coding: *utf-8.*", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
     private static final String CHARSET = "ErlangContentDescriber.charset"; //$NON-NLS-1$
     private static final String RESULT = "ErlangContentDescriber.processed"; //$NON-NLS-1$
 
@@ -28,13 +28,12 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     // Pattern.compile("#![.]*escript");
 
     @Override
-    public int describe(final InputStream input,
-            final IContentDescription description) throws IOException {
+    public int describe(final InputStream input, final IContentDescription description)
+            throws IOException {
         return describe2(input, description, new HashMap<String, Object>());
     }
 
-    int describe2(final InputStream input,
-            final IContentDescription description,
+    int describe2(final InputStream input, final IContentDescription description,
             final Map<String, Object> properties) throws IOException {
         if (!isProcessed(properties)) {
             fillContentProperties(input, description, properties);
@@ -43,8 +42,8 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     }
 
     @Override
-    public int describe(final Reader input,
-            final IContentDescription description) throws IOException {
+    public int describe(final Reader input, final IContentDescription description)
+            throws IOException {
         return describe2(input, description, new HashMap<String, Object>());
     }
 
@@ -65,16 +64,14 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     }
 
     private void fillContentProperties(final InputStream input,
-            final IContentDescription description,
-            final Map<String, Object> properties) throws IOException {
+            final IContentDescription description, final Map<String, Object> properties)
+            throws IOException {
         final String encoding = "UTF-8"; //$NON-NLS-1$
-        fillContentProperties(readEncoding(input, encoding), description,
-                properties);
+        fillContentProperties(readEncoding(input, encoding), description, properties);
     }
 
     private void fillContentProperties(final String charset,
-            final IContentDescription description,
-            final Map<String, Object> properties) {
+            final IContentDescription description, final Map<String, Object> properties) {
         if (charset != null) {
             properties.put(CHARSET, charset);
         }
@@ -91,29 +88,16 @@ public class ErlangContentDescriber implements ITextContentDescriber {
             if (charset != null && !isCharsetValid(charset)) {
                 return INVALID;
             }
-            final String charsetName = realCharsetName(charset);
-            if (charsetName != null) {
-                description.setProperty(IContentDescription.CHARSET,
-                        charsetName);
-            } else {
-                // keep the default setting, as in the
+            if (charset != null) {
+                description.setProperty(IContentDescription.CHARSET, charset);
             }
         }
         return VALID;
     }
 
-    private String realCharsetName(final String charset) {
-        if ("latin1".equals(charset)) {
-            return Charsets.ISO_8859_1.name();
-        } else if ("utf8".equals(charset)) {
-            return Charsets.UTF_8.name();
-        } else {
-            return null;
-        }
-    }
-
     private boolean isCharsetValid(final String charset) {
-        return "latin1".equals(charset) || "utf8".equals(charset);
+        return Charsets.ISO_8859_1.name().equals(charset)
+                || Charsets.UTF_8.name().equals(charset);
     }
 
     private String readEncoding(final InputStream input, final String encoding)

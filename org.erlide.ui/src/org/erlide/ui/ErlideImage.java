@@ -64,8 +64,7 @@ public enum ErlideImage {
 
     private static URL fgIconBaseURL = null;
     static {
-        fgIconBaseURL = ErlideUIPlugin.getDefault().getBundle()
-                .getEntry("/icons/full/"); //$NON-NLS-1$
+        fgIconBaseURL = ErlideUIPlugin.getDefault().getBundle().getEntry("/icons/full/"); //$NON-NLS-1$
     }
 
     private ErlideImage(final ErlideImagePrefix prefix, final String path) {
@@ -140,8 +139,7 @@ public enum ErlideImage {
      * @param iconName
      *            the icon name
      */
-    public static void setToolImageDescriptors(final IAction action,
-            final String iconName) {
+    public static void setToolImageDescriptors(final IAction action, final String iconName) {
         setImageDescriptors(action, "tool16", iconName);
     }
 
@@ -159,12 +157,12 @@ public enum ErlideImage {
         setImageDescriptors(action, "lcl16", iconName);
     }
 
-    private static void setImageDescriptors(final IAction action,
-            final String type, final String relPath) {
+    private static void setImageDescriptors(final IAction action, final String type,
+            final String relPath) {
 
         try {
-            final ImageDescriptor id = ImageDescriptor
-                    .createFromURL(makeIconFileURL("d" + type, relPath));
+            final ImageDescriptor id = ImageDescriptor.createFromURL(makeIconFileURL("d"
+                    + type, relPath));
             if (id != null) {
                 action.setDisabledImageDescriptor(id);
             }

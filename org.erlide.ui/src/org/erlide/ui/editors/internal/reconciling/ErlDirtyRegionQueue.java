@@ -17,8 +17,7 @@ import com.google.common.collect.Lists;
 public class ErlDirtyRegionQueue {
 
     /** The list of dirty regions. */
-    private final LinkedList<ErlDirtyRegion> fDirtyRegions = Lists
-            .newLinkedList();
+    private final LinkedList<ErlDirtyRegion> fDirtyRegions = Lists.newLinkedList();
 
     /**
      * Creates a new empty dirty region.
@@ -59,8 +58,7 @@ public class ErlDirtyRegionQueue {
     }
 
     public List<ErlDirtyRegion> extractAllDirtyRegions() {
-        final List<ErlDirtyRegion> d = new ArrayList<ErlDirtyRegion>(
-                fDirtyRegions);
+        final List<ErlDirtyRegion> d = new ArrayList<ErlDirtyRegion>(fDirtyRegions);
         fDirtyRegions.clear();
         return d;
     }

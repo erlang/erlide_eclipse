@@ -57,9 +57,8 @@ import org.erlide.ui.util.DisplayUtils;
  * 
  * @since 3.1
  */
-public class ConsolePageParticipant implements IConsolePageParticipant,
-        IShowInSource, IShowInTargetList, IDebugEventSetListener,
-        IDebugContextListener {
+public class ConsolePageParticipant implements IConsolePageParticipant, IShowInSource,
+        IShowInTargetList, IDebugEventSetListener, IDebugContextListener {
 
     // actions
     private ConsoleTerminateAction fTerminate;
@@ -184,17 +183,16 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         if (process == null) {
             return null;
         }
-        final IDebugTarget target = (IDebugTarget) process
-                .getAdapter(IDebugTarget.class);
+        final IDebugTarget target = (IDebugTarget) process.getAdapter(IDebugTarget.class);
         ISelection selection = null;
         if (target == null) {
             selection = new TreeSelection(new TreePath(new Object[] {
-                    DebugPlugin.getDefault().getLaunchManager(),
-                    process.getLaunch(), process }));
+                    DebugPlugin.getDefault().getLaunchManager(), process.getLaunch(),
+                    process }));
         } else {
             selection = new TreeSelection(new TreePath(new Object[] {
-                    DebugPlugin.getDefault().getLaunchManager(),
-                    target.getLaunch(), target }));
+                    DebugPlugin.getDefault().getLaunchManager(), target.getLaunch(),
+                    target }));
         }
         return new ShowInContext(null, selection);
     }

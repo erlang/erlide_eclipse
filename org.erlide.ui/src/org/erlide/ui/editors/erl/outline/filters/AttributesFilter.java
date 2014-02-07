@@ -9,8 +9,7 @@ public class AttributesFilter extends ErlangViewerFilter {
     @Override
     public boolean select(final Viewer viewer, final Object parentElement,
             final Object element) {
-        if (element instanceof IErlAttribute
-                || element instanceof IErlImportExport) {
+        if (element instanceof IErlAttribute || element instanceof IErlImportExport) {
             return false;
         }
         return true;

@@ -55,14 +55,13 @@ public class ErlRange extends Range implements IErlRange {
      *            containing document
      */
     public ErlRange(final IRange range, final IDocument doc) {
-        super(range.getStartLine(), range.getStartCol(), range.getEndLine(),
-                range.getEndCol());
+        super(range.getStartLine(), range.getStartCol(), range.getEndLine(), range
+                .getEndCol());
 
         try {
-            offset = WranglerUtils.calculateOffsetFromPosition(startLine,
-                    startCol, doc);
-            length = WranglerUtils.calculateOffsetFromPosition(endLine, endCol,
-                    doc) - offset + 1;
+            offset = WranglerUtils.calculateOffsetFromPosition(startLine, startCol, doc);
+            length = WranglerUtils.calculateOffsetFromPosition(endLine, endCol, doc)
+                    - offset + 1;
         } catch (final BadLocationException e) {
             ErlLogger.error(e);
         }

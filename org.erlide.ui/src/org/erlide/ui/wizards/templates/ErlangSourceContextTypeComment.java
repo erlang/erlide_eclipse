@@ -87,8 +87,7 @@ public class ErlangSourceContextTypeComment extends TemplateContextType {
                 ErlideUIPlugin
                         .getDefault()
                         .getLog()
-                        .log(new Status(
-                                IStatus.ERROR,
+                        .log(new Status(IStatus.ERROR,
                                 "org.erlide.ui.erlangsource.template", IStatus.OK, "", e)); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }

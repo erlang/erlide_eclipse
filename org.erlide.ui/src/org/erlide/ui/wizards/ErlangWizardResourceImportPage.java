@@ -217,11 +217,10 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     protected void createFileSelectionGroup(final Composite parent) {
 
         // Just create with a dummy root.
-        selectionGroup = new ResourceTreeAndListGroup(
-                parent,
+        selectionGroup = new ResourceTreeAndListGroup(parent,
                 new FileSystemElement("Dummy", null, true), //$NON-NLS-1$
-                getFolderProvider(), new WorkbenchLabelProvider(),
-                getFileProvider(), new WorkbenchLabelProvider(), SWT.NONE,
+                getFolderProvider(), new WorkbenchLabelProvider(), getFileProvider(),
+                new WorkbenchLabelProvider(), SWT.NONE,
                 DialogUtil.inRegularFontMode(parent));
 
         final ICheckStateListener listener = new ICheckStateListener() {
@@ -372,8 +371,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      */
     protected void handleTypesEditButtonPressed() {
 
-        final TypeFilteringDialog dialog = new TypeFilteringDialog(
-                getContainer().getShell(), getTypesToImport());
+        final TypeFilteringDialog dialog = new TypeFilteringDialog(getContainer()
+                .getShell(), getTypesToImport());
         dialog.open();
         final Object[] newSelectedTypes = dialog.getResult();
         if (newSelectedTypes != null) { // ie.- did not press Cancel
@@ -536,8 +535,8 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      * @see WizardDataTransferPage.determinePageCompletion.
      */
     protected boolean determinePageCompletion() {
-        final boolean complete = validateSourceGroup()
-                && validateDestinationGroup() && validateOptionsGroup();
+        final boolean complete = validateSourceGroup() && validateDestinationGroup()
+                && validateOptionsGroup();
 
         // Check for valid projects before making the user do anything
         // if (noOpenProjects()) {
@@ -577,8 +576,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      * @param newEntry
      *            the entry to add to the history
      */
-    protected String[] addToHistory(final String[] history,
-            final String newEntry) {
+    protected String[] addToHistory(final String[] history, final String newEntry) {
         final java.util.ArrayList<String> l = new java.util.ArrayList<String>(
                 Arrays.asList(history));
         addToHistory(l, newEntry);
@@ -598,8 +596,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      * @param newEntry
      *            the entry to add to the history
      */
-    protected void addToHistory(final List<String> history,
-            final String newEntry) {
+    protected void addToHistory(final List<String> history, final String newEntry) {
         history.remove(newEntry);
         history.add(0, newEntry);
 

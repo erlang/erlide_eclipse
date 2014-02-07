@@ -42,9 +42,8 @@ public abstract class ErlidePreferencePage extends PreferencePage {
         return l;
     }
 
-    protected static void addKeysAndPrefs(final String dialogKey,
-            final String[] keys, final String[] defaults,
-            final Map<String, String> m) {
+    protected static void addKeysAndPrefs(final String dialogKey, final String[] keys,
+            final String[] defaults, final Map<String, String> m) {
         final List<String> prefs = getPreferences(dialogKey, keys, defaults);
         for (int i = 0; i < keys.length; ++i) {
             m.put(keys[i], prefs.get(i));
@@ -53,8 +52,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     public void setToPreferences(final String[] keys, final String[] defaults,
             final List<Button> buttons) {
-        final List<String> p = getPreferences(getDialogPreferenceKey(), keys,
-                defaults);
+        final List<String> p = getPreferences(getDialogPreferenceKey(), keys, defaults);
         final List<Boolean> l = getBooleanPreferences(p);
         for (int i = 0; i < l.size(); ++i) {
             final boolean b = l.get(i);
@@ -79,14 +77,14 @@ public abstract class ErlidePreferencePage extends PreferencePage {
             try {
                 final int value = Integer.parseInt(number);
                 if (value < 0) {
-                    status.setError(MessageFormat
-                            .format(ErlEditorMessages.ErlEditorPreferencePage_invalid_input,
-                                    (Object[]) new String[] { number }));
+                    status.setError(MessageFormat.format(
+                            ErlEditorMessages.ErlEditorPreferencePage_invalid_input,
+                            (Object[]) new String[] { number }));
                 }
             } catch (final NumberFormatException e) {
-                status.setError(MessageFormat
-                        .format(ErlEditorMessages.ErlEditorPreferencePage_invalid_input,
-                                (Object[]) new String[] { number }));
+                status.setError(MessageFormat.format(
+                        ErlEditorMessages.ErlEditorPreferencePage_invalid_input,
+                        (Object[]) new String[] { number }));
             }
         }
         return status;
@@ -100,8 +98,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
      * @param status
      *            the status
      */
-    public static void applyToStatusLine(final DialogPage page,
-            final IStatus status) {
+    public static void applyToStatusLine(final DialogPage page, final IStatus status) {
         String message = status.getMessage();
         switch (status.getSeverity()) {
         case IStatus.OK:
@@ -161,8 +158,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     protected abstract void putPreferences();
 
-    protected void putBooleanPreferences(final String[] keys,
-            final List<Button> buttons) {
+    protected void putBooleanPreferences(final String[] keys, final List<Button> buttons) {
         final Preferences node = ErlideUIPlugin.getPrefsNode();
         for (int i = 0; i < keys.length; ++i) {
             final boolean b = buttons.get(i).getSelection();
@@ -177,8 +173,8 @@ public abstract class ErlidePreferencePage extends PreferencePage {
         }
     }
 
-    protected void addCheckboxes(final Composite composite,
-            final String[] nlStrings, final List<Button> list) {
+    protected void addCheckboxes(final Composite composite, final String[] nlStrings,
+            final List<Button> list) {
         for (final String s : nlStrings) {
             final Button b = addCheckBox(composite, s);
             list.add(b);
@@ -201,8 +197,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
         gd.horizontalSpan = 2;
         checkBox.setLayoutData(gd);
 
-        return new Pair<Button, String>(checkBox, getDialogPreferenceKey()
-                + "/" + key);
+        return new Pair<Button, String>(checkBox, getDialogPreferenceKey() + "/" + key);
     }
 
     protected abstract String getDialogPreferenceKey();
@@ -226,8 +221,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
             textControl.addModifyListener(getNumberFieldListener());
             fNumberFields.add(textControl);
         }
-        return new Pair<Text, String>(textControl, getDialogPreferenceKey()
-                + "/" + key);
+        return new Pair<Text, String>(textControl, getDialogPreferenceKey() + "/" + key);
     }
 
     protected void numberFieldChanged(final Text textControl) {
@@ -252,8 +246,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
         return fNumberFieldListener;
     }
 
-    protected void putIntPreferences(final String[] keys,
-            final List<Text> textFields) {
+    protected void putIntPreferences(final String[] keys, final List<Text> textFields) {
         final Preferences node = ErlideUIPlugin.getPrefsNode();
         for (int i = 0; i < keys.length; ++i) {
             int n;
@@ -264,8 +257,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     protected List<String> getPreferences(final String[] indentKeys,
             final String[] indentDefaults) {
-        return getPreferences(getDialogPreferenceKey(), indentKeys,
-                indentDefaults);
+        return getPreferences(getDialogPreferenceKey(), indentKeys, indentDefaults);
     }
 
 }

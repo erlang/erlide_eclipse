@@ -25,8 +25,7 @@ import org.erlide.wrangler.refactoring.selection.IErlSelection;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public abstract class CostumWorkflowRefactoring extends
-        SimpleWranglerRefactoring {
+public abstract class CostumWorkflowRefactoring extends SimpleWranglerRefactoring {
 
     protected RefactoringStatus status;
 
@@ -37,8 +36,7 @@ public abstract class CostumWorkflowRefactoring extends
      *            erlang selection
      * @return parsed refactoring message
      */
-    public abstract IRefactoringRpcMessage runAlternative(
-            IErlSelection selection);
+    public abstract IRefactoringRpcMessage runAlternative(IErlSelection selection);
 
     @Override
     public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
@@ -54,7 +52,6 @@ public abstract class CostumWorkflowRefactoring extends
      *            shell
      * @return refactoring workflow controller
      */
-    public abstract RefactoringWorkflowController getWorkflowController(
-            Shell shell);
+    public abstract RefactoringWorkflowController getWorkflowController(Shell shell);
 
 }

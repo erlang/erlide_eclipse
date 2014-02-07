@@ -33,8 +33,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
      * ProblemsLabelDecorator</code> s.
      * </p>
      */
-    public static class ProblemsLabelChangedEvent extends
-            LabelProviderChangedEvent {
+    public static class ProblemsLabelChangedEvent extends LabelProviderChangedEvent {
 
         /**
 		 * 
@@ -106,9 +105,8 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
         return 0;
     }
 
-    public static int getErrorTicksFromMarkers(final IResource res,
-            final int depth, final ISourceReference sourceElement)
-            throws CoreException {
+    public static int getErrorTicksFromMarkers(final IResource res, final int depth,
+            final ISourceReference sourceElement) throws CoreException {
         if (res == null || !res.isAccessible()) {
             return 0;
         }
@@ -116,11 +114,9 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
         if (sourceElement == null) {
             severity = res.findMaxProblemSeverity(IMarker.PROBLEM, true, depth);
         } else {
-            final IMarker[] markers = res.findMarkers(IMarker.PROBLEM, true,
-                    depth);
+            final IMarker[] markers = res.findMarkers(IMarker.PROBLEM, true, depth);
             if (markers != null && markers.length > 0) {
-                for (int i = 0; i < markers.length
-                        && severity != IMarker.SEVERITY_ERROR; i++) {
+                for (int i = 0; i < markers.length && severity != IMarker.SEVERITY_ERROR; i++) {
                     final IMarker curr = markers[i];
                     if (isMarkerInRange(curr, sourceElement)) {
                         final int val = curr.getAttribute(IMarker.SEVERITY, -1);
@@ -160,8 +156,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
 
     private static boolean isInsideLines(final int line,
             final ISourceReference sourceElement) {
-        return line >= sourceElement.getLineStart()
-                && line <= sourceElement.getLineEnd();
+        return line >= sourceElement.getLineStart() && line <= sourceElement.getLineEnd();
     }
 
     /**
@@ -177,8 +172,8 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
      *             Exception thrown if element range could not be accessed.
      * 
      */
-    protected static boolean isInside(final int pos,
-            final ISourceReference sourceElement) throws CoreException {
+    protected static boolean isInside(final int pos, final ISourceReference sourceElement)
+            throws CoreException {
         // if (fCachedRange == null) {
         // fCachedRange= sourceElement.getSourceRange();
         // }
@@ -224,12 +219,11 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
     void fireProblemsChanged(final IResource[] changedResources,
             final boolean isMarkerChange) {
         if (fListeners != null && !fListeners.isEmpty()) {
-            final LabelProviderChangedEvent event = new ProblemsLabelChangedEvent(
-                    this, changedResources, isMarkerChange);
+            final LabelProviderChangedEvent event = new ProblemsLabelChangedEvent(this,
+                    changedResources, isMarkerChange);
             final Object[] listeners = fListeners.getListeners();
             for (int i = 0; i < listeners.length; i++) {
-                ((ILabelProviderListener) listeners[i])
-                        .labelProviderChanged(event);
+                ((ILabelProviderListener) listeners[i]).labelProviderChanged(event);
             }
         }
     }

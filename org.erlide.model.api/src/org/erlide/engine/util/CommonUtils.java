@@ -20,8 +20,7 @@ public final class CommonUtils {
     }
 
     public static boolean isErlangFileContentFileName(final String fileName) {
-        final IContentTypeManager contentTypeManager = Platform
-                .getContentTypeManager();
+        final IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
         final IContentType[] contentTypes = contentTypeManager
                 .findContentTypesFor(fileName);
         for (final IContentType contentType : contentTypes) {

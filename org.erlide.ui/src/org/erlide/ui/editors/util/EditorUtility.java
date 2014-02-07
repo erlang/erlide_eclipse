@@ -60,8 +60,7 @@ import com.google.common.collect.Lists;
  */
 public class EditorUtility {
 
-    public static boolean isEditorInput(final Object element,
-            final IEditorPart editor) {
+    public static boolean isEditorInput(final Object element, final IEditorPart editor) {
         if (editor != null) {
             return editor.getEditorInput().equals(getEditorInput(element));
         }
@@ -140,8 +139,7 @@ public class EditorUtility {
     /**
      * Selects a Erlang Element in an editor
      */
-    public static boolean revealInEditor(final IEditorPart part,
-            final IErlElement element) {
+    public static boolean revealInEditor(final IEditorPart part, final IErlElement element) {
         if (element != null && part instanceof ErlangEditor) {
             ((ErlangEditor) part).setSelection(element);
             return true;
@@ -152,8 +150,7 @@ public class EditorUtility {
     /**
      * Selects and reveals the given region in the given editor part.
      */
-    public static void revealInEditor(final IEditorPart part,
-            final IRegion region) {
+    public static void revealInEditor(final IEditorPart part, final IRegion region) {
         if (part != null && region != null) {
             revealInEditor(part, region.getOffset(), region.getLength());
         }
@@ -171,8 +168,8 @@ public class EditorUtility {
     /**
      * Selects and reveals the given offset and length in the given editor part.
      */
-    public static void revealInEditor(final IEditorPart editor,
-            final int offset, final int length) {
+    public static void revealInEditor(final IEditorPart editor, final int offset,
+            final int length) {
         if (editor instanceof ITextEditor) {
             ((ITextEditor) editor).selectAndReveal(offset, length);
             return;
@@ -182,13 +179,12 @@ public class EditorUtility {
                         editor.getClass().getName());
     }
 
-    private static IEditorPart openInEditor(final IFile file,
-            final boolean activate) throws PartInitException {
+    private static IEditorPart openInEditor(final IFile file, final boolean activate)
+            throws PartInitException {
         if (file != null) {
             final IWorkbenchPage p = ErlideUIPlugin.getActivePage();
             if (p != null) {
-                final IEditorPart editorPart = IDE
-                        .openEditor(p, file, activate);
+                final IEditorPart editorPart = IDE.openEditor(p, file, activate);
                 return editorPart;
             }
         }
@@ -196,27 +192,23 @@ public class EditorUtility {
     }
 
     private static IEditorPart openInEditor(final IEditorInput input,
-            final String editorID, final boolean activate)
-            throws PartInitException {
+            final String editorID, final boolean activate) throws PartInitException {
         if (input != null) {
             final IWorkbenchPage p = ErlideUIPlugin.getActivePage();
             if (p != null) {
-                final IEditorPart editorPart = p.openEditor(input, editorID,
-                        activate);
+                final IEditorPart editorPart = p.openEditor(input, editorID, activate);
                 return editorPart;
             }
         }
         return null;
     }
 
-    public static String getEditorID(final IEditorInput input,
-            final Object inputObject) {
+    public static String getEditorID(final IEditorInput input, final Object inputObject) {
         IEditorDescriptor editorDescriptor;
         try {
             if (input instanceof IFileEditorInput) {
-                editorDescriptor = IDE
-                        .getEditorDescriptor(((IFileEditorInput) input)
-                                .getFile());
+                editorDescriptor = IDE.getEditorDescriptor(((IFileEditorInput) input)
+                        .getFile());
             } else {
                 editorDescriptor = IDE.getEditorDescriptor(input.getName());
             }
@@ -258,8 +250,7 @@ public class EditorUtility {
             if (!fetchInfo.isDirectory() && fetchInfo.exists()) {
                 if (element instanceof IErlModule
                         && element.getParent() instanceof IErlExternal) {
-                    return new ErlangExternalEditorInput(fileStore,
-                            (IErlModule) element);
+                    return new ErlangExternalEditorInput(fileStore, (IErlModule) element);
                 }
                 return new FileStoreEditorInput(fileStore);
             }
@@ -274,8 +265,7 @@ public class EditorUtility {
                 final File f = new File(file.getLocation().toString());
                 final IFileInfo info = EFS.getFileSystem(EFS.SCHEME_FILE)
                         .fromLocalFile(f).fetchInfo();
-                final String target = info
-                        .getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET);
+                final String target = info.getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET);
                 if (target != null) {
                     // FIXME this is wrong in the general case
                     // find the file in the externals!
@@ -309,8 +299,8 @@ public class EditorUtility {
     /**
      * Opens the editor on the given element and subsequently selects it.
      */
-    public static void openElementInEditor(final Object element,
-            final boolean activate) throws PartInitException {
+    public static void openElementInEditor(final Object element, final boolean activate)
+            throws PartInitException {
         final IEditorPart part = EditorUtility.openInEditor(element, activate);
         if (element instanceof IErlElement) {
             EditorUtility.revealInEditor(part, (IErlElement) element);
@@ -328,8 +318,7 @@ public class EditorUtility {
             if (part != null) {
                 final IEditorInput editorInput = part.getEditorInput();
                 if (editorInput != null) {
-                    return (IErlElement) editorInput
-                            .getAdapter(IErlElement.class);
+                    return (IErlElement) editorInput.getAdapter(IErlElement.class);
                     // return JavaUI.getEditorInputJavaElement(editorInput);
                 }
             }
@@ -360,8 +349,7 @@ public class EditorUtility {
         if (modifierName.equalsIgnoreCase(Action.findModifierString(SWT.ALT))) {
             return SWT.ALT;
         }
-        if (modifierName.equalsIgnoreCase(Action
-                .findModifierString(SWT.COMMAND))) {
+        if (modifierName.equalsIgnoreCase(Action.findModifierString(SWT.COMMAND))) {
             return SWT.COMMAND;
         }
 
@@ -373,10 +361,8 @@ public class EditorUtility {
         final IWorkbench workbench = ErlideUIPlugin.getDefault().getWorkbench();
         for (final IWorkbenchWindow i : workbench.getWorkbenchWindows()) {
             for (final IWorkbenchPage j : i.getPages()) {
-                for (final IEditorReference editorReference : j
-                        .getEditorReferences()) {
-                    final IEditorPart editorPart = editorReference
-                            .getEditor(false);
+                for (final IEditorReference editorReference : j.getEditorReferences()) {
+                    final IEditorPart editorPart = editorReference.getEditor(false);
                     if (editorPart instanceof ErlangEditor) {
                         result.add(editorPart);
                     }

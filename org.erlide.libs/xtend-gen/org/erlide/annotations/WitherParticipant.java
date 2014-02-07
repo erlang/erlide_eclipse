@@ -6,7 +6,6 @@ import org.eclipse.xtend.lib.macro.AbstractClassProcessor;
 import org.eclipse.xtend.lib.macro.TransformationContext;
 import org.eclipse.xtend.lib.macro.declaration.AnnotationTypeDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
-import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy.CompilationContext;
 import org.eclipse.xtend.lib.macro.declaration.MutableAnnotationReference;
 import org.eclipse.xtend.lib.macro.declaration.MutableClassDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableFieldDeclaration;
@@ -28,13 +27,11 @@ public class WitherParticipant extends AbstractClassProcessor {
         String _canonicalName = Data.class.getCanonicalName();
         AnnotationTypeDeclaration _annotationTypeDeclaration = it.getAnnotationTypeDeclaration();
         String _qualifiedName = _annotationTypeDeclaration.getQualifiedName();
-        boolean _equals = Objects.equal(_canonicalName, _qualifiedName);
-        return Boolean.valueOf(_equals);
+        return Boolean.valueOf(Objects.equal(_canonicalName, _qualifiedName));
       }
     };
     final boolean dataClass = IterableExtensions.exists(_annotations, _function);
-    boolean _not = (!dataClass);
-    if (_not) {
+    if ((!dataClass)) {
       context.addError(annotatedClass, "Class needs to be annotated with @Data to be able to use @Wither");
       return;
     }
@@ -42,8 +39,7 @@ public class WitherParticipant extends AbstractClassProcessor {
     final Function1<MutableFieldDeclaration,Boolean> _function_1 = new Function1<MutableFieldDeclaration,Boolean>() {
       public Boolean apply(final MutableFieldDeclaration it) {
         boolean _isStatic = it.isStatic();
-        boolean _not = (!_isStatic);
-        return Boolean.valueOf(_not);
+        return Boolean.valueOf((!_isStatic));
       }
     };
     final Iterable<? extends MutableFieldDeclaration> fields = IterableExtensions.filter(_declaredFields, _function_1);
@@ -57,8 +53,7 @@ public class WitherParticipant extends AbstractClassProcessor {
         final Function1<MutableMethodDeclaration,Boolean> _function = new Function1<MutableMethodDeclaration,Boolean>() {
           public Boolean apply(final MutableMethodDeclaration it) {
             String _simpleName = it.getSimpleName();
-            boolean _equals = Objects.equal(_simpleName, methodName);
-            return Boolean.valueOf(_equals);
+            return Boolean.valueOf(Objects.equal(_simpleName, methodName));
           }
         };
         boolean _exists = IterableExtensions.exists(_declaredMethods, _function);
@@ -71,7 +66,7 @@ public class WitherParticipant extends AbstractClassProcessor {
               TypeReference _newTypeReference = context.newTypeReference(annotatedClass);
               it.setReturnType(_newTypeReference);
               final CompilationStrategy _function = new CompilationStrategy() {
-                public CharSequence compile(final CompilationContext it) {
+                public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                   StringConcatenation _builder = new StringConcatenation();
                   _builder.append("return new ");
                   String _simpleName = annotatedClass.getSimpleName();

@@ -41,8 +41,7 @@ public class KeyBindingHelper {
      *         false otherwise).
      */
     public static boolean matchesQuickAssistKeybinding(final KeyEvent event) {
-        return matchesKeybinding(event,
-                ITextEditorActionDefinitionIds.QUICK_ASSIST);
+        return matchesKeybinding(event, ITextEditorActionDefinitionIds.QUICK_ASSIST);
     }
 
     /**
@@ -63,10 +62,9 @@ public class KeyBindingHelper {
      * @return true if the given key event can trigger the passed command (and
      *         false otherwise).
      */
-    public static boolean matchesKeybinding(final KeyEvent event,
-            final String commandId) {
-        final IBindingService bindingSvc = (IBindingService) PlatformUI
-                .getWorkbench().getAdapter(IBindingService.class);
+    public static boolean matchesKeybinding(final KeyEvent event, final String commandId) {
+        final IBindingService bindingSvc = (IBindingService) PlatformUI.getWorkbench()
+                .getAdapter(IBindingService.class);
         final TriggerSequence[] activeBindingsFor = bindingSvc
                 .getActiveBindingsFor(commandId);
 
@@ -95,10 +93,9 @@ public class KeyBindingHelper {
      * @return the 'best' key sequence that will activate the given command
      */
     public static KeySequence getCommandKeyBinding(final String commandId) {
-        final IBindingService bindingSvc = (IBindingService) PlatformUI
-                .getWorkbench().getAdapter(IBindingService.class);
-        final TriggerSequence binding = bindingSvc
-                .getBestActiveBindingFor(commandId);
+        final IBindingService bindingSvc = (IBindingService) PlatformUI.getWorkbench()
+                .getAdapter(IBindingService.class);
+        final TriggerSequence binding = bindingSvc.getBestActiveBindingFor(commandId);
         if (binding instanceof KeySequence) {
             return (KeySequence) binding;
         }

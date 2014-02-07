@@ -30,8 +30,7 @@ public final class CoreUtility {
      * heavy (creates a runnable)
      */
     public static void createFolder(final IFolder folder, final boolean force,
-            final boolean local, final IProgressMonitor monitor)
-            throws CoreException {
+            final boolean local, final IProgressMonitor monitor) throws CoreException {
         if (!folder.exists()) {
             final IContainer parent = folder.getParent();
             if (parent instanceof IFolder) {
@@ -55,8 +54,7 @@ public final class CoreUtility {
             final String classAttribute) throws CoreException {
         // If plugin has been loaded create extension.
         // Otherwise, show busy cursor then create extension.
-        final String pluginId = element.getDeclaringExtension()
-                .getNamespaceIdentifier();
+        final String pluginId = element.getDeclaringExtension().getNamespaceIdentifier();
         final Bundle bundle = Platform.getBundle(pluginId);
         if (bundle != null && bundle.getState() == Bundle.ACTIVE) {
             return element.createExecutableExtension(classAttribute);

@@ -26,8 +26,8 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
 
-public final class ErlangProjectProperties implements
-        IPreferenceChangeListener, IErlangProjectProperties {
+public final class ErlangProjectProperties implements IPreferenceChangeListener,
+        IErlangProjectProperties {
 
     private IProject project;
 
@@ -39,8 +39,8 @@ public final class ErlangProjectProperties implements
             .unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
     private String externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
     private String externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
-    private RuntimeVersion runtimeVersion = new RuntimeVersion(
-            ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+    private RuntimeVersion runtimeVersion = RuntimeVersion.Serializer
+            .parse(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
     private String runtimeName = null;
 
     private boolean nukeOutputOnClean = false;
@@ -70,46 +70,41 @@ public final class ErlangProjectProperties implements
         final IEclipsePreferences node = new ProjectScope(project)
                 .getNode("org.erlide.core");
 
-        final String sourceDirsStr = node.get(
-                ProjectPreferencesConstants.SOURCE_DIRS,
+        final String sourceDirsStr = node.get(ProjectPreferencesConstants.SOURCE_DIRS,
                 ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
         sourceDirs = PathSerializer.unpackList(sourceDirsStr);
-        final String includeDirsStr = node.get(
-                ProjectPreferencesConstants.INCLUDE_DIRS,
+        final String includeDirsStr = node.get(ProjectPreferencesConstants.INCLUDE_DIRS,
                 ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
         includeDirs = PathSerializer.unpackList(includeDirsStr);
-        final String outputDirsStr = node.get(
-                ProjectPreferencesConstants.OUTPUT_DIR,
+        final String outputDirsStr = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
                 ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
         outputDirs = PathSerializer.unpackList(outputDirsStr);
-        runtimeVersion = new RuntimeVersion(node.get(
+        runtimeVersion = RuntimeVersion.Serializer.parse(node.get(
                 ProjectPreferencesConstants.RUNTIME_VERSION, null));
         runtimeName = node.get(ProjectPreferencesConstants.RUNTIME_NAME, null);
         if (!runtimeVersion.isDefined()) {
             if (runtimeName == null) {
-                runtimeVersion = new RuntimeVersion(
-                        ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+                runtimeVersion = RuntimeVersion.Serializer
+                        .parse(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
             } else {
-                final RuntimeInfo info = RuntimeCore.getRuntimeInfoCatalog()
-                        .getRuntime(runtimeName);
+                final RuntimeInfo info = RuntimeCore.getRuntimeInfoCatalog().getRuntime(
+                        runtimeName);
                 if (info != null) {
                     runtimeVersion = new RuntimeVersion(info.getVersion());
                 } else {
-                    runtimeVersion = new RuntimeVersion(
-                            ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+                    runtimeVersion = RuntimeVersion.Serializer
+                            .parse(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
                 }
             }
         }
         externalModulesFile = node.get(
                 ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
                 ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES);
-        externalIncludesFile = node.get(
-                ProjectPreferencesConstants.EXTERNAL_INCLUDES,
+        externalIncludesFile = node.get(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
                 ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
         setNukeOutputOnClean(node.getBoolean(
                 ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN, false));
-        setBuilderName(node
-                .get(ProjectPreferencesConstants.BUILDER, "internal"));
+        setBuilderName(node.get(ProjectPreferencesConstants.BUILDER, "internal"));
     }
 
     @Override
@@ -128,11 +123,10 @@ public final class ErlangProjectProperties implements
                     PathSerializer.packList(includeDirs));
             node.put(ProjectPreferencesConstants.OUTPUT_DIR,
                     PathSerializer.packList(outputDirs));
-            node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
-                    externalIncludesFile);
+            node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES, externalIncludesFile);
             if (runtimeVersion.isDefined()) {
-                node.put(ProjectPreferencesConstants.RUNTIME_VERSION,
-                        runtimeVersion.asMinor().toString());
+                node.put(ProjectPreferencesConstants.RUNTIME_VERSION, runtimeVersion
+                        .asMinor().toString());
             } else {
                 node.remove(ProjectPreferencesConstants.RUNTIME_VERSION);
             }
@@ -146,8 +140,7 @@ public final class ErlangProjectProperties implements
             node.putBoolean(ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
                     isNukeOutputOnClean());
 
-            node.put(ProjectPreferencesConstants.BUILDER, getBuilderName()
-                    .toString());
+            node.put(ProjectPreferencesConstants.BUILDER, getBuilderName().toString());
 
             node.flush();
         } finally {
@@ -234,8 +227,8 @@ public final class ErlangProjectProperties implements
 
     @Override
     public RuntimeInfo getRuntimeInfo() {
-        final RuntimeInfo runtime = RuntimeCore.getRuntimeInfoCatalog()
-                .getRuntime(runtimeVersion, runtimeName);
+        final RuntimeInfo runtime = RuntimeCore.getRuntimeInfoCatalog().getRuntime(
+                runtimeVersion, runtimeName);
         return runtime;
     }
 
@@ -278,6 +271,6 @@ public final class ErlangProjectProperties implements
 
     @Override
     public void setBuilderName(final String builder) {
-        this.builderName = builder;
+        builderName = builder;
     }
 }

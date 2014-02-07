@@ -42,8 +42,7 @@ public class NewParameterNameInputDialog extends AbstractInputDialog {
      * @param title
      *            dialog title
      */
-    public NewParameterNameInputDialog(final Shell parentShell,
-            final String title) {
+    public NewParameterNameInputDialog(final Shell parentShell, final String title) {
         super(parentShell, title);
     }
 
@@ -83,8 +82,8 @@ public class NewParameterNameInputDialog extends AbstractInputDialog {
         errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
         errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
-        errorMessageText.setBackground(errorMessageText.getDisplay()
-                .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+        errorMessageText.setBackground(errorMessageText.getDisplay().getSystemColor(
+                SWT.COLOR_WIDGET_BACKGROUND));
 
         setErrorMessage("New parameter name must be a valid variable name!");
         newParameterName.setText("");

@@ -45,8 +45,7 @@ public class AddRefacHandler extends AbstractHandler {
     public Object execute(final ExecutionEvent event) throws ExecutionException {
 
         final InputDialog dialog = new InputDialog(PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getShell(),
-                "Add user-defined refactoring",
+                .getActiveWorkbenchWindow().getShell(), "Add user-defined refactoring",
                 "Please type callback module name!", "", new IInputValidator() {
 
                     public IValidator internalV = new ModuleNameValidator();
@@ -80,24 +79,21 @@ public class AddRefacHandler extends AbstractHandler {
             return null;
         }
         if (type.equals(RefacType.ELEMENTARY)) {
-            UserRefactoringsManager.getInstance().addMyElementary(
-                    callbackModule);
+            UserRefactoringsManager.getInstance().addMyElementary(callbackModule);
         } else {
-            UserRefactoringsManager.getInstance()
-                    .addMyComposite(callbackModule);
+            UserRefactoringsManager.getInstance().addMyComposite(callbackModule);
         }
 
         MessageDialog.openInformation(PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getShell(),
-                "Add user-defined refactoring", "Success!");
+                .getActiveWorkbenchWindow().getShell(), "Add user-defined refactoring",
+                "Success!");
 
         return null;
     }
 
     private void showErrorMesg(final String mesg) {
-        MessageDialog.openError(PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getShell(),
-                "Add user-defined refactoring  - error", mesg);
+        MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                .getShell(), "Add user-defined refactoring  - error", mesg);
     }
 
     // check if the refactoring is elementary or composite
@@ -120,8 +116,7 @@ public class AddRefacHandler extends AbstractHandler {
                         || attr.getName().equals("behavior")) {
                     if (attr.getValue().toString().contains("gen_refac")) {
                         return RefacType.ELEMENTARY;
-                    } else if (attr.getValue().toString()
-                            .contains("gen_composite_refac")) {
+                    } else if (attr.getValue().toString().contains("gen_composite_refac")) {
                         return RefacType.COMPOSITE;
                     }
                 }
@@ -158,8 +153,7 @@ public class AddRefacHandler extends AbstractHandler {
         String path;
 
         try {
-            if (ErlangEngine.getInstance().getModel()
-                    .findModule(callbackModule) == null) {
+            if (ErlangEngine.getInstance().getModel().findModule(callbackModule) == null) {
                 return null;
             }
 
@@ -170,8 +164,8 @@ public class AddRefacHandler extends AbstractHandler {
                             ErlangEngine.getInstance().getModel()
                                     .findModule(callbackModule));
             path = project.getWorkspaceProject().getLocation()
-                    .append(project.getOutputLocation())
-                    .append(callbackModule + ".beam").toOSString();
+                    .append(project.getOutputLocation()).append(callbackModule + ".beam")
+                    .toOSString();
 
             return path;
 
@@ -183,8 +177,8 @@ public class AddRefacHandler extends AbstractHandler {
     // destination directory
     private IPath getDestDir(final RefacType type) {
         final Bundle coreBundle = Platform.getBundle(Activator.CORE_ID);
-        return new Path(coreBundle.getLocation()).append("wrangler")
-                .append("ebin").append(type.getDirName());
+        return new Path(coreBundle.getLocation()).append("wrangler").append("ebin")
+                .append(type.getDirName());
     }
 
     // destination path
@@ -195,8 +189,7 @@ public class AddRefacHandler extends AbstractHandler {
     }
 
     // copying files
-    private boolean copy(final String source, final String dest,
-            final String destDir) {
+    private boolean copy(final String source, final String dest, final String destDir) {
 
         final File dir = new File(destDir);
         if (!dir.exists()) {

@@ -85,8 +85,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
      *            If not <code>null</code>, formattings will be applied to the
      *            presentation.
      */
-    public HTML2TextReader(final Reader reader,
-            final TextPresentation presentation) {
+    public HTML2TextReader(final Reader reader, final TextPresentation presentation) {
         super(new PushbackReader(reader));
         fTextPresentation = presentation;
     }
@@ -121,8 +120,8 @@ public class HTML2TextReader extends SubstitutionTextReader {
         --fBold;
         if (fBold == 0) {
             if (fTextPresentation != null) {
-                fTextPresentation.addStyleRange(new StyleRange(fStartOffset,
-                        fCounter - fStartOffset, null, null, SWT.BOLD));
+                fTextPresentation.addStyleRange(new StyleRange(fStartOffset, fCounter
+                        - fStartOffset, null, null, SWT.BOLD));
             }
             fStartOffset = -1;
         }
@@ -203,8 +202,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
         if ("li".equals(html)) {
             // XXX: this hard-coded prefix does not work for RTL languages,
             // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=91682
-            return LINE_DELIM
-                    + HTMLMessages.getString("HTML2TextReader.listItemPrefix"); //$NON-NLS-1$
+            return LINE_DELIM + HTMLMessages.getString("HTML2TextReader.listItemPrefix"); //$NON-NLS-1$
         }
 
         if ("/b".equals(html)) { //$NON-NLS-1$

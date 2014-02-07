@@ -23,8 +23,7 @@ import java.io.Serializable;
 /**
  * Provides a Java representation of Erlang ports.
  */
-public class OtpErlangPort extends OtpErlangObject implements Serializable,
-        Cloneable {
+public class OtpErlangPort extends OtpErlangObject implements Serializable, Cloneable {
     // don't change this!
     static final long serialVersionUID = 4037115468007644704L;
 
@@ -59,8 +58,7 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable,
      *                if the buffer does not contain a valid external
      *                representation of an Erlang port.
      */
-    public OtpErlangPort(final OtpInputStream buf)
-            throws OtpErlangDecodeException {
+    public OtpErlangPort(final OtpInputStream buf) throws OtpErlangDecodeException {
         final OtpErlangPort p = buf.read_port();
 
         node = p.node();

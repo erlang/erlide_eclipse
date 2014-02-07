@@ -46,8 +46,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         this.editor = editor;
     }
 
-    private void autoIndentAfterNewLine(final IDocument d,
-            final DocumentCommand c) {
+    private void autoIndentAfterNewLine(final IDocument d, final DocumentCommand c) {
         try {
             indentAfterNewLine(d, c);
         } catch (final BadLocationException e) {
@@ -103,23 +102,18 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
      * @return
      */
     public static int getTabWidthFromPreferences() {
-        int tabw = ErlideUIPlugin
-                .getDefault()
-                .getPreferenceStore()
+        int tabw = ErlideUIPlugin.getDefault().getPreferenceStore()
                 .getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
         if (tabw == 0) {
-            tabw = EditorsUI
-                    .getPreferenceStore()
-                    .getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
+            tabw = EditorsUI.getPreferenceStore().getInt(
+                    AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
         }
         return tabw;
     }
 
     public static boolean getUseTabsFromPreferences() {
-        return !EditorsUI
-                .getPreferenceStore()
-                .getBoolean(
-                        AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS);
+        return !EditorsUI.getPreferenceStore().getBoolean(
+                AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS);
     }
 
     /**
@@ -132,8 +126,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
      *            the command
      */
     @Override
-    public void customizeDocumentCommand(final IDocument d,
-            final DocumentCommand c) {
+    public void customizeDocumentCommand(final IDocument d, final DocumentCommand c) {
         if (c.length == 0 && c.text != null) {
             if (TextUtilities.endsWith(d.getLegalLineDelimiters(), c.text) != -1) {
                 autoIndentAfterNewLine(d, c);

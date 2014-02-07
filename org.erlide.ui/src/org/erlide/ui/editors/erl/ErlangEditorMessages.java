@@ -35,8 +35,7 @@ final public class ErlangEditorMessages extends NLS {
         return fgBundleForConstructedKeys;
     }
 
-    private static final String BUNDLE_NAME = ErlangEditorMessages.class
-            .getName();
+    private static final String BUNDLE_NAME = ErlangEditorMessages.class.getName();
 
     private ErlangEditorMessages() {
         // Do not instantiate

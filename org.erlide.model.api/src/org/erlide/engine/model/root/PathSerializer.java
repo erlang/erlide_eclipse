@@ -45,8 +45,7 @@ public final class PathSerializer {
     public static List<String> readFile(final String file) {
         final List<String> res = new ArrayList<String>();
         try {
-            final BufferedReader reader = new BufferedReader(new FileReader(
-                    file));
+            final BufferedReader reader = new BufferedReader(new FileReader(file));
             try {
                 String line;
                 while ((line = reader.readLine()) != null) {

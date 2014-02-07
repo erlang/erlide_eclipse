@@ -48,8 +48,7 @@ public class DuplicatesView extends ViewPart {
     ISelectionListener listener = new ISelectionListener() {
 
         @Override
-        public void selectionChanged(final IWorkbenchPart part,
-                final ISelection selection) {
+        public void selectionChanged(final IWorkbenchPart part, final ISelection selection) {
             MessageDialog.openInformation(getSite().getShell(), "test",
                     selection.toString());
 
@@ -58,18 +57,16 @@ public class DuplicatesView extends ViewPart {
 
     private TreeViewer viewer;
     private Action copyGeneralisedToClipboard;
-    private final Action copyFunCallToClipboard = new ClipboardAction(
-            PlatformUI.getWorkbench().getDisplay()) {
+    private final Action copyFunCallToClipboard = new ClipboardAction(PlatformUI
+            .getWorkbench().getDisplay()) {
         private boolean hasText = false;
 
         @Override
         public void run() {
             if (!hasText) {
-                MessageDialog
-                        .openInformation(PlatformUI.getWorkbench()
-                                .getActiveWorkbenchWindow().getShell(),
-                                "Empty clipboard",
-                                "There is no FunCall element according the selected item!");
+                MessageDialog.openInformation(PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow().getShell(), "Empty clipboard",
+                        "There is no FunCall element according the selected item!");
             } else {
                 super.run();
             }
@@ -102,8 +99,7 @@ public class DuplicatesView extends ViewPart {
      */
     @Override
     public void createPartControl(final Composite parent) {
-        viewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL
-                | SWT.V_SCROLL);
+        viewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
         // drillDownAdapter = new DrillDownAdapter(viewer);
         viewer.setContentProvider(new DuplicatesViewContentProvider(this));
         viewer.setLabelProvider(new DuplicatesViewLabelProvider());
@@ -165,8 +161,7 @@ public class DuplicatesView extends ViewPart {
     }
 
     private void createToolbar() {
-        final IToolBarManager mgr = getViewSite().getActionBars()
-                .getToolBarManager();
+        final IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
         mgr.add(copyGeneralisedToClipboard);
         mgr.add(copyFunCallToClipboard);
 
@@ -174,17 +169,15 @@ public class DuplicatesView extends ViewPart {
 
     private void makeActions() {
 
-        copyGeneralisedToClipboard = new ClipboardAction(PlatformUI
-                .getWorkbench().getDisplay());
+        copyGeneralisedToClipboard = new ClipboardAction(PlatformUI.getWorkbench()
+                .getDisplay());
         copyGeneralisedToClipboard
                 .setToolTipText("Copy generalised function to the clipboard");
         copyGeneralisedToClipboard.setImageDescriptor(PlatformUI.getWorkbench()
-                .getSharedImages()
-                .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
+                .getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
         copyFunCallToClipboard.setToolTipText("Copy FunCall to the clipboard");
         copyFunCallToClipboard.setImageDescriptor(PlatformUI.getWorkbench()
-                .getSharedImages()
-                .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
+                .getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
 
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
@@ -200,8 +193,7 @@ public class DuplicatesView extends ViewPart {
 
                 if (selection instanceof DuplicatedCodeInstanceElement) {
                     final DuplicatedCodeInstanceElement dcie = (DuplicatedCodeInstanceElement) selection;
-                    copyFunCallToClipboard.setText(dcie
-                            .getReplicationFunction());
+                    copyFunCallToClipboard.setText(dcie.getReplicationFunction());
                 }
 
             }

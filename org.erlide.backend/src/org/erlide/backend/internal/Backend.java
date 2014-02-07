@@ -87,8 +87,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         this.runtime = runtime;
         this.data = data;
         this.backendManager = backendManager;
-        codeManager = new CodeManager(getRpcSite(), data.getRuntimeInfo()
-                .getName());
+        codeManager = new CodeManager(getRpcSite(), data.getRuntimeInfo().getName());
     }
 
     @Override
@@ -108,19 +107,11 @@ public abstract class Backend implements IStreamListener, IBackend {
         return runtime.getNodeName();
     }
 
-    protected boolean startErlideApps(final OtpErlangPid jRex,
-            final boolean watch) {
+    protected boolean startErlideApps(final OtpErlangPid jRex, final boolean watch) {
         try {
-            getRpcSite().call(
-                    "erlide_common_app",
-                    "init",
-                    "poii",
-                    jRex,
-                    watch,
-                    SystemConfiguration.getInstance()
-                            .getWarnProcessSizeLimitMB(),
-                    SystemConfiguration.getInstance()
-                            .getKillProcessSizeLimitMB());
+            getRpcSite().call("erlide_common_app", "init", "poii", jRex, watch,
+                    SystemConfiguration.getInstance().getWarnProcessSizeLimitMB(),
+                    SystemConfiguration.getInstance().getKillProcessSizeLimitMB());
             // TODO should use extension point!
             getRpcSite().call("erlide_builder_app", "init", "");
             getRpcSite().call("erlide_ide_app", "init", "");
@@ -180,11 +171,9 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
         final IStreamsProxy proxy = getStreamsProxy();
         if (proxy != null) {
-            final IStreamMonitor errorStreamMonitor = proxy
-                    .getErrorStreamMonitor();
+            final IStreamMonitor errorStreamMonitor = proxy.getErrorStreamMonitor();
             errorStreamMonitor.addListener(this);
-            final IStreamMonitor outputStreamMonitor = proxy
-                    .getOutputStreamMonitor();
+            final IStreamMonitor outputStreamMonitor = proxy.getOutputStreamMonitor();
             outputStreamMonitor.addListener(this);
         }
     }
@@ -194,21 +183,17 @@ public abstract class Backend implements IStreamListener, IBackend {
         final IBackendShell shell = shellManager.openShell(id);
         final IStreamsProxy proxy = getStreamsProxy();
         if (proxy != null) {
-            final IStreamMonitor errorStreamMonitor = proxy
-                    .getErrorStreamMonitor();
+            final IStreamMonitor errorStreamMonitor = proxy.getErrorStreamMonitor();
             errorStreamMonitor.addListener(new IStreamListener() {
                 @Override
-                public void streamAppended(final String text,
-                        final IStreamMonitor monitor) {
+                public void streamAppended(final String text, final IStreamMonitor monitor) {
                     shell.add(text, IoRequestKind.STDERR);
                 }
             });
-            final IStreamMonitor outputStreamMonitor = proxy
-                    .getOutputStreamMonitor();
+            final IStreamMonitor outputStreamMonitor = proxy.getOutputStreamMonitor();
             outputStreamMonitor.addListener(new IStreamListener() {
                 @Override
-                public void streamAppended(final String text,
-                        final IStreamMonitor monitor) {
+                public void streamAppended(final String text, final IStreamMonitor monitor) {
                     shell.add(text, IoRequestKind.STDOUT);
                 }
             });
@@ -223,21 +208,23 @@ public abstract class Backend implements IStreamListener, IBackend {
             if (proxy != null) {
                 proxy.write(s);
             } else {
-                ErlLogger
-                        .warn("Could not send input to backend %s, stream proxy is null",
-                                getName());
+                ErlLogger.warn(
+                        "Could not send input to backend %s, stream proxy is null",
+                        getName());
             }
         }
     }
 
     @Override
     public void addProjectPath(final IErlProject eproject) {
+        if (eproject == null) {
+            return;
+        }
         final IProject project = eproject.getWorkspaceProject();
-        final String outDir = project.getLocation()
-                .append(eproject.getOutputLocation()).toOSString();
+        final String outDir = project.getLocation().append(eproject.getOutputLocation())
+                .toOSString();
         if (outDir.length() > 0) {
-            final boolean accessible = RuntimeUtils.isAccessibleDir(
-                    getRpcSite(), outDir);
+            final boolean accessible = RuntimeUtils.isAccessibleDir(getRpcSite(), outDir);
             if (accessible) {
                 addPath(false/* prefs.getUsePathZ() */, outDir);
             } else {
@@ -276,8 +263,7 @@ public abstract class Backend implements IStreamListener, IBackend {
                     final String m = path.removeFileExtension().lastSegment();
                     try {
                         boolean ok = false;
-                        final OtpErlangBinary bin = BeamUtil.getBeamBinary(m,
-                                path);
+                        final OtpErlangBinary bin = BeamUtil.getBeamBinary(m, path);
                         if (bin != null) {
                             ok = BeamLoader.loadBeam(getRpcSite(), m, bin);
                         }
@@ -297,8 +283,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     protected void postLaunch() throws DebugException {
-        final Collection<IProject> projects = Lists.newArrayList(data
-                .getProjects());
+        final Collection<IProject> projects = Lists.newArrayList(data.getProjects());
         registerProjectsWithExecutionBackend(projects);
         if (data.isDebug()) {
             // add debug debugTarget
@@ -314,8 +299,8 @@ public abstract class Backend implements IStreamListener, IBackend {
                 distributeDebuggerCode();
                 addNodesAsDebugTargets(launch, debugTarget);
             }
-            debugTarget.interpretModules(data.getInitialInterpretedModules(),
-                    distributed);
+            debugTarget
+                    .interpretModules(data.getInitialInterpretedModules(), distributed);
             registerStartupFunctionStarter(data);
             debugTarget.sendStarted();
         } else {
@@ -327,35 +312,30 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    private void registerProjectsWithExecutionBackend(
-            final Collection<IProject> projects) {
+    private void registerProjectsWithExecutionBackend(final Collection<IProject> projects) {
         for (final IProject project : projects) {
             backendManager.addExecutionBackend(project, this);
         }
     }
 
     private void registerStartupFunctionStarter(final BackendData myData) {
-        DebugPlugin.getDefault().addDebugEventListener(
-                new IDebugEventSetListener() {
-                    @Override
-                    public void handleDebugEvents(final DebugEvent[] events) {
-                        final InitialCall initCall = myData.getInitialCall();
-                        if (initCall != null) {
-                            runInitial(initCall.getModule(),
-                                    initCall.getName(),
-                                    initCall.getParameters());
-                        }
-                        DebugPlugin.getDefault().removeDebugEventListener(this);
-                    }
-                });
+        DebugPlugin.getDefault().addDebugEventListener(new IDebugEventSetListener() {
+            @Override
+            public void handleDebugEvents(final DebugEvent[] events) {
+                final InitialCall initCall = myData.getInitialCall();
+                if (initCall != null) {
+                    runInitial(initCall.getModule(), initCall.getName(),
+                            initCall.getParameters());
+                }
+                DebugPlugin.getDefault().removeDebugEventListener(this);
+            }
+        });
     }
 
-    void runInitial(final String module, final String function,
-            final String args) {
+    void runInitial(final String module, final String function, final String args) {
         try {
             if (module.length() > 0 && function.length() > 0) {
-                ErlLogger.debug("calling startup function %s:%s", module,
-                        function);
+                ErlLogger.debug("calling startup function %s:%s", module, function);
                 if (args.length() > 0) {
                     getRpcSite().cast(module, function, "s", args);
                 } else {
@@ -363,8 +343,8 @@ public abstract class Backend implements IStreamListener, IBackend {
                 }
             }
         } catch (final Exception e) {
-            ErlLogger.debug("Could not run initial call %s:%s(\"%s\")", module,
-                    function, args);
+            ErlLogger.debug("Could not run initial call %s:%s(\"%s\")", module, function,
+                    args);
             ErlLogger.warn(e);
         }
     }
@@ -375,8 +355,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (nodes != null) {
             for (int i = 1, n = nodes.arity(); i < n; ++i) {
                 final OtpErlangAtom a = (OtpErlangAtom) nodes.elementAt(i);
-                final IDebugTarget edn = new ErlangDebugNode(target,
-                        a.atomValue());
+                final IDebugTarget edn = new ErlangDebugNode(target, a.atomValue());
                 aLaunch.addDebugTarget(edn);
             }
         }
@@ -390,10 +369,9 @@ public abstract class Backend implements IStreamListener, IBackend {
         for (final String module : debuggerModules) {
             final OtpErlangBinary b = getDebuggerBeam(module);
             if (b != null) {
-                final OtpErlangString filename = new OtpErlangString(module
-                        + ".erl");
-                final OtpErlangTuple t = OtpErlang.mkTuple(new OtpErlangAtom(
-                        module), filename, b);
+                final OtpErlangString filename = new OtpErlangString(module + ".erl");
+                final OtpErlangTuple t = OtpErlang.mkTuple(new OtpErlangAtom(module),
+                        filename, b);
                 modules.add(t);
             } else {
                 ErlLogger.warn("Could not find debugger module %s", module);
@@ -408,12 +386,10 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     private List<String> getDebuggerModules() {
-        final Bundle debugger = Platform
-                .getBundle("org.erlide.kernel.debugger");
+        final Bundle debugger = Platform.getBundle("org.erlide.kernel.debugger");
         final List<String> debuggerModules = Lists.newArrayList();
         @SuppressWarnings("rawtypes")
-        final Enumeration beams = debugger
-                .findEntries("/ebin", "*.beam", false);
+        final Enumeration beams = debugger.findEntries("/ebin", "*.beam", false);
         while (beams.hasMoreElements()) {
             final URL beam = (URL) beams.nextElement();
             debuggerModules.add(new Path(beam.getPath()).removeFileExtension()

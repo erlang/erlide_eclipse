@@ -230,8 +230,8 @@ public class ErlStructureCreator extends StructureCreator {
     }
 
     @Override
-    protected IStructureComparator createStructureComparator(
-            final Object element, final IDocument document0,
+    protected IStructureComparator createStructureComparator(final Object element,
+            final IDocument document0,
             final ISharedDocumentAdapter sharedDocumentAdapter,
             final IProgressMonitor monitor) throws CoreException {
         IErlModule module = null;
@@ -255,8 +255,7 @@ public class ErlStructureCreator extends StructureCreator {
                     }
                 }
             }
-        } else if (document == null
-                && element instanceof IStreamContentAccessor) {
+        } else if (document == null && element instanceof IStreamContentAccessor) {
             try {
                 final InputStream contents = ((IStreamContentAccessor) element)
                         .getContents();

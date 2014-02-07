@@ -74,8 +74,7 @@ public class ErlElementSorter extends ViewerSorter {
      * @param e1
      * @param e2
      */
-    protected int comparePositions(final Viewer viewer, final Object e1,
-            final Object e2) {
+    protected int comparePositions(final Viewer viewer, final Object e1, final Object e2) {
         if (e1 instanceof ISourceReference) {
             final ISourceReference s1 = (ISourceReference) e1;
             if (e2 instanceof ISourceReference) {

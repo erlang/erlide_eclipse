@@ -19,8 +19,8 @@ public class EmakeBuilder extends ExternalBuilder {
 
     @Override
     public String getOsCommand() {
-        final IBackend backend = BackendCore.getBackendManager()
-                .getBuildBackend(getProject());
+        final IBackend backend = BackendCore.getBackendManager().getBuildBackend(
+                getProject());
         final IPath path = new Path(backend.getRuntimeInfo().getOtpHome())
                 .append("bin/erl");
         return path.toOSString();

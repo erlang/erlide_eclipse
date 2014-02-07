@@ -6,8 +6,7 @@ public class BackendShellEvent {
     private final int removedLength;
     private final String text;
 
-    public BackendShellEvent(final int offset, final int removedLength,
-            final String text) {
+    public BackendShellEvent(final int offset, final int removedLength, final String text) {
         this.offset = offset;
         this.removedLength = removedLength;
         this.text = text;

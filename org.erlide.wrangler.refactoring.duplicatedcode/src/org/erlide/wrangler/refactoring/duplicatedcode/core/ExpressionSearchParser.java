@@ -49,8 +49,7 @@ public class ExpressionSearchParser extends AbstractDuplicatesParser {
             final OtpErlangTuple res = (OtpErlangTuple) object;
 
             if (!res.elementAt(0).toString().equals("ok")) {
-                setUnSuccessful(((OtpErlangString) res.elementAt(1))
-                        .stringValue());
+                setUnSuccessful(((OtpErlangString) res.elementAt(1)).stringValue());
                 return;
             }
             if (res.elementAt(1).equals(new OtpErlangList())) {
@@ -67,25 +66,22 @@ public class ExpressionSearchParser extends AbstractDuplicatesParser {
             final Iterator<OtpErlangObject> it = posList.iterator();
             while (it.hasNext()) {
                 actPos = (OtpErlangTuple) it.next();
-                startLine = (OtpErlangLong) ((OtpErlangTuple) actPos
-                        .elementAt(0)).elementAt(0);
-                startColumn = (OtpErlangLong) ((OtpErlangTuple) actPos
-                        .elementAt(0)).elementAt(1);
+                startLine = (OtpErlangLong) ((OtpErlangTuple) actPos.elementAt(0))
+                        .elementAt(0);
+                startColumn = (OtpErlangLong) ((OtpErlangTuple) actPos.elementAt(0))
+                        .elementAt(1);
                 endLine = (OtpErlangLong) ((OtpErlangTuple) actPos.elementAt(1))
                         .elementAt(0);
-                endColumn = (OtpErlangLong) ((OtpErlangTuple) actPos
-                        .elementAt(1)).elementAt(1);
+                endColumn = (OtpErlangLong) ((OtpErlangTuple) actPos.elementAt(1))
+                        .elementAt(1);
 
-                final IErlSelection sel = GlobalParameters
-                        .getWranglerSelection();
+                final IErlSelection sel = GlobalParameters.getWranglerSelection();
                 instances.add(new DuplicatedCodeInstanceElement((IFile) sel
-                        .getErlElement().getResource(), startLine.intValue(),
-                        startColumn.intValue(), endLine.intValue(), endColumn
-                                .intValue() + 1));
+                        .getErlElement().getResource(), startLine.intValue(), startColumn
+                        .intValue(), endLine.intValue(), endColumn.intValue() + 1));
             }
 
-            final DuplicatedCodeInstanceElement defaultInstance = instances
-                    .get(0);
+            final DuplicatedCodeInstanceElement defaultInstance = instances.get(0);
 
             final DuplicatedCodeElement result = new DuplicatedCodeElement(
                     defaultInstance);

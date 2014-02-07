@@ -24,8 +24,7 @@ import java.io.Serializable;
  * Provides a Java representation of Erlang binaries. Anything that can be
  * represented as a sequence of bytes can be made into an Erlang binary.
  */
-public class OtpErlangBinary extends OtpErlangBitstr implements Serializable,
-        Cloneable {
+public class OtpErlangBinary extends OtpErlangBitstr implements Serializable, Cloneable {
     // don't change this!
     static final long serialVersionUID = -3781009633593609217L;
 
@@ -50,8 +49,7 @@ public class OtpErlangBinary extends OtpErlangBitstr implements Serializable,
      *                if the buffer does not contain a valid external
      *                representation of an Erlang binary.
      */
-    public OtpErlangBinary(final OtpInputStream buf)
-            throws OtpErlangDecodeException {
+    public OtpErlangBinary(final OtpInputStream buf) throws OtpErlangDecodeException {
         super(new byte[0]);
         bin = buf.read_binary();
         pad_bits = 0;

@@ -30,8 +30,7 @@ public class CodeBundle implements ICodeBundle {
     private final Collection<Pair<String, String>> inits;
     private final Bundle bundle;
 
-    public CodeBundle(final Bundle bundle,
-            final Map<String, CodeContext> paths2,
+    public CodeBundle(final Bundle bundle, final Map<String, CodeContext> paths2,
             final Collection<Pair<String, String>> inits) {
         this.bundle = bundle;
         paths = Maps.newHashMap(paths2);
@@ -47,8 +46,7 @@ public class CodeBundle implements ICodeBundle {
     public Collection<String> getEbinDirs() {
         final List<String> result = Lists.newArrayList();
         for (final Entry<String, CodeContext> path : paths.entrySet()) {
-            final Collection<String> myPath = BeamUtil.getPaths(path.getKey(),
-                    bundle);
+            final Collection<String> myPath = BeamUtil.getPaths(path.getKey(), bundle);
             if (myPath != null) {
                 result.addAll(myPath);
             } else {

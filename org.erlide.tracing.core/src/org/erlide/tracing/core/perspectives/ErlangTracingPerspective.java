@@ -39,8 +39,8 @@ public class ErlangTracingPerspective implements IPerspectiveFactory {
 
     private void defineLayout(final IPageLayout pageLayout) {
         // top left
-        final IFolderLayout topLeft = pageLayout.createFolder(TOP_LEFT,
-                IPageLayout.LEFT, 0.30f, pageLayout.getEditorArea());
+        final IFolderLayout topLeft = pageLayout.createFolder(TOP_LEFT, IPageLayout.LEFT,
+                0.30f, pageLayout.getEditorArea());
         topLeft.addView(ErlideUIConstants.NAVIGATOR_VIEW_ID);
 
         // center left
@@ -54,9 +54,8 @@ public class ErlangTracingPerspective implements IPerspectiveFactory {
         bottomLeft.addView(TREE_VIEWER_VIEW_ID);
 
         // bottom center
-        final IFolderLayout bottomCenter = pageLayout.createFolder(
-                BOTTOM_CENTER, IPageLayout.BOTTOM, 0.60f,
-                pageLayout.getEditorArea());
+        final IFolderLayout bottomCenter = pageLayout.createFolder(BOTTOM_CENTER,
+                IPageLayout.BOTTOM, 0.60f, pageLayout.getEditorArea());
         bottomCenter.addView(IPageLayout.ID_PROBLEM_VIEW);
         bottomCenter.addView(CONTROL_PANEL_VIEW_ID);
 

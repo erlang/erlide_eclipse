@@ -38,7 +38,8 @@ public class ModelFindUtil implements ModelFindService {
     public ISourceRange findVariable(final ISourceRange range,
             final String variableName, final String elementText)
             throws OtpErlangRangeException {
-        final OtpErlangTuple res2 = ErlangEngine.getInstance().getService(OpenService.class)
+        final OtpErlangTuple res2 = ErlangEngine.getInstance()
+                .getService(OpenService.class)
                 .findFirstVar(variableName, elementText);
         if (res2 != null) {
             final int relativePos = ((OtpErlangLong) res2.elementAt(0))

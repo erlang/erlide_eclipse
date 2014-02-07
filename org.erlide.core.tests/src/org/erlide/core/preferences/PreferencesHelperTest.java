@@ -16,8 +16,7 @@ import org.osgi.service.prefs.BackingStoreException;
 public class PreferencesHelperTest {
 
     private static final IScopeContext[] ALL_SCOPE_CONTEXTS = new IScopeContext[] {
-            InstanceScope.INSTANCE, ConfigurationScope.INSTANCE,
-            DefaultScope.INSTANCE };
+            InstanceScope.INSTANCE, ConfigurationScope.INSTANCE, DefaultScope.INSTANCE };
     private static final String QUALIFIER = "org.erlide.testing";
     private static final String KEY = "key";
 
@@ -33,8 +32,7 @@ public class PreferencesHelperTest {
     public void nextContexts_1() {
         final IScopeContext[] list = ALL_SCOPE_CONTEXTS;
         final IScopeContext item = ConfigurationScope.INSTANCE;
-        final IScopeContext[] val = PreferencesHelper.getNextContexts(list,
-                item);
+        final IScopeContext[] val = PreferencesHelper.getNextContexts(list, item);
         Assert.assertNotNull(val);
         Assert.assertEquals(1, val.length);
         Assert.assertEquals(DefaultScope.INSTANCE, val[0]);
@@ -44,8 +42,7 @@ public class PreferencesHelperTest {
     public void nextContexts_2() {
         final IScopeContext[] list = ALL_SCOPE_CONTEXTS;
         final IScopeContext item = DefaultScope.INSTANCE;
-        final IScopeContext[] val = PreferencesHelper.getNextContexts(list,
-                item);
+        final IScopeContext[] val = PreferencesHelper.getNextContexts(list, item);
         Assert.assertNotNull(val);
         Assert.assertEquals(0, val.length);
     }
@@ -54,8 +51,7 @@ public class PreferencesHelperTest {
     public void nextContexts_3() {
         final IScopeContext[] list = ALL_SCOPE_CONTEXTS;
         final IScopeContext item = InstanceScope.INSTANCE;
-        final IScopeContext[] val = PreferencesHelper.getNextContexts(list,
-                item);
+        final IScopeContext[] val = PreferencesHelper.getNextContexts(list, item);
         Assert.assertNotNull(val);
         Assert.assertEquals(2, val.length);
         Assert.assertEquals(ConfigurationScope.INSTANCE, val[0]);

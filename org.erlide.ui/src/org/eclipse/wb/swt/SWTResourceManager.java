@@ -123,8 +123,7 @@ public class SWTResourceManager {
      *            the {@link InputStream} encoding the image data
      * @return the {@link Image} encoded by the specified input stream
      */
-    protected static Image getImage(final InputStream stream)
-            throws IOException {
+    protected static Image getImage(final InputStream stream) throws IOException {
         try {
             final Display display = Display.getCurrent();
             final ImageData data = new ImageData(stream);
@@ -241,8 +240,7 @@ public class SWTResourceManager {
      *            the {@link Image} to decorate the base image
      * @return {@link Image} The resulting decorated image
      */
-    public static Image decorateImage(final Image baseImage,
-            final Image decorator) {
+    public static Image decorateImage(final Image baseImage, final Image decorator) {
         return decorateImage(baseImage, decorator, BOTTOM_RIGHT);
     }
 
@@ -258,8 +256,8 @@ public class SWTResourceManager {
      *            the corner to place decorator image
      * @return the resulting decorated {@link Image}
      */
-    public static Image decorateImage(final Image baseImage,
-            final Image decorator, final int corner) {
+    public static Image decorateImage(final Image baseImage, final Image decorator,
+            final int corner) {
         if (corner <= 0 || corner >= LAST_CORNER_KEY) {
             throw new IllegalArgumentException("Wrong decorate corner");
         }
@@ -290,8 +288,7 @@ public class SWTResourceManager {
             } else if (corner == BOTTOM_LEFT) {
                 gc.drawImage(decorator, 0, bib.height - dib.height);
             } else if (corner == BOTTOM_RIGHT) {
-                gc.drawImage(decorator, bib.width - dib.width, bib.height
-                        - dib.height);
+                gc.drawImage(decorator, bib.width - dib.width, bib.height - dib.height);
             }
             gc.dispose();
             //
@@ -352,8 +349,7 @@ public class SWTResourceManager {
      *            the style of the font
      * @return {@link Font} The font matching the name, height and style
      */
-    public static Font getFont(final String name, final int height,
-            final int style) {
+    public static Font getFont(final String name, final int height, final int style) {
         return getFont(name, height, style, false, false);
     }
 
@@ -374,10 +370,10 @@ public class SWTResourceManager {
      * @return {@link Font} The font matching the name, height, style, strikeout
      *         and underline
      */
-    public static Font getFont(final String name, final int size,
-            final int style, final boolean strikeout, final boolean underline) {
-        final String fontName = name + '|' + size + '|' + style + '|'
-                + strikeout + '|' + underline;
+    public static Font getFont(final String name, final int size, final int style,
+            final boolean strikeout, final boolean underline) {
+        final String fontName = name + '|' + size + '|' + style + '|' + strikeout + '|'
+                + underline;
         Font font = m_fontMap.get(fontName);
         if (font == null) {
             final FontData fontData = new FontData(name, size, style);
@@ -385,8 +381,7 @@ public class SWTResourceManager {
                 try {
                     final Class<?> logFontClass = Class
                             .forName("org.eclipse.swt.internal.win32.LOGFONT"); //$NON-NLS-1$
-                    final Object logFont = FontData.class
-                            .getField("data").get(fontData); //$NON-NLS-1$
+                    final Object logFont = FontData.class.getField("data").get(fontData); //$NON-NLS-1$
                     if (logFont != null && logFontClass != null) {
                         if (strikeout) {
                             logFontClass
@@ -420,8 +415,8 @@ public class SWTResourceManager {
         if (font == null) {
             final FontData fontDatas[] = baseFont.getFontData();
             final FontData data = fontDatas[0];
-            font = new Font(Display.getCurrent(), data.getName(),
-                    data.getHeight(), SWT.BOLD);
+            font = new Font(Display.getCurrent(), data.getName(), data.getHeight(),
+                    SWT.BOLD);
             m_fontToBoldFontMap.put(baseFont, font);
         }
         return font;

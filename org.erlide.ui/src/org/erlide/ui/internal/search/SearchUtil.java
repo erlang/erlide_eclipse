@@ -77,8 +77,7 @@ public class SearchUtil {
     private static final int ARI_INCLUDE = -6;
     private static final int ARI_RECORD_FIELD_DEF = -7;
 
-    public static final class WorkingSetComparator implements
-            Comparator<IWorkingSet> {
+    public static final class WorkingSetComparator implements Comparator<IWorkingSet> {
         private static Collator collator = Collator.getInstance();
 
         @Override
@@ -88,8 +87,7 @@ public class SearchUtil {
     }
 
     public static ErlSearchScope getSelectionScope(final ISelection selection,
-            final boolean addExternals, final boolean addOtp)
-            throws CoreException {
+            final boolean addExternals, final boolean addOtp) throws CoreException {
         final ErlSearchScope result = new ErlSearchScope();
         final Set<String> externalModulePaths = new HashSet<String>();
         if (selection instanceof IStructuredSelection) {
@@ -115,16 +113,14 @@ public class SearchUtil {
         NewSearchUI.runQueryInBackground((ISearchQuery) query);
     }
 
-    public static IStatus runQueryInForeground(
-            final IProgressService progressService, final Object query) {
-        return NewSearchUI.runQueryInForeground(progressService,
-                (ISearchQuery) query);
+    public static IStatus runQueryInForeground(final IProgressService progressService,
+            final Object query) {
+        return NewSearchUI.runQueryInForeground(progressService, (ISearchQuery) query);
     }
 
     public static Match createMatch(final ModuleLineFunctionArityRef ref,
             final Map<String, IErlModule> pathToModuleMap) {
-        final ErlangSearchElement ese = createSearchElementFromRef(ref,
-                pathToModuleMap);
+        final ErlangSearchElement ese = createSearchElementFromRef(ref, pathToModuleMap);
         return new Match(ese, ref.getOffset(), ref.getLength());
     }
 
@@ -137,9 +133,8 @@ public class SearchUtil {
 
     public static ErlangSearchElement createSearchElement(
             final ModuleLineFunctionArityRef ref, final IErlModule module) {
-        return new ErlangSearchElement(module, ref.getModulePath(),
-                ref.getName(), ref.getArity(), ref.getClauseHead(),
-                ref.isSubClause(), refToKind(ref));
+        return new ErlangSearchElement(module, ref.getModulePath(), ref.getName(),
+                ref.getArity(), ref.getClauseHead(), ref.isSubClause(), refToKind(ref));
     }
 
     public static ErlElementKind refToKind(final ModuleLineFunctionArityRef ref) {
@@ -179,16 +174,14 @@ public class SearchUtil {
                 if (offset != -1) {
                     final IErlElement e = module.getElementAt(offset);
                     if (new OpenUtils().isTypeDefOrRecordDef(e, res)) {
-                        return new TypeRefPattern(moduleName, res.getFun(),
-                                limitTo);
+                        return new TypeRefPattern(moduleName, res.getFun(), limitTo);
                     }
                 }
             } else {
                 moduleName = res.getName();
             }
-            return new FunctionPattern(moduleName, res.getFun(),
-                    res.getArity(), limitTo, matchAnyFunctionDefinition,
-                    module, true);
+            return new FunctionPattern(moduleName, res.getFun(), res.getArity(), limitTo,
+                    matchAnyFunctionDefinition, module, true);
         }
         String moduleName = res.getName();
         if (moduleName == null) {
@@ -199,8 +192,7 @@ public class SearchUtil {
             if (module != null && offset != -1) {
                 final IErlElement e = module.getElementAt(offset);
                 if (e != null
-                        && (e.getKind() == ErlElementKind.TYPESPEC || e
-                                .getKind() == ErlElementKind.RECORD_DEF)) {
+                        && (e.getKind() == ErlElementKind.TYPESPEC || e.getKind() == ErlElementKind.RECORD_DEF)) {
                     return new TypeRefPattern(moduleName, res.getFun(), limitTo);
                 }
             }
@@ -211,9 +203,8 @@ public class SearchUtil {
                 moduleName = ErlangEngine.getInstance().getModelFindService()
                         .resolveMacroValue(moduleName, module);
             } while (!moduleName.equals(oldName));
-            return new FunctionPattern(moduleName, res.getFun(),
-                    res.getArity(), limitTo, matchAnyFunctionDefinition,
-                    module, false);
+            return new FunctionPattern(moduleName, res.getFun(), res.getArity(), limitTo,
+                    matchAnyFunctionDefinition, module, false);
         } else if (res.isMacro()) {
             return new MacroPattern(unquoted, limitTo);
         } else if (res.isRecord()) {
@@ -226,9 +217,8 @@ public class SearchUtil {
                     final IErlElement e = module.getElementAt(offset);
                     if (e instanceof IErlFunctionClause) {
                         final IErlFunctionClause c = (IErlFunctionClause) e;
-                        return new VariablePattern(c.getFunctionName(),
-                                c.getArity(), c.getHead(), res.getName(),
-                                limitTo, module);
+                        return new VariablePattern(c.getFunctionName(), c.getArity(),
+                                c.getHead(), res.getName(), limitTo, module);
                     }
                 }
             }
@@ -239,8 +229,7 @@ public class SearchUtil {
     }
 
     public static ErlangSearchPattern getSearchPattern(final IErlModule module,
-            final SearchFor searchFor, final String pattern,
-            final LimitTo limitTo) {
+            final SearchFor searchFor, final String pattern, final LimitTo limitTo) {
         String moduleName = "";
         String name = pattern;
         int arity = -1;
@@ -254,16 +243,13 @@ public class SearchUtil {
             arity = Integer.valueOf(name.substring(p + 1));
             name = name.substring(0, p);
         }
-        return new SearchPatternFactory(ErlangEngine.getInstance()
-                .getModelUtilService()).getSearchPattern(searchFor, moduleName,
-                name, arity, limitTo, module);
+        return new SearchPatternFactory(ErlangEngine.getInstance().getModelUtilService())
+                .getSearchPattern(searchFor, moduleName, name, arity, limitTo, module);
     }
 
     public static void runQuery(final ErlangSearchPattern pattern,
-            final ErlSearchScope scope, final String scopeDescription,
-            final Shell shell) {
-        final ErlSearchQuery query = new ErlSearchQuery(pattern, scope,
-                scopeDescription);
+            final ErlSearchScope scope, final String scopeDescription, final Shell shell) {
+        final ErlSearchQuery query = new ErlSearchQuery(pattern, scope, scopeDescription);
         if (query.canRunInBackground()) {
             /*
              * This indirection with Object as parameter is needed to prevent
@@ -283,22 +269,17 @@ public class SearchUtil {
              * eventually triggering the loading of a plug-in (in this case it
              * would be ISearchQuery).
              */
-            final IStatus status = NewSearchUI.runQueryInForeground(
-                    progressService, query);
+            final IStatus status = NewSearchUI.runQueryInForeground(progressService,
+                    query);
             if (status.matches(IStatus.ERROR | IStatus.INFO | IStatus.WARNING)) {
-                ErrorDialog
-                        .openError(
-                                shell,
-                                "Search",
-                                "Problems occurred while searching. "
-                                        + "The affected files will be skipped.",
-                                status);
+                ErrorDialog.openError(shell, "Search",
+                        "Problems occurred while searching. "
+                                + "The affected files will be skipped.", status);
             }
         }
     }
 
-    public static String getWorkingSetsScopeDescription(
-            final IWorkingSet[] workingSets) {
+    public static String getWorkingSetsScopeDescription(final IWorkingSet[] workingSets) {
         final String wssS = "working sets ";
         final String wsS = "working set ";
         if (workingSets.length == 0) {
@@ -313,8 +294,7 @@ public class SearchUtil {
         final StringBuilder sb = new StringBuilder(s);
         int i = 0;
         for (final IWorkingSet ws : workingSets) {
-            sb.append(surround).append(ws.getLabel()).append(surround)
-                    .append(", ");
+            sb.append(surround).append(ws.getLabel()).append(surround).append(", ");
             i++;
             if (i == 2) {
                 break;
@@ -326,9 +306,8 @@ public class SearchUtil {
         return sb.substring(0, sb.length() - 2);
     }
 
-    public static ErlSearchScope getWorkingSetsScope(
-            final IWorkingSet[] workingSets, final boolean addExternals,
-            final boolean addOTP) throws CoreException {
+    public static ErlSearchScope getWorkingSetsScope(final IWorkingSet[] workingSets,
+            final boolean addExternals, final boolean addOTP) throws CoreException {
         final ErlSearchScope result = new ErlSearchScope();
         final Set<String> externalModulePaths = new HashSet<String>();
         if (workingSets == null) {
@@ -347,8 +326,8 @@ public class SearchUtil {
                     o = a.getAdapter(IResource.class);
                     if (o != null) {
                         final IResource resource = (IResource) o;
-                        final IErlElement element = ErlangEngine.getInstance()
-                                .getModel().findElement(resource);
+                        final IErlElement element = ErlangEngine.getInstance().getModel()
+                                .findElement(resource);
                         if (element instanceof IParent) {
                             parent = (IParent) element;
                         }
@@ -363,13 +342,12 @@ public class SearchUtil {
         return result;
     }
 
-    public static String getProjectScopeDescription(
-            final Collection<IProject> projects) {
+    public static String getProjectScopeDescription(final Collection<IProject> projects) {
         if (projects == null || projects.isEmpty()) {
             return "";
         }
-        final StringBuilder sb = new StringBuilder(
-                projects.size() == 1 ? "project" : "projects");
+        final StringBuilder sb = new StringBuilder(projects.size() == 1 ? "project"
+                : "projects");
         sb.append(' ');
         int i = 0;
         for (final IProject p : projects) {
@@ -447,8 +425,7 @@ public class SearchUtil {
     private static IDialogSettings getDialogStoreSection() {
         final IDialogSettings dialogSettings = ErlideUIPlugin.getDefault()
                 .getDialogSettings();
-        IDialogSettings settingsStore = dialogSettings
-                .getSection(DIALOG_SETTINGS_KEY);
+        IDialogSettings settingsStore = dialogSettings.getSection(DIALOG_SETTINGS_KEY);
         if (settingsStore == null) {
             settingsStore = dialogSettings.addNewSection(DIALOG_SETTINGS_KEY);
         }
@@ -473,23 +450,22 @@ public class SearchUtil {
                 final Set<IWorkingSet> workingSets = new HashSet<IWorkingSet>(2);
                 for (int j = 0; j < lruWorkingSetNames.length; j++) {
                     final IWorkingSet workingSet = PlatformUI.getWorkbench()
-                            .getWorkingSetManager()
-                            .getWorkingSet(lruWorkingSetNames[j]);
+                            .getWorkingSetManager().getWorkingSet(lruWorkingSetNames[j]);
                     if (workingSet != null) {
                         workingSets.add(workingSet);
                     }
                 }
                 if (!workingSets.isEmpty()) {
-                    fgLRUWorkingSets.add(workingSets
-                            .toArray(new IWorkingSet[workingSets.size()]));
+                    fgLRUWorkingSets.add(workingSets.toArray(new IWorkingSet[workingSets
+                            .size()]));
                 }
             }
         }
     }
 
     public static IWorkingSet[] queryWorkingSets() throws InterruptedException {
-        final IWorkbenchWindow activeWorkbenchWindow = PlatformUI
-                .getWorkbench().getActiveWorkbenchWindow();
+        final IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow();
         if (activeWorkbenchWindow == null) {
             return null;
         }
@@ -498,8 +474,7 @@ public class SearchUtil {
             return null;
         }
         final IWorkingSetSelectionDialog dialog = PlatformUI.getWorkbench()
-                .getWorkingSetManager()
-                .createWorkingSetSelectionDialog(shell, true);
+                .getWorkingSetManager().createWorkingSetSelectionDialog(shell, true);
         if (dialog.open() != Window.OK) {
             throw new InterruptedException();
         }
@@ -531,8 +506,7 @@ public class SearchUtil {
         }
     }
 
-    public static void addSearchResult(
-            final List<ModuleLineFunctionArityRef> result,
+    public static void addSearchResult(final List<ModuleLineFunctionArityRef> result,
             final OtpErlangObject r) throws OtpErlangRangeException {
         final OtpErlangTuple t = (OtpErlangTuple) r;
         final OtpErlangList l = (OtpErlangList) t.elementAt(1);
@@ -549,8 +523,7 @@ public class SearchUtil {
             final OtpErlangLong arityL = (OtpErlangLong) modLineT.elementAt(2);
             final int arity = arityL.intValue();
             final String clauseHead = Util.stringValue(modLineT.elementAt(3));
-            final OtpErlangAtom subClause = (OtpErlangAtom) modLineT
-                    .elementAt(4);
+            final OtpErlangAtom subClause = (OtpErlangAtom) modLineT.elementAt(4);
             final OtpErlangLong offsetL = (OtpErlangLong) modLineT.elementAt(5);
             final OtpErlangLong lengthL = (OtpErlangLong) modLineT.elementAt(6);
             final OtpErlangAtom isDef = (OtpErlangAtom) modLineT.elementAt(7);
@@ -561,9 +534,9 @@ public class SearchUtil {
             } else {
                 name = Util.stringValue(nameO);
             }
-            result.add(new ModuleLineFunctionArityRef(modName, offsetL
-                    .intValue(), lengthL.intValue(), name, arity, clauseHead,
-                    Boolean.parseBoolean(subClause.atomValue()), Boolean
+            result.add(new ModuleLineFunctionArityRef(modName, offsetL.intValue(),
+                    lengthL.intValue(), name, arity, clauseHead, Boolean
+                            .parseBoolean(subClause.atomValue()), Boolean
                             .parseBoolean(isDef.atomValue())));
         }
     }

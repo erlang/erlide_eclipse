@@ -60,8 +60,7 @@ public class TestResultsView extends ViewPart {
         control.setLayout(new GridLayout(1, false));
 
         label = new Label(control, SWT.NONE);
-        label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-                1));
+        label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         label.setText("");
 
         treeViewer = new TreeViewer(control, SWT.NONE);
@@ -136,8 +135,8 @@ public class TestResultsView extends ViewPart {
         });
     }
 
-    private void handleEvent(final OtpErlangObject msg)
-            throws TermParserException, OtpErlangException {
+    private void handleEvent(final OtpErlangObject msg) throws TermParserException,
+            OtpErlangException {
         final OtpErlangTuple tuple = (OtpErlangTuple) msg;
         final String tag = ((OtpErlangAtom) tuple.elementAt(0)).atomValue();
         final OtpErlangObject value = tuple.elementAt(1);
@@ -199,14 +198,12 @@ public class TestResultsView extends ViewPart {
             test.setSkipped(reason);
         } else if ("done".equals(tag)) {
             // value = Module, Log, {Successful,Failed,Skipped}, [Results]}
-            final Bindings bindings = ErlUtils.match("{M,L,{S:i,F:i,K:i},R}",
-                    value);
+            final Bindings bindings = ErlUtils.match("{M,L,{S:i,F:i,K:i},R}", value);
             final int successful = bindings.getInt("S");
             final int failed = bindings.getInt("F");
             final int skipped = bindings.getInt("K");
-            label.setText(label.getText() + " -- Done! Successful: "
-                    + successful + ", Failed: " + failed + ", Skipped: "
-                    + skipped);
+            label.setText(label.getText() + " -- Done! Successful: " + successful
+                    + ", Failed: " + failed + ", Skipped: " + skipped);
         }
         control.redraw();
     }

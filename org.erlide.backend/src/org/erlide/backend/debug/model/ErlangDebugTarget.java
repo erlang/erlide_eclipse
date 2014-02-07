@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
@@ -39,7 +38,6 @@ import org.erlide.backend.debug.DebuggerEventDaemon;
 import org.erlide.backend.debug.ErlangLineBreakpoint;
 import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.IErlangDebugNode;
-import org.erlide.engine.model.ErlModelException;
 import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.OtpErlang;
@@ -47,8 +45,8 @@ import org.erlide.util.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
-public class ErlangDebugTarget extends ErlangDebugElement implements
-        IDebugTarget, IErlangDebugNode {
+public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarget,
+        IErlangDebugNode {
 
     private static final OtpErlangAtom PARENT_ATOM = new OtpErlangAtom("parent");
 
@@ -80,8 +78,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     // private final WaitingForDebuggerListener waiter;
 
     public ErlangDebugTarget(final ILaunch launch, final IBackend b,
-            final Collection<IProject> projects,
-            final EnumSet<ErlDebugFlags> debugFlags) throws DebugException {
+            final Collection<IProject> projects, final EnumSet<ErlDebugFlags> debugFlags)
+            throws DebugException {
         super(null);
         fBackend = b;
         fNodeName = b.getName();
@@ -101,8 +99,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         fBackend.getRpcSite().send(pid,
                 OtpErlang.mkTuple(PARENT_ATOM, debuggerDaemon.getMBox()));
 
-        DebugPlugin.getDefault().getBreakpointManager()
-                .addBreakpointListener(this);
+        DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
     }
 
     @Override
@@ -143,8 +140,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         // TODO we should ask the Erlang debugger too...
         if (!isTerminated()
                 && breakpoint.getModelIdentifier().equals(getModelIdentifier())) {
-            final IProject bpProject = breakpoint.getMarker().getResource()
-                    .getProject();
+            final IProject bpProject = breakpoint.getMarker().getResource().getProject();
             for (final IProject p : projects) {
                 if (p == bpProject) {
                     return true;
@@ -171,7 +167,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         }
         fTerminated = true;
 
-        fBackend.getRpcSite().send("erlide_dbg_mon", new OtpErlangAtom("stop"));
+        fBackend.getRpcSite().send("dbg_mon", new OtpErlangAtom("stop"));
         final DebugPlugin dbgPlugin = DebugPlugin.getDefault();
         if (dbgPlugin != null) {
             dbgPlugin.getBreakpointManager().removeBreakpointListener(this);
@@ -208,8 +204,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
      * manager.
      */
     public void installDeferredBreakpoints() {
-        final IBreakpoint[] breakpoints = DebugPlugin.getDefault()
-                .getBreakpointManager().getBreakpoints(getModelIdentifier());
+        final IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager()
+                .getBreakpoints(getModelIdentifier());
         for (int i = 0; i < breakpoints.length; i++) {
             breakpointAdded(breakpoints[i]);
         }
@@ -243,8 +239,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         if (supportsBreakpoint(breakpoint)) {
             try {
                 if (breakpoint.isEnabled()
-                        && DebugPlugin.getDefault().getBreakpointManager()
-                                .isEnabled() || !breakpoint.isRegistered()) {
+                        && DebugPlugin.getDefault().getBreakpointManager().isEnabled()
+                        || !breakpoint.isRegistered()) {
                     final ErlangLineBreakpoint erlangLineBreakpoint = (ErlangLineBreakpoint) breakpoint;
                     erlangLineBreakpoint.install(this);
                 }
@@ -256,11 +252,9 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     }
 
     @Override
-    public void breakpointRemoved(final IBreakpoint breakpoint,
-            final IMarkerDelta delta) {
+    public void breakpointRemoved(final IBreakpoint breakpoint, final IMarkerDelta delta) {
         try {
-            ErlLogger.debug("breakpointRemoved "
-                    + breakpoint.getMarker().toString()
+            ErlLogger.debug("breakpointRemoved " + breakpoint.getMarker().toString()
                     + breakpoint.getMarker().getAttribute(IMarker.LINE_NUMBER));
         } catch (final CoreException e) {
         }
@@ -271,13 +265,11 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     }
 
     @Override
-    public void breakpointChanged(final IBreakpoint breakpoint,
-            final IMarkerDelta delta) {
+    public void breakpointChanged(final IBreakpoint breakpoint, final IMarkerDelta delta) {
         if (supportsBreakpoint(breakpoint)) {
             try {
                 if (breakpoint.isEnabled()
-                        && DebugPlugin.getDefault().getBreakpointManager()
-                                .isEnabled()) {
+                        && DebugPlugin.getDefault().getBreakpointManager().isEnabled()) {
                     breakpointAdded(breakpoint);
                 } else {
                     breakpointRemoved(breakpoint, null);
@@ -310,8 +302,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     }
 
     @Override
-    public IMemoryBlock getMemoryBlock(final long startAddress,
-            final long length) throws DebugException {
+    public IMemoryBlock getMemoryBlock(final long startAddress, final long length)
+            throws DebugException {
         return null;
     }
 
@@ -442,35 +434,14 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
             final String[] pms = pm.split(":");
             final IProject project = ResourcesPlugin.getWorkspace().getRoot()
                     .getProject(pms[0]);
-            interpret(project, pms[1], distributed, true);
+            final String moduleName = pms[1].replace(".erl", "");
+            interpret(project, moduleName, distributed, true);
         }
     }
 
     public void interpret(final IProject project, final String moduleName,
             final boolean distributed, final boolean interpret) {
-        try {
-            final IFile beam = fBackend.getData().getBeamLocator()
-                    .findModuleBeam(project, moduleName);
-            if (beam != null) {
-                if (beam.exists()) {
-                    final String de = interpret ? "" : "de";
-                    ErlLogger.debug(de + "interpret " + beam.getLocation());
-                    boolean b = ErlideDebug.interpret(fBackend.getRpcSite(),
-                            beam.getLocation().toString(), distributed,
-                            interpret);
-                    b = !b;
-                } else {
-                    ErlLogger.debug("IGNORED MISSING interpret "
-                            + (project == null ? "null" : project.getName())
-                            + ":" + moduleName);
-                }
-            } else {
-                ErlLogger.debug("IGNORED NULL interpret "
-                        + (project == null ? "null" : project.getName()) + ":"
-                        + moduleName);
-            }
-        } catch (final ErlModelException e) {
-            ErlLogger.warn(e);
-        }
+        ErlLogger.debug((interpret ? "" : "de") + "interpret " + moduleName);
+        ErlideDebug.interpret(fBackend.getRpcSite(), moduleName, distributed, interpret);
     }
 }

@@ -14,8 +14,7 @@ import com.google.common.collect.Lists;
 
 public class SourcePathUtils {
 
-    public static Collection<IPath> getExtraSourcePathsForBuild(
-            final IProject project) {
+    public static Collection<IPath> getExtraSourcePathsForBuild(final IProject project) {
         return getExtraSourcePathsGeneric(project, new SPPMethod() {
             @Override
             public Collection<IPath> call(final IProject myProject) {
@@ -24,8 +23,7 @@ public class SourcePathUtils {
         });
     }
 
-    public static Collection<IPath> getExtraSourcePathsForModel(
-            final IProject project) {
+    public static Collection<IPath> getExtraSourcePathsForModel(final IProject project) {
         return getExtraSourcePathsGeneric(project, new SPPMethod() {
             @Override
             public Collection<IPath> call(final IProject myProject) {
@@ -34,8 +32,7 @@ public class SourcePathUtils {
         });
     }
 
-    public static Collection<IPath> getExtraSourcePathsForExecution(
-            final IProject project) {
+    public static Collection<IPath> getExtraSourcePathsForExecution(final IProject project) {
         return getExtraSourcePathsGeneric(project, new SPPMethod() {
             @Override
             public Collection<IPath> call(final IProject myProject) {
@@ -44,8 +41,8 @@ public class SourcePathUtils {
         });
     }
 
-    private static Collection<IPath> getExtraSourcePathsGeneric(
-            final IProject project, final SPPMethod method) {
+    private static Collection<IPath> getExtraSourcePathsGeneric(final IProject project,
+            final SPPMethod method) {
         final List<IPath> result = Lists.newArrayList();
         Collection<SourcePathProvider> spps;
         try {
@@ -78,9 +75,8 @@ public class SourcePathUtils {
             return sourcePathProviders;
         }
         // TODO should be listening to plugin changes
-        sourcePathProviders = ExtensionUtils
-                .getExtensions("org.erlide.model.sourcePathProvider",
-                        SourcePathProvider.class);
+        sourcePathProviders = ExtensionUtils.getExtensions(
+                "org.erlide.model.sourcePathProvider", SourcePathProvider.class);
         return sourcePathProviders;
     }
 

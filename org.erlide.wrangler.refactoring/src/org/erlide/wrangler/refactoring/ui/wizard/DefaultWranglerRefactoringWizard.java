@@ -21,8 +21,7 @@ import org.erlide.wrangler.refactoring.ui.wizardpages.WranglerPage;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public class DefaultWranglerRefactoringWizard extends
-        AbstractWranglerRefactoringWizard {
+public class DefaultWranglerRefactoringWizard extends AbstractWranglerRefactoringWizard {
 
     private final ArrayList<WranglerPage> pages;
 

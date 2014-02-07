@@ -51,8 +51,7 @@ public class ErlangSourceContextTypeModule extends TemplateContextType {
                 .getTemplates(
                         ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
         for (final Template template : templates) {
-            addResolver(new ModuleElementVariableResolver(template.getName(),
-                    template));
+            addResolver(new ModuleElementVariableResolver(template.getName(), template));
         }
     }
 

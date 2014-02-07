@@ -65,8 +65,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
     }
 
     @Override
-    public final Object execute(final ExecutionEvent event)
-            throws ExecutionException {
+    public final Object execute(final ExecutionEvent event) throws ExecutionException {
         final List<IFile> files = new ArrayList<IFile>();
 
         if (event.getParameter(PARAM_ID_FILE_PATH) == null) {
@@ -79,8 +78,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
             final IResource resource = (IResource) event
                     .getObjectParameterForExecution(PARAM_ID_FILE_PATH);
             if (!(resource instanceof IFile)) {
-                throw new ExecutionException(
-                        "filePath parameter must identify a file"); //$NON-NLS-1$
+                throw new ExecutionException("filePath parameter must identify a file"); //$NON-NLS-1$
             }
             files.add((IFile) resource);
         }
@@ -118,8 +116,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
                 } else if (o instanceof String) {
                     try {
                         final String path = (String) o;
-                        final IFile[] cons = ResourcesPlugin.getWorkspace()
-                                .getRoot()
+                        final IFile[] cons = ResourcesPlugin.getWorkspace().getRoot()
                                 .findFilesForLocationURI(new URI(path));
                         for (final IFile con : cons) {
                             if (cons.length == 1) {
@@ -188,8 +185,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
     }
 
     @Override
-    public final void selectionChanged(final IAction action,
-            final ISelection selection) {
+    public final void selectionChanged(final IAction action, final ISelection selection) {
         // Do nothing.
     }
 }

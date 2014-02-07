@@ -24,8 +24,7 @@ public class BackendCore {
     }
 
     public static IRuntimeInfoCatalog getRuntimeInfoCatalog() {
-        return RuntimeCore
-                .getRuntimeInfoCatalog(new RuntimeInfoPreferencesSerializer());
+        return RuntimeCore.getRuntimeInfoCatalog(new RuntimeInfoPreferencesSerializer());
     }
 
     public static IRpcSite getBuildBackend(@Nullable final IProject project) {

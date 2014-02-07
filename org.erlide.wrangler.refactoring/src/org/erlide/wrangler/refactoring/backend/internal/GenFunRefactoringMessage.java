@@ -73,18 +73,13 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
             parameters = new HashMap<GenFunReturnParameterName, OtpErlangObject>();
             final OtpErlangTuple pars = (OtpErlangTuple) wranglerResult;
             setState("", RefactoringState.MULTI_INSTANCES);
-            parameters
-                    .put(GenFunReturnParameterName.parName, pars.elementAt(0));
-            parameters
-                    .put(GenFunReturnParameterName.funName, pars.elementAt(1));
+            parameters.put(GenFunReturnParameterName.parName, pars.elementAt(0));
+            parameters.put(GenFunReturnParameterName.funName, pars.elementAt(1));
             parameters.put(GenFunReturnParameterName.arity, pars.elementAt(2));
-            parameters.put(GenFunReturnParameterName.funDefPos,
-                    pars.elementAt(3));
+            parameters.put(GenFunReturnParameterName.funDefPos, pars.elementAt(3));
             parameters.put(GenFunReturnParameterName.exp, pars.elementAt(4));
-            parameters.put(GenFunReturnParameterName.sideEffect,
-                    pars.elementAt(5));
-            parameters.put(GenFunReturnParameterName.dupsInFun,
-                    pars.elementAt(6));
+            parameters.put(GenFunReturnParameterName.sideEffect, pars.elementAt(5));
+            parameters.put(GenFunReturnParameterName.dupsInFun, pars.elementAt(6));
             parameters.put(GenFunReturnParameterName.logCmd, pars.elementAt(7));
 
         } else if (state.equals("unknown_side_effect")) {
@@ -92,20 +87,14 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
             final OtpErlangTuple pars = (OtpErlangTuple) wranglerResult;
             setState("", RefactoringState.UNKNOWN_SIDE_EFFECT);
 
-            parameters
-                    .put(GenFunReturnParameterName.parName, pars.elementAt(0));
-            parameters
-                    .put(GenFunReturnParameterName.funName, pars.elementAt(1));
+            parameters.put(GenFunReturnParameterName.parName, pars.elementAt(0));
+            parameters.put(GenFunReturnParameterName.funName, pars.elementAt(1));
             parameters.put(GenFunReturnParameterName.arity, pars.elementAt(2));
-            parameters.put(GenFunReturnParameterName.funDefPos,
-                    pars.elementAt(3));
+            parameters.put(GenFunReturnParameterName.funDefPos, pars.elementAt(3));
             parameters.put(GenFunReturnParameterName.exp, pars.elementAt(4));
-            parameters.put(GenFunReturnParameterName.noOfClauses,
-                    pars.elementAt(5));
-            parameters.put(GenFunReturnParameterName.dupsInFun,
-                    pars.elementAt(6));
-            parameters.put(GenFunReturnParameterName.dupsInClause,
-                    pars.elementAt(7));
+            parameters.put(GenFunReturnParameterName.noOfClauses, pars.elementAt(5));
+            parameters.put(GenFunReturnParameterName.dupsInFun, pars.elementAt(6));
+            parameters.put(GenFunReturnParameterName.dupsInClause, pars.elementAt(7));
             parameters.put(GenFunReturnParameterName.logCmd, pars.elementAt(8));
 
         } else if (state.equals("more_than_one_clause")) {
@@ -113,20 +102,14 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
             final OtpErlangTuple pars = (OtpErlangTuple) wranglerResult;
             setState("", RefactoringState.MORE_THAN_ONE_CLAUSE);
 
-            parameters
-                    .put(GenFunReturnParameterName.parName, pars.elementAt(0));
-            parameters
-                    .put(GenFunReturnParameterName.funName, pars.elementAt(1));
+            parameters.put(GenFunReturnParameterName.parName, pars.elementAt(0));
+            parameters.put(GenFunReturnParameterName.funName, pars.elementAt(1));
             parameters.put(GenFunReturnParameterName.arity, pars.elementAt(2));
-            parameters.put(GenFunReturnParameterName.funDefPos,
-                    pars.elementAt(3));
+            parameters.put(GenFunReturnParameterName.funDefPos, pars.elementAt(3));
             parameters.put(GenFunReturnParameterName.exp, pars.elementAt(4));
-            parameters.put(GenFunReturnParameterName.sideEffect,
-                    pars.elementAt(5));
-            parameters.put(GenFunReturnParameterName.dupsInFun,
-                    pars.elementAt(6));
-            parameters.put(GenFunReturnParameterName.dupsInClause,
-                    pars.elementAt(7));
+            parameters.put(GenFunReturnParameterName.sideEffect, pars.elementAt(5));
+            parameters.put(GenFunReturnParameterName.dupsInFun, pars.elementAt(6));
+            parameters.put(GenFunReturnParameterName.dupsInClause, pars.elementAt(7));
             parameters.put(GenFunReturnParameterName.logCmd, pars.elementAt(8));
         } else {
             throw new WranglerRpcParsingException(resultTuple.toString());

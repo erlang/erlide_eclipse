@@ -7,8 +7,7 @@ import org.erlide.engine.model.erlang.IErlModule;
 
 import com.google.common.collect.Lists;
 
-public abstract class ModuleListContentProvider implements
-        IStructuredContentProvider {
+public abstract class ModuleListContentProvider implements IStructuredContentProvider {
 
     protected static final List<IErlModule> EMPTY = Lists.newArrayList();
 

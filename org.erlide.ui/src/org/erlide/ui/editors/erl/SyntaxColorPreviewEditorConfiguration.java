@@ -33,8 +33,7 @@ public class SyntaxColorPreviewEditorConfiguration extends
     public SyntaxColorPreviewEditorConfiguration(final IPreferenceStore store,
             final IColorManager lcolorManager, final List<TokenHighlight> styles) {
         super(store, lcolorManager);
-        codeScanner = new SyntaxColorPreviewHighlightScanner(colorManager,
-                store);
+        codeScanner = new SyntaxColorPreviewHighlightScanner(colorManager, store);
     }
 
     @Override
@@ -68,8 +67,8 @@ public class SyntaxColorPreviewEditorConfiguration extends
         return null;
     }
 
-    public IAutoEditStrategy getAutoEditStrategy(
-            final ISourceViewer sourceViewer, final String contentType) {
+    public IAutoEditStrategy getAutoEditStrategy(final ISourceViewer sourceViewer,
+            final String contentType) {
         return null;
     }
 

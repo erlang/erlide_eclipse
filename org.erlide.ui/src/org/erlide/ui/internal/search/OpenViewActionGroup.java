@@ -63,8 +63,7 @@ public class OpenViewActionGroup extends ActionGroup {
      * 
      * @since 3.2
      */
-    public OpenViewActionGroup(final Page page,
-            final ISelectionProvider selectionProvider) {
+    public OpenViewActionGroup(final Page page, final ISelectionProvider selectionProvider) {
         site = page.getSite();
         createSiteActions(selectionProvider);
     }
@@ -203,8 +202,7 @@ public class OpenViewActionGroup extends ActionGroup {
                 : site.getSelectionProvider();
 
         fOpenPropertiesDialog = new PropertyDialogAction(site, provider);
-        fOpenPropertiesDialog
-                .setActionDefinitionId("org.eclipse.ui.file.properties"); // $NON-NLS-1$
+        fOpenPropertiesDialog.setActionDefinitionId("org.eclipse.ui.file.properties"); // $NON-NLS-1$
 
         initialize(provider);
     }
@@ -249,10 +247,8 @@ public class OpenViewActionGroup extends ActionGroup {
         // appendToGroup(menu, fOpenCallHierarchy);
 
         if (fShowShowInMenu) {
-            final MenuManager showInSubMenu = new MenuManager(
-                    getShowInMenuLabel());
-            final IWorkbenchWindow workbenchWindow = getSite()
-                    .getWorkbenchWindow();
+            final MenuManager showInSubMenu = new MenuManager(getShowInMenuLabel());
+            final IWorkbenchWindow workbenchWindow = getSite().getWorkbenchWindow();
             showInSubMenu.add(ContributionItemFactory.VIEWS_SHOW_IN
                     .create(workbenchWindow));
             menu.appendToGroup(IContextMenuConstants.GROUP_OPEN, showInSubMenu);

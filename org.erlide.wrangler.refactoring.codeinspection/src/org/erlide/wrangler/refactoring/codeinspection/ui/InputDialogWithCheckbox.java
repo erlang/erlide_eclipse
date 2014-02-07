@@ -48,10 +48,9 @@ public class InputDialogWithCheckbox extends InputDialog {
      * @param validator
      *            validator object
      */
-    public InputDialogWithCheckbox(final Shell parentShell,
-            final String dialogTitle, final String dialogMessage,
-            final String checkBoxText, final String initialValue,
-            final IInputValidator validator) {
+    public InputDialogWithCheckbox(final Shell parentShell, final String dialogTitle,
+            final String dialogMessage, final String checkBoxText,
+            final String initialValue, final IInputValidator validator) {
         super(parentShell, dialogTitle, dialogMessage, initialValue, validator);
         this.checkBoxText = checkBoxText;
 

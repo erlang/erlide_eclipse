@@ -12,10 +12,8 @@ import org.eclipse.swt.widgets.Composite;
 public class ErlStructureDiffViewerCreator implements IViewerCreator {
 
     @Override
-    public Viewer createViewer(final Composite parent,
-            final CompareConfiguration config) {
-        final StructureDiffViewer viewer = new StructureDiffViewer(parent,
-                config);
+    public Viewer createViewer(final Composite parent, final CompareConfiguration config) {
+        final StructureDiffViewer viewer = new StructureDiffViewer(parent, config);
         viewer.setStructureCreator(new ErlStructureCreator());
         viewer.setComparator(new ErlViewerComparator());
         return viewer;

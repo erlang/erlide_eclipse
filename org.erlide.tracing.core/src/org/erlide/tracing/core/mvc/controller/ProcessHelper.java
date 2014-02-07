@@ -35,12 +35,11 @@ public class ProcessHelper {
      */
     public static TracedProcess[] getProcsOnTracedNodes() {
         try {
-            final IRpcSite backend = TraceBackend.getInstance()
-                    .getBackend(true).getRpcSite();
+            final IRpcSite backend = TraceBackend.getInstance().getBackend(true)
+                    .getRpcSite();
             final List<OtpErlangAtom> nodeAtoms = new ArrayList<OtpErlangAtom>();
 
-            for (final Object o : TraceBackend.getInstance()
-                    .getTracedNodesArray()) {
+            for (final Object o : TraceBackend.getInstance().getTracedNodesArray()) {
                 final TracedNode tracedNode = (TracedNode) o;
                 if (tracedNode.isEnabled()) {
                     nodeAtoms.add(new OtpErlangAtom(tracedNode.getNodeName()));
@@ -49,14 +48,12 @@ public class ProcessHelper {
 
             final OtpErlangList nodesList = new OtpErlangList(
                     nodeAtoms.toArray(new OtpErlangAtom[nodeAtoms.size()]));
-            final OtpErlangList procList = (OtpErlangList) backend.call(
-                    MODULE_NAME, FUNCTION_NAME, "x", nodesList);
-            final TracedProcess[] processes = new TracedProcess[procList
-                    .arity()];
+            final OtpErlangList procList = (OtpErlangList) backend.call(MODULE_NAME,
+                    FUNCTION_NAME, "x", nodesList);
+            final TracedProcess[] processes = new TracedProcess[procList.arity()];
 
             for (int i = 0; i < procList.arity(); i++) {
-                final OtpErlangTuple tuple = (OtpErlangTuple) procList
-                        .elementAt(i);
+                final OtpErlangTuple tuple = (OtpErlangTuple) procList.elementAt(i);
                 processes[i] = new TracedProcess(tuple);
             }
             return processes;

@@ -59,8 +59,7 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
      * <code>Group</code>
      */
     public SelectionButtonDialogFieldGroup(final int buttonsStyle,
-            final String[] buttonNames, final int nColumns,
-            final int borderStyle) {
+            final String[] buttonNames, final int nColumns, final int borderStyle) {
         super();
 
         assertThat(buttonsStyle, isOneOf(SWT.RADIO, SWT.CHECK, SWT.TOGGLE));
@@ -122,8 +121,8 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 
     // ------- ui creation
 
-    private Button createSelectionButton(final int index,
-            final Composite group, final SelectionListener listener) {
+    private Button createSelectionButton(final int index, final Composite group,
+            final SelectionListener listener) {
         final Button button = new Button(group, fButtonsStyle | SWT.LEFT);
         button.setFont(group.getFont());
         button.setText(fButtonNames[index]);
@@ -179,8 +178,7 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
             final int nButtons = fButtonNames.length;
             fButtons = new Button[nButtons];
             for (int i = 0; i < nButtons; i++) {
-                fButtons[i] = createSelectionButton(i, fButtonComposite,
-                        listener);
+                fButtons[i] = createSelectionButton(i, fButtonComposite, listener);
             }
             final int nRows = nButtons / fGroupNumberOfColumns;
             final int nFillElements = nRows * fGroupNumberOfColumns - nButtons;

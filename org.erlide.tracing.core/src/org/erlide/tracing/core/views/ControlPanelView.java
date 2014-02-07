@@ -162,8 +162,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                     finish();
                 }
             };
-            PlatformUI.getWorkbench().getProgressService()
-                    .busyCursorWhile(task);
+            PlatformUI.getWorkbench().getProgressService().busyCursorWhile(task);
             TracingStatusHandler.handleStatus(status);
         } catch (final Exception e) {
         } finally {
@@ -182,8 +181,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             }
         };
         try {
-            final Shell shell = PlatformUI.getWorkbench()
-                    .getActiveWorkbenchWindow().getShell();
+            final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getShell();
             new ProgressMonitorDialog(shell).run(true, false, task);
             startStopAction.setImageDescriptor(DebugUITools
                     .getImageDescriptor(IDebugUIConstants.IMG_ACT_RUN));
@@ -221,8 +220,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
         final Composite container = new Composite(parent, SWT.NONE);
         container.setLayout(new GridLayout(4, false));
-        container
-                .setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT, true, false));
+        container.setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT, true, false));
 
         for (final ProcessMode mode : ProcessMode.values()) {
             final Button button = new Button(container, SWT.RADIO);
@@ -257,8 +255,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         final boolean changeFromByPidMode = !ProcessMode.BY_PID.equals(newMode)
                 && (oldMode == null || ProcessMode.BY_PID.equals(oldMode));
 
-        if (currentProcessControl != null
-                && (changeToByPidMode || changeFromByPidMode)) {
+        if (currentProcessControl != null && (changeToByPidMode || changeFromByPidMode)) {
             currentProcessControl.dispose();
         }
 
@@ -347,28 +344,25 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
         // input
         fillProcessesList(processesTableViewer);
-        processesTableViewer
-                .setInput(TraceBackend.getInstance().getProcesses());
+        processesTableViewer.setInput(TraceBackend.getInstance().getProcesses());
 
         // editors
         final CellEditor[] editors = new CellEditor[ProcessFlag.values().length
                 + ProcessFlag.values().length];
-        editors[ProcessColumn.SELECTED.ordinal()] = new CheckboxCellEditor(
-                table);
+        editors[ProcessColumn.SELECTED.ordinal()] = new CheckboxCellEditor(table);
         for (final ProcessFlag flag : ProcessFlag.values()) {
             editors[ProcessColumn.values().length + flag.ordinal()] = new CheckboxCellEditor(
                     table);
         }
         processesTableViewer.setCellEditors(editors);
-        processesTableViewer.setCellModifier(new ProcessCellModifier(
-                processesTableViewer));
+        processesTableViewer
+                .setCellModifier(new ProcessCellModifier(processesTableViewer));
 
         return container;
     }
 
     private void fillProcessesList(final TableViewer tableViewer) {
-        final IProgressService ps = PlatformUI.getWorkbench()
-                .getProgressService();
+        final IProgressService ps = PlatformUI.getWorkbench().getProgressService();
         try {
             ps.busyCursorWhile(new IRunnableWithProgress() {
                 @Override
@@ -415,8 +409,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                TraceBackend.getInstance().addTracePattern(
-                        new TracePattern(true));
+                TraceBackend.getInstance().addTracePattern(new TracePattern(true));
             }
         });
 
@@ -439,14 +432,10 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         });
 
         // Pattern config buttons
-        final Button loadConfigButton = new Button(container, SWT.PUSH
-                | SWT.CENTER);
-        final Button deleteConfigButton = new Button(container, SWT.PUSH
-                | SWT.CENTER);
-        final Button saveConfigButton = new Button(container, SWT.PUSH
-                | SWT.CENTER);
-        final Button saveAsConfigButton = new Button(container, SWT.PUSH
-                | SWT.CENTER);
+        final Button loadConfigButton = new Button(container, SWT.PUSH | SWT.CENTER);
+        final Button deleteConfigButton = new Button(container, SWT.PUSH | SWT.CENTER);
+        final Button saveConfigButton = new Button(container, SWT.PUSH | SWT.CENTER);
+        final Button saveAsConfigButton = new Button(container, SWT.PUSH | SWT.CENTER);
         final Label configNameLabel = new Label(container, SWT.NULL);
         configNameLabel.setLayoutData(new RowData(120, SWT.DEFAULT));
 
@@ -467,8 +456,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                     patternsConfigName = result;
                     configNameLabel.setText(patternsConfigName);
                     TraceBackend.getInstance().loadTracePatterns(
-                            ConfigurationManager
-                                    .loadTPConfig(patternsConfigName));
+                            ConfigurationManager.loadTPConfig(patternsConfigName));
                 }
             }
         });
@@ -482,10 +470,9 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 if (patternsConfigName != null) {
-                    final MessageBox messageBox = new MessageBox(parent
-                            .getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-                    messageBox.setMessage("Delete \"" + patternsConfigName
-                            + "\"?");
+                    final MessageBox messageBox = new MessageBox(parent.getShell(),
+                            SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+                    messageBox.setMessage("Delete \"" + patternsConfigName + "\"?");
                     messageBox.setText("Delete configuration");
                     if (messageBox.open() == SWT.YES) {
                         ConfigurationManager.removeTPConfig(patternsConfigName);
@@ -506,8 +493,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             public void widgetSelected(final SelectionEvent e) {
                 if (patternsConfigName != null) {
                     if (!ConfigurationManager.saveTPConfig(patternsConfigName)) {
-                        final MessageBox messageBox = new MessageBox(parent
-                                .getShell(), SWT.ICON_ERROR | SWT.OK);
+                        final MessageBox messageBox = new MessageBox(parent.getShell(),
+                                SWT.ICON_ERROR | SWT.OK);
                         messageBox.setMessage("Unable to save configuration: "
                                 + patternsConfigName);
                         messageBox.setText("Error");
@@ -525,8 +512,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final String[] configurations = ConfigurationManager
-                        .getTPConfigs();
+                final String[] configurations = ConfigurationManager.getTPConfigs();
                 final Set<String> existingNames = new HashSet<String>(Arrays
                         .asList(configurations));
                 final InputDialog dialog = new ConfigurationSaveAsDialog(parent
@@ -539,8 +525,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                         patternsConfigName = dialog.getValue();
                         configNameLabel.setText(patternsConfigName);
                     } else {
-                        final MessageBox messageBox = new MessageBox(parent
-                                .getShell(), SWT.ICON_ERROR | SWT.OK);
+                        final MessageBox messageBox = new MessageBox(parent.getShell(),
+                                SWT.ICON_ERROR | SWT.OK);
                         messageBox.setMessage("Unable to save configuration: "
                                 + dialog.getValue());
                         messageBox.setText("Error");
@@ -567,8 +553,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         table.setLinesVisible(true);
 
         // columns
-        final String columnProperties[] = new String[TracePatternColumn
-                .values().length];
+        final String columnProperties[] = new String[TracePatternColumn.values().length];
         for (final TracePatternColumn column : TracePatternColumn.values()) {
             final TableColumn tableColumn = new TableColumn(table, SWT.LEFT,
                     column.ordinal());
@@ -582,25 +567,19 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
         // providers
         functionsTableViewer.setLabelProvider(new TracePatternLabelProvider());
-        functionsTableViewer
-                .setContentProvider(new TracePatternContentProvider());
+        functionsTableViewer.setContentProvider(new TracePatternContentProvider());
 
         // input
         functionsTableViewer.setInput(TraceBackend.getInstance());
 
         // editors
         final CellEditor[] editors = new CellEditor[TracePatternColumn.values().length];
-        editors[TracePatternColumn.ENABLED.ordinal()] = new CheckboxCellEditor(
-                table);
-        editors[TracePatternColumn.LOCAL.ordinal()] = new CheckboxCellEditor(
-                table);
-        editors[TracePatternColumn.MODULE_NAME.ordinal()] = new TextCellEditor(
-                table);
-        editors[TracePatternColumn.FUNCTION_NAME.ordinal()] = new TextCellEditor(
-                table);
+        editors[TracePatternColumn.ENABLED.ordinal()] = new CheckboxCellEditor(table);
+        editors[TracePatternColumn.LOCAL.ordinal()] = new CheckboxCellEditor(table);
+        editors[TracePatternColumn.MODULE_NAME.ordinal()] = new TextCellEditor(table);
+        editors[TracePatternColumn.FUNCTION_NAME.ordinal()] = new TextCellEditor(table);
         editors[TracePatternColumn.ARITY.ordinal()] = new TextCellEditor(table);
-        editors[TracePatternColumn.MATCH_SPEC.ordinal()] = new MatchSpecCellEditor(
-                table);
+        editors[TracePatternColumn.MATCH_SPEC.ordinal()] = new MatchSpecCellEditor(table);
         functionsTableViewer.setCellEditors(editors);
         functionsTableViewer.setCellModifier(new TracePatternCellModifier(
                 functionsTableViewer));
@@ -682,14 +661,10 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         });
 
         // Pattern config buttons
-        final Button loadConfigButton = new Button(container, SWT.PUSH
-                | SWT.CENTER);
-        final Button deleteConfigButton = new Button(container, SWT.PUSH
-                | SWT.CENTER);
-        final Button saveConfigButton = new Button(container, SWT.PUSH
-                | SWT.CENTER);
-        final Button saveAsConfigButton = new Button(container, SWT.PUSH
-                | SWT.CENTER);
+        final Button loadConfigButton = new Button(container, SWT.PUSH | SWT.CENTER);
+        final Button deleteConfigButton = new Button(container, SWT.PUSH | SWT.CENTER);
+        final Button saveConfigButton = new Button(container, SWT.PUSH | SWT.CENTER);
+        final Button saveAsConfigButton = new Button(container, SWT.PUSH | SWT.CENTER);
         final Label configNameLabel = new Label(container, SWT.NULL);
         configNameLabel.setLayoutData(new RowData(120, SWT.DEFAULT));
 
@@ -710,16 +685,14 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                     nodesConfigName = result;
                     configNameLabel.setText(nodesConfigName);
                     TraceBackend.getInstance().loadTracedNodes(
-                            ConfigurationManager
-                                    .loadNodesConfig(nodesConfigName));
+                            ConfigurationManager.loadNodesConfig(nodesConfigName));
                     nodesTableViewer.refresh();
                 }
             }
         });
 
         // "Delete nodes configuration" button
-        deleteConfigButton
-                .setToolTipText("Delete current node configuration...");
+        deleteConfigButton.setToolTipText("Delete current node configuration...");
         deleteConfigButton.setImage(PlatformUI.getWorkbench().getSharedImages()
                 .getImage(ISharedImages.IMG_ELCL_REMOVE));
         deleteConfigButton.addSelectionListener(new SelectionAdapter() {
@@ -727,10 +700,9 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 if (nodesConfigName != null) {
-                    final MessageBox messageBox = new MessageBox(parent
-                            .getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-                    messageBox
-                            .setMessage("Delete \"" + nodesConfigName + "\"?");
+                    final MessageBox messageBox = new MessageBox(parent.getShell(),
+                            SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+                    messageBox.setMessage("Delete \"" + nodesConfigName + "\"?");
                     messageBox.setText("Delete configuration");
                     if (messageBox.open() == SWT.YES) {
                         ConfigurationManager.removeNodesConfig(nodesConfigName);
@@ -751,8 +723,8 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             public void widgetSelected(final SelectionEvent e) {
                 if (nodesConfigName != null) {
                     if (!ConfigurationManager.saveNodesConfig(nodesConfigName)) {
-                        final MessageBox messageBox = new MessageBox(parent
-                                .getShell(), SWT.ICON_ERROR | SWT.OK);
+                        final MessageBox messageBox = new MessageBox(parent.getShell(),
+                                SWT.ICON_ERROR | SWT.OK);
                         messageBox.setMessage("Unable to save configuration: "
                                 + nodesConfigName);
                         messageBox.setText("Error");
@@ -763,30 +735,27 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         });
 
         // "Save nodes configuration as..." button
-        saveAsConfigButton
-                .setToolTipText("Save current nodes configuration as...");
+        saveAsConfigButton.setToolTipText("Save current nodes configuration as...");
         saveAsConfigButton.setImage(PlatformUI.getWorkbench().getSharedImages()
                 .getImage(ISharedImages.IMG_ETOOL_SAVEAS_EDIT));
         saveAsConfigButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final String[] configurations = ConfigurationManager
-                        .getNodesConfig();
+                final String[] configurations = ConfigurationManager.getNodesConfig();
                 final Set<String> existingNames = new HashSet<String>(Arrays
                         .asList(configurations));
                 final InputDialog dialog = new ConfigurationSaveAsDialog(parent
                         .getShell(), "Save nodes configuration",
-                        "Enter name for configuration:", nodesConfigName,
-                        existingNames);
+                        "Enter name for configuration:", nodesConfigName, existingNames);
 
                 if (dialog.open() == Window.OK) {
                     if (ConfigurationManager.saveNodesConfig(dialog.getValue())) {
                         nodesConfigName = dialog.getValue();
                         configNameLabel.setText(nodesConfigName);
                     } else {
-                        final MessageBox messageBox = new MessageBox(parent
-                                .getShell(), SWT.ICON_ERROR | SWT.OK);
+                        final MessageBox messageBox = new MessageBox(parent.getShell(),
+                                SWT.ICON_ERROR | SWT.OK);
                         messageBox.setMessage("Unable to save configuration: "
                                 + dialog.getValue());
                         messageBox.setText("Error");
@@ -813,8 +782,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         table.setLinesVisible(true);
 
         // columns
-        final String columnProperties[] = new String[TracePatternColumn
-                .values().length];
+        final String columnProperties[] = new String[TracePatternColumn.values().length];
         for (final NodeColumn column : NodeColumn.values()) {
             final TableColumn tableColumn = new TableColumn(table, SWT.LEFT,
                     column.ordinal());
@@ -839,8 +807,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         editors[NodeColumn.NODE_NAME.ordinal()] = new TextCellEditor(table);
         editors[NodeColumn.COOKIE.ordinal()] = new TextCellEditor(table);
         nodesTableViewer.setCellEditors(editors);
-        nodesTableViewer
-                .setCellModifier(new NodeCellModifier(nodesTableViewer));
+        nodesTableViewer.setCellModifier(new NodeCellModifier(nodesTableViewer));
     }
 
     @Override

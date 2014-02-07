@@ -27,8 +27,7 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public abstract class ProcessRelatedRefactoring extends
-        SimpleWranglerRefactoring {
+public abstract class ProcessRelatedRefactoring extends SimpleWranglerRefactoring {
 
     protected String undecidables;
 
@@ -47,11 +46,9 @@ public abstract class ProcessRelatedRefactoring extends
             final IRefactoringRpcMessage message = run(sel);
             changedFiles = message.getRefactoringChangeset();
 
-            return RefactoringStatus
-                    .createWarningStatus(getUndecidableWarningMessage());
+            return RefactoringStatus.createWarningStatus(getUndecidableWarningMessage());
         } else {
-            return RefactoringStatus.createFatalErrorStatus(msg
-                    .getMessageString());
+            return RefactoringStatus.createFatalErrorStatus(msg.getMessageString());
 
         }
     }
@@ -61,6 +58,5 @@ public abstract class ProcessRelatedRefactoring extends
     /**
      * @noreference This method is not intended to be referenced by clients.
      */
-    protected abstract ProcessRpcMessage checkUndecidables(
-            IErlMemberSelection sel);
+    protected abstract ProcessRpcMessage checkUndecidables(IErlMemberSelection sel);
 }

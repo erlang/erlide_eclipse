@@ -47,32 +47,30 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
 
     protected OtpErlangTuple parseFile(final IFile f) {
         final String filePath = f.getLocation().toOSString();
-        final RpcResult res = backend.call_noexception(MODULE, PARSE_FUNCTION,
-                "sax", filePath, "true", GlobalParameters
-                        .getWranglerSelection().getSearchPath());
+        final RpcResult res = backend
+                .call_noexception(MODULE, PARSE_FUNCTION, "sax", filePath, "true",
+                        GlobalParameters.getWranglerSelection().getSearchPath());
         return parseParserResult(res.getValue());
     }
 
     protected OtpErlangTuple parseParserResult(final OtpErlangObject value) {
         final OtpErlangTuple backendResult = (OtpErlangTuple) value;
-        if (!((OtpErlangAtom) backendResult.elementAt(0)).atomValue().equals(
-                "ok")) {
+        if (!((OtpErlangAtom) backendResult.elementAt(0)).atomValue().equals("ok")) {
             return null;
         }
-        final OtpErlangTuple wranglerResult = (OtpErlangTuple) backendResult
-                .elementAt(1);
+        final OtpErlangTuple wranglerResult = (OtpErlangTuple) backendResult.elementAt(1);
 
         return (OtpErlangTuple) wranglerResult.elementAt(0);
 
     }
 
-    protected SyntaxInfo varToPos(final OtpErlangTuple syntaxTree,
-            final int line, final int col) {
+    protected SyntaxInfo varToPos(final OtpErlangTuple syntaxTree, final int line,
+            final int col) {
         final OtpErlangInt[] position = new OtpErlangInt[2];
         position[0] = new OtpErlangInt(line);
         position[1] = new OtpErlangInt(col);
-        final RpcResult res = backend.call_noexception(INTERFACE_MODULE,
-                VAR_FUNCTION, "xx", syntaxTree, new OtpErlangTuple(position));
+        final RpcResult res = backend.call_noexception(INTERFACE_MODULE, VAR_FUNCTION,
+                "xx", syntaxTree, new OtpErlangTuple(position));
         return parseVarInfo(res.getValue());
     }
 

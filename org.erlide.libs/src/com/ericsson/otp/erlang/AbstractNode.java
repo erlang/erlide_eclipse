@@ -98,9 +98,8 @@ public class AbstractNode {
     int distHigh = 5; // Cannot talk to nodes before R6
     int distLow = 5; // Cannot talk to nodes before R6
     int creation = 0;
-    int flags = dFlagExtendedReferences | dFlagExtendedPidsPorts
-            | dFlagBitBinaries | dFlagNewFloats | dFlagFunTags
-            | dflagNewFunTags | dFlagUtf8Atoms;
+    int flags = dFlagExtendedReferences | dFlagExtendedPidsPorts | dFlagBitBinaries
+            | dFlagNewFloats | dFlagFunTags | dflagNewFunTags | dFlagUtf8Atoms;
 
     /* initialize hostname and default cookie */
     static {
@@ -119,8 +118,7 @@ public class AbstractNode {
         }
 
         final String homeDir = getHomeDir();
-        final String dotCookieFilename = homeDir + File.separator
-                + ".erlang.cookie";
+        final String dotCookieFilename = homeDir + File.separator + ".erlang.cookie";
         BufferedReader br = null;
 
         try {

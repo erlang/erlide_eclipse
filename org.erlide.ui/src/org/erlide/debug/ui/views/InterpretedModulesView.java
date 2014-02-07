@@ -97,10 +97,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
                 final EnumSet<ErlDebugFlags> debugFlags = ErlDebugFlags
                         .makeSet(launchConfiguration.getAttribute(
                                 ErlRuntimeAttributes.DEBUG_FLAGS,
-                                ErlDebugFlags
-                                        .getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS)));
-                distributed = debugFlags
-                        .contains(ErlDebugFlags.DISTRIBUTED_DEBUG);
+                                ErlDebugFlags.getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS)));
+                distributed = debugFlags.contains(ErlDebugFlags.DISTRIBUTED_DEBUG);
             } catch (final CoreException e1) {
                 distributed = false;
             }
@@ -131,8 +129,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
                 ErlLogger.warn("erlangDebugTarget is null ?!?!");
                 return;
             }
-            final Set<String> interpret = erlangDebugTarget
-                    .getInterpretedModules();
+            final Set<String> interpret = erlangDebugTarget.getInterpretedModules();
             contentProvider.setModules(interpret);
             refreshList();
         }
@@ -204,27 +201,24 @@ public class InterpretedModulesView extends AbstractDebugView implements
     protected void becomesVisible() {
         super.becomesVisible();
         final ISelection selection = DebugUITools.getDebugContextManager()
-                .getContextService(getSite().getWorkbenchWindow())
-                .getActiveContext();
+                .getContextService(getSite().getWorkbenchWindow()).getActiveContext();
         contextActivated(selection);
     }
 
-    public void interpretOrDeinterpret(final IErlModule module,
-            final boolean checked) {
+    public void interpretOrDeinterpret(final IErlModule module, final boolean checked) {
         if (erlangDebugTarget == null) {
             ErlLogger.warn("erlangDebugTarget is null ?!?!");
             return;
         }
         final String moduleWoExtension = module.getModuleName();
-        final IProject project = ErlangEngine.getInstance()
-                .getModelUtilService().getProject(module).getWorkspaceProject();
+        final IProject project = ErlangEngine.getInstance().getModelUtilService()
+                .getProject(module).getWorkspaceProject();
         final boolean interpret = checked;
 
-        if (erlangDebugTarget.getInterpretedModules().contains(
-                moduleWoExtension) != interpret) {
+        if (erlangDebugTarget.getInterpretedModules().contains(moduleWoExtension) != interpret) {
             // FIXME this isn't correct!!!
-            erlangDebugTarget.interpret(project, moduleWoExtension,
-                    distributed, interpret);
+            erlangDebugTarget.interpret(project, moduleWoExtension, distributed,
+                    interpret);
         }
         addRemove(module, checked);
     }

@@ -44,8 +44,8 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
      *            editor, where the text is selected
      * @throws WranglerException
      */
-    public ErlTextMemberSelection(final ITextSelection selection,
-            final ITextEditor editor) throws WranglerException {
+    public ErlTextMemberSelection(final ITextSelection selection, final ITextEditor editor)
+            throws WranglerException {
         final IEditorInput input = editor.getEditorInput();
         if (!(input instanceof IFileEditorInput)) {
             throw new WranglerException("Can not refactor external modules!");
@@ -67,8 +67,8 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
     }
 
     protected int getStartCol() {
-        return WranglerUtils.calculateColumnFromOffset(
-                textSelection.getOffset(), getStartLine() - 1, document);
+        return WranglerUtils.calculateColumnFromOffset(textSelection.getOffset(),
+                getStartLine() - 1, document);
     }
 
     protected int getEndLine() {
@@ -76,9 +76,8 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
     }
 
     protected int getEndCol() {
-        return WranglerUtils.calculateColumnFromOffset(
-                textSelection.getOffset() + textSelection.getLength(),
-                getEndLine() - 1, document);
+        return WranglerUtils.calculateColumnFromOffset(textSelection.getOffset()
+                + textSelection.getLength(), getEndLine() - 1, document);
     }
 
     protected int getStartLine() {
@@ -87,12 +86,11 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlElement getErlElement() {
-        final IErlModule module = (IErlModule) ErlangEngine.getInstance()
-                .getModel().findElement(file);
+        final IErlModule module = (IErlModule) ErlangEngine.getInstance().getModel()
+                .findElement(file);
 
         try {
-            final IErlElement element = module.getElementAt(textSelection
-                    .getOffset());
+            final IErlElement element = module.getElementAt(textSelection.getOffset());
             if (element == null) {
                 return module;
             }
@@ -112,13 +110,12 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
             sL = member.getLineStart() + 1;
             eL = member.getLineEnd() + 1;
 
-            sC = WranglerUtils.calculateColumnFromOffset(member
-                    .getSourceRange().getOffset(), sL - 1, document);
-            eC = WranglerUtils.calculateColumnFromOffset(member
-                    .getSourceRange().getOffset()
-                    + member.getSourceRange().getLength(), eL - 1, document);
-            range = new ErlRange(sL, sC, eL, eC, member.getSourceRange()
-                    .getOffset(), member.getSourceRange().getLength());
+            sC = WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
+                    .getOffset(), sL - 1, document);
+            eC = WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
+                    .getOffset() + member.getSourceRange().getLength(), eL - 1, document);
+            range = new ErlRange(sL, sC, eL, eC, member.getSourceRange().getOffset(),
+                    member.getSourceRange().getLength());
 
             return range;
         }
@@ -127,9 +124,8 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlRange getSelectionRange() {
-        return new ErlRange(getStartLine(), getStartCol(), getEndLine(),
-                getEndCol(), textSelection.getOffset(),
-                textSelection.getLength());
+        return new ErlRange(getStartLine(), getStartCol(), getEndLine(), getEndCol(),
+                textSelection.getOffset(), textSelection.getLength());
     }
 
     @Override
@@ -149,7 +145,6 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlModule getErlModule() {
-        return (IErlModule) ErlangEngine.getInstance().getModel()
-                .findElement(file);
+        return (IErlModule) ErlangEngine.getInstance().getModel().findElement(file);
     }
 }

@@ -49,13 +49,11 @@ public class ImplementorsSearchGroup extends ActionGroup {
         fFindImplementorsAction
                 .setActionDefinitionId("org.erlide.ui.search.implementors.in.workspace");
 
-        fFindImplementorsInProjectAction = new FindImplementorsInProjectAction(
-                site);
+        fFindImplementorsInProjectAction = new FindImplementorsInProjectAction(site);
         fFindImplementorsInProjectAction
                 .setActionDefinitionId("org.erlide.ui.search.implementors.in.project");
 
-        fFindImplementorsInWorkingSetAction = new FindImplementorsInWorkingSetAction(
-                site);
+        fFindImplementorsInWorkingSetAction = new FindImplementorsInWorkingSetAction(site);
         fFindImplementorsInWorkingSetAction
                 .setActionDefinitionId("org.erlide.ui.search.implementors.in.workset");
 
@@ -83,15 +81,12 @@ public class ImplementorsSearchGroup extends ActionGroup {
         fFindImplementorsAction = new FindImplementorsAction(editor);
         fFindImplementorsAction
                 .setActionDefinitionId("org.erlide.ui.search.implementors.in.workspace");
-        fEditor.setAction(
-                "SearchReferencesInWorkspace", fFindImplementorsAction); //$NON-NLS-1$
+        fEditor.setAction("SearchReferencesInWorkspace", fFindImplementorsAction); //$NON-NLS-1$
 
-        fFindImplementorsInProjectAction = new FindImplementorsInProjectAction(
-                fEditor);
+        fFindImplementorsInProjectAction = new FindImplementorsInProjectAction(fEditor);
         fFindImplementorsInProjectAction
                 .setActionDefinitionId("org.erlide.ui.search.implementors.in.project");
-        fEditor.setAction(
-                "SearchImplementorsInProject", fFindImplementorsInProjectAction); //$NON-NLS-1$
+        fEditor.setAction("SearchImplementorsInProject", fFindImplementorsInProjectAction); //$NON-NLS-1$
 
         fFindImplementorsInWorkingSetAction = new FindImplementorsInWorkingSetAction(
                 fEditor);

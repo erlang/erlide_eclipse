@@ -57,10 +57,8 @@ public class ProcessCellModifier implements ICellModifier {
     }
 
     @Override
-    public void modify(final Object element, final String property,
-            final Object value) {
-        final TracedProcess process = (TracedProcess) ((TableItem) element)
-                .getData();
+    public void modify(final Object element, final String property, final Object value) {
+        final TracedProcess process = (TracedProcess) ((TableItem) element).getData();
 
         // processes column
         try {

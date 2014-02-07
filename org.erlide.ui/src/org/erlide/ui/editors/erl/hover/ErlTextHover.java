@@ -67,9 +67,8 @@ import org.osgi.framework.Bundle;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlTextHover implements ITextHover,
-        IInformationProviderExtension2, ITextHoverExtension,
-        ITextHoverExtension2 {
+public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
+        ITextHoverExtension, ITextHoverExtension2 {
 
     private static URL fgStyleSheet = null;
     private IInformationControlCreator fHoverControlCreator;
@@ -119,8 +118,8 @@ public class ErlTextHover implements ITextHover,
      * @param offset
      * @param length
      */
-    private static String makeDebuggerVariableHover(
-            final ITextViewer textViewer, final int offset, final int length) {
+    private static String makeDebuggerVariableHover(final ITextViewer textViewer,
+            final int offset, final int length) {
         final IAdaptable adaptable = DebugUITools.getDebugContext();
         if (adaptable != null) {
             final IStackFrame frame = (IStackFrame) adaptable
@@ -140,8 +139,7 @@ public class ErlTextHover implements ITextHover,
                                 if (variable.getName().equals(varName)) {
                                     final String value = variable.getValue()
                                             .getValueString();
-                                    return makeVariablePresentation(varName,
-                                            value);
+                                    return makeVariablePresentation(varName, value);
                                 }
                             }
                         }
@@ -185,8 +183,7 @@ public class ErlTextHover implements ITextHover,
         }
 
         @Override
-        protected IInformationControl doCreateInformationControl(
-                final Shell parent) {
+        protected IInformationControl doCreateInformationControl(final Shell parent) {
             IInformationControl control;
             if (BrowserInformationControl.isAvailable(parent)) {
                 control = new BrowserInformationControl(parent,
@@ -235,8 +232,7 @@ public class ErlTextHover implements ITextHover,
 
     @Deprecated
     @Override
-    public String getHoverInfo(final ITextViewer textViewer,
-            final IRegion hoverRegion) {
+    public String getHoverInfo(final ITextViewer textViewer, final IRegion hoverRegion) {
         if (isHoverDisabled()) {
             return null;
         }
@@ -250,8 +246,7 @@ public class ErlTextHover implements ITextHover,
     }
 
     @Override
-    public Object getHoverInfo2(final ITextViewer textViewer,
-            final IRegion hoverRegion) {
+    public Object getHoverInfo2(final ITextViewer textViewer, final IRegion hoverRegion) {
         if (isHoverDisabled()) {
             return null;
         }
@@ -272,8 +267,7 @@ public class ErlTextHover implements ITextHover,
 
         final int offset = hoverRegion.getOffset();
         final int length = hoverRegion.getLength();
-        final String debuggerVar = makeDebuggerVariableHover(textViewer,
-                offset, length);
+        final String debuggerVar = makeDebuggerVariableHover(textViewer, offset, length);
         if (debuggerVar.length() > 0) {
             result.append(debuggerVar);
         }
@@ -287,8 +281,7 @@ public class ErlTextHover implements ITextHover,
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getWorkspaceProject();
-            final IRpcSite backend = backendManager.getBuildBackend(project)
-                    .getRpcSite();
+            final IRpcSite backend = backendManager.getBuildBackend(project).getRpcSite();
             if (backend == null) {
                 return null;
             }
@@ -299,9 +292,8 @@ public class ErlTextHover implements ITextHover,
             final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine
                     .getInstance()
                     .getService(OtpDocService.class)
-                    .getOtpDoc(backend, offset, stateDir,
-                            editor.getScannerName(), fImports,
-                            externalModulesString, model.getPathVars());
+                    .getOtpDoc(backend, offset, stateDir, editor.getScannerName(),
+                            fImports, externalModulesString, model.getPathVars());
             // ErlLogger.debug("otp doc %s", t);
             if (Util.isOk(t)) {
                 element = new OpenResult(t.elementAt(2));
@@ -319,13 +311,12 @@ public class ErlTextHover implements ITextHover,
                         editor.getElementAt(offset, false));
                 if (found instanceof IErlFunction) {
                     final IErlFunction function = (IErlFunction) found;
-                    final String comment = HoverUtil
-                            .getDocumentationString(function.getComments());
+                    final String comment = HoverUtil.getDocumentationString(function
+                            .getComments());
                     if (comment.length() == 0) {
                         return null;
                     }
-                    result.append(HTMLPrinter.asHtml("<pre>" + comment
-                            + "</pre>"));
+                    result.append(HTMLPrinter.asHtml("<pre>" + comment + "</pre>"));
                 } else if (found instanceof IErlPreprocessorDef) {
                     final IErlPreprocessorDef preprocessorDef = (IErlPreprocessorDef) found;
                     result.append(preprocessorDef.getExtra());
@@ -336,7 +327,7 @@ public class ErlTextHover implements ITextHover,
             return null;
         }
         final String strResult = HoverUtil.getHTMLAndReplaceJSLinks(result);
-        return new ErlBrowserInformationControlInput(null, editor, element,
-                strResult, 20, docPath, anchor);
+        return new ErlBrowserInformationControlInput(null, editor, element, strResult,
+                20, docPath, anchor);
     }
 }

@@ -47,8 +47,7 @@ public class ErlangProjectPropertyPage extends FieldEditorOverlayPage {
         final IProject prj = (IProject) getElement().getAdapter(IProject.class);
 
         try {
-            prj.getFolder(new Path(".settings")).refreshLocal(
-                    IResource.DEPTH_ONE, null);
+            prj.getFolder(new Path(".settings")).refreshLocal(IResource.DEPTH_ONE, null);
         } catch (final CoreException e) {
         }
 
@@ -63,9 +62,8 @@ public class ErlangProjectPropertyPage extends FieldEditorOverlayPage {
         addField(src);
 
         final ProjectPathEditor inc = new ProjectPathEditor(
-                ProjectPreferencesConstants.INCLUDE_DIRS,
-                "Include directories:", "Select directory:",
-                getFieldEditorParent(), prj);
+                ProjectPreferencesConstants.INCLUDE_DIRS, "Include directories:",
+                "Select directory:", getFieldEditorParent(), prj);
         addField(inc);
 
         // IPreferenceStore ps = getPreferenceStore();
@@ -89,12 +87,10 @@ public class ErlangProjectPropertyPage extends FieldEditorOverlayPage {
             versionsArray[i][0] = versions.get(i);
             versionsArray[i][1] = versionsArray[i][0];
         }
-        addField(new ComboFieldEditor(
-                ProjectPreferencesConstants.RUNTIME_VERSION,
+        addField(new ComboFieldEditor(ProjectPreferencesConstants.RUNTIME_VERSION,
                 "Runtime version:", versionsArray, getFieldEditorParent()));
 
-        addField(new BooleanFieldEditor(
-                ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
+        addField(new BooleanFieldEditor(ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
                 "When cleaning, delete the whole output directories (is faster)",
                 getFieldEditorParent()));
 
@@ -111,8 +107,7 @@ public class ErlangProjectPropertyPage extends FieldEditorOverlayPage {
 
     @Override
     public boolean performOk() {
-        final IProject project = (IProject) getElement().getAdapter(
-                IProject.class);
+        final IProject project = (IProject) getElement().getAdapter(IProject.class);
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
         erlProject.clearCaches();

@@ -12,8 +12,8 @@ import org.erlide.ui.prefs.IPreferenceConfigurationBlock;
 import org.erlide.ui.util.OverlayPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
 
-abstract class AbstractConfigurationBlockPreferencePage extends PreferencePage
-        implements IWorkbenchPreferencePage {
+abstract class AbstractConfigurationBlockPreferencePage extends PreferencePage implements
+        IWorkbenchPreferencePage {
 
     private final IPreferenceConfigurationBlock fConfigurationBlock;
 
@@ -52,8 +52,7 @@ abstract class AbstractConfigurationBlockPreferencePage extends PreferencePage
     @Override
     public void createControl(final Composite parent) {
         super.createControl(parent);
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(getControl(), getHelpId());
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), getHelpId());
     }
 
     /*

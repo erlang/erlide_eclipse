@@ -33,8 +33,7 @@ import org.erlide.wrangler.refactoring.util.IErlRange;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public class MergeLetRefactoring extends
-        CostumWorkflowRefactoringWithPositionsSelection {
+public class MergeLetRefactoring extends CostumWorkflowRefactoringWithPositionsSelection {
 
     @Override
     public RefactoringWorkflowController getWorkflowController(final Shell shell) {
@@ -59,8 +58,7 @@ public class MergeLetRefactoring extends
             changedFiles = message.getRefactoringChangeset();
             return new RefactoringStatus();
         }
-        return RefactoringStatus.createFatalErrorStatus(message
-                .getMessageString());
+        return RefactoringStatus.createFatalErrorStatus(message.getMessageString());
     }
 
     @Override
@@ -82,16 +80,14 @@ public class MergeLetRefactoring extends
 
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
         ExpressionPosRpcMessage m = new ExpressionPosRpcMessage();
-        m = (ExpressionPosRpcMessage) WranglerBackendManager
-                .getRefactoringBackend().callWithParser(m, "merge_let_eclipse",
-                        "sxi", sel.getFilePath(), sel.getSearchPath(),
-                        GlobalParameters.getTabWidth());
+        m = (ExpressionPosRpcMessage) WranglerBackendManager.getRefactoringBackend()
+                .callWithParser(m, "merge_let_eclipse", "sxi", sel.getFilePath(),
+                        sel.getSearchPath(), GlobalParameters.getTabWidth());
         if (m.isSuccessful()) {
             positions = m.getPositionDefinitions(sel.getDocument());
             selectedPositions = new ArrayList<IErlRange>();
         } else {
-            return RefactoringStatus.createFatalErrorStatus(m
-                    .getMessageString());
+            return RefactoringStatus.createFatalErrorStatus(m.getMessageString());
         }
         return new RefactoringStatus();
     }
@@ -99,9 +95,8 @@ public class MergeLetRefactoring extends
     @Override
     public IRefactoringRpcMessage run(final IErlSelection selection) {
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "merge_let_1_eclipse", "sxxi", sel.getFilePath(),
-                getSelectedPos(), sel.getSearchPath(),
+        return WranglerBackendManager.getRefactoringBackend().call("merge_let_1_eclipse",
+                "sxxi", sel.getFilePath(), getSelectedPos(), sel.getSearchPath(),
                 GlobalParameters.getTabWidth());
     }
 }

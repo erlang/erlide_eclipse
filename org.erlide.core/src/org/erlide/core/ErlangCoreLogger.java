@@ -48,15 +48,13 @@ public class ErlangCoreLogger {
 
     public void log(final String msg, final Throwable thr) {
         final String id = plugin.getBundle().getSymbolicName();
-        final Status status = new Status(IStatus.ERROR, id, IStatus.OK, msg,
-                thr);
+        final Status status = new Status(IStatus.ERROR, id, IStatus.OK, msg, thr);
         plugin.getLog().log(status);
     }
 
     public void log(final Throwable e) {
         log(new Status(IStatus.ERROR, plugin.getBundle().getSymbolicName(),
-                ErlangStatus.INTERNAL_ERROR.getValue(),
-                "Erlide internal error", e));
+                ErlangStatus.INTERNAL_ERROR.getValue(), "Erlide internal error", e));
     }
 
     public void logErrorMessage(final String message) {
@@ -69,9 +67,8 @@ public class ErlangCoreLogger {
             logErrorMessage(message);
             return;
         }
-        final MultiStatus multi = new MultiStatus(plugin.getBundle()
-                .getSymbolicName(), ErlangStatus.INTERNAL_ERROR.getValue(),
-                message, null);
+        final MultiStatus multi = new MultiStatus(plugin.getBundle().getSymbolicName(),
+                ErlangStatus.INTERNAL_ERROR.getValue(), message, null);
         multi.add(status);
         log(multi);
     }
@@ -85,8 +82,7 @@ public class ErlangCoreLogger {
         if (s != null) {
             dir = s;
         } else {
-            dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
-                    .toString();
+            dir = ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
         }
         return dir;
     }

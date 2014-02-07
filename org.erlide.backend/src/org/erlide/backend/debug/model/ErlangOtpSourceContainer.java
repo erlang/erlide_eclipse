@@ -123,8 +123,8 @@ public class ErlangOtpSourceContainer extends CompositeSourceContainer {
         }
         final List<ISourceContainer> r = new ArrayList<ISourceContainer>();
         for (final IPath dir : moduleDirs) {
-            r.add(new DirectorySourceContainer(dir.addTrailingSeparator()
-                    .append("src"), false));
+            r.add(new DirectorySourceContainer(dir.addTrailingSeparator().append("src"),
+                    false));
         }
         return r.toArray(new ISourceContainer[r.size()]);
     }

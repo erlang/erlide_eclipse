@@ -104,8 +104,8 @@ public class OpenEditorActionGroup extends ActionGroup {
     }
 
     private void setGlobalActionHandlers(final IActionBars actionBars) {
-        actionBars.setGlobalActionHandler(
-                IErlangEditorActionDefinitionIds.OPEN_EDITOR, fOpen);
+        actionBars.setGlobalActionHandler(IErlangEditorActionDefinitionIds.OPEN_EDITOR,
+                fOpen);
     }
 
     private void appendToGroup(final IMenuManager menu, final IAction action) {
@@ -136,8 +136,7 @@ public class OpenEditorActionGroup extends ActionGroup {
         }
 
         // Create a menu.
-        final IMenuManager submenu = new MenuManager(
-                ActionMessages.OpenWithMenu_label);
+        final IMenuManager submenu = new MenuManager(ActionMessages.OpenWithMenu_label);
         submenu.add(new OpenWithMenu(fSite.getPage(), (IFile) resource));
 
         // Add the submenu.

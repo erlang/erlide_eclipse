@@ -97,8 +97,7 @@ public class ErlangElementImageProvider {
         return fRegistry;
     }
 
-    private ImageDescriptor computeDescriptor(final Object element,
-            final int flags) {
+    private ImageDescriptor computeDescriptor(final Object element, final int flags) {
         if (element instanceof IErlElement) {
             return getErlImageDescriptor((IErlElement) element, flags);
         } else if (element instanceof IFile) {
@@ -109,10 +108,8 @@ public class ErlangElementImageProvider {
             }
             return getWorkbenchImageDescriptor(file, flags);
         } else if (element instanceof IFolder) {
-            final IErlElementLocator model = ErlangEngine.getInstance()
-                    .getModel();
-            final IErlFolder ef = (IErlFolder) model
-                    .findElement((IResource) element);
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlFolder ef = (IErlFolder) model.findElement((IResource) element);
             if (ef != null && (ef.isOnSourcePath() || ef.isOnIncludePath())) {
                 return getErlImageDescriptor(ef, flags);
             }
@@ -140,8 +137,7 @@ public class ErlangElementImageProvider {
      * Returns an image descriptor for a module not on the class path. The
      * descriptor includes overlays, if specified.
      */
-    public ImageDescriptor getErlResourceImageDescriptor(final IFile file,
-            final int flags) {
+    public ImageDescriptor getErlResourceImageDescriptor(final IFile file, final int flags) {
         final Point size = useSmallSize(flags) ? SMALL_SIZE : BIG_SIZE;
         return new ErlangElementImageDescriptor(
                 ErlideImage.MODULE_RESOURCE.getDescriptor(), 0, size);
@@ -151,13 +147,13 @@ public class ErlangElementImageProvider {
      * Returns an image descriptor for an erlang element. The descriptor
      * includes overlays, if specified.
      */
-    static public ImageDescriptor getErlImageDescriptor(
-            final IErlElement element, final int flags) {
+    static public ImageDescriptor getErlImageDescriptor(final IErlElement element,
+            final int flags) {
         final int adornmentFlags = 0; // computeAdornmentFlags(element,
         // flags);
         final Point size = useSmallSize(flags) ? SMALL_SIZE : BIG_SIZE;
-        return new ErlangElementImageDescriptor(getBaseImageDescriptor(element,
-                flags), adornmentFlags, size);
+        return new ErlangElementImageDescriptor(getBaseImageDescriptor(element, flags),
+                adornmentFlags, size);
     }
 
     /**
@@ -165,15 +161,14 @@ public class ErlangElementImageProvider {
      * overlays, if specified (only error ticks apply). Returns
      * <code>null</code> if no image could be found.
      */
-    public ImageDescriptor getWorkbenchImageDescriptor(
-            final IAdaptable adaptable, final int flags) {
+    public ImageDescriptor getWorkbenchImageDescriptor(final IAdaptable adaptable,
+            final int flags) {
         final IWorkbenchAdapter wbAdapter = (IWorkbenchAdapter) adaptable
                 .getAdapter(IWorkbenchAdapter.class);
         if (wbAdapter == null) {
             return null;
         }
-        final ImageDescriptor descriptor = wbAdapter
-                .getImageDescriptor(adaptable);
+        final ImageDescriptor descriptor = wbAdapter.getImageDescriptor(adaptable);
         if (descriptor == null) {
             return null;
         }
@@ -189,8 +184,8 @@ public class ErlangElementImageProvider {
      * Returns an image descriptor for an Erlang element. This is the base
      * image, no overlays.
      */
-    static public ImageDescriptor getBaseImageDescriptor(
-            final IErlElement element, final int renderFlags) {
+    static public ImageDescriptor getBaseImageDescriptor(final IErlElement element,
+            final int renderFlags) {
         if (element instanceof IErlFunction) {
             final IErlFunction fun = (IErlFunction) element;
             if (fun.isExported()) {
@@ -200,8 +195,7 @@ public class ErlangElementImageProvider {
         return getImageDescriptionFromKind(element.getKind());
     }
 
-    public static ImageDescriptor getImageDescriptionFromKind(
-            final ErlElementKind kind) {
+    public static ImageDescriptor getImageDescriptionFromKind(final ErlElementKind kind) {
         ErlideImage result = ErlideImage.UNKNOWN;
         switch (kind) {
         case ATTRIBUTE:

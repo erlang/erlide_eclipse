@@ -83,8 +83,7 @@ public class StringButtonDialogField extends StringDialogField {
         return 3;
     }
 
-    protected static GridData gridDataForButton(final Button button,
-            final int span) {
+    protected static GridData gridDataForButton(final Button button, final int span) {
         final GridData gd = new GridData();
         gd.horizontalAlignment = GridData.FILL;
         gd.grabExcessHorizontalSpace = false;

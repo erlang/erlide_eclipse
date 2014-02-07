@@ -70,8 +70,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
     @Override
     public void dispose() {
         if (fListener != null) {
-            ErlangEngine.getInstance().getModel()
-                    .removeElementChangedListener(fListener);
+            ErlangEngine.getInstance().getModel().removeElementChangedListener(fListener);
             fListener = null;
         }
     }
@@ -89,11 +88,9 @@ public class ErlangContentProvider implements ITreeContentProvider {
             // TODO fixme
             fListener = new ElementChangedListener(null);
 
-            ErlangEngine.getInstance().getModel()
-                    .addElementChangedListener(fListener);
+            ErlangEngine.getInstance().getModel().addElementChangedListener(fListener);
         } else if (!isModule && fListener != null) {
-            ErlangEngine.getInstance().getModel()
-                    .removeElementChangedListener(fListener);
+            ErlangEngine.getInstance().getModel().removeElementChangedListener(fListener);
             fListener = null;
         }
     }

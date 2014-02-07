@@ -13,8 +13,7 @@ import org.eclipse.debug.core.ILaunchesListener;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.erlide.util.ErlLogger;
 
-public class ErlangDebugOptionsManager implements ILaunchesListener,
-        IBreakpointsListener {
+public class ErlangDebugOptionsManager implements ILaunchesListener, IBreakpointsListener {
 
     public ErlangDebugOptionsManager() {
     }
@@ -57,14 +56,12 @@ public class ErlangDebugOptionsManager implements ILaunchesListener,
     private void updateBreakpointsMessages(final IBreakpoint[] breakpoints) {
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             @Override
-            public void run(final IProgressMonitor monitor)
-                    throws CoreException {
+            public void run(final IProgressMonitor monitor) throws CoreException {
                 for (final IBreakpoint breakpoint : breakpoints) {
                     if (breakpoint instanceof IErlangBreakpoint) {
                         final IErlangBreakpoint erlangBreakpoint = (IErlangBreakpoint) breakpoint;
                         final String message = erlangBreakpoint.getMessage();
-                        breakpoint.getMarker().setAttribute(IMarker.MESSAGE,
-                                message);
+                        breakpoint.getMarker().setAttribute(IMarker.MESSAGE, message);
                     }
                 }
             }

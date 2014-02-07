@@ -10,8 +10,8 @@ import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.IDisposable;
 
-public interface IBackend extends IShutdownCallback, IDisposable,
-        IPluginCodeLoader, IProjectCodeLoader {
+public interface IBackend extends IShutdownCallback, IDisposable, IPluginCodeLoader,
+        IProjectCodeLoader {
 
     String getName();
 

@@ -87,8 +87,7 @@ public class OtpMsg {
     }
 
     // send_reg has sender pid and receiver name
-    OtpMsg(final OtpErlangPid from, final String toName,
-            final OtpInputStream paybuf) {
+    OtpMsg(final OtpErlangPid from, final String toName, final OtpInputStream paybuf) {
         tag = regSendTag;
         this.from = from;
         this.toName = toName;
@@ -98,8 +97,7 @@ public class OtpMsg {
     }
 
     // send_reg has sender pid and receiver name
-    OtpMsg(final OtpErlangPid from, final String toName,
-            final OtpErlangObject payload) {
+    OtpMsg(final OtpErlangPid from, final String toName, final OtpErlangObject payload) {
         tag = regSendTag;
         this.from = from;
         this.toName = toName;

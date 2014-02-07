@@ -97,8 +97,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
     public Control getListControl(final Composite parent) {
         final Control control = super.getListControl(parent);
         if (parent != null) {
-            ((CheckboxTableViewer) fTable).setCheckedElements(fCheckElements
-                    .toArray());
+            ((CheckboxTableViewer) fTable).setCheckedElements(fCheckElements.toArray());
         }
         return control;
     }
@@ -128,8 +127,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
     public List<Object> getCheckedElements() {
         if (isOkToUse(fTableControl)) {
             // workaround for bug 53853
-            final Object[] checked = ((CheckboxTableViewer) fTable)
-                    .getCheckedElements();
+            final Object[] checked = ((CheckboxTableViewer) fTable).getCheckedElements();
             final ArrayList<Object> res = new ArrayList<Object>(checked.length);
             for (final Object element : checked) {
                 res.add(element);
@@ -181,8 +179,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
      * Sets the checked state of an element. No dialog changed listener is
      * informed.
      */
-    public void setCheckedWithoutUpdate(final Element object,
-            final boolean state) {
+    public void setCheckedWithoutUpdate(final Element object, final boolean state) {
         if (state) {
             if (!fCheckElements.contains(object)) {
                 fCheckElements.add(object);
@@ -220,8 +217,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
     }
 
     @Override
-    public void replaceElement(final Element oldElement,
-            final Element newElement) {
+    public void replaceElement(final Element oldElement, final Element newElement) {
         final boolean wasChecked = isChecked(oldElement);
         super.replaceElement(oldElement, newElement);
         setChecked(newElement, wasChecked);
@@ -233,8 +229,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
      * @see ListDialogField#getManagedButtonState
      */
     @Override
-    protected boolean getManagedButtonState(final ISelection sel,
-            final int index) {
+    protected boolean getManagedButtonState(final ISelection sel, final int index) {
         if (index == fCheckAllButtonIndex) {
             return !fElements.isEmpty();
         } else if (index == fUncheckAllButtonIndex) {

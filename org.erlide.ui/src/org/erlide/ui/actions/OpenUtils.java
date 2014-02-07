@@ -39,17 +39,16 @@ public class OpenUtils {
         modelFindService = ErlangEngine.getInstance().getModelFindService();
     }
 
-    public void openOpenResult(final ITextEditor editor,
-            final IErlModule module, final int offset,
-            final IErlProject erlProject, final OpenResult openResult,
+    public void openOpenResult(final ITextEditor editor, final IErlModule module,
+            final int offset, final IErlProject erlProject, final OpenResult openResult,
             final IErlElement element) throws CoreException, ErlModelException,
             PartInitException, BadLocationException, OtpErlangRangeException,
             RpcException {
         if (editor == null) {
             return;
         }
-        final Object found = findOpenResult(editor, module, erlProject,
-                openResult, element);
+        final Object found = findOpenResult(editor, module, erlProject, openResult,
+                element);
         if (found instanceof IErlElement) {
             ErlModelUtils.openElement((IErlElement) found);
         } else if (found instanceof ISourceRange) {
@@ -57,26 +56,22 @@ public class OpenUtils {
         }
     }
 
-    public Object findOpenResult(final ITextEditor editor,
-            final IErlModule module, final IErlProject project,
-            final OpenResult openResult, final IErlElement element)
-            throws CoreException, ErlModelException, OtpErlangRangeException,
-            RpcException, BadLocationException {
+    public Object findOpenResult(final ITextEditor editor, final IErlModule module,
+            final IErlProject project, final OpenResult openResult,
+            final IErlElement element) throws CoreException, ErlModelException,
+            OtpErlangRangeException, RpcException, BadLocationException {
         final IErlElementLocator.Scope scope = NavigationPreferencePage
                 .getCheckAllProjects() ? IErlElementLocator.Scope.ALL_PROJECTS
                 : IErlElementLocator.Scope.REFERENCED_PROJECTS;
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         Object found = null;
         if (openResult.isExternalCall()) {
-            found = findExternalCallOrType(module, openResult, project,
-                    element, scope);
+            found = findExternalCallOrType(module, openResult, project, element, scope);
         } else if (openResult.isInclude()) {
-            found = modelFindService.findInclude(module, project, openResult,
-                    model);
+            found = modelFindService.findInclude(module, project, openResult, model);
         } else if (openResult.isLocalCall()) {
             found = findLocalCall(module, project, openResult, element, scope);
-        } else if (openResult.isVariable()
-                && element instanceof ISourceReference) {
+        } else if (openResult.isVariable() && element instanceof ISourceReference) {
             final ISourceReference sref = (ISourceReference) element;
             final ISourceRange range = sref.getSourceRange();
             final String elementText = editor.getDocumentProvider()
@@ -87,8 +82,8 @@ public class OpenUtils {
         } else if (openResult.isRecord() || openResult.isMacro()) {
             final ErlElementKind kind = openResult.isMacro() ? ErlElementKind.MACRO_DEF
                     : ErlElementKind.RECORD_DEF;
-            found = modelFindService.findPreprocessorDef(module,
-                    openResult.getName(), kind);
+            found = modelFindService.findPreprocessorDef(module, openResult.getName(),
+                    kind);
         } else if (openResult.isField()) {
             final IErlRecordDef def = (IErlRecordDef) modelFindService
                     .findPreprocessorDef(module, openResult.getFun(),
@@ -107,8 +102,7 @@ public class OpenUtils {
         if (isTypeDefOrRecordDef(element, res)) {
             return modelFindService.findTypespec(module, res.getFun());
         }
-        final IErlFunction foundElement = module
-                .findFunction(res.getFunction());
+        final IErlFunction foundElement = module.findFunction(res.getFunction());
         if (foundElement != null) {
             return foundElement;
         }
@@ -129,18 +123,15 @@ public class OpenUtils {
             // imported from otp module
             final OtpErlangString otpErlangString = (OtpErlangString) res2;
             final String modulePath = otpErlangString.stringValue();
-            final IErlElementLocator model = ErlangEngine.getInstance()
-                    .getModel();
-            return modelFindService.findFunction(model, moduleName,
-                    res.getFunction(), modulePath, erlProject, scope, module);
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            return modelFindService.findFunction(model, moduleName, res.getFunction(),
+                    modulePath, erlProject, scope, module);
         }
         // functions defined in include files
-        final Collection<IErlModule> allIncludedFiles = ErlangEngine
-                .getInstance().getModelSearcherService()
-                .findAllIncludedFiles(module);
+        final Collection<IErlModule> allIncludedFiles = ErlangEngine.getInstance()
+                .getModelSearcherService().findAllIncludedFiles(module);
         for (final IErlModule includedModule : allIncludedFiles) {
-            final IErlFunction function = includedModule.findFunction(res
-                    .getFunction());
+            final IErlFunction function = includedModule.findFunction(res.getFunction());
             if (function != null) {
                 return function;
             }
@@ -148,8 +139,7 @@ public class OpenUtils {
         return null;
     }
 
-    public boolean isTypeDefOrRecordDef(final IErlElement element,
-            final OpenResult res) {
+    public boolean isTypeDefOrRecordDef(final IErlElement element, final OpenResult res) {
         if (element != null) {
             if (element.getKind() == ErlElementKind.RECORD_DEF) {
                 return true;
@@ -164,17 +154,15 @@ public class OpenUtils {
     }
 
     private IErlElement findExternalCallOrType(final IErlModule module,
-            final OpenResult res, final IErlProject project,
-            final IErlElement element, final IErlElementLocator.Scope scope)
-            throws CoreException {
+            final OpenResult res, final IErlProject project, final IErlElement element,
+            final IErlElementLocator.Scope scope) throws CoreException {
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         if (isTypeDefOrRecordDef(element, res)) {
             return modelFindService.findTypeDef(model, module, res.getName(),
                     res.getFun(), res.getPath(), project, scope);
         }
-        final IErlFunction result = modelFindService.findFunction(model,
-                res.getName(), res.getFunction(), res.getPath(), project,
-                scope, module);
+        final IErlFunction result = modelFindService.findFunction(model, res.getName(),
+                res.getFunction(), res.getPath(), project, scope, module);
         if (result != null) {
             return result;
         }

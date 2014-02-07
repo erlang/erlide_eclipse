@@ -22,8 +22,8 @@ public class MinimizedFileSystemElement extends FileSystemElement {
      * @param isDirectory
      *            indicated if this could have children or not
      */
-    public MinimizedFileSystemElement(final String name,
-            final FileSystemElement parent, final boolean isDirectory) {
+    public MinimizedFileSystemElement(final String name, final FileSystemElement parent,
+            final boolean isDirectory) {
         super(name, parent, isDirectory);
     }
 

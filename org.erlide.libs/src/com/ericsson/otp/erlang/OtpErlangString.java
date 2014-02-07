@@ -24,8 +24,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * Provides a Java representation of Erlang strings.
  */
-public class OtpErlangString extends OtpErlangObject implements Serializable,
-        Cloneable {
+public class OtpErlangString extends OtpErlangObject implements Serializable, Cloneable {
     // don't change this!
     static final long serialVersionUID = -7053595217604929233L;
 
@@ -72,8 +71,7 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
      *                if the buffer does not contain a valid external
      *                representation of an Erlang string.
      */
-    public OtpErlangString(final OtpInputStream buf)
-            throws OtpErlangDecodeException {
+    public OtpErlangString(final OtpInputStream buf) throws OtpErlangDecodeException {
         str = buf.read_string();
     }
 

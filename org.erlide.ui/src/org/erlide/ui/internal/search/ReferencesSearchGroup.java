@@ -74,8 +74,7 @@ public class ReferencesSearchGroup extends ActionGroup {
         fFindReferencesInProjectAction
                 .setActionDefinitionId("org.erlide.ui.search.references.in.project");
 
-        fFindReferencesInWorkingSetAction = new FindReferencesInWorkingSetAction(
-                site);
+        fFindReferencesInWorkingSetAction = new FindReferencesInWorkingSetAction(site);
         fFindReferencesInWorkingSetAction
                 .setActionDefinitionId("org.erlide.ui.search.references.in.workset");
 
@@ -105,15 +104,12 @@ public class ReferencesSearchGroup extends ActionGroup {
                 .setActionDefinitionId("org.erlide.ui.search.references.in.workspace");
         fEditor.setAction("SearchReferencesInWorkspace", fFindReferencesAction); //$NON-NLS-1$
 
-        fFindReferencesInProjectAction = new FindReferencesInProjectAction(
-                fEditor);
+        fFindReferencesInProjectAction = new FindReferencesInProjectAction(fEditor);
         fFindReferencesInProjectAction
                 .setActionDefinitionId("org.erlide.ui.search.references.in.project");
-        fEditor.setAction(
-                "SearchReferencesInProject", fFindReferencesInProjectAction); //$NON-NLS-1$
+        fEditor.setAction("SearchReferencesInProject", fFindReferencesInProjectAction); //$NON-NLS-1$
 
-        fFindReferencesInWorkingSetAction = new FindReferencesInWorkingSetAction(
-                fEditor);
+        fFindReferencesInWorkingSetAction = new FindReferencesInWorkingSetAction(fEditor);
         fFindReferencesInWorkingSetAction
                 .setActionDefinitionId("org.erlide.ui.search.references.in.workset");
         fEditor.setAction(
@@ -208,9 +204,10 @@ public class ReferencesSearchGroup extends ActionGroup {
 
     private void updateGlobalActionHandlers() {
         if (fActionBars != null) {
-            fActionBars.setGlobalActionHandler(
-                    ErlideUIConstants.FIND_REFERENCES_IN_WORKSPACE,
-                    fFindReferencesAction);
+            fActionBars
+                    .setGlobalActionHandler(
+                            ErlideUIConstants.FIND_REFERENCES_IN_WORKSPACE,
+                            fFindReferencesAction);
             fActionBars.setGlobalActionHandler(
                     ErlideUIConstants.FIND_REFERENCES_IN_PROJECT,
                     fFindReferencesInProjectAction);

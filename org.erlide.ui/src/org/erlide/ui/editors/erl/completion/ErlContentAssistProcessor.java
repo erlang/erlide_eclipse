@@ -22,8 +22,8 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
 
-public class ErlContentAssistProcessor extends
-        AbstractErlContentAssistProcessor implements IDisposable {
+public class ErlContentAssistProcessor extends AbstractErlContentAssistProcessor
+        implements IDisposable {
 
     protected char[] fCompletionProposalAutoActivationCharacters;
     protected final IPreferenceChangeListener fPreferenceChangeListener;

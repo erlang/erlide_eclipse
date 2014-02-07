@@ -121,8 +121,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         }
     };
 
-    public ErlangConsolePage(final IConsoleView view,
-            final ErlangConsole console, final IBackend backend) {
+    public ErlangConsolePage(final IConsoleView view, final ErlangConsole console,
+            final IBackend backend) {
         super();
         fConsole = console;
         fConsoleView = view;
@@ -133,8 +133,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
     @Override
     public void dispose() {
-        consoleOutputViewer.getSelectionProvider()
-                .removeSelectionChangedListener(selectionChangedListener);
+        consoleOutputViewer.getSelectionProvider().removeSelectionChangedListener(
+                selectionChangedListener);
         if (fMenuManager != null) {
             fMenuManager.dispose();
         }
@@ -216,9 +216,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 .addPropertyChangeListener(new IPropertyChangeListener() {
                     @Override
                     public void propertyChange(final PropertyChangeEvent event) {
-                        if (event
-                                .getProperty()
-                                .equals(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR)) {
+                        if (event.getProperty().equals(
+                                IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR)) {
                             final Color color = DebugUIPlugin
                                     .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
                             consoleText.setBackground(color);
@@ -227,21 +226,18 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                     }
                 });
 
-        final IPreferenceStore store = ErlideUIPlugin.getDefault()
-                .getPreferenceStore();
+        final IPreferenceStore store = ErlideUIPlugin.getDefault().getPreferenceStore();
         final IColorManager colorManager = new ColorManager();
 
         consoleOutputViewer.setDocument(fDoc);
-        consoleOutputViewer
-                .configure(new ErlangConsoleSourceViewerConfiguration(store,
-                        colorManager, backend));
+        consoleOutputViewer.configure(new ErlangConsoleSourceViewerConfiguration(store,
+                colorManager, backend));
 
-        consoleInputViewer = new SourceViewer(sashForm, null, SWT.MULTI
-                | SWT.WRAP | SWT.V_SCROLL);
+        consoleInputViewer = new SourceViewer(sashForm, null, SWT.MULTI | SWT.WRAP
+                | SWT.V_SCROLL);
         consoleInputViewer.setDocument(new Document());
-        consoleInputViewer
-                .configure(new ErlangConsoleSourceViewerConfiguration(store,
-                        colorManager, backend));
+        consoleInputViewer.configure(new ErlangConsoleSourceViewerConfiguration(store,
+                colorManager, backend));
         consoleInput = (StyledText) consoleInputViewer.getControl();
 
         sashForm.setWeights(new int[] { 2, 1 });
@@ -288,16 +284,14 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                         && inputComplete) {
                     sendInput();
                 } else if (ctrlOrCommandPressed && e.keyCode == SWT.SPACE) {
-                    consoleInputViewer
-                            .doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
+                    consoleInputViewer.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
                 } else if (ctrlOrCommandPressed && e.keyCode == SWT.ARROW_UP) {
                     e.doit = false;
                     history.prev();
                     final String s = history.get();
                     if (s != null) {
                         consoleInput.setText(s);
-                        consoleInput.setSelection(consoleInput.getText()
-                                .length());
+                        consoleInput.setSelection(consoleInput.getText().length());
                     }
                 } else if (ctrlOrCommandPressed && e.keyCode == SWT.ARROW_DOWN) {
                     e.doit = false;
@@ -305,8 +299,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                     final String s = history.get();
                     if (s != null) {
                         consoleInput.setText(s);
-                        consoleInput.setSelection(consoleInput.getText()
-                                .length());
+                        consoleInput.setSelection(consoleInput.getText().length());
                     }
                 }
             }
@@ -372,8 +365,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
 
         final float[] hsbvals = new float[3];
-        java.awt.Color.RGBtoHSB(color.getRed(), color.getGreen(),
-                color.getBlue(), hsbvals);
+        java.awt.Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(),
+                hsbvals);
 
         if (hsbvals[1] >= 0.01) {
             bgColor_Ok = color;
@@ -390,16 +383,15 @@ public class ErlangConsolePage extends Page implements IAdaptable,
             bgColor_Err = new Color(Display.getCurrent(), new RGB(cx.getRed(),
                     cx.getGreen(), cx.getBlue()));
 
-            rgb = java.awt.Color.HSBtoRGB(green, 2 * deltaSaturation,
-                    hsbvals[2]);
+            rgb = java.awt.Color.HSBtoRGB(green, 2 * deltaSaturation, hsbvals[2]);
             cx = new java.awt.Color(rgb);
             bgColor_Ok = new Color(Display.getCurrent(), new RGB(cx.getRed(),
                     cx.getGreen(), cx.getBlue()));
 
             rgb = java.awt.Color.HSBtoRGB(green, deltaSaturation, hsbvals[2]);
             cx = new java.awt.Color(rgb);
-            bgColor_AlmostOk = new Color(Display.getCurrent(), new RGB(
-                    cx.getRed(), cx.getGreen(), cx.getBlue()));
+            bgColor_AlmostOk = new Color(Display.getCurrent(), new RGB(cx.getRed(),
+                    cx.getGreen(), cx.getBlue()));
             disposeColors = true;
         }
     }
@@ -435,8 +427,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
             final Object source = event.getSource();
             final String property = event.getProperty();
 
-            if (source.equals(fConsole)
-                    && IConsoleConstants.P_FONT.equals(property)) {
+            if (source.equals(fConsole) && IConsoleConstants.P_FONT.equals(property)) {
                 // consoleOutputViewer.setFont(fConsole.getFont());
             } else if (IConsoleConstants.P_FONT_STYLE.equals(property)) {
                 consoleOutputViewer.getTextWidget().redraw();
@@ -464,15 +455,11 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 ConsoleMessages.TextConsolePage_SelectAllDescrip,
                 ConsoleMessages.TextConsolePage_SelectAllDescrip);
         action.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_SELECT_ALL);
-        PlatformUI
-                .getWorkbench()
-                .getHelpSystem()
-                .setHelp(action,
-                        IConsoleHelpContextIds.CONSOLE_SELECT_ALL_ACTION);
+        PlatformUI.getWorkbench().getHelpSystem()
+                .setHelp(action, IConsoleHelpContextIds.CONSOLE_SELECT_ALL_ACTION);
         setGlobalAction(actionBars, ActionFactory.SELECT_ALL.getId(), action);
 
-        action = new TextViewerAction(consoleOutputViewer,
-                ITextOperationTarget.CUT);
+        action = new TextViewerAction(consoleOutputViewer, ITextOperationTarget.CUT);
         action.configureAction(ConsoleMessages.TextConsolePage_CutText,
                 ConsoleMessages.TextConsolePage_CutDescrip,
                 ConsoleMessages.TextConsolePage_CutDescrip);
@@ -483,8 +470,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 .setHelp(action, IConsoleHelpContextIds.CONSOLE_CUT_ACTION);
         setGlobalAction(actionBars, ActionFactory.CUT.getId(), action);
 
-        action = new TextViewerAction(consoleOutputViewer,
-                ITextOperationTarget.COPY);
+        action = new TextViewerAction(consoleOutputViewer, ITextOperationTarget.COPY);
         action.configureAction(ConsoleMessages.TextConsolePage_CopyText,
                 ConsoleMessages.TextConsolePage_CopyDescrip,
                 ConsoleMessages.TextConsolePage_CopyDescrip);
@@ -500,11 +486,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         final ResourceBundle bundle = ConsoleResourceBundleMessages.getBundle();
         final FindReplaceAction fraction = new FindReplaceAction(bundle,
                 "find_replace_action_", fConsoleView); //$NON-NLS-1$
-        PlatformUI
-                .getWorkbench()
-                .getHelpSystem()
-                .setHelp(fraction,
-                        IConsoleHelpContextIds.CONSOLE_FIND_REPLACE_ACTION);
+        PlatformUI.getWorkbench().getHelpSystem()
+                .setHelp(fraction, IConsoleHelpContextIds.CONSOLE_FIND_REPLACE_ACTION);
         setGlobalAction(actionBars, ActionFactory.FIND.getId(), fraction);
 
         fSelectionActions.add(ActionFactory.CUT.getId());
@@ -514,8 +497,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         actionBars.updateActionBars();
     }
 
-    protected void setGlobalAction(final IActionBars actionBars,
-            final String actionID, final IAction action) {
+    protected void setGlobalAction(final IActionBars actionBars, final String actionID,
+            final IAction action) {
         fGlobalActions.put(actionID, action);
         actionBars.setGlobalActionHandler(actionID, action);
     }

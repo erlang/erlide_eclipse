@@ -40,8 +40,7 @@ public class ErtsProcess extends RuntimeProcess {
      *            The system.
      * @throws IOException
      */
-    public synchronized void writeToErlang(final String value)
-            throws IOException {
+    public synchronized void writeToErlang(final String value) throws IOException {
         if (!isStarted()) {
             return;
         }

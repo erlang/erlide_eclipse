@@ -17,8 +17,7 @@ public class RecordCompletion {
     private String prefix;
     private final List<String> fields;
 
-    public RecordCompletion(final OtpErlangTuple r)
-            throws OtpErlangRangeException {
+    public RecordCompletion(final OtpErlangTuple r) throws OtpErlangRangeException {
         final OtpErlangLong kindL = (OtpErlangLong) r.elementAt(0);
         final OtpErlangAtom nameA = (OtpErlangAtom) r.elementAt(1);
         final OtpErlangAtom prefixA = (OtpErlangAtom) r.elementAt(2);

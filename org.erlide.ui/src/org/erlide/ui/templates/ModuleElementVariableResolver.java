@@ -25,23 +25,20 @@ public class ModuleElementVariableResolver extends TemplateVariableResolver {
     private final Template fTemplate;
     private boolean reentry = false;
 
-    public ModuleElementVariableResolver(final String type,
-            final Template template) {
+    public ModuleElementVariableResolver(final String type, final Template template) {
         super(type, "");
         fTemplate = template;
     }
 
     @Override
-    public void resolve(final TemplateVariable variable,
-            final TemplateContext theContext) {
+    public void resolve(final TemplateVariable variable, final TemplateContext theContext) {
         if (reentry) {
             return;
         }
         reentry = true;
         final DocumentTemplateContext context = new DocumentTemplateContext(
                 ErlangSourceContextTypeModule.getDefault(), new Document(
-                        fTemplate.getPattern()), 0, fTemplate.getPattern()
-                        .length());
+                        fTemplate.getPattern()), 0, fTemplate.getPattern().length());
         TemplateBuffer tb;
         try {
             tb = context.evaluate(fTemplate);

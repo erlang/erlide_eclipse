@@ -8,13 +8,11 @@ import org.eclipse.jface.text.rules.FastPartitioner;
 import org.erlide.ui.editors.erl.scanner.ErlangPartitionScanner;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 
-public class ErlangDocumentSetupParticipant implements
-        IDocumentSetupParticipant {
+public class ErlangDocumentSetupParticipant implements IDocumentSetupParticipant {
 
     @Override
     public void setup(final IDocument document) {
-        setupErlangDocumentPartitioner(document,
-                IErlangPartitions.ERLANG_PARTITIONING);
+        setupErlangDocumentPartitioner(document, IErlangPartitions.ERLANG_PARTITIONING);
     }
 
     public void setupErlangDocumentPartitioner(final IDocument document,

@@ -70,8 +70,7 @@ public class TestCaseData {
         private final Collection<FailStackItem> items;
         private final String reason;
 
-        public FailReason(final String reason,
-                final Collection<OtpErlangObject> stack) {
+        public FailReason(final String reason, final Collection<OtpErlangObject> stack) {
             this.reason = reason;
             items = Lists.newArrayList();
             for (final OtpErlangObject item : stack) {
@@ -123,8 +122,8 @@ public class TestCaseData {
                 if (a instanceof OtpErlangLong) {
                     args = " / " + aa;
                 } else {
-                    final String aas = aa.length() > 2 ? aa.substring(1,
-                            aa.length() - 2) : "";
+                    final String aas = aa.length() > 2 ? aa.substring(1, aa.length() - 2)
+                            : "";
                     args = " ( " + aas + " )";
                 }
                 return m + " : " + f + args;
@@ -185,8 +184,7 @@ public class TestCaseData {
         try {
             b = ErlUtils.match("{Cause, Stack}", reason);
             if (b == null) {
-                return new FailReason("internal error: " + reason.toString(),
-                        NO_STACK);
+                return new FailReason("internal error: " + reason.toString(), NO_STACK);
             }
             final Collection<OtpErlangObject> stack = b.getList("Stack");
             return new FailReason(b.get("Cause").toString(), stack);

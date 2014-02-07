@@ -47,12 +47,10 @@ public class ExportsVariableResolver extends FunctionVariableResolver {
     }
 
     @Override
-    public void resolve(final TemplateVariable variable,
-            final TemplateContext context) {
+    public void resolve(final TemplateVariable variable, final TemplateContext context) {
         final StringBuilder buff = new StringBuilder();
 
-        for (final Iterator<Object[]> iter = functions.iterator(); iter
-                .hasNext();) {
+        for (final Iterator<Object[]> iter = functions.iterator(); iter.hasNext();) {
             final String[] part = buff.toString().split("\\n");
             if (part[part.length - 1].length() > 60) {
                 buff.append('\n');

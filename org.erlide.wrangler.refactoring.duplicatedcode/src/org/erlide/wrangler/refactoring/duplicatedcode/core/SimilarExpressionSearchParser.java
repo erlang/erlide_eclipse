@@ -61,8 +61,7 @@ public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
         try {
             final OtpErlangTuple res = (OtpErlangTuple) object;
             if (!res.elementAt(0).toString().equals("ok")) {
-                setUnSuccessful(((OtpErlangString) res.elementAt(1))
-                        .stringValue());
+                setUnSuccessful(((OtpErlangString) res.elementAt(1)).stringValue());
                 return;
             }
 
@@ -101,26 +100,20 @@ public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
 
         for (int i = 0; i < elements.length; ++i) {
             final OtpErlangTuple elementPair = (OtpErlangTuple) elements[i];
-            final OtpErlangTuple firstElement = (OtpErlangTuple) elementPair
-                    .elementAt(0);
+            final OtpErlangTuple firstElement = (OtpErlangTuple) elementPair.elementAt(0);
             final OtpErlangTuple secondElement = (OtpErlangTuple) elementPair
                     .elementAt(1);
-            final OtpErlangString fileName = (OtpErlangString) firstElement
-                    .elementAt(0);
-            final OtpErlangLong startLine = (OtpErlangLong) firstElement
-                    .elementAt(1);
-            final OtpErlangLong startCol = (OtpErlangLong) firstElement
-                    .elementAt(2);
-            final OtpErlangLong endLine = (OtpErlangLong) secondElement
-                    .elementAt(1);
-            final OtpErlangLong endCol = (OtpErlangLong) secondElement
-                    .elementAt(2);
+            final OtpErlangString fileName = (OtpErlangString) firstElement.elementAt(0);
+            final OtpErlangLong startLine = (OtpErlangLong) firstElement.elementAt(1);
+            final OtpErlangLong startCol = (OtpErlangLong) firstElement.elementAt(2);
+            final OtpErlangLong endLine = (OtpErlangLong) secondElement.elementAt(1);
+            final OtpErlangLong endCol = (OtpErlangLong) secondElement.elementAt(2);
 
             final String fileNameStr = fileName.stringValue();
             final IFile file = WranglerUtils.getFileFromPath(fileNameStr);
             final DuplicatedCodeInstanceElement instance = new DuplicatedCodeInstanceElement(
-                    file, startLine.intValue(), startCol.intValue(),
-                    endLine.intValue(), endCol.intValue() + 1);
+                    file, startLine.intValue(), startCol.intValue(), endLine.intValue(),
+                    endCol.intValue() + 1);
             instance.setSuggestedCode(suggStr);
             if (values.containsKey(file)) {
                 values.get(file).add(instance);
@@ -131,8 +124,8 @@ public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
             }
         }
 
-        final DuplicatedCodeElement result = new DuplicatedCodeElement(values
-                .entrySet().iterator().next().getValue().get(0));
+        final DuplicatedCodeElement result = new DuplicatedCodeElement(values.entrySet()
+                .iterator().next().getValue().get(0));
         result.setSuggestedCode(suggStr);
 
         for (final Map.Entry<IFile, List<DuplicatedCodeInstanceElement>> entry : values
@@ -140,8 +133,7 @@ public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
             final DuplicatedFileElement dupFile = new DuplicatedFileElement(
                     entry.getKey());
             dupFile.setSuggestedCode(suggStr);
-            for (final DuplicatedCodeInstanceElement instance : entry
-                    .getValue()) {
+            for (final DuplicatedCodeInstanceElement instance : entry.getValue()) {
                 dupFile.addChild(instance);
             }
 

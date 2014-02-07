@@ -27,8 +27,8 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.util.ErlLogger;
 
-public class ErlangLineBreakpoint extends Breakpoint implements
-        IErlangBreakpoint, ILineBreakpoint {
+public class ErlangLineBreakpoint extends Breakpoint implements IErlangBreakpoint,
+        ILineBreakpoint {
 
     public static final String ERLANG_LINE_BREAKPOINT_MARKER_TYPE = "org.erlide.core.erlang.lineBreakpoint.marker";
 
@@ -50,11 +50,9 @@ public class ErlangLineBreakpoint extends Breakpoint implements
             throws CoreException {
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             @Override
-            public void run(final IProgressMonitor monitor)
-                    throws CoreException {
-                final IMarker marker = DebugMarkerUtils
-                        .createErlangLineBreakpointMarker(resource, lineNumber,
-                                getModelIdentifier());
+            public void run(final IProgressMonitor monitor) throws CoreException {
+                final IMarker marker = DebugMarkerUtils.createErlangLineBreakpointMarker(
+                        resource, lineNumber, getModelIdentifier());
                 setMarker(marker);
                 resetClauseHead(lineNumber - 1, resource);
             }
@@ -62,13 +60,11 @@ public class ErlangLineBreakpoint extends Breakpoint implements
         run(getMarkerRule(resource), runnable);
     }
 
-    protected void resetClauseHead(final int lineNumber,
-            final IResource resource) {
+    protected void resetClauseHead(final int lineNumber, final IResource resource) {
         clauseHead = "";
         if (resource instanceof IFile) {
             final IFile file = (IFile) resource;
-            final IErlModule m = ErlangEngine.getInstance().getModel()
-                    .findModule(file);
+            final IErlModule m = ErlangEngine.getInstance().getModel().findModule(file);
             if (m != null) {
                 try {
                     m.open(null);
@@ -229,9 +225,8 @@ public class ErlangLineBreakpoint extends Breakpoint implements
     @Override
     public String getMessage() {
         final IMarker marker = getMarker();
-        return "Line Breakpoint: " + marker.getResource().getName()
-                + " [line: " + marker.getAttribute(IMarker.LINE_NUMBER, -1)
-                + "]";
+        return "Line Breakpoint: " + marker.getResource().getName() + " [line: "
+                + marker.getAttribute(IMarker.LINE_NUMBER, -1) + "]";
     }
 
 }

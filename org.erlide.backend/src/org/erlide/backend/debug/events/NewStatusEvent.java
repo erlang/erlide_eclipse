@@ -17,8 +17,7 @@ public class NewStatusEvent extends IntEvent {
     @Override
     public void execute(final ErlangDebugTarget debugTarget) {
         final OtpErlangPid pid = (OtpErlangPid) cmds[1];
-        final ErlangProcess erlangProcess = debugTarget
-                .getOrCreateErlangProcess(pid);
+        final ErlangProcess erlangProcess = debugTarget.getOrCreateErlangProcess(pid);
         final OtpErlangAtom sa = (OtpErlangAtom) cmds[2];
         final String status = sa.atomValue();
         if (status.equals("break")) {
@@ -35,8 +34,7 @@ public class NewStatusEvent extends IntEvent {
         }
     }
 
-    private void handleIdleStatus(final ErlangProcess erlangProcess,
-            final String status) {
+    private void handleIdleStatus(final ErlangProcess erlangProcess, final String status) {
         // FIXME: this must be cleaned, but the status messages seem
         // to come out of order...
         // erlangProcess.removeStackFrames();
@@ -54,16 +52,14 @@ public class NewStatusEvent extends IntEvent {
         }
     }
 
-    private void handleExitStatus(final ErlangProcess erlangProcess,
-            final String status) {
+    private void handleExitStatus(final ErlangProcess erlangProcess, final String status) {
         erlangProcess.setStatus(status);
         final OtpErlangObject esa = cmds[3];
         erlangProcess.setExitStatus(esa.toString());
         erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
     }
 
-    private void handleBreakStatus(final ErlangProcess erlangProcess,
-            final String status) {
+    private void handleBreakStatus(final ErlangProcess erlangProcess, final String status) {
         erlangProcess.setStatus(status);
         if (!erlangProcess.isStepping()) {
             erlangProcess.fireSuspendEvent(DebugEvent.BREAKPOINT);

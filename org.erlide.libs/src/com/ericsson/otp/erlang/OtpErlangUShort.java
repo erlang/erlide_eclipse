@@ -23,8 +23,7 @@ import java.io.Serializable;
 /**
  * Provides a Java representation of Erlang integral types.
  */
-public class OtpErlangUShort extends OtpErlangLong implements Serializable,
-        Cloneable {
+public class OtpErlangUShort extends OtpErlangLong implements Serializable, Cloneable {
     // don't change this!
     static final long serialVersionUID = 300370950578307246L;
 
@@ -58,8 +57,8 @@ public class OtpErlangUShort extends OtpErlangLong implements Serializable,
      *                if the value is too large to be represented as a short, or
      *                the value is negative.
      */
-    public OtpErlangUShort(final OtpInputStream buf)
-            throws OtpErlangRangeException, OtpErlangDecodeException {
+    public OtpErlangUShort(final OtpInputStream buf) throws OtpErlangRangeException,
+            OtpErlangDecodeException {
         super(buf);
 
         final short j = uShortValue();

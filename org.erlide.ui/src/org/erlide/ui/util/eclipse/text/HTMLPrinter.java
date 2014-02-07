@@ -54,10 +54,10 @@ public final class HTMLPrinter {
                      */
                     @Override
                     public void run() {
-                        BG_COLOR_RGB = display.getSystemColor(
-                                SWT.COLOR_INFO_BACKGROUND).getRGB();
-                        FG_COLOR_RGB = display.getSystemColor(
-                                SWT.COLOR_INFO_FOREGROUND).getRGB();
+                        BG_COLOR_RGB = display.getSystemColor(SWT.COLOR_INFO_BACKGROUND)
+                                .getRGB();
+                        FG_COLOR_RGB = display.getSystemColor(SWT.COLOR_INFO_FOREGROUND)
+                                .getRGB();
                     }
                 });
             } catch (final SWTError err) {
@@ -73,8 +73,7 @@ public final class HTMLPrinter {
     private HTMLPrinter() {
     }
 
-    private static String replace(final String text, final char c,
-            final String s) {
+    private static String replace(final String text, final char c, final String s) {
 
         int previous = 0;
         int current = text.indexOf(c, previous);
@@ -121,8 +120,8 @@ public final class HTMLPrinter {
         return null;
     }
 
-    private static void appendColors(final StringBuffer pageProlog,
-            final RGB fgRGB, final RGB bgRGB) {
+    private static void appendColors(final StringBuffer pageProlog, final RGB fgRGB,
+            final RGB bgRGB) {
         pageProlog.append("<body text=\""); //$NON-NLS-1$
         appendColor(pageProlog, fgRGB);
         pageProlog.append("\" bgcolor=\""); //$NON-NLS-1$
@@ -137,8 +136,7 @@ public final class HTMLPrinter {
         appendAsHexString(buffer, rgb.blue);
     }
 
-    private static void appendAsHexString(final StringBuffer buffer,
-            final int intValue) {
+    private static void appendAsHexString(final StringBuffer buffer, final int intValue) {
         final String hexValue = Integer.toHexString(intValue);
         if (hexValue.length() == 1) {
             buffer.append('0');
@@ -146,8 +144,7 @@ public final class HTMLPrinter {
         buffer.append(hexValue);
     }
 
-    public static void insertStyles(final StringBuffer buffer,
-            final String[] styles) {
+    public static void insertStyles(final StringBuffer buffer, final String[] styles) {
         if (styles == null || styles.length == 0) {
             return;
         }
@@ -192,8 +189,8 @@ public final class HTMLPrinter {
         buffer.append("</head>"); //$NON-NLS-1$
     }
 
-    public static void insertPageProlog(final StringBuffer buffer,
-            final int position, final URL styleSheetURL) {
+    public static void insertPageProlog(final StringBuffer buffer, final int position,
+            final URL styleSheetURL) {
         final StringBuffer pageProlog = new StringBuffer(300);
         updateDialogFontData();
         pageProlog.append("<html>"); //$NON-NLS-1$
@@ -249,8 +246,7 @@ public final class HTMLPrinter {
         }
     }
 
-    public static void addSmallHeader(final StringBuffer buffer,
-            final String header) {
+    public static void addSmallHeader(final StringBuffer buffer, final String header) {
         if (header != null) {
             buffer.append("<h5>"); //$NON-NLS-1$
             buffer.append(header);
@@ -258,8 +254,7 @@ public final class HTMLPrinter {
         }
     }
 
-    public static void addParagraph(final StringBuffer buffer,
-            final String paragraph) {
+    public static void addParagraph(final StringBuffer buffer, final String paragraph) {
         if (paragraph != null) {
             buffer.append("<p>"); //$NON-NLS-1$
             buffer.append(paragraph);

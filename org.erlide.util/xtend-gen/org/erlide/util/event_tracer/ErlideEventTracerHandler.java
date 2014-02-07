@@ -21,12 +21,7 @@ import org.erlide.util.event_tracer.ErlideSessionEvent;
 
 @SuppressWarnings("all")
 public class ErlideEventTracerHandler implements IDisposable {
-  protected String user = new Function0<String>() {
-    public String apply() {
-      String _property = System.getProperty("user.name");
-      return _property;
-    }
-  }.apply();
+  protected String user = System.getProperty("user.name");
   
   protected String machine = new Function0<String>() {
     public String apply() {
@@ -44,12 +39,7 @@ public class ErlideEventTracerHandler implements IDisposable {
   
   private PrintWriter file;
   
-  private final SimpleDateFormat formatter = new Function0<SimpleDateFormat>() {
-    public SimpleDateFormat apply() {
-      SimpleDateFormat _simpleDateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS");
-      return _simpleDateFormat;
-    }
-  }.apply();
+  private final SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS");
   
   public ErlideEventTracerHandler(final String path) {
     boolean _tripleEquals = (path == null);
@@ -72,13 +62,11 @@ public class ErlideEventTracerHandler implements IDisposable {
       return;
     }
     long _timestamp = event.getTimestamp();
-    Date _date = new Date(_timestamp);
-    final Date date = _date;
+    final Date date = new Date(_timestamp);
     final String sdate = this.formatter.format(date);
     String _hexString = Integer.toHexString(event.workspace);
     IPath _append = this.storagePath.append(_hexString);
-    String _plus = (sdate + ".log");
-    IPath _append_1 = _append.append(_plus);
+    IPath _append_1 = _append.append((sdate + ".log"));
     final String name = _append_1.toPortableString();
     try {
       FileWriter _fileWriter = new FileWriter(name, false);

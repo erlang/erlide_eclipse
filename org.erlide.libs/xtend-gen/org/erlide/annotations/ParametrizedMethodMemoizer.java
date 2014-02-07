@@ -1,7 +1,7 @@
 package org.erlide.annotations;
 
 import org.eclipse.xtend.lib.macro.TransformationContext;
-import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy.CompilationContext;
+import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
 import org.eclipse.xtend.lib.macro.declaration.MutableAnnotationReference;
 import org.eclipse.xtend.lib.macro.declaration.MutableMethodDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.Type;
@@ -18,7 +18,7 @@ public abstract class ParametrizedMethodMemoizer extends MethodMemoizer {
     super(method, context, index);
   }
   
-  protected final CharSequence cacheFieldInit(@Extension final CompilationContext context) {
+  protected final CharSequence cacheFieldInit(@Extension final CompilationStrategy.CompilationContext context) {
     CharSequence _xblockexpression = null;
     {
       TypeReference _newTypeReference = this.context.newTypeReference(Memoize.class);
@@ -83,12 +83,11 @@ public abstract class ParametrizedMethodMemoizer extends MethodMemoizer {
   protected final TypeReference cacheFieldType() {
     TypeReference _cacheKeyType = this.cacheKeyType();
     TypeReference _wrappedReturnType = this.wrappedReturnType();
-    TypeReference _newTypeReference = this.context.newTypeReference(
+    return this.context.newTypeReference(
       "com.google.common.cache.LoadingCache", _cacheKeyType, _wrappedReturnType);
-    return _newTypeReference;
   }
   
-  protected final CharSequence cacheCall(@Extension final CompilationContext context) {
+  protected final CharSequence cacheCall(@Extension final CompilationStrategy.CompilationContext context) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("try {");
     _builder.newLine();
@@ -117,7 +116,7 @@ public abstract class ParametrizedMethodMemoizer extends MethodMemoizer {
   
   protected abstract TypeReference cacheKeyType();
   
-  protected abstract CharSequence parametersToCacheKey(final CompilationContext context);
+  protected abstract CharSequence parametersToCacheKey(final CompilationStrategy.CompilationContext context);
   
-  protected abstract CharSequence cacheKeyToParameters(final CompilationContext context);
+  protected abstract CharSequence cacheKeyToParameters(final CompilationStrategy.CompilationContext context);
 }

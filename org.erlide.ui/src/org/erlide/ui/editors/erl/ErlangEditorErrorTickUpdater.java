@@ -86,8 +86,7 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
 
     public void dispose() {
         fLabelProvider.dispose();
-        ErlideUIPlugin.getDefault().getProblemMarkerManager()
-                .removeListener(this);
+        ErlideUIPlugin.getDefault().getProblemMarkerManager().removeListener(this);
     }
 
 }

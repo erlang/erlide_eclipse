@@ -118,8 +118,8 @@ import org.erlide.util.SystemConfiguration;
  * 
  * @author Eric Merrit [cyberlync at gmail dot com]
  */
-public class ErlangEditor extends AbstractErlangEditor implements
-        IOutlineContentCreator, IOutlineSelectionHandler {
+public class ErlangEditor extends AbstractErlangEditor implements IOutlineContentCreator,
+        IOutlineSelectionHandler {
 
     public static final String ERLANG_EDITOR_ID = "org.erlide.ui.editors.erl.ErlangEditor";
 
@@ -147,8 +147,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
 
     XrefService xrefService;
 
-    final MarkOccurencesHandler markOccurencesHandler = new MarkOccurencesHandler(
-            this, null, IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP,
+    final MarkOccurencesHandler markOccurencesHandler = new MarkOccurencesHandler(this,
+            null, IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP,
             new ActivationListener());
 
     public ErlangEditor(final XrefService xrefService) {
@@ -217,11 +217,9 @@ public class ErlangEditor extends AbstractErlangEditor implements
     }
 
     public static ChainedPreferenceStore getErlangEditorPreferenceStore() {
-        final IPreferenceStore generalTextStore = EditorsUI
-                .getPreferenceStore();
+        final IPreferenceStore generalTextStore = EditorsUI.getPreferenceStore();
         return new ChainedPreferenceStore(new IPreferenceStore[] {
-                ErlideUIPlugin.getDefault().getPreferenceStore(),
-                generalTextStore });
+                ErlideUIPlugin.getDefault().getPreferenceStore(), generalTextStore });
     }
 
     public void disposeModule() {
@@ -241,8 +239,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         public void preferenceChange(final PreferenceChangeEvent event) {
             final String key = event.getKey();
             if ("markingOccurences".equals(key)) {
-                final boolean newBooleanValue = event.getNewValue().equals(
-                        "true");
+                final boolean newBooleanValue = event.getNewValue().equals("true");
                 if (newBooleanValue != markOccurencesHandler.fMarkOccurrenceAnnotations) {
                     markOccurencesHandler.fMarkOccurrenceAnnotations = newBooleanValue;
                     if (!markOccurencesHandler.fMarkOccurrenceAnnotations) {
@@ -290,8 +287,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         createCommonActions();
 
         compileAction = new CompileAction(getSite());
-        compileAction
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.COMPILE);
+        compileAction.setActionDefinitionId(IErlangEditorActionDefinitionIds.COMPILE);
         setAction("Compile file", compileAction);
 
         if (getModule() != null) {
@@ -321,13 +317,10 @@ public class ErlangEditor extends AbstractErlangEditor implements
         }
 
         fShowOutline = new ShowOutlineAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "ShowOutline.", this);
-        fShowOutline
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.SHOW_OUTLINE);
+                ErlangEditorMessages.getBundleForConstructedKeys(), "ShowOutline.", this);
+        fShowOutline.setActionDefinitionId(IErlangEditorActionDefinitionIds.SHOW_OUTLINE);
         setAction(IErlangEditorActionDefinitionIds.SHOW_OUTLINE, fShowOutline);
-        markAsContentDependentAction(
-                IErlangEditorActionDefinitionIds.SHOW_OUTLINE, true);
+        markAsContentDependentAction(IErlangEditorActionDefinitionIds.SHOW_OUTLINE, true);
 
     }
 
@@ -336,8 +329,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
             return;
         }
         clearCacheAction = new ClearCacheAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "ClearCache.", this);
+                ErlangEditorMessages.getBundleForConstructedKeys(), "ClearCache.", this);
         clearCacheAction
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAR_CACHE);
         setAction("ClearCache", clearCacheAction);
@@ -349,9 +341,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
         if (testAction != null) {
             return;
         }
-        testAction = new TestAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(), "Test.",
-                this, getModule());
+        testAction = new TestAction(ErlangEditorMessages.getBundleForConstructedKeys(),
+                "Test.", this, getModule());
         testAction.setActionDefinitionId(IErlangEditorActionDefinitionIds.TEST);
         setAction("Test", testAction);
         markAsStateDependentAction("Test", true);
@@ -368,8 +359,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         }
         if (SystemConfiguration.getInstance().isClearCacheAvailable()) {
             setupClearCacheAction();
-            menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
-                    clearCacheAction);
+            menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, clearCacheAction);
         }
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, callhierarchy);
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, compileAction);
@@ -402,8 +392,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
         }
 
         if (fProjectionSupport != null) {
-            final Object adapter = fProjectionSupport.getAdapter(
-                    getSourceViewer(), required);
+            final Object adapter = fProjectionSupport.getAdapter(getSourceViewer(),
+                    required);
             if (adapter != null) {
                 return adapter;
             }
@@ -437,14 +427,12 @@ public class ErlangEditor extends AbstractErlangEditor implements
         }
 
         // #26314
-        final int sourceCaretOffset = selection.getOffset()
-                + selection.getLength();
+        final int sourceCaretOffset = selection.getOffset() + selection.getLength();
         // TODO fix me!
         // if (isSurroundedByBrackets(document, sourceCaretOffset))
         // sourceCaretOffset -= selection.getLength();
 
-        final IRegion region = getBracketMatcher().match(document,
-                sourceCaretOffset);
+        final IRegion region = getBracketMatcher().match(document, sourceCaretOffset);
         if (region == null) {
             setStatusLineErrorMessage(ErlangEditorMessages.GotoMatchingBracket_error_noMatchingBracket);
             sourceViewer.getTextWidget().getDisplay().beep();
@@ -460,8 +448,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
 
         final int anchor = getBracketMatcher().getAnchor();
         // http://dev.eclipse.org/bugs/show_bug.cgi?id=34195
-        int targetOffset = ICharacterPairMatcher.RIGHT == anchor ? offset + 1
-                : offset + length;
+        int targetOffset = ICharacterPairMatcher.RIGHT == anchor ? offset + 1 : offset
+                + length;
 
         boolean visible = false;
         if (sourceViewer instanceof ITextViewerExtension5) {
@@ -597,8 +585,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         int caret = 0;
         if (sourceViewer instanceof ITextViewerExtension5) {
             final ITextViewerExtension5 extension = (ITextViewerExtension5) sourceViewer;
-            caret = extension.widgetOffset2ModelOffset(styledText
-                    .getCaretOffset());
+            caret = extension.widgetOffset2ModelOffset(styledText.getCaretOffset());
         } else {
             final int offset = sourceViewer.getVisibleRegion().getOffset();
             caret = offset + styledText.getCaretOffset();
@@ -658,8 +645,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
             fProjectionSupport.install();
 
             fProjectionModelUpdater = ErlideUIPlugin.getDefault()
-                    .getFoldingStructureProviderRegistry()
-                    .getCurrentFoldingProvider();
+                    .getFoldingStructureProviderRegistry().getCurrentFoldingProvider();
             if (fProjectionModelUpdater != null) {
                 fProjectionModelUpdater.install(this, projectionViewer);
             }
@@ -754,8 +740,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
      * Updates the Erlang outline page selection and this editor's range
      * indicator.
      */
-    class EditorSelectionChangedListener extends
-            AbstractSelectionChangedListener {
+    class EditorSelectionChangedListener extends AbstractSelectionChangedListener {
 
         /*
          * @see
@@ -878,8 +863,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         synchronizeOutlinePage(computeHighlightRangeSourceReference());
     }
 
-    public void setSelection(final ISourceReference reference,
-            final boolean moveCursor) {
+    public void setSelection(final ISourceReference reference, final boolean moveCursor) {
         if (getSelectionProvider() == null) {
             return;
         }
@@ -888,8 +872,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         if (selection instanceof TextSelection) {
             final TextSelection textSelection = (TextSelection) selection;
             if (moveCursor
-                    && (textSelection.getOffset() != 0 || textSelection
-                            .getLength() != 0)) {
+                    && (textSelection.getOffset() != 0 || textSelection.getLength() != 0)) {
                 markInNavigationHistory();
             }
         }
@@ -1032,8 +1015,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         }
     }
 
-    private IllegalArgumentException filterUTF8Exception(
-            final IllegalArgumentException e) {
+    private IllegalArgumentException filterUTF8Exception(final IllegalArgumentException e) {
         final StackTraceElement[] stack = e.getStackTrace();
         boolean filterIt = false;
         for (final StackTraceElement element : stack) {
@@ -1048,8 +1030,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         }
         if (filterIt) {
             return new IllegalArgumentException(
-                    "The file's actual encoding doesn't match the declared one",
-                    e);
+                    "The file's actual encoding doesn't match the declared one", e);
         }
         return e;
     }
@@ -1084,19 +1065,16 @@ public class ErlangEditor extends AbstractErlangEditor implements
         Position containingAnnotationPosition = null;
         boolean currentAnnotation = false;
 
-        final IDocument document = getDocumentProvider().getDocument(
-                getEditorInput());
+        final IDocument document = getDocumentProvider().getDocument(getEditorInput());
         final int endOfDocument = document.getLength();
         int distance = Integer.MAX_VALUE;
 
-        final IAnnotationModel model = getDocumentProvider()
-                .getAnnotationModel(getEditorInput());
-        final Iterator<Annotation> e = new ErlangAnnotationIterator(model,
-                true, true);
+        final IAnnotationModel model = getDocumentProvider().getAnnotationModel(
+                getEditorInput());
+        final Iterator<Annotation> e = new ErlangAnnotationIterator(model, true, true);
         while (e.hasNext()) {
             final Annotation a = e.next();
-            if (a instanceof IErlangAnnotation
-                    && ((IErlangAnnotation) a).hasOverlay()
+            if (a instanceof IErlangAnnotation && ((IErlangAnnotation) a).hasOverlay()
                     || !isNavigationTarget(a)) {
                 continue;
             }
@@ -1111,8 +1089,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
                 // || p.includes(offset))
                 if (containingAnnotation == null
                         || containingAnnotationPosition != null
-                        && (forward
-                                && p.length >= containingAnnotationPosition.length || !forward
+                        && (forward && p.length >= containingAnnotationPosition.length || !forward
                                 && p.length < containingAnnotationPosition.length)) {
                     containingAnnotation = a;
                     containingAnnotationPosition = p;
@@ -1127,8 +1104,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
                         currentDistance = endOfDocument + currentDistance;
                     }
 
-                    if (currentDistance < distance
-                            || currentDistance == distance
+                    if (currentDistance < distance || currentDistance == distance
                             && nextAnnotationPosition != null
                             && p.length < nextAnnotationPosition.length) {
                         distance = currentDistance;
@@ -1136,14 +1112,12 @@ public class ErlangEditor extends AbstractErlangEditor implements
                         nextAnnotationPosition = p;
                     }
                 } else {
-                    currentDistance = offset + length
-                            - (p.getOffset() + p.length);
+                    currentDistance = offset + length - (p.getOffset() + p.length);
                     if (currentDistance < 0) {
                         currentDistance = endOfDocument + currentDistance;
                     }
 
-                    if (currentDistance < distance
-                            || currentDistance == distance
+                    if (currentDistance < distance || currentDistance == distance
                             && nextAnnotationPosition != null
                             && p.length < nextAnnotationPosition.length) {
                         distance = currentDistance;
@@ -1155,10 +1129,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
         }
         if (containingAnnotationPosition != null
                 && (!currentAnnotation || nextAnnotation == null)) {
-            annotationPosition.setOffset(containingAnnotationPosition
-                    .getOffset());
-            annotationPosition.setLength(containingAnnotationPosition
-                    .getLength());
+            annotationPosition.setOffset(containingAnnotationPosition.getOffset());
+            annotationPosition.setLength(containingAnnotationPosition.getLength());
             return containingAnnotation;
         }
         if (nextAnnotationPosition != null) {
@@ -1303,8 +1275,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
     }
 
     public void resetReconciler() {
-        ((EditorConfiguration) getSourceViewerConfiguration())
-                .resetReconciler();
+        ((EditorConfiguration) getSourceViewerConfiguration()).resetReconciler();
     }
 
     @Override
@@ -1500,8 +1471,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         @Override
         public void windowActivated(final IWorkbenchWindow window) {
             if (window == getEditorSite().getWorkbenchWindow()
-                    && markOccurencesHandler.fMarkOccurrenceAnnotations
-                    && isActivePart()) {
+                    && markOccurencesHandler.fMarkOccurrenceAnnotations && isActivePart()) {
                 markOccurencesHandler.fForcedMarkOccurrencesSelection = getSelectionProvider()
                         .getSelection();
                 final IErlModule module = getModule();
@@ -1523,8 +1493,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         @Override
         public void windowDeactivated(final IWorkbenchWindow window) {
             if (window == getEditorSite().getWorkbenchWindow()
-                    && markOccurencesHandler.fMarkOccurrenceAnnotations
-                    && isActivePart()) {
+                    && markOccurencesHandler.fMarkOccurrenceAnnotations && isActivePart()) {
                 markOccurencesHandler.removeOccurrenceAnnotations();
             }
         }
@@ -1560,8 +1529,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
      */
     Object getLockObject(final IAnnotationModel annotationModel) {
         if (annotationModel instanceof ISynchronizable) {
-            final Object lock = ((ISynchronizable) annotationModel)
-                    .getLockObject();
+            final Object lock = ((ISynchronizable) annotationModel).getLockObject();
             if (lock != null) {
                 return lock;
             }
@@ -1602,8 +1570,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
 
     @Override
     public IErlProject getProject() {
-        return ErlangEngine.getInstance().getModelUtilService()
-                .getProject(getModule());
+        return ErlangEngine.getInstance().getModelUtilService().getProject(getModule());
     }
 
     @Override

@@ -177,9 +177,8 @@ public abstract class OverlayPage extends PropertyPage implements
         });
         // Set workspace/project radio buttons
         try {
-            final String use = ((IResource) getElement().getAdapter(
-                    IResource.class)).getPersistentProperty(new QualifiedName(
-                    pageId, USEPROJECTSETTINGS));
+            final String use = ((IResource) getElement().getAdapter(IResource.class))
+                    .getPersistentProperty(new QualifiedName(pageId, USEPROJECTSETTINGS));
             if (TRUE.equals(use)) {
                 useProjectSettingsButton.setSelection(true);
                 configureButton.setEnabled(false);
@@ -206,8 +205,7 @@ public abstract class OverlayPage extends PropertyPage implements
         button.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                configureButton
-                        .setEnabled(button == useWorkspaceSettingsButton);
+                configureButton.setEnabled(button == useWorkspaceSettingsButton);
                 setControlsEnabled();
             }
         });
@@ -363,13 +361,12 @@ public abstract class OverlayPage extends PropertyPage implements
      * @param page
      *            - the preference page
      */
-    protected void showPreferencePage(final String id,
-            final IPreferencePage page) {
+    protected void showPreferencePage(final String id, final IPreferencePage page) {
         final IPreferenceNode targetNode = new PreferenceNode(id, page);
         final PreferenceManager manager = new PreferenceManager();
         manager.addToRoot(targetNode);
-        final PreferenceDialog dialog = new PreferenceDialog(getControl()
-                .getShell(), manager);
+        final PreferenceDialog dialog = new PreferenceDialog(getControl().getShell(),
+                manager);
         BusyIndicator.showWhile(getControl().getDisplay(), new Runnable() {
             @Override
             public void run() {

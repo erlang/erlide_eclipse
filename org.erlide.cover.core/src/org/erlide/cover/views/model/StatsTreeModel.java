@@ -62,10 +62,10 @@ public class StatsTreeModel implements Serializable {
                         Calendar.getInstance().get(Calendar.DAY_OF_MONTH)))
                 .append(String.format("%02d",
                         Calendar.getInstance().get(Calendar.HOUR_OF_DAY)))
-                .append(String.format("%02d",
-                        Calendar.getInstance().get(Calendar.MINUTE)))
-                .append(String.format("%02d",
-                        Calendar.getInstance().get(Calendar.SECOND)));
+                .append(String
+                        .format("%02d", Calendar.getInstance().get(Calendar.MINUTE)))
+                .append(String
+                        .format("%02d", Calendar.getInstance().get(Calendar.SECOND)));
 
         timestamp = timeTmp.toString();
 

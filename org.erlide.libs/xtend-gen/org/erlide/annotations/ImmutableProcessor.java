@@ -6,7 +6,6 @@ import org.eclipse.xtend.lib.macro.RegisterGlobalsContext;
 import org.eclipse.xtend.lib.macro.TransformationContext;
 import org.eclipse.xtend.lib.macro.declaration.ClassDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
-import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy.CompilationContext;
 import org.eclipse.xtend.lib.macro.declaration.MutableClassDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableConstructorDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableFieldDeclaration;
@@ -46,7 +45,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
             TypeReference _newTypeReference = context.newTypeReference(cls);
             it.setReturnType(_newTypeReference);
             final CompilationStrategy _function = new CompilationStrategy() {
-              public CharSequence compile(final CompilationContext it) {
+              public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                 StringConcatenation _builder = new StringConcatenation();
                 _builder.append("return new ");
                 String _simpleName = cls.getSimpleName();
@@ -55,8 +54,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
                 Iterable<? extends MutableFieldDeclaration> _dataFields = ImmutableProcessor.this.dataFields(cls);
                 final Function1<MutableFieldDeclaration,String> _function = new Function1<MutableFieldDeclaration,String>() {
                   public String apply(final MutableFieldDeclaration it) {
-                    String _simpleName = it.getSimpleName();
-                    return _simpleName;
+                    return it.getSimpleName();
                   }
                 };
                 String _join = IterableExtensions.join(_dataFields, ",", _function);
@@ -83,7 +81,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
                 TypeReference _newTypeReference = context.newTypeReference(_builderClassName);
                 it.setReturnType(_newTypeReference);
                 final CompilationStrategy _function = new CompilationStrategy() {
-                  public CharSequence compile(final CompilationContext it) {
+                  public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                     StringConcatenation _builder = new StringConcatenation();
                     _builder.append("this.");
                     String _simpleName = field.getSimpleName();
@@ -125,7 +123,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         TypeReference _newTypeReference_2 = context.newTypeReference(Procedure1.class, _newTypeReference_1);
         it.addParameter("init", _newTypeReference_2);
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             String _builderClassName = ImmutableProcessor.this.builderClassName(cls);
             _builder.append(_builderClassName, "");
@@ -149,7 +147,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         it.setReturnType(_newTypeReference);
         it.setStatic(true);
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("return new ");
             String _builderClassName = ImmutableProcessor.this.builderClassName(cls);
@@ -175,7 +173,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         };
         IterableExtensions.forEach(_dataFields, _function);
         final CompilationStrategy _function_1 = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             {
               Iterable<? extends MutableFieldDeclaration> _dataFields = ImmutableProcessor.this.dataFields(cls);
@@ -210,7 +208,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         } else {
           Type _type = fieldType.getType();
           boolean _equals_1 = Objects.equal(_type, Boolean.class);
-          _or = (_equals || _equals_1);
+          _or = _equals_1;
         }
         if (_or) {
           _xifexpression = "is";
@@ -226,7 +224,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
             TypeReference _type = field.getType();
             it.setReturnType(_type);
             final CompilationStrategy _function = new CompilationStrategy() {
-              public CharSequence compile(final CompilationContext it) {
+              public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                 StringConcatenation _builder = new StringConcatenation();
                 _builder.append("return ");
                 String _simpleName = field.getSimpleName();
@@ -250,7 +248,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         TypeReference _object = context.getObject();
         it.addParameter("o", _object);
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("if (o instanceof ");
             String _simpleName = cls.getSimpleName();
@@ -303,7 +301,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         TypeReference _primitiveInt = context.getPrimitiveInt();
         it.setReturnType(_primitiveInt);
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("return ");
             String _objects = ImmutableProcessor.this.objects();
@@ -312,8 +310,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
             Iterable<? extends MutableFieldDeclaration> _dataFields = ImmutableProcessor.this.dataFields(cls);
             final Function1<MutableFieldDeclaration,String> _function = new Function1<MutableFieldDeclaration,String>() {
               public String apply(final MutableFieldDeclaration it) {
-                String _simpleName = it.getSimpleName();
-                return _simpleName;
+                return it.getSimpleName();
               }
             };
             String _join = IterableExtensions.join(_dataFields, ",", _function);
@@ -331,7 +328,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         TypeReference _string = context.getString();
         it.setReturnType(_string);
         final CompilationStrategy _function = new CompilationStrategy() {
-          public CharSequence compile(final CompilationContext it) {
+          public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("return new org.eclipse.xtext.xbase.lib.util.ToStringHelper().toString(this);");
             return _builder;
@@ -348,18 +345,15 @@ public class ImmutableProcessor extends AbstractClassProcessor {
     final Function1<MutableFieldDeclaration,Boolean> _function = new Function1<MutableFieldDeclaration,Boolean>() {
       public Boolean apply(final MutableFieldDeclaration it) {
         boolean _isStatic = it.isStatic();
-        boolean _equals = (_isStatic == false);
-        return Boolean.valueOf(_equals);
+        return Boolean.valueOf((_isStatic == false));
       }
     };
-    Iterable<? extends MutableFieldDeclaration> _filter = IterableExtensions.filter(_declaredFields, _function);
-    return _filter;
+    return IterableExtensions.filter(_declaredFields, _function);
   }
   
   public String builderClassName(final ClassDeclaration cls) {
     String _qualifiedName = cls.getQualifiedName();
-    String _plus = (_qualifiedName + "Builder");
-    return _plus;
+    return (_qualifiedName + "Builder");
   }
   
   public String objects() {

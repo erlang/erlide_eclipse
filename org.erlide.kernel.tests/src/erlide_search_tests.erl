@@ -12,10 +12,6 @@
 %%
 %% Exported Functions
 %%
--compile(export_all).
-%%
-%% API Functions
-%%
 
 -define(ARI_TYPESPEC, -2).
 -define(ARI_ATTRIBUTE, -3).

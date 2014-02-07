@@ -34,8 +34,7 @@ public class ErlCodeScanner extends ErlTokenScanner {
     }
 
     @Override
-    public void setRange(final IDocument document, final int offset,
-            final int length) {
+    public void setRange(final IDocument document, final int offset, final int length) {
         if (document == null) {
             return;
         }

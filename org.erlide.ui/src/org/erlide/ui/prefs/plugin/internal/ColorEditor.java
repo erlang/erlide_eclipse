@@ -69,8 +69,7 @@ public class ColorEditor {
 
             @Override
             public void widgetSelected(final SelectionEvent event) {
-                final ColorDialog colorDialog = new ColorDialog(fButton
-                        .getShell());
+                final ColorDialog colorDialog = new ColorDialog(fButton.getShell());
                 colorDialog.setRGB(fColorValue);
                 final RGB newColor = colorDialog.open();
                 if (newColor != null) {
@@ -157,8 +156,7 @@ public class ColorEditor {
      */
     protected Point computeImageSize(final Control window) {
         final GC gc = new GC(window);
-        final Font f = JFaceResources.getFontRegistry().get(
-                JFaceResources.DEFAULT_FONT);
+        final Font f = JFaceResources.getFontRegistry().get(JFaceResources.DEFAULT_FONT);
         gc.setFont(f);
         final int height = gc.getFontMetrics().getHeight();
         gc.dispose();

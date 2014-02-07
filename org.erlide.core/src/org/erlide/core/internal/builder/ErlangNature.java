@@ -54,9 +54,9 @@ public class ErlangNature implements IProjectNature {
         project = lproject;
     }
 
-    private final static Collection<String> ALL_BUILDER_IDS = Lists
-            .newArrayList(ErlangCore.BUILDER_ID, ErlangCore.MAKEBUILDER_ID,
-                    ErlangCore.EMAKEBUILDER_ID, ErlangCore.REBARBUILDER_ID);
+    private final static Collection<String> ALL_BUILDER_IDS = Lists.newArrayList(
+            ErlangCore.BUILDER_ID, ErlangCore.MAKEBUILDER_ID, ErlangCore.EMAKEBUILDER_ID,
+            ErlangCore.REBARBUILDER_ID);
 
     public final static Map<String, String> BUILDER_ID_MAP = Maps.newHashMap();
     static {
@@ -82,8 +82,7 @@ public class ErlangNature implements IProjectNature {
         prj.setDescription(description, new NullProgressMonitor());
     }
 
-    public static void unsetAllErlangBuilders(final IProject prj)
-            throws CoreException {
+    public static void unsetAllErlangBuilders(final IProject prj) throws CoreException {
         final IProjectDescription description = prj.getDescription();
         final ICommand[] old = description.getBuildSpec();
         final List<ICommand> specs = Lists.newArrayList();

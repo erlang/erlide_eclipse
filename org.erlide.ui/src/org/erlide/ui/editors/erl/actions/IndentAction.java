@@ -35,17 +35,16 @@ public class IndentAction extends ErlangTextEditorAction {
     @Override
     protected OtpErlangObject callErlang(final int offset, final int length,
             final String text) throws RpcException {
-        final OtpErlangObject r1 = doIndentLines(offset, length, text, false,
-                "");
+        final OtpErlangObject r1 = doIndentLines(offset, length, text, false, "");
         return r1;
     }
 
-    private static OtpErlangObject doIndentLines(final int offset,
-            final int length, final String text, final boolean template,
-            final String prefix) throws RpcException {
+    private static OtpErlangObject doIndentLines(final int offset, final int length,
+            final String text, final boolean template, final String prefix)
+            throws RpcException {
 
-        final IndentService indentService = ErlangEngine.getInstance()
-                .getService(IndentService.class);
+        final IndentService indentService = ErlangEngine.getInstance().getService(
+                IndentService.class);
 
         final int tabw = AutoIndentStrategy.getTabWidthFromPreferences();
         final Map<String, String> prefs = new TreeMap<String, String>();
@@ -53,19 +52,18 @@ public class IndentAction extends ErlangTextEditorAction {
         SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
         final boolean useTabs = AutoIndentStrategy.getUseTabsFromPreferences();
         if (template) {
-            final OtpErlangObject r1 = indentService.templateIndentLines(
-                    prefix, text, tabw, useTabs, prefs);
+            final OtpErlangObject r1 = indentService.templateIndentLines(prefix, text,
+                    tabw, useTabs, prefs);
             return r1;
         }
-        final OtpErlangObject r1 = indentService.indentLines(offset, length,
-                text, tabw, useTabs, prefs);
+        final OtpErlangObject r1 = indentService.indentLines(offset, length, text, tabw,
+                useTabs, prefs);
         return r1;
     }
 
     public static String indentLines(final int offset, final int length,
             final String text, final boolean template, final String prefix)
             throws RpcException {
-        return Util.stringValue(doIndentLines(offset, length, text, template,
-                prefix));
+        return Util.stringValue(doIndentLines(offset, length, text, template, prefix));
     }
 }

@@ -72,8 +72,7 @@ public class Separator extends DialogField {
         return 1;
     }
 
-    protected static GridData gridDataForSeperator(final int span,
-            final int height) {
+    protected static GridData gridDataForSeperator(final int span, final int height) {
         final GridData gd = new GridData();
         gd.horizontalAlignment = GridData.FILL;
         gd.verticalAlignment = GridData.BEGINNING;

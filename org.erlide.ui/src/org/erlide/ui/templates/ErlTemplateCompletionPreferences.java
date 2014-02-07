@@ -26,13 +26,12 @@ public class ErlTemplateCompletionPreferences {
     }
 
     public static void putPrefs() {
-        ErlideUIPlugin.getPrefsNode().putBoolean(INDENT_CODE_PREFS_KEY,
-                sIndentCode);
+        ErlideUIPlugin.getPrefsNode().putBoolean(INDENT_CODE_PREFS_KEY, sIndentCode);
     }
 
     public static void getPrefs() {
-        sIndentCode = ErlideUIPlugin.getPrefsNode().getBoolean(
-                INDENT_CODE_PREFS_KEY, DEFAULT_INDENT_CODE);
+        sIndentCode = ErlideUIPlugin.getPrefsNode().getBoolean(INDENT_CODE_PREFS_KEY,
+                DEFAULT_INDENT_CODE);
         hasPrefs = true;
     }
 

@@ -10,9 +10,9 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 
 public interface IndentService extends ErlangService {
 
-    IndentResult indentLine(String oldLine, String txt, String insertedText,
-            int tabw, boolean useTabs, Map<String, String> prefs)
-            throws RpcException, OtpErlangRangeException;
+    IndentResult indentLine(String oldLine, String txt, String insertedText, int tabw,
+            boolean useTabs, Map<String, String> prefs) throws RpcException,
+            OtpErlangRangeException;
 
     OtpErlangObject indentLines(int offset, int length, String text, int tabw,
             boolean useTabs, Map<String, String> prefs) throws RpcException;

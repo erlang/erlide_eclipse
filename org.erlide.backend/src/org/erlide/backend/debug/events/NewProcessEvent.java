@@ -19,8 +19,7 @@ public class NewProcessEvent extends IntEvent {
     public void execute(final ErlangDebugTarget debugTarget) {
         final OtpErlangTuple t = (OtpErlangTuple) cmds[1];
         final OtpErlangPid pid = (OtpErlangPid) t.elementAt(0);
-        final ErlangProcess erlangProcess = debugTarget
-                .getOrCreateErlangProcess(pid);
+        final ErlangProcess erlangProcess = debugTarget.getOrCreateErlangProcess(pid);
         final OtpErlangAtom statusA = (OtpErlangAtom) t.elementAt(2);
         final String status = statusA.atomValue();
         erlangProcess.setStatus(status);

@@ -13,10 +13,9 @@ public class ErlangSearchElement {
     private final ErlElementKind kind;
     private final IErlModule module;
 
-    public ErlangSearchElement(final IErlModule module,
-            final String moduleName, final String name, final int arity,
-            final String arguments, final boolean subClause,
-            final ErlElementKind kind) {
+    public ErlangSearchElement(final IErlModule module, final String moduleName,
+            final String name, final int arity, final String arguments,
+            final boolean subClause, final ErlElementKind kind) {
         this.module = module;
         this.moduleName = moduleName;
         this.name = name;

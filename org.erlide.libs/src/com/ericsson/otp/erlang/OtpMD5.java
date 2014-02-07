@@ -45,8 +45,7 @@ class OtpMD5 {
      * Has to be this large to avoid sign problems
      */
 
-    private final long state[] = { 0x67452301L, 0xefcdab89L, 0x98badcfeL,
-            0x10325476L };
+    private final long state[] = { 0x67452301L, 0xefcdab89L, 0x98badcfeL, 0x10325476L };
     private final long count[] = { 0L, 0L };
     private final int buffer[];
 
@@ -99,8 +98,7 @@ class OtpMD5 {
         return ~x & 0xFFFFFFFFL;
     }
 
-    private void to_buffer(int to_start, final int[] from, int from_start,
-            int num) {
+    private void to_buffer(int to_start, final int[] from, int from_start, int num) {
         while (num-- > 0) {
             buffer[to_start++] = from[from_start++];
         }
@@ -145,8 +143,8 @@ class OtpMD5 {
     }
 
     private void dumpstate() {
-        System.out.println("state = {" + state[0] + ", " + state[1] + ", "
-                + state[2] + ", " + state[3] + "}");
+        System.out.println("state = {" + state[0] + ", " + state[1] + ", " + state[2]
+                + ", " + state[3] + "}");
         System.out.println("count = {" + count[0] + ", " + count[1] + "}");
         System.out.print("buffer = {");
         int i;
@@ -183,42 +181,41 @@ class OtpMD5 {
         return shl(x, (int) n) | shr(x, (int) (32 - n));
     }
 
-    private long FF(long a, final long b, final long c, final long d,
-            final long x, final long s, final long ac) {
+    private long FF(long a, final long b, final long c, final long d, final long x,
+            final long s, final long ac) {
         a = plus(a, plus(plus(F(b, c, d), x), ac));
         a = ROTATE_LEFT(a, s);
         return plus(a, b);
     }
 
-    private long GG(long a, final long b, final long c, final long d,
-            final long x, final long s, final long ac) {
+    private long GG(long a, final long b, final long c, final long d, final long x,
+            final long s, final long ac) {
         a = plus(a, plus(plus(G(b, c, d), x), ac));
         a = ROTATE_LEFT(a, s);
         return plus(a, b);
     }
 
-    private long HH(long a, final long b, final long c, final long d,
-            final long x, final long s, final long ac) {
+    private long HH(long a, final long b, final long c, final long d, final long x,
+            final long s, final long ac) {
         a = plus(a, plus(plus(H(b, c, d), x), ac));
         a = ROTATE_LEFT(a, s);
         return plus(a, b);
     }
 
-    private long II(long a, final long b, final long c, final long d,
-            final long x, final long s, final long ac) {
+    private long II(long a, final long b, final long c, final long d, final long x,
+            final long s, final long ac) {
         a = plus(a, plus(plus(I(b, c, d), x), ac));
         a = ROTATE_LEFT(a, s);
         return plus(a, b);
     }
 
-    private void decode(final long output[], final int input[],
-            final int in_from, final int len) {
+    private void decode(final long output[], final int input[], final int in_from,
+            final int len) {
         int i, j;
 
         for (i = 0, j = 0; j < len; i++, j += 4) {
             output[i] = input[j + in_from] | shl(input[j + in_from + 1], 8)
-                    | shl(input[j + in_from + 2], 16)
-                    | shl(input[j + in_from + 3], 24);
+                    | shl(input[j + in_from + 2], 16) | shl(input[j + in_from + 3], 24);
         }
     }
 

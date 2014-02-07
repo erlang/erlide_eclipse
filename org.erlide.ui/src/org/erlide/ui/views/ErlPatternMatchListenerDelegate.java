@@ -24,8 +24,7 @@ import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
 import org.erlide.util.ErlLogger;
 
-public class ErlPatternMatchListenerDelegate implements
-        IPatternMatchListenerDelegate {
+public class ErlPatternMatchListenerDelegate implements IPatternMatchListenerDelegate {
 
     private TextConsole fConsole;
 
@@ -49,8 +48,8 @@ public class ErlPatternMatchListenerDelegate implements
                     event.getLength());
             final String[] v = txt.split(":");
 
-            final IProject[] projects = ResourcesPlugin.getWorkspace()
-                    .getRoot().getProjects();
+            final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
+                    .getProjects();
             IResource res = null;
             for (final IProject prj : projects) {
                 if (!prj.isOpen()) {
@@ -93,8 +92,8 @@ public class ErlPatternMatchListenerDelegate implements
         return null;
     }
 
-    private static IResource recursiveFindNamedResource(
-            final IContainer container, final String name) throws CoreException {
+    private static IResource recursiveFindNamedResource(final IContainer container,
+            final String name) throws CoreException {
         if (!container.isAccessible()) {
             return null;
         }

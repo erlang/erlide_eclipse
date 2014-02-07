@@ -41,8 +41,7 @@ public class Configuration implements IConfiguration {
                     .getInstance()
                     .getModel()
                     .getErlangProject(
-                            ResourcesPlugin.getWorkspace().getRoot()
-                                    .getProject(name));
+                            ResourcesPlugin.getWorkspace().getRoot().getProject(name));
         }
     }
 
@@ -57,8 +56,7 @@ public class Configuration implements IConfiguration {
      * @throws CoverException
      *             if project is not set
      */
-    public void addModule(final String name) throws ErlModelException,
-            CoverException {
+    public void addModule(final String name) throws ErlModelException, CoverException {
 
         if (project == null) {
             throw new CoverException("no project set");

@@ -56,8 +56,7 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
         conMan.removeConsoles(new IConsole[] { console });
     }
 
-    public void addPage(final IErlangConsole console,
-            final IErlangConsolePage page) {
+    public void addPage(final IErlangConsole console, final IErlangConsolePage page) {
         pages.put(console, page);
     }
 

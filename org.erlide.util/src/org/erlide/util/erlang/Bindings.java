@@ -21,15 +21,13 @@ public interface Bindings {
 
     String getString(final String name) throws OtpErlangException;
 
-    Collection<OtpErlangObject> getList(final String name)
-            throws OtpErlangException;
+    Collection<OtpErlangObject> getList(final String name) throws OtpErlangException;
 
     OtpErlangObject[] getTuple(final String name) throws OtpErlangException;
 
     OtpErlangPid getPid(final String name) throws OtpErlangException;
 
-    <T> T getAs(final String name, final Class<T> cls)
-            throws SignatureException;
+    <T> T getAs(final String name, final Class<T> cls) throws SignatureException;
 
     void put(final String name, final OtpErlangObject value);
 

@@ -40,8 +40,8 @@ public class IErlCommentTests extends ErlModelTestBase {
     // boolean isHeader();
     @Test
     public void isHeader() throws Exception {
-        final IErlModule module3 = ErlideTestUtils.createModule(project,
-                "uu.erl", "-module(uu).\n% header too\n\n% comment\n");
+        final IErlModule module3 = ErlideTestUtils.createModule(project, "uu.erl",
+                "-module(uu).\n% header too\n\n% comment\n");
         module3.open(null);
         final Collection<IErlComment> comments = module2.getComments();
         final Iterator<IErlComment> iterator = comments.iterator();

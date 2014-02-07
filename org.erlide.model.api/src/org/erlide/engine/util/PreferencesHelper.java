@@ -26,19 +26,18 @@ public final class PreferencesHelper {
             final IProject project) {
         return new PreferencesHelper(qualifier, new IScopeContext[] {
                 new ProjectScope(project), InstanceScope.INSTANCE,
-                ConfigurationScope.INSTANCE, DefaultScope.INSTANCE },
-                new ProjectScope(project));
+                ConfigurationScope.INSTANCE, DefaultScope.INSTANCE }, new ProjectScope(
+                project));
     }
 
     public static PreferencesHelper getHelper(final String qualifier) {
         final IScopeContext instanceScope = InstanceScope.INSTANCE;
-        return new PreferencesHelper(qualifier, new IScopeContext[] {
-                instanceScope, ConfigurationScope.INSTANCE,
-                DefaultScope.INSTANCE }, instanceScope);
+        return new PreferencesHelper(qualifier, new IScopeContext[] { instanceScope,
+                ConfigurationScope.INSTANCE, DefaultScope.INSTANCE }, instanceScope);
     }
 
-    private PreferencesHelper(final String qualifier,
-            final IScopeContext[] loadContexts, final IScopeContext storeContext) {
+    private PreferencesHelper(final String qualifier, final IScopeContext[] loadContexts,
+            final IScopeContext storeContext) {
         this.loadContexts = loadContexts;
         this.storeContext = storeContext;
         nextContexts = getNextContexts(loadContexts, storeContext);
@@ -75,8 +74,7 @@ public final class PreferencesHelper {
     }
 
     public void putBoolean(final String key, final boolean value) {
-        final String def = service
-                .getString(qualifier, key, null, nextContexts);
+        final String def = service.getString(qualifier, key, null, nextContexts);
         if (def == null || Boolean.parseBoolean(def) != value) {
             storeContext.getNode(qualifier).putBoolean(key, value);
         }
@@ -98,48 +96,42 @@ public final class PreferencesHelper {
     }
 
     public void putByteArray(final String key, final byte[] value) {
-        final byte[] def = service.getByteArray(qualifier, key, null,
-                nextContexts);
+        final byte[] def = service.getByteArray(qualifier, key, null, nextContexts);
         if (def == null || def != value) {
             storeContext.getNode(qualifier).putByteArray(key, value);
         }
     }
 
     public void putDouble(final String key, final double value) {
-        final double def = service.getDouble(qualifier, key, Double.NaN,
-                nextContexts);
+        final double def = service.getDouble(qualifier, key, Double.NaN, nextContexts);
         if (Double.isNaN(def) || Double.compare(def, value) != 0) {
             storeContext.getNode(qualifier).putDouble(key, value);
         }
     }
 
     public void putFloat(final String key, final float value) {
-        final float def = service.getFloat(qualifier, key, Float.NaN,
-                nextContexts);
+        final float def = service.getFloat(qualifier, key, Float.NaN, nextContexts);
         if (Double.isNaN(def) || def != value) {
             storeContext.getNode(qualifier).putFloat(key, value);
         }
     }
 
     public void putInt(final String key, final int value) {
-        final int def = service.getInt(qualifier, key, Integer.MIN_VALUE,
-                nextContexts);
+        final int def = service.getInt(qualifier, key, Integer.MIN_VALUE, nextContexts);
         if (def == Integer.MIN_VALUE || Double.compare(def, value) != 0) {
             storeContext.getNode(qualifier).putInt(key, value);
         }
     }
 
     public void putLong(final String key, final long value) {
-        final long def = service.getLong(qualifier, key, Long.MIN_VALUE,
-                nextContexts);
+        final long def = service.getLong(qualifier, key, Long.MIN_VALUE, nextContexts);
         if (def == Long.MIN_VALUE || def != value) {
             storeContext.getNode(qualifier).putLong(key, value);
         }
     }
 
     public void putString(final String key, final String value) {
-        final String def = service
-                .getString(qualifier, key, null, nextContexts);
+        final String def = service.getString(qualifier, key, null, nextContexts);
         if (value == null) {
             storeContext.getNode(qualifier).remove(key);
         } else if (def == null || !def.equals(value)) {

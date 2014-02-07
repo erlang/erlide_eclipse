@@ -95,8 +95,8 @@ public class TableLayoutComposite extends Composite {
         return result;
     }
 
-    protected void layoutTable(final Table table, final int width,
-            final Rectangle area, final boolean increase) {
+    protected void layoutTable(final Table table, final int width, final Rectangle area,
+            final boolean increase) {
         if (width <= 1) {
             return;
         }
@@ -143,8 +143,7 @@ public class TableLayoutComposite extends Composite {
                     // int weight = firstTime ? cw.weight :
                     // tableColumns[i].getWidth();
                     final int weight = cw.weight;
-                    int pixels = totalWeight == 0 ? 0 : weight * rest
-                            / totalWeight;
+                    int pixels = totalWeight == 0 ? 0 : weight * rest / totalWeight;
                     if (pixels < cw.minimumWidth) {
                         pixels = cw.minimumWidth;
                     }

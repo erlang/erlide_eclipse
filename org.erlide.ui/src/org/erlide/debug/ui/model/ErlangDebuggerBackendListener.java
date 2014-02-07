@@ -43,24 +43,20 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
             final ErlangDebugTarget erlangDebugTarget = debugTargetOfBackend(backend
                     .getRpcSite());
             if (erlangDebugTarget != null
-                    && erlangDebugTarget.getInterpretedModules().contains(
-                            moduleName)) {
-                if (isModuleRunningInInterpreter(erlangDebugTarget,
-                        backend.getRpcSite(), moduleName)) {
+                    && erlangDebugTarget.getInterpretedModules().contains(moduleName)) {
+                if (isModuleRunningInInterpreter(erlangDebugTarget, backend.getRpcSite(),
+                        moduleName)) {
                     abortContinueDialog(erlangDebugTarget);
                 } else {
                     final ILaunchConfiguration launchConfiguration = erlangDebugTarget
                             .getLaunch().getLaunchConfiguration();
                     final EnumSet<ErlDebugFlags> debugFlags = ErlDebugFlags
-                            .makeSet(launchConfiguration
-                                    .getAttribute(
-                                            ErlRuntimeAttributes.DEBUG_FLAGS,
-                                            ErlDebugFlags
-                                                    .getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS)));
+                            .makeSet(launchConfiguration.getAttribute(
+                                    ErlRuntimeAttributes.DEBUG_FLAGS, ErlDebugFlags
+                                            .getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS)));
                     final boolean distributed = debugFlags
                             .contains(ErlDebugFlags.DISTRIBUTED_DEBUG);
-                    erlangDebugTarget.interpret(project, moduleName,
-                            distributed, true);
+                    erlangDebugTarget.interpret(project, moduleName, distributed, true);
                 }
             }
         } catch (final CoreException e) {
@@ -69,8 +65,8 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
     }
 
     private ErlangDebugTarget debugTargetOfBackend(final IRpcSite backend) {
-        final IDebugTarget[] debugTargets = DebugPlugin.getDefault()
-                .getLaunchManager().getDebugTargets();
+        final IDebugTarget[] debugTargets = DebugPlugin.getDefault().getLaunchManager()
+                .getDebugTargets();
         for (final IDebugTarget debugTarget : debugTargets) {
             if (debugTarget instanceof ErlangDebugTarget) {
                 final ErlangDebugTarget erlangDebugTarget = (ErlangDebugTarget) debugTarget;
@@ -105,10 +101,8 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
             name = ""; // never happens, ErlangDebugTarget doesn't throw this...
         }
         final String vmName = name;
-        final ILaunchConfiguration config = target.getLaunch()
-                .getLaunchConfiguration();
-        final String launchName = config != null ? config.getName()
-                : "<unknown>";
+        final ILaunchConfiguration config = target.getLaunch().getLaunchConfiguration();
+        final String launchName = config != null ? config.getName() : "<unknown>";
         final IStatus status = new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
                 IStatus.ERROR, "Can't replace code", null);
         final String title = "Code Replace Failed";
@@ -134,8 +128,8 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
             final ErlangDebugTarget erlangDebugTarget, final IRpcSite backend,
             final String moduleName) {
         for (final OtpErlangPid metaPid : erlangDebugTarget.getAllMetaPids()) {
-            final List<String> allModulesOnStack = ErlideDebug
-                    .getAllModulesOnStack(backend, metaPid);
+            final List<String> allModulesOnStack = ErlideDebug.getAllModulesOnStack(
+                    backend, metaPid);
             if (allModulesOnStack != null) {
                 for (final String m : allModulesOnStack) {
                     if (m.equals(moduleName)) {

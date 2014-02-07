@@ -32,8 +32,7 @@ public class IErlExternalTests extends ErlModelTestBase {
                 "-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
         final String absolutePath = externalFile.getAbsolutePath();
         externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX, absolutePath);
-        ((ErlProject) project).setExternalModulesFile(externalsFile
-                .getAbsolutePath());
+        ((ErlProject) project).setExternalModulesFile(externalsFile.getAbsolutePath());
         project.open(null);
     }
 
@@ -59,10 +58,8 @@ public class IErlExternalTests extends ErlModelTestBase {
         external.open(null);
         final IErlExternal external2 = (IErlExternal) externals.get(1);
         external2.open(null);
-        final IErlExternal external3 = (IErlExternal) external.getChildren()
-                .get(0);
-        final IErlExternal external4 = (IErlExternal) external2.getChildren()
-                .get(0);
+        final IErlExternal external3 = (IErlExternal) external.getChildren().get(0);
+        final IErlExternal external4 = (IErlExternal) external2.getChildren().get(0);
         assertFalse(external.isOTP());
         assertTrue(external2.isOTP());
         assertFalse(external3.isOTP());

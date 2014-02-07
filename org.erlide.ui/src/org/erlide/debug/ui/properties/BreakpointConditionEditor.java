@@ -157,8 +157,8 @@ public class BreakpointConditionEditor {
                     return null;
                 }
             };
-            fHandlerService = (IHandlerService) PlatformUI.getWorkbench()
-                    .getAdapter(IHandlerService.class);
+            fHandlerService = (IHandlerService) PlatformUI.getWorkbench().getAdapter(
+                    IHandlerService.class);
         } catch (final CoreException exception) {
             ErlLogger.warn(exception);
         }
@@ -200,8 +200,7 @@ public class BreakpointConditionEditor {
             // fViewer.updateViewerColors();
             fViewer.getTextWidget().setFocus();
             fActivation = fHandlerService.activateHandler(
-                    ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS,
-                    fHandler);
+                    ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS, fHandler);
         } else {
             final Color color = fViewer.getControl().getDisplay()
                     .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);

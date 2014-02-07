@@ -145,8 +145,7 @@ public class OtpNode extends OtpLocalNode {
 
     private synchronized void init(final int port) throws IOException {
         if (!initDone) {
-            connections = new Hashtable<String, OtpCookedConnection>(17,
-                    (float) 0.95);
+            connections = new Hashtable<String, OtpCookedConnection>(17, (float) 0.95);
             mboxes = new Mailboxes();
             acceptor = new Acceptor(port);
             initDone = true;
@@ -532,8 +531,7 @@ public class OtpNode extends OtpLocalNode {
         }
     }
 
-    synchronized void localStatus(final String node, final boolean up,
-            final Object info) {
+    synchronized void localStatus(final String node, final boolean up, final Object info) {
         if (handler == null) {
             return;
         }
@@ -565,10 +563,8 @@ public class OtpNode extends OtpLocalNode {
         private final Hashtable<String, WeakReference<OtpMbox>> byName;
 
         public Mailboxes() {
-            byPid = new Hashtable<OtpErlangPid, WeakReference<OtpMbox>>(17,
-                    (float) 0.95);
-            byName = new Hashtable<String, WeakReference<OtpMbox>>(17,
-                    (float) 0.95);
+            byPid = new Hashtable<OtpErlangPid, WeakReference<OtpMbox>>(17, (float) 0.95);
+            byName = new Hashtable<String, WeakReference<OtpMbox>>(17, (float) 0.95);
         }
 
         public OtpMbox create(final String name) {

@@ -103,8 +103,7 @@ public final class BindingsImpl implements Bindings {
     }
 
     @Override
-    public OtpErlangObject[] getTuple(final String name)
-            throws OtpErlangException {
+    public OtpErlangObject[] getTuple(final String name) throws OtpErlangException {
         final OtpErlangObject r = get(name);
         if (r instanceof OtpErlangTuple) {
             return ((OtpErlangTuple) r).elements();
@@ -122,8 +121,7 @@ public final class BindingsImpl implements Bindings {
     }
 
     @Override
-    public <T> T getAs(final String name, final Class<T> cls)
-            throws SignatureException {
+    public <T> T getAs(final String name, final Class<T> cls) throws SignatureException {
         final OtpErlangObject v = get(name);
         return (T) TypeConverter.erlang2java(v, cls);
     }

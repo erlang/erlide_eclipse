@@ -47,8 +47,7 @@ public class NodeCellModifier implements ICellModifier {
     }
 
     @Override
-    public void modify(final Object element, final String property,
-            final Object value) {
+    public void modify(final Object element, final String property, final Object value) {
         final TracedNode node = (TracedNode) ((TableItem) element).getData();
         switch (NodeColumn.valueOf(property)) {
         case COOKIE:

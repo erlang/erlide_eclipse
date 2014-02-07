@@ -44,13 +44,13 @@ public abstract class ExternalBuilder extends ErlangBuilder {
             project.getFolder("ebin").create(true, true, null);
         }
 
-        final ToolResults result = ex.run(getOsCommand(), getCompileTarget(),
-                project.getLocation().toPortableString());
+        final ToolResults result = ex.run(getOsCommand(), getCompileTarget(), project
+                .getLocation().toPortableString());
 
-        if (result.isCommandNotFound()) {
-            MarkerUtils.addMarker(null, project, null,
-                    "Builder command not found: " + getOsCommand(), 0,
-                    IMarker.SEVERITY_ERROR, MarkerUtils.PROBLEM_MARKER);
+        if (result == null || result.isCommandNotFound()) {
+            MarkerUtils.addMarker(null, project, null, "Builder command not found: "
+                    + getOsCommand(), 0, IMarker.SEVERITY_ERROR,
+                    MarkerUtils.PROBLEM_MARKER);
         } else {
             createMarkers(result);
         }
@@ -69,8 +69,8 @@ public abstract class ExternalBuilder extends ErlangBuilder {
         if (getCleanTarget() == null) {
             return;
         }
-        final ToolResults result = ex.run(getOsCommand(), getCleanTarget(),
-                project.getLocation().toPortableString());
+        final ToolResults result = ex.run(getOsCommand(), getCleanTarget(), project
+                .getLocation().toPortableString());
         if (result != null) {
             createMarkers(result);
         }
@@ -79,10 +79,10 @@ public abstract class ExternalBuilder extends ErlangBuilder {
 
     private void createMarkers(final ToolResults result) {
         if (result.exit > 2) {
-            ErlLogger.error("The '" + getOsCommand()
-                    + "' builder returned error " + result.exit + "\n"
-                    + Joiner.on('\n').join(result.output) + "--------------\n"
-                    + Joiner.on('\n').join(result.error) + "--------------");
+            ErlLogger.error("The '" + getOsCommand() + "' builder returned error "
+                    + result.exit + "\n" + Joiner.on('\n').join(result.output)
+                    + "--------------\n" + Joiner.on('\n').join(result.error)
+                    + "--------------");
             return;
         }
 

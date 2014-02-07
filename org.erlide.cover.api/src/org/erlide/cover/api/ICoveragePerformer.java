@@ -27,8 +27,7 @@ public interface ICoveragePerformer {
      * 
      * @param conf
      */
-    public void setCoverageConfiguration(IConfiguration conf)
-            throws CoverException;
+    public void setCoverageConfiguration(IConfiguration conf) throws CoverException;
 
     /**
      * Perform cover analises based on present configuration

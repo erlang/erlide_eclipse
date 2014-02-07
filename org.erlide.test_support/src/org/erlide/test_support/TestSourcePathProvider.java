@@ -38,8 +38,7 @@ public class TestSourcePathProvider implements SourcePathProvider,
         }
 
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        workspace.addResourceChangeListener(this,
-                IResourceChangeEvent.POST_CHANGE);
+        workspace.addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
     }
 
     @Override
@@ -98,8 +97,7 @@ public class TestSourcePathProvider implements SourcePathProvider,
             final long time = System.currentTimeMillis();
             delta.accept(new IResourceDeltaVisitor() {
                 @Override
-                public boolean visit(final IResourceDelta theDelta)
-                        throws CoreException {
+                public boolean visit(final IResourceDelta theDelta) throws CoreException {
                     final IResource resource = theDelta.getResource();
                     if (!(resource instanceof IContainer)) {
                         return false;
@@ -107,11 +105,9 @@ public class TestSourcePathProvider implements SourcePathProvider,
                     final IContainer container = (IContainer) resource;
                     // TODO isintestpath is slow...
                     final IPath location = container.getLocation();
-                    final Set<IPath> paths = getProjectPaths(resource
-                            .getProject());
+                    final Set<IPath> paths = getProjectPaths(resource.getProject());
                     if (theDelta.getKind() == IResourceDelta.ADDED
-                            && !paths.contains(location)
-                            && isTestDir(container)) {
+                            && !paths.contains(location) && isTestDir(container)) {
                         paths.add(location);
                     }
                     if (theDelta.getKind() == IResourceDelta.REMOVED
@@ -122,8 +118,7 @@ public class TestSourcePathProvider implements SourcePathProvider,
                 }
             });
             if (SystemConfiguration.hasFeatureEnabled("erlide.debug.tspp")) {
-                ErlLogger.debug("TSPP took "
-                        + (System.currentTimeMillis() - time));
+                ErlLogger.debug("TSPP took " + (System.currentTimeMillis() - time));
             }
         } catch (final CoreException e) {
             ErlLogger.error(e);

@@ -67,12 +67,10 @@ import com.google.common.collect.Sets;
 public abstract class AbstractErlContentAssistProcessor implements
         IContentAssistProcessor {
 
-    public static class CompletionNameComparer implements
-            Comparator<ICompletionProposal> {
+    public static class CompletionNameComparer implements Comparator<ICompletionProposal> {
 
         @Override
-        public int compare(final ICompletionProposal o1,
-                final ICompletionProposal o2) {
+        public int compare(final ICompletionProposal o1, final ICompletionProposal o2) {
             final String s1 = o1.getDisplayString();
             final String s2 = o2.getDisplayString();
             return s1.compareTo(s2);
@@ -84,8 +82,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         return Character.isJavaIdentifierPart(char1);
     }
 
-    static boolean filterImported(final IErlImport erlImport,
-            final String funWithArity) {
+    static boolean filterImported(final IErlImport erlImport, final String funWithArity) {
         if (erlImport == null) {
             return true;
         }
@@ -140,13 +137,9 @@ public abstract class AbstractErlContentAssistProcessor implements
             final int offset, final String prefix, final Kinds kind)
             throws ErlModelException {
         final List<ICompletionProposal> result = Lists.newArrayList();
-        final boolean includes = kind == Kinds.INCLUDES
-                || kind == Kinds.INCLUDE_LIBS;
-        final List<String> names = ErlangEngine
-                .getInstance()
-                .getModelUtilService()
-                .findUnitsWithPrefix(prefix, project, kind != Kinds.INCLUDES,
-                        includes);
+        final boolean includes = kind == Kinds.INCLUDES || kind == Kinds.INCLUDE_LIBS;
+        final List<String> names = ErlangEngine.getInstance().getModelUtilService()
+                .findUnitsWithPrefix(prefix, project, kind != Kinds.INCLUDES, includes);
         final OtpErlangObject res = ErlangEngine.getInstance()
                 .getService(OtpDocService.class)
                 .getModules(backend, prefix, names, includes);
@@ -158,8 +151,8 @@ public abstract class AbstractErlContentAssistProcessor implements
                     final String suffix = includes ? "" : ":";
                     final String cpl = quoted(s.stringValue() + suffix, kind);
                     final int prefixLength = prefix.length();
-                    result.add(new CompletionProposal(cpl, offset
-                            - prefixLength, prefixLength, cpl.length()));
+                    result.add(new CompletionProposal(cpl, offset - prefixLength,
+                            prefixLength, cpl.length()));
                 }
             }
         }
@@ -169,12 +162,11 @@ public abstract class AbstractErlContentAssistProcessor implements
     protected abstract String quoted(String string, Kinds kind);
 
     @Override
-    public ICompletionProposal[] computeCompletionProposals(
-            final ITextViewer viewer, final int offset) {
+    public ICompletionProposal[] computeCompletionProposals(final ITextViewer viewer,
+            final int offset) {
         final String id = Integer.toHexString(viewer.hashCode()) + "@" + offset;
         try {
-            ErlideEventTracer.getInstance().traceOperationStart("completion",
-                    id);
+            ErlideEventTracer.getInstance().traceOperationStart("completion", id);
             try {
 
                 final IDocument doc = viewer.getDocument();
@@ -217,9 +209,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                             .getInstance()
                             .getContextAssistService()
                             .checkRecordCompletion(
-                                    BackendCore
-                                            .getBuildBackend(workspaceProject),
-                                    before);
+                                    BackendCore.getBuildBackend(workspaceProject), before);
                 }
                 if (rc != null && rc.isNameWanted()) {
                     flags = EnumSet.of(Kinds.RECORD_DEFS);
@@ -244,8 +234,8 @@ public abstract class AbstractErlContentAssistProcessor implements
                         pos = colonPos;
                         before = before.substring(colonPos + 1);
                     } else {
-                        moduleOrRecord = StringUtils.unquote(getPrefix(before
-                                .substring(0, colonPos)));
+                        moduleOrRecord = StringUtils.unquote(getPrefix(before.substring(
+                                0, colonPos)));
                         flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS);
                         pos = colonPos;
                         before = before.substring(colonPos + 1);
@@ -269,15 +259,14 @@ public abstract class AbstractErlContentAssistProcessor implements
                         case IMPORT:
                             final IErlImport i = (IErlImport) element;
                             moduleOrRecord = i.getImportModule();
-                            flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS,
-                                    Kinds.ARITY_ONLY);
+                            flags = EnumSet
+                                    .of(Kinds.EXTERNAL_FUNCTIONS, Kinds.ARITY_ONLY);
                             break;
                         case FUNCTION:
                         case CLAUSE:
                             flags = EnumSet.of(Kinds.MODULES);
                             if (module != null) {
-                                flags = Sets.union(flags, EnumSet.of(
-                                        Kinds.VARIABLES,
+                                flags = Sets.union(flags, EnumSet.of(Kinds.VARIABLES,
                                         Kinds.DECLARED_FUNCTIONS,
                                         Kinds.IMPORTED_FUNCTIONS,
                                         Kinds.AUTO_IMPORTED_FUNCTIONS));
@@ -303,12 +292,11 @@ public abstract class AbstractErlContentAssistProcessor implements
                     }
                 }
                 flags = filterFlags(flags);
-                result = addCompletions(flags, offset, before, moduleOrRecord,
-                        pos, fieldsSoFar);
+                result = addCompletions(flags, offset, before, moduleOrRecord, pos,
+                        fieldsSoFar);
                 final ErlTemplateCompletionProcessor t = new ErlTemplateCompletionProcessor(
                         doc, offset - before.length(), before.length());
-                result.addAll(Arrays.asList(t.computeCompletionProposals(
-                        viewer, offset)));
+                result.addAll(Arrays.asList(t.computeCompletionProposals(viewer, offset)));
                 oldSuggestions = result.size();
                 if (result.isEmpty()) {
                     ErlLogger.debug("no results");
@@ -333,8 +321,8 @@ public abstract class AbstractErlContentAssistProcessor implements
 
     private List<ICompletionProposal> addCompletions(final Set<Kinds> flags,
             final int offset, final String prefix, final String moduleOrRecord,
-            final int pos, final List<String> fieldsSoFar)
-            throws CoreException, BadLocationException {
+            final int pos, final List<String> fieldsSoFar) throws CoreException,
+            BadLocationException {
         final IProject workspaceProject = project == null ? null : project
                 .getWorkspaceProject();
         final IRpcSite backend = BackendCore.getBuildBackend(workspaceProject);
@@ -356,44 +344,37 @@ public abstract class AbstractErlContentAssistProcessor implements
             addSorted(result, getAutoImportedFunctions(backend, offset, prefix));
         }
         if (flags.contains(Kinds.MODULES)) {
-            addSorted(result,
-                    getModules(backend, offset, prefix, Kinds.MODULES));
+            addSorted(result, getModules(backend, offset, prefix, Kinds.MODULES));
         }
         if (flags.contains(Kinds.INCLUDES)) {
-            addSorted(result,
-                    getModules(backend, offset, prefix, Kinds.INCLUDES));
+            addSorted(result, getModules(backend, offset, prefix, Kinds.INCLUDES));
         }
         if (flags.contains(Kinds.INCLUDE_LIBS)) {
-            addSorted(result,
-                    getModules(backend, offset, prefix, Kinds.INCLUDE_LIBS));
+            addSorted(result, getModules(backend, offset, prefix, Kinds.INCLUDE_LIBS));
         }
         if (flags.contains(Kinds.RECORD_DEFS)) {
             addSorted(
                     result,
-                    getMacroOrRecordCompletions(offset, prefix,
-                            ErlElementKind.RECORD_DEF));
+                    getMacroOrRecordCompletions(offset, prefix, ErlElementKind.RECORD_DEF));
         }
         if (flags.contains(Kinds.RECORD_FIELDS)) {
             addSorted(
                     result,
-                    getRecordFieldCompletions(moduleOrRecord, offset, prefix,
-                            pos, fieldsSoFar));
+                    getRecordFieldCompletions(moduleOrRecord, offset, prefix, pos,
+                            fieldsSoFar));
         }
         if (flags.contains(Kinds.MACRO_DEFS)) {
-            addSorted(
-                    result,
-                    getMacroOrRecordCompletions(offset, prefix,
-                            ErlElementKind.MACRO_DEF));
+            addSorted(result,
+                    getMacroOrRecordCompletions(offset, prefix, ErlElementKind.MACRO_DEF));
         }
         if (flags.contains(Kinds.EXTERNAL_FUNCTIONS)) {
             addSorted(
                     result,
-                    getExternalCallCompletions(backend, moduleOrRecord, offset,
-                            prefix, flags.contains(Kinds.ARITY_ONLY)));
+                    getExternalCallCompletions(backend, moduleOrRecord, offset, prefix,
+                            flags.contains(Kinds.ARITY_ONLY)));
         }
         if (flags.contains(Kinds.TYPES)) {
-            addSorted(result,
-                    getTypeCompletions(backend, moduleOrRecord, offset, prefix));
+            addSorted(result, getTypeCompletions(backend, moduleOrRecord, offset, prefix));
         }
 
         return result;
@@ -405,8 +386,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         result.addAll(completions);
     }
 
-    String getBefore(final ITextViewer viewer, final IDocument doc,
-            final int offset) {
+    String getBefore(final ITextViewer viewer, final IDocument doc, final int offset) {
         try {
             if (module != null) {
                 try {
@@ -458,9 +438,9 @@ public abstract class AbstractErlContentAssistProcessor implements
         return before;
     }
 
-    List<ICompletionProposal> getDeclaredFunctions(final int offset,
-            final String prefix, final boolean unexportedOnly,
-            final boolean arityOnly) throws ErlModelException {
+    List<ICompletionProposal> getDeclaredFunctions(final int offset, final String prefix,
+            final boolean unexportedOnly, final boolean arityOnly)
+            throws ErlModelException {
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         for (final IErlElement e : module.getChildren()) {
             if (e instanceof IErlFunction) {
@@ -512,8 +492,8 @@ public abstract class AbstractErlContentAssistProcessor implements
             ErlLogger.error(e);
         }
         if (kind == ErlElementKind.MACRO_DEF) {
-            final String[] names = ErlangEngine.getInstance()
-                    .getModelUtilService().getPredefinedMacroNames();
+            final String[] names = ErlangEngine.getInstance().getModelUtilService()
+                    .getPredefinedMacroNames();
             for (final String name : names) {
                 addIfMatches(name, prefix, offset, result);
             }
@@ -526,48 +506,40 @@ public abstract class AbstractErlContentAssistProcessor implements
             final boolean arityOnly) throws CoreException {
         final ModelFindService modelFindService = ErlangEngine.getInstance()
                 .getModelFindService();
-        final String moduleName = modelFindService.resolveMacroValue(
-                moduleName0, module);
+        final String moduleName = modelFindService.resolveMacroValue(moduleName0, module);
         // we have an external call
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-        final boolean checkAllProjects = NavigationPreferencePage
-                .getCheckAllProjects();
+        final boolean checkAllProjects = NavigationPreferencePage.getCheckAllProjects();
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlModule theModule = modelFindService.findModule(model,
-                project, moduleName, null,
+        final IErlModule theModule = modelFindService.findModule(model, project,
+                moduleName, null,
                 checkAllProjects ? IErlElementLocator.Scope.ALL_PROJECTS
                         : IErlElementLocator.Scope.REFERENCED_PROJECTS);
         if (theModule != null) {
-            if (ErlangEngine.getInstance().getModelUtilService()
-                    .isOtpModule(theModule)) {
-                final String stateDir = ErlideUIPlugin.getDefault()
-                        .getStateLocation().toString();
+            if (ErlangEngine.getInstance().getModelUtilService().isOtpModule(theModule)) {
+                final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
+                        .toString();
                 final OtpErlangObject res = ErlangEngine.getInstance()
                         .getService(OtpDocService.class)
                         .getProposalsWithDoc(b, moduleName, prefix, stateDir);
-                addFunctionProposalsWithDoc(offset, prefix, result, res, null,
-                        arityOnly);
+                addFunctionProposalsWithDoc(offset, prefix, result, res, null, arityOnly);
             } else {
-                addFunctionsFromModule(offset, prefix, arityOnly, result,
-                        theModule);
+                addFunctionsFromModule(offset, prefix, arityOnly, result, theModule);
             }
         }
         return result;
     }
 
-    List<ICompletionProposal> getRecordFieldCompletions(
-            final String recordName, final int offset, final String prefix,
-            final int hashMarkPos, final List<String> fieldsSoFar) {
+    List<ICompletionProposal> getRecordFieldCompletions(final String recordName,
+            final int offset, final String prefix, final int hashMarkPos,
+            final List<String> fieldsSoFar) {
         if (module == null) {
             return EMPTY_COMPLETIONS;
         }
         IErlPreprocessorDef pd;
         try {
-            pd = ErlangEngine
-                    .getInstance()
-                    .getModelFindService()
-                    .findPreprocessorDef(module, recordName,
-                            ErlElementKind.RECORD_DEF);
+            pd = ErlangEngine.getInstance().getModelFindService()
+                    .findPreprocessorDef(module, recordName, ErlElementKind.RECORD_DEF);
         } catch (final CoreException e) {
             return EMPTY_COMPLETIONS;
         }
@@ -592,19 +564,17 @@ public abstract class AbstractErlContentAssistProcessor implements
             final List<ICompletionProposal> result) {
         final int length = prefix.length();
         if (name.regionMatches(true, 0, prefix, 0, length)) {
-            result.add(new CompletionProposal(name, offset - length, length,
-                    name.length()));
+            result.add(new CompletionProposal(name, offset - length, length, name
+                    .length()));
         }
     }
 
     List<ICompletionProposal> getAutoImportedFunctions(final IRpcSite backend,
             final int offset, final String prefix) {
         final String stateDir = ErlangEngine.getInstance().getStateDir();
-        final OtpErlangObject res = ErlangEngine
-                .getInstance()
+        final OtpErlangObject res = ErlangEngine.getInstance()
                 .getService(OtpDocService.class)
-                .getProposalsWithDoc(backend, "<auto_imported>", prefix,
-                        stateDir);
+                .getProposalsWithDoc(backend, "<auto_imported>", prefix, stateDir);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         addFunctionProposalsWithDoc(offset, prefix, result, res, null, false);
         return result;
@@ -618,8 +588,7 @@ public abstract class AbstractErlContentAssistProcessor implements
             final OtpErlangObject res = ErlangEngine
                     .getInstance()
                     .getService(OtpDocService.class)
-                    .getProposalsWithDoc(backend, imp.getImportModule(),
-                            prefix, stateDir);
+                    .getProposalsWithDoc(backend, imp.getImportModule(), prefix, stateDir);
             addFunctionProposalsWithDoc(offset, prefix, result, res, imp, false);
         }
         return result;
@@ -630,8 +599,8 @@ public abstract class AbstractErlContentAssistProcessor implements
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         for (final String builtin : getBuiltinTypeCompletions()) {
             if (builtin.startsWith(prefix.trim())) {
-                result.add(new CompletionProposal(builtin, offset
-                        - prefix.length(), prefix.length(), builtin.length()));
+                result.add(new CompletionProposal(builtin, offset - prefix.length(),
+                        prefix.length(), builtin.length()));
             }
         }
         // TODO provide types completions from workspace
@@ -640,12 +609,11 @@ public abstract class AbstractErlContentAssistProcessor implements
 
     List<String> getBuiltinTypeCompletions() {
         final List<String> result = Lists.newArrayList("any()", "binary()",
-                "bitstring()", "boolean()", "byte()", "char()", "float()",
-                "fun()", "integer()", "iolist()", "list()",
-                "maybe_improper_list()", "mfa()", "module()", "neg_integer()",
-                "no_return()", "node()", "non_neg_integer()", "none()",
-                "nonempty_list()", "number()", "pid()", "port()",
-                "pos_integer()", "reference()", "term()", "timeout()",
+                "bitstring()", "boolean()", "byte()", "char()", "float()", "fun()",
+                "integer()", "iolist()", "list()", "maybe_improper_list()", "mfa()",
+                "module()", "neg_integer()", "no_return()", "node()",
+                "non_neg_integer()", "none()", "nonempty_list()", "number()", "pid()",
+                "port()", "pos_integer()", "reference()", "term()", "timeout()",
                 "tuple()");
         return result;
     }
@@ -660,8 +628,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                 if (e instanceof IErlFunction) {
                     final IErlFunction f = (IErlFunction) e;
                     if (f.isExported()) {
-                        addFunctionCompletion(offset, prefix, proposals, f,
-                                arityOnly);
+                        addFunctionCompletion(offset, prefix, proposals, f, arityOnly);
                         result = true;
                     }
                 }
@@ -696,8 +663,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                     }
                 }
 
-                funWithParameters = funWithParameters.substring(aprefix
-                        .length());
+                funWithParameters = funWithParameters.substring(aprefix.length());
                 final List<Point> offsetsAndLengths = new ArrayList<Point>();
                 if (!arityOnly) {
                     addOffsetsAndLengths(parOffsets, offset, offsetsAndLengths);
@@ -732,16 +698,16 @@ public abstract class AbstractErlContentAssistProcessor implements
                 return;
             }
         }
-        final ICompletionProposal c = new ErlCompletionProposal(
-                offsetsAndLengths, funWithArity, funWithParameters, offset, 0,
-                cursorPosition, null, null, docStr, sourceViewer);
+        final ICompletionProposal c = new ErlCompletionProposal(offsetsAndLengths,
+                funWithArity, funWithParameters, offset, 0, cursorPosition, null, null,
+                docStr, sourceViewer);
 
         result.add(c);
     }
 
     void addFunctionCompletion(final int offset, final String aprefix,
-            final List<ICompletionProposal> result,
-            final IErlFunction function, final boolean arityOnly) {
+            final List<ICompletionProposal> result, final IErlFunction function,
+            final boolean arityOnly) {
         addFunctionCompletion(offset, aprefix, function.getFunction(),
                 function.getComments(), arityOnly, arityOnly ? null
                         : getParameterNames(function), result);
@@ -759,8 +725,8 @@ public abstract class AbstractErlContentAssistProcessor implements
         return result;
     }
 
-    private void addParametersFromFunctionParameters(
-            final List<String> parameters, final List<String> result) {
+    private void addParametersFromFunctionParameters(final List<String> parameters,
+            final List<String> result) {
         final int n = Math.min(parameters.size(), result.size());
         for (int i = 0; i < n; ++i) {
             if (result.get(i).equals("_")) {
@@ -772,8 +738,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         }
     }
 
-    private void addEmptyParameterNames(final int arity,
-            final List<String> result) {
+    private void addEmptyParameterNames(final int arity, final List<String> result) {
         for (int i = result.size(); i < arity; ++i) {
             result.add("_");
         }
@@ -782,8 +747,7 @@ public abstract class AbstractErlContentAssistProcessor implements
     private String fixVarName(final String var) {
         final String v = var.charAt(0) == '_' ? var.substring(1) : var;
         final char c = v.charAt(0);
-        return Character.isLowerCase(c) ? Character.toUpperCase(c)
-                + v.substring(1) : v;
+        return Character.isLowerCase(c) ? Character.toUpperCase(c) + v.substring(1) : v;
     }
 
     /**
@@ -804,21 +768,19 @@ public abstract class AbstractErlContentAssistProcessor implements
     }
 
     void addFunctionCompletion(final int offset, final String prefix,
-            final ErlangFunction function,
-            final Collection<IErlMember> comments, final boolean arityOnly,
-            final List<String> parameterNames,
+            final ErlangFunction function, final Collection<IErlMember> comments,
+            final boolean arityOnly, final List<String> parameterNames,
             final List<ICompletionProposal> result) {
         if (function.name.regionMatches(0, prefix, 0, prefix.length())) {
             final int offs = function.name.length() - prefix.length();
 
             final List<Point> offsetsAndLengths = new ArrayList<Point>();
             if (!arityOnly) {
-                addOffsetsAndLengths(parameterNames, offset + offs + 1,
-                        offsetsAndLengths);
+                addOffsetsAndLengths(parameterNames, offset + offs + 1, offsetsAndLengths);
             }
             final String funWithArity = function.getNameWithArity();
-            String funWithParameters = arityOnly ? funWithArity
-                    : getNameWithParameters(function.name, parameterNames);
+            String funWithParameters = arityOnly ? funWithArity : getNameWithParameters(
+                    function.name, parameterNames);
             funWithParameters = funWithParameters.substring(prefix.length());
             final String htmlComment = comments == null ? "" : HTMLPrinter
                     .asHtml(HoverUtil.getDocumentationString(comments));
@@ -857,16 +819,16 @@ public abstract class AbstractErlContentAssistProcessor implements
             final OtpErlangLong offset = (OtpErlangLong) t.elementAt(0);
             final OtpErlangLong length = (OtpErlangLong) t.elementAt(1);
             try {
-                result.add(new Point(offset.intValue() + replacementOffset,
-                        length.intValue()));
+                result.add(new Point(offset.intValue() + replacementOffset, length
+                        .intValue()));
             } catch (final OtpErlangRangeException e) {
             }
         }
     }
 
     @Override
-    public IContextInformation[] computeContextInformation(
-            final ITextViewer viewer, final int offset) {
+    public IContextInformation[] computeContextInformation(final ITextViewer viewer,
+            final int offset) {
         return null;
     }
 

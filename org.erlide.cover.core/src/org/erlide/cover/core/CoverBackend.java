@@ -87,8 +87,7 @@ public class CoverBackend implements ICoverBackend {
      * Run coverage analysis
      */
     @Override
-    public synchronized void runCoverageAnalysis(
-            final AbstractCoverRunner runner) {
+    public synchronized void runCoverageAnalysis(final AbstractCoverRunner runner) {
         runner.start();
     }
 

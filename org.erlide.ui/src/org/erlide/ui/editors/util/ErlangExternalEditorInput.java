@@ -10,8 +10,7 @@ public class ErlangExternalEditorInput extends FileStoreEditorInput implements
 
     final private IErlModule module;
 
-    public ErlangExternalEditorInput(final IFileStore fileStore,
-            final IErlModule module) {
+    public ErlangExternalEditorInput(final IFileStore fileStore, final IErlModule module) {
         super(fileStore);
         this.module = module;
     }

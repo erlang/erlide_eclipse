@@ -78,8 +78,8 @@ public class FindImplementorsInWorkingSetAction extends FindImplementorsAction {
      * @param workingSets
      *            the working sets to be used in the search
      */
-    public FindImplementorsInWorkingSetAction(
-            final AbstractErlangEditor editor, final IWorkingSet[] workingSets) {
+    public FindImplementorsInWorkingSetAction(final AbstractErlangEditor editor,
+            final IWorkingSet[] workingSets) {
         super(editor);
         fWorkingSets = workingSets;
     }

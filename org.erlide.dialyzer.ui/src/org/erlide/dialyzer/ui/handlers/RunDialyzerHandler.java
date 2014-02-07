@@ -46,8 +46,8 @@ public class RunDialyzerHandler extends AbstractHandler {
         private final Set<IErlModule> modules;
         private final Set<IErlProject> projects;
 
-        public DialyzeOperation(final String name,
-                final Set<IErlModule> modules, final Set<IErlProject> projects) {
+        public DialyzeOperation(final String name, final Set<IErlModule> modules,
+                final Set<IErlProject> projects) {
             super(name);
             this.modules = modules;
             this.projects = projects;
@@ -61,17 +61,15 @@ public class RunDialyzerHandler extends AbstractHandler {
 
                 try {
                     backend = createBackend();
-                    DialyzerUtils
-                            .doDialyze(monitor, modules, projects, backend);
+                    DialyzerUtils.doDialyze(monitor, modules, projects, backend);
                 } catch (final OperationCanceledException e) {
                     ErlLogger.debug("Dialyzer operation was canceled");
                     return Status.CANCEL_STATUS;
                 } catch (final DialyzerErrorException e) {
-                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                            e.getMessage());
+                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage());
                 } catch (final InvocationTargetException e) {
-                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID, e
-                            .getCause().getMessage());
+                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getCause()
+                            .getMessage());
                 } finally {
                     if (backend != null) {
                         backend.dispose();
@@ -85,11 +83,10 @@ public class RunDialyzerHandler extends AbstractHandler {
         }
 
         private IBackend createBackend() {
-            final RuntimeInfo info = new RuntimeInfo(BackendCore
-                    .getRuntimeInfoCatalog().getErlideRuntime());
+            final RuntimeInfo info = new RuntimeInfo(BackendCore.getRuntimeInfoCatalog()
+                    .getErlideRuntime());
             final BackendData data = new BackendData(info);
-            final String nodeName = BackendUtils.getErlideNodeNameTag()
-                    + "_dialyzer";
+            final String nodeName = BackendUtils.getErlideNodeNameTag() + "_dialyzer";
             data.setNodeName(nodeName);
             data.setDebug(false);
             data.setConsole(false);
@@ -130,16 +127,13 @@ public class RunDialyzerHandler extends AbstractHandler {
         final Set<IErlProject> projects = collectProjectsFromModules(modules);
 
         // build
-        final WorkspaceJob buildJob = new BuildOperation("Building projects",
-                projects);
+        final WorkspaceJob buildJob = new BuildOperation("Building projects", projects);
         buildJob.setUser(true);
-        buildJob.setRule(ResourcesPlugin.getWorkspace().getRuleFactory()
-                .buildRule());
+        buildJob.setRule(ResourcesPlugin.getWorkspace().getRuleFactory().buildRule());
         buildJob.schedule();
 
         // run dialyzer
-        final Job job = new DialyzeOperation("Running Dialyzer", modules,
-                projects);
+        final Job job = new DialyzeOperation("Running Dialyzer", modules, projects);
         final ISchedulingRule rule = createRuleForModules(modules);
         job.setRule(rule);
         job.setUser(true);
@@ -158,8 +152,7 @@ public class RunDialyzerHandler extends AbstractHandler {
         return combinedRule;
     }
 
-    private Set<IErlModule> collectModulesFromSelection(
-            final ISelection selection) {
+    private Set<IErlModule> collectModulesFromSelection(final ISelection selection) {
         final Set<IErlModule> modules = Sets.newHashSet();
         if (selection instanceof IStructuredSelection) {
             final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
@@ -169,8 +162,7 @@ public class RunDialyzerHandler extends AbstractHandler {
                 for (final Object i : structuredSelection.toList()) {
                     if (i instanceof IResource) {
                         final IResource r = (IResource) i;
-                        modules.addAll(DialyzerUtils
-                                .collectModulesFromResource(model, r));
+                        modules.addAll(DialyzerUtils.collectModulesFromResource(model, r));
                     }
                 }
             } catch (final ErlModelException e) {
@@ -180,8 +172,7 @@ public class RunDialyzerHandler extends AbstractHandler {
         return modules;
     }
 
-    private Set<IErlProject> collectProjectsFromModules(
-            final Set<IErlModule> modules) {
+    private Set<IErlProject> collectProjectsFromModules(final Set<IErlModule> modules) {
         final Set<IErlProject> projects = Sets.newHashSet();
         for (final IErlModule module : modules) {
             projects.add(ErlangEngine.getInstance().getModelUtilService()

@@ -79,8 +79,8 @@ public class FunctionGroup implements SelectionListener {
     }
 
     private void createTable(final Composite parent) {
-        fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL
-                | SWT.FULL_SELECTION | SWT.CHECK);
+        fTable = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.FULL_SELECTION
+                | SWT.CHECK);
         fTable.showSelection();
         fTable.setHeaderVisible(true);
         fTable.setLinesVisible(true);
@@ -126,8 +126,7 @@ public class FunctionGroup implements SelectionListener {
 
     private void createInputField(final Composite parent) {
         final Composite container = new Composite(parent, SWT.NULL);
-        container
-                .setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        container.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         final GridLayout layout = new GridLayout(4, false);
         container.setLayout(layout);
 
@@ -136,8 +135,7 @@ public class FunctionGroup implements SelectionListener {
         exportButtonBtn.addSelectionListener(this);
 
         functionNameText = new Text(container, SWT.BORDER | SWT.SINGLE);
-        functionNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                false));
+        functionNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         functionNameText.addModifyListener(new ModifyListener() {
 
             @Override
@@ -169,15 +167,14 @@ public class FunctionGroup implements SelectionListener {
 
         addFunctionBtn = new Button(container, SWT.PUSH);
         addFunctionBtn.setText("          Apply          ");
-        addFunctionBtn
-                .setToolTipText("Create a new function or edit an existing one.");
+        addFunctionBtn.setToolTipText("Create a new function or edit an existing one.");
         addFunctionBtn.addSelectionListener(new SelectionListener() {
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 addFunction(functionNameText.getText(),
-                        Integer.parseInt(arityText.getText()),
-                        FunctionGroup.NONE, exportButtonBtn.getSelection());
+                        Integer.parseInt(arityText.getText()), FunctionGroup.NONE,
+                        exportButtonBtn.getSelection());
                 functionNameText.setText("");
                 arityText.setText("0");
             }
@@ -199,8 +196,8 @@ public class FunctionGroup implements SelectionListener {
      */
     void addFunction(final String name, final int arity, final int type,
             final boolean exported) {
-        final TableItem item = fEditingItem != null ? fEditingItem
-                : new TableItem(fTable, SWT.NULL, 0);
+        final TableItem item = fEditingItem != null ? fEditingItem : new TableItem(
+                fTable, SWT.NULL, 0);
         item.setChecked(exported);
         item.setText(0, name + getPostfix(type));
         item.setText(1, "" + arity);
@@ -295,8 +292,8 @@ public class FunctionGroup implements SelectionListener {
                 functionList.add(f);
             }
         }
-        final Function[] functions = functionList
-                .toArray(new Function[functionList.size()]);
+        final Function[] functions = functionList.toArray(new Function[functionList
+                .size()]);
 
         return functions;
     }
@@ -331,8 +328,7 @@ public class FunctionGroup implements SelectionListener {
                 functionNameText.setText(selectedItem.getText(0));
                 arityText.setText(selectedItem.getText(1));
                 exportButtonBtn.setSelection(selectedItem.getChecked());
-                fEditingItem.setText(0, selectedItem.getText(0)
-                        + "<<Being Edited>>");
+                fEditingItem.setText(0, selectedItem.getText(0) + "<<Being Edited>>");
             }
             // } else if (e.widget == addState) {
 

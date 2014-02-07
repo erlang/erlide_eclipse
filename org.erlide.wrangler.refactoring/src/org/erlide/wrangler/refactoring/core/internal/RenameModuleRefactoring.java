@@ -54,9 +54,9 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 
     @Override
     public IRefactoringRpcMessage run(final IErlSelection sel) {
-        return WranglerBackendManager.getRefactoringBackend().call(
-                "rename_mod_eclipse", "ssxi", sel.getFilePath(), userInput,
-                sel.getSearchPath(), GlobalParameters.getTabWidth());
+        return WranglerBackendManager.getRefactoringBackend().call("rename_mod_eclipse",
+                "ssxi", sel.getFilePath(), userInput, sel.getSearchPath(),
+                GlobalParameters.getTabWidth());
     }
 
     @Override
@@ -84,8 +84,7 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
 
             @Override
             public void doRefactoring() {
-                final IErlSelection sel = GlobalParameters
-                        .getWranglerSelection();
+                final IErlSelection sel = GlobalParameters.getWranglerSelection();
                 IRefactoringRpcMessage message = run(sel);
                 if (message.isSuccessful()) {
                     changedFiles = message.getRefactoringChangeset();
@@ -97,9 +96,8 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
                         changedFiles = message.getRefactoringChangeset();
                         status = new RefactoringStatus();
                     } else {
-                        status = RefactoringStatus
-                                .createFatalErrorStatus(message
-                                        .getMessageString());
+                        status = RefactoringStatus.createFatalErrorStatus(message
+                                .getMessageString());
                     }
                 } else if (message.getRefactoringState() == RefactoringState.WARNING) {
                     renameTestMod = !ask("Warning", message.getMessageString());
@@ -109,9 +107,8 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
                             changedFiles = message.getRefactoringChangeset();
                             status = new RefactoringStatus();
                         } else {
-                            status = RefactoringStatus
-                                    .createFatalErrorStatus(message
-                                            .getMessageString());
+                            status = RefactoringStatus.createFatalErrorStatus(message
+                                    .getMessageString());
                         }
                     } else {
                         stop();

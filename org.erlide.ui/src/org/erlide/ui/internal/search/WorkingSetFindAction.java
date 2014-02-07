@@ -40,8 +40,8 @@ public class WorkingSetFindAction extends FindAction {
      * Note: This constructor is for internal use only. Clients should not call
      * this constructor.
      */
-    public WorkingSetFindAction(final IWorkbenchSite site,
-            final FindAction action, final String workingSetName) {
+    public WorkingSetFindAction(final IWorkbenchSite site, final FindAction action,
+            final String workingSetName) {
         super(site);
         init(action, workingSetName);
     }

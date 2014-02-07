@@ -44,8 +44,8 @@ public class OpenErlangAction extends Action {
         provider = selectionProvider;
         selectedElement = null;
         selectedClosedProjects = Sets.newHashSet();
-        final IShellProvider shellProvider = (IShellProvider) site
-                .getViewSite().getAdapter(IShellProvider.class);
+        final IShellProvider shellProvider = (IShellProvider) site.getViewSite()
+                .getAdapter(IShellProvider.class);
         openResourceAction = new OpenResourceAction(shellProvider);
     }
 
@@ -87,8 +87,7 @@ public class OpenErlangAction extends Action {
                             final AbstractTreeViewer treeViewer = (AbstractTreeViewer) structuredViewer;
                             final boolean expanded = treeViewer
                                     .getExpandedState(selectedElement);
-                            treeViewer.setExpandedState(selectedElement,
-                                    !expanded);
+                            treeViewer.setExpandedState(selectedElement, !expanded);
                         }
                     } else {
                         final IEditorPart part = EditorUtility.openInEditor(
@@ -96,9 +95,8 @@ public class OpenErlangAction extends Action {
                         EditorUtility.revealInEditor(part, selectedElement);
                     }
                 } else if (!selectedClosedProjects.isEmpty()) {
-                    openResourceAction
-                            .selectionChanged((IStructuredSelection) provider
-                                    .getSelection());
+                    openResourceAction.selectionChanged((IStructuredSelection) provider
+                            .getSelection());
                     openResourceAction.run();
                 }
             } catch (final PartInitException e) {

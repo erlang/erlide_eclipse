@@ -54,24 +54,21 @@ public class PatternMatchTest {
 
     @Test
     public void testFormatParser_list() throws Exception {
-        final OtpErlangObject value = ErlUtils
-                .format("[~a,2,~a]", "hej", "brr");
+        final OtpErlangObject value = ErlUtils.format("[~a,2,~a]", "hej", "brr");
         final OtpErlangObject expected = ErlUtils.parse("[hej,2,brr]");
         Assert.assertEquals(expected, value);
     }
 
     @Test
     public void testFormatParser_tuple() throws Exception {
-        final OtpErlangObject value = ErlUtils
-                .format("{~a,2,~a}", "hej", "brr");
+        final OtpErlangObject value = ErlUtils.format("{~a,2,~a}", "hej", "brr");
         final OtpErlangObject expected = ErlUtils.parse("{hej,2,brr}");
         Assert.assertEquals(expected, value);
     }
 
     @Test
     public void testFormatParser_full() throws Exception {
-        final OtpErlangObject value = ErlUtils.format("[~a,{2,~a},5]", "hej",
-                "brr");
+        final OtpErlangObject value = ErlUtils.format("[~a,{2,~a},5]", "hej", "brr");
         final OtpErlangObject expected = ErlUtils.parse("[hej,{2,brr},5]");
         Assert.assertEquals(expected, value);
     }

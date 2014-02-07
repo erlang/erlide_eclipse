@@ -129,8 +129,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
      */
     public void ensureCapacity(final int minCapacity) {
         if (minCapacity > fixedSize) {
-            throw new IllegalArgumentException(
-                    "Trying to increase fixed-size buffer");
+            throw new IllegalArgumentException("Trying to increase fixed-size buffer");
         }
         final int oldCapacity = super.buf.length;
         if (minCapacity > oldCapacity) {
@@ -565,8 +564,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
             write1(v);
         } else {
             // note that v != 0L
-            if (v < 0 && unsigned || v < OtpExternal.erlMin
-                    || v > OtpExternal.erlMax) {
+            if (v < 0 && unsigned || v < OtpExternal.erlMin || v > OtpExternal.erlMax) {
                 // some kind of bignum
                 final long abs = unsigned ? v : v < 0 ? -v : v;
                 final int sign = unsigned ? 0 : v < 0 ? 1 : 0;
@@ -941,8 +939,8 @@ public class OtpOutputStream extends ByteArrayOutputStream {
     }
 
     public void write_fun(final OtpErlangPid pid, final String module,
-            final long old_index, final int arity, final byte[] md5,
-            final long index, final long uniq, final OtpErlangObject[] freeVars) {
+            final long old_index, final int arity, final byte[] md5, final long index,
+            final long uniq, final OtpErlangObject[] freeVars) {
         if (arity == -1) {
             write1(OtpExternal.funTag);
             write4BE(freeVars.length);

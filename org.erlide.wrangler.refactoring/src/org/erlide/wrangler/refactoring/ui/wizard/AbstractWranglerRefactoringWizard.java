@@ -19,8 +19,7 @@ import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
-public abstract class AbstractWranglerRefactoringWizard extends
-        RefactoringWizard {
+public abstract class AbstractWranglerRefactoringWizard extends RefactoringWizard {
 
     /**
      * Default constructor

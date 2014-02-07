@@ -73,8 +73,8 @@ public class EditorPreferencePage extends ErlidePreferencePage implements
 
     public static boolean getEnableHover() {
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
-        return node.getBoolean(EDITOR_KEY + "/"
-                + ErlideUIConstants.EDITOR_ENABLE_HOVER, DEFAULT_ENABLE_HOVER);
+        return node.getBoolean(EDITOR_KEY + "/" + ErlideUIConstants.EDITOR_ENABLE_HOVER,
+                DEFAULT_ENABLE_HOVER);
     }
 
     @Override
@@ -107,18 +107,15 @@ public class EditorPreferencePage extends ErlidePreferencePage implements
 
         String label = ErlEditorMessages.ErlEditorPreferencePage_displayedTabWidth;
 
-        final Pair<Text, String> addTextField = addTextField(
-                appearanceComposite,
-                label,
-                AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH,
-                3, 0, true);
+        final Pair<Text, String> addTextField = addTextField(appearanceComposite, label,
+                AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH, 3, 0,
+                true);
         tabWidthText = addTextField.getKey();
         tabWidthKey = addTextField.getValue();
 
         label = ErlEditorMessages.ErlEditorPreferencePage_enable_hover;
 
-        final Pair<Button, String> addCheckBox = addCheckBox(
-                appearanceComposite, label,
+        final Pair<Button, String> addCheckBox = addCheckBox(appearanceComposite, label,
                 ErlideUIConstants.EDITOR_ENABLE_HOVER, 0);
         enableHoverCheckBox = addCheckBox.getKey();
         enableHoverKey = addCheckBox.getValue();

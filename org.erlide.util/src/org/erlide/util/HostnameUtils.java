@@ -28,8 +28,8 @@ public class HostnameUtils {
             addr = InetAddress.getLocalHost();
             return addr.getCanonicalHostName();
         } catch (final UnknownHostException e1) {
-            ErlLogger.warn("Could not retrieve long host name, "
-                    + "defaulting to " + erlangLongNameFallback);
+            ErlLogger.warn("Could not retrieve long host name, " + "defaulting to "
+                    + erlangLongNameFallback);
             return erlangLongNameFallback;
         }
     }
@@ -40,8 +40,8 @@ public class HostnameUtils {
             addr = InetAddress.getLocalHost();
             return addr.getHostName();
         } catch (final UnknownHostException e1) {
-            ErlLogger.warn("Could not retrieve short host name, "
-                    + "defaulting to " + erlangShortNameFallback);
+            ErlLogger.warn("Could not retrieve short host name, " + "defaulting to "
+                    + erlangShortNameFallback);
             return erlangShortNameFallback;
         }
     }
@@ -51,16 +51,14 @@ public class HostnameUtils {
      * names.
      */
     public static void detectHostNames(final String otpHome) {
-        final ErlangHostnameRetriever retriever = new ErlangHostnameRetriever(
-                otpHome);
+        final ErlangHostnameRetriever retriever = new ErlangHostnameRetriever(otpHome);
         final String forcedLongName = System.getProperty("erlide.long.name");
         if (!Strings.isNullOrEmpty(forcedLongName)) {
             erlangLongName = forcedLongName;
         } else {
             erlangLongName = retriever.checkHostName(true);
             if (erlangLongName == null) {
-                erlangLongName = retriever.checkHostName(true,
-                        getJavaLongHostName());
+                erlangLongName = retriever.checkHostName(true, getJavaLongHostName());
             }
         }
         final String forcedShortName = System.getProperty("erlide.short.name");
@@ -69,8 +67,7 @@ public class HostnameUtils {
         } else {
             erlangShortName = retriever.checkHostName(false);
             if (erlangShortName == null) {
-                erlangShortName = retriever.checkHostName(false,
-                        getJavaShortHostName());
+                erlangShortName = retriever.checkHostName(false, getJavaShortHostName());
             }
         }
         ErlLogger.debug("Detected:: %s%s && %s%s", erlangShortName,

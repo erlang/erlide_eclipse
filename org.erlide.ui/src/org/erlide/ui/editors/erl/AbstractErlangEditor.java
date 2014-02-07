@@ -95,8 +95,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
 
     protected ErlangViewerBracketInserter getBracketInserter() {
         if (fBracketInserter == null) {
-            fBracketInserter = new ErlangViewerBracketInserter(
-                    getSourceViewer());
+            fBracketInserter = new ErlangViewerBracketInserter(getSourceViewer());
         }
         return fBracketInserter;
     }
@@ -117,8 +116,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
     protected ISourceViewer createSourceViewer(final Composite parent,
             final IVerticalRuler ruler, final int styles) {
         final ISourceViewer viewer = new ErlangSourceViewer(parent, ruler,
-                getOverviewRuler(), true, styles,
-                new IBracketInserterValidator() {
+                getOverviewRuler(), true, styles, new IBracketInserterValidator() {
                     @Override
                     public boolean earlyCancelCheck() {
                         return getInsertMode() != ITextEditorExtension3.SMART_INSERT;
@@ -140,25 +138,22 @@ public abstract class AbstractErlangEditor extends TextEditor {
 
     protected void createCommonActions() {
         indentAction = new IndentAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "Indent.", this); //$NON-NLS-1$
-        indentAction
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.INDENT);
+                ErlangEditorMessages.getBundleForConstructedKeys(), "Indent.", this); //$NON-NLS-1$
+        indentAction.setActionDefinitionId(IErlangEditorActionDefinitionIds.INDENT);
         setAction("Indent", indentAction); //$NON-NLS-1$
         markAsStateDependentAction("Indent", true); //$NON-NLS-1$
         markAsSelectionDependentAction("Indent", true); //$NON-NLS-1$
         PlatformUI.getWorkbench().getHelpSystem()
                 .setHelp(indentAction, IErlangHelpContextIds.INDENT_ACTION);
         final Action action = new IndentAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(), "Indent.",
-                this);
+                ErlangEditorMessages.getBundleForConstructedKeys(), "Indent.", this);
         setAction("IndentOnTab", action);
         markAsStateDependentAction("IndentOnTab", true);
         markAsSelectionDependentAction("IndentOnTab", true);
 
         toggleCommentAction = new ToggleCommentAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "ToggleComment.", this);
+                ErlangEditorMessages.getBundleForConstructedKeys(), "ToggleComment.",
+                this);
         toggleCommentAction
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.TOGGLE_COMMENT);
         setAction("ToggleComment", toggleCommentAction);
@@ -167,17 +162,15 @@ public abstract class AbstractErlangEditor extends TextEditor {
         PlatformUI
                 .getWorkbench()
                 .getHelpSystem()
-                .setHelp(toggleCommentAction,
-                        IErlangHelpContextIds.TOGGLE_COMMENT_ACTION);
+                .setHelp(toggleCommentAction, IErlangHelpContextIds.TOGGLE_COMMENT_ACTION);
 
         openAction = new OpenAction(this);
-        openAction
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
+        openAction.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
         setAction(IErlangEditorActionDefinitionIds.OPEN, openAction);
 
         sendToConsole = new SendToConsoleAction(getSite(),
-                ErlangEditorMessages.getBundleForConstructedKeys(),
-                "SendToConsole.", this, false, getProject());
+                ErlangEditorMessages.getBundleForConstructedKeys(), "SendToConsole.",
+                this, false, getProject());
         sendToConsole
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.SEND_TO_CONSOLE);
         setAction("SendToConsole", sendToConsole);
@@ -206,23 +199,20 @@ public abstract class AbstractErlangEditor extends TextEditor {
         resAction = new InformationDispatchAction(
                 ErlangEditorMessages.getBundleForConstructedKeys(),
                 "ShowEDoc.", (TextOperationAction) resAction); //$NON-NLS-1$
-        resAction
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.SHOW_EDOC);
+        resAction.setActionDefinitionId(IErlangEditorActionDefinitionIds.SHOW_EDOC);
         setAction("ShowEDoc", resAction); //$NON-NLS-1$
         PlatformUI.getWorkbench().getHelpSystem()
                 .setHelp(resAction, IErlangHelpContextIds.SHOW_EDOC_ACTION);
     }
 
     protected void addCommonActions(final IMenuManager menu) {
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
-                toggleCommentAction);
+        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, toggleCommentAction);
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, indentAction);
         // TODO disabled until erl_tidy doean't destroy formatting
         // menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, cleanUpAction);
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, openAction);
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, sendToConsole);
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
-                sendToConsoleWithResult);
+        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, sendToConsoleWithResult);
     }
 
     /**
@@ -247,8 +237,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
          *            the text operation action
          */
         public InformationDispatchAction(final ResourceBundle resourceBundle,
-                final String prefix,
-                final TextOperationAction textOperationAction) {
+                final String prefix, final TextOperationAction textOperationAction) {
             super(resourceBundle, prefix, AbstractErlangEditor.this);
             if (textOperationAction == null) {
                 throw new IllegalArgumentException();
@@ -269,8 +258,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
              * @since 3.0
              */
             class InformationProvider implements IInformationProvider,
-                    IInformationProviderExtension,
-                    IInformationProviderExtension2 {
+                    IInformationProviderExtension, IInformationProviderExtension2 {
 
                 private final IRegion fHoverRegion;
 
@@ -278,8 +266,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
 
                 private final IInformationControlCreator fControlCreator;
 
-                InformationProvider(final IRegion hoverRegion,
-                        final String hoverInfo,
+                InformationProvider(final IRegion hoverRegion, final String hoverInfo,
                         final IInformationControlCreator controlCreator) {
                     fHoverRegion = hoverRegion;
                     fHoverInfo = hoverInfo;
@@ -343,16 +330,14 @@ public abstract class AbstractErlangEditor extends TextEditor {
             final ITextViewerExtension2 textViewerExtension2 = (ITextViewerExtension2) sourceViewer;
 
             // does a text hover exist?
-            final ITextHover textHover = textViewerExtension2
-                    .getCurrentTextHover();
+            final ITextHover textHover = textViewerExtension2.getCurrentTextHover();
             if (textHover == null) {
                 // TODO this crashes... why?
                 // fTextOperationAction.run();
                 return;
             }
 
-            final Point hoverEventLocation = textViewerExtension2
-                    .getHoverEventLocation();
+            final Point hoverEventLocation = textViewerExtension2.getHoverEventLocation();
             final int offset = computeOffsetAtLocation(sourceViewer,
                     hoverEventLocation.x, hoverEventLocation.y);
             if (offset == -1) {
@@ -366,16 +351,16 @@ public abstract class AbstractErlangEditor extends TextEditor {
                         sourceViewer.getDocument(),
                         IErlangPartitions.ERLANG_PARTITIONING, offset, true);
 
-                final IRegion hoverRegion = textHover.getHoverRegion(
-                        sourceViewer, offset);
+                final IRegion hoverRegion = textHover
+                        .getHoverRegion(sourceViewer, offset);
                 if (hoverRegion == null) {
                     return;
                 }
 
                 final String hoverInfo = "";
                 if (textHover instanceof ITextHoverExtension2) {
-                    ((ITextHoverExtension2) textHover).getHoverInfo2(
-                            sourceViewer, hoverRegion);
+                    ((ITextHoverExtension2) textHover).getHoverInfo2(sourceViewer,
+                            hoverRegion);
                 }
 
                 IInformationControlCreator controlCreator = null;
@@ -390,16 +375,16 @@ public abstract class AbstractErlangEditor extends TextEditor {
                 fInformationPresenter.setOffset(offset);
                 fInformationPresenter
                         .setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
-                fInformationPresenter.setInformationProvider(
-                        informationProvider, contentType);
+                fInformationPresenter.setInformationProvider(informationProvider,
+                        contentType);
                 fInformationPresenter.showInformation();
             } catch (final BadLocationException e) {
             }
         }
 
         // modified version from TextViewer
-        private int computeOffsetAtLocation(final ITextViewer textViewer,
-                final int x, final int y) {
+        private int computeOffsetAtLocation(final ITextViewer textViewer, final int x,
+                final int y) {
 
             final StyledText styledText = textViewer.getTextWidget();
             final IDocument document = textViewer.getDocument();
@@ -430,14 +415,12 @@ public abstract class AbstractErlangEditor extends TextEditor {
 
         final IInformationControlCreator informationControlCreator = getSourceViewerConfiguration()
                 .getInformationControlCreator(getSourceViewer());
-        fInformationPresenter = new InformationPresenter(
-                informationControlCreator);
+        fInformationPresenter = new InformationPresenter(informationControlCreator);
         // sizes: see org.eclipse.jface.text.TextViewer.TEXT_HOVER_*_CHARS
         fInformationPresenter.setSizeConstraints(100, 12, true, true);
         fInformationPresenter.install(getSourceViewer());
-        fInformationPresenter
-                .setDocumentPartitioning(getSourceViewerConfiguration()
-                        .getConfiguredDocumentPartitioning(getSourceViewer()));
+        fInformationPresenter.setDocumentPartitioning(getSourceViewerConfiguration()
+                .getConfiguredDocumentPartitioning(getSourceViewer()));
     }
 
 }

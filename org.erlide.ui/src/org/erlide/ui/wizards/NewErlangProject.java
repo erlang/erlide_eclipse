@@ -67,8 +67,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
      *      org.eclipse.jface.viewers.IStructuredSelection)
      */
     @Override
-    public void init(final IWorkbench workbench,
-            final IStructuredSelection selection) {
+    public void init(final IWorkbench workbench, final IStructuredSelection selection) {
         setNeedsProgressMonitor(true);
     }
 
@@ -79,26 +78,22 @@ public class NewErlangProject extends Wizard implements INewWizard {
     public void addPages() {
         try {
             super.addPages();
-            namePage = new WizardNewProjectCreationPage(
-                    "NewErlideProjectWizard");
+            namePage = new WizardNewProjectCreationPage("NewErlideProjectWizard");
             namePage.setTitle(ErlideUIPlugin
                     .getResourceString("wizards.titles.newproject"));
             namePage.setDescription(ErlideUIPlugin
                     .getResourceString("wizards.descs.newproject"));
-            namePage.setImageDescriptor(ErlideUIPlugin.getDefault()
-                    .getImageDescriptor(
-                            ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
+            namePage.setImageDescriptor(ErlideUIPlugin.getDefault().getImageDescriptor(
+                    ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
             addPage(namePage);
 
-            buildPage = new ProjectPreferencesWizardPage(
-                    "ProjectPreferencesWizardPage");
+            buildPage = new ProjectPreferencesWizardPage("ProjectPreferencesWizardPage");
             buildPage.setTitle(ErlideUIPlugin
                     .getResourceString("wizards.titles.buildprefs"));
             buildPage.setDescription(ErlideUIPlugin
                     .getResourceString("wizards.descs.buildprefs"));
-            buildPage.setImageDescriptor(ErlideUIPlugin.getDefault()
-                    .getImageDescriptor(
-                            ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
+            buildPage.setImageDescriptor(ErlideUIPlugin.getDefault().getImageDescriptor(
+                    ErlideUIConstants.IMG_NEW_PROJECT_WIZARD));
             addPage(buildPage);
         } catch (final Exception x) {
             reportError(x);
@@ -122,13 +117,12 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
                 @Override
                 protected void execute(final IProgressMonitor monitor) {
-                    createProject(buildPage.getPrefs(),
-                            monitor != null ? monitor
-                                    : new NullProgressMonitor());
+                    createProject(buildPage.getPrefs(), monitor != null ? monitor
+                            : new NullProgressMonitor());
 
                     try {
-                        final IWorkbench workbench = ErlideUIPlugin
-                                .getDefault().getWorkbench();
+                        final IWorkbench workbench = ErlideUIPlugin.getDefault()
+                                .getWorkbench();
                         workbench.showPerspective(ErlangPerspective.ID,
                                 workbench.getActiveWorkbenchWindow());
                     } catch (final WorkbenchException we) {
@@ -155,14 +149,12 @@ public class NewErlangProject extends Wizard implements INewWizard {
     private boolean validateFinish() {
         final IErlangProjectProperties prefs = buildPage.getPrefs();
         if (prefs.getOutputDirs().isEmpty()) {
-            reportError(ErlideUIPlugin
-                    .getResourceString("wizard.errors.buildpath"));
+            reportError(ErlideUIPlugin.getResourceString("wizard.errors.buildpath"));
             return false;
         }
 
         if (prefs.getSourceDirs().isEmpty()) {
-            reportError(ErlideUIPlugin
-                    .getResourceString("wizards.errors.sourcepath"));
+            reportError(ErlideUIPlugin.getResourceString("wizards.errors.sourcepath"));
             return false;
         }
         return true;
@@ -178,11 +170,10 @@ public class NewErlangProject extends Wizard implements INewWizard {
      */
     protected void createProject(final IErlangProjectProperties prefs,
             final IProgressMonitor monitor) {
-        monitor.beginTask(ErlideUIPlugin
-                .getResourceString("wizards.messages.creatingproject"), 50);
+        monitor.beginTask(
+                ErlideUIPlugin.getResourceString("wizards.messages.creatingproject"), 50);
         try {
-            final IWorkspaceRoot root = ResourcesPlugin.getWorkspace()
-                    .getRoot();
+            final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
             monitor.subTask(ErlideUIPlugin
                     .getResourceString("wizards.messages.creatingdirectories"));
             final IProject project = root.getProject(namePage.getProjectName());
@@ -198,8 +189,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
             description = project.getDescription();
 
             description.setNatureIds(new String[] { ErlangCore.NATURE_ID });
-            project.setDescription(description, new SubProgressMonitor(monitor,
-                    10));
+            project.setDescription(description, new SubProgressMonitor(monitor, 10));
 
             monitor.worked(10);
             monitor.subTask(ErlideUIPlugin
@@ -209,8 +199,8 @@ public class NewErlangProject extends Wizard implements INewWizard {
             createFolders(project, prefs.getSourceDirs(), monitor);
             createFolders(project, prefs.getIncludeDirs(), monitor);
 
-            final IErlProject erlProject = ErlangEngine.getInstance()
-                    .getModel().getErlangProject(project);
+            final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                    .getErlangProject(project);
             erlProject.setAllProperties(prefs);
         } catch (final CoreException e) {
             ErlLogger.debug(e);
@@ -226,16 +216,14 @@ public class NewErlangProject extends Wizard implements INewWizard {
     /**
      * Builds the path from the specified path list.
      */
-    private void createFolders(final IProject project,
-            final Collection<IPath> pathList, final IProgressMonitor monitor)
-            throws CoreException {
+    private void createFolders(final IProject project, final Collection<IPath> pathList,
+            final IProgressMonitor monitor) throws CoreException {
         // Some paths are optionals (include): If we do not specify it, we get a
         // null string and we do not need to create the directory
         if (pathList != null) {
             for (final IPath path : pathList) {
                 // only create in-project paths
-                if (!path.isAbsolute() && !path.toString().equals(".")
-                        && !path.isEmpty()) {
+                if (!path.isAbsolute() && !path.toString().equals(".") && !path.isEmpty()) {
                     final IFolder folder = project.getFolder(path);
                     createFolderHelper(folder, monitor);
                 }
@@ -248,14 +236,15 @@ public class NewErlangProject extends Wizard implements INewWizard {
      */
     private void reportError(final Exception x) {
         ErlLogger.error(x);
-        ErrorDialog.openError(
-                getShell(),
-                ErlideUIPlugin
-                        .getResourceString("wizards.errors.projecterrordesc"),
-                ErlideUIPlugin
-                        .getResourceString("wizards.errors.projecterrortitle"),
-                new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, 0, x
-                        .getMessage(), x));
+        ErrorDialog
+                .openError(
+                        getShell(),
+                        ErlideUIPlugin
+                                .getResourceString("wizards.errors.projecterrordesc"),
+                        ErlideUIPlugin
+                                .getResourceString("wizards.errors.projecterrortitle"),
+                        new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, 0, x
+                                .getMessage(), x));
     }
 
     /**
@@ -265,11 +254,12 @@ public class NewErlangProject extends Wizard implements INewWizard {
      *            details on the error
      */
     private void reportError(final String x) {
-        final Status status = new Status(IStatus.ERROR,
-                ErlideUIPlugin.PLUGIN_ID, 0, x, null);
+        final Status status = new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, 0, x,
+                null);
 
-        ErrorDialog.openError(getShell(), x, ErlideUIPlugin
-                .getResourceString("wizards.errors.projecterrortitle"), status);
+        ErrorDialog.openError(getShell(), x,
+                ErlideUIPlugin.getResourceString("wizards.errors.projecterrortitle"),
+                status);
     }
 
     /**
@@ -280,8 +270,8 @@ public class NewErlangProject extends Wizard implements INewWizard {
      * @throws CoreException
      * @see java.io.File#mkdirs()
      */
-    private void createFolderHelper(final IFolder folder,
-            final IProgressMonitor monitor) throws CoreException {
+    private void createFolderHelper(final IFolder folder, final IProgressMonitor monitor)
+            throws CoreException {
         if (!folder.exists()) {
             final IContainer parent = folder.getParent();
             if (parent instanceof IFolder && !((IFolder) parent).exists()) {

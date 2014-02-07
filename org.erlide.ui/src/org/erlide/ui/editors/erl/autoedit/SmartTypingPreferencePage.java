@@ -56,8 +56,8 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 
     @Override
     protected Control createContents(final Composite parent) {
-        final ScrolledPageContent scrolled = new ScrolledPageContent(parent,
-                SWT.H_SCROLL | SWT.V_SCROLL);
+        final ScrolledPageContent scrolled = new ScrolledPageContent(parent, SWT.H_SCROLL
+                | SWT.V_SCROLL);
         scrolled.setExpandHorizontal(true);
         scrolled.setExpandVertical(true);
 
@@ -104,8 +104,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
                 ErlEditorMessages.SmartTypingPrefs_AdjustIndentation));
     }
 
-    protected Composite createSubsection(final Composite parent,
-            final String label) {
+    protected Composite createSubsection(final Composite parent, final String label) {
         final Group group = new Group(parent, SWT.SHADOW_NONE);
         group.setText(label);
         final GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false);
@@ -128,8 +127,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 
     private void addAutoNLSection(final Composite composite) {
         final String[] nlStrings = { ErlEditorMessages.Prefs_Semicolon_nl,
-                ErlEditorMessages.Prefs_Dot_nl,
-                ErlEditorMessages.Prefs_Arrow_nl,
+                ErlEditorMessages.Prefs_Dot_nl, ErlEditorMessages.Prefs_Arrow_nl,
                 ErlEditorMessages.Prefs_Comma_nl };
         addCheckboxes(composite, nlStrings, autoNLButtons);
     }
@@ -164,8 +162,8 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
     }
 
     public static List<Boolean> getBracketInserterPreferences() {
-        return getBooleanPreferences(getPreferences(SMART_TYPING_KEY,
-                SMART_TYPING_KEYS, SMART_TYPING_DEFAULTS));
+        return getBooleanPreferences(getPreferences(SMART_TYPING_KEY, SMART_TYPING_KEYS,
+                SMART_TYPING_DEFAULTS));
     }
 
     @Override

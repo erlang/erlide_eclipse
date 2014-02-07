@@ -55,14 +55,12 @@ public class SimpleSelectionProvider implements ISelectionProvider {
     }
 
     @Override
-    public void removeSelectionChangedListener(
-            final ISelectionChangedListener listener) {
+    public void removeSelectionChangedListener(final ISelectionChangedListener listener) {
         fSelectionChangedListeners.remove(listener);
     }
 
     @Override
-    public void addSelectionChangedListener(
-            final ISelectionChangedListener listener) {
+    public void addSelectionChangedListener(final ISelectionChangedListener listener) {
         fSelectionChangedListeners.add(listener);
     }
 }

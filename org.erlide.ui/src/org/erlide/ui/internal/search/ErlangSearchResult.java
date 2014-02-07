@@ -97,8 +97,8 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
         final int matchCount = getMatchCount();
         final String occurrences = getOccurrencesLabel(matchCount);
         final String scope = query.getScopeDescription();
-        return query.getLabel() + " - " + matchCount + " " + occurrences
-                + " in " + scope + ".";
+        return query.getLabel() + " - " + matchCount + " " + occurrences + " in " + scope
+                + ".";
     }
 
     private String getOccurrencesLabel(final int matchCount) {
@@ -136,8 +136,8 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
     private static final Match[] NO_MATCHES = new Match[0];
 
     @Override
-    public Match[] computeContainedMatches(
-            final AbstractTextSearchResult aResult, final IEditorPart editor) {
+    public Match[] computeContainedMatches(final AbstractTextSearchResult aResult,
+            final IEditorPart editor) {
         final IEditorInput editorInput = editor.getEditorInput();
         if (editorInput instanceof IFileEditorInput) {
             final IFileEditorInput fileEditorInput = (IFileEditorInput) editorInput;
@@ -148,10 +148,8 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 
     @Override
     public boolean isShownInEditor(final Match match, final IEditorPart editor) {
-        final ErlangSearchElement ese = (ErlangSearchElement) match
-                .getElement();
-        final IFile file = ResourceUtil
-                .getFileFromLocation(ese.getModuleName());
+        final ErlangSearchElement ese = (ErlangSearchElement) match.getElement();
+        final IFile file = ResourceUtil.getFileFromLocation(ese.getModuleName());
         if (editor instanceof ErlangEditor) {
             final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) editor;
             final IErlModule module = erlangEditor.getModule();
@@ -166,8 +164,8 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
     }
 
     @Override
-    public Match[] computeContainedMatches(
-            final AbstractTextSearchResult aResult, final IFile file) {
+    public Match[] computeContainedMatches(final AbstractTextSearchResult aResult,
+            final IFile file) {
         final ErlangSearchResult esr = (ErlangSearchResult) aResult;
         final List<Match> l = new ArrayList<Match>();
         final List<ErlangSearchElement> eses = esr.getResult();
@@ -176,8 +174,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
             return NO_MATCHES;
         }
         for (final ErlangSearchElement ese : eses) {
-            final String moduleName = new Path(ese.getModuleName())
-                    .lastSegment();
+            final String moduleName = new Path(ese.getModuleName()).lastSegment();
             if (moduleName.equals(name)) {
                 final Match[] matches = getMatches(ese);
                 for (final Match match : matches) {

@@ -3,27 +3,16 @@ package org.erlide.util.event_tracer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.eclipse.xtend2.lib.StringConcatenation;
-import org.eclipse.xtext.xbase.lib.Functions.Function0;
 import org.erlide.util.event_tracer.ErlideEvent;
 
 @SuppressWarnings("all")
 public class ErlideSessionEvent extends ErlideEvent {
-  private final SimpleDateFormat formatter = new Function0<SimpleDateFormat>() {
-    public SimpleDateFormat apply() {
-      SimpleDateFormat _simpleDateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS");
-      return _simpleDateFormat;
-    }
-  }.apply();
+  private final SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS");
   
   public final int workspace;
   
   public ErlideSessionEvent(final String aWorkspace) {
-    super(new Function0<Long>() {
-      public Long apply() {
-        long _currentTimeMillis = System.currentTimeMillis();
-        return _currentTimeMillis;
-      }
-    }.apply());
+    super(System.currentTimeMillis());
     int _hashCode = aWorkspace.hashCode();
     this.workspace = _hashCode;
   }

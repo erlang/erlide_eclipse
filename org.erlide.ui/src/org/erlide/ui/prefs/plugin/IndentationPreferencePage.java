@@ -38,15 +38,12 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
     private static final String INDENT_FIELDS[] = new String[] {
             ErlEditorMessages.Prefs_Before_binary_op,
             ErlEditorMessages.Prefs_After_binary_op,
-            ErlEditorMessages.Prefs_Before_arrow,
-            ErlEditorMessages.Prefs_After_arrow,
-            ErlEditorMessages.Prefs_After_unary_op,
-            ErlEditorMessages.Prefs_Clause, ErlEditorMessages.Prefs_Case,
-            ErlEditorMessages.Prefs_Try, ErlEditorMessages.Prefs_Catch,
-            ErlEditorMessages.Prefs_Function_parameters,
+            ErlEditorMessages.Prefs_Before_arrow, ErlEditorMessages.Prefs_After_arrow,
+            ErlEditorMessages.Prefs_After_unary_op, ErlEditorMessages.Prefs_Clause,
+            ErlEditorMessages.Prefs_Case, ErlEditorMessages.Prefs_Try,
+            ErlEditorMessages.Prefs_Catch, ErlEditorMessages.Prefs_Function_parameters,
             ErlEditorMessages.Prefs_Fun, ErlEditorMessages.Prefs_Fun_body,
-            ErlEditorMessages.Prefs_Paren,
-            ErlEditorMessages.Prefs_Binary_begin,
+            ErlEditorMessages.Prefs_Paren, ErlEditorMessages.Prefs_Binary_begin,
             ErlEditorMessages.Prefs_End_paren };
 
     private static final String INDENT_KEYS[] = new String[] {

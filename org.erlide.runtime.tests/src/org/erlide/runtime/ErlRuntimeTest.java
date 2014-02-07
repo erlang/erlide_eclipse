@@ -38,7 +38,8 @@ public class ErlRuntimeTest {
         data.setCookie("c");
 
         runtime = new ManagedErlRuntime(data);
-        runtime.startAndWait();
+        runtime.startAsync();
+        runtime.awaitRunning();
         process = runtime.getProcess();
         assertThat("beam process", process, is(not(nullValue())));
     }
@@ -136,7 +137,9 @@ public class ErlRuntimeTest {
         data.setManaged(false);
 
         final ErlRuntime runtime2 = new ErlRuntime(data);
-        runtime2.startAndWait();
+        runtime2.startAsync();
+        runtime2.awaitRunning();
+
         final Process process2 = runtime2.getProcess();
         assertThat("running", runtime2.isRunning(), is(true));
         assertThat("beam process", process2, is(nullValue()));
@@ -150,7 +153,8 @@ public class ErlRuntimeTest {
         }
         assertThat("rpc", r, is(not(nullValue())));
         try {
-            runtime2.stopAndWait();
+            runtime2.stopAsync();
+            runtime2.awaitTerminated();
         } catch (final Throwable t) {
             System.out.println("EXCEPTION:::: " + t);
         }

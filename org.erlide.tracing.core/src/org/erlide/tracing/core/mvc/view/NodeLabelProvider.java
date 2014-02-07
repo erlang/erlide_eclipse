@@ -14,8 +14,7 @@ import org.erlide.tracing.core.mvc.model.TracedNode;
  * @author Piotr Dorobisz
  * 
  */
-public class NodeLabelProvider extends LabelProvider implements
-        ITableLabelProvider {
+public class NodeLabelProvider extends LabelProvider implements ITableLabelProvider {
 
     @Override
     public Image getColumnImage(final Object element, final int index) {
@@ -43,8 +42,7 @@ public class NodeLabelProvider extends LabelProvider implements
         case NODE_NAME:
             return node.getNodeName();
         case TYPE:
-            return NodeHelper.isExternal(node.getNodeName()) ? "external"
-                    : "erlide";
+            return NodeHelper.isExternal(node.getNodeName()) ? "external" : "erlide";
         }
         return "";
     }
