@@ -254,6 +254,23 @@ indent_newline_char_test_() ->
             "    ok.\n",
     ?Test_indent(I, S).
 
+indent_maps_test_() ->
+    S = "" ++
+            "a()->\n"++
+            "foo,\n"++
+            "#[\n" ++
+            "a=>b\n" ++
+            "],\n" ++
+            "ok.\n",
+    I = "" ++
+            "a()->\n"++
+            "    foo,\n"++
+            "    #[\n" ++
+            "      a=>b\n" ++
+            "     ],\n" ++
+            "    ok.\n",
+    ?Test_indent(I, S).
+
 %%
 %% Local Functions
 %%
