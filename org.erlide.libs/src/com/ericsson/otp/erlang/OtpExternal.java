@@ -22,7 +22,7 @@ package com.ericsson.otp.erlang;
  * Provides a collection of constants used when encoding and decoding Erlang
  * terms.
  */
-public final class OtpExternal {
+public class OtpExternal {
     // no constructor
     private OtpExternal() {
     }
@@ -84,6 +84,9 @@ public final class OtpExternal {
 
     /** The tag used for new style references */
     public static final int newRefTag = 114;
+
+    /** The tag used for maps */
+    public static final int mapTag = 116;
 
     /** The tag used for old Funs */
     public static final int funTag = 117;
