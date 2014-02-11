@@ -20,19 +20,6 @@
 %% API Functions
 %%
 
--define(TOK_OTHER, 0).
--define(TOK_WS, 1).
--define(TOK_STR, 2).
--define(TOK_ATOM, 3).
--define(TOK_VAR, 4).
--define(TOK_CHAR, 5).
--define(TOK_MACRO, 6).
--define(TOK_ARROW, 7).
--define(TOK_INTEGER,8).
--define(TOK_FLOAT, 9).
--define(TOK_COMMENT, 10).
--define(TOK_KEYWORD, 11).
-
 scanner_test_() ->
     [?_assertEqual([#token{kind = atom, line = 0, offset = 0,length = 1, value = a},
                     #token{kind = '(', line = 0, offset = 1, length = 1},

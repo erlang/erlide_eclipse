@@ -46,10 +46,10 @@ public final class ErlToken {
 
     // special for lightscanstring
     // <<(kind_small(Kind)), L:24, O:24, G:24>>
-    public ErlToken(final byte[] bytes, final int index) {
+    public ErlToken(final byte[] bytes, final int index, final int offset0) {
         kind = bytes[index];
         line = int24(bytes, index + 1);
-        offset = int24(bytes, index + 4);
+        offset = int24(bytes, index + 4) + offset0;
         length = int24(bytes, index + 7);
     }
 
@@ -162,14 +162,6 @@ public final class ErlToken {
     @Override
     public String toString() {
         return "{" + kind + ", " + line + "/" + offset + "+" + length + "}";
-        // return "{" + kind + ", " + line + "/" + offset + "+" + length + ": "
-        // + text + "}";
     }
 
-    /**
-     * @param ofs
-     */
-    public void fixOffset(final int ofs) {
-        offset += ofs;
-    }
 }
