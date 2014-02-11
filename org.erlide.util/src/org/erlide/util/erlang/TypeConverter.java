@@ -30,12 +30,14 @@ import com.ericsson.otp.erlang.OtpErlangFloat;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
+import com.ericsson.otp.erlang.OtpErlangMap;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpErlangShort;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Maps;
 
 /**
  * Helps converting Java values to Erlang terms, and back. The type information
@@ -207,6 +209,19 @@ public final class TypeConverter {
                 throw new SignatureException(WRONG_ARG_TYPE + obj.getClass().getName()
                         + CANT_CONVERT_TO + cls.getCanonicalName());
             }
+            if (Map.class.isAssignableFrom(cls)) {
+                if (obj instanceof OtpErlangMap) {
+                    final Map<OtpErlangObject, OtpErlangObject> result = Maps
+                            .newHashMap();
+                    final OtpErlangMap map = (OtpErlangMap) obj;
+                    for (final OtpErlangObject key : map.keys()) {
+                        result.put(key, map.get(key));
+                    }
+                    return result;
+                }
+                throw new SignatureException(WRONG_ARG_TYPE + obj.getClass().getName()
+                        + CANT_CONVERT_TO + cls.getCanonicalName());
+            }
             if (Collection.class.isAssignableFrom(cls)) {
                 if (obj instanceof OtpErlangList) {
                     final OtpErlangObject[] list = ((OtpErlangList) obj).elements();
@@ -351,6 +366,15 @@ public final class TypeConverter {
         }
         if (obj instanceof OtpErlangBinary) {
             return (OtpErlangObject) obj;
+        }
+        if (obj instanceof Map) {
+            if (type.kind == 'm') {
+                @SuppressWarnings("unchecked")
+                final Map<OtpErlangObject, OtpErlangObject> map = (Map<OtpErlangObject, OtpErlangObject>) obj;
+                return new OtpErlangMap(map.keySet().toArray(new OtpErlangObject[0]), map
+                        .values().toArray(new OtpErlangObject[0]));
+            }
+            failConversion(obj, type);
         }
         if (obj instanceof OtpErlangObject) {
             checkConversion(obj);

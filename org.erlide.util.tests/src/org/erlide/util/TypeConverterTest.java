@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import org.erlide.util.erlang.IConvertible;
 import org.erlide.util.erlang.Signature;
@@ -30,6 +31,7 @@ import com.ericsson.otp.erlang.OtpErlangDouble;
 import com.ericsson.otp.erlang.OtpErlangFloat;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
+import com.ericsson.otp.erlang.OtpErlangMap;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 
@@ -136,6 +138,21 @@ public class TypeConverterTest {
     @Test
     public void cvtDoubleOk_1() throws SignatureException {
         test(3.14d, "d", new OtpErlangDouble(3.14d));
+    }
+
+    @Test
+    public void cvtMapOk_1() throws SignatureException {
+        final HashMap<OtpErlangObject, OtpErlangObject> map = new HashMap<OtpErlangObject, OtpErlangObject>();
+        test(map, "m", new OtpErlangMap(new OtpErlangObject[0], new OtpErlangObject[0]));
+    }
+
+    @Test
+    public void cvtMapOk_2() throws SignatureException {
+        final HashMap<OtpErlangObject, OtpErlangObject> map = new HashMap<OtpErlangObject, OtpErlangObject>();
+        map.put(new OtpErlangAtom("foo"), new OtpErlangAtom("bar"));
+        test(map, "m", new OtpErlangMap(
+                new OtpErlangObject[] { new OtpErlangAtom("foo") },
+                new OtpErlangObject[] { new OtpErlangAtom("bar") }));
     }
 
     @Test
