@@ -75,7 +75,7 @@ public class ErlangFunction {
 
     @Override
     public String toString() {
-        return name + "/" + Integer.toString(arity);
+        return new OtpErlangAtom(name).toString() + "/" + Integer.toString(arity);
     }
 
     public String getNameWithArity() {
