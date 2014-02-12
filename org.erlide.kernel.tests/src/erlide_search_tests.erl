@@ -68,6 +68,6 @@ find_second_field_in_record_match_test_() ->
 %%
 
 test_refs(S, SearchPattern) ->
-    {ok, Tokens, _EndPos} = erlide_scan:string(S, {0, 1}, []),
+    {ok, Tokens, _EndPos} = erlide_scan:string(S),
     {_Forms, _Comments, Refs} = erlide_np:parse(Tokens),
     erlide_search:find_data(Refs, [SearchPattern], xxx, "xxx").

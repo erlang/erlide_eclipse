@@ -167,14 +167,8 @@ fixup_tokens([#token{kind='?', line=L}=T1, #token{kind='?', line=L}=T2, T3 | Res
     fixup_tokens(Rest, [Acc | [fixup_tokens([T1], []),
                                fixup_tokens([T2], []),
                                fixup_tokens([T3], [])]]);
-fixup_tokens([#token{kind='?', line=L, offset=O}, #token{kind=var, line=L, offset=O1, text=Txt} | Rest], Acc) when O1=:=O+1->
-    T = fixup_macro(L, O, length(Txt)),
-    fixup_tokens(Rest, [Acc | T]);
-fixup_tokens([#token{kind='?', line=L, offset=O}, #token{kind=atom, line=L, offset=O1, text=Txt} | Rest], Acc) when O1=:=O+1->
-    T = fixup_macro(L, O, length(Txt)),
-    fixup_tokens(Rest, [Acc | T]);
 fixup_tokens([#token{kind=Kind, line=L, offset=O, text=Txt} | Rest], Acc) ->
-    G = length(Txt),
+    G = case is_list(Txt) of true -> length(Txt); _ -> byte_size(Txt) end,
     fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]).
 
 

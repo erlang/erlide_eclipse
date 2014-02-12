@@ -263,7 +263,6 @@ get_clauses([], Acc) ->
     lists:reverse(Acc);
 get_clauses([C | Rest], Acc) ->
     {Clause, Refs} = get_clause(C),
-    io:format("%% ~p~n", [Clause]),
     get_clauses(Rest, [{Clause, Refs} | Acc]).
 
 get_clause([#token{kind=AtomOrMacro, value=Name, line=Line, offset=Offset, length=Length} | Rest])

@@ -14,6 +14,8 @@
 %% Exported Functions
 %%
 
+-define(D(X), begin Y=X, io:format("~p~n", [Y]), Y end).
+
 %%
 %% API Functions
 %%
@@ -30,6 +32,8 @@
 -define(TOK_FLOAT, 9).
 -define(TOK_COMMENT, 10).
 -define(TOK_KEYWORD, 11).
+
+-define(CHAR, (case erlang:system_info(otp_release) of "R14"++_ -> ?TOK_INTEGER; "R15"++_ -> ?TOK_INTEGER; _-> ?TOK_CHAR end)).
 
 scanner_light_scan_string_test_() ->
     [
@@ -61,7 +65,7 @@ scanner_light_scan_string_test_() ->
                     <<?TOK_CHAR, 0:24, 0:24, 5:24>>},
                    erlide_scanner:light_scan_string(<<"$\\122">>, latin1)),
       ?_assertEqual({ok,
-                     <<?TOK_INTEGER, 0:24, 0:24, 9:24>>},
+                     <<?CHAR, 0:24, 0:24, 9:24>>},
                     erlide_scanner:light_scan_string(<<"$\\x{faca}">>, latin1)),
       ?_assertEqual({ok,
                      <<?TOK_CHAR, 0:24, 0:24, 5:24>>},
@@ -100,9 +104,7 @@ scanner_light_scan_string_test_() ->
                     <<?TOK_MACRO, 0:24, 0:24, 3:24>>},
                    erlide_scanner:light_scan_string(<<"?HI">>, latin1)),
      ?_assertEqual({ok,
-                    <<$?, 0:24, 0:24, 1:24,
-                      $?, 0:24, 1:24, 1:24,
-                      ?TOK_ATOM, 0:24, 2:24, 2:24>>},
+                    <<?TOK_MACRO, 0:24, 0:24, 4:24>>},
                    erlide_scanner:light_scan_string(<<"??hi">>, latin1)),
      ?_assertEqual({ok,
                     <<?TOK_COMMENT, 0:24, 0:24, 2:24>>},
@@ -191,7 +193,7 @@ newline_char_simple_test_() ->
     [?_assertEqual({ok, [#token{kind='[', line=0, offset=0, length=1, text="["},
                          #token{kind=char, line=0, offset=1, length=3, text="$\\n", value=10},
                          #token{kind=']', line=0, offset=4, length=1, text="]"}
-                         ], {0,6}},
+                         ], {0,6,5}},
                    erlide_scan:string("[$\\n]"))
      ].
 

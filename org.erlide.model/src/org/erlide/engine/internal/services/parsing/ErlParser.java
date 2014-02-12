@@ -274,7 +274,7 @@ public final class ErlParser implements ParserService {
         try {
             final int ofs = ((OtpErlangLong) c.elementAt(3)).intValue();
             final int len = ((OtpErlangLong) c.elementAt(4)).intValue();
-            setPos(comment, line, lastLine, ofs + 1, len, true);
+            setPos(comment, line, lastLine, ofs + 1, len);
         } catch (final OtpErlangRangeException e) {
             return null;
         }
@@ -295,7 +295,7 @@ public final class ErlParser implements ParserService {
             final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
             final String msg = helper.formatError(er);
             final ErlParserProblem e = ErlParserProblem.newError(module, msg);
-            setPos(e, er.elementAt(0), false);
+            setPos(e, er.elementAt(0));
             return e;
         } else if ("tree".equals(typeS)) {
             final OtpErlangTuple atr = (OtpErlangTuple) el.elementAt(3);
@@ -360,7 +360,7 @@ public final class ErlParser implements ParserService {
         } catch (final OtpErlangRangeException e) {
             return f;
         }
-        setPos(f, pos, true);
+        setPos(f, pos);
         try {
             setNamePos(f, namePos);
         } catch (final OtpErlangRangeException e) {
@@ -393,7 +393,7 @@ public final class ErlParser implements ParserService {
         } catch (final OtpErlangRangeException e) {
             ErlLogger.warn(e);
         }
-        setPos(cl, cpos, true);
+        setPos(cl, cpos);
         return cl;
     }
 
@@ -436,7 +436,7 @@ public final class ErlParser implements ParserService {
         final OtpErlangList functionList = (OtpErlangList) val;
         final ErlExport ex = new ErlExport(module, functionList,
                 Util.stringValue(extra));
-        setPos(ex, pos, false);
+        setPos(ex, pos);
         return ex;
     }
 
@@ -447,7 +447,7 @@ public final class ErlParser implements ParserService {
             final String s = Util.stringValue(extra);
             final ErlMember r = new ErlMacroDef(module,
                     ((OtpErlangAtom) val).atomValue(), s);
-            setPos(r, pos, false);
+            setPos(r, pos);
             // r.setParseTree(val);
             return r;
         } else if (val instanceof OtpErlangList) {
@@ -470,7 +470,7 @@ public final class ErlParser implements ParserService {
                             module.getName(), o.toString());
                     r = new ErlMacroDef(module, o.toString(), null);
                 }
-                setPos(r, pos, false);
+                setPos(r, pos);
                 // r.setParseTree(val);
                 return r;
             }
@@ -500,7 +500,7 @@ public final class ErlParser implements ParserService {
         }
         final ErlAttribute a = new ErlAttribute(module, nameS, o,
                 Util.stringValue(extra));
-        setPos(a, pos, false);
+        setPos(a, pos);
         // a.setParseTree(val);
         return a;
     }
@@ -516,7 +516,7 @@ public final class ErlParser implements ParserService {
                 final OtpErlangList fields = (OtpErlangList) recordTuple
                         .elementAt(1);
                 final ErlRecordDef r = new ErlRecordDef(module, null, s);
-                setPos(r, pos, false);
+                setPos(r, pos);
                 if (fields != null) {
                     final List<ErlRecordField> children = Lists
                             .newArrayListWithCapacity(fields.arity());
@@ -535,7 +535,7 @@ public final class ErlParser implements ParserService {
                                         .elementAt(2);
                                 field.setExtra(Util.stringValue(fieldExtra));
                             }
-                            setPos(field, posTuple, false);
+                            setPos(field, posTuple);
                             children.add(field);
                         } else {
                             ErlLogger.error("bad record def: %s", o);
@@ -552,7 +552,7 @@ public final class ErlParser implements ParserService {
             final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
                     .stringValue() : null;
             final ErlRecordDef r = new ErlRecordDef(module, null, s);
-            setPos(r, pos, false);
+            setPos(r, pos);
             return r;
         }
         return null;
@@ -566,7 +566,7 @@ public final class ErlParser implements ParserService {
         final String typeName = p < 0 ? s : s.substring(0, p);
         final int arity = Util.getIntegerValue(arityL, -1);
         final ErlTypespec a = new ErlTypespec(module, typeName, arity, s);
-        setPos(a, pos, false);
+        setPos(a, pos);
         return a;
     }
 
@@ -579,7 +579,7 @@ public final class ErlParser implements ParserService {
             final OtpErlangList functionList = (OtpErlangList) t.elementAt(1);
             final ErlImport imp = new ErlImport(module,
                     importModule.atomValue(), functionList);
-            setPos(imp, pos, false);
+            setPos(imp, pos);
             return imp;
         }
         return null;
@@ -590,12 +590,11 @@ public final class ErlParser implements ParserService {
             final OtpErlangObject extra, final String nameS) {
         final String s = Util.stringValue(extra);
         final ErlAttribute r = new ErlAttribute(module, nameS, value, s);
-        setPos(r, pos, false);
+        setPos(r, pos);
         return r;
     }
 
-    private boolean setPos(final SourceRefElement e, final OtpErlangObject pos,
-            final boolean minusOne) {
+    private boolean setPos(final SourceRefElement e, final OtpErlangObject pos) {
         if (!(pos instanceof OtpErlangTuple)) {
             if (pos instanceof OtpErlangLong) {
                 int ipos = 999999;
@@ -603,7 +602,7 @@ public final class ErlParser implements ParserService {
                     ipos = ((OtpErlangLong) pos).intValue();
                 } catch (final OtpErlangRangeException e1) {
                 }
-                setPos(e, 0, 0, ipos, 0, false);
+                setPos(e, 0, 0, ipos, 0);
                 return true;
             }
             ErlLogger.debug("!> expecting pos tuple, got " + pos);
@@ -628,7 +627,7 @@ public final class ErlParser implements ParserService {
                 lastLine = line;
             }
             final int len = lenL.intValue();
-            setPos(e, line, lastLine, ofs, len, minusOne);
+            setPos(e, line, lastLine, ofs, len);
             return true;
         } catch (final OtpErlangRangeException ex) {
             return false;
@@ -637,10 +636,9 @@ public final class ErlParser implements ParserService {
     }
 
     private void setPos(final SourceRefElement e, final int line,
-            final int lastLine, final int ofs, final int len,
-            final boolean minusOne) {
+            final int lastLine, final int ofs, final int len) {
         e.setSourceRangeOffset(ofs);
-        e.setSourceRangeLength(len - (minusOne ? 1 : 0));
+        e.setSourceRangeLength(len);
         e.setLineStart(line);
         e.setLineEnd(lastLine);
     }

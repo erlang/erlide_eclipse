@@ -5,29 +5,37 @@
          string/3,
          reserved_word/1,
          filter_ws/1,
-         filter_comment/1,
-         filter_tokens/2]).
+         filter_comments/1,
+         filter_ws_comments/1]).
 
 -include("erlide_token.hrl").
 
 string(String) ->
-  erlide_scan:string(String, {0, 1}).
+    string(String, {0, 1}).
 
-string(String, Pos) ->
-  erlide_scan:string(String, Pos, []).
+string(String, Pos) when is_tuple(Pos) ->
+    string(String, Pos, []);
+string(String, Opts) when is_list(Opts) ->
+    string(String, {0, 1}, Opts).
 
-string(String, Pos, Opts) ->
-  {ok, Tokens, EndPos} = erl_scan:string(String, Pos, [text, return |Opts]),
-  {ok, filter_tokens(convert_tokens(Tokens), Opts), EndPos}.
+string(String, {L, C}, Opts) ->
+    string(String, {L, C, 0}, Opts);
+string(String, {L, C, O}, Opts) ->
+    {ok, Tokens, {L1, C1}} = erl_scan:string(String, {L, C}, [text, return |Opts]),
+    {ok, NewTokens, O1} = convert_tokens(Tokens, O),
+    {ok, filter_tokens(NewTokens, Opts), {L1, C1, O1}}.
 
 reserved_word(Word) ->
-  erl_scan:reserved_word(Word).
+    erl_scan:reserved_word(Word).
 
 filter_ws(L) ->
-  lists:filter(fun(#token{kind=Kind}) -> Kind =/= white_space end, L).
+    lists:filter(fun(#token{kind=Kind}) -> Kind =/= white_space end, L).
 
-filter_comment(L) ->
-  lists:filter(fun(#token{kind=Kind}) -> Kind =/= comment end, L).
+filter_comments(L) ->
+    lists:filter(fun(#token{kind=Kind}) -> Kind =/= comment end, L).
+
+filter_ws_comments(L) ->
+    lists:filter(fun(#token{kind=Kind}) -> (Kind =/= comment) and (Kind =/= white_space) end, L).
 
 filter_tokens(Tokens, Opts) ->
     case {lists:member(return, Opts),
@@ -40,59 +48,57 @@ filter_tokens(Tokens, Opts) ->
         {_, true, false} ->
             filter_ws(Tokens);
         {_, false, true} ->
-            filter_comment(Tokens);
+            filter_comments(Tokens);
         {_, false, false} ->
-            filter_ws(filter_comment(Tokens));
-        _Err ->
-            io:format("~p~n", [_Err])
+            filter_ws_comments(Tokens)
     end.
 
-convert_tokens(Tokens) ->
-    convert_tokens(Tokens, 0, 0).
+convert_tokens(Tokens, O) ->
+    convert_tokens(Tokens, O, []).
 
-convert_tokens(Tokens, Offset, NL) ->
-    convert_tokens(Tokens, Offset, NL, []).
-
-convert_tokens([], _Ofs, _NL, Acc) ->
-    lists:reverse(Acc);
-convert_tokens([{white_space, [{line, _L}, {column, _O}, {text, Txt}], _} | Rest], Ofs, NL, Acc) ->
-    T = #token{kind=white_space, line=NL, offset=Ofs, length=length(Txt), text=Txt},
-    NL1 = case lists:member($\n, Txt) of true -> NL+1; false -> NL end,
-    convert_tokens(Rest, Ofs+length(Txt), NL1, [T | Acc]);
-convert_tokens([{'?', [{line, L}, {column, _O1}, {text, "?"}]}, {'?', [{line, L}, {column, _O2}, {text, "?"}]} | Rest],
-                Ofs, NL, Acc) ->
-     C1 = #token{kind='?', line=NL, offset= Ofs, length=1, text="?"},
-     C2 = #token{kind='?', line=NL, offset= Ofs+1, length=1, text="?"},
-     convert_tokens(Rest, Ofs+2, NL, [C2, C1 | Acc]);
-convert_tokens([{'?', [{line, L}, {column, O}, {text, "?"}]}, {atom, [{line, L}, {column, O1}, {text, Txt}], _V} | Rest],
-                Ofs, NL, Acc) when O1=:=O+1->
-     T = make_macro(NL, Ofs, length(Txt)+1, Txt),
-     convert_tokens(Rest, Ofs+length(Txt)+1, NL, [T | Acc]);
-convert_tokens([{'?', [{line, L}, {column, O}, {text, "?"}]}, {var, [{line, L}, {column, O1}, {text, Txt}], _V} | Rest],
-                Ofs, NL, Acc) when O1=:=O+1->
-     T = make_macro(NL, Ofs, length(Txt)+1, Txt),
-     convert_tokens(Rest, Ofs+length(Txt)+1, NL, [T | Acc]);
-convert_tokens([{dot, [{line,_L}, {column,_O}, {text,Txt}]} | Rest], Ofs, NL, Acc) ->
+convert_tokens([], Ofs, Acc) ->
+    {ok, lists:reverse(Acc), Ofs};
+convert_tokens([{'?', [{line, L}, {column, O1}, {text, "?"}]}, {'?', [{line, L}, {column, O2}, {text, "?"}]}, {atom, [{line, L}, {column, O}, {text, Txt}], _V} | Rest],
+               Ofs, Acc) when O2=:=O1+1; O=:=O2+1 ->
+    Txt1 = [$?, $? | Txt],
+    T = make_macro(L, Ofs, length(Txt1), Txt1),
+    convert_tokens(Rest, Ofs+length(Txt1), [T | Acc]);
+convert_tokens([{'?', [{line, L}, {column, O1}|_]}, {'?', [{line, L}, {column, O2}|_]}, {var, [{line, L}, {column, O}, {text, Txt}], _V} | Rest],
+               Ofs, Acc) when O2=:=O1+1; O=:=O2+1 ->
+    Txt1 = [$?, $? | Txt],
+    T = make_macro(L, Ofs, length(Txt1), Txt1),
+    convert_tokens(Rest, Ofs+length(Txt1), [T | Acc]);
+convert_tokens([{'?', [{line, L}, {column, O}|_]}, {atom, [{line, L}, {column, O1}, {text, Txt}], _V} | Rest],
+               Ofs, Acc) when O1=:=O+1->
+    Txt1 = [$? | Txt],
+    T = make_macro(L, Ofs, length(Txt1), Txt1),
+    convert_tokens(Rest, Ofs+length(Txt1), [T | Acc]);
+convert_tokens([{'?', [{line, L}, {column, O}|_]}, {var, [{line, L}, {column, O1}, {text, Txt}], _V} | Rest],
+               Ofs, Acc) when O1=:=O+1->
+    Txt1 = [$? | Txt],
+    T = make_macro(L, Ofs, length(Txt1), Txt1),
+    convert_tokens(Rest, Ofs+length(Txt1), [T | Acc]);
+convert_tokens([{dot, [{line,L}, {column,_O}, {text,Txt}]} | Rest], Ofs, Acc) ->
     %% erl_scan conflates the dot with following whitespace.
-    %% Maybe we should create here a whitespace token too, but we have already filtered
-    %% out these at this point
-    T = #token{kind=dot, line=NL, offset=Ofs, length=1, text=[hd(Txt)]},
+    T = #token{kind=dot, line=L, offset=Ofs, length=1, text=[hd(Txt)]},
     case Txt of
         "." ->
-            convert_tokens(Rest, Ofs+1, NL, [T | Acc]);
+            convert_tokens(Rest, Ofs+1, [T | Acc]);
         _ ->
-            T1 = #token{kind=white_space, line=NL, offset=Ofs+1, length=length(Txt)-1, text=tl(Txt)},
-            NL1 = case lists:member($\n, Txt) of true -> NL+1; false -> NL end,
-            convert_tokens(Rest, Ofs+length(Txt), NL1, [T1, T | Acc])
+            T1 = #token{kind=white_space, line=L, offset=Ofs+1, length=length(Txt)-1, text=list_to_binary(tl(Txt))},
+            convert_tokens(Rest, Ofs+length(Txt), [T1, T | Acc])
     end;
-convert_tokens([{What, [{line,_L}, {column,_O}, {text,Txt}], Sym} | Rest], Ofs, NL, Acc) ->
-    T = #token{kind=What, line=NL, offset=Ofs, length=length(Txt), text=Txt, value=Sym},
-    convert_tokens(Rest, Ofs+length(Txt), NL, [T | Acc]);
-convert_tokens([{What, [{line,_L}, {column,_O}, {text,Txt}]} | Rest], Ofs, NL, Acc) ->
-    T = #token{kind=What, line=NL, offset=Ofs, length=length(Txt), text=Txt},
-    convert_tokens(Rest, Ofs+length(Txt), NL, [T | Acc]).
+convert_tokens([{What, [{line,L}, {column,_O}, {text,Txt}], _} | Rest], Ofs, Acc) when What==white_space; What==comment ->
+    T = #token{kind=What, line=L, offset=Ofs, length=length(Txt), text=list_to_binary(Txt)},
+    convert_tokens(Rest, Ofs+length(Txt), [T | Acc]);
+convert_tokens([{What, [{line,L}, {column,_O}, {text,Txt}], Sym} | Rest], Ofs, Acc) ->
+    T = #token{kind=What, line=L, offset=Ofs, length=length(Txt), text=Txt, value=Sym},
+    convert_tokens(Rest, Ofs+length(Txt), [T | Acc]);
+convert_tokens([{What, [{line,L}, {column,_O}, {text,Txt}]} | Rest], Ofs, Acc) ->
+    T = #token{kind=What, line=L, offset=Ofs, length=length(Txt), text=Txt},
+    convert_tokens(Rest, Ofs+length(Txt), [T | Acc]).
 
-make_macro(NL, O, G, V0) ->
-    V = list_to_atom([$? | V0]),
-    #token{kind=macro, line=NL, offset=O, length=G, text=[$? | V0], value=V}.
+make_macro(L, O, G, Txt) ->
+    V = list_to_atom(Txt),
+    #token{kind=macro, line=L, offset=O, length=G, text=Txt, value=V}.
 

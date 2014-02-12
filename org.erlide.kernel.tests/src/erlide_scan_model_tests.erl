@@ -21,17 +21,17 @@
 %%
 
 scanner_test_() ->
-    [?_assertEqual({[#token{kind = atom, line = 0, offset = 0,length = 1, value = a},
-                     #token{kind = '(', line = 0, offset = 1, length = 1},
-                     #token{kind = ')', line = 0, offset = 2, length = 1},
-                     #token{kind = '->', line = 0, offset = 4, length = 2},
-                     #token{kind = atom, line = 0, offset = 7, length = 1, value = b},
+    [?_assertEqual({[#token{kind = atom, line = 0, offset = 0,length = 1, value = a, text="a"},
+                     #token{kind = '(', line = 0, offset = 1, length = 1, text="("},
+                     #token{kind = ')', line = 0, offset = 2, length = 1, text=")"},
+                     #token{kind = '->', line = 0, offset = 4, length = 2, text="->"},
+                     #token{kind = atom, line = 0, offset = 7, length = 1, value = b, text="b"},
                      #token{kind = dot, line = 0, offset = 8, length = 1, text = "."}],
-                    [#token{kind = atom, line = 0, offset = 0,length = 4, value = test},
-                     #token{kind = '(', line = 0, offset = 4, length = 1},
-                     #token{kind = ')', line = 0, offset = 5, length = 1},
-                     #token{kind = '->', line = 0, offset = 7, length = 2},
-                     #token{kind = atom, line = 0, offset = 10, length = 1, value = b},
+                    [#token{kind = atom, line = 0, offset = 0,length = 4, value = test, text="test"},
+                     #token{kind = '(', line = 0, offset = 4, length = 1, text="("},
+                     #token{kind = ')', line = 0, offset = 5, length = 1, text=")"},
+                     #token{kind = '->', line = 0, offset = 7, length = 2, text="->"},
+                     #token{kind = atom, line = 0, offset = 10, length = 1, value = b, text="b"},
                      #token{kind = dot, line = 0, offset = 11, length = 1, text = "."}]},
                    test_replace("a() -> b.", 0, 1, "test"))
     ].

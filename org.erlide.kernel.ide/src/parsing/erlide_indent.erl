@@ -936,8 +936,6 @@ i_sniff(L) ->
 scan(S) ->
     case erlide_scan:string(S, {0, 1}, [return_comments]) of
         {ok, T, _} ->
-            io:format("~p~n", [S]),
-            io:format("~p~n", [T]),
             {ok, T};
         Error ->
             Error
