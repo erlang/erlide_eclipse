@@ -61,6 +61,8 @@ import com.google.common.collect.Maps;
  * <dd>reference</dd>
  * <dt>j</dt>
  * <dd>java reference (a distinguished reference, to be used with e->j rpcs)</dd>
+ * <dt>m</dt>
+ * <dd>map</dd>
  * <dt>l*</dt>
  * <dd>list, the next type descriptor specifies the items' type</dd>
  * <dt>f</dt>
@@ -117,6 +119,9 @@ public final class TypeConverter {
         }
         if (Collection.class.isAssignableFrom(obj)) {
             return OtpErlangList.class;
+        }
+        if (Map.class.isAssignableFrom(obj)) {
+            return OtpErlangMap.class;
         }
         if (obj == Integer.TYPE) {
             return OtpErlangLong.class;
@@ -211,11 +216,15 @@ public final class TypeConverter {
             }
             if (Map.class.isAssignableFrom(cls)) {
                 if (obj instanceof OtpErlangMap) {
-                    final Map<OtpErlangObject, OtpErlangObject> result = Maps
-                            .newHashMap();
+
+                    // TODO we need right classes for keys and values
+
+                    final Map<Object, Object> result = Maps.newHashMap();
                     final OtpErlangMap map = (OtpErlangMap) obj;
                     for (final OtpErlangObject key : map.keys()) {
-                        result.put(key, map.get(key));
+                        final OtpErlangObject value = map.get(key);
+                        result.put(erlang2java(key, key.getClass()),
+                                erlang2java(value, value.getClass()));
                     }
                     return result;
                 }
@@ -224,6 +233,9 @@ public final class TypeConverter {
             }
             if (Collection.class.isAssignableFrom(cls)) {
                 if (obj instanceof OtpErlangList) {
+
+                    // TODO we need right class for elements
+
                     final OtpErlangObject[] list = ((OtpErlangList) obj).elements();
                     final Object[] olist = new Object[list.length];
                     for (int i = 0; i < list.length; i++) {
@@ -367,12 +379,18 @@ public final class TypeConverter {
         if (obj instanceof OtpErlangBinary) {
             return (OtpErlangObject) obj;
         }
-        if (obj instanceof Map) {
+        if (obj instanceof Map<?, ?>) {
             if (type.kind == 'm') {
                 @SuppressWarnings("unchecked")
                 final Map<OtpErlangObject, OtpErlangObject> map = (Map<OtpErlangObject, OtpErlangObject>) obj;
-                return new OtpErlangMap(map.keySet().toArray(new OtpErlangObject[0]), map
-                        .values().toArray(new OtpErlangObject[0]));
+                final int size = map.keySet().size();
+                final OtpErlangObject[] keys = map.keySet().toArray(
+                        new OtpErlangObject[size]);
+                final OtpErlangObject[] values = new OtpErlangObject[size];
+                for (int i = 0; i < size; i++) {
+                    values[i] = map.get(keys[i]);
+                }
+                return new OtpErlangMap(keys, values);
             }
             failConversion(obj, type);
         }
@@ -534,6 +552,18 @@ public final class TypeConverter {
                 vv[i] = java2erlang(v[i]);
             }
             return new OtpErlangList(vv);
+        }
+        if (obj instanceof Map<?, ?>) {
+            @SuppressWarnings("unchecked")
+            final Map<Object, Object> map = (Map<Object, Object>) obj;
+            final Object[] k = map.keySet().toArray(new Object[map.keySet().size()]);
+            final OtpErlangObject[] kk = new OtpErlangObject[k.length];
+            final OtpErlangObject[] vv = new OtpErlangObject[k.length];
+            for (int i = 0; i < k.length; i++) {
+                kk[i] = java2erlang(k[i]);
+                vv[i] = java2erlang(map.get(k[i]));
+            }
+            return new OtpErlangMap(kk, vv);
         }
 
         if (obj instanceof OtpErlangPid) {
