@@ -23,11 +23,14 @@ import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;
 
 public class ErlangProjectPropertyPage extends FieldEditorOverlayPage {
+
+    private ComboFieldEditor runtimeCombo;
 
     /**
      * Constructor for ErlProjectPropertyPage.
@@ -39,7 +42,18 @@ public class ErlangProjectPropertyPage extends FieldEditorOverlayPage {
 
     @Override
     public void propertyChange(final PropertyChangeEvent event) {
+        super.propertyChange(event);
         ErlLogger.debug("*+> " + event);
+        if (event.getSource() == runtimeCombo) {
+            final IProject project = (IProject) getElement().getAdapter(IProject.class);
+            final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                    .getErlangProject(project);
+            final Object newValue = event.getNewValue();
+            if (newValue instanceof String) {
+                erlProject.getProperties().setRuntimeVersion(
+                        RuntimeVersion.Serializer.parse((String) newValue));
+            }
+        }
     }
 
     @Override
@@ -87,8 +101,9 @@ public class ErlangProjectPropertyPage extends FieldEditorOverlayPage {
             versionsArray[i][0] = versions.get(i);
             versionsArray[i][1] = versionsArray[i][0];
         }
-        addField(new ComboFieldEditor(ProjectPreferencesConstants.RUNTIME_VERSION,
-                "Runtime version:", versionsArray, getFieldEditorParent()));
+        runtimeCombo = new ComboFieldEditor(ProjectPreferencesConstants.RUNTIME_VERSION,
+                "Runtime version:", versionsArray, getFieldEditorParent());
+        addField(runtimeCombo);
 
         addField(new BooleanFieldEditor(ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
                 "When cleaning, delete the whole output directories (is faster)",

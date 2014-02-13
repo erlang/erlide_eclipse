@@ -15,6 +15,7 @@ import java.util.Collections;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
@@ -24,6 +25,8 @@ import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.osgi.service.prefs.BackingStoreException;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 public final class ErlangProjectProperties implements IPreferenceChangeListener,
@@ -39,8 +42,7 @@ public final class ErlangProjectProperties implements IPreferenceChangeListener,
             .unpackList(ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
     private String externalIncludesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES;
     private String externalModulesFile = ProjectPreferencesConstants.DEFAULT_EXTERNAL_MODULES;
-    private RuntimeVersion runtimeVersion = RuntimeVersion.Serializer
-            .parse(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+    private RuntimeVersion runtimeVersion;
     private String runtimeName = null;
 
     private boolean nukeOutputOnClean = false;
@@ -49,6 +51,8 @@ public final class ErlangProjectProperties implements IPreferenceChangeListener,
     private final String builderCleanTarget = "clean";
 
     public ErlangProjectProperties() {
+        setRuntimeVersion(RuntimeVersion.Serializer
+                .parse(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION));
     }
 
     public ErlangProjectProperties(final IProject prj) {
@@ -84,16 +88,16 @@ public final class ErlangProjectProperties implements IPreferenceChangeListener,
         runtimeName = node.get(ProjectPreferencesConstants.RUNTIME_NAME, null);
         if (!runtimeVersion.isDefined()) {
             if (runtimeName == null) {
-                runtimeVersion = RuntimeVersion.Serializer
-                        .parse(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+                setRuntimeVersion(RuntimeVersion.Serializer
+                        .parse(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION));
             } else {
                 final RuntimeInfo info = RuntimeCore.getRuntimeInfoCatalog().getRuntime(
                         runtimeName);
                 if (info != null) {
-                    runtimeVersion = new RuntimeVersion(info.getVersion());
+                    setRuntimeVersion(new RuntimeVersion(info.getVersion()));
                 } else {
-                    runtimeVersion = RuntimeVersion.Serializer
-                            .parse(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+                    setRuntimeVersion(RuntimeVersion.Serializer
+                            .parse(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION));
                 }
             }
         }
@@ -201,7 +205,7 @@ public final class ErlangProjectProperties implements IPreferenceChangeListener,
         sourceDirs = bprefs.getSourceDirs();
         outputDirs = bprefs.getOutputDirs();
         runtimeName = bprefs.getRuntimeName();
-        runtimeVersion = bprefs.getRequiredRuntimeVersion();
+        setRuntimeVersion(bprefs.getRequiredRuntimeVersion());
         builderName = bprefs.getBuilderName();
     }
 
@@ -240,7 +244,25 @@ public final class ErlangProjectProperties implements IPreferenceChangeListener,
 
     @Override
     public void setRuntimeVersion(final RuntimeVersion runtimeVersion) {
+        if (Objects.equal(this.runtimeVersion, runtimeVersion)) {
+            return;
+        }
         this.runtimeVersion = runtimeVersion;
+        if (project != null && project.isAccessible()) {
+            try {
+                String charset;
+                if (runtimeVersion.isReleaseCompatible(new RuntimeVersion(17))) {
+                    charset = Charsets.UTF_8.name();
+                } else {
+                    charset = Charsets.ISO_8859_1.name();
+                }
+                if (!charset.equals(project.getDefaultCharset())) {
+                    project.setDefaultCharset(charset, null);
+                }
+            } catch (final CoreException e) {
+                // ignore, we can't do anything about it
+            }
+        }
     }
 
     @Override

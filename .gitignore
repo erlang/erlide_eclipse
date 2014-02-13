@@ -30,3 +30,4 @@ deps
 *.beam
 *.plt
 erl_crash.dump
+org.erlide.ui.tests/projects/Erlide_tests (1).launch

@@ -636,7 +636,8 @@ public class ErlProject extends Openable implements IErlProject {
         }
     }
 
-    private IErlangProjectProperties getProperties() {
+    @Override
+    public IErlangProjectProperties getProperties() {
         return new ErlangProjectProperties(fProject);
     }
 
