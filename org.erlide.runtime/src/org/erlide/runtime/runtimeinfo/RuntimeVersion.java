@@ -111,8 +111,11 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
                 if (pos < 0) {
                     micro = Integer.parseInt(parts[2]);
                 } else {
-                    micro = Integer.parseInt(parts[2].substring(0, pos));
-
+                    if (pos == 0) {
+                        micro = 0;
+                    } else {
+                        micro = Integer.parseInt(parts[2].substring(0, pos));
+                    }
                     final String extra = parts[2].substring(pos + 1);
                     if (extra.startsWith("rc")) {
                         update_level = -Integer.parseInt(extra.substring(2));
