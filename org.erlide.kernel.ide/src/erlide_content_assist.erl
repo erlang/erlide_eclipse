@@ -28,7 +28,7 @@
 
 %% check if the text is where to enter record field
 check_record(S) ->
-    case erlide_scan:string(S) of
+    case (catch erlide_scan:string(S)) of
         {ok, Tokens, _Pos} ->
             ?D(Tokens),
             {State, Name, Prefix, Fields} =
@@ -70,11 +70,11 @@ get_var_tokens(Tokens, Prefix) ->
 
 get_var_tokens([], _Prefix, Acc) ->
     Acc;
-get_var_tokens([{'?', _}, {var, _Pos, _Value} | Rest], Prefix, Acc) ->
+get_var_tokens([#token{kind='?'}, #token{kind=var} | Rest], Prefix, Acc) ->
     get_var_tokens(Rest, Prefix, Acc);
-get_var_tokens([{'#', _}, {var, _Pos, _Value} | Rest], Prefix, Acc) ->
+get_var_tokens([#token{kind='#'}, #token{kind=var} | Rest], Prefix, Acc) ->
     get_var_tokens(Rest, Prefix, Acc);
-get_var_tokens([{var, _Pos, Value} | Rest], Prefix, Acc) ->
+get_var_tokens([#token{kind=var, value=Value} | Rest], Prefix, Acc) ->
     S = atom_to_list(Value),
     case S of
         "_" ->

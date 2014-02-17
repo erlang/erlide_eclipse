@@ -236,6 +236,18 @@ public final class ErlParser implements ParserService {
         return j;
     }
 
+    // -record(token, {kind, line, offset, length, value, text,
+    // last_line, column}).
+    // indexes of the token fields
+    final static int KIND = 1;
+    final static int LINE = 2;
+    final static int OFFSET = 3;
+    final static int LENGTH = 4;
+    final static int VALUE = 5;
+    final static int TEXT = 6;
+    final static int LAST_LINE = 7;
+    final static int COLUMN = 8;
+
     /**
      * create an IErlComment from a token record
      * 
@@ -247,11 +259,8 @@ public final class ErlParser implements ParserService {
      */
     private IErlComment createComment(final IErlModule module,
             final OtpErlangTuple c) {
-        // from erlide_token.hrl:
-        // -record(token, {kind, line = {Line, LastLine}, offset, length, value,
-        // text}).
-        final OtpErlangLong lineL = (OtpErlangLong) c.elementAt(2);
-        final OtpErlangObject s = c.elementAt(5);
+        final OtpErlangLong lineL = (OtpErlangLong) c.elementAt(LINE);
+        final OtpErlangObject s = c.elementAt(TEXT);
 
         int line;
         int lastLine;
@@ -262,8 +271,9 @@ public final class ErlParser implements ParserService {
         }
         lastLine = line;
         try {
-            if (c.elementAt(7) instanceof OtpErlangLong) {
-                final OtpErlangLong lastLineL = (OtpErlangLong) c.elementAt(7);
+            if (c.elementAt(LAST_LINE) instanceof OtpErlangLong) {
+                final OtpErlangLong lastLineL = (OtpErlangLong) c
+                        .elementAt(LAST_LINE);
                 lastLine = lastLineL.intValue();
             }
         } catch (final OtpErlangRangeException e1) {
@@ -272,8 +282,8 @@ public final class ErlParser implements ParserService {
         final ErlComment comment = new ErlComment(module, Util.stringValue(s),
                 line <= MODULE_HEADER_COMMENT_THRESHOLD);
         try {
-            final int ofs = ((OtpErlangLong) c.elementAt(3)).intValue();
-            final int len = ((OtpErlangLong) c.elementAt(4)).intValue();
+            final int ofs = ((OtpErlangLong) c.elementAt(OFFSET)).intValue();
+            final int len = ((OtpErlangLong) c.elementAt(LENGTH)).intValue();
             setPos(comment, line, lastLine, ofs + 1, len);
         } catch (final OtpErlangRangeException e) {
             return null;

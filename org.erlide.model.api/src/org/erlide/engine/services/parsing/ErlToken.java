@@ -65,7 +65,7 @@ public final class ErlToken {
         }
 
         final OtpErlangObject[] parts = e.elements();
-        if (((OtpErlangAtom) parts[0]).atomValue().equals("token") && parts.length == 8) {
+        if (((OtpErlangAtom) parts[0]).atomValue().equals("token") && parts.length == 9) {
 
             // -record(token, {kind, line, offset, length, value, text}).
             kind = KIND_OTHER;

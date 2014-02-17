@@ -71,10 +71,10 @@ get_top_level_comments(Forms, Comments) ->
 extract_comments([], _, TAcc, CAcc) ->
     {lists:reverse(TAcc), lists:reverse(CAcc)};
 extract_comments([#token{kind=comment, offset=ONext, length=LNext, line=NNext,
-                         value=VNext}
+                         text=VNext}
                             | Rest], NNext, TAcc,
-                 [#token{kind=comment, offset=O, value=V}=C | CAcc]) ->
-    NewComment = C#token{offset=O, length=ONext-O+LNext, value=V++"\n"++VNext,
+                 [#token{kind=comment, offset=O, text=V}=C | CAcc]) ->
+    NewComment = C#token{offset=O, length=ONext-O+LNext, text = <<V/binary,<<"\n">>/binary,VNext/binary>>,
                          last_line=NNext},
     extract_comments(Rest, NNext+1, TAcc, [NewComment | CAcc]);
 extract_comments([C = #token{kind=comment, line=N} | Rest], _, TAcc, CAcc) ->

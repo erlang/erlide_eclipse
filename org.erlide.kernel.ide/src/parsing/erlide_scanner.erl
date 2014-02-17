@@ -117,7 +117,7 @@ check_all(ScannerName, Text, GetTokens)
 do_light_scan(S) ->
     case erlide_scan:string(S, {0, 1}, [return]) of
         {ok, T, _} ->
-            {ok, fixup_tokens(T, [])};
+            {ok, convert_tokens(T)};
         {error, _, _} ->
             error
     end.
@@ -158,17 +158,10 @@ kind_small(Kind) when is_atom(Kind) ->
             end
     end.
 
-fixup_macro(L, O, G) ->
-    <<?TOK_MACRO, L:24, (O-1):24, (G+1):24>>.
-
-fixup_tokens([], Acc) ->
-    erlang:iolist_to_binary(Acc);
-fixup_tokens([#token{kind='?', line=L}=T1, #token{kind='?', line=L}=T2, T3 | Rest], Acc) ->
-    fixup_tokens(Rest, [Acc | [fixup_tokens([T1], []),
-                               fixup_tokens([T2], []),
-                               fixup_tokens([T3], [])]]);
-fixup_tokens([#token{kind=Kind, line=L, offset=O, text=Txt} | Rest], Acc) ->
-    G = case is_list(Txt) of true -> length(Txt); _ -> byte_size(Txt) end,
-    fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]).
-
+convert_tokens(Tokens) ->
+    Fun = fun(#token{kind=Kind, line=L, offset=O, text=Txt}) ->
+                  G = case is_list(Txt) of true -> length(Txt); _ -> byte_size(Txt) end,
+                  <<(kind_small(Kind)), L:24, O:24, G:24>>
+          end,
+    erlang:iolist_to_binary([Fun(X) || X <- Tokens]).
 
