@@ -286,6 +286,14 @@ i_expr_rest(R0, I, A) ->
             R1 = i_binary_op(R0, i_with(before_binary_op, I)),
             {R2, _A} = i_expr(R1, i_with(after_binary_op, I), none),
             {R2, A};
+        '=>' -> % maps
+            R1 = i_binary_op(R0, i_with(before_binary_op, I)),
+            {R2, _A} = i_expr(R1, i_with(after_binary_op, I), none),
+            {R2, A};
+        ':=' -> % maps
+            R1 = i_binary_op(R0, i_with(before_binary_op, I)),
+            {R2, _A} = i_expr(R1, i_with(after_binary_op, I), none),
+            {R2, A};
         _ ->
             case is_binary_op(i_sniff(R0)) of
                 true ->

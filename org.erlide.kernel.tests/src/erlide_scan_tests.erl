@@ -10,8 +10,6 @@
 
 -define(D(X), begin Y=X, io:format("~p~n", [Y]), Y end).
 
--define(CHAR, (case erlang:system_info(otp_release) of "R14"++_ -> integer; "R15"++_ -> integer; _-> char end)).
-
 %%
 %% Exported Functions
 %%
@@ -44,17 +42,16 @@ tokens_test_() ->
      ?_assertEqual({ok, [#token{kind = string, line = 0, offset = 0, length = 5, text= "\"a\nb\"", value="a\nb"}],
                     {1,3,5}},
                    test_scan("\"a\nb\"")),
-     %% this test depends on which version of erlang is running! R15- gives list of integers, R16+ gives string
-     %%      ?_assertEqual({ok, [#token{kind = string, line = 0, offset = 0, length = 12, text= "\"z\\x{faca}z\"", value="z\x{faca}z"}],
-     %%                     {0,13,12}},
-     %%                    test_scan("\"z\\x{faca}z\"")),
+     ?_assertEqual({ok, [#token{kind = string, line = 0, offset = 0, length = 12, text= "\"z\\x{faca}z\"", value="z\x{faca}z"}],
+                    {0,13,12}},
+                   test_scan("\"z\\x{faca}z\"")),
      ?_assertEqual({ok, [#token{kind = string, line = 0, offset = 0, length = 4, text= "\"\\s\"", value="\s"}],
                     {0,5,4}},
                    test_scan("\"\\s\"")),
      ?_assertEqual({ok, [#token{kind = char, line = 0, offset = 0, length = 3, text= "$\\s", value=$\s}],
                     {0,4,3}},
                    test_scan("$\\s")),
-     ?_assertEqual({ok, [#token{kind = ?CHAR, line = 0, offset = 0, length = 9, text= "$\\x{faca}", value=16#faca}],
+     ?_assertEqual({ok, [#token{kind = char, line = 0, offset = 0, length = 9, text= "$\\x{faca}", value=16#faca}],
                     {0,10,9}},
                    test_scan("$\\x{faca}")),
      ?_assertEqual({ok, [#token{kind = integer, line = 0, offset = 0, length = 1, text= "3", value=3}],

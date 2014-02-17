@@ -247,18 +247,18 @@ public class ModelUtilsTests {
     @Test
     public void getPreprocessorDefs() throws Exception {
         final IErlProject project = projects[0];
-        final IErlModule module = ErlideTestUtils
-                .createModule(
-                        project,
-                        "a.erl",
-                        "-module(g).\n-include_lib(\"kernel/include/file.hrl\").\n-export([f/0]).\n-define(A(B), '++B++').\n-record(rec2, {a, b}).\n"
-                                + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
+        final IErlModule module = ErlideTestUtils.createModule(project, "a.erl",
+                "-module(g).\n" + "-include_lib(\"kernel/include/file.hrl\").\n"
+                        + "-export([f/0]).\n" + "-define(A(B), '++B++').\n"
+                        + "-record(rec2, {a, b}).\n" + "f() ->\n"
+                        + "    lists:reverse([1, 0]),\n"
+                        + "    lists:reverse([1, 0], [2]).\n");
         module.open(null);
-        final List<IErlPreprocessorDef> macrodDefs = modelUtilService
+        final List<IErlPreprocessorDef> macroDefs = modelUtilService
                 .getAllPreprocessorDefs(module, ErlElementKind.MACRO_DEF);
         final List<IErlPreprocessorDef> recordDefs = modelUtilService
                 .getAllPreprocessorDefs(module, ErlElementKind.RECORD_DEF);
-        assertEquals(2, macrodDefs.size());
+        assertEquals(2, macroDefs.size());
         assertEquals(3, recordDefs.size());
     }
 

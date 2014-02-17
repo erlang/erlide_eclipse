@@ -33,8 +33,6 @@
 -define(TOK_COMMENT, 10).
 -define(TOK_KEYWORD, 11).
 
--define(CHAR, (case erlang:system_info(otp_release) of "R14"++_ -> ?TOK_INTEGER; "R15"++_ -> ?TOK_INTEGER; _-> ?TOK_CHAR end)).
-
 scanner_light_scan_string_test_() ->
     [
      ?_assertEqual({ok,
@@ -65,7 +63,7 @@ scanner_light_scan_string_test_() ->
                     <<?TOK_CHAR, 0:24, 0:24, 5:24>>},
                    erlide_scanner:light_scan_string(<<"$\\122">>, latin1)),
       ?_assertEqual({ok,
-                     <<?CHAR, 0:24, 0:24, 9:24>>},
+                     <<?TOK_CHAR, 0:24, 0:24, 9:24>>},
                     erlide_scanner:light_scan_string(<<"$\\x{faca}">>, latin1)),
       ?_assertEqual({ok,
                      <<?TOK_CHAR, 0:24, 0:24, 5:24>>},
