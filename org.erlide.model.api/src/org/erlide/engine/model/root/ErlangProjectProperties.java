@@ -248,8 +248,9 @@ public final class ErlangProjectProperties implements IPreferenceChangeListener,
             return;
         }
         this.runtimeVersion = runtimeVersion;
-        if (project != null && project.isAccessible()) {
-            try {
+        try {
+            if (project != null && project.isAccessible()
+                    && project.hasNature("org.erlide.core.erlnature")) {
                 String charset;
                 if (runtimeVersion.isReleaseCompatible(new RuntimeVersion(17))) {
                     charset = Charsets.UTF_8.name();
@@ -259,9 +260,9 @@ public final class ErlangProjectProperties implements IPreferenceChangeListener,
                 if (!charset.equals(project.getDefaultCharset())) {
                     project.setDefaultCharset(charset, null);
                 }
-            } catch (final CoreException e) {
-                // ignore, we can't do anything about it
             }
+        } catch (final CoreException e) {
+            // ignore, we can't do anything about it
         }
     }
 
