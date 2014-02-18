@@ -21,9 +21,26 @@ string(String, Opts) when is_list(Opts) ->
 string(String, {L, C}, Opts) ->
     string(String, {L, C, 0}, Opts);
 string(String, {L, C, O}, Opts) ->
-    {ok, Tokens, {L1, C1}} = erl_scan:string(String, {L, C}, [text, return |Opts]),
-    {ok, NewTokens, O1} = convert_tokens(Tokens, O),
-    {ok, filter_tokens(NewTokens, Opts), {L1, C1, O1}}.
+    case string2(String, {L, C, O}, Opts) of
+        {ok, _, _}=R ->
+            R;
+        {error, {_, _, {_, Quote, _}}, _} ->
+            case string2(String++[Quote], {L, C, O}, Opts) of
+                {ok, _, _}=R1 ->
+                    R1;
+                _Err ->
+                    _Err
+            end
+    end.
+
+string2(String, {L, C, O}, Opts) ->
+    case erl_scan:string(String, {L, C}, [text, return |Opts]) of
+        {ok, Tokens, {L1, C1}} ->
+            {ok, NewTokens, O1} = convert_tokens(Tokens, O),
+            {ok, filter_tokens(NewTokens, Opts), {L1, C1, O1}};
+        _Err ->
+            _Err
+    end.
 
 reserved_word(Word) ->
     erl_scan:reserved_word(Word).
