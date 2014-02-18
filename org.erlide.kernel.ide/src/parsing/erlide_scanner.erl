@@ -26,7 +26,7 @@
 %% API Functions
 %%
 
--define(CACHE_VERSION, 24).
+-define(CACHE_VERSION, 25).
 
 light_scan_string(B, latin1) ->
     S = binary_to_list(B),

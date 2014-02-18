@@ -38,7 +38,7 @@ tokens_to_string(T) ->
     S.
 
 replace_text(Module, Offset, RemoveLength, NewText) ->
-    ?D({Offset, RemoveLength, NewText}),
+    ?D({Offset, RemoveLength, NewText, Module}),
     {Line, NOldLines, AffectedLines, NewLines} =
         replace_between_lines(Offset, RemoveLength, NewText, Module#module.lines),
     ?D({AffectedLines, NewLines}),

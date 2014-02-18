@@ -33,7 +33,7 @@
 -include("erlide_open.hrl").
 -include("erlide_token.hrl").
 
--define(CACHE_VERSION, 1).
+-define(CACHE_VERSION, 2).
 
 %%
 %% API Functions
@@ -207,11 +207,11 @@ consider_macro_def(_) ->
     false.
 
 consider_record_field_ref([#token{kind='{'}, #token{kind=atom, value=Record}, #token{kind='#'} | _]) ->
-	{true, Record};
+    {true, Record};
 consider_record_field_ref([_ | Rest]) ->
-	consider_record_field_ref(Rest);
+    consider_record_field_ref(Rest);
 consider_record_field_ref(_) ->
-	false.
+    false.
 
 %% TODO: rewrite this with some kind of table, and make it possible to
 %% add new items, e.g. gen_server calls
@@ -263,12 +263,12 @@ o_tokens([#token{kind=atom, value=Function}, #token{kind='('} | Rest],
             continue
     end;
 o_tokens([#token{kind=atom, value=Value} | _], _Offset, _, BeforeReversed) ->
-	case consider_record_field_ref(BeforeReversed) of
-		{true, Record} ->
-			throw({open, {field, Record, Value}});
-		false ->
-			no
-	end;
+    case consider_record_field_ref(BeforeReversed) of
+        {true, Record} ->
+            throw({open, {field, Record, Value}});
+        false ->
+            no
+    end;
 o_tokens([#token{kind=var, value=VarName} | _], _, _, BeforeReversed) ->
     case consider_macro_def(BeforeReversed) of
         true ->
