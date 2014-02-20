@@ -57,16 +57,6 @@ get_variables(Src, Prefix) ->
 %% Local Functions
 %%
 
-count(C, S) ->
-    count(C, S, 0).
-
-count(_C, "", N) ->
-    N;
-count(C, [C|T], N) ->
-    count(C, T, N+1);
-count(C, [_|T], N) ->
-    count(C, T, N).
-
 get_var_tokens(Tokens, Prefix) ->
     get_var_tokens(Tokens, Prefix, []).
 
