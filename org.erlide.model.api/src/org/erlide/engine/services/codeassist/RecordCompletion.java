@@ -25,6 +25,7 @@ public class RecordCompletion {
         kind = kindL.intValue();
         name = nameA.atomValue();
         prefix = prefixA.atomValue();
+        // TODO we probably need another way to signal this...
         if (prefix.endsWith("><")) {
             prefix = "'" + prefix.substring(0, prefix.length() - 2);
         } else if ("<>".equals(prefix)) {

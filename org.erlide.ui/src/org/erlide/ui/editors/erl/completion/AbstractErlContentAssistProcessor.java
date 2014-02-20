@@ -563,7 +563,9 @@ public abstract class AbstractErlContentAssistProcessor implements
     void addIfMatches(final String name, final String prefix, final int offset,
             final List<ICompletionProposal> result) {
         final int length = prefix.length();
-        if (name.regionMatches(true, 0, prefix, 0, length)) {
+        final String qname = name.startsWith("'") ? name.substring(1, name.length() - 2)
+                : name;
+        if (qname.regionMatches(true, 0, prefix, 0, length)) {
             result.add(new CompletionProposal(name, offset - length, length, name
                     .length()));
         }

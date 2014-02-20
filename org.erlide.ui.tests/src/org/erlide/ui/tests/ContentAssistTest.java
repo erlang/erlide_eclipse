@@ -44,6 +44,149 @@ import org.junit.Test;
 @SuppressWarnings("deprecation")
 public class ContentAssistTest {
 
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        ErlideTestUtils.initModulesAndIncludes();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        ErlideTestUtils.deleteModules();
+    }
+
+    @Test
+    public void moduleCompletionTest() throws Exception {
+        final String initialText = "a";
+        completionTestWithoutParsing(initialText, 4, "p", 3, "application:");
+    }
+
+    @Test
+    public void moduleCompletion1Test() throws Exception {
+        ErlideTestUtils.initProjects();
+        final String name1 = "testproject1";
+        final IErlProject project = ErlideTestUtils.createProject(
+                ErlideTestUtils.getTmpPath(name1), name1);
+        try {
+            completionTestWithParsing(project, "az.erl", "a", 1, -1, "alarm_handler:",
+                    false);
+            completionTestWithParsing(project, "a.erl", "a", 1, -1, "a:", false);
+        } finally {
+            ErlideTestUtils.deleteProjects();
+        }
+    }
+
+    @Test
+    public void moduleCompletion2Test() throws Exception {
+        ErlideTestUtils.initProjects();
+        final String name1 = "testproject1";
+        final IErlProject project = ErlideTestUtils.createProject(
+                ErlideTestUtils.getTmpPath(name1), name1);
+        try {
+            completionTestWithParsing(project, "a.erl", "'Cos", 4, 220,
+                    "'CosEventChannelAdmin_AlreadyConnected':", false);
+        } finally {
+            ErlideTestUtils.deleteProjects();
+        }
+    }
+
+    @Test
+    public void recordCompletionLettersTest() throws Exception {
+        final String initialText = "-record(aa, {a, b}).\n-record(ab, {a, b}).\n-record(bb, {a, b}).\nf() ->\n#";
+        completionTestWithoutParsing(initialText, 3, "a", 2, "aa");
+    }
+
+    @Test
+    public void recordCompletionSingleQuoteTest() throws Exception {
+        final String initialText = "-record('AA', {a, b}).\n-record('BB', {a, b}).\n-record(ab, {a, b}).\nf() ->\n#";
+        completionTestWithoutParsing(initialText, 3, "'", 2, "'AA'");
+    }
+
+    public void completionTestWithParsing(final IErlProject project, final String name,
+            final String text, final int offset, final int expectedNumber,
+            final String expectedText1, final boolean stringContentAssistProcessor)
+            throws CoreException {
+        final IDocument document = new StringDocument(text);
+        final IErlModule module = ErlideTestUtils.createModule(project, name, text);
+        module.open(null);
+        final MockSourceViewer sourceViewer = new MockSourceViewer(document, offset);
+        final IContentAssistProcessor p = stringContentAssistProcessor ? new ErlStringContentAssistProcessor(
+                sourceViewer, module, project, null) : new ErlContentAssistProcessor(
+                sourceViewer, module, project, null);
+        final ICompletionProposal[] completionProposals = p.computeCompletionProposals(
+                sourceViewer, offset);
+        if (expectedNumber > 0) {
+            Assert.assertEquals(expectedNumber, completionProposals.length);
+        }
+        final String displayString1 = completionProposals[0].getDisplayString();
+        Assert.assertEquals(expectedText1, displayString1);
+    }
+
+    // http://www.assembla.com/spaces/erlide/tickets/947
+    // completion of include and include_lib
+    @Test
+    public void includeCompletionTest() throws Exception {
+        ErlideTestUtils.initProjects();
+        final String name1 = "testproject1";
+        final IErlProject project = ErlideTestUtils.createProject(
+                ErlideTestUtils.getTmpPath(name1), name1);
+        try {
+            ErlideTestUtils.createInclude(project, "a.hrl", "-define(A, a).\n");
+            // check that quotes are added if needed
+            completionTestWithParsing(project, "a.erl", "-include().\n", 9, 1,
+                    "\"a.hrl\"", false);
+            // check that completion works in strings
+            completionTestWithParsing(project, "b.erl", "-include(\"\").\n", 10, 1,
+                    "a.hrl", true);
+        } finally {
+            ErlideTestUtils.deleteProjects();
+        }
+    }
+
+    private void completionTestWithoutParsing(final String initialText,
+            final int nTotalExpectedCompletions, final String completionChar,
+            final int nExpectedCompletions, final String expectedFirstCompletion) {
+        // http://www.assembla.com/spaces/erlide/tickets/593-completion--don-t-work-records-with-quoted-names-
+        final int offset = initialText.length();
+        IDocument document = new StringDocument(initialText);
+        final IErlModule module = ErlideTestUtils.createModuleFromText(initialText);
+        final ScannerService scanner = module.getScanner();
+        try {
+            final MockSourceViewer sourceViewer = new MockSourceViewer(document, offset);
+            final IContentAssistProcessor p = new ErlContentAssistProcessor(sourceViewer,
+                    module, null, null);
+            // null is ok above since we don't call setToPrefs
+
+            ICompletionProposal[] completionProposals = p.computeCompletionProposals(
+                    sourceViewer, offset);
+            for (final ICompletionProposal pp : completionProposals) {
+                System.out.println("# " + pp.getDisplayString());
+            }
+            Assert.assertEquals(nTotalExpectedCompletions, completionProposals.length);
+
+            document = new StringDocument(initialText + completionChar);
+            sourceViewer.setDocument(document);
+            sourceViewer.setOffset(offset + 1);
+
+            completionProposals = p.computeCompletionProposals(sourceViewer, offset + 1);
+            for (final ICompletionProposal pp : completionProposals) {
+                System.out.println("@ " + pp.getDisplayString());
+            }
+            Assert.assertEquals(nExpectedCompletions, completionProposals.length);
+            Assert.assertEquals(expectedFirstCompletion,
+                    completionProposals[0].getDisplayString());
+        } finally {
+            scanner.dispose();
+        }
+    }
+
     private static final class MockSourceViewer implements ISourceViewer {
         private IDocument document;
         private int offset;
@@ -312,101 +455,4 @@ public class ContentAssistTest {
         }
     }
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        ErlideTestUtils.initModulesAndIncludes();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        ErlideTestUtils.deleteModules();
-    }
-
-    @Test
-    public void recordCompletionLettersTest() throws Exception {
-        final String initialText = "-record(aa, {a, b}).\n-record(ab, {a, b}).\n-record(bb, {a, b}).\nf() ->\n#";
-        completionTestWithoutParsing(initialText, 3, "a", 2, "aa");
-    }
-
-    @Test
-    public void recordCompletionSingleQuoteTest() throws Exception {
-        final String initialText = "-record('AA', {a, b}).\n-record('BB', {a, b}).\n-record(ab, {a, b}).\nf() ->\n#";
-        completionTestWithoutParsing(initialText, 3, "'", 2, "'AA'");
-    }
-
-    public void completionTestWithParsing(final IErlProject project, final String name,
-            final String text, final int offset, final String expectedText1,
-            final boolean stringContentAssistProcessor) throws CoreException {
-        final IDocument document = new StringDocument(text);
-        final IErlModule module = ErlideTestUtils.createModule(project, name, text);
-        module.open(null);
-        final MockSourceViewer sourceViewer = new MockSourceViewer(document, offset);
-        final IContentAssistProcessor p = stringContentAssistProcessor ? new ErlStringContentAssistProcessor(
-                sourceViewer, module, project, null) : new ErlContentAssistProcessor(
-                sourceViewer, module, project, null);
-        final ICompletionProposal[] completionProposals = p.computeCompletionProposals(
-                sourceViewer, offset);
-        Assert.assertEquals(1, completionProposals.length);
-        final String displayString1 = completionProposals[0].getDisplayString();
-        Assert.assertEquals(expectedText1, displayString1);
-    }
-
-    // http://www.assembla.com/spaces/erlide/tickets/947
-    // completion of include and include_lib
-    @Test
-    public void includeCompletionTest() throws Exception {
-        ErlideTestUtils.initProjects();
-        final String name1 = "testproject1";
-        final IErlProject project = ErlideTestUtils.createProject(
-                ErlideTestUtils.getTmpPath(name1), name1);
-        try {
-            ErlideTestUtils.createInclude(project, "a.hrl", "-define(A, a).\n");
-            // check that quotes are added if needed
-            completionTestWithParsing(project, "a.erl", "-include().\n", 9, "\"a.hrl\"",
-                    false);
-            // check that completion works in strings
-            completionTestWithParsing(project, "b.erl", "-include(\"\").\n", 10, "a.hrl",
-                    true);
-        } finally {
-            ErlideTestUtils.deleteProjects();
-        }
-    }
-
-    private void completionTestWithoutParsing(final String initialText,
-            final int nTotalExpectedCompletions, final String completionChar,
-            final int nExpectedCompletions, final String expectedFirstCompletion) {
-        // http://www.assembla.com/spaces/erlide/tickets/593-completion--don-t-work-records-with-quoted-names-
-        final int offset = initialText.length();
-        IDocument document = new StringDocument(initialText);
-        final IErlModule module = ErlideTestUtils.createModuleFromText(initialText);
-        final ScannerService scanner = module.getScanner();
-        try {
-            final MockSourceViewer sourceViewer = new MockSourceViewer(document, offset);
-            final IContentAssistProcessor p = new ErlContentAssistProcessor(sourceViewer,
-                    module, null, null); // null is ok since we
-                                         // don't
-                                         // call
-                                         // setToPrefs
-            ICompletionProposal[] completionProposals = p.computeCompletionProposals(
-                    sourceViewer, offset);
-            Assert.assertEquals(nTotalExpectedCompletions, completionProposals.length);
-            document = new StringDocument(initialText + completionChar);
-            sourceViewer.setDocument(document);
-            sourceViewer.setOffset(offset + 1);
-            completionProposals = p.computeCompletionProposals(sourceViewer, offset + 1);
-            Assert.assertEquals(nExpectedCompletions, completionProposals.length);
-            Assert.assertEquals(expectedFirstCompletion,
-                    completionProposals[0].getDisplayString());
-        } finally {
-            scanner.dispose();
-        }
-    }
 }

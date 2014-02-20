@@ -35,15 +35,7 @@ check_record(S) ->
                 check_record_tokens(Tokens),
             {ok, {state_to_num(State), Name, Prefix, Fields}};
         _D ->
-            case erlide_scan:string(S++"><'") of
-                {ok, Tokens, _Pos} ->
-                    ?D(Tokens),
-                    {State, Name, Prefix, Fields} =
-                        check_record_tokens(Tokens),
-                    {ok, {state_to_num(State), Name, Prefix, Fields}};
-                _X ->
-                    none
-            end
+            none
     end.
 
 %% get list of variables matching prefix
@@ -135,6 +127,9 @@ check_record_tokens(_State, [#token{kind='}'} | Rest], _W, _R, _B, _Fields, _Pre
     Rest; %% either we've recursed, or we left the record, so this is safe
 check_record_tokens(_State, [#token{kind='#'} | Rest], W, _R, _B, _Fields, PrevR) -> % 1
     check_record_tokens(record_want_name, Rest, W, '', '<>', [], PrevR);
+check_record_tokens(record_want_name, [#token{kind=atom, value=''} | Rest], W, R, _B, Fields, _PrevR) -> % 2
+    ?D('><'),
+    check_record_tokens(record_name, Rest, W, '><', '><', Fields, R);
 check_record_tokens(record_want_name, [#token{kind=atom, value=V} | Rest], W, R, _B, Fields, _PrevR) -> % 2
     ?D(V),
     check_record_tokens(record_name, Rest, W, V, V, Fields, R);
