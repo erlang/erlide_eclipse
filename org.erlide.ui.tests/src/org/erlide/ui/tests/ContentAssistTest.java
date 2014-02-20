@@ -107,6 +107,7 @@ public class ContentAssistTest {
     public void recordCompletionSingleQuoteTest() throws Exception {
         final String initialText = "-record('AA', {a, b}).\n-record('BB', {a, b}).\n-record(ab, {a, b}).\nf() ->\n#";
         completionTestWithoutParsing(initialText, 3, "'", 2, "'AA'");
+        completionTestWithoutParsing(initialText + "'", 2, "A", 1, "'AA'");
     }
 
     public void completionTestWithParsing(final IErlProject project, final String name,

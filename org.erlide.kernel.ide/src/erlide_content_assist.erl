@@ -19,7 +19,7 @@
 %%
 %% Exported Functions
 %%
--export([get_variables/2, check_record/1, get_function_head/2, check_record_tokens/1, check_record_tokens/7]).
+-export([get_variables/2, check_record/1, get_function_head/2, check_record_tokens/1]).
 
 %%
 %% API Functions
@@ -30,7 +30,7 @@
 check_record(S) ->
     case (catch erlide_scan:string(S)) of
         {ok, Tokens, _Pos} ->
-            ?D(Tokens),
+            ?D({check_record, Tokens}),
             {State, Name, Prefix, Fields} =
                 check_record_tokens(Tokens),
             {ok, {state_to_num(State), Name, Prefix, Fields}};
@@ -56,6 +56,16 @@ get_variables(Src, Prefix) ->
 %%
 %% Local Functions
 %%
+
+count(C, S) ->
+    count(C, S, 0).
+
+count(_C, "", N) ->
+    N;
+count(C, [C|T], N) ->
+    count(C, T, N+1);
+count(C, [_|T], N) ->
+    count(C, T, N).
 
 get_var_tokens(Tokens, Prefix) ->
     get_var_tokens(Tokens, Prefix, []).
@@ -87,10 +97,12 @@ get_var_tokens([_ | Rest], Prefix, Acc) ->
 -define(RECORD_FIELD, 2).
 
 check_record_tokens(Tokens) ->
-    ?D(Tokens),
+    ?D({">>",Tokens}),
     case check_record_tokens(no_record, Tokens, false, '', '<>', [], '') of
-        L when is_list(L) -> check_record_tokens(L); % Shouldn't happen
-        {State, Name, Prefix, Fields} -> {State, Name, Prefix, Fields}
+        L when is_list(L) ->
+            check_record_tokens(L);
+        {State, Name, Prefix, Fields} ->
+            {State, Name, Prefix, Fields}
     end.
 
 state_to_num(record_want_name) -> ?RECORD_NAME;
@@ -139,7 +151,7 @@ check_record_tokens(record_want_name, [#token{kind=macro, value=V} | Rest], W, R
 check_record_tokens(record_want_name, [#token{kind='?'} | Rest], W, R, _B, _Fields, _PrevR) -> % 2
     ?D(Rest),
     check_record_tokens(record_name, Rest, W, '?', '?', [], R);
-check_record_tokens(record_name, [#token{kind=Dot} | Rest], W, _R, B, _Fields, PrevR) % 3
+check_record_tokens(record_name, [#token{kind=Dot} | Rest], W, _R, B, _Fields, PrevR) % 3
   when Dot=:='.'; Dot=:=dot ->
     check_record_tokens(record_want_dot_field, Rest, W, B, '<>', [], PrevR);
 check_record_tokens(record_want_dot_field, [#token{kind=atom, value=V} | Rest],

@@ -563,9 +563,14 @@ public abstract class AbstractErlContentAssistProcessor implements
     void addIfMatches(final String name, final String prefix, final int offset,
             final List<ICompletionProposal> result) {
         final int length = prefix.length();
-        final String qname = name.startsWith("'") ? name.substring(1, name.length() - 2)
-                : name;
-        if (qname.regionMatches(true, 0, prefix, 0, length)) {
+        final boolean hasQuote = name.startsWith("'");
+        final int qlength = hasQuote ? length - 2 : length;
+        final String qname = hasQuote ? name.substring(1, name.length() - 1) : name;
+        // System.out.println(">> " + hasQuote + " " + prefix + ":: " + name +
+        // "/" + length
+        // + " " + qname + "/" + qlength);
+        if (qname.regionMatches(!hasQuote, 0, prefix, 0, qlength)) {
+            // System.out.println("!");
             result.add(new CompletionProposal(name, offset - length, length, name
                     .length()));
         }
