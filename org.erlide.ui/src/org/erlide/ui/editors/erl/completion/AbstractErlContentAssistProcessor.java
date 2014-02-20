@@ -302,7 +302,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                     ErlLogger.debug("no results");
                     return getNoCompletion(offset);
                 }
-                ErlLogger.debug("%d results", result.size());
+                // ErlLogger.debug("%d results", result.size());
                 return result.toArray(new ICompletionProposal[result.size()]);
             } catch (final Exception e) {
                 ErlLogger.warn(e);
@@ -564,13 +564,7 @@ public abstract class AbstractErlContentAssistProcessor implements
             final List<ICompletionProposal> result) {
         final int length = prefix.length();
         final boolean hasQuote = name.startsWith("'");
-        final int qlength = hasQuote ? length - 2 : length;
-        final String qname = hasQuote ? name.substring(1, name.length() - 1) : name;
-        // System.out.println(">> " + hasQuote + " " + prefix + ":: " + name +
-        // "/" + length
-        // + " " + qname + "/" + qlength);
-        if (qname.regionMatches(!hasQuote, 0, prefix, 0, qlength)) {
-            // System.out.println("!");
+        if (name.regionMatches(hasQuote, 0, prefix, 0, length)) {
             result.add(new CompletionProposal(name, offset - length, length, name
                     .length()));
         }
