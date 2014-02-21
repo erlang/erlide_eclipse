@@ -106,7 +106,7 @@ convert_tokens([{dot, [{line,L}, {column,_O}, {text,Txt}]} | Rest], Ofs, Acc) ->
             convert_tokens(Rest, Ofs+length(Txt), [T1, T | Acc])
     end;
 convert_tokens([{What, [{line,L}, {column,_O}, {text,Txt}], _} | Rest], Ofs, Acc) when What==white_space; What==comment ->
-    T = #token{kind=What, line=L, offset=Ofs, length=length(Txt), text=list_to_binary(Txt)},
+    T = #token{kind=What, line=L, offset=Ofs, length=length(Txt), text=unicode:characters_to_binary(Txt)},
     convert_tokens(Rest, Ofs+length(Txt), [T | Acc]);
 convert_tokens([{What, [{line,L}, {column,_O}, {text,Txt}], Sym} | Rest], Ofs, Acc) ->
     T = #token{kind=What, line=L, offset=Ofs, length=length(Txt), text=Txt, value=Sym},

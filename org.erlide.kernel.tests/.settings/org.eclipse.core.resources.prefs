@@ -1,2 +1,4 @@
 eclipse.preferences.version=1
+encoding//data/test_unicode.erl=UTF-8
+encoding//src/erlide_scan_tests.erl=UTF-8
 encoding/<project>=ISO-8859-1

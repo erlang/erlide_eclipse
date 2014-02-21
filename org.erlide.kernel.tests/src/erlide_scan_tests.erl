@@ -1,3 +1,4 @@
+%% coding: utf-8
 %% Description: TODO: Add description to erlide_scanner_tests
 -module(erlide_scan_tests).
 
@@ -176,8 +177,24 @@ filter_test_() ->
     [
      ].
 
+unicode_test_() ->
+    [
+     ?_assertEqual({ok, [{token,char,0,0,9,$\x{0206},"$\\x{0206}",u,u}],{0,10,9}}, test_scan("$\\x{0206}")),
+     ?_assertEqual({ok,[{token,string,0,0,10,"\x{0206}","\"\\x{0206}\"",u,u}],{0,11,10}}, test_scan("\"\\x{0206}\"")),
+     ?_assertEqual({ok,[{token,char,0,0,2,$Ȇ,"$Ȇ",u,u}],{0,3,2}}, test_scan("$Ȇ")),
+     ?_assertEqual({ok,[{token,string,0,0,3,"Ȇ","\"Ȇ\"",u,u}],{0,4,3}}, test_scan("\"Ȇ\"")),
+     ?_assertEqual({ok,[{token,char,0,0,2,$生,"$生",u,u}],{0,3,2}}, test_scan("$生")),
+     ?_assertEqual({ok,[{token,string,0,0,3,"生","\"生\"",u,u}],{0,4,3}}, test_scan("\"生\"")),
+     ?_assertEqual({ok,[{token,comment,0,0,2,u,<<"%生"/utf8>>,u,u}],{0,3,2}}, test_scan("%生"))
+     ].
+
 test_scan(S) ->
-    test_scan(S, 0, 1, 0).
+    %%io:format("~s~n----------------~n", [S]),
+    %%io:format("~ts~n----------------~n", [S]),
+    R = test_scan(S, 0, 1, 0),
+    io:format("~p~n----------------~n", [R]),
+    R.
 
 test_scan(S, L, C, O) ->
     erlide_scan:string(S, {L, C, O}, [return]).
+

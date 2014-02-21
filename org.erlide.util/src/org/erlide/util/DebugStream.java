@@ -1,20 +1,29 @@
 package org.erlide.util;
 
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 
 /**
  * @author Jeeeyul 2011. 11. 1.
  */
 public final class DebugStream extends PrintStream {
-    private static final DebugStream INSTANCE = new DebugStream();
+    private static DebugStream INSTANCE;
 
     public static void activate() {
-        System.setOut(INSTANCE);
+        if (INSTANCE == null) {
+            try {
+                INSTANCE = new DebugStream();
+                System.setOut(INSTANCE);
+            } catch (final UnsupportedEncodingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 
-    private DebugStream() {
-        super(System.out);
+    private DebugStream() throws UnsupportedEncodingException {
+        super(System.out, true, "UTF-8");
     }
 
     @Override

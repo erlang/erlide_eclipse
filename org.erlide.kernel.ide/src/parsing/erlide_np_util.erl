@@ -121,7 +121,7 @@ compact_token(Token) ->
     Token.
 
 list_of_binaries(Args) when is_list(Args) ->
-    [iolist_to_binary(A) || A <- Args];
+    [unicode:characters_to_binary(A) || A <- Args];
 list_of_binaries(_) ->
     [].
 
@@ -133,12 +133,7 @@ compact_form(Other) ->
     Other.
 
 to_binary_with_unicode(Comment) when is_list(Comment) ->
-    try
-        iolist_to_binary(Comment)
-    catch
-        _:_ ->
-            unicode:characters_to_binary(Comment)
-    end;
+    unicode:characters_to_binary(Comment);
 to_binary_with_unicode(Other) ->
     Other.
 
