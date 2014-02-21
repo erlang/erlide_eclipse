@@ -1,7 +1,9 @@
 package org.erlide.engine.model.erlang;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
@@ -20,8 +22,8 @@ public class IErlFunctionClauseTests extends ErlModelTestBase2 {
         final String head3 = clauses.get(1).getHead();
         final String head4 = functionB.getHead();
         final String head5 = functionC.getHead();
-        assertNull(head);
-        assertEquals("(L) when is_list(L)", head2);
+        assertThat(head, is(nullValue()));
+        assertThat(head2, is("(L) when is_list(L)"));
         assertEquals("(A) when is_atom(A)", head3);
         assertEquals("", head4);
         assertEquals("(A, B, C)", head5);

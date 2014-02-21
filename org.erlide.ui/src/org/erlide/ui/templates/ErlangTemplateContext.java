@@ -47,8 +47,7 @@ public class ErlangTemplateContext extends DocumentTemplateContext {
     @Override
     public boolean canEvaluate(final Template template) {
         final String key = getKey();
-        return key.length() != 0
-                && template.getName().toLowerCase().startsWith(key.toLowerCase());
+        return key.length() != 0 && template.getName().startsWith(key);
     }
 
     private Template indentTemplatePattern(final Template template,

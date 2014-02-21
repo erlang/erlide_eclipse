@@ -26,7 +26,7 @@
 %% API Functions
 %%
 
--define(CACHE_VERSION, 24).
+-define(CACHE_VERSION, 25).
 
 light_scan_string(B, latin1) ->
     S = binary_to_list(B),
@@ -115,9 +115,9 @@ check_all(ScannerName, Text, GetTokens)
 %%
 
 do_light_scan(S) ->
-    case erlide_scan:string(S, {0, 0}) of
+    case erlide_scan:string(S, {0, 1}, [return]) of
         {ok, T, _} ->
-            {ok, fixup_tokens(T, [])};
+            {ok, convert_tokens(T)};
         {error, _, _} ->
             error
     end.
@@ -136,6 +136,7 @@ do_light_scan(S) ->
 -define(TOK_KEYWORD, 11).
 
 kind_small(ws) -> ?TOK_WS;
+kind_small(white_space) -> ?TOK_WS;
 kind_small(string) -> ?TOK_STR;
 kind_small(atom) -> ?TOK_ATOM;
 kind_small(var) -> ?TOK_VAR;
@@ -157,29 +158,10 @@ kind_small(Kind) when is_atom(Kind) ->
             end
     end.
 
-fixup_macro(L, O, G) ->
-    ?D({macro, L, O, G}),
-    <<?TOK_MACRO, L:24, O:24, (G+1):24>>.
-
-fixup_tokens([], Acc) ->
-    erlang:iolist_to_binary(Acc);
-fixup_tokens([{'?', {{L, _}, _}}=T1, {'?', {{L, _}, _}}=T2, T3 | Rest], Acc) ->
-    fixup_tokens(Rest, [Acc | [fixup_tokens([T1], []), fixup_tokens([T2], []),
-                               fixup_tokens([T3], [])]]);
-fixup_tokens([{'?', {{L, O}, _}}, {var, {{L, O1}, G}, _V} | Rest], Acc) when O1=:=O+1->
-    T = fixup_macro(L, O, G),
-    fixup_tokens(Rest, [Acc | T]);
-fixup_tokens([{'?', {{L, O}, _}}, {atom, {{L, O1}, G}, _V, _Txt} | Rest], Acc) when O1=:=O+1->
-    T = fixup_macro(L, O, G),
-    fixup_tokens(Rest, [Acc | T]);
-fixup_tokens([{'?', {{L, O}, _}}, {atom, {{L, O1}, G}, _V} | Rest], Acc) when O1=:=O+1->
-    T = fixup_macro(L, O, G),
-    fixup_tokens(Rest, [Acc | T]);
-fixup_tokens([{Kind, {{L, O}, G}} | Rest], Acc) ->
-    fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]);
-fixup_tokens([{Kind, {{L, O}, G}, _A} | Rest], Acc) ->
-    fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]);
-fixup_tokens([{Kind, {{L, O}, G}, _A, _B} | Rest], Acc) ->
-    fixup_tokens(Rest, [Acc | <<(kind_small(Kind)), L:24, O:24, G:24>>]).
-
+convert_tokens(Tokens) ->
+    Fun = fun(#token{kind=Kind, line=L, offset=O, text=Txt}) ->
+                  G = case is_list(Txt) of true -> length(Txt); _ -> byte_size(Txt) end,
+                  <<(kind_small(Kind)), L:24, O:24, G:24>>
+          end,
+    erlang:iolist_to_binary([Fun(X) || X <- Tokens]).
 

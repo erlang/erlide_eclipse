@@ -45,10 +45,10 @@ public class ErlideContextAssist implements ContextAssistService {
 
     @Override
     public RecordCompletion checkRecordCompletion(final IRpcSite buildBackend,
-            final String substring) {
+            final String prefix) {
         try {
             final OtpErlangObject res = buildBackend.call(
-                    "erlide_content_assist", "check_record", "s", substring);
+                    "erlide_content_assist", "check_record", "s", prefix);
             if (Util.isOk(res)) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangTuple r = (OtpErlangTuple) t.elementAt(1);

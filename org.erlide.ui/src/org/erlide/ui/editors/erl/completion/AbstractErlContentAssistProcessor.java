@@ -302,7 +302,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                     ErlLogger.debug("no results");
                     return getNoCompletion(offset);
                 }
-                ErlLogger.debug("%d results", result.size());
+                // ErlLogger.debug("%d results", result.size());
                 return result.toArray(new ICompletionProposal[result.size()]);
             } catch (final Exception e) {
                 ErlLogger.warn(e);
@@ -563,7 +563,8 @@ public abstract class AbstractErlContentAssistProcessor implements
     void addIfMatches(final String name, final String prefix, final int offset,
             final List<ICompletionProposal> result) {
         final int length = prefix.length();
-        if (name.regionMatches(true, 0, prefix, 0, length)) {
+        final boolean hasQuote = name.startsWith("'");
+        if (name.regionMatches(hasQuote, 0, prefix, 0, length)) {
             result.add(new CompletionProposal(name, offset - length, length, name
                     .length()));
         }

@@ -244,12 +244,12 @@ indent_catch_with_guards_test_() ->
 indent_newline_char_test_() ->
     S = "" ++
             "a()->\n"++
-            "foo(x, $\n, y),\n"++
+            "foo(x, $\\n, y),\n"++
             "boo(),\n" ++
             "ok.\n",
     I = "" ++
             "a()->\n"++
-            "    foo(x, $\n, y),\n"++
+            "    foo(x, $\\n, y),\n"++
             "    boo(),\n" ++
             "    ok.\n",
     ?Test_indent(I, S).

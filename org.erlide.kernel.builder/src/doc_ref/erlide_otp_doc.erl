@@ -43,12 +43,19 @@ get_modules(Prefix, Modules, modules) ->
     LoadedModules = [atom_to_list(I) || {I, _} <- code:all_loaded()],
     get_modules(Prefix, Modules ++ LoadedModules).
 
+get_modules([C|_]=Prefix, Modules) when C>=$A, C=<$Z ->
+    get_modules("'"++Prefix, Modules);
 get_modules(Prefix, Modules) when is_list(Prefix), is_list(Modules) ->
-    L = [I || I <- Modules, lists:prefix(Prefix, I)],
+    L = [strip_quotes(I) || I <- Modules, lists:prefix(Prefix, I)],
     lists:usort(L).
 
 find_tags(L, Fun) ->
     lists:filter(Fun, L).
+
+strip_quotes("'"++Rest) ->
+    string:sub_string(Rest, 1, length(Rest)-1);
+strip_quotes(S) ->
+    S.
 
 %% return true for tags which is either <div> or <a name=...>
 %% (used for extracting those with recu_find_tags in extract_from_file)

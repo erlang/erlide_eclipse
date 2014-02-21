@@ -20,7 +20,7 @@
 
 %% -define(DEBUG, 1).
 
--define(CACHE_VERSION, 30).
+-define(CACHE_VERSION, 31).
 -define(SERVER, erlide_noparse).
 
 -include("erlide.hrl").
