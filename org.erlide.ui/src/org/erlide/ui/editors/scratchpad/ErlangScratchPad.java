@@ -171,8 +171,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements ISaveableP
 
     @Override
     public void reconcileNow() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override

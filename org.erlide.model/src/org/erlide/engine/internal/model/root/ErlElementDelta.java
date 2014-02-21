@@ -249,7 +249,6 @@ public class ErlElementDelta implements IErlElementDelta {
                     // precedence over this existing child delta
                     // as non-erlang resource deltas are always
                     // created last (by the DeltaProcessor)
-                    // FIXME JC: which means??
                     ((ErlElementDelta) existingChild).fResourceDeltas = child.fResourceDeltas;
                     return;
                 }

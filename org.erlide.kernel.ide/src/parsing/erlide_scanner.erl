@@ -70,7 +70,6 @@ addref(ScannerName) when is_atom(ScannerName) ->
     erlide_scanner_server:server_cmd(ScannerName, addref).
 
 dispose(ScannerName) when is_atom(ScannerName) ->
-    %% TODO move this from here?
     erlide_search_server:remove_module(ScannerName),
     erlide_scanner_server:server_cmd(ScannerName, dispose).
 

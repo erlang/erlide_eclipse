@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -40,7 +40,6 @@ public class RenameProcessRefactoring extends ProcessRelatedRefactoring {
                 return new RefactoringStatus();
             }
         }
-        // TODO: testing
         return RefactoringStatus.createFatalErrorStatus("Please select a process!");
     }
 

@@ -56,7 +56,6 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
             runtimeInfo = BackendCore.getRuntimeInfoCatalog().getDefaultRuntime();
         }
         if (runtimeInfo == null) {
-            // TODO what to do here?
             ErlLogger.error("Can't create backend without a runtime defined!");
             return;
         }

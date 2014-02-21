@@ -236,7 +236,6 @@ public class ErlideOpen implements OpenService {
 
     @Override
     public List<List<String>> getLibSrcInclude(final List<String> libList) {
-        // TODO Auto-generated method stub
         return null;
     }
 

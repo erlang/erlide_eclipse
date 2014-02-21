@@ -112,7 +112,6 @@ get_dirs([Dir | Rest], Base, Acc) ->
 
 get_lib_files(Dir) ->
     case file:list_dir(Dir) of
-        %% TODO should we filter for erlang source-files here?
         {ok, SrcFiles} ->
             Files = [filename:join(Dir, SrcFile) || SrcFile <- SrcFiles],
             {ok, lists:filter(fun(F) -> filelib:is_regular(F) end, Files)};

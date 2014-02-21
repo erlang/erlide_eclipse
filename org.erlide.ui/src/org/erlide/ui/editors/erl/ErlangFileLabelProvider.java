@@ -52,12 +52,10 @@ public class ErlangFileLabelProvider extends LabelProvider implements
 
     @Override
     public void addListener(final ILabelProviderListener listener) {
-        // TODO Auto-generated method stub
     }
 
     @Override
     public void removeListener(final ILabelProviderListener listener) {
-        // TODO Auto-generated method stub
     }
 
     @Override

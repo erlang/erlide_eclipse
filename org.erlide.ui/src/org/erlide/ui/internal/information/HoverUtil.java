@@ -64,12 +64,10 @@ public class HoverUtil {
     }
 
     public static URL getBaseDocumentationURL(final IErlElement element) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public static URL getDocumentationLocation(final IErlElement element) {
-        // TODO Auto-generated method stub
         return null;
     }
 
