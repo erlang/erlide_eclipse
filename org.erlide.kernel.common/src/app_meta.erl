@@ -13,7 +13,7 @@
 
 -include("app_meta.hrl").
 
-%%FIXME inlined #meta in #app_meta, code probably broken now
+%%FIX_ME inlined #meta in #app_meta, code probably broken now
 
 -spec read(string()) -> #app_meta{}.
 read(Path) ->

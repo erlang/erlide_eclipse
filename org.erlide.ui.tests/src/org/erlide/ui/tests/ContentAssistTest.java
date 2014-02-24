@@ -144,10 +144,6 @@ public class ContentAssistTest {
                     Lists.newArrayList("'AA'", "'B'", "ab"), false);
             completionTest(project, "a2.erl", initialText, len - 1,
                     Lists.newArrayList("'AA'", "'B'"), false);
-
-            // FIXME it looks like the name matching looks 2 characters to the
-            // right
-
             completionTest(project, "a3.erl", initialText, len,
                     Lists.newArrayList("'AA'"), false);
         } finally {

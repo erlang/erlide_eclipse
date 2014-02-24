@@ -62,17 +62,6 @@ public class ErlFolder extends Openable implements IErlFolder {
     }
 
     @Override
-    protected void closing(final Object info) throws ErlModelException {
-        // FIXME general stuff, move to model or manager
-        for (final IErlElement e : getChildren()) {
-            if (e instanceof ErlElement) {
-                final ErlElement ee = (ErlElement) e;
-                ee.closing(info);
-            }
-        }
-    }
-
-    @Override
     public Collection<IErlModule> getModules() throws ErlModelException {
         final List<IErlModule> result = new ArrayList<IErlModule>();
         addModules(result);
