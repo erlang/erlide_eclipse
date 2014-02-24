@@ -38,11 +38,12 @@ import com.google.common.collect.Maps;
 
 public final class MarkerUtils {
 
-    private static final String FIXME = "FIXME";
-    private static final String XXX = "XXX";
-    private static final String TODO = "TODO";
-    private static final String TODO_XXX_FIXME_PATTERN = "^[^%]*%+[ \t]*(" + TODO + "|"
-            + XXX + "|" + FIXME + ").*";
+    // do this to keep them from being detected as real tasks by Jenkins plugin
+    private static final String FIXME_TAG = "F" + "IXME";
+    private static final String XXX_TAG = "X" + "XX";
+    private static final String TODO_TAG = "T" + "ODO";
+    private static final String TODO_XXX_FIXME_PATTERN = "^[^%]*%+[ \t]*(" + TODO_TAG
+            + "|" + XXX_TAG + "|" + FIXME_TAG + ").*";
     // Copied from org.eclipse.ui.ide (since we don't want ui code in core)
     public static final String PATH_ATTRIBUTE = "org.eclipse.ui.views.markers.path";//$NON-NLS-1$
 
@@ -355,11 +356,11 @@ public final class MarkerUtils {
                 }
 
                 for (final Pair<String, Integer> c : cl) {
-                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(), TODO,
+                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(), TODO_TAG,
                             IMarker.PRIORITY_NORMAL);
-                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(), XXX,
+                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(), XXX_TAG,
                             IMarker.PRIORITY_NORMAL);
-                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(), FIXME,
+                    createTaskMarkerAtText(resource, c.getValue(), c.getKey(), FIXME_TAG,
                             IMarker.PRIORITY_HIGH);
                 }
             } finally {

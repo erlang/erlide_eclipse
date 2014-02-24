@@ -16,7 +16,6 @@ public final class DebugStream extends PrintStream {
                 INSTANCE = new DebugStream();
                 System.setOut(INSTANCE);
             } catch (final UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
