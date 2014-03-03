@@ -70,7 +70,7 @@ public class DebuggerEventDaemon implements IBackendListener {
                     if (myBackend.isRunning()) {
                         // backend crashed -- restart?
                         // also when it was closed... how do we tell difference?
-                        ErlLogger.warn(e);
+                        // ErlLogger.warn(e);
                     }
                 } catch (final Exception e) {
                     ErlLogger.warn(e);
