@@ -48,18 +48,17 @@ cac_form(_, _D, _E, _I) ->
 -define(ARI_INCLUDE, -6).
 -define(ARI_RECORD_FIELD_DEF, -7).
 
-get_type_attribute(Kind, Name0, Offset, Line, Attribute, Args) ->
-    Name = case Kind of 'spec' -> Kind; _ -> Name0 end,
+get_type_attribute(Name, Offset, Line, Attribute, Args) ->
     #token{line=LastLine, offset=LastOffset,
            length=LastLength} = last_not_eof(Attribute),
     PosLength = LastOffset - Offset + LastLength,
     ?D(Args),
     Extra = to_string(Args),
     ?D(Extra),
-    {AttrArgs, _, _} = get_attribute_args(Kind, Args, Args),
+    {AttrArgs, _, _} = get_attribute_args(Name, Args, Args),
     ?D({AttrArgs, Extra}),
     ExternalRefs = get_refs(tl(AttrArgs), Extra, ?ARI_TYPESPEC),
-    Arity = case Kind of
+    Arity = case Name of
                 'spec' ->
                     erlide_text:guess_arity(Args);
                 _ ->
@@ -88,11 +87,10 @@ get_function(Tokens, Exports, Imports) ->
     {Function, fix_code_refs(ClausesAndRefs, Function, Imports), [], []}.
 
 get_attribute([#token{kind='-', offset=Offset, line=Line},
-               #token{kind=Kind, line=_Line, offset=_Offset, value=Name} | Args] = Attribute)
-  when (Kind=:='spec') or ((Kind=:=atom) and (Name=:='type'))
-           or ((Kind=:=atom) and (Name=:='opaque'))->
+               #token{kind=atom, line=_Line, offset=_Offset, value=Name} | Args] = Attribute)
+  when (Name=:='type') or (Name=:='spec') or (Name=:='opaque') ->
     %% -spec, -type or -opaque
-    get_type_attribute(Kind, Name, Offset, Line, Attribute, Args);
+    get_type_attribute(Name, Offset, Line, Attribute, Args);
 get_attribute([#token{kind='-', offset=Offset, line=Line},
                #token{kind=atom, value=Name, line=_Line, offset=_Offset},
                _, #token{value=Args} | _] = Attribute) ->
@@ -142,10 +140,6 @@ check_class([#token{kind = AtomOrMacro}, #token{kind = '('} | _])
   when AtomOrMacro=:=atom; AtomOrMacro=:=macro ->
     function;
 check_class([#token{kind = '-'}, #token{kind = atom} | _]) ->
-    attribute;
-check_class([#token{kind = '-'}, #token{kind = 'spec'} | _]) ->
-    attribute;
-check_class([#token{kind = '-'}, #token{kind = 'type'} | _]) ->
     attribute;
 check_class(_X) ->
     %?D(lists:sublist(_X, 5)),
@@ -274,7 +268,7 @@ get_clauses([C | Rest], Acc) ->
 get_clause([#token{kind=AtomOrMacro, value=Name, line=Line, offset=Offset, length=Length} | Rest])
   when AtomOrMacro=:=atom; AtomOrMacro=:=macro ->
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
-    PosLength = LastOffset - Offset + LastLength+1,
+    PosLength = LastOffset - Offset + LastLength,
     ExternalRefs = get_refs_in_code(Rest),
     {#clause{pos={{Line, LastLine, Offset}, PosLength}, name_pos={{Line, Offset}, Length},
              name=Name, args=get_function_args(Rest), head=get_head(Rest)},

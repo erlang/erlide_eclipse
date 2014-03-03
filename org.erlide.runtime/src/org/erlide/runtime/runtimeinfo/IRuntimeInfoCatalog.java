@@ -7,7 +7,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 public interface IRuntimeInfoCatalog {
 
-    RuntimeVersion OLDEST_SUPPORTED_VERSION = new RuntimeVersion(14);
+    RuntimeVersion OLDEST_SUPPORTED_VERSION = new RuntimeVersion(15);
 
     Collection<RuntimeInfo> getRuntimes();
 

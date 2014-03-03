@@ -112,6 +112,7 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public boolean internalBuildStructure(final IProgressMonitor pm) {
+        setChildren(null);
         final String text = getInitialText();
         if (text != null) {
             final ParserService parser = ErlangEngine.getInstance()
@@ -120,7 +121,6 @@ public class ErlModule extends Openable implements IErlModule {
                     text, true);
             return parsed;
         }
-        setChildren(null);
         return true;
     }
 

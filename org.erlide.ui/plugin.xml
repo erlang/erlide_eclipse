@@ -1642,11 +1642,8 @@
           modes="run,debug">
         <contextualLaunch>
             <enablement>
-               <with
-                     variable="selection">
-                  <iterate
-                        ifEmpty="false"
-                        operator="and">
+               <with variable="selection">
+                  <iterate>
                      <adapt
                            type="org.erlide.engine.model.root.IErlElement">
                      </adapt>
@@ -1657,6 +1654,14 @@
         <configurationType
               id="org.erlide.backend.erlangProcess">
         </configurationType>
+        <description
+              description="Load this project in an Erlang node, starting it if needed."
+              mode="run">
+        </description>
+        <description
+              description="Load and debug this project in an Erlang node, starting it if needed."
+              mode="debug">
+        </description>
     </shortcut>
  </extension>
     <extension
@@ -1947,4 +1952,10 @@
             file-extensions="erlScratchPad">
       </file-association>
    </extension>
+<extension point="org.eclipse.core.runtime.adapters">
+  <factory class="org.eclipse.core.runtime.IAdaptable"
+           adaptableType="org.eclipse.core.resources.IResource">
+     <adapter type="org.eclipse.debug.ui.actions.ILaunchable"/>
+  </factory>
+</extension>
 </plugin>

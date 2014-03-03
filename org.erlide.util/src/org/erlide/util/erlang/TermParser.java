@@ -21,6 +21,7 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
+import com.ericsson.otp.erlang.OtpErlangMap;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -92,6 +93,9 @@ public class TermParser {
             break;
         case LISTEND:
             throw new TermParserException("unexpected " + t.toString());
+        case MAP:
+            result = parseMap(tokens, new Stack<OtpErlangObject>());
+            break;
         case COMMA:
             throw new TermParserException("unexpected " + t.toString());
         default:
@@ -151,8 +155,38 @@ public class TermParser {
         return parseTuple(tokens, stack);
     }
 
+    private static OtpErlangObject parseMap(final List<Token> tokens,
+            final Stack<OtpErlangObject> stack) throws TermParserException {
+        if (tokens.isEmpty()) {
+            return null;
+        }
+        final Token t = tokens.get(0);
+        if (t.kind == TokenKind.TUPLEEND) {
+            tokens.remove(0);
+            final int size = stack.size();
+            final OtpErlangObject[] all = stack.toArray(new OtpErlangObject[size]);
+            final OtpErlangObject[] keys = new OtpErlangObject[size / 2];
+            final OtpErlangObject[] values = new OtpErlangObject[size / 2];
+            for (int i = 0; i < size / 2; i++) {
+                keys[i] = all[i * 2];
+                values[i] = all[i * 2 + 1];
+            }
+            return new OtpErlangMap(keys, values);
+        }
+        stack.push(parse(tokens));
+        if (tokens.get(0).kind != TokenKind.ARROW) {
+            throw new TermParserException("badly constructed map");
+        }
+        tokens.remove(0);
+        stack.push(parse(tokens));
+        if (tokens.get(0).kind == TokenKind.COMMA) {
+            tokens.remove(0);
+        }
+        return parseMap(tokens, stack);
+    }
+
     private static enum TokenKind {
-        ATOM, VARIABLE, STRING, INTEGER, PLACEHOLDER, TUPLESTART, TUPLEEND, LISTSTART, LISTEND, COMMA, CONS, UNKNOWN;
+        ATOM, VARIABLE, STRING, INTEGER, PLACEHOLDER, TUPLESTART, TUPLEEND, LISTSTART, LISTEND, COMMA, CONS, MAP, ARROW, UNKNOWN;
     }
 
     private static class Token {
@@ -214,6 +248,12 @@ public class TermParser {
             } else if (c == '|') {
                 result.kind = TokenKind.CONS;
                 result.end = result.start + 1;
+            } else if (c == '#' && s.charAt(i + 1) == '{') {
+                result.kind = TokenKind.MAP;
+                result.end = result.start + 2;
+            } else if (c == '=' && s.charAt(i + 1) == '>') {
+                result.kind = TokenKind.ARROW;
+                result.end = result.start + 2;
             } else {
                 result.kind = TokenKind.UNKNOWN;
                 result.end = result.start + 1;

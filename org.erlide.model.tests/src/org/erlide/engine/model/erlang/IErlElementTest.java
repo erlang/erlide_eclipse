@@ -193,7 +193,6 @@ public class IErlElementTest extends ErlModelTestBase {
         // this sets structureKnown to false
 
         final boolean structureKnown = project.isStructureKnown();
-        // FIXME shouldn't open below be enough?
         project.open(null);
         final boolean structureKnown2 = project.isStructureKnown();
         final boolean structureKnown3 = module.isStructureKnown();

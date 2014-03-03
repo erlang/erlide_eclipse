@@ -269,7 +269,7 @@ public class ErlangProjectProperties {
         }
       };
       final Objects.ToStringHelper helper = ObjectExtensions.<Objects.ToStringHelper>operator_doubleArrow(_stringHelper, _function);
-      _xblockexpression = (helper.toString());
+      _xblockexpression = helper.toString();
     }
     return _xblockexpression;
   }

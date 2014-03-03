@@ -102,10 +102,10 @@ public class ErlangContentDescriber implements ITextContentDescriber {
         }
         final String charset = (String) properties.get(CHARSET);
         if (description.isRequested(IContentDescription.CHARSET)) {
-            if (charset != null && !isCharsetValid(charset)) {
-                return INVALID;
-            }
             if (charset != null) {
+                if (!isCharsetValid(charset)) {
+                    return INVALID;
+                }
                 description.setProperty(IContentDescription.CHARSET, charset);
             }
         }

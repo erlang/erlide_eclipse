@@ -800,7 +800,6 @@ public class ErlProject extends Openable implements IErlProject,
         return getConfigType().matchTool(builderProperties.getBuilderTool());
     }
 
-    @Override
     public BuilderProperties getBuilderProperties() {
         if (builderProperties == null) {
             loadBuilderProperties();

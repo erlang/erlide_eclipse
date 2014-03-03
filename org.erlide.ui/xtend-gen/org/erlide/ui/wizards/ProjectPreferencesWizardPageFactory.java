@@ -32,10 +32,10 @@ public class ProjectPreferencesWizardPageFactory {
       ProjectPreferencesWizardPage _xblockexpression = null;
       {
         final Class<? extends ProjectPreferencesWizardPage> clazz = ProjectPreferencesWizardPageFactory.PAGES.get(builder);
-        Constructor<? extends Object>[] _constructors = clazz.getConstructors();
-        Constructor<? extends Object> _get = _constructors[0];
+        Constructor<?>[] _constructors = clazz.getConstructors();
+        Constructor<?> _get = _constructors[0];
         Object _newInstance = _get.newInstance("buildPage", info);
-        _xblockexpression = (((ProjectPreferencesWizardPage) _newInstance));
+        _xblockexpression = ((ProjectPreferencesWizardPage) _newInstance);
       }
       return _xblockexpression;
     } catch (Throwable _e) {

@@ -118,7 +118,7 @@ public class ErlangNature implements IProjectNature {
       if (_tripleNotEquals_2) {
         return BuilderTool.REBAR;
       }
-      _xblockexpression = (BuilderTool.INTERNAL);
+      _xblockexpression = BuilderTool.INTERNAL;
     }
     return _xblockexpression;
   }
@@ -143,7 +143,7 @@ public class ErlangNature implements IProjectNature {
       if (_tripleNotEquals_1) {
         return ProjectConfigType.REBAR;
       }
-      _xblockexpression = (ProjectConfigType.INTERNAL);
+      _xblockexpression = ProjectConfigType.INTERNAL;
     }
     return _xblockexpression;
   }

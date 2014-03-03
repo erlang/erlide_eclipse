@@ -219,10 +219,15 @@ public class ModelInternalUtils implements ModelUtilService {
             if (external && includes) {
                 moduleName = getIncludeLibPath(module);
             }
-            if (moduleName.startsWith(prefix)
-                    && (includes || !module.getName().endsWith(".hrl"))) {
+            boolean nameMatches = moduleName.startsWith(prefix);
+            if (!nameMatches && prefix.startsWith("'")) {
+                nameMatches = moduleName.startsWith(prefix.substring(1));
+            }
+            if (nameMatches && (includes || !module.getName().endsWith(".hrl"))) {
                 if (!result.contains(moduleName)) {
-                    result.add(moduleName);
+                    final String name = new OtpErlangAtom(moduleName)
+                            .toString();
+                    result.add(name);
                 }
             }
         }

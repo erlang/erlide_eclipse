@@ -29,7 +29,7 @@ public class RebarBuilder extends ExternalBuilder {
     {
       final IProject[] result = super.build(kind, args, monitor);
       this.checkIfProjectHasAppFile();
-      _xblockexpression = (result);
+      _xblockexpression = result;
     }
     return _xblockexpression;
   }
@@ -65,7 +65,7 @@ public class RebarBuilder extends ExternalBuilder {
                 RebarBuilder.this.foundAppSrc = true;
               }
             }
-            _xblockexpression = ((!RebarBuilder.this.foundAppSrc));
+            _xblockexpression = (!RebarBuilder.this.foundAppSrc);
           }
           return _xblockexpression;
         }
@@ -78,7 +78,7 @@ public class RebarBuilder extends ExternalBuilder {
         _xifexpression = MarkerUtils.addMarker(_project_1, _project_2, null, "No .app.src file found, can\'t compile with rebar", (-1), 
           IMarker.SEVERITY_WARNING, MarkerUtils.PROBLEM_MARKER);
       }
-      _xblockexpression = (_xifexpression);
+      _xblockexpression = _xifexpression;
     }
     return _xblockexpression;
   }

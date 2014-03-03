@@ -53,7 +53,7 @@ public class EmakeBuilder extends ExternalBuilder {
       } else {
         _xifexpression = path.toPortableString();
       }
-      _xblockexpression = (_xifexpression);
+      _xblockexpression = _xifexpression;
     }
     return _xblockexpression;
   }

@@ -71,7 +71,6 @@ public class RpcFutureImpl implements IRpcFuture {
 
     @Override
     public void addListener(final Runnable listener, final Executor executor) {
-        // TODO Auto-generated method stub
     }
 
     @Override

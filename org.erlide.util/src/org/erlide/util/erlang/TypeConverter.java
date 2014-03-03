@@ -30,12 +30,14 @@ import com.ericsson.otp.erlang.OtpErlangFloat;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
+import com.ericsson.otp.erlang.OtpErlangMap;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpErlangShort;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Maps;
 
 /**
  * Helps converting Java values to Erlang terms, and back. The type information
@@ -59,6 +61,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * <dd>reference</dd>
  * <dt>j</dt>
  * <dd>java reference (a distinguished reference, to be used with e->j rpcs)</dd>
+ * <dt>m</dt>
+ * <dd>map</dd>
  * <dt>l*</dt>
  * <dd>list, the next type descriptor specifies the items' type</dd>
  * <dt>f</dt>
@@ -115,6 +119,9 @@ public final class TypeConverter {
         }
         if (Collection.class.isAssignableFrom(obj)) {
             return OtpErlangList.class;
+        }
+        if (Map.class.isAssignableFrom(obj)) {
+            return OtpErlangMap.class;
         }
         if (obj == Integer.TYPE) {
             return OtpErlangLong.class;
@@ -207,8 +214,28 @@ public final class TypeConverter {
                 throw new SignatureException(WRONG_ARG_TYPE + obj.getClass().getName()
                         + CANT_CONVERT_TO + cls.getCanonicalName());
             }
+            if (Map.class.isAssignableFrom(cls)) {
+                if (obj instanceof OtpErlangMap) {
+
+                    // TODO we need right classes for keys and values
+
+                    final Map<Object, Object> result = Maps.newHashMap();
+                    final OtpErlangMap map = (OtpErlangMap) obj;
+                    for (final OtpErlangObject key : map.keys()) {
+                        final OtpErlangObject value = map.get(key);
+                        result.put(erlang2java(key, key.getClass()),
+                                erlang2java(value, value.getClass()));
+                    }
+                    return result;
+                }
+                throw new SignatureException(WRONG_ARG_TYPE + obj.getClass().getName()
+                        + CANT_CONVERT_TO + cls.getCanonicalName());
+            }
             if (Collection.class.isAssignableFrom(cls)) {
                 if (obj instanceof OtpErlangList) {
+
+                    // TODO we need right class for elements
+
                     final OtpErlangObject[] list = ((OtpErlangList) obj).elements();
                     final Object[] olist = new Object[list.length];
                     for (int i = 0; i < list.length; i++) {
@@ -351,6 +378,21 @@ public final class TypeConverter {
         }
         if (obj instanceof OtpErlangBinary) {
             return (OtpErlangObject) obj;
+        }
+        if (obj instanceof Map<?, ?>) {
+            if (type.kind == 'm') {
+                @SuppressWarnings("unchecked")
+                final Map<OtpErlangObject, OtpErlangObject> map = (Map<OtpErlangObject, OtpErlangObject>) obj;
+                final int size = map.keySet().size();
+                final OtpErlangObject[] keys = map.keySet().toArray(
+                        new OtpErlangObject[size]);
+                final OtpErlangObject[] values = new OtpErlangObject[size];
+                for (int i = 0; i < size; i++) {
+                    values[i] = map.get(keys[i]);
+                }
+                return new OtpErlangMap(keys, values);
+            }
+            failConversion(obj, type);
         }
         if (obj instanceof OtpErlangObject) {
             checkConversion(obj);
@@ -510,6 +552,18 @@ public final class TypeConverter {
                 vv[i] = java2erlang(v[i]);
             }
             return new OtpErlangList(vv);
+        }
+        if (obj instanceof Map<?, ?>) {
+            @SuppressWarnings("unchecked")
+            final Map<Object, Object> map = (Map<Object, Object>) obj;
+            final Object[] k = map.keySet().toArray(new Object[map.keySet().size()]);
+            final OtpErlangObject[] kk = new OtpErlangObject[k.length];
+            final OtpErlangObject[] vv = new OtpErlangObject[k.length];
+            for (int i = 0; i < k.length; i++) {
+                kk[i] = java2erlang(k[i]);
+                vv[i] = java2erlang(map.get(k[i]));
+            }
+            return new OtpErlangMap(kk, vv);
         }
 
         if (obj instanceof OtpErlangPid) {

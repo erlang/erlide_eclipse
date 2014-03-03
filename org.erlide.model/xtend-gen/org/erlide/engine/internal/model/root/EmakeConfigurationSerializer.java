@@ -85,7 +85,7 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
         }
       };
       IterableExtensions.<OtpErlangObject>forEach(content, _function);
-      _xblockexpression = (result);
+      _xblockexpression = result;
     }
     return _xblockexpression;
   }

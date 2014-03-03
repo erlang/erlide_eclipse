@@ -318,8 +318,11 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
     @Override
     protected ItemsFilter createFilter() {
-        return new ModuleFilter(container, typeMask, allowHrl);
+        return new ModuleFilter(container, typeMask, allowHrl,
+                new MatchAnySearchPattern());
     }
+
+    private String patternText;
 
     @Override
     protected Comparator<Object> getItemsComparator() {
@@ -337,7 +340,6 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
                     fCollator = collator;
                 }
             }
-
             fComparator = new Comparator<Object>() {
 
                 @Override
@@ -346,8 +348,16 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
                             .getName() : (String) o1;
                     final String s2 = o2 instanceof IResource ? ((IResource) o2)
                             .getName() : (String) o2;
-                    final int comparability = fCollator.compare(s1, s2);
-                    return comparability;
+
+                    if (s1.startsWith(patternText)) {
+                        return -1;
+                    }
+                    if (s2.startsWith(patternText)) {
+                        return 1;
+                    }
+
+                    final int result = fCollator.compare(s1, s2);
+                    return result;
                 }
             };
         }
@@ -609,7 +619,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
     }
 
-    protected static class MatchAnySearchPattern extends SearchPattern {
+    protected class MatchAnySearchPattern extends SearchPattern {
 
         public MatchAnySearchPattern() {
             super(SearchPattern.RULE_PATTERN_MATCH);
@@ -617,6 +627,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
         @Override
         public void setPattern(final String stringPattern) {
+            patternText = stringPattern;
             if ("".equals(stringPattern)) {
                 super.setPattern(stringPattern);
             } else {
@@ -643,10 +654,11 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
          * @param showDerived
          *            flag which determine showing derived elements
          * @param typeMask
+         * @param searchPattern
          */
         public ModuleFilter(final IContainer container, final int typeMask,
-                final boolean allowHrl) {
-            super(new MatchAnySearchPattern());
+                final boolean allowHrl, final SearchPattern searchPattern) {
+            super(searchPattern);
             filterContainer = container;
             filterTypeMask = typeMask;
             allow_Hrl = allowHrl;

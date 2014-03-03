@@ -104,7 +104,7 @@ public class NewProjectData extends ErlangProjectProperties {
         }
       };
       final Objects.ToStringHelper helper = ObjectExtensions.<Objects.ToStringHelper>operator_doubleArrow(_stringHelper, _function);
-      _xblockexpression = (helper.toString());
+      _xblockexpression = helper.toString();
     }
     return _xblockexpression;
   }
@@ -173,19 +173,19 @@ public class NewProjectData extends ErlangProjectProperties {
                 String _xblockexpression_3 = null;
                 {
                   final ErlangProjectProperties props = persister.getConfiguration();
-                  _xblockexpression_3 = (InputOutput.<String>println(("detected PROPS: " + props)));
+                  _xblockexpression_3 = InputOutput.<String>println(("detected PROPS: " + props));
                 }
                 _xifexpression_2 = _xblockexpression_3;
               }
-              _xblockexpression_2 = (_xifexpression_2);
+              _xblockexpression_2 = _xifexpression_2;
             }
             _xifexpression_1 = _xblockexpression_2;
           }
-          _xblockexpression_1 = (_xifexpression_1);
+          _xblockexpression_1 = _xifexpression_1;
         }
         _xifexpression = _xblockexpression_1;
       }
-      _xblockexpression = (_xifexpression);
+      _xblockexpression = _xifexpression;
     }
     return _xblockexpression;
   }

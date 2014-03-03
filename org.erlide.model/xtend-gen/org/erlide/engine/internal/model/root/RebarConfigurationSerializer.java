@@ -71,7 +71,7 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
         }
       };
       IterableExtensions.<OtpErlangObject>forEach(content, _function);
-      _xblockexpression = (result);
+      _xblockexpression = result;
     }
     return _xblockexpression;
   }
@@ -104,7 +104,7 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
               Path _xblockexpression = null;
               {
                 final String s = ((OtpErlangString) it).stringValue();
-                _xblockexpression = (new Path(s));
+                _xblockexpression = new Path(s);
               }
               return _xblockexpression;
             }

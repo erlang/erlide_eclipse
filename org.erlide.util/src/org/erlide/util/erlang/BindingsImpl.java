@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -139,6 +140,21 @@ public final class BindingsImpl implements Bindings {
     @Override
     public String toString() {
         return bindings.toString();
+    }
+
+    @Override
+    public OtpErlangBinary getBinary(final String name) throws OtpErlangException {
+        final OtpErlangObject r = get(name);
+        if (r instanceof OtpErlangBinary) {
+            return (OtpErlangBinary) r;
+        }
+        throw new OtpErlangException("value is not a binary");
+    }
+
+    @Override
+    public String getAsString(final String name) {
+        final OtpErlangObject r = get(name);
+        return ErlUtils.asString(r);
     }
 
 }

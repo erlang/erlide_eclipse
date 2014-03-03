@@ -89,8 +89,8 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     void storeAllProperties();
 
-    BuilderProperties getBuilderProperties();
-
     void setBuilderProperties(BuilderProperties props);
+
+    BuilderProperties getBuilderProperties();
 
 }
