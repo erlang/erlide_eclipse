@@ -1,3 +1,18 @@
+List of user visible changes between 0.25.0 and 0.26.0 (20140221)
+
+24c8c8e open modules: sort items to start with better matches
+b75040e reenable "run as" on project explorer
+4f598af make scanner work with unicode files
+c033a35 completion: templates match case-sensitively
+fe8c0d2 upgrade min erlang version to R15/R16
+7edf13d 339 - use the OTP lexical scanner
+970dc3c add getBinary and getAsString to Bindings
+157525c make sure R17+ projects get utf-8 encoding
+1542ad5 add some higher-level support for maps
+ec8fc5b add jinterface support for maps
+55bd7bb 1306 - erlide cannot handle quoted module name correctly
+3ff3ec5 indenter accepts r17 maps now without crashing
+
 List of user visible changes between 0.24.2 and 0.25.0 (20140207)
 
 4d499fa debugger update; not all r17 stuff is in yet (maps, named funs)

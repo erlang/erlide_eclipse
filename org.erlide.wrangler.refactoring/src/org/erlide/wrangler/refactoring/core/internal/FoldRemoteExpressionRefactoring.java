@@ -88,7 +88,6 @@ public class FoldRemoteExpressionRefactoring extends
 
         int clauseIndex = 1;
         if (!(functionClause instanceof IErlFunction)) {
-            // FIXME: avoid hacking!!!
             clauseIndex = Integer.valueOf(functionClause.getName().substring(1));
         }
 

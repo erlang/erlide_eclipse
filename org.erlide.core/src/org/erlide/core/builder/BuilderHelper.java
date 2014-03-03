@@ -329,7 +329,7 @@ public final class BuilderHelper {
             p = p.removeLastSegments(1);
             p = p.removeFirstSegments(project.getLocation().segmentCount());
             final String projectName = project.getName();
-            // FIXME hardcoded "_erl" suffix
+            // FIXME hardcoded "_erl" suffix ///
             if (projectName.endsWith("_erl")) {
                 final String linkname = projectName
                         .substring(0, projectName.length() - 4);

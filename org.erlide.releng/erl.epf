@@ -34,3 +34,12 @@ file_export_version=3.0
 /instance/org.erlide.core/runtimes/erl15/startShell=false
 /instance/org.erlide.core/runtimes/erl15/workingDir=.
 
+/instance/org.erlide.core/runtimes/erl16/args=
+/instance/org.erlide.core/runtimes/erl16/codePath=
+# homeDir has to be replaced to a proper value
+/instance/org.erlide.core/runtimes/erl16/homeDir=/var/lib/jenkins/erlide_tools/otp16
+/instance/org.erlide.core/runtimes/erl16/longName=true
+/instance/org.erlide.core/runtimes/erl16/managed=false
+/instance/org.erlide.core/runtimes/erl16/startShell=false
+/instance/org.erlide.core/runtimes/erl16/workingDir=.
+

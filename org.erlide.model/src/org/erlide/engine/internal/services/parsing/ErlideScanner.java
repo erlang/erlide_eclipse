@@ -150,8 +150,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
                 final byte[] bytes = b.binaryValue();
                 toks = new ArrayList<ErlToken>(bytes.length / 10);
                 for (int i = 0; i < bytes.length; i += 10) {
-                    final ErlToken tk = new ErlToken(bytes, i);
-                    tk.fixOffset(offset);
+                    final ErlToken tk = new ErlToken(bytes, i, offset);
                     toks.add(tk);
                 }
                 return toks;

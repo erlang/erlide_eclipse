@@ -54,6 +54,8 @@ import org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+
 /**
  * The "New" wizard page allows setting the container for the new file as well
  * as the file name. The page will only accept file name without the extension
@@ -327,12 +329,16 @@ public class ErlangFileWizardPage extends WizardPage {
         return fContextType;
     }
 
+    private String moduleName(final String fileName) {
+        return new OtpErlangAtom(fileName).toString();
+    }
+
     private String parse(final Template template, final TemplateContextType contextType) {
         String s = getFileName();
         if (ModuleKind.hasModuleExtension(s)) {
             s = SystemConfiguration.withoutExtension(s);
         }
-        ModuleVariableResolver.getDefault().setModule(s);
+        ModuleVariableResolver.getDefault().setModule(moduleName(s));
 
         ExportedFunctionsVariableResolver.getDefault().clearFunctions();
         LocalFunctionsVariableResolver.getDefault().clearFunctions();

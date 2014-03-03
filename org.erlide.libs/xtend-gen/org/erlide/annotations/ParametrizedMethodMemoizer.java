@@ -75,7 +75,7 @@ public abstract class ParametrizedMethodMemoizer extends MethodMemoizer {
       _builder.newLine();
       _builder.append("})");
       _builder.newLine();
-      _xblockexpression = (_builder);
+      _xblockexpression = _builder;
     }
     return _xblockexpression;
   }

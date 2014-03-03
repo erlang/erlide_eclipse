@@ -64,13 +64,13 @@ public class ErlideEventTracer implements IDisposable {
   }
   
   public void traceOperationStart(final Object id) {
-    Class<? extends Object> _class = id.getClass();
+    Class<?> _class = id.getClass();
     String _simpleName = _class.getSimpleName();
     this.traceOperationStart(_simpleName, id);
   }
   
   public void traceOperationEnd(final Object id) {
-    Class<? extends Object> _class = id.getClass();
+    Class<?> _class = id.getClass();
     String _simpleName = _class.getSimpleName();
     this.traceOperationEnd(_simpleName, id);
   }

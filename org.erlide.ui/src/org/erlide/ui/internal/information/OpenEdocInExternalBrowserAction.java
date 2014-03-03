@@ -240,7 +240,6 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
 
     @Override
     public void setEnabled(final boolean enabled) {
-        // TODO Auto-generated method stub
         super.setEnabled(enabled);
     }
 

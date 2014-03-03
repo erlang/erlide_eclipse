@@ -159,8 +159,7 @@ public class DialyzerUtilsTest {
             final IMarker[] markers = root.findMarkers(
                     DialyzerMarkerUtils.DIALYZE_WARNING_MARKER, true,
                     IResource.DEPTH_INFINITE);
-            // FIXME this fails on Hudson!
-            // assertTrue(markers.length > 0);
+            assertTrue(markers.length > 0);
             for (final IMarker marker : markers) {
                 // for some reason, when running on Hudson, we get two identical
                 // markers...

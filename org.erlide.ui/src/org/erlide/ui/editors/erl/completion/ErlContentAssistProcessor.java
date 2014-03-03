@@ -22,6 +22,8 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+
 public class ErlContentAssistProcessor extends AbstractErlContentAssistProcessor
         implements IDisposable {
 
@@ -51,6 +53,10 @@ public class ErlContentAssistProcessor extends AbstractErlContentAssistProcessor
     protected String quoted(final String string, final Kinds kind) {
         if (kind == Kinds.INCLUDES || kind == Kinds.INCLUDE_LIBS) {
             return "\"" + string + "\"";
+        }
+        if (kind == Kinds.MODULES) {
+            final String string1 = string.substring(0, string.length() - 1);
+            return new OtpErlangAtom(string1).toString() + ":";
         }
         return string;
     }

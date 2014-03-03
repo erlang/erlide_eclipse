@@ -354,7 +354,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
 
     private class ErlideNodeStatus extends OtpNodeStatus {
         public ErlideNodeStatus() {
-            // TODO Auto-generated constructor stub
         }
 
         @Override

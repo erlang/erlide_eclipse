@@ -260,6 +260,8 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
         contentAssistProcessor.setToPrefs();
         contentAssistant.setContentAssistProcessor(contentAssistProcessor,
                 IDocument.DEFAULT_CONTENT_TYPE);
+        contentAssistant.setContentAssistProcessor(contentAssistProcessor,
+                IErlangPartitions.ERLANG_QATOM);
         contentAssistant.setContentAssistProcessor(contentAssistProcessorForStrings,
                 IErlangPartitions.ERLANG_STRING);
         contentAssistant.enableAutoInsert(true);

@@ -77,6 +77,10 @@ public class ToolExecutor {
                     new NullProgressMonitor(), false, false);
 
             final ToolResults result = new ToolResults();
+            if (myLaunch.getProcesses().length == 0) {
+                ErlLogger.error("Tool process was not created?!");
+                return null;
+            }
             final IProcess process = myLaunch.getProcesses()[0];
             process.getStreamsProxy().getOutputStreamMonitor()
                     .addListener(new IStreamListener() {

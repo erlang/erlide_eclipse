@@ -66,7 +66,7 @@ public class ErlangToolExtensions {
         }
         IFileStore _store = EFS.getStore(uri);
         NullProgressMonitor _nullProgressMonitor = new NullProgressMonitor();
-        _xblockexpression = (_store.toLocalFile(0, _nullProgressMonitor));
+        _xblockexpression = _store.toLocalFile(0, _nullProgressMonitor);
       }
       return _xblockexpression;
     } catch (Throwable _e) {
@@ -94,7 +94,7 @@ public class ErlangToolExtensions {
           }
         };
         List<String> _map = ListExtensions.<String, String>map(lines, _function);
-        _xblockexpression = (IterableExtensions.<String>filterNull(_map));
+        _xblockexpression = IterableExtensions.<String>filterNull(_map);
       }
       return _xblockexpression;
     } catch (Throwable _e) {

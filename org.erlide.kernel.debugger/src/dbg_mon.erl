@@ -32,8 +32,6 @@
 %% Internal exports
 -export([send_attached_to_java/2]).
 
-%% TODO we don't really need the state, this is used by the OTP debugger
-
 -record(state, {parent, %pid() remote
                 mode,      % local | global
                 starter,   % bool() 'true' if int was started by me

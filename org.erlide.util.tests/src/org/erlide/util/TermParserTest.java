@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
+import com.ericsson.otp.erlang.OtpErlangMap;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpOutputStream;
@@ -197,4 +198,23 @@ public class TermParserTest {
             Assert.assertEquals(contents2[i], contents1[i]);
         }
     }
+
+    @Test
+    public void map_1() throws TermParserException {
+        final OtpErlangMap r = (OtpErlangMap) termParser.parse("#{}");
+        Assert.assertEquals("#{}", r.toString());
+    }
+
+    @Test
+    public void map_2() throws TermParserException {
+        @SuppressWarnings("unused")
+        final OtpErlangMap r = (OtpErlangMap) termParser.parse("#{a=>2,\"b\"=>[4]}");
+    }
+
+    @Test(expected = TermParserException.class)
+    public void map_3() throws TermParserException {
+        @SuppressWarnings("unused")
+        final OtpErlangMap r = (OtpErlangMap) termParser.parse("#{a=>2,b}");
+    }
+
 }

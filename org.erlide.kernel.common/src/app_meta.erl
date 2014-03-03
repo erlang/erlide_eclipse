@@ -13,7 +13,7 @@
 
 -include("app_meta.hrl").
 
-%%FIXME inlined #meta in #app_meta, code probably broken now
+%%FIX_ME inlined #meta in #app_meta, code probably broken now
 
 -spec read(string()) -> #app_meta{}.
 read(Path) ->
@@ -183,7 +183,6 @@ clean1(X, _) ->
 
 get_all_modules(Ms) ->
     Files = lists:append(lists:map(fun(X) -> {ok,Y}=file:list_dir(X), Y end, Ms)),
-    %% TODO what do we do with yrl files?
     Mods = lists:filter(fun(X) -> filename:extension(X) == ".erl" end, Files),
     [list_to_atom(filename:basename(X, ".erl")) || X<-Mods].
 

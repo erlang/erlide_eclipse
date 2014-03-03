@@ -30,7 +30,14 @@ parse_directive_test_() ->
                    test_parse("-compile([inline,{hipe,[{regalloc,linear_scan}]}])."))].
 
 parse_small_functions_test_() ->
-    [?_assertEqual({[#function{pos = {{0,1,0},14},
+    [?_assertEqual({[#function{pos = {{0,0,0},9},
+                               name = f, arity = 0,
+                               args = [], head = "", clauses = [],
+                               name_pos = {{0, 0}, 1},
+                               exported = false}],
+                    []},
+                   test_parse("f() -> a.")),
+    ?_assertEqual({[#function{pos = {{0,1,0},13},
                                name = f, arity = 0,
                                args = [], head = "", clauses = [],
                                name_pos = {{0, 0}, 1},
@@ -59,7 +66,7 @@ parsing_record_def_test_() ->
 
 parsing_function_with_macro_test_() ->
     %% http://www.assembla.com/spaces/erlide/tickets/571-functions-defined-with-macros-confuses-the-model
-    [?_assertEqual({[#function{pos = {{0, 0, 0},12},
+    [?_assertEqual({[#function{pos = {{0, 0, 0},11},
                                name = '?f', arity = 0,
                                args = [], head = "", clauses = [],
                                name_pos = {{0, 0}, 2},
@@ -73,7 +80,7 @@ parsing_when_clauses_test_() ->
             "case A of\n"++
             "    ?CHST_HRL when is_integer(A);\n"++
             "                   is_list(A) ->\n",
-    [?_assertEqual({[#function{pos = {{0,3,0},86},
+    [?_assertEqual({[#function{pos = {{0,3,0},85},
                                name = foo,arity = 0,args = [],head = [],
                                clauses = [],
                                name_pos = {{0,0},3},
@@ -90,11 +97,11 @@ function_comments_only_toplevel_test_() ->
             "    foo:bar().\n"++
             "f2() ->\n"++
             "    ok.",
-    [?_assertEqual({[#function{pos = {{0,2,0},46},
+    [?_assertEqual({[#function{pos = {{0,2,0},45},
                                name = f1,arity = 0,args = [],head = [],clauses = [],
                                name_pos = {{0,0},2},
                                exported = false},
-                     #function{pos = {{3,4,46},16},
+                     #function{pos = {{3,4,46},15},
                                name = f2,arity = 0,args = [],head = [],clauses = [],
                                name_pos = {{3,46},2},
                                exported = false}],
@@ -107,7 +114,7 @@ reparse_test_() ->
             "f() ->\n"++
             "    ok.\n",
     Value = test_reparse(S), % , 15, 0, NewText),
-    Expected = #model{forms=[#function{pos = {{0,1,0},15},
+    Expected = #model{forms=[#function{pos = {{0,1,0},14},
                                        name = f, arity = 0, args = [], head = [],
                                        clauses = [],
                                        name_pos = {{0,0},1},
@@ -121,15 +128,14 @@ replace_and_reparse_test_() ->
             "    ok.\n"++
             "%% renamed\n",
     Value = test_replace_and_reparse(S, 0, 1, "g"),
-    Expected = #model{forms=[#function{pos={{0,1,0},15},
+    Expected = #model{forms=[#function{pos={{0,1,0},14},
                                        name=g, arity=0, args=[], head=[],
                                        clauses=[],
                                        name_pos={{0, 0}, 1},
                                        exported=false}],
-                      comments=[#token{kind=comment, 
+                      comments=[#token{kind=comment,
                                        line=2, offset=15, length=10,
-                                       value= <<"%% renamed">>,
-                                       text=u, last_line=u}]},
+                                       text= <<"%% renamed">>}]},
     [?_assertEqual(Expected, Value)].
 
 %%
@@ -137,8 +143,7 @@ replace_and_reparse_test_() ->
 %%
 
 test_parse(S) ->
-    {ok, RawTokens, _EndPos} = erlide_scan:string(S, {0, 0}),
-    Tokens = erlide_scan_model:convert_tokens(erlide_scan:filter_ws(RawTokens)),
+    {ok, Tokens, _EndPos} = erlide_scan:string(S, {0, 1}, [return_comments]),
     {Forms, Comments, _Refs} = erlide_np:parse(Tokens),
     {Forms, Comments}.
 

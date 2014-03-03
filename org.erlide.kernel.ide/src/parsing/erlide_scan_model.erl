@@ -20,7 +20,7 @@
 %%
 
 -export([do_scan/2, tokens_to_string/1, get_all_tokens/1, replace_text/4,
-         convert_tokens/1, get_token_window/4, get_token_at/2, get_text/1]).
+         get_token_window/4, get_token_at/2, get_text/1]).
 
 %%
 %% API Functions
@@ -38,7 +38,7 @@ tokens_to_string(T) ->
     S.
 
 replace_text(Module, Offset, RemoveLength, NewText) ->
-    ?D({Offset, RemoveLength, NewText}),
+    ?D({Offset, RemoveLength, NewText, Module}),
     {Line, NOldLines, AffectedLines, NewLines} =
         replace_between_lines(Offset, RemoveLength, NewText, Module#module.lines),
     ?D({AffectedLines, NewLines}),
@@ -152,54 +152,6 @@ fix_token(T = #token{offset=O, line=L, last_line=LL}, Offset, Line) ->
 
 fix_tokens(Tokens, Offset, Line) ->
     [fix_token(T, Offset, Line) || T <- Tokens].
-
-convert_tokens(Tokens) ->
-    convert_tokens(Tokens, 0).
-
-convert_tokens(Tokens, NL) ->
-    convert_tokens(Tokens, 0, NL).
-
-convert_tokens(Tokens, Offset, NL) ->
-    convert_tokens(Tokens, Offset, NL, []).
-
-convert_tokens([], _Ofs, _NL, Acc) ->
-    lists:reverse(Acc);
-convert_tokens([{dot, {{L, O}, G}} | Rest], Ofs, NL, Acc) ->
-    T = #token{kind=dot, line=L+NL, offset=O+Ofs, length=G, text="."},
-    convert_tokens(Rest, Ofs, NL, [T | Acc]);
-convert_tokens([{ws, {{L, O}, G}, Txt} | Rest], Ofs, NL, Acc) ->
-    T = #token{kind=ws, line=L+NL, offset=O+Ofs, length=G, text=Txt},
-    convert_tokens(Rest, Ofs, NL, [T | Acc]);
-convert_tokens([{'?', {{L, O1}, G1}}, {'?', {{L, O2}, G2}} | Rest],
-               Ofs, NL, Acc) ->
-    C1 = #token{kind=$?, line=L+NL, offset= O1+Ofs, length=G1, text="?"},
-    C2 = #token{kind=$?, line=L+NL, offset= O2+Ofs, length=G2, text="?"},
-    convert_tokens(Rest, Ofs, NL, [C2, C1 | Acc]);
-convert_tokens([{'?', {{L, O}, 1}}, {var, {{L, O1}, G}, V} | Rest],
-               Ofs, NL, Acc) when O1=:=O+1->
-    T = make_macro(L, NL, O, G, V),
-    convert_tokens(Rest, Ofs, NL, [T | Acc]);
-convert_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, V} | Rest],
-               Ofs, NL, Acc) when O1=:=O+1->
-    T = make_macro(L, NL, O, G, V),
-    convert_tokens(Rest, Ofs, NL, [T | Acc]);
-convert_tokens([{'?', {{L, O}, 1}}, {atom, {{L, O1}, G}, V, _Txt} | Rest],
-               Ofs, NL, Acc) when O1=:=O+1->
-    T = make_macro(L, NL, O, G, V),
-    convert_tokens(Rest, Ofs, NL, [T | Acc]);
-convert_tokens([{K, {{L, O}, G}} | Rest], Ofs, NL, Acc) ->
-    T = #token{kind=K, line=L+NL, offset=O+Ofs, length=G},
-    convert_tokens(Rest, Ofs, NL, [T | Acc]);
-convert_tokens([{K, {{L, O}, G}, V} | Rest], Ofs, NL, Acc) ->
-    T = #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V},
-    convert_tokens(Rest, Ofs, NL, [T | Acc]);
-convert_tokens([{K, {{L, O}, G}, V, Txt} | Rest], Ofs, NL, Acc) ->
-    T = #token{kind=K, line=L+NL, offset=O+Ofs, length=G, value=V, text=Txt},
-    convert_tokens(Rest, Ofs, NL, [T | Acc]).
-
-make_macro(L, NL, O, G, V0) ->
-    V = list_to_atom([$? | atom_to_list(V0)]),
-    #token{kind=macro, line=L+NL, offset=O, length=G+1, value=V}.
 
 token_to_string(#token{text=Text}) when is_list(Text) ->
     Text;
@@ -316,10 +268,9 @@ get_all_tokens([{Length, Tokens} | Rest], Line, Pos, Acc) ->
     get_all_tokens(Rest, Line+1, Pos+Length, [Acc, T]).
 
 scan_line({Length, S}) ->
-    case erlide_scan:string(S, {0, 0}) of
-        {ok, T0, _} ->
-            T = erlide_scan:filter_ws(T0),
-            {Length, convert_tokens(T)};
+    case erlide_scan:string(S, {0, 1}, [return_comments]) of
+        {ok, T, _} ->
+            {Length, T};
         {error, _, _} ->
             {Length, [#token{kind=string, line=0, offset=0, length=length(S),
                              value=S, text="\""++S++"\"", last_line=0}]}

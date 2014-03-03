@@ -65,7 +65,7 @@ public final class ErlangCore {
     }
 
     public void start() throws CoreException {
-        final String version = getFeatureVersionImpl();
+        final String version = retrieveFeatureVersion();
 
         ErlLogger.info("Starting CORE " + Thread.currentThread());
         String dev = "(" + EncodingUtils.getEncoding() + ") ";
@@ -165,7 +165,7 @@ public final class ErlangCore {
         return false;
     }
 
-    private String getFeatureVersionImpl() {
+    private String retrieveFeatureVersion() {
         String version = "?";
         try {
             final IBundleGroupProvider[] providers = Platform.getBundleGroupProviders();
@@ -178,7 +178,10 @@ public final class ErlangCore {
             // ignore
         }
         final Version coreVersion = getBundle().getVersion();
-        version = version + " (core=" + coreVersion.toString() + ")";
+        final Version modelVersion = Platform.getBundle("org.erlide.model.api")
+                .getVersion();
+        version = version + " (core=" + coreVersion.toString() + ")" + " (model api="
+                + modelVersion.toString() + ")";
         return version;
     }
 

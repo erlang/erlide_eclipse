@@ -377,7 +377,7 @@ public class EdocView extends AbstractInfoView {
      */
     @Override
     protected String getHelpContextId() {
-        return ""; // TODO return IJavaHelpContextIds.JAVADOC_VIEW;
+        return "";
     }
 
     @Override

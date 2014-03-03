@@ -92,8 +92,8 @@ public abstract class MethodMemoizer {
           it.setReturnType(_wrappedReturnType);
         }
       };
-      _xblockexpression = (ObjectExtensions.<MutableMethodDeclaration>operator_doubleArrow(
-        this.method, _function_1));
+      _xblockexpression = ObjectExtensions.<MutableMethodDeclaration>operator_doubleArrow(
+        this.method, _function_1);
     }
     return _xblockexpression;
   }

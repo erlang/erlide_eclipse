@@ -88,7 +88,7 @@ public class Signature {
 
     private static ParseState parseOne(final String signature) throws SignatureException {
         final char crt = signature.charAt(0);
-        if ("xidabrjfpso".indexOf(crt) >= 0) {
+        if ("xidabrjfpsom".indexOf(crt) >= 0) {
             return new ParseState(new Signature(crt), signature.substring(1));
         } else if (crt == 'l') {
             final ParseState sub = parseOne(signature.substring(1));

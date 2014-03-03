@@ -89,6 +89,12 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * @throws ErlModelException
      */
     protected void closing(final Object info) throws ErlModelException {
+        for (final IErlElement e : getChildren()) {
+            if (e instanceof ErlElement) {
+                final ErlElement ee = (ErlElement) e;
+                ee.closing(info);
+            }
+        }
     }
 
     /**

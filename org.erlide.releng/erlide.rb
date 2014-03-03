@@ -13,7 +13,7 @@ module Erlide
     info = `git describe`
 
     fputs "document.write('#{info.strip}');", "#{where}/info.js"
-    fputs "document.write('#{version.strip}');", "#{where}/version.js"
+    fputs "document.write('#{PDE.unqualifiedVersion(version).strip}');", "#{where}/version.js"
     fputs "document.write('#{build_id.strip}');", "#{where}/id.js"
   end
 

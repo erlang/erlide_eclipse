@@ -16,8 +16,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
@@ -59,7 +57,6 @@ import org.erlide.ui.util.IColorManager;
 import org.erlide.ui.util.OverlayPreferenceStore;
 import org.erlide.ui.util.PixelConverter;
 import org.erlide.util.ErlLogger;
-import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
 
@@ -210,25 +207,11 @@ public class ColoringPreferencePage extends PreferencePage implements
     @Override
     public boolean performOk() {
         for (final TokenHighlight th : fColors) {
-            removeOldPreferenceNode(th);
-
             final HighlightStyle data = th.getStyle(fOverlayStore);
             storeHighlight(fOverlayStore, th, data);
         }
         fOverlayStore.propagate();
         return super.performOk();
-    }
-
-    // TODO Remove this after a while, when all users have new versions
-    // (suggested: september 2013)
-    private void removeOldPreferenceNode(final TokenHighlight th) {
-        final IEclipsePreferences node = InstanceScope.INSTANCE
-                .getNode(OLD_COLORS_QUALIFIER + th.getDisplayName());
-        try {
-            node.removeNode();
-        } catch (final BackingStoreException e) {
-            // ignore
-        }
     }
 
     @Override

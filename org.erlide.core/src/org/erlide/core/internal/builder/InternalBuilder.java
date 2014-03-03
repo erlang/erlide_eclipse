@@ -101,7 +101,7 @@ public class InternalBuilder extends ErlangBuilder {
         } catch (final Exception e) {
             ErlLogger.error(e);
             final String msg = NLS.bind(BuilderMessages.build_inconsistentProject,
-                    e.getMessage(), e.getClass().getName());
+                    e.getLocalizedMessage(), e.getClass().getName());
             MarkerUtils.addProblemMarker(project, null, null, msg, 0,
                     IMarker.SEVERITY_ERROR);
         } finally {
@@ -145,7 +145,7 @@ public class InternalBuilder extends ErlangBuilder {
         } catch (final Exception e) {
             ErlLogger.error(e);
             final String msg = NLS.bind(BuilderMessages.build_inconsistentProject,
-                    e.getLocalizedMessage());
+                    e.getLocalizedMessage(), e.getClass().getName());
             MarkerUtils.addProblemMarker(currentProject, null, null, msg, 0,
                     IMarker.SEVERITY_ERROR);
         } finally {

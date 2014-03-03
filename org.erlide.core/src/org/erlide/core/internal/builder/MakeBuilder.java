@@ -22,7 +22,6 @@ public class MakeBuilder extends ExternalBuilder {
 
     @Override
     public BuilderConfigParser getConfigParser() {
-        // TODO Auto-generated method stub
         return null;
     }
 
