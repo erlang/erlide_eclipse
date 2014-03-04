@@ -45,7 +45,7 @@ start(Name, Max) when is_atom(Name), is_integer(Max) ->
   Pid = spawn(fun() ->
             loop(#state{max=Max})
         end),
-  register(Name, Pid),
+  catch register(Name, Pid),
   ok.
 
 call(Name, Fun, Args) when is_atom(Name) ->

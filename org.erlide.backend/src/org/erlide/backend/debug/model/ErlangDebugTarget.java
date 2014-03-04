@@ -167,16 +167,17 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
         }
         fTerminated = true;
 
-        fBackend.getRpcSite().send("dbg_mon", new OtpErlangAtom("stop"));
-        final DebugPlugin dbgPlugin = DebugPlugin.getDefault();
-        if (dbgPlugin != null) {
-            dbgPlugin.getBreakpointManager().removeBreakpointListener(this);
+        if (fBackend != null) {
+            fBackend.getRpcSite().send("dbg_mon", new OtpErlangAtom("stop"));
+            final DebugPlugin dbgPlugin = DebugPlugin.getDefault();
+            if (dbgPlugin != null) {
+                dbgPlugin.getBreakpointManager().removeBreakpointListener(this);
+            }
+            if (debuggerDaemon != null) {
+                debuggerDaemon.stop();
+            }
+            fBackend.dispose();
         }
-        if (debuggerDaemon != null) {
-            debuggerDaemon.stop();
-        }
-        fBackend.dispose();
-
         final ILaunch launch = getLaunch();
         if (launch != null) {
             launch.terminate();

@@ -73,8 +73,12 @@ local_global(_) ->
 
 start_debug(Flags) ->
     group_leader(whereis(init), self()),
-    {ok, Pid} = dbg_mon:start(local_global(Flags), fix_flags(Flags)),
-    Pid.
+    case dbg_mon:start(local_global(Flags), fix_flags(Flags)) of
+        {ok, Pid} ->
+            Pid;
+        _ ->
+            {error, already_started}
+    end.
 
 send_started(JPid) ->
     JPid ! {started, whereis(dbg_mon)}.
@@ -214,6 +218,3 @@ process_info(Pid, Info) ->
             rpc:call(Node, erlang, process_info, [Pid, Info], 5000)
     end.
 
-%%
-%% Local Functions
-%%

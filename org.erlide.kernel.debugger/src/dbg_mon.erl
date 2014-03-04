@@ -59,20 +59,20 @@
 %%--------------------------------------------------------------------
 start(Mode, Flags) ->
     case whereis(?SERVER) of
-  undefined ->
-      CallingPid = self(),
-      Pid = spawn(fun () ->
-         ?SAVE_CALLS,
-         init(CallingPid, Mode, Flags)
-      end),
-      receive
-    {initialization_complete, Pid} ->
-        {ok, Pid};
-    Error ->
-        Error
-      end;
-  Pid ->
-      {error, {already_started,Pid}}
+        undefined ->
+            CallingPid = self(),
+            Pid = spawn(fun () ->
+                                 ?SAVE_CALLS,
+                                 init(CallingPid, Mode, Flags)
+                        end),
+            receive
+                {initialization_complete, Pid} ->
+                    {ok, Pid};
+                Error ->
+                    Error
+            end;
+        Pid ->
+            {ok,Pid}
     end.
 
 %%--------------------------------------------------------------------
@@ -99,7 +99,7 @@ stop() ->
 %%====================================================================
 
 init(CallingPid, Mode, Flags) ->
-    register(?SERVER, self()),
+    catch register(?SERVER, self()),
     %% Start Int if necessary and subscribe to information from it
     Bool = case int:start() of
                {ok, _Int} -> true;
@@ -182,8 +182,8 @@ gui_cmd(ignore, State) ->
     {ok, State};
 gui_cmd(stopped, State) ->
     if
-  State#state.starter==true -> int:stop();
-  true -> int:auto_attach(false)
+        State#state.starter==true -> int:stop();
+        true -> int:auto_attach(false)
     end,
     exit(stop);
 
@@ -435,10 +435,17 @@ cmd(Cmd, Args) ->
     cmd({Cmd, Args}).
 
 cmd(Cmd) ->
-    ?SERVER ! {cmd, Cmd, self()},
-    receive
-        Reply ->
-            Reply
+    case whereis(?SERVER) of
+        undefined ->
+            %% return error?
+            log({cmd_error, undefined, ?SERVER}),
+            ok;
+        _ ->
+            ?SERVER ! {cmd, Cmd, self()},
+            receive
+                Reply ->
+                    Reply
+            end
     end.
 
 %%====================================================================
