@@ -386,6 +386,9 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     private List<String> getDebuggerModules() {
+
+        // XXX debugger
+
         final Bundle debugger = Platform.getBundle("org.erlide.kernel.debugger");
         final List<String> debuggerModules = Lists.newArrayList();
         @SuppressWarnings("rawtypes")

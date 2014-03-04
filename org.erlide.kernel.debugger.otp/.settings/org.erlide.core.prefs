@@ -1,0 +1,17 @@
+backend_version=R15B
+compiler/warn_deprecated_function=true
+compiler/warn_export_all=true
+compiler/warn_export_vars=true
+compiler/warn_obsolete_guard=true
+compiler/warn_shadow_vars=true
+compiler/warn_unused_function=true
+compiler/warn_unused_import=true
+compiler/warn_unused_record=true
+compiler/warn_unused_vars=true
+eclipse.preferences.version=1
+external_includes=
+external_modules=
+include_dirs=include
+output_dir=ebin
+source_dirs=src
+use_pathz=false
