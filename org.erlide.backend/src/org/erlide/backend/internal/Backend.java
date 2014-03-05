@@ -253,11 +253,8 @@ public abstract class Backend implements IStreamListener, IBackend {
                 registerStartupFunctionStarter(data);
                 debugTarget.sendStarted();
             }
-        } else {
-
-            // TODO should we run this multiple times if many backends are on
-            // the same node?
-
+        } else if (data.isManaged()) {
+            // don't run this if the node is already running
             final InitialCall initCall = data.getInitialCall();
             if (initCall != null) {
                 runInitial(initCall.getModule(), initCall.getName(),
