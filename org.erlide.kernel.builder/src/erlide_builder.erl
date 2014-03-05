@@ -174,7 +174,7 @@ source_clash(Dirs) ->
 
 build_resources(Files, OutputDir, IncludeDirs, Options, Reporter) ->
   spawn(fun() ->
-          erlang:register(erlide_builder, self()),
+          catch erlang:register(erlide_builder, self()),
           receive
             start ->
               erlide_log:logp("Start building! ~p", [{Files, OutputDir, IncludeDirs, Options, Reporter}]),

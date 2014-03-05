@@ -59,20 +59,20 @@
 %%--------------------------------------------------------------------
 start(Mode, Flags) ->
     case whereis(?SERVER) of
-  undefined ->
-      CallingPid = self(),
-      Pid = spawn(fun () ->
-         ?SAVE_CALLS,
-         init(CallingPid, Mode, Flags)
-      end),
-      receive
-    {initialization_complete, Pid} ->
-        {ok, Pid};
-    Error ->
-        Error
-      end;
-  Pid ->
-      {error, {already_started,Pid}}
+        undefined ->
+            CallingPid = self(),
+            Pid = spawn(fun () ->
+                                 ?SAVE_CALLS,
+                                 init(CallingPid, Mode, Flags)
+                        end),
+            receive
+                {initialization_complete, Pid} ->
+                    {ok, Pid};
+                Error ->
+                    Error
+            end;
+        Pid ->
+            {ok,Pid}
     end.
 
 %%--------------------------------------------------------------------
@@ -99,7 +99,7 @@ stop() ->
 %%====================================================================
 
 init(CallingPid, Mode, Flags) ->
-    register(?SERVER, self()),
+    catch register(?SERVER, self()),
     %% Start Int if necessary and subscribe to information from it
     Bool = case int:start() of
                {ok, _Int} -> true;
@@ -140,7 +140,12 @@ loop(State) ->
     receive
         {parent, P} -> %% P is the remote mailbox
             log({parent, P}),
-            int:auto_attach(State#state.attach, {?MODULE, send_attached_to_java, [P]}),
+            case State#state.attach of
+                Flags when is_list(Flags) ->
+                    int:auto_attach(Flags, {?MODULE, send_attached_to_java, [P]});
+                _ ->
+                    ignore
+            end,
             loop(State#state{parent=P});
 
 %%         dumpState ->
@@ -182,8 +187,8 @@ gui_cmd(ignore, State) ->
     {ok, State};
 gui_cmd(stopped, State) ->
     if
-  State#state.starter==true -> int:stop();
-  true -> int:auto_attach(false)
+        State#state.starter==true -> int:stop();
+        true -> int:auto_attach(false)
     end,
     exit(stop);
 
@@ -302,14 +307,14 @@ gui_cmd({drop_to_frame, {MetaPid, StackFrameNum}}, State) ->
 %% Options Commands
 gui_cmd({trace, JPid}, State) ->
     case State#state.attach of
-  false -> ignore;
-  {Flags, {dbg, start, [JPid, StartFlags]}} ->
-      case trace_function(JPid, State) of
-    {_, _, StartFlags} -> ignore;
-    NewFunction -> % {_, _, NewStartFlags}
-        int:auto_attach(Flags, NewFunction)
-      end;
-  _AutoAttach -> ignore
+        false -> ignore;
+        {Flags, {dbg, start, [JPid, StartFlags]}} ->
+            case trace_function(JPid, State) of
+                {_, _, StartFlags} -> ignore;
+                NewFunction -> % {_, _, NewStartFlags}
+                    int:auto_attach(Flags, NewFunction)
+            end;
+        _AutoAttach -> ignore
     end,
     State;
 gui_cmd({auto_attach, Flags}, State) ->
@@ -435,10 +440,17 @@ cmd(Cmd, Args) ->
     cmd({Cmd, Args}).
 
 cmd(Cmd) ->
-    ?SERVER ! {cmd, Cmd, self()},
-    receive
-        Reply ->
-            Reply
+    case whereis(?SERVER) of
+        undefined ->
+            %% return error?
+            log({cmd_error, undefined, ?SERVER}),
+            ok;
+        _ ->
+            ?SERVER ! {cmd, Cmd, self()},
+            receive
+                Reply ->
+                    Reply
+            end
     end.
 
 %%====================================================================

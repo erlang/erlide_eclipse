@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.headless"
       label="Erlang headless support"
-      version="0.26.0.qualifier"
+      version="0.26.1.qualifier"
       provider-name="erlide.org"
       license-feature="org.erlide.licenses"
       license-feature-version="1.0.0.qualifier">
@@ -65,6 +65,12 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.erlide.kernel.debugger"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.erlide.kernel.debugger.otp"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
