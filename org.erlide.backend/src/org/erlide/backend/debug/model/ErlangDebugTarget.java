@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.erlide.backend.debug.model;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,12 @@ import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IContributor;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -33,20 +41,30 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.debug.DebuggerEventDaemon;
 import org.erlide.backend.debug.ErlangLineBreakpoint;
 import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.IErlangDebugNode;
+import org.erlide.backend.internal.BackendPlugin;
+import org.erlide.backend.internal.BeamUtil;
 import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.IDisposable;
 import org.erlide.util.erlang.OtpErlang;
+import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangBinary;
+import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangPid;
+import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Lists;
 
 public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarget,
-        IErlangDebugNode {
+        IErlangDebugNode, IDisposable {
 
     private static final OtpErlangAtom PARENT_ATOM = new OtpErlangAtom("parent");
 
@@ -55,56 +73,60 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
     public static final int INTERPRETED_MODULES_CHANGED = 0;
     public static final int TRACE_CHANGED = 1;
 
-    private final List<ErlangProcess> fAllProcesses;
-    private final List<ErlangProcess> fLocalProcesses;
-    final IBackend fBackend;
-    private final ILaunch fLaunch;
-    private boolean fDisconnected = false;
+    private final List<ErlangProcess> allProcesses;
+    private final List<ErlangProcess> localProcesses;
+    final IBackend backend;
+    private final ILaunch launch;
+    private boolean disconnected = false;
     // private final DebuggerListener fDbgListener;
     // private final DebuggerEventListener fDebuggerEventListener;
-    private boolean fTerminated;
-    private boolean fShowSystemProcesses = false;
-    private boolean fShowErlideProcesses = false;
+    private boolean terminated = false;
+    private boolean showSystemProcesses = false;
+    private boolean showErlideProcesses = false;
     private final Set<String> interpretedModules;
     private final Collection<IProject> projects;
 
     private final Map<OtpErlangPid, OtpErlangPid> metaPids = new TreeMap<OtpErlangPid, OtpErlangPid>();
     private final Map<OtpErlangPid, OtpErlangPid> pidsFromMeta = new TreeMap<OtpErlangPid, OtpErlangPid>();
 
-    private final String fNodeName;
-
     private final DebuggerEventDaemon debuggerDaemon;
 
-    // private final WaitingForDebuggerListener waiter;
-
-    public ErlangDebugTarget(final ILaunch launch, final IBackend b,
-            final Collection<IProject> projects, final EnumSet<ErlDebugFlags> debugFlags)
-            throws DebugException {
+    public ErlangDebugTarget(final ILaunch launch, final IBackend backend,
+            final Collection<IProject> projects) throws DebugException {
         super(null);
-        fBackend = b;
-        fNodeName = b.getName();
-        fLaunch = launch;
-        fTerminated = false;
+        this.backend = backend;
+        this.launch = launch;
         this.projects = projects;
-        fAllProcesses = new ArrayList<ErlangProcess>();
-        fLocalProcesses = new ArrayList<ErlangProcess>();
+
+        allProcesses = new ArrayList<ErlangProcess>();
+        localProcesses = new ArrayList<ErlangProcess>();
         interpretedModules = new HashSet<String>();
 
-        debuggerDaemon = new DebuggerEventDaemon(b, this);
+        debuggerDaemon = new DebuggerEventDaemon(backend, this);
         debuggerDaemon.start();
 
-        final OtpErlangPid pid = ErlideDebug.startDebug(b.getRpcSite(),
+        // interpret everything we can
+        final EnumSet<ErlDebugFlags> debugFlags = backend.getData().getDebugFlags();
+        final boolean distributed = debugFlags.contains(ErlDebugFlags.DISTRIBUTED_DEBUG);
+        if (distributed) {
+            distributeDebuggerCode();
+            addNodesAsDebugTargets(launch);
+        }
+
+        final OtpErlangPid pid = ErlideDebug.startDebug(backend.getRpcSite(),
                 ErlDebugFlags.getFlag(debugFlags));
         ErlLogger.debug("debug started " + pid);
-        fBackend.getRpcSite().send(pid,
+        backend.getRpcSite().send(pid,
                 OtpErlang.mkTuple(PARENT_ATOM, debuggerDaemon.getMBox()));
 
         DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
+
+        interpretModules(backend.getData().getInitialInterpretedModules(), distributed);
     }
 
     @Override
     public ILaunch getLaunch() {
-        return fLaunch;
+        return launch;
     }
 
     @Override
@@ -122,7 +144,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
         if (isTerminated()) {
             return NO_PROCS;
         }
-        return fLocalProcesses.toArray(new IThread[fLocalProcesses.size()]);
+        return localProcesses.toArray(new IThread[localProcesses.size()]);
     }
 
     @Override
@@ -132,7 +154,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
 
     @Override
     public String getName() throws DebugException {
-        return fNodeName;
+        return backend.getName();
     }
 
     @Override
@@ -157,18 +179,18 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
 
     @Override
     public boolean isTerminated() {
-        return fTerminated;
+        return terminated;
     }
 
     @Override
     public void terminate() throws DebugException {
-        if (fTerminated) {
+        if (terminated) {
             return;
         }
-        fTerminated = true;
+        terminated = true;
 
-        if (fBackend != null) {
-            fBackend.getRpcSite().send("dbg_mon", new OtpErlangAtom("stop"));
+        if (backend != null) {
+            backend.getRpcSite().send("dbg_mon", new OtpErlangAtom("stop"));
             final DebugPlugin dbgPlugin = DebugPlugin.getDefault();
             if (dbgPlugin != null) {
                 dbgPlugin.getBreakpointManager().removeBreakpointListener(this);
@@ -176,9 +198,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
             if (debuggerDaemon != null) {
                 debuggerDaemon.stop();
             }
-            fBackend.dispose();
+            backend.dispose();
         }
-        final ILaunch launch = getLaunch();
         if (launch != null) {
             launch.terminate();
         }
@@ -289,12 +310,12 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
     @Override
     public void disconnect() throws DebugException {
         // tell backend to stop debugging
-        fDisconnected = true;
+        disconnected = true;
     }
 
     @Override
     public boolean isDisconnected() {
-        return fDisconnected;
+        return disconnected;
     }
 
     @Override
@@ -309,23 +330,23 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
     }
 
     public IBackend getBackend() {
-        return fBackend;
+        return backend;
     }
 
     public boolean isShowErlideProcesses() {
-        return fShowErlideProcesses;
+        return showErlideProcesses;
     }
 
     public void setShowErlideProcesses(final boolean showErlideProcesses) {
-        fShowErlideProcesses = showErlideProcesses;
+        this.showErlideProcesses = showErlideProcesses;
     }
 
     public boolean isShowSystemProcesses() {
-        return fShowSystemProcesses;
+        return showSystemProcesses;
     }
 
     public void setShowSystemProcesses(final boolean showSystemProcesses) {
-        fShowSystemProcesses = showSystemProcesses;
+        this.showSystemProcesses = showSystemProcesses;
     }
 
     public ErlangProcess getOrCreateErlangProcess(final OtpErlangPid pid) {
@@ -341,17 +362,17 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
     }
 
     private ErlangProcess createErlangProcess(final OtpErlangPid pid) {
-        final String nodeName = pid.node();
+        final String theNodeName = pid.node();
         final IDebugTarget[] targets = getLaunch().getDebugTargets();
         for (final IDebugTarget debugTarget : targets) {
             try {
-                if (debugTarget.getName().equals(nodeName)) {
+                if (debugTarget.getName().equals(theNodeName)) {
                     if (debugTarget instanceof IErlangDebugNode) {
                         final IErlangDebugNode edn = (IErlangDebugNode) debugTarget;
                         final ErlangProcess p = new ErlangProcess(debugTarget,
                                 getBackend(), pid);
                         edn.addErlangProcess(p);
-                        fAllProcesses.add(p);
+                        allProcesses.add(p);
                         return p;
                     }
                 }
@@ -361,13 +382,13 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
         }
         final ErlangProcess p = new ErlangProcess(this, getBackend(), pid);
         addErlangProcess(p);
-        fAllProcesses.add(p);
+        allProcesses.add(p);
         return p;
     }
 
     public ErlangProcess getErlangProcess(final OtpErlangPid pid) {
-        for (int i = 0; i < fAllProcesses.size(); ++i) {
-            final ErlangProcess p = fAllProcesses.get(i);
+        for (int i = 0; i < allProcesses.size(); ++i) {
+            final ErlangProcess p = allProcesses.get(i);
             if (p.getPid().equals(pid)) {
                 return p;
             }
@@ -379,14 +400,14 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
     private void removeErlangProcess(final OtpErlangPid pid) {
         final ErlangProcess p = getErlangProcess(pid);
         if (p != null) {
-            fAllProcesses.remove(p);
+            allProcesses.remove(p);
             removeErlangProcess(p);
             p.fireTerminateEvent();
         }
     }
 
     public void sendStarted() {
-        ErlideDebug.sendStarted(fBackend, debuggerDaemon.getMBox());
+        ErlideDebug.sendStarted(backend, debuggerDaemon.getMBox());
     }
 
     public OtpErlangPid getMetaFromPid(final OtpErlangPid pid) {
@@ -408,12 +429,12 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
 
     @Override
     public void addErlangProcess(final ErlangProcess p) {
-        fLocalProcesses.add(p);
+        localProcesses.add(p);
     }
 
     @Override
     public void removeErlangProcess(final ErlangProcess p) {
-        fLocalProcesses.remove(p);
+        localProcesses.remove(p);
     }
 
     @Override
@@ -443,6 +464,117 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
     public void interpret(final IProject project, final String moduleName,
             final boolean distributed, final boolean interpret) {
         ErlLogger.debug((interpret ? "" : "de") + "interpret " + moduleName);
-        ErlideDebug.interpret(fBackend.getRpcSite(), moduleName, distributed, interpret);
+        ErlideDebug.interpret(backend.getRpcSite(), moduleName, distributed, interpret);
     }
+
+    private void distributeDebuggerCode() {
+        final List<String> debuggerModules = getDebuggerModules();
+
+        final List<OtpErlangTuple> modules = new ArrayList<OtpErlangTuple>(
+                debuggerModules.size());
+        for (final String module : debuggerModules) {
+            final OtpErlangBinary b = getDebuggerBeam(module);
+            if (b != null) {
+                final OtpErlangString filename = new OtpErlangString(module + ".erl");
+                final OtpErlangTuple t = OtpErlang.mkTuple(new OtpErlangAtom(module),
+                        filename, b);
+                modules.add(t);
+            } else {
+                ErlLogger.warn("Could not find debugger module %s", module);
+            }
+        }
+        ErlideDebug.distributeDebuggerCode(backend.getRpcSite(), modules);
+    }
+
+    private void unloadDebuggerCode() {
+        final List<String> debuggerModules = getDebuggerModules();
+        ErlideDebug.unloadDebuggerCode(backend.getRpcSite(), debuggerModules);
+    }
+
+    /**
+     * Get a named beam-file as a binary from the debugger plug-in bundle
+     */
+    private OtpErlangBinary getDebuggerBeam(final String module) {
+        final String beamname = module + ".beam";
+        final Bundle bundle = Platform.getBundle("org.erlide.kernel.debugger");
+
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        final IConfigurationElement[] els = reg.getConfigurationElementsFor(
+                BackendPlugin.PLUGIN_ID, "codepath");
+
+        // TODO: this code assumes that the debugged debugTarget and the
+        // erlide-plugin uses the same Erlang version, how can we escape this?
+
+        for (final IConfigurationElement el : els) {
+            final IContributor c = el.getContributor();
+            final String name = c.getName();
+            if (name.equals(bundle.getSymbolicName())) {
+                final String dirPath = el.getAttribute("path");
+                final Enumeration<?> e = bundle.getEntryPaths(dirPath);
+                if (e == null) {
+                    ErlLogger.error("* !!! error loading plugin "
+                            + bundle.getSymbolicName());
+                    return null;
+                }
+                while (e.hasMoreElements()) {
+                    final String s = (String) e.nextElement();
+                    final Path path = new Path(s);
+                    if (path.lastSegment().equals(beamname)) {
+                        return getBeamFromBundlePath(bundle, s, path);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private OtpErlangBinary getBeamFromBundlePath(@NonNull final Bundle bundle,
+            final String s, final Path path) {
+        final String m = path.removeFileExtension().lastSegment();
+        try {
+            return BeamUtil.getBeamBinary(m, bundle.getEntry(s));
+        } catch (final Exception ex) {
+            ErlLogger.warn(ex);
+            return null;
+        }
+    }
+
+    private void addNodesAsDebugTargets(final ILaunch aLaunch) {
+        final OtpErlangList nodes = ErlideDebug.nodes(backend.getRpcSite());
+        if (nodes != null) {
+            for (int i = 1, n = nodes.arity(); i < n; ++i) {
+                final OtpErlangAtom a = (OtpErlangAtom) nodes.elementAt(i);
+                final IDebugTarget edn = new ErlangDebugNode(this, a.atomValue());
+                aLaunch.addDebugTarget(edn);
+            }
+        }
+    }
+
+    private List<String> getDebuggerModules() {
+        final Bundle debugger = Platform.getBundle("org.erlide.kernel.debugger");
+        final List<String> dbg_modules = getModulesFromBundle(debugger);
+
+        final Bundle debugger_otp = Platform.getBundle("org.erlide.kernel.debugger.otp");
+        final List<String> dbg_otp_modules = getModulesFromBundle(debugger_otp);
+
+        dbg_modules.addAll(dbg_otp_modules);
+        return dbg_modules;
+    }
+
+    private List<String> getModulesFromBundle(final Bundle bundle) {
+        final List<String> modules = Lists.newArrayList();
+        @SuppressWarnings("rawtypes")
+        final Enumeration beams = bundle.findEntries("/ebin", "*.beam", false);
+        while (beams.hasMoreElements()) {
+            final URL beam = (URL) beams.nextElement();
+            modules.add(new Path(beam.getPath()).removeFileExtension().lastSegment());
+        }
+        return modules;
+    }
+
+    @Override
+    public void dispose() {
+        unloadDebuggerCode();
+    }
+
 }
