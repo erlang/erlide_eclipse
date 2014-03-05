@@ -99,7 +99,6 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
             final IErlRuntime runtime) {
         final Process process = runtime.getProcess();
         if (process == null) {
-            ErlLogger.warn("Error starting process");
             data.setManaged(false);
             return;
         }

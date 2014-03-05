@@ -406,4 +406,17 @@ public class ErlideDebug {
         }
         return false;
     }
+
+    public static boolean isRunning(final IRpcSite backend) {
+        try {
+            final OtpErlangObject o = backend.call(ERLIDE_DEBUG, "is_running", "");
+            if (o instanceof OtpErlangAtom) {
+                final OtpErlangAtom atom = (OtpErlangAtom) o;
+                return atom.booleanValue();
+            }
+        } catch (final RpcException e) {
+            ErlLogger.error(e);
+        }
+        return false;
+    }
 }

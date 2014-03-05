@@ -35,6 +35,7 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.console.BackendShellManager;
+import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.BeamLoader;
@@ -74,7 +75,9 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public void dispose() {
         if (data.isDebug()) {
-            debugTarget.dispose();
+            if (debugTarget != null) {
+                debugTarget.dispose();
+            }
         }
         if (shellManager != null) {
             shellManager.dispose();
@@ -244,17 +247,27 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (data.isDebug()) {
             // add debugTarget
             final ILaunch launch = getData().getLaunch();
-            debugTarget = new ErlangDebugTarget(launch, this, projects);
-            launch.addDebugTarget(debugTarget);
-            registerStartupFunctionStarter(data);
-            debugTarget.sendStarted();
+            if (!debuggerIsRunning()) {
+                debugTarget = new ErlangDebugTarget(launch, this, projects);
+                launch.addDebugTarget(debugTarget);
+                registerStartupFunctionStarter(data);
+                debugTarget.sendStarted();
+            }
         } else {
+
+            // TODO should we run this multiple times if many backends are on
+            // the same node?
+
             final InitialCall initCall = data.getInitialCall();
             if (initCall != null) {
                 runInitial(initCall.getModule(), initCall.getName(),
                         initCall.getParameters());
             }
         }
+    }
+
+    private boolean debuggerIsRunning() {
+        return ErlideDebug.isRunning(getRpcSite());
     }
 
     private void registerProjectsWithExecutionBackend(final Collection<IProject> projects) {
