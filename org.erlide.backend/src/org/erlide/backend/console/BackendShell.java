@@ -51,7 +51,7 @@ public class BackendShell implements IBackendShell {
 
     @Override
     public void close() {
-        if (server != null) {
+        if (server != null && backend.getRpcSite() != null) {
             backend.getRpcSite().send(server, new OtpErlangAtom("stop"));
         }
         server = null;

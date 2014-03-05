@@ -75,9 +75,8 @@ public class BackendFactory implements IBackendFactory {
 
         final IBackend b;
         final IErlRuntime runtime = ErlRuntimeFactory.createRuntime(data);
-        if (data.isManaged()) {
-            runtime.startAndWait();
-        }
+        runtime.startAndWait();
+
         final IBackendManager backendManager = BackendCore.getBackendManager();
         b = data.isInternal() ? new InternalBackend(data, runtime, backendManager)
                 : new ExternalBackend(data, runtime, backendManager);

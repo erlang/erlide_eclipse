@@ -377,6 +377,8 @@ public class ErlideDebug {
         try {
             backend.cast(ERLIDE_DEBUG, "unload_debugger_code", "la", modules);
         } catch (final RpcException e) {
+            // occurs when closing debugger too, how can we tell if it's an
+            // error or not?
             ErlLogger.warn(e);
         }
         return;

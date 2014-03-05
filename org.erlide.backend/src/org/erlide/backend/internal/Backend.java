@@ -387,34 +387,32 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     private List<String> getDebuggerModules() {
         final Bundle debugger = Platform.getBundle("org.erlide.kernel.debugger");
-        final List<String> debuggerModules = Lists.newArrayList();
+        final List<String> dbg_modules = getModulesFromBundle(debugger);
+
+        final Bundle debugger_otp = Platform.getBundle("org.erlide.kernel.debugger.otp");
+        final List<String> dbg_otp_modules = getModulesFromBundle(debugger_otp);
+
+        dbg_modules.addAll(dbg_otp_modules);
+        return dbg_modules;
+    }
+
+    private List<String> getModulesFromBundle(final Bundle bundle) {
+        final List<String> modules = Lists.newArrayList();
         @SuppressWarnings("rawtypes")
-        final Enumeration beams = debugger.findEntries("/ebin", "*.beam", false);
+        final Enumeration beams = bundle.findEntries("/ebin", "*.beam", false);
         while (beams.hasMoreElements()) {
             final URL beam = (URL) beams.nextElement();
-            debuggerModules.add(new Path(beam.getPath()).removeFileExtension()
-                    .lastSegment());
+            modules.add(new Path(beam.getPath()).removeFileExtension().lastSegment());
         }
-        return debuggerModules;
+        return modules;
     }
 
     /**
-     * Get a named beam-file as a binary from the core plug-in bundle
-     * 
-     * @param module
-     *            module name, without extension
-     * @param backend
-     *            the execution backend
-     * @return
+     * Get a named beam-file as a binary from the debugger plug-in bundle
      */
     private OtpErlangBinary getDebuggerBeam(final String module) {
         final String beamname = module + ".beam";
         final Bundle bundle = Platform.getBundle("org.erlide.kernel.debugger");
-        if (bundle == null) {
-            ErlLogger.error("* !!! error bundle not found "
-                    + "org.erlide.kernel.debugger");
-            return null;
-        }
 
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] els = reg.getConfigurationElementsFor(

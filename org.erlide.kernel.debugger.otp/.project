@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-    <name>org.erlide.kernel.tests</name>
+    <name>org.erlide.kernel.debugger.otp</name>
     <comment></comment>
     <projects>
         <project>org.erlide.kernel.common</project>
-        <project>org.erlide.kernel.ide</project>
-        <project>org.erlide.kernel.builder</project>
-        <project>org.erlide.kernel.debugger</project>
-        <project>org.erlide.kernel.debugger.otp</project>
     </projects>
     <buildSpec>
         <buildCommand>
