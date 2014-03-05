@@ -90,6 +90,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
     private final Map<OtpErlangPid, OtpErlangPid> pidsFromMeta = new TreeMap<OtpErlangPid, OtpErlangPid>();
 
     private final DebuggerEventDaemon debuggerDaemon;
+    private boolean disposed = false;
 
     public ErlangDebugTarget(final ILaunch launch, final IBackend backend,
             final Collection<IProject> projects) throws DebugException {
@@ -574,6 +575,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
 
     @Override
     public void dispose() {
+        if (disposed) {
+            return;
+        }
+        disposed = true;
         unloadDebuggerCode();
     }
 

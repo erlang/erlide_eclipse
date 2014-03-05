@@ -62,6 +62,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
     protected final IBackendManager backendManager;
+    private boolean disposed = false;
 
     public Backend(final BackendData data, @NonNull final IErlRuntime runtime,
             final IBackendManager backendManager) {
@@ -74,10 +75,12 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void dispose() {
-        if (data.isDebug()) {
-            if (debugTarget != null) {
-                debugTarget.dispose();
-            }
+        if (disposed) {
+            return;
+        }
+        disposed = true;
+        if (data.isDebug() && debugTarget != null) {
+            debugTarget.dispose();
         }
         if (shellManager != null) {
             shellManager.dispose();
