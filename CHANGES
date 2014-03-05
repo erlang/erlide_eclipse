@@ -1,3 +1,7 @@
+List of user visible changes between 0.26.0 and 0.26.1 (20140305)
+
+0bee7b6 1332 - debugger: hangs when started multiple times
+
 List of user visible changes between 0.25.0 and 0.26.0 (20140221)
 
 24c8c8e open modules: sort items to start with better matches
