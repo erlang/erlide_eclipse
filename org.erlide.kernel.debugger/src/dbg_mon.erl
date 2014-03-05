@@ -140,7 +140,12 @@ loop(State) ->
     receive
         {parent, P} -> %% P is the remote mailbox
             log({parent, P}),
-            int:auto_attach(State#state.attach, {?MODULE, send_attached_to_java, [P]}),
+            case State#state.attach of
+                Flags when is_list(Flags) ->
+                    int:auto_attach(Flags, {?MODULE, send_attached_to_java, [P]});
+                _ ->
+                    ignore
+            end,
             loop(State#state{parent=P});
 
 %%         dumpState ->
@@ -302,14 +307,14 @@ gui_cmd({drop_to_frame, {MetaPid, StackFrameNum}}, State) ->
 %% Options Commands
 gui_cmd({trace, JPid}, State) ->
     case State#state.attach of
-  false -> ignore;
-  {Flags, {dbg, start, [JPid, StartFlags]}} ->
-      case trace_function(JPid, State) of
-    {_, _, StartFlags} -> ignore;
-    NewFunction -> % {_, _, NewStartFlags}
-        int:auto_attach(Flags, NewFunction)
-      end;
-  _AutoAttach -> ignore
+        false -> ignore;
+        {Flags, {dbg, start, [JPid, StartFlags]}} ->
+            case trace_function(JPid, State) of
+                {_, _, StartFlags} -> ignore;
+                NewFunction -> % {_, _, NewStartFlags}
+                    int:auto_attach(Flags, NewFunction)
+            end;
+        _AutoAttach -> ignore
     end,
     State;
 gui_cmd({auto_attach, Flags}, State) ->
