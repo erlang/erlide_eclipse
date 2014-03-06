@@ -4,7 +4,7 @@
 #
 # run as user who will run (jenkins)
 #
-# the tools are installed in ~/erlide/tools
+# the tools are installed in ~/erlide_tools
 #
 # jdk 1.6 install requires pressing "enter" once
 
@@ -62,6 +62,11 @@ if [ ! -d otp ] ; then
   ln -s otp_src_R14B04 otp
 fi
 
+  # prerequisites to build erlang:
+  #    sudo apt-get update
+  #    sudo apt-get install build-essential make perl gcc sed m4 ncurses-dev
+
+
 # erlang R15
 if [ ! -d otp15 ] ; then
   if [ ! -f otp_src_R15B03-1.tar.gz ] ; then
@@ -70,10 +75,6 @@ if [ ! -d otp15 ] ; then
   tar zxvf otp_src_R15B03-1.tar.gz
 
   # build erlang
-  # prerequisites:
-  #    sudo apt-get update
-  #    sudo apt-get install build-essential make perl gcc sed m4 ncurses-dev
-
   pushd otp_src_R15B03-1
   export LANG=C
   ./configure
@@ -90,10 +91,6 @@ if [ ! -d otp16 ] ; then
   tar zxvf otp_src_R16B03.tar.gz
 
   # build erlang
-  # prerequisites:
-  #    sudo apt-get update
-  #    sudo apt-get install build-essential make perl gcc sed m4 ncurses-dev
-
   pushd otp_src_R16B03
   export LANG=C
   ./configure
@@ -101,6 +98,22 @@ if [ ! -d otp16 ] ; then
   popd
 
   ln -s otp_src_R16B03 otp16
+fi
+
+if [ ! -d otp17 ] ; then
+  if [ ! -f otp_src_17.0-rc2.tar.gz ] ; then
+    wget http://download.erlide.org/tools/otp_src_17.0-rc2.tar.gz
+  fi
+  tar zxvf otp_src_17.0-rc2.tar.gz
+
+  # build erlang
+  pushd otp_src_17.0-rc2
+  export LANG=C
+  ./configure
+  make
+  popd
+
+  ln -s otp_src_17.0-rc2 otp17
 fi
 
 echo "add links to path"
