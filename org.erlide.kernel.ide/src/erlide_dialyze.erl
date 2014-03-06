@@ -443,7 +443,7 @@ find_file(Paths, File) ->
 
 find_file([], File, _Name) ->
     File;
-find_file([Dir | Rest], File, Name) ->
+find_file([Dir | Rest], File, Name) ->
     NewFile = filename:join([Dir, Name]),
     case filelib:is_regular(NewFile) of
         true ->

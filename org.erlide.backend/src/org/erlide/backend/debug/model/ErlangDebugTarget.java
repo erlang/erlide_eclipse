@@ -191,7 +191,9 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
         terminated = true;
 
         if (backend != null) {
-            backend.getRpcSite().send("dbg_mon", new OtpErlangAtom("stop"));
+            if (backend.getRpcSite() != null) {
+                backend.getRpcSite().send("dbg_mon", new OtpErlangAtom("stop"));
+            }
             final DebugPlugin dbgPlugin = DebugPlugin.getDefault();
             if (dbgPlugin != null) {
                 dbgPlugin.getBreakpointManager().removeBreakpointListener(this);
@@ -555,7 +557,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
         final Bundle debugger = Platform.getBundle("org.erlide.kernel.debugger");
         final List<String> dbg_modules = getModulesFromBundle(debugger);
 
-        final Bundle debugger_otp = Platform.getBundle("org.erlide.kernel.debugger.otp");
+        final String ver = backend.getRuntimeInfo().getVersion().asMajor().toString()
+                .toLowerCase();
+        final Bundle debugger_otp = Platform.getBundle("org.erlide.kernel.debugger.otp."
+                + ver);
         final List<String> dbg_otp_modules = getModulesFromBundle(debugger_otp);
 
         dbg_modules.addAll(dbg_otp_modules);

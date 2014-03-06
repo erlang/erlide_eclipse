@@ -11,23 +11,24 @@
 package org.erlide.backend.api;
 
 import java.util.Collection;
-import java.util.Map;
 
 import org.eclipse.xtext.xbase.lib.Pair;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.osgi.framework.Bundle;
 
 public interface ICodeBundle {
 
+    // common context is always included in the others
     public static enum CodeContext {
-        ANY, COMMON, BUILDER, IDE, DEBUGGER
+        COMMON, IDE, DEBUGGER
     }
 
     Bundle getBundle();
 
-    Collection<String> getEbinDirs();
-
-    Map<String, CodeContext> getPaths();
+    Collection<String> getEbinDirs(CodeContext context);
 
     Collection<Pair<String, String>> getInits();
+
+    RuntimeVersion getVersion();
 
 }

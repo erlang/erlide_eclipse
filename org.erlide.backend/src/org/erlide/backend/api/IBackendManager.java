@@ -1,7 +1,6 @@
 package org.erlide.backend.api;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -12,7 +11,6 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
-import org.osgi.framework.Bundle;
 
 public interface IBackendManager extends IEpmdListener {
 
@@ -44,7 +42,7 @@ public interface IBackendManager extends IEpmdListener {
 
     void dispose();
 
-    Map<Bundle, ICodeBundle> getCodeBundles();
+    Collection<ICodeBundle> getCodeBundles();
 
     IRpcSite getByName(final String nodeName);
 

@@ -34,6 +34,7 @@ import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.api.ICodeBundle;
+import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.backend.console.BackendShellManager;
 import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
@@ -70,7 +71,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         this.runtime = runtime;
         this.data = data;
         this.backendManager = backendManager;
-        codeManager = new CodeManager(getRpcSite(), data.getRuntimeInfo().getName());
+        codeManager = new CodeManager(getRpcSite(), data.getRuntimeInfo().getName(), data
+                .getRuntimeInfo().getVersion());
     }
 
     @Override
@@ -100,9 +102,13 @@ public abstract class Backend implements IStreamListener, IBackend {
                     SystemConfiguration.getInstance().getWarnProcessSizeLimitMB(),
                     SystemConfiguration.getInstance().getKillProcessSizeLimitMB());
             // TODO should use extension point!
-            getRpcSite().call("erlide_builder_app", "init", "");
-            getRpcSite().call("erlide_ide_app", "init", "");
-
+            switch (data.getContext()) {
+            case IDE:
+                getRpcSite().call("erlide_builder_app", "init", "");
+                getRpcSite().call("erlide_ide_app", "init", "");
+                break;
+            default:
+            }
             // TODO start tracing when configured to do so!
             // getRpcSite().call("erlide_tracer", "start", "");
             return true;
@@ -131,13 +137,13 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void registerCodeBundle(final ICodeBundle bundle) {
-        codeManager.register(bundle);
+    public void registerCodeBundle(final CodeContext context, final ICodeBundle bundle) {
+        codeManager.register(context, bundle);
     }
 
     @Override
-    public void unregisterCodeBundle(final ICodeBundle b) {
-        codeManager.unregister(b);
+    public void unregisterCodeBundle(final CodeContext context, final ICodeBundle b) {
+        codeManager.unregister(context, b);
     }
 
     @Override
@@ -313,11 +319,12 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void initialize(final Collection<ICodeBundle> bundles) {
+    public void initialize(final CodeContext context,
+            final Collection<ICodeBundle> bundles) {
         runtime.addShutdownCallback(this);
         shellManager = new BackendShellManager(this);
         for (final ICodeBundle bb : bundles) {
-            registerCodeBundle(bb);
+            registerCodeBundle(context, bb);
         }
         initErlang(data.isManaged());
 

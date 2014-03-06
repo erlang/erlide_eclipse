@@ -29,6 +29,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.jdt.annotation.NonNull;
+import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.backend.debug.ErlDebugConstants;
 import org.erlide.backend.launch.IErlangLaunchDelegateConstants;
 import org.erlide.engine.model.IBeamLocator;
@@ -51,6 +52,7 @@ public final class BackendData extends RuntimeData {
     private IBeamLocator beamLocator;
     protected ILaunch launch;
     private Collection<IProject> projects;
+    private CodeContext context = CodeContext.COMMON;
 
     public BackendData(@NonNull final RuntimeInfo info,
             @NonNull final ILaunchConfiguration config, final String mode,
@@ -220,4 +222,11 @@ public final class BackendData extends RuntimeData {
         return new InitialCall(module, function, args);
     }
 
+    public CodeContext getContext() {
+        return context;
+    }
+
+    public void setContext(final CodeContext context) {
+        this.context = context;
+    }
 }

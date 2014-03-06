@@ -50,8 +50,10 @@ import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 public final class BackendManager implements IBackendManager {
@@ -259,48 +261,47 @@ public final class BackendManager implements IBackendManager {
         final String pluginId = extension.getContributor().getName();
         final Bundle plugin = Platform.getBundle(pluginId);
 
-        final Map<String, CodeContext> paths = Maps.newHashMap();
+        final Multimap<CodeContext, String> paths = HashMultimap.create();
         final List<Pair<String, String>> inits = Lists.newArrayList();
+        RuntimeVersion ver = RuntimeVersion.NO_VERSION;
+
         for (final IConfigurationElement el : extension.getConfigurationElements()) {
             if ("beam_dir".equals(el.getName())) {
                 final String dir = el.getAttribute("path");
                 final String t = el.getAttribute("context").toUpperCase();
+
                 final CodeContext type = Enum.valueOf(CodeContext.class, t);
-                paths.put(dir, type);
+                paths.put(type, dir);
             } else if ("init".equals(el.getName())) {
                 final String module = el.getAttribute("module");
                 final String function = el.getAttribute("function");
                 inits.add(new Pair<String, String>(module, function));
+            } else if ("otp_version".equals(el.getName())) {
+                final String attribute = el.getAttribute("value");
+                if (attribute != null) {
+                    ver = RuntimeVersion.Serializer.parse(attribute);
+                }
             } else {
                 ErlLogger.error("Unknown code bundle element: %s", el.getName());
             }
         }
-        addBundle(plugin, paths, inits);
+        addBundle(plugin, ver, paths, inits);
     }
 
-    private void addBundle(final Bundle b, final Map<String, CodeContext> paths,
+    private void addBundle(final Bundle b, final RuntimeVersion version,
+            final Multimap<CodeContext, String> paths,
             final Collection<Pair<String, String>> inits) {
-        final ICodeBundle p = findBundle(b);
+        final ICodeBundle p = codeBundles.get(b);
         if (p != null) {
             return;
         }
-        final CodeBundle pp = new CodeBundle(b, paths, inits);
-        getCodeBundles().put(b, pp);
-        forEachBackend(new Procedure1<IBackend>() {
-            @Override
-            public void apply(final IBackend bb) {
-                bb.registerCodeBundle(pp);
-            }
-        });
-    }
-
-    private ICodeBundle findBundle(final Bundle b) {
-        return getCodeBundles().get(b);
+        final CodeBundle pp = new CodeBundle(b, version, paths, inits);
+        codeBundles.put(b, pp);
     }
 
     @Override
-    public Map<Bundle, ICodeBundle> getCodeBundles() {
-        return codeBundles;
+    public Collection<ICodeBundle> getCodeBundles() {
+        return codeBundles.values();
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.erlide.backend.api;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.IShutdownCallback;
@@ -27,7 +28,7 @@ public interface IBackend extends IShutdownCallback, IDisposable, IPluginCodeLoa
 
     IBackendShell getShell(String string);
 
-    void initialize(Collection<ICodeBundle> collection);
+    void initialize(CodeContext context, Collection<ICodeBundle> collection);
 
     void input(final String s) throws IOException;
 

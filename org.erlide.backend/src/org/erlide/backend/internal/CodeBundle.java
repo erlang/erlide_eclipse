@@ -10,30 +10,37 @@
  *******************************************************************************/
 package org.erlide.backend.internal;
 
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.backend.api.ICodeBundle;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 
 public class CodeBundle implements ICodeBundle {
 
-    private final Map<String, CodeContext> paths;
+    private final RuntimeVersion version;
+    private final Multimap<CodeContext, String> paths;
     private final Collection<Pair<String, String>> inits;
     private final Bundle bundle;
 
-    public CodeBundle(final Bundle bundle, final Map<String, CodeContext> paths2,
+    public CodeBundle(final Bundle bundle, final RuntimeVersion version,
+            final Multimap<CodeContext, String> paths,
             final Collection<Pair<String, String>> inits) {
         this.bundle = bundle;
-        paths = Maps.newHashMap(paths2);
+        this.version = version;
+        this.paths = HashMultimap.create();
+        this.paths.putAll(paths);
         this.inits = inits;
     }
 
@@ -43,23 +50,31 @@ public class CodeBundle implements ICodeBundle {
     }
 
     @Override
-    public Collection<String> getEbinDirs() {
-        final List<String> result = Lists.newArrayList();
-        for (final Entry<String, CodeContext> path : paths.entrySet()) {
-            final Collection<String> myPath = BeamUtil.getPaths(path.getKey(), bundle);
-            if (myPath != null) {
-                result.addAll(myPath);
-            } else {
-                ErlLogger.warn("Can't access path %s, "
-                        + "plugin may be incorrectly built", path.getKey());
-            }
+    public Collection<String> getEbinDirs(final CodeContext context) {
+        final Set<String> result = Sets.newHashSet();
+        result.addAll(doGetEbinDirs(context));
+        if (context != CodeContext.COMMON) {
+            result.addAll(doGetEbinDirs(CodeContext.COMMON));
         }
         return result;
     }
 
-    @Override
-    public Map<String, CodeContext> getPaths() {
-        return Collections.unmodifiableMap(paths);
+    private List<String> doGetEbinDirs(final CodeContext context) {
+        final List<String> result = Lists.newArrayList();
+        for (final String path : paths.get(context)) {
+            final String entryName = path.replace(" ", "%20");
+            final URL entry = bundle.getEntry(entryName);
+            if (entry != null) {
+                final String aPath = BeamUtil.getPathFromUrl(entry);
+                if (aPath != null) {
+                    result.add(aPath);
+                }
+            } else {
+                ErlLogger.warn("Can't access path %s, "
+                        + "plugin may be incorrectly built", path);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -67,4 +82,8 @@ public class CodeBundle implements ICodeBundle {
         return Collections.unmodifiableCollection(inits);
     }
 
+    @Override
+    public RuntimeVersion getVersion() {
+        return this.version;
+    }
 }
