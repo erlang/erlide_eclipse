@@ -70,7 +70,19 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          version="0.0.0"/>
 
    <plugin
-         id="org.erlide.kernel.debugger.otp"
+         id="org.erlide.kernel.debugger.otp.r15"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.erlide.kernel.debugger.otp.r16"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.erlide.kernel.debugger.otp.17"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
@@ -131,6 +143,13 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.erlide.dialyzer.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.branding"
          download-size="0"
          install-size="0"
          version="0.0.0"
