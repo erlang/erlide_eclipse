@@ -11,7 +11,7 @@
 -include("erlide_noparse.hrl").
 -include("erlide_search.hrl").
 
--type form() :: #attribute{} | #clause{} | #function{} | #other{}.
+-type form() :: #attribute{} | #clause{} | #function{} | #other{}.
 
 -spec parse([#token{}]) -> {[form()], [#token{}], [#ref{}]}.
 parse(Tokens) ->
@@ -397,7 +397,7 @@ get_refs([_ | Rest], Name, Arity, Acc) ->
 
 get_record_field_defs([], _) ->
     [];
-get_record_field_defs([{FieldName, {{_, _, Offset}, Length}, _Extra} | Rest],
+get_record_field_defs([{FieldName, {{_, _, Offset}, Length}, _Extra} | Rest],
                       RecordName) ->
     [make_ref(Offset, Length, #record_field_def{record=RecordName, name=FieldName},
               FieldName, ?ARI_RECORD_FIELD_DEF)
