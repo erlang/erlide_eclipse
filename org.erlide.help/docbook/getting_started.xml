@@ -42,7 +42,7 @@
                             <guimenuitem>Search for new features to install</guimenuitem>
                         </menuchoice>. In the dialog, choose <guibutton>New remote site</guibutton>
                         and enter <userinput>Erlide</userinput> as name and <userinput>
-                            http://erlide.org/update</userinput> as URL. Follow the dialogs with the
+                            http://download.erlide.org/update</userinput> as URL. Follow the dialogs with the
                         obvious choices and in the end you will be asked to restart.</para>
                 </listitem>
                 <listitem>
@@ -51,7 +51,7 @@
                             <guisubmenu>Software Updates</guisubmenu>
                             <guimenuitem>Available software</guimenuitem>
                         </menuchoice>. In the dialog, choose <guibutton>Add site...</guibutton> and
-                        enter <userinput> http://erlide.org/update</userinput> as URL. Follow the
+                        enter <userinput> http://download.erlide.org/update</userinput> as URL. Follow the
                         dialogs with the obvious choices and in the end you will be asked to
                         restart.</para>
                 </listitem>
