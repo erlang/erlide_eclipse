@@ -14,12 +14,14 @@ import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
+import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
-import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideDebug {
@@ -326,29 +328,15 @@ public class ErlideDebug {
             final String value, final int stackFrameNo, final OtpErlangPid meta) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_DEBUG, "set_variable_value",
-                    "ssix", name, value, stackFrameNo + 1, meta);
-            if (res instanceof OtpErlangTuple) {
-                final OtpErlangTuple t = (OtpErlangTuple) res;
-                final OtpErlangObject o = t.elementAt(1);
-                if (o instanceof OtpErlangTuple) {
-                    final OtpErlangTuple t1 = (OtpErlangTuple) o;
-                    final OtpErlangObject o10 = t1.elementAt(0);
-                    final OtpErlangObject o11 = t1.elementAt(1);
-                    if (o10 instanceof OtpErlangAtom) {
-                        final OtpErlangAtom e = (OtpErlangAtom) o10;
-                        if (e.atomValue().equals("error")) {
-                            if (o11 instanceof OtpErlangAtom) {
-                                final OtpErlangAtom e11 = (OtpErlangAtom) o11;
-                                return e11.atomValue();
-                            } else if (o11 instanceof OtpErlangString) {
-                                final OtpErlangString s11 = (OtpErlangString) o11;
-                                return s11.stringValue();
-                            } else {
-                                return "error";
-                            }
-                        }
-                    }
+                    "ssix", name, value, stackFrameNo + 2, meta);
+            try {
+                final Bindings bind = ErlUtils.match("{eval_rsp, {'EXIT', Val}}", res);
+                if (bind == null) {
+                    return null;
                 }
+                final String err = bind.getAsString("Val");
+                return err;
+            } catch (final TermParserException e1) {
             }
             return null;
         } catch (final RpcException e) {
