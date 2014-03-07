@@ -236,8 +236,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
     }
 
     public boolean isReleaseCompatible(final RuntimeVersion other) {
-        return major == UNUSED || other.major == UNUSED || major == other.major
-                && isCompatible(other);
+        return major == UNUSED || other.major == UNUSED || isCompatible(other);
     }
 
     public RuntimeVersion asMinor() {

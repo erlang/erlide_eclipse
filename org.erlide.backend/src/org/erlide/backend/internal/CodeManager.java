@@ -13,19 +13,17 @@ package org.erlide.backend.internal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IContributor;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.api.ICodeBundle;
+import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeUtils;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
-import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
@@ -35,15 +33,16 @@ public class CodeManager {
     private final String backendName;
     private final List<PathItem> pathA;
     private final List<PathItem> pathZ;
-    private final List<ICodeBundle> registeredBundles;
+    private final RuntimeVersion version;
 
     // only to be called by Backend
-    CodeManager(final IRpcSite site, final String backendName) {
+    CodeManager(final IRpcSite site, final String backendName,
+            final RuntimeVersion version) {
         this.site = site;
         this.backendName = backendName;
+        this.version = version;
         pathA = new ArrayList<PathItem>();
         pathZ = new ArrayList<PathItem>();
-        registeredBundles = new ArrayList<ICodeBundle>();
     }
 
     public void addPath(final boolean usePathZ, final String path) {
@@ -64,24 +63,37 @@ public class CodeManager {
         }
     }
 
-    public void register(final ICodeBundle b) {
-        registeredBundles.add(b);
-        registerBundle(b);
+    public void register(final CodeContext context, final ICodeBundle bundle) {
+        if (bundle.getVersion() != RuntimeVersion.NO_VERSION
+                && bundle.getVersion().getMajor() != version.getMajor()) {
+            return;
+        }
+        final Collection<String> ebinDirs = bundle.getEbinDirs(context);
+        if (ebinDirs == null) {
+            ErlLogger.warn("Could not find 'ebin' in bundle %s.", bundle.getBundle());
+            return;
+        }
+        for (final String ebinDir : ebinDirs) {
+            final String localDir = ebinDir.replaceAll("\\\\", "/");
+            final boolean accessible = RuntimeUtils.isAccessibleDir(site, localDir);
+            final boolean embedded = ErlangCode.isEmbedded(site);
+            if (accessible && !embedded) {
+                ErlangCode.addPathA(site, localDir);
+            } else {
+                ErlLogger.debug("loading %s for %s", bundle.getBundle(), backendName);
+                loadCodeForBundle(context, bundle);
+            }
+        }
     }
 
-    public void unregister(final ICodeBundle bundle) {
+    public void unregister(final CodeContext context, final ICodeBundle bundle) {
         if (bundle == null) {
             return;
         }
-        registeredBundles.remove(bundle);
-        unloadPluginCode(bundle);
+        ErlLogger.debug("unloading %s for %s", bundle.getBundle(), backendName);
+        unloadCodeForBundle(context, bundle);
     }
 
-    /**
-     * @param moduleName
-     * @param beamPath
-     * @return boolean
-     */
     private boolean loadBeam(final String moduleName, final URL beamPath) {
         final OtpErlangBinary bin = BeamUtil.getBeamBinary(moduleName, beamPath);
         if (bin == null) {
@@ -90,50 +102,36 @@ public class CodeManager {
         return BeamLoader.loadBeam(site, moduleName, bin);
     }
 
-    private void loadPluginCode(final ICodeBundle p) {
-
-        final Bundle b = p.getBundle();
-
-        // TODO Do we have to also check any fragments?
-        // see FindSupport.findInFragments
-
-        final IConfigurationElement[] els = BackendUtils
-                .getCodepathConfigurationElements();
-        for (final IConfigurationElement el : els) {
-            final IContributor c = el.getContributor();
-            if ("beam_dir".equals(el.getName())
-                    && c.getName().equals(b.getSymbolicName())) {
-                final String dirPath = el.getAttribute("path");
-                @SuppressWarnings("rawtypes")
-                Enumeration e = null;
-                if (dirPath != null) {
-                    e = b.getEntryPaths(dirPath);
-                }
-                if (e == null) {
-                    ErlLogger.warn("Could not find Erlang code in plugin "
-                            + b.getSymbolicName());
-                    return;
-                }
-                while (e.hasMoreElements()) {
-                    final String s = (String) e.nextElement();
-                    final String beamModuleName = BackendUtils.getBeamModuleName(s);
-                    if (beamModuleName != null) {
-                        // ErlLogger.debug(" " + beamModuleName);
-                        try {
-                            final boolean ok = loadBeam(beamModuleName, b.getEntry(s));
-                            if (!ok) {
-                                ErlLogger.error("Could not load %s", beamModuleName);
-                            }
-                        } catch (final Exception ex) {
-                            ErlLogger.warn(ex);
-                        }
-                    }
+    private void loadCodeForBundle(final CodeContext context, final ICodeBundle bundle) {
+        final Collection<String> ebinDirs = bundle.getEbinDirs(context);
+        if (ebinDirs == null) {
+            return;
+        }
+        for (final String ebinDir : ebinDirs) {
+            final String beamModuleName = BackendUtils.getBeamModuleName(ebinDir);
+            if (beamModuleName != null) {
+                // ErlLogger.debug(" load " + beamModuleName);
+                final boolean ok = loadBeam(beamModuleName,
+                        bundle.getBundle().getEntry(ebinDir));
+                if (!ok) {
+                    ErlLogger.error("Could not load %s", beamModuleName);
                 }
             }
         }
+    }
 
-        // loadStubCode(b, reg);
-        // ErlLogger.debug("*done! loading plugin " + b.getSymbolicName());
+    private void unloadCodeForBundle(final CodeContext context, final ICodeBundle bundle) {
+        final Collection<String> ebinDirs = bundle.getEbinDirs(context);
+        if (ebinDirs == null) {
+            return;
+        }
+        for (final String ebinDir : ebinDirs) {
+            final String beamModuleName = BackendUtils.getBeamModuleName(ebinDir);
+            if (beamModuleName != null) {
+                // ErlLogger.debug(" unload " + beamModuleName);
+                unloadBeam(beamModuleName);
+            }
+        }
     }
 
     private boolean addPath(final List<PathItem> l, final String path) {
@@ -165,38 +163,6 @@ public class CodeManager {
         return false;
     }
 
-    private void registerBundle(final ICodeBundle p) {
-        final String externalPath = System.getProperty(p.getBundle().getSymbolicName()
-                + ".ebin");
-        if (externalPath != null) {
-            final boolean accessible = RuntimeUtils.isAccessibleDir(site, externalPath);
-            if (accessible) {
-                ErlangCode.addPathA(site, externalPath);
-                return;
-            }
-            ErlLogger.info("external code path %s for %s "
-                    + "is not accessible, using plugin code", externalPath, site,
-                    backendName);
-        }
-        final Collection<String> ebinDirs = p.getEbinDirs();
-        if (ebinDirs != null) {
-            for (final String ebinDir : ebinDirs) {
-                final String localDir = ebinDir.replaceAll("\\\\", "/");
-                final boolean accessible = RuntimeUtils.isAccessibleDir(site, localDir);
-                final boolean embedded = ErlangCode.isEmbedded(site);
-                if (accessible && !embedded) {
-                    ErlangCode.addPathA(site, localDir);
-                } else {
-                    ErlLogger.debug("loading %s for %s", p.getBundle(), backendName);
-                    loadPluginCode(p);
-                }
-            }
-        } else {
-            ErlLogger.warn("Could not find 'ebin' in bundle %s.", p.getBundle());
-            loadPluginCode(p);
-        }
-    }
-
     private PathItem findItem(final List<PathItem> l, final String p) {
         final Iterator<PathItem> i = l.iterator();
         while (i.hasNext()) {
@@ -206,20 +172,6 @@ public class CodeManager {
             }
         }
         return null;
-    }
-
-    private void unloadPluginCode(final ICodeBundle p) {
-        final Bundle b = p.getBundle();
-        @SuppressWarnings("rawtypes")
-        Enumeration e;
-        e = b.getEntryPaths("/ebin");
-        while (e.hasMoreElements()) {
-            final String s = (String) e.nextElement();
-            final String beamModuleName = BackendUtils.getBeamModuleName(s);
-            if (beamModuleName != null) {
-                unloadBeam(beamModuleName);
-            }
-        }
     }
 
     private void unloadBeam(final String moduleName) {

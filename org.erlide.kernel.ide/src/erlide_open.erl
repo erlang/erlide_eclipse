@@ -1,6 +1,6 @@
 %% Author: jakob
 %% Created: Mar 23, 2006
-%% Description: TODO: Add description to erlide_open
+%% Description:
 -module(erlide_open).
 -author('jakobce@gmail.com').
 
@@ -205,7 +205,7 @@ consider_macro_def([#token{kind='('} | Rest]) ->
 consider_macro_def(_) ->
     false.
 
-consider_record_field_ref([#token{kind='{'}, #token{kind=atom, value=Record}, #token{kind='#'} | _]) ->
+consider_record_field_ref([#token{kind='{'}, #token{kind=atom, value=Record}, #token{kind='#'} | _]) ->
     {true, Record};
 consider_record_field_ref([_ | Rest]) ->
     consider_record_field_ref(Rest);
@@ -556,6 +556,3 @@ find_var([{var, _, Var} = T | _], Var) ->
     T;
 find_var([_ | Rest], Var) ->
     find_var(Rest, Var).
-
-
-

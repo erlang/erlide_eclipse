@@ -16,13 +16,25 @@
 %%
 -export([check_and_renew_cached/5, check_and_renew_cached/6, check_cached/3, renew_cached/4, read_cache_date_and_version/1, read_cache/1]).
 -export([pack/1, unpack/1, join/2]).
--export([reverse2/1]).
+-export([load/2, reverse2/1]).
 -export([get_between_strs/3, get_all_between_strs/3, get_from_str/2, get_upto_str/2 ,split_lines/1]).
 -export([get_auto_imported/1, add_auto_imported/1]).
 
 %%
 %% API Functions
 %%
+
+load(Mod, All) ->
+    case code:is_sticky(Mod) of
+  true ->
+      ok;
+  false ->
+      if All ->
+       c:nl(Mod);
+         true ->
+       c:l(Mod)
+      end
+    end.
 
 -define(SEP, ";").
 

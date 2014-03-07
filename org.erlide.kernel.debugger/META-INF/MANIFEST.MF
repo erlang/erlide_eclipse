@@ -6,4 +6,4 @@ Bundle-Version: 0.24.4.qualifier
 Bundle-Vendor: Erlide project
 Require-Bundle: org.erlide.core,
  org.erlide.kernel.common,
- org.erlide.kernel.debugger.otp
+ org.erlide.kernel.debugger.otp.r15

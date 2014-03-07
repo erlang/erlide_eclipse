@@ -18,6 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
+            <element ref="otp_version" minOccurs="0" maxOccurs="1"/>
             <element ref="beam_dir" minOccurs="1" maxOccurs="unbounded"/>
             <element ref="init" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
@@ -60,22 +61,19 @@
          <attribute name="context" use="required">
             <annotation>
                <documentation>
-                  Specifies in which context the code is to be loaded. 
+                  Specifies in which context the code is to be loaded.
 &lt;ul&gt;
-&lt;li&gt; &quot;ide&quot; means it is for general ide use. &lt;/li&gt;
-&lt;li&gt; &quot;builder&quot; means that the code will be loaded on build backends. &lt;/li&gt;
-&lt;li&gt;&quot;any&quot; means all contexts, generic utilities. &lt;/li&gt;
-&lt;li&gt;&quot;debugger&quot; means in execution backends (including debugger)&lt;/li&gt;
+&lt;li&gt;&quot;common&quot;: all contexts, generic utilities. &lt;/li&gt;
+&lt;li&gt; &quot;ide&quot;: for general ide use (includeing builder). &lt;/li&gt;
+&lt;li&gt;&quot;debugger&quot;: debugging facilities, load on execution backends in debug mode.&lt;/li&gt;
 &lt;/ul&gt;
                </documentation>
             </annotation>
             <simpleType>
                <restriction base="string">
+                  <enumeration value="common">
+                  </enumeration>
                   <enumeration value="ide">
-                  </enumeration>
-                  <enumeration value="builder">
-                  </enumeration>
-                  <enumeration value="any">
                   </enumeration>
                   <enumeration value="debugger">
                   </enumeration>
@@ -105,6 +103,33 @@
                   the function
                </documentation>
             </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="otp_version">
+      <annotation>
+         <documentation>
+            Describe which OTP version was used to compile the code in this bundle.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="value" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="R15">
+                  </enumeration>
+                  <enumeration value="R16">
+                  </enumeration>
+                  <enumeration value="17">
+                  </enumeration>
+               </restriction>
+            </simpleType>
          </attribute>
       </complexType>
    </element>

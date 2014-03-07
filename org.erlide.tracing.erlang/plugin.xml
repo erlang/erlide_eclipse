@@ -4,7 +4,7 @@
    <extension
          point="org.erlide.backend.codepath">
       <beam_dir
-            context="builder"
+            context="common"
             path="/ebin">
       </beam_dir>
    </extension>

@@ -25,7 +25,8 @@
 %%
 -export([start_debug/1,
          attached/2,
-         send_started/1]).
+         send_started/1,
+         is_running/0]).
 -export([line_breakpoint/3,
          resume/1,
          suspend/1,
@@ -53,6 +54,14 @@
 %%
 %% API Functions
 %%
+
+is_running() ->
+    case whereis(dbg_mon) of
+        undefined ->
+            false;
+        _ ->
+            true
+    end.
 
 %% copied from IErlDebugConstants
 %% final int DISTRIBUTED_DEBUG_FLAG = 1;

@@ -63,7 +63,8 @@ public class BeamUtil {
         }
     }
 
-    public static Collection<String> getPaths(final String name, final Bundle b) {
+    public static Collection<String> getPathsFromBundleAndFragments(final String name,
+            final Bundle b) {
         final List<String> result = Lists.newArrayList();
         final String entryName = name.replace(" ", "%20");
         URL entry = b.getEntry(entryName);
@@ -90,7 +91,7 @@ public class BeamUtil {
         return result;
     }
 
-    private static String getPathFromUrl(final URL entry) {
+    public static String getPathFromUrl(final URL entry) {
         URLConnection connection;
         try {
             connection = entry.openConnection();
