@@ -328,7 +328,7 @@ public class ErlideDebug {
             final String value, final int stackFrameNo, final OtpErlangPid meta) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_DEBUG, "set_variable_value",
-                    "ssix", name, value, stackFrameNo + 2, meta);
+                    "ssix", name, value, stackFrameNo + 4, meta);
             try {
                 final Bindings bind = ErlUtils.match("{eval_rsp, {'EXIT', Val}}", res);
                 if (bind == null) {

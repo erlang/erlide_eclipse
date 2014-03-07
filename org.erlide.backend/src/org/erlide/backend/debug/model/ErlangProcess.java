@@ -11,6 +11,7 @@
 package org.erlide.backend.debug.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -30,8 +31,12 @@ import org.erlide.backend.internal.BackendPlugin;
 import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlangFunctionCall;
+import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -219,21 +224,30 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     private void addStackTrace(final OtpErlangTuple savedStackTrace) {
-        final OtpErlangTuple t = (OtpErlangTuple) savedStackTrace.elementAt(2);
-        final OtpErlangTuple t2 = (OtpErlangTuple) t.elementAt(1);
-        final OtpErlangList stackTrace = (OtpErlangList) t2.elementAt(1);
-        for (int i = 2, n = stackTrace.arity(); i < n; ++i) {
-            final OtpErlangTuple frame = (OtpErlangTuple) stackTrace.elementAt(i);
-            final OtpErlangAtom m = (OtpErlangAtom) frame.elementAt(0);
-            final OtpErlangAtom f = (OtpErlangAtom) frame.elementAt(1);
-            final OtpErlangLong a = (OtpErlangLong) frame.elementAt(2);
-            try {
-                stackFrames.add(new ErlangUninterpretedStackFrame(m.atomValue(),
-                        new ErlangFunction(f.atomValue(), a.intValue()), this,
-                        getDebugTarget()));
-            } catch (final OtpErlangRangeException e) {
-                ErlLogger.error(e);
+        try {
+            final Bindings bind = ErlUtils.match("{saved_stacktrace, _,STrace}",
+                    savedStackTrace);
+            if (bind != null) {
+                final Collection<OtpErlangObject> trace = bind.getList("STrace");
+                for (final OtpErlangObject oframe : trace) {
+                    final OtpErlangTuple frame = (OtpErlangTuple) oframe;
+                    final OtpErlangAtom m = (OtpErlangAtom) frame.elementAt(0);
+                    final OtpErlangAtom f = (OtpErlangAtom) frame.elementAt(1);
+                    final OtpErlangLong a = (OtpErlangLong) frame.elementAt(2);
+                    try {
+                        stackFrames.add(new ErlangUninterpretedStackFrame(m.atomValue(),
+                                new ErlangFunction(f.atomValue(), a.intValue()), this,
+                                getDebugTarget()));
+                    } catch (final OtpErlangRangeException e) {
+                        ErlLogger.error(e);
+                    }
+                }
             }
+        } catch (final TermParserException e1) {
+            // ignore
+            ErlLogger.error(e1);
+        } catch (final OtpErlangException e1) {
+            ErlLogger.error(e1);
         }
     }
 
