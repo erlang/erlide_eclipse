@@ -209,6 +209,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
         }
         OtpErlangObject savedStackTrace = null;
         // BindingsImpl b = ErlUtils.match("{ST, F:l, }", stackAndBindings);
+        // System.out.println("STACK=" + stackAndBindings);
         OtpErlangObject el0 = stackAndBindings.elementAt(0);
         if (el0 instanceof OtpErlangTuple) {
             final OtpErlangTuple t = (OtpErlangTuple) el0;
@@ -259,7 +260,8 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
             final OtpErlangList erlStackFrames, final OtpErlangList bs) {
         stackFrames = new ArrayList<IStackFrame>();
         final IDebugTarget target = getDebugTarget();
-        stackFrames.add(new ErlangStackFrame(module, this, target, line, null, bs, 0));
+        stackFrames.add(new ErlangStackFrame(module, this, target, line, null, bs,
+                erlStackFrames.arity() + 2));
         for (final OtpErlangObject o : erlStackFrames) {
             final OtpErlangTuple t = (OtpErlangTuple) o;
             final OtpErlangTuple mfa;

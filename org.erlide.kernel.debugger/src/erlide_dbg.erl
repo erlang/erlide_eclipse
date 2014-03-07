@@ -85,7 +85,6 @@ init(Pid, JPid, Meta, _BackTrace) ->
     loop(State1).
 
 loop(#state{meta=Meta} = State) ->
-erlang:display({"****",Meta}),
     receive
 
 %%   Command = ignore

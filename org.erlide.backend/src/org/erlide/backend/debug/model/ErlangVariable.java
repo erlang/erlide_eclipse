@@ -86,11 +86,11 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
         }
         final ErlangDebugTarget edt = getErlangDebugTarget();
         final String err = ErlideDebug.setVariableValue(edt.getBackend().getRpcSite(),
-                name, expression, stackFrameNo, process.getMeta());
+                name, expression, stackFrameNo - 1, process.getMeta());
         if (err != null) {
             // restore old value
             ErlideDebug.setVariableValue(edt.getBackend().getRpcSite(), name,
-                    value.toString(), stackFrameNo, process.getMeta());
+                    value.toString(), stackFrameNo - 1, process.getMeta());
             throw new DebugException(new Status(IStatus.ERROR, BackendPlugin.PLUGIN_ID,
                     DebugException.TARGET_REQUEST_FAILED, "Bad expression", null));
         }
