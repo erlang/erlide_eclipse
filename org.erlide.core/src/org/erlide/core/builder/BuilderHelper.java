@@ -555,7 +555,7 @@ public final class BuilderHelper {
             final IBackendManager backendManager = BackendCore.getBackendManager();
             for (final IBackend b : backendManager.getExecutionBackends(project)) {
                 ErlLogger.debug(":: loading %s in %s", module, b.getName());
-                b.getRpcSite().call(ERLIDE_BUILDER, "load", "ao", module,
+                b.getRpcSite().call("erlide_util", "load", "ao", module,
                         b.getData().shouldLoadOnAllNodes());
                 backendManager.moduleLoaded(b, project, module);
             }
