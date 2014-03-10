@@ -82,20 +82,4 @@ public class OpenBrowserUtil {
         });
     }
 
-    /**
-     * DO NOT REMOVE, used in a product.
-     * 
-     * @param url
-     *            the URL
-     * @param display
-     *            the display
-     * @param title
-     *            the title
-     * @deprecated As of 3.6, replaced by {@link #open(URL, Display)}
-     */
-    @Deprecated
-    public static void open(final URL url, final Display display, final String title) {
-        open(url, display);
-    }
-
 }

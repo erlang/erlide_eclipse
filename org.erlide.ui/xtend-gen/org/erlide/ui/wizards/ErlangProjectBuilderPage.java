@@ -297,53 +297,57 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
   
   public String getDescription(final BuilderTool builder) {
     String _switchResult = null;
-    switch (builder) {
-      case INTERNAL:
-        StringConcatenation _builder = new StringConcatenation();
-        _builder.append(": let erlide do the compiling.");
-        _switchResult = _builder.toString();
-        break;
-      case MAKE:
-        StringConcatenation _builder_1 = new StringConcatenation();
-        _builder_1.append(": choose this if there is a Makefile (even if it calls rebar or emake).");
-        _switchResult = _builder_1.toString();
-        break;
-      case EMAKE:
-        StringConcatenation _builder_2 = new StringConcatenation();
-        _builder_2.append(": straight Emake.");
-        _switchResult = _builder_2.toString();
-        break;
-      case REBAR:
-        StringConcatenation _builder_3 = new StringConcatenation();
-        _builder_3.append(": straight rebar.");
-        _switchResult = _builder_3.toString();
-        break;
-      default:
-        break;
+    if (builder != null) {
+      switch (builder) {
+        case INTERNAL:
+          StringConcatenation _builder = new StringConcatenation();
+          _builder.append(": let erlide do the compiling.");
+          _switchResult = _builder.toString();
+          break;
+        case MAKE:
+          StringConcatenation _builder_1 = new StringConcatenation();
+          _builder_1.append(": choose this if there is a Makefile (even if it calls rebar or emake).");
+          _switchResult = _builder_1.toString();
+          break;
+        case EMAKE:
+          StringConcatenation _builder_2 = new StringConcatenation();
+          _builder_2.append(": straight Emake.");
+          _switchResult = _builder_2.toString();
+          break;
+        case REBAR:
+          StringConcatenation _builder_3 = new StringConcatenation();
+          _builder_3.append(": straight rebar.");
+          _switchResult = _builder_3.toString();
+          break;
+        default:
+          break;
+      }
     }
     return _switchResult;
   }
   
   public String getDescription(final ProjectConfigType config) {
     String _switchResult = null;
-    switch (config) {
-      case INTERNAL:
-        StringConcatenation _builder = new StringConcatenation();
-        _builder.append("manually (on next page)");
-        _switchResult = _builder.toString();
-        break;
-      case EMAKE:
-        StringConcatenation _builder_1 = new StringConcatenation();
-        _builder_1.append("in Emakefile");
-        _switchResult = _builder_1.toString();
-        break;
-      case REBAR:
-        StringConcatenation _builder_2 = new StringConcatenation();
-        _builder_2.append("in rebar.config");
-        _switchResult = _builder_2.toString();
-        break;
-      default:
-        break;
+    if (config != null) {
+      switch (config) {
+        case INTERNAL:
+          StringConcatenation _builder = new StringConcatenation();
+          _builder.append("manually (on next page)");
+          _switchResult = _builder.toString();
+          break;
+        case EMAKE:
+          StringConcatenation _builder_1 = new StringConcatenation();
+          _builder_1.append("in Emakefile");
+          _switchResult = _builder_1.toString();
+          break;
+        case REBAR:
+          StringConcatenation _builder_2 = new StringConcatenation();
+          _builder_2.append("in rebar.config");
+          _switchResult = _builder_2.toString();
+          break;
+        default:
+          break;
+      }
     }
     return _switchResult;
   }

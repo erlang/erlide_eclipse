@@ -293,9 +293,7 @@ gui_cmd({step_return, MetaPid}, State) ->
     Res = dbg_icmd:finish(MetaPid),
     {Res, State};
 gui_cmd({set_variable_value, {Variable, Value, SP, MetaPid}}, State) ->
-    log({?MODULE, ?LINE, Variable, Value}),
     Res = dbg_icmd:set_variable_value(MetaPid, Variable, Value, SP),
-    log({?MODULE, ?LINE, Res}),
     {Res, State};
 gui_cmd({eval, {Expr, MetaPid}}, State) ->
     Res = dbg_icmd:eval(MetaPid, {dummy_mod, Expr}),

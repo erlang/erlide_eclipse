@@ -31,7 +31,11 @@ public class OpenResult {
             return; // not a call, ignore
         }
         final OtpErlangTuple openTuple = (OtpErlangTuple) res;
-        final String kind = ((OtpErlangAtom) openTuple.elementAt(0)).atomValue();
+        final OtpErlangObject tag = openTuple.elementAt(0);
+        if (!(tag instanceof OtpErlangAtom)) {
+            return;
+        }
+        final String kind = ((OtpErlangAtom) tag).atomValue();
         try {
             if ("external".equals(kind)) {
                 final OtpErlangAtom element = (OtpErlangAtom) openTuple.elementAt(1);

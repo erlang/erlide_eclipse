@@ -94,28 +94,6 @@ start_dialyze(JPid, Files, PltFiles, Includes, FromSource, NoCheckPLT) ->
 %%     end.
 
 
-dialyze(Files, Plts, Includes, FromSource, NoCheckPLT, x) ->
-    From = case FromSource of
-               true -> src_code;
-               false -> byte_code
-           end,
-    PltOption = case Plts of
-                    [Plt] ->
-                        {init_plt, Plt};
-                    _ ->
-                        {plts, Plts}
-                end,
-    case catch dialyzer:run([{files_rec, Files},
-                             PltOption,
-                             {from, From},
-                             {include_dirs, Includes},
-                             {check_plt, not NoCheckPLT}]) of
-        {_ErrorOrExit, E} ->
-            {error, flat(E)};
-        Result ->
-            Result
-    end.
-
 %% format_warning(Msg) ->
 %%     dialyzer:format_warning(Msg).
 
@@ -443,7 +421,7 @@ find_file(Paths, File) ->
 
 find_file([], File, _Name) ->
     File;
-find_file([Dir | Rest], File, Name) ->
+find_file([Dir | Rest], File, Name) ->
     NewFile = filename:join([Dir, Name]),
     case filelib:is_regular(NewFile) of
         true ->

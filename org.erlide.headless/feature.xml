@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.headless"
       label="Erlang headless support"
-      version="0.26.1.qualifier"
+      version="0.27.0.qualifier"
       provider-name="erlide.org"
       license-feature="org.erlide.licenses"
       license-feature-version="1.0.0.qualifier">
@@ -34,105 +34,68 @@ is available from http://www.eclipse.org/legal/epl-v10.html
    </license>
 
    <url>
-      <update label="Erlide main update site" url="http://erlide.org/update/"/>
+      <update label="Erlide main update site" url="http://download.erlide.org/update/"/>
    </url>
 
    <plugin
          id="org.erlide.core"
-         download-size="0"
-         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.runtime"
-         download-size="0"
-         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.kernel.builder"
-         download-size="0"
-         install-size="0"
          version="0.0.0"/>
 
    <plugin
          id="org.erlide.kernel.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.kernel.debugger"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.kernel.debugger.otp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.kernel.ide"
-         download-size="0"
-         install-size="0"
          version="0.0.0"/>
 
    <plugin
          id="org.erlide.libs"
-         download-size="0"
-         install-size="0"
          version="0.0.0"/>
 
    <plugin
          id="org.erlide.backend"
-         download-size="0"
-         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.model"
-         download-size="0"
-         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.util"
-         download-size="0"
-         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.util_eclipse"
-         download-size="0"
-         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.model.api"
-         download-size="0"
-         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.core.api"
-         download-size="0"
-         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.dialyzer.core"
-         download-size="0"
-         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.branding"
          version="0.0.0"
          unpack="false"/>
 

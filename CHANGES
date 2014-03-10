@@ -1,3 +1,13 @@
+List of user visible changes between 0.26.1 and 0.27.0 (20140310)
+
+ee654c8 debugger: update debugger code for r15 and r16
+ade0472 debugger: update to latest from r17
+20dbf7b update jenkins tooling for otp 17
+f2328f0 make code loading from plugins respect code context and version
+ce49d11 dispose backends only once
+6393817 run initialCall only on managed backends
+2490ea8 dialyzer: can run with both long and short names
+
 List of user visible changes between 0.26.0 and 0.26.1 (20140305)
 
 0bee7b6 1332 - debugger: hangs when started multiple times
