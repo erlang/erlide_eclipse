@@ -337,16 +337,6 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     }
 
     /**
-     * @see IErlModelStatus#getString()
-     * @deprecated
-     */
-    @Override
-    @Deprecated
-    public String getString() {
-        return fString;
-    }
-
-    /**
      * @see IErlModelStatus#isDoesNotExist()
      */
     @Override
