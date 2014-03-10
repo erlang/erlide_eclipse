@@ -11,6 +11,7 @@ package org.erlide.util.erlang;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpOutputStream;
+import com.google.common.base.Preconditions;
 
 /**
  * Provides a Java representation of Erlang variables.
@@ -26,6 +27,8 @@ public class OtpPatternVariable extends OtpErlangObject {
     private Signature sign;
 
     public OtpPatternVariable(final String n) {
+        Preconditions.checkNotNull(n);
+        Preconditions.checkArgument(!n.isEmpty());
         final String[] v = n.split(":");
         name = v[0];
         if (v.length > 1) {

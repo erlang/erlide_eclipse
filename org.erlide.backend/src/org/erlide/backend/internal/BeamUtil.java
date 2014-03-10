@@ -29,16 +29,15 @@ public class BeamUtil {
 
     public static OtpErlangBinary getBeamBinary(final String moduleName,
             final URL beamPath) {
+        FileInputStream s;
         try {
-            final FileInputStream s = (FileInputStream) beamPath.openStream();
-            final int sz = (int) s.getChannel().size();
-            final byte[] buf = new byte[sz];
+            s = (FileInputStream) beamPath.openStream();
             try {
-                s.read(buf);
-                return new OtpErlangBinary(buf);
+                return getBeamBinary(moduleName, s);
             } finally {
                 s.close();
             }
+
         } catch (final IOException e) {
             ErlLogger.warn(e);
             return null;
@@ -47,16 +46,28 @@ public class BeamUtil {
 
     public static OtpErlangBinary getBeamBinary(final String moduleName,
             final IPath beamPath) {
+        FileInputStream s;
         try {
-            final FileInputStream s = new FileInputStream(beamPath.toPortableString());
-            final int sz = (int) s.getChannel().size();
-            final byte[] buf = new byte[sz];
+            s = new FileInputStream(beamPath.toPortableString());
             try {
-                s.read(buf);
-                return new OtpErlangBinary(buf);
+                return getBeamBinary(moduleName, s);
             } finally {
                 s.close();
             }
+
+        } catch (final IOException e) {
+            ErlLogger.warn(e);
+            return null;
+        }
+    }
+
+    private static OtpErlangBinary getBeamBinary(final String moduleName,
+            final FileInputStream stream) {
+        try {
+            final int sz = (int) stream.getChannel().size();
+            final byte[] buf = new byte[sz];
+            stream.read(buf);
+            return new OtpErlangBinary(buf);
         } catch (final IOException e) {
             ErlLogger.warn(e);
             return null;

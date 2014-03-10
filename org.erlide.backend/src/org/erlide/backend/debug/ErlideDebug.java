@@ -138,17 +138,6 @@ public class ErlideDebug {
         return false;
     }
 
-    public static boolean isSystemProcess(final IRpcSite backend, final OtpErlangPid pid) {
-        boolean res = false;
-        try {
-            final OtpErlangAtom eres = (OtpErlangAtom) backend.call("pman_process",
-                    "is_system_process", "s", pid);
-            res = Boolean.parseBoolean(eres.atomValue());
-        } catch (final Exception e) {
-        }
-        return res;
-    }
-
     @SuppressWarnings("boxing")
     public static void addDeleteLineBreakpoint(final IBackend backend,
             final String module, final int line, final int action) {
@@ -403,6 +392,10 @@ public class ErlideDebug {
         } catch (final RpcException e) {
             ErlLogger.error(e);
         }
+        return false;
+    }
+
+    public static boolean isSystemProcess(final IRpcSite rpcSite, final OtpErlangPid fPid) {
         return false;
     }
 }
