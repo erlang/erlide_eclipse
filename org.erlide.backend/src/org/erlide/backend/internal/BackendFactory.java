@@ -19,6 +19,7 @@ import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendManager;
+import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.runtime.ErlRuntimeFactory;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
@@ -80,7 +81,8 @@ public class BackendFactory implements IBackendFactory {
         final IBackendManager backendManager = BackendCore.getBackendManager();
         b = data.isInternal() ? new InternalBackend(data, runtime, backendManager)
                 : new ExternalBackend(data, runtime, backendManager);
-        b.initialize(backendManager.getCodeBundles().values());
+
+        b.initialize(data.getContext(), backendManager.getCodeBundles());
         return b;
     }
 
@@ -96,6 +98,7 @@ public class BackendFactory implements IBackendFactory {
                 : HostnameUtils.canUseLongNames());
         result.setInternal(true);
         result.setReportErrors(true);
+        result.setContext(CodeContext.IDE);
         return result;
     }
 
@@ -113,6 +116,7 @@ public class BackendFactory implements IBackendFactory {
         result.setLongName(HostnameUtils.canUseLongNames());
         result.setInternal(true);
         result.setReportErrors(true);
+        result.setContext(CodeContext.IDE);
         return result;
     }
 
@@ -130,7 +134,8 @@ public class BackendFactory implements IBackendFactory {
     }
 
     private boolean runtimeHomeDirExists(final RuntimeInfo runtime) {
-        return new File(runtime.getOtpHome()).exists();
+        final String otpHome = runtime.getOtpHome();
+        return otpHome != null && new File(otpHome).exists();
     }
 
     private String getIdeNodeName() {

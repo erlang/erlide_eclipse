@@ -37,6 +37,7 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.HostnameUtils;
 
 import com.google.common.collect.Sets;
 
@@ -91,6 +92,7 @@ public class RunDialyzerHandler extends AbstractHandler {
             data.setDebug(false);
             data.setConsole(false);
             data.setInternal(true);
+            data.setLongName(HostnameUtils.canUseLongNames());
             return BackendCore.getBackendManager().createExecutionBackend(data);
         }
     }
@@ -175,8 +177,9 @@ public class RunDialyzerHandler extends AbstractHandler {
     private Set<IErlProject> collectProjectsFromModules(final Set<IErlModule> modules) {
         final Set<IErlProject> projects = Sets.newHashSet();
         for (final IErlModule module : modules) {
-            projects.add(ErlangEngine.getInstance().getModelUtilService()
-                    .getProject(module));
+            final IErlProject project = ErlangEngine.getInstance().getModelUtilService()
+                    .getProject(module);
+            projects.add(project);
         }
         return projects;
     }

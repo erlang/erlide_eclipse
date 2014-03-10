@@ -61,7 +61,7 @@ initial_parse(ScannerName, ModuleFileName, InitialText, StateDir, UseCache,
     end.
 
 -spec reparse(atom(), boolean()) ->
-          {ok, #model{}, cached | renewing | dont_use_cache, [#ref{}]}
+          {ok, #model{}, cached | renewing | dont_use_cache, [#ref{}]}
               | {error, term(), term()}.
 reparse(ScannerName, UpdateSearchServer) ->
     try
@@ -90,12 +90,12 @@ get_module_refs(ScannerName, ModulePath, StateDir, UpdateSearchServer) ->
                               _ ->
                                   ""
                           end,
-            {ok, _, _, Refs} = initial_parse(ScannerName, ModulePath, InitialText,
+            {ok, _, _, Refs} = initial_parse(ScannerName, ModulePath, InitialText,
                                              StateDir, true, UpdateSearchServer),
             Refs
     end.
 
--spec remove_cache_files(atom(), string) -> ok | {error, term()}.
+-spec remove_cache_files(atom(), string) -> ok | {error, term()}.
 %% remove all cache files for an erlang module in erlide
 remove_cache_files(ScannerName, StateDir) ->
     BaseName = filename:join(StateDir, atom_to_list(ScannerName)),

@@ -29,16 +29,15 @@ public class BeamUtil {
 
     public static OtpErlangBinary getBeamBinary(final String moduleName,
             final URL beamPath) {
+        FileInputStream s;
         try {
-            final FileInputStream s = (FileInputStream) beamPath.openStream();
-            final int sz = (int) s.getChannel().size();
-            final byte[] buf = new byte[sz];
+            s = (FileInputStream) beamPath.openStream();
             try {
-                s.read(buf);
-                return new OtpErlangBinary(buf);
+                return getBeamBinary(moduleName, s);
             } finally {
                 s.close();
             }
+
         } catch (final IOException e) {
             ErlLogger.warn(e);
             return null;
@@ -47,23 +46,36 @@ public class BeamUtil {
 
     public static OtpErlangBinary getBeamBinary(final String moduleName,
             final IPath beamPath) {
+        FileInputStream s;
         try {
-            final FileInputStream s = new FileInputStream(beamPath.toPortableString());
-            final int sz = (int) s.getChannel().size();
-            final byte[] buf = new byte[sz];
+            s = new FileInputStream(beamPath.toPortableString());
             try {
-                s.read(buf);
-                return new OtpErlangBinary(buf);
+                return getBeamBinary(moduleName, s);
             } finally {
                 s.close();
             }
+
         } catch (final IOException e) {
             ErlLogger.warn(e);
             return null;
         }
     }
 
-    public static Collection<String> getPaths(final String name, final Bundle b) {
+    private static OtpErlangBinary getBeamBinary(final String moduleName,
+            final FileInputStream stream) {
+        try {
+            final int sz = (int) stream.getChannel().size();
+            final byte[] buf = new byte[sz];
+            stream.read(buf);
+            return new OtpErlangBinary(buf);
+        } catch (final IOException e) {
+            ErlLogger.warn(e);
+            return null;
+        }
+    }
+
+    public static Collection<String> getPathsFromBundleAndFragments(final String name,
+            final Bundle b) {
         final List<String> result = Lists.newArrayList();
         final String entryName = name.replace(" ", "%20");
         URL entry = b.getEntry(entryName);
@@ -90,7 +102,7 @@ public class BeamUtil {
         return result;
     }
 
-    private static String getPathFromUrl(final URL entry) {
+    public static String getPathFromUrl(final URL entry) {
         URLConnection connection;
         try {
             connection = entry.openConnection();

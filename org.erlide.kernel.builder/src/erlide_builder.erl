@@ -19,7 +19,6 @@
      compile/1,
      compile/3,
      compile/4,
-     load/2,
      compile_yrl/2,
      code_clash/0,
      source_clash/1,
@@ -73,18 +72,6 @@ format_compile_msg(L, Marker) when is_list(L) ->
   lists:flatten([format_compile_msg(X, Marker) || X <- L]);
 format_compile_msg({File, L}, Marker) ->
   [{Ln, File, iolist_to_binary(M:format_error(D)), Marker} || {Ln, M, D} <- L].
-
-load(Mod, All) ->
-    case code:is_sticky(Mod) of
-  true ->
-      ok;
-  false ->
-      if All ->
-       c:nl(Mod);
-         true ->
-       c:l(Mod)
-      end
-    end.
 
 mk_includes(L) ->
   [{i, X} || X <- L].

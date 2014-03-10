@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -63,18 +63,6 @@ public interface IErlModelStatus extends IStatus {
      * @see ErlModelStatusConstants#RELATIVE_PATH
      */
     IPath getPath();
-
-    /**
-     * Returns the string associated with the failure (see specification of the
-     * status code), or <code>null</code> if no string is related to this
-     * particular status code.
-     * 
-     * @return the string culprit, or <code>null</code> if none
-     * @see ErlModelStatusConstants
-     * @deprecated Use IStatus#getMessage instead
-     */
-    @Deprecated
-    String getString();
 
     /**
      * Returns whether this status indicates that a Erlang model element does
