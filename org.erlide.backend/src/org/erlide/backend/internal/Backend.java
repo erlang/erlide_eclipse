@@ -241,8 +241,8 @@ public abstract class Backend implements IStreamListener, IBackend {
                 // TODO unloadBeamsFromDir(outDir); ?
             }
         } catch (final Exception e) {
-            // can happen when shutting down
-            ErlLogger.warn(e);
+            // can happen when shutting down, ignore
+            // ErlLogger.warn(e);
         }
     }
 
