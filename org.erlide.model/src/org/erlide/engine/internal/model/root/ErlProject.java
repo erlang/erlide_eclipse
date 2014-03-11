@@ -711,15 +711,18 @@ public class ErlProject extends Openable implements IErlProject,
         node.put(CONFIG_TYPE_TAG, getConfigType().name());
         try {
             node.flush();
-        } catch (final BackingStoreException e) {
+        } catch (final Exception e) {
+            ErlLogger.debug(e);
             // ignore?
         }
     }
 
     @Override
     public void setConfigType(final ProjectConfigType config) {
-        configType = config;
-        storeCoreProperties();
+        if (configType != config) {
+            configType = config;
+            storeCoreProperties();
+        }
     }
 
     @Override
@@ -800,6 +803,7 @@ public class ErlProject extends Openable implements IErlProject,
         return getConfigType().matchTool(builderProperties.getBuilderTool());
     }
 
+    @Override
     public BuilderProperties getBuilderProperties() {
         if (builderProperties == null) {
             loadBuilderProperties();
