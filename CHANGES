@@ -1,3 +1,7 @@
+List of user visible changes between 0.27.0 and 0.27.1 (20140311)
+
+50df998 move erlang files to kernel.common
+
 List of user visible changes between 0.26.1 and 0.27.0 (20140310)
 
 ee654c8 debugger: update debugger code for r15 and r16
