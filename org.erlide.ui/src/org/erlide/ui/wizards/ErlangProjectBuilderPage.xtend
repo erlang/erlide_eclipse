@@ -18,10 +18,9 @@ import org.erlide.engine.model.root.NewProjectData
 import org.erlide.engine.model.root.ProjectConfigType
 import org.erlide.engine.model.root.ProjectPreferencesConstants
 import org.erlide.runtime.runtimeinfo.RuntimeVersion
+import org.erlide.util.SystemConfiguration
 
 import static extension org.erlide.ui.util.XtendSWTLib.*
-import java.awt.SystemColor
-import org.erlide.util.SystemConfiguration
 
 class ErlangProjectBuilderPage extends ErlangWizardPage {
 
@@ -30,6 +29,8 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
     protected Composite makeConfigComposite
 
     Combo runtimeCombo
+
+    Composite builderComposite
 
     protected new(String pageName, NewProjectData info) {
         super(pageName)
@@ -53,40 +54,51 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
             newControl(Label, SWT.NONE)[]
             newControl(Label, SWT.NONE)[]
             newControl(Label, SWT.NONE) [
-                text = 'Build system to be used:'
+                layoutData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1)
+                text = 'Build system to be used (disabled options will be implemented soon): '
             ]
-            val builderListener = new BuilderSelectionListener(info, this)
-            val builders = BuilderTool.values
-            builders.forEach [ builder |
-                newControl(Button, SWT.RADIO) [
-                    text = builder.toString.toLowerCase
-                    data = builder
-                    addSelectionListener(builderListener)
-                    selection = (builder === BuilderTool.INTERNAL)
-                    if (!SystemConfiguration.hasFeatureEnabled("erlide.newbuilders") &&
-                        builder !== BuilderTool.INTERNAL) {
-                        enabled = false
-                    }
+            builderComposite = newControl(Composite, SWT.NONE) [
+                layoutData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1)
+                layout = new GridLayout(3, false)
+                val builderListener = new BuilderSelectionListener(info, this)
+                val builders = BuilderTool.values
+                builders.forEach [ builder |
+                    newControl(Label, SWT.NONE) [
+                        text = "        "
+                    ]
+                    newControl(Button, SWT.RADIO) [
+                        text = builder.toString.toLowerCase
+                        data = builder
+                        addSelectionListener(builderListener)
+                        selection = (builder === BuilderTool.INTERNAL)
+                        if (!SystemConfiguration.hasFeatureEnabled("erlide.newbuilders") &&
+                            builder !== BuilderTool.INTERNAL) {
+                            enabled = false
+                        }
+                    ]
+                    newControl(Label, SWT.NONE) [
+                        text = getDescription(builder)
+                        if (!SystemConfiguration.hasFeatureEnabled("erlide.newbuilders") &&
+                            builder !== BuilderTool.INTERNAL) {
+                            enabled = false
+                        }
+                    ]
                 ]
-                newControl(Label, SWT.NONE) [
-                    text = getDescription(builder)
-                    if (!SystemConfiguration.hasFeatureEnabled("erlide.newbuilders") &&
-                        builder !== BuilderTool.INTERNAL) {
-                        enabled = false
-                    }
-                ]
-                newControl(Label, SWT.NONE)[]
+            ]
+            newControl(Label, SWT.NONE) [
+                layoutData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1)
+                text = 'The directory layout and the build configuration are described:'
             ]
             info.builder = BuilderTool.INTERNAL
             configComposite = newControl(Composite, SWT.NONE) [
                 layoutData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1)
                 layout = new GridLayout(3, false)
-                newControl(Label, SWT.NONE) [
-                    text = 'The directory layout and the build \nconfiguration are described'
-                ]
                 val configListener = new ConfigSelectionListener(info)
                 val configs = ProjectConfigType.values
                 configs.forEach [ config |
+                    newControl(Label, SWT.NONE) [
+                        text = "        "
+                    ]
                     newControl(Button, SWT.RADIO) [
                         text = getDescription(config)
                         data = config
@@ -97,7 +109,6 @@ class ErlangProjectBuilderPage extends ErlangWizardPage {
                             enabled = false
                         }
                     ]
-                    newControl(Label, SWT.NONE)[]
                     newControl(Label, SWT.NONE)[]
                 ]
             ]

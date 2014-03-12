@@ -43,6 +43,8 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
   
   private Combo runtimeCombo;
   
+  private Composite builderComposite;
+  
   protected ErlangProjectBuilderPage(final String pageName, final NewProjectData info) {
     super(pageName);
     this.info = info;
@@ -105,136 +107,148 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
             XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_5);
             final Procedure1<Label> _function_6 = new Procedure1<Label>() {
               public void apply(final Label it) {
-                it.setText("Build system to be used:");
+                GridData _gridData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
+                it.setLayoutData(_gridData);
+                it.setText("Build system to be used (disabled options will be implemented soon): ");
               }
             };
             XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_6);
-            final BuilderSelectionListener builderListener = new BuilderSelectionListener(ErlangProjectBuilderPage.this.info, ErlangProjectBuilderPage.this);
-            final BuilderTool[] builders = BuilderTool.values();
-            final Procedure1<BuilderTool> _function_7 = new Procedure1<BuilderTool>() {
-              public void apply(final BuilderTool builder) {
-                try {
-                  final Procedure1<Button> _function = new Procedure1<Button>() {
-                    public void apply(final Button it) {
-                      String _string = builder.toString();
-                      String _lowerCase = _string.toLowerCase();
-                      it.setText(_lowerCase);
-                      it.setData(builder);
-                      it.addSelectionListener(builderListener);
-                      boolean _tripleEquals = (builder == BuilderTool.INTERNAL);
-                      it.setSelection(_tripleEquals);
-                      boolean _and = false;
-                      boolean _hasFeatureEnabled = SystemConfiguration.hasFeatureEnabled("erlide.newbuilders");
-                      boolean _not = (!_hasFeatureEnabled);
-                      if (!_not) {
-                        _and = false;
-                      } else {
-                        boolean _tripleNotEquals = (builder != BuilderTool.INTERNAL);
-                        _and = _tripleNotEquals;
-                      }
-                      if (_and) {
-                        it.setEnabled(false);
-                      }
-                    }
-                  };
-                  XtendSWTLib.<Button>newControl(it, Button.class, SWT.RADIO, _function);
-                  final Procedure1<Label> _function_1 = new Procedure1<Label>() {
-                    public void apply(final Label it) {
-                      String _description = ErlangProjectBuilderPage.this.getDescription(builder);
-                      it.setText(_description);
-                      boolean _and = false;
-                      boolean _hasFeatureEnabled = SystemConfiguration.hasFeatureEnabled("erlide.newbuilders");
-                      boolean _not = (!_hasFeatureEnabled);
-                      if (!_not) {
-                        _and = false;
-                      } else {
-                        boolean _tripleNotEquals = (builder != BuilderTool.INTERNAL);
-                        _and = _tripleNotEquals;
-                      }
-                      if (_and) {
-                        it.setEnabled(false);
-                      }
-                    }
-                  };
-                  XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_1);
-                  final Procedure1<Label> _function_2 = new Procedure1<Label>() {
-                    public void apply(final Label it) {
-                    }
-                  };
-                  XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_2);
-                } catch (Throwable _e) {
-                  throw Exceptions.sneakyThrow(_e);
-                }
-              }
-            };
-            IterableExtensions.<BuilderTool>forEach(((Iterable<BuilderTool>)Conversions.doWrapArray(builders)), _function_7);
-            ErlangProjectBuilderPage.this.info.setBuilder(BuilderTool.INTERNAL);
-            final Procedure1<Composite> _function_8 = new Procedure1<Composite>() {
+            final Procedure1<Composite> _function_7 = new Procedure1<Composite>() {
               public void apply(final Composite it) {
-                try {
-                  GridData _gridData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
-                  it.setLayoutData(_gridData);
-                  GridLayout _gridLayout = new GridLayout(3, false);
-                  it.setLayout(_gridLayout);
-                  final Procedure1<Label> _function = new Procedure1<Label>() {
-                    public void apply(final Label it) {
-                      it.setText("The directory layout and the build \nconfiguration are described");
+                GridData _gridData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
+                it.setLayoutData(_gridData);
+                GridLayout _gridLayout = new GridLayout(3, false);
+                it.setLayout(_gridLayout);
+                final BuilderSelectionListener builderListener = new BuilderSelectionListener(ErlangProjectBuilderPage.this.info, ErlangProjectBuilderPage.this);
+                final BuilderTool[] builders = BuilderTool.values();
+                final Procedure1<BuilderTool> _function = new Procedure1<BuilderTool>() {
+                  public void apply(final BuilderTool builder) {
+                    try {
+                      final Procedure1<Label> _function = new Procedure1<Label>() {
+                        public void apply(final Label it) {
+                          it.setText("        ");
+                        }
+                      };
+                      XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function);
+                      final Procedure1<Button> _function_1 = new Procedure1<Button>() {
+                        public void apply(final Button it) {
+                          String _string = builder.toString();
+                          String _lowerCase = _string.toLowerCase();
+                          it.setText(_lowerCase);
+                          it.setData(builder);
+                          it.addSelectionListener(builderListener);
+                          boolean _tripleEquals = (builder == BuilderTool.INTERNAL);
+                          it.setSelection(_tripleEquals);
+                          boolean _and = false;
+                          boolean _hasFeatureEnabled = SystemConfiguration.hasFeatureEnabled("erlide.newbuilders");
+                          boolean _not = (!_hasFeatureEnabled);
+                          if (!_not) {
+                            _and = false;
+                          } else {
+                            boolean _tripleNotEquals = (builder != BuilderTool.INTERNAL);
+                            _and = _tripleNotEquals;
+                          }
+                          if (_and) {
+                            it.setEnabled(false);
+                          }
+                        }
+                      };
+                      XtendSWTLib.<Button>newControl(it, Button.class, SWT.RADIO, _function_1);
+                      final Procedure1<Label> _function_2 = new Procedure1<Label>() {
+                        public void apply(final Label it) {
+                          String _description = ErlangProjectBuilderPage.this.getDescription(builder);
+                          it.setText(_description);
+                          boolean _and = false;
+                          boolean _hasFeatureEnabled = SystemConfiguration.hasFeatureEnabled("erlide.newbuilders");
+                          boolean _not = (!_hasFeatureEnabled);
+                          if (!_not) {
+                            _and = false;
+                          } else {
+                            boolean _tripleNotEquals = (builder != BuilderTool.INTERNAL);
+                            _and = _tripleNotEquals;
+                          }
+                          if (_and) {
+                            it.setEnabled(false);
+                          }
+                        }
+                      };
+                      XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_2);
+                    } catch (Throwable _e) {
+                      throw Exceptions.sneakyThrow(_e);
                     }
-                  };
-                  XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function);
-                  final ConfigSelectionListener configListener = new ConfigSelectionListener(ErlangProjectBuilderPage.this.info);
-                  final ProjectConfigType[] configs = ProjectConfigType.values();
-                  final Procedure1<ProjectConfigType> _function_1 = new Procedure1<ProjectConfigType>() {
-                    public void apply(final ProjectConfigType config) {
-                      try {
-                        final Procedure1<Button> _function = new Procedure1<Button>() {
-                          public void apply(final Button it) {
-                            String _description = ErlangProjectBuilderPage.this.getDescription(config);
-                            it.setText(_description);
-                            it.setData(config);
-                            it.addSelectionListener(configListener);
-                            boolean _tripleEquals = (config == ProjectConfigType.INTERNAL);
-                            it.setSelection(_tripleEquals);
-                            boolean _and = false;
-                            boolean _hasFeatureEnabled = SystemConfiguration.hasFeatureEnabled("erlide.newbuilders");
-                            boolean _not = (!_hasFeatureEnabled);
-                            if (!_not) {
-                              _and = false;
-                            } else {
-                              boolean _tripleNotEquals = (config != ProjectConfigType.INTERNAL);
-                              _and = _tripleNotEquals;
-                            }
-                            if (_and) {
-                              it.setEnabled(false);
-                            }
-                          }
-                        };
-                        XtendSWTLib.<Button>newControl(it, Button.class, SWT.RADIO, _function);
-                        final Procedure1<Label> _function_1 = new Procedure1<Label>() {
-                          public void apply(final Label it) {
-                          }
-                        };
-                        XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_1);
-                        final Procedure1<Label> _function_2 = new Procedure1<Label>() {
-                          public void apply(final Label it) {
-                          }
-                        };
-                        XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_2);
-                      } catch (Throwable _e) {
-                        throw Exceptions.sneakyThrow(_e);
-                      }
-                    }
-                  };
-                  IterableExtensions.<ProjectConfigType>forEach(((Iterable<ProjectConfigType>)Conversions.doWrapArray(configs)), _function_1);
-                } catch (Throwable _e) {
-                  throw Exceptions.sneakyThrow(_e);
-                }
+                  }
+                };
+                IterableExtensions.<BuilderTool>forEach(((Iterable<BuilderTool>)Conversions.doWrapArray(builders)), _function);
               }
             };
-            Composite _newControl_1 = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_8);
-            ErlangProjectBuilderPage.this.configComposite = _newControl_1;
-            ErlangProjectBuilderPage.this.info.setConfigType(ProjectConfigType.INTERNAL);
+            Composite _newControl_1 = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_7);
+            ErlangProjectBuilderPage.this.builderComposite = _newControl_1;
+            final Procedure1<Label> _function_8 = new Procedure1<Label>() {
+              public void apply(final Label it) {
+                GridData _gridData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
+                it.setLayoutData(_gridData);
+                it.setText("The directory layout and the build configuration are described:");
+              }
+            };
+            XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_8);
+            ErlangProjectBuilderPage.this.info.setBuilder(BuilderTool.INTERNAL);
             final Procedure1<Composite> _function_9 = new Procedure1<Composite>() {
+              public void apply(final Composite it) {
+                GridData _gridData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
+                it.setLayoutData(_gridData);
+                GridLayout _gridLayout = new GridLayout(3, false);
+                it.setLayout(_gridLayout);
+                final ConfigSelectionListener configListener = new ConfigSelectionListener(ErlangProjectBuilderPage.this.info);
+                final ProjectConfigType[] configs = ProjectConfigType.values();
+                final Procedure1<ProjectConfigType> _function = new Procedure1<ProjectConfigType>() {
+                  public void apply(final ProjectConfigType config) {
+                    try {
+                      final Procedure1<Label> _function = new Procedure1<Label>() {
+                        public void apply(final Label it) {
+                          it.setText("        ");
+                        }
+                      };
+                      XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function);
+                      final Procedure1<Button> _function_1 = new Procedure1<Button>() {
+                        public void apply(final Button it) {
+                          String _description = ErlangProjectBuilderPage.this.getDescription(config);
+                          it.setText(_description);
+                          it.setData(config);
+                          it.addSelectionListener(configListener);
+                          boolean _tripleEquals = (config == ProjectConfigType.INTERNAL);
+                          it.setSelection(_tripleEquals);
+                          boolean _and = false;
+                          boolean _hasFeatureEnabled = SystemConfiguration.hasFeatureEnabled("erlide.newbuilders");
+                          boolean _not = (!_hasFeatureEnabled);
+                          if (!_not) {
+                            _and = false;
+                          } else {
+                            boolean _tripleNotEquals = (config != ProjectConfigType.INTERNAL);
+                            _and = _tripleNotEquals;
+                          }
+                          if (_and) {
+                            it.setEnabled(false);
+                          }
+                        }
+                      };
+                      XtendSWTLib.<Button>newControl(it, Button.class, SWT.RADIO, _function_1);
+                      final Procedure1<Label> _function_2 = new Procedure1<Label>() {
+                        public void apply(final Label it) {
+                        }
+                      };
+                      XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_2);
+                    } catch (Throwable _e) {
+                      throw Exceptions.sneakyThrow(_e);
+                    }
+                  }
+                };
+                IterableExtensions.<ProjectConfigType>forEach(((Iterable<ProjectConfigType>)Conversions.doWrapArray(configs)), _function);
+              }
+            };
+            Composite _newControl_2 = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_9);
+            ErlangProjectBuilderPage.this.configComposite = _newControl_2;
+            ErlangProjectBuilderPage.this.info.setConfigType(ProjectConfigType.INTERNAL);
+            final Procedure1<Composite> _function_10 = new Procedure1<Composite>() {
               public void apply(final Composite it) {
                 try {
                   GridData _gridData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
@@ -318,8 +332,8 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                 }
               }
             };
-            Composite _newControl_2 = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_9);
-            ErlangProjectBuilderPage.this.makeConfigComposite = _newControl_2;
+            Composite _newControl_3 = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_10);
+            ErlangProjectBuilderPage.this.makeConfigComposite = _newControl_3;
           } catch (Throwable _e) {
             throw Exceptions.sneakyThrow(_e);
           }
