@@ -31,6 +31,7 @@ import org.erlide.ui.util.XtendSWTLib;
 import org.erlide.ui.wizards.BuilderSelectionListener;
 import org.erlide.ui.wizards.ConfigSelectionListener;
 import org.erlide.ui.wizards.ErlangWizardPage;
+import org.erlide.util.SystemConfiguration;
 
 @SuppressWarnings("all")
 public class ErlangProjectBuilderPage extends ErlangWizardPage {
@@ -122,6 +123,18 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                       it.addSelectionListener(builderListener);
                       boolean _tripleEquals = (builder == BuilderTool.INTERNAL);
                       it.setSelection(_tripleEquals);
+                      boolean _and = false;
+                      boolean _hasFeatureEnabled = SystemConfiguration.hasFeatureEnabled("erlide.newbuilders");
+                      boolean _not = (!_hasFeatureEnabled);
+                      if (!_not) {
+                        _and = false;
+                      } else {
+                        boolean _tripleNotEquals = (builder != BuilderTool.INTERNAL);
+                        _and = _tripleNotEquals;
+                      }
+                      if (_and) {
+                        it.setEnabled(false);
+                      }
                     }
                   };
                   XtendSWTLib.<Button>newControl(it, Button.class, SWT.RADIO, _function);
@@ -129,6 +142,18 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                     public void apply(final Label it) {
                       String _description = ErlangProjectBuilderPage.this.getDescription(builder);
                       it.setText(_description);
+                      boolean _and = false;
+                      boolean _hasFeatureEnabled = SystemConfiguration.hasFeatureEnabled("erlide.newbuilders");
+                      boolean _not = (!_hasFeatureEnabled);
+                      if (!_not) {
+                        _and = false;
+                      } else {
+                        boolean _tripleNotEquals = (builder != BuilderTool.INTERNAL);
+                        _and = _tripleNotEquals;
+                      }
+                      if (_and) {
+                        it.setEnabled(false);
+                      }
                     }
                   };
                   XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_1);
@@ -170,6 +195,18 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                             it.addSelectionListener(configListener);
                             boolean _tripleEquals = (config == ProjectConfigType.INTERNAL);
                             it.setSelection(_tripleEquals);
+                            boolean _and = false;
+                            boolean _hasFeatureEnabled = SystemConfiguration.hasFeatureEnabled("erlide.newbuilders");
+                            boolean _not = (!_hasFeatureEnabled);
+                            if (!_not) {
+                              _and = false;
+                            } else {
+                              boolean _tripleNotEquals = (config != ProjectConfigType.INTERNAL);
+                              _and = _tripleNotEquals;
+                            }
+                            if (_and) {
+                              it.setEnabled(false);
+                            }
                           }
                         };
                         XtendSWTLib.<Button>newControl(it, Button.class, SWT.RADIO, _function);
