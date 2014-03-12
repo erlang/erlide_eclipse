@@ -28,30 +28,34 @@ public class ErlcMessageParser implements IMessageParser {
     public boolean createMarkers(final String msg) {
         boolean result = false;
         final Iterable<String> pars = Splitter.on(':').limit(3).split(msg);
-        final Iterator<String> iterator = pars.iterator();
-        try {
-            final String filename = iterator.next();
-            final int line = Integer.parseInt(iterator.next());
-            final String rawmessage = iterator.next().trim();
-            String message;
-            int severity;
-            if (rawmessage.startsWith("Warning: ")) {
-                message = rawmessage.substring("Warning: ".length());
-                severity = IMarker.SEVERITY_WARNING;
-            } else {
-                message = rawmessage;
-                severity = IMarker.SEVERITY_ERROR;
+        if (pars.iterator().next().equals("ERROR")) {
+            MarkerUtils.addProblemMarker(project, null, null, pars.iterator().next(), -1,
+                    IMarker.SEVERITY_ERROR);
+            result = true;
+        } else {
+            final Iterator<String> iterator = pars.iterator();
+            try {
+                final String filename = iterator.next();
+                final int line = Integer.parseInt(iterator.next());
+                final String rawmessage = iterator.next().trim();
+                String message;
+                int severity;
+                if (rawmessage.startsWith("Warning: ")) {
+                    message = rawmessage.substring("Warning: ".length());
+                    severity = IMarker.SEVERITY_WARNING;
+                } else {
+                    message = rawmessage;
+                    severity = IMarker.SEVERITY_ERROR;
+                }
+                final IResource resource = project.findMember(filename);
+                if (resource != null) {
+                    MarkerUtils.addProblemMarker(resource, null, null, message, line,
+                            severity);
+                    result = true;
+                }
+            } catch (final Exception e) {
             }
-            final IResource resource = project.findMember(filename);
-            if (resource != null) {
-                MarkerUtils.addProblemMarker(resource, null, null, message, line,
-                        severity);
-                result = true;
-            }
-
-        } catch (final Exception e) {
         }
         return result;
     }
-
 }
