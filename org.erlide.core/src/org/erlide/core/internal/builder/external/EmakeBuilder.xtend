@@ -11,7 +11,6 @@ import org.erlide.engine.model.builder.MarkerUtils
 import org.erlide.util.ErlLogger
 import org.erlide.util.SystemConfiguration
 
-@SuppressWarnings('deprecation')
 class EmakeBuilder extends ExternalBuilder {
 
   new() {
