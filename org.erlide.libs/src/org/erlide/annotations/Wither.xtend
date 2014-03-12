@@ -7,7 +7,7 @@ import org.eclipse.xtend.lib.macro.Active
 import org.eclipse.xtend.lib.macro.TransformationContext
 import org.eclipse.xtend.lib.macro.declaration.MutableClassDeclaration
 
-@Target(ElementType::TYPE)
+@Target(ElementType.TYPE)
 @Active(typeof(WitherParticipant))
 annotation Wither {
 }

@@ -12,6 +12,7 @@ import org.erlide.runtime.internal.ManagedErlRuntime;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
+import org.erlide.util.ErlLogger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -156,7 +157,7 @@ public class ErlRuntimeTest {
             runtime2.stopAsync();
             runtime2.awaitTerminated();
         } catch (final Throwable t) {
-            System.out.println("EXCEPTION:::: " + t);
+            ErlLogger.error(t);
         }
         expect(runtime2, process2, -1, State.TERMINATED);
         assertThat("state", runtime.state(), is(State.RUNNING));

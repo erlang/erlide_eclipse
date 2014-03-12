@@ -4,7 +4,7 @@
 -compile(export_all).
 
 ok() ->   
-	ok.
+ 	ok.
 
 foo() ->
 	Z=[],

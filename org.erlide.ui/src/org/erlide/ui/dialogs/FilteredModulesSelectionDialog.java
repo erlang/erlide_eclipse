@@ -69,6 +69,7 @@ import org.eclipse.ui.dialogs.SearchPattern;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.CommonUtils;
@@ -544,10 +545,11 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
             final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             final IErlProject erlProject = model.findProject(project);
             if (erlProject != null) {
-                final String extMods = erlProject.getExternalModulesString();
+                ErlangProjectProperties properties = erlProject.getProperties();
+                final String extMods = properties.getExternalModules();
                 final List<String> files = new ArrayList<String>();
                 files.addAll(PreferencesUtils.unpackList(extMods));
-                final String extIncs = erlProject.getExternalIncludesString();
+                final String extIncs = properties.getExternalIncludes();
                 files.addAll(PreferencesUtils.unpackList(extIncs));
 
                 final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
@@ -589,8 +591,10 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
             final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                     .getErlangProject(project);
             if (erlProject != null) {
-                validPaths.addAll(getFullPaths(project, erlProject.getIncludeDirs()));
-                validPaths.addAll(getFullPaths(project, erlProject.getSourceDirs()));
+                validPaths.addAll(getFullPaths(project, erlProject.getProperties()
+                        .getIncludeDirs()));
+                validPaths.addAll(getFullPaths(project, erlProject.getProperties()
+                        .getSourceDirs()));
                 final Collection<IPath> extras = Lists.newArrayList();
                 for (final IPath p : SourcePathUtils.getExtraSourcePathsForModel(project)) {
                     extras.add(p);

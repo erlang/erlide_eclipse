@@ -22,7 +22,7 @@ import org.eclipse.xtend.lib.macro.declaration.Visibility
 
 @Active(typeof(VisitableProcessor))
 @Documented
-@Target(ElementType::TYPE)
+@Target(ElementType.TYPE)
 annotation Visitable {
 }
 
@@ -89,7 +89,7 @@ class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclaration>,
         MethodDeclaration original,
         extension TransformationContext context
     ) {
-        clazz.visibility = Visibility::PUBLIC
+        clazz.visibility = Visibility.PUBLIC
         inheritors.forEach [ inheritor |
             clazz.addMethod('visit' + inheritor.simpleName) [ method |
                 method.returnType = original.returnType

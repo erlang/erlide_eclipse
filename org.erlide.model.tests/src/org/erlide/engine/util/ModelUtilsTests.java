@@ -10,10 +10,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
@@ -33,7 +31,6 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.ModelUtilService;
-import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 import org.junit.After;
@@ -526,56 +523,6 @@ public class ModelUtilsTests {
             if (externalInclude != null && externalInclude.exists()) {
                 externalInclude.delete();
             }
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void findPreprocessorDefExternalIncludeOnIncludePathWithPathVariablesTest()
-            throws Exception {
-        // http://www.assembla.com/spaces/erlide/tickets/756-navigation--external-include-files-are-not-found
-        File externalInclude = null;
-        IErlProject project = null;
-        final IPathVariableManager pathVariableManager = ResourcesPlugin.getWorkspace()
-                .getPathVariableManager();
-        final String pathVariableName = "TEST";
-        // given
-        // a project with an include dir outside the model, the include file
-        // contains a record def
-        try {
-            final String projectName = "testprojectx";
-            project = ErlideTestUtils.createProject(
-                    ErlideTestUtils.getTmpPath(projectName), projectName);
-            final IErlModule module = ErlideTestUtils.createModule(project, "a.erl",
-                    "-include(\"x.hrl\").\n");
-            final String includeName = "x.hrl";
-            externalInclude = ErlideTestUtils.createTmpFile(includeName,
-                    "-record(rec2, {field, another=def}.");
-            final String includePath = externalInclude.getAbsolutePath();
-            IPath path = new Path(includePath).removeLastSegments(1);
-            final IPath[] paths = ErlideTestUtils.splitPathAfter(1, path);
-            pathVariableManager.setValue(pathVariableName, paths[0]);
-            path = new Path(pathVariableName).append(paths[1]);
-            ((ErlProject) project).setIncludeDirs(Lists.newArrayList(path));
-            project.open(null);
-            // when
-            // looking for the record def
-            final IErlPreprocessorDef preprocessorDef = modelFindService
-                    .findPreprocessorDef(module, "rec2", ErlElementKind.RECORD_DEF);
-            final Collection<IErlProject> myprojects = Lists.newArrayList(project);
-            modelFindService.findPreprocessorDef(myprojects, "a.erl", "rec2",
-                    ErlElementKind.RECORD_DEF);
-            // then
-            // it should be found
-            assertNotNull(preprocessorDef);
-        } finally {
-            if (project != null) {
-                ErlideTestUtils.deleteProject(project);
-            }
-            if (externalInclude != null && externalInclude.exists()) {
-                externalInclude.delete();
-            }
-            pathVariableManager.setValue(pathVariableName, null);
         }
     }
 

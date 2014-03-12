@@ -10,7 +10,7 @@ import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlExternal;
-import org.erlide.test.support.ErlideTestUtils;
+import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class IErlExternalTests extends ErlModelTestBase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        externalModulesString = project.getExternalModulesString();
+        externalModulesString = project.getProperties().getExternalModules();
         final String externalFileName = "external.erl";
         externalFile = ErlideTestUtils.createTmpFile(externalFileName,
                 "-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
@@ -56,13 +56,16 @@ public class IErlExternalTests extends ErlModelTestBase {
                 .getChildrenOfKind(ErlElementKind.EXTERNAL);
         final IErlExternal external = (IErlExternal) externals.get(0);
         external.open(null);
+        assertFalse(external.isOTP());
+
         final IErlExternal external2 = (IErlExternal) externals.get(1);
         external2.open(null);
-        final IErlExternal external3 = (IErlExternal) external.getChildren().get(0);
-        final IErlExternal external4 = (IErlExternal) external2.getChildren().get(0);
-        assertFalse(external.isOTP());
         assertTrue(external2.isOTP());
+
+        final IErlExternal external3 = (IErlExternal) external.getChildren().get(0);
         assertFalse(external3.isOTP());
+
+        final IErlExternal external4 = (IErlExternal) external2.getChildren().get(0);
         assertTrue(external4.isOTP());
     }
 

@@ -28,12 +28,12 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 
     public static final String SMART_TYPING_KEY = "smartTyping"; //$NON-NLS-1$
 
-    private static final String SMART_TYPING_KEYS[] = new String[] {
+    private static final String[] SMART_TYPING_KEYS = new String[] {
             "strings", "atoms", "braces", "brackets", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             "parens", "embraceSelection", "pasteReindent" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     //    public static final String AUTO_NL_KEY = "indentation"; //$NON-NLS-1$
-    public static final String AUTO_NL_KEYS[] = {
+    public static final String[] AUTO_NL_KEYS = {
             "semicolon_nl", "dot_nl", "arrow_nl", "comma_nl" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     public static final int STRINGS = 0;
@@ -45,7 +45,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
 
     public static final int PASTE_REINDENT = 6;
 
-    private static final String SMART_TYPING_DEFAULTS[] = new String[] { "1", //$NON-NLS-1$
+    private static final String[] SMART_TYPING_DEFAULTS = new String[] { "1", //$NON-NLS-1$
             "0", "1", "1", "1", "1", "1" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 
     private static final String[] AUTO_NL_DEFAULTS = new String[] { "0", "0", //$NON-NLS-1$ //$NON-NLS-2$

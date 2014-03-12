@@ -126,13 +126,13 @@ public final class ErlUtils {
             return null;
         }
 
-        if (pattern.equals(term)) {
-            return bindings;
-        } else if (pattern instanceof OtpErlangList) {
+        if (pattern instanceof OtpErlangList) {
             return matchList(pattern, term, bindings);
         } else if (pattern instanceof OtpErlangTuple) {
             return matchTuple(((OtpErlangTuple) pattern).elements(),
                     ((OtpErlangTuple) term).elements(), bindings);
+        } else if (pattern.equals(term)) {
+            return bindings;
         }
         return null;
     }

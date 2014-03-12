@@ -22,7 +22,7 @@ public class ClearCacheAction extends TextEditorAction {
     private static final String NOPARSE_CACHE_SUFFIX = ".noparse";
     private static final String SCANNER_CACHE_SUFFIX = ".scan";
     private static final String REFS_CACHE_SUFFIX = ".refs";
-    private static final String suffixes[] = { NOPARSE_CACHE_SUFFIX,
+    private static final String[] suffixes = { NOPARSE_CACHE_SUFFIX,
             SCANNER_CACHE_SUFFIX, REFS_CACHE_SUFFIX };
 
     public ClearCacheAction(final ResourceBundle bundle, final String prefix,

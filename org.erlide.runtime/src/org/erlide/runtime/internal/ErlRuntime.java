@@ -343,7 +343,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
                         .error("code server did not start in time for %s", getNodeName());
                 return false;
             }
-            ErlLogger.info("code server started");
             return true;
         } catch (final Exception e) {
             ErlLogger.error("error starting code server for %s: %s", getNodeName(),

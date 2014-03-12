@@ -42,8 +42,8 @@ loop(State) ->
         {get_binary_content, From} ->
             From ! {module_content, list_to_binary(State#state.content)},
             ?MODULE:loop(State);
-        {change, Offset, Length, Text}=Msg ->
-            erlide_log:logp("Module ~s:: ~p", [Name, Msg]),
+        {change, Offset, Length, Text}=_Msg ->
+            % erlide_log:logp("Module ~s:: ~p", [Name, _Msg]),
             Content1 = replace_text(State#state.content, Offset, Length, Text),
             ?MODULE:loop(State#state{content=Content1});
         Msg ->

@@ -18,4 +18,19 @@
          </adapter>
       </factory>
    </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            default-charset="ISO-8859-1"
+            describer="org.erlide.engine.model.root.ErlangContentDescriber"
+            file-extensions="erl,hrl,yrl,escript"
+            id="org.erlide.core.content.erlang"
+            name="Erlang source file"
+            priority="normal">
+         <describer
+               class="org.erlide.engine.model.root.ErlangContentDescriber">
+         </describer>
+      </content-type>
+   </extension>
 </plugin>

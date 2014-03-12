@@ -11,8 +11,10 @@
 package org.erlide.ui.util;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 /**
  * A utility class to work with IStatus.
@@ -76,4 +78,23 @@ public class StatusUtil {
             break;
         }
     }
+
+    public static IStatus newStatus(final int severity, final String message,
+            final Throwable exception) {
+
+        String statusMessage = message;
+        if (message == null || message.trim().length() == 0) {
+            if (exception == null) {
+                throw new IllegalArgumentException();
+            } else if (exception.getMessage() == null) {
+                statusMessage = exception.toString();
+            } else {
+                statusMessage = exception.getMessage();
+            }
+        }
+
+        return new Status(severity, ErlideUIPlugin.PLUGIN_ID, severity, statusMessage,
+                exception);
+    }
+
 }

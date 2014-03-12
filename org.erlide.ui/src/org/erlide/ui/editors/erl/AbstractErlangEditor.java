@@ -208,7 +208,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
     protected void addCommonActions(final IMenuManager menu) {
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, toggleCommentAction);
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, indentAction);
-        // TODO disabled until erl_tidy doean't destroy formatting
+        // TODO disabled until erl_tidy doesn't destroy formatting
         // menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, cleanUpAction);
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, openAction);
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, sendToConsole);

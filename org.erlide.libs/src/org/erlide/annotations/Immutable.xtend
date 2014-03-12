@@ -13,7 +13,7 @@ import org.eclipse.xtend.lib.macro.declaration.TypeReference
 
 @Active(typeof(ImmutableProcessor))
 @Documented
-@Target(ElementType::TYPE)
+@Target(ElementType.TYPE)
 annotation Immutable {
 }
 

@@ -60,8 +60,8 @@ public class CompileAction extends Action {
                 .getErlangProject(project);
 
         if ("erl".equals(resource.getFileExtension())) {
-            helper.compileErl(project, bres, erlProject.getOutputLocation().toString(),
-                    b, compilerOptions);
+            helper.compileErl(project, bres, erlProject.getProperties().getOutputDir()
+                    .toString(), b, compilerOptions);
         }
         if ("yrl".equals(resource.getFileExtension())) {
             helper.compileYrl(project, bres, b, compilerOptions);

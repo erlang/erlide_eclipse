@@ -59,7 +59,7 @@
       </category>
       <wizard
             category="org.erlide.ui.wizards.newWizards"
-            class="org.erlide.ui.wizards.NewErlangProject"
+            class="org.erlide.ui.wizards.NewErlangProjectWizard"
             finalPerspective="org.erlide.ui.perspectives.ErlangPerspective"
             hasPages="true"
             icon="icons/full/obj16/newproject.png"

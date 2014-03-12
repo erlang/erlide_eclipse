@@ -67,8 +67,6 @@ public interface OpenService extends ErlangService {
 
     List<String> getLibFiles(final String entry);
 
-    List<List<String>> getLibSrcInclude(final List<String> libList);
-
     Collection<String> getIncludesInDir(final String directory);
 
     Map<String, List<String>> getOtpLibSrcIncludes(IRpcSite backend);

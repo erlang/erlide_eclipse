@@ -163,7 +163,8 @@ public class DialyzerUtils {
             final IErlProject erlProject = ErlangEngine.getInstance()
                     .getModelUtilService().getProject(m);
             final IProject project = erlProject.getWorkspaceProject();
-            final IFolder ebin = project.getFolder(erlProject.getOutputLocation());
+            final IFolder ebin = project.getFolder(erlProject.getProperties()
+                    .getOutputDir());
             if (ModuleKind.hasErlExtension(name)) {
                 if (fromSource) {
                     final IResource resource = m.getResource();

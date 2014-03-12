@@ -1,11 +1,10 @@
 -module(m11).
 
--export([f/0]).
+-export([f/0, g/0]).
 
 -include("h11.hrl").
 -include("h12.hrl").
 -include("h21.hrl"). 
--include("h31.hrl"). 
 
 f() ->
 	%% in project
@@ -17,7 +16,10 @@ f() ->
     m21:f(), 
 	?H21,
 	?H22, % not to be found!
-	
+
+	ok.
+
+g() ->
 	%% in externals
 	m31:f(), 
 	?H31,

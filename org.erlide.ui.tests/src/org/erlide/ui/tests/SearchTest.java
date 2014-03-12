@@ -18,7 +18,7 @@ import org.erlide.engine.services.search.ErlangSearchPattern;
 import org.erlide.engine.services.search.LimitTo;
 import org.erlide.engine.services.search.SearchFor;
 import org.erlide.engine.services.search.SearchPatternFactory;
-import org.erlide.test.support.ErlideTestUtils;
+import org.erlide.engine.util.ErlideTestUtils;
 import org.erlide.ui.internal.search.ErlSearchQuery;
 import org.erlide.ui.internal.search.ErlangSearchElement;
 import org.erlide.ui.internal.search.ErlangSearchResult;

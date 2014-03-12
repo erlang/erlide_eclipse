@@ -28,7 +28,7 @@ public class ErlideSearchServer implements SearchServerService {
     }
 
     private OtpErlangList getModulesFromScope(final ErlSearchScope scope) {
-        final OtpErlangObject result[] = new OtpErlangObject[scope.size()];
+        final OtpErlangObject[] result = new OtpErlangObject[scope.size()];
         int i = 0;
         for (final IErlModule module : scope.getModules()) {
             result[i] = make2Tuple(module.getScannerName(),

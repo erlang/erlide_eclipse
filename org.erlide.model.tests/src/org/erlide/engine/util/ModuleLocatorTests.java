@@ -12,9 +12,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.test.support.ErlideTestUtils;
-import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,8 +36,8 @@ public class ModuleLocatorTests {
 
     @Test
     public void demoProjectsShouldBeInWorkspace() {
-        MatcherAssert.assertThat(p1, is(not(nullValue())));
-        MatcherAssert.assertThat(p2, is(not(nullValue())));
+        assertThat(p1, is(not(nullValue())));
+        assertThat(p2, is(not(nullValue())));
     }
 
     @Test
@@ -50,12 +49,15 @@ public class ModuleLocatorTests {
     }
 
     private void checkProjectDirectories(final IErlProject project,
-            final Object[] expected_sources, final Object[] expected_includes) {
-        MatcherAssert.assertThat(project.getSourceDirs().toArray(), is(expected_sources));
-        MatcherAssert.assertThat(project.getIncludeDirs().toArray(),
-                is(expected_includes));
-        assertThat(project.getExternalModulesString(), is("../external_modules"));
-        assertThat(project.getExternalIncludesString(), is("../external_includes"));
+            final Object[] expectedSources, final Object[] expectedIncludes) {
+        ErlangProjectProperties properties = project.getProperties();
+        assertThat(properties.getSourceDirs().toArray(), is(expectedSources));
+        assertThat(properties.getIncludeDirs().toArray(),
+                is(expectedIncludes));
+        assertThat(properties.getExternalModules(),
+                is("../external_modules"));
+        assertThat(properties.getExternalIncludes(),
+                is("../external_includes"));
     }
 
     // @Test

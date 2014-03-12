@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -22,32 +21,30 @@ import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.ModelPlugin;
 import org.erlide.engine.internal.model.cache.ErlModelCache;
 import org.erlide.engine.internal.model.erlang.ErlExternalReferenceEntryList;
 import org.erlide.engine.internal.model.erlang.ErlOtpExternalReferenceEntryList;
-import org.erlide.engine.internal.util.ModelConfig;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.ErlModelStatus;
 import org.erlide.engine.model.ErlModelStatusConstants;
 import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.IErlModelMarker;
 import org.erlide.engine.model.IOpenable;
+import org.erlide.engine.model.builder.BuilderProperties;
+import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ModuleKind;
 import org.erlide.engine.model.root.ErlElementKind;
@@ -59,30 +56,32 @@ import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.model.root.IErlangProjectProperties;
+import org.erlide.engine.model.root.ProjectConfigType;
+import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
+import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
 import org.erlide.engine.util.SourcePathUtils;
+import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
 
 /**
- * Handle for an Erlang Project.
+ * Handle for an Erlang project.
  * 
  * <p>
  * A Erlang Project internally maintains a devpath that corresponds to the
  * project's classpath. The classpath may include source folders from the
- * current project; jars in the current project, other projects, and the local
- * file system; and binary folders (output location) of other projects. The
- * Erlang Model presents source elements corresponding to output .class files in
- * other projects, and thus uses the devpath rather than the classpath (which is
- * really a compilation path). The devpath mimics the classpath, except has
+ * current project; archives in the current project, other projects, and the
+ * local file system; and binary folders (output location) of other projects.
+ * The Erlang Model presents source elements corresponding to output .beam files
+ * in other projects, and thus uses the devpath rather than the classpath (which
+ * is really a compilation path). The devpath mimics the classpath, except has
  * source folder entries in place of output locations in external projects.
  * 
  * <p>
@@ -91,33 +90,28 @@ import com.google.common.collect.Lists;
  * 
  * @see IErlProject
  */
-public class ErlProject extends Openable implements IErlProject {
+public class ErlProject extends Openable implements IErlProject,
+        ProjectConfigurationChangeListener {
+
+    private static final String CONFIG_TYPE_TAG = "configType";
 
     /**
      * Whether the underlying file system is case sensitive.
      */
-    protected static final boolean IS_CASE_SENSITIVE = !new File("Temp").equals(new File("temp")); //$NON-NLS-1$ //$NON-NLS-2$
+    private static final boolean IS_CASE_SENSITIVE = !new File("Temp").equals(new File("temp")); //$NON-NLS-1$ //$NON-NLS-2$
 
-    /**
-     * The platform project this <code>IErlProject</code> is based on
-     */
     protected IProject fProject;
+    private ProjectConfigType configType = ProjectConfigType.INTERNAL;
+    private ErlangProjectProperties properties;
+    private BuilderProperties builderProperties;
 
-    /**
-     * A array with all the non-Erlang resources contained by this
-     * PackageFragment
-     */
-    private Collection<IResource> nonErlangResources;
+    private volatile boolean configuring = false;
 
     public ErlProject(final IProject project, final ErlElement parent) {
         super(parent, project.getName());
         fProject = project;
-        nonErlangResources = null;
     }
 
-    /**
-     * @see Openable
-     */
     @Override
     public boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
@@ -131,6 +125,9 @@ public class ErlProject extends Openable implements IErlProject {
             throw new ErlModelException(new ErlModelStatus(
                     ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
         }
+
+        addConfigurationChangeListeners();
+
         try {
             final IContainer c = (IContainer) r;
             final IResource[] elems = c.members();
@@ -169,17 +166,17 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private void addOtpExternals(final List<IErlElement> children) {
-        final String name = "OTP "
-                + getProperties().getRuntimeVersion().toString();
+        final String name = "OTP " + getRuntimeVersion().toString();
         final IErlExternalRoot external = new ErlOtpExternalReferenceEntryList(
                 this, name);
         children.add(external);
     }
 
     private void addExternals(final List<IErlElement> children) {
-        final String externalIncludes = getExternalIncludesString();
-        final String externalModules = getExternalModulesString();
-        final Collection<IPath> includeDirs = getIncludeDirs();
+        final ErlangProjectProperties myProperties = getProperties();
+        final String externalIncludes = myProperties.getExternalIncludes();
+        final String externalModules = myProperties.getExternalModules();
+        final Collection<IPath> includeDirs = myProperties.getIncludeDirs();
         final List<String> projectIncludes = Lists.newArrayList();
         for (final IPath path : includeDirs) {
             if (path.isAbsolute() && !fProject.getLocation().isPrefixOf(path)) {
@@ -203,112 +200,8 @@ public class ErlProject extends Openable implements IErlProject {
         }
     }
 
-    /*
-     * Returns whether the given resource is accessible through the children or
-     * the non-Erlang resources of this project. Returns true if the resource is
-     * not in the project. Assumes that the resource is a folder or a file.
-     */
-    public boolean contains(final IResource resource) {
-        //
-        // IClasspathEntry[] classpath;
-        // IPath output;
-        // try
-        // {
-        // classpath = getResolvedClasspath(true/* ignoreUnresolvedEntry */,
-        // false/* don't generateMarkerOnError */, false/*
-        // * don't
-        // * returnResolutionInProgress
-        // */);
-        // output = getOutputLocation();
-        // }
-        // catch (ErlModelException e)
-        // {
-        // return false;
-        // }
-        //
-        // IPath fullPath = resource.getFullPath();
-        // IPath innerMostOutput = output.isPrefixOf(fullPath) ? output : null;
-        // IClasspathEntry innerMostEntry = null;
-        // for (int j = 0, cpLength = classpath.length; j < cpLength; j++)
-        // {
-        // IClasspathEntry entry = classpath[j];
-        //
-        // IPath entryPath = entry.getPath();
-        // if ((innerMostEntry == null || innerMostEntry.getPath().isPrefixOf(
-        // entryPath))
-        // && entryPath.isPrefixOf(fullPath))
-        // {
-        // innerMostEntry = entry;
-        // }
-        // IPath entryOutput = classpath[j].getOutputLocation();
-        // if (entryOutput != null && entryOutput.isPrefixOf(fullPath))
-        // {
-        // innerMostOutput = entryOutput;
-        // }
-        // }
-        // if (innerMostEntry != null)
-        // {
-        // // special case prj==src and nested output location
-        // if (innerMostOutput != null && innerMostOutput.segmentCount() > 1 //
-        // output
-        // // isn't
-        // // project
-        // && innerMostEntry.getPath().segmentCount() == 1)
-        // { // 1 segment must be project name
-        // return false;
-        // }
-        // if (resource instanceof IFolder)
-        // {
-        // // folders are always included in src/lib entries
-        // return true;
-        // }
-        // switch (innerMostEntry.getEntryKind())
-        // {
-        // case IClasspathEntry.CPE_SOURCE :
-        // // .class files are not visible in source folders
-        // return !org.eclipse.jdt.internal.compiler.util.Util
-        // .isClassFileName(fullPath.lastSegment());
-        // case IClasspathEntry.CPE_LIBRARY :
-        // // .Erlang files are not visible in library folders
-        // return !org.eclipse.jdt.internal.compiler.util.Util
-        // .isErlangFileName(fullPath.lastSegment());
-        // }
-        // }
-        // if (innerMostOutput != null)
-        // {
-        // return false;
-        // }
-        return true;
-    }
-
-    // /**
-    // * TODO: Record a new marker denoting a classpath problem
-    // */
-    // void createCodeProblemMarker(final IErlModelStatus status) {
-    // /*
-    // * final IMarker marker = null; int severity; String[] arguments = new
-    // * String[0]; final boolean isCycleProblem = false,
-    // * isClasspathFileFormatProblem = false; switch (status.getCode()) {
-    // *
-    // * case IErlModelStatusConstants.INCOMPATIBLE_ERTS_LEVEL: final String
-    // * setting = getOption( ErlangCore.CORE_INCOMPATIBLE_ERTS_LEVEL, true);
-    // * if (ErlangCore.ERROR.equals(setting)) { severity =
-    // * IMarker.SEVERITY_ERROR; } else if
-    // * (ErlangCore.WARNING.equals(setting)) { severity =
-    // * IMarker.SEVERITY_WARNING; } else { return; // setting == IGNORE }
-    // * break;
-    // *
-    // * default: final IPath path = status.getPath(); if (path != null) {
-    // * arguments = new String[] { path.toString() }; } if
-    // * (ErlangCore.ERROR.equals(getOption(
-    // * ErlangCore.CORE_INCOMPLETE_CLASSPATH, true))) { severity =
-    // * IMarker.SEVERITY_ERROR; } else { severity = IMarker.SEVERITY_WARNING; }
-    // * break; }
-    // */
-    // }
-
     /**
-     * /** Removes the Erlang nature from the project.
+     * Removes the Erlang nature from the project.
      */
     public void deconfigure() throws CoreException {
         // unregister Erlang builder
@@ -351,42 +244,11 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     /**
-     * Remove all markers denoting classpath problems
-     */
-    protected void flushCodepathProblemMarkers(final boolean flushCycleMarkers,
-            final boolean flushCodepathFormatMarkers) {
-        try {
-            if (fProject.isAccessible()) {
-                final IMarker[] markers = fProject.findMarkers(
-                        IErlModelMarker.BUILDPATH_PROBLEM_MARKER, false,
-                        IResource.DEPTH_ZERO);
-                for (final IMarker marker : markers) {
-                    if (flushCycleMarkers && flushCodepathFormatMarkers) {
-                        marker.delete();
-                    }
-                }
-            }
-        } catch (final CoreException e) {
-            // could not flush markers: not much we can do
-            if (ModelConfig.verbose) {
-                ErlLogger.warn(e);
-            }
-        }
-    }
-
-    /**
      * @see IErlElement
      */
     @Override
     public ErlElementKind getKind() {
         return ErlElementKind.PROJECT;
-    }
-
-    /**
-     * Returns an array of non-Erlang resources contained in the receiver.
-     */
-    public Collection<IResource> getNonErlangResources() {
-        return getNonErlangResources(this);
     }
 
     /**
@@ -401,17 +263,6 @@ public class ErlProject extends Openable implements IErlProject {
     public IResource getCorrespondingResource() {
         return fProject;
     }
-
-    // /**
-    // * @see IErlElement
-    // */
-    // @Override
-    // public IResource getUnderlyingResource() throws ErlModelException {
-    // if (!exists()) {
-    // throw newNotPresentException();
-    // }
-    // return fProject;
-    // }
 
     @Override
     public int hashCode() {
@@ -460,7 +311,8 @@ public class ErlProject extends Openable implements IErlProject {
             return modulesForProject;
         }
         final List<IErlModule> result = new ArrayList<IErlModule>();
-        final List<IPath> sourceDirs = Lists.newArrayList(getSourceDirs());
+        final List<IPath> sourceDirs = Lists.newArrayList(getProperties()
+                .getSourceDirs());
         for (final IPath s : SourcePathUtils
                 .getExtraSourcePathsForModel(fProject)) {
             sourceDirs.add(s);
@@ -517,7 +369,7 @@ public class ErlProject extends Openable implements IErlProject {
                     .getModel();
             if (cached == null) {
                 final List<IErlModule> modules = getModulesOrIncludes(fProject,
-                        model, getSourceDirs(), true);
+                        model, getProperties().getSourceDirs(), true);
                 result.addAll(modules);
             } else {
                 result.addAll(cached);
@@ -537,7 +389,8 @@ public class ErlProject extends Openable implements IErlProject {
             return cached;
         }
         final List<IErlModule> includes = getModulesOrIncludes(fProject,
-                ErlangEngine.getInstance().getModel(), getIncludeDirs(), false);
+                ErlangEngine.getInstance().getModel(), getProperties()
+                        .getIncludeDirs(), false);
         erlModelCache.putIncludesForProject(this, includes);
         return includes;
     }
@@ -610,18 +463,6 @@ public class ErlProject extends Openable implements IErlProject {
         return result;
     }
 
-    /**
-     * Returns an array of non-Erlang resources contained in the receiver.
-     */
-    private Collection<IResource> getNonErlangResources(
-            final IErlProject project) {
-
-        if (nonErlangResources == null) {
-            nonErlangResources = Lists.newArrayList();
-        }
-        return Collections.unmodifiableCollection(nonErlangResources);
-    }
-
     @Override
     public IErlModule getModule(final String name) {
         try {
@@ -637,8 +478,15 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     @Override
-    public IErlangProjectProperties getProperties() {
-        return new ErlangProjectProperties(fProject);
+    public ErlangProjectProperties getProperties() {
+        if (properties == null) {
+            configurationChanged();
+        }
+        return properties;
+    }
+
+    public IEclipsePreferences getCorePropertiesNode() {
+        return new ProjectScope(fProject).getNode("org.erlide.model");
     }
 
     @Override
@@ -680,177 +528,66 @@ public class ErlProject extends Openable implements IErlProject {
         }
     }
 
-    private String getExternal(final ExternalKind external) {
-        final IPreferencesService service = Platform.getPreferencesService();
-        final String key = external == ExternalKind.EXTERNAL_INCLUDES ? "default_external_includes"
-                : "default_external_modules";
-        String result = getExternal(external, service, key, "org.erlide.ui");
-        if ("".equals(result)) {
-            result = getExternal(external, service, key, "org.erlide.core");
-        }
-        return result;
-    }
-
-    private String getExternal(final ExternalKind external,
-            final IPreferencesService service, final String key,
-            final String pluginId) {
-        final String s = service.getString(pluginId, key, "", null);
-        if (s.length() > 0) {
-            // ErlLogger.debug("%s: '%s'", key, s);
-        }
-        final String global = s;
-        final IErlangProjectProperties prefs = getProperties();
-        final String projprefs = external == ExternalKind.EXTERNAL_INCLUDES ? prefs
-                .getExternalIncludesFile() : prefs.getExternalModulesFile();
-        return PreferencesUtils.packArray(new String[] { projprefs, global });
-    }
-
-    @Override
-    public String getExternalModulesString() {
-        final ErlModelCache modelCache = getModelCache();
-        String externalModulesString = modelCache
-                .getExternalModulesString(this);
-        if (externalModulesString == null) {
-            externalModulesString = getExternal(ExternalKind.EXTERNAL_MODULES);
-            modelCache.putExternalModulesString(this, externalModulesString);
-        }
-        return externalModulesString;
-    }
-
-    @Override
-    public String getExternalIncludesString() {
-        final ErlModelCache modelCache = getModelCache();
-        String externalIncludesString = modelCache
-                .getExternalIncludesString(this);
-        if (externalIncludesString == null) {
-            externalIncludesString = getExternal(ExternalKind.EXTERNAL_INCLUDES);
-            modelCache.putExternalIncludesString(this, externalIncludesString);
-        }
-        return externalIncludesString;
-    }
-
-    public void setIncludeDirs(final Collection<IPath> includeDirs)
-            throws BackingStoreException {
+    public void setIncludeDirs(final Collection<IPath> includeDirs) {
         getModelCache().removeProject(this);
-        final IErlangProjectProperties properties = getProperties();
         properties.setIncludeDirs(includeDirs);
-        properties.store();
+        storeProperties();
         setStructureKnown(false);
     }
 
-    public void setSourceDirs(final Collection<IPath> sourceDirs)
-            throws BackingStoreException {
+    public void setSourceDirs(final Collection<IPath> sourceDirs) {
         getModelCache().removeProject(this);
-        final IErlangProjectProperties properties = getProperties();
         properties.setSourceDirs(sourceDirs);
-        properties.store();
+        storeProperties();
         setStructureKnown(false);
     }
 
-    public void setExternalModulesFile(final String absolutePath)
-            throws BackingStoreException {
+    public void setExternalModulesFile(final String absolutePath) {
         getModelCache().removeProject(this);
-        final IErlangProjectProperties properties = getProperties();
         properties.setExternalModulesFile(absolutePath);
-        properties.store();
+        storeProperties();
         setStructureKnown(false);
     }
 
-    public void setExternalIncludesFile(final String absolutePath)
-            throws BackingStoreException {
+    public void setExternalIncludesFile(final String absolutePath) {
         getModelCache().removeProject(this);
-        final IErlangProjectProperties properties = getProperties();
         properties.setExternalIncludesFile(absolutePath);
-        properties.store();
+        storeProperties();
         setStructureKnown(false);
     }
 
-    @Override
-    public Collection<IPath> getSourceDirs() {
-        final ErlModelCache modelCache = getModelCache();
-        Collection<IPath> sourceDirs = modelCache.getSourceDirs(this);
-        if (sourceDirs == null) {
-            final IErlangProjectProperties properties = getProperties();
-            sourceDirs = properties.getSourceDirs();
-            sourceDirs = resolvePaths(sourceDirs);
-            modelCache.putSourceDirs(this, sourceDirs);
-        }
-        return sourceDirs;
-    }
+    RuntimeVersion cachedRuntimeVersion;
+    RuntimeInfo cachedRuntimeInfo;
 
-    @Override
-    public Collection<IPath> getIncludeDirs() {
-        final ErlModelCache modelCache = getModelCache();
-        Collection<IPath> includeDirs = modelCache.getIncludeDirs(this);
-        if (includeDirs == null) {
-            final IErlangProjectProperties properties = getProperties();
-            includeDirs = properties.getIncludeDirs();
-            includeDirs = resolvePaths(includeDirs);
-            modelCache.putIncludeDirs(this, includeDirs);
-        }
-        return includeDirs;
-    }
-
-    private Collection<IPath> resolvePaths(final Collection<IPath> paths) {
-        final IPathVariableManager pathVariableManager = ResourcesPlugin
-                .getWorkspace().getPathVariableManager();
-        final List<IPath> cachedIncludeDirs = Lists
-                .newArrayListWithCapacity(paths.size());
-        for (final IPath includeDir : paths) {
-            @SuppressWarnings("deprecation")
-            final IPath resolvedPath = pathVariableManager
-                    .resolvePath(includeDir);
-            cachedIncludeDirs.add(resolvedPath);
-        }
-        return Collections.unmodifiableCollection(cachedIncludeDirs);
-    }
-
-    @Override
-    @Deprecated
-    public IPath getOutputLocation() {
-        return getProperties().getOutputDir();
-    }
-
-    public Collection<IPath> getOutputLocations() {
-        return getProperties().getOutputDirs();
-    }
+    private boolean storing;
 
     @Override
     public RuntimeInfo getRuntimeInfo() {
-        return getProperties().getRuntimeInfo();
+        final RuntimeVersion requiredRuntimeVersion = getProperties()
+                .getRequiredRuntimeVersion();
+        if (requiredRuntimeVersion != cachedRuntimeVersion) {
+            cachedRuntimeVersion = requiredRuntimeVersion;
+            cachedRuntimeInfo = RuntimeCore.getRuntimeInfoCatalog().getRuntime(
+                    requiredRuntimeVersion, null);
+        }
+        return cachedRuntimeInfo;
     }
 
     @Override
     public RuntimeVersion getRuntimeVersion() {
-        return getProperties().getRuntimeVersion();
-    }
-
-    final IPath DOT_PATH = new Path(".");
-
-    @Override
-    public boolean hasSourceDir(final IPath path) {
-        if (path.equals(DOT_PATH)) {
-            return true;
+        final RuntimeInfo runtimeInfo = getRuntimeInfo();
+        if (runtimeInfo != null) {
+            return runtimeInfo.getVersion();
         }
-        final IPath f = path.removeFirstSegments(1);
-        for (final IPath s : getSourceDirs()) {
-            if (s.equals(f)) {
-                return true;
-            }
-            // if (fullPath.segmentCount() == 1 && s.toString().equals(".")) {
-            // return true;
-            // }
-        }
-        return false;
+        // should not happen
+        return null;
     }
 
     @Override
-    public void setAllProperties(final IErlangProjectProperties properties)
-            throws BackingStoreException {
+    public void setProperties(final ErlangProjectProperties newProperties) {
         getModelCache().removeProject(this);
-        final IErlangProjectProperties projectProperties = getProperties();
-        projectProperties.copyFrom(properties);
-        projectProperties.store();
+        properties.copyFrom(newProperties);
+        storeAllProperties();
     }
 
     @Override
@@ -871,7 +608,7 @@ public class ErlProject extends Openable implements IErlProject {
                 }
             }
         } catch (final CoreException e) {
-            // throw new ErlModelException(e);
+            throw new ErlModelException(e);
         }
         return result;
     }
@@ -925,6 +662,7 @@ public class ErlProject extends Openable implements IErlProject {
 
     @Override
     public void dispose() {
+        removeConfigurationChangeListeners();
         clearCaches();
         try {
             accept(new IErlElementVisitor() {
@@ -942,6 +680,14 @@ public class ErlProject extends Openable implements IErlProject {
         super.dispose();
     }
 
+    private void addConfigurationChangeListeners() {
+        // TODO listen for changes to config files/prefs -- config specific??
+    }
+
+    private void removeConfigurationChangeListeners() {
+        // TODO remove listeners above
+    }
+
     @Override
     public IProject getWorkspaceProject() {
         return fProject;
@@ -952,4 +698,122 @@ public class ErlProject extends Openable implements IErlProject {
         clearCaches();
         super.close();
     }
+
+    private void loadCoreProperties() {
+        final IEclipsePreferences node = getCorePropertiesNode();
+        final String name = node.get(CONFIG_TYPE_TAG,
+                ProjectConfigType.INTERNAL.name());
+        setConfigType(ProjectConfigType.valueOf(name));
+    }
+
+    private void storeCoreProperties() {
+        final IEclipsePreferences node = getCorePropertiesNode();
+        node.put(CONFIG_TYPE_TAG, getConfigType().name());
+        try {
+            node.flush();
+        } catch (final Exception e) {
+            ErlLogger.debug(e);
+            // ignore?
+        }
+    }
+
+    @Override
+    public void setConfigType(final ProjectConfigType config) {
+        if (configType != config) {
+            configType = config;
+            storeCoreProperties();
+        }
+    }
+
+    @Override
+    public ProjectConfigType getConfigType() {
+        return configType;
+    }
+
+    private ErlangProjectProperties loadProperties() {
+        final ProjectConfigurator builderConfig = getConfig();
+        return builderConfig.getConfiguration();
+    }
+
+    private ProjectConfigurator getConfig() {
+        return ProjectConfiguratorFactory.getDefault().getConfig(
+                getConfigType(), this);
+    }
+
+    private void storeProperties() {
+        if (properties != null) {
+            final ProjectConfigurator builderConfig = getConfig();
+            builderConfig.setConfiguration(properties);
+        }
+    }
+
+    @Override
+    public void configurationChanged() {
+        if (configuring || storing) {
+            return;
+        }
+        try {
+            configuring = true;
+            loadAllProperties();
+        } finally {
+            configuring = false;
+        }
+    }
+
+    private void loadAllProperties() {
+        loadCoreProperties();
+        loadBuilderProperties();
+        properties = loadProperties();
+    }
+
+    @Override
+    public void storeAllProperties() {
+        if (storing) {
+            return;
+        }
+        try {
+            storing = true;
+            storeCoreProperties();
+            storeBuilderProperties();
+            storeProperties();
+        } finally {
+            storing = false;
+        }
+    }
+
+    private void loadBuilderProperties() {
+        final IEclipsePreferences node = getCorePropertiesNode();
+        final String data = node.get("builderData", "");
+        builderProperties = new BuilderProperties();
+        builderProperties.fromString(data);
+        // TODO more
+    }
+
+    private void storeBuilderProperties() {
+        final IEclipsePreferences node = getCorePropertiesNode();
+        node.put("builderData", builderProperties.toString());
+        try {
+            node.flush();
+        } catch (final BackingStoreException e) {
+            // ignore?
+        }
+    }
+
+    private boolean validateBuilderTool(final BuilderTool tool) {
+        return getConfigType().matchTool(builderProperties.getBuilderTool());
+    }
+
+    @Override
+    public BuilderProperties getBuilderProperties() {
+        if (builderProperties == null) {
+            loadBuilderProperties();
+        }
+        return builderProperties;
+    }
+
+    @Override
+    public void setBuilderProperties(final BuilderProperties props) {
+        builderProperties = props;
+    }
+
 }

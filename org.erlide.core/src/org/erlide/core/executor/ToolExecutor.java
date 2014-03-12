@@ -1,11 +1,11 @@
 package org.erlide.core.executor;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
@@ -16,23 +16,16 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
-
-import com.google.common.collect.Lists;
 
 @SuppressWarnings("restriction")
 public class ToolExecutor {
 
     public static class ToolResults {
-        public Collection<String> output;
-        public Collection<String> error;
         public int exit;
 
         public ToolResults() {
-            output = Lists.newArrayList();
-            error = Lists.newArrayList();
             exit = -1;
         }
 
@@ -46,15 +39,16 @@ public class ToolExecutor {
 
         @Override
         public String toString() {
-            return "{{{\n  " + output + "\n  " + error + "\n  " + exit + "\n}}}";
+            return "{{{ exit=" + exit + "}}}";
         }
     }
 
     public ToolResults run(final String cmd0, final String args, final String wdir,
-            final Procedure1<String> progressCallback) {
+            final ProgressCallback progressCallback, final IProgressMonitor monitor) {
         final String cmd = new Path(cmd0).isAbsolute() ? cmd0 : getToolLocation(cmd0);
 
         if (cmd == null) {
+            ErlLogger.warn("Tool '" + cmd0 + "' can't be found in $PATH");
             return new ToolResults();
         }
 
@@ -87,12 +81,11 @@ public class ToolExecutor {
 
                         @Override
                         public void streamAppended(final String text,
-                                final IStreamMonitor monitor) {
+                                final IStreamMonitor mon) {
                             final List<String> lines = Arrays.asList(text.split("\n"));
-                            result.output.addAll(lines);
                             if (progressCallback != null) {
                                 for (final String line : lines) {
-                                    progressCallback.apply(line);
+                                    progressCallback.stdout(line);
                                 }
                             }
                         }
@@ -102,12 +95,17 @@ public class ToolExecutor {
 
                         @Override
                         public void streamAppended(final String text,
-                                final IStreamMonitor monitor) {
-                            result.error.addAll(Arrays.asList(text.split("\n")));
+                                final IStreamMonitor mon) {
+                            final List<String> lines = Arrays.asList(text.split("\n"));
+                            if (progressCallback != null) {
+                                for (final String line : lines) {
+                                    progressCallback.stderr(line);
+                                }
+                            }
                         }
                     });
             boolean done = false;
-            while (!done) {
+            while (!done && !(monitor != null && monitor.isCanceled())) {
                 try {
                     result.exit = process.getExitValue();
                     done = true;
@@ -118,6 +116,9 @@ public class ToolExecutor {
                     }
                 }
             }
+            if (monitor != null && monitor.isCanceled()) {
+                process.terminate();
+            }
             return result;
         } catch (final CoreException e) {
             ErlLogger.error(e);
@@ -125,11 +126,12 @@ public class ToolExecutor {
         }
     }
 
-    public ToolResults run(final String cmd0, final String args, final String wdir) {
-        return run(cmd0, args, wdir, null);
+    public ToolResults run(final String cmd0, final String args, final String wdir,
+            final IProgressMonitor m) {
+        return run(cmd0, args, wdir, null, m);
     }
 
-    public String getToolLocation(final String cmd) {
+    public static String getToolLocation(final String cmd) {
         // hack because sometimes first call returns an empty value
         String result;
         final int MAX_TRIES = 5;
@@ -140,34 +142,46 @@ public class ToolExecutor {
             }
         }
         result = getToolLocation_1(cmd);
-        if (result == null) {
-            ErlLogger.warn("Tool '%s' not found in $PATH!", cmd);
-        }
         return result;
     }
 
-    private String getToolLocation_1(final String cmd) {
+    private static String getToolLocation_1(final String cmd) {
         if (SystemConfiguration.getInstance().isOnWindows()) {
             return getWindowsToolLocation(cmd);
         }
         return getUnixToolLocation(cmd);
     }
 
-    private String getUnixToolLocation(final String cmd) {
-        final ToolResults tool = run("/bin/sh", "-c \"which " + cmd + "\"", null);
-        if (tool.output.isEmpty()) {
-            return null;
-        }
-        return tool.output.iterator().next();
+    private static String getUnixToolLocation(final String cmd) {
+        final ToolProgressCallback callback = new ToolProgressCallback();
+        new ToolExecutor().run("/bin/sh", "-c \"which " + cmd + "\"", null, callback,
+                null);
+        return callback.result;
     }
 
-    private String getWindowsToolLocation(final String cmd) {
-        final ToolResults tool = run("c:\\Windows\\System32\\cmd.exe", "/c \"where "
-                + cmd + "\"", null);
-        if (tool.output.isEmpty()) {
+    private static String getWindowsToolLocation(final String cmd) {
+        final ToolProgressCallback callback = new ToolProgressCallback();
+        new ToolExecutor().run("c:\\Windows\\System32\\cmd.exe", "/c \"where " + cmd
+                + "\"", null, callback, null);
+        if (callback.result == null) {
             return null;
         }
-        return tool.output.iterator().next();
+        return callback.result.replace('\\', '/');
+    }
+
+    static class ToolProgressCallback implements ProgressCallback {
+        String result = null;
+
+        @Override
+        public void stdout(final String line) {
+            if (result == null) {
+                result = line;
+            }
+        }
+
+        @Override
+        public void stderr(final String line) {
+        }
     }
 
 }

@@ -67,6 +67,7 @@ import org.erlide.engine.model.root.IErlElementDelta;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
 import org.erlide.engine.util.ResourceUtil;
@@ -892,10 +893,13 @@ public class ErlModel extends Openable implements IErlModel {
                     ErlLogger.warn(e);
                 }
             }
+            final Set<IProject> prjs = Sets.newHashSet();
             for (final IResource rsrc : added) {
+                prjs.add(rsrc.getProject());
                 create(rsrc);
             }
             for (final IResource rsrc : changed) {
+                prjs.add(rsrc.getProject());
                 change(rsrc, changedDelta.get(rsrc));
             }
             // make sure we don't dispose trees before leaves...
@@ -915,6 +919,21 @@ public class ErlModel extends Openable implements IErlModel {
             });
             for (final IResource rsrc : removed) {
                 remove(rsrc);
+            }
+
+            for (final IProject prj : prjs) {
+                notifyProject(prj);
+            }
+        }
+
+        private void notifyProject(final IProject prj0) {
+            if (!prj0.exists()) {
+                return;
+            }
+            final IErlProject prj = findProject(prj0);
+            if (prj instanceof ProjectConfigurationChangeListener) {
+                ((ProjectConfigurationChangeListener) prj)
+                        .configurationChanged();
             }
         }
     }

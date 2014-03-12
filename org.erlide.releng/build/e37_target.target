@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?>
-<target name="e37_target" sequenceNumber="37">
+<?pde version="3.8"?><target name="e37_target" sequenceNumber="63">
 	<locations>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<unit id="com.abstratt.eclipsegraphviz.feature.feature.group" version="1.8.0.201208300609"/>
 			<repository location="jar:http://repository-textuml.forge.cloudbees.com/snapshot/com/abstratt/mdd/com.abstratt.mdd.oss.repository/1.0/com.abstratt.mdd.oss.repository-1.0.zip!/"/>
 		</location>
-		<location path="/home/qvladum/eclipse37_target/eclipse" type="Profile"/>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<unit id="org.eclipse.emf.sdk.feature.group" version="2.7.2.v20120130-0943"/>
 			<repository location="http://download.eclipse.org/releases/indigo"/>
 		</location>
 		<location path="/proj/uz/shade/plugins/shade.feature_1.7.1.201309261321/eclipse" type="Directory"/>
+<location path="/home/qvladum/eclipse37_target/eclipse" type="Profile"/>
+<location path="/proj/uz/shade/WB-3.3.4/workbench-3.3/wrwb/tools/eclipse" type="Directory"/>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="slf4j.api" version="1.6.6"/>
+<unit id="slf4j.log4j12" version="1.6.6"/>
+<repository location="http://www.fuin.org/p2-repository/"/>
+</location>
 	</locations>
 	<targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 </target>

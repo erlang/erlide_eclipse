@@ -1,5 +1,6 @@
 %% coding: utf-8
 -module(test_unicode).
+-compile(export_all).
 
 %%
 %% 人不知而不慍，不亦君子乎？」
@@ -13,9 +14,9 @@
 %% Yukarda mavi gök, asağıda yağız yer yaratıldıkta
 %%
 start("謀", $為) ->
-    "為人謀而不忠乎",
-    $為,
-    ok.
+    S = "為人謀而不忠乎",
+    C = $為,
+    [S, C].
 
 stop()->
     ok.
