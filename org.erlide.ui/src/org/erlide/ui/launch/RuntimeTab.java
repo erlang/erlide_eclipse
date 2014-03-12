@@ -337,23 +337,19 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             return false;
         }
         String workingDir = workingDirText.getText();
-        File d = new File(workingDir);
-        if (d.isAbsolute()) {
-            if (!d.exists()) {
-                setErrorMessage(String.format("Working dir '%s' doesn't exist.",
-                        workingDir));
-                return false;
-            }
-        } else {
+        if (workingDir.equals(".")) {
+            workingDir = "";
+        }
+        final File d = new File(workingDir);
+        if (!d.isAbsolute()) {
             final String wspace = ResourcesPlugin.getWorkspace().getRoot().getLocation()
                     .toPortableString();
             workingDir = wspace + "/" + workingDir;
-            d = new File(workingDir);
-            if (!d.exists()) {
-                setErrorMessage(String.format("Working dir '%s' doesn't exist.",
-                        workingDir));
-                return false;
-            }
+            workingDirText.setText(workingDir);
+        }
+        if (!d.exists()) {
+            setErrorMessage(String.format("Working dir '%s' doesn't exist.", workingDir));
+            return false;
         }
         return true;
     }

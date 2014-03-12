@@ -30,7 +30,9 @@ string(String, {L, C, O}, Opts) ->
                     R1;
                 _Err ->
                     _Err
-            end
+            end;
+        _Err2 ->
+            _Err2
     end.
 
 string2(String, {L, C, O}, Opts) ->
