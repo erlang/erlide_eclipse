@@ -44,7 +44,6 @@ public class SendToConsoleAction extends SelectionDispatchAction {
             counter = 0;
         }
 
-        // TODO maybe it should check for specific kinds instead
         @Override
         public void changed(final BackendShellEvent event) {
             if (shell == null) {

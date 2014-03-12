@@ -83,7 +83,7 @@ public class InternalBuilder extends ErlangBuilder {
             initializeBuilder(monitor);
 
             // TODO validate source and include directories
-            ErlangProjectProperties properties = erlProject.getProperties();
+            final ErlangProjectProperties properties = erlProject.getProperties();
             final IPath out = properties.getOutputDir();
             final IResource outr = project.findMember(out);
             if (outr != null) {
@@ -275,7 +275,7 @@ public class InternalBuilder extends ErlangBuilder {
 
     private void handleAppFile(final String outPath, final Collection<IPath> sources) {
 
-        // TODO bad idea to traverse every source dir at every build!
+        // bad idea to traverse every source dir at every build!
         // what to do instead?
 
         // final Collection<String> srcPaths = Collections2.transform(sources,

@@ -1547,7 +1547,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
      * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63898 for a description of
      * the problem.
      * <p>
-     * XXX remove once the underlying problem
+     * remove once the underlying problem
      * (https://bugs.eclipse.org/bugs/show_bug.cgi?id=66176) is solved.
      * </p>
      */
@@ -1558,7 +1558,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
      * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63898 for a description of
      * the problem.
      * <p>
-     * XXX remove once the underlying problem
+     * remove once the underlying problem
      * (https://bugs.eclipse.org/bugs/show_bug.cgi?id=66176) is solved.
      * </p>
      * 

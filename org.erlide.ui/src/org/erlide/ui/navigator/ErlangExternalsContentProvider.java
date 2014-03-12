@@ -83,13 +83,6 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             IParent parent = elt.getParent();
             final String filePath = elt.getFilePath();
             if (parent == ErlangEngine.getInstance().getModel() && filePath != null) {
-                // try {
-                // FIXME shouldn't this call be assigned to something!?
-                // ErlangEngine.getInstance().getModelUtilService().findModule(null,
-                // null, filePath,
-                // Scope.ALL_PROJECTS);
-                // } catch (final CoreException e) {
-                // }
                 parent = elt.getParent();
             }
             if (parent instanceof IErlModule) {

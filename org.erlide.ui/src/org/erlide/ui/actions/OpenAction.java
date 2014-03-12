@@ -96,7 +96,8 @@ public class OpenAction extends SelectionDispatchAction {
                 continue;
             }
             if (element instanceof IStorage) {
-                continue;// FIXME We don't handle IStorage, do we?
+                // We don't handle IStorage, do we?
+                continue;
             }
             if (element instanceof IErlModule) {
                 continue;

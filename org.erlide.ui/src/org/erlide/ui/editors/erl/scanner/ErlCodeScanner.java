@@ -21,7 +21,6 @@ import org.erlide.engine.services.parsing.ScannerException;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.util.ErlLogger;
 
-// TODO use RuleBasedScanner instead?
 public class ErlCodeScanner extends ErlTokenScanner {
 
     protected List<ErlToken> fTokens;
