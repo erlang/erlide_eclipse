@@ -161,12 +161,6 @@ class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListe
         fEmbraceSelection = enabled;
     }
 
-    // private boolean isStopper(final String kind) {
-    // return kind.equals("(") || kind.equals(")") || kind.equals("{")
-    // || kind.equals("}") || kind.equals("[") || kind.equals("]")
-    // || kind.equals("'") || kind.equals("\"") || kind.equals("atom");
-    // }
-
     /*
      * @see org.eclipse.swt.custom.VerifyKeyListener#verifyKey(org.eclipse.swt
      * .events.VerifyEvent)
@@ -196,51 +190,45 @@ class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListe
         final int length = selection.y;
         try {
             final String selStr = fEmbraceSelection ? document.get(offset, length) : "";
-            if (selStr.length() == 0) {
-                final int kind = getKindOfBracket(document, offset, length);
-                // if (isStopper(kind)) {
-                // return;
-                // }
-                if (kind == '(' || kind == '{' || kind == '[') {
-                    return;
-                }
-
-                switch (event.character) {
-                case '(':
-                    if (!fCloseParens || kind == ')') {
-                        return;
-                    }
-                    break;
-
-                case '[':
-                    if (!fCloseBrackets || kind == ']') {
-                        return;
-                    }
-                    break;
-                case '{':
-                    if (!fCloseBraces || kind == '}') {
-                        return;
-                    }
-                    break;
-                case '\'':
-                    if (!fCloseAtoms || kind == '\'') {
-                        return;
-                    }
-                    break;
-                case '"':
-                    if (!fCloseStrings || kind == '"') {
-                        return;
-                    }
-                    break;
-
-                default:
-                    return;
-                }
-
-                if (!validator.validInput()) {
-                    return;
-                }
+            final int kind = getKindOfBracket(document, offset, length);
+            if (kind == '(' || kind == '{' || kind == '[') {
+                return;
             }
+
+            switch (event.character) {
+            case '(':
+                if (!fCloseParens || kind == '(') {
+                    return;
+                }
+                break;
+            case '[':
+                if (!fCloseBrackets || kind == '[') {
+                    return;
+                }
+                break;
+            case '{':
+                if (!fCloseBraces || kind == '{') {
+                    return;
+                }
+                break;
+            case '\'':
+                if (!fCloseAtoms || kind == '\'') {
+                    return;
+                }
+                break;
+            case '"':
+                if (!fCloseStrings || kind == '"') {
+                    return;
+                }
+                break;
+            default:
+                return;
+            }
+
+            if (!validator.validInput()) {
+                return;
+            }
+
             final char character = event.character;
             final char closingCharacter = getPeerCharacter(character);
             updateDocument(document, offset, length, selStr, character, closingCharacter);
@@ -255,7 +243,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListe
     }
 
     private void updateDocumentSelection(final IDocument document, final int offset,
-            final String selStr, final char closingCharacter)
+            final int selLength, final char closingCharacter)
             throws BadLocationException, BadPositionCategoryException {
         final BracketLevel level = new BracketLevel();
         fBracketLevelStack.push(level);
@@ -270,7 +258,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListe
         model.forceInstall();
 
         level.fOffset = offset;
-        level.fLength = 2 + selStr.length();
+        level.fLength = 2 + selLength;
 
         // set up position tracking for our magic peers
         if (fBracketLevelStack.size() == 1) {
@@ -286,7 +274,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListe
         level.fUI.setSimpleMode(true);
         level.fUI.setExitPolicy(new ExitPolicy(closingCharacter,
                 getEscapeCharacter(closingCharacter), fBracketLevelStack));
-        level.fUI.setExitPosition(sourceViewer, offset + 2 + selStr.length(), 0,
+        level.fUI.setExitPosition(sourceViewer, offset + 2 + selLength, 0,
                 Integer.MAX_VALUE);
         level.fUI.setCyclingMode(LinkedModeUI.CYCLE_NEVER);
         level.fUI.enter();
@@ -306,7 +294,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListe
 
         document.replace(offset, length, buffer.toString());
 
-        updateDocumentSelection(document, offset, selStr, closingCharacter);
+        updateDocumentSelection(document, offset, selStr.length(), closingCharacter);
     }
 
     private int getKindOfBracket(final IDocument document, final int offset,
@@ -341,7 +329,6 @@ class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListe
     public void left(final LinkedModeModel environment, final int flags) {
 
         final BracketLevel level = fBracketLevelStack.pop();
-
         if (flags != ILinkedModeListener.EXTERNAL_MODIFICATION) {
             return;
         }
@@ -401,28 +388,20 @@ class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListe
         switch (character) {
         case '(':
             return ')';
-
         case ')':
             return '(';
-
         case '{':
             return '}';
-
         case '}':
             return '{';
-
         case '[':
             return ']';
-
         case ']':
             return '[';
-
         case '"':
-            return character;
-
+            return '"';
         case '\'':
-            return character;
-
+            return '\'';
         default:
             throw new IllegalArgumentException();
         }
@@ -453,12 +432,6 @@ class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListe
             fSize = fStack.size();
         }
 
-        /*
-         * @see
-         * org.eclipse.jdt.internal.ui.text.link.LinkedPositionUI.ExitPolicy
-         * #doExit(org.eclipse.jdt.internal.ui.text.link.LinkedPositionManager,
-         * org.eclipse.swt.events.VerifyEvent, int, int)
-         */
         @Override
         @SuppressWarnings("synthetic-access")
         public ExitFlags doExit(final LinkedModeModel model, final VerifyEvent event,
