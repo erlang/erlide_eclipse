@@ -189,8 +189,10 @@ class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListe
         final int offset = selection.x;
         final int length = selection.y;
         try {
+            final char prev = document.get(offset - 1, 1).charAt(0);
             final String selStr = fEmbraceSelection ? document.get(offset, length) : "";
             final int kind = getKindOfBracket(document, offset, length);
+
             if (kind == '(' || kind == '{' || kind == '[') {
                 return;
             }
@@ -212,12 +214,12 @@ class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListe
                 }
                 break;
             case '\'':
-                if (!fCloseAtoms || kind == '\'') {
+                if (!fCloseAtoms || kind == '\'' || prev == '\\') {
                     return;
                 }
                 break;
             case '"':
-                if (!fCloseStrings || kind == '"') {
+                if (!fCloseStrings || kind == '"' || prev == '\\') {
                     return;
                 }
                 break;
