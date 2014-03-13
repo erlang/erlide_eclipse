@@ -10,37 +10,22 @@
  *******************************************************************************/
 package org.erlide.ui.wizards;
 
-import java.io.ByteArrayInputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -48,29 +33,17 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.dialogs.WizardNewProjectReferencePage;
-import org.eclipse.ui.ide.undo.CreateFileOperation;
-import org.eclipse.ui.ide.undo.CreateFolderOperation;
-import org.eclipse.ui.ide.undo.CreateProjectOperation;
 import org.eclipse.ui.ide.undo.WorkspaceUndoUtil;
 import org.eclipse.ui.part.ISetSelectionTarget;
-import org.eclipse.ui.statushandlers.IStatusAdapterConstants;
-import org.eclipse.ui.statushandlers.StatusAdapter;
-import org.eclipse.ui.statushandlers.StatusManager;
-import org.erlide.core.ErlangCore;
-import org.erlide.core.internal.builder.ErlangNature;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.ui.util.StatusUtil;
 import org.erlide.util.ErlLogger;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -167,164 +140,20 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     }
 
     private IProject createNewProject() {
-        // get a project handle
-        final IProject newProjectHandle = mainPage.getProjectHandle();
-
-        // get a project descriptor
         URI location = null;
         if (!mainPage.useDefaults()) {
             location = mainPage.getLocationURI();
         }
 
-        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        final IProjectDescription description = workspace
-                .newProjectDescription(newProjectHandle.getName());
-        description.setLocationURI(location);
-
-        // // update the referenced project if provided
+        IProject[] refProjects = null;
         if (referencePage != null) {
-            final IProject[] refProjects = referencePage.getReferencedProjects();
-            if (refProjects.length > 0) {
-                description.setReferencedProjects(refProjects);
-            }
+            refProjects = referencePage.getReferencedProjects();
         }
 
-        // create the new project operation
-        final IRunnableWithProgress op = new IRunnableWithProgress() {
-            @Override
-            public void run(final IProgressMonitor monitor)
-                    throws InvocationTargetException {
-                final CreateProjectOperation op1 = new CreateProjectOperation(
-                        description, WizardMessages.NewProject_windowTitle);
-                try {
-                    // see bug
-                    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=219901
-                    // directly execute the operation so that the undo state is
-                    // not preserved. Making this undoable resulted in too many
-                    // accidental file deletions.
-                    op1.execute(monitor, WorkspaceUndoUtil.getUIInfoAdapter(getShell()));
-
-                    newProjectHandle.open(monitor);
-
-                    description.setNatureIds(new String[] { ErlangCore.NATURE_ID });
-                    newProjectHandle.setDescription(description, null);
-                    if (info.getBuilder() != null) {
-                        ErlangNature.setErlangProjectBuilder(newProjectHandle,
-                                info.getBuilder());
-                        createBuilderConfig(info.getBuilder());
-                    }
-
-                    createFolders(newProjectHandle,
-                            Lists.newArrayList(info.getOutputDir()), monitor);
-                    createFolders(newProjectHandle, info.getSourceDirs(), monitor);
-                    createFolders(newProjectHandle, info.getIncludeDirs(), monitor);
-
-                    createConfig(newProjectHandle, info.getConfigType(), monitor);
-
-                    final IErlProject erlProject = ErlangEngine.getInstance().getModel()
-                            .getErlangProject(newProjectHandle);
-                    erlProject.setConfigType(info.getConfigType());
-                    final BuilderProperties builderProperties = new BuilderProperties();
-                    builderProperties.setBuilderTool(info.getBuilder());
-                    builderProperties.setCompileTarget(info.getBuilderData().get(
-                            "compile"));
-                    builderProperties.setCleanTarget(info.getBuilderData().get("clean"));
-                    erlProject.setBuilderProperties(builderProperties);
-                    erlProject.setProperties(info);
-
-                } catch (final Exception e) {
-                    throw new InvocationTargetException(e);
-                }
-            }
-        };
-
-        // run the new project creation operation
-        try {
-            getContainer().run(false, true, op);
-        } catch (final InterruptedException e) {
-            return null;
-        } catch (final InvocationTargetException e) {
-            final Throwable t = e.getTargetException();
-            if (t instanceof ExecutionException && t.getCause() instanceof CoreException) {
-                final CoreException cause = (CoreException) t.getCause();
-                StatusAdapter status;
-                if (cause.getStatus().getCode() == IResourceStatus.CASE_VARIANT_EXISTS) {
-                    status = new StatusAdapter(StatusUtil.newStatus(IStatus.WARNING, NLS
-                            .bind(WizardMessages.NewProject_caseVariantExistsError,
-                                    newProjectHandle.getName()), cause));
-                } else {
-                    status = new StatusAdapter(
-                            StatusUtil.newStatus(cause.getStatus().getSeverity(),
-                                    WizardMessages.NewProject_errorMessage, cause));
-                }
-                status.setProperty(IStatusAdapterConstants.TITLE_PROPERTY,
-                        WizardMessages.NewProject_errorMessage);
-                StatusManager.getManager().handle(status, StatusManager.BLOCK);
-            } else {
-                final StatusAdapter status = new StatusAdapter(new Status(
-                        IStatus.WARNING, ErlideUIPlugin.PLUGIN_ID, 0, NLS.bind(
-                                WizardMessages.NewProject_internalError, t.getMessage()),
-                        t));
-                status.setProperty(IStatusAdapterConstants.TITLE_PROPERTY,
-                        WizardMessages.NewProject_errorMessage);
-                StatusManager.getManager().handle(status,
-                        StatusManager.LOG | StatusManager.BLOCK);
-            }
-            return null;
-        }
-
-        return newProjectHandle;
-    }
-
-    private void createConfig(final IProject newProjectHandle,
-            final ProjectConfigType configType, final IProgressMonitor monitor)
-            throws ExecutionException {
-        System.out.println("config?? " + configType);
-        switch (configType) {
-        case REBAR:
-        case EMAKE:
-            final IFile cfg = newProjectHandle.getFile(configType.getConfigName());
-            final String contents = getConfigContent(info, configType);
-            final CreateFileOperation fop = new CreateFileOperation(cfg, null,
-                    new ByteArrayInputStream(contents.getBytes(Charsets.ISO_8859_1)),
-                    "creating file " + cfg.getName());
-            fop.execute(monitor, WorkspaceUndoUtil.getUIInfoAdapter(getShell()));
-            break;
-        case INTERNAL:
-            break;
-        default:
-            break;
-        }
-    }
-
-    private String getConfigContent(final NewProjectData info2,
-            final ProjectConfigType configType) {
-        switch (configType) {
-        case EMAKE:
-            return "";
-        case REBAR:
-            return "";
-        default:
-            return "";
-        }
-    }
-
-    private void createBuilderConfig(final BuilderTool builderTool) {
-        System.out.println("TODO: create builder config " + builderTool);
-    }
-
-    private void createFolders(final IProject project, final Collection<IPath> pathList,
-            final IProgressMonitor monitor) throws CoreException, ExecutionException {
-        if (pathList == null) {
-            return;
-        }
-        for (final IPath path : pathList) {
-            // only create in-project paths
-            if (!path.isAbsolute() && !path.toString().equals(".") && !path.isEmpty()) {
-                final IFolder folder = project.getFolder(path);
-                createFolderHelper(folder, monitor);
-            }
-        }
+        final ProjectCreator creator = new ProjectCreator(mainPage.getProjectName(),
+                location, refProjects, info, getContainer(),
+                WorkspaceUndoUtil.getUIInfoAdapter(getShell()));
+        return creator.newProject();
 
     }
 
@@ -336,29 +165,6 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
                 .getResourceString("wizards.errors.projecterrortitle");
         ErrorDialog.openError(getShell(), description, title, new Status(IStatus.ERROR,
                 ErlideUIPlugin.PLUGIN_ID, 0, x.getMessage(), x));
-    }
-
-    /**
-     * Helper method: it recursively creates a folder path.
-     * 
-     * @param folder
-     * @param monitor
-     * @throws CoreException
-     * @throws ExecutionException
-     * @see java.io.File#mkdirs()
-     */
-    private void createFolderHelper(final IFolder folder, final IProgressMonitor monitor)
-            throws CoreException, ExecutionException {
-        if (!folder.exists()) {
-            final IContainer parent = folder.getParent();
-            if (parent instanceof IFolder && !((IFolder) parent).exists()) {
-                createFolderHelper((IFolder) parent, monitor);
-            }
-            final CreateFolderOperation fop = new CreateFolderOperation(folder, null,
-                    "creating folder " + folder.getName());
-            System.out.println("create folder " + folder.getName());
-            fop.execute(monitor, WorkspaceUndoUtil.getUIInfoAdapter(getShell()));
-        }
     }
 
     @Override
