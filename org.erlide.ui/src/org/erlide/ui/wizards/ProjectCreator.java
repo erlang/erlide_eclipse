@@ -63,13 +63,15 @@ public class ProjectCreator {
         this.context = context;
     }
 
-    IProject newProject() {
-        final IProject newProjectHandle = ResourcesPlugin.getWorkspace().getRoot()
-                .getProject(name);
-
+    public IProject createProject() throws CoreException {
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        final IProjectDescription description = workspace
-                .newProjectDescription(newProjectHandle.getName());
+        final IProject newProjectHandle = workspace.getRoot().getProject(name);
+
+        if (newProjectHandle.exists()) {
+            throw new CoreException(Status.OK_STATUS);
+        }
+
+        final IProjectDescription description = workspace.newProjectDescription(name);
         description.setLocationURI(location);
 
         // // update the referenced project if provided
@@ -90,14 +92,12 @@ public class ProjectCreator {
                     op1.execute(monitor, notifier);
 
                     newProjectHandle.open(monitor);
-
                     description.setNatureIds(new String[] { ErlangCore.NATURE_ID });
                     newProjectHandle.setDescription(description, null);
-                    if (info.getBuilder() != null) {
-                        ErlangNature.setErlangProjectBuilder(newProjectHandle,
-                                info.getBuilder());
-                        createBuilderConfig(info.getBuilder());
-                    }
+
+                    final BuilderTool builder = info.getBuilder();
+                    ErlangNature.setErlangProjectBuilder(newProjectHandle, builder);
+                    createBuilderConfig(builder);
 
                     createFolders(newProjectHandle,
                             Lists.newArrayList(info.getOutputDir()), monitor);
@@ -110,10 +110,11 @@ public class ProjectCreator {
                             .getErlangProject(newProjectHandle);
                     erlProject.setConfigType(info.getConfigType());
                     final BuilderProperties builderProperties = new BuilderProperties();
-                    builderProperties.setBuilderTool(info.getBuilder());
+                    builderProperties.setBuilderTool(builder);
                     builderProperties.setCompileTarget(info.getBuilderData().get(
                             "compile"));
                     builderProperties.setCleanTarget(info.getBuilderData().get("clean"));
+
                     erlProject.setBuilderProperties(builderProperties);
                     erlProject.setProperties(info);
 
