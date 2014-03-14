@@ -167,7 +167,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                             + "and erlide can't work. You need to fix your .hosts file and restart.\n"
                             + "\n" + "This instance will close now.";
                     final String description = "Java and Erlang can't agree on hostnames. Please check the log "
-                            + "in <workspace>/.metadata/.log for details on which names were tried.\n\n"
+                            + "in <workspace>/erlide.log for details on which names were tried.\n\n"
                             + "Hostnames with dots in them can't be used as short names.\n"
                             + "Hostnames with dashes in them might not always work.\n\n"
                             + "Try to conect two Erlang nodes manually first. Add the working hostname to .hosts.";
