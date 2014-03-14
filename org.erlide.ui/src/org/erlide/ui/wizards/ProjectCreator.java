@@ -84,6 +84,7 @@ public class ProjectCreator {
             @Override
             public void run(final IProgressMonitor monitor)
                     throws InvocationTargetException {
+
                 final CreateProjectOperation op1 = new CreateProjectOperation(
                         description, WizardMessages.NewProject_windowTitle);
                 try {

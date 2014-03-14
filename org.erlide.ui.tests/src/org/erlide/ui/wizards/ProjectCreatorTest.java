@@ -20,6 +20,7 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.ui.tests.util.DummyRunnableContext;
+import org.erlide.ui.tests.util.WorkbenchHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -40,6 +41,8 @@ public class ProjectCreatorTest {
         location = null;
         context = new DummyRunnableContext();
         factory = ErlangEngine.getInstance().getProjectConfiguratorFactory();
+
+        WorkbenchHelper.waitForWorkbench();
     }
 
     @Before
