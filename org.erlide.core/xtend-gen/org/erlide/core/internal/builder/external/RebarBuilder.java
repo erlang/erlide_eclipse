@@ -74,8 +74,7 @@ public class RebarBuilder extends ExternalBuilder {
       IMarker _xifexpression = null;
       if ((!this.foundAppSrc)) {
         IProject _project_1 = this.getProject();
-        IProject _project_2 = this.getProject();
-        _xifexpression = MarkerUtils.addMarker(_project_1, _project_2, null, "No .app.src file found, can\'t compile with rebar", (-1), 
+        _xifexpression = MarkerUtils.addMarker(_project_1, null, "No .app.src file found, can\'t compile with rebar", (-1), 
           IMarker.SEVERITY_WARNING, MarkerUtils.PROBLEM_MARKER);
       }
       _xblockexpression = _xifexpression;

@@ -158,8 +158,7 @@ public final class MarkerUtils {
         if (msg.length() > 1000) {
             msg = msg.substring(0, 1000) + "...";
         }
-        final IMarker marker = addMarker(res, resource.getProject(), fileName, msg, line,
-                sev, PROBLEM_MARKER);
+        final IMarker marker = addMarker(res, fileName, msg, line, sev, PROBLEM_MARKER);
         if (marker != null) {
             try {
                 marker.setAttribute(IMarker.SOURCE_ID, resource.getLocation().toString());
@@ -308,15 +307,13 @@ public final class MarkerUtils {
         return marker;
     }
 
-    public static IMarker addMarker(final IResource file, final IProject project,
-            final String path, final String message, final int lineNumber,
-            final int severity, final String markerKind) {
+    public static IMarker addMarker(final IResource file, final String path,
+            final String message, final int lineNumber, final int severity,
+            final String markerKind) {
         try {
             IResource resource;
             if (file != null) {
                 resource = file;
-            } else if (project != null) {
-                resource = project;
             } else {
                 resource = ResourcesPlugin.getWorkspace().getRoot();
             }
@@ -325,6 +322,11 @@ public final class MarkerUtils {
             marker.setAttribute(IMarker.SEVERITY, severity);
             marker.setAttribute(IMarker.LINE_NUMBER, lineNumber != -1 ? lineNumber : 1);
             marker.setAttribute(PATH_ATTRIBUTE, path);
+            if (path != null) {
+                marker.setAttribute(IMarker.SOURCE_ID, path);
+            } else {
+                marker.setAttribute(IMarker.SOURCE_ID, resource.getLocation().toString());
+            }
             return marker;
         } catch (final CoreException e) {
         }

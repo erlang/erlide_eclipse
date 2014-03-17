@@ -81,14 +81,14 @@ public abstract class ExternalBuilder extends ErlangBuilder {
                     .getLocation().toPortableString(), callback, m);
 
             if (result == null || result.isCommandNotFound()) {
-                MarkerUtils.addMarker(null, project, null, "Builder command not found: "
+                MarkerUtils.addMarker(project, null, "Builder command not found: "
                         + getOsCommand(), 0, IMarker.SEVERITY_ERROR,
                         MarkerUtils.PROBLEM_MARKER);
             } else {
                 final boolean noMarkersOnProject = project.findMarkers(IMarker.PROBLEM,
                         true, IResource.DEPTH_INFINITE).length == 0;
                 if (noMarkersOnProject && result.exit > 0) {
-                    MarkerUtils.addMarker(null, project, null, "Builder error: "
+                    MarkerUtils.addMarker(project, null, "Builder error: "
                             + getOsCommand(), 0, IMarker.SEVERITY_ERROR,
                             MarkerUtils.PROBLEM_MARKER);
                 }
