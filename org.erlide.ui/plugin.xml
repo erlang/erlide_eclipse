@@ -1958,4 +1958,9 @@
      <adapter type="org.eclipse.debug.ui.actions.ILaunchable"/>
   </factory>
 </extension>
+  <extension point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+         markerType="org.erlide.core.problemmarker"
+         class="org.erlide.ui.editors.erl.correction.QuickFixResolutionGenerator"/>
+   </extension>
 </plugin>
