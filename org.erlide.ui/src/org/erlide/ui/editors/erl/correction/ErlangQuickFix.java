@@ -5,7 +5,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IMarkerResolution2;
 
-public class ErlangQuickFix implements IMarkerResolution2 {
+public abstract class ErlangQuickFix implements IMarkerResolution2 {
 
     String label;
     private final String description;

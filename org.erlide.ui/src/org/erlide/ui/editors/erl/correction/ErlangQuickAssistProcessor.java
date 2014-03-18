@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext;
@@ -22,6 +23,7 @@ import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
+import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
@@ -56,8 +58,11 @@ public class ErlangQuickAssistProcessor implements IQuickAssistProcessor {
             if (annotation instanceof MarkerAnnotation) {
                 final MarkerAnnotation markerAnnotation = (MarkerAnnotation) annotation;
                 final IMarker marker = markerAnnotation.getMarker();
-                final int line = marker.getAttribute(IMarker.LINE_NUMBER, -1) - 1;
                 try {
+                    if (!marker.getType().equals(MarkerUtils.PROBLEM_MARKER)) {
+                        continue;
+                    }
+                    final int line = marker.getAttribute(IMarker.LINE_NUMBER, -1) - 1;
                     final int lineOffset = sourceViewer.getDocument().getLineOffset(line);
                     final int lineEnd = lineOffset
                             + sourceViewer.getDocument().getLineLength(line);
@@ -70,6 +75,8 @@ public class ErlangQuickAssistProcessor implements IQuickAssistProcessor {
                         }
                     }
                 } catch (final BadLocationException e) {
+                    ErlLogger.debug(e);
+                } catch (final CoreException e) {
                     ErlLogger.debug(e);
                 }
             }

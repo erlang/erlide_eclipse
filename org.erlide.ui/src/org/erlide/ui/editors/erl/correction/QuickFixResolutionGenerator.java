@@ -9,8 +9,6 @@ import org.erlide.engine.model.builder.MarkerUtils;
 
 public class QuickFixResolutionGenerator implements IMarkerResolutionGenerator {
 
-    // TODO need context!
-
     @Override
     public IMarkerResolution[] getResolutions(final IMarker marker) {
 
