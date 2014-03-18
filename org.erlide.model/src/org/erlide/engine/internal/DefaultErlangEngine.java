@@ -61,6 +61,7 @@ public class DefaultErlangEngine implements IErlangEngine {
     private final Map<Class<? extends ErlangService>, Class<? extends ErlangService>> implementations = Maps
             .newHashMap();
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends ErlangService> T getService(final Class<T> type) {
         try {

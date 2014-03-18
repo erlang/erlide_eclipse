@@ -7,7 +7,7 @@ import org.eclipse.ui.IMarkerResolution2;
 
 public abstract class ErlangQuickFix implements IMarkerResolution2 {
 
-    String label;
+    private final String label;
     private final String description;
     private final Image image;
 
@@ -24,7 +24,7 @@ public abstract class ErlangQuickFix implements IMarkerResolution2 {
 
     @Override
     public void run(final IMarker marker) {
-        MessageDialog.openInformation(null, "QuickFix Demo",
+        MessageDialog.openInformation(null, "Erlang quick fix",
                 "This quick-fix is not yet implemented");
     }
 

@@ -304,8 +304,10 @@ public class TermParser {
             char c;
             result.kind = TokenKind.STRING;
             c = s.charAt(++result.end);
-            // TODO add escape!
             while (result.end < s.length() && c != '"') {
+                if (c == '\\') {
+                    c = s.charAt(result.end++);
+                }
                 c = s.charAt(result.end++);
             }
         }
@@ -314,8 +316,10 @@ public class TermParser {
             char c;
             result.kind = TokenKind.ATOM;
             c = s.charAt(++result.end);
-            // TODO add escape!
             while (result.end < s.length() && c != '\'') {
+                if (c == '\\') {
+                    c = s.charAt(result.end++);
+                }
                 c = s.charAt(result.end++);
             }
         }

@@ -1,7 +1,7 @@
 package org.erlide.ui.editors.erl.correction;
 
 import java.util.Collection;
-import java.util.regex.Pattern;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -10,14 +10,12 @@ import org.eclipse.ui.IMarkerResolution;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.services.correction.MessageMatcher;
+
+import com.google.common.collect.Lists;
 
 //TODO make this an engine service?
 
 public class ErlangQuickFixCollector {
-
-    private static final Pattern INCLUDE_NO_HEADER_PATTERN = Pattern
-            .compile("can't find include file \"(.+?)\"");
 
     public IMarkerResolution[] getFixes(final IResource resource, final int line,
             final String message) {
@@ -44,8 +42,7 @@ public class ErlangQuickFixCollector {
     private IMarkerResolution[] getFixesForProject(final IProject project,
             final int line, final String message) {
 
-        // TODO
-        final MessageMatcher matcher = new MessageMatcher();
+        // TODO handle multiple project quickfixes
 
         return new IMarkerResolution[0];
     }
@@ -53,18 +50,15 @@ public class ErlangQuickFixCollector {
     private IMarkerResolution[] getFixesForModule(final IErlModule module,
             final int line, final String message) {
 
-        // TODO
+        // TODO handle multiple quickfixes
 
-        final MessageMatcher matcher = new MessageMatcher();
-        final Collection<String> match = matcher.matchMessage(message,
-                INCLUDE_NO_HEADER_PATTERN);
+        final List<IMarkerResolution> result = Lists.newArrayList();
+        final Collection<String> match = CreateHeaderQuickFix.matches(message);
         if (match != null) {
-            final ErlangQuickFix fix = new CreateHeaderQuickFix(module, match.iterator()
-                    .next());
-            return new IMarkerResolution[] { fix };
+            final ErlangQuickFix fix = new CreateHeaderQuickFix(module, match);
+            result.add(fix);
         }
 
-        return new IMarkerResolution[0];
+        return result.toArray(new IMarkerResolution[result.size()]);
     }
-
 }

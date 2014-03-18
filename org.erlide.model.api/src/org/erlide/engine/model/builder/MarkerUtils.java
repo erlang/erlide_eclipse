@@ -74,7 +74,7 @@ public final class MarkerUtils {
 
     /**
      * Add error markers from a list of error tuples
-     * 
+     *
      * @param resource
      * @param errorList
      */
@@ -154,10 +154,7 @@ public final class MarkerUtils {
         } catch (final OtpErlangRangeException e) {
         }
 
-        String msg = ErlUtils.asString(data.elementAt(2));
-        if (msg.length() > 1000) {
-            msg = msg.substring(0, 1000) + "...";
-        }
+        final String msg = ErlUtils.asString(data.elementAt(2));
         final IMarker marker = addMarker(res, fileName, msg, line, sev, PROBLEM_MARKER);
         if (marker != null) {
             try {
@@ -326,6 +323,10 @@ public final class MarkerUtils {
                 marker.setAttribute(IMarker.SOURCE_ID, path);
             } else {
                 marker.setAttribute(IMarker.SOURCE_ID, resource.getLocation().toString());
+            }
+            final ProblemData problem = ErlProblems.parse(message);
+            if (problem != null) {
+                marker.setAttribute(IProblem.TAG, problem.getTag());
             }
             return marker;
         } catch (final CoreException e) {
