@@ -4,6 +4,7 @@
    <extension-point id="foldingStructureProviders" name="%foldingStructureProvidersExtensionPoint" schema="schema/foldingStructureProviders.exsd"/>
    <extension-point id="erlDndAdapter" name="Erlide Drag and Drop Adapter" schema="schema/erlDndAdapter.exsd"/>
    <extension-point id="erlangElementFilters" name="Erlang Element Filters" schema="schema/erlangElementFilters.exsd"/>
+   <extension-point id="quickfix" name="quickfix" schema="schema/quickfix.exsd"/>
 
      <extension
          point="org.eclipse.ui.editors">
@@ -1963,4 +1964,31 @@
          markerType="org.erlide.core.problemmarker"
          class="org.erlide.ui.editors.erl.correction.QuickFixResolutionGenerator"/>
    </extension>
+  <extension
+        point="org.erlide.ui.quickfix">
+     <quickfix
+           class="org.erlide.ui.editors.erl.correction.RenameModuleQuickFix"
+           image="icons/full/obj16/change.gif"
+           label="Change module name to  &apos;~&apos;">
+        <tag
+              name="compiler_module_name">
+        </tag>
+     </quickfix>
+     <quickfix
+           class="org.erlide.ui.editors.erl.correction.RenameFileQuickFix"
+           image="icons/full/obj16/change.gif"
+           label="Change file name to  &quot;~&quot;">
+        <tag
+              name="compiler_module_name">
+        </tag>
+     </quickfix>
+     <quickfix
+           class="org.erlide.ui.editors.erl.correction.CreateHeaderQuickFix"
+           image="icons/full/obj16/change.gif"
+           label="Create include file &quot;~&quot;">
+        <tag
+              name="epp_include">
+        </tag>
+     </quickfix>
+  </extension>
 </plugin>
