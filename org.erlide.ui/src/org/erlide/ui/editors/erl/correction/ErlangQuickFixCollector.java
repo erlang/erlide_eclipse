@@ -49,10 +49,10 @@ public class ErlangQuickFixCollector {
 
     private IMarkerResolution[] getFixesForModule(final IErlModule module,
             final int line, final String message) {
+        final List<IMarkerResolution> result = Lists.newArrayList();
 
         // TODO handle multiple quickfixes
 
-        final List<IMarkerResolution> result = Lists.newArrayList();
         final Collection<String> match = CreateHeaderQuickFix.matches(message);
         if (match != null) {
             final ErlangQuickFix fix = new CreateHeaderQuickFix(module, match);

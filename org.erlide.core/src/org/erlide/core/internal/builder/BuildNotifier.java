@@ -11,14 +11,12 @@
  *******************************************************************************/
 package org.erlide.core.internal.builder;
 
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.builder.BuilderHelper;
-import org.erlide.engine.model.builder.IProblem;
 import org.erlide.util.ErlLogger;
 
 public class BuildNotifier {
@@ -217,81 +215,81 @@ public class BuildNotifier {
         previousSubtask = msg;
     }
 
-    protected void updateProblemCounts(final IProblem[] newProblems) {
-        for (final IProblem element : newProblems) {
-            if (element.isError()) {
-                fNewErrorCount++;
-            } else {
-                fNewWarningCount++;
-            }
-        }
-    }
+    // protected void updateProblemCounts(final IProblem[] newProblems) {
+    // for (final IProblem element : newProblems) {
+    // if (element.isError()) {
+    // fNewErrorCount++;
+    // } else {
+    // fNewWarningCount++;
+    // }
+    // }
+    // }
 
-    /**
-     * Update the problem counts from one compilation result given the old and
-     * new problems, either of which may be null.
-     */
-    protected void updateProblemCounts(final IMarker[] oldProblems,
-            final IProblem[] newProblems) {
-        if (newProblems != null) {
-            next:
-            for (final IProblem newProblem : newProblems) {
-                if (newProblem.getID() == IProblem.Task) {
-                    continue; // skip task
-                }
-                final boolean isError = newProblem.isError();
-                final String message = newProblem.getMessage();
-
-                if (oldProblems != null) {
-                    for (int j = 0, m = oldProblems.length; j < m; j++) {
-                        final IMarker pb = oldProblems[j];
-                        if (pb == null) {
-                            continue; // already matched up with a new problem
-                        }
-                        final boolean wasError = IMarker.SEVERITY_ERROR == pb
-                                .getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-                        if (isError == wasError
-                                && message.equals(pb.getAttribute(IMarker.MESSAGE, ""))) { //$NON-NLS-1$
-                            oldProblems[j] = null;
-                            continue next;
-                        }
-                    }
-                }
-                if (isError) {
-                    fNewErrorCount++;
-                } else {
-                    fNewWarningCount++;
-                }
-            }
-        }
-        if (oldProblems != null) {
-            next:
-            for (final IMarker oldProblem : oldProblems) {
-                if (oldProblem == null) {
-                    continue next; // already matched up with a new problem
-                }
-                final boolean wasError = IMarker.SEVERITY_ERROR == oldProblem
-                        .getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-                final String message = oldProblem.getAttribute(IMarker.MESSAGE, ""); //$NON-NLS-1$
-
-                if (newProblems != null) {
-                    for (final IProblem pb : newProblems) {
-                        if (pb.getID() == IProblem.Task) {
-                            continue; // skip task
-                        }
-                        if (wasError == pb.isError() && message.equals(pb.getMessage())) {
-                            continue next;
-                        }
-                    }
-                }
-                if (wasError) {
-                    fFixedErrorCount++;
-                } else {
-                    fFixedWarningCount++;
-                }
-            }
-        }
-    }
+    // /**
+    // * Update the problem counts from one compilation result given the old and
+    // * new problems, either of which may be null.
+    // */
+    // protected void updateProblemCounts(final IMarker[] oldProblems,
+    // final IProblem[] newProblems) {
+    // if (newProblems != null) {
+    // next:
+    // for (final IProblem newProblem : newProblems) {
+    // if (newProblem.getID() == IProblem.Task) {
+    // continue; // skip task
+    // }
+    // final boolean isError = newProblem.isError();
+    // final String message = newProblem.getMessage();
+    //
+    // if (oldProblems != null) {
+    // for (int j = 0, m = oldProblems.length; j < m; j++) {
+    // final IMarker pb = oldProblems[j];
+    // if (pb == null) {
+    // continue; // already matched up with a new problem
+    // }
+    // final boolean wasError = IMarker.SEVERITY_ERROR == pb
+    // .getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+    // if (isError == wasError
+    //                                && message.equals(pb.getAttribute(IMarker.MESSAGE, ""))) { //$NON-NLS-1$
+    // oldProblems[j] = null;
+    // continue next;
+    // }
+    // }
+    // }
+    // if (isError) {
+    // fNewErrorCount++;
+    // } else {
+    // fNewWarningCount++;
+    // }
+    // }
+    // }
+    // if (oldProblems != null) {
+    // next:
+    // for (final IMarker oldProblem : oldProblems) {
+    // if (oldProblem == null) {
+    // continue next; // already matched up with a new problem
+    // }
+    // final boolean wasError = IMarker.SEVERITY_ERROR == oldProblem
+    // .getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+    //                final String message = oldProblem.getAttribute(IMarker.MESSAGE, ""); //$NON-NLS-1$
+    //
+    // if (newProblems != null) {
+    // for (final IProblem pb : newProblems) {
+    // if (pb.getID() == IProblem.Task) {
+    // continue; // skip task
+    // }
+    // if (wasError == pb.isError() && message.equals(pb.getMessage())) {
+    // continue next;
+    // }
+    // }
+    // }
+    // if (wasError) {
+    // fFixedErrorCount++;
+    // } else {
+    // fFixedWarningCount++;
+    // }
+    // }
+    // }
+    // }
 
     public void updateProgress(final float newPercentComplete) {
         if (newPercentComplete > percentComplete) {

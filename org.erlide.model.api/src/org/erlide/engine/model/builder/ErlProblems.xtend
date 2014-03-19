@@ -6,15 +6,16 @@ import com.ericsson.otp.erlang.OtpErlangObject
 import com.ericsson.otp.erlang.OtpErlangString
 import com.ericsson.otp.erlang.OtpErlangTuple
 import java.util.List
+import java.util.Map
 import java.util.Scanner
 import java.util.regex.Pattern
 import org.erlide.util.ErlLogger
 import org.erlide.util.erlang.ErlUtils
-import org.erlide.util.erlang.OtpPatternVariable
 
 class ErlProblems {
 
-    val List<ProblemData> data = newArrayList()
+    val List<ProblemData> data = newArrayList
+    val Map<String, ProblemData> tagMap = newHashMap
 
     private new() {
         load()
@@ -30,16 +31,17 @@ class ErlProblems {
             try {
                 val source0 = ErlUtils.parse(src)
                 val source = source0 as OtpErlangList
-                for (OtpErlangObject category0 : source.elements) {
-                    val category = category0 as OtpErlangTuple
-                    val categoryName = (category.elementAt(0) as OtpErlangAtom).atomValue
-                    for (OtpErlangObject item0 : (category.elementAt(1) as OtpErlangList).elements()) {
-                        val item = item0 as OtpErlangTuple
-                        val tag = (item.elementAt(0) as OtpErlangAtom).atomValue
-                        val message = (item.elementAt(1) as OtpErlangString).stringValue.replaceAll("\\\\n", "\n")
-                        //message = quoteRegex(message) //.replace("~", "(.+?)")
-                        data.add(new ProblemData(categoryName, tag, message, arity(message)))
-                    }
+                for (OtpErlangObject item0 : source.elements()) {
+                    val item = item0 as OtpErlangTuple
+                    val tag = (item.elementAt(0) as OtpErlangAtom).atomValue
+                    val message = (item.elementAt(1) as OtpErlangString).stringValue.replaceAll("\\\\n", "\n")
+                    val myarity = arity(message)
+                    val problemData = new ProblemData(tag + "_" + myarity, message, myarity)
+                    data.add(problemData)
+                    if (tagMap.containsKey(problemData.tag))
+                        throw new IllegalStateException(
+                            "duplicate problem tags are not allowed: '" + problemData.tag + "'")
+                    tagMap.put(problemData.tag, problemData)
                 }
             } catch (Exception e) {
                 ErlLogger.debug(e)
@@ -51,11 +53,18 @@ class ErlProblems {
         }
     }
 
-    def arity(String string) {
+    def getData() {
+        return data.immutableCopy;
+    }
+
+    def static arity(String string) {
         var result = 0;
+        var escape = false;
         for (c : string.bytes) {
-            if (c == 126) // '~'
+            if (!escape && c == 126) { // '~'
                 result = result + 1
+            }
+            escape = (c == 92) // '\'
         }
         return result;
     }
@@ -81,18 +90,69 @@ class ErlProblems {
         }
     }
 
-    val public static ErlProblems instance = new ErlProblems()
+    var static ErlProblems instance = null
+
+    def static getInstance() {
+        if (instance === null) {
+            instance = new ErlProblems()
+        }
+        return instance
+    }
 
     def static ProblemData parse(String msg) {
+        for (p : getInstance().data) {
+            if (p.pattern.matcher(msg).matches)
+                return p
+        }
         return null
     }
 
 }
 
 @Data
-class ProblemData {
-    String category
+class ProblemData0 {
     String tag
     String message
     int arity
+}
+
+class ProblemData extends ProblemData0 {
+    val public static TAG = "erlide.tag"
+    val public static ARGS = "erlide.args"
+
+    Pattern pattern
+
+    new(String tag, String message, int arity) {
+        super(tag, message, arity)
+    }
+
+    def getPattern() {
+        if (pattern === null) {
+            val str = ErlProblems.quoteRegex(message)
+            pattern = Pattern.compile(str.replaceAll("~", "(.+?)"))
+        }
+        return pattern
+    }
+
+    def setPattern(Pattern p) {
+        throw new UnsupportedOperationException("pattern is read-only")
+    }
+
+    def getCategory() {
+        return tag.split("_").head
+    }
+
+    def List<String> getMessageArgs(String msg) {
+        val matcher = pattern.matcher(msg)
+        matcher.matches
+        val num = matcher.groupCount
+        val result = newArrayList
+        var i = 1
+        while (i <= num) {
+            result.add(matcher.group(i))
+            i = i + 1
+        }
+        return result
+    }
+
 }

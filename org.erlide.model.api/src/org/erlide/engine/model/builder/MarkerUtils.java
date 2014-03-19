@@ -32,6 +32,7 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -326,7 +327,9 @@ public final class MarkerUtils {
             }
             final ProblemData problem = ErlProblems.parse(message);
             if (problem != null) {
-                marker.setAttribute(IProblem.TAG, problem.getTag());
+                marker.setAttribute(ProblemData.TAG, problem.getTag());
+                marker.setAttribute(ProblemData.ARGS,
+                        Joiner.on('\0').join(problem.getMessageArgs(message)));
             }
             return marker;
         } catch (final CoreException e) {

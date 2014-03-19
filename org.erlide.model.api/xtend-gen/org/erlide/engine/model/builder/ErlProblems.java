@@ -5,9 +5,13 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.ImmutableList;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
@@ -18,6 +22,8 @@ import org.erlide.util.erlang.ErlUtils;
 @SuppressWarnings("all")
 public class ErlProblems {
   private final List<ProblemData> data = CollectionLiterals.<ProblemData>newArrayList();
+  
+  private final Map<String,ProblemData> tagMap = CollectionLiterals.<String, ProblemData>newHashMap();
   
   private ErlProblems() {
     this.load();
@@ -43,26 +49,27 @@ public class ErlProblems {
           final OtpErlangObject source0 = ErlUtils.parse(src);
           final OtpErlangList source = ((OtpErlangList) source0);
           OtpErlangObject[] _elements = source.elements();
-          for (final OtpErlangObject category0 : _elements) {
+          for (final OtpErlangObject item0 : _elements) {
             {
-              final OtpErlangTuple category = ((OtpErlangTuple) category0);
-              OtpErlangObject _elementAt = category.elementAt(0);
-              final String categoryName = ((OtpErlangAtom) _elementAt).atomValue();
-              OtpErlangObject _elementAt_1 = category.elementAt(1);
-              OtpErlangObject[] _elements_1 = ((OtpErlangList) _elementAt_1).elements();
-              for (final OtpErlangObject item0 : _elements_1) {
-                {
-                  final OtpErlangTuple item = ((OtpErlangTuple) item0);
-                  OtpErlangObject _elementAt_2 = item.elementAt(0);
-                  final String tag = ((OtpErlangAtom) _elementAt_2).atomValue();
-                  OtpErlangObject _elementAt_3 = item.elementAt(1);
-                  String _stringValue = ((OtpErlangString) _elementAt_3).stringValue();
-                  final String message = _stringValue.replaceAll("\\\\n", "\n");
-                  int _arity = this.arity(message);
-                  ProblemData _problemData = new ProblemData(categoryName, tag, message, _arity);
-                  this.data.add(_problemData);
-                }
+              final OtpErlangTuple item = ((OtpErlangTuple) item0);
+              OtpErlangObject _elementAt = item.elementAt(0);
+              final String tag = ((OtpErlangAtom) _elementAt).atomValue();
+              OtpErlangObject _elementAt_1 = item.elementAt(1);
+              String _stringValue = ((OtpErlangString) _elementAt_1).stringValue();
+              final String message = _stringValue.replaceAll("\\\\n", "\n");
+              final int myarity = ErlProblems.arity(message);
+              final ProblemData problemData = new ProblemData(((tag + "_") + Integer.valueOf(myarity)), message, myarity);
+              this.data.add(problemData);
+              String _tag = problemData.getTag();
+              boolean _containsKey = this.tagMap.containsKey(_tag);
+              if (_containsKey) {
+                String _tag_1 = problemData.getTag();
+                String _plus = ("duplicate problem tags are not allowed: \'" + _tag_1);
+                String _plus_1 = (_plus + "\'");
+                throw new IllegalStateException(_plus_1);
               }
+              String _tag_2 = problemData.getTag();
+              this.tagMap.put(_tag_2, problemData);
             }
           }
         } catch (final Throwable _t) {
@@ -82,12 +89,20 @@ public class ErlProblems {
     }
   }
   
-  public int arity(final String string) {
+  public List<ProblemData> getData() {
+    return ImmutableList.<ProblemData>copyOf(this.data);
+  }
+  
+  public static int arity(final String string) {
     int result = 0;
+    boolean escape = false;
     byte[] _bytes = string.getBytes();
     for (final byte c : _bytes) {
-      if ((c == 126)) {
-        result = (result + 1);
+      {
+        if (((!escape) && (c == 126))) {
+          result = (result + 1);
+        }
+        escape = (c == 92);
       }
     }
     return result;
@@ -133,9 +148,27 @@ public class ErlProblems {
     }
   }
   
-  public final static ErlProblems instance = new ErlProblems();
+  private static ErlProblems instance = null;
+  
+  public static ErlProblems getInstance() {
+    boolean _tripleEquals = (ErlProblems.instance == null);
+    if (_tripleEquals) {
+      ErlProblems _erlProblems = new ErlProblems();
+      ErlProblems.instance = _erlProblems;
+    }
+    return ErlProblems.instance;
+  }
   
   public static ProblemData parse(final String msg) {
+    ErlProblems _instance = ErlProblems.getInstance();
+    for (final ProblemData p : _instance.data) {
+      Pattern _pattern = p.getPattern();
+      Matcher _matcher = _pattern.matcher(msg);
+      boolean _matches = _matcher.matches();
+      if (_matches) {
+        return p;
+      }
+    }
     return null;
   }
 }
