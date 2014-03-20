@@ -48,6 +48,7 @@ import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.erlang.ModuleKind;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.rpc.IRpcFuture;
@@ -286,9 +287,13 @@ public class InternalBuilder extends ErlangBuilder {
 
         final Collection<String> modules = newArrayList();
         try {
-            for (final IErlModule m : ErlangEngine.getInstance().getModel()
-                    .getErlangProject(getProject()).getModules()) {
-                modules.add(m.getModuleName());
+            final IErlProject erlangProject = ErlangEngine.getInstance().getModel()
+                    .getErlangProject(getProject());
+            for (final IErlModule m : erlangProject.getModules()) {
+                if (!ignoreModule(erlangProject, m)) {
+                    // ignore rebar deps;
+                    modules.add(m.getModuleName());
+                }
             }
         } catch (final ErlModelException e1) {
             ErlLogger.error(e1);
@@ -313,7 +318,31 @@ public class InternalBuilder extends ErlangBuilder {
                 ErlLogger.error(e);
             }
         }
+    }
 
+    private boolean ignoreModule(final IErlProject erlangProject, final IErlModule m) {
+        boolean result = false;
+        result |= m.getModuleKind() != ModuleKind.ERL;
+        result |= !isModuleOnDirectSourcePath(erlangProject, m);
+        result |= m.getResource().getProjectRelativePath().segment(0).equals("deps");
+        if (result) {
+            ErlLogger.debug(".app: ignore " + m.getName());
+        }
+        return result;
+    }
+
+    private boolean isModuleOnDirectSourcePath(final IErlProject erlangProject,
+            final IErlModule m) {
+        boolean result = false;
+        final List<IPath> sourceDirs = Lists.newArrayList(erlangProject.getProperties()
+                .getSourceDirs());
+        for (final IPath p : sourceDirs) {
+            if (m.getResource().getParent().getProjectRelativePath().equals(p)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 
     private void fillAppFileDetails(final String appSrc, final String destPath,
