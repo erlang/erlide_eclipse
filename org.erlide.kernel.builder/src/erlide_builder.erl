@@ -216,7 +216,7 @@ compile_app_src(Src, Dest, Modules) ->
                false ->
                    [kernel, stdlib];
                {applications, App0} ->
-                   lists:usort(App0 ++ [kernel, stdlib])
+                   App0
            end,
     NewOpts0 = lists:keystore(modules, 1, Opts, {modules, Modules}),
     NewOpts = lists:keystore(applications, 1, NewOpts0, {applications, Apps}),
