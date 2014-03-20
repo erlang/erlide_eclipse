@@ -36,7 +36,7 @@ class ErlProblems {
                     val tag = (item.elementAt(0) as OtpErlangAtom).atomValue
                     val message = (item.elementAt(1) as OtpErlangString).stringValue.replaceAll("\\\\n", "\n")
                     val myarity = arity(message)
-                    val problemData = new ProblemData(tag + "_" + myarity, message, myarity)
+                    val problemData = new ProblemData(tag, message, myarity)
                     data.add(problemData)
                     if (tagMap.containsKey(problemData.tag))
                         throw new IllegalStateException(
@@ -129,7 +129,8 @@ class ProblemData extends ProblemData0 {
     def getPattern() {
         if (pattern === null) {
             val str = ErlProblems.quoteRegex(message)
-            pattern = Pattern.compile(str.replaceAll("~", "(.+?)"))
+            val key = "@@@"
+            pattern = Pattern.compile(str.replaceAll("\\\\~", key).replaceAll("~", "(.+?)").replaceAll(key, "~"))
         }
         return pattern
     }

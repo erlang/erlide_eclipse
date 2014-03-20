@@ -27,8 +27,11 @@ public class ProblemData extends ProblemData0 {
     if (_tripleEquals) {
       String _message = this.getMessage();
       final String str = ErlProblems.quoteRegex(_message);
-      String _replaceAll = str.replaceAll("~", "(.+?)");
-      Pattern _compile = Pattern.compile(_replaceAll);
+      final String key = "@@@";
+      String _replaceAll = str.replaceAll("\\\\~", key);
+      String _replaceAll_1 = _replaceAll.replaceAll("~", "(.+?)");
+      String _replaceAll_2 = _replaceAll_1.replaceAll(key, "~");
+      Pattern _compile = Pattern.compile(_replaceAll_2);
       this.pattern = _compile;
     }
     return this.pattern;

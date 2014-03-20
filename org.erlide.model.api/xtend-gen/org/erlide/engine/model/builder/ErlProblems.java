@@ -58,7 +58,7 @@ public class ErlProblems {
               String _stringValue = ((OtpErlangString) _elementAt_1).stringValue();
               final String message = _stringValue.replaceAll("\\\\n", "\n");
               final int myarity = ErlProblems.arity(message);
-              final ProblemData problemData = new ProblemData(((tag + "_") + Integer.valueOf(myarity)), message, myarity);
+              final ProblemData problemData = new ProblemData(tag, message, myarity);
               this.data.add(problemData);
               String _tag = problemData.getTag();
               boolean _containsKey = this.tagMap.containsKey(_tag);

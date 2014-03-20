@@ -49,4 +49,10 @@ public class ErlProblemsTest {
         final int n = ErlProblems.arity("~ ~ \\~ ~");
         assertThat(n, is(3));
     }
+
+    @Test
+    public void keepTildes() {
+        final ProblemData data = new ProblemData("t", "~ \\~ ~", 2);
+        assertThat(data.getPattern().toString(), is("(.+?) ~ (.+?)"));
+    }
 }
