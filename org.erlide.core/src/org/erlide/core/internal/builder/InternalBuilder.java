@@ -98,10 +98,13 @@ public class InternalBuilder extends ErlangBuilder {
                 }
             }
 
-            handleAppFile(getProject().getLocation().toPortableString() + "/" + out,
-                    properties.getSourceDirs());
+            final IResourceDelta delta = getDelta(project);
+            if (delta != null && delta.getAffectedChildren().length != 0) {
+                handleAppFile(getProject().getLocation().toPortableString() + "/" + out,
+                        properties.getSourceDirs());
+            }
 
-            handleErlangFiles(erlProject, project, args, kind, getDelta(project));
+            handleErlangFiles(erlProject, project, args, kind, delta);
 
         } catch (final OperationCanceledException e) {
             if (BuilderHelper.isDebugging()) {
