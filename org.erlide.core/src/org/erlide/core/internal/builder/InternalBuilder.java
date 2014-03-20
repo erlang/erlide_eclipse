@@ -52,6 +52,7 @@ import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -276,6 +277,10 @@ public class InternalBuilder extends ErlangBuilder {
     }
 
     private void handleAppFile(final String outPath, final Collection<IPath> sources) {
+        if (SystemConfiguration.hasFeatureEnabled("erlide.no_app_src")) {
+            return;
+        }
+
         final Collection<String> modules = newArrayList();
         try {
             for (final IErlModule m : ErlangEngine.getInstance().getModel()
