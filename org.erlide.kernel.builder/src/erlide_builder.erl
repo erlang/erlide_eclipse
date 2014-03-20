@@ -210,17 +210,15 @@ build_one_file(F, OutputDir, IncludeDirs, Options) ->
             {error, [{0, F, "Don't know how to compile this file"}]}
     end.
 
-%% TODO disabled inefficient scanning of source dirs, ticket #1300
-compile_app_src(Src, Dest, _Sources) ->
+compile_app_src(Src, Dest, Modules) ->
     {ok, [{application, App, Opts}]} = file:consult(Src),
-    %Modules = get_mods_from_dirs(Sources),
     Apps = case lists:keyfind(applications, 1, Opts) of
                false ->
                    [kernel, stdlib];
                {applications, App0} ->
                    lists:usort(App0 ++ [kernel, stdlib])
            end,
-    NewOpts0 = Opts, %lists:keystore(modules, 1, Opts, {modules, Modules}),
+    NewOpts0 = lists:keystore(modules, 1, Opts, {modules, Modules}),
     NewOpts = lists:keystore(applications, 1, NewOpts0, {applications, Apps}),
     file:write_file(Dest, io_lib:format("~p.~n", [{application, App, NewOpts}])),
     ok.
