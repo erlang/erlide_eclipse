@@ -17,6 +17,7 @@ public class ModelActivator implements BundleActivator {
     @Override
     public void start(final BundleContext context) throws Exception {
         ErlLogger.debug("Starting Erlang model api");
+
         engine = ExtensionUtils.getSingletonExtension(
                 "org.erlide.model.api.erlangEngine", IErlangEngine.class);
         if (engine == null) {

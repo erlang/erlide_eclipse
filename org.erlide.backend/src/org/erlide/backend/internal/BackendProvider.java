@@ -1,6 +1,8 @@
 package org.erlide.backend.internal;
 
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.api.IBackend;
+import org.erlide.backend.api.IBackendManager;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.IRpcSiteProvider;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -9,7 +11,9 @@ public class BackendProvider implements IRpcSiteProvider {
 
     @Override
     public IRpcSite get() {
-        return BackendCore.getBackendManager().getIdeBackend().getRpcSite();
+        IBackendManager backendManager = BackendCore.getBackendManager();
+        IBackend ideBackend = backendManager.getIdeBackend();
+        return ideBackend.getRpcSite();
     }
 
     @Override

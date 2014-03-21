@@ -71,7 +71,8 @@ public class CodeBundle implements ICodeBundle {
                 }
             } else {
                 ErlLogger.warn("Can't access path %s, "
-                        + "plugin may be incorrectly built", path);
+                        + "plugin %s may be incorrectly built (%s)", path,
+                        bundle.getSymbolicName(), context.toString());
             }
         }
         return result;
