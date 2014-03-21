@@ -148,11 +148,4 @@
             default="false">
       </support>
    </extension-->
-   <extension
-         point="org.erlide.backend.codepath">
-      <beam_dir
-            context="common"
-            path="ebin">
-      </beam_dir>
-   </extension>
 </plugin>
