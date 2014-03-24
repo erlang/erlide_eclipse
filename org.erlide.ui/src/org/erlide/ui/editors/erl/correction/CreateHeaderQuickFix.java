@@ -1,9 +1,7 @@
 package org.erlide.ui.editors.erl.correction;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -16,31 +14,23 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.services.correction.MessageMatcher;
 import org.erlide.engine.services.search.ModelUtilService;
 import org.erlide.util.ErlLogger;
 
-public class CreateHeaderQuickFix extends ErlangQuickFix {
-
-    private static final Pattern PATTERN = Pattern
-            .compile("can't find include file \"(.+?)\"");
-    private static final String LABEL = "Create header file \"%s\"";
-    private static final String DESCRIPTION = "description...";
-
-    private final IErlModule module;
-    private final String name;
-
-    public CreateHeaderQuickFix(final IErlModule module, final Collection<String> matches) {
-        super(String.format(LABEL, matches.iterator().next()), DESCRIPTION, null);
-        this.module = module;
-        this.name = matches.iterator().next();
-    }
+public class CreateHeaderQuickFix extends ErlangQuickFixRunnable {
 
     @Override
-    public void run(final IMarker marker) {
+    public void run() {
         final ModelUtilService svc = ErlangEngine.getInstance().getModelUtilService();
+        final IErlModel model = ErlangEngine.getInstance().getModel();
+
+        final IMarker marker = getMarker();
+        final IErlModule module = model.findModule((IFile) marker.getResource());
+        final String name = getQuickFix().getArgs().get(0);
+
         final IErlProject project = svc.getProject(module);
 
         final Iterator<IPath> iterator = project.getProperties().getIncludeDirs()
@@ -75,11 +65,5 @@ public class CreateHeaderQuickFix extends ErlangQuickFix {
             ErlLogger.error(e);
         }
 
-    }
-
-    public static Collection<String> matches(final String message) {
-        final MessageMatcher matcher = new MessageMatcher();
-        final Collection<String> match = matcher.matchMessage(message, PATTERN);
-        return match;
     }
 }

@@ -18,6 +18,7 @@
  {compiler_crash, "internal error in ~\ncrash reason: ~"},
  {compiler_bad_return, "internal error in ~\nbad return value: ~"},
  {compiler_module_name, "Module name '~' does not match file name '~'"},
+ {compiler_module_name_1, "declared module name '~' doesn't match file name '~'"},
  {compiler_reparsing_invalid_unicode, "Non-UTF-8 character(s) detected, but no encoding declared. Encode the file in UTF-8 or add \"%% coding: latin-1\" at the beginning of the file. Retrying with latin-1 encoding."},
 
  {epp_cannot_parse, "cannot parse file, giving up"},
@@ -157,7 +158,10 @@
  {scan_string, "unterminated ~ starting with ~"},
  {scan_base, "illegal base '~'"},
  {scan_illegal, "illegal ~"},
- {scan_char, "unterminated character"}
+ {scan_char, "unterminated character"},
+
+ {builder_duplicate_module, "duplicated module name in ~ and ~"},
+ {builder_code_clash, "code clash between ~ and ~"}
 
 ]
 

@@ -171,4 +171,17 @@ public class ErlProblems {
     }
     return null;
   }
+  
+  public ProblemData getProblem(final String message) {
+    for (final ProblemData d : this.data) {
+      {
+        final List<String> args = d.getMessageArgs(message);
+        boolean _tripleNotEquals = (args != null);
+        if (_tripleNotEquals) {
+          return d;
+        }
+      }
+    }
+    return null;
+  }
 }

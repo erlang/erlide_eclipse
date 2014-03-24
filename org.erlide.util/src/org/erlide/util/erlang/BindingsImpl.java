@@ -121,6 +121,7 @@ public final class BindingsImpl implements Bindings {
         throw new OtpErlangException("value is not a pid");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getAs(final String name, final Class<T> cls) throws SignatureException {
         final OtpErlangObject v = get(name);

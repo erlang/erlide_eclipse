@@ -53,8 +53,8 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
             final String msg = String.format(
                     "Project's builder tool %s and configuration %s don't match", tool,
                     config);
-            MarkerUtils.addProblemMarker(erlProject.getWorkspaceProject(), null, null,
-                    msg, 0, IMarker.SEVERITY_WARNING);
+            MarkerUtils.createProblemMarker(erlProject.getWorkspaceProject(), null, msg, 0,
+                    IMarker.SEVERITY_WARNING);
             return false;
         }
         return true;

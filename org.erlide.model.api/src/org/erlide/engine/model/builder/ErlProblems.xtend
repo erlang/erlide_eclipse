@@ -107,6 +107,15 @@ class ErlProblems {
         return null
     }
 
+    def ProblemData getProblem(String message) {
+        for (d : data) {
+            val args = d.getMessageArgs(message)
+            if (args !== null) {
+                return d
+            }
+        }
+        return null
+    }
 }
 
 @Data
@@ -120,19 +129,19 @@ class ProblemData extends ProblemData0 {
     val public static TAG = "erlide.tag"
     val public static ARGS = "erlide.args"
 
-    Pattern pattern
+    Pattern _pattern
 
     new(String tag, String message, int arity) {
         super(tag, message, arity)
     }
 
     def getPattern() {
-        if (pattern === null) {
+        if (_pattern === null) {
             val str = ErlProblems.quoteRegex(message)
             val key = "@@@"
-            pattern = Pattern.compile(str.replaceAll("\\\\~", key).replaceAll("~", "(.+?)").replaceAll(key, "~"))
+            _pattern = Pattern.compile(str.replaceAll("\\\\~", key).replaceAll("~", "(.+?)").replaceAll(key, "~"))
         }
-        return pattern
+        return _pattern
     }
 
     def setPattern(Pattern p) {
@@ -145,15 +154,17 @@ class ProblemData extends ProblemData0 {
 
     def List<String> getMessageArgs(String msg) {
         val matcher = pattern.matcher(msg)
-        matcher.matches
-        val num = matcher.groupCount
-        val result = newArrayList
-        var i = 1
-        while (i <= num) {
-            result.add(matcher.group(i))
-            i = i + 1
+        if (matcher.matches) {
+            val num = matcher.groupCount
+            val result = newArrayList
+            var i = 1
+            while (i <= num) {
+                result.add(matcher.group(i))
+                i = i + 1
+            }
+            return result
         }
-        return result
+        return null
     }
 
 }

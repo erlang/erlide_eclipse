@@ -16,14 +16,14 @@ public class ProblemData extends ProblemData0 {
   
   public final static String ARGS = "erlide.args";
   
-  private Pattern pattern;
+  private Pattern _pattern;
   
   public ProblemData(final String tag, final String message, final int arity) {
     super(tag, message, arity);
   }
   
   public Pattern getPattern() {
-    boolean _tripleEquals = (this.pattern == null);
+    boolean _tripleEquals = (this._pattern == null);
     if (_tripleEquals) {
       String _message = this.getMessage();
       final String str = ErlProblems.quoteRegex(_message);
@@ -32,9 +32,9 @@ public class ProblemData extends ProblemData0 {
       String _replaceAll_1 = _replaceAll.replaceAll("~", "(.+?)");
       String _replaceAll_2 = _replaceAll_1.replaceAll(key, "~");
       Pattern _compile = Pattern.compile(_replaceAll_2);
-      this.pattern = _compile;
+      this._pattern = _compile;
     }
-    return this.pattern;
+    return this._pattern;
   }
   
   public void setPattern(final Pattern p) {
@@ -48,20 +48,24 @@ public class ProblemData extends ProblemData0 {
   }
   
   public List<String> getMessageArgs(final String msg) {
-    final Matcher matcher = this.pattern.matcher(msg);
-    matcher.matches();
-    final int num = matcher.groupCount();
-    final ArrayList<String> result = CollectionLiterals.<String>newArrayList();
-    int i = 1;
-    boolean _while = (i <= num);
-    while (_while) {
-      {
-        String _group = matcher.group(i);
-        result.add(_group);
-        i = (i + 1);
+    Pattern _pattern = this.getPattern();
+    final Matcher matcher = _pattern.matcher(msg);
+    boolean _matches = matcher.matches();
+    if (_matches) {
+      final int num = matcher.groupCount();
+      final ArrayList<String> result = CollectionLiterals.<String>newArrayList();
+      int i = 1;
+      boolean _while = (i <= num);
+      while (_while) {
+        {
+          String _group = matcher.group(i);
+          result.add(_group);
+          i = (i + 1);
+        }
+        _while = (i <= num);
       }
-      _while = (i <= num);
+      return result;
     }
-    return result;
+    return null;
   }
 }

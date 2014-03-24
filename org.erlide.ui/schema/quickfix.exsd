@@ -58,7 +58,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.erlide.ui.editors.erl.correction.ErlangQuickFix:"/>
+                  <meta.attribute kind="java" basedOn="org.erlide.ui.editors.erl.correction.ErlangQuickFixRunnable:"/>
                </appInfo>
             </annotation>
          </attribute>

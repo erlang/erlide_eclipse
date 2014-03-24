@@ -207,6 +207,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
         checkStateChanged();
     }
 
+    @SuppressWarnings("unchecked")
     protected void doCheckStateChanged(final CheckStateChangedEvent e) {
         if (e.getChecked()) {
             fCheckElements.add((Element) e.getElement());

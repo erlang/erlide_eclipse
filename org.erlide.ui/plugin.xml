@@ -1966,26 +1966,32 @@
    </extension>
   <extension
         point="org.erlide.ui.quickfix">
-     <quickfix
+     <!--quickfix
            class="org.erlide.ui.editors.erl.correction.RenameModuleQuickFix"
            image="icons/full/obj16/change.gif"
-           label="Change module name to  &apos;~&apos;">
+           label="Change module name to &apos;{1}&apos;">
         <tag
               name="compiler_module_name">
         </tag>
-     </quickfix>
+        <tag
+              name="compiler_module_name_1">
+        </tag>
+     </quickfix-->
      <quickfix
            class="org.erlide.ui.editors.erl.correction.RenameFileQuickFix"
            image="icons/full/obj16/change.gif"
-           label="Change file name to  &quot;~&quot;">
+           label="Change file name to &quot;{0}.erl&quot;">
         <tag
               name="compiler_module_name">
+        </tag>
+        <tag
+              name="compiler_module_name_1">
         </tag>
      </quickfix>
      <quickfix
            class="org.erlide.ui.editors.erl.correction.CreateHeaderQuickFix"
            image="icons/full/obj16/change.gif"
-           label="Create include file &quot;~&quot;">
+           label="Create include file &quot;{1}&quot;">
         <tag
               name="epp_include">
         </tag>

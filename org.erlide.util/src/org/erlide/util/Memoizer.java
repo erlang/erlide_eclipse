@@ -27,6 +27,7 @@ import com.google.common.cache.CacheBuilder;
  */
 public class Memoizer implements InvocationHandler {
 
+    @SuppressWarnings("unchecked")
     public static <T> T memoize(final T object) {
         return (T) Proxy.newProxyInstance(object.getClass().getClassLoader(), object
                 .getClass().getInterfaces(), new Memoizer(object));
