@@ -20,16 +20,16 @@ public class ErlcMessageParser implements IMessageParser {
     /**
      * Parses messages from erlc and creates the markers on the appropriate
      * resource. Returns true if any marker was created.
-     * 
+     *
      * Format is filename:line: message
-     * 
+     *
      */
     @Override
     public boolean createMarkers(final String msg) {
         boolean result = false;
         final Iterable<String> pars = Splitter.on(':').limit(3).split(msg);
         if (pars.iterator().next().equals("ERROR")) {
-            MarkerUtils.addProblemMarker(project, null, null, pars.iterator().next(), -1,
+            MarkerUtils.createProblemMarker(project, null, pars.iterator().next(), -1,
                     IMarker.SEVERITY_ERROR);
             result = true;
         } else {
@@ -49,8 +49,7 @@ public class ErlcMessageParser implements IMessageParser {
                 }
                 final IResource resource = project.findMember(filename);
                 if (resource != null) {
-                    MarkerUtils.addProblemMarker(resource, null, null, message, line,
-                            severity);
+                    MarkerUtils.createProblemMarker(resource, null, message, line, severity);
                     result = true;
                 }
             } catch (final Exception e) {

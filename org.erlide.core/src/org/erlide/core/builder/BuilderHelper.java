@@ -197,9 +197,8 @@ public final class BuilderHelper {
                 final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
                 final String f1 = ((OtpErlangString) t.elementAt(0)).stringValue();
                 final String f2 = ((OtpErlangString) t.elementAt(1)).stringValue();
-                MarkerUtils.addMarker(project, null, project,
-                        "Duplicated module name in " + f1 + " and " + f2, 0,
-                        IMarker.SEVERITY_WARNING, "");
+                MarkerUtils.createProblemMarker(project, null, "duplicated module name in "
+                        + f1 + " and " + f2, 0, IMarker.SEVERITY_WARNING);
             }
         } catch (final Exception e) {
             ErlLogger.debug(e);
@@ -219,8 +218,8 @@ public final class BuilderHelper {
                 final IResource r1 = project.findMember(f1);
                 final IResource r2 = project.findMember(f2);
                 if (r1 != null || r2 != null) {
-                    MarkerUtils.addMarker(project, null, project, "Code clash between "
-                            + f1 + " and " + f2, 0, IMarker.SEVERITY_WARNING, "");
+                    MarkerUtils.createProblemMarker(project, null, "code clash between "
+                            + f1 + " and " + f2, 0, IMarker.SEVERITY_WARNING);
                 }
             }
 
@@ -301,7 +300,7 @@ public final class BuilderHelper {
             final OtpErlangObject compilationResult, final IRpcSite backend,
             final OtpErlangList compilerOptions) {
         if (compilationResult == null) {
-            MarkerUtils.addProblemMarker(source, null, null, "Could not compile file", 0,
+            MarkerUtils.createProblemMarker(source, null, "Could not compile file", 0,
                     IMarker.SEVERITY_ERROR);
             return;
         }
@@ -667,7 +666,7 @@ public final class BuilderHelper {
 
             final IPath path = resource.getParent().getProjectRelativePath();
             final String ext = resource.getFileExtension();
-            ErlangProjectProperties properties = erlProject.getProperties();
+            final ErlangProjectProperties properties = erlProject.getProperties();
             if (properties.getSourceDirs().contains(path)) {
                 if (ERL.equals(ext)) {
                     handleErlFile(kind, resource);
@@ -678,8 +677,7 @@ public final class BuilderHelper {
                     return false;
                 }
             }
-            if (properties.getIncludeDirs().contains(path)
-                    && HRL.equals(ext)) {
+            if (properties.getIncludeDirs().contains(path) && HRL.equals(ext)) {
                 try {
                     handleHrlFile(kind, resource, fullBuild);
                 } catch (final ErlModelException e) {
@@ -687,8 +685,7 @@ public final class BuilderHelper {
                 }
                 return false;
             }
-            if (properties.getOutputDir().equals(path)
-                    && BEAM.equals(ext)) {
+            if (properties.getOutputDir().equals(path) && BEAM.equals(ext)) {
                 try {
                     handleBeamFile(kind, resource);
                 } catch (final CoreException e) {

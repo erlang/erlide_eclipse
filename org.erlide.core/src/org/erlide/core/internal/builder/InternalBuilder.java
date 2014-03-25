@@ -115,8 +115,7 @@ public class InternalBuilder extends ErlangBuilder {
             ErlLogger.error(e);
             final String msg = NLS.bind(BuilderMessages.build_inconsistentProject,
                     e.getLocalizedMessage(), e.getClass().getName());
-            MarkerUtils.addProblemMarker(project, null, null, msg, 0,
-                    IMarker.SEVERITY_ERROR);
+            MarkerUtils.createProblemMarker(project, null, msg, 0, IMarker.SEVERITY_ERROR);
         } finally {
             cleanup();
             // if (BuilderHelper.isDebugging()) {
@@ -156,7 +155,7 @@ public class InternalBuilder extends ErlangBuilder {
             ErlLogger.error(e);
             final String msg = NLS.bind(BuilderMessages.build_inconsistentProject,
                     e.getLocalizedMessage(), e.getClass().getName());
-            MarkerUtils.addProblemMarker(currentProject, null, null, msg, 0,
+            MarkerUtils.createProblemMarker(currentProject, null, msg, 0,
                     IMarker.SEVERITY_ERROR);
         } finally {
             cleanup();
@@ -209,7 +208,7 @@ public class InternalBuilder extends ErlangBuilder {
         if (backend == null) {
             final String message = "No backend with the required "
                     + "version could be found. Can't build.";
-            MarkerUtils.addProblemMarker(project, null, null, message, 0,
+            MarkerUtils.createProblemMarker(project, null, message, 0,
                     IMarker.SEVERITY_ERROR);
             throw new BackendException(message);
         }

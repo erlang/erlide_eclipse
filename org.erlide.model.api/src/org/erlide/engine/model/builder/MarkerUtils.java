@@ -14,7 +14,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.IErlFunction;
@@ -32,6 +31,7 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -52,29 +52,15 @@ public final class MarkerUtils {
     public static final String PROBLEM_MARKER = "org.erlide.core.problemmarker";
     public static final String TASK_MARKER = "org.erlide.core.taskmarker";
 
-    public static void addMarker(final IResource file, final String path,
-            final IResource compiledFile, final String errorDesc, final int lineNumber,
-            final int severity, final String errorVar) {
-        addProblemMarker(file, path, compiledFile, errorDesc, lineNumber, severity);
-    }
-
-    public static void addTaskMarker(final IResource file, final IResource compiledFile,
-            final String message, final int lineNumber, final int priority) {
-        try {
-            final IMarker marker = file.createMarker(TASK_MARKER);
-            marker.setAttribute(IMarker.MESSAGE, message);
-            marker.setAttribute(IMarker.PRIORITY, priority);
-            marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath().toString());
-            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber != -1 ? lineNumber : 1);
-        } catch (final CoreException e) {
-        } catch (final Exception e) {
-            ErlLogger.warn(e);
-        }
+    public static void addTaskMarker(final IResource resource, final String message,
+            final int lineNumber, final int priority) {
+        createMarker(resource, null, message, lineNumber, IMarker.SEVERITY_INFO,
+                TASK_MARKER);
     }
 
     /**
      * Add error markers from a list of error tuples
-     * 
+     *
      * @param resource
      * @param errorList
      */
@@ -154,11 +140,8 @@ public final class MarkerUtils {
         } catch (final OtpErlangRangeException e) {
         }
 
-        String msg = ErlUtils.asString(data.elementAt(2));
-        if (msg.length() > 1000) {
-            msg = msg.substring(0, 1000) + "...";
-        }
-        final IMarker marker = addMarker(res, fileName, msg, line, sev, PROBLEM_MARKER);
+        final String msg = ErlUtils.asString(data.elementAt(2));
+        final IMarker marker = createMarker(res, fileName, msg, line, sev, PROBLEM_MARKER);
         if (marker != null) {
             try {
                 marker.setAttribute(IMarker.SOURCE_ID, resource.getLocation().toString());
@@ -188,23 +171,10 @@ public final class MarkerUtils {
         list.add(tuple);
     }
 
-    public static void addProblemMarker(final IResource resource, final String path,
-            final IResource compiledFile, final String message, final int lineNumber,
+    public static IMarker createProblemMarker(final IResource resource,
+            final String path, final String message, final int lineNumber,
             final int severity) {
-        try {
-            final IMarker marker = resource.createMarker(PROBLEM_MARKER);
-            marker.setAttribute(IMarker.MESSAGE, message);
-            marker.setAttribute(IMarker.SEVERITY, severity);
-            if (path != null && !new Path(path).equals(resource.getLocation())) {
-                marker.setAttribute(MarkerUtils.PATH_ATTRIBUTE, path);
-            }
-            if (compiledFile != null) {
-                marker.setAttribute(IMarker.SOURCE_ID, compiledFile.getFullPath()
-                        .toString());
-            }
-            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber != -1 ? lineNumber : 1);
-        } catch (final CoreException e) {
-        }
+        return createMarker(resource, path, message, lineNumber, severity, PROBLEM_MARKER);
     }
 
     public static IMarker[] getProblemsFor(final IResource resource) {
@@ -278,16 +248,15 @@ public final class MarkerUtils {
     public void createProblemMarkerFor(final IResource resource,
             final IErlFunction erlElement, final String message, final int problemSeverity)
             throws CoreException {
-        final IMarker marker = resource.createMarker(PROBLEM_MARKER);
-        final int severity = problemSeverity;
-
         final ISourceRange range = erlElement == null ? null : erlElement.getNameRange();
+
+        final IMarker marker = createProblemMarker(resource, null, message, 0,
+                problemSeverity);
+
         final int start = range == null ? 0 : range.getOffset();
         final int end = range == null ? 1 : start + range.getLength();
-        marker.setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY,
-                IMarker.CHAR_START, IMarker.CHAR_END },
-                new Object[] { message, Integer.valueOf(severity),
-                        Integer.valueOf(start), Integer.valueOf(end) });
+        marker.setAttribute(IMarker.CHAR_START, Integer.valueOf(start));
+        marker.setAttribute(IMarker.CHAR_END, Integer.valueOf(end));
     }
 
     public static IMarker createSearchResultMarker(final IErlModule module,
@@ -307,7 +276,7 @@ public final class MarkerUtils {
         return marker;
     }
 
-    public static IMarker addMarker(final IResource file, final String path,
+    public static IMarker createMarker(final IResource file, final String path,
             final String message, final int lineNumber, final int severity,
             final String markerKind) {
         try {
@@ -320,12 +289,18 @@ public final class MarkerUtils {
             final IMarker marker = resource.createMarker(markerKind);
             marker.setAttribute(IMarker.MESSAGE, message);
             marker.setAttribute(IMarker.SEVERITY, severity);
-            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber != -1 ? lineNumber : 1);
+            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber >= 0 ? lineNumber : 1);
             marker.setAttribute(PATH_ATTRIBUTE, path);
             if (path != null) {
                 marker.setAttribute(IMarker.SOURCE_ID, path);
             } else {
                 marker.setAttribute(IMarker.SOURCE_ID, resource.getLocation().toString());
+            }
+            final ProblemData problem = ErlProblems.parse(message);
+            if (problem != null) {
+                marker.setAttribute(ProblemData.TAG, problem.getTag());
+                marker.setAttribute(ProblemData.ARGS,
+                        Joiner.on('\0').join(problem.getMessageArgs(message)));
             }
             return marker;
         } catch (final CoreException e) {
@@ -382,7 +357,7 @@ public final class MarkerUtils {
                     dl++;
                 }
             }
-            addTaskMarker(resource, resource, msg, line + 1 + dl, prio);
+            addTaskMarker(resource, msg, line + 1 + dl, prio);
         }
     }
 
