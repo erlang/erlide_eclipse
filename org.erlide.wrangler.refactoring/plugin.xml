@@ -501,7 +501,7 @@
     </command>
 			</menu>
 		</menuContribution>
-		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?endof=group.edit">
 			<menu label="%RefactoringMenu_Label">
 				<visibleWhen>
 					<with variable="activeEditorId">
