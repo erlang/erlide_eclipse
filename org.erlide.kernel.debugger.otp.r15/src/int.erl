@@ -20,7 +20,7 @@
 
 %% External exports
 -export([i/1, i/2, ni/1, ni/2, n/1, nn/1, interpreted/0, file/1,
-	 interpretable/1]).
+	 interpretable/1, interpretable/2]).
 -export([auto_attach/0, auto_attach/1, auto_attach/2,
 	 stack_trace/0, stack_trace/1]).
 -export([break/2, delete_break/2, break_in/3, del_break_in/3,
@@ -91,30 +91,33 @@
 
 %%--------------------------------------------------------------------
 %% i(AbsMods) -> {module,Mod} | error | ok
+%% i(AbsMods, Options) -> {module,Mod} | error | ok
 %% ni(AbsMods) -> {module,Mod} | error | ok
+%% ni(AbsMods, Options) -> {module,Mod} | error | ok
 %%   AbsMods = AbsMod | [AbsMod]
 %%     AbsMod = atom() | string()
 %%     Mod = atom()
-%%     Options = term() ignored
+%%   Options = [option()]
+%%     option = {ebin_dir, term()} | {src_dirs, [term()]} | term()
 %%--------------------------------------------------------------------
-i(AbsMods) -> i2(AbsMods, local, ok).
-i(AbsMods, _Options) -> i2(AbsMods, local, ok).
-ni(AbsMods) -> i2(AbsMods, distributed, ok).
-ni(AbsMods, _Options) -> i2(AbsMods, distributed, ok).
+i(AbsMods) -> i2(AbsMods, [], local, ok).
+i(AbsMods, Options) when is_list(Options) -> i2(AbsMods, Options, local, ok).
+ni(AbsMods) -> i2(AbsMods, [], distributed, ok).
+ni(AbsMods, Options) when is_list(Options) -> i2(AbsMods, Options, distributed, ok).
     
-i2([AbsMod|AbsMods], Dist, Acc)
+i2([AbsMod|AbsMods], Options, Dist, Acc)
   when is_atom(AbsMod); is_list(AbsMod); is_tuple(AbsMod) -> 
-    Res = int_mod(AbsMod, Dist),
+    Res = int_mod(AbsMod, Options, Dist),
     case Res of
 	error ->
-	    i2(AbsMods, Dist, Res);
+	    i2(AbsMods, Options, Dist, Res);
 	_ ->
-	    i2(AbsMods, Dist, Acc)
+	    i2(AbsMods, Options, Dist, Acc)
     end;
-i2([], _Dist, Acc) ->
+i2([], _Options, _Dist, Acc) ->
     Acc;
-i2(AbsMod, Dist, _Acc) when is_atom(AbsMod); is_list(AbsMod); is_tuple(AbsMod) ->
-    int_mod(AbsMod, Dist).
+i2(AbsMod, Options, Dist, _Acc) when is_atom(AbsMod); is_list(AbsMod); is_tuple(AbsMod) ->
+    int_mod(AbsMod, Options, Dist).
 
 %%--------------------------------------------------------------------
 %% n(AbsMods) -> ok
@@ -153,7 +156,17 @@ file(Mod) when is_atom(Mod) ->
 %%   Reason = no_src | no_beam | no_debug_info | badarg | {app, App}
 %%--------------------------------------------------------------------
 interpretable(AbsMod) ->
-    case check(AbsMod) of
+    interpretable(AbsMod, []).
+
+%%--------------------------------------------------------------------
+%% interpretable(AbsMod, Options) -> true | {error, Reason}
+%%   AbsMod = Mod | File
+%%   Reason = no_src | no_beam | no_debug_info | badarg | {app, App}
+%%   Options = [option()]
+%%     option = {ebin_dir, term()} | {src_dirs, [term()]} | term()
+%%--------------------------------------------------------------------
+interpretable(AbsMod, Options) when is_list(Options) ->
+    case check(AbsMod, Options) of
 	{ok, _Res} -> true;
 	Error -> Error
     end.
@@ -489,13 +502,13 @@ eval(Mod, Func, Args) ->
 
 %%--Interpreting modules----------------------------------------------
 
-int_mod({Mod, Src, Beam, BeamBin}, Dist)
+int_mod({Mod, Src, Beam, BeamBin}, Options, Dist)
   when is_atom(Mod), is_list(Src), is_list(Beam), is_binary(BeamBin) ->
     try
 	case is_file(Src) of
 	    true ->
 		check_application(Src),
-		case check_beam(BeamBin) of
+		case check_beam(BeamBin, Options) of
 		    {ok, Exp, Abst, _BeamBin} ->
 			load({Mod, Src, Beam, BeamBin, Exp, Abst}, Dist);
 		    error -> 
@@ -508,8 +521,8 @@ int_mod({Mod, Src, Beam, BeamBin}, Dist)
 	throw:Reason ->
 	    Reason
     end;
-int_mod(AbsMod, Dist) when is_atom(AbsMod); is_list(AbsMod) ->
-    case check(AbsMod) of
+int_mod(AbsMod, Options, Dist) when is_atom(AbsMod); is_list(AbsMod) ->
+    case check(AbsMod, Options) of
 	{ok, Res} -> 
 	    load(Res, Dist);
 	{error, {app, App}} ->
@@ -517,13 +530,13 @@ int_mod(AbsMod, Dist) when is_atom(AbsMod); is_list(AbsMod) ->
 		      [App, AbsMod]),
 	    error;
 	_Error ->
-	    io:format("** Invalid beam file or no abstract code: ~p\n",
-		      [AbsMod]),
+        io:format("** Invalid beam file or no abstract code: ~p ~p\n",
+		      [AbsMod, _Error]),
 	    error
     end.
 
-check(Mod) when is_atom(Mod) -> catch check_module(Mod);
-check(File) when is_list(File) -> catch check_file(File).
+check(Mod, Options) when is_atom(Mod) -> catch check_module(Mod, Options);
+check(File, Options) when is_list(File) -> catch check_file(File, Options).
 
 load({Mod, Src, Beam, BeamBin, Exp, Abst}, Dist) ->
     everywhere(Dist,
@@ -546,13 +559,13 @@ load({Mod, Src, Beam, BeamBin, Exp, Abst}, Dist) ->
 	    error
     end.
 
-check_module(Mod) ->
+check_module(Mod, Options) ->
     case code:which(Mod) of
 	Beam when is_list(Beam) ->
-	    case find_src(Beam) of
+	    case find_src(Beam, Options) of
 		Src when is_list(Src) ->
 		    check_application(Src),
-		    case check_beam(Beam) of
+		    case check_beam(Beam, Options) of
 			{ok, Exp, Abst, BeamBin} ->
 			    {ok, {Mod, Src, Beam, BeamBin, Exp, Abst}};
 			error -> 
@@ -565,7 +578,7 @@ check_module(Mod) ->
 	    {error, badarg}
     end.
 
-check_file(Name0) ->
+check_file(Name0, Options) ->
     Src =
 	case is_file(Name0) of
 	    true -> 
@@ -581,9 +594,9 @@ check_file(Name0) ->
 	is_list(Src) ->
 	    check_application(Src),
 	    Mod = scan_module_name(Src),
-	    case find_beam(Mod, Src) of
+	    case find_beam(Mod, Src, Options) of
 		Beam when is_list(Beam) ->
-		    case check_beam(Beam) of
+		    case check_beam(Beam, Options) of
 			{ok, Exp, Abst, BeamBin} ->
 			    {ok, {Mod, Src, Beam, BeamBin, Exp, Abst}};
 			error ->
@@ -610,32 +623,37 @@ check_application2("gs-"++_) -> throw({error,{app,gs}});
 check_application2("debugger-"++_) -> throw({error,{app,debugger}});
 check_application2(_) -> ok.
 
-find_src(Beam) ->
+find_src(Beam, Options) ->
     Src0 = filename:rootname(Beam) ++ ".erl",
     case is_file(Src0) of
 	true -> Src0;
 	false ->
 	    EbinDir = filename:dirname(Beam),
-	    Src = filename:join([filename:dirname(EbinDir), "src",
+        SrcDirs = proplists:get_value(src_dirs, Options, ["src"]),
+            Fun = fun(Dir, Acc) ->
+                          Src = filename:join([filename:dirname(EbinDir), Dir,
 				 filename:basename(Src0)]),
 	    case is_file(Src) of
 		true -> Src;
-		false -> error
+                              false -> Acc
 	    end
+                  end,
+            lists:foldl(Fun, error, SrcDirs)
     end.
 
-find_beam(Mod, Src) ->
+find_beam(Mod, Src, Options) ->
     SrcDir = filename:dirname(Src),
     BeamFile = atom_to_list(Mod) ++ code:objfile_extension(),
     File = filename:join(SrcDir, BeamFile),
     case is_file(File) of
 	true -> File;
-	false -> find_beam_1(BeamFile, SrcDir)
+	false -> find_beam_1(BeamFile, SrcDir, Options)
     end.
 
-find_beam_1(BeamFile, SrcDir) ->
+find_beam_1(BeamFile, SrcDir, Options) ->
     RootDir = filename:dirname(SrcDir),
-    EbinDir = filename:join(RootDir, "ebin"),
+    EbinDir0 = proplists:get_value(ebin_dir, Options, "ebin"),
+    EbinDir = filename:join(RootDir, EbinDir0),
     CodePath = [EbinDir | code:get_path()],
     lists:foldl(fun(_, Beam) when is_list(Beam) -> Beam;
 		   (Dir, error) ->
@@ -648,7 +666,7 @@ find_beam_1(BeamFile, SrcDir) ->
 		error,
 		CodePath).
 
-check_beam(BeamBin) when is_binary(BeamBin) ->
+check_beam(BeamBin, _Options) when is_binary(BeamBin) ->
     case beam_lib:chunks(BeamBin, [abstract_code,exports]) of
 	{ok,{_Mod,[{abstract_code,no_abstract_code}|_]}} ->
 	    error;
@@ -657,9 +675,9 @@ check_beam(BeamBin) when is_binary(BeamBin) ->
 	_ -> 
 	    error
     end;
-check_beam(Beam) when is_list(Beam) ->
+check_beam(Beam, Options) when is_list(Beam) ->
     {ok, Bin, _FullPath} = erl_prim_loader:get_file(filename:absname(Beam)),
-    check_beam(Bin).
+    check_beam(Bin, Options).
 
 is_file(Name) ->
     filelib:is_regular(filename:absname(Name), erl_prim_loader).

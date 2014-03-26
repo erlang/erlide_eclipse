@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,8 +15,8 @@ import org.erlide.util.HostnameUtils;
 import org.erlide.util.SystemConfiguration;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public class RuntimeData {
     protected boolean internal;
@@ -37,7 +38,7 @@ public class RuntimeData {
     protected boolean loadOnAllNodes;
     protected boolean debug;
     protected EnumSet<ErlDebugFlags> debugFlags;
-    protected List<String> initialInterpretedModules;
+    protected Set<String> initialInterpretedModules;
 
     protected boolean reportErrors = false;
 
@@ -47,7 +48,6 @@ public class RuntimeData {
         restartable = false;
         startShell = true;
         console = true;
-        initialInterpretedModules = Lists.newArrayList();
         nodeName = "";
         longName = true;
         extraArgs = "";
@@ -57,7 +57,7 @@ public class RuntimeData {
         debugFlags = ErlDebugFlags.DEFAULT_DEBUG_FLAGS;
         loadOnAllNodes = false;
         internal = false;
-        initialInterpretedModules = Lists.newArrayList();
+        initialInterpretedModules = Sets.newHashSet();
         runtimeInfo = null;
         debug = false;
     }
@@ -132,7 +132,7 @@ public class RuntimeData {
         this.debug = debug;
     }
 
-    public List<String> getInitialInterpretedModules() {
+    public Set<String> getInitialInterpretedModules() {
         return initialInterpretedModules;
     }
 
@@ -267,7 +267,7 @@ public class RuntimeData {
 
     /**
      * split on spaces but respect quotes
-     * 
+     *
      * @param theArgs
      * @return
      */
