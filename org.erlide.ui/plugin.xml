@@ -643,6 +643,17 @@
              id="org.erlide.ui.deinterpret"
              name="Deinterpret">
        </command>
+       <command
+             categoryId="org.erlide.ui.category.source"
+             description="Generate documentation for the selected element"
+             id="org.erlide.ui.source.gen_doc"
+             name="Generate documentation ">
+       </command>
+       <category
+             description="Source commands"
+             id="org.erlide.ui.category.source"
+             name="Source">
+       </category>
  </extension>
  <extension
        point="org.eclipse.ui.menus">
@@ -829,6 +840,36 @@
              style="push">
        </command>
     </menuContribution>
+    <menuContribution
+          allPopups="true"
+          locationURI="popup:org.eclipse.ui.popup.any?after=group.edit">
+       <menu
+             id="org.erlide.ui.menus.source"
+             label="Source"
+             mnemonic="S">
+          <separator
+                name="generators"
+                visible="true">
+          </separator>
+          <command
+                commandId="org.erlide.ui.source.gen_doc"
+                label="Generate documentation for element"
+                mnemonic="G"
+                style="push">
+          </command>
+          <separator
+                name="formatting"
+                visible="true">
+          </separator>
+          <command
+                commandId="org.erlide.ui.actions.indent"
+                mnemonic="I">
+          </command>
+       </menu>
+       <separator
+             name="org.erlide.ui.separator2">
+       </separator>
+    </menuContribution>
  </extension>
  <extension
        point="org.eclipse.ui.bindings">
@@ -988,6 +1029,9 @@
     <handler
           class="org.erlide.debug.ui.views.InterpretHandler"
           commandId="org.erlide.ui.interpret">
+    </handler>
+    <handler
+          commandId="org.erlide.ui.source.gen_doc">
     </handler>
  </extension>
  <extension

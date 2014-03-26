@@ -145,11 +145,6 @@ public abstract class AbstractErlangEditor extends TextEditor {
         markAsSelectionDependentAction("Indent", true); //$NON-NLS-1$
         PlatformUI.getWorkbench().getHelpSystem()
                 .setHelp(indentAction, IErlangHelpContextIds.INDENT_ACTION);
-        final Action action = new IndentAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(), "Indent.", this);
-        setAction("IndentOnTab", action);
-        markAsStateDependentAction("IndentOnTab", true);
-        markAsSelectionDependentAction("IndentOnTab", true);
 
         toggleCommentAction = new ToggleCommentAction(
                 ErlangEditorMessages.getBundleForConstructedKeys(), "ToggleComment.",
@@ -228,7 +223,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
 
         /**
          * Creates a dispatch action.
-         * 
+         *
          * @param resourceBundle
          *            the resource bundle
          * @param prefix
@@ -254,7 +249,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
 
             /**
              * Information provider used to present the information.
-             * 
+             *
              * @since 3.0
              */
             class InformationProvider implements IInformationProvider,

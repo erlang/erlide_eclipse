@@ -114,8 +114,8 @@ import org.erlide.util.SystemConfiguration;
 
 /**
  * The actual editor itself
- * 
- * 
+ *
+ *
  * @author Eric Merrit [cyberlync at gmail dot com]
  */
 public class ErlangEditor extends AbstractErlangEditor implements IOutlineContentCreator,
@@ -288,13 +288,13 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 
         compileAction = new CompileAction(getSite());
         compileAction.setActionDefinitionId(IErlangEditorActionDefinitionIds.COMPILE);
-        setAction("Compile file", compileAction);
+        setAction("compileFile", compileAction);
 
         if (getModule() != null) {
             cleanUpAction = new CleanUpAction(getModule().getResource());
             cleanUpAction
                     .setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAN_UP);
-            setAction("Clean Up...", cleanUpAction);
+            setAction("cleanUp", cleanUpAction);
         }
 
         if (SystemConfiguration.getInstance().isTest()) {
@@ -306,7 +306,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
         callhierarchy = new CallHierarchyAction(this, getModule(), xrefService);
         callhierarchy
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.CALLHIERARCHY);
-        setAction("CallHierarchy", callhierarchy);
+        setAction("callHierarchy", callhierarchy);
         markAsStateDependentAction("CallHierarchy", true);
         markAsSelectionDependentAction("CallHierarchy", true);
 
@@ -483,7 +483,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
      * <p>
      * The selection offset is model based.
      * </p>
-     * 
+     *
      * @param sourceViewer
      *            the source viewer
      * @return a region denoting the current signed selection, for a resulting
@@ -505,7 +505,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 
     /**
      * Sets the given message as error message to this editor's status line.
-     * 
+     *
      * @param msg
      *            message to be set
      */
@@ -519,7 +519,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 
     /**
      * Sets the given message as message to this editor's status line.
-     * 
+     *
      * @param msg
      *            message to be set
      * @since 3.0
@@ -658,7 +658,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
      * reconciled in advance. If it is <code>false</code> this method only
      * returns a result if the editor's input element does not need to be
      * reconciled.
-     * 
+     *
      * @param offset
      *            the offset included by the retrieved element
      * @param reconcile
@@ -698,7 +698,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
          * provider. If the selection provider is a post selection provider,
          * post selection changed events are the preferred choice, otherwise
          * normal selection changed events are requested.
-         * 
+         *
          * @param selectionProvider
          */
         public void install(final ISelectionProvider selectionProvider) {
@@ -717,7 +717,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
         /**
          * Removes this selection changed listener from the given selection
          * provider.
-         * 
+         *
          * @param selectionProvider
          *            the selection provider
          */
@@ -757,7 +757,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
      * Called from
      * org.erlide.ui.editors.erl.outline.ErlangOutlinePage.createControl
      * (...).new OpenAndLinkWithEditorHelper() {...}.linkToEditor(ISelection)
-     * 
+     *
      * @param selection
      */
     public void doSelectionChanged(final ISelection selection) {
@@ -798,7 +798,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 
     /**
      * Creates the outline page used with this editor.
-     * 
+     *
      * @return the created Erlang outline page
      */
     protected ErlangOutlinePage createOutlinePage() {
@@ -828,7 +828,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
     /**
      * Synchronizes the outliner selection with the given element position in
      * the editor.
-     * 
+     *
      * @param element
      *            the java element to select
      */
@@ -839,7 +839,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
     /**
      * Synchronizes the outliner selection with the given element position in
      * the editor.
-     * 
+     *
      * @param element
      *            the java element to select
      * @param checkIfOutlinePageActive
@@ -1044,7 +1044,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
      * Returns the annotation closest to the given range respecting the given
      * direction. If an annotation is found, the annotations current position is
      * copied into the provided annotation position.
-     * 
+     *
      * @param offset
      *            the region offset
      * @param length
@@ -1144,7 +1144,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
     /**
      * Returns whether the given annotation is configured as a target for the
      * "Go to Next/Previous Annotation" actions
-     * 
+     *
      * @param annotation
      *            the annotation
      * @return <code>true</code> if this is a target, <code>false</code>
@@ -1306,7 +1306,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
      * The access to the fFoldingRunner field is not thread-safe, it is assumed
      * that <code>runWhenNextVisible</code> is only called from the UI thread.
      * </p>
-     * 
+     *
      * @since 3.1
      */
     final class ToggleFoldingRunner implements IPartListener2 {
@@ -1457,7 +1457,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 
     /**
      * Internal activation listener.
-     * 
+     *
      * @since 3.0
      */
     class ActivationListener implements IWindowListener {
@@ -1521,7 +1521,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 
     /**
      * Returns the lock object for the given annotation model.
-     * 
+     *
      * @param annotationModel
      *            the annotation model
      * @return the annotation model's lock object
@@ -1561,7 +1561,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
      * remove once the underlying problem
      * (https://bugs.eclipse.org/bugs/show_bug.cgi?id=66176) is solved.
      * </p>
-     * 
+     *
      * @return the lock reconcilers may use to synchronize on
      */
     public Object getReconcilerLock() {
