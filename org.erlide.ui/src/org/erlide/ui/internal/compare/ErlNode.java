@@ -24,10 +24,9 @@ import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.util.ErlLogger;
 
 /**
- * 
+ *
  */
 
 class ErlNode extends DocumentRangeNode implements ITypedElement {
@@ -47,7 +46,6 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
 
     public static ErlNode createErlNode(final ErlNode parent, final IErlElement element,
             final IDocument doc) {
-        ErlLogger.info("created node " + element + " (parent " + parent + ")");
         int start = 0, length = 0;
         String name = element.toString();
         if (element instanceof IErlModule) {
@@ -75,7 +73,7 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
      * Extends the range to include ranges of children, this is needed since the
      * range of a function in the erlang model only covers the first clause
      * (which is good in the outline and the navigator, but not optimal here).
-     * 
+     *
      * @see org.eclipse.compare.structuremergeviewer.DocumentRangeNode#addChild(org.eclipse.compare.structuremergeviewer.DocumentRangeNode)
      */
     @Override
