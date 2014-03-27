@@ -488,6 +488,7 @@
       <command
             categoryId="org.erlide.ui.erlangCategory"
             description="Indent code"
+            helpContextId="indent"
             id="org.erlide.ui.actions.indent"
             name="Indent code"/>
       <command
@@ -862,9 +863,27 @@
                 visible="true">
           </separator>
           <command
-                commandId="org.erlide.ui.actions.indent"
-                mnemonic="I">
+                commandId="org.erlide.ui.actions.togglecomment"
+                style="push">
           </command>
+          <command
+                commandId="org.erlide.ui.actions.indent"
+                mnemonic="I"
+                style="push">
+          </command>
+          <visibleWhen
+                checkEnabled="false">
+             <with
+                   variable="activePartId">
+                <equals
+                      value="org.erlide.ui.editors.erl.ErlangEditor">
+                </equals>
+             </with>
+          </visibleWhen>
+       </menu>
+       <menu
+             id="org.erlide.ui.menus.refactor"
+             label="Refactor">
        </menu>
        <separator
              name="org.erlide.ui.separator2">
@@ -1032,6 +1051,15 @@
     </handler>
     <handler
           commandId="org.erlide.ui.source.gen_doc">
+    </handler>
+    <handler
+          class="org.erlide.ui.actions.ToggleCommentHandler"
+          commandId="org.erlide.ui.actions.togglecomment"
+          helpContextId="togglecomment">
+    </handler>
+    <handler
+          class="org.erlide.ui.actions.IndentHandler"
+          commandId="org.erlide.ui.actions.indent">
     </handler>
  </extension>
  <extension

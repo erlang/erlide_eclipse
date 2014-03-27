@@ -41,9 +41,7 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.ui.actions.OpenAction;
-import org.erlide.ui.editors.erl.actions.IndentAction;
 import org.erlide.ui.editors.erl.actions.SendToConsoleAction;
-import org.erlide.ui.editors.erl.actions.ToggleCommentAction;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.prefs.PreferenceConstants;
 
@@ -58,8 +56,6 @@ public abstract class AbstractErlangEditor extends TextEditor {
     private SendToConsoleAction sendToConsole;
     private SendToConsoleAction sendToConsoleWithResult;
     private OpenAction openAction;
-    private IndentAction indentAction;
-    private ToggleCommentAction toggleCommentAction;
     private InformationPresenter fInformationPresenter;
     private ScannerService erlScanner;
 
@@ -137,28 +133,6 @@ public abstract class AbstractErlangEditor extends TextEditor {
     protected abstract void addFoldingSupport(final ISourceViewer viewer);
 
     protected void createCommonActions() {
-        indentAction = new IndentAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(), "Indent.", this); //$NON-NLS-1$
-        indentAction.setActionDefinitionId(IErlangEditorActionDefinitionIds.INDENT);
-        setAction("Indent", indentAction); //$NON-NLS-1$
-        markAsStateDependentAction("Indent", true); //$NON-NLS-1$
-        markAsSelectionDependentAction("Indent", true); //$NON-NLS-1$
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(indentAction, IErlangHelpContextIds.INDENT_ACTION);
-
-        toggleCommentAction = new ToggleCommentAction(
-                ErlangEditorMessages.getBundleForConstructedKeys(), "ToggleComment.",
-                this);
-        toggleCommentAction
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.TOGGLE_COMMENT);
-        setAction("ToggleComment", toggleCommentAction);
-        markAsStateDependentAction("ToggleComment", true);
-        markAsSelectionDependentAction("ToggleComment", true);
-        PlatformUI
-                .getWorkbench()
-                .getHelpSystem()
-                .setHelp(toggleCommentAction, IErlangHelpContextIds.TOGGLE_COMMENT_ACTION);
-
         openAction = new OpenAction(this);
         openAction.setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
         setAction(IErlangEditorActionDefinitionIds.OPEN, openAction);
@@ -201,8 +175,6 @@ public abstract class AbstractErlangEditor extends TextEditor {
     }
 
     protected void addCommonActions(final IMenuManager menu) {
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, toggleCommentAction);
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, indentAction);
         // TODO disabled until erl_tidy doesn't destroy formatting
         // menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, cleanUpAction);
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, openAction);
