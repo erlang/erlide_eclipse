@@ -225,10 +225,9 @@ public class ErlideTestUtils {
         buildPaths(root, project, includeDirs);
         prefs.setIncludeDirs(includeDirs);
 
-        final List<IPath> ebinDirs = new ArrayList<IPath>();
-        ebinDirs.add(new Path("ebin"));
-        buildPaths(root, project, ebinDirs);
-        prefs.setOutputDir(ebinDirs.get(0));
+        final IPath ebinDir = new Path("ebin");
+        buildPaths(root, project, Lists.newArrayList(ebinDir));
+        prefs.setOutputDir(ebinDir);
 
         // TODO project.setProperties(prefs);
 

@@ -43,10 +43,11 @@ public class PreferencesProjectConfigurator implements ProjectConfigurator {
                 ProjectPreferencesConstants.INCLUDE_DIRS,
                 ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
         result.setIncludeDirs(PathSerializer.unpackList(includeDirsStr));
-        final String outputDirsStr = node.get(
+        final String outputDirStr = node.get(
                 ProjectPreferencesConstants.OUTPUT_DIR,
                 ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
-        result.setOutputDir(new Path(outputDirsStr));
+        final String outputStr = outputDirStr.replaceAll(";", "");
+        result.setOutputDir(new Path(outputStr));
         result.setRequiredRuntimeVersion(RuntimeVersion.Serializer.parse(node
                 .get(ProjectPreferencesConstants.RUNTIME_VERSION, null)));
         if (!result.getRequiredRuntimeVersion().isDefined()) {
