@@ -402,16 +402,20 @@ public final class BackendManager implements IBackendManager {
 
     @Override
     public void dispose() {
-        for (final IBackend b : buildBackends.values()) {
-            b.dispose();
+        synchronized (this) {
+            final Collection<IBackend> bb = Lists.newArrayList(buildBackends.values());
+            buildBackends.clear();
+            for (final IBackend b : bb) {
+                b.dispose();
+            }
+            if (ideBackend != null) {
+                ideBackend.dispose();
+            }
+            final ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager()
+                    .getLaunches();
+            launchListener.launchesTerminated(launches);
+            launchListener.dispose();
         }
-        if (ideBackend != null) {
-            ideBackend.dispose();
-        }
-        final ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager()
-                .getLaunches();
-        launchListener.launchesTerminated(launches);
-        launchListener.dispose();
     }
 
     @Override
