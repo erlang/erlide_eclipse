@@ -488,6 +488,7 @@
       <command
             categoryId="org.erlide.ui.erlangCategory"
             description="Indent code"
+            helpContextId="indent"
             id="org.erlide.ui.actions.indent"
             name="Indent code"/>
       <command
@@ -643,6 +644,17 @@
              id="org.erlide.ui.deinterpret"
              name="Deinterpret">
        </command>
+       <command
+             categoryId="org.erlide.ui.category.source"
+             description="Generate documentation for the selected element"
+             id="org.erlide.ui.source.gen_doc"
+             name="Generate documentation ">
+       </command>
+       <category
+             description="Source commands"
+             id="org.erlide.ui.category.source"
+             name="Source">
+       </category>
  </extension>
  <extension
        point="org.eclipse.ui.menus">
@@ -829,6 +841,54 @@
              style="push">
        </command>
     </menuContribution>
+    <menuContribution
+          allPopups="true"
+          locationURI="popup:org.eclipse.ui.popup.any?after=group.edit">
+       <menu
+             id="org.erlide.ui.menus.source"
+             label="Source"
+             mnemonic="S">
+          <separator
+                name="formatting"
+                visible="true">
+          </separator>
+          <command
+                commandId="org.erlide.ui.actions.togglecomment"
+                style="push">
+          </command>
+          <command
+                commandId="org.erlide.ui.actions.indent"
+                mnemonic="I"
+                style="push">
+          </command>
+          <separator
+                name="generators"
+                visible="true">
+          </separator>
+          <command
+                commandId="org.erlide.ui.source.gen_doc"
+                label="Generate documentation for element"
+                mnemonic="G"
+                style="push">
+          </command>
+          <visibleWhen
+                checkEnabled="false">
+             <with
+                   variable="activePartId">
+                <equals
+                      value="org.erlide.ui.editors.erl.ErlangEditor">
+                </equals>
+             </with>
+          </visibleWhen>
+       </menu>
+       <menu
+             id="org.erlide.ui.menus.refactor"
+             label="Refactor">
+       </menu>
+       <separator
+             name="org.erlide.ui.separator2">
+       </separator>
+    </menuContribution>
  </extension>
  <extension
        point="org.eclipse.ui.bindings">
@@ -988,6 +1048,18 @@
     <handler
           class="org.erlide.debug.ui.views.InterpretHandler"
           commandId="org.erlide.ui.interpret">
+    </handler>
+    <handler
+          commandId="org.erlide.ui.source.gen_doc">
+    </handler>
+    <handler
+          class="org.erlide.ui.actions.ToggleCommentHandler"
+          commandId="org.erlide.ui.actions.togglecomment"
+          helpContextId="togglecomment">
+    </handler>
+    <handler
+          class="org.erlide.ui.actions.IndentHandler"
+          commandId="org.erlide.ui.actions.indent">
     </handler>
  </extension>
  <extension
@@ -1966,17 +2038,17 @@
    </extension>
   <extension
         point="org.erlide.ui.quickfix">
-     <!--quickfix
+     <quickfix
            class="org.erlide.ui.editors.erl.correction.RenameModuleQuickFix"
            image="icons/full/obj16/change.gif"
            label="Change module name to &apos;{1}&apos;">
         <tag
-              name="compiler_module_name">
+              name="compiler_module_name___todo">
         </tag>
         <tag
-              name="compiler_module_name_1">
+              name="compiler_module_name_1___todo">
         </tag>
-     </quickfix-->
+     </quickfix>
      <quickfix
            class="org.erlide.ui.editors.erl.correction.RenameFileQuickFix"
            image="icons/full/obj16/change.gif"
