@@ -159,18 +159,19 @@ public final class BackendManager implements IBackendManager {
 
     @Override
     public IBackend getIdeBackend() {
-        // System.out.println("GET ide" + Thread.currentThread());
-        if (ideBackend == null) {
+        IBackend result = ideBackend;
+        if (result == null) {
             synchronized (ideBackendLock) {
-                if (ideBackend == null) {
-                    ideBackend = factory.createIdeBackend();
-                    addBackend(ideBackend);
-                    notifyBackendChange(ideBackend, BackendEvent.ADDED, null, null);
+                result = ideBackend;
+                if (result == null) {
+                    result = factory.createIdeBackend();
+                    addBackend(result);
+                    notifyBackendChange(result, BackendEvent.ADDED, null, null);
+                    ideBackend = result;
                 }
             }
         }
-        // System.out.println(">>> " + ideBackend);
-        return ideBackend;
+        return result;
     }
 
     void notifyBackendChange(final IBackend b, final BackendEvent type,
