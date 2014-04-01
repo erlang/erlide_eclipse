@@ -380,6 +380,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         @Override
         public void terminated(final State from) {
             ErlLogger.debug(String.format("Runtime %s terminated", getNodeName()));
+            dispose();
             reportDown();
         }
 
@@ -389,6 +390,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
             final int exitCode = getExitCode();
             ErlLogger.warn(String.format("Runtime %s crashed, exit code: %d.", nodeName,
                     exitCode));
+            dispose();
             reportDown();
             try {
                 reporter.createFileReport(nodeName, exitCode, getRuntimeData()

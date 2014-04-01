@@ -29,7 +29,7 @@ public class ExternalBackend extends Backend {
     }
 
     @Override
-    public void dispose() {
+    public synchronized void dispose() {
         try {
             final ILaunch launch = getData().getLaunch();
             if (!launch.isTerminated()) {

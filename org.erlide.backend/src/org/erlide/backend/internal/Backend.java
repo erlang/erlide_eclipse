@@ -30,6 +30,7 @@ import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.jdt.annotation.NonNull;
+import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
@@ -76,7 +77,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void dispose() {
+    public synchronized void dispose() {
         if (disposed) {
             return;
         }
@@ -89,6 +90,7 @@ public abstract class Backend implements IStreamListener, IBackend {
             shellManager = null;
         }
         runtime.dispose();
+        BackendCore.getBackendManager().removeBackend(this);
     }
 
     @Override
@@ -354,6 +356,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void onShutdown() {
+        dispose();
     }
 
     private void loadBeamsFromDir(final String outDir) {

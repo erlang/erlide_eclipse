@@ -18,6 +18,8 @@ public interface IBackendManager extends IEpmdListener {
 
     IBackend getBuildBackend(@Nullable final IProject project);
 
+    void removeBackend(IBackend backend);
+
     Set<IBackend> getExecutionBackends(final IProject project);
 
     Collection<IBackend> getAllBackends();

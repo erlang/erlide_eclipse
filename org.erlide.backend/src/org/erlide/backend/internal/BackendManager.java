@@ -452,4 +452,14 @@ public final class BackendManager implements IBackendManager {
         }
     }
 
+    @Override
+    public synchronized void removeBackend(final IBackend backend) {
+        allBackends.remove(backend);
+        if (buildBackends.values().contains(backend)) {
+            final String version = backend.getRuntimeInfo().getVersion().asMajor()
+                    .toString();
+            buildBackends.remove(version);
+        }
+    }
+
 }

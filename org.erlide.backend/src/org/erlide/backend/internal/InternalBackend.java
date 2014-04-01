@@ -24,6 +24,7 @@ public class InternalBackend extends Backend {
 
     @Override
     public void onShutdown() {
+        super.onShutdown();
         getData().setLaunch(null);
     }
 }
