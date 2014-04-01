@@ -46,7 +46,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.search.ui.IContextMenuConstants;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -71,6 +70,7 @@ import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.engine.ErlangEngine;
@@ -355,16 +355,19 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 
         if (SystemConfiguration.getInstance().isTest()) {
             setupTestAction();
-            menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, testAction);
+            menu.prependToGroup(ITextEditorActionConstants.GROUP_OPEN, testAction);
         }
         if (SystemConfiguration.getInstance().isClearCacheAvailable()) {
             setupClearCacheAction();
-            menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, clearCacheAction);
+            menu.prependToGroup(ITextEditorActionConstants.GROUP_SETTINGS,
+                    clearCacheAction);
         }
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, callhierarchy);
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, compileAction);
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, fShowOutline);
+        menu.prependToGroup(ITextEditorActionConstants.GROUP_OPEN, compileAction);
+        menu.prependToGroup(ITextEditorActionConstants.GROUP_OPEN, fShowOutline);
         addCommonActions(menu);
+
+        menu.appendToGroup(ITextEditorActionConstants.GROUP_FIND, callhierarchy);
+
         final ActionContext context = new ActionContext(getSelectionProvider()
                 .getSelection());
         fContextMenuGroup.setContext(context);

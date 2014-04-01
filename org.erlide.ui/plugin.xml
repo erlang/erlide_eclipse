@@ -849,16 +849,6 @@
              label="Source"
              mnemonic="S">
           <separator
-                name="generators"
-                visible="true">
-          </separator>
-          <command
-                commandId="org.erlide.ui.source.gen_doc"
-                label="Generate documentation for element"
-                mnemonic="G"
-                style="push">
-          </command>
-          <separator
                 name="formatting"
                 visible="true">
           </separator>
@@ -869,6 +859,16 @@
           <command
                 commandId="org.erlide.ui.actions.indent"
                 mnemonic="I"
+                style="push">
+          </command>
+          <separator
+                name="generators"
+                visible="true">
+          </separator>
+          <command
+                commandId="org.erlide.ui.source.gen_doc"
+                label="Generate documentation for element"
+                mnemonic="G"
                 style="push">
           </command>
           <visibleWhen
@@ -2038,17 +2038,17 @@
    </extension>
   <extension
         point="org.erlide.ui.quickfix">
-     <!--quickfix
+     <quickfix
            class="org.erlide.ui.editors.erl.correction.RenameModuleQuickFix"
            image="icons/full/obj16/change.gif"
            label="Change module name to &apos;{1}&apos;">
         <tag
-              name="compiler_module_name">
+              name="compiler_module_name___todo">
         </tag>
         <tag
-              name="compiler_module_name_1">
+              name="compiler_module_name_1___todo">
         </tag>
-     </quickfix-->
+     </quickfix>
      <quickfix
            class="org.erlide.ui.editors.erl.correction.RenameFileQuickFix"
            image="icons/full/obj16/change.gif"

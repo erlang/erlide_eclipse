@@ -23,13 +23,13 @@ import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
-import org.eclipse.search.ui.IContextMenuConstants;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ContentAssistAction;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.ui.texteditor.ResourceAction;
@@ -177,9 +177,9 @@ public abstract class AbstractErlangEditor extends TextEditor {
     protected void addCommonActions(final IMenuManager menu) {
         // TODO disabled until erl_tidy doesn't destroy formatting
         // menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, cleanUpAction);
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, openAction);
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, sendToConsole);
-        menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, sendToConsoleWithResult);
+        menu.prependToGroup(ITextEditorActionConstants.GROUP_OPEN, openAction);
+        menu.appendToGroup(ITextEditorActionConstants.GROUP_REST, sendToConsole);
+        menu.appendToGroup(ITextEditorActionConstants.GROUP_REST, sendToConsoleWithResult);
     }
 
     /**
