@@ -100,9 +100,10 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     protected boolean startErlideApps(final OtpErlangPid jRex, final boolean watch) {
         try {
-            getRpcSite().call("erlide_common_app", "init", "poii", jRex, watch,
+            getRpcSite().call("erlide_common_app", "init", "poiii", jRex, watch,
                     SystemConfiguration.getInstance().getWarnProcessSizeLimitMB(),
-                    SystemConfiguration.getInstance().getKillProcessSizeLimitMB());
+                    SystemConfiguration.getInstance().getKillProcessSizeLimitMB(),
+                    SystemConfiguration.getInstance().getMaxParallelBuilds());
             // TODO should use extension point!
             switch (data.getContext()) {
             case IDE:

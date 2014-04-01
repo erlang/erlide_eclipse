@@ -15,6 +15,7 @@ public final class SystemConfiguration {
     private final boolean onWindows;
     private int warnProcessSizeLimitMB;
     private int killProcessSizeLimitMB;
+    private int maxParallelBuilds;
     private static final int MIN_WARN_LIMIT = 5;
     private static final int MIN_KILL_LIMIT = 10;
 
@@ -28,6 +29,7 @@ public final class SystemConfiguration {
                 .getProperty("erlide.process.heap.warn.limit", "10"));
         setKillProcessSizeLimit(System
                 .getProperty("erlide.process.heap.kill.limit", "50"));
+        setMaxParallelBuilds(System.getProperty("erlide.max.parallel.builds", "4"));
     }
 
     public boolean isDeveloper() {
@@ -119,5 +121,17 @@ public final class SystemConfiguration {
             return d != null && p != null ? d + p : u;
         }
         return u;
+    }
+
+    private void setMaxParallelBuilds(final String text) {
+        try {
+            maxParallelBuilds = Integer.parseInt(text);
+        } catch (final Exception e) {
+            maxParallelBuilds = 4;
+        }
+    }
+
+    public int getMaxParallelBuilds() {
+        return maxParallelBuilds;
     }
 }
