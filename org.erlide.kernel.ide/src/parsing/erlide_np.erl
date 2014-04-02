@@ -224,14 +224,26 @@ get_upto([T | Rest], Delim, Acc) ->
     get_upto(Rest, Delim, [T | Acc]).
 
 get_upto2(L, Delim) ->
-    get_upto2(L, Delim, []).
+    get_upto2(L, Delim, [], 0, 0, 0).
 
-get_upto2([], _Delim, Acc) ->
+get_upto2([], _Delim, Acc, _, _, _) ->
     {lists:reverse(Acc), []};
-get_upto2([#token{kind=Delim} | Rest], Delim, Acc) ->
+get_upto2([T=#token{kind='('} | Rest], Delim, Acc, N1, N2, N3) ->
+    get_upto2(Rest, Delim, [T|Acc], N1+1, N2, N3);
+get_upto2([T=#token{kind=')'} | Rest], Delim, Acc, N1, N2, N3) ->
+    get_upto2(Rest, Delim, [T|Acc], N1-1, N2, N3);
+get_upto2([T=#token{kind='{'} | Rest], Delim, Acc, N1, N2, N3) ->
+    get_upto2(Rest, Delim, [T|Acc], N1, N2+1, N3);
+get_upto2([T=#token{kind='}'} | Rest], Delim, Acc, N1, N2, N3) ->
+    get_upto2(Rest, Delim, [T|Acc], N1, N2-1, N3);
+get_upto2([T=#token{kind='['} | Rest], Delim, Acc, N1, N2, N3) ->
+    get_upto2(Rest, Delim, [T|Acc], N1, N2, N3+1);
+get_upto2([T=#token{kind=']'} | Rest], Delim, Acc, N1, N2, N3) ->
+    get_upto2(Rest, Delim, [T|Acc], N1, N2, N3-1);
+get_upto2([#token{kind=Delim} | Rest], Delim, Acc, 0, 0, 0) ->
     {lists:reverse(Acc), Rest};
-get_upto2([T | Rest], Delim, Acc) ->
-    get_upto2(Rest, Delim, [T | Acc]).
+get_upto2([T | Rest], Delim, Acc, N1, N2, N3) ->
+    get_upto2(Rest, Delim, [T | Acc], N1, N2, N3).
 
 check_clause([#token{kind = ';'} | Rest], false) ->
     check_class(Rest) == function;
@@ -380,20 +392,36 @@ get_refs([#token{kind='#', offset=Offset},
     get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
           #token{kind=atom, value=T, offset=Offset2, length=Length2},
-          #token{kind='('}, #token{kind=')'} | Rest], Name, Arity, Acc) ->
+          #token{kind='('} | Rest], Name, Arity, Acc) ->
     Ref = make_ref(Offset, Length2+Offset2-Offset,
                    #type_ref{module=M, type=T}, Name, Arity),
-    get_refs(Rest, Name, Arity, [Ref | Acc]);
+    Rest1 = drop_until_matching(Rest, '(', ')'),
+    get_refs(Rest1, Name, Arity, [Ref | Acc]);
 get_refs([#token{kind=atom, value=T, offset=Offset, length=Length},
-          #token{kind='('}, #token{kind=')'} | Rest], Name, Arity, Acc) ->
+          #token{kind='('} | Rest], Name, Arity, Acc) ->
     Ref = make_ref(Offset, Length, #type_ref{module='_', type=T}, Name, Arity),
-    get_refs(Rest, Name, Arity, [Ref | Acc]);
+    Rest1 = drop_until_matching(Rest, '(', ')'),
+    get_refs(Rest1, Name, Arity, [Ref | Acc]);
 get_refs([#token{kind=variable, value=V, offset=Offset, length=Length} | Rest],
          Name, Arity, Acc) ->
     Ref = make_ref(Offset, Length, #var_ref{name=V}, Name, Arity),
     get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([_ | Rest], Name, Arity, Acc) ->
     get_refs(Rest, Name, Arity, Acc).
+
+drop_until_matching(L, Delim1, Delim2) ->
+    drop_until_matching(L, Delim1, Delim2, 1).
+
+drop_until_matching([], _, _, _) ->
+    [];
+drop_until_matching(L, _, _, 0) ->
+    L;
+drop_until_matching([#token{kind=Delim1} | T], Delim1, Delim2, N)->
+    drop_until_matching(T, Delim1, Delim2, N+1);
+drop_until_matching([#token{kind=Delim2} | T], Delim1, Delim2, N)->
+    drop_until_matching(T, Delim1, Delim2, N-1);
+drop_until_matching([_H|T], Delim1, Delim2, N) ->
+    drop_until_matching(T, Delim1, Delim2, N).
 
 get_record_field_defs([], _) ->
     [];
@@ -408,20 +436,13 @@ make_ref(Offset, Length, Data, Name, Arity) ->
          clause="", sub_clause=false}.
 
 make_attribute_arg_refs(define, Name, [#token{}, #token{kind='('} | Rest]) ->
-    get_refs(skip_to_rparen(Rest), Name, ?ARI_MACRO_DEF);
+    get_refs(drop_until_matching(Rest, '(', ')'), Name, ?ARI_MACRO_DEF);
 make_attribute_arg_refs(define, Name, [#token{}, #token{kind=','} | Rest]) ->
     get_refs(Rest, Name, ?ARI_MACRO_DEF);
 make_attribute_arg_refs(record, {Name, Fields}, [#token{}, #token{kind=','} | Rest]) ->
     get_record_field_defs(Fields, Name) ++ get_refs(Rest, Name, ?ARI_RECORD_DEF);
 make_attribute_arg_refs(_, _, _) ->
     [].
-
-skip_to_rparen([]) ->
-    [];
-skip_to_rparen([#token{kind=')'} | Rest]) ->
-    Rest;
-skip_to_rparen([_ | Rest]) ->
-    skip_to_rparen(Rest).
 
 make_attribute_ref(Name, Between, Extra, Offset, Length) ->
     case make_attribute_ref(Name, Between, Extra) of

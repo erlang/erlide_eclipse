@@ -64,6 +64,17 @@ parsing_record_def_test_() ->
     Value = test_parse("-record(a, {b, c :: integer()})."),
     [?_assertEqual(Expected, Value)].
 
+parsing_record_def1_test_() ->
+    Expected = {[#attribute{pos = {{0, 0, 0}, 49},
+                            name = record,
+                            args = {a, [{b, {{0, 0, 12}, 1}, ""},
+                                        {c, {{0, 0, 15}, 1}, ":: dict(integer(), term())"},
+                                        {d, {{0, 0, 45}, 1}, ""}]},
+                            extra = "a, {b, c :: dict(integer(), term()), d}"}],
+                []},
+    Value = test_parse("-record(a, {b, c :: dict(integer(), term()), d})."),
+    [?_assertEqual(Expected, Value)].
+
 parsing_function_with_macro_test_() ->
     %% http://www.assembla.com/spaces/erlide/tickets/571-functions-defined-with-macros-confuses-the-model
     [?_assertEqual({[#function{pos = {{0, 0, 0},11},
