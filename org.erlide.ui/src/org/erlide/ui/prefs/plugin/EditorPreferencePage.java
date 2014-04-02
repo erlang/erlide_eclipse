@@ -19,23 +19,23 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.ui.ErlideUIConstants;
+import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 /**
  * The editor preferences
- * 
- * 
+ *
+ *
  * @author Jakob
  */
 public class EditorPreferencePage extends ErlidePreferencePage implements
-        IWorkbenchPreferencePage {
+IWorkbenchPreferencePage {
 
     /**
      * Initialize the system preferences
-     * 
+     *
      */
     public EditorPreferencePage() {
         setDescription(ErlEditorMessages.ErlEditorPreferencePage_description);
@@ -52,14 +52,13 @@ public class EditorPreferencePage extends ErlidePreferencePage implements
 
     static final String EDITOR_KEY = "erlangEditor"; //$NON-NLS-1$
 
-    private static final int DEFAULT_TAB_WIDTH = 8;
-
+    private static final int DEFAULT_INDENT_WIDTH = 4;
     private static final boolean DEFAULT_ENABLE_HOVER = true;
 
     private void setToPreferences() {
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
-        final Integer i = node.getInt(tabWidthKey, DEFAULT_TAB_WIDTH);
-        tabWidthText.setText(i.toString());
+        final Integer i = node.getInt(indentWidthKey, DEFAULT_INDENT_WIDTH);
+        indentWidthText.setText(i.toString());
         enableHoverCheckBox.setSelection(node.getBoolean(enableHoverKey,
                 DEFAULT_ENABLE_HOVER));
     }
@@ -67,7 +66,7 @@ public class EditorPreferencePage extends ErlidePreferencePage implements
     @Override
     protected void putPreferences() {
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
-        node.putInt(tabWidthKey, Integer.parseInt(tabWidthText.getText()));
+        node.putInt(indentWidthKey, Integer.parseInt(indentWidthText.getText()));
         node.putBoolean(enableHoverKey, enableHoverCheckBox.getSelection());
     }
 
@@ -82,10 +81,10 @@ public class EditorPreferencePage extends ErlidePreferencePage implements
         return EDITOR_KEY;
     }
 
-    private Text tabWidthText;
+    private Text indentWidthText;
     private Button enableHoverCheckBox;
 
-    private String tabWidthKey;
+    private String indentWidthKey;
     private String enableHoverKey;
 
     /*
@@ -105,13 +104,13 @@ public class EditorPreferencePage extends ErlidePreferencePage implements
         layout.numColumns = 2;
         appearanceComposite.setLayout(layout);
 
-        String label = ErlEditorMessages.ErlEditorPreferencePage_displayedTabWidth;
+        String label = ErlEditorMessages.ErlEditorPreferencePage_indentationWidth;
 
         final Pair<Text, String> addTextField = addTextField(appearanceComposite, label,
-                AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH, 3, 0,
-                true);
-        tabWidthText = addTextField.getKey();
-        tabWidthKey = addTextField.getValue();
+                ErlangEditor.EDITOR_INDENT_WIDTH, 3, 0, true);
+        indentWidthText = addTextField.getKey();
+        indentWidthText.setEnabled(false);
+        indentWidthKey = addTextField.getValue();
 
         label = ErlEditorMessages.ErlEditorPreferencePage_enable_hover;
 
@@ -142,7 +141,7 @@ public class EditorPreferencePage extends ErlidePreferencePage implements
     protected void performDefaults() {
 
         enableHoverCheckBox.setSelection(DEFAULT_ENABLE_HOVER);
-        tabWidthText.setText(Integer.toString(DEFAULT_TAB_WIDTH));
+        indentWidthText.setText(Integer.toString(DEFAULT_INDENT_WIDTH));
 
         super.performDefaults();
     }

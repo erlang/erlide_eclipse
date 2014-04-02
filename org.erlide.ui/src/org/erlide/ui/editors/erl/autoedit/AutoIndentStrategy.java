@@ -26,14 +26,15 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.services.text.IndentResult;
 import org.erlide.engine.services.text.IndentService;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
+import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 import org.erlide.util.ErlLogger;
 
 /**
  * The erlang auto indent strategy
- * 
- * 
+ *
+ *
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class AutoIndentStrategy implements IAutoEditStrategy {
@@ -98,16 +99,15 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         }
     }
 
-    /**
-     * @return
-     */
+    public static int getIndentWidthFromPreferences() {
+        final int tabw = ErlideUIPlugin.getDefault().getPreferenceStore()
+                .getInt(ErlangEditor.EDITOR_INDENT_WIDTH);
+        return tabw;
+    }
+
     public static int getTabWidthFromPreferences() {
-        int tabw = ErlideUIPlugin.getDefault().getPreferenceStore()
-                .getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
-        if (tabw == 0) {
-            tabw = EditorsUI.getPreferenceStore().getInt(
-                    AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
-        }
+        final int tabw = EditorsUI.getPreferenceStore().getInt(
+                AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
         return tabw;
     }
 
@@ -119,7 +119,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
     /**
      * Override a DocumentCommand if it ends with a line delim (CR) to include
      * space characters for autoindentation
-     * 
+     *
      * @param d
      *            the document
      * @param c
