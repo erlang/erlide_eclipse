@@ -118,7 +118,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
         IOutlineSelectionHandler {
 
     public static final String ERLANG_EDITOR_ID = "org.erlide.ui.editors.erl.ErlangEditor";
-    public static final String EDITOR_INDENT_WIDTH = "indentWidth";
+    public static final String EDITOR_INDENTATION_WIDTH = "indentationWidth";
 
     private IErlModule fModule = null;
     private ColorManager colorManager;

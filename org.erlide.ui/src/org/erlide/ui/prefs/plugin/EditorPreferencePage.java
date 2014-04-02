@@ -107,7 +107,7 @@ public class EditorPreferencePage extends ErlidePreferencePage implements
         String label = ErlEditorMessages.ErlEditorPreferencePage_indentationWidth;
 
         final Pair<Text, String> addTextField = addTextField(appearanceComposite, label,
-                ErlangEditor.EDITOR_INDENT_WIDTH, 3, 0, true);
+                ErlangEditor.EDITOR_INDENTATION_WIDTH, 3, 0, true);
         indentWidthText = addTextField.getKey();
         indentWidthText.setEnabled(false);
         indentWidthKey = addTextField.getValue();

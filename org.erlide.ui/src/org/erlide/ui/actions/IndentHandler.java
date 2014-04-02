@@ -12,6 +12,8 @@ import org.eclipse.jface.text.IRewriteTarget;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangStatus;
@@ -99,18 +101,20 @@ public class IndentHandler extends ErlangAbstractHandler {
         final IndentService indentService = ErlangEngine.getInstance().getService(
                 IndentService.class);
 
-        final int tabw = AutoIndentStrategy.getTabWidthFromPreferences();
+        final int tabw = EditorsUI.getPreferenceStore().getInt(
+                AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
+        final int indentw = AutoIndentStrategy.getIndentWidthFromPreferences();
         final Map<String, String> prefs = new TreeMap<String, String>();
         IndentationPreferencePage.addKeysAndPrefs(prefs);
         SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
         final boolean useTabs = AutoIndentStrategy.getUseTabsFromPreferences();
         if (template) {
             final OtpErlangObject r1 = indentService.templateIndentLines(prefix, text,
-                    tabw, useTabs, prefs);
+                    indentw, tabw, useTabs, prefs);
             return r1;
         }
-        final OtpErlangObject r1 = indentService.indentLines(offset, length, text, tabw,
-                useTabs, prefs);
+        final OtpErlangObject r1 = indentService.indentLines(offset, length, text,
+                indentw, tabw, useTabs, prefs);
         return r1;
     }
 
