@@ -95,7 +95,7 @@ get_otp_lib_src_includes(StateDir) ->
     VersionFileName = filename:join([code:root_dir(), "releases", "start_erl.data"]),
     CacheName = filename:join(StateDir, "otp.dirs"),
     {_Cached, R} =
-        erlide_util:check_and_renew_cached(VersionFileName, CacheName,
+        erlide_cache:check_and_renew_cached(VersionFileName, CacheName,
                                            ?CACHE_VERSION, RenewFun, true),
     {ok, R}.
 
