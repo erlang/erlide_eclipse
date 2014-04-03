@@ -1,3 +1,23 @@
+List of user visible changes between 0.27.1 and 0.28.0 (20140403)
+
+455febd rename editor tab width preference to 'indent width' and make read-only
+1896cdd 1307 - better parse record definitions with type specs
+ff1bf5a 1344 - builder: limit number of parallel compiles
+db005e8 when runtime dies/stops, remove it from manager
+f1c8e1e gh168 - debugger: send source paths to int:i
+48af499 implement quickfixes
+a608211 gh166 - fix encoding issue in console
+b7d2eed improve debug info when engine doesn't start
+27b139e .app generation: ignore modules in deps/ and not directly on source dirs
+2984c30 don't sort applications when writing .app file
+be03d06 only recreate .app if there is a change
+74ea444 don't touch app.src if erlide.no_app_src is defined
+62bcaf2 gh166 - Erlide Eshell appears to hang
+b260995 gh163 - correct location of log in message shown to user
+a3014c2 gh162 - Incorrect auto-close braces/brackets/parenthesis
+b57c183 new wizard: set minimum req OTP version to r15
+------- initial work on building with rebar/make/emake (not enabled yet)
+
 List of user visible changes between 0.27.0 and 0.27.1 (20140311)
 
 50df998 move erlang files to kernel.common
