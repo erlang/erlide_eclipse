@@ -41,7 +41,7 @@ public class UserAdhocRefactoring {
                             ErlangEngine.getInstance().getModel()
                                     .findModule(refac.getCallbackModule()));
             callbackPath = project.getWorkspaceProject().getLocation()
-                    .append(project.getOutputLocation()).toString();
+                    .append(project.getProperties().getOutputDir()).toString();
         } catch (final ErlModelException e) {
             return false;
         }

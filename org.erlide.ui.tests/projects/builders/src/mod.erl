@@ -4,6 +4,6 @@
 
 -include("hdr.hrl").
 
-f() ->
+f() -> 
     4+5,
 	ok.

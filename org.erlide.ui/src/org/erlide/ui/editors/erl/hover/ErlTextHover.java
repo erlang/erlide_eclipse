@@ -267,6 +267,7 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
 
         final int offset = hoverRegion.getOffset();
         final int length = hoverRegion.getLength();
+
         final String debuggerVar = makeDebuggerVariableHover(textViewer, offset, length);
         if (debuggerVar.length() > 0) {
             result.append(debuggerVar);
@@ -288,7 +289,7 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
 
             final IErlModel model = ErlangEngine.getInstance().getModel();
             final String externalModulesString = erlProject != null ? erlProject
-                    .getExternalModulesString() : null;
+                    .getProperties().getExternalModules() : null;
             final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine
                     .getInstance()
                     .getService(OtpDocService.class)

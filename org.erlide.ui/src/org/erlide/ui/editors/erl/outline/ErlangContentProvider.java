@@ -85,7 +85,6 @@ public class ErlangContentProvider implements ITreeContentProvider {
 
         // ErlLogger.debug("content set input:: " + newInput);
         if (isModule && fListener == null) {
-            // TODO fixme
             fListener = new ElementChangedListener(null);
 
             ErlangEngine.getInstance().getModel().addElementChangedListener(fListener);

@@ -6,17 +6,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.internal.model.cache.ErlModelCache;
 import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.root.ErlElementKind;
@@ -25,7 +22,7 @@ import org.erlide.engine.model.root.IErlElement.AcceptFlags;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlElementVisitor;
 import org.erlide.engine.model.root.IErlExternal;
-import org.erlide.test.support.ErlideTestUtils;
+import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -192,7 +189,7 @@ public class IErlElementTest extends ErlModelTestBase {
     // boolean isStructureKnown() throws ErlModelException;
     @Test
     public void isStructureKnown() throws Exception {
-        ((ErlProject) project).setSourceDirs(project.getSourceDirs());
+        ((ErlProject) project).setSourceDirs(project.getProperties().getSourceDirs());
         // this sets structureKnown to false
 
         final boolean structureKnown = project.isStructureKnown();
@@ -312,13 +309,6 @@ public class IErlElementTest extends ErlModelTestBase {
     // TODO check more than source dir cache
     @Test
     public void clearCaches() throws Exception {
-        project.getSourceDirs();
-        final ErlModelCache cache = ErlModelCache.getDefault();
-        final Collection<IPath> sourceDirs = cache.getSourceDirs(project);
-        project.clearCaches();
-        final Collection<IPath> sourceDirs2 = cache.getSourceDirs(project);
-        assertNotNull(sourceDirs);
-        assertNull(sourceDirs2);
     }
 
 }

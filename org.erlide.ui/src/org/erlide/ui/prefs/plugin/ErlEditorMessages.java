@@ -12,8 +12,8 @@ package org.erlide.ui.prefs.plugin;
 import org.eclipse.osgi.util.NLS;
 
 /**
- * 
- * 
+ *
+ *
  * @author VlaDum
  */
 public final class ErlEditorMessages extends NLS {
@@ -25,7 +25,7 @@ public final class ErlEditorMessages extends NLS {
     public static String ErlEditorPreferencePage_printMarginColor;
     public static String ErlEditorPreferencePage_selectionForegroundColor;
     public static String ErlEditorPreferencePage_selectionBackgroundColor;
-    public static String ErlEditorPreferencePage_displayedTabWidth;
+    public static String ErlEditorPreferencePage_indentationWidth;
     public static String ErlEditorPreferencePage_printMarginColumn;
     public static String ErlEditorPreferencePage_showOverviewRuler;
     public static String ErlEditorPreferencePage_showLineNumbers;

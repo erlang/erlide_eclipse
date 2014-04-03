@@ -30,6 +30,7 @@ import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.jdt.annotation.NonNull;
+import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
@@ -76,7 +77,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void dispose() {
+    public synchronized void dispose() {
         if (disposed) {
             return;
         }
@@ -89,6 +90,7 @@ public abstract class Backend implements IStreamListener, IBackend {
             shellManager = null;
         }
         runtime.dispose();
+        BackendCore.getBackendManager().removeBackend(this);
     }
 
     @Override
@@ -98,9 +100,10 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     protected boolean startErlideApps(final OtpErlangPid jRex, final boolean watch) {
         try {
-            getRpcSite().call("erlide_common_app", "init", "poii", jRex, watch,
+            getRpcSite().call("erlide_common_app", "init", "poiii", jRex, watch,
                     SystemConfiguration.getInstance().getWarnProcessSizeLimitMB(),
-                    SystemConfiguration.getInstance().getKillProcessSizeLimitMB());
+                    SystemConfiguration.getInstance().getKillProcessSizeLimitMB(),
+                    SystemConfiguration.getInstance().getMaxParallelBuilds());
             // TODO should use extension point!
             switch (data.getContext()) {
             case IDE:
@@ -214,8 +217,8 @@ public abstract class Backend implements IStreamListener, IBackend {
             return;
         }
         final IProject project = eproject.getWorkspaceProject();
-        final String outDir = project.getLocation().append(eproject.getOutputLocation())
-                .toOSString();
+        final String outDir = project.getLocation()
+                .append(eproject.getProperties().getOutputDir()).toOSString();
         if (outDir.length() > 0) {
             final boolean accessible = RuntimeUtils.isAccessibleDir(getRpcSite(), outDir);
             if (accessible) {
@@ -235,14 +238,14 @@ public abstract class Backend implements IStreamListener, IBackend {
         try {
             final IProject project = eproject.getWorkspaceProject();
             final String outDir = project.getLocation()
-                    .append(eproject.getOutputLocation()).toOSString();
+                    .append(eproject.getProperties().getOutputDir()).toOSString();
             if (outDir.length() > 0) {
                 removePath(outDir);
                 // TODO unloadBeamsFromDir(outDir); ?
             }
         } catch (final Exception e) {
-            // can happen when shutting down
-            ErlLogger.warn(e);
+            // can happen when shutting down, ignore
+            // ErlLogger.warn(e);
         }
     }
 
@@ -354,6 +357,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void onShutdown() {
+        dispose();
     }
 
     private void loadBeamsFromDir(final String outDir) {

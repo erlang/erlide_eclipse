@@ -340,7 +340,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
             styles = new String[] {
                     "direction:rtl;", "overflow:hidden;", "word-wrap:break-word;" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else if (!resizable) {
-            // XXX: In IE, "word-wrap: break-word;" causes bogus wrapping even
+            // In IE, "word-wrap: break-word;" causes bogus wrapping even
             // in non-broken words :-(see e.g. Javadoc of String).
             // Re-check whether we really still need this now that the Javadoc
             // Hover header already sets this style.
@@ -354,7 +354,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
         content = buffer.toString();
 
         /*
-         * XXX: Should add some JavaScript here that shows something like
+         * Should add some JavaScript here that shows something like
          * "(continued...)" or "..." at the end of the visible area when the
          * page overflowed with "overflow:hidden;".
          */
@@ -485,7 +485,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
         final Rectangle trim = computeTrim();
         int height = trim.height;
 
-        // FIXME: The HTML2TextReader does not render <p> like a browser.
+        // The HTML2TextReader does not render <p> like a browser.
         // Instead of inserting an empty line, it just adds a single line break.
         // Furthermore, the indentation of <dl><dd> elements is too small (e.g
         // with a long @see line)

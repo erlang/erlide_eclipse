@@ -18,7 +18,7 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OpenService;
-import org.erlide.test.support.ErlideTestUtils;
+import org.erlide.engine.util.ErlideTestUtils;
 import org.erlide.util.FilePathUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -198,7 +198,8 @@ public class ErlProjectTest {
                             49,
                             ErlangEngine.getInstance().getModelUtilService()
                                     .getImportsAsList(moduleE),
-                            project.getExternalModulesString(), model.getPathVars());
+                            project.getProperties().getExternalModules(),
+                            model.getPathVars());
             final IErlFunction function = ErlangEngine
                     .getInstance()
                     .getModelFindService()

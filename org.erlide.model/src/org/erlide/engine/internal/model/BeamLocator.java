@@ -29,7 +29,8 @@ public class BeamLocator implements IBeamLocator {
             ErlLogger.warn("Project " + project + " is not in erlang model...");
             return null;
         }
-        final IFolder r = project.getFolder(erlProject.getOutputLocation());
+        final IFolder r = project.getFolder(erlProject.getProperties()
+                .getOutputDir());
         try {
             r.refreshLocal(IResource.DEPTH_ONE, null);
         } catch (final CoreException e) {

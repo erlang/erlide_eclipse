@@ -29,9 +29,8 @@ public class StringMatcher {
 
     protected boolean fHasTrailingStar;
 
-    protected String fSegments[]; // the given pattern is split into separated
-
-    // segments
+    protected String[] fSegments;
+    // the given pattern is split into separated segments
 
     /* boundary value beyond which we don't need to search in the text */
     protected int fBound = 0;

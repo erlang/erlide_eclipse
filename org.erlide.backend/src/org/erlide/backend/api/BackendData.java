@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.erlide.backend.api;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -82,8 +83,7 @@ public final class BackendData extends RuntimeData {
 
             projects = getProjects(config);
             final List<String> intMods = config.getAttribute(
-                    ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES,
-                    initialInterpretedModules);
+                    ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, Lists.newArrayList());
             initialInterpretedModules = addBreakpointProjectsAndModules(getProjects(),
                     intMods);
         } catch (final CoreException e1) {
@@ -126,10 +126,10 @@ public final class BackendData extends RuntimeData {
         return myProjects;
     }
 
-    public static List<String> addBreakpointProjectsAndModules(
+    public static Set<String> addBreakpointProjectsAndModules(
             final Collection<IProject> projects, final List<String> interpretedModules) {
         final IBreakpointManager bpm = DebugPlugin.getDefault().getBreakpointManager();
-        final List<String> result = new ArrayList<String>(interpretedModules);
+        final Set<String> result = new HashSet<String>(interpretedModules);
         for (final IBreakpoint bp : bpm
                 .getBreakpoints(ErlDebugConstants.ID_ERLANG_DEBUG_MODEL)) {
             final IMarker m = bp.getMarker();
@@ -139,9 +139,7 @@ public final class BackendData extends RuntimeData {
                 final IProject p = r.getProject();
                 if (projects == null || projects.contains(p)) {
                     final String s = p.getName() + ":" + name;
-                    if (!result.contains(s)) {
-                        result.add(s);
-                    }
+                    result.add(s);
                 }
             }
         }

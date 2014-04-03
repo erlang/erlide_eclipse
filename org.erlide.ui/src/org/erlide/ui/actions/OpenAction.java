@@ -96,7 +96,8 @@ public class OpenAction extends SelectionDispatchAction {
                 continue;
             }
             if (element instanceof IStorage) {
-                continue;// FIXME We don't handle IStorage, do we?
+                // We don't handle IStorage, do we?
+                continue;
             }
             if (element instanceof IErlModule) {
                 continue;
@@ -131,7 +132,8 @@ public class OpenAction extends SelectionDispatchAction {
                                 offset,
                                 ErlangEngine.getInstance().getModelUtilService()
                                         .getImportsAsList(module),
-                                project.getExternalModulesString(), model.getPathVars());
+                                project.getProperties().getExternalModules(),
+                                model.getPathVars());
                 ErlLogger.debug("open " + openResult);
                 element = editor.getElementAt(offset, true);
             } else if (activeEditor instanceof ITextEditor) {

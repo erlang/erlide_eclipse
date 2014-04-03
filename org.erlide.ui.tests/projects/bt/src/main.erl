@@ -2,16 +2,14 @@
 
 -module(main).
 
--export([foo/0]).
+-export([foo/0, bar/0]).
 
 %% Здравствуйте
 %% 汉语/漢語 中文 ff
 foo() ->
 	io:format("kakak~n"),
-	oki, "ok",
-	ok, 
-	fun() -> ok end,
-	ok.
+	F = fun() -> ok end,
+	F.
 
 bar() ->
 	fo,

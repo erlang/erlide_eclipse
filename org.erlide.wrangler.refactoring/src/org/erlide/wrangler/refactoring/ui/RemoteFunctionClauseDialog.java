@@ -101,10 +101,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 
             for (final IErlModule m : erlmodules) {
                 // must refresh the scanner!
-                if (/* !m.isStructureKnown() */true) {
-                    // FIXME: not permitted operation
-                    m.open(null);
-                }
+                m.open(null);
 
                 final TreeItem moduleName = new TreeItem(functionClausesTree, 0);
                 moduleName.setText(m.getModuleName());

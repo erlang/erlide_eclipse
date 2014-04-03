@@ -56,7 +56,8 @@ public class SearchCoreUtil {
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
         if (erlProject != null) {
-            final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
+            final Collection<IPath> sourcePaths = erlProject.getProperties()
+                    .getSourceDirs();
             for (final IPath path : sourcePaths) {
                 final IFolder folder = project.getFolder(path);
                 SearchCoreUtil.addFolderToScope(folder, result);

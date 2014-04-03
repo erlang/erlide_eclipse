@@ -3,6 +3,7 @@ package org.erlide.engine.internal;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.InjectionException;
@@ -10,11 +11,13 @@ import org.erlide.engine.internal.model.BeamLocator;
 import org.erlide.engine.internal.model.ErlModel;
 import org.erlide.engine.internal.model.erlang.ModelFindUtil;
 import org.erlide.engine.internal.model.erlang.ModelInternalUtils;
+import org.erlide.engine.internal.model.root.ProjectConfiguratorFactory;
 import org.erlide.engine.internal.services.cleanup.ErlTidyCleanupProvider;
 import org.erlide.engine.internal.services.codeassist.ErlideContextAssist;
 import org.erlide.engine.internal.services.edoc.ErlideEdocExport;
 import org.erlide.engine.internal.services.importer.ErlideImport;
 import org.erlide.engine.internal.services.parsing.ErlParser;
+import org.erlide.engine.internal.services.parsing.ErlideParser;
 import org.erlide.engine.internal.services.parsing.ErlideScanner;
 import org.erlide.engine.internal.services.parsing.ScannerProvider;
 import org.erlide.engine.internal.services.proclist.ErlideProclist;
@@ -24,9 +27,9 @@ import org.erlide.engine.internal.services.search.ErlideOpen;
 import org.erlide.engine.internal.services.search.ErlideSearchServer;
 import org.erlide.engine.internal.services.search.ModelSearcher;
 import org.erlide.engine.internal.services.text.ErlideIndent;
-import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IBeamLocator;
 import org.erlide.engine.model.IErlModel;
+import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.services.ErlangService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
 import org.erlide.engine.services.codeassist.ContextAssistService;
@@ -34,6 +37,7 @@ import org.erlide.engine.services.edoc.EdocExportService;
 import org.erlide.engine.services.importer.ImportService;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.ScannerProviderService;
+import org.erlide.engine.services.parsing.SimpleParserService;
 import org.erlide.engine.services.parsing.SimpleScannerService;
 import org.erlide.engine.services.proclist.ProclistService;
 import org.erlide.engine.services.search.ModelFindService;
@@ -57,6 +61,7 @@ public class DefaultErlangEngine implements IErlangEngine {
     private final Map<Class<? extends ErlangService>, Class<? extends ErlangService>> implementations = Maps
             .newHashMap();
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends ErlangService> T getService(final Class<T> type) {
         try {
@@ -131,7 +136,7 @@ public class DefaultErlangEngine implements IErlangEngine {
         if (!erlangModel.isOpen()) {
             try {
                 erlangModel.open(null);
-            } catch (final ErlModelException e) {
+            } catch (final CoreException e) {
                 ErlLogger.error(e);
             }
         }
@@ -213,8 +218,18 @@ public class DefaultErlangEngine implements IErlangEngine {
     }
 
     @Override
+    public SimpleParserService getSimpleParserService() {
+        return new ErlideParser(backend);
+    }
+
+    @Override
     public ModelSearcherService getModelSearcherService() {
         return new ModelSearcher();
+    }
+
+    @Override
+    public IProjectConfiguratorFactory getProjectConfiguratorFactory() {
+        return ProjectConfiguratorFactory.getDefault();
     }
 
 }

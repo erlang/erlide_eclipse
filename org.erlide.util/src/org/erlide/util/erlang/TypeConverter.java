@@ -42,7 +42,7 @@ import com.google.common.collect.Maps;
 /**
  * Helps converting Java values to Erlang terms, and back. The type information
  * is provided through a string signature, as below.
- * 
+ *
  * <dl>
  * <dt>x</dt>
  * <dd>Uses simple conversion, complex types are expected to be OtpErlangObjecs
@@ -73,7 +73,7 @@ import com.google.common.collect.Maps;
  * <dd>tuple, the number is the arity and the types of the elements follow in
  * order. Only arities between 0 and 9 are supported.</dd>
  * </dl>
- * 
+ *
  */
 public final class TypeConverter {
 
@@ -321,7 +321,7 @@ public final class TypeConverter {
 
     /**
      * Converts Java objects to Erlang terms.<br/>
-     * 
+     *
      * @param obj
      *            the object to be converted
      * @param type
@@ -369,16 +369,6 @@ public final class TypeConverter {
             }
             failConversion(obj, type);
         }
-
-        if (obj instanceof OtpErlangPid) {
-            return (OtpErlangPid) obj;
-        }
-        if (obj instanceof OtpErlangRef) {
-            return (OtpErlangObject) obj;
-        }
-        if (obj instanceof OtpErlangBinary) {
-            return (OtpErlangObject) obj;
-        }
         if (obj instanceof Map<?, ?>) {
             if (type.kind == 'm') {
                 @SuppressWarnings("unchecked")
@@ -393,6 +383,16 @@ public final class TypeConverter {
                 return new OtpErlangMap(keys, values);
             }
             failConversion(obj, type);
+        }
+
+        if (obj instanceof OtpErlangPid) {
+            return (OtpErlangPid) obj;
+        }
+        if (obj instanceof OtpErlangRef) {
+            return (OtpErlangObject) obj;
+        }
+        if (obj instanceof OtpErlangBinary) {
+            return (OtpErlangObject) obj;
         }
         if (obj instanceof OtpErlangObject) {
             checkConversion(obj);
@@ -424,6 +424,13 @@ public final class TypeConverter {
             } else {
                 failConversion(obj, type);
             }
+        }
+
+        if (type.kind == 's' && obj != null) {
+            return new OtpErlangString(obj.toString());
+        }
+        if (type.kind == 'b' && obj != null) {
+            return new OtpErlangBinary(obj.toString().getBytes());
         }
         failConversion(obj, type);
         return null;
@@ -509,7 +516,7 @@ public final class TypeConverter {
 
     /**
      * Old style java->erlang conversion, used when "x" is given as an argument.
-     * 
+     *
      * @param obj
      * @return
      */

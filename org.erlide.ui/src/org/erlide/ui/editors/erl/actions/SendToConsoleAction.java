@@ -23,6 +23,7 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.shell.BackendShellEvent;
 import org.erlide.runtime.shell.BackendShellListener;
 import org.erlide.runtime.shell.IBackendShell;
+import org.erlide.ui.actions.ErlangAbstractHandler;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.console.IErlangConsole;
@@ -44,7 +45,6 @@ public class SendToConsoleAction extends SelectionDispatchAction {
             counter = 0;
         }
 
-        // TODO maybe it should check for specific kinds instead
         @Override
         public void changed(final BackendShellEvent event) {
             if (shell == null) {
@@ -154,7 +154,7 @@ public class SendToConsoleAction extends SelectionDispatchAction {
         final IDocument document = editor.getDocumentProvider().getDocument(
                 editor.getEditorInput());
         if (selection.getLength() == 0) { // don't use isEmpty()!
-            selection = ErlangTextEditorAction.extendSelectionToWholeLines(document,
+            selection = ErlangAbstractHandler.extendSelectionToWholeLines(document,
                     selection);
         }
         if (beginningOfNextLine) {

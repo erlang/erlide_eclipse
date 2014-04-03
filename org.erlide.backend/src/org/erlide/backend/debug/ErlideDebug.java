@@ -65,7 +65,7 @@ public class ErlideDebug {
      * Sent upon attach of process (should we move this to erlang, erlide_debug?
      * maybe we should have an erlang process subscribing, and even filtering
      * events to us)
-     * 
+     *
      * @param backend
      *            backend
      * @param pid
@@ -119,10 +119,11 @@ public class ErlideDebug {
 
     @SuppressWarnings("boxing")
     public static boolean interpret(final IRpcSite backend, final String moduleName,
-            final boolean distributed, final boolean interpret) {
+            final OtpErlangList options, final boolean distributed,
+            final boolean interpret) {
         try {
-            final OtpErlangObject res = backend.call(ERLIDE_DEBUG, "interpret", "aoo",
-                    moduleName, distributed, interpret);
+            final OtpErlangObject res = backend.call(ERLIDE_DEBUG, "interpret", "alxoo",
+                    moduleName, options, distributed, interpret);
             if (res instanceof OtpErlangTuple) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangObject o = t.elementAt(0);

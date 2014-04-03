@@ -159,18 +159,19 @@ public final class BackendManager implements IBackendManager {
 
     @Override
     public IBackend getIdeBackend() {
-        // System.out.println("GET ide" + Thread.currentThread());
-        if (ideBackend == null) {
+        IBackend result = ideBackend;
+        if (result == null) {
             synchronized (ideBackendLock) {
-                if (ideBackend == null) {
-                    ideBackend = factory.createIdeBackend();
-                    addBackend(ideBackend);
-                    notifyBackendChange(ideBackend, BackendEvent.ADDED, null, null);
+                result = ideBackend;
+                if (result == null) {
+                    result = factory.createIdeBackend();
+                    addBackend(result);
+                    notifyBackendChange(result, BackendEvent.ADDED, null, null);
+                    ideBackend = result;
                 }
             }
         }
-        // System.out.println(">>> " + ideBackend);
-        return ideBackend;
+        return result;
     }
 
     void notifyBackendChange(final IBackend b, final BackendEvent type,
@@ -401,16 +402,20 @@ public final class BackendManager implements IBackendManager {
 
     @Override
     public void dispose() {
-        for (final IBackend b : buildBackends.values()) {
-            b.dispose();
+        synchronized (this) {
+            final Collection<IBackend> bb = Lists.newArrayList(buildBackends.values());
+            buildBackends.clear();
+            for (final IBackend b : bb) {
+                b.dispose();
+            }
+            if (ideBackend != null) {
+                ideBackend.dispose();
+            }
+            final ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager()
+                    .getLaunches();
+            launchListener.launchesTerminated(launches);
+            launchListener.dispose();
         }
-        if (ideBackend != null) {
-            ideBackend.dispose();
-        }
-        final ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager()
-                .getLaunches();
-        launchListener.launchesTerminated(launches);
-        launchListener.dispose();
     }
 
     @Override
@@ -449,6 +454,16 @@ public final class BackendManager implements IBackendManager {
                 }
             }
             return null;
+        }
+    }
+
+    @Override
+    public synchronized void removeBackend(final IBackend backend) {
+        allBackends.remove(backend);
+        if (buildBackends.values().contains(backend)) {
+            final String version = backend.getRuntimeInfo().getVersion().asMajor()
+                    .toString();
+            buildBackends.remove(version);
         }
     }
 

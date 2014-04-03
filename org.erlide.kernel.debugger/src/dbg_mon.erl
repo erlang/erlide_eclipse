@@ -18,7 +18,7 @@
 -include("erlide.hrl").
 
 %% External exports
--export([start/2, stop/0, interpret/3, line_breakpoint/3]).
+-export([start/2, stop/0, interpret/4, line_breakpoint/3]).
 -export([resume/1, suspend/1, bindings/1, all_stack_frames/1, step_over/1]).
 -export([step_into/1, step_return/1, eval/2, set_variable_value/4]).
 -export([tracing/2, drop_to_frame/2, all_modules_on_stack/1]).
@@ -27,7 +27,7 @@
 
 -record(pinfo, {pid,       % pid()
                 status     % break | exit | idle | running | waiting
-                }).
+               }).
 
 %% Internal exports
 -export([send_attached_to_java/2]).
@@ -148,10 +148,10 @@ loop(State) ->
             end,
             loop(State#state{parent=P});
 
-%%         dumpState ->
-%%             io:format("dbg_mon state:: ~p~n", [State]),
-%%             msg(State#state.parent, {dumpState, State, int:snapshot()}),
-%%             loop(State);
+        %%         dumpState ->
+        %%             io:format("dbg_mon state:: ~p~n", [State]),
+        %%             msg(State#state.parent, {dumpState, State, int:snapshot()}),
+        %%             loop(State);
 
         {cmd, Cmd, From} = _Msg ->
             %% 	    io:format("@ dbg_mon cmd: ~p~n", [_Msg]),
@@ -196,30 +196,30 @@ gui_cmd(refresh, State) ->
     int:clear(),
     State2 = State#state{pinfos=[]},
     lists:foldl(fun(PidTuple, S) ->
-      int_cmd({new_process,PidTuple}, S)
-    end,
-    State2,
-    int:snapshot());
+                        int_cmd({new_process,PidTuple}, S)
+                end,
+                State2,
+                int:snapshot());
 
 gui_cmd({attach, Jproc, Dproc}, State) ->
-  int:attach(Dproc, {dbg, start, [Jproc, Dproc]}),
-  State;
+    int:attach(Dproc, {dbg, start, [Jproc, Dproc]}),
+    State;
 
 gui_cmd(kill_all_processes, State) ->
     lists:foreach(fun(PInfo) ->
-        case PInfo#pinfo.status of
-            exit -> ignore;
-            _Status -> exit(PInfo#pinfo.pid, kill)
-        end
-      end,
-      State#state.pinfos),
+                          case PInfo#pinfo.status of
+                              exit -> ignore;
+                              _Status -> exit(PInfo#pinfo.pid, kill)
+                          end
+                  end,
+                  State#state.pinfos),
     State;
 
-gui_cmd({interpret, {Mod, local, true}}, State) ->
-  Res = int:i(Mod),
+gui_cmd({interpret, {Mod, Options, local, true}}, State) ->
+    Res = int:i(Mod, Options),
     {Res, State};
-gui_cmd({interpret, {Mod, distributed, true}}, State) ->
-  Res = int:ni(Mod),
+gui_cmd({interpret, {Mod, Options, distributed, true}}, State) ->
+    Res = int:ni(Mod, Options),
     {Res, State};
 gui_cmd({interpret, {Mod, local, false}}, State) ->
     Res = int:n(Mod),
@@ -232,16 +232,16 @@ gui_cmd(delete_all, State) ->
     {ok, State};
 gui_cmd({module, Mod, What}, State) ->
     case What of
-  delete -> int:nn(Mod)
+        delete -> int:nn(Mod)
     end,
     State;
 
 gui_cmd(enable_all_breaks, State) ->
     Breaks = int:all_breaks(),
     lists:foreach(fun ({{Mod, Line}, _Options}) ->
-        int:enable_break(Mod, Line)
-      end,
-      Breaks),
+                           int:enable_break(Mod, Line)
+                  end,
+                  Breaks),
     State;
 gui_cmd(disable_all_breaks, State) ->
     Breaks = int:all_breaks(),
@@ -255,7 +255,7 @@ gui_cmd(delete_all_breaks, State) ->
     int:no_break(),
     State;
 gui_cmd({break, {Mod, Line, What}}, State) ->
-%%     io:format("break Mod Line What ~p\n", [{Mod, Line, What}]),
+    %%     io:format("break Mod Line What ~p\n", [{Mod, Line, What}]),
     Res = case What of
               add -> int:break(Mod, Line);
               delete -> int:delete_break(Mod, Line);
@@ -319,21 +319,21 @@ gui_cmd({auto_attach, Flags}, State) ->
     int:auto_attach(Flags, {'_', '_', []}),
     State;
 gui_cmd({stack_trace, [_Name]}, State) ->
-%    int:stack_trace(map(Name)),
+    %    int:stack_trace(map(Name)),
     State;
 gui_cmd(backtrace_size, State) ->
     State;
 
 gui_cmd({focus, Pid, _Win}, State) ->
     {value, PInfo} =
-  lists:keysearch(Pid, #pinfo.pid, State#state.pinfos),
+        lists:keysearch(Pid, #pinfo.pid, State#state.pinfos),
     State#state{focus=PInfo};
 gui_cmd(default, State) ->
-  State;
+    State;
 
 gui_cmd(_Cmd, State) ->
-  %% io:format("@ dbg_mon: unknown ~p~n",[_Cmd]),
-  State.
+    %% io:format("@ dbg_mon: unknown ~p~n",[_Cmd]),
+    State.
 
 %%--Commands from the interpreter-------------------------------------
 
@@ -363,10 +363,10 @@ int_cmd({new_status, Pid, Status, _Info}, State) ->
     State2 = State#state{pinfos=PInfos2},
 
     case State2#state.focus of
-  #pinfo{pid=Pid} ->
-      State2#state{focus=PInfo2};
-  _ ->
-      State2
+        #pinfo{pid=Pid} ->
+            State2#state{focus=PInfo2};
+        _ ->
+            State2
     end;
 
 int_cmd({new_break, _Break}, State) ->
@@ -386,14 +386,14 @@ int_cmd({stack_trace, _Flag}, State) ->
     State;
 
 int_cmd(_Other, State) ->
-  State.
+    State.
 
 
 %%====================================================================
 %% Debugger API
 %%====================================================================
-interpret(Module, Dist, Interpret) ->
-    cmd(interpret, {Module, Dist, Interpret}).
+interpret(Module, Options, Dist, Interpret) ->
+    cmd(interpret, {Module, Options, Dist, Interpret}).
 
 suspend(MetaPid) ->
     cmd(suspend, MetaPid).
@@ -537,25 +537,25 @@ registered_name(Pid) ->
 
     Node = node(Pid),
     if
-  Node==node() ->
-      case erlang:process_info(Pid, registered_name) of
-    {registered_name, Name} -> Name;
-    _ -> undefined
-      end;
-  true ->
-      case rpc:call(Node,erlang,process_info,
-        [Pid,registered_name]) of
-    {registered_name, Name} -> Name;
-    _ -> undefined
-      end
+        Node==node() ->
+            case erlang:process_info(Pid, registered_name) of
+                {registered_name, Name} -> Name;
+                _ -> undefined
+            end;
+        true ->
+            case rpc:call(Node,erlang,process_info,
+                          [Pid,registered_name]) of
+                {registered_name, Name} -> Name;
+                _ -> undefined
+            end
     end.
 
 trace_function(Jpid, State) ->
     {dbg, start, [Jpid, State#state.backtrace]}.
 
 msg(Pid, Msg) ->
-  %% Pid may be 'undefined'
-%% 	io:format("SEND:: ~p~n", [Msg]),
+    %% Pid may be 'undefined'
+    %% 	io:format("SEND:: ~p~n", [Msg]),
     _Res = (catch(Pid ! Msg)),
     ok.
 

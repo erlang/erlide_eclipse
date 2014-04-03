@@ -25,7 +25,7 @@ import org.erlide.engine.model.IErlModelChangeListener;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.test.support.ErlideTestUtils;
+import org.erlide.engine.util.ErlideTestUtils;
 import org.erlide.util.Util;
 import org.junit.After;
 import org.junit.Before;
@@ -243,7 +243,7 @@ public class IErlModelTest extends ErlModelTestBase {
         final IErlProject myProject = projects[0];
         final IProject workspaceProject = myProject.getWorkspaceProject();
         final IProject[] referencedProjects = workspaceProject.getReferencedProjects();
-        final Collection<IPath> includeDirs = myProject.getIncludeDirs();
+        final Collection<IPath> includeDirs = myProject.getProperties().getIncludeDirs();
         // given
         // a project with an external include and an internal include and a
         // referenced project with an include and an include in the same
@@ -347,7 +347,8 @@ public class IErlModelTest extends ErlModelTestBase {
         final IErlProject aProject = projects[0];
         final IProject workspaceProject = aProject.getWorkspaceProject();
         final IProject[] referencedProjects = workspaceProject.getReferencedProjects();
-        final String externalModulesString = aProject.getExternalModulesString();
+        final String externalModulesString = aProject.getProperties()
+                .getExternalModules();
         // given
         // a project with an external module and an internal module and a
         // referenced project with a module
@@ -445,7 +446,8 @@ public class IErlModelTest extends ErlModelTestBase {
         final IErlProject aProject = projects[0];
         final IProject workspaceProject = aProject.getWorkspaceProject();
         final IProject[] referencedProjects = workspaceProject.getReferencedProjects();
-        final String externalModulesString = aProject.getExternalModulesString();
+        final String externalModulesString = aProject.getProperties()
+                .getExternalModules();
         // given
         // a project with an external include and a
         // referenced project with an include, both have same name
@@ -516,7 +518,7 @@ public class IErlModelTest extends ErlModelTestBase {
         final IErlProject aProject = projects[0];
         final IProject workspaceProject = aProject.getWorkspaceProject();
         final IProject[] referencedProjects = workspaceProject.getReferencedProjects();
-        final Collection<IPath> includeDirs = aProject.getIncludeDirs();
+        final Collection<IPath> includeDirs = aProject.getProperties().getIncludeDirs();
         // given
         // a project with an external include and an internal include and a
         // referenced project with an include
@@ -612,7 +614,7 @@ public class IErlModelTest extends ErlModelTestBase {
         final IErlProject aProject = projects[0];
         final IProject workspaceProject = aProject.getWorkspaceProject();
         final IProject[] referencedProjects = workspaceProject.getReferencedProjects();
-        final Collection<IPath> includeDirs = aProject.getIncludeDirs();
+        final Collection<IPath> includeDirs = aProject.getProperties().getIncludeDirs();
         // given
         // a project with an external include and a
         // referenced project with an include, both have same name

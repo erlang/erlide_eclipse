@@ -24,7 +24,9 @@ import java.util.logging.Logger;
 
 public class ErlLogger {
 
+    private static final ErlSimpleFormatter erlSimpleFormatter = new ErlSimpleFormatter();
     private static final ErlLogger instance = new ErlLogger();
+
     private Logger logger;
     private String logDir;
     private ConsoleHandler consoleHandler = null;
@@ -39,12 +41,9 @@ public class ErlLogger {
     }
 
     public final void setLogDir(final String dir) {
-        logger.removeHandler(consoleHandler);
         logger.removeHandler(fileHandler);
         logDir = dir == null ? "./" : dir;
-        final ErlSimpleFormatter erlSimpleFormatter = new ErlSimpleFormatter();
         addFileHandler(erlSimpleFormatter);
-        addConsoleHandler(erlSimpleFormatter);
     }
 
     public String getLogLocation() {
@@ -58,6 +57,9 @@ public class ErlLogger {
                 + str;
         if (logger != null) {
             logger.log(kind, msg);
+            if (logger.getHandlers().length == 0) {
+                System.out.println(msg);
+            }
         }
     }
 
@@ -68,6 +70,9 @@ public class ErlLogger {
                 + str;
         if (logger != null) {
             logger.log(kind, msg, exception);
+            if (logger.getHandlers().length == 0) {
+                System.out.println(msg);
+            }
         }
     }
 
@@ -78,6 +83,9 @@ public class ErlLogger {
         final String msg = "(" + module + ":" + line + ") : " + str;
         if (logger != null) {
             logger.log(kind, msg);
+            if (logger.getHandlers().length == 0) {
+                System.out.println(msg);
+            }
         }
     }
 
@@ -121,20 +129,21 @@ public class ErlLogger {
         logger = Logger.getLogger("org.erlide");
         logger.setUseParentHandlers(false);
         logger.setLevel(java.util.logging.Level.FINEST);
+        addConsoleHandler(erlSimpleFormatter);
     }
 
-    private void addConsoleHandler(final ErlSimpleFormatter erlSimpleFormatter) {
+    private void addConsoleHandler(final ErlSimpleFormatter formatter) {
         consoleHandler = new ConsoleHandler();
-        consoleHandler.setFormatter(erlSimpleFormatter);
+        consoleHandler.setFormatter(formatter);
         final Level lvl = java.util.logging.Level.FINEST;
         consoleHandler.setLevel(lvl);
         logger.addHandler(consoleHandler);
     }
 
-    private void addFileHandler(final ErlSimpleFormatter erlSimpleFormatter) {
+    private void addFileHandler(final ErlSimpleFormatter formatter) {
         try {
             fileHandler = new FileHandler(getLogLocation());
-            fileHandler.setFormatter(erlSimpleFormatter);
+            fileHandler.setFormatter(formatter);
             fileHandler.setLevel(java.util.logging.Level.FINEST);
             logger.addHandler(fileHandler);
         } catch (final SecurityException e) {

@@ -42,7 +42,7 @@ public final class ErlUtils {
      * corresponding argument (from left to right). The text after the ~ is the
      * type signature of the argument, so that automatic conversion Java->Erlang
      * can be done. See TypeConverter.java2erlang for details.
-     * 
+     *
      * @see org.erlide.util.erlang.TypeConverter
      */
     public static OtpErlangObject format(final String fmt, final Object... args)
@@ -95,7 +95,7 @@ public final class ErlUtils {
      * The returned value is null if there was any mismatch, otherwise it is a
      * map of variable names to matched values. <br>
      * TODO should we throw an exception instead?
-     * 
+     *
      */
     public static Bindings match(final OtpErlangObject pattern,
             final OtpErlangObject term, final Bindings bindings) {
@@ -126,13 +126,13 @@ public final class ErlUtils {
             return null;
         }
 
-        if (pattern.equals(term)) {
-            return bindings;
-        } else if (pattern instanceof OtpErlangList) {
+        if (pattern instanceof OtpErlangList) {
             return matchList(pattern, term, bindings);
         } else if (pattern instanceof OtpErlangTuple) {
             return matchTuple(((OtpErlangTuple) pattern).elements(),
                     ((OtpErlangTuple) term).elements(), bindings);
+        } else if (pattern.equals(term)) {
+            return bindings;
         }
         return null;
     }
@@ -222,7 +222,7 @@ public final class ErlUtils {
     /**
      * This is useful if a value can be anything, but we need to see it as a
      * string (but without any quotes if it really is a string).
-     * 
+     *
      * @param target
      * @return
      */

@@ -134,7 +134,7 @@ public class CodeAssistPreferencePage extends PreferencePage implements
         final StatusInfo status = new StatusInfo();
         status.setOK();
         if (text.length() > 1) {
-            final String chars[] = text.split(",");
+            final String[] chars = text.split(",");
             for (final String c : chars) {
                 if (c.trim().length() != 1) {
                     status.setError("Trigger keys should be a list of comma-separated characters");

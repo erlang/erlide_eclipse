@@ -234,9 +234,4 @@ public class ErlideOpen implements OpenService {
         return null;
     }
 
-    @Override
-    public List<List<String>> getLibSrcInclude(final List<String> libList) {
-        return null;
-    }
-
 }

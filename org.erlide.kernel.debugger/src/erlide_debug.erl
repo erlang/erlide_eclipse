@@ -34,7 +34,7 @@
          step_over/1,
          step_into/1,
          step_return/1,
-         interpret/3,
+         interpret/4,
          all_stack_frames/1,
          all_modules_on_stack/1,
          tracing/2,
@@ -130,8 +130,8 @@ is_erlide_process(Pid) -> % when is_pid(Pid)->
 get_dist(true) -> distributed;
 get_dist(false) -> local.
 
-interpret(Module, Dist, Interpret) ->
-    dbg_mon:interpret(Module, get_dist(Dist), Interpret).
+interpret(Module, Options, Dist, Interpret) ->
+    dbg_mon:interpret(Module, Options, get_dist(Dist), Interpret).
 
 line_breakpoint(File, Line, Action) ->
     ModuleName = filename:rootname(filename:basename(File)),

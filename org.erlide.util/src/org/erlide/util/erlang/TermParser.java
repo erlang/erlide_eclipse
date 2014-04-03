@@ -9,6 +9,9 @@
  *******************************************************************************/
 package org.erlide.util.erlang;
 
+import java.io.IOException;
+import java.io.StreamTokenizer;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -25,6 +28,7 @@ import com.ericsson.otp.erlang.OtpErlangMap;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -38,7 +42,7 @@ public class TermParser {
     private final LoadingCache<String, OtpErlangObject> cache;
 
     private TermParser() {
-        cache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.HOURS)
+        cache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.HOURS)
                 .maximumSize(250).build(new CacheLoader<String, OtpErlangObject>() {
                     @Override
                     public OtpErlangObject load(final String key)
@@ -49,6 +53,9 @@ public class TermParser {
     }
 
     public OtpErlangObject parse(final String s) throws TermParserException {
+        if (Strings.isNullOrEmpty(s)) {
+            return null;
+        }
         try {
             return cache.get(s);
         } catch (final ExecutionException e) {
@@ -256,17 +263,20 @@ public class TermParser {
             }
             result.text = s.substring(result.start, result.end);
             final char ch = result.text.charAt(0);
-            if (ch == '~') {
+            if (result.kind == TokenKind.STRING) {
+                result.text = unescape(result.text);
+            } else if (result.kind == TokenKind.PLACEHOLDER) {
                 result.text = result.text.substring(1);
-            } else if (ch == '"' || ch == '\'') {
+            } else if (result.kind == TokenKind.ATOM && ch == '\'') {
                 result.text = result.text.substring(1, result.text.length() - 1);
             }
+
             return result;
         }
 
         private static void scanPlaceholder(final String s, final Token result) {
-            char c;
             result.kind = TokenKind.PLACEHOLDER;
+            char c;
             c = s.charAt(++result.end);
             while (result.end <= s.length()
                     && (c >= 'a' && c <= 'z' || c >= '0' && c <= '9')) {
@@ -300,8 +310,10 @@ public class TermParser {
             char c;
             result.kind = TokenKind.STRING;
             c = s.charAt(++result.end);
-            // TODO add escape!
             while (result.end < s.length() && c != '"') {
+                if (c == '\\') {
+                    c = s.charAt(result.end++);
+                }
                 c = s.charAt(result.end++);
             }
         }
@@ -310,8 +322,10 @@ public class TermParser {
             char c;
             result.kind = TokenKind.ATOM;
             c = s.charAt(++result.end);
-            // TODO add escape!
             while (result.end < s.length() && c != '\'') {
+                if (c == '\\') {
+                    c = s.charAt(result.end++);
+                }
                 c = s.charAt(result.end++);
             }
         }
@@ -336,6 +350,22 @@ public class TermParser {
             result.add(t);
             ss = ss.substring(t.end);
             t = Token.nextToken(ss);
+        }
+        return result;
+    }
+
+    private static String unescape(final String message) {
+        final StreamTokenizer parser = new StreamTokenizer(new StringReader(message));
+        String result;
+        try {
+            parser.nextToken();
+            if (parser.ttype == '"') {
+                result = parser.sval;
+            } else {
+                result = "ERROR!";
+            }
+        } catch (final IOException e) {
+            result = e.toString();
         }
         return result;
     }

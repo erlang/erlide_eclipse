@@ -134,9 +134,9 @@ public class ProcessStatus {
     String _format_3 = String.format("%,10d", Long.valueOf(this.total_heap_size));
     _builder.append(_format_3, " ");
     _builder.newLineIfNotEmpty();
-    _builder.append("   ");
+    _builder.append("     ");
     _builder.append("binary: ");
-    _builder.append(this.binary, "   ");
+    _builder.append(this.binary, "     ");
     _builder.newLineIfNotEmpty();
     _builder.append(" ");
     _builder.append("stacktrace: ");

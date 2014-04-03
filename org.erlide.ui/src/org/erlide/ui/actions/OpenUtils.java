@@ -117,7 +117,7 @@ public class OpenUtils {
                     .getInstance()
                     .getService(OpenService.class)
                     .getSourceFromModule(model.getPathVars(), moduleName,
-                            erlProject.getExternalModulesString());
+                            erlProject.getProperties().getExternalModules());
         }
         if (res2 instanceof OtpErlangString && moduleName != null) {
             // imported from otp module

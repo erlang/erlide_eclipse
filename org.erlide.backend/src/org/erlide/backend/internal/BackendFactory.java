@@ -40,8 +40,9 @@ public class BackendFactory implements IBackendFactory {
 
     @Override
     public IBackend createIdeBackend() {
-        ErlLogger.debug("Create ide backend");
-        final IBackend backend = createBackend(getIdeBackendData());
+        final BackendData data = getIdeBackendData();
+        ErlLogger.debug("Create ide backend " + data.getRuntimeInfo().getVersion());
+        final IBackend backend = createBackend(data);
         setWorkDirForCoreDumps(backend.getRpcSite());
         return backend;
     }
@@ -56,8 +57,8 @@ public class BackendFactory implements IBackendFactory {
             try {
                 backend.call("c", "cd", "s", dir);
             } catch (final RpcException e) {
-                ErlLogger
-                        .warn("Can't change erlang working dir, core dumps will not be available");
+                ErlLogger.warn("Can't change erlang working dir, "
+                        + "core dumps will not be available");
             }
         }
     }

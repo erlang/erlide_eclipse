@@ -134,7 +134,7 @@ public class EdocView extends AbstractInfoView {
             if (fControl instanceof StyledText) {
                 ((StyledText) fControl).selectAll();
             } else {
-                // FIXME: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
+                // https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
                 // ((Browser)fControl).selectAll();
                 if (fSelectionProvider != null) {
                     fSelectionProvider.fireSelectionChanged();
@@ -173,7 +173,7 @@ public class EdocView extends AbstractInfoView {
                     }
                 });
             } else {
-                // FIXME: https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
+                // https://bugs.eclipse.org/bugs/show_bug.cgi?id=63022
                 // ((Browser)fControl).addSelectionListener(new
                 // SelectionAdapter() {
                 // public void widgetSelected(SelectionEvent e) {

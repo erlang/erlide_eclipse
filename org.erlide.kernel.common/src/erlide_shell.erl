@@ -215,7 +215,7 @@ handle_io_request(Client, State, From, ReplyAs, IoRequest) ->
             handle_io_requests(Client, State, From, ReplyAs, IoReqests);
 
         getopts ->
-            io_reply(From, ReplyAs, [{encoding, 'latin-1'}]),
+            io_reply(From, ReplyAs, [{encoding, latin1}]),
             {ok, State};
 
         UnexpectedIORequest ->

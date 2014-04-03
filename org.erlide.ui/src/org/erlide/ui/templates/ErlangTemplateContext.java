@@ -9,7 +9,7 @@ import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.jface.text.templates.TemplateTranslator;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.ui.editors.erl.actions.IndentAction;
+import org.erlide.ui.actions.IndentHandler;
 import org.erlide.util.ErlLogger;
 
 public class ErlangTemplateContext extends DocumentTemplateContext {
@@ -55,7 +55,7 @@ public class ErlangTemplateContext extends DocumentTemplateContext {
         String pattern = template.getPattern();
         final String whiteSpacePrefix = indentFrom0 ? "" : getWhiteSpacePrefix();
         try {
-            pattern = IndentAction.indentLines(0, 0, pattern, true, whiteSpacePrefix);
+            pattern = IndentHandler.indentLines(0, 0, pattern, true, whiteSpacePrefix);
         } catch (final RpcException e) {
             ErlLogger.error(e);
         }

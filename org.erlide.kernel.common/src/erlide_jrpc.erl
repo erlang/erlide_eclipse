@@ -60,14 +60,14 @@ manager(State) ->
                              end
                      end,
             manager(State2);
-        {get, Service, From} ->
+        {get, Service, From, Ref} ->
             Value = case lists:keysearch(Service, 1, State) of
                         false ->
                             [];
                         {value, {Service, Pids}} ->
                             Pids
                     end,
-            From ! Value,
+            From ! {Ref, Value},
             manager(State);
         stop ->
             ok;
@@ -79,8 +79,9 @@ add_service(Service, Pid) when is_atom(Service), is_pid(Pid) ->
     ?MANAGER ! {add, Service, Pid}.
 
 get_service_listeners(Service) when is_atom(Service) ->
-    ?MANAGER ! {get, Service, self()},
-    receive X -> X end.
+    Ref = make_ref(),
+    ?MANAGER ! {get, Service, self(), Ref},
+    receive {Ref, X} -> X end.
 
 notify(Service, Message) when is_atom(Service) ->
     L = case get_service_listeners(Service) of
@@ -89,7 +90,7 @@ notify(Service, Message) when is_atom(Service) ->
             L0 ->
                 L0
         end,
-    [catch (Pid ! Message) || Pid <- L],
+    [Pid ! Message || Pid <- L],
     ok.
 
 keytake(Key, N, L) when is_integer(N), N > 0 ->

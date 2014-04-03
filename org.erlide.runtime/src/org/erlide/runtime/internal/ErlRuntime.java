@@ -197,7 +197,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     @Override
     public IRpcSite getRpcSite() {
         try {
-            awaitTerminated(1, TimeUnit.MILLISECONDS);
+            awaitTerminated(100, TimeUnit.MILLISECONDS);
             return null;
         } catch (final TimeoutException e) {
             awaitRunning();
@@ -343,7 +343,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
                         .error("code server did not start in time for %s", getNodeName());
                 return false;
             }
-            ErlLogger.info("code server started");
             return true;
         } catch (final Exception e) {
             ErlLogger.error("error starting code server for %s: %s", getNodeName(),
@@ -381,6 +380,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         @Override
         public void terminated(final State from) {
             ErlLogger.debug(String.format("Runtime %s terminated", getNodeName()));
+            dispose();
             reportDown();
         }
 
@@ -390,6 +390,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
             final int exitCode = getExitCode();
             ErlLogger.warn(String.format("Runtime %s crashed, exit code: %d.", nodeName,
                     exitCode));
+            dispose();
             reportDown();
             try {
                 reporter.createFileReport(nodeName, exitCode, getRuntimeData()

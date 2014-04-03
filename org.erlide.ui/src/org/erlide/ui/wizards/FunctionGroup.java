@@ -46,7 +46,7 @@ public class FunctionGroup implements SelectionListener {
     private TableItem fEditingItem;
     Text functionNameText;
     Text arityText;
-    private final TableColumn tableColumns[] = new TableColumn[2];
+    private final TableColumn[] tableColumns = new TableColumn[2];
     Button addFunctionBtn;
     // Button addStateBtn;
     Button removeFunctionBtn;
@@ -186,14 +186,6 @@ public class FunctionGroup implements SelectionListener {
 
     }
 
-    /**
-     * TODO Write description of addFunction in FunctionGroup.
-     * 
-     * @param name
-     * @param arity
-     * @param type
-     * @param exported
-     */
     void addFunction(final String name, final int arity, final int type,
             final boolean exported) {
         final TableItem item = fEditingItem != null ? fEditingItem : new TableItem(
@@ -208,12 +200,6 @@ public class FunctionGroup implements SelectionListener {
         }
     }
 
-    /**
-     * TODO Write description of getPostfix in FunctionGroup.
-     * 
-     * @param type
-     * @return
-     */
     private String getPostfix(final int type) {
         switch (type) {
         case FunctionGroup.FSM:
@@ -223,13 +209,9 @@ public class FunctionGroup implements SelectionListener {
         }
     }
 
-    /**
-     * TODO Write description of dialogChanged in FunctionGroup.
-     * 
-     */
     void dialogChanged() {
         if (functionNameText.getText().length() != 0) {
-            final TableItem allTableItems[] = fTable.getItems();
+            final TableItem[] allTableItems = fTable.getItems();
             for (final TableItem element : allTableItems) {
                 if (element.getText(0).equals(functionNameText.getText())
                         && element.getText(1).equals(arityText.getText())) {
@@ -274,7 +256,7 @@ public class FunctionGroup implements SelectionListener {
     public Function[] getFunctionData() {
         removeEdit();
 
-        final TableItem function[] = fTable.getItems();
+        final TableItem[] function = fTable.getItems();
         final ArrayList<Function> functionList = new ArrayList<Function>();
         for (final TableItem element : function) {
             if (!"".equals(element.getText(0))) {
@@ -309,7 +291,7 @@ public class FunctionGroup implements SelectionListener {
         ErlLogger.debug("widgetSelected: e.widget = " + e.widget);
 
         if (e.widget == removeFunctionBtn) {
-            final TableItem itemsToRemove[] = fTable.getSelection();
+            final TableItem[] itemsToRemove = fTable.getSelection();
             for (final TableItem element : itemsToRemove) {
                 fTable.remove(fTable.indexOf(element));
                 if (element == fEditingItem) {

@@ -7,10 +7,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.internal.util.ErlideUtil;
 import org.erlide.engine.model.IErlModelChangeListener;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
@@ -26,12 +24,11 @@ import com.google.common.collect.Sets;
 
 public class ErlModelCache implements IDisposable {
 
-    private static final int CACHE_SIZE = 100;
+    private static final int CACHE_SIZE = 200;
     private static final int CACHE_TIME_MINUTES = 15;
-    // TODO make a more educated guess here...
-    // private static final int NAME_CACHE_SIZE = 300;
 
-    private static final boolean disabled = ErlideUtil.isCacheDisabled();
+    private static final boolean disabled = Boolean.valueOf(System
+            .getProperty("erlide.noModelCache"));
     private static final ErlModelCache fgInstance = disabled ? new DisabledErlModelCache()
             : new ErlModelCache();
 
@@ -43,10 +40,6 @@ public class ErlModelCache implements IDisposable {
     private final ModelChangeListener modelChangeListener;
     private final Cache<IErlProject, List<IErlModule>> projectModuleCache;
     private final Cache<IErlProject, List<IErlModule>> projectIncludeCache;
-    private final Cache<IErlProject, String> projectExternalModulesStringCache;
-    private final Cache<IErlProject, String> projectExternalIncludesStringCache;
-    private final Cache<IErlProject, Collection<IPath>> projectSourceDirsCache;
-    private final Cache<IErlProject, Collection<IPath>> projectIncludeDirsCache;
 
     public static ErlModelCache getDefault() {
         return fgInstance;
@@ -81,10 +74,6 @@ public class ErlModelCache implements IDisposable {
         externalTreeCache = newCache();
         projectModuleCache = newCache();
         projectIncludeCache = newCache();
-        projectExternalModulesStringCache = newCache();
-        projectExternalIncludesStringCache = newCache();
-        projectSourceDirsCache = newCache();
-        projectIncludeDirsCache = newCache();
 
         modelChangeListener = new ModelChangeListener();
         ErlangEngine.getInstance().getModel()
@@ -261,68 +250,10 @@ public class ErlModelCache implements IDisposable {
         for (final String keyToRemove : keysToRemove) {
             externalTreeCache.invalidate(keyToRemove);
         }
-        projectExternalModulesStringCache.invalidate(project);
-        projectExternalIncludesStringCache.invalidate(project);
-        projectIncludeDirsCache.invalidate(project);
-        projectSourceDirsCache.invalidate(project);
     }
 
     public void pathVarsChanged() {
         // FIXME we need to clear some stuff here...
-    }
-
-    public String getExternalModulesString(final IErlProject project) {
-        return projectExternalModulesStringCache.getIfPresent(project);
-    }
-
-    public void putExternalModulesString(final IErlProject project,
-            final String externalModulesString) {
-        if (externalModulesString == null) {
-            projectExternalModulesStringCache.invalidate(project);
-        } else {
-            projectExternalModulesStringCache.put(project,
-                    externalModulesString);
-        }
-    }
-
-    public String getExternalIncludesString(final IErlProject project) {
-        return projectExternalIncludesStringCache.getIfPresent(project);
-    }
-
-    public void putExternalIncludesString(final IErlProject project,
-            final String externalModulesString) {
-        if (externalModulesString == null) {
-            projectExternalIncludesStringCache.invalidate(project);
-        } else {
-            projectExternalIncludesStringCache.put(project,
-                    externalModulesString);
-        }
-    }
-
-    public void putSourceDirs(final IErlProject project,
-            final Collection<IPath> dirs) {
-        if (dirs == null) {
-            projectSourceDirsCache.invalidate(project);
-        } else {
-            projectSourceDirsCache.put(project, dirs);
-        }
-    }
-
-    public Collection<IPath> getSourceDirs(final IErlProject project) {
-        return projectSourceDirsCache.getIfPresent(project);
-    }
-
-    public void putIncludeDirs(final IErlProject project,
-            final Collection<IPath> dirs) {
-        if (dirs == null) {
-            projectIncludeDirsCache.invalidate(project);
-        } else {
-            projectIncludeDirsCache.put(project, dirs);
-        }
-    }
-
-    public Collection<IPath> getIncludeDirs(final IErlProject project) {
-        return projectIncludeDirsCache.getIfPresent(project);
     }
 
     public void newProjectCreated() {
@@ -344,25 +275,11 @@ public class ErlModelCache implements IDisposable {
         // nameToModuleCache.clear();
         projectModuleCache.invalidateAll();
         projectIncludeCache.invalidateAll();
-        projectExternalModulesStringCache.invalidateAll();
-        projectExternalIncludesStringCache.invalidateAll();
-        projectSourceDirsCache.invalidateAll();
-        projectIncludeDirsCache.invalidateAll();
     }
 
     private static class DisabledErlModelCache extends ErlModelCache {
         @Override
         public void putEdited(final String path, final IErlModule module) {
-        }
-
-        @Override
-        public void putExternalIncludesString(final IErlProject project,
-                final String externalModulesString) {
-        }
-
-        @Override
-        public void putExternalModulesString(final IErlProject project,
-                final String externalModulesString) {
         }
 
         @Override
@@ -374,11 +291,6 @@ public class ErlModelCache implements IDisposable {
         @Override
         public void putIncludedFilesForModule(final IErlModule module,
                 final Collection<IErlModule> result) {
-        }
-
-        @Override
-        public void putIncludeDirs(final IErlProject project,
-                final Collection<IPath> dirs) {
         }
 
         @Override
@@ -399,9 +311,5 @@ public class ErlModelCache implements IDisposable {
                 final List<IErlModule> modules) {
         }
 
-        @Override
-        public void putSourceDirs(final IErlProject project,
-                final Collection<IPath> dirs) {
-        }
     }
 }

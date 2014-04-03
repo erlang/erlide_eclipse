@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009 * and others.
+ * Copyright (c) 2009-2013 Vlad Dumitrescu and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available
  * at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     *
+ *     Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.wizards;
 
@@ -63,7 +63,7 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
                 final List<String> files = new ArrayList<String>();
                 final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                         .findProject(project);
-                for (final IPath dir : erlProject.getSourceDirs()) {
+                for (final IPath dir : erlProject.getProperties().getSourceDirs()) {
                     final IFolder folder = project.getFolder(dir);
                     if (folder.isAccessible()) {
                         folder.accept(new IResourceVisitor() {

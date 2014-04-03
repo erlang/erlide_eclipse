@@ -32,7 +32,6 @@ public final class BackendManagerPopup implements IBackendListener {
 
     @Override
     public void runtimeAdded(final IBackend b) {
-        ErlLogger.debug("$$ added backend " + b.getName() + " " + b);
         DisplayUtils.asyncExec(new Runnable() {
 
             @Override

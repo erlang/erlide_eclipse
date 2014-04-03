@@ -5,7 +5,7 @@
 %% try all combinations of defines and check if navigation and autocompletion
 %% work as expected
 
-%% TODO expand this to separate tests, mossibly in different files
+%% TODO expand this to separate tests, possibly in different files
 %% we aim to automate these
    
 -define(mmm, navigation). 

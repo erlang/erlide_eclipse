@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.erlide.engine.model.root;
 
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
+
 /**
  * Constants used in project and plugin preferences
  * 
@@ -22,7 +24,7 @@ public final class ProjectPreferencesConstants {
     public static final String DEFAULT_SOURCE_DIRS = "src";
 
     public static final String TEST_DIRS = "test_dirs";
-    public static final String DEFAULT_TEST_DIRS = "";
+    public static final String DEFAULT_TEST_DIRS = "test";
 
     public static final String INCLUDE_DIRS = "include_dirs";
     public static final String DEFAULT_INCLUDE_DIRS = "include";
@@ -34,18 +36,14 @@ public final class ProjectPreferencesConstants {
     public static final String DEFAULT_EXTERNAL_INCLUDES = "";
 
     public static final String RUNTIME_VERSION = "backend_version";
-    public static final String DEFAULT_RUNTIME_VERSION = "R15B";
-
-    public static final String RUNTIME_NAME = "backend_name";
-    public static final String DEFAULT_RUNTIME_NAME = "R15B";
+    public static final RuntimeVersion DEFAULT_RUNTIME_VERSION = new RuntimeVersion(16);
+    public static final RuntimeVersion[] SUPPORTED_VERSIONS = { new RuntimeVersion(15),
+            new RuntimeVersion(16), new RuntimeVersion(17) };
+    public static final RuntimeVersion FALLBACK_RUNTIME_VERSION = SUPPORTED_VERSIONS[0];
 
     public static final String PROJECT_EXTERNAL_MODULES = "external_modules";
     public static final String DEFAULT_EXTERNAL_MODULES = "";
 
-    public static final String PROJECT_TYPE = "type";
-    public static final String DEFAULT_PROJECT_TYPE = "NORMAL";
-
-    public static final String NUKE_OUTPUT_ON_CLEAN = "nukeOutputOnClean";
     public static final String BUILDER = "builder";
     public static final String BUILDER_COMPILE_TARGET = "builderCompileTarget";
     public static final String BUILDER_CLEAN_TARGET = "builderCleanTarget";

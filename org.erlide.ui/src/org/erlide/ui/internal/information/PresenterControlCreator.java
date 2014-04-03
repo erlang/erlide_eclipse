@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009 * and others.
+ * Copyright (c) 2009-2013 Vlad Dumitrescu and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available
  * at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     *
+ *     Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.internal.information;
 
@@ -225,55 +225,56 @@ public final class PresenterControlCreator extends
             final PresenterControlCreator.ShowInEdocViewAction showInEdocViewAction = new PresenterControlCreator.ShowInEdocViewAction(
                     control);
             tbm.add(showInEdocViewAction);
-            final OpenDeclarationAction openDeclarationAction = new OpenDeclarationAction(
-                    control, editor);
-            tbm.add(openDeclarationAction);
+            if (editor != null) {
+                final OpenDeclarationAction openDeclarationAction = new OpenDeclarationAction(
+                        control, editor);
+                tbm.add(openDeclarationAction);
 
-            final SimpleSelectionProvider selectionProvider = new SimpleSelectionProvider();
-            final OpenEdocInExternalBrowserAction openEdocInExternalBrowserAction = new OpenEdocInExternalBrowserAction(
-                    editor.getSite(), null);
-            openEdocInExternalBrowserAction
-                    .setSpecialSelectionProvider(selectionProvider);
-            selectionProvider
-                    .addSelectionChangedListener(openEdocInExternalBrowserAction);
-            final ImageDescriptor descriptor = ErlideImage.OBJS_EXTERNALBROWSER
-                    .getDescriptor();
-            openEdocInExternalBrowserAction.setImageDescriptor(descriptor);
-            openEdocInExternalBrowserAction.setDisabledImageDescriptor(descriptor);
-            selectionProvider.setSelection(new StructuredSelection());
-            tbm.add(openEdocInExternalBrowserAction);
+                final SimpleSelectionProvider selectionProvider = new SimpleSelectionProvider();
+                final OpenEdocInExternalBrowserAction openEdocInExternalBrowserAction = new OpenEdocInExternalBrowserAction(
+                        editor.getSite(), null);
+                openEdocInExternalBrowserAction
+                        .setSpecialSelectionProvider(selectionProvider);
+                selectionProvider
+                        .addSelectionChangedListener(openEdocInExternalBrowserAction);
+                final ImageDescriptor descriptor = ErlideImage.OBJS_EXTERNALBROWSER
+                        .getDescriptor();
+                openEdocInExternalBrowserAction.setImageDescriptor(descriptor);
+                openEdocInExternalBrowserAction.setDisabledImageDescriptor(descriptor);
+                selectionProvider.setSelection(new StructuredSelection());
+                tbm.add(openEdocInExternalBrowserAction);
 
-            // OpenExternalBrowserAction openExternalJavadocAction = new
-            // OpenExternalBrowserAction(
-            // parent.getDisplay(), selectionProvider);
-            // selectionProvider
-            // .addSelectionChangedListener(openExternalJavadocAction);
-            // selectionProvider.setSelection(new
-            // StructuredSelection());
-            // tbm.add(openExternalJavadocAction);
+                // OpenExternalBrowserAction openExternalJavadocAction = new
+                // OpenExternalBrowserAction(
+                // parent.getDisplay(), selectionProvider);
+                // selectionProvider
+                // .addSelectionChangedListener(openExternalJavadocAction);
+                // selectionProvider.setSelection(new
+                // StructuredSelection());
+                // tbm.add(openExternalJavadocAction);
 
-            final IInputChangedListener inputChangeListener = new IInputChangedListener() {
-                @Override
-                public void inputChanged(final Object newInput) {
-                    backAction.update();
-                    forwardAction.update();
-                    if (newInput == null) {
-                        selectionProvider.setSelection(new StructuredSelection());
-                    } else if (newInput instanceof BrowserInformationControlInput) {
-                        final BrowserInformationControlInput input = (BrowserInformationControlInput) newInput;
-                        final Object inputElement = input.getInputElement();
-                        selectionProvider.setSelection(new StructuredSelection(
-                                inputElement));
-                        final boolean hasInputElement = inputElement != null;
-                        showInEdocViewAction.setEnabled(hasInputElement);
-                        openDeclarationAction.setEnabled(hasInputElement);
-                        openEdocInExternalBrowserAction.setInput(newInput);
-                        openEdocInExternalBrowserAction.setEnabled(hasInputElement);
+                final IInputChangedListener inputChangeListener = new IInputChangedListener() {
+                    @Override
+                    public void inputChanged(final Object newInput) {
+                        backAction.update();
+                        forwardAction.update();
+                        if (newInput == null) {
+                            selectionProvider.setSelection(new StructuredSelection());
+                        } else if (newInput instanceof BrowserInformationControlInput) {
+                            final BrowserInformationControlInput input = (BrowserInformationControlInput) newInput;
+                            final Object inputElement = input.getInputElement();
+                            selectionProvider.setSelection(new StructuredSelection(
+                                    inputElement));
+                            final boolean hasInputElement = inputElement != null;
+                            showInEdocViewAction.setEnabled(hasInputElement);
+                            openDeclarationAction.setEnabled(hasInputElement);
+                            openEdocInExternalBrowserAction.setInput(newInput);
+                            openEdocInExternalBrowserAction.setEnabled(hasInputElement);
+                        }
                     }
-                }
-            };
-            control.addInputChangeListener(inputChangeListener);
-
+                };
+                control.addInputChangeListener(inputChangeListener);
+            }
             tbm.update(true);
 
             control.addLocationListener(new HandleEdocLinksLocationListener(control));

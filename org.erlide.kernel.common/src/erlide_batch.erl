@@ -38,9 +38,11 @@ start(Name) when is_atom(Name) ->
   Max = erlang:system_info(schedulers),
   start(Name, Max).
 
-start(Name, {multiplier, Multi}) when is_atom(Name), is_integer(Multi), Multi>0 ->
+start(Name, {multiplier, Multi}) when is_atom(Name), is_integer(Multi), Multi > 0 ->
   Max = erlang:system_info(schedulers)*Multi,
   start(Name, Max);
+start(Name, Max) when is_atom(Name), is_integer(Max), Max =< 0 ->
+  start(Name);
 start(Name, Max) when is_atom(Name), is_integer(Max) ->
   Pid = spawn(fun() ->
             loop(#state{max=Max})

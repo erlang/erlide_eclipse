@@ -660,7 +660,7 @@ public class ErlideSelection {
     /**
      * Checks if the activationToken ends with some char from cs.
      */
-    public static boolean endsWithSomeChar(final char cs[], final String activationToken) {
+    public static boolean endsWithSomeChar(final char[] cs, final String activationToken) {
         for (int i = 0; i < cs.length; i++) {
             if (activationToken.endsWith(cs[i] + "")) {
                 return true;

@@ -14,14 +14,13 @@ package org.erlide.engine.model.root;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IOpenable;
 import org.erlide.engine.model.IParent;
+import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
-import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * An Erlang project represents a view of a project resource in terms of Erlang
@@ -63,24 +62,20 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     Collection<IErlModule> getExternalIncludes() throws ErlModelException;
 
-    String getExternalModulesString();
-
-    String getExternalIncludesString();
-
-    Collection<IPath> getSourceDirs();
-
-    Collection<IPath> getIncludeDirs();
-
-    IPath getOutputLocation();
-
     RuntimeInfo getRuntimeInfo();
 
     RuntimeVersion getRuntimeVersion();
 
-    boolean hasSourceDir(IPath path);
+    /**
+     * Returns the project's current configuration.
+     * <p>
+     * Value must not be cached! It can be changed in the background when config
+     * file or preferences are edited.
+     * </p>
+     */
+    ErlangProjectProperties getProperties();
 
-    void setAllProperties(IErlangProjectProperties properties)
-            throws BackingStoreException;
+    void setProperties(ErlangProjectProperties properties);
 
     Collection<IErlProject> getReferencedProjects() throws ErlModelException;
 
@@ -88,6 +83,14 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     IProject getWorkspaceProject();
 
-    IErlangProjectProperties getProperties();
+    ProjectConfigType getConfigType();
+
+    void setConfigType(ProjectConfigType config);
+
+    void storeAllProperties();
+
+    void setBuilderProperties(BuilderProperties props);
+
+    BuilderProperties getBuilderProperties();
 
 }

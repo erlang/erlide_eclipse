@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.test.support.ErlideTestUtils;
+import org.erlide.engine.util.ErlideTestUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

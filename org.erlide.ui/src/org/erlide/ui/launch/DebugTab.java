@@ -14,6 +14,7 @@ package org.erlide.ui.launch;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -58,7 +59,7 @@ import com.google.common.collect.Lists;
  * for attaching and distruibuted debugging a checkbox tree of modules to
  * interpret upon launching. The checkbox tree classes are reused by
  * InterpretedModulesView
- * 
+ *
  */
 public class DebugTab extends AbstractLaunchConfigurationTab {
 
@@ -243,7 +244,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             listViewer.setInput(config);
         }
 
-        final List<String> interpret = BackendData.addBreakpointProjectsAndModules(null,
+        final Set<String> interpret = BackendData.addBreakpointProjectsAndModules(null,
                 new ArrayList<String>());
         contentProvider.addModules(interpret);
 
@@ -284,7 +285,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 
     /**
      * check or uncheck the four flag checkboxes
-     * 
+     *
      * @param debugFlags
      *            flags
      */
@@ -304,7 +305,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 
     /**
      * get flag settings by reading checkboxes
-     * 
+     *
      * @return flags as int
      */
     private EnumSet<ErlDebugFlags> getFlagCheckboxes() {
