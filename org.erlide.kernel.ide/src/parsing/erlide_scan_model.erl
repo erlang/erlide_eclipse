@@ -39,13 +39,16 @@ tokens_to_string(T) ->
 
 replace_text(Module, Offset, RemoveLength, NewText) ->
     ?D({Offset, RemoveLength, NewText, Module}),
-    {Line, NOldLines, AffectedLines, NewLines} =
-        replace_between_lines(Offset, RemoveLength, NewText, Module#module.lines),
-    ?D({AffectedLines, NewLines}),
-    LineTokens = [scan_line(L) || L <- AffectedLines],
-    ?D(LineTokens),
-    NewTokens = replace_between(Line, NOldLines, LineTokens, Module#module.tokens),
-    Module#module{lines=NewLines, tokens=NewTokens}.
+    case replace_between_lines(Offset, RemoveLength, NewText, Module#module.lines) of
+        {Line, NOldLines, AffectedLines, NewLines} ->
+            ?D({AffectedLines, NewLines}),
+            LineTokens = [scan_line(L) || L <- AffectedLines],
+            ?D(LineTokens),
+            NewTokens = replace_between(Line, NOldLines, LineTokens, Module#module.tokens),
+            Module#module{lines=NewLines, tokens=NewTokens};
+        ok ->
+            Module
+    end.
 
 get_all_tokens(#module{tokens=Tokens}) ->
     get_all_tokens(Tokens, 0, 0, []).
