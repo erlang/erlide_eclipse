@@ -7,25 +7,16 @@
          check_and_renew_cached/5
          ]).
 
-check_and_renew_cached(SourceFileName, CacheFileName, Version,
-           RenewFun, UseCache) ->
-    ?D({SourceFileName, CacheFileName, Version,
-           RenewFun, UseCache}),
-    check_and_renew_cached(SourceFileName, CacheFileName, Version,
-         RenewFun, fun(D) -> D end, UseCache).
-
-check_and_renew_cached(SourceFileName, _CacheFileName, _Version,
-                       RenewFun, _CachedFun, false) ->
+-spec check_and_renew_cached(string(), string(), integer(), function(), boolean()) -> {cached|renewed, term()}.
+check_and_renew_cached(SourceFileName, _CacheFileName, _Version, RenewFun, false) ->
     Term = RenewFun(SourceFileName),
     {dont_use_cache, Term};
-check_and_renew_cached(SourceFileName, CacheFileName,
-                       Version, RenewFun, CachedFun,
-                       true) ->
+check_and_renew_cached(SourceFileName, CacheFileName, Version, RenewFun, true) ->
     ?D(check_and_renew_cached),
     case check_cached(SourceFileName, CacheFileName, Version) of
         {cache, Cached} ->
             ?D({from_cache, CacheFileName}),
-            R = {cached, CachedFun(Cached)},
+            R = {cached, Cached},
             ?D(got_cached),
             R;
         {no_cache, SourceModDate} ->
@@ -77,15 +68,15 @@ same_date_and_version({{Date, {H, M, S1}}, V}, {{Date, {H, M, S2}}, V}) ->
 same_date_and_version(_, _) ->
     false.
 
-renew_cached(SourceFileName, CacheFileName, Version, Term) ->
-    SourceModDate = case file:read_file_info(SourceFileName) of
-                        {ok, Info} ->
-                            Info#file_info.mtime;
-                        {error, enoent} ->
-                            {{1900, 1, 1}, {0, 0, 0}}
-                    end,
-    ?D(SourceFileName),
-    renew_cache(SourceModDate, Version, CacheFileName, Term).
+%% renew_cached(SourceFileName, CacheFileName, Version, Term) ->
+%%     SourceModDate = case file:read_file_info(SourceFileName) of
+%%                         {ok, Info} ->
+%%                             Info#file_info.mtime;
+%%                         {error, enoent} ->
+%%                             {{1900, 1, 1}, {0, 0, 0}}
+%%                     end,
+%%     ?D(SourceFileName),
+%%     renew_cache(SourceModDate, Version, CacheFileName, Term).
 
 read_cache(CacheFileName) ->
     {ok, B} = file:read_file(CacheFileName),
