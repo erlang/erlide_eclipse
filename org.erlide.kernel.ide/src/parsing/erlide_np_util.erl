@@ -59,7 +59,7 @@ compact_model(#model{forms=Forms, comments=Comments}) ->
     FixedForms = compact_forms(Forms),
     #model{forms=FixedForms, comments=FixedComments}.
 
--spec get_top_level_comments([tuple()], [#token{}]) -> #token{}.
+-spec get_top_level_comments([tuple()], [#token{}]) -> [#token{}].
 get_top_level_comments(Forms, Comments) ->
     get_top_level_comments(Forms, Comments, []).
 

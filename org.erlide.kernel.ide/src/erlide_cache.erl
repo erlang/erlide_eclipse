@@ -7,7 +7,9 @@
          check_and_renew_cached/5
          ]).
 
--spec check_and_renew_cached(string(), string(), integer(), function(), boolean()) -> {cached|renewed, term()}.
+-type date() :: {{1900..2038, 1..12, 1..31}, {0..24, 0..59, 0..59}}.
+
+-spec check_and_renew_cached(file:name_all(), file:name_all(), non_neg_integer(), fun((any()) -> any()), boolean()) -> {'cached'|'renewed'|'dont_use_cache', any()}.
 check_and_renew_cached(SourceFileName, _CacheFileName, _Version, RenewFun, false) ->
     Term = RenewFun(SourceFileName),
     {dont_use_cache, Term};
@@ -27,6 +29,7 @@ check_and_renew_cached(SourceFileName, CacheFileName, Version, RenewFun, true) -
             {renewed, Term}
     end.
 
+-spec read_cache_date_and_version(string()) -> {date(), integer()}.
 read_cache_date_and_version(CacheFileName) ->
     case file:open(CacheFileName, [read, binary]) of
         {ok, F} ->
@@ -84,12 +87,15 @@ read_cache(CacheFileName) ->
     <<_:5/binary, _:16/integer-big, BinTerm/binary>> = B,
     binary_to_term(BinTerm).
 
-
+-spec bin_to_date(binary()) -> date().
 bin_to_date(<<Y:15/integer-big, Mo:4, D:5, H:5, M:6, S:5>>) ->
     {{Y, Mo, D}, {H, M, S*2}}.
+
+-spec date_to_bin(date()) -> binary().
 date_to_bin({{Y, Mo, D}, {H, M, S}}) ->
     <<Y:15/integer-big, Mo:4, D:5, H:5, M:6, (S div 2):5>>.
 
+-spec renew_cache(date(), non_neg_integer(), file:name_all(), any()) -> 'ok'.
 renew_cache(SourceFileModDate, Version, CacheFileName, Term) ->
     ?D(SourceFileModDate),
     BinDate = date_to_bin(SourceFileModDate),
