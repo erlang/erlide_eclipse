@@ -442,7 +442,7 @@ get_doc_for_external(StateDir, Mod, FuncList) ->
         ?D(OutDir),
         DocFileName = filename:join(OutDir, Module ++ ".html"),
         IndexFileName = filename:join([StateDir, "erlide_doc",
-                                       Module ++ ".erlide_doc_x"]),
+                                       Module ++ ".doc"]),
         filelib:ensure_dir(IndexFileName),
         Renew = fun(F) -> extract_from_file(F) end,
         ?D({DocFileName, IndexFileName, Renew}),
