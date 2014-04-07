@@ -18,6 +18,7 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementDelta;
 import org.erlide.engine.model.root.IErlElementLocator;
+import org.erlide.engine.model.root.IErlLibrary;
 import org.erlide.engine.model.root.IErlProject;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -62,6 +63,10 @@ public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementL
      *             if this request fails.
      */
     Collection<IErlProject> getErlangProjects() throws ErlModelException;
+
+    Collection<IErlLibrary> getLibraries() throws ErlModelException;
+
+    IErlLibrary getLibrary(String name) throws ErlModelException;
 
     void addModelChangeListener(IErlModelChangeListener listener);
 

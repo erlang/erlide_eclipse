@@ -204,13 +204,6 @@ public class ErlangElementImageProvider {
         case CLAUSE:
             result = ErlideImage.FUNCTION_CLAUSE;
             break;
-        case COMMENT:
-        case PROBLEM:
-        case HEADERCOMMENT:
-        case MODEL:
-        case PROJECT:
-            result = ErlideImage.UNKNOWN;
-            break;
         case EXPORT:
             result = ErlideImage.EXPORT;
             break;
@@ -249,6 +242,14 @@ public class ErlangElementImageProvider {
             break;
         case RECORD_FIELD:
             result = ErlideImage.RECORD_FIELD;
+            break;
+        case COMMENT:
+        case PROBLEM:
+        case HEADERCOMMENT:
+        case MODEL:
+        case LIBRARY:
+        case PROJECT:
+            result = ErlideImage.UNKNOWN;
             break;
         }
         return result.getDescriptor();
