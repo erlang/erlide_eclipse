@@ -41,17 +41,15 @@ if [ ! -d jruby ] ; then
   jruby/bin/jruby -S gem install rake
 fi
 
+sudo apt-get update
+sudo apt-get install -y build-essential make perl gcc sed m4 ncurses-dev
+
 # erlang R14
 if [ ! -d otp ] ; then
   if [ ! -f otp_src_R14B04.tar.gz ] ; then
     wget http://download.erlide.org/tools/otp_src_R14B04.tar.gz
   fi
   tar zxvf otp_src_R14B04.tar.gz
-
-  # build erlang
-  # prerequisites:
-  #    sudo apt-get update
-  #    sudo apt-get install build-essential make perl gcc sed m4 ncurses-dev
 
   pushd otp_src_R14B04
   export LANG=C
@@ -62,11 +60,6 @@ if [ ! -d otp ] ; then
   ln -s otp_src_R14B04 otp
 fi
 
-  # prerequisites to build erlang:
-  #    sudo apt-get update
-  #    sudo apt-get install build-essential make perl gcc sed m4 ncurses-dev
-
-
 # erlang R15
 if [ ! -d otp15 ] ; then
   if [ ! -f otp_src_R15B03-1.tar.gz ] ; then
@@ -74,14 +67,13 @@ if [ ! -d otp15 ] ; then
   fi
   tar zxvf otp_src_R15B03-1.tar.gz
 
-  # build erlang
-  pushd otp_src_R15B03-1
+  pushd otp_src_R15B03
   export LANG=C
   ./configure
   make
   popd
 
-  ln -s otp_src_R15B03-1 otp15
+  ln -s otp_src_R15B03 otp15
 fi
 
 if [ ! -d otp16 ] ; then
@@ -90,7 +82,6 @@ if [ ! -d otp16 ] ; then
   fi
   tar zxvf otp_src_R16B03.tar.gz
 
-  # build erlang
   pushd otp_src_R16B03
   export LANG=C
   ./configure
