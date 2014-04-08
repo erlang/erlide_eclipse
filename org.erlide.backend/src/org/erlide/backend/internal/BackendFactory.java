@@ -81,7 +81,7 @@ public class BackendFactory implements IBackendFactory {
 
         final IBackendManager backendManager = BackendCore.getBackendManager();
         b = data.isInternal() ? new InternalBackend(data, runtime, backendManager)
-                : new ExternalBackend(data, runtime, backendManager);
+        : new ExternalBackend(data, runtime, backendManager);
 
         b.initialize(data.getContext(), backendManager.getCodeBundles());
         return b;
@@ -127,7 +127,7 @@ public class BackendFactory implements IBackendFactory {
             return new RuntimeInfo(runtime);
         }
         for (final RuntimeInfo aruntime : runtimeInfoCatalog.getRuntimes()) {
-            if (runtimeHomeDirExists(aruntime) && aruntime != null) {
+            if (aruntime != null && runtimeHomeDirExists(aruntime)) {
                 return new RuntimeInfo(aruntime);
             }
         }
