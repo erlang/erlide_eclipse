@@ -173,6 +173,7 @@ public class ProjectCreator {
             final IFile cfg = newProjectHandle.getFile(configType.getConfigName());
             final String contents = getConfigContent(info, configType);
             final CreateFileOperation fop = new CreateFileOperation(cfg, null,
+                    // TODO real encoding?
                     new ByteArrayInputStream(contents.getBytes(Charsets.ISO_8859_1)),
                     "creating file " + cfg.getName());
             fop.execute(monitor, notifier);
