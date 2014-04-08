@@ -81,7 +81,7 @@ public class BackendFactory implements IBackendFactory {
 
         final IBackendManager backendManager = BackendCore.getBackendManager();
         b = data.isInternal() ? new InternalBackend(data, runtime, backendManager)
-        : new ExternalBackend(data, runtime, backendManager);
+                : new ExternalBackend(data, runtime, backendManager);
 
         b.initialize(data.getContext(), backendManager.getCodeBundles());
         return b;
@@ -135,6 +135,9 @@ public class BackendFactory implements IBackendFactory {
     }
 
     private boolean runtimeHomeDirExists(final RuntimeInfo runtime) {
+        if (runtime == null) {
+            return false;
+        }
         final String otpHome = runtime.getOtpHome();
         return otpHome != null && new File(otpHome).exists();
     }
