@@ -57,6 +57,7 @@ public class FileProjectConfigurator implements ProjectConfigurator,
         String line;
         ErlangProjectProperties result = null;
         try {
+            // TODO detect real encoding!
             line = Files.readFirstLine(confFile, Charsets.ISO_8859_1);
             Charset coding = ErlangContentDescriber.detectEncoding(line);
             if (coding == null) {

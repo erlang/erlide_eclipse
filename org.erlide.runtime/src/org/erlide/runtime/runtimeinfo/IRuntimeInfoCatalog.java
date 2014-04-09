@@ -3,8 +3,6 @@ package org.erlide.runtime.runtimeinfo;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 public interface IRuntimeInfoCatalog {
 
     RuntimeVersion OLDEST_SUPPORTED_VERSION = new RuntimeVersion(15);
@@ -28,7 +26,6 @@ public interface IRuntimeInfoCatalog {
 
     void setDefaultRuntime(final String name);
 
-    @NonNull
     RuntimeInfo getErlideRuntime();
 
     RuntimeInfo getDefaultRuntime();
@@ -49,7 +46,7 @@ public interface IRuntimeInfoCatalog {
      * <li>Look for existing Erlang runtimes in a few obvious places and install
      * them, choosing a suitable one as default.</li>
      * </ul>
-     * 
+     *
      */
     void initializeRuntimesList();
 

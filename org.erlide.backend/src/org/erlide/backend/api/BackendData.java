@@ -40,6 +40,7 @@ import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.runtime.api.InitialCall;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 
@@ -163,8 +164,14 @@ public final class BackendData extends RuntimeData {
             final RuntimeInfo info = getRuntimeInfo();
             final String name = getNodeName();
             workingCopy = type.newInstance(null, name);
-            workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
-                    Charsets.ISO_8859_1.name());
+            if (info.getVersion().isReleaseCompatible(new RuntimeVersion(17))) {
+                workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
+                        Charsets.UTF_8.name());
+            } else {
+                workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
+                        Charsets.ISO_8859_1.name());
+            }
+
             workingCopy.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
                     "org.erlide.backend.ertsProcessFactory");
 

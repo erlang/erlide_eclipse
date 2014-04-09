@@ -13,8 +13,6 @@ package org.erlide.ui.util.eclipse.text;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
@@ -27,8 +25,6 @@ import org.eclipse.swt.widgets.Display;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.DisplayUtils;
 import org.osgi.framework.Bundle;
-
-import com.google.common.base.Charsets;
 
 /**
  * Provides a set of convenience methods for creating HTML pages.
@@ -266,18 +262,6 @@ public final class HTMLPrinter {
         if (paragraphReader != null) {
             addParagraph(buffer, read(paragraphReader));
         }
-    }
-
-    public static String fixEncoding(final String comment) {
-        try {
-            final byte[] bytes = comment.getBytes(Charsets.ISO_8859_1);
-            final ByteBuffer bb = ByteBuffer.wrap(bytes);
-            final CharBuffer cb = Charsets.UTF_8.newDecoder().decode(bb);
-            return cb.toString();
-        } catch (final Exception e) {
-            // it was Latin-1
-        }
-        return comment;
     }
 
     public static String asHtml(final String string) {

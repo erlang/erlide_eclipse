@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -127,7 +128,13 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     @Override
     public boolean performFinish() {
         System.out.println("CREATE " + info);
-        final IProject newProject = createNewProject();
+        IProject newProject;
+        try {
+            newProject = createNewProject();
+        } catch (final CoreException e) {
+            System.out.println(">>> project exists!");
+            return false;
+        }
 
         if (newProject == null) {
             return false;
@@ -139,7 +146,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         return true;
     }
 
-    private IProject createNewProject() {
+    private IProject createNewProject() throws CoreException {
         URI location = null;
         if (!mainPage.useDefaults()) {
             location = mainPage.getLocationURI();
@@ -153,7 +160,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
         final ProjectCreator creator = new ProjectCreator(mainPage.getProjectName(),
                 location, refProjects, info, getContainer(),
                 WorkspaceUndoUtil.getUIInfoAdapter(getShell()));
-        return creator.newProject();
+        return creator.createProject();
 
     }
 
