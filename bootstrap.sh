@@ -10,6 +10,16 @@ echo "Europe/Stockholm" > /etc/timezone
 dpkg-reconfigure --frontend noninteractive tzdata
 
 ######
+## docker
+
+#apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
+#sh -c "echo deb http://get.docker.io/ubuntu docker main /etc/apt/sources.list.d/docker.list"
+#apt-get install lxc-docker
+#sudo groupadd docker
+#sudo gpasswd -a vagrant docker
+#sudo service docker restart
+
+######
 
 rm -rf /home/vagrant/erlide
 
@@ -21,3 +31,5 @@ ln -s /vagrant /home/vagrant/erlide
 dos2unix erlide/org.erlide.releng/setup_tools.sh
 erlide/org.erlide.releng/setup_tools.sh
 
+chown -R vagrant:vagrant erlide_tools
+chown vagrant:vagrant erlide

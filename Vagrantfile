@@ -6,7 +6,7 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "hashicorp/precise32"
+  config.vm.box = "chef/ubuntu-13.10"
 
   # config.vm.box_url = "http://domain.com/path/to/above.box"
 
@@ -25,14 +25,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Default value: false
   # config.ssh.forward_agent = true
 
-  # Share an additional folder to the guest VM. 
+  # Share an additional folder to the guest VM.
   # config.vm.synced_folder "../data", "/vagrant_data"
 
   config.vm.provider :virtualbox do |vb|
     vb.name = "erlide"
-  #   # Don't boot with headless mode
-  #   vb.gui = true
+  	# # Don't boot with headless mode
+  	# vb.gui = true
 
-    vb.customize ["modifyvm", :id, "--memory", "2048", "--cpus", "3", "--ioapic", "on"]
+    vb.customize ["modifyvm", :id, "--memory", "1024", "--cpus", "3", "--ioapic", "on"]
   end
 end
