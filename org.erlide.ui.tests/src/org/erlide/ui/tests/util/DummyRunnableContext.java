@@ -12,9 +12,9 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
  * @author Vlad
  * 
  */
-public class DummyRunnerContext implements IRunnableContext {
+public class DummyRunnableContext implements IRunnableContext {
 
-    public DummyRunnerContext() {
+    public DummyRunnableContext() {
     }
 
     /*
