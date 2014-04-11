@@ -51,6 +51,9 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
         final Map<String, List<String>> srcIncludes = ErlangEngine
                 .getInstance().getService(OpenService.class)
                 .getOtpLibSrcIncludes(backend);
+        if (srcIncludes == null) {
+            return;
+        }
         for (final String srcInclude : srcIncludes.keySet()) {
             boolean hasHeaders = false;
             final List<String> paths = srcIncludes.get(srcInclude);

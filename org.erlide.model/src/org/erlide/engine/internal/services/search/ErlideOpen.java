@@ -186,6 +186,7 @@ public class ErlideOpen implements OpenService {
                 }
                 return result;
             }
+            ErlLogger.error(res.toString());
         } catch (final RpcException e) {
             ErlLogger.error(e);
         }
