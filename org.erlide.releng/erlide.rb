@@ -15,6 +15,7 @@ module Erlide
     fputs "document.write('#{info.strip}');", "#{where}/info.js"
     fputs "document.write('#{PDE.unqualifiedVersion(version).strip}');", "#{where}/version.js"
     fputs "document.write('#{build_id.strip}');", "#{where}/id.js"
+    fputs "#{PDE.unqualifiedVersion(version).strip}", "#{where}/version.txt"
   end
 
   def Erlide.run_ant(task, opts={}, tools_dir="#{ENV['HOME']}/erlide_tools")
