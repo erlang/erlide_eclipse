@@ -188,11 +188,17 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="popup:#ErlangEditorRulerContext?after=additions">
+            locationURI="popup:#ErlangEditorRulerContext?before=additions">
          <command
                commandId="org.erlide.test_support.toggleTrace"
-               label="Toggle tracing"
                style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <test
+                     property="org.erlide.test_support.foo"
+                     value="bar">
+               </test>
+            </visibleWhen>
          </command>
       </menuContribution>
    </extension>
@@ -200,7 +206,14 @@
          point="org.eclipse.ui.commands">
       <command
             id="org.erlide.test_support.toggleTrace"
-            name="Toggle tracing">
+            name="Toggle tracepoint">
       </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.erlide.test_support.ui.trace.ToggleTracepointHandler"
+            commandId="org.erlide.test_support.toggleTrace">
+      </handler>
    </extension>
 </plugin>
