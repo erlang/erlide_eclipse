@@ -172,9 +172,8 @@
       <specification
             annotationType="org.erlide.test_support.tracing"
             colorPreferenceKey="org.erlide.test_support.tracing.color"
-            colorPreferenceValue="org.erlide.test_support.tracing.color"
             highlightPreferenceKey="org.erlide.test_support.tracing.highlight"
-            includeOnPreferencePage="true"
+            includeOnPreferencePage="false"
             label="Tracing"
             overviewRulerPreferenceKey="org.erlide.test_support.tracing.overview"
             overviewRulerPreferenceValue="true"
@@ -184,5 +183,24 @@
             verticalRulerPreferenceKey="org.erlide.test_support.tracing.vertical"
             verticalRulerPreferenceValue="true">
       </specification>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:#ErlangEditorRulerContext?after=additions">
+         <command
+               commandId="org.erlide.test_support.toggleTrace"
+               label="Toggle tracing"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.erlide.test_support.toggleTrace"
+            name="Toggle tracing">
+      </command>
    </extension>
 </plugin>
