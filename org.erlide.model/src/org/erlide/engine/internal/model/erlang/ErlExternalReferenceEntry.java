@@ -42,6 +42,11 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
     }
 
     @Override
+    public boolean isStructureKnown() {
+        return prebuilt || super.isStructureKnown();
+    }
+
+    @Override
     public boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
         if (prebuilt) {
