@@ -148,4 +148,72 @@
             default="false">
       </support>
    </extension-->
+
+  <extension
+        id="tracingmarker"
+        name="Erlang tracing marker"
+        point="org.eclipse.core.resources.markers">
+     <super
+           type="org.eclipse.core.resources.textmarker">
+     </super>
+     <persistent
+           value="true">
+     </persistent>
+  </extension>
+   <extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerType="org.erlide.test_support.tracingmarker"
+            name="org.erlide.test_support.tracing">
+      </type>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      <specification
+            annotationType="org.erlide.test_support.tracing"
+            colorPreferenceKey="org.erlide.test_support.tracing.color"
+            highlightPreferenceKey="org.erlide.test_support.tracing.highlight"
+            includeOnPreferencePage="false"
+            label="Tracing"
+            overviewRulerPreferenceKey="org.erlide.test_support.tracing.overview"
+            overviewRulerPreferenceValue="true"
+            symbolicIcon="bookmark"
+            textPreferenceKey="org.erlide.test_support.tracing.text"
+            textPreferenceValue="true"
+            verticalRulerPreferenceKey="org.erlide.test_support.tracing.vertical"
+            verticalRulerPreferenceValue="true">
+      </specification>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:#ErlangEditorRulerContext?before=additions">
+         <command
+               commandId="org.erlide.test_support.toggleTrace"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <test
+                     property="org.erlide.test_support.foo"
+                     value="bar">
+               </test>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.erlide.test_support.toggleTrace"
+            name="Toggle tracepoint">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.erlide.test_support.ui.trace.ToggleTracepointHandler"
+            commandId="org.erlide.test_support.toggleTrace">
+      </handler>
+   </extension>
 </plugin>
