@@ -33,7 +33,7 @@
 -include("erlide_open.hrl").
 -include("erlide_token.hrl").
 
--define(CACHE_VERSION, 3).
+-define(CACHE_VERSION, 4).
 
 %%
 %% API Functions
@@ -87,9 +87,8 @@ get_otp_lib_structure(StateDir) ->
                        LibDirs = [get_lib_dir(Lib) || Lib<-Libs],
                        R = lists:map(fun(Dir) ->
                                              SubDirs = ["src", "include"],
-                                             DirName = base(filename:basename(Dir)),
                                              Group = get_app_group(Dir),
-                                             {DirName, get_dirs(SubDirs, get_lib_dir(Dir), []), Group}
+                                             {Dir, get_dirs(SubDirs, get_lib_dir(Dir), []), Group}
                                      end, LibDirs),
                        ?D(R),
                        R
@@ -101,15 +100,6 @@ get_otp_lib_structure(StateDir) ->
                                             ?CACHE_VERSION, RenewFun, true),
     ?D(_Cached),
     {ok, R}.
-
-base(N) ->
-    {A, _} = lists:splitwith(fun($-)->
-                                     false;
-                                (_) ->
-
-                                     true
-                             end, N),
-    A.
 
 get_app_group(Dir) ->
     case file:open(filename:join(Dir, "info"), [read]) of
@@ -137,7 +127,7 @@ get_dirs([Dir | Rest], Base, Acc) ->
     case filelib:is_dir(D) of
         true ->
             {ok, Files} = get_lib_files(D),
-            get_dirs(Rest, Base, [{filename:basename(D), [filename:basename(F)||F<-Files]} | Acc]);
+            get_dirs(Rest, Base, [{D, Files} | Acc]);
         false ->
             get_dirs(Rest, Base, Acc)
     end.

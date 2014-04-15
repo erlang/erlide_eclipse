@@ -22,10 +22,8 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.OpenService.ExternalTreeEntry;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.google.common.base.Stopwatch;
 import com.google.common.collect.Maps;
 
 public class ErlExternalReferenceEntryList extends Openable implements
@@ -52,10 +50,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
     public boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
         // TODO some code duplication within this function
-        ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
-                getName());
-
-        final Stopwatch stopwatch = Stopwatch.createStarted();
+        // ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
+        // getName());
 
         final IErlProject project = ErlangEngine.getInstance()
                 .getModelUtilService().getProject(this);
@@ -106,9 +102,6 @@ public class ErlExternalReferenceEntryList extends Openable implements
                         externalIncludeTree);
             }
         }
-
-        System.out.println("ExtRefList: " + stopwatch);
-
         return true;
     }
 
