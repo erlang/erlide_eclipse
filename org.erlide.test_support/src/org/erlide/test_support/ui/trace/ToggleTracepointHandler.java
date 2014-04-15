@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.ui.actions.ErlangAbstractHandler;
+import org.erlide.ui.handlers.ErlangAbstractHandler;
 
 public class ToggleTracepointHandler extends ErlangAbstractHandler {
 

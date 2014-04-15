@@ -23,11 +23,11 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.shell.BackendShellEvent;
 import org.erlide.runtime.shell.BackendShellListener;
 import org.erlide.runtime.shell.IBackendShell;
-import org.erlide.ui.actions.ErlangAbstractHandler;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.console.IErlangConsole;
 import org.erlide.ui.console.IErlangConsolePage;
+import org.erlide.ui.handlers.ErlangAbstractHandler;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.ErlLogger;
 
