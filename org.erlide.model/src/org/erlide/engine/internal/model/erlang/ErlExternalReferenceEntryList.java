@@ -52,8 +52,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
     public boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
         // TODO some code duplication within this function
-        // ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
-        // externalName);
+        ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
+                getName());
 
         final Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -107,7 +107,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
             }
         }
 
-        ErlLogger.debug("ExtRefList build took: " + stopwatch);
+        System.out.println("ExtRefList: " + stopwatch);
 
         return true;
     }

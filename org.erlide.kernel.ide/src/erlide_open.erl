@@ -15,7 +15,7 @@
          get_external_module_tree/1,
          get_external_include/2,
          get_external_1/3,
-         get_otp_lib_src_includes/1,
+         get_otp_lib_structure/1,
          get_lib_files/1,
          get_includes_in_dir/1
         ]).
@@ -33,7 +33,7 @@
 -include("erlide_open.hrl").
 -include("erlide_token.hrl").
 
--define(CACHE_VERSION, 2).
+-define(CACHE_VERSION, 3).
 
 %%
 %% API Functions
@@ -79,25 +79,56 @@ get_external_include(FilePath, #open_context{externalIncludes=ExternalIncludes,
     ExtIncPaths = get_external_modules_files(ExternalIncludes, PathVars),
     get_ext_inc(ExtIncPaths, FilePath).
 
-get_otp_lib_src_includes(StateDir) ->
+get_otp_lib_structure(StateDir) ->
     RenewFun = fun(_) ->
-                       CodeLibs = [D || D <- code:get_path(), D =/= "."],
+                       CodeLibs = code:get_path(),
                        LibDir = code:lib_dir(),
                        Libs = lists:filter(fun(N) -> lists:prefix(LibDir, N) end, CodeLibs),
                        LibDirs = [get_lib_dir(Lib) || Lib<-Libs],
                        R = lists:map(fun(Dir) ->
                                              SubDirs = ["src", "include"],
-                                             {Dir, get_dirs(SubDirs, get_lib_dir(Dir), [])}
+                                             DirName = base(filename:basename(Dir)),
+                                             Group = get_app_group(Dir),
+                                             {DirName, get_dirs(SubDirs, get_lib_dir(Dir), []), Group}
                                      end, LibDirs),
                        ?D(R),
                        R
                end,
-    VersionFileName = filename:join([code:root_dir(), "releases", "start_erl.data"]),
-    CacheName = filename:join(StateDir, "otp.dirs"),
+    VersionFileName = filename:join([code:root_dir()]),
+    CacheName = filename:join(StateDir, "otp.structure"),
     {_Cached, R} =
         erlide_cache:check_and_renew_cached(VersionFileName, CacheName,
-                                           ?CACHE_VERSION, RenewFun, true),
+                                            ?CACHE_VERSION, RenewFun, true),
+    ?D(_Cached),
     {ok, R}.
+
+base(N) ->
+    {A, _} = lists:splitwith(fun($-)->
+                                     false;
+                                (_) ->
+
+                                     true
+                             end, N),
+    A.
+
+get_app_group(Dir) ->
+    case file:open(filename:join(Dir, "info"), [read]) of
+        {ok, F} ->
+            case file:read_line(F) of
+                {ok, "group:"++Group} ->
+                    Val = string:strip(string:strip(Group),right, $\n),
+                    case lists:split(string:chr(Val, $\s), Val) of
+                        {[], A} ->
+                            A;
+                        {A, _} ->
+                            A
+                    end;
+                _ ->
+                    ""
+            end;
+        _->
+            ""
+    end.
 
 get_dirs([], _, Acc) ->
     lists:reverse(Acc);
@@ -105,7 +136,8 @@ get_dirs([Dir | Rest], Base, Acc) ->
     D = filename:join(Base, Dir),
     case filelib:is_dir(D) of
         true ->
-            get_dirs(Rest, Base, [D | Acc]);
+            {ok, Files} = get_lib_files(D),
+            get_dirs(Rest, Base, [{filename:basename(D), [filename:basename(F)||F<-Files]} | Acc]);
         false ->
             get_dirs(Rest, Base, Acc)
     end.

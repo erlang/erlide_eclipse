@@ -1,7 +1,5 @@
 package org.erlide.engine;
 
-import java.io.File;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -27,7 +25,6 @@ public class ModelActivator implements BundleActivator {
             throw new CoreException(status);
         }
 
-        cleanupStateDir();
         ErlLogger.debug("Started model api");
     }
 
@@ -40,16 +37,4 @@ public class ModelActivator implements BundleActivator {
         return engine;
     }
 
-    private void cleanupStateDir() {
-        if (engine == null) {
-            return;
-        }
-        final String ndir = engine.getStateDir();
-        final File fdir = new File(ndir);
-        for (final File f : fdir.listFiles()) {
-            if (f.isFile()) {
-                f.delete();
-            }
-        }
-    }
 }

@@ -2,10 +2,12 @@ package org.erlide.engine.internal.services.search;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.runtime.IPath;
+import org.erlide.engine.internal.model.erlang.ErlExternalReferenceEntry;
+import org.erlide.engine.internal.model.erlang.ErlOtpExternalReferenceEntryList;
+import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.SourcePathUtils;
@@ -13,6 +15,7 @@ import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
+import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.OtpErlang;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -22,7 +25,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 public class ErlideOpen implements OpenService {
 
@@ -165,26 +167,14 @@ public class ErlideOpen implements OpenService {
     }
 
     @Override
-    public Map<String, List<String>> getOtpLibSrcIncludes(final IRpcSite backend) {
+    public IErlExternalRoot getOtpLibStructure(final IRpcSite backend) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
-                    "get_otp_lib_src_includes", "s", stateDir);
+                    "get_otp_lib_structure", "s", stateDir);
             if (Util.isOk(res)) {
                 final OtpErlangTuple tres = (OtpErlangTuple) res;
                 final OtpErlangList lot = (OtpErlangList) tres.elementAt(1);
-                final Map<String, List<String>> result = Maps.newHashMap();
-                for (final OtpErlangObject o : lot) {
-                    final OtpErlangTuple t = (OtpErlangTuple) o;
-                    final OtpErlangString s = (OtpErlangString) t.elementAt(0);
-                    final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-                    final List<String> subResult = Lists
-                            .newArrayListWithCapacity(l.arity());
-                    for (final OtpErlangObject o2 : l) {
-                        subResult.add(Util.stringValue(o2));
-                    }
-                    result.put(s.stringValue(), subResult);
-                }
-                return result;
+                return mkOtpStructureMap(lot);
             }
         } catch (final RpcException e) {
             ErlLogger.error(e);
@@ -192,11 +182,47 @@ public class ErlideOpen implements OpenService {
         return null;
     }
 
+    private IErlExternalRoot mkOtpStructureMap(final OtpErlangList input) {
+        final IErlExternalRoot root = new ErlOtpExternalReferenceEntryList(
+                null, "otp");
+
+        for (final OtpErlangObject o : input) {
+            final OtpErlangTuple t = (OtpErlangTuple) o;
+            final String lib = ((OtpErlangString) t.elementAt(0)).stringValue();
+            final OtpErlangList dirs = (OtpErlangList) t.elementAt(1);
+            final String group = ErlUtils.asString(t.elementAt(2));
+
+            final ErlExternalReferenceEntry extLib = new ErlExternalReferenceEntry(
+                    root, lib, "", true, false);
+            extLib.setGroup(group);
+            root.addChild(extLib);
+
+            for (final OtpErlangObject dir : dirs.elements()) {
+                final OtpErlangTuple tdir = (OtpErlangTuple) dir;
+                final String dname = ((OtpErlangString) tdir.elementAt(0))
+                        .stringValue();
+                final OtpErlangList files = (OtpErlangList) tdir.elementAt(1);
+
+                final ErlExternalReferenceEntry subdir = new ErlExternalReferenceEntry(
+                        extLib, dname, "", true, "include".equals(dname));
+                extLib.addChild(subdir);
+
+                for (final OtpErlangObject fn : files.elements()) {
+                    final OtpErlangString sfn = (OtpErlangString) fn;
+                    final ErlExternalReferenceEntry ext = new ErlExternalReferenceEntry(
+                            subdir, sfn.stringValue(), "", true, false);
+                    subdir.addChild(ext);
+                }
+            }
+        }
+        return root;
+    }
+
     @Override
     public List<String> getLibFiles(final String entry) {
         try {
             final OtpErlangObject res = ideBackend.call(ERLIDE_OPEN,
-                    "get_lib_files", "s", entry);
+                    "get_lib_files", "ss", entry, stateDir);
             if (Util.isOk(res)) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangList l = (OtpErlangList) t.elementAt(1);

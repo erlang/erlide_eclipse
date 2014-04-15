@@ -26,10 +26,10 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
     private final String entry;
     private final boolean prebuilt;
     private final boolean hasHeaders;
+    private String group;
 
-    protected ErlExternalReferenceEntry(final IParent parent,
-            final String name, final String entry, final boolean prebuilt,
-            final boolean hasHeaders) {
+    public ErlExternalReferenceEntry(final IParent parent, final String name,
+            final String entry, final boolean prebuilt, final boolean hasHeaders) {
         super(parent, name);
         this.entry = entry;
         this.prebuilt = prebuilt;
@@ -105,5 +105,13 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
     @Override
     public boolean hasIncludes() {
         return hasHeaders;
+    }
+
+    public void setGroup(final String group) {
+        this.group = group;
+    }
+
+    public String getGroup() {
+        return group;
     }
 }
