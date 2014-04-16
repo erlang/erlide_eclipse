@@ -56,8 +56,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
             final IRpcSite backend) {
         final OtpErlangList structure = ErlangEngine.getInstance()
                 .getService(OpenService.class).getOtpLibStructure(backend);
-        final IErlExternalRoot otp = mkOtpStructureMap(structure);
-        setChildren(otp.internalGetChildren());
+        mkOtpStructureMap(structure);
     }
 
     @Override
@@ -94,10 +93,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
         return super.internalGetChildren();
     }
 
-    private IErlExternalRoot mkOtpStructureMap(final OtpErlangList input) {
-        final IErlExternalRoot root = new ErlOtpExternalReferenceEntryList(
-                null, "otp");
-
+    private void mkOtpStructureMap(final OtpErlangList input) {
         for (final OtpErlangObject o : input) {
             final OtpErlangTuple t = (OtpErlangTuple) o;
             final String lib = ((OtpErlangString) t.elementAt(0)).stringValue();
@@ -105,9 +101,9 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
             final String group = ErlUtils.asString(t.elementAt(2));
 
             final ErlExternalReferenceEntry extLib = new ErlExternalReferenceEntry(
-                    root, getLibName(lib), lib, true, false);
+                    this, getLibName(lib), lib, true, false);
             extLib.setGroup(group);
-            root.addChild(extLib);
+            addChild(extLib);
 
             for (final OtpErlangObject dir : dirs.elements()) {
                 final OtpErlangTuple tdir = (OtpErlangTuple) dir;
@@ -124,12 +120,11 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
                     final String sfn = ((OtpErlangString) fn).stringValue();
                     final IErlModule ext = new ErlModule(subdir,
                             getModuleName(sfn), sfn,
-                            Charsets.ISO_8859_1.toString(), "");
+                            Charsets.ISO_8859_1.toString(), null);
                     subdir.addChild(ext);
                 }
             }
         }
-        return root;
     }
 
     private final boolean includePath(final String path) {
