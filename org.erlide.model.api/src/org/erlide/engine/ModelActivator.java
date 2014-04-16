@@ -27,7 +27,6 @@ public class ModelActivator implements BundleActivator {
             throw new CoreException(status);
         }
 
-        cleanupStateDir();
         ErlLogger.debug("Started model api");
     }
 
@@ -40,7 +39,7 @@ public class ModelActivator implements BundleActivator {
         return engine;
     }
 
-    private void cleanupStateDir() {
+    public static void cleanupStateDir() {
         if (engine == null) {
             return;
         }

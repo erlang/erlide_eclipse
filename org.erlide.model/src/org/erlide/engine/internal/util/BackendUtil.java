@@ -9,16 +9,16 @@ import org.erlide.util.services.ExtensionUtils;
 public class BackendUtil {
 
     public IRpcSite getBackend(final RuntimeVersion version) {
-        final IRpcSiteProvider provider = getRuntimeProvider();
+        final IRpcSiteProvider provider = getBackendProvider();
         return provider.get(version);
     }
 
     public IRpcSite getBackend(final IProject project) {
-        final IRpcSiteProvider provider = getRuntimeProvider();
+        final IRpcSiteProvider provider = getBackendProvider();
         return provider.get(project.getName());
     }
 
-    private IRpcSiteProvider getRuntimeProvider() {
+    private IRpcSiteProvider getBackendProvider() {
         return ExtensionUtils.getSingletonExtension(
                 "org.erlide.backend.backend", IRpcSiteProvider.class);
     }

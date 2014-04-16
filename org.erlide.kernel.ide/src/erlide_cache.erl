@@ -8,8 +8,11 @@
          ]).
 
 -type date() :: {{1900..2038, 1..12, 1..31}, {0..24, 0..59, 0..59}}.
+-define(NO_DATE, {{1900, 1, 1}, {0, 0, 0}}).
 
--spec check_and_renew_cached(file:name_all(), file:name_all(), non_neg_integer(), fun((any()) -> any()), boolean()) -> {'cached'|'renewed'|'dont_use_cache', any()}.
+-spec check_and_renew_cached(file:name_all(), file:name_all(), non_neg_integer(),
+                             fun((any()) -> any()), boolean()) -> {'cached'|'renewed'|'dont_use_cache', any()}.
+
 check_and_renew_cached(SourceFileName, _CacheFileName, _Version, RenewFun, false) ->
     Term = RenewFun(SourceFileName),
     {dont_use_cache, Term};
@@ -25,25 +28,26 @@ check_and_renew_cached(SourceFileName, CacheFileName, Version, RenewFun, true) -
             ?D(SourceModDate),
             Term = RenewFun(SourceFileName),
             ?D({renewing, CacheFileName}),
-            renew_cache(SourceModDate, Version, CacheFileName, Term),
+            write_cache(SourceModDate, Version, CacheFileName, Term),
             {renewed, Term}
     end.
 
 -spec read_cache_date_and_version(string()) -> {date(), integer()}.
 read_cache_date_and_version(CacheFileName) ->
+    ?D("check "++CacheFileName),
     case file:open(CacheFileName, [read, binary]) of
         {ok, F} ->
             {ok, BinDateAndVersion} = file:read(F, 7),
             file:close(F),
             <<BinDate:5/binary, Version:16/integer-big>> = BinDateAndVersion,
             {bin_to_date(BinDate), Version};
-        _ ->
-            {{{0, 0, 0}, {0, 0, 0}}, 0}
+        _Err ->
+            {?NO_DATE, 0}
     end.
 
 check_cached(none, CacheFileName, Version) ->
     ?D(CacheFileName),
-    SourceModDate = {{1900, 1, 1}, {0, 0, 0}},
+    SourceModDate = ?NO_DATE,
     check_cached_aux(SourceModDate, CacheFileName, Version);
 check_cached(SourceFileName, CacheFileName, Version) ->
     ?D({SourceFileName, CacheFileName}),
@@ -51,12 +55,13 @@ check_cached(SourceFileName, CacheFileName, Version) ->
                         {ok, Info} ->
                             Info#file_info.mtime;
                         {error, enoent} ->
-                            {{1900, 1, 1}, {0, 0, 0}}
+                            ?NO_DATE
                     end,
     ?D(SourceModDate),
     check_cached_aux(SourceModDate, CacheFileName, Version).
 
 check_cached_aux(SourceModDate, CacheFileName, Version) ->
+    ?D({SourceModDate, CacheFileName, Version}),
     SV = read_cache_date_and_version(CacheFileName),
     ?D(SV),
     case same_date_and_version(SV, {SourceModDate, Version}) of
@@ -95,16 +100,15 @@ bin_to_date(<<Y:15/integer-big, Mo:4, D:5, H:5, M:6, S:5>>) ->
 date_to_bin({{Y, Mo, D}, {H, M, S}}) ->
     <<Y:15/integer-big, Mo:4, D:5, H:5, M:6, (S div 2):5>>.
 
--spec renew_cache(date(), non_neg_integer(), file:name_all(), any()) -> 'ok'.
-renew_cache(SourceFileModDate, Version, CacheFileName, Term) ->
-    ?D(SourceFileModDate),
+-spec write_cache(date(), non_neg_integer(), file:name_all(), any()) -> 'ok'.
+write_cache(SourceFileModDate, Version, CacheFileName, Term) ->
+    ?D({write, CacheFileName, SourceFileModDate, Version}),
     BinDate = date_to_bin(SourceFileModDate),
     B = term_to_binary(Term, [compressed]),
     _Delete = file:delete(CacheFileName),
     touch_path(CacheFileName),
     _Write = file:write_file(CacheFileName, <<BinDate/binary, Version:16/integer-big, B/binary>>),
-    ?D(_Write),
-    ?D(CacheFileName).
+    ?D(_Write).
 
 touch_path(Path) ->
     touch_path(filename:split(Path), []).

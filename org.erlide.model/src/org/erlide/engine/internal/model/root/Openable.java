@@ -28,7 +28,7 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Abstract class for implementations of Erlang elements which are IOpenable.
- * 
+ *
  * @see IErlElement
  * @see IOpenable
  */
@@ -67,7 +67,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
      * (note, this element has already been placed in the newElements table).
      * Returns true if successful, or false if an error is encountered while
      * determining the structure of this element.
-     * 
+     *
      * @param dirtyRegion
      */
     public abstract boolean buildStructure(IProgressMonitor pm)
@@ -212,7 +212,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 
     /**
      * Subclasses must override as required.
-     * 
+     *
      * @see IOpenable
      */
     @Override
@@ -221,7 +221,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
     }
 
     /**
-     * 
+     *
      * @see IOpenable
      */
     @Override
@@ -271,7 +271,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 
     /**
      * Answers true if the parent exists (null parent is answering true)
-     * 
+     *
      */
     protected boolean parentExists() {
         final IParent parent = getParent();
@@ -329,5 +329,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
                 }
             }
         }
+        internalGetChildren().clear();
+        setStructureKnown(false);
     }
 }
