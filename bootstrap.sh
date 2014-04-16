@@ -3,33 +3,35 @@
 apt-get update
 #apt-mark hold grub2 grub2-common grub-pc grub-pc-bin
 apt-get upgrade -y
-apt-get install -y build-essential git dos2unix erlang openjdk-6-jdk
+apt-get install -y build-essential git openjdk-6-jdk 
 apt-get autoremove
+apt-get clean
 
 echo "Europe/Stockholm" > /etc/timezone
 dpkg-reconfigure --frontend noninteractive tzdata
 
+# configure keyboard ?
+
+# if [ -z grep "en_US.UTF-8" ~/.bashrc ]
+# 	then
+# cat >> ~/.bashrc <<EOF
+# 	export LC_ALL=en_US.UTF-8
+# 	export LANG=en_US.UTF-8
+# 	export LANGUAGE=en_US.UTF-8
+# EOF
+# fi
+
+
+# workaround vbox 4.3.10, must be entered manually
+# sudo ln -s /opt/VBoxGuestAdditions-4.3.10/lib/VBoxGuestAdditions /usr/lib/VBoxGuestAdditions
+
 ######
-## docker
 
-#apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
-#sh -c "echo deb http://get.docker.io/ubuntu docker main /etc/apt/sources.list.d/docker.list"
-#apt-get install lxc-docker
-#sudo groupadd docker
-#sudo gpasswd -a vagrant docker
-#sudo service docker restart
+cd ~
+rm -rf erlide
 
-######
+# which branch?
+git clone http://github.com/erlide/erlide.git
 
-rm -rf /home/vagrant/erlide
+sh -c erlide/org.erlide.releng/setup_tools.sh
 
-su - vagrant
-
-cd /home/vagrant
-ln -s /vagrant /home/vagrant/erlide
-
-dos2unix erlide/org.erlide.releng/setup_tools.sh
-erlide/org.erlide.releng/setup_tools.sh
-
-chown -R vagrant:vagrant erlide_tools
-chown vagrant:vagrant erlide
