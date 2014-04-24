@@ -69,10 +69,23 @@ public abstract class AbstractErlContentAssistProcessor implements
 
     public static class CompletionNameComparer implements Comparator<ICompletionProposal> {
 
+        private final String prefix;
+
+        public CompletionNameComparer(final String prefix) {
+            this.prefix = prefix;
+        }
+
         @Override
         public int compare(final ICompletionProposal o1, final ICompletionProposal o2) {
             final String s1 = o1.getDisplayString();
             final String s2 = o2.getDisplayString();
+            // exact prefix matches get higher priority
+            if (s1.startsWith(prefix)) {
+                return -1;
+            }
+            if (s2.startsWith(prefix)) {
+                return 1;
+            }
             return s1.compareTo(s2);
         }
 
@@ -118,7 +131,6 @@ public abstract class AbstractErlContentAssistProcessor implements
     }
 
     protected static final List<ICompletionProposal> EMPTY_COMPLETIONS = new ArrayList<ICompletionProposal>();
-    protected final CompletionNameComparer completionNameComparer = new CompletionNameComparer();
     protected final ContentAssistant contentAssistant;
     private IDocument oldDoc;
     private String oldBefore;
@@ -329,59 +341,67 @@ public abstract class AbstractErlContentAssistProcessor implements
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(
+                    prefix,
                     result,
                     getDeclaredFunctions(offset, prefix,
                             flags.contains(Kinds.UNEXPORTED_ONLY),
                             flags.contains(Kinds.ARITY_ONLY)));
         }
         if (flags.contains(Kinds.VARIABLES)) {
-            addSorted(result, getVariables(backend, offset, prefix));
+            addSorted(prefix, result, getVariables(backend, offset, prefix));
         }
         if (flags.contains(Kinds.IMPORTED_FUNCTIONS)) {
-            addSorted(result, getImportedFunctions(backend, offset, prefix));
+            addSorted(prefix, result, getImportedFunctions(backend, offset, prefix));
         }
         if (flags.contains(Kinds.AUTO_IMPORTED_FUNCTIONS)) {
-            addSorted(result, getAutoImportedFunctions(backend, offset, prefix));
+            addSorted(prefix, result, getAutoImportedFunctions(backend, offset, prefix));
         }
         if (flags.contains(Kinds.MODULES)) {
-            addSorted(result, getModules(backend, offset, prefix, Kinds.MODULES));
+            addSorted(prefix, result, getModules(backend, offset, prefix, Kinds.MODULES));
         }
         if (flags.contains(Kinds.INCLUDES)) {
-            addSorted(result, getModules(backend, offset, prefix, Kinds.INCLUDES));
+            addSorted(prefix, result, getModules(backend, offset, prefix, Kinds.INCLUDES));
         }
         if (flags.contains(Kinds.INCLUDE_LIBS)) {
-            addSorted(result, getModules(backend, offset, prefix, Kinds.INCLUDE_LIBS));
+            addSorted(prefix, result,
+                    getModules(backend, offset, prefix, Kinds.INCLUDE_LIBS));
         }
         if (flags.contains(Kinds.RECORD_DEFS)) {
             addSorted(
+                    prefix,
                     result,
                     getMacroOrRecordCompletions(offset, prefix, ErlElementKind.RECORD_DEF));
         }
         if (flags.contains(Kinds.RECORD_FIELDS)) {
             addSorted(
+                    prefix,
                     result,
                     getRecordFieldCompletions(moduleOrRecord, offset, prefix, pos,
                             fieldsSoFar));
         }
         if (flags.contains(Kinds.MACRO_DEFS)) {
-            addSorted(result,
+            addSorted(prefix, result,
                     getMacroOrRecordCompletions(offset, prefix, ErlElementKind.MACRO_DEF));
         }
         if (flags.contains(Kinds.EXTERNAL_FUNCTIONS)) {
             addSorted(
+                    prefix,
                     result,
                     getExternalCallCompletions(backend, moduleOrRecord, offset, prefix,
                             flags.contains(Kinds.ARITY_ONLY)));
         }
         if (flags.contains(Kinds.TYPES)) {
-            addSorted(result, getTypeCompletions(backend, moduleOrRecord, offset, prefix));
+            addSorted(prefix, result,
+                    getTypeCompletions(backend, moduleOrRecord, offset, prefix));
         }
 
         return result;
     }
 
-    private void addSorted(final List<ICompletionProposal> result,
+    private void addSorted(final String prefix, final List<ICompletionProposal> result,
             final List<ICompletionProposal> completions) {
+        final CompletionNameComparer completionNameComparer = new CompletionNameComparer(
+                prefix);
         Collections.sort(completions, completionNameComparer);
         result.addAll(completions);
     }
@@ -563,8 +583,7 @@ public abstract class AbstractErlContentAssistProcessor implements
     void addIfMatches(final String name, final String prefix, final int offset,
             final List<ICompletionProposal> result) {
         final int length = prefix.length();
-        final boolean hasQuote = name.startsWith("'");
-        if (name.regionMatches(hasQuote, 0, prefix, 0, length)) {
+        if (name.regionMatches(true, 0, prefix, 0, length)) {
             result.add(new CompletionProposal(name, offset - length, length, name
                     .length()));
         }
@@ -753,7 +772,7 @@ public abstract class AbstractErlContentAssistProcessor implements
 
     /**
      * Check if the string looks like an erlang parameter
-     * 
+     *
      * @param parameter
      *            String the parameter to check
      * @return true iff parameter is like Par, _Par or _par
