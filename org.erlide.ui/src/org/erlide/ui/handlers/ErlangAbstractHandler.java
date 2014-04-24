@@ -118,12 +118,12 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
 
-        final ISelection sel = HandlerUtil.getCurrentSelection(event);
-        if (sel == null || sel.isEmpty() || !(sel instanceof ITextSelection)) {
-            return null;
-        }
         final ITextEditor textEditor = (ITextEditor) HandlerUtil.getActiveEditor(event);
         if (!validateEditorInputState(textEditor)) {
+            return null;
+        }
+        final ISelection sel = textEditor.getSelectionProvider().getSelection();
+        if (sel == null || sel.isEmpty() || !(sel instanceof ITextSelection)) {
             return null;
         }
         ErlideEventTracer.getInstance().traceOperationStart(this);
