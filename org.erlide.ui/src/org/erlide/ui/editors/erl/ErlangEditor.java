@@ -1468,34 +1468,19 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
      */
     class ActivationListener implements IWindowListener {
 
-        /*
-         * @seeorg.eclipse.ui.IWindowListener#windowActivated(org.eclipse.ui.
-         * IWorkbenchWindow)
-         * 
-         * @since 3.1
-         */
         @Override
         public void windowActivated(final IWorkbenchWindow window) {
             if (window == getEditorSite().getWorkbenchWindow()
                     && markOccurencesHandler.fMarkOccurrenceAnnotations && isActivePart()) {
                 markOccurencesHandler.fForcedMarkOccurrencesSelection = getSelectionProvider()
                         .getSelection();
-                final IErlModule module = getModule();
-                if (module != null) {
-                    markOccurencesHandler
-                            .updateOccurrenceAnnotations(
-                                    (ITextSelection) markOccurencesHandler.fForcedMarkOccurrencesSelection,
-                                    module);
-                }
+                markOccurencesHandler
+                        .updateOccurrenceAnnotations(
+                                (ITextSelection) markOccurencesHandler.fForcedMarkOccurrencesSelection,
+                                getModule());
             }
         }
 
-        /*
-         * @seeorg.eclipse.ui.IWindowListener#windowDeactivated(org.eclipse.ui.
-         * IWorkbenchWindow)
-         * 
-         * @since 3.1
-         */
         @Override
         public void windowDeactivated(final IWorkbenchWindow window) {
             if (window == getEditorSite().getWorkbenchWindow()
@@ -1504,22 +1489,10 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
             }
         }
 
-        /*
-         * @seeorg.eclipse.ui.IWindowListener#windowClosed(org.eclipse.ui.
-         * IWorkbenchWindow)
-         * 
-         * @since 3.1
-         */
         @Override
         public void windowClosed(final IWorkbenchWindow window) {
         }
 
-        /*
-         * @seeorg.eclipse.ui.IWindowListener#windowOpened(org.eclipse.ui.
-         * IWorkbenchWindow)
-         * 
-         * @since 3.1
-         */
         @Override
         public void windowOpened(final IWorkbenchWindow window) {
         }
