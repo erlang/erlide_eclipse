@@ -29,7 +29,7 @@ default_indent_prefs() ->
      {'case', 4},
      {'try', 4},
      {'catch', 4},
-     {'after', 8},
+     {'after', 4},
      {function_parameters, 2},
      {'fun', 3},
      {fun_body, 5},

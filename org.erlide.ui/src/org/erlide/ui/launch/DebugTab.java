@@ -327,13 +327,11 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 
     private final SelectionListener fBasicSelectionListener = new SelectionListener() {
         @Override
-        @SuppressWarnings("synthetic-access")
         public void widgetDefaultSelected(final SelectionEvent e) {
             updateLaunchConfigurationDialog();
         }
 
         @Override
-        @SuppressWarnings("synthetic-access")
         public void widgetSelected(final SelectionEvent e) {
             updateLaunchConfigurationDialog();
         }
