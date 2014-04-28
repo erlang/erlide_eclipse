@@ -70,13 +70,11 @@ public class IndentHandler extends ErlangAbstractHandler {
                     target.setRedraw(false);
                 }
                 try {
-                    // ErlLogger.debug("'"+newText+"'");
                     if (!document.get(selection.getOffset(), selection.getLength())
                             .equals(newText)) {
                         document.replace(selection.getOffset(), selection.getLength(),
                                 newText);
                     }
-                    selectAndReveal(selection.getOffset(), newText.length(), textEditor);
                 } catch (final BadLocationException e) {
                     ErlLogger.warn(e);
                 }
