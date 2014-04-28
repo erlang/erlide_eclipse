@@ -51,8 +51,9 @@ if [ ! -d jruby ] ; then
   jruby/bin/jruby -S gem install rake
 fi
 
-sudo apt-get update
-sudo apt-get install -y build-essential make perl gcc sed m4 libncurses5-dev ncurses-dev libssl-dev autoconf
+# these are supposed to be installed (jenkins user is not a sudoer anyway)
+# sudo apt-get update
+# sudo apt-get install -y build-essential make perl gcc sed m4 libncurses5-dev ncurses-dev libssl-dev autoconf
 
 # erlang R15
 if [ ! -d otp15 ] ; then
