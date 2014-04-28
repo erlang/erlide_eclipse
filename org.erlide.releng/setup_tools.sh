@@ -16,7 +16,7 @@ if [ -z "$ROOT_DIR" ]
 fi
 
 mkdir -p $ROOT_DIR/erlide_tools
-pushd erlide_tools
+pushd $ROOT_DIR/erlide_tools
 
 # jdk 1.6
 if [ ! -d jdk ] ; then
