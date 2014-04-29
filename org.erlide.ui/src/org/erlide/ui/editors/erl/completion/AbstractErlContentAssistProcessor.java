@@ -15,7 +15,10 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.contentassist.ContentAssistEvent;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.ICompletionListener;
+import org.eclipse.jface.text.contentassist.ICompletionListenerExtension;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
@@ -66,6 +69,41 @@ import com.google.common.collect.Sets;
 
 public abstract class AbstractErlContentAssistProcessor implements
         IContentAssistProcessor {
+
+    public boolean restarted = false;
+
+    private final class CompletionListener implements ICompletionListener,
+            ICompletionListenerExtension {
+
+        @Override
+        public void assistSessionStarted(final ContentAssistEvent event) {
+            if (event.processor != AbstractErlContentAssistProcessor.this) {
+                return;
+            }
+            restarted = false;
+        }
+
+        @Override
+        public void assistSessionEnded(final ContentAssistEvent event) {
+            if (event.processor != AbstractErlContentAssistProcessor.this) {
+                return;
+            }
+            restarted = false;
+        }
+
+        @Override
+        public void selectionChanged(final ICompletionProposal proposal,
+                final boolean smartToggle) {
+        }
+
+        @Override
+        public void assistSessionRestarted(final ContentAssistEvent event) {
+            if (event.processor != AbstractErlContentAssistProcessor.this) {
+                return;
+            }
+            restarted = true;
+        }
+    }
 
     public static class CompletionNameComparer implements Comparator<ICompletionProposal> {
 
@@ -143,6 +181,9 @@ public abstract class AbstractErlContentAssistProcessor implements
         this.module = module;
         this.project = project;
         this.contentAssistant = contentAssistant;
+        if (contentAssistant != null) {
+            contentAssistant.addCompletionListener(new CompletionListener());
+        }
     }
 
     protected List<ICompletionProposal> getModules(final IRpcSite backend,
@@ -185,6 +226,14 @@ public abstract class AbstractErlContentAssistProcessor implements
                 String before = getBefore(viewer, doc, offset);
                 // ErlLogger.debug("computeCompletionProposals before = %s %d %s",
                 // before, oldSuggestions, oldDoc);
+
+                if (restarted && offset > 0) {
+                    final char last = doc.get(offset - 1, 1).charAt(0);
+                    if (last == ',' || last == '.' || last == ';' || last == ')'
+                            || last == '(') {
+                        return null;
+                    }
+                }
 
                 if (Objects.equal(oldDoc, doc) && oldBefore != null
                         && before.startsWith(oldBefore) && oldSuggestions == 0) {
