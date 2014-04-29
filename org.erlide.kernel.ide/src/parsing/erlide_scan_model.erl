@@ -121,31 +121,36 @@ replace_between_lines(From, Length, With, Lines) ->
         {LineNo1, Pos1, _Length1, Line1, Beyond1} ->
             ?D({LineNo1, Pos1, _Length1, Line1, Beyond1}),
             FirstPiece = substr(Line1, 1, From-Pos1),
-            {LineNo2, Pos2, _Length2, Line2, Beyond2} =
-                case Length of
-                    0 ->
-                        {LineNo1, Pos1, unused, Line1, Beyond1};
-                    _ ->
-                        erlide_scan_util:find_line_w_offset(From+Length, Lines)
-                end,
-            ?D({LineNo2, Pos2, _Length2, Line2, Beyond2}),
-            LastPiece = substr(Line2, From+Length-Pos2+1),
-            ?D({FirstPiece, LastPiece}),
-            {NewText, NOldLines} =
-                case {Beyond1, Beyond2} of
-                    {on_eof, on_eof} ->
-                        {LastPiece++With, 1};
-                    {beyond_eof, _} ->
-                        {FirstPiece++With++LastPiece, 0};
-                    {_, beyond_eof} ->
-                        {FirstPiece++With++LastPiece, LineNo2-LineNo1};
-                    _ ->
-                        {FirstPiece++With++LastPiece, LineNo2-LineNo1+1}
-                end,
-            WLines = erlide_scan_util:split_lines_w_lengths(NewText),
-            ?D(WLines),
-            {LineNo1, NOldLines, WLines,
-             replace_between(LineNo1, NOldLines, WLines, Lines)}
+            LineInfo = case Length of
+                           0 ->
+                               {LineNo1, Pos1, unused, Line1, Beyond1};
+                           _ ->
+                               erlide_scan_util:find_line_w_offset(From+Length, Lines)
+                       end,
+            case LineInfo of
+                {LineNo2, Pos2, _Length2, Line2, Beyond2} ->
+                    ?D({LineNo2, Pos2, _Length2, Line2, Beyond2}),
+                    LastPiece = substr(Line2, From+Length-Pos2+1),
+                    ?D({FirstPiece, LastPiece}),
+                    {NewText, NOldLines} =
+                        case {Beyond1, Beyond2} of
+                            {on_eof, on_eof} ->
+                                {LastPiece++With, 1};
+                            {beyond_eof, _} ->
+                                {FirstPiece++With++LastPiece, 0};
+                            {_, beyond_eof} ->
+                                {FirstPiece++With++LastPiece, LineNo2-LineNo1};
+                            _ ->
+                                {FirstPiece++With++LastPiece, LineNo2-LineNo1+1}
+                        end,
+                    WLines = erlide_scan_util:split_lines_w_lengths(NewText),
+                    ?D(WLines),
+                    {LineNo1, NOldLines, WLines,
+                     replace_between(LineNo1, NOldLines, WLines, Lines)};
+                _ ->
+                    erlide_log:log({not_found_2, "erlide_scan_util:find_line_w_offset", From+Length, Lines}),
+                    ok
+            end
     end.
 
 fix_token(T = #token{offset=O, line=L, last_line=u}, Offset, Line) ->
