@@ -134,7 +134,7 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
                     final IProgressMonitor monitor = monitor0 != null ? monitor0
                             : new NullProgressMonitor();
                     try {
-                        monitor.beginTask("Indenting "
+                        monitor.beginTask("Processing "
                                 + textEditor.getEditorInput().getName(),
                                 IProgressMonitor.UNKNOWN);
                         doAction(sel, textEditor);
@@ -146,7 +146,7 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
 
             try {
                 PlatformUI.getWorkbench().getProgressService()
-                        .busyCursorWhile(myRunnableWithProgress);
+                .busyCursorWhile(myRunnableWithProgress);
             } catch (final InvocationTargetException e) {
             } catch (final InterruptedException e) {
             }

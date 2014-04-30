@@ -5,8 +5,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRewriteTarget;
+import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -57,24 +58,21 @@ public class ToggleCommentHandler extends ErlangAbstractHandler {
         display.syncExec(new Runnable() {
             @Override
             public void run() {
-                final IRewriteTarget target = (IRewriteTarget) textEditor
-                        .getAdapter(IRewriteTarget.class);
-                if (target != null) {
-                    target.beginCompoundChange();
-                    target.setRedraw(false);
-                }
-                try {
-                    if (!document.get(selection.getOffset(), selection.getLength())
-                            .equals(newText)) {
-                        document.replace(selection.getOffset(), selection.getLength(),
-                                newText);
+                final ITextOperationTarget target1 = (ITextOperationTarget) textEditor
+                        .getAdapter(ITextOperationTarget.class);
+                if (target1 instanceof ITextViewer) {
+                    final ITextViewer textViewer = (ITextViewer) target1;
+                    try {
+                        if (!document.get(selection.getOffset(), selection.getLength())
+                                .equals(newText)) {
+                            document.replace(selection.getOffset(),
+                                    selection.getLength(), newText);
+                            textViewer.setSelectedRange(selection.getOffset(),
+                                    newText.length());
+                        }
+                    } catch (final BadLocationException e) {
+                        ErlLogger.warn(e);
                     }
-                } catch (final BadLocationException e) {
-                    ErlLogger.warn(e);
-                }
-                if (target != null) {
-                    target.endCompoundChange();
-                    target.setRedraw(true);
                 }
             }
         });
