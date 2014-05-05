@@ -3,12 +3,28 @@
 WORKSPACE=$1
 ERLANG_HOME=$2
 OUTPUT=$3
+WW=$4
+
+if [ -z "$WW" ]
+	then
+		WW="$WORKSPACE"
+fi
 
 mkdir -p $OUTPUT
 cd ${WORKSPACE}
 
-"${ERLANG_HOME}/bin/erl" -pa "${WORKSPACE}/org.erlide.kernel.builder/ebin" -pa "${WORKSPACE}/org.erlide.kernel.debugger/ebin" -pa "${WORKSPACE}/org.erlide.kernel.debugger.otp/ebin" -pa "${WORKSPACE}/org.erlide.kernel.ide/ebin" -pa "${WORKSPACE}/org.erlide.kernel.tests/ebin" -pa "${WORKSPACE}/org.erlide.kernel.common/ebin" -eval "eunit:test(kernel_tests, [{report,{eunit_surefire,[{dir,\"$OUTPUT\"}]}}]),init:stop()." -noshell
+"$ERLANG_HOME/bin/erlc" ${WORKSPACE}/org.erlide.releng/erlide_eunit.erl
+
+SRC_DIRS="[\"${WW}/org.erlide.kernel.common/ebin\",\"${WW}/org.erlide.kernel.builder/ebin\",\"${WW}/org.erlide.kernel.ide/ebin\", \
+           \"${WW}/org.erlide.kernel.debugger/ebin\",\"${WW}/org.erlide.kernel.debugger.otp.r15/ebin\"]"
+
+"${ERLANG_HOME}/bin/erl" -pa "${WORKSPACE}/org.erlide.releng" -pa "${WORKSPACE}/org.erlide.kernel.builder/ebin" -pa "${WORKSPACE}/org.erlide.kernel.debugger/ebin" \
+ -pa "${WORKSPACE}/org.erlide.kernel.debugger.otp.r15/ebin" -pa "${WORKSPACE}/org.erlide.kernel.ide/ebin" \
+ -pa "${WORKSPACE}/org.erlide.kernel.tests/ebin" -pa "${WORKSPACE}/org.erlide.kernel.common/ebin" \
+ -eval "erlide_eunit:run(kernel_tests, \"$OUTPUT\", $SRC_DIRS),init:stop()." -noshell
+# -eval "erlide_eunit:test(\"$OUTPUT\"),init:stop()." -noshell 
 
 mv $OUTPUT/TEST-kernel_tests.xml $OUTPUT/junit0.xml
 iconv -f ISO-8859-1 -t UTF-8 $OUTPUT/junit0.xml > $OUTPUT/junit.xml
 rm $OUTPUT/junit0.xml
+
