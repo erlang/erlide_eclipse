@@ -587,7 +587,11 @@ public class ErlProject extends Openable implements IErlProject,
     @Override
     public void setProperties(final ErlangProjectProperties newProperties) {
         getModelCache().removeProject(this);
-        properties.copyFrom(newProperties);
+        if (properties == null) {
+            properties = newProperties;
+        } else {
+            properties.copyFrom(newProperties);
+        }
         storeAllProperties();
     }
 
