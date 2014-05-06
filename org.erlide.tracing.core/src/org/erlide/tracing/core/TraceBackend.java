@@ -37,9 +37,9 @@ import com.google.common.eventbus.Subscribe;
 
 /**
  * Singleton class used for communication with trace node.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TraceBackend {
 
@@ -122,7 +122,7 @@ public class TraceBackend {
 
     /**
      * Checks if tracing is started.
-     * 
+     *
      * @return <code>true</code> if started, <code>false</code> otherwise
      */
     public boolean isStarted() {
@@ -131,7 +131,7 @@ public class TraceBackend {
 
     /**
      * Checks if trace results are being loaded (i.e. backend receives results).
-     * 
+     *
      * @return <code>true</code> if loading in progress, <code>false</code>
      *         otherwise
      */
@@ -141,7 +141,7 @@ public class TraceBackend {
 
     /**
      * Starts tracing given nodes.
-     * 
+     *
      * @return <code>true</code> if successful, <code>false</code> otherwise
      */
     public TracingStatus start() {
@@ -303,7 +303,7 @@ public class TraceBackend {
 
     /**
      * Loads information about given file.
-     * 
+     *
      * @param path
      *            path
      */
@@ -333,7 +333,7 @@ public class TraceBackend {
      * Loads traces from active result set (
      * {@link #setActiveResultSet(TracingResultsNode)}). Index of last trace
      * which will be loaded is <code>max(number_of_traces, endIndex)</code>.
-     * 
+     *
      * @param theStartIndex
      *            number of first trace
      * @param endIndex
@@ -385,7 +385,7 @@ public class TraceBackend {
 
     /**
      * Removes selected tracing result from list.
-     * 
+     *
      * @param tracingResult
      *            tracing result to be removed
      */
@@ -405,7 +405,7 @@ public class TraceBackend {
     /**
      * Returns backend used for tracing. If this backend does not exist it can
      * be created.
-     * 
+     *
      * @param create
      *            if backend should be created when it does not exist
      * @return backend
@@ -419,7 +419,7 @@ public class TraceBackend {
 
     /**
      * Performs actions after loading file or trace data.
-     * 
+     *
      * @param status
      *            status
      */
@@ -550,7 +550,7 @@ public class TraceBackend {
 
     /**
      * Returns object that describes last error (e.g. thrown exception).
-     * 
+     *
      * @return error details
      */
     public Object getErrorObject() {
@@ -559,7 +559,7 @@ public class TraceBackend {
 
     /**
      * Sets active results set (set from which traces will be loaded).
-     * 
+     *
      * @param results
      *            results set
      */
@@ -574,7 +574,7 @@ public class TraceBackend {
     /**
      * Returns index of first trace to be loaded from selected result set (
      * {@link #setActiveResultSet(TracingResultsNode)}).
-     * 
+     *
      * @return index
      */
     public long getStartIndex() {
@@ -582,8 +582,12 @@ public class TraceBackend {
     }
 
     private IBackend createBackend() {
-        final RuntimeInfo info = new RuntimeInfo(BackendCore.getRuntimeInfoCatalog()
-                .getErlideRuntime());
+        final RuntimeInfo erlideRuntime = BackendCore.getRuntimeInfoCatalog()
+                .getErlideRuntime();
+        if (erlideRuntime == null) {
+            return null;
+        }
+        final RuntimeInfo info = new RuntimeInfo(erlideRuntime);
         try {
             final BackendData data = getBackendData(info);
             data.setUseStartShell(true);

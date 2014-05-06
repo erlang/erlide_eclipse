@@ -52,7 +52,7 @@ initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache) ->
     Text = InitialText,
     CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
     RenewFun = fun(_F) -> erlide_scan_model:do_scan(ScannerName, Text) end,
-    Result = erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UseCache),
+    Result = erlide_cache:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UseCache),
     {Result, Text}.
 
 get_token_at(ScannerName, Offset) when is_atom(ScannerName), is_integer(Offset) ->

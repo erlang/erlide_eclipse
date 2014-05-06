@@ -16,8 +16,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.debug.core.model.Breakpoint;
-import org.eclipse.debug.core.model.ILineBreakpoint;
+import org.eclipse.debug.core.model.LineBreakpoint;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.engine.ErlangEngine;
@@ -27,8 +26,7 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.util.ErlLogger;
 
-public class ErlangLineBreakpoint extends Breakpoint implements IErlangBreakpoint,
-        ILineBreakpoint {
+public class ErlangLineBreakpoint extends LineBreakpoint implements IErlangBreakpoint {
 
     public static final String ERLANG_LINE_BREAKPOINT_MARKER_TYPE = "org.erlide.core.erlang.lineBreakpoint.marker";
 
@@ -82,7 +80,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements IErlangBreakpoin
 
     /**
      * Installs this breakpoint
-     * 
+     *
      * @param theTarget
      *            debug target
      */
@@ -111,45 +109,6 @@ public class ErlangLineBreakpoint extends Breakpoint implements IErlangBreakpoin
     public String getModule() {
         final IResource r = getMarker().getResource();
         return r.getFullPath().removeFileExtension().lastSegment();
-    }
-
-    // copied these three from LineBreakpoint, because I think we should have
-    // class hierarchy around ErlangBreakpoint instead... (multiple inheritance,
-    // anyone? =) )
-    /**
-     * @see ILineBreakpoint#getLineNumber()
-     */
-    @Override
-    public int getLineNumber() throws CoreException {
-        final IMarker m = getMarker();
-        if (m != null) {
-            return m.getAttribute(IMarker.LINE_NUMBER, -1);
-        }
-        return -1;
-    }
-
-    /**
-     * @see ILineBreakpoint#getCharStart()
-     */
-    @Override
-    public int getCharStart() throws CoreException {
-        final IMarker m = getMarker();
-        if (m != null) {
-            return m.getAttribute(IMarker.CHAR_START, -1);
-        }
-        return -1;
-    }
-
-    /**
-     * @see ILineBreakpoint#getCharEnd()
-     */
-    @Override
-    public int getCharEnd() throws CoreException {
-        final IMarker m = getMarker();
-        if (m != null) {
-            return m.getAttribute(IMarker.CHAR_END, -1);
-        }
-        return -1;
     }
 
     public void remove(final ErlangDebugTarget theTarget) {

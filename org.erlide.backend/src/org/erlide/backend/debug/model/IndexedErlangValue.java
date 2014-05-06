@@ -56,6 +56,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         if (theValue instanceof OtpErlangString) {
             final OtpErlangString os = (OtpErlangString) theValue;
             final String s = os.stringValue();
+            // TODO real encoding?
             final byte[] b = s.getBytes(Charsets.ISO_8859_1);
             if (!looksLikeAscii(b)) {
                 return new OtpErlangList(s);

@@ -442,11 +442,11 @@ get_doc_for_external(StateDir, Mod, FuncList) ->
         ?D(OutDir),
         DocFileName = filename:join(OutDir, Module ++ ".html"),
         IndexFileName = filename:join([StateDir, "erlide_doc",
-                                       Module ++ ".erlide_doc_x"]),
+                                       Module ++ ".doc"]),
         filelib:ensure_dir(IndexFileName),
         Renew = fun(F) -> extract_from_file(F) end,
         ?D({DocFileName, IndexFileName, Renew}),
-        {_Cached, Doc} = erlide_util:check_and_renew_cached(DocFileName, IndexFileName, ?CACHE_VERSION, Renew, true),
+        {_Cached, Doc} = erlide_cache:check_and_renew_cached(DocFileName, IndexFileName, ?CACHE_VERSION, Renew, true),
         ?D({doc, _Cached, Doc, FuncList}),
         PosLens = extract_doc_for_funcs(Doc, FuncList),
         Anchor = case FuncList of

@@ -151,6 +151,24 @@ public class ContentAssistTest {
         }
     }
 
+    @Test
+    public void caseInsensitiveProposalsTest() throws Exception {
+        ErlideTestUtils.initProjects();
+        final String name1 = "testproject1";
+        final IErlProject project = ErlideTestUtils.createProject(
+                ErlideTestUtils.getTmpPath(name1), name1);
+        try {
+            final String initialText1 = "-define(abc,abc).\n-define(aBc, aBc).\nf()->?ab";
+            completionTest(project, "w.erl", initialText1, initialText1.length() - 1,
+                    Lists.newArrayList("abc", "aBc"), false);
+            final String initialText2 = "-define(abc,abc).\n-define(aBc, aBc).\nf()->?aB";
+            completionTest(project, "w2.erl", initialText2, initialText2.length(),
+                    Lists.newArrayList("aBc", "abc"), false);
+        } finally {
+            ErlideTestUtils.deleteProjects();
+        }
+    }
+
     public void completionTest(final IErlProject project, final String name,
             final String text, final int offset, final List<String> expected,
             final boolean inStrings) throws CoreException {

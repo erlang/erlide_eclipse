@@ -110,7 +110,6 @@ public class ModelInternalUtils implements ModelUtilService {
                     break;
                 }
                 parent = getElementWithExternalName(parent, path.get(i));
-                ErlLogger.debug(">>parent %s", parent);
             }
             if (parent != null) {
                 final IErlElement child = parent.getChildNamed(path.get(n));

@@ -20,6 +20,7 @@ import org.erlide.engine.services.text.IndentService;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
+import org.erlide.ui.handlers.ErlangAbstractHandler;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
@@ -69,13 +70,11 @@ public class IndentHandler extends ErlangAbstractHandler {
                     target.setRedraw(false);
                 }
                 try {
-                    // ErlLogger.debug("'"+newText+"'");
                     if (!document.get(selection.getOffset(), selection.getLength())
                             .equals(newText)) {
                         document.replace(selection.getOffset(), selection.getLength(),
                                 newText);
                     }
-                    selectAndReveal(selection.getOffset(), newText.length(), textEditor);
                 } catch (final BadLocationException e) {
                     ErlLogger.warn(e);
                 }

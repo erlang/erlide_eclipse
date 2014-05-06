@@ -51,7 +51,7 @@ initial_parse(ScannerName, ModuleFileName, InitialText, StateDir, UseCache,
                            {Model, Refs}
                    end,
         CacheFileName = BaseName ++ ".noparse",
-        {Cached, {Model, Refs}} = erlide_util:check_and_renew_cached(
+        {Cached, {Model, Refs}} = erlide_cache:check_and_renew_cached(
                                     ModuleFileName, CacheFileName, ?CACHE_VERSION,
                                     RenewFun, UseCache),
         {ok, Model, Cached, Refs}

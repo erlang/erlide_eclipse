@@ -165,7 +165,7 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
 
     /**
      * The double click strategy
-     * 
+     *
      * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getDoubleClickStrategy(org.eclipse.jface.text.source.ISourceViewer,
      *      java.lang.String)
      */
@@ -211,7 +211,7 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
 
     /**
      * Returns the information control creator for the quick assist assistant.
-     * 
+     *
      * @return the information control creator
      * @since 3.3
      */
@@ -313,4 +313,9 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
         return reconciler;
     }
 
+    @Override
+    public String[] getDefaultPrefixes(final ISourceViewer sourceViewer,
+            final String contentType) {
+        return new String[] { "%%", "" };
+    }
 }

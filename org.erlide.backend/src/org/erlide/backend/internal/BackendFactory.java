@@ -123,11 +123,11 @@ public class BackendFactory implements IBackendFactory {
 
     private RuntimeInfo getIdeRuntimeInfo() {
         final RuntimeInfo runtime = runtimeInfoCatalog.getErlideRuntime();
-        if (runtimeHomeDirExists(runtime)) {
+        if (runtime != null && runtimeHomeDirExists(runtime)) {
             return new RuntimeInfo(runtime);
         }
         for (final RuntimeInfo aruntime : runtimeInfoCatalog.getRuntimes()) {
-            if (runtimeHomeDirExists(aruntime) && aruntime != null) {
+            if (aruntime != null && runtimeHomeDirExists(aruntime)) {
                 return new RuntimeInfo(aruntime);
             }
         }
@@ -135,6 +135,9 @@ public class BackendFactory implements IBackendFactory {
     }
 
     private boolean runtimeHomeDirExists(final RuntimeInfo runtime) {
+        if (runtime == null) {
+            return false;
+        }
         final String otpHome = runtime.getOtpHome();
         return otpHome != null && new File(otpHome).exists();
     }

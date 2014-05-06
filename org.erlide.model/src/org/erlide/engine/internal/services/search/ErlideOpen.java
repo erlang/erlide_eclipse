@@ -2,7 +2,6 @@ package org.erlide.engine.internal.services.search;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.runtime.IPath;
@@ -22,7 +21,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 public class ErlideOpen implements OpenService {
 
@@ -165,27 +163,16 @@ public class ErlideOpen implements OpenService {
     }
 
     @Override
-    public Map<String, List<String>> getOtpLibSrcIncludes(final IRpcSite backend) {
+    public OtpErlangList getOtpLibStructure(final IRpcSite backend) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
-                    "get_otp_lib_src_includes", "s", stateDir);
+                    "get_otp_lib_structure", "s", stateDir);
             if (Util.isOk(res)) {
                 final OtpErlangTuple tres = (OtpErlangTuple) res;
                 final OtpErlangList lot = (OtpErlangList) tres.elementAt(1);
-                final Map<String, List<String>> result = Maps.newHashMap();
-                for (final OtpErlangObject o : lot) {
-                    final OtpErlangTuple t = (OtpErlangTuple) o;
-                    final OtpErlangString s = (OtpErlangString) t.elementAt(0);
-                    final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-                    final List<String> subResult = Lists
-                            .newArrayListWithCapacity(l.arity());
-                    for (final OtpErlangObject o2 : l) {
-                        subResult.add(Util.stringValue(o2));
-                    }
-                    result.put(s.stringValue(), subResult);
-                }
-                return result;
+                return lot;
             }
+            ErlLogger.error(res.toString());
         } catch (final RpcException e) {
             ErlLogger.error(e);
         }
@@ -196,7 +183,7 @@ public class ErlideOpen implements OpenService {
     public List<String> getLibFiles(final String entry) {
         try {
             final OtpErlangObject res = ideBackend.call(ERLIDE_OPEN,
-                    "get_lib_files", "s", entry);
+                    "get_lib_files", "ss", entry, stateDir);
             if (Util.isOk(res)) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangList l = (OtpErlangList) t.elementAt(1);

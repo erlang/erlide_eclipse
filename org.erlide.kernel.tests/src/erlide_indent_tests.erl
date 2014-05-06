@@ -205,7 +205,24 @@ indent_after_test_() ->
             "        X ->\n"
             "            ok\n"++
             "    after 500 ->\n"++
-            "            error\n"++
+            "        error\n"++
+            "    end.\n",
+    ?Test_indent(I, S).
+
+indent_after1_test_() ->
+    S = "" ++
+            "a()->\n"++
+            "try\n"++
+            "ok\n" ++
+            "after\n" ++
+            "ok\n" ++
+            "end.\n",
+    I = "" ++
+            "a()->\n"++
+            "    try\n"++
+            "        ok\n" ++
+            "    after\n" ++
+            "        ok\n" ++
             "    end.\n",
     ?Test_indent(I, S).
 

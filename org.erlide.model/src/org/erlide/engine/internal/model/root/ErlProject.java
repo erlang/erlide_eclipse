@@ -52,7 +52,6 @@ import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlElementVisitor;
-import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
@@ -167,8 +166,10 @@ public class ErlProject extends Openable implements IErlProject,
 
     private void addOtpExternals(final List<IErlElement> children) {
         final String name = "OTP " + getRuntimeVersion().toString();
-        final IErlExternalRoot external = new ErlOtpExternalReferenceEntryList(
-                this, name);
+        IErlElement external = getChildNamed(name);
+        if (external == null) {
+            external = new ErlOtpExternalReferenceEntryList(this, name);
+        }
         children.add(external);
     }
 
@@ -586,7 +587,11 @@ public class ErlProject extends Openable implements IErlProject,
     @Override
     public void setProperties(final ErlangProjectProperties newProperties) {
         getModelCache().removeProject(this);
-        properties.copyFrom(newProperties);
+        if (properties == null) {
+            properties = newProperties;
+        } else {
+            properties.copyFrom(newProperties);
+        }
         storeAllProperties();
     }
 
@@ -626,22 +631,15 @@ public class ErlProject extends Openable implements IErlProject,
                         || element.getKind() == ErlElementKind.PROJECT;
                 if (element instanceof IErlModule) {
                     final IErlModule module = (IErlModule) element;
-                    result.add(module);
+                    if (module.getModuleKind() == ModuleKind.HRL) {
+                        result.add(module);
+                    }
                     return false;
-                } else if (isExternalOrProject) {
-                    if (element instanceof IErlExternal) {
-                        final IErlExternal external = (IErlExternal) element;
-                        if (!external.hasIncludes()) {
-                            return false;
-                        }
-                    }
-                    if (element instanceof IOpenable) {
-                        final IOpenable openable = (IOpenable) element;
-                        openable.open(null);
-                    }
-                    return true;
+                } else if (isExternalOrProject && element instanceof IOpenable) {
+                    final IOpenable openable = (IOpenable) element;
+                    openable.open(null);
                 }
-                return false;
+                return isExternalOrProject;
             }
         }, EnumSet.noneOf(AcceptFlags.class), ErlElementKind.MODULE);
         return result;

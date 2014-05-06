@@ -63,6 +63,10 @@ public class DialyzerUtils {
             final Set<IErlModule> modules, final Set<IErlProject> projects,
             final IBackend backend) throws InvocationTargetException,
             DialyzerErrorException {
+        if (backend == null) {
+            ErlLogger.warn("Trying to dialyze with null backend");
+            return;
+        }
         try {
             for (final IErlModule module : modules) {
                 DialyzerMarkerUtils.removeDialyzerMarkersFor(module.getResource());

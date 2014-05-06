@@ -53,7 +53,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Utility class, which aims to collect common frequently used functions.
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -63,7 +63,7 @@ public final class WranglerUtils {
 
     /**
      * Gets the column number from offset value
-     * 
+     *
      * @param offset
      *            offset in the current editor
      * @param line
@@ -88,7 +88,7 @@ public final class WranglerUtils {
 
     /**
      * Calculates offset from the given line and column number.
-     * 
+     *
      * @param line
      *            line number
      * @param column
@@ -106,7 +106,7 @@ public final class WranglerUtils {
 
     /**
      * Calculate offset from a position.
-     * 
+     *
      * @param pos
      *            Position wrapped in an Erlang Tuple: {Line, Column}
      * @param doc
@@ -127,7 +127,7 @@ public final class WranglerUtils {
 
     /**
      * Gets a string from a document.
-     * 
+     *
      * @param range
      *            Position range
      * @param doc
@@ -147,7 +147,7 @@ public final class WranglerUtils {
 
     /**
      * Returns a list of the given project Erlang files.
-     * 
+     *
      * @param project
      *            the containing project in which the scan is run
      * @return module names' list
@@ -165,7 +165,7 @@ public final class WranglerUtils {
 
     /**
      * Get modules in an Erlang project.
-     * 
+     *
      * @param project
      *            the project in which the scan is run
      * @return module list
@@ -203,7 +203,7 @@ public final class WranglerUtils {
 
     /**
      * Removes the extension from a filename
-     * 
+     *
      * @param fileName
      *            the file's name
      * @return file name without the extension
@@ -214,7 +214,7 @@ public final class WranglerUtils {
 
     /**
      * Returns the selection's text from the active editor's text file.
-     * 
+     *
      * @param start
      *            tuple with 2 element: line:int(), col:int()
      * @param end
@@ -237,7 +237,7 @@ public final class WranglerUtils {
 
     /**
      * Returns the selection's text from the active editor's text file.
-     * 
+     *
      * @param startOffset
      *            start offset
      * @param endOffset
@@ -271,7 +271,7 @@ public final class WranglerUtils {
 
     /**
      * Highlight the given selection in the given editor
-     * 
+     *
      * @param startOffset
      *            selection's starting offset
      * @param endOffset
@@ -286,7 +286,7 @@ public final class WranglerUtils {
 
     /**
      * Highlight the given selection in the given editor
-     * 
+     *
      * @param offset
      *            selection's starting offset
      * @param length
@@ -304,7 +304,7 @@ public final class WranglerUtils {
     /**
      * Highlight the given selection in the editor which contains the given
      * IErlMemberSelection
-     * 
+     *
      * @param offset
      *            selection's starting offset
      * @param length
@@ -320,7 +320,7 @@ public final class WranglerUtils {
 
     /**
      * Highlights the given function clause
-     * 
+     *
      * @param clause
      *            erlang function clause
      */
@@ -337,7 +337,7 @@ public final class WranglerUtils {
 
     /**
      * Opens the given file with the Eclipse default editor
-     * 
+     *
      * @param file
      *            file
      * @return the opened editor
@@ -363,7 +363,7 @@ public final class WranglerUtils {
 
     /**
      * Returns the actual editor's document
-     * 
+     *
      * @return document in the current editor
      */
     static public IDocument getDocument() {
@@ -378,7 +378,7 @@ public final class WranglerUtils {
 
     /**
      * Gets the document which belongs to a file
-     * 
+     *
      * @param file
      *            corresponding file
      * @return document
@@ -389,7 +389,7 @@ public final class WranglerUtils {
 
     /**
      * Returns the corresponding IDocument object
-     * 
+     *
      * @param editor
      *            editor which has the document
      * @return document is conatained by the editor
@@ -427,7 +427,7 @@ public final class WranglerUtils {
 
     /**
      * Gets IFile object from path string
-     * 
+     *
      * @param pathString
      *            file path
      * @return IFile object
@@ -439,7 +439,7 @@ public final class WranglerUtils {
 
     /**
      * Gets an IFile object from Path
-     * 
+     *
      * @param path
      *            file path
      * @return IFile object
@@ -463,7 +463,7 @@ public final class WranglerUtils {
 
     /**
      * Notifies Erlide about the changed files.
-     * 
+     *
      * @param changedFiles
      *            changed files
      */

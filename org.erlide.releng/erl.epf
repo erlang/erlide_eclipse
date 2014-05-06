@@ -19,7 +19,7 @@ file_export_version=3.0
 /instance/org.erlide.core/runtimes/erl/args=
 /instance/org.erlide.core/runtimes/erl/codePath=
 # homeDir has to be replaced to a proper value
-/instance/org.erlide.core/runtimes/erl/homeDir=/var/lib/jenkins/erlide_tools/otp
+/instance/org.erlide.core/runtimes/erl/homeDir=/home/jenkins/erlide_tools/otp
 /instance/org.erlide.core/runtimes/erl/longName=true
 /instance/org.erlide.core/runtimes/erl/managed=false
 /instance/org.erlide.core/runtimes/erl/startShell=false
@@ -28,7 +28,7 @@ file_export_version=3.0
 /instance/org.erlide.core/runtimes/erl15/args=
 /instance/org.erlide.core/runtimes/erl15/codePath=
 # homeDir has to be replaced to a proper value
-/instance/org.erlide.core/runtimes/erl15/homeDir=/var/lib/jenkins/erlide_tools/otp15
+/instance/org.erlide.core/runtimes/erl15/homeDir=/home/jenkins/erlide_tools/otp15
 /instance/org.erlide.core/runtimes/erl15/longName=true
 /instance/org.erlide.core/runtimes/erl15/managed=false
 /instance/org.erlide.core/runtimes/erl15/startShell=false
@@ -37,7 +37,7 @@ file_export_version=3.0
 /instance/org.erlide.core/runtimes/erl16/args=
 /instance/org.erlide.core/runtimes/erl16/codePath=
 # homeDir has to be replaced to a proper value
-/instance/org.erlide.core/runtimes/erl16/homeDir=/var/lib/jenkins/erlide_tools/otp16
+/instance/org.erlide.core/runtimes/erl16/homeDir=/home/jenkins/erlide_tools/otp16
 /instance/org.erlide.core/runtimes/erl16/longName=true
 /instance/org.erlide.core/runtimes/erl16/managed=false
 /instance/org.erlide.core/runtimes/erl16/startShell=false
@@ -46,7 +46,7 @@ file_export_version=3.0
 /instance/org.erlide.core/runtimes/erl17/args=
 /instance/org.erlide.core/runtimes/erl17/codePath=
 # homeDir has to be replaced to a proper value
-/instance/org.erlide.core/runtimes/erl17/homeDir=/var/lib/jenkins/erlide_tools/otp17
+/instance/org.erlide.core/runtimes/erl17/homeDir=/home/jenkins/erlide_tools/otp17
 /instance/org.erlide.core/runtimes/erl17/longName=true
 /instance/org.erlide.core/runtimes/erl17/managed=false
 /instance/org.erlide.core/runtimes/erl17/startShell=false

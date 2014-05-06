@@ -2,7 +2,6 @@ package org.erlide.engine.services.search;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.services.ErlangService;
@@ -69,5 +68,5 @@ public interface OpenService extends ErlangService {
 
     Collection<String> getIncludesInDir(final String directory);
 
-    Map<String, List<String>> getOtpLibSrcIncludes(IRpcSite backend);
+    OtpErlangList getOtpLibStructure(IRpcSite backend);
 }

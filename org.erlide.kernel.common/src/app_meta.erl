@@ -15,7 +15,7 @@
 
 %%FIX_ME inlined #meta in #app_meta, code probably broken now
 
--spec read(string()) -> #app_meta{}.
+-spec read(string()) -> app_meta().
 read(Path) ->
     {ok, [Term]} = file:consult(Path),
     case Term of
@@ -30,20 +30,20 @@ write(Term, Path) ->
     Text = io_lib:format("~p~n", [format(Term)]),
     file:write_file(Path, Text).
 
--spec meta_to_app(#app_meta{}) -> {application, string(), list()}.
+-spec meta_to_app(app_meta()) -> {application, atom(), list()}.
 meta_to_app(#app_meta{name=Name}=Meta) ->
     {application, Name, remove_defaults(clean(format(Meta)), format(#app_meta{}))}.
 
--spec app_to_meta({application, string(), list()}) -> #app_meta{}.
+%-spec app_to_meta({application, string(), list()}) -> #app_meta{}.
 app_to_meta({application, Name, Meta}) ->
     {app_meta, Name, meta(Meta)}.
 
--spec merge_app_to_meta({application, string(), list()}, #app_meta{}) -> #app_meta{}.
+%-spec merge_app_to_meta({application, atom(), list()}, app_meta()) -> app_meta().
 merge_app_to_meta(App, Meta) ->
-    lists:foldl(App, fun meta/2, Meta).
+    lists:foldl(fun meta/2, App, Meta).
 
 check_app_meta(App, Meta) ->
-    lists:append(lists:foldl(App, fun check_meta/2, Meta)).
+    lists:append(lists:foldl(fun check_meta/2, App, Meta)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

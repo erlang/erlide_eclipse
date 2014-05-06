@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Wrangler code inspection fragment
 Bundle-SymbolicName: org.erlide.wrangler.refactoring.codeinspection;singleton:=true
-Bundle-Version: 0.1.11.qualifier
+Bundle-Version: 0.1.12.qualifier
 Bundle-Vendor: UKC
 Fragment-Host: org.erlide.wrangler.refactoring;bundle-version="0.10.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.ui
-Import-Package: com.abstratt.graphviz,
+Import-Package: com.abstratt.graphviz;resolution:=optional,
  org.apache.commons.io
 Export-Package: org.erlide.wrangler.refactoring.codeinspection;x-internal:=true,
  org.erlide.wrangler.refactoring.codeinspection.ui;x-internal:=true,

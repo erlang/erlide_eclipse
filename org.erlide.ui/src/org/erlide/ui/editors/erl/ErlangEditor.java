@@ -119,7 +119,7 @@ import org.erlide.util.SystemConfiguration;
  * @author Eric Merrit [cyberlync at gmail dot com]
  */
 public class ErlangEditor extends AbstractErlangEditor implements IOutlineContentCreator,
-IOutlineSelectionHandler {
+        IOutlineSelectionHandler {
 
     public static final String ERLANG_EDITOR_ID = "org.erlide.ui.editors.erl.ErlangEditor";
     public static final String EDITOR_INDENT_WIDTH = "indentWidth";
@@ -157,6 +157,8 @@ IOutlineSelectionHandler {
         fErlangEditorErrorTickUpdater = new ErlangEditorErrorTickUpdater(this);
 
         this.xrefService = xrefService;
+
+        setRulerContextMenuId("#ErlangEditorRulerContext");
     }
 
     @Override
@@ -174,7 +176,7 @@ IOutlineSelectionHandler {
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
         node.removePreferenceChangeListener(fPreferenceChangeListener);
         ErlideUIPlugin.getDefault().getPreferenceStore()
-        .removePropertyChangeListener(propertyChangeListener);
+                .removePropertyChangeListener(propertyChangeListener);
         if (fActionGroups != null) {
             fActionGroups.dispose();
             fActionGroups = null;
@@ -294,7 +296,7 @@ IOutlineSelectionHandler {
         if (getModule() != null) {
             cleanUpAction = new CleanUpAction(getModule().getResource());
             cleanUpAction
-            .setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAN_UP);
+                    .setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAN_UP);
             setAction("cleanUp", cleanUpAction);
         }
 
@@ -306,7 +308,7 @@ IOutlineSelectionHandler {
 
         callhierarchy = new CallHierarchyAction(this, getModule(), xrefService);
         callhierarchy
-        .setActionDefinitionId(IErlangEditorActionDefinitionIds.CALLHIERARCHY);
+                .setActionDefinitionId(IErlangEditorActionDefinitionIds.CALLHIERARCHY);
         setAction("callHierarchy", callhierarchy);
         markAsStateDependentAction("CallHierarchy", true);
         markAsSelectionDependentAction("CallHierarchy", true);
@@ -332,7 +334,7 @@ IOutlineSelectionHandler {
         clearCacheAction = new ClearCacheAction(
                 ErlangEditorMessages.getBundleForConstructedKeys(), "ClearCache.", this);
         clearCacheAction
-        .setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAR_CACHE);
+                .setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAR_CACHE);
         setAction("ClearCache", clearCacheAction);
         markAsStateDependentAction("ClearCache", true);
         markAsSelectionDependentAction("ClearCache", true);
@@ -464,7 +466,7 @@ IOutlineSelectionHandler {
             // http://dev.eclipse.org/bugs/show_bug.cgi?id=34195
             visible = targetOffset >= visibleRegion.getOffset()
                     && targetOffset <= visibleRegion.getOffset()
-                    + visibleRegion.getLength();
+                            + visibleRegion.getLength();
         }
 
         if (!visible) {
@@ -633,9 +635,9 @@ IOutlineSelectionHandler {
             fProjectionSupport = new ProjectionSupport(projectionViewer,
                     getAnnotationAccess(), getSharedColors());
             fProjectionSupport
-            .addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error"); //$NON-NLS-1$
+                    .addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error"); //$NON-NLS-1$
             fProjectionSupport
-            .addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning"); //$NON-NLS-1$
+                    .addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning"); //$NON-NLS-1$
             // TODO fProjectionSupport.setHoverControlCreator(new
             // IInformationControlCreator()
             // {
@@ -695,7 +697,7 @@ IOutlineSelectionHandler {
     // }
 
     protected abstract class AbstractSelectionChangedListener implements
-    ISelectionChangedListener {
+            ISelectionChangedListener {
 
         /**
          * Installs this selection changed listener with the given selection
@@ -853,8 +855,8 @@ IOutlineSelectionHandler {
     protected void synchronizeOutlinePage(final ISourceReference element,
             final boolean checkIfOutlinePageActive) {
         if (myOutlinePage != null // && element != null
-                // && !(checkIfOutlinePageActive && isErlangOutlinePageActive())
-                ) {
+        // && !(checkIfOutlinePageActive && isErlangOutlinePageActive())
+        ) {
             myOutlinePage.select(element);
         }
     }
@@ -1009,7 +1011,7 @@ IOutlineSelectionHandler {
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
         node.addPreferenceChangeListener(fPreferenceChangeListener);
         ErlideUIPlugin.getDefault().getPreferenceStore()
-        .addPropertyChangeListener(propertyChangeListener);
+                .addPropertyChangeListener(propertyChangeListener);
 
         PlatformUI.getWorkbench().addWindowListener(
                 markOccurencesHandler.fActivationListener);
@@ -1094,7 +1096,7 @@ IOutlineSelectionHandler {
                 if (containingAnnotation == null
                         || containingAnnotationPosition != null
                         && (forward && p.length >= containingAnnotationPosition.length || !forward
-                        && p.length < containingAnnotationPosition.length)) {
+                                && p.length < containingAnnotationPosition.length)) {
                     containingAnnotation = a;
                     containingAnnotationPosition = p;
                     currentAnnotation = p.length == length;
@@ -1289,7 +1291,7 @@ IOutlineSelectionHandler {
 
     public void dumpReconcilerLog(final String filename) {
         ((EditorConfiguration) getSourceViewerConfiguration())
-        .dumpReconcilerLog(filename);
+                .dumpReconcilerLog(filename);
     }
 
     public ActionGroup getActionGroup() {
@@ -1466,34 +1468,19 @@ IOutlineSelectionHandler {
      */
     class ActivationListener implements IWindowListener {
 
-        /*
-         * @seeorg.eclipse.ui.IWindowListener#windowActivated(org.eclipse.ui.
-         * IWorkbenchWindow)
-         *
-         * @since 3.1
-         */
         @Override
         public void windowActivated(final IWorkbenchWindow window) {
             if (window == getEditorSite().getWorkbenchWindow()
                     && markOccurencesHandler.fMarkOccurrenceAnnotations && isActivePart()) {
                 markOccurencesHandler.fForcedMarkOccurrencesSelection = getSelectionProvider()
                         .getSelection();
-                final IErlModule module = getModule();
-                if (module != null) {
-                    markOccurencesHandler
-                    .updateOccurrenceAnnotations(
-                            (ITextSelection) markOccurencesHandler.fForcedMarkOccurrencesSelection,
-                            module);
-                }
+                markOccurencesHandler
+                        .updateOccurrenceAnnotations(
+                                (ITextSelection) markOccurencesHandler.fForcedMarkOccurrencesSelection,
+                                getModule());
             }
         }
 
-        /*
-         * @seeorg.eclipse.ui.IWindowListener#windowDeactivated(org.eclipse.ui.
-         * IWorkbenchWindow)
-         *
-         * @since 3.1
-         */
         @Override
         public void windowDeactivated(final IWorkbenchWindow window) {
             if (window == getEditorSite().getWorkbenchWindow()
@@ -1502,22 +1489,10 @@ IOutlineSelectionHandler {
             }
         }
 
-        /*
-         * @seeorg.eclipse.ui.IWindowListener#windowClosed(org.eclipse.ui.
-         * IWorkbenchWindow)
-         *
-         * @since 3.1
-         */
         @Override
         public void windowClosed(final IWorkbenchWindow window) {
         }
 
-        /*
-         * @seeorg.eclipse.ui.IWindowListener#windowOpened(org.eclipse.ui.
-         * IWorkbenchWindow)
-         *
-         * @since 3.1
-         */
         @Override
         public void windowOpened(final IWorkbenchWindow window) {
         }

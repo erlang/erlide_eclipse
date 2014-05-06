@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
-Bundle-Version: 0.24.5.qualifier
+Bundle-Version: 0.24.6.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.erlide.ui.internal.ErlideUIPlugin
 Bundle-Vendor: %providerName
@@ -37,7 +37,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.ui.editors.internal.reconciling;x-internal:=true,
  org.erlide.ui.editors.scratchpad;x-internal:=true,
  org.erlide.ui.editors.util;x-friends:="org.erlide.test_support",
- org.erlide.ui.handlers;x-internal:=true,
+ org.erlide.ui.handlers,
  org.erlide.ui.internal;x-internal:=true,
  org.erlide.ui.internal.compare;x-internal:=true,
  org.erlide.ui.internal.folding;x-internal:=true,

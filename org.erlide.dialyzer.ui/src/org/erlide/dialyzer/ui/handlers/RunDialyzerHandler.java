@@ -84,8 +84,12 @@ public class RunDialyzerHandler extends AbstractHandler {
         }
 
         private IBackend createBackend() {
-            final RuntimeInfo info = new RuntimeInfo(BackendCore.getRuntimeInfoCatalog()
-                    .getErlideRuntime());
+            final RuntimeInfo erlideRuntime = BackendCore.getRuntimeInfoCatalog()
+                    .getErlideRuntime();
+            if (erlideRuntime == null) {
+                return null;
+            }
+            final RuntimeInfo info = new RuntimeInfo(erlideRuntime);
             final BackendData data = new BackendData(info);
             final String nodeName = BackendUtils.getErlideNodeNameTag() + "_dialyzer";
             data.setNodeName(nodeName);

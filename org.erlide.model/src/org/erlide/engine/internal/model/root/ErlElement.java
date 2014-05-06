@@ -41,7 +41,7 @@ import com.google.common.collect.Lists;
 
 /**
  * Root of Erlang element handle hierarchy.
- * 
+ *
  * @see IErlElement
  */
 public abstract class ErlElement extends PlatformObject implements IErlElement,
@@ -66,16 +66,16 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     /**
      * Constructs a handle for a Erlang element with the given parent element
      * and name.
-     * 
+     *
      * @param parent
      *            The parent of Erlang element
      * @param name
      *            The name of Erlang element
-     * 
+     *
      * @throws IllegalArgumentException
      *             if the type is not one of the valid Erlang element type
      *             constants
-     * 
+     *
      */
     protected ErlElement(final IParent parent, final String name) {
         fParent = parent;
@@ -85,7 +85,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     /**
      * This element is being closed. Do any necessary cleanup.
-     * 
+     *
      * @throws ErlModelException
      */
     protected void closing(final Object info) throws ErlModelException {
@@ -102,11 +102,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * given handle. By default, two handles represent the same element if they
      * are identical or if they represent the same type of element, have equal
      * names, parents, and occurrence counts.
-     * 
+     *
      * <p>
      * If a subclass has other requirements for equality, this method must be
      * overridden.
-     * 
+     *
      * @see Object#equals
      */
     @Override
@@ -171,7 +171,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     /**
      * Return the first instance of IOpenable in the parent hierarchy of this
      * element.
-     * 
+     *
      * <p>
      * Subclasses that are not IOpenable's must override this method.
      */
@@ -385,7 +385,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     /**
      * Is the structure of this element known
-     * 
+     *
      * @see IErlElement#isStructureKnown()
      */
     protected boolean structureKnown = false;
@@ -421,7 +421,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     /**
      * Returns a collection of (immediate) children of this node of the
      * specified type.
-     * 
+     *
      * @param type
      *            - one of the constants defined by IErlElement
      */
@@ -493,15 +493,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         }
     }
 
-    /**
-     * Sets whether the structure of this element known
-     * 
-     * @see IErlElement#isStructureKnown()
-     */
     public void setStructureKnown(final boolean newStructureKnown) {
-        if (structureKnown != newStructureKnown) {
-            structureKnown = newStructureKnown;
-        }
+        structureKnown = newStructureKnown;
     }
 
     @Override

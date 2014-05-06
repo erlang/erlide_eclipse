@@ -1,4 +1,4 @@
-package org.erlide.ui.actions;
+package org.erlide.ui.handlers;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -118,12 +118,12 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
 
-        final ISelection sel = HandlerUtil.getCurrentSelection(event);
-        if (sel == null || sel.isEmpty() || !(sel instanceof ITextSelection)) {
-            return null;
-        }
         final ITextEditor textEditor = (ITextEditor) HandlerUtil.getActiveEditor(event);
         if (!validateEditorInputState(textEditor)) {
+            return null;
+        }
+        final ISelection sel = textEditor.getSelectionProvider().getSelection();
+        if (sel == null || sel.isEmpty() || !(sel instanceof ITextSelection)) {
             return null;
         }
         ErlideEventTracer.getInstance().traceOperationStart(this);
@@ -134,7 +134,7 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
                     final IProgressMonitor monitor = monitor0 != null ? monitor0
                             : new NullProgressMonitor();
                     try {
-                        monitor.beginTask("Indenting "
+                        monitor.beginTask("Processing "
                                 + textEditor.getEditorInput().getName(),
                                 IProgressMonitor.UNKNOWN);
                         doAction(sel, textEditor);
@@ -146,7 +146,7 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
 
             try {
                 PlatformUI.getWorkbench().getProgressService()
-                        .busyCursorWhile(myRunnableWithProgress);
+                .busyCursorWhile(myRunnableWithProgress);
             } catch (final InvocationTargetException e) {
             } catch (final InterruptedException e) {
             }

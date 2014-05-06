@@ -64,7 +64,7 @@ public class RuntimeHelper {
 
     public OtpErlangObject concreteSyntax(final OtpErlangObject val) {
         try {
-            return target.call("erlide_syntax", "concrete", "x", val);
+            return target.call("erl_syntax", "concrete", "x", val);
         } catch (final RpcException e) {
             return null;
         }

@@ -3,6 +3,9 @@
 -record('REC', {a,b,c}).
 
 -define(myrec, #'REC'{}).
+-define(amacro, "").
+-define(Amacro, "").
+-define(aMacro, "").
 
 %%    hello
 %% doc for f
@@ -10,7 +13,7 @@
 		  any().
 f() -> 
 	X=[1,4,6,8], 
-	Z = lists:reverse(X), 
+	Z = lists:reverse(X),
 	io:format(""),
 	Z.
 

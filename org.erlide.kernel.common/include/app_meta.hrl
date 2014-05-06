@@ -9,6 +9,8 @@
                  doc = ["doc"] :: [meta_path()],
                  priv = "priv" :: meta_path()
                 }).
+-type layout() :: #layout{}.
+
 -type meta_module() :: module() |
                        {module(), options()}.
 -type meta_app() :: atom() |
@@ -32,4 +34,4 @@
                layout = #layout{},
                compiler_options = [] :: options()
               }).
-
+-type app_meta() :: #app_meta{}.
