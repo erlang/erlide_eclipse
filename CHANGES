@@ -1,6 +1,7 @@
 
 List of user visible changes between 0.28.0 and 0.28.1 (20140506)
 
+        809 - disable autocompletion chars in string literals
 7eae493 gh152 - Toggle comment (Ctrl-/) scrolls the editor
 5ac542b 1239 - completion: proposals should close after dot or semicolon
 b7852a3 1315 - Toggle comment (Ctrl-/) scrolls the editor
