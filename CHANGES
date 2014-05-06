@@ -1,3 +1,16 @@
+
+List of user visible changes between 0.28.0 and 0.28.1 (20140506)
+
+7eae493 gh152 - Toggle comment (Ctrl-/) scrolls the editor
+5ac542b 1239 - completion: proposals should close after dot or semicolon
+b7852a3 1315 - Toggle comment (Ctrl-/) scrolls the editor
+49a3863 gh171 - Indentation for "after" clause in try/catch seems off
+5750c82 gh176 - Comment code CTRL-SHIFT-C works strange
+4d7d6a2 gh175 - code completion is case sensitive
+f1cac75 Build otp model only once and cache it better
+2b7f379 wrangler: make dependency on graphviz optional
+f68f112 publish latest version number in plain text
+
 List of user visible changes between 0.27.1 and 0.28.0 (20140403)
 
 455febd rename editor tab width preference to 'indent width' and make read-only
