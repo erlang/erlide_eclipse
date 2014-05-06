@@ -89,13 +89,13 @@ public class DefaultErlangEngine implements IErlangEngine {
 
     private Object injectParameter(final Class<?> paramType) {
         if (IRpcSite.class == paramType) {
-            return backend;
+            return getBackend();
         }
         if (IErlModel.class == paramType) {
-            return erlangModel;
+            return getModel();
         }
         if (String.class == paramType) {
-            return stateDir;
+            return getStateDir();
         }
         throw new InjectionException(
                 "Constructor parameters are not injectable (ErlangService): "
