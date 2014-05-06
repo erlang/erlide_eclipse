@@ -85,7 +85,7 @@ import com.google.common.collect.Sets;
 /**
  * Shows a list of resources to the user with a text entry field for a string
  * pattern used to filter the list of resources.
- * 
+ *
  */
 public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog {
 
@@ -114,7 +114,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
     /**
      * Creates a new instance of the class
-     * 
+     *
      * @param shell
      *            the parent shell
      * @param multi
@@ -148,7 +148,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
     /**
      * Adds or replaces subtitle of the dialog
-     * 
+     *
      * @param text
      *            the new subtitle
      */
@@ -369,7 +369,6 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
             final ItemsFilter itemsFilter, final IProgressMonitor progressMonitor)
             throws CoreException {
         if (itemsFilter instanceof ModuleFilter) {
-
             container.accept(new ModuleProxyVisitor(contentProvider,
                     (ModuleFilter) itemsFilter, progressMonitor), IResource.NONE);
         }
@@ -429,7 +428,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
         /**
          * Returns the active working set the filter is working with.
-         * 
+         *
          * @return the active working set
          */
         public IWorkingSet getWorkingSet() {
@@ -438,7 +437,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
         /**
          * Sets the active working set.
-         * 
+         *
          * @param workingSet
          *            the working set the filter should work with
          */
@@ -469,7 +468,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
         /**
          * Creates new ResourceProxyVisitor instance.
-         * 
+         *
          * @param contentProvider
          * @param moduleFilter
          * @param progressMonitor
@@ -496,11 +495,14 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
             if (progressMonitor.isCanceled()) {
                 return false;
             }
-
-            final IResource resource = proxy.requestResource();
-            if (!resource.isAccessible()) {
+            if (!proxy.isAccessible()) {
                 return false;
             }
+            if (proxy.isDerived()) {
+                return false;
+            }
+
+            final IResource resource = proxy.requestResource();
             final IProject project = resource.getProject();
             final boolean accessible = project != null && project.isAccessible();
             if (project != null && !accessible) {
@@ -515,10 +517,6 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
             if (project == resource && accessible) {
                 addPathFiltersToContentProvider(project);
-            }
-
-            if (resource.isDerived()) {
-                return false;
             }
 
             if (CommonUtils.isErlangFileContentFileName(resource.getName())
@@ -545,7 +543,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
             final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             final IErlProject erlProject = model.findProject(project);
             if (erlProject != null) {
-                ErlangProjectProperties properties = erlProject.getProperties();
+                final ErlangProjectProperties properties = erlProject.getProperties();
                 final String extMods = properties.getExternalModules();
                 final List<String> files = new ArrayList<String>();
                 files.addAll(PreferencesUtils.unpackList(extMods));
@@ -563,13 +561,13 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
                         fres = null;
                     }
                     if (fres != null) {
-                        addfilerPathsFromFile(project, pvm, fres);
+                        addFilePathsFromFile(project, pvm, fres);
                     }
                 }
             }
         }
 
-        private void addfilerPathsFromFile(final IProject project,
+        private void addFilePathsFromFile(final IProject project,
                 final IPathVariableManager pvm, final IResource fres) {
             final List<String> lines = PreferencesUtils.readFile(fres.getLocation()
                     .toString());
@@ -649,7 +647,7 @@ public class FilteredModulesSelectionDialog extends FilteredItemsSelectionDialog
 
         /**
          * Creates new ResourceFilter instance
-         * 
+         *
          * @param container
          * @param showDerived
          *            flag which determine showing derived elements
