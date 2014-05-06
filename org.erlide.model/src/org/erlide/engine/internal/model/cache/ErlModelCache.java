@@ -29,8 +29,7 @@ public class ErlModelCache implements IDisposable {
 
     private static final boolean disabled = Boolean.valueOf(System
             .getProperty("erlide.noModelCache"));
-    private static final ErlModelCache fgInstance = disabled ? new DisabledErlModelCache()
-            : new ErlModelCache();
+    private static ErlModelCache fgInstance;
 
     private final Cache<IErlModule, List<IErlModule>> moduleIncludeCache;
     private final Cache<String, IErlModule> pathToModuleCache;
@@ -42,6 +41,10 @@ public class ErlModelCache implements IDisposable {
     private final Cache<IErlProject, List<IErlModule>> projectIncludeCache;
 
     public static ErlModelCache getDefault() {
+        if (fgInstance == null) {
+            fgInstance = disabled ? new DisabledErlModelCache()
+            : new ErlModelCache();
+        }
         return fgInstance;
     }
 
