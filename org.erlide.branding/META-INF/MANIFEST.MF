@@ -13,3 +13,4 @@ Export-Package: org.erlide.branding
 Bundle-Vendor: %vendor
 Bundle-ClassPath: .
 Bundle-Localization: plugin
+Bundle-ActivationPolicy: lazy
