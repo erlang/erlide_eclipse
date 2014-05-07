@@ -115,7 +115,8 @@ public class InternalBuilder extends ErlangBuilder {
             ErlLogger.error(e);
             final String msg = NLS.bind(BuilderMessages.build_inconsistentProject,
                     e.getLocalizedMessage(), e.getClass().getName());
-            MarkerUtils.createProblemMarker(project, null, msg, 0, IMarker.SEVERITY_ERROR);
+            MarkerUtils
+                    .createProblemMarker(project, null, msg, 0, IMarker.SEVERITY_ERROR);
         } finally {
             cleanup();
             // if (BuilderHelper.isDebugging()) {
@@ -283,26 +284,15 @@ public class InternalBuilder extends ErlangBuilder {
         if (SystemConfiguration.hasFeatureEnabled("erlide.no_app_src")) {
             return;
         }
-
-        final Collection<String> modules = newArrayList();
-        try {
-            final IErlProject erlangProject = ErlangEngine.getInstance().getModel()
-                    .getErlangProject(getProject());
-            for (final IErlModule m : erlangProject.getModules()) {
-                if (!ignoreModule(erlangProject, m)) {
-                    // ignore rebar deps;
-                    modules.add(m.getModuleName());
-                }
-            }
-        } catch (final ErlModelException e1) {
-            ErlLogger.error(e1);
+        // if project doesn't look like an OTP app, skip this step
+        if (!sources.contains(new Path("src"))) {
+            return;
         }
 
-        for (final IPath src : sources) {
-            final IFolder dir = (IFolder) getProject().findMember(src);
-            if (dir == null) {
-                continue;
-            }
+        // ignore other dirs than 'src'
+        final IPath src = new Path("src");
+        final IFolder dir = (IFolder) getProject().findMember(src);
+        if (dir != null) {
             try {
                 for (final IResource file : dir.members()) {
                     final String name = file.getName();
@@ -310,6 +300,7 @@ public class InternalBuilder extends ErlangBuilder {
                         final String appSrc = file.getLocation().toPortableString();
                         final String destPath = outPath + "/"
                                 + name.substring(0, name.lastIndexOf('.'));
+                        final Collection<String> modules = gatherModules();
                         fillAppFileDetails(appSrc, destPath, modules);
                     }
                 }
@@ -317,6 +308,23 @@ public class InternalBuilder extends ErlangBuilder {
                 ErlLogger.error(e);
             }
         }
+    }
+
+    private Collection<String> gatherModules() {
+        final Collection<String> modules = newArrayList();
+        try {
+            final IErlProject erlangProject = ErlangEngine.getInstance().getModel()
+                    .getErlangProject(getProject());
+            for (final IErlModule m : erlangProject.getModules()) {
+                // ignore rebar deps;
+                if (!ignoreModule(erlangProject, m)) {
+                    modules.add(m.getModuleName());
+                }
+            }
+        } catch (final ErlModelException e1) {
+            ErlLogger.error(e1);
+        }
+        return modules;
     }
 
     private boolean ignoreModule(final IErlProject erlangProject, final IErlModule m) {
