@@ -502,9 +502,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     @Override
     public void resourceChanged(final IResourceDelta delta) {
-        // FIXME is this enough? it will rebuild at next occasion, and modules
-        // are handled with reconciles, containers children through add and
-        // remove, but... e.g. name change of folder?
         setStructureKnown(false);
     }
 

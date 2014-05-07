@@ -10,9 +10,14 @@
 package org.erlide.engine.model.erlang;
 
 /**
- * 
+ *
  * @author Vlad Dumitrescu
  */
 public interface IErlTypespec extends IErlMember {
+
+    @Override
+    String getName();
+
+    int getArity();
 
 }

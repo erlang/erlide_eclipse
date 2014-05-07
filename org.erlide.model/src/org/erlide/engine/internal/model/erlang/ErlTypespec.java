@@ -51,6 +51,7 @@ public class ErlTypespec extends ErlMember implements IErlTypespec {
         return getName() + "/" + getArity();
     }
 
+    @Override
     public int getArity() {
         return arity;
     }
