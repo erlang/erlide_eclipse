@@ -18,7 +18,9 @@ public enum ErlElementKind {
     MACRO_DEF,
     FOLDER,
     TYPESPEC,
-    EXTERNAL,
+    EXTERNAL_ROOT,
+    EXTERNAL_APP,
+    EXTERNAL_FOLDER,
     RECORD_FIELD
     //@formatter:on
 }

@@ -235,11 +235,13 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     @Override
-    public boolean hasChildrenOfKind(final ErlElementKind kind) {
+    public boolean hasChildrenOfKind(final ErlElementKind... kinds) {
         synchronized (getModelLock()) {
-            for (final IErlElement child : internalGetChildren()) {
-                if (child.getKind() == kind) {
-                    return true;
+            for (final ErlElementKind kind : kinds) {
+                for (final IErlElement child : internalGetChildren()) {
+                    if (child.getKind() == kind) {
+                        return true;
+                    }
                 }
             }
         }
@@ -426,13 +428,15 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      *            - one of the constants defined by IErlElement
      */
     @Override
-    public List<IErlElement> getChildrenOfKind(final ErlElementKind kind)
+    public List<IErlElement> getChildrenOfKind(final ErlElementKind... kinds)
             throws ErlModelException {
         final List<IErlElement> result = Lists.newArrayList();
         synchronized (getModelLock()) {
-            for (final IErlElement element : internalGetChildren()) {
-                if (element.getKind() == kind) {
-                    result.add(element);
+            for (final ErlElementKind kind : kinds) {
+                for (final IErlElement element : internalGetChildren()) {
+                    if (element.getKind() == kind) {
+                        result.add(element);
+                    }
                 }
             }
         }

@@ -38,7 +38,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
 
     @Override
     public ErlElementKind getKind() {
-        return ErlElementKind.EXTERNAL;
+        return ErlElementKind.EXTERNAL_FOLDER;
     }
 
     @Override

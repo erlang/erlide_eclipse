@@ -45,7 +45,9 @@ public enum ErlideImage {
     SRC_FOLDER(ErlideImagePrefix.T_OBJ, "erlang_src_folder_obj.gif"),
     ATTRIBUTE(ErlideImagePrefix.T_OBJ, "field_public_obj.gif"),
     EXPORT(ErlideImagePrefix.T_OBJ, "field_public_obj.gif"),
-    EXTERNAL(ErlideImagePrefix.T_OBJ, "external_ref.gif"),
+    EXTERNAL_ROOT(ErlideImagePrefix.T_OBJ, "external_ref.gif"),
+    EXTERNAL_APP(ErlideImagePrefix.T_OBJ, "app_ref.gif"),
+    EXTERNAL_FOLDER(ErlideImagePrefix.T_OBJ, "folder.gif"),
     IMPORT(ErlideImagePrefix.T_OBJ, "field_public_obj.gif"),
     OVR_WARNING(ErlideImagePrefix.T_OVR, "warning_co.gif"),
     OVR_ERROR(ErlideImagePrefix.T_OVR, "error_co.gif"),
@@ -133,7 +135,7 @@ public enum ErlideImage {
     /**
      * Sets the three image descriptors for enabled, disabled, and hovered to an
      * action. The actions are retrieved from the *tool16 folders.
-     * 
+     *
      * @param action
      *            the action
      * @param iconName
@@ -146,7 +148,7 @@ public enum ErlideImage {
     /**
      * Sets the three image descriptors for enabled, disabled, and hovered to an
      * action. The icons are retrieved from the *lcl16 folders.
-     * 
+     *
      * @param action
      *            the action
      * @param iconName

@@ -43,7 +43,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
 
     @Override
     public ErlElementKind getKind() {
-        return ErlElementKind.EXTERNAL;
+        return ErlElementKind.EXTERNAL_ROOT;
     }
 
     @Override

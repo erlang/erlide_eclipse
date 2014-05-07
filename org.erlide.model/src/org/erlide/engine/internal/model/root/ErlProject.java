@@ -498,7 +498,9 @@ public class ErlProject extends Openable implements IErlProject,
             @Override
             public boolean visit(final IErlElement element)
                     throws ErlModelException {
-                final boolean isExternalOrProject = element.getKind() == ErlElementKind.EXTERNAL
+                final boolean isExternalOrProject = element.getKind() == ErlElementKind.EXTERNAL_ROOT
+                        || element.getKind() == ErlElementKind.EXTERNAL_APP
+                        || element.getKind() == ErlElementKind.EXTERNAL_FOLDER
                         || element.getKind() == ErlElementKind.PROJECT;
                 if (element instanceof IErlModule) {
                     final IErlModule module = (IErlModule) element;
@@ -627,7 +629,9 @@ public class ErlProject extends Openable implements IErlProject,
             @Override
             public boolean visit(final IErlElement element)
                     throws ErlModelException {
-                final boolean isExternalOrProject = element.getKind() == ErlElementKind.EXTERNAL
+                final boolean isExternalOrProject = element.getKind() == ErlElementKind.EXTERNAL_ROOT
+                        || element.getKind() == ErlElementKind.EXTERNAL_APP
+                        || element.getKind() == ErlElementKind.EXTERNAL_FOLDER
                         || element.getKind() == ErlElementKind.PROJECT;
                 if (element instanceof IErlModule) {
                     final IErlModule module = (IErlModule) element;

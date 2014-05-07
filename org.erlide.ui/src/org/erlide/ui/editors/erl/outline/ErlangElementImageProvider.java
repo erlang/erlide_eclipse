@@ -75,7 +75,7 @@ public class ErlangElementImageProvider {
      * Returns the icon for a given element. The icon depends on the element
      * type and element properties. If configured, overlay icons are constructed
      * for <code>ISourceReference</code>s.
-     * 
+     *
      * @param flags
      *            Flags as defined by the ErlangImageLabelProvider
      */
@@ -223,8 +223,14 @@ public class ErlangElementImageProvider {
         case FUNCTION:
             result = ErlideImage.FUNCTION_DEFAULT;
             break;
-        case EXTERNAL:
-            result = ErlideImage.EXTERNAL;
+        case EXTERNAL_ROOT:
+            result = ErlideImage.EXTERNAL_ROOT;
+            break;
+        case EXTERNAL_APP:
+            result = ErlideImage.EXTERNAL_APP;
+            break;
+        case EXTERNAL_FOLDER:
+            result = ErlideImage.EXTERNAL_FOLDER;
             break;
         case IMPORT:
             result = ErlideImage.IMPORT;

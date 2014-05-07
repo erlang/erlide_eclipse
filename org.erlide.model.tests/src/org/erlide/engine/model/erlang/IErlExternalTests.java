@@ -53,7 +53,7 @@ public class IErlExternalTests extends ErlModelTestBase {
     @Test
     public void isOTP() throws Exception {
         final List<IErlElement> externals = project
-                .getChildrenOfKind(ErlElementKind.EXTERNAL);
+                .getChildrenOfKind(ErlElementKind.EXTERNAL_ROOT);
         final IErlExternal external = (IErlExternal) externals.get(0);
         external.open(null);
         assertFalse(external.isOTP());
@@ -73,7 +73,7 @@ public class IErlExternalTests extends ErlModelTestBase {
     @Test
     public void hasIncludes() throws Exception {
         final List<IErlElement> externals = project
-                .getChildrenOfKind(ErlElementKind.EXTERNAL);
+                .getChildrenOfKind(ErlElementKind.EXTERNAL_ROOT);
         final IErlExternal external = (IErlExternal) externals.get(0);
         external.open(null);
         final IErlExternal externalOTP = (IErlExternal) externals.get(1);
