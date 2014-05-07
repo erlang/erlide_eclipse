@@ -254,7 +254,7 @@ IPropertyChangeListener, IErlangConsolePage {
             @Override
             public void modifyText(final ModifyEvent e) {
                 // final Stopwatch time = Stopwatch.createStarted();
-                final String conText = StringUtils.rightTrim(consoleInput.getText(), ' ');
+                final String conText = trimInput(consoleInput.getText());
                 final boolean atEndOfInput = consoleInput.getCaretOffset() >= conText
                         .length() && conText.endsWith(".");
 
@@ -282,7 +282,7 @@ IPropertyChangeListener, IErlangConsolePage {
             public void keyPressed(final KeyEvent e) {
                 // final Stopwatch time = Stopwatch.createStarted();
                 final boolean ctrlOrCommandPressed = (e.stateMask & SWT.MOD1) == SWT.MOD1;
-                final String conText = StringUtils.rightTrim(consoleInput.getText(), ' ');
+                final String conText = trimInput(consoleInput.getText());
                 final boolean atEndOfInput = consoleInput.getCaretOffset() >= conText
                         .length() && conText.endsWith(".");
                 e.doit = true;
@@ -314,6 +314,7 @@ IPropertyChangeListener, IErlangConsolePage {
                 // System.out.println("2> " +
                 // time.elapsed(TimeUnit.MILLISECONDS));
             }
+
         });
         consoleInput.setFont(consoleText.getFont());
         consoleInput.setBackground(consoleText.getBackground());
@@ -561,5 +562,12 @@ IPropertyChangeListener, IErlangConsolePage {
 
     public IBackendShell getShell() {
         return shell;
+    }
+
+    private static String trimInput(final String s) {
+        String conText = StringUtils.rightTrim(s, ' ');
+        conText = StringUtils.rightTrim(conText, '\n');
+        conText = StringUtils.rightTrim(conText, '\r');
+        return conText;
     }
 }
