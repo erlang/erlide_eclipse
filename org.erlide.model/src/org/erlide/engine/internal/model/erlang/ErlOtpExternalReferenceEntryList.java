@@ -64,11 +64,6 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
         return null;
     }
 
-    @Override
-    public String getLabelString() {
-        return getName();
-    }
-
     public String getExternalName() {
         return getName();
     }

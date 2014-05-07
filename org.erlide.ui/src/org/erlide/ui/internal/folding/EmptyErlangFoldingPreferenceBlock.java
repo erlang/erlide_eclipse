@@ -12,8 +12,6 @@ import org.erlide.ui.editors.erl.folding.IErlangFoldingPreferenceBlock;
  * Empty preference block for extensions to the
  * <code>org.erlide.ui.erlangFoldingStructureProvider</code> extension point
  * that do not specify their own.
- * 
- * @since 3.0
  */
 
 public class EmptyErlangFoldingPreferenceBlock implements IErlangFoldingPreferenceBlock {
@@ -29,8 +27,6 @@ public class EmptyErlangFoldingPreferenceBlock implements IErlangFoldingPreferen
         label.setLayoutData(gd);
 
         label = new Label(inner, SWT.CENTER);
-        // TODO
-        // label.setText(FoldingMessages.EmptyErlangFoldingPreferenceBlock_emptyCaption);
         label.setText("");
         gd = new GridData(GridData.CENTER);
         label.setLayoutData(gd);

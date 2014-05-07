@@ -507,11 +507,6 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     @Override
-    public String getLabelString() {
-        return getName();
-    }
-
-    @Override
     public ScannerService getScanner() {
         if (scanner == null) {
             scanner = getNewScanner();

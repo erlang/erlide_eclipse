@@ -34,7 +34,6 @@ import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementVisitor;
-import org.erlide.util.StringUtils;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -585,11 +584,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
             return parentElement.getResource();
         }
         return null;
-    }
-
-    @Override
-    public String getLabelString() {
-        return StringUtils.normalizeSpaces(toString());
     }
 
     @Override

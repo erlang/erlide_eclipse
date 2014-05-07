@@ -170,11 +170,6 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return null;
     }
 
-    @Override
-    public String getLabelString() {
-        return getName();
-    }
-
     public IRpcSite getBackend() {
         return null;
     }

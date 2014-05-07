@@ -83,11 +83,6 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         return null;
     }
 
-    @Override
-    public String getLabelString() {
-        return super.getName();
-    }
-
     public String getExternalName() {
         return entry;
     }
