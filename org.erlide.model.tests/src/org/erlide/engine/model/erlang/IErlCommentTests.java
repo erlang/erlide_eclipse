@@ -75,9 +75,7 @@ public class IErlCommentTests extends ErlModelTestBase {
         final IErlFunction fn = (IErlFunction) functions.get(0);
         final Iterator<IErlMember> iterator = fn.getComments().iterator();
         final IErlMember comment1 = iterator.next();
-        final IErlMember comment2 = iterator.next();
         assertNotNull(comment1);
-        assertNotNull(comment2);
         assertFalse(iterator.hasNext());
     }
 
@@ -93,9 +91,7 @@ public class IErlCommentTests extends ErlModelTestBase {
         fn = (IErlFunction) functions.get(1);
         iterator = fn.getComments().iterator();
         comment1 = iterator.next();
-        final IErlMember comment2 = iterator.next();
         assertNotNull(comment1);
-        assertNotNull(comment2);
         assertFalse(iterator.hasNext());
     }
 
