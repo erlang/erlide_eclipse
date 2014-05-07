@@ -15,8 +15,8 @@ import org.erlide.engine.model.erlang.IErlTypespec;
 import org.erlide.engine.model.root.ErlElementKind;
 
 /**
- * 
- * 
+ *
+ *
  * @author Vlad Dumitrescu
  */
 public class ErlTypespec extends ErlMember implements IErlTypespec {

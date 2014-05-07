@@ -30,7 +30,7 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
 
     @Override
     public String toString() {
-        return getName() + ": " + getDefinedName();
+        return "macro: " + getDefinedName();
     }
 
     @Override
