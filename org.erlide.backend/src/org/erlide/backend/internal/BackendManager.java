@@ -71,12 +71,9 @@ public final class BackendManager implements IBackendManager {
     private final Set<IBackend> allBackends;
     private final BackendManagerLaunchListener launchListener;
     private final IBackendFactory factory;
-    private final RuntimeInfo erlideRuntimeInfo;
 
-    public BackendManager(final RuntimeInfo erlideRuntimeInfo,
-            final IBackendFactory factory) {
+    public BackendManager(final IBackendFactory factory) {
         this.factory = factory;
-        this.erlideRuntimeInfo = erlideRuntimeInfo;
 
         ideBackend = null;
         executionBackends = Maps.newHashMap();

@@ -5,7 +5,6 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.DebugStream;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.BundleContext;
@@ -34,10 +33,8 @@ public class BackendPlugin extends Plugin {
         ErlLogger.debug("Backend plugin starting");
 
         final IRuntimeInfoCatalog catalog = BackendCore.getRuntimeInfoCatalog();
-        final RuntimeInfo erlideRuntime = catalog.getErlideRuntime();
         final IBackendFactory backendFactory = new BackendFactory(catalog);
-        final IBackendManager backendManager = new BackendManager(erlideRuntime,
-                backendFactory);
+        final IBackendManager backendManager = new BackendManager(backendFactory);
         BackendCore.init(backendManager);
         ErlLogger.debug("Backend plugin started " + backendManager);
     }
