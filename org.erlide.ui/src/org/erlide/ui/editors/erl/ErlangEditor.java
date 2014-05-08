@@ -628,14 +628,6 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 
     @Override
     protected void addFoldingSupport(final ISourceViewer viewer) {
-        /*
-         * This is a performance optimization to reduce the computation of the
-         * text presentation triggered by {@link #setVisibleDocument(IDocument)}
-         */
-        // if (javaSourceViewer != null && isFoldingEnabled() && (store == null
-        // ||
-        // !store.getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS)))
-        // javaSourceViewer.prepareDelayedProjection();
         if (isFoldingEnabled()) {
             final ProjectionViewer projectionViewer = (ProjectionViewer) viewer;
             fProjectionSupport = new ProjectionSupport(projectionViewer,
