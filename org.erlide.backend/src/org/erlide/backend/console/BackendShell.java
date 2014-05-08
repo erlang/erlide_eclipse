@@ -143,7 +143,6 @@ public class BackendShell implements IBackendShell {
     }
 
     private void deleteOldItems() {
-        // TODO use a configuration for this
         final int prevLength = length;
         synchronized (requests) {
             if (requests.size() > MAX_REQUESTS) {

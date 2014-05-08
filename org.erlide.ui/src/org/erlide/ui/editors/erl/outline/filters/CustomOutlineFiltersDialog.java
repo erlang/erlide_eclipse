@@ -61,7 +61,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
 
     /**
      * Creates a dialog to customize Erlang element filters.
-     * 
+     *
      * @param shell
      *            the parent shell
      * @param viewId
@@ -102,7 +102,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
 
     /**
      * Overrides method in Dialog
-     * 
+     *
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(Composite)
      */
     @Override
@@ -134,9 +134,6 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
         fUserDefinedPatterns.setLayoutData(data);
         final String patterns = convertToString(fPatterns, SEPARATOR);
         fUserDefinedPatterns.setText(patterns);
-        // TODO SWTUtil.setAccessibilityText(
-        // fUserDefinedPatterns,
-        // "Name filter patterns. The patterns are separated by comma, where star is any string");
 
         // Info text
         final Label info = new Label(group, SWT.LEFT);

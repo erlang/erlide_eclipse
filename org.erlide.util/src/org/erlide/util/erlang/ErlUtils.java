@@ -94,7 +94,6 @@ public final class ErlUtils {
      * <p>
      * The returned value is null if there was any mismatch, otherwise it is a
      * map of variable names to matched values. <br>
-     * TODO should we throw an exception instead?
      *
      */
     public static Bindings match(final OtpErlangObject pattern,
