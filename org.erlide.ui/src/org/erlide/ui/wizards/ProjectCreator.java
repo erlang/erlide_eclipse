@@ -191,7 +191,7 @@ public class ProjectCreator {
             final ProjectConfigType configType) {
 
         // TODO get config content
-        System.out.println("TODO: get config content " + info2 + " " + configType);
+        System.out.println("TO DO: get config content " + info2 + " " + configType);
 
         switch (configType) {
         case EMAKE:
@@ -206,7 +206,7 @@ public class ProjectCreator {
     private void createBuilderConfig(final BuilderTool builderTool) {
 
         // TODO create builder config
-        System.out.println("TODO: create builder config " + builderTool);
+        System.out.println("TO DO: create builder config " + builderTool);
 
     }
 
