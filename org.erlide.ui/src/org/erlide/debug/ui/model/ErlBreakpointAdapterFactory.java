@@ -11,7 +11,7 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
  * @author jakob
- * 
+ *
  */
 public class ErlBreakpointAdapterFactory implements IAdapterFactory {
 

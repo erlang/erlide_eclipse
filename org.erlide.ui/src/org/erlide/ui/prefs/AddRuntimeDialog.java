@@ -272,7 +272,7 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
     /**
      * Updates the status of the ok button to reflect the given status.
      * Subclasses may override this method to update additional buttons.
-     * 
+     *
      * @param status
      *            the status.
      */
@@ -294,7 +294,7 @@ public class AddRuntimeDialog extends StatusDialog implements IListAdapter<Strin
 
     /**
      * Returns the name of the section that this dialog stores its settings in
-     * 
+     *
      * @return String
      */
     protected String getDialogSettingsSectionName() {

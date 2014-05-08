@@ -77,7 +77,7 @@ public class ErlangFileWizardPage extends WizardPage {
 
     /**
      * Constructor for SampleNewWizardPage.
-     * 
+     *
      * @param pageName
      */
     public ErlangFileWizardPage(final ISelection selection) {
@@ -308,7 +308,7 @@ public class ErlangFileWizardPage extends WizardPage {
 
     /**
      * Get the skeleton that is to be generated.
-     * 
+     *
      * @return The skeleton that the new file is to consist of.
      */
     public String getSkeleton() {

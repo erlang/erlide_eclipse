@@ -96,7 +96,7 @@ public class StringButtonDialogField extends StringDialogField {
 
     /**
      * Creates or returns the created buttom widget.
-     * 
+     *
      * @param parent
      *            The parent composite or <code>null</code> if the widget has
      *            already been created.

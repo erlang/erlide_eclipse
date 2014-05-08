@@ -161,7 +161,7 @@ public class ErlElementDelta implements IErlElementDelta {
     /**
      * Adds the child delta to the collection of affected children. If the child
      * is already in the collection, walk down the hierarchy.
-     * 
+     *
      * JC: this sucks a little bit, too much code, as always... (from C model,
      * not my fault)
      */

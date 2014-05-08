@@ -1,11 +1,11 @@
 /**
- * 
+ *
  */
 package org.erlide.engine.model.erlang;
 
 /**
  * @author jakob
- * 
+ *
  */
 public interface IErlRecordDef extends IErlPreprocessorDef {
 

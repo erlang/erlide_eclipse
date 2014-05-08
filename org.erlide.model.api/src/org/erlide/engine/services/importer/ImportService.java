@@ -6,11 +6,11 @@ public interface ImportService {
 
     /**
      * Filter import parameters for newly imported erlang project
-     * 
+     *
      * @param prefix
      * @param importSources
      * @param prefix
-     * 
+     *
      * @return
      */
     public abstract ErlProjectImport importProject(String prefix,

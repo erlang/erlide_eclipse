@@ -40,7 +40,7 @@ public class ErlangAnnotationIterator implements Iterator<Annotation> {
 
     /**
      * Returns a new ErlangAnnotationIterator.
-     * 
+     *
      * @param model
      *            the annotation model
      * @param skipIrrelevants

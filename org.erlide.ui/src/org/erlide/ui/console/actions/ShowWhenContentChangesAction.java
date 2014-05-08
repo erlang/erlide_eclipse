@@ -20,7 +20,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 /**
  * Abstract action for toggling preference to automatically show the console
  * when a streams content changes.
- * 
+ *
  * @since 3.3
  */
 public abstract class ShowWhenContentChangesAction extends Action implements

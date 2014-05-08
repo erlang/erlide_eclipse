@@ -23,7 +23,7 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
 
     /**
      * Creates an iterator for the entire document.
-     * 
+     *
      * @param document
      *            the document backing this iterator
      */
@@ -33,7 +33,7 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
 
     /**
      * Creates an iterator, starting at offset <code>first</code>.
-     * 
+     *
      * @param document
      *            the document backing this iterator
      * @param first
@@ -49,7 +49,7 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
     /**
      * Creates an iterator for the document contents from <code>first</code>
      * (inclusive) to <code>last</code> (exclusive).
-     * 
+     *
      * @param document
      *            the document backing this iterator
      * @param first
@@ -196,7 +196,7 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
      * return {@link CharacterIterator#DONE} if a {@link BadLocationException}
      * was thrown when accessing the backing document.
      * </p>
-     * 
+     *
      * @param index
      *            {@inheritDoc}
      * @return {@inheritDoc}

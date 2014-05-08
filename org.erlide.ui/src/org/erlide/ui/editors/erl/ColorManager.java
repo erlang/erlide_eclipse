@@ -21,8 +21,8 @@ import org.erlide.ui.util.IColorManager;
 
 /**
  * The color manager for the system (very simple implementation)
- * 
- * 
+ *
+ *
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class ColorManager implements IColorManager {
@@ -48,14 +48,14 @@ public class ColorManager implements IColorManager {
 
     /**
      * Creates a new Erlang color manager.
-     * 
+     *
      * @param autoDisposeOnDisplayDispose
      *            if <code>true</code> the color manager automatically disposes
      *            all managed colors when the current display gets disposed and
      *            all calls to
      *            {@link org.eclipse.jface.text.source.ISharedTextColors#dispose()}
      *            are ignored.
-     * 
+     *
      */
     public ColorManager(final boolean autoDisposeOnDisplayDispose) {
         fAutoDisposeOnDisplayDispose = autoDisposeOnDisplayDispose;

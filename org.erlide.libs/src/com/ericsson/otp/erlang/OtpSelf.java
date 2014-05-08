@@ -1,19 +1,19 @@
 /*
  * %CopyrightBegin%
- * 
+ *
  * Copyright Ericsson AB 2000-2009. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
@@ -26,26 +26,26 @@ import java.net.UnknownHostException;
 /**
  * Represents an OTP node. It is used to connect to remote nodes or accept
  * incoming connections from remote nodes.
- * 
+ *
  * <p>
  * When the Java node will be connecting to a remote Erlang, Java or C node, it
  * must first identify itself as a node by creating an instance of this class,
  * after which it may connect to the remote node.
- * 
+ *
  * <p>
  * When you create an instance of this class, it will bind a socket to a port so
  * that incoming connections can be accepted. However the port number will not
  * be made available to other nodes wishing to connect until you explicitely
  * register with the port mapper daemon by calling {@link #publishPort()}.
  * </p>
- * 
+ *
  * <pre>
  * OtpSelf self = new OtpSelf(&quot;client&quot;, &quot;authcookie&quot;); // identify self
  * OtpPeer other = new OtpPeer(&quot;server&quot;); // identify peer
  * 
  * OtpConnection conn = self.connect(other); // connect to peer
  * </pre>
- * 
+ *
  */
 public class OtpSelf extends OtpLocalNode {
     private final ServerSocket sock;
@@ -58,15 +58,15 @@ public class OtpSelf extends OtpLocalNode {
      * directory. The home directory is obtained from the System property
      * "user.home".
      * </p>
-     * 
+     *
      * <p>
      * If the file does not exist, an empty string is used. This method makes no
      * attempt to create the file.
      * </p>
-     * 
+     *
      * @param node
      *            the name of this node.
-     * 
+     *
      */
     public OtpSelf(final String node) throws IOException {
         this(node, defaultCookie, 0);
@@ -74,10 +74,10 @@ public class OtpSelf extends OtpLocalNode {
 
     /**
      * Create a self node.
-     * 
+     *
      * @param node
      *            the name of this node.
-     * 
+     *
      * @param cookie
      *            the authorization cookie that will be used by this node when
      *            it communicates with other nodes.
@@ -106,7 +106,7 @@ public class OtpSelf extends OtpLocalNode {
      * messages sent by this node. Anonymous messages are those sent via send
      * methods in {@link OtpConnection OtpConnection} that do not specify a
      * sender.
-     * 
+     *
      * @return the Erlang PID that will be used as the sender id in all
      *         anonymous messages sent by this node.
      */
@@ -119,21 +119,21 @@ public class OtpSelf extends OtpLocalNode {
      * connect to this one. This method establishes a connection to the Erlang
      * port mapper (Epmd) and registers the server node's name and port so that
      * remote nodes are able to connect.
-     * 
+     *
      * <p>
      * This method will fail if an Epmd process is not running on the localhost.
      * See the Erlang documentation for information about starting Epmd.
-     * 
+     *
      * <p>
      * Note that once this method has been called, the node is expected to be
      * available to accept incoming connections. For that reason you should make
      * sure that you call {@link #accept()} shortly after calling
      * {@link #publishPort()}. When you no longer intend to accept connections
      * you should call {@link #unPublishPort()}.
-     * 
+     *
      * @return true if the operation was successful, false if the node was
      *         already registered.
-     * 
+     *
      * @exception java.io.IOException
      *                if the port mapper could not be contacted.
      */
@@ -167,13 +167,13 @@ public class OtpSelf extends OtpLocalNode {
     /**
      * Accept an incoming connection from a remote node. A call to this method
      * will block until an incoming connection is at least attempted.
-     * 
+     *
      * @return a connection to a remote node.
-     * 
+     *
      * @exception java.io.IOException
      *                if a remote node attempted to connect but no common
      *                protocol was found.
-     * 
+     *
      * @exception OtpAuthException
      *                if a remote node attempted to connect, but was not
      *                authorized to connect.
@@ -199,18 +199,18 @@ public class OtpSelf extends OtpLocalNode {
 
     /**
      * Open a connection to a remote node.
-     * 
+     *
      * @param other
      *            the remote node to which you wish to connect.
-     * 
+     *
      * @return a connection to the remote node.
-     * 
+     *
      * @exception java.net.UnknownHostException
      *                if the remote host could not be found.
-     * 
+     *
      * @exception java.io.IOException
      *                if it was not possible to connect to the remote node.
-     * 
+     *
      * @exception OtpAuthException
      *                if the connection was refused by the remote node.
      */

@@ -41,7 +41,7 @@ import org.erlide.util.ErlLogger;
 /**
  * A view with a checkbox tree of interpreted modules checking/unchecking
  * interpretes/de-interpretes a module
- * 
+ *
  * @author jakob
  */
 public class InterpretedModulesView extends AbstractDebugView implements

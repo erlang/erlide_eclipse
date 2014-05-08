@@ -146,7 +146,7 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
 
             try {
                 PlatformUI.getWorkbench().getProgressService()
-                .busyCursorWhile(myRunnableWithProgress);
+                        .busyCursorWhile(myRunnableWithProgress);
             } catch (final InvocationTargetException e) {
             } catch (final InterruptedException e) {
             }

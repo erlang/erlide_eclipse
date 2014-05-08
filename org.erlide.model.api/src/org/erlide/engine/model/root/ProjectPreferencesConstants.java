@@ -15,7 +15,7 @@ import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 
 /**
  * Constants used in project and plugin preferences
- * 
+ *
  * @author Eric Merritt [cyberlync at yahoo dot com]
  */
 public final class ProjectPreferencesConstants {

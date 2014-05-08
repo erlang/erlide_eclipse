@@ -26,7 +26,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 /**
- * 
+ *
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class PreferencesInitializer extends AbstractPreferenceInitializer {

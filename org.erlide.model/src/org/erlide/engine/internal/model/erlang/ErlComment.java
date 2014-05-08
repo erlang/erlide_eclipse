@@ -11,7 +11,7 @@ import org.erlide.engine.model.root.ErlElementKind;
 
 /**
  * @author jakob
- * 
+ *
  */
 public class ErlComment extends ErlMember implements IErlComment {
 

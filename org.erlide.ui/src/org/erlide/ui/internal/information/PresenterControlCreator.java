@@ -155,7 +155,7 @@ public final class PresenterControlCreator extends
 
     /**
      * Action that opens the current hover input element.
-     * 
+     *
      * @since 3.4
      */
     private static final class OpenDeclarationAction extends Action {

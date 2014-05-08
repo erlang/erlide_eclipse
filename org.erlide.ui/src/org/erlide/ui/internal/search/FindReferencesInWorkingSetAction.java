@@ -20,11 +20,11 @@ import org.erlide.ui.editors.erl.AbstractErlangEditor;
 /**
  * Finds references of the selected element in working sets. The action is
  * applicable to selections representing a Erlang element.
- * 
+ *
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class FindReferencesInWorkingSetAction extends FindReferencesAction {
@@ -36,7 +36,7 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
      * requires that the selection provided by the site's selection provider is
      * of type <code>org.eclipse.jface.viewers.IStructuredSelection</code>. The
      * user will be prompted to select the working sets.
-     * 
+     *
      * @param site
      *            the site providing context information for this action
      */
@@ -48,7 +48,7 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
      * Creates a new <code>FindReferencesInWorkingSetAction</code>. The action
      * requires that the selection provided by the site's selection provider is
      * of type <code>org.eclipse.jface.viewers.IStructuredSelection</code>.
-     * 
+     *
      * @param site
      *            the site providing context information for this action
      * @param workingSets
@@ -63,7 +63,7 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
     /**
      * Note: This constructor is for internal use only. Clients should not call
      * this constructor.
-     * 
+     *
      * @param editor
      *            the Erlang editor
      */
@@ -74,7 +74,7 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
     /**
      * Note: This constructor is for internal use only. Clients should not call
      * this constructor.
-     * 
+     *
      * @param editor
      *            the Erlang editor
      * @param workingSets

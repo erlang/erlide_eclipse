@@ -28,7 +28,7 @@ public class RestartDialog extends MessageDialog {
 
     /**
      * Creates a new dialog
-     * 
+     *
      * @see MessageDialog#MessageDialog(org.eclipse.swt.widgets.Shell,
      *      java.lang.String, org.eclipse.swt.graphics.Image, java.lang.String,
      *      int, java.lang.String[], int)
@@ -36,14 +36,14 @@ public class RestartDialog extends MessageDialog {
     public RestartDialog(final Shell parent, final String title, final String message) {
         super(parent, title, null, // accept the default window icon
                 message, QUESTION, yesNo, 0); // yes
-                                              // is
-                                              // the
-                                              // default
+        // is
+        // the
+        // default
     }
 
     /**
      * Convenience method to open the Yes/No/Continue question dialog.
-     * 
+     *
      * @param parent
      *            the parent shell of the dialog, or <code>null</code> if none
      * @param restartIsReallyNeeded
@@ -61,7 +61,7 @@ public class RestartDialog extends MessageDialog {
 
     /**
      * When a button is pressed, store the preference.
-     * 
+     *
      * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
      */
     @Override
@@ -76,7 +76,7 @@ public class RestartDialog extends MessageDialog {
     /**
      * Returns the user's selection, <code>null</code> if the user hasn't chosen
      * yet.
-     * 
+     *
      * @return the user's selection or <code>null</code>
      */
     public int getResult() {

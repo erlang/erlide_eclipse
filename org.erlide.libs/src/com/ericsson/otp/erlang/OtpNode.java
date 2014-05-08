@@ -1,19 +1,19 @@
-/* 
+/*
  * %CopyrightBegin%
- * 
+ *
  * Copyright Ericsson AB 2000-2012. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
@@ -36,21 +36,21 @@ import java.util.Iterator;
  * communication mechanism is automatic and hidden from the application
  * programmer.
  * </p>
- * 
+ *
  * <p>
  * Once an instance of this class has been created, obtain one or more mailboxes
  * in order to send or receive messages. The first message sent to a given node
  * will cause a connection to be set up to that node. Any messages received will
  * be delivered to the appropriate mailboxes.
  * </p>
- * 
+ *
  * <p>
  * To shut down the node, call {@link #close close()}. This will prevent the
  * node from accepting additional connections and it will cause all existing
  * connections to be closed. Any unread messages in existing mailboxes can still
  * be read, however no new messages will be delivered to the mailboxes.
  * </p>
- * 
+ *
  * <p>
  * Note that the use of this class requires that Epmd (Erlang Port Mapper
  * Daemon) is running on each cooperating host. This class does not start Epmd
@@ -83,18 +83,18 @@ public class OtpNode extends OtpLocalNode {
      * directory. The home directory is obtained from the System property
      * "user.home".
      * </p>
-     * 
+     *
      * <p>
      * If the file does not exist, an empty string is used. This method makes no
      * attempt to create the file.
      * </p>
-     * 
+     *
      * @param node
      *            the name of this node.
-     * 
+     *
      * @exception IOException
      *                if communication could not be initialized.
-     * 
+     *
      */
     public OtpNode(final String node) throws IOException {
         this(node, defaultCookie, 0);
@@ -102,17 +102,17 @@ public class OtpNode extends OtpLocalNode {
 
     /**
      * Create a node.
-     * 
+     *
      * @param node
      *            the name of this node.
-     * 
+     *
      * @param cookie
      *            the authorization cookie that will be used by this node when
      *            it communicates with other nodes.
-     * 
+     *
      * @exception IOException
      *                if communication could not be initialized.
-     * 
+     *
      */
     public OtpNode(final String node, final String cookie) throws IOException {
         this(node, cookie, 0);
@@ -120,21 +120,21 @@ public class OtpNode extends OtpLocalNode {
 
     /**
      * Create a node.
-     * 
+     *
      * @param node
      *            the name of this node.
-     * 
+     *
      * @param cookie
      *            the authorization cookie that will be used by this node when
      *            it communicates with other nodes.
-     * 
+     *
      * @param port
      *            the port number you wish to use for incoming connections.
      *            Specifying 0 lets the system choose an available port.
-     * 
+     *
      * @exception IOException
      *                if communication could not be initialized.
-     * 
+     *
      */
     public OtpNode(final String node, final String cookie, final int port)
             throws IOException {
@@ -182,7 +182,7 @@ public class OtpNode extends OtpLocalNode {
      * receive messages with other, similar mailboxes and with Erlang processes.
      * Messages can be sent to this mailbox by using its associated
      * {@link OtpMbox#self() pid}.
-     * 
+     *
      * @return a mailbox.
      */
     public OtpMbox createMbox() {
@@ -191,23 +191,23 @@ public class OtpNode extends OtpLocalNode {
 
     /**
      * Close the specified mailbox with reason 'normal'.
-     * 
+     *
      * @param mbox
      *            the mailbox to close.
-     * 
+     *
      *            <p>
      *            After this operation, the mailbox will no longer be able to
      *            receive messages. Any delivered but as yet unretrieved
      *            messages can still be retrieved however.
      *            </p>
-     * 
+     *
      *            <p>
      *            If there are links from the mailbox to other
      *            {@link OtpErlangPid pids}, they will be broken when this
      *            method is called and exit signals with reason 'normal' will be
      *            sent.
      *            </p>
-     * 
+     *
      */
     public void closeMbox(final OtpMbox mbox) {
         closeMbox(mbox, new OtpErlangAtom("normal"));
@@ -215,25 +215,25 @@ public class OtpNode extends OtpLocalNode {
 
     /**
      * Close the specified mailbox with the given reason.
-     * 
+     *
      * @param mbox
      *            the mailbox to close.
      * @param reason
      *            an Erlang term describing the reason for the termination.
-     * 
+     *
      *            <p>
      *            After this operation, the mailbox will no longer be able to
      *            receive messages. Any delivered but as yet unretrieved
      *            messages can still be retrieved however.
      *            </p>
-     * 
+     *
      *            <p>
      *            If there are links from the mailbox to other
      *            {@link OtpErlangPid pids}, they will be broken when this
      *            method is called and exit signals with the given reason will
      *            be sent.
      *            </p>
-     * 
+     *
      */
     public void closeMbox(final OtpMbox mbox, final OtpErlangObject reason) {
         if (mbox != null) {
@@ -248,13 +248,13 @@ public class OtpNode extends OtpLocalNode {
      * with other, similar mailboxes and with Erlang processes. Messages can be
      * sent to this mailbox by using its registered name or the associated
      * {@link OtpMbox#self() pid}.
-     * 
+     *
      * @param name
      *            a name to register for this mailbox. The name must be unique
      *            within this OtpNode.
-     * 
+     *
      * @return a mailbox, or null if the name was already in use.
-     * 
+     *
      */
     public OtpMbox createMbox(final String name) {
         return mboxes.create(name);
@@ -268,14 +268,14 @@ public class OtpNode extends OtpLocalNode {
      * name; if the mailbox already had a name, calling this method will
      * supercede that name.
      * </p>
-     * 
+     *
      * @param name
      *            the name to register for the mailbox. Specify null to
      *            unregister the existing name from this mailbox.
-     * 
+     *
      * @param mbox
      *            the mailbox to associate with the name.
-     * 
+     *
      * @return true if the name was available, or false otherwise.
      */
     public boolean registerName(final String name, final OtpMbox mbox) {
@@ -284,7 +284,7 @@ public class OtpNode extends OtpLocalNode {
 
     /**
      * Get a list of all known registered names on this node.
-     * 
+     *
      * @return an array of Strings, containins all known registered names on
      *         this node.
      */
@@ -296,7 +296,7 @@ public class OtpNode extends OtpLocalNode {
     /**
      * Determine the {@link OtpErlangPid pid} corresponding to a registered name
      * on this node.
-     * 
+     *
      * @return the {@link OtpErlangPid pid} corresponding to the registered
      *         name, or null if the name is not known on this node.
      */
@@ -312,11 +312,11 @@ public class OtpNode extends OtpLocalNode {
      * Register interest in certain system events. The {@link OtpNodeStatus
      * OtpNodeStatus} handler object contains callback methods, that will be
      * called when certain events occur.
-     * 
+     *
      * @param handler
      *            the callback object to register. To clear the handler, specify
      *            null as the handler to use.
-     * 
+     *
      */
     public synchronized void registerStatusHandler(final OtpNodeStatus handler) {
         this.handler = handler;
@@ -328,7 +328,7 @@ public class OtpNode extends OtpLocalNode {
      * setting up a connection to the remote node (if possible). Only a single
      * outgoing message is sent; the timeout is how long to wait for a response.
      * </p>
-     * 
+     *
      * <p>
      * Only a single attempt is made to connect to the remote node, so for
      * example it is not possible to specify an extremely long timeout and
@@ -336,20 +336,20 @@ public class OtpNode extends OtpLocalNode {
      * wait for a remote node to be started, the following construction may be
      * useful:
      * </p>
-     * 
+     *
      * <pre>
      * // ping every 2 seconds until positive response
      * while (!me.ping(him, 2000))
      *     ;
      * </pre>
-     * 
+     *
      * @param node
      *            the name of the node to ping.
-     * 
+     *
      * @param timeout
      *            the time, in milliseconds, to wait for response before
      *            returning false.
-     * 
+     *
      * @return true if the node was alive and the correct ping response was
      *         returned. false if the correct response was not returned on time.
      */

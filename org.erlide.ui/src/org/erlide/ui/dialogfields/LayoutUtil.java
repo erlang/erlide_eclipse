@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -34,7 +34,7 @@ public final class LayoutUtil {
 
     /**
      * Creates a composite and fills in the given editors.
-     * 
+     *
      * @param labelOnTop
      *            Defines if the label of all fields should be on top of the
      *            fields
@@ -46,7 +46,7 @@ public final class LayoutUtil {
 
     /**
      * Creates a composite and fills in the given editors.
-     * 
+     *
      * @param labelOnTop
      *            Defines if the label of all fields should be on top of the
      *            fields

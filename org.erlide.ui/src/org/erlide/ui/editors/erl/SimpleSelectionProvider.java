@@ -21,10 +21,10 @@ import org.erlide.ui.actions.SelectionDispatchAction;
  * A simple default implementation of a {@link ISelectionProvider}. It stores
  * the selection and notifies all selection change listeners when the selection
  * is set.
- * 
+ *
  * Instances of this class can be used as special selection provider for
  * {@link SelectionDispatchAction}s
- * 
+ *
  */
 public class SimpleSelectionProvider implements ISelectionProvider {
 

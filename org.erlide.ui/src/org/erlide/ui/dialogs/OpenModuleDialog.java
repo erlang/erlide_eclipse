@@ -19,13 +19,13 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 /**
  * Shows a list of resources to the user with a text entry field for a string
  * pattern used to filter the list of resources.
- * 
+ *
  */
 public class OpenModuleDialog extends FilteredModulesSelectionDialog {
 
     /**
      * Creates a new instance of the class.
-     * 
+     *
      * @param parentShell
      *            the parent shell
      * @param container

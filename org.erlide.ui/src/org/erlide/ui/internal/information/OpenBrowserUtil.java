@@ -24,7 +24,7 @@ public class OpenBrowserUtil {
 
     /**
      * Opens the given url in the browser as choosen in the preferences.
-     * 
+     *
      * @param url
      *            the URL
      * @param display
@@ -42,7 +42,7 @@ public class OpenBrowserUtil {
 
     /**
      * Opens the given URL in an external browser.
-     * 
+     *
      * @param url
      *            the URL
      * @param display

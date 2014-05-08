@@ -75,7 +75,7 @@ public final class DialogUtil {
     /**
      * Return the number of rows available in the current display using the
      * current font.
-     * 
+     *
      * @param parent
      *            The Composite whose Font will be queried.
      * @return int The result of the display size divided by the font size.
@@ -92,7 +92,7 @@ public final class DialogUtil {
      * Return whether or not the font in the parent is the size of a regular
      * font. Typically used to know if a font is smaller than the High Contrast
      * Font. This method is used to make layout decisions based on screen space.
-     * 
+     *
      * @param parent
      *            The Composite whose Font will be queried.
      * @return boolean. True if there are more than 50 lines of possible text in

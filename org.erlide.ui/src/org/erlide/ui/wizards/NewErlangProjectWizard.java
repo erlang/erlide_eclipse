@@ -50,7 +50,7 @@ import com.google.common.collect.Maps;
 
 /**
  * Creates a new erlang project in the Eclipse workbench.
- * 
+ *
  * @author Eric Merritt [cyberlync at yahoo dot com]
  * @author Vlad Dumitrescu
  */
@@ -68,7 +68,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
 
     @Override
     public void init(final IWorkbench aWorkbench, final IStructuredSelection selection) {
-        this.workbench = aWorkbench;
+        workbench = aWorkbench;
         setNeedsProgressMonitor(true);
     }
 
@@ -117,7 +117,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
                 referencePage.setTitle(WizardMessages.NewProject_referenceTitle);
                 referencePage
                         .setDescription(WizardMessages.NewProject_referenceDescription);
-                this.addPage(referencePage);
+                addPage(referencePage);
             }
 
         } catch (final Exception x) {
@@ -213,7 +213,7 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
     /**
      * Selects and reveals the newly added resource in all parts of the active
      * workbench window's active page.
-     * 
+     *
      * @see ISetSelectionTarget
      */
     protected void selectAndReveal(final IResource newResource) {
@@ -228,12 +228,12 @@ public class NewErlangProjectWizard extends Wizard implements INewWizard {
      * <code>ISetSelectionTarget</code>, either directly or as an adapter. If
      * so, tells the part to select and reveal the specified resource.
      * </p>
-     * 
+     *
      * @param resource
      *            the resource to be selected and revealed
      * @param window
      *            the workbench window to select and reveal the resource
-     * 
+     *
      * @see ISetSelectionTarget
      */
     public static void selectAndReveal(final IResource resource,

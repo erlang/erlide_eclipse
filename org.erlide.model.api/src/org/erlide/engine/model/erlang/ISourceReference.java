@@ -24,7 +24,7 @@ import org.erlide.engine.model.ErlModelException;
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
- * 
+ *
  */
 public interface ISourceReference {
 
@@ -37,7 +37,7 @@ public interface ISourceReference {
      * For beam files, this returns the source of the entire compilation unit
      * associated with the beam file (if there is one).
      * </p>
-     * 
+     *
      * @return the source code, or <code>null</code> if this element has no
      *         associated source code
      * @exception ErlModelException
@@ -52,7 +52,7 @@ public interface ISourceReference {
      * For beam files, this returns the range of the entire compilation unit
      * associated with the beam file (if there is one).
      * </p>
-     * 
+     *
      * @return the source range, or <code>null</code> if this element has no
      *         associated source code
      */

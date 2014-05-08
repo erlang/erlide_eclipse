@@ -36,7 +36,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 
 /**
  * Abstract class for views which show information for a given element.
- * 
+ *
  * @since 3.0
  */
 abstract public class AbstractInfoView extends ViewPart implements ISelectionListener,
@@ -101,7 +101,7 @@ abstract public class AbstractInfoView extends ViewPart implements ISelectionLis
 
     /**
      * Set the input of this view.
-     * 
+     *
      * @param input
      *            the input object
      */
@@ -109,7 +109,7 @@ abstract public class AbstractInfoView extends ViewPart implements ISelectionLis
 
     /**
      * Create the part control.
-     * 
+     *
      * @param parent
      *            the parent control
      * @see IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
@@ -118,7 +118,7 @@ abstract public class AbstractInfoView extends ViewPart implements ISelectionLis
 
     /**
      * Set the view's foreground color.
-     * 
+     *
      * @param color
      *            the SWT color
      */
@@ -126,7 +126,7 @@ abstract public class AbstractInfoView extends ViewPart implements ISelectionLis
 
     /**
      * Set the view's background color.
-     * 
+     *
      * @param color
      *            the SWT color
      */
@@ -134,7 +134,7 @@ abstract public class AbstractInfoView extends ViewPart implements ISelectionLis
 
     /**
      * Returns the view's primary control.
-     * 
+     *
      * @return the primary control
      */
     abstract Control getControl();
@@ -144,7 +144,7 @@ abstract public class AbstractInfoView extends ViewPart implements ISelectionLis
 
     /**
      * Returns the context ID for the Help system
-     * 
+     *
      * @return the string used as ID for the Help context
      * @since 3.1
      */
@@ -196,7 +196,7 @@ abstract public class AbstractInfoView extends ViewPart implements ISelectionLis
 
     /**
      * Returns the input of this view.
-     * 
+     *
      * @return input the input object or <code>null</code> if not input is set
      */
     protected Object getInfo() {
@@ -207,7 +207,7 @@ abstract public class AbstractInfoView extends ViewPart implements ISelectionLis
      * Fills the actions bars.
      * <p>
      * Subclasses may extend.
-     * 
+     *
      * @param actionBars
      *            the action bars
      */
@@ -221,7 +221,7 @@ abstract public class AbstractInfoView extends ViewPart implements ISelectionLis
      * <p>
      * Default is to do nothing.
      * </p>
-     * 
+     *
      * @param tbm
      *            the tool bar manager
      */
@@ -278,7 +278,7 @@ abstract public class AbstractInfoView extends ViewPart implements ISelectionLis
     /**
      * Tells whether the new input should be ignored if the current input is the
      * same.
-     * 
+     *
      * @return <code>true</code> if the new input should be ignored
      */
     protected boolean isIgnoringEqualInput() {
@@ -389,7 +389,7 @@ abstract public class AbstractInfoView extends ViewPart implements ISelectionLis
     /**
      * Determines all necessary details and delegates the computation into a
      * background thread.
-     * 
+     *
      * @param part
      *            the workbench part
      */

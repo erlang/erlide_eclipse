@@ -21,11 +21,11 @@ import org.erlide.ui.editors.erl.AbstractErlangEditor;
 /**
  * Finds references of the selected element in the workspace. The action is
  * applicable to selections representing a Erlang element.
- * 
+ *
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class FindImplementorsAction extends FindAction {
@@ -34,7 +34,7 @@ public class FindImplementorsAction extends FindAction {
      * Creates a new <code>FindReferencesAction</code>. The action requires that
      * the selection provided by the site's selection provider is of type
      * <code>org.eclipse.jface.viewers.IStructuredSelection</code>.
-     * 
+     *
      * @param site
      *            the site providing context information for this action
      */
@@ -45,7 +45,7 @@ public class FindImplementorsAction extends FindAction {
     /**
      * Note: This constructor is for internal use only. Clients should not call
      * this constructor.
-     * 
+     *
      * @param editor
      *            the Erlang editor
      */

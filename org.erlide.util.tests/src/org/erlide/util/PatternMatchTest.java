@@ -23,8 +23,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 
 /**
- * 
- * 
+ *
+ *
  * @author Vlad Dumitrescu
  */
 public class PatternMatchTest {

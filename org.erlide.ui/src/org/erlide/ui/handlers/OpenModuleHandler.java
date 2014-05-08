@@ -145,7 +145,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
 
     /**
      * Query the user for the resources that should be opened
-     * 
+     *
      * @return the resource that should be opened.
      */
     private final Object[] queryFileResource() {

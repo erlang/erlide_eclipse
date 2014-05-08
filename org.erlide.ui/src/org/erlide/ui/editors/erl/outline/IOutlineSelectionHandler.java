@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 
 /**
  * IOutlineSelectionHandler
- * 
+ *
  */
 public interface IOutlineSelectionHandler {
 

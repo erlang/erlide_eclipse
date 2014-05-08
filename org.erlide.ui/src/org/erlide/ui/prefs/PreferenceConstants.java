@@ -15,7 +15,7 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * Constants used in project and plugin preferences
- * 
+ *
  * @author Eric Merritt [cyberlync at yahoo dot com]
  */
 public class PreferenceConstants {
@@ -97,7 +97,7 @@ public class PreferenceConstants {
      * Value is of type <code>String</code>. A RGB color value encoded as a
      * string using class <code>PreferenceConverter</code>
      * </p>
-     * 
+     *
      * @see org.eclipse.jface.resource.StringConverter
      * @see org.eclipse.jface.preference.PreferenceConverter
      */

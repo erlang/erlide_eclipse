@@ -179,7 +179,7 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
     /**
      * We will accept the selection in the workbench to see if we can initialize
      * from it.
-     * 
+     *
      * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
      */
     @Override

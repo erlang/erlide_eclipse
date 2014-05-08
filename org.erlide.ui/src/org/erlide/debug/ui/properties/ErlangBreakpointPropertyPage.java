@@ -65,7 +65,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
 
     /**
      * Store the breakpoint properties.
-     * 
+     *
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
      */
     @Override
@@ -101,7 +101,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
      * should retain messages that are passed into this method as the message
      * should later be passed into removeErrorMessage(String) to clear the
      * error. This method should be used instead of setErrorMessage(String).
-     * 
+     *
      * @param message
      *            the error message to display on this page.
      */
@@ -118,7 +118,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
      * that was added before the given message. This is akin to popping the
      * message from a stack. Clients should call this method instead of
      * setErrorMessage(null).
-     * 
+     *
      * @param message
      *            the error message to clear
      */
@@ -144,7 +144,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
 
     /**
      * Stores the value of the enabled state in the breakpoint.
-     * 
+     *
      * @param breakpoint
      *            the breakpoint to update
      * @throws CoreException
@@ -156,7 +156,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
 
     /**
      * Stores the value of the suspend policy in the breakpoint.
-     * 
+     *
      * @param breakpoint
      *            the breakpoint to update
      * @throws CoreException
@@ -169,7 +169,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
 
     /**
      * Stores the value of the hit count in the breakpoint.
-     * 
+     *
      * @param breakpoint
      *            the breakpoint to update
      * @throws CoreException
@@ -197,7 +197,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     // }
     /**
      * Creates the labels and editors displayed for the breakpoint.
-     * 
+     *
      * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
      */
     @Override
@@ -263,7 +263,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
 
     /**
      * Returns the name of the given element.
-     * 
+     *
      * @param element
      *            the element
      * @return the name of the element
@@ -279,7 +279,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
 
     /**
      * Creates the labels displayed for the breakpoint.
-     * 
+     *
      * @param parent
      */
     protected void createLabels(final Composite parent) {
@@ -359,7 +359,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
 
     /**
      * Creates the button to toggle enablement of the breakpoint
-     * 
+     *
      * @param parent
      * @throws CoreException
      */
@@ -370,7 +370,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
 
     /**
      * Returns the breakpoint that this preference page configures
-     * 
+     *
      * @return the breakpoint this page configures
      */
     protected IErlangBreakpoint getBreakpoint() {
@@ -380,7 +380,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     /**
      * Allows subclasses to add type specific labels to the common Erlang
      * breakpoint page.
-     * 
+     *
      * @param parent
      */
     protected void createTypeSpecificLabels(final Composite parent) {
@@ -389,7 +389,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     /**
      * Allows subclasses to add type specific editors to the common Erlang
      * breakpoint page.
-     * 
+     *
      * @param parent
      * @throws CoreException
      */
@@ -398,7 +398,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
 
     /**
      * Creates a fully configured text editor with the given initial value
-     * 
+     *
      * @param parent
      * @param initialValue
      * @return the configured text editor
@@ -420,7 +420,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
 
     /**
      * Creates a fully configured composite with the given number of columns
-     * 
+     *
      * @param parent
      * @param numColumns
      * @return the configured composite
@@ -440,7 +440,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
 
     /**
      * Creates a fully configured check button with the given text.
-     * 
+     *
      * @param parent
      *            the parent composite
      * @param text
@@ -476,7 +476,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
 
     /**
      * Creates a fully configured label with the given text.
-     * 
+     *
      * @param parent
      *            the parent composite
      * @param text
@@ -496,7 +496,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
 
     /**
      * Creates a fully configured radio button with the given text.
-     * 
+     *
      * @param parent
      *            the parent composite
      * @param text

@@ -58,7 +58,7 @@ import org.osgi.framework.Bundle;
 
 /**
  * View which shows Edoc for a given Erlang element.
- * 
+ *
  */
 public class EdocView extends AbstractInfoView {
 
@@ -66,7 +66,7 @@ public class EdocView extends AbstractInfoView {
     /**
      * Preference key for the preference whether to show a dialog when the SWT
      * Browser widget is not available.
-     * 
+     *
      * @since 3.0
      */
     //    private static final String DO_NOT_WARN_PREFERENCE_KEY = "EdocView.error.doNotWarn"; //$NON-NLS-1$
@@ -103,7 +103,7 @@ public class EdocView extends AbstractInfoView {
 
         /**
          * Creates the action.
-         * 
+         *
          * @param control
          *            the widget
          * @param selectionProvider
@@ -157,7 +157,7 @@ public class EdocView extends AbstractInfoView {
 
         /**
          * Creates a new selection provider.
-         * 
+         *
          * @param control
          *            the widget
          */

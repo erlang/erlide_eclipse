@@ -85,6 +85,6 @@ public class CodeBundle implements ICodeBundle {
 
     @Override
     public RuntimeVersion getVersion() {
-        return this.version;
+        return version;
     }
 }

@@ -90,7 +90,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 @SuppressWarnings("restriction")
 public class ErlangConsolePage extends Page implements IAdaptable,
-IPropertyChangeListener, IErlangConsolePage {
+        IPropertyChangeListener, IErlangConsolePage {
     public static final String ID = "org.erlide.ui.views.console";
 
     Color bgColor_Ok;
@@ -215,18 +215,18 @@ IPropertyChangeListener, IErlangConsolePage {
                 .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
         consoleText.setBackground(bgcolor);
         DebugUIPlugin.getDefault().getPreferenceStore()
-        .addPropertyChangeListener(new IPropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent event) {
-                if (event.getProperty().equals(
-                        IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR)) {
-                    final Color color = DebugUIPlugin
-                            .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
-                    consoleText.setBackground(color);
-                    consoleInput.setBackground(color);
-                }
-            }
-        });
+                .addPropertyChangeListener(new IPropertyChangeListener() {
+                    @Override
+                    public void propertyChange(final PropertyChangeEvent event) {
+                        if (event.getProperty().equals(
+                                IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR)) {
+                            final Color color = DebugUIPlugin
+                                    .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
+                            consoleText.setBackground(color);
+                            consoleInput.setBackground(color);
+                        }
+                    }
+                });
 
         final IPreferenceStore store = ErlideUIPlugin.getDefault().getPreferenceStore();
         final IColorManager colorManager = new ColorManager();
@@ -246,8 +246,8 @@ IPropertyChangeListener, IErlangConsolePage {
 
         final Label helpLabel = new Label(composite, SWT.NONE);
         helpLabel
-        .setText("To send the input to the console: press Enter at the end of an expression."
-                + "Ctrl/Cmd-arrows navigate the input history.");
+                .setText("To send the input to the console: press Enter at the end of an expression."
+                        + "Ctrl/Cmd-arrows navigate the input history.");
         helpLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         final ModifyListener modifyListener = new ModifyListener() {
@@ -468,7 +468,7 @@ IPropertyChangeListener, IErlangConsolePage {
                 ConsoleMessages.TextConsolePage_SelectAllDescrip);
         action.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_SELECT_ALL);
         PlatformUI.getWorkbench().getHelpSystem()
-        .setHelp(action, IConsoleHelpContextIds.CONSOLE_SELECT_ALL_ACTION);
+                .setHelp(action, IConsoleHelpContextIds.CONSOLE_SELECT_ALL_ACTION);
         setGlobalAction(actionBars, ActionFactory.SELECT_ALL.getId(), action);
 
         action = new TextViewerAction(consoleOutputViewer, ITextOperationTarget.CUT);
@@ -479,7 +479,7 @@ IPropertyChangeListener, IErlangConsolePage {
                 .getImageDescriptor(ISharedImages.IMG_TOOL_CUT));
         action.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_CUT);
         PlatformUI.getWorkbench().getHelpSystem()
-        .setHelp(action, IConsoleHelpContextIds.CONSOLE_CUT_ACTION);
+                .setHelp(action, IConsoleHelpContextIds.CONSOLE_CUT_ACTION);
         setGlobalAction(actionBars, ActionFactory.CUT.getId(), action);
 
         action = new TextViewerAction(consoleOutputViewer, ITextOperationTarget.COPY);
@@ -490,7 +490,7 @@ IPropertyChangeListener, IErlangConsolePage {
                 .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
         action.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_COPY);
         PlatformUI.getWorkbench().getHelpSystem()
-        .setHelp(action, IConsoleHelpContextIds.CONSOLE_COPY_ACTION);
+                .setHelp(action, IConsoleHelpContextIds.CONSOLE_COPY_ACTION);
         setGlobalAction(actionBars, ActionFactory.COPY.getId(), action);
 
         // fClearOutputAction = new ClearOutputAction(fConsole);
@@ -499,7 +499,7 @@ IPropertyChangeListener, IErlangConsolePage {
         final FindReplaceAction fraction = new FindReplaceAction(bundle,
                 "find_replace_action_", fConsoleView); //$NON-NLS-1$
         PlatformUI.getWorkbench().getHelpSystem()
-        .setHelp(fraction, IConsoleHelpContextIds.CONSOLE_FIND_REPLACE_ACTION);
+                .setHelp(fraction, IConsoleHelpContextIds.CONSOLE_FIND_REPLACE_ACTION);
         setGlobalAction(actionBars, ActionFactory.FIND.getId(), fraction);
 
         fSelectionActions.add(ActionFactory.CUT.getId());

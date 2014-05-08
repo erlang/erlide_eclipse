@@ -193,7 +193,7 @@ public class ErlangMainTab extends AbstractLaunchConfigurationTab {
 
     /**
      * Provides the labels for the projects table
-     * 
+     *
      */
     static class ProjectsLabelProvider implements ITableLabelProvider {
         @Override

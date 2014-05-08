@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.IAdaptable;
  * contains static helping functionality to work on file resources in the
  * workspace.
  * </p>
- * 
+ *
  * @author Leif Frenzel
  * @author Andrei Formiga
  */

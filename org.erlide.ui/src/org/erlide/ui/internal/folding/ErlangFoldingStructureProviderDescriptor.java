@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.erlide.ui.internal.folding;
 
@@ -11,7 +11,7 @@ import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 
 /**
  * @author jakob
- * 
+ *
  */
 public final class ErlangFoldingStructureProviderDescriptor {
 
@@ -48,7 +48,7 @@ public final class ErlangFoldingStructureProviderDescriptor {
 
     /**
      * Creates a new descriptor.
-     * 
+     *
      * @param element
      *            the configuration element to read
      */
@@ -74,7 +74,7 @@ public final class ErlangFoldingStructureProviderDescriptor {
 
     /**
      * Creates a folding provider as described in the extension's xml.
-     * 
+     *
      * @return a new instance of the folding provider described by this
      *         descriptor
      * @throws CoreException
@@ -88,7 +88,7 @@ public final class ErlangFoldingStructureProviderDescriptor {
 
     /**
      * Creates a preferences object as described in the extension's xml.
-     * 
+     *
      * @return a new instance of the reference provider described by this
      *         descriptor
      * @throws CoreException
@@ -105,7 +105,7 @@ public final class ErlangFoldingStructureProviderDescriptor {
 
     /**
      * Returns the identifier of the described extension.
-     * 
+     *
      * @return Returns the id
      */
     public String getId() {
@@ -114,7 +114,7 @@ public final class ErlangFoldingStructureProviderDescriptor {
 
     /**
      * Returns the name of the described extension.
-     * 
+     *
      * @return Returns the name
      */
     public String getName() {

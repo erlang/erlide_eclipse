@@ -50,14 +50,11 @@ public class ModuleLocatorTests {
 
     private void checkProjectDirectories(final IErlProject project,
             final Object[] expectedSources, final Object[] expectedIncludes) {
-        ErlangProjectProperties properties = project.getProperties();
+        final ErlangProjectProperties properties = project.getProperties();
         assertThat(properties.getSourceDirs().toArray(), is(expectedSources));
-        assertThat(properties.getIncludeDirs().toArray(),
-                is(expectedIncludes));
-        assertThat(properties.getExternalModules(),
-                is("../external_modules"));
-        assertThat(properties.getExternalIncludes(),
-                is("../external_includes"));
+        assertThat(properties.getIncludeDirs().toArray(), is(expectedIncludes));
+        assertThat(properties.getExternalModules(), is("../external_modules"));
+        assertThat(properties.getExternalIncludes(), is("../external_includes"));
     }
 
     // @Test

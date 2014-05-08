@@ -89,7 +89,7 @@ import com.google.common.collect.Sets;
  * active <code>IErlProject</code>s in a workspace. A Erlang Model is specific
  * to a workspace. To retrieve a workspace's model, use the
  * <code>#getErlangModel(IWorkspace)</code> method.
- * 
+ *
  * @see IErlModel
  */
 public class ErlModel extends Openable implements IErlModel {
@@ -442,7 +442,7 @@ public class ErlModel extends Openable implements IErlModel {
      * same Erlang element change shows up in multiple notifications. Clients
      * are guaranteed to receive only the events for which they are registered.
      * </p>
-     * 
+     *
      * @param listener
      *            the listener
      * @param eventMask
@@ -460,7 +460,7 @@ public class ErlModel extends Openable implements IErlModel {
     /**
      * Removes the given element changed listener. Has no affect if an identical
      * listener is not registered.
-     * 
+     *
      * @param listener
      *            the listener
      */
@@ -473,13 +473,13 @@ public class ErlModel extends Openable implements IErlModel {
     /**
      * Adds the given listener for changes to Erlang elements. Has no effect if
      * an identical listener is already registered.
-     * 
+     *
      * This listener will only be notified during the POST_CHANGE resource
      * change notification and any reconcile operation (POST_RECONCILE). For
      * finer control of the notification, use
      * <code>addElementChangedListener(IElementChangedListener,int)</code>,
      * which allows to specify a different eventMask.
-     * 
+     *
      * @param listener
      *            the listener
      * @see ElementChangedEvent
@@ -643,7 +643,7 @@ public class ErlModel extends Openable implements IErlModel {
      * Returns the Erlang element corresponding to the given file, its project
      * being the given project. Returns <code>null</code> if unable to associate
      * the given file with a Erlang element.
-     * 
+     *
      * <p>
      * The file must be one of:
      * <ul>
@@ -715,7 +715,7 @@ public class ErlModel extends Openable implements IErlModel {
      * <p>
      * Note that no check is done at this time on the existence or the Erlang
      * nature of this project.
-     * 
+     *
      * @param project
      *            the given project
      * @return the Erlang project corresponding to the given project, null if
@@ -747,7 +747,7 @@ public class ErlModel extends Openable implements IErlModel {
      * <p>
      * Creating a Erlang element has the side effect of creating and opening all
      * of the element's parents if they are not yet open.
-     * 
+     *
      * @param resource
      *            the given resource
      * @return the Erlang element corresponding to the given resource, or
@@ -772,7 +772,7 @@ public class ErlModel extends Openable implements IErlModel {
 
     /**
      * Returns the Erlang model.
-     * 
+     *
      * @param root
      *            the given root
      * @return the Erlang model, or <code>null</code> if the root is null

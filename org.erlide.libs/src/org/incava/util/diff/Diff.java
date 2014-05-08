@@ -18,7 +18,7 @@ import java.util.TreeMap;
  * <code>compareTo</code> methods will be invoked on the instances in the "from"
  * and "to" lists; otherwise, for speed, hash codes from the objects will be
  * used instead for comparison.
- * 
+ *
  * <p>
  * The file FileDiff.java shows an example usage of this class, in an
  * application similar to the Unix "diff" program.

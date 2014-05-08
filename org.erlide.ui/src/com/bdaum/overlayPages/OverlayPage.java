@@ -82,7 +82,7 @@ public abstract class OverlayPage extends PropertyPage implements
 
     /**
      * Constructor
-     * 
+     *
      * @param title
      *            - title string
      */
@@ -93,7 +93,7 @@ public abstract class OverlayPage extends PropertyPage implements
 
     /**
      * Constructor
-     * 
+     *
      * @param title
      *            - title string
      * @param image
@@ -109,14 +109,14 @@ public abstract class OverlayPage extends PropertyPage implements
     /**
      * Returns the id of the current preference page as defined in plugin.xml
      * Subclasses must implement.
-     * 
+     *
      * @return - the qualifier
      */
     protected abstract String getPageId();
 
     /**
      * Returns true if this instance represents a property page
-     * 
+     *
      * @return - true for property pages, false for preference pages
      */
     public boolean isPropertyPage() {
@@ -128,7 +128,7 @@ public abstract class OverlayPage extends PropertyPage implements
      * insert two radio buttons and a push button at the top of the page. Below
      * this group we create a new composite for the contents created by
      * subclasses.
-     * 
+     *
      * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
      */
     @Override
@@ -148,7 +148,7 @@ public abstract class OverlayPage extends PropertyPage implements
     /**
      * Creates and initializes a selection group with two choice buttons and one
      * push button.
-     * 
+     *
      * @param parent
      *            - the parent composite
      */
@@ -192,7 +192,7 @@ public abstract class OverlayPage extends PropertyPage implements
 
     /**
      * Convenience method creating a radio button
-     * 
+     *
      * @param parent
      *            - the parent composite
      * @param label
@@ -216,7 +216,7 @@ public abstract class OverlayPage extends PropertyPage implements
      * In case of property pages we create a new PropertyStore as local overlay
      * store. After all controls have been create, we enable/disable these
      * controls
-     * 
+     *
      * @see org.eclipse.jface.preference.PreferencePage#createControl()
      */
     @Override
@@ -261,7 +261,7 @@ public abstract class OverlayPage extends PropertyPage implements
 
     /**
      * Enables or disables the controls of this page Subclasses may override.
-     * 
+     *
      * @param enabled
      *            - true if controls shall be enabled
      */
@@ -272,7 +272,7 @@ public abstract class OverlayPage extends PropertyPage implements
     /**
      * Enables or disables a tree of controls starting at the specified root. We
      * spare tabbed notebooks and pagebooks to allow for user navigation.
-     * 
+     *
      * @param root
      *            - the root composite
      * @param enabled
@@ -295,7 +295,7 @@ public abstract class OverlayPage extends PropertyPage implements
     /**
      * We override the performOk method. In case of property pages we save the
      * state of the radio buttons.
-     * 
+     *
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
      */
     @Override
@@ -319,7 +319,7 @@ public abstract class OverlayPage extends PropertyPage implements
     /**
      * We override the performDefaults method. In case of property pages we
      * switch back to the workspace settings and disable the page controls.
-     * 
+     *
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
     @Override
@@ -335,7 +335,7 @@ public abstract class OverlayPage extends PropertyPage implements
 
     /**
      * Creates a new preferences page and opens it
-     * 
+     *
      * @see com.bdaum.SpellChecker.preferences.SpellCheckerPreferencePage#configureWorkspaceSettings()
      */
     protected void configureWorkspaceSettings() {
@@ -355,7 +355,7 @@ public abstract class OverlayPage extends PropertyPage implements
 
     /**
      * Show a single preference pages
-     * 
+     *
      * @param id
      *            - the preference page identification
      * @param page

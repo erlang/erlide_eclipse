@@ -28,7 +28,7 @@ public class TypedViewerFilter extends ViewerFilter {
 
     /**
      * Creates a filter that only allows elements of gives types.
-     * 
+     *
      * @param acceptedTypes
      *            The types of accepted elements
      */
@@ -39,7 +39,7 @@ public class TypedViewerFilter extends ViewerFilter {
     /**
      * Creates a filter that only allows elements of gives types, but not from a
      * list of rejected elements.
-     * 
+     *
      * @param acceptedTypes
      *            Accepted elements must be of this types
      * @param rejectedElements

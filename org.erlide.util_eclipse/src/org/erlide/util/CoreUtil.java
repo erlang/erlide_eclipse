@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IPath;
 public final class CoreUtil {
     /**
      * Returns the given file's contents as a byte array.
-     * 
+     *
      * @throws CoreException
      * @throws IOException
      */
@@ -43,10 +43,10 @@ public final class CoreUtil {
 
     /**
      * Returns the given file's contents as a character array.
-     * 
+     *
      * @throws CoreException
      * @throws IOException
-     * 
+     *
      * @throws ErlModelException
      */
     public static char[] getResourceContentsAsCharArray(final IFile file)

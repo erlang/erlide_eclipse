@@ -46,12 +46,12 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
      * characters must have the form <blockquote>{ <i>start</i>, <i>end</i>,
      * <i>start</i>, <i>end</i>, ..., <i>start</i>, <i>end</i> }</blockquote>
      * For instance:
-     * 
+     *
      * <pre>
      * char[] chars = new char[] {'(', ')', '{', '}', '[', ']'};
      * new SimpleCharacterPairMatcher(chars, ...);
      * </pre>
-     * 
+     *
      * @param chars
      *            a list of characters
      * @param partitioning
@@ -69,12 +69,12 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
      * default partitioning. The specified list of characters must have the form
      * <blockquote>{ <i>start</i>, <i>end</i>, <i>start</i>, <i>end</i>, ...,
      * <i>start</i>, <i>end</i> }</blockquote> For instance:
-     * 
+     *
      * <pre>
      * char[] chars = new char[] { '(', ')', '{', '}', '[', ']' };
      * new SimpleCharacterPairMatcher(chars);
      * </pre>
-     * 
+     *
      * @param chars
      *            a list of characters
      */
@@ -138,7 +138,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 
     /**
      * Searches <code>doc</code> for the specified end string, <code>end</code>.
-     * 
+     *
      * @param doc
      *            the document to search
      * @param start
@@ -206,7 +206,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 
         /**
          * Creates a new partitioned document for the specified document.
-         * 
+         *
          * @param doc
          *            the document to wrap
          * @param partitioning
@@ -223,7 +223,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 
         /**
          * Returns the character at the specified position in this document.
-         * 
+         *
          * @param pos
          *            an offset within this document
          * @param length
@@ -239,7 +239,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
          * Returns true if the character at the specified position is a valid
          * match for the specified end character. To be a valid match, it must
          * be in the appropriate partition and equal to the end character.
-         * 
+         *
          * @param pos
          *            an offset within this document
          * @param end
@@ -255,7 +255,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
         /**
          * Returns true if the specified offset is within the partition managed
          * by this document.
-         * 
+         *
          * @param pos
          *            an offset within this document
          * @return true if the offset is within this document's partition
@@ -268,7 +268,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
         /**
          * Returns the next position to query in the search. The position is not
          * guaranteed to be in this document's partition.
-         * 
+         *
          * @param pos
          *            an offset within the document
          * @param searchForward
@@ -304,7 +304,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
         /**
          * Returns partition information about the region containing the
          * specified position.
-         * 
+         *
          * @param pos
          *            a position within this document.
          * @return positioning information about the region containing the
@@ -345,7 +345,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
         /**
          * Returns true if the specified character pair occurs in one of the
          * character pairs.
-         * 
+         *
          * @param c
          *            a character
          * @return true exactly if the character occurs in one of the pairs
@@ -373,7 +373,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
         /**
          * Returns true if the specified character opens a character pair when
          * scanning in the specified direction.
-         * 
+         *
          * @param c
          *            a character
          * @param searchForward
@@ -393,7 +393,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 
         /**
          * Returns true of the specified string is a start string.
-         * 
+         *
          * @param s
          *            a string
          * @return true exactly if the string is a start string
@@ -404,7 +404,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
 
         /**
          * Returns the matching character for the specified character.
-         * 
+         *
          * @param s
          *            a string occurring in a string pair
          * @return the matching string

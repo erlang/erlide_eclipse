@@ -33,7 +33,7 @@ public interface IErlElementLocator {
     /**
      * Locates definitions of functions matching the given signature. Function
      * name and module can be regexps.
-     * 
+     *
      * @throws ErlModelException
      */
     IErlFunction findFunction(FunctionRef r) throws ErlModelException;

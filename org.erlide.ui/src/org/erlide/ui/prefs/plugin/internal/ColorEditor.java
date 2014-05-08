@@ -3,7 +3,7 @@
  * program and the accompanying materials are made available under the terms of the
  * Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors: IBM Corporation - initial API and implementation
  **************************************************************************************/
 package org.erlide.ui.prefs.plugin.internal;
@@ -28,8 +28,8 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * A "button" of a certain color determined by the color picker.
- * 
- * 
+ *
+ *
  */
 public class ColorEditor {
 
@@ -50,7 +50,7 @@ public class ColorEditor {
 
     /**
      * Creates and returns a new color editor.
-     * 
+     *
      * @param parent
      *            the parent composite of this color editor
      */
@@ -97,7 +97,7 @@ public class ColorEditor {
 
     /**
      * Returns the current RGB color value.
-     * 
+     *
      * @return an rgb with the current color value
      */
     public RGB getColorValue() {
@@ -106,7 +106,7 @@ public class ColorEditor {
 
     /**
      * Sets the current RGB color value.
-     * 
+     *
      * @param rgb
      *            the new value for the rgb color value
      */
@@ -117,7 +117,7 @@ public class ColorEditor {
 
     /**
      * Returns the image push button.
-     * 
+     *
      * @return the button which shows the current color as image
      */
     public Button getButton() {
@@ -149,7 +149,7 @@ public class ColorEditor {
 
     /**
      * Computes the size for the image.
-     * 
+     *
      * @param window
      *            the window on which to render the image
      * @return the point with the image size

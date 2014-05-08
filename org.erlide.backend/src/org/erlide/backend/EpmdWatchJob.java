@@ -19,7 +19,7 @@ import org.erlide.runtime.epmd.EpmdWatcher;
 /**
  * Periodically, query epmd to see if there are any new nodes that have been
  * registered.
- * 
+ *
  */
 public class EpmdWatchJob extends Job {
 

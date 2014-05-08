@@ -5,7 +5,7 @@ public abstract class MessageReporter {
     /**
      * Status type severity (bit mask, value 1) indicating this status is
      * informational only.
-     * 
+     *
      * @see #getSeverity()
      * @see #matches(int)
      */
@@ -14,7 +14,7 @@ public abstract class MessageReporter {
     /**
      * Status type severity (bit mask, value 2) indicating this status
      * represents a warning.
-     * 
+     *
      * @see #getSeverity()
      * @see #matches(int)
      */
@@ -23,7 +23,7 @@ public abstract class MessageReporter {
     /**
      * Status type severity (bit mask, value 4) indicating this status
      * represents an error.
-     * 
+     *
      * @see #getSeverity()
      * @see #matches(int)
      */

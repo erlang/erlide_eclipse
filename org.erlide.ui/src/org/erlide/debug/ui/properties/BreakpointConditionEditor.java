@@ -51,7 +51,7 @@ public class BreakpointConditionEditor {
 
     /**
      * Constructor
-     * 
+     *
      * @param parent
      *            the parent to add this widget to
      * @param page
@@ -166,7 +166,7 @@ public class BreakpointConditionEditor {
 
     /**
      * Returns the condition defined in the source viewer.
-     * 
+     *
      * @return the contents of this condition editor
      */
     public String getCondition() {

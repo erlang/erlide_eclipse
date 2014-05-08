@@ -19,8 +19,8 @@ import org.eclipse.jface.text.source.ICharacterPairMatcher;
 
 /**
  * The double click strategy for the editor
- * 
- * 
+ *
+ *
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class DoubleClickStrategy implements ITextDoubleClickStrategy {
@@ -38,7 +38,7 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 
     /**
      * If something is doubleclicking
-     * 
+     *
      * @see org.eclipse.jface.text.ITextDoubleClickStrategy#doubleClicked(org.eclipse.jface.text.ITextViewer)
      */
     @Override
@@ -64,7 +64,7 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 
     /**
      * if a t_comment is selected
-     * 
+     *
      * @param caretPos
      * @return
      */
@@ -127,7 +127,7 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 
     /**
      * Select a word
-     * 
+     *
      * @param caretPos
      * @return
      */
@@ -176,7 +176,7 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 
     /**
      * select a range of values
-     * 
+     *
      * @param startPos
      *            the starting pos
      * @param stopPos

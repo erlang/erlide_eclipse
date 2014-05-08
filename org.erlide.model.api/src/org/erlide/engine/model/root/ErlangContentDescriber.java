@@ -156,7 +156,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
 
     /**
      * Read a line of data from the underlying InputStream
-     * 
+     *
      * @return a line stripped of line terminators
      */
     public String readLine(final InputStream in) throws IOException {

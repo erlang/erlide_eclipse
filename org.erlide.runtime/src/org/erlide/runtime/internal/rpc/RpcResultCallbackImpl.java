@@ -17,7 +17,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 /**
  * Groups callbacks for {@link RpcHelper#rpcCallWithProgress}. Clients should
  * extend it locally.
- * 
+ *
  */
 public class RpcResultCallbackImpl implements IRpcResultCallback {
     @Override

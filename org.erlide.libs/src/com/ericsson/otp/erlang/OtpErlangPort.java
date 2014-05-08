@@ -1,19 +1,19 @@
 /*
  * %CopyrightBegin%
- * 
+ *
  * Copyright Ericsson AB 2000-2009. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
@@ -50,10 +50,10 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable, Clon
     /**
      * Create an Erlang port from a stream containing a port encoded in Erlang
      * external format.
-     * 
+     *
      * @param buf
      *            the stream containing the encoded port.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the buffer does not contain a valid external
      *                representation of an Erlang port.
@@ -68,13 +68,13 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Create an Erlang port from its components.
-     * 
+     *
      * @param node
      *            the nodename.
-     * 
+     *
      * @param id
      *            an arbitrary number. Only the low order 28 bits will be used.
-     * 
+     *
      * @param creation
      *            another arbitrary number. Only the low order 2 bits will be
      *            used.
@@ -87,7 +87,7 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Get the id number from the port.
-     * 
+     *
      * @return the id number from the port.
      */
     public int id() {
@@ -96,7 +96,7 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Get the creation number from the port.
-     * 
+     *
      * @return the creation number from the port.
      */
     public int creation() {
@@ -105,7 +105,7 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Get the node name from the port.
-     * 
+     *
      * @return the node name from the port.
      */
     public String node() {
@@ -115,7 +115,7 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable, Clon
     /**
      * Get the string representation of the port. Erlang ports are printed as
      * #Port&lt;node.id&gt;.
-     * 
+     *
      * @return the string representation of the port.
      */
     @Override
@@ -125,7 +125,7 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Convert this port to the equivalent Erlang external representation.
-     * 
+     *
      * @param buf
      *            an output stream to which the encoded port should be written.
      */
@@ -137,10 +137,10 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable, Clon
     /**
      * Determine if two ports are equal. Ports are equal if their components are
      * equal.
-     * 
+     *
      * @param o
      *            the other port to compare to.
-     * 
+     *
      * @return true if the ports are equal, false otherwise.
      */
     @Override

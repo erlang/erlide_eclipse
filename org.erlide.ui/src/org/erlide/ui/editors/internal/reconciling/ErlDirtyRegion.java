@@ -11,7 +11,7 @@ public class ErlDirtyRegion {
 
     /**
      * Creates a new dirty region.
-     * 
+     *
      * @param offset
      *            the offset within the document where the change occurred
      * @param length
@@ -39,7 +39,7 @@ public class ErlDirtyRegion {
 
     /**
      * Returns the text that changed as part of the region change.
-     * 
+     *
      * @return the changed text
      */
     public String getText() {
@@ -49,7 +49,7 @@ public class ErlDirtyRegion {
     /**
      * Modify the receiver so that it encompasses the region specified by the
      * dirty region.
-     * 
+     *
      * @param dr
      *            the dirty region to merge with
      */
@@ -69,7 +69,7 @@ public class ErlDirtyRegion {
 
     /**
      * Check if the regions are adjacent and can be merged to one
-     * 
+     *
      * @param nextMerge
      * @return
      */

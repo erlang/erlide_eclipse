@@ -57,7 +57,7 @@ import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
-import org.erlide.engine.model.root.ProjectConfigurator;
+import org.erlide.engine.model.root.IProjectConfigurator;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
@@ -733,18 +733,18 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     private ErlangProjectProperties loadProperties() {
-        final ProjectConfigurator builderConfig = getConfig();
+        final IProjectConfigurator builderConfig = getConfig();
         return builderConfig.getConfiguration();
     }
 
-    private ProjectConfigurator getConfig() {
+    private IProjectConfigurator getConfig() {
         return ProjectConfiguratorFactory.getDefault().getConfig(
                 getConfigType(), this);
     }
 
     private void storeProperties() {
         if (properties != null) {
-            final ProjectConfigurator builderConfig = getConfig();
+            final IProjectConfigurator builderConfig = getConfig();
             builderConfig.setConfiguration(properties);
         }
     }

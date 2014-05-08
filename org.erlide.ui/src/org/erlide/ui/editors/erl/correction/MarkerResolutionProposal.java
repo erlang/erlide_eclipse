@@ -22,7 +22,7 @@ import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolution2;
 
 /**
-  */
+ */
 public class MarkerResolutionProposal implements ICompletionProposal {
 
     private final IMarkerResolution fResolution;

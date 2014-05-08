@@ -14,14 +14,14 @@ public interface IRpcSite {
 
     /**
      * typed RPC
-     * 
+     *
      */
     RpcResult call_noexception(final String m, final String f, final String signature,
             final Object... a);
 
     /**
      * typed RPC with timeout
-     * 
+     *
      * @throws ConversionException
      */
     RpcResult call_noexception(final long timeout, final String m, final String f,

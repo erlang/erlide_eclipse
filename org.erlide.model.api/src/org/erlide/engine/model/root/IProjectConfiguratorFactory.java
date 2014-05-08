@@ -4,10 +4,10 @@ import java.io.File;
 
 public interface IProjectConfiguratorFactory {
 
-    public abstract ProjectConfigurator getConfig(ProjectConfigType configType,
+    public abstract IProjectConfigurator getConfig(ProjectConfigType configType,
             IErlProject project);
 
-    public abstract ProjectConfigurator getConfig(ProjectConfigType configType,
+    public abstract IProjectConfigurator getConfig(ProjectConfigType configType,
             File directory);
 
 }

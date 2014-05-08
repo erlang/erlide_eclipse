@@ -59,7 +59,7 @@ public abstract class SourceRefElement extends ErlElement implements
     /**
      * Elements within compilation units and class files have no corresponding
      * resource.
-     * 
+     *
      * @see IErlElement
      */
     @Override

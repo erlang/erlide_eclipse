@@ -30,11 +30,11 @@ import org.erlide.ui.util.IContextMenuConstants;
 /**
  * Action group that adds the actions opening a new editor to the context menu
  * and the action bar's navigate menu.
- * 
+ *
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class OpenEditorActionGroup extends ActionGroup {
@@ -49,7 +49,7 @@ public class OpenEditorActionGroup extends ActionGroup {
      * Creates a new <code>OpenActionGroup</code>. The group requires that the
      * selection provided by the part's selection provider is of type <code>
      * org.eclipse.jface.viewers.IStructuredSelection</code> .
-     * 
+     *
      * @param part
      *            the view part that owns this action group
      */
@@ -62,7 +62,7 @@ public class OpenEditorActionGroup extends ActionGroup {
 
     /**
      * Returns the open action managed by this action group.
-     * 
+     *
      * @return the open action. Returns <code>null</code> if the group doesn't
      *         provide any open action
      */

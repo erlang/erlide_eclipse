@@ -18,7 +18,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 public interface ISortableContentOutlinePage extends IContentOutlinePage {
     /**
      * Turns sorting on or off
-     * 
+     *
      * @param sorting
      *            - boolean value indicating if sorting should be enabled
      */

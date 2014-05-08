@@ -29,7 +29,7 @@ import org.erlide.ui.internal.ErlBrowserInformationControlInput;
  * <p>
  * The action is applicable to selections containing elements of type
  * <code>IJavaElement</code>.
- * 
+ *
  * @since 3.6
  * @noextend This class is not intended to be subclassed by clients.
  */
@@ -46,7 +46,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
      * that the selection provided by the site's selection provider is of type
      * <code>
      * org.eclipse.jface.viewers.IStructuredSelection</code> .
-     * 
+     *
      * @param site
      *            the site providing additional context information for this
      *            action
@@ -68,7 +68,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
     /**
      * Note: This constructor is for internal use only. Clients should not call
      * this constructor.
-     * 
+     *
      * @param editor
      *            the Java editor
      * @noreference This constructor is not intended to be referenced by
@@ -99,7 +99,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
 
     /**
      * Tells whether this action can be enabled for the given selection.
-     * 
+     *
      * @param selection
      *            the structured selection.
      * @return <code>true</code> if the action can be enabled,
@@ -148,7 +148,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
 
     /**
      * Executes this actions with the given Java element.
-     * 
+     *
      * @param element
      *            the Java element
      */
@@ -165,7 +165,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
 
     /**
      * Opens the given URL in the browser.
-     * 
+     *
      * @param url
      *            the URL
      */
@@ -180,7 +180,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
     /**
      * Tells whether to use an external browser or the one chosen by the
      * preferences.
-     * 
+     *
      * @return <code>true</code> if it should always use the external browser,
      *         <code>false</code> to use the browser chosen in the preferences
      * @since 3.6
@@ -210,9 +210,9 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
     /**
      * Note: this method is for internal use only. Clients should not call this
      * method.
-     * 
+     *
      * @return the dialog default title
-     * 
+     *
      * @noreference This method is not intended to be referenced by clients.
      */
     protected String getDialogTitle() {
@@ -221,7 +221,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
 
     /**
      * Returns the shell provided by the site owning this action.
-     * 
+     *
      * @return the site's shell
      */
     @Override

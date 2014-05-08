@@ -23,7 +23,7 @@ import org.junit.Test;
 
 /**
  * @author jakob
- * 
+ *
  */
 public class ParsingTests {
 

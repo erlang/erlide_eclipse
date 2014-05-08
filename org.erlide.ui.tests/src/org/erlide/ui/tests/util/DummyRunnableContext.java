@@ -8,9 +8,9 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 /**
  * To be used from tests, when we don't care about canceling long running
  * operations
- * 
+ *
  * @author Vlad
- * 
+ *
  */
 public class DummyRunnableContext implements IRunnableContext {
 

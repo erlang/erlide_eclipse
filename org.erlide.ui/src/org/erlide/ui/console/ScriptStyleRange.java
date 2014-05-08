@@ -10,7 +10,7 @@ import org.eclipse.swt.graphics.Color;
 /**
  * Defines a style range that identifies a given type of content in the console
  * (as defined in the constants)
- * 
+ *
  * @author Fabio
  */
 public class ScriptStyleRange extends StyleRange {

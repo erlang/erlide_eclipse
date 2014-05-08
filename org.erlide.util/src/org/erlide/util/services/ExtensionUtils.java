@@ -64,7 +64,7 @@ public final class ExtensionUtils {
     /**
      * Get the underlying class for a type, or null if the type is a variable
      * type.
-     * 
+     *
      * @param type
      *            the type
      * @return the underlying class

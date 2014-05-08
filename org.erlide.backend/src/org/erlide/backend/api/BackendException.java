@@ -3,7 +3,7 @@
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Eric Merritt
  *******************************************************************************/
@@ -11,9 +11,9 @@ package org.erlide.backend.api;
 
 /**
  * Simple top level exception
- * 
+ *
  * $Revision$ $Date$
- * 
+ *
  * @author Eric Merritt
  */
 public class BackendException extends Exception {
@@ -29,7 +29,7 @@ public class BackendException extends Exception {
 
     /**
      * Constructor with message
-     * 
+     *
      * @param message
      *            The message to pass up
      */
@@ -39,7 +39,7 @@ public class BackendException extends Exception {
 
     /**
      * Constructor with message and cause
-     * 
+     *
      * @param message
      *            The message
      * @param cause
@@ -51,7 +51,7 @@ public class BackendException extends Exception {
 
     /**
      * Constructor with cause only
-     * 
+     *
      * @param cause
      *            The cause.
      */

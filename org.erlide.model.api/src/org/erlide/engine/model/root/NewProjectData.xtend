@@ -42,7 +42,7 @@ class NewProjectData extends ErlangProjectProperties {
     val File f = new File(getLocation().append(getConfigType().getConfigName()).toPortableString())
     if (f.exists()) {
       System.out.println(">>> LOAD " + f.getAbsolutePath())
-      val ProjectConfigurator config = factory.getConfig(getConfigType(),
+      val IProjectConfigurator config = factory.getConfig(getConfigType(),
         new File(getLocation().toPortableString()))
       val ErlangProjectProperties props = config.getConfiguration()
       setOutputDir(props.getOutputDir())

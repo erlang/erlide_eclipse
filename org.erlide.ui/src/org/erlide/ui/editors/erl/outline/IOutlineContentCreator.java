@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.ViewerComparator;
 
 /**
  * IContentOutlineCreator
- * 
+ *
  */
 public interface IOutlineContentCreator {
 

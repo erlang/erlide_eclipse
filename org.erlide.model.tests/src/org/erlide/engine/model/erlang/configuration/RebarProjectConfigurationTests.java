@@ -16,7 +16,7 @@ import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectConfigurationSerializer;
-import org.erlide.engine.model.root.ProjectConfigurator;
+import org.erlide.engine.model.root.IProjectConfigurator;
 import org.junit.Test;
 
 public class RebarProjectConfigurationTests extends AbstractProjectConfigurationTests {
@@ -28,7 +28,7 @@ public class RebarProjectConfigurationTests extends AbstractProjectConfiguration
         project.storeAllProperties();
         setFileContent(ProjectConfigType.REBAR.getConfigName(), "");
 
-        final ProjectConfigurator persister = ProjectConfiguratorFactory.getDefault()
+        final IProjectConfigurator persister = ProjectConfiguratorFactory.getDefault()
                 .getConfig(project.getConfigType(), project);
         final ProjectConfigurationSerializer configurator = ((FileProjectConfigurator) persister)
                 .getSerializer();

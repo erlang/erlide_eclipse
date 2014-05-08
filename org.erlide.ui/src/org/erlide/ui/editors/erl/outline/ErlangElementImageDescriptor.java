@@ -27,11 +27,11 @@ import org.erlide.ui.internal.ErlideUIPlugin;
  * An ErlangImageDescriptor consists of a base image and several adornments. The
  * adornments are computed according to the flags either passed during creation
  * or set via the method <code>setAdornments</code>.
- * 
+ *
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
@@ -51,7 +51,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 
     /**
      * Creates a new ErlangElementImageDescriptor.
-     * 
+     *
      * @param baseImage
      *            an image descriptor used as the base image
      * @param flags
@@ -74,7 +74,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
     /**
      * Sets the descriptors adornments. Valid values are: <code>EXPORTED</code>,
      * or any combination of those.
-     * 
+     *
      * @param adornments
      *            the image descriptors adornments
      */
@@ -85,7 +85,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 
     /**
      * Returns the current adornments.
-     * 
+     *
      * @return the current adornments
      */
     public int getAdornments() {
@@ -94,7 +94,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
 
     /**
      * Sets the size of the image created by calling <code>createImage()</code>.
-     * 
+     *
      * @param size
      *            the size of the image returned from calling
      *            <code>createImage()</code>
@@ -110,7 +110,7 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
     /**
      * Returns the size of the image created by calling
      * <code>createImage()</code>.
-     * 
+     *
      * @return the size of the image created by calling
      *         <code>createImage()</code>
      * @see ImageDescriptor#createImage()

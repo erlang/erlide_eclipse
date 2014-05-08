@@ -29,9 +29,9 @@ import org.erlide.util.SystemConfiguration;
 
 /**
  * Implementation of folder in erlang model
- * 
+ *
  * @author Jakob C
- * 
+ *
  */
 public class ErlFolder extends Openable implements IErlFolder {
     private final IFolder folder;

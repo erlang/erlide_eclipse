@@ -36,8 +36,8 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
     public static class ProblemsLabelChangedEvent extends LabelProviderChangedEvent {
 
         /**
-		 * 
-		 */
+         *
+         */
         private static final long serialVersionUID = 1L;
         private final boolean fMarkerChange;
 
@@ -55,7 +55,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
          * Returns whether this event origins from marker changes. If
          * <code>false</code> an annotation model change is the origin. In this
          * case viewers not displaying working copies can ignore these events.
-         * 
+         *
          * @return if this event origins from a marker change.
          */
         public boolean isMarkerChange() {
@@ -79,10 +79,10 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
     /**
      * Note: This method is for internal use only. Clients should not call this
      * method.
-     * 
+     *
      * @param obj
      *            the element to compute the flags for
-     * 
+     *
      * @return the adornment flags
      */
     protected int computeAdornmentFlags(final Object obj) {
@@ -161,7 +161,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
 
     /**
      * Tests if a position is inside the source range of an element.
-     * 
+     *
      * @param pos
      *            Position to be tested.
      * @param sourceElement
@@ -170,7 +170,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
      *         the source element.
      * @throws CoreException
      *             Exception thrown if element range could not be accessed.
-     * 
+     *
      */
     protected static boolean isInside(final int pos, final ISourceReference sourceElement)
             throws CoreException {

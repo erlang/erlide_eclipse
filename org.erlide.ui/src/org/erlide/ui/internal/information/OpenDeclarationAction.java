@@ -15,7 +15,7 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Action that opens the current hover input element.
- * 
+ *
  * @since 3.4
  */
 public final class OpenDeclarationAction extends Action {

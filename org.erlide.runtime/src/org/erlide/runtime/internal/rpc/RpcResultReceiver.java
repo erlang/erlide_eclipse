@@ -21,7 +21,7 @@ import com.ericsson.otp.erlang.OtpMbox;
 /**
  * This is a thread driven by a mailbox, that waits for rpc results and
  * dispatches them to registered callback.
- * 
+ *
  * Protocol:
  * <ul>
  * <li>caller starts receiver and registers callback</li>

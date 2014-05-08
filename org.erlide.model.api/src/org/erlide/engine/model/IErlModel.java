@@ -35,7 +35,7 @@ import com.google.common.base.Predicate;
  * one of these handles can be created via
  * <code>ErlangCore.create(workspace.getRoot())</code>.
  * </p>
- * 
+ *
  * @see ErlangCore#create(org.eclipse.core.resources.IWorkspaceRoot)
  */
 public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementLocator {
@@ -43,7 +43,7 @@ public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementL
     /**
      * Returns the Erlang project with the given name. This is a handle-only
      * method. The project may or may not exist.
-     * 
+     *
      * @param project
      *            the name of the Erlang project
      * @return the Erlang project with the given name
@@ -53,7 +53,7 @@ public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementL
     /**
      * Returns the Erlang projects in this Erlang model, or an empty array if
      * there are none.
-     * 
+     *
      * @return the Erlang projects in this Erlang model, or an empty array if
      *         there are none
      * @throws ErlModelException
@@ -108,7 +108,7 @@ public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementL
      * same Erlang element change shows up in multiple notifications. Clients
      * are guaranteed to receive only the events for which they are registered.
      * </p>
-     * 
+     *
      * @param listener
      *            the listener
      * @param eventMask
@@ -122,7 +122,7 @@ public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementL
     /**
      * Removes the given element changed listener. Has no affect if an identical
      * listener is not registered.
-     * 
+     *
      * @param listener
      *            the listener
      */
@@ -131,13 +131,13 @@ public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementL
     /**
      * Adds the given listener for changes to Erlang elements. Has no effect if
      * an identical listener is already registered.
-     * 
+     *
      * This listener will only be notified during the POST_CHANGE resource
      * change notification and any reconcile operation (POST_RECONCILE). For
      * finer control of the notification, use
      * <code>addElementChangedListener(IElementChangedListener,int)</code>,
      * which allows to specify a different eventMask.
-     * 
+     *
      * @param listener
      *            the listener
      * @see ElementChangedEvent

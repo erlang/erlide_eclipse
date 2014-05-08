@@ -73,7 +73,7 @@ import org.eclipse.swt.widgets.Slider;
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=84532</li>
  * </ul>
  * </p>
- * 
+ *
  * @since 3.2
  */
 public class BrowserInformationControl extends AbstractInformationControl implements
@@ -82,7 +82,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
     /**
      * Tells whether the SWT Browser widget and hence this information control
      * is available.
-     * 
+     *
      * @param parent
      *            the parent component used for checking or <code>null</code> if
      *            none
@@ -114,7 +114,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
 
     /**
      * Minimal size constraints.
-     * 
+     *
      * @since 3.2
      */
     private static final int MIN_WIDTH = 80;
@@ -130,7 +130,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
 
     /**
      * Cached scroll bar width and height
-     * 
+     *
      * @since 3.4
      */
     private static Point fgScrollBarSize;
@@ -152,7 +152,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
     /**
      * <code>true</code> iff the browser has completed loading of the last input
      * set via {@link #setInformation(String)}.
-     * 
+     *
      * @since 3.4
      */
     private boolean fCompleted = false;
@@ -160,14 +160,14 @@ public class BrowserInformationControl extends AbstractInformationControl implem
     /**
      * The listener to be notified when a delayed location changing event
      * happened.
-     * 
+     *
      * @since 3.4
      */
     private IInputChangedListener fDelayedInputChangeListener;
 
     /**
      * The listeners to be notified when the input changed.
-     * 
+     *
      * @since 3.4
      */
     private final ListenerList/* <IInputChangedListener> */fInputChangeListeners = new ListenerList(
@@ -176,14 +176,14 @@ public class BrowserInformationControl extends AbstractInformationControl implem
     /**
      * The symbolic name of the font used for size computations, or
      * <code>null</code> to use dialog font.
-     * 
+     *
      * @since 3.4
      */
     private final String fSymbolicFontName;
 
     /**
      * Creates a browser information control with the given shell as parent.
-     * 
+     *
      * @param parent
      *            the parent shell
      * @param symbolicFontName
@@ -201,7 +201,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
 
     /**
      * Creates a browser information control with the given shell as parent.
-     * 
+     *
      * @param parent
      *            the parent shell
      * @param symbolicFontName
@@ -220,7 +220,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
 
     /**
      * Creates a browser information control with the given shell as parent.
-     * 
+     *
      * @param parent
      *            the parent shell
      * @param symbolicFontName
@@ -272,7 +272,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @deprecated use {@link #setInput(Object)}
      */
     @Deprecated
@@ -438,7 +438,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
 
     /**
      * Creates and initializes the text layout used to compute the size hint.
-     * 
+     *
      * @since 3.2
      */
     private void createTextLayout() {
@@ -519,8 +519,8 @@ public class BrowserInformationControl extends AbstractInformationControl implem
         }
 
         final Rectangle bounds = fTextLayout.getBounds(); // does not return
-                                                          // minimum width, see
-                                                          // https://bugs.eclipse.org/bugs/show_bug.cgi?id=217446
+        // minimum width, see
+        // https://bugs.eclipse.org/bugs/show_bug.cgi?id=217446
         final int lineCount = fTextLayout.getLineCount();
         int textWidth = 0;
         for (int i = 0; i < lineCount; i++) {
@@ -578,7 +578,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
     /**
      * Adds the listener to the collection of listeners who will be notified
      * when the current location has changed or is about to change.
-     * 
+     *
      * @param listener
      *            the location listener
      * @since 3.4
@@ -616,7 +616,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
     /**
      * Adds a listener for input changes to this input change provider. Has no
      * effect if an identical listener is already registered.
-     * 
+     *
      * @param inputChangeListener
      *            the listener to add
      * @since 3.4
@@ -629,7 +629,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
     /**
      * Removes the given input change listener from this input change provider.
      * Has no effect if an identical listener is not registered.
-     * 
+     *
      * @param inputChangeListener
      *            the listener to remove
      * @since 3.4
@@ -653,7 +653,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
 
     /**
      * Tells whether a delayed input change listener is registered.
-     * 
+     *
      * @return <code>true</code> iff a delayed input change listener is
      *         currently registered
      * @since 3.4
@@ -664,7 +664,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
 
     /**
      * Notifies listeners of a delayed input change.
-     * 
+     *
      * @param newInput
      *            the new input, or <code>null</code> to request cancellation
      * @since 3.4

@@ -23,7 +23,7 @@ import org.erlide.runtime.rpc.IRpcFuture;
  * {@link CleanupProvider} that uses <code>erl_tidy</code> to do the heavy
  * lifting.
  * </p>
- * 
+ *
  * @author Alain O'Dea [alain dot odea at gmail dot com]
  */
 public class ErlTidyCleanupProvider implements CleanupProvider {
@@ -42,9 +42,9 @@ public class ErlTidyCleanupProvider implements CleanupProvider {
      * Construct an {@link ErlTidyCleanupProvider} for a particular
      * {@link IResource} for an Erlang module.
      * </p>
-     * 
+     *
      * @param backend
-     * 
+     *
      * @param resource
      *            {@link IResource} for an Erlang module
      */

@@ -86,7 +86,7 @@ public class StringDialogField extends DialogField {
 
     /**
      * Creates or returns the created text control.
-     * 
+     *
      * @param parent
      *            The parent composite or <code>null</code> when the widget has
      *            already been created.

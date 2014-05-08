@@ -59,7 +59,7 @@ public class MarkOccurencesHandler {
 
     /**
      * Finds and marks occurrence annotations.
-     * 
+     *
      * @since 3.0
      */
     class OccurrencesFinderJob extends Job {
@@ -241,7 +241,7 @@ public class MarkOccurencesHandler {
 
     /**
      * Cancels the occurrences finder job upon document changes.
-     * 
+     *
      * @since 3.0
      */
     class OccurrencesFinderJobCanceler implements IDocumentListener, ITextInputListener {
@@ -334,9 +334,9 @@ public class MarkOccurencesHandler {
 
     /**
      * Private class used by mark occurrences
-     * 
+     *
      * @author jakob
-     * 
+     *
      */
     static class ErlangRef {
         final private ErlangSearchElement element;
@@ -384,46 +384,46 @@ public class MarkOccurencesHandler {
      * stay even if there's no valid erlang element at the current caret
      * position. Only valid if {@link #markOccurencesHandler.fMarkOccurrenceAnnotations} is
      * <code>true</code>.
-     * 
+     *
      * @since 3.0
      */
     public boolean fStickyOccurrenceAnnotations;
     /**
      * Holds the current occurrence annotations.
-     * 
+     *
      * @since 3.0
      */
     public Annotation[] fOccurrenceAnnotations;
     /**
      * Tells whether all occurrences of the element at the current caret
      * location are automatically marked in this editor.
-     * 
+     *
      * @since 3.0
      */
     public boolean fMarkOccurrenceAnnotations;
     /**
      * The selection used when forcing occurrence marking through code.
-     * 
+     *
      * @since 3.0
      */
     public ISelection fForcedMarkOccurrencesSelection;
     /**
      * The document modification stamp at the time when the last occurrence
      * marking took place.
-     * 
+     *
      * @since 3.1
      */
     public long fMarkOccurrenceModificationStamp;
     /**
      * The region of the word under the caret used to when computing the current
      * occurrence markings.
-     * 
+     *
      * @since 3.1
      */
     public IRegion fMarkOccurrenceTargetRegion;
     /**
      * The internal shell activation listener for updating occurrences.
-     * 
+     *
      * @since 3.0
      */
     public ActivationListener fActivationListener;
@@ -503,13 +503,13 @@ public class MarkOccurencesHandler {
 
     /**
      * Updates the occurrences annotations based on the current selection.
-     * 
+     *
      * @param selection
      *            the text selection
      * @param module
      * @param astRoot
      *            the compilation unit AST
-     * 
+     *
      * @since 3.0
      */
     protected void updateOccurrenceAnnotations(final ITextSelection selection,

@@ -37,11 +37,11 @@ import org.erlide.util.ErlLogger;
  * <p>
  * The action is applicable to selections containing elements of type
  * <code>ICompilationUnit</code>, <code>IMember</code> or <code>IFile</code>.
- * 
+ *
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class OpenAction extends SelectionDispatchAction {
@@ -52,7 +52,7 @@ public class OpenAction extends SelectionDispatchAction {
      * Creates a new <code>OpenAction</code>. The action requires that the
      * selection provided by the site's selection provider is of type <code>
      * org.eclipse.jface.viewers.IStructuredSelection</code> .
-     * 
+     *
      * @param site
      *            the site providing context information for this action
      * @param externalModules

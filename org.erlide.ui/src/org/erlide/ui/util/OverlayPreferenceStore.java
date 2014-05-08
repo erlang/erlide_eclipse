@@ -17,8 +17,8 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 
 /**
  * An overlaying preference store.
- * 
- * 
+ *
+ *
  */
 public class OverlayPreferenceStore implements IPreferenceStore {
 
@@ -69,7 +69,7 @@ public class OverlayPreferenceStore implements IPreferenceStore {
 
     /**
      * Creates and returns a new overlay preference store.
-     * 
+     *
      * @param parent
      *            the parent preference store
      * @param overlayKeys
@@ -85,7 +85,7 @@ public class OverlayPreferenceStore implements IPreferenceStore {
     /**
      * Tries to find and return the overlay key for the given preference key
      * string.
-     * 
+     *
      * @param key
      *            the preference key string
      * @return the overlay key or <code>null</code> if none can be found
@@ -102,7 +102,7 @@ public class OverlayPreferenceStore implements IPreferenceStore {
     /**
      * Tells whether the given preference key string is covered by this overlay
      * store.
-     * 
+     *
      * @param key
      *            the preference key string
      * @return <code>true</code> if this overlay store covers the given key
@@ -114,7 +114,7 @@ public class OverlayPreferenceStore implements IPreferenceStore {
     /**
      * Propagates the given overlay key from the orgin to the target preference
      * store.
-     * 
+     *
      * @param orgin
      *            the source preference store
      * @param key
@@ -196,7 +196,7 @@ public class OverlayPreferenceStore implements IPreferenceStore {
 
     /**
      * Loads the given key from the orgin into the target.
-     * 
+     *
      * @param orgin
      *            the source preference store
      * @param key
@@ -601,9 +601,9 @@ public class OverlayPreferenceStore implements IPreferenceStore {
      * <p>
      * Note: This method must be called before {@link #load()}is called.
      * </p>
-     * 
+     *
      * @param keys
-     * 
+     *
      */
     public void addKeys(final OverlayKey[] keys) {
         final int overlayKeysLength = fOverlayKeys.length;

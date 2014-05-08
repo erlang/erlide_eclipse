@@ -1,19 +1,19 @@
 /*
  * %CopyrightBegin%
- * 
+ *
  * Copyright Ericsson AB 2000-2009. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
@@ -64,7 +64,7 @@ public class OtpLocalNode extends AbstractNode {
 
     /**
      * Get the port number used by this node.
-     * 
+     *
      * @return the port number this server node is accepting connections on.
      */
     public int port() {
@@ -73,7 +73,7 @@ public class OtpLocalNode extends AbstractNode {
 
     /**
      * Set the Epmd socket after publishing this nodes listen port to Epmd.
-     * 
+     *
      * @param s
      *            The socket connecting this node to Epmd.
      */
@@ -83,7 +83,7 @@ public class OtpLocalNode extends AbstractNode {
 
     /**
      * Get the Epmd socket.
-     * 
+     *
      * @return The socket connecting this node to Epmd.
      */
     protected java.net.Socket getEpmd() {
@@ -94,7 +94,7 @@ public class OtpLocalNode extends AbstractNode {
      * Create an Erlang {@link OtpErlangPid pid}. Erlang pids are based upon
      * some node specific information; this method creates a pid using the
      * information in this node. Each call to this method produces a unique pid.
-     * 
+     *
      * @return an Erlang pid.
      */
     public synchronized OtpErlangPid createPid() {
@@ -119,7 +119,7 @@ public class OtpLocalNode extends AbstractNode {
      * information in this node. Each call to this method produces a unique
      * port. It may not be meaningful to create a port in a non-Erlang
      * environment, but this method is provided for completeness.
-     * 
+     *
      * @return an Erlang port.
      */
     public synchronized OtpErlangPort createPort() {
@@ -138,7 +138,7 @@ public class OtpLocalNode extends AbstractNode {
      * based upon some node specific information; this method creates a
      * reference using the information in this node. Each call to this method
      * produces a unique reference.
-     * 
+     *
      * @return an Erlang reference.
      */
     public synchronized OtpErlangRef createRef() {

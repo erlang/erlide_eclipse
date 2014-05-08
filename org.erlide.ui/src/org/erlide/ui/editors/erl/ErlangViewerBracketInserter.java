@@ -56,7 +56,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListe
 
         /**
          * Creates a new updater for the given <code>category</code>.
-         * 
+         *
          * @param category
          *            the new category.
          */

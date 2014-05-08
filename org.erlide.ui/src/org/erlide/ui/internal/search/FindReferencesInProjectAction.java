@@ -19,11 +19,11 @@ import org.erlide.ui.editors.erl.AbstractErlangEditor;
  * Finds references to the selected element in the enclosing project of the
  * selected element. The action is applicable to selections representing a
  * Erlang element.
- * 
+ *
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
- * 
+ *
  * @since 3.0
  */
 public class FindReferencesInProjectAction extends FindReferencesAction {
@@ -32,7 +32,7 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
      * Creates a new <code>FindReferencesInProjectAction</code>. The action
      * requires that the selection provided by the site's selection provider is
      * of type <code>IStructuredSelection</code>.
-     * 
+     *
      * @param fEditor
      *            the site providing context information for this action
      */
@@ -43,7 +43,7 @@ public class FindReferencesInProjectAction extends FindReferencesAction {
     /**
      * Note: This constructor is for internal use only. Clients should not call
      * this constructor.
-     * 
+     *
      * @param editor
      *            the Erlang editor
      */

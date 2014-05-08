@@ -54,7 +54,7 @@ import org.erlide.ui.util.DisplayUtils;
 
 /**
  * Creates and manages process console specific actions
- * 
+ *
  * @since 3.1
  */
 public class ConsolePageParticipant implements IConsolePageParticipant, IShowInSource,

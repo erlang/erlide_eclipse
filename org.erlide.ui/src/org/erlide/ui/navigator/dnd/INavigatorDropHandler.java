@@ -7,14 +7,14 @@ import org.eclipse.ui.navigator.CommonDropAdapter;
 
 /**
  * Interface for implementing erlDndAdapter extension point
- * 
+ *
  * @author György Orosz
- * 
+ *
  */
 public interface INavigatorDropHandler {
     /**
      * Function for handling drop event
-     * 
+     *
      * @param dropAdapter
      * @param dropTargetEvent
      * @param target
@@ -25,7 +25,7 @@ public interface INavigatorDropHandler {
 
     /**
      * Function for validating drop event
-     * 
+     *
      * @param target
      * @param operation
      * @param transferType

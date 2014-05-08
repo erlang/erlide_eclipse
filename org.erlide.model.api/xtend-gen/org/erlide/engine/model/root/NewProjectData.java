@@ -11,9 +11,9 @@ import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.IProjectConfigurator;
 import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.model.root.ProjectConfigType;
-import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
@@ -125,7 +125,7 @@ public class NewProjectData extends ErlangProjectProperties {
       IPath _location_1 = this.getLocation();
       String _portableString_1 = _location_1.toPortableString();
       File _file = new File(_portableString_1);
-      final ProjectConfigurator config = this.factory.getConfig(_configType_1, _file);
+      final IProjectConfigurator config = this.factory.getConfig(_configType_1, _file);
       final ErlangProjectProperties props = config.getConfiguration();
       IPath _outputDir = props.getOutputDir();
       this.setOutputDir(_outputDir);
@@ -165,7 +165,7 @@ public class NewProjectData extends ErlangProjectProperties {
             String _xblockexpression_2 = null;
             {
               ProjectConfigType _configType = this.getConfigType();
-              final ProjectConfigurator persister = this.factory.getConfig(_configType, directory);
+              final IProjectConfigurator persister = this.factory.getConfig(_configType, directory);
               InputOutput.<String>println(("PERSISTER " + persister));
               String _xifexpression_2 = null;
               boolean _tripleNotEquals_1 = (persister != null);

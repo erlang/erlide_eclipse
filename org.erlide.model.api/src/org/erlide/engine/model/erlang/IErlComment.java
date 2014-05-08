@@ -1,11 +1,11 @@
 /**
- * 
+ *
  */
 package org.erlide.engine.model.erlang;
 
 /**
  * @author jakob
- * 
+ *
  */
 public interface IErlComment extends IErlMember {
 
@@ -15,7 +15,7 @@ public interface IErlComment extends IErlMember {
 
     /**
      * The number of %s preceding the comment. Useful for correct indentation
-     * 
+     *
      * @return the number of %s preceding the comment
      */
     // int getLevel();

@@ -29,7 +29,7 @@ import java.net.UnknownHostException;
  * <p>
  * Represents an OTP node.
  * </p>
- * 
+ *
  * <p>
  * About nodenames: Erlang nodenames consist of two components, an alivename and
  * a hostname separated by '@'. Additionally, there are two nodename formats:
@@ -40,7 +40,7 @@ import java.net.UnknownHostException;
  * however Jinterface makes no distinction. See the Erlang documentation for
  * more information about nodenames.
  * </p>
- * 
+ *
  * <p>
  * The constructors for the AbstractNode classes will create names exactly as
  * you provide them as long as the name contains '@'. If the string you provide
@@ -48,7 +48,7 @@ import java.net.UnknownHostException;
  * host will be appended, resulting in a shortname. Nodenames longer than 255
  * characters will be truncated without warning.
  * </p>
- * 
+ *
  * <p>
  * Upon initialization, this class attempts to read the file .erlang.cookie in
  * the user's home directory, and uses the trimmed first line of the file as the
@@ -58,7 +58,7 @@ import java.net.UnknownHostException;
  * using the system property "user.home", which may not be automatically set on
  * all platforms.
  * </p>
- * 
+ *
  * <p>
  * Instances of this class cannot be created directly, use one of the subclasses
  * instead.
@@ -173,7 +173,7 @@ public class AbstractNode {
 
     /**
      * Get the name of this node.
-     * 
+     *
      * @return the name of the node represented by this object.
      */
     public String node() {
@@ -184,7 +184,7 @@ public class AbstractNode {
      * Get the hostname part of the nodename. Nodenames are composed of two
      * parts, an alivename and a hostname, separated by '@'. This method returns
      * the part of the nodename following the '@'.
-     * 
+     *
      * @return the hostname component of the nodename.
      */
     public String host() {
@@ -195,7 +195,7 @@ public class AbstractNode {
      * Get the alivename part of the hostname. Nodenames are composed of two
      * parts, an alivename and a hostname, separated by '@'. This method returns
      * the part of the nodename preceding the '@'.
-     * 
+     *
      * @return the alivename component of the nodename.
      */
     public String alive() {
@@ -204,7 +204,7 @@ public class AbstractNode {
 
     /**
      * Get the authorization cookie used by this node.
-     * 
+     *
      * @return the authorization cookie used by this node.
      */
     public String cookie() {
@@ -238,7 +238,7 @@ public class AbstractNode {
 
     /**
      * Set the authorization cookie used by this node.
-     * 
+     *
      * @return the previous authorization cookie used by this node.
      */
     public String setCookie(final String cookie) {

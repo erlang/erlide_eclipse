@@ -31,7 +31,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
  * @author Jakob
  */
 public class EditorPreferencePage extends ErlidePreferencePage implements
-IWorkbenchPreferencePage {
+        IWorkbenchPreferencePage {
 
     /**
      * Initialize the system preferences

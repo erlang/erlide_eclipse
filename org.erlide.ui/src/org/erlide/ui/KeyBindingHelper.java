@@ -13,7 +13,7 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
 /**
  * Helper for knowing about keybindings and related actions
- * 
+ *
  * @author Fabio
  */
 public class KeyBindingHelper {

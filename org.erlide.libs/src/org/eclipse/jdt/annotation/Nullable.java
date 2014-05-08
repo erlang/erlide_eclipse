@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  * <code>NullPointerException</code> can occur at runtime.</li>
  * </ul>
  * </p>
- * 
+ *
  * @since 1.0
  */
 @Documented

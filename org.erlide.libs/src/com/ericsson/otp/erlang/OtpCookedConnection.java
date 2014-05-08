@@ -27,29 +27,29 @@ import java.net.Socket;
  * node. The object maintains connection state and allows data to be sent to and
  * received from the peer.
  * </p>
- * 
+ *
  * <p>
  * Once a connection is established between the local node and a remote node,
  * the connection object can be used to send and receive messages between the
  * nodes.
  * </p>
- * 
+ *
  * <p>
  * The various receive methods are all blocking and will return only when a
  * valid message has been received or an exception is raised.
  * </p>
- * 
+ *
  * <p>
  * If an exception occurs in any of the methods in this class, the connection
  * will be closed and must be reopened in order to resume communication with the
  * peer.
  * </p>
- * 
+ *
  * <p>
  * The message delivery methods in this class deliver directly to
  * {@link OtpMbox mailboxes} in the {@link OtpNode OtpNode} class.
  * </p>
- * 
+ *
  * <p>
  * It is not possible to create an instance of this class directly.
  * OtpCookedConnection objects are created as needed by the underlying mailbox

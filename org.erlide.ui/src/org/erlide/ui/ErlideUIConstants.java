@@ -11,8 +11,8 @@ package org.erlide.ui;
 
 /**
  * Simple ui constants.
- * 
- * 
+ *
+ *
  * @author Vlad Dumitrescu
  */
 public final class ErlideUIConstants {

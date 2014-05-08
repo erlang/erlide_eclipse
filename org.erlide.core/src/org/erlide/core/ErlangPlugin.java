@@ -21,8 +21,8 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
- * 
- * 
+ *
+ *
  * @author Eric Merritt [cyberlync at gmail dot com]
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  * @author jakob

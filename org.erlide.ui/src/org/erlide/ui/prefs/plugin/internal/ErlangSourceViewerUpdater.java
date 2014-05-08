@@ -29,14 +29,14 @@ import org.erlide.ui.prefs.PreferenceConstants;
 
 /**
  * Handles Erlang editor font changes for Erlang source preview viewers.
- * 
+ *
  */
 public class ErlangSourceViewerUpdater {
 
     /**
      * Creates an Erlang source preview updater for the given viewer,
      * configuration and preference store.
-     * 
+     *
      * @param viewer
      *            the viewer
      * @param configuration

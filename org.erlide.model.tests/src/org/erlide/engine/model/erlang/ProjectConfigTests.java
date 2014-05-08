@@ -10,7 +10,7 @@ import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.junit.Test;
 
-public class BuilderConfigTests {
+public class ProjectConfigTests {
 
     @Test
     public void configMapMatchesToolMap() {

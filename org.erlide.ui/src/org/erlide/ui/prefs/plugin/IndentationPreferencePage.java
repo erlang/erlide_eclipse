@@ -28,8 +28,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * The editor preferences
- * 
- * 
+ *
+ *
  * @author Vlad Dumitrescu
  */
 public class IndentationPreferencePage extends ErlidePreferencePage implements

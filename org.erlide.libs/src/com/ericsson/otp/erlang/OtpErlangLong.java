@@ -1,19 +1,19 @@
 /*
  * %CopyrightBegin%
- * 
+ *
  * Copyright Ericsson AB 2000-2009. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
@@ -39,7 +39,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Create an Erlang integer from the given value.
-     * 
+     *
      * @param l
      *            the long value to use.
      */
@@ -49,7 +49,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Create an Erlang integer from the given value.
-     * 
+     *
      * @param val
      *            the long value to use.
      */
@@ -67,10 +67,10 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
     /**
      * Create an Erlang integer from a stream containing an integer encoded in
      * Erlang external format.
-     * 
+     *
      * @param buf
      *            the stream containing the encoded value.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the buffer does not contain a valid external
      *                representation of an Erlang integer.
@@ -86,7 +86,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Get this number as a BigInteger.
-     * 
+     *
      * @return the value of this number, as a BigInteger.
      */
     public BigInteger bigIntegerValue() {
@@ -101,7 +101,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
      * Get this number as a long, or rather truncate all but the least
      * significant 64 bits from the 2's complement representation of this number
      * and return them as a long.
-     * 
+     *
      * @return the value of this number, as a long.
      */
     public long longValue() {
@@ -114,7 +114,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Determine if this value can be represented as a long without truncation.
-     * 
+     *
      * @return true if this value fits in a long, false otherwise.
      */
     public boolean isLong() {
@@ -131,7 +131,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
      * Determine if this value can be represented as an unsigned long without
      * truncation, that is if the value is non-negative and its bit pattern
      * completely fits in a long.
-     * 
+     *
      * @return true if this value is non-negative and fits in a long false
      *         otherwise.
      */
@@ -147,7 +147,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
     /**
      * Returns the number of bits in the minimal two's-complement representation
      * of this BigInteger, excluding a sign bit.
-     * 
+     *
      * @return number of bits in the minimal two's-complement representation of
      *         this BigInteger, excluding a sign bit.
      */
@@ -195,7 +195,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Return the signum function of this object.
-     * 
+     *
      * @return -1, 0 or 1 as the value is negative, zero or positive.
      */
     public int signum() {
@@ -208,9 +208,9 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Get this number as an int.
-     * 
+     *
      * @return the value of this number, as an int.
-     * 
+     *
      * @exception OtpErlangRangeException
      *                if the value is too large to be represented as an int.
      */
@@ -227,9 +227,9 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Get this number as a non-negative int.
-     * 
+     *
      * @return the value of this number, as an int.
-     * 
+     *
      * @exception OtpErlangRangeException
      *                if the value is too large to be represented as an int, or
      *                if the value is negative.
@@ -249,9 +249,9 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Get this number as a short.
-     * 
+     *
      * @return the value of this number, as a short.
-     * 
+     *
      * @exception OtpErlangRangeException
      *                if the value is too large to be represented as a short.
      */
@@ -268,9 +268,9 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Get this number as a non-negative short.
-     * 
+     *
      * @return the value of this number, as a short.
-     * 
+     *
      * @exception OtpErlangRangeException
      *                if the value is too large to be represented as a short, or
      *                if the value is negative.
@@ -290,9 +290,9 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Get this number as a char.
-     * 
+     *
      * @return the char value of this number.
-     * 
+     *
      * @exception OtpErlangRangeException
      *                if the value is too large to be represented as a char.
      */
@@ -309,9 +309,9 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Get this number as a byte.
-     * 
+     *
      * @return the byte value of this number.
-     * 
+     *
      * @exception OtpErlangRangeException
      *                if the value is too large to be represented as a byte.
      */
@@ -328,7 +328,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Get the string representation of this number.
-     * 
+     *
      * @return the string representation of this number.
      */
     @Override
@@ -342,7 +342,7 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Convert this number to the equivalent Erlang external representation.
-     * 
+     *
      * @param buf
      *            an output stream to which the encoded number should be
      *            written.
@@ -359,10 +359,10 @@ public class OtpErlangLong extends OtpErlangObject implements Serializable, Clon
     /**
      * Determine if two numbers are equal. Numbers are equal if they contain the
      * same value.
-     * 
+     *
      * @param o
      *            the number to compare to.
-     * 
+     *
      * @return true if the numbers have the same value.
      */
     @Override

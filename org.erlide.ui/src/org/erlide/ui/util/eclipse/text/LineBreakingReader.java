@@ -34,7 +34,7 @@ public class LineBreakingReader {
 
     /**
      * Creates a reader that breaks an input text to fit in a given width.
-     * 
+     *
      * @param reader
      *            Reader of the input text
      * @param gc
@@ -59,7 +59,7 @@ public class LineBreakingReader {
     /**
      * Reads the next line. The lengths of the line will not exceed the given
      * maximum width.
-     * 
+     *
      * @return the next line
      * @throws IOException
      */

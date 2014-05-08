@@ -43,7 +43,7 @@ public class InterpretedModuleListContentProvider extends ModuleListContentProvi
 
     /**
      * Find modules from string list add to IFile-list
-     * 
+     *
      * @param interpret
      *            the list of strings from prefs (projectName:fileName;... or
      *            moduleName;...)

@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Alain O'Dea
  *******************************************************************************/
@@ -20,7 +20,7 @@ import org.erlide.util.ErlLogger;
  * The {@link CleanUpAction} class provides the {@link Action} behind Erlang
  * module source code clean up.
  * </p>
- * 
+ *
  * @author Alain O'Dea [alain dot odea at gmail dot com]
  *******************************************************************************/
 public class CleanUpAction extends Action {
@@ -37,7 +37,7 @@ public class CleanUpAction extends Action {
      * Construct a {@link CleanUpAction} for a particular {@link IResource} for
      * an Erlang module.
      * </p>
-     * 
+     *
      * @param resource
      *            {@link IResource} for a an Erlang
      */

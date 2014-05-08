@@ -1,19 +1,19 @@
 /*
  * %CopyrightBegin%
- * 
+ *
  * Copyright Ericsson AB 2000-2010. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
@@ -22,13 +22,13 @@ package com.ericsson.otp.erlang;
  * <p>
  * Provides a carrier for Erlang messages.
  * </p>
- * 
+ *
  * <p>
  * Instances of this class are created to package header and payload information
  * in received Erlang messages so that the recipient can obtain both parts with
  * a single call to {@link OtpMbox#receiveMsg receiveMsg()}.
  * </p>
- * 
+ *
  * <p>
  * The header information that is available is as follows: <lu>
  * <li>a tag indicating the type of message
@@ -38,7 +38,7 @@ package com.ericsson.otp.erlang;
  * characteristics of the Erlang distribution protocol, not all messages have
  * information about the sending process. In particular, only messages whose tag
  * is {@link OtpMsg#regSendTag regSendTag} contain sender information. </lu>
- * 
+ *
  * <p>
  * Message are sent using the Erlang external format (see separate
  * documentation). When a message is received and delivered to the recipient
@@ -140,9 +140,9 @@ public class OtpMsg {
 
     /**
      * Get the payload from this message without deserializing it.
-     * 
+     *
      * @return the serialized Erlang term contained in this message.
-     * 
+     *
      */
     OtpInputStream getMsgBuf() {
         return paybuf;
@@ -154,29 +154,29 @@ public class OtpMsg {
      * type of message. Valid values are the ``tag'' constants defined in this
      * class.
      * </p>
-     * 
+     *
      * <p>
      * The tab identifies not only the type of message but also the content of
      * the OtpMsg object, since different messages have different components, as
      * follows:
      * </p>
-     * 
+     *
      * <ul>
      * <li>sendTag identifies a "normal" message. The recipient is a
      * {@link OtpErlangPid Pid} and it is available through
      * {@link #getRecipientPid getRecipientPid()}. Sender information is not
      * available. The message body can be retrieved with {@link #getMsg
      * getMsg()}.</li>
-     * 
+     *
      * <li>regSendTag also identifies a "normal" message. The recipient here is
      * a String and it is available through {@link #getRecipientName
      * getRecipientName()}. Sender information is available through
      * #getSenderPid getSenderPid()}. The message body can be retrieved with
      * {@link #getMsg getMsg()}.</li>
-     * 
+     *
      * <li>linkTag identifies a link request. The Pid of the sender is
      * available, as well as the Pid to which the link should be made.</li>
-     * 
+     *
      * <li>exitTag and exit2Tag messages are sent as a result of broken links.
      * Both sender and recipient Pids and are available through the
      * corresponding methods, and the "reason" is available through
@@ -192,19 +192,19 @@ public class OtpMsg {
      * Deserialize and return a new copy of the message contained in this
      * OtpMsg.
      * </p>
-     * 
+     *
      * <p>
      * The first time this method is called the actual payload is deserialized
      * and the Erlang term is created. Calling this method subsequent times will
      * not cuase the message to be deserialized additional times, instead the
      * same Erlang term object will be returned.
      * </p>
-     * 
+     *
      * @return an Erlang term.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the byte stream could not be deserialized.
-     * 
+     *
      */
     public OtpErlangObject getMsg() throws OtpErlangDecodeException {
         if (payload == null) {
@@ -217,12 +217,12 @@ public class OtpMsg {
      * <p>
      * Get the name of the recipient for this message.
      * </p>
-     * 
+     *
      * <p>
      * Messages are sent to Pids or names. If this message was sent to a name
      * then the name is returned by this method.
      * </p>
-     * 
+     *
      * @return the name of the recipient, or null if the recipient was in fact a
      *         Pid.
      */
@@ -235,13 +235,13 @@ public class OtpMsg {
      * Get the Pid of the recipient for this message, if it is a sendTag
      * message.
      * </p>
-     * 
+     *
      * <p>
      * Messages are sent to Pids or names. If this message was sent to a Pid
      * then the Pid is returned by this method. The recipient Pid is also
      * available for link, unlink and exit messages.
      * </p>
-     * 
+     *
      * @return the Pid of the recipient, or null if the recipient was in fact a
      *         name.
      */
@@ -254,12 +254,12 @@ public class OtpMsg {
      * Get the name of the recipient for this message, if it is a regSendTag
      * message.
      * </p>
-     * 
+     *
      * <p>
      * Messages are sent to Pids or names. If this message was sent to a name
      * then the name is returned by this method.
      * </p>
-     * 
+     *
      * @return the Pid of the recipient, or null if the recipient was in fact a
      *         name.
      */
@@ -274,13 +274,13 @@ public class OtpMsg {
      * <p>
      * Get the Pid of the sender of this message.
      * </p>
-     * 
+     *
      * <p>
      * For messages sent to names, the Pid of the sender is included with the
      * message. The sender Pid is also available for link, unlink and exit
      * messages. It is not available for sendTag messages sent to Pids.
      * </p>
-     * 
+     *
      * @return the Pid of the sender, or null if it was not available.
      */
     public OtpErlangPid getSenderPid() {

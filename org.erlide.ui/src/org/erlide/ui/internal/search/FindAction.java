@@ -53,7 +53,7 @@ import com.google.common.collect.Sets;
  * <p>
  * Note: This class is for internal use only. Clients should not use this class.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public abstract class FindAction extends SelectionDispatchAction {
@@ -254,7 +254,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 
     /**
      * Executes this action for the given java element.
-     * 
+     *
      * @param element
      *            The erlang element to be found.
      * @throws CoreException

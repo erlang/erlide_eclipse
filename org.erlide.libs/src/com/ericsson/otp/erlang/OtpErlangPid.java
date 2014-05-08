@@ -1,19 +1,19 @@
 /*
  * %CopyrightBegin%
- * 
+ *
  * Copyright Ericsson AB 2000-2009. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
@@ -36,10 +36,10 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable, Clone
 
     /**
      * Create a unique Erlang PID belonging to the local node.
-     * 
+     *
      * @param self
      *            the local node.
-     * 
+     *
      * @deprecated use OtpLocalNode:createPid() instead
      */
     @Deprecated
@@ -55,10 +55,10 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable, Clone
     /**
      * Create an Erlang PID from a stream containing a PID encoded in Erlang
      * external format.
-     * 
+     *
      * @param buf
      *            the stream containing the encoded PID.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the buffer does not contain a valid external
      *                representation of an Erlang PID.
@@ -74,17 +74,17 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable, Clone
 
     /**
      * Create an Erlang pid from its components.
-     * 
+     *
      * @param node
      *            the nodename.
-     * 
+     *
      * @param id
      *            an arbitrary number. Only the low order 15 bits will be used.
-     * 
+     *
      * @param serial
      *            another arbitrary number. Only the low order 13 bits will be
      *            used.
-     * 
+     *
      * @param creation
      *            yet another arbitrary number. Only the low order 2 bits will
      *            be used.
@@ -99,7 +99,7 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable, Clone
 
     /**
      * Get the serial number from the PID.
-     * 
+     *
      * @return the serial number from the PID.
      */
     public int serial() {
@@ -108,7 +108,7 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable, Clone
 
     /**
      * Get the id number from the PID.
-     * 
+     *
      * @return the id number from the PID.
      */
     public int id() {
@@ -117,7 +117,7 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable, Clone
 
     /**
      * Get the creation number from the PID.
-     * 
+     *
      * @return the creation number from the PID.
      */
     public int creation() {
@@ -126,7 +126,7 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable, Clone
 
     /**
      * Get the node name from the PID.
-     * 
+     *
      * @return the node name from the PID.
      */
     public String node() {
@@ -136,7 +136,7 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable, Clone
     /**
      * Get the string representation of the PID. Erlang PIDs are printed as
      * #Pid&lt;node.id.serial&gt;
-     * 
+     *
      * @return the string representation of the PID.
      */
     @Override
@@ -146,7 +146,7 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable, Clone
 
     /**
      * Convert this PID to the equivalent Erlang external representation.
-     * 
+     *
      * @param buf
      *            an output stream to which the encoded PID should be written.
      */
@@ -158,10 +158,10 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable, Clone
     /**
      * Determine if two PIDs are equal. PIDs are equal if their components are
      * equal.
-     * 
+     *
      * @param port
      *            the other PID to compare to.
-     * 
+     *
      * @return true if the PIDs are equal, false otherwise.
      */
     @Override

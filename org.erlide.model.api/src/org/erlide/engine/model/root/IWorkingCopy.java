@@ -52,7 +52,7 @@ public interface IWorkingCopy {
      * Commits the contents of this working copy to its original element and
      * underlying resource, bringing the Erlang model up-to-date with the
      * current contents of the working copy.
-     * 
+     *
      * <p>
      * It is possible that the contents of the original resource have changed
      * since this working copy was created, in which case there is an update
@@ -91,7 +91,7 @@ public interface IWorkingCopy {
     /**
      * Returns whether this working copy's original element's content has not
      * changed since the inception of this working copy.
-     * 
+     *
      * @return true if this working copy's original element's content has not
      *         changed since the inception of this working copy, false otherwise
      */

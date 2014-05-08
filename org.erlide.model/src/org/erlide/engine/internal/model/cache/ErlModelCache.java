@@ -43,7 +43,7 @@ public class ErlModelCache implements IDisposable {
     public static ErlModelCache getDefault() {
         if (fgInstance == null) {
             fgInstance = disabled ? new DisabledErlModelCache()
-            : new ErlModelCache();
+                    : new ErlModelCache();
         }
         return fgInstance;
     }

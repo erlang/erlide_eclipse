@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Label;
  * the model, independed from the creation time of the widgets. - support for
  * automated layouting. - enable / disable, set focus a concept of the base
  * class.
- * 
+ *
  * DialogField have a label.
  */
 public class DialogField {
@@ -136,7 +136,7 @@ public class DialogField {
 
     /**
      * Creates or returns the created label widget.
-     * 
+     *
      * @param parent
      *            The parent composite or <code>null</code> if the widget has
      *            already been created.
@@ -160,7 +160,7 @@ public class DialogField {
 
     /**
      * Creates a spacer control.
-     * 
+     *
      * @param parent
      *            The parent composite
      */
@@ -171,7 +171,7 @@ public class DialogField {
     /**
      * Creates a spacer control with the given span. The composite is assumed to
      * have <code>MGridLayout</code> as layout.
-     * 
+     *
      * @param parent
      *            The parent composite
      */

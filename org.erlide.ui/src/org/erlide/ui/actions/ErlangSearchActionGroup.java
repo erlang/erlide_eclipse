@@ -29,11 +29,11 @@ import org.erlide.ui.internal.search.ReferencesSearchGroup;
 /**
  * Action group that adds erlang search actions to a context menu and the global
  * menu bar.
- * 
+ *
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class ErlangSearchActionGroup extends ActionGroup {
@@ -53,7 +53,7 @@ public class ErlangSearchActionGroup extends ActionGroup {
      * Creates a new <code>ErlangSearchActionGroup</code>. The group requires
      * that the selection provided by the part's selection provider is of type
      * <code>org.eclipse.jface.viewers.IStructuredSelection</code>.
-     * 
+     *
      * @param part
      *            the view part that owns this action group
      */
@@ -65,7 +65,7 @@ public class ErlangSearchActionGroup extends ActionGroup {
      * Creates a new <code>ErlangSearchActionGroup</code>. The group requires
      * that the selection provided by the page's selection provider is of type
      * <code>org.eclipse.jface.viewers.IStructuredSelection</code>.
-     * 
+     *
      * @param page
      *            the page that owns this action group
      */
@@ -76,7 +76,7 @@ public class ErlangSearchActionGroup extends ActionGroup {
     /**
      * Note: This constructor is for internal use only. Clients should not call
      * this constructor.
-     * 
+     *
      * @param editor
      *            the Erlang editor
      */

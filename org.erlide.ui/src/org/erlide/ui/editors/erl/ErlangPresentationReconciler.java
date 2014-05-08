@@ -18,7 +18,7 @@ import org.eclipse.jface.text.presentation.PresentationReconciler;
 
 /**
  * Presentation reconciler, adding functionality for operation without a viewer.
- * 
+ *
  * @since 3.0
  */
 public class ErlangPresentationReconciler extends PresentationReconciler {
@@ -32,7 +32,7 @@ public class ErlangPresentationReconciler extends PresentationReconciler {
      * <p>
      * NOTE: Should not be used if this reconciler is installed on a viewer.
      * </p>
-     * 
+     *
      * @param damage
      *            the damage to be repaired
      * @param document
