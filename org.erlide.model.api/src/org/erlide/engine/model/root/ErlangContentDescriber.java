@@ -1,6 +1,7 @@
 package org.erlide.engine.model.root;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -15,6 +16,7 @@ import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.ITextContentDescriber;
 
 import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
 public class ErlangContentDescriber implements ITextContentDescriber {
     private static final QualifiedName[] SUPPORTED_OPTIONS = new QualifiedName[] { IContentDescription.CHARSET };
@@ -62,6 +64,20 @@ public class ErlangContentDescriber implements ITextContentDescriber {
             return Charsets.UTF_8;
         }
         return null;
+    }
+
+    public static Charset detectCodingForFile(final File file) throws IOException {
+        return detectCodingForFile(file, Charsets.ISO_8859_1);
+    }
+
+    public static Charset detectCodingForFile(final File file, final Charset dflt)
+            throws IOException {
+        final String line = Files.readFirstLine(file, Charsets.ISO_8859_1);
+        Charset coding = detectEncoding(line);
+        if (coding == null) {
+            coding = dflt;
+        }
+        return coding;
     }
 
     int describe2(final Reader input, final IContentDescription description,

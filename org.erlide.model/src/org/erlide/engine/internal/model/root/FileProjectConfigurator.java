@@ -54,15 +54,10 @@ public class FileProjectConfigurator implements IProjectConfigurator,
     }
 
     private ErlangProjectProperties getRawConfig(final File confFile) {
-        String line;
         ErlangProjectProperties result = null;
         try {
-            // TODO detect real encoding!
-            line = Files.readFirstLine(confFile, Charsets.ISO_8859_1);
-            Charset coding = ErlangContentDescriber.detectEncoding(line);
-            if (coding == null) {
-                coding = Charsets.ISO_8859_1;
-            }
+            final Charset coding = ErlangContentDescriber
+                    .detectCodingForFile(confFile);
             final List<String> confString = Files.readLines(confFile, coding);
             if (confString != null) {
                 final String content = Joiner.on("\n").join(confString);
