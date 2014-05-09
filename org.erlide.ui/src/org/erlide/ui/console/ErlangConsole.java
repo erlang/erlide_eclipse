@@ -66,7 +66,11 @@ public class ErlangConsole extends TextConsole implements IErlangConsole {
 
     @Override
     public String getName() {
-        return "Erlang: " + backend.getName();
+        String name = "Erlang: " + backend.getName();
+        if (backend.isDebugging()) {
+            name = name + " (debug)";
+        }
+        return name;
     }
 
     @Override

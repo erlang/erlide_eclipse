@@ -384,4 +384,13 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
+    public boolean isDebugging() {
+        try {
+            return "debug".equals(getData().getLaunch().getLaunchMode());
+        } catch (final Exception e) {
+            return false;
+        }
+    }
+
 }
