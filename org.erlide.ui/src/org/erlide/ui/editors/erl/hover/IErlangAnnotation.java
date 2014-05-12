@@ -14,7 +14,7 @@ import java.util.Iterator;
 
 /**
  * Interface of annotations representing markers and problems.
- * 
+ *
  * @see org.eclipse.core.resources.IMarker
  */
 public interface IErlangAnnotation {
@@ -41,14 +41,14 @@ public interface IErlangAnnotation {
 
     /**
      * Returns whether this annotation is overlaid.
-     * 
+     *
      * @return <code>true</code> if overlaid
      */
     boolean hasOverlay();
 
     /**
      * Returns the overlay of this annotation.
-     * 
+     *
      * @return the annotation's overlay
      * @since 3.0
      */
@@ -57,7 +57,7 @@ public interface IErlangAnnotation {
     /**
      * Returns an iterator for iterating over the annotation which are overlaid
      * by this annotation.
-     * 
+     *
      * @return an iterator over the overlaid annotations
      */
     Iterator<IErlangAnnotation> getOverlaidIterator();
@@ -65,7 +65,7 @@ public interface IErlangAnnotation {
     /**
      * Adds the given annotation to the list of annotations which are overlaid
      * by this annotations.
-     * 
+     *
      * @param annotation
      *            the problem annotation
      */
@@ -74,7 +74,7 @@ public interface IErlangAnnotation {
     /**
      * Removes the given annotation from the list of annotations which are
      * overlaid by this annotation.
-     * 
+     *
      * @param annotation
      *            the problem annotation
      */
@@ -82,7 +82,7 @@ public interface IErlangAnnotation {
 
     /**
      * Tells whether this annotation is a problem annotation.
-     * 
+     *
      * @return <code>true</code> if it is a problem annotation
      */
     boolean isProblem();

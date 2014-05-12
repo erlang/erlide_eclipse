@@ -24,7 +24,11 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.IErlExternal;
+import org.erlide.engine.model.root.IErlExternalRoot;
+import org.erlide.util.StringUtils;
 
 public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 
@@ -73,7 +77,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 
     /**
      * Sets the textFlags.
-     * 
+     *
      * @param textFlags
      *            The textFlags to set
      */
@@ -83,7 +87,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 
     /**
      * Sets the imageFlags
-     * 
+     *
      * @param imageFlags
      *            The imageFlags to set
      */
@@ -93,7 +97,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 
     /**
      * Gets the image flags. Can be overwriten by super classes.
-     * 
+     *
      * @return Returns a int
      */
     public final int getImageFlags() {
@@ -102,7 +106,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 
     /**
      * Gets the text flags.
-     * 
+     *
      * @return Returns a int
      */
     public final long getTextFlags() {
@@ -112,7 +116,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
     /**
      * Evaluates the image flags for a element. Can be overwriten by super
      * classes.
-     * 
+     *
      * @return Returns a int
      */
     protected int evaluateImageFlags(final Object element) {
@@ -122,7 +126,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
     /**
      * Evaluates the text flags for a element. Can be overwriten by super
      * classes.
-     * 
+     *
      * @return Returns a int
      */
     protected long evaluateTextFlags(final Object element) {
@@ -167,9 +171,11 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 
     public static String getLabelString(final Object element) {
         String label;
-        if (element instanceof IErlElement) {
-            final IErlElement el = (IErlElement) element;
-            label = el.getLabelString();
+        if (element instanceof IErlModule || element instanceof IErlExternalRoot
+                || element instanceof IErlExternal) {
+            label = ((IErlElement) element).getName();
+        } else if (element instanceof IErlElement) {
+            label = StringUtils.normalizeSpaces(element.toString());
         } else {
             label = element.toString();
         }
@@ -249,10 +255,10 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
     /**
      * Fires a label provider changed event to all registered listeners Only
      * listeners registered at the time this method is called are notified.
-     * 
+     *
      * @param event
      *            a label provider changed event
-     * 
+     *
      * @see ILabelProviderListener#labelProviderChanged
      */
     protected void fireLabelProviderChanged(final LabelProviderChangedEvent event) {

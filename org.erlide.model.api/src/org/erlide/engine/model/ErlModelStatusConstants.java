@@ -16,7 +16,7 @@ package org.erlide.engine.model;
  * This interface declares constants only; it is not intended to be implemented
  * or extended.
  * </p>
- * 
+ *
  * @see IErlModelStatus
  * @see org.eclipse.core.runtime.IStatus#getCode()
  */
@@ -50,7 +50,7 @@ public final class ErlModelStatusConstants {
      * Status constant indicating that one or more elements supplied do not
      * exist. The element(s) can be retrieved using <code>getElements</code> on
      * the status object.
-     * 
+     *
      * @see IErlModelStatus#isDoesNotExist()
      */
     public static final int ELEMENT_DOES_NOT_EXIST = 969;
@@ -170,7 +170,7 @@ public final class ErlModelStatusConstants {
     /**
      * Status indicating that a Erlang element could not be created because the
      * underlying resource is invalid.
-     * 
+     *
      * @see ErlangCore
      */
     public static final int INVALID_RESOURCE = 995;
@@ -178,7 +178,7 @@ public final class ErlModelStatusConstants {
     /**
      * Status indicating that a Erlang element could not be created because the
      * underlying resource is not of an appropriate type.
-     * 
+     *
      * @see ErlangCore
      */
     public static final int INVALID_RESOURCE_TYPE = 996;
@@ -186,7 +186,7 @@ public final class ErlModelStatusConstants {
     /**
      * Status indicating that a Erlang element could not be created because the
      * project owning underlying resource does not have the Erlang nature.
-     * 
+     *
      * @see ErlangCore
      */
     public static final int INVALID_PROJECT = 997;

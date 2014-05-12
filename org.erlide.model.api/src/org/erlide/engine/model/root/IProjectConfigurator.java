@@ -1,6 +1,6 @@
 package org.erlide.engine.model.root;
 
-public interface ProjectConfigurator {
+public interface IProjectConfigurator {
 
     ErlangProjectProperties getConfiguration();
 

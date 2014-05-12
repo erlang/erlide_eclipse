@@ -35,7 +35,7 @@ public class ErtsProcess extends RuntimeProcess {
 
     /**
      * Write something out to the node process.
-     * 
+     *
      * @param value
      *            The system.
      * @throws IOException
@@ -52,7 +52,7 @@ public class ErtsProcess extends RuntimeProcess {
 
     /**
      * if this isn't already stopped, try to stop it.
-     * 
+     *
      * @throws Throwable
      */
     @Override

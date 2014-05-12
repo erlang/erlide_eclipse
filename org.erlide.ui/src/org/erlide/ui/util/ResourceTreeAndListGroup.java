@@ -68,7 +68,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
      * Create an instance of this class. Use this constructor if you wish to
      * specify the width and/or height of the combined widget (to only hardcode
      * one of the sizing dimensions, specify the other dimension's value as -1)
-     * 
+     *
      * @param parent
      * @param rootObject
      * @param treeContentProvider
@@ -78,7 +78,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
      * @param style
      * @param useHeightHint
      *            If true then use the height hint to make this group big enough
-     * 
+     *
      */
     public ResourceTreeAndListGroup(final Composite parent, final Object rootObject,
             final ITreeContentProvider treeContentProvider,
@@ -116,7 +116,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Add the passed listener to self's collection of clients that listen for
      * changes to element checked states
-     * 
+     *
      * @param listener
      *            ICheckStateListener
      */
@@ -127,7 +127,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Return a boolean indicating whether all children of the passed tree
      * element are currently white-checked
-     * 
+     *
      * @return boolean
      * @param treeElement
      *            java.lang.Object
@@ -146,7 +146,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Return a boolean indicating whether all list elements associated with the
      * passed tree element are currently checked
-     * 
+     *
      * @return boolean
      * @param treeElement
      *            java.lang.Object
@@ -177,7 +177,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * An item was checked in one of self's two views. Determine which view this
      * occurred in and delegate appropriately
-     * 
+     *
      * @param event
      *            CheckStateChangedEvent
      */
@@ -201,7 +201,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
     /**
      * Lay out and initialize self's visual components.
-     * 
+     *
      * @param parent
      *            org.eclipse.swt.widgets.Composite
      * @param style
@@ -271,7 +271,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
      * white-checked will result in a <code>true</code> answer from this method.
      * To determine whether a tree item should be white-checked use method
      * #determineShouldBeWhiteChecked(Object).
-     * 
+     *
      * @param treeElement
      *            java.lang.Object
      * @return boolean
@@ -303,7 +303,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Returns a boolean indicating whether the passed tree item should be
      * white-checked.
-     * 
+     *
      * @return boolean
      * @param treeElement
      *            java.lang.Object
@@ -316,7 +316,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Recursively add appropriate tree elements to the collection of known
      * white-checked tree elements.
-     * 
+     *
      * @param treeElement
      *            java.lang.Object
      */
@@ -383,7 +383,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Add all of the selected children of nextEntry to result recursively. This
      * does not set any values in the checked state.
-     * 
+     *
      * @param The
      *            treeElement being queried
      * @param addAll
@@ -434,7 +434,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
      * Find all of the white checked children of the treeElement and add them to
      * the collection. If the element itself is white select add it. If not then
      * add any selected list elements and recurse down to the children.
-     * 
+     *
      * @param treeElement
      *            java.lang.Object
      * @param result
@@ -464,7 +464,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
      * Returns a flat list of all of the leaf elements which are checked. Filter
      * then based on the supplied ElementFilter. If monitor is cancelled then
      * return null
-     * 
+     *
      * @param filter
      *            - the filter for the data
      * @param monitor
@@ -486,7 +486,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
     /**
      * Returns a flat list of all of the leaf elements which are checked.
-     * 
+     *
      * @return all of the leaf elements which are checked. This API does not
      *         return null in order to keep backwards compatibility.
      */
@@ -524,7 +524,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
      * Returns a list of all of the items that are white checked. Any folders
      * that are white checked are added and then any files from white checked
      * folders are added.
-     * 
+     *
      * @return the list of all of the items that are white checked
      */
     public List<Object> getAllWhiteCheckedItems() {
@@ -543,7 +543,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
     /**
      * Answer the number of elements that have been checked by the user.
-     * 
+     *
      * @return int
      */
     public int getCheckedElementCount() {
@@ -552,7 +552,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
     /**
      * Get the full label of the treeElement (its name and its parent's name).
-     * 
+     *
      * @param treeElement
      *            - the element being exported
      * @param parentLabel
@@ -576,7 +576,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Return a count of the number of list items associated with a given tree
      * item.
-     * 
+     *
      * @return int
      * @param treeElement
      *            java.lang.Object
@@ -588,7 +588,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
     /**
      * Get the table the list viewer uses.
-     * 
+     *
      * @return org.eclipse.swt.widgets.Table
      */
     public Table getListTable() {
@@ -640,7 +640,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
     /**
      * Set the initial checked state of the passed list element to true.
-     * 
+     *
      * @param element
      */
     public void initialCheckListItem(final Object element) {
@@ -657,7 +657,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Set the initial checked state of the passed element to true, as well as
      * to all of its children and associated list elements
-     * 
+     *
      * @param element
      */
     public void initialCheckTreeItem(final Object element) {
@@ -741,7 +741,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Set the contents of the list viewer based upon the specified selected
      * tree element. This also includes checking the appropriate list items.
-     * 
+     *
      * @param treeElement
      *            java.lang.Object
      */
@@ -802,7 +802,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Remove the passed listener from self's collection of clients that listen
      * for changes to element checked states
-     * 
+     *
      * @param listener
      *            ICheckStateListener
      */
@@ -812,7 +812,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
     /**
      * Handle the selection of an item in the tree viewer
-     * 
+     *
      * @param event
      *            SelectionChangedEvent
      */
@@ -838,7 +838,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Select or deselect all of the elements in the tree depending on the value
      * of the selection boolean. Be sure to update the displayed files as well.
-     * 
+     *
      * @param selection
      */
     public void setAllSelections(final boolean selection) {
@@ -861,7 +861,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * The treeElement has been white selected. Get the list for the element and
      * set it in the checked state store.
-     * 
+     *
      * @param treeElement
      *            the element being updated
      */
@@ -878,7 +878,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
     /**
      * Set the list viewer's providers to those passed
-     * 
+     *
      * @param contentProvider
      *            ITreeContentProvider
      * @param labelProvider
@@ -892,7 +892,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
     /**
      * Set the comparator that is to be applied to self's list viewer
-     * 
+     *
      * @param comparator
      */
     public void setListComparator(final ViewerComparator comparator) {
@@ -902,7 +902,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Set the root of the widget to be new Root. Regenerate all of the tables
      * and lists from this value.
-     * 
+     *
      * @param newRoot
      */
     public void setRoot(final Object newRoot) {
@@ -942,7 +942,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
     /**
      * Set the tree viewer's providers to those passed
-     * 
+     *
      * @param contentProvider
      *            ITreeContentProvider
      * @param labelProvider
@@ -956,7 +956,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
     /**
      * Set the sorter that is to be applied to self's tree viewer
-     * 
+     *
      * @param sorter
      */
     public void setTreeComparator(final ViewerComparator comparator) {
@@ -966,7 +966,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Adjust the collection of references to white-checked tree elements
      * appropriately.
-     * 
+     *
      * @param treeElement
      *            java.lang.Object
      * @param isWhiteChecked
@@ -1063,7 +1063,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Update the selections of the tree elements in items to reflect the new
      * selections provided.
-     * 
+     *
      * @param items
      *            Map with keys of Object (the tree element) and values of List
      *            (the selected list elements). NOTE: This method does not
@@ -1111,8 +1111,8 @@ public class ResourceTreeAndListGroup extends EventManager implements
     }
 
     /**
-	 * 
-	 */
+     *
+     */
     public void enableFolderComposite(final boolean enabled) {
         folderComposite.setEnabled(enabled);
     }

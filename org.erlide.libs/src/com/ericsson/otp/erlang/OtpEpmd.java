@@ -1,19 +1,19 @@
 /*
  * %CopyrightBegin%
- * 
+ *
  * Copyright Ericsson AB 2000-2013. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
@@ -29,12 +29,12 @@ import java.net.Socket;
  * information about the port on which incoming connections are accepted, as
  * well as which versions of the Erlang communication protocolt the node
  * supports.
- * 
+ *
  * <p>
  * Nodes wishing to contact other nodes must first request information from Epmd
  * before a connection can be set up, however this is done automatically by
  * {@link OtpSelf#connect(OtpPeer) OtpSelf.connect()} when necessary.
- * 
+ *
  * <p>
  * The methods {@link #publishPort(OtpLocalNode) publishPort()} and
  * {@link #unPublishPort(OtpLocalNode) unPublishPort()} will fail if an Epmd
@@ -42,7 +42,7 @@ import java.net.Socket;
  * {@link #lookupPort(AbstractNode) lookupPort()} will fail if there is no Epmd
  * process running on the host where the specified node is running. See the
  * Erlang documentation for information about starting Epmd.
- * 
+ *
  * <p>
  * This class contains only static methods, there are no constructors.
  */
@@ -109,10 +109,10 @@ public class OtpEpmd {
 
     /**
      * Determine what port a node listens for incoming connections on.
-     * 
+     *
      * @return the listen port for the specified node, or 0 if the node was not
      *         registered with Epmd.
-     * 
+     *
      * @exception java.io.IOException
      *                if there was no response from the name server.
      */
@@ -123,13 +123,13 @@ public class OtpEpmd {
     /**
      * Register with Epmd, so that other nodes are able to find and connect to
      * it.
-     * 
+     *
      * @param node
      *            the server node that should be registered with Epmd.
-     * 
+     *
      * @return true if the operation was successful. False if the node was
      *         already registered.
-     * 
+     *
      * @exception java.io.IOException
      *                if there was no response from the name server.
      */
@@ -149,7 +149,7 @@ public class OtpEpmd {
     /**
      * Unregister from Epmd. Other nodes wishing to connect will no longer be
      * able to.
-     * 
+     *
      * <p>
      * This method does not report any failures.
      */

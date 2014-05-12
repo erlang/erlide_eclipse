@@ -15,8 +15,8 @@ import java.util.List;
 import org.erlide.engine.model.IParent;
 
 /**
- * 
- * 
+ *
+ *
  * @author Vlad Dumitrescu
  */
 public interface IErlFunction extends IErlFunctionClause, IParent {
@@ -36,5 +36,9 @@ public interface IErlFunction extends IErlFunctionClause, IParent {
     Collection<IErlMember> getComments();
 
     void setComments(Collection<IErlMember> comments);
+
+    void setTypespec(IErlTypespec spec);
+
+    IErlTypespec getTypespec();
 
 }

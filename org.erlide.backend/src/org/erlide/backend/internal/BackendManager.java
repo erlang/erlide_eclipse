@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.backend.internal;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -72,12 +71,9 @@ public final class BackendManager implements IBackendManager {
     private final Set<IBackend> allBackends;
     private final BackendManagerLaunchListener launchListener;
     private final IBackendFactory factory;
-    private final RuntimeInfo erlideRuntimeInfo;
 
-    public BackendManager(final RuntimeInfo erlideRuntimeInfo,
-            final IBackendFactory factory) {
+    public BackendManager(final IBackendFactory factory) {
         this.factory = factory;
-        this.erlideRuntimeInfo = erlideRuntimeInfo;
 
         ideBackend = null;
         executionBackends = Maps.newHashMap();
@@ -90,27 +86,6 @@ public final class BackendManager implements IBackendManager {
 
         launchListener = new BackendManagerLaunchListener(this, DebugPlugin.getDefault()
                 .getLaunchManager());
-    }
-
-    @SuppressWarnings("unused")
-    private void tryStartEpmdProcess() {
-        final RuntimeInfo info = erlideRuntimeInfo;
-        if (info == null || info.getOtpHome() == null) {
-            ErlLogger.error("Trying to start with a null runtime info");
-            return;
-        }
-        // FIXME the location of epmd is OS dependent... look for it!
-        // Win: $OTP/erts-$VSN/bin/epmd
-        // Lin: $OTP/bin/$TARGET/epmd
-        // Others: ?
-        final String[] cmdline = new String[] { info.getOtpHome() + "/bin/epmd",
-                "-daemon" };
-        try {
-            Runtime.getRuntime().exec(cmdline);
-            ErlLogger.info("Epmd started.");
-        } catch (final IOException e) {
-            // ErlLogger.info("Could not start epmd! " + e.getMessage());
-        }
     }
 
     @Override

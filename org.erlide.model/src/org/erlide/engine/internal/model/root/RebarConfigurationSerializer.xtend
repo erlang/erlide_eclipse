@@ -21,12 +21,12 @@ class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
   //        // TODO compiler options
   //        '''
   //            %% coding: utf-8
-  //            {require_min_otp_vsn, "«info.runtimeVersion»"}.
+  //            {require_min_otp_vsn, "Â«info.runtimeVersionÂ»"}.
   //            {erl_opts,
   //                [
   //                 debug_info,
-  //                 «FOR inc: info.includeDirs SEPARATOR ','»{i, "«inc»"},«ENDFOR»
-  //                 {src_dirs, [«FOR src: info.sourceDirs SEPARATOR ','»«src.toPortableString»«ENDFOR»]}
+  //                 Â«FOR inc: info.includeDirs SEPARATOR ','Â»{i, "Â«incÂ»"},Â«ENDFORÂ»
+  //                 {src_dirs, [Â«FOR src: info.sourceDirs SEPARATOR ','Â»Â«src.toPortableStringÂ»Â«ENDFORÂ»]}
   //                ]}.
   //
   //        '''

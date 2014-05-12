@@ -77,8 +77,9 @@ public class ModelInternalUtils implements ModelUtilService {
 
     private IErlExternal getElementWithExternalName(final IParent parent,
             final String segment) throws ErlModelException {
-        for (final IErlElement i : parent
-                .getChildrenOfKind(ErlElementKind.EXTERNAL)) {
+        for (final IErlElement i : parent.getChildrenOfKind(
+                ErlElementKind.EXTERNAL_ROOT, ErlElementKind.EXTERNAL_APP,
+                ErlElementKind.EXTERNAL_FOLDER)) {
             final IErlExternal external = (IErlExternal) i;
             final String externalName = external.getName();
             if (externalName.equals(segment)) {

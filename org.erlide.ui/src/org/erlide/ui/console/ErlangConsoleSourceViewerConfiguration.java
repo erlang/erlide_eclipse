@@ -39,11 +39,6 @@ final public class ErlangConsoleSourceViewerConfiguration extends EditorConfigur
         this.backend = backend;
     }
 
-    /**
-     * Creates the reconciler
-     * 
-     * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getPresentationReconciler(org.eclipse.jface.text.source.ISourceViewer)
-     */
     @Override
     public IPresentationReconciler getPresentationReconciler(
             final ISourceViewer sourceViewer) {

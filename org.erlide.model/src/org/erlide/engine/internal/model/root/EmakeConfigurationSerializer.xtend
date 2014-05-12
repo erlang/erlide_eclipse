@@ -19,9 +19,9 @@ class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
 
   //
   //        '''
-  //            «FOR src : info.sourceDirs»
-  //                {'«src.toPortableString»/*',[«FOR inc : info.includeDirs»{i, "«inc.toPortableString»"},«ENDFOR»]}.
-  //            «ENDFOR»
+  //            Â«FOR src : info.sourceDirsÂ»
+  //                {'Â«src.toPortableStringÂ»/*',[Â«FOR inc : info.includeDirsÂ»{i, "Â«inc.toPortableStringÂ»"},Â«ENDFORÂ»]}.
+  //            Â«ENDFORÂ»
   //        '''
   }
 

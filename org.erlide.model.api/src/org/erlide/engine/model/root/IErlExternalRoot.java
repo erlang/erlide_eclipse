@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * @author jakob
- * 
+ *
  */
 public interface IErlExternalRoot extends IErlExternal {
 

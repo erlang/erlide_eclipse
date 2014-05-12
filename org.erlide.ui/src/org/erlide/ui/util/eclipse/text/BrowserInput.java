@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -13,9 +13,9 @@ package org.erlide.ui.util.eclipse.text;
 /**
  * A browser input contains an input element and a previous and a next input, if
  * available.
- * 
+ *
  * The browser input also provides a human readable name of its input element.
- * 
+ *
  * @since 3.4
  */
 public abstract class BrowserInput {
@@ -25,7 +25,7 @@ public abstract class BrowserInput {
 
     /**
      * Create a new Browser input.
-     * 
+     *
      * @param previous
      *            the input previous to this or <code>null</code> if this is the
      *            first
@@ -39,7 +39,7 @@ public abstract class BrowserInput {
 
     /**
      * The previous input or <code>null</code> if this is the first.
-     * 
+     *
      * @return the previous input or <code>null</code>
      */
     public BrowserInput getPrevious() {
@@ -48,7 +48,7 @@ public abstract class BrowserInput {
 
     /**
      * The next input or <code>null</code> if this is the last.
-     * 
+     *
      * @return the next input or <code>null</code>
      */
     public BrowserInput getNext() {
@@ -57,14 +57,14 @@ public abstract class BrowserInput {
 
     /**
      * The element to use to set the browsers input.
-     * 
+     *
      * @return the input element
      */
     public abstract Object getInputElement();
 
     /**
      * A human readable name for the input.
-     * 
+     *
      * @return the input name
      */
     public abstract String getInputName();

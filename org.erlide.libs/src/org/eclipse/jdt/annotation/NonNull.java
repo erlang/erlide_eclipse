@@ -49,7 +49,7 @@ import java.lang.annotation.Target;
  * involved for which null annotations are lacking.</li>
  * </ol>
  * </p>
- * 
+ *
  * @since 1.0
  */
 @Documented

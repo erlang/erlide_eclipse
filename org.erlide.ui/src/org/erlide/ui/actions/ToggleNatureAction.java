@@ -58,7 +58,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 
     /**
      * Toggles Erlang nature on a project
-     * 
+     *
      * @param project
      *            to have sample nature added or removed
      */

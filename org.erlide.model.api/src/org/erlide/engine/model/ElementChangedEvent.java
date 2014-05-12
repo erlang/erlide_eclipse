@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -22,7 +22,7 @@ import org.erlide.engine.model.root.IErlElementDelta;
  * This class is not intended to be instantiated or subclassed by clients.
  * Instances of this class are automatically created by the Erlang model.
  * </p>
- * 
+ *
  * @see IElementChangedListener
  * @see IErlElementDelta
  */
@@ -35,11 +35,11 @@ public class ElementChangedEvent extends EventObject {
      * creations, deletions, and modifications to one or more Erlang element(s)
      * expressed as a hierarchical Erlang element delta as returned by
      * <code>getDelta()</code>.
-     * 
+     *
      * Note: this notification occurs during the corresponding POST_CHANGE
      * resource change notification, and contains a full delta accounting for
      * any ErlangModel operation and/or resource change.
-     * 
+     *
      * @see IErlElementDelta
      * @see org.eclipse.core.resources.IResourceChangeEvent
      * @see #getDelta()
@@ -51,10 +51,10 @@ public class ElementChangedEvent extends EventObject {
      * creations, deletions, and modifications to one or more Erlang element(s)
      * expressed as a hierarchical Erlang element delta as returned by
      * <code>getDelta</code>.
-     * 
+     *
      * Note: this notification occurs as a result of a working copy reconcile
      * operation.
-     * 
+     *
      * @see IErlElementDelta
      * @see org.eclipse.core.resources.IResourceChangeEvent
      * @see #getDelta()
@@ -65,10 +65,10 @@ public class ElementChangedEvent extends EventObject {
      * Event type constant indicating the following: Source text is changed
      * somewhere in function body No global data affected for any erl element
      * but element offsets should be recalculated now.
-     * 
+     *
      * Note: usually, ErlShiftData object is sent with this event as
      * IErlElementDelta
-     * 
+     *
      * @see CShiftData
      */
     public static final int POST_SHIFT = 5;
@@ -82,7 +82,7 @@ public class ElementChangedEvent extends EventObject {
     /**
      * Creates an new element changed event (based on a
      * <code>IErlElementDelta</code>).
-     * 
+     *
      * @param delta
      *            the Erlang element delta.
      * @param type
@@ -96,7 +96,7 @@ public class ElementChangedEvent extends EventObject {
 
     /**
      * Returns the delta describing the change.
-     * 
+     *
      * @return the delta describing the change
      */
     public IErlElementDelta getDelta() {
@@ -105,7 +105,7 @@ public class ElementChangedEvent extends EventObject {
 
     /**
      * Returns the type of event being reported.
-     * 
+     *
      * @return one of the event type constants
      * @see #POST_CHANGE
      * @see #PRE_AUTO_BUILD

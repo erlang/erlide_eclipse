@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -12,8 +12,8 @@ package org.erlide.util;
 
 /**
  * This class is a collection of helper methods to manipulate char arrays.
- * 
- * 
+ *
+ *
  */
 public final class CharOperation {
 
@@ -37,25 +37,25 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      *   array = { 'a', 'b' }
      *   suffix = 'c'
      * =&gt; result = { 'a', 'b' , 'c' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      *   array = null
      *   suffix = 'c'
      * =&gt; result = { 'c' }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param array
      *            the array that is concanated with the suffix character
      * @param suffix
@@ -81,7 +81,7 @@ public final class CharOperation {
      * For example: <br>
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * target = { 'a', 'b', '0' }
      *                index = 2
@@ -90,10 +90,10 @@ public final class CharOperation {
      *                end = 1
      *                =&gt; result = { 'a', 'b' , 'c' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * target = { 'a', 'b' }
      *                index = 2
@@ -102,10 +102,10 @@ public final class CharOperation {
      *                end = 1
      *                =&gt; result = { 'a', 'b' , 'c', '0', '0' , '0' } (new array)
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * target = { 'a', 'b', 'c' }
      *                index = 1
@@ -114,10 +114,10 @@ public final class CharOperation {
      *                end = 4
      *                =&gt; result = { 'a', 'd' , 'e', 'f', '0', '0', '0', '0' } (new array)
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param target
      *            the given target
      * @param index
@@ -128,7 +128,7 @@ public final class CharOperation {
      *            the given start index
      * @param end
      *            the given end index
-     * 
+     *
      * @return the new array
      * @throws NullPointerException
      *             if the target array is null
@@ -154,43 +154,43 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * first = null
      *                second = null
      *                =&gt; result = null
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { { ' a' } }
      *                second = null
      *                =&gt; result = { { ' a' } }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = null
      *                second = { { ' a' } }
      *                =&gt; result = { { ' a' } }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { { ' b' } }
      *                second = { { ' a' } }
      *                =&gt; result = { { ' b' }, { ' a' } }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param first
      *            the first array to concatenate
      * @param second
@@ -216,12 +216,12 @@ public final class CharOperation {
 
     /**
      * Returns the char arrays as an array of Strings
-     * 
+     *
      * @param charArrays
      *            the char array to convert
      * @return the char arrays as an array of Strings or null if the given char
      *         arrays is null.
-     * 
+     *
      */
     public static String[] charArrayToStringArray(final char[][] charArrays) {
         if (charArrays == null) {
@@ -236,12 +236,12 @@ public final class CharOperation {
 
     /**
      * Returns the char array as a String
-     * 
+     *
      * @param charArray
      *            the char array to convert
      * @return the char array as a String or null if the given char array is
      *         null.
-     * 
+     *
      */
     public static String charToString(final char[] charArray) {
         if (charArray == null) {
@@ -259,33 +259,33 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * first = null
      *                second = { 'a' }
      *                =&gt; result = { { ' a' } }
      * </pre>
-     * 
+     *
      * <li>
-     * 
+     *
      * <pre>
      * first = { { ' a' } }
      *                second = null
      *                =&gt; result = { { ' a' } }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { { ' a' } }
      *                second = { ' b' }
      *                =&gt; result = { { ' a' } , { ' b' } }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param first
      *            the first array to concatenate
      * @param second
@@ -320,62 +320,62 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * array = null
      *                prefix = null
      *                =&gt; result = NullPointerException
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'a', 'b', 'c', 'd', 'e' }
      *                prefix = { 'a', 'b', 'c'}
      *                =&gt; result = 0
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'a', 'b', 'c', 'd', 'e' }
      *                prefix = { 'a', 'B', 'c'}
      *                =&gt; result = 32
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'd', 'b', 'c', 'd', 'e' }
      *                prefix = { 'a', 'b', 'c'}
      *                =&gt; result = 3
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'a', 'b', 'c', 'd', 'e' }
      *                prefix = { 'd', 'b', 'c'}
      *                =&gt; result = -3
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'a', 'a', 'c', 'd', 'e' }
      *                prefix = { 'a', 'e', 'c'}
      *                =&gt; result = -4
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
      * </p>
-     * 
+     *
      * @param array
      *            the given array
      * @param prefix
@@ -411,34 +411,34 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * first = null
      *                second = { 'a' }
      *                =&gt; result = { ' a' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { ' a' }
      *                second = null
      *                =&gt; result = { ' a' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { ' a' }
      *                second = { ' b' }
      *                =&gt; result = { ' a' , ' b' }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param first
      *            the first array to concatenate
      * @param second
@@ -472,64 +472,64 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * first = null
      *                second = { 'a' }
      *                third = { 'b' }
      *                =&gt; result = { ' a', 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { 'a' }
      *                second = null
      *                third = { 'b' }
      *                =&gt; result = { ' a', 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { 'a' }
      *                second = { 'b' }
      *                third = null
      *                =&gt; result = { ' a', 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = null
      *                second = null
      *                third = null
      *                =&gt; result = null
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { 'a' }
      *                second = { 'b' }
      *                third = { 'c' }
      *                =&gt; result = { 'a', 'b', 'c' }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param first
      *            the first array to concatenate
      * @param second
      *            the second array to concatenate
      * @param third
      *            the third array to concatenate
-     * 
+     *
      * @return the concatenation of the three arrays, or null if the three
      *         arrays are null.
      */
@@ -564,37 +564,37 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * first = null
      *                second = { 'a' }
      *                separator = '/'
      *                =&gt; result = { ' a' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { ' a' }
      *                second = null
      *                separator = '/'
      *                =&gt; result = { ' a' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { ' a' }
      *                second = { ' b' }
      *                separator = '/'
      *                =&gt; result = { ' a' , '/', 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param first
      *            the first array to concatenate
      * @param second
@@ -643,7 +643,7 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * first = null
      *                sep1 = '/'
@@ -652,10 +652,10 @@ public final class CharOperation {
      *                third = { 'b' }
      *                =&gt; result = { ' a' , ':', 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { 'a' }
      *                sep1 = '/'
@@ -664,10 +664,10 @@ public final class CharOperation {
      *                third = { 'b' }
      *                =&gt; result = { ' a' , '/', 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { 'a' }
      *                sep1 = '/'
@@ -676,10 +676,10 @@ public final class CharOperation {
      *                third = null
      *                =&gt; result = { ' a' , '/', 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { 'a' }
      *                sep1 = '/'
@@ -688,10 +688,10 @@ public final class CharOperation {
      *                third = { 'c' }
      *                =&gt; result = { ' a' , '/', 'b' , ':', 'c' }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param first
      *            the first array to concatenate
      * @param sep1
@@ -737,27 +737,27 @@ public final class CharOperation {
      * For example: <br>
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * prefix = 'a'
      *                array = { 'b' }
      *                suffix = 'c'
      *                =&gt; result = { 'a', 'b' , 'c' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * prefix = 'a'
      *                array = null
      *                suffix = 'c'
      *                =&gt; result = { 'a', 'c' }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param prefix
      *            the prefix character
      * @param array
@@ -787,37 +787,37 @@ public final class CharOperation {
      * For example: <br>
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * name = { 'c' }
      *                array = { { 'a' }, { 'b' } }
      *                separator = '.'
      *                =&gt; result = { 'a', '.', 'b' , '.', 'c' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * name = null
      *                array = { { 'a' }, { 'b' } }
      *                separator = '.'
      *                =&gt; result = { 'a', '.', 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * name = { ' c' }
      *                array = null
      *                separator = '.'
      *                =&gt; result = { 'c' }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param name
      *            the given name
      * @param array
@@ -840,37 +840,37 @@ public final class CharOperation {
      * For example: <br>
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * name = { 'c' }
      *                array = { { 'a' }, { 'b' } }
      *                separator = '.'
      *                =&gt; result = { 'a', '.', 'b' , '.', 'c' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * name = null
      *                array = { { 'a' }, { 'b' } }
      *                separator = '.'
      *                =&gt; result = { 'a', '.', 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * name = { ' c' }
      *                array = null
      *                separator = '.'
      *                =&gt; result = { 'c' }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param array
      *            the given array
      * @param name
@@ -922,25 +922,25 @@ public final class CharOperation {
      * For example: <br>
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * array = { { 'a' }, { 'b' } }
      *                separator = '.'
      *                =&gt; result = { 'a', '.', 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * array = null
      *                separator = '.'
      *                =&gt; result = { }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param array
      *            the given array
      * @param separator
@@ -988,25 +988,25 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * character = 'c'
      *                array = { { ' a' }, { ' b' } }
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * character = 'a'
      *                array = { { ' a' }, { ' b' } }
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param character
      *            the character to search
      * @param array
@@ -1035,25 +1035,25 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * character = 'c'
      *                array = { ' b'  }
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * character = 'a'
      *                array = { ' a' , ' b' }
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param character
      *            the character to search
      * @param array
@@ -1074,7 +1074,7 @@ public final class CharOperation {
 
     /**
      * Answers a deep copy of the toCopy array.
-     * 
+     *
      * @param toCopy
      *            the array to copy
      * @return a deep copy of the toCopy array.
@@ -1099,25 +1099,25 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'a', 'b', 'c', 'd' }
      *                toBeFound = { 'b', 'c' }
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'a', 'b', 'c' }
      *                toBeFound = { 'b', 'c' }
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param array
      *            the array to check
      * @param toBeFound
@@ -1149,43 +1149,43 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * first = null
      *                second = null
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { { } }
      *                second = null
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { { 'a' } }
      *                second = { { 'a' } }
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { { 'A' } }
      *                second = { { 'a' } }
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param first
      *            the first array
      * @param second
@@ -1221,47 +1221,47 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * first = null
      *                second = null
      *                isCaseSensitive = true
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { { } }
      *                second = null
      *                isCaseSensitive = true
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { { 'A' } }
      *                second = { { 'a' } }
      *                isCaseSensitive = true
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { { 'A' } }
      *                second = { { 'a' } }
      *                isCaseSensitive = false
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param first
      *            the first array
      * @param second
@@ -1302,43 +1302,43 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * first = null
      *                second = null
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { }
      *                second = null
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { 'a' }
      *                second = { 'a' }
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { 'a' }
      *                second = { 'A' }
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param first
      *            the first array
      * @param second
@@ -1374,7 +1374,7 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * first = null
      *                second = null
@@ -1382,10 +1382,10 @@ public final class CharOperation {
      *                secondEnd = 0
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { }
      *                second = null
@@ -1393,10 +1393,10 @@ public final class CharOperation {
      *                secondEnd = 0
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { 'a' }
      *                second = { 'a' }
@@ -1404,10 +1404,10 @@ public final class CharOperation {
      *                secondEnd = 1
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { 'a' }
      *                second = { 'A' }
@@ -1415,10 +1415,10 @@ public final class CharOperation {
      *                secondEnd = 1
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param first
      *            the first array
      * @param second
@@ -1430,7 +1430,7 @@ public final class CharOperation {
      * @return true if the first array is identical character by character to
      *         fragment of second array ranging from secondStart to secondEnd-1,
      *         otherwise false
-     * 
+     *
      */
     public static boolean equals(final char[] first, final char[] second,
             final int secondStart, final int secondEnd) {
@@ -1461,47 +1461,47 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * first = null
      *                second = null
      *                isCaseSensitive = true
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { }
      *                second = null
      *                isCaseSensitive = true
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { 'A' }
      *                second = { 'a' }
      *                isCaseSensitive = true
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * first = { 'A' }
      *                second = { 'a' }
      *                isCaseSensitive = false
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param first
      *            the first array
      * @param second
@@ -1538,14 +1538,14 @@ public final class CharOperation {
     /**
      * If isCaseSensite is true, the equality is case sensitive, otherwise it is
      * case insensitive.
-     * 
+     *
      * Answers true if the name contains the fragment at the starting index
      * startIndex, otherwise false. <br>
      * <br>
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * fragment = { 'b', 'c' , 'd' }
      *                name = { 'a', 'b', 'c' , 'd' }
@@ -1553,10 +1553,10 @@ public final class CharOperation {
      *                isCaseSensitive = true
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * fragment = { 'b', 'c' , 'd' }
      *                name = { 'a', 'b', 'C' , 'd' }
@@ -1564,10 +1564,10 @@ public final class CharOperation {
      *                isCaseSensitive = true
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * fragment = { 'b', 'c' , 'd' }
      *                name = { 'a', 'b', 'C' , 'd' }
@@ -1575,10 +1575,10 @@ public final class CharOperation {
      *                isCaseSensitive = false
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * fragment = { 'b', 'c' , 'd' }
      *                name = { 'a', 'b'}
@@ -1586,10 +1586,10 @@ public final class CharOperation {
      *                isCaseSensitive = true
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param fragment
      *            the fragment to check
      * @param name
@@ -1632,7 +1632,7 @@ public final class CharOperation {
 
     /**
      * Answers a hashcode for the array
-     * 
+     *
      * @param array
      *            the array for which a hashcode is required
      * @return the hashcode
@@ -1664,23 +1664,23 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * c = ' '
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * c = ' \u3000'
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param c
      *            the character to check
      * @return true if c is a whitespace according to the JLS, otherwise false.
@@ -1706,25 +1706,25 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'c'
      *                array = { ' a', 'b', 'c', 'd' }
      *                result =&gt; 2
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'e'
      *                array = { ' a', 'b', 'c', 'd' }
      *                result =&gt; -1
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param toBeFound
      *            the character to search
      * @param array
@@ -1751,37 +1751,37 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'c'
      *                array = { ' a', 'b', 'c', 'd' }
      *                start = 2
      *                result =&gt; 2
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'c'
      *                array = { ' a', 'b', 'c', 'd' }
      *                start = 3
      *                result =&gt; -1
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'e'
      *                array = { ' a', 'b', 'c', 'd' }
      *                start = 1
      *                result =&gt; -1
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param toBeFound
      *            the character to search
      * @param array
@@ -1812,25 +1812,25 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'c'
      *                array = { ' a', 'b', 'c', 'd' , 'c', 'e' }
      *                result =&gt; 4
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'e'
      *                array = { ' a', 'b', 'c', 'd' }
      *                result =&gt; -1
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param toBeFound
      *            the character to search
      * @param array
@@ -1858,37 +1858,37 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'c'
      *                array = { ' a', 'b', 'c', 'd' }
      *                startIndex = 2
      *                result =&gt; 2
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'c'
      *                array = { ' a', 'b', 'c', 'd', 'e' }
      *                startIndex = 3
      *                result =&gt; -1
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'e'
      *                array = { ' a', 'b', 'c', 'd' }
      *                startIndex = 0
      *                result =&gt; -1
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param toBeFound
      *            the character to search
      * @param array
@@ -1921,7 +1921,7 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'c'
      *                array = { ' a', 'b', 'c', 'd' }
@@ -1929,10 +1929,10 @@ public final class CharOperation {
      *                endIndex = 2
      *                result =&gt; 2
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'c'
      *                array = { ' a', 'b', 'c', 'd', 'e' }
@@ -1940,10 +1940,10 @@ public final class CharOperation {
      *                endIndex = 4
      *                result =&gt; -1
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'e'
      *                array = { ' a', 'b', 'c', 'd' }
@@ -1951,10 +1951,10 @@ public final class CharOperation {
      *                endIndex = 3
      *                result =&gt; -1
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param toBeFound
      *            the character to search
      * @param array
@@ -1986,11 +1986,11 @@ public final class CharOperation {
      * Answers the last portion of a name given a separator. <br>
      * <br>
      * For example,
-     * 
+     *
      * <pre>
      * lastSegment(&quot;java.lang.Object&quot;.toCharArray(),'.') --&gt; Object
      * </pre>
-     * 
+     *
      * @param array
      *            the array
      * @param separator
@@ -2010,7 +2010,7 @@ public final class CharOperation {
     /**
      * Answers true if the pattern matches the given name, false otherwise. This
      * char[] pattern matching accepts wild-cards '*' and '?'.
-     * 
+     *
      * When not case sensitive, the pattern is assumed to already be lowercased,
      * the name will be lowercased character per character as comparing. If name
      * is null, the answer is false. If pattern is null, the answer is true if
@@ -2019,37 +2019,37 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * pattern = { '?', 'b', '*' }
      *                name = { 'a', 'b', 'c' , 'd' }
      *                isCaseSensitive = true
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * pattern = { '?', 'b', '?' }
      *                name = { 'a', 'b', 'c' , 'd' }
      *                isCaseSensitive = true
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * pattern = { 'b', '*' }
      *                name = { 'a', 'b', 'c' , 'd' }
      *                isCaseSensitive = true
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param pattern
      *            the given pattern
      * @param name
@@ -2084,7 +2084,7 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * pattern = { '?', 'b', '*' }
      *                patternStart = 1
@@ -2095,10 +2095,10 @@ public final class CharOperation {
      *                isCaseSensitive = true
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * pattern = { '?', 'b', '*' }
      *                patternStart = 1
@@ -2109,10 +2109,10 @@ public final class CharOperation {
      *                isCaseSensitive = true
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param pattern
      *            the given pattern
      * @param patternStart
@@ -2208,7 +2208,7 @@ public final class CharOperation {
     /**
      * Answers true if the pattern matches the filepath using the pathSepatator,
      * false otherwise.
-     * 
+     *
      * Path char[] pattern matching, accepting wild-cards '**', '*' and '?'
      * (using Ant directory tasks conventions, also see
      * "http://jakarta.apache.org/ant/manual/dirtasks.html#defaultexcludes").
@@ -2217,7 +2217,7 @@ public final class CharOperation {
      * foo\ is equivalent to foo\** When not case sensitive, the pattern is
      * assumed to already be lowercased, the name will be lowercased character
      * per character as comparing.
-     * 
+     *
      * @param pattern
      *            the given pattern
      * @param filepath
@@ -2419,25 +2419,25 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'b'
      *                array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                result =&gt; 3
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'c'
      *                array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                result =&gt; 0
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param toBeFound
      *            the given character
      * @param array
@@ -2458,27 +2458,27 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'b'
      *                array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                start = 2
      *                result =&gt; 2
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * toBeFound = 'c'
      *                array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                start = 0
      *                result =&gt; 0
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param toBeFound
      *            the given character
      * @param array
@@ -2510,25 +2510,25 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * prefix = { 'a' , 'b' }
      *                name = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * prefix = { 'a' , 'c' }
      *                name = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param prefix
      *            the given prefix
      * @param name
@@ -2561,27 +2561,27 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * prefix = { 'a' , 'B' }
      *                name = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                isCaseSensitive = false
      *                result =&gt; true
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * prefix = { 'a' , 'B' }
      *                name = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                isCaseSensitive = true
      *                result =&gt; false
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param prefix
      *            the given prefix
      * @param name
@@ -2627,27 +2627,27 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                toBeReplaced = 'b'
      *                replacementChar = 'a'
      *                result =&gt; No returned value, but array is now equals to { 'a' , 'a', 'a', 'a', 'a', 'a' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                toBeReplaced = 'c'
      *                replacementChar = 'a'
      *                result =&gt; No returned value, but array is now equals to { 'a' , 'b', 'b', 'a', 'b', 'a' }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param array
      *            the given array
      * @param toBeReplaced
@@ -2676,27 +2676,27 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                toBeReplaced = { 'b' }
      *                replacementChar = { 'a', 'a' }
      *                result =&gt; { 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                toBeReplaced = { 'c' }
      *                replacementChar = { 'a' }
      *                result =&gt; { 'a' , 'b', 'b', 'a', 'b', 'a' }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param array
      *            the given array
      * @param toBeReplaced
@@ -2764,43 +2764,43 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * divider = 'b'
      *                array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                result =&gt; { { 'a' }, {  }, { 'a' }, { 'a' } }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * divider = 'c'
      *                array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                result =&gt; { { 'a', 'b', 'b', 'a', 'b', 'a' } }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * divider = 'b'
      *                array = { 'a' , ' ', 'b', 'b', 'a', 'b', 'a' }
      *                result =&gt; { { 'a' }, {  }, { 'a' }, { 'a' } }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * divider = 'c'
      *                array = { ' ', ' ', 'a' , 'b', 'b', 'a', 'b', 'a', ' ' }
      *                result =&gt; { { 'a', 'b', 'b', 'a', 'b', 'a' } }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param divider
      *            the given divider
      * @param array
@@ -2857,34 +2857,34 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * divider = 'b'
      *                array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                result =&gt; { { 'a' }, {  }, { 'a' }, { 'a' } }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * divider = 'c'
      *                array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
      *                result =&gt; { { 'a', 'b', 'b', 'a', 'b', 'a' } }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * divider = 'c'
      *                array = { ' ', ' ', 'a' , 'b', 'b', 'a', 'b', 'a', ' ' }
      *                result =&gt; { { ' ', 'a', 'b', 'b', 'a', 'b', 'a', ' ' } }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param divider
      *            the given divider
      * @param array
@@ -2904,7 +2904,7 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * divider = 'b'
      *                array = { 'a' , 'b', 'b', 'a', 'b', 'a' }
@@ -2912,10 +2912,10 @@ public final class CharOperation {
      *                end = 5
      *                result =&gt; { {  }, { 'a' }, {  } }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param divider
      *            the given divider
      * @param array
@@ -2968,27 +2968,27 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * array = { { 'a' } , { 'b' } }
      *                start = 0
      *                end = 1
      *                result =&gt; { { 'a' } }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * array = { { 'a' } , { 'b' } }
      *                start = 0
      *                end = -1
      *                result =&gt; { { 'a' }, { 'b' } }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param array
      *            the given array
      * @param start
@@ -3030,27 +3030,27 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'a' , 'b' }
      *                start = 0
      *                end = 1
      *                result =&gt; { 'a' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'a', 'b' }
      *                start = 0
      *                end = -1
      *                result =&gt; { 'a' , 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param array
      *            the given array
      * @param start
@@ -3090,23 +3090,23 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * chars = { 'a' , 'b' }
      *                result =&gt; { 'a' , 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'A', 'b' }
      *                result =&gt; { 'a' , 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param chars
      *            the chars to convert
      * @return the result of a char[] conversion to lowercase
@@ -3137,23 +3137,23 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * chars = { ' ', 'a' , 'b', ' ',  ' ' }
      *                result =&gt; { 'a' , 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * array = { 'A', 'b' }
      *                result =&gt; { 'A' , 'b' }
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param chars
      *            the given array
      * @return a new array removing leading and trailing spaces (' ')
@@ -3186,23 +3186,23 @@ public final class CharOperation {
      * For example:
      * <ol>
      * <li>
-     * 
+     *
      * <pre>
      * array = { { 'a' } , { 'b' } }
      *                result =&gt; &quot;a.b&quot;
      * </pre>
-     * 
+     *
      * </li>
      * <li>
-     * 
+     *
      * <pre>
      * array = { { ' ',  'a' } , { 'b' } }
      *                result =&gt; &quot; a.b&quot;
      * </pre>
-     * 
+     *
      * </li>
      * </ol>
-     * 
+     *
      * @param array
      *            the given array
      * @return a string which is the concatenation of the given array using the
@@ -3215,11 +3215,11 @@ public final class CharOperation {
 
     /**
      * Answers an array of strings from the given array of char array.
-     * 
+     *
      * @param array
      *            the given array
      * @return an array of strings
-     * 
+     *
      */
     public static String[] toStrings(final char[][] array) {
         final int length = array.length;

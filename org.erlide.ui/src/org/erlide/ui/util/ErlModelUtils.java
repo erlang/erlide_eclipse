@@ -114,7 +114,6 @@ public class ErlModelUtils {
                 return module;
             }
             final String path = file.getLocation().toPortableString();
-            // TODO shouldn't we use the resource directly below?
             module = model.getModuleFromFile(model, file.getName(), path,
                     file.getCharset(), path);
             module.setResource(file);

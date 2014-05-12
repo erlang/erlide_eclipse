@@ -58,7 +58,7 @@ import org.erlide.util.ErlLogger;
 
 /**
  * AbstractInfoPopupDialog
- * 
+ *
  */
 public class QuickOutlinePopupDialog extends PopupDialog implements IInformationControl,
         IInformationControlExtension, IInformationControlExtension2, DisposeListener {
@@ -94,8 +94,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
     }
 
     /**
-	 *
-	 */
+     *
+     */
     private void initialize() {
         setInfoText(ErlideUIMessages.QuickOutlinePopupDialog_infoTextPressEscToExit);
 
@@ -130,8 +130,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
     }
 
     /**
-	 *
-	 */
+     *
+     */
     private void createUIActions() {
         // Add sort action to dialog menu
         fSortAction = new SortAction(fTreeViewer,
@@ -193,8 +193,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
     }
 
     /**
-	 *
-	 */
+     *
+     */
     private void createUIListenersTreeViewer() {
         // Get the underlying tree widget
         final Tree tree = fTreeViewer.getTree();
@@ -428,8 +428,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
     }
 
     /**
-	 *
-	 */
+     *
+     */
     protected void gotoSelectedElement() {
         final Object selectedElement = getSelectedElement();
         ErlLogger.debug("&&>> " + selectedElement);
@@ -443,8 +443,8 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
     }
 
     /**
-	 *
-	 */
+     *
+     */
     private void createUIListenersFilterText() {
         // Handle key events
         fFilterText.addKeyListener(new KeyListener() {
@@ -500,7 +500,7 @@ public class QuickOutlinePopupDialog extends PopupDialog implements IInformation
      * The following characters have special meaning: ? => any character * =>
      * any string
      * </p>
-     * 
+     *
      * @param pattern
      *            the pattern
      * @param update

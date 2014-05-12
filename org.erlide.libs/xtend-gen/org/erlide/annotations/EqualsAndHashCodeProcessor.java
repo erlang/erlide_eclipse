@@ -103,7 +103,7 @@ public class EqualsAndHashCodeProcessor extends AbstractClassProcessor {
                         _builder.append(" ^ (");
                         String _simpleName_9 = f.getSimpleName();
                         _builder.append(_simpleName_9, "");
-                        _builder.append(" >>> 32));");
+                        _builder.append(" » 32));");
                         _builder.newLineIfNotEmpty();
                       } else {
                         String _name_6 = Float.TYPE.getName();
@@ -128,7 +128,7 @@ public class EqualsAndHashCodeProcessor extends AbstractClassProcessor {
                             _builder.append(") ^ (Double.doubleToLongBits(");
                             String _simpleName_14 = f.getSimpleName();
                             _builder.append(_simpleName_14, "");
-                            _builder.append(") >>> 32));");
+                            _builder.append(") » 32));");
                             _builder.newLineIfNotEmpty();
                           } else {
                             _builder.append("result = prime * result + ((");

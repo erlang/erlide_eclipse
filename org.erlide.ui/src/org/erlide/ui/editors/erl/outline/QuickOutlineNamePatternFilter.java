@@ -20,7 +20,7 @@ import org.erlide.ui.util.StringMatcher;
 
 /**
  * QuickOutlineNamePatternFilter
- * 
+ *
  */
 public class QuickOutlineNamePatternFilter extends ViewerFilter {
 

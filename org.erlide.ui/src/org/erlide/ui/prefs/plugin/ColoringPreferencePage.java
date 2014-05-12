@@ -62,7 +62,7 @@ import com.google.common.collect.Lists;
 
 /**
  * The color preferences.
- * 
+ *
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class ColoringPreferencePage extends PreferencePage implements
@@ -201,6 +201,9 @@ public class ColoringPreferencePage extends PreferencePage implements
         if (store != null) {
             store.setValue(th.getColorKey(), StringConverter.asString(style.getColor()));
             store.setValue(th.getStylesKey(), style.getStyles());
+            ErlLogger.debug("Store colors:: %s: %s; %s: %d", th.getColorKey(),
+                    StringConverter.asString(style.getColor()), th.getStylesKey(),
+                    style.getStyles());
         }
     }
 
@@ -583,9 +586,9 @@ public class ColoringPreferencePage extends PreferencePage implements
 
     /**
      * Returns the current highlighting color list item.
-     * 
+     *
      * @return the current highlighting color list item
-     * 
+     *
      */
     TokenHighlight getHighlight() {
         if (fListViewer == null) {

@@ -328,7 +328,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 
     /**
      * Returns the Runtimes currently being displayed in this block
-     * 
+     *
      * @return Runtimes currently being displayed in this block
      */
     public List<RuntimeInfo> getRuntimes() {
@@ -426,7 +426,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 
     /**
      * Removes the given VMs from the table.
-     * 
+     *
      * @param vms
      */
     public void removeRuntimes(final RuntimeInfo[] vms) {
@@ -460,7 +460,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 
     /**
      * Sets the checked Backend, possible <code>null</code>
-     * 
+     *
      * @param vm
      *            Backend or <code>null</code>
      */
@@ -474,7 +474,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 
     /**
      * Returns the checked Backend or <code>null</code> if none.
-     * 
+     *
      * @return the checked Backend or <code>null</code> if none
      */
     public RuntimeInfo getCheckedRuntime() {
@@ -488,7 +488,7 @@ public class RuntimePreferencePage extends PreferencePage implements
     /**
      * Persist table settings into the give dialog store, prefixed with the
      * given key.
-     * 
+     *
      * @param settings
      *            dialog store
      * @param qualifier
@@ -514,7 +514,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 
     /**
      * Restore table settings from the given dialog store using the given key.
-     * 
+     *
      * @param settings
      *            dialog settings store
      * @param qualifier

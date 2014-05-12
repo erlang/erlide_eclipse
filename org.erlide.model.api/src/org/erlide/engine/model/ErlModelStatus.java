@@ -390,7 +390,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     /**
      * Creates and returns a new <code>IErlModelStatus</code> that is a a
      * multi-status status.
-     * 
+     *
      * @see IStatus#isMultiStatus()
      */
     public static IErlModelStatus newMultiStatus(final int code,
@@ -403,7 +403,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     /**
      * Creates and returns a new <code>IErlModelStatus</code> that is a a
      * multi-status status.
-     * 
+     *
      * @see IStatus#isMultiStatus()
      */
     public static IErlModelStatus newMultiStatus(final IErlModelStatus[] children) {

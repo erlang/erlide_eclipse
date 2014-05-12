@@ -8,7 +8,7 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.ISourceRange;
 
 /**
- * 
+ *
  * @author Vlad Dumitrescu
  */
 public abstract class ErlMember extends SourceRefElement implements IErlMember {

@@ -14,7 +14,7 @@ import org.eclipse.ui.console.IConsoleDocumentPartitioner;
 /**
  * This document partitioner does not actually partition things, but receives
  * ranges with the valid styles, so, each range maps to a style.
- * 
+ *
  * Aside from that, all is marked as the default content type.
  */
 public class ErlangConsolePartitioner implements IConsoleDocumentPartitioner {
@@ -28,14 +28,14 @@ public class ErlangConsolePartitioner implements IConsoleDocumentPartitioner {
 
     /**
      * Adds a given style range.
-     * 
+     *
      * When a range is added, the ranges that were added before must be
      * removed/updated if the added range has some intersection with a previous
      * one.
-     * 
+     *
      * The ranges must all be set sequentially, so, all the ranges that have
      * some intersection with that range must be removed/updated.
-     * 
+     *
      * @param r
      *            the range to be added.
      */

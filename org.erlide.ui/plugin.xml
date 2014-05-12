@@ -473,6 +473,12 @@
  <extension
        point="org.eclipse.ui.commands">
       <command
+            name="Go to matching bracket"
+            description="Jump to the bracket matching the one under the cursor"
+            categoryId="org.eclipse.ui.category.navigate"
+            id="org.erlide.ui.actions.gotoMatchingBracket">
+      </command>
+      <command
             name="Show tooltip content"
             description="Show tooltip content"
             categoryId="org.eclipse.ui.category.edit"
@@ -930,6 +936,11 @@
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+O"/>
+      <key
+            commandId="org.erlide.ui.actions.gotoMatchingBracket"
+            contextId="org.erlide.ui.erlangEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+P"/>
       <key
             commandId="org.erlide.ui.actions.togglecomment"
             contextId="org.erlide.ui.erlangEditorScope"

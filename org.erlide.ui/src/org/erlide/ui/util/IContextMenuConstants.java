@@ -94,7 +94,7 @@ public interface IContextMenuConstants {
      * Pop-up menu: name of group for source actions. This is an alias for
      * <code>GROUP_GENERATE</code> to be more consistent with main menu bar
      * structure.
-     * 
+     *
      * @since 2.0
      */
     String GROUP_SOURCE = GROUP_GENERATE;

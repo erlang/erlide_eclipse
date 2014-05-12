@@ -39,7 +39,7 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 
     @Override
     public String toString() {
-        return getName() + ": " + getDefinedName();
+        return "record: " + getDefinedName();
     }
 
     @Override

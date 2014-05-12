@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.CoreException;
 public class EncodingUtils {
     /**
      * Returns the workspace root default charset encoding.
-     * 
+     *
      * @return the name of the default charset encoding for workspace root.
      * @see IContainer#getDefaultCharset()
      * @see ResourcesPlugin#getEncoding()

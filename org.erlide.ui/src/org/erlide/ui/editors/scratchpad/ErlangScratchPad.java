@@ -41,7 +41,7 @@ public class ErlangScratchPad extends AbstractErlangEditor implements ISaveableP
 
     /**
      * Simple constructor
-     * 
+     *
      */
     public ErlangScratchPad() {
         super();
@@ -53,7 +53,7 @@ public class ErlangScratchPad extends AbstractErlangEditor implements ISaveableP
 
     /**
      * Simple disposer
-     * 
+     *
      * @see org.eclipse.ui.IWorkbenchPart#dispose()
      */
     @Override

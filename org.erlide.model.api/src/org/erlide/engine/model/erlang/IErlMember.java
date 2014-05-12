@@ -18,7 +18,7 @@ public interface IErlMember extends IErlElement, ISourceReference {
      * Returns the compilation unit in which this member is declared, or
      * <code>null</code> if this member is not declared in a compilation unit
      * (for example, a binary type). This is a handle-only method.
-     * 
+     *
      * @return the compilation unit in which this member is declared, or
      *         <code>null</code> if this member is not declared in a compilation
      *         unit (for example, a binary type)

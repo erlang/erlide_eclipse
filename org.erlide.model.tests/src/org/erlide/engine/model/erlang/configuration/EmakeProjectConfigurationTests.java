@@ -16,7 +16,7 @@ import org.erlide.engine.internal.model.root.ProjectConfiguratorFactory;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.ProjectConfigType;
-import org.erlide.engine.model.root.ProjectConfigurator;
+import org.erlide.engine.model.root.IProjectConfigurator;
 import org.junit.Test;
 
 public class EmakeProjectConfigurationTests extends AbstractProjectConfigurationTests {
@@ -25,7 +25,7 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
     public void configuratorExists() {
         project.setConfigType(ProjectConfigType.EMAKE);
 
-        final ProjectConfigurator config = ProjectConfiguratorFactory.getDefault()
+        final IProjectConfigurator config = ProjectConfiguratorFactory.getDefault()
                 .getConfig(project.getConfigType(), project);
         assertThat(config, is(notNullValue()));
 
@@ -37,7 +37,7 @@ public class EmakeProjectConfigurationTests extends AbstractProjectConfiguration
     @Test
     public void configCanBeParsed() throws CoreException {
         project.setConfigType(ProjectConfigType.EMAKE);
-        final ProjectConfigurator config = ProjectConfiguratorFactory.getDefault()
+        final IProjectConfigurator config = ProjectConfiguratorFactory.getDefault()
                 .getConfig(project.getConfigType(), project);
 
         final ErlangProjectProperties expected = ErlangProjectProperties.DEFAULT;

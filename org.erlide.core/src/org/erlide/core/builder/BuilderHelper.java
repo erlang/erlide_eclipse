@@ -15,9 +15,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IPathVariableManager;
@@ -59,6 +61,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public final class BuilderHelper {
@@ -197,8 +200,9 @@ public final class BuilderHelper {
                 final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
                 final String f1 = ((OtpErlangString) t.elementAt(0)).stringValue();
                 final String f2 = ((OtpErlangString) t.elementAt(1)).stringValue();
-                MarkerUtils.createProblemMarker(project, null, "duplicated module name in "
-                        + f1 + " and " + f2, 0, IMarker.SEVERITY_WARNING);
+                MarkerUtils.createProblemMarker(project, null,
+                        "duplicated module name in " + f1 + " and " + f2, 0,
+                        IMarker.SEVERITY_WARNING);
             }
         } catch (final Exception e) {
             ErlLogger.debug(e);
@@ -325,19 +329,35 @@ public final class BuilderHelper {
 
     private void refreshDirs(final IProject project, final OtpErlangObject element) {
         final OtpErlangList list = (OtpErlangList) element;
+        final Map<IPath, String> paths = Maps.newHashMap();
         for (final OtpErlangObject ebeam : list) {
             final OtpErlangString beam = (OtpErlangString) ebeam;
-            IPath p = new Path(beam.stringValue());
+            final String sbeam = beam.stringValue();
+            IPath p = new Path(sbeam);
             p = p.removeLastSegments(1);
             p = p.removeFirstSegments(project.getLocation().segmentCount());
-            final String projectName = project.getName();
-            // FIXME hardcoded "_erl" suffix ///
-            if (projectName.endsWith("_erl")) {
-                final String linkname = projectName
-                        .substring(0, projectName.length() - 4);
-                p = new Path(linkname).append(p);
+            p = p.setDevice(null);
+            paths.put(p, sbeam);
+        }
+        for (final Entry<IPath, String> p : paths.entrySet()) {
+            final IPath pp = p.getKey();
+            IResource dir = project.findMember(pp);
+            if (dir == null) {
+                try {
+                    final IResource[] top = project.members();
+                    if (top.length == 1 && top[0] instanceof IContainer) {
+                        final IResource[] ds = ((IContainer) top[0]).members();
+                        for (final IResource r : ds) {
+                            if (r.getLocation().toPortableString().equals(p.getValue())) {
+                                dir = r;
+                                break;
+                            }
+                        }
+                    }
+                } catch (final CoreException e) {
+                    e.printStackTrace();
+                }
             }
-            final IResource dir = project.findMember(p);
             if (dir != null) {
                 try {
                     dir.refreshLocal(IResource.DEPTH_ONE, null);

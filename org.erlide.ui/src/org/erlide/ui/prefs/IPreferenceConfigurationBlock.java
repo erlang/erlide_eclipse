@@ -17,7 +17,7 @@ public interface IPreferenceConfigurationBlock {
 
     /**
      * Creates the preference control.
-     * 
+     *
      * @param parent
      *            the parent composite to which to add the preferences control
      * @return the control that was added to <code>parent</code>

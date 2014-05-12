@@ -17,7 +17,7 @@ import org.osgi.framework.Bundle;
 
 /**
  * Use together with declared handlers like for example
- * 
+ *
  * <pre>
  * <code>
  * &lt;extension point="org.eclipse.ui.handlers">

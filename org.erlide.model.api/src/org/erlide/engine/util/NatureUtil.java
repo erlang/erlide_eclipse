@@ -8,7 +8,7 @@ public final class NatureUtil {
     /**
      * Returns true if the given project is accessible and it has a Erlang
      * nature, otherwise false.
-     * 
+     *
      * @param project
      *            IProject
      * @return boolean

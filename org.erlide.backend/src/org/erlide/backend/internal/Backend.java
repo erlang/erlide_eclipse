@@ -100,20 +100,20 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     protected boolean startErlideApps(final OtpErlangPid jRex, final boolean watch) {
         try {
-            getRpcSite().call("erlide_common_app", "init", "poiii", jRex, watch,
+            final IRpcSite site = getRpcSite();
+            site.call("erlide_common_app", "init", "poiii", jRex, watch,
                     SystemConfiguration.getInstance().getWarnProcessSizeLimitMB(),
                     SystemConfiguration.getInstance().getKillProcessSizeLimitMB(),
                     SystemConfiguration.getInstance().getMaxParallelBuilds());
             // TODO should use extension point!
             switch (data.getContext()) {
             case IDE:
-                getRpcSite().call("erlide_builder_app", "init", "");
-                getRpcSite().call("erlide_ide_app", "init", "");
+                site.call("erlide_builder_app", "init", "");
+                site.call("erlide_ide_app", "init", "");
                 break;
             default:
             }
-            // TODO start tracing when configured to do so!
-            // getRpcSite().call("erlide_tracer", "start", "");
+            // site.call("erlide_tracer", "start", "");
             return true;
         } catch (final Exception e) {
             ErlLogger.error(e);
@@ -245,7 +245,6 @@ public abstract class Backend implements IStreamListener, IBackend {
             }
         } catch (final Exception e) {
             // can happen when shutting down, ignore
-            // ErlLogger.warn(e);
         }
     }
 
@@ -382,6 +381,15 @@ public abstract class Backend implements IStreamListener, IBackend {
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public boolean isDebugging() {
+        try {
+            return "debug".equals(getData().getLaunch().getLaunchMode());
+        } catch (final Exception e) {
+            return false;
         }
     }
 

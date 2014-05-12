@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
@@ -91,6 +92,7 @@ import org.erlide.ui.editors.erl.actions.CallHierarchyAction;
 import org.erlide.ui.editors.erl.actions.CleanUpAction;
 import org.erlide.ui.editors.erl.actions.ClearCacheAction;
 import org.erlide.ui.editors.erl.actions.CompileAction;
+import org.erlide.ui.editors.erl.actions.GotoMatchingBracketAction;
 import org.erlide.ui.editors.erl.actions.ShowOutlineAction;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension;
@@ -324,6 +326,10 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
         fShowOutline.setActionDefinitionId(IErlangEditorActionDefinitionIds.SHOW_OUTLINE);
         setAction(IErlangEditorActionDefinitionIds.SHOW_OUTLINE, fShowOutline);
         markAsContentDependentAction(IErlangEditorActionDefinitionIds.SHOW_OUTLINE, true);
+
+        final Action action = new GotoMatchingBracketAction(this);
+        action.setActionDefinitionId(IErlangEditorActionDefinitionIds.GOTO_MATCHING_BRACKET);
+        setAction(GotoMatchingBracketAction.GOTO_MATCHING_BRACKET, action);
 
     }
 
@@ -622,14 +628,6 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 
     @Override
     protected void addFoldingSupport(final ISourceViewer viewer) {
-        /*
-         * This is a performance optimization to reduce the computation of the
-         * text presentation triggered by {@link #setVisibleDocument(IDocument)}
-         */
-        // if (javaSourceViewer != null && isFoldingEnabled() && (store == null
-        // ||
-        // !store.getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS)))
-        // javaSourceViewer.prepareDelayedProjection();
         if (isFoldingEnabled()) {
             final ProjectionViewer projectionViewer = (ProjectionViewer) viewer;
             fProjectionSupport = new ProjectionSupport(projectionViewer,

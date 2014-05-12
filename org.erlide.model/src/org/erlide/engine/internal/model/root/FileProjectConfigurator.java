@@ -16,8 +16,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.engine.model.root.ErlangContentDescriber;
 import org.erlide.engine.model.root.ErlangProjectProperties;
+import org.erlide.engine.model.root.IProjectConfigurator;
 import org.erlide.engine.model.root.ProjectConfigurationSerializer;
-import org.erlide.engine.model.root.ProjectConfigurator;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.IDisposable;
 
@@ -26,7 +26,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 
-public class FileProjectConfigurator implements ProjectConfigurator,
+public class FileProjectConfigurator implements IProjectConfigurator,
         IResourceChangeListener, IDisposable {
 
     private final String filePath;
@@ -54,15 +54,10 @@ public class FileProjectConfigurator implements ProjectConfigurator,
     }
 
     private ErlangProjectProperties getRawConfig(final File confFile) {
-        String line;
         ErlangProjectProperties result = null;
         try {
-            // TODO detect real encoding!
-            line = Files.readFirstLine(confFile, Charsets.ISO_8859_1);
-            Charset coding = ErlangContentDescriber.detectEncoding(line);
-            if (coding == null) {
-                coding = Charsets.ISO_8859_1;
-            }
+            final Charset coding = ErlangContentDescriber
+                    .detectCodingForFile(confFile);
             final List<String> confString = Files.readLines(confFile, coding);
             if (confString != null) {
                 final String content = Joiner.on("\n").join(confString);

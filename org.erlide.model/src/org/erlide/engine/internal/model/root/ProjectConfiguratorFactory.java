@@ -9,7 +9,7 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.model.root.OTPProjectConfigurator;
 import org.erlide.engine.model.root.ProjectConfigType;
-import org.erlide.engine.model.root.ProjectConfigurator;
+import org.erlide.engine.model.root.IProjectConfigurator;
 
 public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
     private static IProjectConfiguratorFactory instance;
@@ -25,9 +25,9 @@ public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
     }
 
     @Override
-    public ProjectConfigurator getConfig(final ProjectConfigType configType,
+    public IProjectConfigurator getConfig(final ProjectConfigType configType,
             final IErlProject project) {
-        ProjectConfigurator result = null;
+        IProjectConfigurator result = null;
         final String qualifier = configType.getConfigName();
         switch (configType) {
         case INTERNAL:
@@ -45,9 +45,9 @@ public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
     }
 
     @Override
-    public ProjectConfigurator getConfig(final ProjectConfigType configType,
+    public IProjectConfigurator getConfig(final ProjectConfigType configType,
             final File directory) {
-        ProjectConfigurator result = null;
+        IProjectConfigurator result = null;
         final String qualifier = configType.getConfigName();
         switch (configType) {
         case INTERNAL:

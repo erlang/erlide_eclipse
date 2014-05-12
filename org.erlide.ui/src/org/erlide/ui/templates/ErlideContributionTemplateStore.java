@@ -21,7 +21,7 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
 
     /**
      * Creates a new template store.
-     * 
+     *
      * @param store
      *            the preference store in which to store custom templates under
      *            <code>key</code>
@@ -37,7 +37,7 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
      * Creates a new template store with a context type registry. Only templates
      * that specify a context type contained in the registry will be loaded by
      * this store if the registry is not <code>null</code>.
-     * 
+     *
      * @param registry
      *            a context type registry, or <code>null</code> if all templates
      *            should be loaded
@@ -55,7 +55,7 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
 
     /**
      * Loads the templates contributed via the templates extension point.
-     * 
+     *
      * @throws IOException
      *             {@inheritDoc}
      */
@@ -124,7 +124,7 @@ public class ErlideContributionTemplateStore extends ContributionTemplateStore {
     /**
      * Returns <code>true</code> if a context type id specifies a valid context
      * type or if no context type registry is present.
-     * 
+     *
      * @param contextTypeId
      *            the context type id to look for
      * @return <code>true</code> if the context type specified by the id is

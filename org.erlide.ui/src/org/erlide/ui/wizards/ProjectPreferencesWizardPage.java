@@ -38,7 +38,7 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
 
     /**
      * Constructor inherited from parent
-     * 
+     *
      * @param pageName
      * @param builder
      * @param info
@@ -227,8 +227,7 @@ public abstract class ProjectPreferencesWizardPage extends ErlangWizardPage {
         if (info.getConfigType() != ProjectConfigType.INTERNAL) {
             final String op = info.isExistingProject() ? "editing" : "creating";
             setMessage("Please configure the project by " + op + " "
-                    + info.getConfigType().getConfigName(),
-                    IMessageProvider.INFORMATION);
+                    + info.getConfigType().getConfigName(), IMessageProvider.INFORMATION);
         }
         info.loadFromFile();
         output.setText(info.getOutputDir().toPortableString());

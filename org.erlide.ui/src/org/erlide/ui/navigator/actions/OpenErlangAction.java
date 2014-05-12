@@ -31,7 +31,7 @@ public class OpenErlangAction extends Action {
 
     /**
      * Construct the OpenPropertyAction with the given page.
-     * 
+     *
      * @param p
      *            The page to use as context to open the editor.
      * @param selectionProvider

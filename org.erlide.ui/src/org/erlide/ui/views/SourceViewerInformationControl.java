@@ -42,8 +42,8 @@ import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
  * Source viewer based implementation of
  * {@link org.eclipse.jface.text.IInformationControl}. Displays information in a
  * source viewer.
- * 
- * 
+ *
+ *
  */
 public class SourceViewerInformationControl implements IInformationControl,
         IInformationControlExtension, DisposeListener {
@@ -78,7 +78,7 @@ public class SourceViewerInformationControl implements IInformationControl,
     /**
      * Creates a source viewer information control with the given shell as
      * parent and the given font.
-     * 
+     *
      * @param parent
      *            the parent shell
      * @param symbolicFontName
@@ -95,7 +95,7 @@ public class SourceViewerInformationControl implements IInformationControl,
      * given styles are applied to the created styled text widget. The text
      * widget will be initialized with the given font. The status field will
      * contain the given text or be hidden.
-     * 
+     *
      * @param parent
      *            the parent shell
      * @param shellStyle

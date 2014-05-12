@@ -60,9 +60,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.eventbus.Subscribe;
 
 /**
- * 
- * 
- * 
+ *
+ *
+ *
  * @author Vlad Dumitrescu
  */
 public class ProcessListView extends ViewPart {

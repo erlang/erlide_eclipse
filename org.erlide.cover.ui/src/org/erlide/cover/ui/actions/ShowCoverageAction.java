@@ -17,9 +17,9 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Showing annotations from context menu for specified objects
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class ShowCoverageAction extends CoverageAction {
 
@@ -86,7 +86,6 @@ public class ShowCoverageAction extends CoverageAction {
                 return true;
             }
         } catch (final Exception e) {
-            // TODO
             ErlLogger.error(e);
         }
         return false;

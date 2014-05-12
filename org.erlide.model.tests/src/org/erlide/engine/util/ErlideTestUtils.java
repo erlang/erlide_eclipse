@@ -229,8 +229,6 @@ public class ErlideTestUtils {
         buildPaths(root, project, Lists.newArrayList(ebinDir));
         prefs.setOutputDir(ebinDir);
 
-        // TODO project.setProperties(prefs);
-
         projects.add(erlProject);
         return erlProject;
     }

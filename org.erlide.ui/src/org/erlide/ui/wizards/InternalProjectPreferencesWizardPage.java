@@ -90,22 +90,28 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
             if (src.contains("test")) {
                 src.remove("test");
                 final List<String> tst = Lists.newArrayList("test");
-                final String[] tsts = dirs(tst, loc);
-                test.setText(PreferencesUtils.packArray(tsts));
+                final List<String> tsts = dirs(tst, loc);
+                test.setText(PreferencesUtils.packList(tsts));
             }
-            final String[] srcs = dirs(src, loc);
+            final List<String> srcs = dirs(src, loc);
+            if (loc.append("src").toFile().exists() && !srcs.contains("src")) {
+                srcs.add("src");
+            }
 
             final List<String> inc = search("hrl", dir);
-            final String[] incs = dirs(inc, loc);
+            final List<String> incs = dirs(inc, loc);
+            if (loc.append("include").toFile().exists() && !incs.contains("include")) {
+                incs.add("include");
+            }
 
-            source.setText(PreferencesUtils.packArray(srcs));
-            include.setText(PreferencesUtils.packArray(incs));
+            source.setText(PreferencesUtils.packList(srcs));
+            include.setText(PreferencesUtils.packList(incs));
         }
     }
 
-    private String[] dirs(final List<String> list, final IPath ref) {
+    private List<String> dirs(final List<String> list, final IPath ref) {
         final int n = ref.segmentCount();
-        final List<String> res = Lists.newArrayList();
+        final List<String> result = Lists.newArrayList();
         for (final Iterator<String> iter = list.iterator(); iter.hasNext();) {
             final String element = iter.next();
             IPath p = new Path(element);
@@ -114,11 +120,11 @@ public class InternalProjectPreferencesWizardPage extends ProjectPreferencesWiza
             if ("".equals(ps)) {
                 ps = ".";
             }
-            if (res.indexOf(ps) < 0) {
-                res.add(ps);
+            if (result.indexOf(ps) < 0) {
+                result.add(ps);
             }
         }
-        return res.toArray(new String[res.size()]);
+        return result;
     }
 
     private List<String> search(final String ext, final File file) {

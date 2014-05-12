@@ -79,8 +79,8 @@ class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclaration>,
     }
 
     private def getAcceptMethodBody(MutableMethodDeclaration it) {
-        '''«IF !returnType.void»return «ENDIF»«parameters.head.simpleName».visit«declaringType.simpleName»(this«parameters.toList.
-            subList(1, parameters.size).join(', ', ', ', '')[simpleName]»);'''
+        '''Â«IF !returnType.voidÂ»return Â«ENDIFÂ»Â«parameters.head.simpleNameÂ».visitÂ«declaringType.simpleNameÂ»(thisÂ«parameters.toList.
+            subList(1, parameters.size).join(', ', ', ', '')[simpleName]Â»);'''
     }
 
     private def addVisitMethods(
@@ -106,8 +106,8 @@ class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclaration>,
                         ]
                 } else {
                     method.setBody [
-                        '''«IF !original.returnType.void»return «ENDIF»visit«(inheritor.extendedClass.type as TypeDeclaration).
-                            simpleName»(«method.parameters.map[simpleName].join(', ')»);'''
+                        '''Â«IF !original.returnType.voidÂ»return Â«ENDIFÂ»visitÂ«(inheritor.extendedClass.type as TypeDeclaration).
+                            simpleNameÂ»(Â«method.parameters.map[simpleName].join(', ')Â»);'''
                     ]
                 }
             ]

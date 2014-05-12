@@ -67,8 +67,9 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
                     openable.open(null);
                 }
                 final IParent parent = (IParent) parentElement;
-                final Collection<IErlElement> children = parent
-                        .getChildrenOfKind(ErlElementKind.EXTERNAL);
+                final Collection<IErlElement> children = parent.getChildrenOfKind(
+                        ErlElementKind.EXTERNAL_ROOT, ErlElementKind.EXTERNAL_APP,
+                        ErlElementKind.EXTERNAL_FOLDER);
                 return children.toArray();
             }
         } catch (final ErlModelException e) {
@@ -125,8 +126,9 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
                 }
             }
             final IParent parent = (IParent) element;
-            final boolean result = parent.hasChildrenOfKind(ErlElementKind.EXTERNAL)
-                    || parent.hasChildrenOfKind(ErlElementKind.MODULE);
+            final boolean result = parent.hasChildrenOfKind(ErlElementKind.EXTERNAL_ROOT,
+                    ErlElementKind.EXTERNAL_APP, ErlElementKind.EXTERNAL_FOLDER,
+                    ErlElementKind.MODULE);
             if (clock.elapsed(TimeUnit.MILLISECONDS) > 100) {
                 ErlLogger.debug("TIME open " + element.getClass() + " " + element + "  "
                         + clock.elapsed(TimeUnit.MILLISECONDS) + " ms");

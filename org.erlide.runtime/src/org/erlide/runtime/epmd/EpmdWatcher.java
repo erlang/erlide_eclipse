@@ -109,7 +109,7 @@ public final class EpmdWatcher {
 
     /**
      * Register interest in all changes of node status
-     * 
+     *
      * @param listener
      */
     public void addEpmdListener(final IEpmdListener listener) {
@@ -120,7 +120,7 @@ public final class EpmdWatcher {
 
     /**
      * Unregister interest in all changes of node status
-     * 
+     *
      * @param listener
      */
     public void removeEpmdListener(final IEpmdListener listener) {
@@ -158,7 +158,7 @@ public final class EpmdWatcher {
 
     /**
      * Register interest in the status of a certain node.
-     * 
+     *
      * @param node
      * @param monitor
      */
@@ -176,7 +176,7 @@ public final class EpmdWatcher {
 
     /**
      * Unregister interest in the status of a certain node.
-     * 
+     *
      * @param node
      * @param monitor
      */

@@ -78,7 +78,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 
     /**
      * Transforms the HTML text from the reader to formatted text.
-     * 
+     *
      * @param reader
      *            the reader
      * @param presentation

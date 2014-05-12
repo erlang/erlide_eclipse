@@ -26,6 +26,8 @@ public interface IBackend extends IShutdownCallback, IDisposable, IPluginCodeLoa
 
     boolean isRunning();
 
+    boolean isDebugging();
+
     IBackendShell getShell(String string);
 
     void initialize(CodeContext context, Collection<ICodeBundle> collection);

@@ -22,8 +22,8 @@ import org.erlide.ui.views.processlist.ProcessListView;
 
 /**
  * The erlang perspective.
- * 
- * 
+ *
+ *
  * @author Eric Merritt [cyberlync at yahoo dot com]
  */
 public class ErlangPerspective implements IPerspectiveFactory {
@@ -45,7 +45,7 @@ public class ErlangPerspective implements IPerspectiveFactory {
 
     /**
      * The action objects Define the actions
-     * 
+     *
      * @param layout
      */
     private void defineActions(final IPageLayout layout) {
@@ -57,7 +57,7 @@ public class ErlangPerspective implements IPerspectiveFactory {
 
     /**
      * Define the layout of the editor and views
-     * 
+     *
      * @param layout
      *            the layout object
      */

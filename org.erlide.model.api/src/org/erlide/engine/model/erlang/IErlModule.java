@@ -47,7 +47,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable, ISourceUnit
      * <code>null</code> if there is no element other than the compilation unit
      * itself at the given position, or if the given position is not within the
      * source range of this compilation unit.
-     * 
+     *
      * @param position
      *            a source position inside the compilation unit
      * @return the innermost Erlang element enclosing a given source position or
@@ -62,7 +62,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable, ISourceUnit
 
     /**
      * Is this module a real one, or an include file?
-     * 
+     *
      * @return true if .erl, false if .hrl
      */
     ModuleKind getModuleKind();
@@ -100,7 +100,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable, ISourceUnit
 
     /**
      * Returns the transitive closure of modules that include this one.
-     * 
+     *
      * @throws CoreException
      **/
     Set<IErlModule> getAllDependentModules() throws CoreException;
@@ -108,7 +108,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable, ISourceUnit
     /**
      * Resets parser so that the next parse will be a full parse, possibly
      * updating the parser cache
-     * 
+     *
      * @param newText
      * @throws ErlModelException
      */
@@ -116,7 +116,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable, ISourceUnit
 
     /**
      * Get the module name without extension
-     * 
+     *
      * @return name as string
      */
     String getModuleName();

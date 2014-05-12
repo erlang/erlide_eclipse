@@ -98,7 +98,7 @@ public class ProcessStatus {
       } catch (final Throwable _t) {
         if (_t instanceof Exception) {
           final Exception e = (Exception)_t;
-          ErlLogger.error((">>>>>>> bad term in system status: " + input));
+          ErlLogger.error(("»»> bad term in system status: " + input));
         } else {
           throw Exceptions.sneakyThrow(_t);
         }

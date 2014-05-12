@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -23,7 +23,7 @@ public interface IElementChangedListener {
      * Notifies that one or more attributes of one or more Erlang elements have
      * changed. The specific details of the change are described by the given
      * event.
-     * 
+     *
      * @param event
      *            the change event
      */

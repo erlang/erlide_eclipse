@@ -1,19 +1,19 @@
 /*
  * %CopyrightBegin%
- * 
+ *
  * Copyright Ericsson AB 2000-2009. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
@@ -38,10 +38,10 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable, Clone
 
     /**
      * Create a unique Erlang ref belonging to the local node.
-     * 
+     *
      * @param self
      *            the local node.
-     * 
+     *
      * @deprecated use OtpLocalNode:createRef() instead
      */
     @Deprecated
@@ -56,10 +56,10 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable, Clone
     /**
      * Create an Erlang ref from a stream containing a ref encoded in Erlang
      * external format.
-     * 
+     *
      * @param buf
      *            the stream containing the encoded ref.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the buffer does not contain a valid external
      *                representation of an Erlang ref.
@@ -75,13 +75,13 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable, Clone
 
     /**
      * Create an old style Erlang ref from its components.
-     * 
+     *
      * @param node
      *            the nodename.
-     * 
+     *
      * @param id
      *            an arbitrary number. Only the low order 18 bits will be used.
-     * 
+     *
      * @param creation
      *            another arbitrary number. Only the low order 2 bits will be
      *            used.
@@ -95,16 +95,16 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable, Clone
 
     /**
      * Create a new style Erlang ref from its components.
-     * 
+     *
      * @param node
      *            the nodename.
-     * 
+     *
      * @param ids
      *            an array of arbitrary numbers. Only the low order 18 bits of
      *            the first number will be used. If the array contains only one
      *            number, an old style ref will be written instead. At most
      *            three numbers will be read from the array.
-     * 
+     *
      * @param creation
      *            another arbitrary number. Only the low order 2 bits will be
      *            used.
@@ -130,7 +130,7 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable, Clone
     /**
      * Get the id number from the ref. Old style refs have only one id number.
      * If this is a new style ref, the first id number is returned.
-     * 
+     *
      * @return the id number from the ref.
      */
     public int id() {
@@ -141,7 +141,7 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable, Clone
      * Get the array of id numbers from the ref. If this is an old style ref,
      * the array is of length 1. If this is a new style ref, the array has
      * length 3.
-     * 
+     *
      * @return the array of id numbers from the ref.
      */
     public int[] ids() {
@@ -150,7 +150,7 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable, Clone
 
     /**
      * Determine whether this is a new style ref.
-     * 
+     *
      * @return true if this ref is a new style ref, false otherwise.
      */
     public boolean isNewRef() {
@@ -159,7 +159,7 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable, Clone
 
     /**
      * Get the creation number from the ref.
-     * 
+     *
      * @return the creation number from the ref.
      */
     public int creation() {
@@ -168,7 +168,7 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable, Clone
 
     /**
      * Get the node name from the ref.
-     * 
+     *
      * @return the node name from the ref.
      */
     public String node() {
@@ -178,7 +178,7 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable, Clone
     /**
      * Get the string representation of the ref. Erlang refs are printed as
      * #Ref&lt;node.id&gt;
-     * 
+     *
      * @return the string representation of the ref.
      */
     @Override
@@ -196,7 +196,7 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable, Clone
 
     /**
      * Convert this ref to the equivalent Erlang external representation.
-     * 
+     *
      * @param buf
      *            an output stream to which the encoded ref should be written.
      */
@@ -209,10 +209,10 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable, Clone
      * Determine if two refs are equal. Refs are equal if their components are
      * equal. New refs and old refs are considered equal if the node, creation
      * and first id numnber are equal.
-     * 
+     *
      * @param o
      *            the other ref to compare to.
-     * 
+     *
      * @return true if the refs are equal, false otherwise.
      */
     @Override
@@ -236,7 +236,7 @@ public class OtpErlangRef extends OtpErlangObject implements Serializable, Clone
     /**
      * Compute the hashCode value for a given ref. This function is compatible
      * with equal.
-     * 
+     *
      * @return the hashCode of the node.
      **/
 

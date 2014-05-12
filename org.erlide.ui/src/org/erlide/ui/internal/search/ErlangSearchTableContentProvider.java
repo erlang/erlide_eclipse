@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.erlide.ui.internal.search;
 

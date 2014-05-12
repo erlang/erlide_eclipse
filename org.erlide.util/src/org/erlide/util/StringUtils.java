@@ -27,9 +27,9 @@ public final class StringUtils {
 
     /**
      * Given a string remove all from the rightmost '.' onwards.
-     * 
+     *
      * E.g.: bbb.t would return bbb
-     * 
+     *
      * If it has no '.', returns the original string unchanged.
      */
     public static String stripExtension(final String input) {
@@ -93,7 +93,7 @@ public final class StringUtils {
 
     /**
      * Changes all backward slashes (\) for forward slashes (/)
-     * 
+     *
      * @return the replaced string
      */
     public static String replaceAllSlashes(final String string) {
@@ -121,11 +121,11 @@ public final class StringUtils {
 
     /**
      * Splits the given string in a list where each element is a line.
-     * 
+     *
      * @param string
      *            string to be splitted.
      * @return list of strings where each string is a line.
-     * 
+     *
      * @note the new line characters are also added to the returned string.
      */
     public static List<String> splitLines(final String string) {
@@ -252,7 +252,7 @@ public final class StringUtils {
 
     /**
      * Adds a char to an array of chars and returns the new array.
-     * 
+     *
      * @param c
      *            The chars to where the new char should be appended
      * @param toAdd

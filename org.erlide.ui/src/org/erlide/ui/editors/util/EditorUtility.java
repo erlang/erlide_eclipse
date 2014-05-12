@@ -53,7 +53,7 @@ import com.google.common.collect.Lists;
 
 /**
  * A number of routines for working with ErlElements in editors.
- * 
+ *
  * Use 'isOpenInEditor' to test if an element is already open in a editor Use
  * 'openInEditor' to force opening an element in a editor With 'getWorkingCopy'
  * you get the working copy (element in the editor) of an element
@@ -69,7 +69,7 @@ public class EditorUtility {
 
     /**
      * Tests if a CU is currently shown in an editor
-     * 
+     *
      * @return the IEditorPart if shown, null if element is not open in an
      *         editor
      */
@@ -102,7 +102,7 @@ public class EditorUtility {
      * Opens an Erlang editor for an element such as <code>IErlElement</code>,
      * <code>IFile</code>, or <code>IStorage</code>. The editor is activated by
      * default.
-     * 
+     *
      * @return the IEditorPart or null if wrong element type or opening failed
      */
     public static IEditorPart openInEditor(final Object inputElement)
@@ -112,7 +112,7 @@ public class EditorUtility {
 
     /**
      * Opens an Erlang editor for an element (IErlElement, IFile, IStorage...)
-     * 
+     *
      * @return the IEditorPart or null if wrong element type or opening failed
      */
     public static IEditorPart openInEditor(final Object inputElement,
@@ -329,7 +329,7 @@ public class EditorUtility {
     /**
      * Maps the localized modifier name to a code in the same manner as
      * #findModifier.
-     * 
+     *
      * @param modifierName
      *            the modifier name
      * @return the SWT modifier bit, or <code>0</code> if no match was found

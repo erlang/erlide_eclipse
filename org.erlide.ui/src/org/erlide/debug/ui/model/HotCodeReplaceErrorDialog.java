@@ -42,7 +42,7 @@ public class HotCodeReplaceErrorDialog extends ErrorDialog {
     /**
      * Creates a new dialog which can terminate, disconnect or restart the given
      * debug target.
-     * 
+     *
      * @param target
      *            the debug target
      * @see ErrorDialogWithToggle#ErrorDialogWithToggle(Shell, String, String,

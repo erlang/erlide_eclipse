@@ -43,7 +43,7 @@ public class ImageDescriptorRegistry {
     /**
      * Creates a new image descriptor registry for the given display. All images
      * managed by this registry will be disposed when the display gets disposed.
-     * 
+     *
      * @param display
      *            the display the images managed by this registry are allocated
      *            for
@@ -56,7 +56,7 @@ public class ImageDescriptorRegistry {
 
     /**
      * Returns the image assiciated with the given image descriptor.
-     * 
+     *
      * @param descriptor
      *            the image descriptor for which the registry manages an image
      * @return the image associated with the image descriptor or

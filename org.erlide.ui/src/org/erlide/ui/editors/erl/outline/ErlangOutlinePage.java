@@ -77,9 +77,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
- * 
+ *
  * @author Vlad Dumitrescu
- * 
+ *
  */
 
 public class ErlangOutlinePage extends ContentOutlinePage implements
@@ -121,11 +121,11 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     }
 
     /**
-     * 
+     *
      * @param documentProvider
-     * 
+     *
      * @param editor
-     * 
+     *
      */
     public ErlangOutlinePage(final ErlangEditor editor) {
         // myDocProvider = documentProvider;
@@ -134,9 +134,9 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     }
 
     /**
-     * 
+     *
      * @param editorInput
-     * 
+     *
      */
     public void setInput(final IEditorInput editorInput) {
         fModule = null;
@@ -389,7 +389,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     /**
      * This action toggles whether this Erlang Outline page links its selection
      * to the active editor.
-     * 
+     *
      * @since 3.0
      */
     public class ToggleLinkingAction extends Action {

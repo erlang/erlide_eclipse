@@ -1,6 +1,6 @@
 package org.erlide.engine.model.root;
 
-public class OTPProjectConfigurator implements ProjectConfigurator {
+public class OTPProjectConfigurator implements IProjectConfigurator {
 
     @Override
     public ErlangProjectProperties getConfiguration() {

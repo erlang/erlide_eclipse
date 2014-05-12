@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -113,7 +113,7 @@ public class SelectionButtonDialogField extends DialogField {
     /**
      * Returns the selection button widget. When called the first time, the
      * widget will be created.
-     * 
+     *
      * @param group
      *            The parent composite when called the first time, or
      *            <code>null</code> after.

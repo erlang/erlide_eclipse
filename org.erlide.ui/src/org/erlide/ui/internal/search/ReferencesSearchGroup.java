@@ -32,11 +32,11 @@ import org.erlide.ui.editors.erl.AbstractErlangEditor;
 /**
  * Action group that adds the search for references actions to a context menu
  * and the global menu bar.
- * 
+ *
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class ReferencesSearchGroup extends ActionGroup {
@@ -58,7 +58,7 @@ public class ReferencesSearchGroup extends ActionGroup {
      * Creates a new <code>ReferencesSearchGroup</code>. The group requires that
      * the selection provided by the site's selection provider is of type <code>
      * org.eclipse.jface.viewers.IStructuredSelection</code> .
-     * 
+     *
      * @param site
      *            the view part that owns this action group
      */
@@ -89,7 +89,7 @@ public class ReferencesSearchGroup extends ActionGroup {
     /**
      * Note: This constructor is for internal use only. Clients should not call
      * this constructor.
-     * 
+     *
      * @param editor
      *            the Erlang editor
      */
@@ -125,7 +125,7 @@ public class ReferencesSearchGroup extends ActionGroup {
     /**
      * Note: this method is for internal use only. Clients should not call this
      * method.
-     * 
+     *
      * @return the menu label
      */
     protected String getName() {

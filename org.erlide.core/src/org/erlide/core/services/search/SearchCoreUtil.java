@@ -88,8 +88,9 @@ public class SearchCoreUtil {
     public static void addExternalModules(final IParent element,
             final ErlSearchScope result, final Set<String> externalModulePaths,
             final boolean addExternals, final boolean addOtp) throws ErlModelException {
-        final Collection<IErlElement> externals = element
-                .getChildrenOfKind(ErlElementKind.EXTERNAL);
+        final Collection<IErlElement> externals = element.getChildrenOfKind(
+                ErlElementKind.EXTERNAL_ROOT, ErlElementKind.EXTERNAL_APP,
+                ErlElementKind.EXTERNAL_FOLDER);
         for (final IErlElement external : externals) {
             external.accept(new IErlElementVisitor() {
 

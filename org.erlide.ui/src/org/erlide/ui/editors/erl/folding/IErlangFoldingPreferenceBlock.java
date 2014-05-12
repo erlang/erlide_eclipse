@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.erlide.ui.editors.erl.folding;
 
@@ -8,14 +8,14 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * @author jakob
- * 
+ *
  */
 public interface IErlangFoldingPreferenceBlock {
 
     /**
      * Creates the control that will be displayed on the Erlang &gt; Editor &gt;
      * Folding preference page.
-     * 
+     *
      * @param parent
      *            the parent composite to which to add the preferences control
      * @return the control that was added to <code>parent</code>

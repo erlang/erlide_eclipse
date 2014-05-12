@@ -17,7 +17,7 @@ import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
 
 /**
  * Browser input for Edoc hover.
- * 
+ *
  * @since 3.4
  */
 public class ErlBrowserInformationControlInput extends BrowserInformationControlInput {
@@ -31,7 +31,7 @@ public class ErlBrowserInformationControlInput extends BrowserInformationControl
 
     /**
      * Creates a new browser information control input.
-     * 
+     *
      * @param previous
      *            previous input, or <code>null</code> if none available
      * @param element

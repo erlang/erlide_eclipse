@@ -29,7 +29,7 @@ import org.eclipse.ui.IWorkbenchSite;
  * Action that dispatches the <code>IAction#run()</code> and the
  * <code>ISelectionChangedListener#selectionChanged</code> according to the type
  * of the selection.
- * 
+ *
  * <ul>
  * <li>if selection is of type <code>ITextSelection</code> then
  * <code>run(ITextSelection)</code> and
@@ -40,11 +40,11 @@ import org.eclipse.ui.IWorkbenchSite;
  * <li>default is to call <code>run(ISelection)</code> and <code>
  *  selectionChanged(ISelection)</code> .</li>
  * </ul>
- * 
+ *
  * <p>
  * Note: This class is not intended to be subclassed outside the JDT UI plug-in.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public abstract class SelectionDispatchAction extends Action implements
@@ -58,7 +58,7 @@ public abstract class SelectionDispatchAction extends Action implements
      * <p>
      * Configure the action later using the set methods.
      * </p>
-     * 
+     *
      * @param site
      *            the site this action is working on
      */
@@ -70,7 +70,7 @@ public abstract class SelectionDispatchAction extends Action implements
 
     /**
      * Returns the site owning this action.
-     * 
+     *
      * @return the site owning this action
      */
     public IWorkbenchSite getSite() {
@@ -79,7 +79,7 @@ public abstract class SelectionDispatchAction extends Action implements
 
     /**
      * Returns the selection provided by the site owning this action.
-     * 
+     *
      * @return the site's selection
      */
     public ISelection getSelection() {
@@ -91,7 +91,7 @@ public abstract class SelectionDispatchAction extends Action implements
 
     /**
      * Returns the shell provided by the site owning this action.
-     * 
+     *
      * @return the site's shell
      */
     public Shell getShell() {
@@ -100,7 +100,7 @@ public abstract class SelectionDispatchAction extends Action implements
 
     /**
      * Returns the selection provider managed by the site owning this action.
-     * 
+     *
      * @return the site's selection provider
      */
     public ISelectionProvider getSelectionProvider() {
@@ -115,7 +115,7 @@ public abstract class SelectionDispatchAction extends Action implements
      * This default implementation calls one of the
      * <code>selectionChanged</code> methods depending on the type of the passed
      * selection.
-     * 
+     *
      * @param selection
      *            the selection this action is working on
      */
@@ -127,7 +127,7 @@ public abstract class SelectionDispatchAction extends Action implements
      * Notifies this action that the given structured selection has changed.
      * This default implementation calls
      * <code>selectionChanged(ISelection selection)</code>.
-     * 
+     *
      * @param selection
      *            the new selection
      */
@@ -138,7 +138,7 @@ public abstract class SelectionDispatchAction extends Action implements
     /**
      * Executes this actions with the given structured selection. This default
      * implementation calls <code>run(ISelection selection)</code>.
-     * 
+     *
      * @param selection
      *            the selection
      */
@@ -150,7 +150,7 @@ public abstract class SelectionDispatchAction extends Action implements
      * Notifies this action that the given text selection has changed. This
      * default implementation calls
      * <code>selectionChanged(ISelection selection)</code>.
-     * 
+     *
      * @param selection
      *            the new selection
      */
@@ -161,7 +161,7 @@ public abstract class SelectionDispatchAction extends Action implements
     /**
      * Executes this actions with the given text selection. This default
      * implementation calls <code>run(ISelection selection)</code>.
-     * 
+     *
      * @param selection
      *            the selection
      */
@@ -172,7 +172,7 @@ public abstract class SelectionDispatchAction extends Action implements
     /**
      * Notifies this action that the given selection has changed. This default
      * implementation sets the action's enablement state to <code>false</code>.
-     * 
+     *
      * @param selection
      *            the new selection
      */
@@ -183,7 +183,7 @@ public abstract class SelectionDispatchAction extends Action implements
     /**
      * Executes this actions with the given selection. This default
      * implementation does nothing.
-     * 
+     *
      * @param selection
      *            the selection
      */

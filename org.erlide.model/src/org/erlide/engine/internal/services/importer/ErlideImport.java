@@ -15,7 +15,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
  * @author jakob
- * 
+ *
  */
 public class ErlideImport implements ImportService {
 
@@ -27,11 +27,11 @@ public class ErlideImport implements ImportService {
 
     /**
      * Filter import parameters for newly imported erlang project
-     * 
+     *
      * @param prefix
      * @param importSources
      * @param prefix
-     * 
+     *
      * @return
      */
     @Override

@@ -88,7 +88,7 @@ public class ErlangBreakpointPropertiesAction implements IObjectActionDelegate {
 
     /**
      * Allows the underlying breakpoint for the properties page to be set
-     * 
+     *
      * @param breakpoint
      */
     public void setBreakpoint(final IErlangBreakpoint breakpoint) {

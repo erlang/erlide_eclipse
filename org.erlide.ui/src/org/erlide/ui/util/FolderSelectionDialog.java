@@ -33,7 +33,7 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
 /**
-  */
+ */
 public class FolderSelectionDialog extends ElementTreeSelectionDialog implements
         ISelectionChangedListener {
 

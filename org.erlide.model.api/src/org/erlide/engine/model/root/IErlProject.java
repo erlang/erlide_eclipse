@@ -47,7 +47,7 @@ import org.erlide.runtime.runtimeinfo.RuntimeVersion;
  * one of these handles can be created via
  * <code>ErlangCore.create(project)</code>.
  * </p>
- * 
+ *
  * @see ErlangCore#createRoot(org.eclipse.core.resources.IProject)
  */
 public interface IErlProject extends IParent, IErlElement, IOpenable {

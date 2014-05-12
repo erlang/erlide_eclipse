@@ -43,7 +43,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
 
     @Override
     public ErlElementKind getKind() {
-        return ErlElementKind.EXTERNAL;
+        return ErlElementKind.EXTERNAL_ROOT;
     }
 
     @Override
@@ -168,11 +168,6 @@ public class ErlExternalReferenceEntryList extends Openable implements
     @Override
     public String getFilePath() {
         return null;
-    }
-
-    @Override
-    public String getLabelString() {
-        return getName();
     }
 
     public IRpcSite getBackend() {

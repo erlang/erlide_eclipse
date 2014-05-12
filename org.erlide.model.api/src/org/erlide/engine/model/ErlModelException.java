@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.IStatus;
  * class are automatically created by the Erlang model when problems arise, so
  * there is generally no need for clients to create instances.
  * </p>
- * 
+ *
  * @see IErlModelStatus
  * @see ErlModelStatusConstants
  */
@@ -37,7 +37,7 @@ public class ErlModelException extends CoreException {
 
     /**
      * Creates a Erlang model exception for a given <code>CoreException</code>.
-     * 
+     *
      * @param exception
      *            the <code>CoreException</code>
      */
@@ -48,7 +48,7 @@ public class ErlModelException extends CoreException {
 
     /**
      * Creates a Erlang model exception for an Erlang-specific status object.
-     * 
+     *
      * @param status
      *            the Erlang-specific status object
      */
@@ -62,7 +62,7 @@ public class ErlModelException extends CoreException {
 
     /**
      * Returns the underlying <code>Throwable</code> that caused the failure.
-     * 
+     *
      * @return the wrappered <code>Throwable</code>, or <code>null</code> if the
      *         direct case of the failure was at the Erlang model layer
      */
@@ -76,7 +76,7 @@ public class ErlModelException extends CoreException {
     /**
      * Returns the Erlang model status object for this exception. Equivalent to
      * <code>(IErlModelStatus) getStatus()</code>.
-     * 
+     *
      * @return a status object
      */
     public IErlModelStatus getErlangModelStatus() {
@@ -92,7 +92,7 @@ public class ErlModelException extends CoreException {
      * does not exist. Such exceptions have a status with a code of
      * <code>IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>. This is a
      * convenience method.
-     * 
+     *
      * @return <code>true</code> if this exception indicates that a Erlang model
      *         element does not exist
      * @see IErlModelStatus#isDoesNotExist()
@@ -105,7 +105,7 @@ public class ErlModelException extends CoreException {
 
     /**
      * Prints this exception's stack trace to the given print stream.
-     * 
+     *
      * @param output
      *            the print stream
      */
@@ -123,7 +123,7 @@ public class ErlModelException extends CoreException {
 
     /**
      * Prints this exception's stack trace to the given print writer.
-     * 
+     *
      * @param output
      *            the print writer
      */

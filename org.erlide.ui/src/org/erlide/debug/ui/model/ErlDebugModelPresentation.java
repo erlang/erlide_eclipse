@@ -30,7 +30,7 @@ import org.erlide.util.ErlLogger;
 
 /**
  * @author jakob
- * 
+ *
  */
 public class ErlDebugModelPresentation extends LabelProvider implements
         IDebugModelPresentation {

@@ -110,7 +110,7 @@ public class ErlangLineBreakpointPropertyPage extends ErlangBreakpointPropertyPa
 
     /**
      * Create the condition editor and associated editors.
-     * 
+     *
      * @see org.eclipse.jdt.internal.debug.ui.propertypages.JavaBreakpointPage#createTypeSpecificEditors(org.eclipse.swt.widgets.Composite)
      */
     @Override
@@ -193,7 +193,7 @@ public class ErlangLineBreakpointPropertyPage extends ErlangBreakpointPropertyPa
     /**
      * Creates the controls that allow the user to specify the breakpoint's
      * condition
-     * 
+     *
      * @param parent
      *            the composite in which the condition editor should be created
      * @throws CoreException
@@ -251,7 +251,7 @@ public class ErlangLineBreakpointPropertyPage extends ErlangBreakpointPropertyPa
 
     /**
      * Sets the enabled state of the condition editing controls.
-     * 
+     *
      * @param enabled
      */
     void setConditionEnabled(final boolean enabled) {

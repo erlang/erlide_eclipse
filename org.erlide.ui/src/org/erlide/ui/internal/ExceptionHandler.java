@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -38,7 +38,7 @@ public class ExceptionHandler {
     /**
      * Handles the given <code>CoreException</code>. The workbench shell is used
      * as a parent for the dialog window.
-     * 
+     *
      * @param e
      *            the <code>CoreException</code> to be handled
      * @param title
@@ -53,7 +53,7 @@ public class ExceptionHandler {
 
     /**
      * Handles the given <code>CoreException</code>.
-     * 
+     *
      * @param e
      *            the <code>CoreException</code> to be handled
      * @param parent
@@ -71,7 +71,7 @@ public class ExceptionHandler {
     /**
      * Handles the given <code>InvocationTargetException</code>. The workbench
      * shell is used as a parent for the dialog window.
-     * 
+     *
      * @param e
      *            the <code>InvocationTargetException</code> to be handled
      * @param title
@@ -86,7 +86,7 @@ public class ExceptionHandler {
 
     /**
      * Handles the given <code>InvocationTargetException</code>.
-     * 
+     *
      * @param e
      *            the <code>InvocationTargetException</code> to be handled
      * @param parent

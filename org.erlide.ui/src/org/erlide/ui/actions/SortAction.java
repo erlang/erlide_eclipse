@@ -77,8 +77,8 @@ public class SortAction extends Action {
     }
 
     /**
-	 * 
-	 */
+     *
+     */
     private void setComparator() {
         if (fSorted) {
             if (fSortedHow == ErlElementSorter.SORT_ON_EXPORT) {

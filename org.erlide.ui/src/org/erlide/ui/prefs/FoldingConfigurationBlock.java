@@ -146,7 +146,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 
     /**
      * Creates page for folding preferences.
-     * 
+     *
      * @param parent
      *            the parent composite
      * @return the control for the preference page

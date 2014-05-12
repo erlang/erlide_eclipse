@@ -58,7 +58,7 @@ import com.google.common.collect.Lists;
 
 /**
  * @author jakob
- * 
+ *
  */
 public final class ErlParser implements ParserService {
 
@@ -128,7 +128,7 @@ public final class ErlParser implements ParserService {
                     comments);
             module.setComments(moduleComments);
         }
-        fixFunctionComments(module);
+        attachFunctionComments(module);
         String cached = "reparsed";
         if (res != null && res.arity() > 2) {
             final OtpErlangObject res2 = res.elementAt(2);
@@ -173,15 +173,16 @@ public final class ErlParser implements ParserService {
     }
 
     /**
-     * fix function documentation with heuristics: if a comment is within 3
-     * lines before function, or a sequence of comment, -spec, comment, then
-     * they should be added to function documentation
-     * 
-     * TODO: check that -spec is actually relevant to the function
-     * 
+     * attach local function documentation with heuristics: if a comment is
+     * within 3 lines before function, or a sequence of comment, -spec, comment,
+     * then they should be added to function documentation
+     *
+     * If any typespec is available for the function (wherever it is located),
+     * then it should be attached too.
+     *
      * @param module
      */
-    private void fixFunctionComments(final IErlModule module) {
+    private void attachFunctionComments(final IErlModule module) {
         // TODO rewrite in Erlang? would be so much less code...
         try {
             final Collection<IErlComment> comments = module.getComments();
@@ -208,9 +209,9 @@ public final class ErlParser implements ParserService {
         if (m instanceof IErlFunction) {
             final IErlFunction function = (IErlFunction) m;
             final LinkedList<IErlMember> comments = Lists.newLinkedList();
-            int j = considerPrevious(i, all, comments);
-            j = considerPrevious(j, all, comments);
-            j = considerPrevious(j, all, comments);
+            int j = considerPrevious(i, all, comments, function);
+            j = considerPrevious(j, all, comments, function);
+            j = considerPrevious(j, all, comments, function);
             if (!comments.isEmpty()) {
                 function.setComments(comments);
             }
@@ -218,16 +219,24 @@ public final class ErlParser implements ParserService {
     }
 
     private int considerPrevious(final int i, final List<IErlMember> all,
-            final LinkedList<IErlMember> comments) {
+            final LinkedList<IErlMember> comments, final IErlFunction function) {
         final int j = i - 1;
         if (j > 0) {
             final IErlMember member = all.get(i);
             final IErlMember prevMember = all.get(j);
-            if (prevMember instanceof IErlComment
-                    || prevMember instanceof IErlTypespec) {
+            if (prevMember instanceof IErlComment) {
                 if (prevMember.getLineEnd() + FUNCTION_COMMENT_THRESHOLD >= member
                         .getLineStart()) {
                     comments.addFirst(prevMember);
+                }
+            } else if (prevMember instanceof IErlTypespec) {
+                final IErlTypespec spec = (IErlTypespec) prevMember;
+
+                if (spec.getName().equals(function.getName())
+                        && spec.getArity() == function.getArity()
+                        && prevMember.getLineEnd() + FUNCTION_COMMENT_THRESHOLD >= member
+                                .getLineStart()) {
+                    function.setTypespec(spec);
                 }
             } else {
                 return -1;
@@ -250,7 +259,7 @@ public final class ErlParser implements ParserService {
 
     /**
      * create an IErlComment from a token record
-     * 
+     *
      * @param IErlModule
      *            module containing comment
      * @param OtpErlangTuple
@@ -293,7 +302,7 @@ public final class ErlParser implements ParserService {
 
     /**
      * create an IErlMember from a tuple from noparse
-     * 
+     *
      * @param el
      *            the tuple, either function or attribute
      * @return
@@ -387,8 +396,8 @@ public final class ErlParser implements ParserService {
      * @param clause
      *            -record(clause, {pos, name, args, head, code, name_pos}).
      * @return ErlFunctionClause
-     * 
-     * 
+     *
+     *
      */
     private ErlFunctionClause makeErlFunctionClause(final ErlFunction f,
             final int i, final OtpErlangTuple clause) {
@@ -433,7 +442,7 @@ public final class ErlParser implements ParserService {
             return addRecordDef(module, pos, val, extra);
         } else if ("type".equals(nameS) || "spec".equals(nameS)
                 || "opaque".equals(nameS)) {
-            return addTypespec(module, pos, arity, extra);
+            return addTypespec(module, pos, extra);
         } else if ("define".equals(nameS)) {
             return addMacroDef(module, pos, val, extra, nameS);
         }
@@ -569,15 +578,50 @@ public final class ErlParser implements ParserService {
     }
 
     private IErlMember addTypespec(final IErlModule module,
-            final OtpErlangObject pos, final OtpErlangObject arityL,
-            final OtpErlangObject extra) {
+            final OtpErlangObject pos, final OtpErlangObject extra) {
         final String s = Util.stringValue(extra);
         final int p = s.indexOf('(');
-        final String typeName = p < 0 ? s : s.substring(0, p);
-        final int arity = Util.getIntegerValue(arityL, -1);
-        final ErlTypespec a = new ErlTypespec(module, typeName, arity, s);
+        final String ref = p < 0 ? s : s.substring(0, p);
+        final int arity = getTypeArity(s);
+        final String[] refs = ref.split(":");
+        String moduleName;
+        String typeName;
+        if (refs.length == 1) {
+            moduleName = module.getName();
+            typeName = refs[0];
+        } else {
+            moduleName = refs[0];
+            typeName = refs[1];
+        }
+        final ErlTypespec a = new ErlTypespec(module, moduleName, typeName,
+                arity, s);
         setPos(a, pos);
         return a;
+    }
+
+    private int getTypeArity(final String s) {
+        final int p = s.indexOf('(');
+        int paras = 1;
+        int result = 0;
+        for (int i = p + 1; i < s.length(); i++) {
+            final char crt = s.charAt(i);
+            if (crt == '(') {
+                paras += 1;
+            }
+            if (crt == ')') {
+                paras -= 1;
+            }
+            if (paras == 0) {
+                break;
+            }
+            if (crt == ',' && paras == 1) {
+                result += 1;
+            }
+            if (result == 0 && crt != ')') {
+                result += 1;
+            }
+        }
+        return result;
     }
 
     private IErlImport addImportAttribute(final IErlModule module,

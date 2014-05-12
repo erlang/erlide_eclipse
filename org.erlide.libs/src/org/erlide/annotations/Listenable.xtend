@@ -43,9 +43,9 @@ class ListenerProcessor extends AbstractFieldProcessor {
         
         field.setInitializer(
             [
-                '''new «toJavaCode(initFieldType)»() {
-                public «toJavaCode(eventListType)» apply() {
-                «toJavaCode(eventListType)» _eventList = new «toJavaCode(initListType)»();
+                '''new Â«toJavaCode(initFieldType)Â»() {
+                public Â«toJavaCode(eventListType)Â» apply() {
+                Â«toJavaCode(eventListType)Â» _eventList = new Â«toJavaCode(initListType)Â»();
                     return _eventList;
                 }
             }.apply();''']
@@ -55,7 +55,7 @@ class ListenerProcessor extends AbstractFieldProcessor {
             visibility = Visibility.PUBLIC
             addParameter("listener", lamdaType)
             body = [
-                '''this.«field.simpleName».add(listener);'''
+                '''this.Â«field.simpleNameÂ».add(listener);'''
             ]
         ]
 
@@ -63,7 +63,7 @@ class ListenerProcessor extends AbstractFieldProcessor {
             visibility = Visibility.PUBLIC
             addParameter("event", eventType)
             body = [
-                '''for («toJavaCode(lamdaType)» listener : «field.simpleName») {
+                '''for (Â«toJavaCode(lamdaType)Â» listener : Â«field.simpleNameÂ») {
                     listener.apply(event);
                     }'''
             ]

@@ -38,7 +38,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
 
     @Override
     public ErlElementKind getKind() {
-        return ErlElementKind.EXTERNAL;
+        return ErlElementKind.EXTERNAL_FOLDER;
     }
 
     @Override
@@ -81,11 +81,6 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
     @Override
     public String getFilePath() {
         return null;
-    }
-
-    @Override
-    public String getLabelString() {
-        return super.getName();
     }
 
     public String getExternalName() {

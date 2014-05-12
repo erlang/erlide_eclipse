@@ -192,8 +192,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     private Button[] fIncludeMasks;
 
     /**
-	 *
-	 */
+     *
+     */
     public ErlangSearchPage() {
         fPreviousSearchPatterns = Lists.newArrayList();
     }
@@ -293,7 +293,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     /**
      * Return search pattern data and update previous searches. An existing
      * entry will be updated.
-     * 
+     *
      * @return the pattern data
      */
     private SearchPatternData getPatternData() {
@@ -737,7 +737,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
     /**
      * Returns the search page's container.
-     * 
+     *
      * @return the search page container
      */
     private ISearchPageContainer getContainer() {
@@ -756,7 +756,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
     /**
      * Returns the page settings for this Erlang search page.
-     * 
+     *
      * @return the page settings to be used
      */
     private IDialogSettings getDialogSettings() {

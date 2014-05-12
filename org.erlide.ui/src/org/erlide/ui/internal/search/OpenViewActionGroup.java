@@ -41,7 +41,7 @@ public class OpenViewActionGroup extends ActionGroup {
      * Creates a new <code>OpenActionGroup</code>. The group requires that the
      * selection provided by the page's selection provider is of type
      * {@link IStructuredSelection}.
-     * 
+     *
      * @param page
      *            the page that owns this action group
      */
@@ -54,13 +54,13 @@ public class OpenViewActionGroup extends ActionGroup {
      * Creates a new <code>OpenActionGroup</code>. The group requires that the
      * selection provided by the given selection provider is of type
      * {@link IStructuredSelection}.
-     * 
+     *
      * @param page
      *            the page that owns this action group
      * @param selectionProvider
      *            the selection provider used instead of the page selection
      *            provider.
-     * 
+     *
      * @since 3.2
      */
     public OpenViewActionGroup(final Page page, final ISelectionProvider selectionProvider) {
@@ -72,7 +72,7 @@ public class OpenViewActionGroup extends ActionGroup {
      * Creates a new <code>OpenActionGroup</code>. The group requires that the
      * selection provided by the part's selection provider is of type
      * {@link IStructuredSelection}.
-     * 
+     *
      * @param part
      *            the view part that owns this action group
      */
@@ -84,13 +84,13 @@ public class OpenViewActionGroup extends ActionGroup {
      * Creates a new <code>OpenActionGroup</code>. The group requires that the
      * selection provided by the given selection provider is of type
      * {@link IStructuredSelection}.
-     * 
+     *
      * @param part
      *            the view part that owns this action group
      * @param selectionProvider
      *            the selection provider used instead of the page selection
      *            provider.
-     * 
+     *
      * @since 3.2
      */
     public OpenViewActionGroup(final IViewPart part,
@@ -107,13 +107,13 @@ public class OpenViewActionGroup extends ActionGroup {
      * Creates a new <code>OpenActionGroup</code>. The group requires that the
      * selection provided by the given selection provider is of type
      * {@link IStructuredSelection}.
-     * 
+     *
      * @param site
      *            the site that will own the action group.
      * @param selectionProvider
      *            the selection provider used instead of the page selection
      *            provider.
-     * 
+     *
      * @since 3.2
      */
     public OpenViewActionGroup(final IWorkbenchSite site,
@@ -125,10 +125,10 @@ public class OpenViewActionGroup extends ActionGroup {
     /**
      * Note: This constructor is for internal use only. Clients should not call
      * this constructor.
-     * 
+     *
      * @param part
      *            the editor part
-     * 
+     *
      * @noreference This constructor is not intended to be referenced by
      *              clients.
      */
@@ -159,7 +159,7 @@ public class OpenViewActionGroup extends ActionGroup {
      * Specifies if this action group also contains the 'Properties' action (
      * {@link PropertyDialogAction}). By default, the action is contained in the
      * group.
-     * 
+     *
      * @param enable
      *            If set, the 'Properties' action is part of this action group
      * @since 3.3
@@ -172,7 +172,7 @@ public class OpenViewActionGroup extends ActionGroup {
      * Specifies if this action group also contains the 'Show In' menu (See
      * {@link ContributionItemFactory#VIEWS_SHOW_IN}). By default, the action is
      * contained in the group except for editors.
-     * 
+     *
      * @param enable
      *            If set, the 'Show In' menu is part of this action group
      * @since 3.3

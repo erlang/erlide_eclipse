@@ -27,7 +27,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * @author jakob
- * 
+ *
  */
 public class TestAction extends TextEditorAction {
 

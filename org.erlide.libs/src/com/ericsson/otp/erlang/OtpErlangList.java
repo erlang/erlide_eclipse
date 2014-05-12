@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 /**
  * Provides a Java representation of Erlang lists. Lists are created from zero
  * or more arbitrary Erlang terms.
- * 
+ *
  * <p>
  * The arity of the list is the number of elements it contains.
  */
@@ -50,7 +50,7 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
     /**
      * Create a list of Erlang integers representing Unicode codePoints. This
      * method does not check if the string contains valid code points.
-     * 
+     *
      * @param str
      *            the characters from which to create the list.
      */
@@ -68,7 +68,7 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
 
     /**
      * Create a list containing one element.
-     * 
+     *
      * @param elem
      *            the elememet to make the list from.
      */
@@ -78,7 +78,7 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
 
     /**
      * Create a list from an array of arbitrary Erlang terms.
-     * 
+     *
      * @param elems
      *            the array of terms from which to create the list.
      */
@@ -89,7 +89,7 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
     /**
      * Create a list from an array of arbitrary Erlang terms. Tail can be
      * specified, if not null, the list will not be proper.
-     * 
+     *
      * @param elems
      *            array of terms from which to create the list
      * @param lastTail
@@ -106,7 +106,7 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
 
     /**
      * Create a list from an array of arbitrary Erlang terms.
-     * 
+     *
      * @param elems
      *            the array of terms from which to create the list.
      * @param start
@@ -126,10 +126,10 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
     /**
      * Create a list from a stream containing an list encoded in Erlang external
      * format.
-     * 
+     *
      * @param buf
      *            the stream containing the encoded list.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the buffer does not contain a valid external
      *                representation of an Erlang list.
@@ -154,7 +154,7 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
 
     /**
      * Get the arity of the list.
-     * 
+     *
      * @return the number of elements contained in the list.
      */
     public int arity() {
@@ -163,11 +163,11 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
 
     /**
      * Get the specified element from the list.
-     * 
+     *
      * @param i
      *            the index of the requested element. List elements are numbered
      *            as array elements, starting at 0.
-     * 
+     *
      * @return the requested element, of null if i is not a valid element index.
      */
     public OtpErlangObject elementAt(final int i) {
@@ -179,7 +179,7 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
 
     /**
      * Get all the elements from the list as an array.
-     * 
+     *
      * @return an array containing all of the list's elements.
      */
     public OtpErlangObject[] elements() {
@@ -194,7 +194,7 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
 
     /**
      * Get the string representation of the list.
-     * 
+     *
      * @return the string representation of the list.
      */
 
@@ -225,10 +225,10 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
      * Convert this list to the equivalent Erlang external representation. Note
      * that this method never encodes lists as strings, even when it is possible
      * to do so.
-     * 
+     *
      * @param buf
      *            An output stream to which the encoded list should be written.
-     * 
+     *
      */
 
     @Override
@@ -256,10 +256,10 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
     /**
      * Determine if two lists are equal. Lists are equal if they have the same
      * arity and all of the elements are equal.
-     * 
+     *
      * @param o
      *            the list to compare to.
-     * 
+     *
      * @return true if the lists have the same arity and all the elements are
      *         equal.
      */
@@ -372,21 +372,21 @@ public class OtpErlangList extends OtpErlangObject implements Iterable<OtpErlang
     /**
      * Convert a list of integers into a Unicode string, interpreting each
      * integer as a Unicode code point value.
-     * 
+     *
      * @return A java.lang.String object created through its constructor
      *         String(int[], int, int).
-     * 
+     *
      * @exception OtpErlangException
      *                for non-proper and non-integer lists.
-     * 
+     *
      * @exception OtpErlangRangeException
      *                if any integer does not fit into a Java int.
-     * 
+     *
      * @exception java.security.InvalidParameterException
      *                if any integer is not within the Unicode range.
-     * 
+     *
      * @see String#String(int[], int, int)
-     * 
+     *
      */
 
     public String stringValue() throws OtpErlangException {

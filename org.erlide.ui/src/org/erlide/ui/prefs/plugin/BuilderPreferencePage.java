@@ -17,8 +17,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * The system preferences
- * 
- * 
+ *
+ *
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class BuilderPreferencePage extends FieldEditorPreferencePage implements
@@ -33,7 +33,7 @@ public class BuilderPreferencePage extends FieldEditorPreferencePage implements
 
     /**
      * Initialize the system preferences
-     * 
+     *
      */
     public BuilderPreferencePage() {
         super(FieldEditorPreferencePage.GRID);

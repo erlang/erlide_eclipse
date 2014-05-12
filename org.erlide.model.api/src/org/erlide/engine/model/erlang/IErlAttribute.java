@@ -12,7 +12,7 @@ package org.erlide.engine.model.erlang;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
- * 
+ *
  * @author Vlad Dumitrescu
  */
 public interface IErlAttribute extends IErlMember {

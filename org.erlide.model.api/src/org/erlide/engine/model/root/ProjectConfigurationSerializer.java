@@ -1,6 +1,5 @@
 package org.erlide.engine.model.root;
 
-
 public interface ProjectConfigurationSerializer {
 
     /**
@@ -11,9 +10,9 @@ public interface ProjectConfigurationSerializer {
 
     /**
      * Decode project properties from string (as read from config file).
-     * 
+     *
      * TODO: store encoding
-     * 
+     *
      * TODO: store config text as template to use for encoding
      */
     ErlangProjectProperties decodeConfig(String config);

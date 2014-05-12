@@ -31,15 +31,15 @@ import org.osgi.framework.Bundle;
 /**
  * Utility class for managing OS resources associated with SWT/JFace controls
  * such as colors, fonts, images, etc.
- * 
+ *
  * !!! IMPORTANT !!! Application code must explicitly invoke the
  * <code>dispose()</code> method to release the operating system resources
  * managed by cached objects when those objects and OS resources are no longer
  * needed (e.g. on application shutdown)
- * 
+ *
  * This class may be freely distributed as part of any application or plugin.
  * <p>
- * 
+ *
  * @author scheglov_ke
  * @author Dan Rubel
  */
@@ -54,7 +54,7 @@ public class ResourceManager extends SWTResourceManager {
     /**
      * Returns an {@link ImageDescriptor} stored in the file at the specified
      * path relative to the specified class.
-     * 
+     *
      * @param clazz
      *            the {@link Class} relative to which to find the image
      *            descriptor.
@@ -71,7 +71,7 @@ public class ResourceManager extends SWTResourceManager {
     /**
      * Returns an {@link ImageDescriptor} stored in the file at the specified
      * path.
-     * 
+     *
      * @param path
      *            the path to the image file.
      * @return the {@link ImageDescriptor} stored in the file at the specified
@@ -87,7 +87,7 @@ public class ResourceManager extends SWTResourceManager {
 
     /**
      * Returns an {@link Image} based on the specified {@link ImageDescriptor}.
-     * 
+     *
      * @param descriptor
      *            the {@link ImageDescriptor} for the {@link Image}.
      * @return the {@link Image} based on the specified {@link ImageDescriptor}.
@@ -113,7 +113,7 @@ public class ResourceManager extends SWTResourceManager {
     /**
      * Returns an {@link Image} composed of a base image decorated by another
      * image.
-     * 
+     *
      * @param baseImage
      *            the base {@link Image} that should be decorated.
      * @param decorator
@@ -127,7 +127,7 @@ public class ResourceManager extends SWTResourceManager {
     /**
      * Returns an {@link Image} composed of a base image decorated by another
      * image.
-     * 
+     *
      * @param baseImage
      *            the base {@link Image} that should be decorated.
      * @param decorator
@@ -246,13 +246,13 @@ public class ResourceManager extends SWTResourceManager {
 
     /**
      * Returns an {@link Image} based on a plugin and file path.
-     * 
+     *
      * @param plugin
      *            the plugin {@link Object} containing the image
      * @param name
      *            the path to the image within the plugin
      * @return the {@link Image} stored in the file at the specified path
-     * 
+     *
      * @deprecated Use {@link #getPluginImage(String, String)} instead.
      */
     @Deprecated
@@ -271,7 +271,7 @@ public class ResourceManager extends SWTResourceManager {
     /**
      * Returns an {@link Image} based on a {@link Bundle} and resource entry
      * path.
-     * 
+     *
      * @param symbolicName
      *            the symbolic name of the {@link Bundle}.
      * @param path
@@ -315,14 +315,14 @@ public class ResourceManager extends SWTResourceManager {
 
     /**
      * Returns an {@link ImageDescriptor} based on a plugin and file path.
-     * 
+     *
      * @param plugin
      *            the plugin {@link Object} containing the image.
      * @param name
      *            the path to th eimage within the plugin.
      * @return the {@link ImageDescriptor} stored in the file at the specified
      *         path.
-     * 
+     *
      * @deprecated Use {@link #getPluginImageDescriptor(String, String)}
      *             instead.
      */
@@ -345,7 +345,7 @@ public class ResourceManager extends SWTResourceManager {
     /**
      * Returns an {@link ImageDescriptor} based on a {@link Bundle} and resource
      * entry path.
-     * 
+     *
      * @param symbolicName
      *            the symbolic name of the {@link Bundle}.
      * @param path
@@ -387,7 +387,7 @@ public class ResourceManager extends SWTResourceManager {
 
     /**
      * Returns an {@link URL} based on a plugin and file path.
-     * 
+     *
      * @param plugin
      *            the plugin {@link Object} containing the file path.
      * @param name

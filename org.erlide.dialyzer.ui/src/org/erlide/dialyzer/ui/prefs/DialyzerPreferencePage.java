@@ -169,7 +169,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
         // final Group group = new Group(prefsComposite, SWT.NONE);
         final Composite group = prefsComposite;// new Composite(prefsComposite,
-                                               // SWT.NONE);
+        // SWT.NONE);
         group.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
         // group.setLayout(new GridLayout(1, false));
         createDialyzeCheckbox(group);

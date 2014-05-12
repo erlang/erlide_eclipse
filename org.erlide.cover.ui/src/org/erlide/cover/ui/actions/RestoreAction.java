@@ -33,9 +33,9 @@ import org.erlide.util.ErlLogger;
 
 /**
  * An action for restoring coverage results which were previously saved
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions com>
- * 
+ *
  */
 public class RestoreAction extends Action {
 
@@ -141,7 +141,6 @@ public class RestoreAction extends Action {
                 return true;
             }
         } catch (final Exception e) {
-            // TODO
             ErlLogger.error(e);
         }
         return false;

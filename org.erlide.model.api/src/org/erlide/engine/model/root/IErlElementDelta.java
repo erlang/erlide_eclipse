@@ -116,7 +116,7 @@ public interface IErlElementDelta {
     /**
      * Status constant indicating that the element has been changed, as
      * described by the change flags.
-     * 
+     *
      * @see #getFlags()
      */
     int CHANGED = 4;
@@ -172,8 +172,8 @@ public interface IErlElementDelta {
      * to its siblings. If the element is an <code>IPackageFragmentRoot</code>,
      * a classpath entry corresponding to the element has changed position in
      * the project's classpath.
-     * 
-     * 
+     *
+     *
      */
     int F_REORDER = 0x00100;
 
@@ -200,8 +200,8 @@ public interface IErlElementDelta {
      * <code>F_CONTENT</code> change should assume that there are no finer
      * grained changes (<code>F_FINE_GRAINED</code> is set) or if finer grained
      * changes were not considered (<code>F_FINE_GRAINED</code> is not set).
-     * 
-     * 
+     *
+     *
      */
     int F_FINE_GRAINED = 0x04000;
 
@@ -209,8 +209,8 @@ public interface IErlElementDelta {
      * Change flag indicating that the raw classpath (or the output folder) of a
      * project has changed. This flag is only valid if the element is an
      * <code>IErlProject</code>.
-     * 
-     * 
+     *
+     *
      */
     int F_CLASSPATH_CHANGED = 0x20000;
 
@@ -271,17 +271,17 @@ public interface IErlElementDelta {
     /**
      * Returns deltas for the children that have been added, removed or changed
      * as specified.
-     * 
+     *
      * @param kind
      *            kind of children
-     * 
+     *
      * @return deltas for the children that have been added
      */
     IErlElementDelta[] getChildren(int kind);
 
     /**
      * Returns the element that this delta describes a change to.
-     * 
+     *
      * @return the element that this delta describes a change to
      */
     IErlElement getElement();
@@ -289,13 +289,13 @@ public interface IErlElementDelta {
     /**
      * Returns flags that describe how an element has changed. Such flags should
      * be tested using the <code>&</code> operand. For example:
-     * 
+     *
      * <pre>
      * if ((delta.getFlags() &amp; IErlElementDelta.F_CONTENT) != 0) {
      *     // the delta indicates a content change
      * }
      * </pre>
-     * 
+     *
      * @return flags that describe how an element has changed
      */
     int getFlags();
@@ -303,7 +303,7 @@ public interface IErlElementDelta {
     /**
      * Returns the kind of this delta - one of <code>ADDED</code>,
      * <code>REMOVED</code>, or <code>CHANGED</code>.
-     * 
+     *
      * @return the kind of this delta
      */
     int getKind();
@@ -312,7 +312,7 @@ public interface IErlElementDelta {
      * Returns an element describing this element before it was moved to its
      * current location, or <code>null</code> if the <code>F_MOVED_FROM</code>
      * change flag is not set.
-     * 
+     *
      * @return an element describing this element before it was moved to its
      *         current location, or <code>null</code> if the
      *         <code>F_MOVED_FROM</code> change flag is not set
@@ -322,7 +322,7 @@ public interface IErlElementDelta {
     /**
      * Returns an element describing this element in its new location, or
      * <code>null</code> if the <code>F_MOVED_TO</code> change flag is not set.
-     * 
+     *
      * @return an element describing this element in its new location, or
      *         <code>null</code> if the <code>F_MOVED_TO</code> change flag is
      *         not set
@@ -336,14 +336,14 @@ public interface IErlElementDelta {
      * valid for the dynamic scope of an event notification. Clients must not
      * hang on to these objects.
      * </p>
-     * 
+     *
      * @return the underlying resource deltas, or <code>null</code> if none
      */
     IResourceDelta[] getResourceDeltas();
 
     /**
      * Find delta with specified element (either this or among children)
-     * 
+     *
      * @param element
      *            the element to find
      * @return the delta for the specified element

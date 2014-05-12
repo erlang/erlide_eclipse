@@ -222,8 +222,8 @@ public abstract class CompilerOption {
 
     }
 
-    //@formatter:off    
-    public static final Collection<WarningOption> WARNINGS = 
+    //@formatter:off
+    public static final Collection<WarningOption> WARNINGS =
             Lists.newArrayList(
                     WARN_EXPORT_ALL,
                     WARN_EXPORT_VARS,
@@ -234,9 +234,9 @@ public abstract class CompilerOption {
                     WARN_UNUSED_IMPORT,
                     WARN_UNUSED_VARS,
                     WARN_UNUSED_RECORD);
-    public static final Collection<CompilerOption> ALL_OPTIONS = 
+    public static final Collection<CompilerOption> ALL_OPTIONS =
             Lists.newArrayList(
-                    CUSTOM, 
+                    CUSTOM,
                     INCLUDE_DIRS,
                     PARSE_TRANSFORM,
                     DEFINE,
@@ -252,7 +252,7 @@ public abstract class CompilerOption {
                     WARN_UNUSED_IMPORT,
                     WARN_UNUSED_VARS,
                     WARN_UNUSED_RECORD);
-    //@formatter:on    
+    //@formatter:on
 
     private final String name;
     private final String description;

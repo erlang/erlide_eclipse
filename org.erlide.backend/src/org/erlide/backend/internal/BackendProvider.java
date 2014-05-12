@@ -11,8 +11,8 @@ public class BackendProvider implements IRpcSiteProvider {
 
     @Override
     public IRpcSite get() {
-        IBackendManager backendManager = BackendCore.getBackendManager();
-        IBackend ideBackend = backendManager.getIdeBackend();
+        final IBackendManager backendManager = BackendCore.getBackendManager();
+        final IBackend ideBackend = backendManager.getIdeBackend();
         return ideBackend.getRpcSite();
     }
 

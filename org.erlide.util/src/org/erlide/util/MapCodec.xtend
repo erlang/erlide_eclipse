@@ -18,6 +18,6 @@ public class MapCodec {
     }
 
     def static String encode(Map<String, String> map) {
-        '''«FOR e : map.entrySet»«e.key»:!«e.value»!,«ENDFOR»'''
+        '''Â«FOR e : map.entrySetÂ»Â«e.keyÂ»:!Â«e.valueÂ»!,Â«ENDFORÂ»'''
     }
 }

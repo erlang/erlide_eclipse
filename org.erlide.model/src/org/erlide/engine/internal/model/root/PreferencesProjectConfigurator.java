@@ -5,13 +5,13 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.OTPProjectConfigurator;
 import org.erlide.engine.model.root.PathSerializer;
-import org.erlide.engine.model.root.ProjectConfigurator;
+import org.erlide.engine.model.root.IProjectConfigurator;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class PreferencesProjectConfigurator implements ProjectConfigurator {
+public class PreferencesProjectConfigurator implements IProjectConfigurator {
 
     private final IEclipsePreferences node;
 

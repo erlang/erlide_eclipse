@@ -15,12 +15,13 @@ import org.erlide.engine.model.erlang.IErlTypespec;
 import org.erlide.engine.model.root.ErlElementKind;
 
 /**
- * 
- * 
+ *
+ *
  * @author Vlad Dumitrescu
  */
 public class ErlTypespec extends ErlMember implements IErlTypespec {
 
+    private final String module;
     private final String fSource;
     private final int arity;
 
@@ -28,9 +29,10 @@ public class ErlTypespec extends ErlMember implements IErlTypespec {
      * @param parent
      * @param name
      */
-    public ErlTypespec(final IParent parent, final String name,
-            final int arity, final String source) {
+    public ErlTypespec(final IParent parent, final String module,
+            final String name, final int arity, final String source) {
         super(parent, name);
+        this.module = module;
         this.arity = arity;
         fSource = source;
     }
@@ -51,6 +53,7 @@ public class ErlTypespec extends ErlMember implements IErlTypespec {
         return getName() + "/" + getArity();
     }
 
+    @Override
     public int getArity() {
         return arity;
     }
@@ -61,5 +64,10 @@ public class ErlTypespec extends ErlMember implements IErlTypespec {
             return fSource;
         }
         return super.getSource();
+    }
+
+    @Override
+    public String getModule() {
+        return module;
     }
 }

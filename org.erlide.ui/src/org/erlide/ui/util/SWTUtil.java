@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2000, 2003 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -58,7 +58,7 @@ public final class SWTUtil {
     /**
      * Returns the shell for the given widget. If the widget doesn't represent a
      * SWT object that manage a shell, <code>null</code> is returned.
-     * 
+     *
      * @return the shell for the given widget
      */
     public static Shell getShell(final Widget widget) {
@@ -105,7 +105,7 @@ public final class SWTUtil {
      * Sets width and height hint for the button control. <b>Note:</b> This is a
      * NOP if the button's layout data is not an instance of
      * <code>GridData</code>.
-     * 
+     *
      * @param the
      *            button for which to set the dimension hint
      */
@@ -122,14 +122,14 @@ public final class SWTUtil {
 
     /**
      * Creates and returns a new push button with the given label and/or image.
-     * 
+     *
      * @param parent
      *            parent control
      * @param label
      *            button label or <code>null</code>
      * @param image
      *            image of <code>null</code>
-     * 
+     *
      * @return a new push button
      */
     public static Button createPushButton(final Composite parent, final String label,
@@ -143,12 +143,12 @@ public final class SWTUtil {
 
     /**
      * Creates and returns a new radio button with the given label.
-     * 
+     *
      * @param parent
      *            parent control
      * @param label
      *            button label or <code>null</code>
-     * 
+     *
      * @return a new radio button
      */
     public static Button createRadioButton(final Composite parent, final String label) {
@@ -186,7 +186,7 @@ public final class SWTUtil {
 
     /**
      * Creates and returns a group with the given characteristics
-     * 
+     *
      * @param parent
      *            parent control
      * @param title
@@ -196,7 +196,7 @@ public final class SWTUtil {
      * @param fill
      *            {@link GridData} fill style, horizontal, vertical, both or
      *            none
-     * 
+     *
      * @return the group created
      */
     public static Group createGroup(final Composite parent, final String title,

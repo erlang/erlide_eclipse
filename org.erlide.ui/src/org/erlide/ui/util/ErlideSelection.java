@@ -28,7 +28,7 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Used as 'shortcuts' to document and selection settings.
- * 
+ *
  * @author Fabio Zadrozny
  * @author Parhaum Toofanian
  */
@@ -40,7 +40,7 @@ public class ErlideSelection {
     /**
      * Alternate constructor for ErlideSelection. Takes in a text editor from
      * Eclipse.
-     * 
+     *
      * @param textEditor
      *            The text editor operating in Eclipse
      */
@@ -63,7 +63,7 @@ public class ErlideSelection {
 
     /**
      * Creates a selection from a document
-     * 
+     *
      * @param doc
      *            the document to be used
      * @param line
@@ -116,7 +116,7 @@ public class ErlideSelection {
 
     /**
      * Changes the selection
-     * 
+     *
      * @param absoluteStart
      *            this is the offset of the start of the selection
      * @param absoluteEnd
@@ -129,7 +129,7 @@ public class ErlideSelection {
     /**
      * Creates a selection for the document, so that no characters are selected
      * and the offset is position 0
-     * 
+     *
      * @param doc
      *            the document where we are doing the selection
      */
@@ -169,7 +169,7 @@ public class ErlideSelection {
 
     /**
      * Gets current line from document.
-     * 
+     *
      * @return String line in String form
      */
     public String getLine() {
@@ -178,7 +178,7 @@ public class ErlideSelection {
 
     /**
      * Gets line from document.
-     * 
+     *
      * @param i
      *            Line number
      * @return String line in String form
@@ -189,7 +189,7 @@ public class ErlideSelection {
 
     /**
      * Gets line from document.
-     * 
+     *
      * @param i
      *            Line number
      * @return String line in String form
@@ -244,7 +244,7 @@ public class ErlideSelection {
 
     /**
      * Deletes a line from the document
-     * 
+     *
      * @param i
      */
     public void deleteLine(final int i) {
@@ -253,7 +253,7 @@ public class ErlideSelection {
 
     /**
      * Deletes a line from the document
-     * 
+     *
      * @param i
      */
     public static void deleteLine(final IDocument doc, final int i) {
@@ -313,7 +313,7 @@ public class ErlideSelection {
 
     /**
      * Deletes the current selected text
-     * 
+     *
      * @throws BadLocationException
      */
     public void deleteSelection() throws BadLocationException {
@@ -327,7 +327,7 @@ public class ErlideSelection {
 
     /**
      * Adds a line to the document.
-     * 
+     *
      * @param doc
      *            the document
      * @param endLineDelim
@@ -401,7 +401,7 @@ public class ErlideSelection {
 
     /**
      * Readjust the selection so that the whole document is selected.
-     * 
+     *
      * @param onlyIfNothingSelected
      *            : If false, check if we already have a selection. If we have a
      *            selection, it is not changed, however, if it is true, it
@@ -619,7 +619,7 @@ public class ErlideSelection {
     /**
      * This function goes backward in the document searching for an 'if' and
      * returns the line that has it.
-     * 
+     *
      * May return null if it was not found.
      */
     public String getPreviousLineThatStartsWithToken(final String[] tokens) {
@@ -746,7 +746,7 @@ public class ErlideSelection {
     /**
      * This function gets the activation token from the document given the
      * current cursor position.
-     * 
+     *
      * @param document
      *            this is the document we want info on
      * @param offset
@@ -903,7 +903,7 @@ public class ErlideSelection {
     /**
      * Returns the position of the first non whitespace char in the current
      * line.
-     * 
+     *
      * @param doc
      * @param cursorOffset
      * @return position of the first character of the line (returned as an

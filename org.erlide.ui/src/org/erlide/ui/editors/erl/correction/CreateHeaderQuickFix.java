@@ -40,7 +40,7 @@ public class CreateHeaderQuickFix extends ErlangQuickFixRunnable {
             inc = module.getResource().getParent().getProjectRelativePath();
         } else {
             inc = iterator.next();
-            // TODO what if there are multiple include dirs?
+            // if there are multiple include dirs, let user move file manually
         }
         final IProject wproject = project.getWorkspaceProject();
         final IFolder folder = wproject.getFolder(inc);

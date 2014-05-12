@@ -70,10 +70,10 @@ class NLSProcessor extends AbstractClassProcessor {
             type = string
             initializer = [
                 '''
-                    new «toJavaCode(Function0.newTypeReference(string))»() {
-                        public «string» apply() {
-                          «toJavaCode(nlsClass.newTypeReference)».initializeMessages(«annotatedClass.findDeclaredField(
-                        BUNDLE_NAME_FIELD).simpleName», «toJavaCode(annotatedClass.qualifiedName.newTypeReference)».class);
+                    new Â«toJavaCode(Function0.newTypeReference(string))Â»() {
+                        public Â«stringÂ» apply() {
+                          Â«toJavaCode(nlsClass.newTypeReference)Â».initializeMessages(Â«annotatedClass.findDeclaredField(
+                        BUNDLE_NAME_FIELD).simpleNameÂ», Â«toJavaCode(annotatedClass.qualifiedName.newTypeReference)Â».class);
                           return "";
                         }
                       }.apply();
@@ -91,8 +91,8 @@ class NLSProcessor extends AbstractClassProcessor {
             final = true
             type = string
             initializer = [
-                '''«toJavaCode(annotatedClass.qualifiedName.newTypeReference)».class.getPackage().getName() + ".«propertyFileName.
-                    replace(".properties", "")»"''']
+                '''Â«toJavaCode(annotatedClass.qualifiedName.newTypeReference)Â».class.getPackage().getName() + ".Â«propertyFileName.
+                    replace(".properties", "")Â»"''']
         ]
     }
 
@@ -105,8 +105,8 @@ class NLSProcessor extends AbstractClassProcessor {
             final = true
             type = ResourceBundle.newTypeReference
             initializer = [
-                '''«toJavaCode(ResourceBundle.newTypeReference)».getBundle(«annotatedClass.
-                    findDeclaredField(BUNDLE_NAME_FIELD).simpleName»)''']
+                '''Â«toJavaCode(ResourceBundle.newTypeReference)Â».getBundle(Â«annotatedClass.
+                    findDeclaredField(BUNDLE_NAME_FIELD).simpleNameÂ»)''']
         ]
     }
 
@@ -122,8 +122,8 @@ class NLSProcessor extends AbstractClassProcessor {
             body = [
                 '''
                     try {
-                        return «annotatedClass.findDeclaredField(RESOURCE_BUNDLE_FIELD).simpleName».getString(key);
-                    } catch («toJavaCode(MissingResourceException.newTypeReference)» e) {
+                        return Â«annotatedClass.findDeclaredField(RESOURCE_BUNDLE_FIELD).simpleNameÂ».getString(key);
+                    } catch (Â«toJavaCode(MissingResourceException.newTypeReference)Â» e) {
                         return '!' + key + '!';
                     }
                 '''
@@ -140,7 +140,7 @@ class NLSProcessor extends AbstractClassProcessor {
             static = true
             final = true
             type = string
-            initializer = ['''"«entry.key»"''']
+            initializer = ['''"Â«entry.keyÂ»"''']
         ]
     }
 
@@ -164,8 +164,8 @@ class NLSProcessor extends AbstractClassProcessor {
             returnType = context.string
             params.forEach(param|addParameter(param, object))
             body = [
-                '''return «toJavaCode(nlsClass.newTypeReference)».bind(getString(«entry.key»), new Object [] { «params.
-                    join(", ")» });'''
+                '''return Â«toJavaCode(nlsClass.newTypeReference)Â».bind(getString(Â«entry.keyÂ»), new Object [] { Â«params.
+                    join(", ")Â» });'''
             ]
         ]
     }

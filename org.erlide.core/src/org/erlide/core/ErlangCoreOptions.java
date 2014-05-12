@@ -3,7 +3,7 @@ package org.erlide.core;
 public enum ErlangCoreOptions {
 
     //@formatter:off
-    COMPILER_TASK_TAGS(ErlangCore.PLUGIN_ID + ".compiler.taskTags"), 
+    COMPILER_TASK_TAGS(ErlangCore.PLUGIN_ID + ".compiler.taskTags"),
     CORE_ENCODING(ErlangCore.PLUGIN_ID + ".encoding");
     //@formatter:on
 

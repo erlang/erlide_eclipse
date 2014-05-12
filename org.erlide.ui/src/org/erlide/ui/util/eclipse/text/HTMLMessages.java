@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 
 /**
  * Helper class to get NLSed messages.
- * 
+ *
  * @since 3.3
  */
 final class HTMLMessages {
@@ -31,7 +31,7 @@ final class HTMLMessages {
 
     /**
      * Gets a string from the resource bundle.
-     * 
+     *
      * @param key
      *            the string used to get the bundle value, must not be null
      * @return the string from the resource bundle
@@ -47,7 +47,7 @@ final class HTMLMessages {
     /**
      * Gets a string from the resource bundle and formats it with the given
      * arguments.
-     * 
+     *
      * @param key
      *            the string used to get the bundle value, must not be null
      * @param args
@@ -67,7 +67,7 @@ final class HTMLMessages {
     /**
      * Gets a string from the resource bundle and formats it with the given
      * argument.
-     * 
+     *
      * @param key
      *            the string used to get the bundle value, must not be null
      * @param arg

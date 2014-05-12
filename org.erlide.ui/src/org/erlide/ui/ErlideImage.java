@@ -34,27 +34,29 @@ public enum ErlideImage {
     HIDE_LOCAL_FUNCTIONS(ErlideImagePrefix.T_ELCL, "hide_local_functions.gif"),
     HIDE_MACRO_RECORD_DEFS(ErlideImagePrefix.T_ELCL,
             "hide_macro_record_defs.gif"),
-    HIDE_ATTRIBUTES(ErlideImagePrefix.T_ELCL, "hide_attributes.gif"),
-    FUNCTION_EXPORTED(ErlideImagePrefix.T_OBJ, "methpub_obj.gif"),
-    FUNCTION_DEFAULT(ErlideImagePrefix.T_OBJ, "methpri_obj.gif"),
-    FUNCTION_CLAUSE(ErlideImagePrefix.T_OBJ, "methpro_obj.gif"),
-    RECORD_DEF(ErlideImagePrefix.T_OBJ, "typevariable_obj.gif"),
-    RECORD_FIELD(ErlideImagePrefix.T_OBJ, "typevariable_obj.gif"),
-    MACRO_DEF(ErlideImagePrefix.T_OBJ, "typevariable_obj.gif"),
-    TYPESPEC_DEF(ErlideImagePrefix.T_OBJ, "typevariable_obj.gif"),
-    SRC_FOLDER(ErlideImagePrefix.T_OBJ, "erlang_src_folder_obj.gif"),
-    ATTRIBUTE(ErlideImagePrefix.T_OBJ, "field_public_obj.gif"),
-    EXPORT(ErlideImagePrefix.T_OBJ, "field_public_obj.gif"),
-    EXTERNAL(ErlideImagePrefix.T_OBJ, "external_ref.gif"),
-    IMPORT(ErlideImagePrefix.T_OBJ, "field_public_obj.gif"),
-    OVR_WARNING(ErlideImagePrefix.T_OVR, "warning_co.gif"),
-    OVR_ERROR(ErlideImagePrefix.T_OVR, "error_co.gif"),
-    ERLANG_SEARCH_RESULTS(ErlideImagePrefix.T_OBJ, "erlang_search_results.gif"),
-    MODULE(ErlideImagePrefix.T_OBJ, "erlang_srcFile.png"),
-    MODULE_RESOURCE(ErlideImagePrefix.T_OBJ, "erlang_srcFileExt.gif"),
-    UNKNOWN(ErlideImagePrefix.T_OBJ, "unknown_obj.gif"),
-    OBJS_EDOCTAG(ErlideImagePrefix.T_OBJ, "jdoc_tag_obj.gif"),
-    OBJS_EXTERNALBROWSER(ErlideImagePrefix.T_ELCL, "open_browser.gif");
+            HIDE_ATTRIBUTES(ErlideImagePrefix.T_ELCL, "hide_attributes.gif"),
+            FUNCTION_EXPORTED(ErlideImagePrefix.T_OBJ, "methpub_obj.gif"),
+            FUNCTION_DEFAULT(ErlideImagePrefix.T_OBJ, "methpri_obj.gif"),
+            FUNCTION_CLAUSE(ErlideImagePrefix.T_OBJ, "methpro_obj.gif"),
+            RECORD_DEF(ErlideImagePrefix.T_OBJ, "record_obj.gif"),
+            RECORD_FIELD(ErlideImagePrefix.T_OBJ, "record_field_obj.gif"),
+            MACRO_DEF(ErlideImagePrefix.T_OBJ, "macro_obj.gif"),
+            TYPESPEC_DEF(ErlideImagePrefix.T_OBJ, "typevariable_obj.gif"),
+            SRC_FOLDER(ErlideImagePrefix.T_OBJ, "erlang_src_folder_obj.gif"),
+            ATTRIBUTE(ErlideImagePrefix.T_OBJ, "field_public_obj.gif"),
+            EXPORT(ErlideImagePrefix.T_OBJ, "field_public_obj.gif"),
+            EXTERNAL_ROOT(ErlideImagePrefix.T_OBJ, "external_ref.gif"),
+            EXTERNAL_APP(ErlideImagePrefix.T_OBJ, "app_ref.gif"),
+            EXTERNAL_FOLDER(ErlideImagePrefix.T_OBJ, "folder.gif"),
+            IMPORT(ErlideImagePrefix.T_OBJ, "field_public_obj.gif"),
+            OVR_WARNING(ErlideImagePrefix.T_OVR, "warning_co.gif"),
+            OVR_ERROR(ErlideImagePrefix.T_OVR, "error_co.gif"),
+            ERLANG_SEARCH_RESULTS(ErlideImagePrefix.T_OBJ, "erlang_search_results.gif"),
+            MODULE(ErlideImagePrefix.T_OBJ, "erlang_srcFile.png"),
+            MODULE_RESOURCE(ErlideImagePrefix.T_OBJ, "erlang_srcFileExt.gif"),
+            UNKNOWN(ErlideImagePrefix.T_OBJ, "unknown_obj.gif"),
+            OBJS_EDOCTAG(ErlideImagePrefix.T_OBJ, "jdoc_tag_obj.gif"),
+            OBJS_EXTERNALBROWSER(ErlideImagePrefix.T_ELCL, "open_browser.gif");
     // @formatter:on
 
     private String prefix;
@@ -133,7 +135,7 @@ public enum ErlideImage {
     /**
      * Sets the three image descriptors for enabled, disabled, and hovered to an
      * action. The actions are retrieved from the *tool16 folders.
-     * 
+     *
      * @param action
      *            the action
      * @param iconName
@@ -146,7 +148,7 @@ public enum ErlideImage {
     /**
      * Sets the three image descriptors for enabled, disabled, and hovered to an
      * action. The icons are retrieved from the *lcl16 folders.
-     * 
+     *
      * @param action
      *            the action
      * @param iconName

@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -21,8 +21,8 @@ import org.erlide.core.ErlangCore;
 /**
  * A setable IStatus. Can be an error, warning, info or ok. For error, info and
  * warning states, a message describes the problem.
- * 
- * 
+ *
+ *
  */
 public class StatusInfo implements IStatus {
 
@@ -41,7 +41,7 @@ public class StatusInfo implements IStatus {
 
     /**
      * Creates a status with the given severity and message.
-     * 
+     *
      * @param severity
      *            the severity of this status: ERROR, WARNING, INFO and OK.
      * @param message
@@ -63,7 +63,7 @@ public class StatusInfo implements IStatus {
 
     /**
      * Returns whether this status indicates a warning.
-     * 
+     *
      * @return <code>true</code> if this status has severity
      *         {@link IStatus#WARNING}and <code>false</code> otherwise
      */
@@ -73,7 +73,7 @@ public class StatusInfo implements IStatus {
 
     /**
      * Returns whether this status indicates an info.
-     * 
+     *
      * @return <code>true</code> if this status has severity
      *         {@link IStatus#INFO}and <code>false</code> otherwise
      */
@@ -83,7 +83,7 @@ public class StatusInfo implements IStatus {
 
     /**
      * Returns whether this status indicates an error.
-     * 
+     *
      * @return <code>true</code> if this status has severity
      *         {@link IStatus#ERROR}and <code>false</code> otherwise
      */
@@ -101,7 +101,7 @@ public class StatusInfo implements IStatus {
 
     /**
      * Sets the status to ERROR.
-     * 
+     *
      * @param errorMessage
      *            the error message which can be an empty string, but not
      *            <code>null</code>
@@ -114,7 +114,7 @@ public class StatusInfo implements IStatus {
 
     /**
      * Sets the status to WARNING.
-     * 
+     *
      * @param warningMessage
      *            the warning message which can be an empty string, but not
      *            <code>null</code>
@@ -127,7 +127,7 @@ public class StatusInfo implements IStatus {
 
     /**
      * Sets the status to INFO.
-     * 
+     *
      * @param infoMessage
      *            the info message which can be an empty string, but not
      *            <code>null</code>
@@ -156,7 +156,7 @@ public class StatusInfo implements IStatus {
 
     /**
      * Returns always <code>false</code>.
-     * 
+     *
      * @see IStatus#isMultiStatus()
      */
     @Override
@@ -182,7 +182,7 @@ public class StatusInfo implements IStatus {
 
     /**
      * Returns always <code>null</code>.
-     * 
+     *
      * @see IStatus#getException()
      */
     @Override
@@ -192,7 +192,7 @@ public class StatusInfo implements IStatus {
 
     /**
      * Returns always the error severity.
-     * 
+     *
      * @see IStatus#getCode()
      */
     @Override
@@ -202,7 +202,7 @@ public class StatusInfo implements IStatus {
 
     /**
      * Returns always <code>null</code>.
-     * 
+     *
      * @see IStatus#getChildren()
      */
     @Override

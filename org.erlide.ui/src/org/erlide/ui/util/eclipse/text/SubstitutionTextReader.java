@@ -52,7 +52,7 @@ public abstract class SubstitutionTextReader extends SingleCharReader {
      * Computes the substitution for the given character and if necessary
      * subsequent characters. Implementation should use <code>nextChar</code> to
      * read subsequent characters.
-     * 
+     *
      * @param c
      *            the character to be substituted
      * @return the substitution for <code>c</code>
@@ -63,7 +63,7 @@ public abstract class SubstitutionTextReader extends SingleCharReader {
 
     /**
      * Returns the internal reader.
-     * 
+     *
      * @return the internal reader
      */
     protected Reader getReader() {
@@ -72,7 +72,7 @@ public abstract class SubstitutionTextReader extends SingleCharReader {
 
     /**
      * Returns the next character.
-     * 
+     *
      * @return the next character
      * @throws IOException
      *             in case reading the character fails

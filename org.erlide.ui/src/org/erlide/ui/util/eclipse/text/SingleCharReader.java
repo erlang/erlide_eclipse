@@ -56,7 +56,7 @@ public abstract class SingleCharReader extends Reader {
 
     /**
      * Returns the readable content as string.
-     * 
+     *
      * @return the readable content as string
      * @exception IOException
      *                in case reading fails

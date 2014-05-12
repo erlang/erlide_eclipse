@@ -56,7 +56,7 @@ public class GenericQueue {
 
     /**
      * Add an object to the tail of the queue.
-     * 
+     *
      * @param o
      *            Object to insert in the queue
      */
@@ -79,7 +79,7 @@ public class GenericQueue {
     /**
      * Retrieve an object from the head of the queue, or block until one
      * arrives.
-     * 
+     *
      * @return The object at the head of the queue.
      */
     public synchronized Object get() {
@@ -97,14 +97,14 @@ public class GenericQueue {
     /**
      * Retrieve an object from the head of the queue, blocking until one arrives
      * or until timeout occurs.
-     * 
+     *
      * @param timeout
      *            Maximum time to block on queue, in ms. Use 0 to poll the
      *            queue.
-     * 
+     *
      * @exception InterruptedException
      *                if the operation times out.
-     * 
+     *
      * @return The object at the head of the queue, or null if none arrived in
      *         time.
      */

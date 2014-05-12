@@ -37,7 +37,7 @@ public class ImplementorsSearchGroup extends ActionGroup {
      * Creates a new <code>ReferencesSearchGroup</code>. The group requires that
      * the selection provided by the site's selection provider is of type <code>
      * org.eclipse.jface.viewers.IStructuredSelection</code> .
-     * 
+     *
      * @param site
      *            the view part that owns this action group
      */
@@ -68,7 +68,7 @@ public class ImplementorsSearchGroup extends ActionGroup {
     /**
      * Note: This constructor is for internal use only. Clients should not call
      * this constructor.
-     * 
+     *
      * @param editor
      *            the Erlang editor
      */
@@ -105,7 +105,7 @@ public class ImplementorsSearchGroup extends ActionGroup {
     /**
      * Note: this method is for internal use only. Clients should not call this
      * method.
-     * 
+     *
      * @return the menu label
      */
     protected String getName() {

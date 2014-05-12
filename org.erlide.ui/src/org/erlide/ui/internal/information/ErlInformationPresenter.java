@@ -28,7 +28,7 @@ import org.erlide.util.StringUtils;
 
 /**
  * Based on HTMLTextPresenter
- * 
+ *
  * @author Fabio
  */
 public class ErlInformationPresenter implements

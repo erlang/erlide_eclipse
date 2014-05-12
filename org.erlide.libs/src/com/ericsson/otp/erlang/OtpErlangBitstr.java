@@ -1,19 +1,19 @@
 /*
  * %CopyrightBegin%
- * 
+ *
  * Copyright Ericsson AB 2007-2009. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
@@ -36,7 +36,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable, Cl
 
     /**
      * Create a bitstr from a byte array
-     * 
+     *
      * @param bin
      *            the array of bytes from which to create the bitstr.
      */
@@ -48,7 +48,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable, Cl
 
     /**
      * Create a bitstr with pad bits from a byte array.
-     * 
+     *
      * @param bin
      *            the array of bytes from which to create the bitstr.
      * @param pad_bits
@@ -78,10 +78,10 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable, Cl
     /**
      * Create a bitstr from a stream containing a bitstr encoded in Erlang
      * external format.
-     * 
+     *
      * @param buf
      *            the stream containing the encoded bitstr.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the buffer does not contain a valid external
      *                representation of an Erlang bitstr.
@@ -98,7 +98,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable, Cl
     /**
      * Create a bitstr from an arbitrary Java Object. The object must implement
      * java.io.Serializable or java.io.Externalizable.
-     * 
+     *
      * @param o
      *            the object to serialize and create this bitstr from.
      */
@@ -148,7 +148,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable, Cl
     /**
      * Get the byte array from a bitstr, padded with zero bits in the little end
      * of the last byte.
-     * 
+     *
      * @return the byte array containing the bytes for this bitstr.
      */
     public byte[] binaryValue() {
@@ -158,7 +158,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable, Cl
     /**
      * Get the size in whole bytes of the bitstr, rest bits in the last byte not
      * counted.
-     * 
+     *
      * @return the number of bytes contained in the bintstr.
      */
     public int size() {
@@ -174,7 +174,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable, Cl
     /**
      * Get the number of pad bits in the last byte of the bitstr. The pad bits
      * are zero and in the little end.
-     * 
+     *
      * @return the number of pad bits in the bitstr.
      */
     public int pad_bits() {
@@ -184,8 +184,8 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable, Cl
     /**
      * Get the java Object from the bitstr. If the bitstr contains a serialized
      * Java object, then this method will recreate the object.
-     * 
-     * 
+     *
+     *
      * @return the java Object represented by this bitstr, or null if the bitstr
      *         does not represent a Java Object.
      */
@@ -200,7 +200,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable, Cl
      * Get the string representation of this bitstr object. A bitstr is printed
      * as #Bin&lt;N&gt;, where N is the number of bytes contained in the object
      * or #bin&lt;N-M&gt; if there are M pad bits.
-     * 
+     *
      * @return the Erlang string representation of this bitstr.
      */
     @Override
@@ -216,7 +216,7 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable, Cl
 
     /**
      * Convert this bitstr to the equivalent Erlang external representation.
-     * 
+     *
      * @param buf
      *            an output stream to which the encoded bitstr should be
      *            written.
@@ -229,10 +229,10 @@ public class OtpErlangBitstr extends OtpErlangObject implements Serializable, Cl
     /**
      * Determine if two bitstrs are equal. Bitstrs are equal if they have the
      * same byte length and tail length, and the array of bytes is identical.
-     * 
+     *
      * @param o
      *            the bitstr to compare to.
-     * 
+     *
      * @return true if the bitstrs contain the same bits, false otherwise.
      */
     @Override

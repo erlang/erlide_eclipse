@@ -34,7 +34,6 @@ import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementVisitor;
-import org.erlide.util.StringUtils;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -235,11 +234,13 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     @Override
-    public boolean hasChildrenOfKind(final ErlElementKind kind) {
+    public boolean hasChildrenOfKind(final ErlElementKind... kinds) {
         synchronized (getModelLock()) {
-            for (final IErlElement child : internalGetChildren()) {
-                if (child.getKind() == kind) {
-                    return true;
+            for (final ErlElementKind kind : kinds) {
+                for (final IErlElement child : internalGetChildren()) {
+                    if (child.getKind() == kind) {
+                        return true;
+                    }
                 }
             }
         }
@@ -426,13 +427,15 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      *            - one of the constants defined by IErlElement
      */
     @Override
-    public List<IErlElement> getChildrenOfKind(final ErlElementKind kind)
+    public List<IErlElement> getChildrenOfKind(final ErlElementKind... kinds)
             throws ErlModelException {
         final List<IErlElement> result = Lists.newArrayList();
         synchronized (getModelLock()) {
-            for (final IErlElement element : internalGetChildren()) {
-                if (element.getKind() == kind) {
-                    result.add(element);
+            for (final ErlElementKind kind : kinds) {
+                for (final IErlElement element : internalGetChildren()) {
+                    if (element.getKind() == kind) {
+                        result.add(element);
+                    }
                 }
             }
         }
@@ -499,9 +502,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     @Override
     public void resourceChanged(final IResourceDelta delta) {
-        // FIXME is this enough? it will rebuild at next occasion, and modules
-        // are handled with reconciles, containers children through add and
-        // remove, but... e.g. name change of folder?
         setStructureKnown(false);
     }
 
@@ -581,11 +581,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
             return parentElement.getResource();
         }
         return null;
-    }
-
-    @Override
-    public String getLabelString() {
-        return StringUtils.normalizeSpaces(toString());
     }
 
     @Override

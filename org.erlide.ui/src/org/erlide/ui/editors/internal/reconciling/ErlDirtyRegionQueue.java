@@ -10,7 +10,7 @@ import com.google.common.collect.Lists;
  * Queue used by {@link org.eclipse.jface.text.reconciler.Reconciler} to manage
  * dirty regions. When a dirty region is inserted into the queue, the queue
  * tries to fold it into the neighbouring dirty region.
- * 
+ *
  * @see org.eclipse.jface.text.reconciler.Reconciler
  * @see org.eclipse.jface.text.reconciler.DirtyRegion
  */
@@ -28,11 +28,11 @@ public class ErlDirtyRegionQueue {
 
     /**
      * Adds a dirty region to the end of the dirty-region queue.
-     * 
+     *
      * @param dr
      *            the dirty region to add
      * @return true if the region is added, false if it's merged to previous
-     * 
+     *
      */
     public boolean addDirtyRegion(final ErlDirtyRegion dr) {
         // If the dirty region being added is directly adjacent to the last

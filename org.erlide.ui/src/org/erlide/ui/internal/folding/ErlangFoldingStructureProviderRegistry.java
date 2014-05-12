@@ -29,7 +29,7 @@ public class ErlangFoldingStructureProviderRegistry {
      * Returns an array of <code>ErlangFoldingStructureProviderDescriptor</code>
      * describing all extension to the <code>foldingProviders</code> extension
      * point.
-     * 
+     *
      * @return the list of extensions to the
      *         <code>quickDiffReferenceProvider</code> extension point.
      */
@@ -44,7 +44,7 @@ public class ErlangFoldingStructureProviderRegistry {
     /**
      * Returns the folding provider descriptor with identifier <code>id</code>
      * or <code>null</code> if no such provider is registered.
-     * 
+     *
      * @param id
      *            the identifier for which a provider is wanted
      * @return the corresponding provider descriptor, or <code>null</code> if
@@ -61,7 +61,7 @@ public class ErlangFoldingStructureProviderRegistry {
     /**
      * Instantiates and returns the provider that is currently configured in the
      * preferences.
-     * 
+     *
      * @return the current provider according to the preferences
      */
     public IErlangFoldingStructureProvider getCurrentFoldingProvider() {

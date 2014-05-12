@@ -79,8 +79,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
 
     @SuppressWarnings("null")
     @Override
-    public @NonNull
-    RuntimeInfo getRuntime(final String name) {
+    public @NonNull RuntimeInfo getRuntime(final String name) {
         final RuntimeInfo rt = runtimes.get(name);
         if (rt != null) {
             return rt;
@@ -125,14 +124,12 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
 
     @SuppressWarnings("null")
     @Override
-    public synchronized @NonNull
-    RuntimeInfo getErlideRuntime() {
+    public synchronized @NonNull RuntimeInfo getErlideRuntime() {
         return erlideRuntime;
     }
 
     @Override
-    public synchronized @NonNull
-    RuntimeInfo getDefaultRuntime() {
+    public synchronized @NonNull RuntimeInfo getDefaultRuntime() {
         return getRuntime(getDefaultRuntimeName());
     }
 
@@ -181,7 +178,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
      * <li>Look for existing Erlang runtimes in a few obvious places and install
      * them, choosing a suitable one as default.</li>
      * </ul>
-     * 
+     *
      */
     @Override
     public void initializeRuntimesList() {

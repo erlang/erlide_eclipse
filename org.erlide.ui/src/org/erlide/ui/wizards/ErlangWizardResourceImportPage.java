@@ -72,7 +72,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      * Creates an import wizard page. If the initial resource selection contains
      * exactly one container resource then it will be used as the default import
      * destination.
-     * 
+     *
      * @param name
      *            the name of the page
      * @param selection
@@ -191,7 +191,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
 
     /**
      * Create the options specification widgets.
-     * 
+     *
      * @param parent
      *            org.eclipse.swt.widgets.Composite
      */
@@ -242,7 +242,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      * <p>
      * Subclasses must implement this method.
      * </p>
-     * 
+     *
      * @param parent
      *            the parent control
      */
@@ -262,7 +262,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      * The container specified by the full path might not exist and would need
      * to be created.
      * </p>
-     * 
+     *
      * @return the full path of the container resource specified in the
      *         container name entry field, or <code>null</code>
      */
@@ -290,7 +290,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
 
     /**
      * Return the path for the resource field.
-     * 
+     *
      * @return IPath
      */
     private IPath getResourcePath() {
@@ -301,7 +301,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     /**
      * Returns this page's list of currently-specified resources to be imported.
      * This is the primary resource selection facility accessor for subclasses.
-     * 
+     *
      * @return a list of resources currently selected for export (element type:
      *         <code>IResource</code>)
      */
@@ -316,7 +316,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     /**
      * Returns this page's list of currently-specified resources to be imported
      * filtered by the IElementFilter.
-     * 
+     *
      */
     protected void getSelectedResources(final IElementFilter filter,
             final IProgressMonitor monitor) throws InterruptedException {
@@ -327,7 +327,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      * Returns the container resource specified in the container name entry
      * field, or <code>null</code> if such a container does not exist in the
      * workbench.
-     * 
+     *
      * @return the container resource specified in the container name entry
      *         field, or <code>null</code>
      */
@@ -357,7 +357,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      * The <code>WizardResourceImportPage</code> implementation of this
      * <code>Listener</code> method handles all events and enablements for
      * controls on this page. Subclasses may extend.
-     * 
+     *
      * @param event
      *            Event
      */
@@ -397,7 +397,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     // }
     /**
      * Set all of the selections in the selection group to value
-     * 
+     *
      * @param value
      *            boolean
      */
@@ -408,7 +408,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     /**
      * Sets the value of this page's container resource field, or stores it for
      * future use if this page's controls do not exist yet.
-     * 
+     *
      * @param value
      *            String
      */
@@ -427,7 +427,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
 
     /**
      * Update the selections with those in map .
-     * 
+     *
      * @param map
      *            Map - key tree elements, values Lists of list elements
      */
@@ -521,7 +521,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      * Returns whether or not the source location conflicts with the destination
      * resource. By default this is not checked, so <code>false</code> is
      * returned.
-     * 
+     *
      * @param sourcePath
      *            the path being checked
      * @return <code>true</code> if the source location conflicts with the
@@ -570,7 +570,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      * and excessively long histories. The assumption is made that all histories
      * should be of length
      * <code>WizardDataTransferPage.COMBO_HISTORY_LENGTH</code>.
-     * 
+     *
      * @param history
      *            the current history
      * @param newEntry
@@ -590,7 +590,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
      * and excessively long histories. The assumption is made that all histories
      * should be of length
      * <code>WizardDataTransferPage.COMBO_HISTORY_LENGTH</code>.
-     * 
+     *
      * @param history
      *            the current history
      * @param newEntry

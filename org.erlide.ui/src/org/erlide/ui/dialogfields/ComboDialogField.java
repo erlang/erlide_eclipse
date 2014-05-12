@@ -95,7 +95,7 @@ public class ComboDialogField extends DialogField {
 
     /**
      * Creates or returns the created combo control.
-     * 
+     *
      * @param parent
      *            The parent composite or <code>null</code> when the widget has
      *            already been created.

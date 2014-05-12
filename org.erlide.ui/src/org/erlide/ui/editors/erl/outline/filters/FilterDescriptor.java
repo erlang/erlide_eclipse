@@ -42,7 +42,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
 
     /**
      * Returns all contributed Erlang element filters.
-     * 
+     *
      * @return all contributed Erlang element filters
      */
     public static Collection<FilterDescriptor> getFilterDescriptors() {
@@ -61,7 +61,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
     /**
      * Returns all Erlang element filters which are contributed to the given
      * view.
-     * 
+     *
      * @param targetId
      *            the target id
      * @return all contributed Erlang element filters for the given view
@@ -84,7 +84,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
 
     /**
      * Creates a new filter descriptor for the given configuration element.
-     * 
+     *
      * @param element
      *            configuration element
      */
@@ -105,7 +105,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
     /**
      * Creates a new <code>ViewerFilter</code>. This method is only valid for
      * viewer filters.
-     * 
+     *
      * @return a new <code>ViewerFilter</code>
      */
     public ViewerFilter getViewerFilter() {
@@ -145,7 +145,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
      * This attribute is mandatory for custom filters. The ID for pattern
      * filters is PATTERN_FILTER_ID_PREFIX plus the pattern itself.
      * </p>
-     * 
+     *
      * @return the filter id
      */
     public String getId() {
@@ -158,7 +158,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
      * If the name of a pattern filter is missing then the pattern is used as
      * its name.
      * </p>
-     * 
+     *
      * @return the filter's name
      */
     public String getName() {
@@ -171,7 +171,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
 
     /**
      * Returns the filter's pattern.
-     * 
+     *
      * @return the pattern string or <code>null</code> if it's not a pattern
      *         filter
      */
@@ -181,7 +181,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
 
     /**
      * Returns the filter's viewId.
-     * 
+     *
      * @return the view ID or <code>null</code> if the filter is for all views
      * @since 3.0
      */
@@ -195,7 +195,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
 
     /**
      * Returns the filter's description.
-     * 
+     *
      * @return the description or <code>null</code> if no description is
      *         provided
      */
@@ -223,9 +223,9 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
 
     /**
      * Returns <code>true</code> if the filter is initially enabled.
-     * 
+     *
      * This attribute is optional and defaults to <code>true</code>.
-     * 
+     *
      * @return returns <code>true</code> if the filter is initially enabled
      */
     public boolean isEnabled() {
@@ -259,7 +259,7 @@ public final class FilterDescriptor implements Comparable<Object>, IPluginContri
 
     /**
      * Creates the filter descriptors.
-     * 
+     *
      * @param elements
      *            the configuration elements
      * @param extensionPointID

@@ -45,7 +45,7 @@ import java.lang.annotation.Target;
  * </dl>
  * Note that for applying an annotation to a package, a file by the name
  * <code>package-info.java</code> is used.
- * 
+ *
  * @since 1.0
  */
 @Documented

@@ -61,7 +61,7 @@ public class ErlangSourceContextTypeComment extends TemplateContextType {
 
     /**
      * Returns the shared instance.
-     * 
+     *
      * @return the shared instance
      */
     public static ErlangSourceContextTypeComment getDefault() {
@@ -73,7 +73,7 @@ public class ErlangSourceContextTypeComment extends TemplateContextType {
 
     /**
      * Returns this plug-in's template store.
-     * 
+     *
      * @return the template store of this plug-in instance
      */
     public TemplateStore getTemplateStore() {
@@ -96,7 +96,7 @@ public class ErlangSourceContextTypeComment extends TemplateContextType {
 
     /**
      * Returns this plug-in's context type registry.
-     * 
+     *
      * @return the context type registry for this plug-in instance
      */
     public ContextTypeRegistry getContextTypeRegistry() {

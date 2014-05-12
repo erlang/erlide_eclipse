@@ -15,7 +15,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 
 /**
-  */
+ */
 public class ImageImageDescriptor extends ImageDescriptor {
 
     private final Image fImage;

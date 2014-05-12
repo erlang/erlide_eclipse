@@ -40,10 +40,10 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 
     /**
      * Create the PropertiesContentProvider instance.
-     * 
+     *
      * Adds the content provider as a resource change listener to track changes
      * on disk.
-     * 
+     *
      */
     public ErlangFileContentProvider() {
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
@@ -80,7 +80,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 
     /**
      * Load the model from the given file, if possible.
-     * 
+     *
      * @param modelFile
      *            The IFile which contains the persisted model
      */

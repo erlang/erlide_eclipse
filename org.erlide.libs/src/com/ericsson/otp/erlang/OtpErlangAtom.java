@@ -1,19 +1,19 @@
 /*
  * %CopyrightBegin%
- * 
+ *
  * Copyright Ericsson AB 2000-2013. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
+ *
  * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
@@ -36,10 +36,10 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Create an atom from the given string.
-     * 
+     *
      * @param atom
      *            the string to create the atom from.
-     * 
+     *
      * @exception java.lang.IllegalArgumentException
      *                if the string is null or contains more than
      *                {@link #maxAtomLength maxAtomLength} characters.
@@ -59,10 +59,10 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable, Clon
     /**
      * Create an atom from a stream containing an atom encoded in Erlang
      * external format.
-     * 
+     *
      * @param buf
      *            the stream containing the encoded atom.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the buffer does not contain a valid external
      *                representation of an Erlang atom.
@@ -80,10 +80,10 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Get the actual string contained in this object.
-     * 
+     *
      * @return the raw string contained in this object, without regard to Erlang
      *         quoting rules.
-     * 
+     *
      * @see #toString
      */
     public String atomValue() {
@@ -92,11 +92,11 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable, Clon
 
     /**
      * The boolean value of this atom.
-     * 
+     *
      * @return the value of this atom expressed as a boolean value. If the atom
      *         consists of the characters "true" (independent of case) the value
      *         will be true. For any other values, the value will be false.
-     * 
+     *
      */
     public boolean booleanValue() {
         return Boolean.valueOf(atomValue()).booleanValue();
@@ -107,9 +107,9 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable, Clon
      * between this method and {link #atomValue atomValue()} is that the
      * printname is quoted and escaped where necessary, according to the Erlang
      * rules for atom naming.
-     * 
+     *
      * @return the printname representation of this atom object.
-     * 
+     *
      * @see #atomValue
      */
     @Override
@@ -123,10 +123,10 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Determine if two atoms are equal.
-     * 
+     *
      * @param o
      *            the other object to compare to.
-     * 
+     *
      * @return true if the atoms are equal, false otherwise.
      */
     @Override
@@ -147,7 +147,7 @@ public class OtpErlangAtom extends OtpErlangObject implements Serializable, Clon
 
     /**
      * Convert this atom to the equivalent Erlang external representation.
-     * 
+     *
      * @param buf
      *            an output stream to which the encoded atom should be written.
      */

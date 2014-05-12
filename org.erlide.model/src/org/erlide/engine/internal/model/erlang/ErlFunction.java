@@ -19,6 +19,7 @@ import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.engine.model.erlang.IErlMember;
+import org.erlide.engine.model.erlang.IErlTypespec;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 
@@ -26,7 +27,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Lists;
 
 /**
- * 
+ *
  * @author Vlad Dumitrescu
  */
 public class ErlFunction extends ErlMember implements IErlFunction {
@@ -35,14 +36,11 @@ public class ErlFunction extends ErlMember implements IErlFunction {
             .newArrayList();
 
     private final boolean fExported;
-
     private int arity;
-
     private final String head;
-
     private final List<String> parameters;
-
     private Collection<IErlMember> fComments = NO_COMMENTS;
+    private IErlTypespec typespec;
 
     /**
      * @param parent
@@ -175,6 +173,23 @@ public class ErlFunction extends ErlMember implements IErlFunction {
     @Override
     public void setComments(final Collection<IErlMember> comments) {
         fComments = comments;
+    }
+
+    @Override
+    public void setTypespec(final IErlTypespec spec) {
+        if (isValidSpec(spec)) {
+            typespec = spec;
+        }
+    }
+
+    private boolean isValidSpec(final IErlTypespec spec) {
+        return spec.getName().equals(getName())
+                && spec.getArity() == getArity();
+    }
+
+    @Override
+    public IErlTypespec getTypespec() {
+        return typespec;
     }
 
 }

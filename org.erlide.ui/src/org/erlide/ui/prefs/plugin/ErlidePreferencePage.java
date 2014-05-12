@@ -92,7 +92,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
 
     /**
      * Applies the status to the status line of a dialog page.
-     * 
+     *
      * @param page
      *            the dialog page
      * @param status

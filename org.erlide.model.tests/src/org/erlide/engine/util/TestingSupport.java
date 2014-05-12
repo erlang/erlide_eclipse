@@ -9,7 +9,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 /**
  * Only support for testing, mostly creating model stuff to compare with parsing
  * etc
- * 
+ *
  * @author jakob
  */
 public final class TestingSupport {

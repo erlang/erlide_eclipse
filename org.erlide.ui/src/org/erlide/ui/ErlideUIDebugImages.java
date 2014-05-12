@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2004 IBM and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -40,7 +40,7 @@ public class ErlideUIDebugImages {
 
     public static final String IMG_OBJS_EXCEPTION_DISABLED = "IMG_OBJS_EXCEPTION_DISABLED"; //$NON-NLS-1$
 
-    public static final String IMG_OBJS_ERROR = "IMG_OBJS_ERROR"; //$NON-NLS-1$	
+    public static final String IMG_OBJS_ERROR = "IMG_OBJS_ERROR"; //$NON-NLS-1$
 
     public static final String IMG_OVR_BREAKPOINT_INSTALLED = "IMG_OBJS_BREAKPOINT_INSTALLED"; //$NON-NLS-1$
 
@@ -143,7 +143,7 @@ public class ErlideUIDebugImages {
 
     /**
      * Returns the image managed under the given key in this registry.
-     * 
+     *
      * @param key
      *            the image's key
      * @return the image managed under the given key
@@ -254,7 +254,7 @@ public class ErlideUIDebugImages {
 
     /**
      * Declare an Image in the registry table.
-     * 
+     *
      * @param key
      *            The key to use when registering the image
      * @param path
