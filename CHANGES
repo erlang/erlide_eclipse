@@ -1,3 +1,16 @@
+List of user visible changes between 0.28.1 and 0.28.2 (20140512)
+
+0ac33c7 convert all xtend files to utf-8
+5b92d33 gh181 - don't show crash report for execution backends
+a3fbc60 gh182 - console title shows if launch mode is "debug"
+c8ac625 add "goto matching bracket" command (Ctrl-Shift-P)
+94c2a77 add debug printouts for 1353
+6e8723b workaround for slow input in console
+94ac6d7 allow typespec with specified module
+a8ad6ea edoc: properly detect typespec before function
+e4c9526 add icons for macros, records
+1a145c3 1303 - autodetect source directories
+9ea8bab 1300 - builder traverses all source dirs looking for .app.src and modules
 
 List of user visible changes between 0.28.0 and 0.28.1 (20140506)
 
