@@ -74,7 +74,7 @@ abstract class MethodMemoizer {
         method.simpleName + "_init"
     }
 
-    def protected final String cacheFieldName() '''cache«index»_«method.simpleName»'''
+    def protected final String cacheFieldName() '''cacheÂ«indexÂ»_Â«method.simpleNameÂ»'''
 
     def protected CharSequence cacheCall(CompilationContext context)
 
@@ -90,14 +90,14 @@ class ParamterlessMethodMemoizer extends MethodMemoizer {
     }
 
     override protected cacheCall(extension CompilationContext context) '''
-        if («cacheFieldName» == null) {
-          synchronized(«lock») {
-            if («cacheFieldName» == null) {
-              «cacheFieldName» = «initMethodName»();
+        if (Â«cacheFieldNameÂ» == null) {
+          synchronized(Â«lockÂ») {
+            if (Â«cacheFieldNameÂ» == null) {
+              Â«cacheFieldNameÂ» = Â«initMethodNameÂ»();
             }
           }
         }
-        return «cacheFieldName»;
+        return Â«cacheFieldNameÂ»;
     '''
 
     override protected cacheFieldType() {
@@ -107,7 +107,7 @@ class ParamterlessMethodMemoizer extends MethodMemoizer {
     override protected cacheFieldInit(CompilationContext context) '''null'''
 
     def lock() {
-        if (method.static) '''«method.declaringType.simpleName».class''' else "this"
+        if (method.static) '''Â«method.declaringType.simpleNameÂ».class''' else "this"
     }
 }
 
@@ -123,12 +123,12 @@ abstract class ParametrizedMethodMemoizer extends MethodMemoizer {
 
         '''
             com.google.common.cache.CacheBuilder.newBuilder()
-            .expireAfterAccess(«cacheDuration», «toJavaCode(newTypeReference("java.util.concurrent.TimeUnit"))».MILLISECONDS)
-            .maximumSize(«maxSize»)
-            .build(new com.google.common.cache.CacheLoader<«cacheKeyType.toJavaCode», «wrappedReturnType.toJavaCode»>() {
+            .expireAfterAccess(Â«cacheDurationÂ», Â«toJavaCode(newTypeReference("java.util.concurrent.TimeUnit"))Â».MILLISECONDS)
+            .maximumSize(Â«maxSizeÂ»)
+            .build(new com.google.common.cache.CacheLoaderÂ«cacheKeyType.toJavaCodeÂ», Â«wrappedReturnType.toJavaCodeÂ»>() {
               @Override
-              public «wrappedReturnType.toJavaCode» load(«cacheKeyType.toJavaCode» key) throws Exception {
-                return «initMethodName»(«cacheKeyToParameters(context)»);
+              public Â«wrappedReturnType.toJavaCodeÂ» load(Â«cacheKeyType.toJavaCodeÂ» key) throws Exception {
+                return Â«initMethodNameÂ»(Â«cacheKeyToParameters(context)Â»);
               }
             })
         '''
@@ -144,9 +144,9 @@ abstract class ParametrizedMethodMemoizer extends MethodMemoizer {
 
     override protected final cacheCall(extension CompilationContext context) '''
         try {
-          return «cacheFieldName».get(«parametersToCacheKey(context)»);
+          return Â«cacheFieldNameÂ».get(Â«parametersToCacheKey(context)Â»);
         } catch (Throwable e) {
-          throw «typeof(Exceptions).newTypeReference.toJavaCode».sneakyThrow(e.getCause());
+          throw Â«typeof(Exceptions).newTypeReference.toJavaCodeÂ».sneakyThrow(e.getCause());
         }
     '''
 
@@ -185,12 +185,12 @@ class MultipleParameterMethodMemoizer extends ParametrizedMethodMemoizer {
     override protected cacheKeyToParameters(extension CompilationContext context) {
         (method.parameters).join("", ",", "")[
             '''
-        («type.toJavaCode») key.getParameters()[«method.parameters.toList.indexOf(it)»]
+        (Â«type.toJavaCodeÂ») key.getParameters()[Â«method.parameters.toList.indexOf(it)Â»]
             ''']
     }
 
     override protected parametersToCacheKey(extension CompilationContext context) '''
-        new «cacheKeyType.toJavaCode»(«method.parameters.join("", ",", "")[simpleName]»)
+        new Â«cacheKeyType.toJavaCodeÂ»(Â«method.parameters.join("", ",", "")[simpleName]Â»)
     '''
 
     override protected cacheKeyType() {

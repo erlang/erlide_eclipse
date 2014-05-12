@@ -31,15 +31,15 @@ class ErlSystemStatus {
 
   def String prettyPrint() '''
     Memory:
-    «memory.prettyPrint»
+    Â«memory.prettyPrintÂ»
     ----------
     Registered processes:
-    «names»
+    Â«namesÂ»
     ----------
-    «FOR status : processes»
-      «status.prettyPrint»
+    Â«FOR status : processesÂ»
+      Â«status.prettyPrintÂ»
       ----------
-    «ENDFOR»
+    Â«ENDFORÂ»
     ----------
   '''
 
@@ -98,17 +98,17 @@ class MemoryStatus {
   }
 
   def String prettyPrint() '''
-             total: «format("%,10d", total)»
-         processes: «format("%,10d", processes)»
-    processes_used: «format("%,10d", processes_used)»
-            system: «format("%,10d", system)»
-              atom: «format("%,10d", atom)»
-         atom_used: «format("%,10d", atom_used)»
-       binary: «format("%,10d", binary)»
-         code: «format("%,10d", code)»
-          ets: «format("%,10d", ets)»
-          low: «format("%,10d", low)»
-           maximum: «format("%,10d", maximum)»
+             total: Â«format("%,10d", total)Â»
+         processes: Â«format("%,10d", processes)Â»
+    processes_used: Â«format("%,10d", processes_used)Â»
+            system: Â«format("%,10d", system)Â»
+              atom: Â«format("%,10d", atom)Â»
+         atom_used: Â«format("%,10d", atom_used)Â»
+       binary: Â«format("%,10d", binary)Â»
+         code: Â«format("%,10d", code)Â»
+          ets: Â«format("%,10d", ets)Â»
+          low: Â«format("%,10d", low)Â»
+           maximum: Â«format("%,10d", maximum)Â»
   '''
 
 }
@@ -152,19 +152,19 @@ class ProcessStatus {
             pid = value as OtpErlangPid
         }
       } catch (Exception e) {
-        ErlLogger.error(">>>>>>> bad term in system status: " + input);
+        ErlLogger.error("Â»Â»> bad term in system status: " + input);
       }
     }
   }
 
   def String prettyPrint() '''
-    Process «pid» («registered_name»)
-         memory: «format("%,10d", memory)»
-      heap_size: «format("%,10d", heap_size)»
-     stack_size: «format("%,10d", stack_size)»
-     total_heap: «format("%,10d", total_heap_size)»
-         binary: «binary»
-     stacktrace: «stacktrace»
+    Process Â«pidÂ» (Â«registered_nameÂ»)
+         memory: Â«format("%,10d", memory)Â»
+      heap_size: Â«format("%,10d", heap_size)Â»
+     stack_size: Â«format("%,10d", stack_size)Â»
+     total_heap: Â«format("%,10d", total_heap_size)Â»
+         binary: Â«binaryÂ»
+     stacktrace: Â«stacktraceÂ»
   '''
 
 }

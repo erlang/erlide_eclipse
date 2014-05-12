@@ -54,11 +54,11 @@ class DelegateParticipant extends AbstractClassProcessor {
                     injected.exceptions = m.exceptions
                     injected.body = [
                         '''
-                            «IF (!m.returnType.void)»
+                            Â«IF (!m.returnType.void)Â»
                                 return
-                            «ENDIF»
-                            «field».«m.simpleName»(
-                            «FOR p : m.parameters SEPARATOR ','»«p.simpleName»«ENDFOR»
+                            Â«ENDIFÂ»
+                            Â«fieldÂ».Â«m.simpleNameÂ»(
+                            Â«FOR p : m.parameters SEPARATOR ','Â»Â«p.simpleNameÂ»Â«ENDFORÂ»
                             );
                         '''
                     ]

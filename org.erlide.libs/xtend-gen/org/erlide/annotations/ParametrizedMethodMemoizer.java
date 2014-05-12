@@ -41,7 +41,7 @@ public abstract class ParametrizedMethodMemoizer extends MethodMemoizer {
       _builder.append(maxSize, "");
       _builder.append(")");
       _builder.newLineIfNotEmpty();
-      _builder.append(".build(new com.google.common.cache.CacheLoader<");
+      _builder.append(".build(new com.google.common.cache.CacheLoader");
       TypeReference _cacheKeyType = this.cacheKeyType();
       String _javaCode_1 = context.toJavaCode(_cacheKeyType);
       _builder.append(_javaCode_1, "");

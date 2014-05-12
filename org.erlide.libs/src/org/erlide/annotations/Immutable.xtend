@@ -33,7 +33,7 @@ class ImmutableProcessor extends AbstractClassProcessor {
         returnType = cls.newTypeReference
         body = [
           '''
-            return new «cls.simpleName»(«cls.dataFields.join(",")[simpleName]»);
+            return new Â«cls.simpleNameÂ»(Â«cls.dataFields.join(",")[simpleName]Â»);
           ''']
       ]
       cls.dataFields.forEach [ field |
@@ -42,7 +42,7 @@ class ImmutableProcessor extends AbstractClassProcessor {
           returnType = cls.builderClassName.newTypeReference
           body = [
             '''
-              this.«field.simpleName» = «field.simpleName»;
+              this.Â«field.simpleNameÂ» = Â«field.simpleNameÂ»;
               return this;
             ''']
         ]
@@ -58,7 +58,7 @@ class ImmutableProcessor extends AbstractClassProcessor {
       addParameter("init", typeof(Procedures$Procedure1).newTypeReference(builder.newTypeReference))
       body = [
         '''
-          «cls.builderClassName» builder = builder();
+          Â«cls.builderClassNameÂ» builder = builder();
           init.apply(builder);
           return builder.build();
         ''']
@@ -68,7 +68,7 @@ class ImmutableProcessor extends AbstractClassProcessor {
       static = true
       body = [
         '''
-          return new «cls.builderClassName»();
+          return new Â«cls.builderClassNameÂ»();
         ''']
     ]
 
@@ -78,9 +78,9 @@ class ImmutableProcessor extends AbstractClassProcessor {
       ]
       body = [
         '''
-          «FOR p : cls.dataFields»
-            this.«p.simpleName» = «p.simpleName»;
-          «ENDFOR»
+          Â«FOR p : cls.dataFieldsÂ»
+            this.Â«p.simpleNameÂ» = Â«p.simpleNameÂ»;
+          Â«ENDFORÂ»
         ''']
     ]
     cls.dataFields.forEach [ field |
@@ -90,7 +90,7 @@ class ImmutableProcessor extends AbstractClassProcessor {
         returnType = field.type
         body = [
           '''
-            return «field.simpleName»;
+            return Â«field.simpleNameÂ»;
           ''']
       ]
     ]
@@ -99,16 +99,16 @@ class ImmutableProcessor extends AbstractClassProcessor {
       addParameter("o", object)
       body = [
         '''
-          if (o instanceof «cls.simpleName») {
-            «cls.simpleName» other = («cls.simpleName») o;
-            return «cls.dataFields.join("\n&& ")['''«objects».equal(«simpleName», other.«simpleName»)''']»;
+          if (o instanceof Â«cls.simpleNameÂ») {
+            Â«cls.simpleNameÂ» other = (Â«cls.simpleNameÂ») o;
+            return Â«cls.dataFields.join("\n&& ")['''Â«objectsÂ».equal(Â«simpleNameÂ», other.Â«simpleNameÂ»)''']Â»;
           }
           return false;
         ''']
     ]
     cls.addMethod("hashCode") [
       returnType = primitiveInt
-      body = ['''return «objects».hashCode(«cls.dataFields.join(",")[simpleName]»);''']
+      body = ['''return Â«objectsÂ».hashCode(Â«cls.dataFields.join(",")[simpleName]Â»);''']
     ]
     cls.addMethod("toString") [
       returnType = string

@@ -26,22 +26,22 @@ class EqualsAndHashCodeProcessor extends AbstractClassProcessor {
                 '''
                     final int prime = 31;
                     int result = super.hashCode();
-                    «FOR f : annotatedClass.declaredFields.filter[!static]»
-                        «IF Boolean.TYPE.name == f.type.simpleName»
-                            result = prime * result + («f.simpleName» ? 1231 : 1237);
-                        «ELSEIF Integer.TYPE.name == f.type.simpleName || Character.TYPE.name == f.type.simpleName ||
-                        Byte.TYPE.name == f.type.simpleName || Short.TYPE.name == f.type.simpleName»
-                            result = prime * result + «f.simpleName»;
-                        «ELSEIF Long.TYPE.name == f.type.simpleName»
-                            result = prime * result + (int) («f.simpleName» ^ («f.simpleName» >>> 32));
-                        «ELSEIF Float.TYPE.name == f.type.simpleName»
-                            result = prime * result + Float.floatToIntBits(«f.simpleName»);
-                        «ELSEIF Double.TYPE.name == f.type.simpleName»
-                            result = prime * result + (int) (Double.doubleToLongBits(«f.simpleName») ^ (Double.doubleToLongBits(«f.simpleName») >>> 32));
-                        «ELSE»
-                            result = prime * result + ((«f.simpleName»== null) ? 0 : «f.simpleName».hashCode());
-                        «ENDIF»
-                    «ENDFOR»
+                    Â«FOR f : annotatedClass.declaredFields.filter[!static]Â»
+                        Â«IF Boolean.TYPE.name == f.type.simpleNameÂ»
+                            result = prime * result + (Â«f.simpleNameÂ» ? 1231 : 1237);
+                        Â«ELSEIF Integer.TYPE.name == f.type.simpleName || Character.TYPE.name == f.type.simpleName ||
+                        Byte.TYPE.name == f.type.simpleName || Short.TYPE.name == f.type.simpleNameÂ»
+                            result = prime * result + Â«f.simpleNameÂ»;
+                        Â«ELSEIF Long.TYPE.name == f.type.simpleNameÂ»
+                            result = prime * result + (int) (Â«f.simpleNameÂ» ^ (Â«f.simpleNameÂ» Â» 32));
+                        Â«ELSEIF Float.TYPE.name == f.type.simpleNameÂ»
+                            result = prime * result + Float.floatToIntBits(Â«f.simpleNameÂ»);
+                        Â«ELSEIF Double.TYPE.name == f.type.simpleNameÂ»
+                            result = prime * result + (int) (Double.doubleToLongBits(Â«f.simpleNameÂ») ^ (Double.doubleToLongBits(Â«f.simpleNameÂ») Â» 32));
+                        Â«ELSEÂ»
+                            result = prime * result + ((Â«f.simpleNameÂ»== null) ? 0 : Â«f.simpleNameÂ».hashCode());
+                        Â«ENDIFÂ»
+                    Â«ENDFORÂ»
                     return 0;
                 '''
             ]

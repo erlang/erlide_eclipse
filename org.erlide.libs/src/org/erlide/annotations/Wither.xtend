@@ -35,14 +35,14 @@ class WitherParticipant extends AbstractClassProcessor {
           setReturnType(newTypeReference(annotatedClass))
           body = [
             '''
-              return new «annotatedClass.simpleName»(
-              «FOR f : fields SEPARATOR ','»
-                «IF f == field»
-                  «properName»
-                «ELSE»
-                  «f.simpleName»
-                «ENDIF»
-              «ENDFOR»
+              return new Â«annotatedClass.simpleNameÂ»(
+              Â«FOR f : fields SEPARATOR ','Â»
+                Â«IF f == fieldÂ»
+                  Â«properNameÂ»
+                Â«ELSEÂ»
+                  Â«f.simpleNameÂ»
+                Â«ENDIFÂ»
+              Â«ENDFORÂ»
               );
             '''
           ]

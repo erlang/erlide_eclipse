@@ -242,7 +242,7 @@ class BuilderSelectionListener implements SelectionListener {
             ToolExecutor.getToolLocation(info.builder.osCommand) !== null
         if (!toolExists) {
             page.setMessage(
-                '''The tool '«info.builder.osCommand»' can't be found on your system's $PATH''',
+                '''The tool 'Â«info.builder.osCommandÂ»' can't be found on your system's $PATH''',
                 DialogPage.WARNING
             )
         }

@@ -35,7 +35,7 @@ class Err<T> extends Opt<T> {
     override iterator() { newLinkedList.iterator }
     override equals(Object obj) { obj instanceof Err<?> }
     override hashCode() { -1 }
-    override toString() '''Error («exception.message»)'''
+    override toString() '''Error (Â«exception.messageÂ»)'''
 }
 
 class Some<T> extends Opt<T> {
@@ -52,7 +52,7 @@ class Some<T> extends Opt<T> {
     override iterator() { newLinkedList(value).iterator	}
     override hashCode() { value.hashCode }
     override equals(Object obj) { obj == value || (obj instanceof Some<?>) && (obj as Some<?>).value == value }
-    override toString() '''Some(«value»)'''
+    override toString() '''Some(Â«valueÂ»)'''
 }
 
 class NoneException extends Exception { }

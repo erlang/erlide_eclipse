@@ -119,7 +119,7 @@ public class NewProjectData extends ErlangProjectProperties {
     boolean _exists = f.exists();
     if (_exists) {
       String _absolutePath = f.getAbsolutePath();
-      String _plus = (">>> LOAD " + _absolutePath);
+      String _plus = ("» LOAD " + _absolutePath);
       System.out.println(_plus);
       ProjectConfigType _configType_1 = this.getConfigType();
       IPath _location_1 = this.getLocation();
@@ -141,7 +141,7 @@ public class NewProjectData extends ErlangProjectProperties {
   public String detectProjectConfig() {
     String _xblockexpression = null;
     {
-      InputOutput.<String>println(">>> DETECT builder config");
+      InputOutput.<String>println("» DETECT builder config");
       String _xifexpression = null;
       IPath _location = this.getLocation();
       boolean _tripleNotEquals = (_location != null);

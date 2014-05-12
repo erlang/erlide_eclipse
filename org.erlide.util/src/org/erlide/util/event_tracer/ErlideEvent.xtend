@@ -26,7 +26,7 @@ class ErlideSessionEvent extends ErlideEvent {
     }
 
     override String print() '''
-        «timestamp» SESSION «formatter.format(new Date(timestamp))»
+        Â«timestampÂ» SESSION Â«formatter.format(new Date(timestamp))Â»
     '''
 
 }
@@ -37,7 +37,7 @@ class ErlideResetEvent extends ErlideEvent {
     }
 
     override String print() '''
-        «timestamp» RESET
+        Â«timestampÂ» RESET
         '''
 }
 
@@ -50,7 +50,7 @@ class ErlideCrashEvent extends ErlideEvent {
     }
 
     override String print() '''
-        «timestamp» CRASH «backend»
+        Â«timestampÂ» CRASH Â«backendÂ»
         '''
 }
 
@@ -72,7 +72,7 @@ class ErlideOperationStartEvent extends ErlideOperationEvent {
     }
 
     override String print() '''
-        «timestamp» OP> «id» «operation»
+        Â«timestampÂ» OP> Â«idÂ» Â«operationÂ»
         '''
 }
 
@@ -83,7 +83,7 @@ class ErlideOperationEndEvent extends ErlideOperationEvent {
     }
 
     override String print() '''
-        «timestamp» OP< «id» «operation»
+        Â«timestampÂ» OP< Â«idÂ» Â«operationÂ»
         '''
 }
 
@@ -96,6 +96,6 @@ class ErlideStatusEvent extends ErlideEvent {
     }
 
     override String print() '''
-        «timestamp» STATUS «status.toString»
+        Â«timestampÂ» STATUS Â«status.toStringÂ»
         '''
 }

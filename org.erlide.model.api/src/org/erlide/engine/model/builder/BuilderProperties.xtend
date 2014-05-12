@@ -45,7 +45,7 @@ class BuilderProperties {
   }
 
   override toString() {
-    '''«builderTool»|«compileTarget»|«cleanTarget»|«testTarget»|«extraFlags»'''
+    '''Â«builderToolÂ»|Â«compileTargetÂ»|Â«cleanTargetÂ»|Â«testTargetÂ»|Â«extraFlagsÂ»'''
   }
 
 }
