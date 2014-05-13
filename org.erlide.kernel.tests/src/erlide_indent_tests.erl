@@ -322,6 +322,93 @@ indent_named_fun_test_() ->
             "    end.",
     ?Test_indent(I, S).
 
+indent_record_arg_test_() ->
+    S = "" ++
+            "-record(rec, {f1, f2}).\n" ++
+            "recordTest(R) ->\n" ++
+            "test(R#rec{f=y,\n" ++
+            "g=z},\n" ++
+            "arg2,\n" ++
+            "arg3\n" ++
+            ").",
+    I = "" ++
+            "-record(rec, {f1, f2}).\n" ++
+            "recordTest(R) ->\n" ++
+            "    test(R#rec{f=y,\n" ++
+            "               g=z},\n" ++
+            "         arg2,\n" ++
+            "         arg3\n" ++
+            "        ).",
+    ?Test_indent(I, S).
+
+indent_record_arg1_test_() ->
+    S = "" ++
+            "-record(rec, {f1, f2}).\n" ++
+            "recordTest(R) ->\n" ++
+            "test(arg0,\n" ++
+            "R#rec{},\n" ++
+            "arg2,\n" ++
+            "arg3\n" ++
+            ").",
+    I = "" ++
+            "-record(rec, {f1, f2}).\n" ++
+            "recordTest(R) ->\n" ++
+            "    test(arg0,\n"++
+            "         R#rec{},\n" ++
+            "         arg2,\n" ++
+            "         arg3\n" ++
+            "        ).",
+    ?Test_indent(I, S).
+
+indent_record_list_test_() ->
+    S = "" ++
+            "recordTest(R) ->\n" ++
+            "[arg0,\n"++
+            "R#rec{},\n" ++
+            "arg2,\n" ++
+            "arg3\n" ++
+            "].",
+    I = "" ++
+            "recordTest(R) ->\n" ++
+            "    [arg0,\n"++
+            "     R#rec{},\n" ++
+            "     arg2,\n" ++
+            "     arg3\n" ++
+            "    ].",
+    ?Test_indent(I, S).
+
+indent_record_list1_test_() ->
+    S = "" ++
+            "recordTest(R) ->\n" ++
+            "[R#rec{f=y,\n" ++
+            "g=z},\n" ++
+            "arg2,\n" ++
+            "arg3\n" ++
+            "].",
+    I = "" ++
+            "recordTest(R) ->\n" ++
+            "    [R#rec{f=y,\n" ++
+            "           g=z},\n" ++
+            "     arg2,\n" ++
+            "     arg3\n" ++
+            "    ].",
+    ?Test_indent(I, S).
+
+indent_map_arg_test_() ->
+    S = "" ++
+            "mapTest(Map) ->\n" ++
+            "test(Map#{},\n" ++
+            "arg2,\n" ++
+            "arg3\n" ++
+            ")",
+    I = "" ++
+            "mapTest(Map) ->\n" ++
+            "    test(Map#{},\n" ++
+            "         arg2,\n" ++
+            "         arg3\n" ++
+            "        )",
+    ?Test_indent(I, S).
+
 %%
 %% Local Functions
 %%

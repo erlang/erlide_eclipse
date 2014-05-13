@@ -661,7 +661,7 @@ i_record([#token{kind='#'} | R0], I0) ->
             ?D(R4),
             {R4, I#i.anchor};
         '{' ->
-            i_expr(R2, I, none);
+            i_expr(R2, I, I#i.anchor);
         '[' ->
             i_expr(R2, I, none);
         '?' ->
