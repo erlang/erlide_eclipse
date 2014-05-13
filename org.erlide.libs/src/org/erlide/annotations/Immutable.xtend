@@ -97,11 +97,12 @@ class ImmutableProcessor extends AbstractClassProcessor {
     cls.addMethod("equals") [
       returnType = primitiveBoolean
       addParameter("o", object)
+      val result = cls.dataFields.join("\n&& ")['''«objects».equal(«simpleName», other.«simpleName»)''']
       body = [
         '''
           if (o instanceof «cls.simpleName») {
             «cls.simpleName» other = («cls.simpleName») o;
-            return «cls.dataFields.join("\n&& ")['''«objects».equal(«simpleName», other.«simpleName»)''']»;
+            return «result»;
           }
           return false;
         ''']

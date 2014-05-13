@@ -247,7 +247,24 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         it.setReturnType(_primitiveBoolean);
         TypeReference _object = context.getObject();
         it.addParameter("o", _object);
-        final CompilationStrategy _function = new CompilationStrategy() {
+        Iterable<? extends MutableFieldDeclaration> _dataFields = ImmutableProcessor.this.dataFields(cls);
+        final Function1<MutableFieldDeclaration,String> _function = new Function1<MutableFieldDeclaration,String>() {
+          public String apply(final MutableFieldDeclaration it) {
+            StringConcatenation _builder = new StringConcatenation();
+            String _objects = ImmutableProcessor.this.objects();
+            _builder.append(_objects, "");
+            _builder.append(".equal(");
+            String _simpleName = it.getSimpleName();
+            _builder.append(_simpleName, "");
+            _builder.append(", other.");
+            String _simpleName_1 = it.getSimpleName();
+            _builder.append(_simpleName_1, "");
+            _builder.append(")");
+            return _builder.toString();
+          }
+        };
+        final String result = IterableExtensions.join(_dataFields, "\n&& ", _function);
+        final CompilationStrategy _function_1 = new CompilationStrategy() {
           public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("if (o instanceof ");
@@ -265,24 +282,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
             _builder.newLineIfNotEmpty();
             _builder.append("  ");
             _builder.append("return ");
-            Iterable<? extends MutableFieldDeclaration> _dataFields = ImmutableProcessor.this.dataFields(cls);
-            final Function1<MutableFieldDeclaration,String> _function = new Function1<MutableFieldDeclaration,String>() {
-              public String apply(final MutableFieldDeclaration it) {
-                StringConcatenation _builder = new StringConcatenation();
-                String _objects = ImmutableProcessor.this.objects();
-                _builder.append(_objects, "");
-                _builder.append(".equal(");
-                String _simpleName = it.getSimpleName();
-                _builder.append(_simpleName, "");
-                _builder.append(", other.");
-                String _simpleName_1 = it.getSimpleName();
-                _builder.append(_simpleName_1, "");
-                _builder.append(")");
-                return _builder.toString();
-              }
-            };
-            String _join = IterableExtensions.join(_dataFields, "\n&& ", _function);
-            _builder.append(_join, "  ");
+            _builder.append(result, "  ");
             _builder.append(";");
             _builder.newLineIfNotEmpty();
             _builder.append("}");
@@ -292,7 +292,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
             return _builder;
           }
         };
-        it.setBody(_function);
+        it.setBody(_function_1);
       }
     };
     cls.addMethod("equals", _function_5);
