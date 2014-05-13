@@ -486,6 +486,15 @@ i_1_expr([#token{kind='fun'}=T | R0], I) ->
         '(' ->
             R1 = i_fun_clause_list(R0, I1),
             i_kind('end', R1, I);
+        var ->
+            case i_sniff(tl(R0)) of
+                '(' ->
+                    R1 = i_fun_clause_list(R0, I1#i{current=I1#i.current+1}),
+                    i_kind('end', R1, I);
+                _ ->
+                    {R1, _A} = i_expr(R0, I1, none),
+                    R1
+            end;
         _ ->
             {R1, _A} = i_expr(R0, I1, none),
             R1
@@ -803,8 +812,8 @@ i_spec(R0, I) ->
 
 i_fun_clause(R0, I0) ->
     R1 = i_comments(R0, I0),
-    R2 = i_par_list(R1, I0),
-    I1 = i_with(before_arrow, R0, I0#i{in_block=false}),
+    {R2, A} = i_expr(R0, I0, none),
+    I1 = i_with(before_arrow, A, I0#i{in_block=false}),
     R3 = case i_sniff(R2) of
              'when' ->
                  R21 = i_kind('when', R2, I1),

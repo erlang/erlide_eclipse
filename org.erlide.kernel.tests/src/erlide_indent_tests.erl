@@ -288,6 +288,40 @@ indent_maps_test_() ->
             "    ok.\n",
     ?Test_indent(I, S).
 
+indent_fun_test_() ->
+    S = "" ++
+            "test() ->\n" ++
+            "fun(0) ->\n" ++
+            "ok;\n" ++
+            "(_) ->\n" ++
+            "ok\n" ++
+            "end.",
+    I = "" ++
+            "test() ->\n" ++
+            "    fun(0) ->\n" ++
+            "            ok;\n" ++
+            "       (_) ->\n" ++
+            "            ok\n" ++
+            "    end.",
+    ?Test_indent(I, S).
+
+indent_named_fun_test_() ->
+    S = "" ++
+            "testNamed() ->\n" ++
+            "fun Name(0) ->\n" ++
+            "ok;\n" ++
+            "Name(_) ->\n" ++
+            "ok\n" ++
+            "end.",
+    I = "" ++
+            "testNamed() ->\n" ++
+            "    fun Name(0) ->\n" ++
+            "             ok;\n" ++
+            "        Name(_) ->\n" ++
+            "             ok\n" ++
+            "    end.",
+    ?Test_indent(I, S).
+
 %%
 %% Local Functions
 %%
