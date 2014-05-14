@@ -191,29 +191,30 @@ macro_in_lc_test_() ->
 
 
 %% for multi-line strings
-multiline_string_test_() ->
-    S = "a() -> \"aaa\n"
-        "b,b,b,\n"
-        " ddd\n"
-        "ccc\",\n"
-        "ok.",
-    SIndent = "a() -> \"aaa\n"
-              "b,b,b,\n"
-              " ddd\n"
-              "ccc\",\n"
-              "       ok.",
-    ?Test_indent(SIndent, S).
-    
+%% TODO when scanner can handle multiline strings
+%% multiline_string_test_() ->
+%%     S = "a() -> \"aaa\n"
+%%         "b,b,b\n"
+%%         " ddd,\n"
+%%         "ccc\",\n"
+%%         "ok.",
+%%     SIndent = "a() -> \"aaa\n"
+%%               "b,b,b\n"
+%%               " ddd,\n"
+%%               "ccc\",\n"
+%%               "       ok.",
+%%     ?Test_indent(SIndent, S).
+
 %% for adjacent strings on different lines
 adjacent_string_test_() ->
     S = "a() -> \"aaa\"\n"
         "\"b,b,b,\"\n"
-        " \"ddd\n"
+        " \"ddd\"\n"
         "\"ccc\",\n"
         "ok.",
     SIndent = "a() -> \"aaa\"\n"
               "       \"b,b,b,\"\n"
-              "       \"ddd\n"
+              "       \"ddd\"\n"
               "       \"ccc\",\n"
               "       ok.",
     ?Test_indent(SIndent, S).

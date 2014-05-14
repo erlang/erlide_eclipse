@@ -188,6 +188,18 @@ unicode_test_() ->
      ?_assertEqual({ok,[{token,comment,0,0,2,u,<<"%生"/utf8>>,u,u}],{0,3,2}}, test_scan("%生"))
      ].
 
+multiline_string_test_() ->
+    [?_assertEqual({ok, [#token{kind = string, line = 0, offset = 0,length = 3, value = "b",text = "\"b\""},
+                         #token{kind = white_space, line = 0, offset = 3, length = 1, text= <<"\n">>},
+                         #token{kind = string, line = 1, offset = 4,length = 3, value = "b",text = "\"b\""},
+                         #token{kind = dot, line = 1, offset = 7, length = 1, text = "."}], {1,5,8}},
+                   test_scan("\"b\"\n\"b\".")),
+     ?_assertEqual({ok, [#token{kind = string, line = 0, offset = 0,length = 5, value = "b\nb",text = "\"b\nb\""},
+                         #token{kind = dot, line = 1, offset = 5, length = 1, text = "."}], {1,4,6}},
+                   test_scan("\"b\nb\"."))
+    ].
+
+
 test_scan(S) ->
     %%io:format("~s~n----------------~n", [S]),
     %%io:format("~ts~n----------------~n", [S]),

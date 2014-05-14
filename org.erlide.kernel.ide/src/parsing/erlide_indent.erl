@@ -13,8 +13,8 @@
 
 -export([indent_line/6, indent_lines/6, template_indent_lines/5]).
 
-%%-define(IO_FORMAT_DEBUG, 1).
--define(DEBUG, 1).
+%-define(IO_FORMAT_DEBUG, 1).
+%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_token.hrl").
@@ -254,9 +254,16 @@ i_expr(R0, I0, A) ->
     R2 = i_1_expr(R1, I1),
     ?D({i_expr, R1}),
     case i_sniff(R1) of
-        Kind when Kind=:=string; Kind=:=macro ->
-            case i_sniff(i_kind(Kind, R1, I1)) of
-                Kind2 when Kind2=:=string; Kind2=:=macro ->
+        string ->
+            case i_sniff(i_kind(string, R1, I1)) of
+                string ->
+                    i_expr(R2, I1, A);
+                _ ->
+                    i_expr_rest(R2, I1, I1#i.anchor)
+            end;
+        macro ->
+            case i_sniff(i_kind(macro, R1, I1)) of
+                macro ->
                     i_expr(R2, i_with(after_binary_op, I1), A);
                 _ ->
                     i_expr_rest(R2, I1, I1#i.anchor)
