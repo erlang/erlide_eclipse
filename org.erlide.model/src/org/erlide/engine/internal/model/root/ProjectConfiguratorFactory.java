@@ -6,10 +6,10 @@ import java.io.FilenameFilter;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.IProjectConfigurator;
 import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.model.root.OTPProjectConfigurator;
 import org.erlide.engine.model.root.ProjectConfigType;
-import org.erlide.engine.model.root.IProjectConfigurator;
 
 public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
     private static IProjectConfiguratorFactory instance;
