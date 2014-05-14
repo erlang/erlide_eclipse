@@ -14,7 +14,7 @@
 -export([indent_line/6, indent_lines/6, template_indent_lines/5]).
 
 %-define(IO_FORMAT_DEBUG, 1).
-%% -define(DEBUG, 1).
+%-define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_token.hrl").
@@ -61,6 +61,7 @@ indent_line(St, OldLine, CommandText, N, Tablength, UseTabs, Prefs) ->
                                 _ ->
                                     N
                             end,
+                    ?D({indent_line, OldLine}),
                     case indent(Tr, LineOffsets, LineN, Prefs, erlide_text:left_strip(OldLine)) of
                         {I, true} ->
                             ?D(I),
@@ -172,10 +173,16 @@ do_indent_lines([], _, _, _, _, _, A) ->
     A;
 do_indent_lines([Line | Rest], Tablength, UseTabs, Text, Prefs, N, Acc) ->
     {NewI, _OldI, _AddNL} = indent_line(Text ++ Line, Line, "", N, Tablength, UseTabs, Prefs),
-    NewLine0 = reindent_line(Line, NewI),
-    NewLine = entab(NewLine0, UseTabs, Tablength),
-    ?D(NewLine),
-    do_indent_lines(Rest, Tablength, UseTabs, Text ++ NewLine, Prefs, N+1, Acc ++ NewLine).
+    ?D({do_indent_lines, Text++Line, NewI, N}),
+    NewLine = case NewI of
+                  error ->
+                      Line;
+                  _ ->
+                      NewLine0 = reindent_line(Line, NewI),
+                      entab(NewLine0, UseTabs, Tablength)
+              end,
+    do_indent_lines(Rest, Tablength, UseTabs, Text ++ NewLine, Prefs, N+1, Acc++NewLine).
+
 
 %%
 reindent_line(" " ++ S, I) ->
@@ -245,11 +252,18 @@ i_expr(R0, I0, A) ->
     R1 = i_comments(R0, I0),
     I1 = i_with_old_or_new_anchor(A, R1, I0),
     R2 = i_1_expr(R1, I1),
-    ?D(R1),
+    ?D({i_expr, R1}),
     case i_sniff(R1) of
-        Kind when Kind=:=string; Kind=:=macro ->
-            case i_sniff(i_kind(Kind, R1, I1)) of
-                Kind2 when Kind2=:=string; Kind2=:=macro ->
+        string ->
+            case i_sniff(i_kind(string, R1, I1)) of
+                string ->
+                    i_expr(R2, I1, A);
+                _ ->
+                    i_expr_rest(R2, I1, I1#i.anchor)
+            end;
+        macro ->
+            case i_sniff(i_kind(macro, R1, I1)) of
+                macro ->
                     i_expr(R2, i_with(after_binary_op, I1), A);
                 _ ->
                     i_expr_rest(R2, I1, I1#i.anchor)
@@ -625,6 +639,7 @@ i_block_end(_Begin, R0, R1, I0) ->
     i_kind('end', R1, I1).
 
 i_one(R0, I) ->
+    ?D({i_one, R0, I}),
     [_ | R] = i_comments(R0, I),
     R.
 
