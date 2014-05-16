@@ -20,7 +20,7 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelUtilService;
 import org.erlide.util.ErlLogger;
 
-public class CreateHeaderQuickFix extends ErlangQuickFixRunnable {
+public class CreateHeaderQuickFix extends MarkerQuickFixExecutor {
 
     @Override
     public void run() {

@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 
-public class RenameFileQuickFix extends ErlangQuickFixRunnable {
+public class RenameFileQuickFix extends MarkerQuickFixExecutor {
 
     @Override
     public void run() throws CoreException {

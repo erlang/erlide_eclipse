@@ -2045,7 +2045,7 @@
   <extension point="org.eclipse.ui.ide.markerResolution">
       <markerResolutionGenerator
          markerType="org.erlide.core.problemmarker"
-         class="org.erlide.ui.editors.erl.correction.QuickFixResolutionGenerator"/>
+         class="org.erlide.ui.editors.erl.correction.ErlangQuickAssistProcessor"/>
    </extension>
   <extension
         point="org.erlide.ui.quickfix">

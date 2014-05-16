@@ -12,7 +12,7 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlModule;
 
-public class RenameModuleQuickFix extends ErlangQuickFixRunnable {
+public class RenameModuleQuickFix extends MarkerQuickFixExecutor {
 
     @Override
     public void run() throws Exception {

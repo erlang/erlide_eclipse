@@ -203,7 +203,7 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
     @Override
     public IQuickAssistAssistant getQuickAssistAssistant(final ISourceViewer sourceViewer) {
         final IQuickAssistAssistant assistant = new QuickAssistAssistant();
-        assistant.setQuickAssistProcessor(new ErlangQuickAssistProcessor(sourceViewer));
+        assistant.setQuickAssistProcessor(new ErlangQuickAssistProcessor());
         assistant
                 .setInformationControlCreator(getQuickAssistAssistantInformationControlCreator());
         return assistant;

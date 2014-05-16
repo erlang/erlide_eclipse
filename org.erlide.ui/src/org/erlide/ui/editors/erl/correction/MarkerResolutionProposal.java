@@ -1,16 +1,5 @@
 package org.erlide.ui.editors.erl.correction;
 
-/*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
@@ -21,29 +10,16 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolution2;
 
-/**
- */
-public class MarkerResolutionProposal implements ICompletionProposal {
+public class MarkerResolutionProposal extends ResolutionProposal {
 
-    private final IMarkerResolution fResolution;
     private final IMarker fMarker;
 
-    /**
-     * Constructor for MarkerResolutionProposal.
-     */
     public MarkerResolutionProposal(final IMarkerResolution resolution,
             final IMarker marker) {
-        fResolution = resolution;
+        super(resolution);
         fMarker = marker;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.contentassist.ICompletionProposal#apply(org.eclipse
-     * .jface.text.IDocument)
-     */
     @Override
     public void apply(final IDocument document) {
         fResolution.run(fMarker);
@@ -57,11 +33,9 @@ public class MarkerResolutionProposal implements ICompletionProposal {
      */
     @Override
     public String getAdditionalProposalInfo() {
-        if (fResolution instanceof IMarkerResolution2) {
-            return ((IMarkerResolution2) fResolution).getDescription();
-        }
-        if (fResolution instanceof ICompletionProposal) {
-            return ((ICompletionProposal) fResolution).getAdditionalProposalInfo();
+        final String info = super.getAdditionalProposalInfo();
+        if (info != null) {
+            return info;
         }
         try {
             final String problemDesc = (String) fMarker.getAttribute(IMarker.MESSAGE);
