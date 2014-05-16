@@ -19,7 +19,7 @@
 
 -export([light_scan_string/2, scan_string/1, initial_scan/5, get_token_at/2,
          initial_scan/6, create/1, addref/1, dispose/1, get_text/1,
-         get_text_line/2, get_tokens/1, get_token_window/4, dump_log/2,
+         get_tokens/1, get_token_window/4, dump_log/2,
          dump_module/1, replace_text/4, check_all/3]).
 
 %%
@@ -53,6 +53,7 @@ initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache) ->
     CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
     RenewFun = fun(_F) -> erlide_scan_model:do_scan(ScannerName, Text) end,
     Result = erlide_cache:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UseCache),
+    erlide_log:log({Result, Text}),
     {Result, Text}.
 
 get_token_at(ScannerName, Offset) when is_atom(ScannerName), is_integer(Offset) ->
@@ -75,9 +76,6 @@ dispose(ScannerName) when is_atom(ScannerName) ->
 
 get_text(ScannerName) when is_atom(ScannerName) ->
     erlide_scanner_server:server_cmd(ScannerName, get_text).
-
-get_text_line(ScannerName, Line) when is_atom(ScannerName), is_integer(Line) ->
-    erlide_scanner_server:server_cmd(ScannerName, get_text_line, Line).
 
 get_tokens(ScannerName) when is_atom(ScannerName) ->
     erlide_scanner_server:server_cmd(ScannerName, get_tokens).

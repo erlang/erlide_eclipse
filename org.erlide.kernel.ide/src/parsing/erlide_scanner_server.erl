@@ -167,9 +167,6 @@ do_cmd(replace_text, {Offset, RemoveLength, NewText}, Module) ->
     erlide_scan_model:replace_text(NewModule, Offset, RemoveLength, NewText);
 do_cmd(get_text, [], Module) ->
     {erlide_scan_model:get_text(Module), Module};
-do_cmd(get_text_line, Line, Module) ->
-    L = lists:nth(Line+1, Module#module.lines),
-    {L, Module};
 do_cmd(get_tokens, [], Module) ->
     {erlide_scan_model:get_all_tokens(Module), Module};
 do_cmd(get_token_window, {Offset, Before, After}, Module) ->
