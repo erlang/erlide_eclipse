@@ -41,7 +41,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
             final String loggingOnOff = logging ? "on" : "off";
             backend.call(ERLIDE_SCANNER, "initial_scan", "asssoa", module,
                     path, initialText == null ? "" : initialText, stateDir,
-                    true, loggingOnOff);
+                            true, loggingOnOff);
         } catch (final RpcTimeoutException e) {
             ErlLogger.debug(e);
         } catch (final Exception e) {

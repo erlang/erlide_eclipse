@@ -5,7 +5,6 @@ import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -14,8 +13,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.IErlModel;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelUtilService;
 import org.erlide.ui.editors.erl.correction.MarkerQuickFixExecutor;
@@ -26,12 +23,8 @@ public class CreateHeaderQuickFix extends MarkerQuickFixExecutor {
     @Override
     public void run() {
         final ModelUtilService svc = ErlangEngine.getInstance().getModelUtilService();
-        final IErlModel model = ErlangEngine.getInstance().getModel();
 
-        final IMarker marker = getMarker();
-        final IErlModule module = model.findModule((IFile) marker.getResource());
         final String name = getQuickFix().getArgs().get(0);
-
         final IErlProject project = svc.getProject(module);
 
         final Iterator<IPath> iterator = project.getProperties().getIncludeDirs()
