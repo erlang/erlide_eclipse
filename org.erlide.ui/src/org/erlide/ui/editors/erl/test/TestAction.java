@@ -68,9 +68,6 @@ public class TestAction extends TextEditorAction {
                 s = Util.stringValue(checkAll);
             }
             ErlLogger.info("%s", s);
-            final String scannerText = ErlangEngine.getInstance()
-                    .getScannerProviderService().get(scannerName).getText();
-            dumpText(scannerText, "/tmp/scanner.txt");
             dumpText(text, "/tmp/editor.txt");
             if (textEditor instanceof ErlangEditor) {
                 final ErlangEditor editor = (ErlangEditor) textEditor;

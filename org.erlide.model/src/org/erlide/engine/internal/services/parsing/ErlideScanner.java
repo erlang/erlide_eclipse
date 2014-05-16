@@ -179,16 +179,6 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
 
     }
 
-    public String getText(final String scannerName) {
-        try {
-            final OtpErlangObject o = backend.call(ERLIDE_SCANNER, "get_text",
-                    "a", scannerName);
-            return Util.stringValue(o);
-        } catch (final RpcException e) {
-            return "";
-        }
-    }
-
     @Override
     public boolean dumpLog(final String scannerName,
             final String dumpLocationFilename) {

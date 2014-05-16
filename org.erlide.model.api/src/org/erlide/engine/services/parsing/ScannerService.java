@@ -12,8 +12,6 @@ public interface ScannerService extends IDisposable {
 
     ErlToken getTokenAt(final int offset);
 
-    String getText();
-
     void addref();
 
 }

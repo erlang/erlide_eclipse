@@ -51,11 +51,6 @@ public class ErlScanner implements ScannerService {
     }
 
     @Override
-    public String getText() {
-        return scanner.getText(name);
-    }
-
-    @Override
     public String getName() {
         return name;
     }
