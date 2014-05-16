@@ -2045,7 +2045,7 @@
   <extension
         point="org.erlide.ui.quickfix">
      <quickfix
-           class="org.erlide.ui.editors.erl.correction.RenameModuleQuickFix"
+           class="org.erlide.ui.editors.erl.correction.fixes.RenameModuleQuickFix"
            image="icons/full/obj16/change.gif"
            label="Change module name to &apos;{1}&apos;">
         <tag
@@ -2056,7 +2056,7 @@
         </tag>
      </quickfix>
      <quickfix
-           class="org.erlide.ui.editors.erl.correction.RenameFileQuickFix"
+           class="org.erlide.ui.editors.erl.correction.fixes.RenameFileQuickFix"
            image="icons/full/obj16/change.gif"
            label="Change file name to &quot;{0}.erl&quot;">
         <tag
@@ -2067,7 +2067,7 @@
         </tag>
      </quickfix>
      <quickfix
-           class="org.erlide.ui.editors.erl.correction.CreateHeaderQuickFix"
+           class="org.erlide.ui.editors.erl.correction.fixes.CreateHeaderQuickFix"
            image="icons/full/obj16/change.gif"
            label="Create include file &quot;{1}&quot;">
         <tag
@@ -2075,7 +2075,7 @@
         </tag>
      </quickfix>
      <quickfix
-           class="org.erlide.ui.editors.erl.correction.ConvertMultiStringQuickFix"
+           class="org.erlide.ui.editors.erl.correction.assists.ConvertMultiStringQuickFix"
            image="icons/full/obj16/change.gif"
            description="Convert multi-line string to a concatenation of strings. This is just as efficient, but easier to read."
            label="Convert multi-line string to concatenation">

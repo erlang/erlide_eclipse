@@ -1,4 +1,4 @@
-package org.erlide.ui.editors.erl.correction;
+package org.erlide.ui.editors.erl.correction.fixes;
 
 import java.io.IOException;
 import java.io.InputStream;

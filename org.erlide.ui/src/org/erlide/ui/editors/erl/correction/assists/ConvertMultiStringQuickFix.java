@@ -1,6 +1,7 @@
-package org.erlide.ui.editors.erl.correction;
+package org.erlide.ui.editors.erl.correction.assists;
 
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext;
+import org.erlide.ui.editors.erl.correction.QuickFixExecutor;
 
 public class ConvertMultiStringQuickFix extends QuickFixExecutor {
 

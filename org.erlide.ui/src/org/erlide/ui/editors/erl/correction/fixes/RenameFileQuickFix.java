@@ -1,4 +1,4 @@
-package org.erlide.ui.editors.erl.correction;
+package org.erlide.ui.editors.erl.correction.fixes;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.erlide.ui.editors.erl.correction.MarkerQuickFixExecutor;
 
 public class RenameFileQuickFix extends MarkerQuickFixExecutor {
 

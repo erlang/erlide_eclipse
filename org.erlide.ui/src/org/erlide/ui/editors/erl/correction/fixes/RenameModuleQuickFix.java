@@ -1,4 +1,4 @@
-package org.erlide.ui.editors.erl.correction;
+package org.erlide.ui.editors.erl.correction.fixes;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -11,6 +11,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.ui.editors.erl.correction.MarkerQuickFixExecutor;
 
 public class RenameModuleQuickFix extends MarkerQuickFixExecutor {
 

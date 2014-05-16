@@ -1,4 +1,4 @@
-package org.erlide.ui.editors.erl.correction;
+package org.erlide.ui.editors.erl.correction.fixes;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -18,6 +18,7 @@ import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelUtilService;
+import org.erlide.ui.editors.erl.correction.MarkerQuickFixExecutor;
 import org.erlide.util.ErlLogger;
 
 public class CreateHeaderQuickFix extends MarkerQuickFixExecutor {
