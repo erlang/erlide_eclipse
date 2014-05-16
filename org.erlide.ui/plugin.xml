@@ -2079,5 +2079,11 @@
               name="epp_include">
         </tag>
      </quickfix>
+     <quickfix
+           class="org.erlide.ui.editors.erl.correction.ConvertMultiStringQuickFix"
+           image="icons/full/obj16/change.gif"
+           description="Convert multi-line string to a concatenation of strings. This is just as efficient, but easier to read."
+           label="Convert multi-line string to concatenation">
+     </quickfix>
   </extension>
 </plugin>
