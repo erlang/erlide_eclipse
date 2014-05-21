@@ -819,18 +819,6 @@
              label="Interpret"
              style="push">
        </command>
-    </menuContribution>
-    <menuContribution
-          locationURI="toolbar:org.erlide.ui.debug.interpretedModulesView">
-       <command
-             commandId="org.erlide.ui.deinterpret"
-             icon="icons/full/elcl16/deinterpret_co.gif"
-             label="Deinterpret"
-             style="push">
-       </command>
-    </menuContribution>
-    <menuContribution
-          locationURI="popup:org.erlide.ui.debug.interpretedModulesView">
        <command
              commandId="org.erlide.ui.deinterpret"
              icon="icons/full/elcl16/deinterpret_co.gif"
@@ -844,6 +832,12 @@
              commandId="org.erlide.ui.interpret"
              icon="icons/full/elcl16/interpret_co.gif"
              label="Interpret"
+             style="push">
+       </command>
+       <command
+             commandId="org.erlide.ui.deinterpret"
+             icon="icons/full/elcl16/deinterpret_co.gif"
+             label="Deinterpret"
              style="push">
        </command>
     </menuContribution>
