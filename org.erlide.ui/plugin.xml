@@ -889,7 +889,8 @@
        </menu>
        <menu
              id="org.erlide.ui.menus.refactor"
-             label="Refactor">
+             label="Refactor"
+             mnemonic="R">
        </menu>
        <separator
              name="org.erlide.ui.separator2">

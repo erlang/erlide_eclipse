@@ -358,7 +358,7 @@
   </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
-		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
+		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=additions">
 			<menu id="org.erlide.wrangler.refactormenu" label="%RefactoringMenu_Label"
 				mnemonic="R">
 				<command commandId="org.erlide.wrangler.refactoring.renamevariable"
@@ -502,7 +502,9 @@
 			</menu>
 		</menuContribution>
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?endof=group.edit">
-			<menu label="%RefactoringMenu_Label">
+			<menu
+         id="org.erlide.ui.menus.refactor"
+         label="%RefactoringMenu_Label">
 				<visibleWhen>
 					<with variable="activeEditorId">
 						<or>
