@@ -71,13 +71,13 @@ public class NewProjectData extends ErlangProjectProperties {
     this._configType = configType;
   }
   
-  private Map<String,String> _builderData = CollectionLiterals.<String, String>newHashMap();
+  private Map<String, String> _builderData = CollectionLiterals.<String, String>newHashMap();
   
-  public Map<String,String> getBuilderData() {
+  public Map<String, String> getBuilderData() {
     return this._builderData;
   }
   
-  public void setBuilderData(final Map<String,String> builderData) {
+  public void setBuilderData(final Map<String, String> builderData) {
     this._builderData = builderData;
   }
   

@@ -7,10 +7,10 @@ import com.google.common.base.Objects;
 import java.util.List;
 import org.eclipse.xtend.lib.macro.AbstractClassProcessor;
 import org.eclipse.xtend.lib.macro.TransformationContext;
+import org.eclipse.xtend.lib.macro.declaration.AnnotationReference;
 import org.eclipse.xtend.lib.macro.declaration.AnnotationTypeDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
 import org.eclipse.xtend.lib.macro.declaration.MethodDeclaration;
-import org.eclipse.xtend.lib.macro.declaration.MutableAnnotationReference;
 import org.eclipse.xtend.lib.macro.declaration.MutableClassDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableMethodDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableTypeParameterDeclaration;
@@ -31,17 +31,17 @@ import org.erlide.annotations.Delegate;
 @SuppressWarnings("all")
 public class DelegateParticipant extends AbstractClassProcessor {
   public void doTransform(final MutableClassDeclaration annotatedClass, @Extension final TransformationContext context) {
-    Iterable<? extends MutableAnnotationReference> _annotations = annotatedClass.getAnnotations();
-    final Function1<MutableAnnotationReference,Boolean> _function = new Function1<MutableAnnotationReference,Boolean>() {
-      public Boolean apply(final MutableAnnotationReference it) {
+    Iterable<? extends AnnotationReference> _annotations = annotatedClass.getAnnotations();
+    final Function1<AnnotationReference, Boolean> _function = new Function1<AnnotationReference, Boolean>() {
+      public Boolean apply(final AnnotationReference it) {
         AnnotationTypeDeclaration _annotationTypeDeclaration = it.getAnnotationTypeDeclaration();
         String _simpleName = _annotationTypeDeclaration.getSimpleName();
         String _simpleName_1 = Delegate.class.getSimpleName();
         return Boolean.valueOf(Objects.equal(_simpleName, _simpleName_1));
       }
     };
-    Iterable<? extends MutableAnnotationReference> _filter = IterableExtensions.filter(_annotations, _function);
-    final MutableAnnotationReference annotation = IterableExtensions.head(_filter);
+    Iterable<? extends AnnotationReference> _filter = IterableExtensions.filter(_annotations, _function);
+    final AnnotationReference annotation = IterableExtensions.head(_filter);
     final String field = annotation.getStringValue("field");
     TypeReference _classValue = annotation.getClassValue("to");
     Type _type = _classValue.getType();
@@ -51,7 +51,7 @@ public class DelegateParticipant extends AbstractClassProcessor {
   
   public void process(final TypeDeclaration to, final String field, final MutableClassDeclaration annotatedClass, @Extension final TransformationContext context) {
     Iterable<? extends MethodDeclaration> _declaredMethods = to.getDeclaredMethods();
-    final Function1<MethodDeclaration,Boolean> _function = new Function1<MethodDeclaration,Boolean>() {
+    final Function1<MethodDeclaration, Boolean> _function = new Function1<MethodDeclaration, Boolean>() {
       public Boolean apply(final MethodDeclaration it) {
         Visibility _visibility = it.getVisibility();
         return Boolean.valueOf(Objects.equal(_visibility, Visibility.PUBLIC));
@@ -61,7 +61,7 @@ public class DelegateParticipant extends AbstractClassProcessor {
     final Procedure1<MethodDeclaration> _function_1 = new Procedure1<MethodDeclaration>() {
       public void apply(final MethodDeclaration m) {
         Iterable<? extends MutableMethodDeclaration> _declaredMethods = annotatedClass.getDeclaredMethods();
-        final Function1<MutableMethodDeclaration,Boolean> _function = new Function1<MutableMethodDeclaration,Boolean>() {
+        final Function1<MutableMethodDeclaration, Boolean> _function = new Function1<MutableMethodDeclaration, Boolean>() {
           public Boolean apply(final MutableMethodDeclaration it) {
             String _simpleName = it.getSimpleName();
             String _simpleName_1 = m.getSimpleName();
@@ -90,7 +90,7 @@ public class DelegateParticipant extends AbstractClassProcessor {
                   TypeReference _type = it.getType();
                   Type _type_1 = _type.getType();
                   Iterable<? extends MutableTypeParameterDeclaration> _typeParameters = injected.getTypeParameters();
-                  final Function1<MutableTypeParameterDeclaration,TypeReference> _function = new Function1<MutableTypeParameterDeclaration,TypeReference>() {
+                  final Function1<MutableTypeParameterDeclaration, TypeReference> _function = new Function1<MutableTypeParameterDeclaration, TypeReference>() {
                     public TypeReference apply(final MutableTypeParameterDeclaration it) {
                       return context.newTypeReference(it);
                     }
@@ -106,7 +106,7 @@ public class DelegateParticipant extends AbstractClassProcessor {
               TypeReference _returnType = m.getReturnType();
               Type _type = _returnType.getType();
               Iterable<? extends MutableTypeParameterDeclaration> _typeParameters_1 = injected.getTypeParameters();
-              final Function1<MutableTypeParameterDeclaration,TypeReference> _function_2 = new Function1<MutableTypeParameterDeclaration,TypeReference>() {
+              final Function1<MutableTypeParameterDeclaration, TypeReference> _function_2 = new Function1<MutableTypeParameterDeclaration, TypeReference>() {
                 public TypeReference apply(final MutableTypeParameterDeclaration it) {
                   return context.newTypeReference(it);
                 }

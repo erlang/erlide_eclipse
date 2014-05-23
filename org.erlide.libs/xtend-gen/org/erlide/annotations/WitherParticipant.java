@@ -4,9 +4,9 @@ import com.google.common.base.Objects;
 import org.eclipse.xtend.lib.Data;
 import org.eclipse.xtend.lib.macro.AbstractClassProcessor;
 import org.eclipse.xtend.lib.macro.TransformationContext;
+import org.eclipse.xtend.lib.macro.declaration.AnnotationReference;
 import org.eclipse.xtend.lib.macro.declaration.AnnotationTypeDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
-import org.eclipse.xtend.lib.macro.declaration.MutableAnnotationReference;
 import org.eclipse.xtend.lib.macro.declaration.MutableClassDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableFieldDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableMethodDeclaration;
@@ -21,9 +21,9 @@ import org.eclipse.xtext.xbase.lib.StringExtensions;
 @SuppressWarnings("all")
 public class WitherParticipant extends AbstractClassProcessor {
   public void doTransform(final MutableClassDeclaration annotatedClass, @Extension final TransformationContext context) {
-    Iterable<? extends MutableAnnotationReference> _annotations = annotatedClass.getAnnotations();
-    final Function1<MutableAnnotationReference,Boolean> _function = new Function1<MutableAnnotationReference,Boolean>() {
-      public Boolean apply(final MutableAnnotationReference it) {
+    Iterable<? extends AnnotationReference> _annotations = annotatedClass.getAnnotations();
+    final Function1<AnnotationReference, Boolean> _function = new Function1<AnnotationReference, Boolean>() {
+      public Boolean apply(final AnnotationReference it) {
         String _canonicalName = Data.class.getCanonicalName();
         AnnotationTypeDeclaration _annotationTypeDeclaration = it.getAnnotationTypeDeclaration();
         String _qualifiedName = _annotationTypeDeclaration.getQualifiedName();
@@ -36,7 +36,7 @@ public class WitherParticipant extends AbstractClassProcessor {
       return;
     }
     Iterable<? extends MutableFieldDeclaration> _declaredFields = annotatedClass.getDeclaredFields();
-    final Function1<MutableFieldDeclaration,Boolean> _function_1 = new Function1<MutableFieldDeclaration,Boolean>() {
+    final Function1<MutableFieldDeclaration, Boolean> _function_1 = new Function1<MutableFieldDeclaration, Boolean>() {
       public Boolean apply(final MutableFieldDeclaration it) {
         boolean _isStatic = it.isStatic();
         return Boolean.valueOf((!_isStatic));
@@ -50,7 +50,7 @@ public class WitherParticipant extends AbstractClassProcessor {
         final String capitalizedName = StringExtensions.toFirstUpper(properName);
         final String methodName = ("with" + capitalizedName);
         Iterable<? extends MutableMethodDeclaration> _declaredMethods = annotatedClass.getDeclaredMethods();
-        final Function1<MutableMethodDeclaration,Boolean> _function = new Function1<MutableMethodDeclaration,Boolean>() {
+        final Function1<MutableMethodDeclaration, Boolean> _function = new Function1<MutableMethodDeclaration, Boolean>() {
           public Boolean apply(final MutableMethodDeclaration it) {
             String _simpleName = it.getSimpleName();
             return Boolean.valueOf(Objects.equal(_simpleName, methodName));

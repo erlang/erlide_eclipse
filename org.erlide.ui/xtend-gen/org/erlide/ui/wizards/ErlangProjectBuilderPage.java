@@ -66,7 +66,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
             final Procedure1<Combo> _function_1 = new Procedure1<Combo>() {
               public void apply(final Combo it) {
                 final RuntimeVersion[] runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS;
-                final Function1<RuntimeVersion,String> _function = new Function1<RuntimeVersion,String>() {
+                final Function1<RuntimeVersion, String> _function = new Function1<RuntimeVersion, String>() {
                   public String apply(final RuntimeVersion it) {
                     return it.toString();
                   }
@@ -288,7 +288,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                       it.setEnabled(false);
                       final ModifyListener _function = new ModifyListener() {
                         public void modifyText(final ModifyEvent l) {
-                          Map<String,String> _builderData = ErlangProjectBuilderPage.this.info.getBuilderData();
+                          Map<String, String> _builderData = ErlangProjectBuilderPage.this.info.getBuilderData();
                           String _text = it.getText();
                           _builderData.put("compile", _text);
                         }
@@ -317,7 +317,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                       it.setEnabled(false);
                       final ModifyListener _function = new ModifyListener() {
                         public void modifyText(final ModifyEvent l) {
-                          Map<String,String> _builderData = ErlangProjectBuilderPage.this.info.getBuilderData();
+                          Map<String, String> _builderData = ErlangProjectBuilderPage.this.info.getBuilderData();
                           String _text = it.getText();
                           _builderData.put("clean", _text);
                         }

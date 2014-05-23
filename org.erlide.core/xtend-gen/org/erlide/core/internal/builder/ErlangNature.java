@@ -70,7 +70,7 @@ public class ErlangNature implements IProjectNature {
     final IProjectDescription description = prj.getDescription();
     final ICommand[] old = description.getBuildSpec();
     BuilderTool[] _values = BuilderTool.values();
-    final Function1<BuilderTool,String> _function = new Function1<BuilderTool,String>() {
+    final Function1<BuilderTool, String> _function = new Function1<BuilderTool, String>() {
       public String apply(final BuilderTool it) {
         return it.getId();
       }

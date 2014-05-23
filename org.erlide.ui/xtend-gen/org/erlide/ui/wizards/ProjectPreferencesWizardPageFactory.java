@@ -15,10 +15,10 @@ import org.erlide.ui.wizards.RebarProjectPreferencesWizardPage;
 
 @SuppressWarnings("all")
 public class ProjectPreferencesWizardPageFactory {
-  private final static Map<ProjectConfigType,Class<? extends ProjectPreferencesWizardPage>> PAGES = new Function0<Map<ProjectConfigType,Class<? extends ProjectPreferencesWizardPage>>>() {
-    public Map<ProjectConfigType,Class<? extends ProjectPreferencesWizardPage>> apply() {
-      Map<ProjectConfigType,Class<? extends ProjectPreferencesWizardPage>> _xsetliteral = null;
-      Map<ProjectConfigType,Class<? extends ProjectPreferencesWizardPage>> _tempMap = Maps.<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>>newHashMap();
+  private final static Map<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>> PAGES = new Function0<Map<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>>>() {
+    public Map<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>> apply() {
+      Map<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>> _xsetliteral = null;
+      Map<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>> _tempMap = Maps.<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>>newHashMap();
       _tempMap.put(ProjectConfigType.INTERNAL, InternalProjectPreferencesWizardPage.class);
       _tempMap.put(ProjectConfigType.EMAKE, EmakeProjectPreferencesWizardPage.class);
       _tempMap.put(ProjectConfigType.REBAR, RebarProjectPreferencesWizardPage.class);

@@ -36,7 +36,7 @@ public class ErlSystemStatus {
     this.memory = _memoryStatus;
     OtpErlangObject _elementAt_2 = tuple.elementAt(2);
     OtpErlangObject[] _elements = ((OtpErlangList) _elementAt_2).elements();
-    final Function1<OtpErlangObject,String> _function = new Function1<OtpErlangObject,String>() {
+    final Function1<OtpErlangObject, String> _function = new Function1<OtpErlangObject, String>() {
       public String apply(final OtpErlangObject it) {
         return ((OtpErlangAtom) it).atomValue();
       }

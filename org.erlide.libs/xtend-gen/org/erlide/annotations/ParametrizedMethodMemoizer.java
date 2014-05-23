@@ -1,8 +1,8 @@
 package org.erlide.annotations;
 
 import org.eclipse.xtend.lib.macro.TransformationContext;
+import org.eclipse.xtend.lib.macro.declaration.AnnotationReference;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
-import org.eclipse.xtend.lib.macro.declaration.MutableAnnotationReference;
 import org.eclipse.xtend.lib.macro.declaration.MutableMethodDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.Type;
 import org.eclipse.xtend.lib.macro.declaration.TypeReference;
@@ -23,7 +23,7 @@ public abstract class ParametrizedMethodMemoizer extends MethodMemoizer {
     {
       TypeReference _newTypeReference = this.context.newTypeReference(Memoize.class);
       Type _type = _newTypeReference.getType();
-      final MutableAnnotationReference memoizeAnnotation = this.method.findAnnotation(_type);
+      final AnnotationReference memoizeAnnotation = this.method.findAnnotation(_type);
       final Object cacheDuration = memoizeAnnotation.getValue("cacheDuration");
       final Object maxSize = memoizeAnnotation.getValue("maxSize");
       StringConcatenation _builder = new StringConcatenation();

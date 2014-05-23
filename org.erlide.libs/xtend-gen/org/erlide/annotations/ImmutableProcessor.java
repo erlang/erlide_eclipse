@@ -52,7 +52,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
                 _builder.append(_simpleName, "");
                 _builder.append("(");
                 Iterable<? extends MutableFieldDeclaration> _dataFields = ImmutableProcessor.this.dataFields(cls);
-                final Function1<MutableFieldDeclaration,String> _function = new Function1<MutableFieldDeclaration,String>() {
+                final Function1<MutableFieldDeclaration, String> _function = new Function1<MutableFieldDeclaration, String>() {
                   public String apply(final MutableFieldDeclaration it) {
                     return it.getSimpleName();
                   }
@@ -248,7 +248,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         TypeReference _object = context.getObject();
         it.addParameter("o", _object);
         Iterable<? extends MutableFieldDeclaration> _dataFields = ImmutableProcessor.this.dataFields(cls);
-        final Function1<MutableFieldDeclaration,String> _function = new Function1<MutableFieldDeclaration,String>() {
+        final Function1<MutableFieldDeclaration, String> _function = new Function1<MutableFieldDeclaration, String>() {
           public String apply(final MutableFieldDeclaration it) {
             StringConcatenation _builder = new StringConcatenation();
             String _objects = ImmutableProcessor.this.objects();
@@ -308,7 +308,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
             _builder.append(_objects, "");
             _builder.append(".hashCode(");
             Iterable<? extends MutableFieldDeclaration> _dataFields = ImmutableProcessor.this.dataFields(cls);
-            final Function1<MutableFieldDeclaration,String> _function = new Function1<MutableFieldDeclaration,String>() {
+            final Function1<MutableFieldDeclaration, String> _function = new Function1<MutableFieldDeclaration, String>() {
               public String apply(final MutableFieldDeclaration it) {
                 return it.getSimpleName();
               }
@@ -342,7 +342,7 @@ public class ImmutableProcessor extends AbstractClassProcessor {
   
   public Iterable<? extends MutableFieldDeclaration> dataFields(final MutableClassDeclaration cls) {
     Iterable<? extends MutableFieldDeclaration> _declaredFields = cls.getDeclaredFields();
-    final Function1<MutableFieldDeclaration,Boolean> _function = new Function1<MutableFieldDeclaration,Boolean>() {
+    final Function1<MutableFieldDeclaration, Boolean> _function = new Function1<MutableFieldDeclaration, Boolean>() {
       public Boolean apply(final MutableFieldDeclaration it) {
         boolean _isStatic = it.isStatic();
         return Boolean.valueOf((_isStatic == false));

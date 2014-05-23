@@ -19,7 +19,7 @@ public class OptExtensions {
     boolean _switchResult = false;
     boolean _matched = false;
     if (!_matched) {
-      if (Objects.equal(o,null)) {
+      if (Objects.equal(o, null)) {
         _matched=true;
         _switchResult = false;
       }
@@ -46,7 +46,7 @@ public class OptExtensions {
    * Only perform the function for a given condition. Returns an optional result.
    * <pre>val Opt<User> user = ifTrue(isMale) [ getUser ]</pre>
    */
-  public static <T extends Object, I extends Object> Opt<T> ifTrue(final boolean condition, final Function1<? super Object,? extends T> fn) {
+  public static <T extends Object, I extends Object> Opt<T> ifTrue(final boolean condition, final Function1<? super Object, ? extends T> fn) {
     Opt<T> _xifexpression = null;
     if (condition) {
       T _apply = fn.apply(null);
@@ -61,7 +61,7 @@ public class OptExtensions {
    * Only perform the function if something was set. Returns an optional result.
    * <pre>val Opt<User> user = ifSome(userId) [ getUser(userId) ]</pre>
    */
-  public static <T extends Object, I extends Object> Opt<T> ifSome(final Opt<I> o, final Function1<? super I,? extends T> fn) {
+  public static <T extends Object, I extends Object> Opt<T> ifSome(final Opt<I> o, final Function1<? super I, ? extends T> fn) {
     try {
       Opt<T> _xifexpression = null;
       boolean _defined = OptExtensions.<Object>defined(o);
@@ -83,7 +83,7 @@ public class OptExtensions {
    * meaning null or empty or an error. Returns an optional result.
    * <pre>val Opt<User> user = ifEmpty(userId) [ getDefaultUser ]</pre>
    */
-  public static <T extends Object, I extends Object> Opt<T> ifEmpty(final Opt<I> o, final Function1<? super I,? extends T> fn) {
+  public static <T extends Object, I extends Object> Opt<T> ifEmpty(final Opt<I> o, final Function1<? super I, ? extends T> fn) {
     try {
       Opt<T> _xifexpression = null;
       boolean _defined = OptExtensions.<Object>defined(o);
@@ -109,7 +109,7 @@ public class OptExtensions {
    * val Opt<String> warning = ifError(user) [ 'something went wrong!' ]
    * </pre>
    */
-  public static <T extends Object, I extends Object> Opt<T> ifError(final Opt<I> o, final Function1<? super I,? extends T> fn) {
+  public static <T extends Object, I extends Object> Opt<T> ifError(final Opt<I> o, final Function1<? super I, ? extends T> fn) {
     try {
       Opt<T> _xifexpression = null;
       boolean _hasError = o.hasError();
@@ -161,7 +161,7 @@ public class OptExtensions {
    * wrap a call as an option (exception or null generates none)<p>
    * example: val userOption = attempt [ api.getUser(userId) ] // if API throws exception, return None
    */
-  public static <T extends Object> Opt<T> attempt(final Function1<? super Object,? extends T> fn) {
+  public static <T extends Object> Opt<T> attempt(final Function1<? super Object, ? extends T> fn) {
     Opt<T> _xtrycatchfinallyexpression = null;
     try {
       T _apply = fn.apply(null);
@@ -184,7 +184,7 @@ public class OptExtensions {
    * then you can do: user.attempt [ name = 'john' ]<br>
    * the assignment will only complete if there was a user
    */
-  public static <T extends Object, O extends Object> Opt<O> attempt(final Opt<O> o, final Function1<? super O,? extends T> fn) {
+  public static <T extends Object, O extends Object> Opt<O> attempt(final Opt<O> o, final Function1<? super O, ? extends T> fn) {
     try {
       Opt<O> _xblockexpression = null;
       {
@@ -241,7 +241,7 @@ public class OptExtensions {
    * The function allows you to transform the value of the passed option,
    * saving you the need to unwrap it yourself
    */
-  public static <T extends Object, I extends Object> Opt<T> mapOpt(final Opt<I> o, final Function1<? super I,? extends T> fn) {
+  public static <T extends Object, I extends Object> Opt<T> mapOpt(final Opt<I> o, final Function1<? super I, ? extends T> fn) {
     try {
       Opt<T> _xifexpression = null;
       boolean _defined = OptExtensions.<Object>defined(o);
@@ -292,7 +292,7 @@ public class OptExtensions {
     }
   }
   
-  public static <T extends Object> T or(final T o, final Function1<? super Object,? extends T> fallbackFn) {
+  public static <T extends Object> T or(final T o, final Function1<? super Object, ? extends T> fallbackFn) {
     T _xifexpression = null;
     boolean _defined = OptExtensions.<Object>defined(o);
     if (_defined) {
@@ -303,7 +303,7 @@ public class OptExtensions {
     return _xifexpression;
   }
   
-  public static <T extends Object> T or(final Opt<T> o, final Function1<? super Object,? extends T> fallbackFn) {
+  public static <T extends Object> T or(final Opt<T> o, final Function1<? super Object, ? extends T> fallbackFn) {
     try {
       T _xifexpression = null;
       boolean _defined = OptExtensions.<Object>defined(o);
@@ -372,7 +372,7 @@ public class OptExtensions {
     }
   }
   
-  public static <T extends Object> T orThrow(final T o, final Function1<? super Object,? extends Throwable> exceptionFn) {
+  public static <T extends Object> T orThrow(final T o, final Function1<? super Object, ? extends Throwable> exceptionFn) {
     try {
       T _xifexpression = null;
       boolean _defined = OptExtensions.<Object>defined(o);
@@ -387,7 +387,7 @@ public class OptExtensions {
     }
   }
   
-  public static <T extends Object> T orThrow(final Opt<T> o, final Function1<? super Object,? extends Throwable> exceptionFn) {
+  public static <T extends Object> T orThrow(final Opt<T> o, final Function1<? super Object, ? extends Throwable> exceptionFn) {
     try {
       T _xifexpression = null;
       boolean _defined = OptExtensions.<Object>defined(o);

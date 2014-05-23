@@ -81,7 +81,7 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
       String _atom = b.getAtom("Tag");
       boolean _matched = false;
       if (!_matched) {
-        if (Objects.equal(_atom,"i")) {
+        if (Objects.equal(_atom, "i")) {
           _matched=true;
           Collection<IPath> _includeDirs = result.getIncludeDirs();
           final List<IPath> incs = CollectionLiterals.<IPath>newArrayList(((IPath[])Conversions.unwrapArray(_includeDirs, IPath.class)));
@@ -96,10 +96,10 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
         }
       }
       if (!_matched) {
-        if (Objects.equal(_atom,"src_dirs")) {
+        if (Objects.equal(_atom, "src_dirs")) {
           _matched=true;
           Collection<OtpErlangObject> _list = b.getList("Arg");
-          final Function1<OtpErlangObject,Path> _function = new Function1<OtpErlangObject,Path>() {
+          final Function1<OtpErlangObject, Path> _function = new Function1<OtpErlangObject, Path>() {
             public Path apply(final OtpErlangObject it) {
               Path _xblockexpression = null;
               {

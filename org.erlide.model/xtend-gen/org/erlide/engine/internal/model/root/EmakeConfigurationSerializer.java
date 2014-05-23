@@ -95,7 +95,7 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
       String _atom = b.getAtom("Tag");
       boolean _matched = false;
       if (!_matched) {
-        if (Objects.equal(_atom,"i")) {
+        if (Objects.equal(_atom, "i")) {
           _matched=true;
           Collection<IPath> _includeDirs = result.getIncludeDirs();
           final List<IPath> incs = new ArrayList<IPath>(_includeDirs);

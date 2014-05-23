@@ -44,67 +44,67 @@ public class MemoryStatus {
         final long value = bind.getLong("V");
         boolean _matched = false;
         if (!_matched) {
-          if (Objects.equal(key,"total")) {
+          if (Objects.equal(key, "total")) {
             _matched=true;
             this.total = value;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"processes")) {
+          if (Objects.equal(key, "processes")) {
             _matched=true;
             this.processes = value;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"processes_used")) {
+          if (Objects.equal(key, "processes_used")) {
             _matched=true;
             this.processes_used = value;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"system")) {
+          if (Objects.equal(key, "system")) {
             _matched=true;
             this.system = value;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"atom")) {
+          if (Objects.equal(key, "atom")) {
             _matched=true;
             this.atom = value;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"atom_used")) {
+          if (Objects.equal(key, "atom_used")) {
             _matched=true;
             this.atom_used = value;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"binary")) {
+          if (Objects.equal(key, "binary")) {
             _matched=true;
             this.binary = value;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"code")) {
+          if (Objects.equal(key, "code")) {
             _matched=true;
             this.code = value;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"ets")) {
+          if (Objects.equal(key, "ets")) {
             _matched=true;
             this.ets = value;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"low")) {
+          if (Objects.equal(key, "low")) {
             _matched=true;
             this.low = value;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"maximum")) {
+          if (Objects.equal(key, "maximum")) {
             _matched=true;
             this.maximum = value;
           }

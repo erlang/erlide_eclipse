@@ -24,7 +24,7 @@ public class RebarBuilder extends ExternalBuilder {
     super(BuilderTool.REBAR);
   }
   
-  public IProject[] build(final int kind, final Map<String,String> args, final IProgressMonitor monitor) throws CoreException {
+  public IProject[] build(final int kind, final Map<String, String> args, final IProgressMonitor monitor) throws CoreException {
     IProject[] _xblockexpression = null;
     {
       final IProject[] result = super.build(kind, args, monitor);
