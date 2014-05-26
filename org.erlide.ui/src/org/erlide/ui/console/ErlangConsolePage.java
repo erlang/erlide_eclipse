@@ -33,7 +33,6 @@ import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.IFindReplaceTarget;
-import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -45,8 +44,6 @@ import org.eclipse.swt.custom.CaretEvent;
 import org.eclipse.swt.custom.CaretListener;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -62,15 +59,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.console.IConsoleView;
-import org.eclipse.ui.console.actions.TextViewerAction;
-import org.eclipse.ui.internal.console.ConsoleMessages;
 import org.eclipse.ui.internal.console.ConsoleResourceBundleMessages;
 import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
 import org.eclipse.ui.part.Page;
@@ -97,10 +90,10 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     Color bgColor_AlmostOk;
     Color bgColor_Err;
 
-    StyledText consoleText;
+    StyledText consoleOutputText;
     private final ErlConsoleDocument fDoc;
     final ErlangConsoleHistory history = new ErlangConsoleHistory();
-    StyledText consoleInput;
+    StyledText consoleInputText;
     SourceViewer consoleOutputViewer;
     private SourceViewer consoleInputViewer;
     private IBackendShell shell;
@@ -160,7 +153,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
     boolean isInputComplete() {
         try {
-            final String str = consoleInput.getText() + " ";
+            final String str = consoleInputText.getText() + " ";
             final RuntimeHelper helper = new RuntimeHelper(backend.getRpcSite());
             final OtpErlangObject o = helper.parseConsoleInput(str);
             if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
@@ -176,9 +169,9 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     }
 
     protected void sendInput() {
-        final String s = consoleInput.getText();
+        final String s = consoleInputText.getText();
         input(s);
-        consoleInput.setText("");
+        consoleInputText.setText("");
     }
 
     @Override
@@ -190,8 +183,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     }
 
     public void setInput(final String str) {
-        consoleInput.setText(str);
-        consoleInput.setSelection(str.length());
+        consoleInputText.setText(str);
+        consoleInputText.setSelection(str.length());
     }
 
     /**
@@ -209,11 +202,11 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
         consoleOutputViewer = new SourceViewer(sashForm, null, SWT.V_SCROLL
                 | SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY);
-        consoleText = consoleOutputViewer.getTextWidget();
-        consoleText.setFont(JFaceResources.getTextFont());
+        consoleOutputText = consoleOutputViewer.getTextWidget();
+        consoleOutputText.setFont(JFaceResources.getTextFont());
         bgcolor = DebugUIPlugin
                 .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
-        consoleText.setBackground(bgcolor);
+        consoleOutputText.setBackground(bgcolor);
         DebugUIPlugin.getDefault().getPreferenceStore()
                 .addPropertyChangeListener(new IPropertyChangeListener() {
                     @Override
@@ -222,25 +215,36 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                                 IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR)) {
                             final Color color = DebugUIPlugin
                                     .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
-                            consoleText.setBackground(color);
-                            consoleInput.setBackground(color);
+                            consoleOutputText.setBackground(color);
+                            consoleInputText.setBackground(color);
                         }
                     }
                 });
+        consoleOutputText.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(final KeyEvent e) {
+                if (e.stateMask == 0 && e.character != '\0') {
+                    consoleInputText.setFocus();
+                    consoleInputText.append("" + e.character);
+                    consoleInputText.setCaretOffset(consoleInputText.getText().length());
+                }
+                e.doit = true;
+            }
+
+        });
 
         final IPreferenceStore store = ErlideUIPlugin.getDefault().getPreferenceStore();
         final IColorManager colorManager = new ColorManager();
-
         consoleOutputViewer.setDocument(fDoc);
         consoleOutputViewer.configure(new ErlangConsoleSourceViewerConfiguration(store,
                 colorManager, backend));
 
         consoleInputViewer = new SourceViewer(sashForm, null, SWT.MULTI | SWT.WRAP
                 | SWT.V_SCROLL);
+        consoleInputText = consoleInputViewer.getTextWidget();
         consoleInputViewer.setDocument(new Document());
         consoleInputViewer.configure(new ErlangConsoleSourceViewerConfiguration(store,
                 colorManager, backend));
-        consoleInput = (StyledText) consoleInputViewer.getControl();
 
         sashForm.setWeights(new int[] { 2, 1 });
 
@@ -253,37 +257,33 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         final ModifyListener modifyListener = new ModifyListener() {
             @Override
             public void modifyText(final ModifyEvent e) {
-                // final Stopwatch time = Stopwatch.createStarted();
-                final String conText = trimInput(consoleInput.getText());
-                final boolean atEndOfInput = consoleInput.getCaretOffset() >= conText
-                        .length() && conText.endsWith(".");
+                final String consoleText = trimInput(consoleInputText.getText());
+                final boolean atEndOfInput = consoleText.endsWith(".")
+                        && consoleInputText.getCaretOffset() >= consoleText.length();
 
                 if (atEndOfInput) {
                     final boolean inputComplete = isInputComplete();
                     if (inputComplete) {
-                        consoleInput.setBackground(bgColor_Ok);
+                        consoleInputText.setBackground(bgColor_Ok);
                     }
                 } else {
-                    consoleInput.setBackground(bgcolor);
+                    consoleInputText.setBackground(bgcolor);
                 }
-                // System.out.println("1>" +
-                // time.elapsed(TimeUnit.MILLISECONDS));
             }
         };
         // consoleInput.addModifyListener(modifyListener);
-        consoleInput.addCaretListener(new CaretListener() {
+        consoleInputText.addCaretListener(new CaretListener() {
             @Override
             public void caretMoved(final CaretEvent event) {
                 modifyListener.modifyText(null);
             }
         });
-        consoleInput.addKeyListener(new KeyAdapter() {
+        consoleInputText.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(final KeyEvent e) {
-                // final Stopwatch time = Stopwatch.createStarted();
                 final boolean ctrlOrCommandPressed = (e.stateMask & SWT.MOD1) == SWT.MOD1;
-                final String conText = trimInput(consoleInput.getText());
-                final boolean atEndOfInput = consoleInput.getCaretOffset() >= conText
+                final String conText = trimInput(consoleInputText.getText());
+                final boolean atEndOfInput = consoleInputText.getCaretOffset() >= conText
                         .length() && conText.endsWith(".");
                 e.doit = true;
 
@@ -299,38 +299,28 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                     history.prev();
                     final String s = history.get();
                     if (s != null) {
-                        consoleInput.setText(s);
-                        consoleInput.setSelection(consoleInput.getText().length());
+                        consoleInputText.setText(s);
+                        consoleInputText
+                                .setSelection(consoleInputText.getText().length());
                     }
                 } else if (ctrlOrCommandPressed && e.keyCode == SWT.ARROW_DOWN) {
                     e.doit = false;
                     history.next();
                     final String s = history.get();
                     if (s != null) {
-                        consoleInput.setText(s);
-                        consoleInput.setSelection(consoleInput.getText().length());
+                        consoleInputText.setText(s);
+                        consoleInputText
+                                .setSelection(consoleInputText.getText().length());
                     }
                 }
-                // System.out.println("2> " +
-                // time.elapsed(TimeUnit.MILLISECONDS));
             }
 
         });
-        consoleInput.setFont(consoleText.getFont());
-        consoleInput.setBackground(consoleText.getBackground());
-        consoleInput.setWordWrap(true);
-        consoleInput.setFocus();
+        consoleInputText.setFont(consoleOutputText.getFont());
+        consoleInputText.setBackground(consoleOutputText.getBackground());
+        consoleInputText.setWordWrap(true);
+        consoleInputText.setFocus();
 
-        consoleText.addFocusListener(new FocusListener() {
-            @Override
-            public void focusLost(final FocusEvent e) {
-            }
-
-            @Override
-            public void focusGained(final FocusEvent e) {
-                consoleInput.setFocus();
-            }
-        });
         // end layout
 
         final IDocumentListener documentListener = new IDocumentListener() {
@@ -419,7 +409,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
     @Override
     public void setFocus() {
-        consoleInput.setFocus();
+        consoleInputText.setFocus();
     }
 
     @Override
@@ -461,37 +451,40 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
     protected void createActions() {
         final IActionBars actionBars = getSite().getActionBars();
-        TextViewerAction action = new TextViewerAction(consoleOutputViewer,
-                ITextOperationTarget.SELECT_ALL);
-        action.configureAction(ConsoleMessages.TextConsolePage_SelectAllText,
-                ConsoleMessages.TextConsolePage_SelectAllDescrip,
-                ConsoleMessages.TextConsolePage_SelectAllDescrip);
-        action.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_SELECT_ALL);
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(action, IConsoleHelpContextIds.CONSOLE_SELECT_ALL_ACTION);
-        setGlobalAction(actionBars, ActionFactory.SELECT_ALL.getId(), action);
-
-        action = new TextViewerAction(consoleOutputViewer, ITextOperationTarget.CUT);
-        action.configureAction(ConsoleMessages.TextConsolePage_CutText,
-                ConsoleMessages.TextConsolePage_CutDescrip,
-                ConsoleMessages.TextConsolePage_CutDescrip);
-        action.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-                .getImageDescriptor(ISharedImages.IMG_TOOL_CUT));
-        action.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_CUT);
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(action, IConsoleHelpContextIds.CONSOLE_CUT_ACTION);
-        setGlobalAction(actionBars, ActionFactory.CUT.getId(), action);
-
-        action = new TextViewerAction(consoleOutputViewer, ITextOperationTarget.COPY);
-        action.configureAction(ConsoleMessages.TextConsolePage_CopyText,
-                ConsoleMessages.TextConsolePage_CopyDescrip,
-                ConsoleMessages.TextConsolePage_CopyDescrip);
-        action.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-                .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
-        action.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_COPY);
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(action, IConsoleHelpContextIds.CONSOLE_COPY_ACTION);
-        setGlobalAction(actionBars, ActionFactory.COPY.getId(), action);
+        // TextViewerAction action = new TextViewerAction(consoleOutputViewer,
+        // ITextOperationTarget.SELECT_ALL);
+        // action.configureAction(ConsoleMessages.TextConsolePage_SelectAllText,
+        // ConsoleMessages.TextConsolePage_SelectAllDescrip,
+        // ConsoleMessages.TextConsolePage_SelectAllDescrip);
+        // action.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_SELECT_ALL);
+        // PlatformUI.getWorkbench().getHelpSystem()
+        // .setHelp(action, IConsoleHelpContextIds.CONSOLE_SELECT_ALL_ACTION);
+        // setGlobalAction(actionBars, ActionFactory.SELECT_ALL.getId(),
+        // action);
+        //
+        // action = new TextViewerAction(consoleOutputViewer,
+        // ITextOperationTarget.CUT);
+        // action.configureAction(ConsoleMessages.TextConsolePage_CutText,
+        // ConsoleMessages.TextConsolePage_CutDescrip,
+        // ConsoleMessages.TextConsolePage_CutDescrip);
+        // action.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+        // .getImageDescriptor(ISharedImages.IMG_TOOL_CUT));
+        // action.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_CUT);
+        // PlatformUI.getWorkbench().getHelpSystem()
+        // .setHelp(action, IConsoleHelpContextIds.CONSOLE_CUT_ACTION);
+        // setGlobalAction(actionBars, ActionFactory.CUT.getId(), action);
+        //
+        // action = new TextViewerAction(consoleOutputViewer,
+        // ITextOperationTarget.COPY);
+        // action.configureAction(ConsoleMessages.TextConsolePage_CopyText,
+        // ConsoleMessages.TextConsolePage_CopyDescrip,
+        // ConsoleMessages.TextConsolePage_CopyDescrip);
+        // action.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+        // .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
+        // action.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_COPY);
+        // PlatformUI.getWorkbench().getHelpSystem()
+        // .setHelp(action, IConsoleHelpContextIds.CONSOLE_COPY_ACTION);
+        // setGlobalAction(actionBars, ActionFactory.COPY.getId(), action);
 
         // fClearOutputAction = new ClearOutputAction(fConsole);
 
@@ -502,8 +495,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 .setHelp(fraction, IConsoleHelpContextIds.CONSOLE_FIND_REPLACE_ACTION);
         setGlobalAction(actionBars, ActionFactory.FIND.getId(), fraction);
 
-        fSelectionActions.add(ActionFactory.CUT.getId());
-        fSelectionActions.add(ActionFactory.COPY.getId());
+        // fSelectionActions.add(ActionFactory.CUT.getId());
+        // fSelectionActions.add(ActionFactory.COPY.getId());
         fSelectionActions.add(ActionFactory.FIND.getId());
 
         actionBars.updateActionBars();
