@@ -1,5 +1,7 @@
 package org.erlide.engine.model.builder
 
+import java.util.regex.Pattern
+
 /*
  * TODO there should be specific properties for each builder tool
  * but we wait until we see if there are many properties that are only
@@ -26,7 +28,7 @@ class BuilderProperties {
   @Property String extraFlags = ""
 
   def void fromString(String data) {
-    val parts = data.split("|")
+    val parts = data.split(Pattern.quote("|"))
     try {
       val bt = BuilderTool.valueOf(parts.get(0))
       val b = parts.get(1)

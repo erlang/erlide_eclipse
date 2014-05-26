@@ -1,5 +1,6 @@
 package org.erlide.engine.model.builder;
 
+import java.util.regex.Pattern;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.erlide.engine.model.builder.BuilderTool;
@@ -126,7 +127,8 @@ public class BuilderProperties {
   }
   
   public void fromString(final String data) {
-    final String[] parts = data.split("|");
+    String _quote = Pattern.quote("|");
+    final String[] parts = data.split(_quote);
     try {
       String _get = parts[0];
       final BuilderTool bt = BuilderTool.valueOf(_get);

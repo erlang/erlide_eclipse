@@ -29,7 +29,7 @@ public class ErlModelCache implements IDisposable {
 
     private static final boolean disabled = Boolean.valueOf(System
             .getProperty("erlide.noModelCache"));
-    private static ErlModelCache fgInstance;
+    private static volatile ErlModelCache fgInstance;
 
     private final Cache<IErlModule, List<IErlModule>> moduleIncludeCache;
     private final Cache<String, IErlModule> pathToModuleCache;
