@@ -159,16 +159,20 @@ public class BeamUtil {
                     final String s = (String) e.nextElement();
                     final String beamModuleName = BackendUtils.getBeamModuleName(s);
                     if (beamModuleName != null) {
-                        final URL url = b.getEntry(s);
                         ErlLogger.debug(" unpack: " + beamModuleName);
                         final File beam = new File(ebinDir, beamModuleName + ".beam");
                         try {
                             beam.createNewFile();
                             final FileOutputStream fs = new FileOutputStream(beam);
                             try {
-                                final OtpErlangBinary bin = getBeamBinary(beamModuleName,
-                                        url);
-                                fs.write(bin.binaryValue());
+                                final URL url = b.getEntry(s);
+                                if (url != null) {
+                                    final OtpErlangBinary bin = getBeamBinary(
+                                            beamModuleName, url);
+                                    if (bin != null) {
+                                        fs.write(bin.binaryValue());
+                                    }
+                                }
                             } finally {
                                 fs.close();
                             }

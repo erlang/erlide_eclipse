@@ -207,7 +207,8 @@ public class ImmutableProcessor extends AbstractClassProcessor {
           _or = true;
         } else {
           Type _type = fieldType.getType();
-          boolean _equals_1 = Objects.equal(_type, Boolean.class);
+          String _simpleName = _type.getSimpleName();
+          boolean _equals_1 = Objects.equal(_simpleName, "Boolean");
           _or = _equals_1;
         }
         if (_or) {
@@ -216,8 +217,8 @@ public class ImmutableProcessor extends AbstractClassProcessor {
           _xifexpression = "get";
         }
         final String prefix = _xifexpression;
-        String _simpleName = field.getSimpleName();
-        String _firstUpper = StringExtensions.toFirstUpper(_simpleName);
+        String _simpleName_1 = field.getSimpleName();
+        String _firstUpper = StringExtensions.toFirstUpper(_simpleName_1);
         String _plus = (prefix + _firstUpper);
         final Procedure1<MutableMethodDeclaration> _function = new Procedure1<MutableMethodDeclaration>() {
           public void apply(final MutableMethodDeclaration it) {

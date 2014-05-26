@@ -12,19 +12,6 @@ import org.osgi.framework.BundleContext;
 public class BackendPlugin extends Plugin {
 
     public static final String PLUGIN_ID = "org.erlide.backend";
-    private static BackendPlugin plugin;
-
-    public BackendPlugin() {
-        super();
-        plugin = this;
-    }
-
-    public static BackendPlugin getDefault() {
-        if (plugin == null) {
-            plugin = new BackendPlugin();
-        }
-        return plugin;
-    }
 
     @Override
     public void start(final BundleContext context) throws Exception {
