@@ -23,11 +23,12 @@ public class RenameModuleQuickFix extends MarkerQuickFixExecutor {
 
         final IErlModel svc = ErlangEngine.getInstance().getModel();
 
-        IErlModule module;
-        module = svc.findModule(moduleName);
-        if (module != null) {
+        IErlModule newModule;
+        newModule = svc.findModule(moduleName);
+        if (newModule != null) {
             MessageDialog.openInformation(null, "Rename module quickfix",
                     "A module with name '" + moduleName + "' already exists.");
+            newModule.dispose();
             return;
         }
 
@@ -38,7 +39,7 @@ public class RenameModuleQuickFix extends MarkerQuickFixExecutor {
         }
 
         String in = convertStreamToString(file.getContents());
-        in = in.replaceAll("-module\\([^)]+\\)\\.", "-module(" + moduleName + ").");
+        in = in.replaceFirst("-module\\([^)]+\\)\\.", "-module(" + moduleName + ").");
         file.setContents(new ByteArrayInputStream(in.getBytes()), IResource.FORCE, null);
     }
 
