@@ -27,7 +27,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * @author jakob
- *
+ * 
  */
 public class TestAction extends TextEditorAction {
 
@@ -73,7 +73,6 @@ public class TestAction extends TextEditorAction {
                 final ErlangEditor editor = (ErlangEditor) textEditor;
                 internalScanner.dumpLog(editor.getModule().getScannerName(),
                         "/tmp/x.scanner.log");
-                editor.dumpReconcilerLog("/tmp/x.reconciler.log");
             }
             if (module != null) {
                 return;
