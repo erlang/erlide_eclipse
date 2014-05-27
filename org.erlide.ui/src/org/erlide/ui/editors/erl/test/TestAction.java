@@ -18,7 +18,6 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.services.parsing.InternalScanner;
-import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
@@ -68,12 +67,6 @@ public class TestAction extends TextEditorAction {
                 s = Util.stringValue(checkAll);
             }
             ErlLogger.info("%s", s);
-            dumpText(text, "/tmp/editor.txt");
-            if (textEditor instanceof ErlangEditor) {
-                final ErlangEditor editor = (ErlangEditor) textEditor;
-                internalScanner.dumpLog(editor.getModule().getScannerName(),
-                        "/tmp/x.scanner.log");
-            }
             if (module != null) {
                 return;
             }

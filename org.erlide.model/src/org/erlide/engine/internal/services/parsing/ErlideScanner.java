@@ -36,13 +36,11 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
     }
 
     public void initialScan(final String module, final String path,
-            final String initialText, final boolean logging) {
+            final String initialText) {
         final String stateDir = ErlangEngine.getInstance().getStateDir();
         try {
-            final String loggingOnOff = logging ? "on" : "off";
-            backend.call(ERLIDE_SCANNER, "initial_scan", "asssoa", module,
-                    path, initialText == null ? "" : initialText, stateDir,
-                    USE_CACHE, loggingOnOff);
+            backend.call(ERLIDE_SCANNER, "initial_scan", "assso", module, path,
+                    initialText == null ? "" : initialText, stateDir, USE_CACHE);
         } catch (final RpcTimeoutException e) {
             ErlLogger.debug(e);
         } catch (final Exception e) {
@@ -177,19 +175,6 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
         }
         return null;
 
-    }
-
-    @Override
-    public boolean dumpLog(final String scannerName,
-            final String dumpLocationFilename) {
-        try {
-            final OtpErlangObject object = backend.call(ERLIDE_SCANNER,
-                    "dump_log", "as", scannerName, dumpLocationFilename);
-            return Util.isOk(object);
-        } catch (final RpcException e) {
-            ErlLogger.warn(e);
-        }
-        return false;
     }
 
 }

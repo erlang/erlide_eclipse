@@ -40,32 +40,32 @@ open_test_() ->
                    open_test("foo()-> ?HEL§LO.")),
      ?_assertEqual({variable,'AA'},
                    open_test("foo()-> A§A.")),
-	 ?_assertEqual({variable, 'BB'},
-				   open_test("-a() -> #r{field1=A, field2=B§B}.")),
-	 ?_assertEqual({local, aa, 0},
-				   open_test("-type a§a()::integer()."))
-	].
+     ?_assertEqual({variable, 'BB'},
+                   open_test("-a() -> #r{field1=A, field2=B§B}.")),
+     ?_assertEqual({local, aa, 0},
+                   open_test("-type a§a()::integer()."))
+    ].
 
 open_record_field_test_() ->
-	[
-	 ?_assertEqual({field, rec, bb},
-				   open_test("-a() -> #rec{aa, b§b}).")),
-	 ?_assertEqual({field, rec, aa},
-				   open_test("-record(rec, {a§a, bb}).")),
-	 ?_assertEqual({field, rec, bb},
-				   open_test("-record(rec, {aa, b§b}).")),
-	 ?_assertEqual({field, rec, aa},
-				   open_test("-a() -> #rec{a§a, bb}).")),
-	 ?_assertEqual({field, r, field2},
-				   open_test("-a() -> #r{field1=A, fiel§d2=B}.")),
-	 ?_assertEqual({field, r, field1},
-				   open_test("-a() -> #r{fiel§d1=A, field2=B}."))
-	].
+    [
+     ?_assertEqual({field, rec, bb},
+                   open_test("-a() -> #rec{aa, b§b}).")),
+     ?_assertEqual({field, rec, aa},
+                   open_test("-record(rec, {a§a, bb}).")),
+     ?_assertEqual({field, rec, bb},
+                   open_test("-record(rec, {aa, b§b}).")),
+     ?_assertEqual({field, rec, aa},
+                   open_test("-a() -> #rec{a§a, bb}).")),
+     ?_assertEqual({field, r, field2},
+                   open_test("-a() -> #r{field1=A, fiel§d2=B}.")),
+     ?_assertEqual({field, r, field1},
+                   open_test("-a() -> #r{fiel§d1=A, field2=B}."))
+    ].
 
 open_test(S) ->
     {S1, Offset} = split(S),
     erlide_scanner:create(test),
-    erlide_scanner:initial_scan(test, "", S1, "", false, off),
+    erlide_scanner:initial_scan(test, "", S1, "", false),
     R = erlide_open:open(test, Offset, #open_context{imports=[]}),
     erlide_scanner:dispose(test),
     R.

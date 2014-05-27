@@ -212,14 +212,14 @@ newline_char_simple_test_() ->
 
 test_scan(S) ->
     erlide_scanner:create(testing),
-    erlide_scanner:initial_scan(testing, "", S, "/tmp", false, off),
+    erlide_scanner:initial_scan(testing, "", S, "/tmp", false),
     R = erlide_scanner:get_tokens(testing),
     erlide_scanner:dispose(testing),
     R.
 
 test_replace(S, Pos, RemoveLength, NewText) ->
     erlide_scanner:create(testing),
-    erlide_scanner:initial_scan(testing, "", S, "/tmp", false, off),
+    erlide_scanner:initial_scan(testing, "", S, "/tmp", false),
     R1 = erlide_scanner:get_tokens(testing),
     erlide_scanner:replace_text(testing, Pos, RemoveLength, NewText),
     R2 = erlide_scanner:get_tokens(testing),
