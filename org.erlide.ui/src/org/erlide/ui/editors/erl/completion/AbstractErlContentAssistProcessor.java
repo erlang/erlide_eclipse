@@ -65,7 +65,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 public abstract class AbstractErlContentAssistProcessor implements
         IContentAssistProcessor {
@@ -255,7 +254,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                 final String prefix = getPrefix(before);
                 List<String> fieldsSoFar = null;
                 List<ICompletionProposal> result;
-                Set<Kinds> flags = EnumSet.noneOf(Kinds.class);
+                EnumSet<Kinds> flags = EnumSet.noneOf(Kinds.class);
                 int pos;
                 String moduleOrRecord = null;
                 IErlElement element = getElementAt(offset);
@@ -327,7 +326,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                         case CLAUSE:
                             flags = EnumSet.of(Kinds.MODULES);
                             if (module != null) {
-                                flags = Sets.union(flags, EnumSet.of(Kinds.VARIABLES,
+                                flags.addAll(EnumSet.of(Kinds.VARIABLES,
                                         Kinds.DECLARED_FUNCTIONS,
                                         Kinds.IMPORTED_FUNCTIONS,
                                         Kinds.AUTO_IMPORTED_FUNCTIONS));
@@ -374,7 +373,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         }
     }
 
-    protected abstract Set<Kinds> filterFlags(Set<Kinds> flags);
+    protected abstract EnumSet<Kinds> filterFlags(EnumSet<Kinds> flags);
 
     private ICompletionProposal[] getNoCompletion(final int offset) {
         return new ICompletionProposal[] { new DummyCompletionProposal(offset) };
@@ -821,7 +820,7 @@ public abstract class AbstractErlContentAssistProcessor implements
 
     /**
      * Check if the string looks like an erlang parameter
-     *
+     * 
      * @param parameter
      *            String the parameter to check
      * @return true iff parameter is like Par, _Par or _par

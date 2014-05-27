@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl.completion;
 
-import java.util.Set;
+import java.util.EnumSet;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
@@ -45,7 +45,7 @@ public class ErlContentAssistProcessor extends AbstractErlContentAssistProcessor
     }
 
     @Override
-    protected Set<Kinds> filterFlags(final Set<Kinds> flags) {
+    protected EnumSet<Kinds> filterFlags(final EnumSet<Kinds> flags) {
         return flags;
     }
 
