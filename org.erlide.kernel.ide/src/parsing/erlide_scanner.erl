@@ -42,15 +42,7 @@ scan_string(L) when is_list(L) ->
     M = erlide_scan_model:do_scan('', L),
     erlide_scan_model:get_all_tokens(M).
 
-initial_scan_0(ScannerName, ModuleFileName, InitialText, StateDir, UseCache) ->
-    %%     Text = case InitialText of
-    %%                "" ->
-    %%                    {ok, B} = file:read_file(ModuleFileName),
-    %%                    binary_to_list(B);
-    %%                _ ->
-    %%                    InitialText
-    %%            end,
-    Text = InitialText,
+initial_scan_0(ScannerName, ModuleFileName, Text, StateDir, UseCache) ->
     CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
     RenewFun = fun(_F) -> erlide_scan_model:do_scan(ScannerName, Text) end,
     Result = erlide_cache:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UseCache),
