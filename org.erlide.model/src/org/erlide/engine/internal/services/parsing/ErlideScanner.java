@@ -27,6 +27,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
     private static final String ERLIDE_SCANNER = "erlide_scanner";
     private static final Object ENCODING = System.getProperty(
             "erlide.encoding.__test__", "latin1");
+    private static final boolean USE_CACHE = true;
 
     private final IRpcSite backend;
 
@@ -41,7 +42,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
             final String loggingOnOff = logging ? "on" : "off";
             backend.call(ERLIDE_SCANNER, "initial_scan", "asssoa", module,
                     path, initialText == null ? "" : initialText, stateDir,
-                            true, loggingOnOff);
+                    USE_CACHE, loggingOnOff);
         } catch (final RpcTimeoutException e) {
             ErlLogger.debug(e);
         } catch (final Exception e) {
