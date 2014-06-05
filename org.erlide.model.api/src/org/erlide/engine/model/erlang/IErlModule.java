@@ -36,7 +36,7 @@ import org.erlide.engine.services.parsing.ScannerService;
  * <code>IErlElement.isStructureKnown</code> to determine whether this is the
  * case.
  * <p>
- * This interface is not intended to be implemented by clients.
+ * @noimplement This interface is not intended to be implemented by clients.
  * </p>
  */
 public interface IErlModule extends IErlElement, IParent, IOpenable, ISourceUnit {

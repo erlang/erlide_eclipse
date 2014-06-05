@@ -21,8 +21,9 @@ import org.erlide.engine.model.erlang.IErlModule;
 /**
  * An Erlang folder is a collection of colder with erlang files. It knows
  * whether it is on the compile path
- *
+ * 
  * @see ErlangCore#createRoot(org.eclipse.core.resources.IFolder)
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IErlFolder extends IParent, IErlElement, IOpenable {
 

@@ -10,6 +10,13 @@
  *******************************************************************************/
 package org.erlide.engine.model.root;
 
+/**
+ * 
+ * @author Vlad
+ * 
+ * @noimplement This interface is not intended to be implemented by clients.
+ * 
+ */
 public interface ISourceUnit {
 
 }

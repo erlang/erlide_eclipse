@@ -12,8 +12,9 @@ package org.erlide.engine.model.erlang;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
- *
  * @author Vlad Dumitrescu
+ * 
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IErlAttribute extends IErlMember {
 

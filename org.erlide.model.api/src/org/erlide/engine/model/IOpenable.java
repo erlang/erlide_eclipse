@@ -27,21 +27,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * provides access to all its constituent elements, but opening a package
  * fragment does not open all compilation units in the package fragment.
  * </p>
- * <p>
- * This interface is not intended to be implemented by clients.
- * </p>
+ * 
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IOpenable {
 
     /**
      * Closes this element and its buffer (if any). Closing an element which is
      * not open has no effect.
-     *
+     * 
      * <p>
      * Note: although <code>close</code> is exposed in the API, clients are not
      * expected to open and close elements - the Erlang model does this
      * automatically as elements are accessed.
-     *
+     * 
      * @exception ErlModelException
      *                if an error occurs closing this element
      */
@@ -55,7 +54,7 @@ public interface IOpenable {
      * <li>a working copy has been created on one of this element's children and
      * has not yet destroyed
      * </ul>
-     *
+     * 
      * @exception ErlModelException
      *                if this element does not exist or if an exception occurs
      *                while accessing its corresponding resource.
@@ -74,13 +73,13 @@ public interface IOpenable {
      * buffer. The element is consistent when opened, and is consistent if the
      * underlying resource or buffer has not been modified since it was last
      * consistent.
-     *
+     * 
      * <p>
      * NOTE: Child consistency is not considered. For example, a package
      * fragment responds <code>true</code> when it knows about all of its
      * compilation units present in its underlying folder. However, one or more
      * of the compilation units could be inconsistent.
-     *
+     * 
      * @exception ErlModelException
      *                if this element does not exist or if an exception occurs
      *                while accessing its corresponding resource.
@@ -92,7 +91,7 @@ public interface IOpenable {
 
     /**
      * Returns whether this openable is open. This is a handle-only method.
-     *
+     * 
      * @return true if this openable is open, false otherwise
      */
     boolean isOpen();
@@ -101,7 +100,7 @@ public interface IOpenable {
      * Makes this element consistent with its underlying resource or buffer by
      * updating the element's structure and properties as necessary.
      * <p>
-     *
+     * 
      * @param progress
      *            the given progress monitor
      * @exception ErlModelException
@@ -119,12 +118,12 @@ public interface IOpenable {
      * Opens this element and all parent elements that are not already open. For
      * compilation units, a buffer is opened on the contents of the underlying
      * resource.
-     *
+     * 
      * <p>
      * Note: although <code>open</code> is exposed in the API, clients are not
      * expected to open and close elements - the Erlang model does this
      * automatically as elements are accessed.
-     *
+     * 
      * @param progress
      *            the given progress monitor
      * @exception ErlModelException
@@ -155,7 +154,7 @@ public interface IOpenable {
      * <p>
      * As a result of this operation, the element is consistent with its
      * underlying resource or buffer.
-     *
+     * 
      * @param progress
      *            the given progress monitor
      * @param force
