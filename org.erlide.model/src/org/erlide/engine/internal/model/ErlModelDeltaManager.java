@@ -13,9 +13,9 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.root.ErlElementDelta;
 import org.erlide.engine.model.ElementChangedEvent;
 import org.erlide.engine.model.IElementChangedListener;
+import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementDelta;
-import org.erlide.engine.model.root.IWorkingCopy;
 
 public class ErlModelDeltaManager {
     public static final int DEFAULT_CHANGE_EVENT = 0;
@@ -29,7 +29,7 @@ public class ErlModelDeltaManager {
      * Queue of reconcile deltas on working copies that have yet to be fired.
      * This is a table form IWorkingCopy to IErlElementDelta
      */
-    public Map<IWorkingCopy, IErlElementDelta> reconcileDeltas;
+    public Map<IErlModule, IErlElementDelta> reconcileDeltas;
     /**
      * Queue of deltas created explicitly by the model that have yet to be
      * fired.
@@ -40,7 +40,7 @@ public class ErlModelDeltaManager {
     public ErlModelDeltaManager(final ErlModel model) {
         this.model = model;
         fFire = true;
-        reconcileDeltas = new HashMap<IWorkingCopy, IErlElementDelta>();
+        reconcileDeltas = new HashMap<IErlModule, IErlElementDelta>();
         erlModelDeltas = Collections
                 .synchronizedList(new ArrayList<IErlElementDelta>());
     }
