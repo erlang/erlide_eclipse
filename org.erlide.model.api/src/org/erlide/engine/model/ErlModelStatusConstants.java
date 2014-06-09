@@ -51,7 +51,7 @@ public final class ErlModelStatusConstants {
      * exist. The element(s) can be retrieved using <code>getElements</code> on
      * the status object.
      *
-     * @see IErlModelStatus#isDoesNotExist()
+     * @see IErlModelStatus#elementDoesNotExist()
      */
     public static final int ELEMENT_DOES_NOT_EXIST = 969;
 

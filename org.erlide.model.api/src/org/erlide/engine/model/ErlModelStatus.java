@@ -337,10 +337,10 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     }
 
     /**
-     * @see IErlModelStatus#isDoesNotExist()
+     * @see IErlModelStatus#elementDoesNotExist()
      */
     @Override
-    public boolean isDoesNotExist() {
+    public boolean elementDoesNotExist() {
         return getCode() == ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST;
     }
 

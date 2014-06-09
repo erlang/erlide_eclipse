@@ -66,12 +66,12 @@ public interface IErlModelStatus extends IStatus {
     /**
      * Returns whether this status indicates that a Erlang model element does
      * not exist. This convenience method is equivalent to
-     * <code>getCode() == IErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>
+     * <code>getCode() == ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>
      * .
      * 
-     * @return <code>true</code> if the status code indicates that a Erlang
+     * @return <code>true</code> if the status code indicates that an Erlang
      *         model element does not exist
      * @see ErlModelStatusConstants#ELEMENT_DOES_NOT_EXIST
      */
-    boolean isDoesNotExist();
+    boolean elementDoesNotExist();
 }
