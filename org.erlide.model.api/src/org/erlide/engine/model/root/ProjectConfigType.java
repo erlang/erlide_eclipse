@@ -12,7 +12,11 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public enum ProjectConfigType {
-    INTERNAL("org.erlide.core"), EMAKE("Emakefile"), REBAR("rebar.config");
+    // @formatter:off
+    INTERNAL("org.erlide.core"),
+    EMAKE("Emakefile"),
+    REBAR("rebar.config");
+    // @formatter:on
 
     private final String configName;
 

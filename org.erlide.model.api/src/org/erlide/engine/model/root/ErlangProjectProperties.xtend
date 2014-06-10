@@ -146,15 +146,6 @@ class ErlangProjectProperties {
 
   }
 
-  def private String getExternal(ExternalKind external, IPreferencesService service, String key, String pluginId) {
-    val String global = service.getString(pluginId, key, "", null)
-    val String projprefs = if (external == ExternalKind.EXTERNAL_INCLUDES)
-        getExternalIncludesFile()
-      else
-        getExternalModulesFile()
-    return PreferencesUtils.packArray(#[projprefs, global])
-  }
-
   def private String getExternal(ExternalKind external) {
     val IPreferencesService service = Platform.getPreferencesService()
     val String key = if (external == ExternalKind.EXTERNAL_INCLUDES) "default_external_includes" else "default_external_modules"
@@ -163,6 +154,15 @@ class ErlangProjectProperties {
       result = getExternal(external, service, key, "org.erlide.core")
     }
     return result
+  }
+
+  def private String getExternal(ExternalKind external, IPreferencesService service, String key, String pluginId) {
+    val String global = service.getString(pluginId, key, "", null)
+    val String projprefs = if (external == ExternalKind.EXTERNAL_INCLUDES)
+        getExternalIncludesFile()
+      else
+        getExternalModulesFile()
+    return PreferencesUtils.packArray(#[projprefs, global])
   }
 
 }

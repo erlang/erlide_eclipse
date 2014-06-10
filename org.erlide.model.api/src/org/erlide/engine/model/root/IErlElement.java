@@ -94,11 +94,10 @@ public interface IErlElement extends IAdaptable, IDisposable {
     String getName();
 
     /**
-     * Returns this element's kind encoded as an integer. This is a handle-only
+     * Returns this element's kind encoded as an enum. This is a handle-only
      * method.
      * 
-     * @return the kind of element; one of the constants declared in
-     *         <code>IErlElement</code>
+     * @return the kind of element
      * @see IErlElement
      */
     ErlElementKind getKind();

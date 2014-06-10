@@ -25,20 +25,14 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
-/**
- *
- */
-
 class ErlNode extends DocumentRangeNode implements ITypedElement {
 
-    private final ErlNode fParent;
     private final ErlElementKind kind;
     private final String name;
 
     private ErlNode(final ErlNode parent, final ErlElementKind kind, final String name,
             final String id, final IDocument doc, final int start, final int length) {
         super(kind.hashCode(), id, doc, start, length);
-        fParent = parent;
         this.kind = kind;
         this.name = name;
         parent.addChild(this);
@@ -64,7 +58,6 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
 
     public ErlNode(final IDocument doc) {
         super(ErlElementKind.MODEL.hashCode(), "<root>", doc, 0, doc.getLength());
-        fParent = null;
         kind = ErlElementKind.MODEL;
         name = "<root>";
     }
@@ -73,7 +66,7 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
      * Extends the range to include ranges of children, this is needed since the
      * range of a function in the erlang model only covers the first clause
      * (which is good in the outline and the navigator, but not optimal here).
-     *
+     * 
      * @see org.eclipse.compare.structuremergeviewer.DocumentRangeNode#addChild(org.eclipse.compare.structuremergeviewer.DocumentRangeNode)
      */
     @Override
@@ -94,21 +87,14 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
     }
 
     /**
-     * @see ITypedInput#getParent
-     */
-    public ErlNode getParent() {
-        return fParent;
-    }
-
-    /**
-     * @see ITypedInput#getNodeType
+     * @see ITypedElement#getNodeType
      */
     public ErlElementKind getNodeType() {
         return kind;
     }
 
     /**
-     * @see ITypedInput#getName
+     * @see ITypedElement#getName
      */
     @Override
     public String getName() {
@@ -116,7 +102,7 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
     }
 
     /**
-     * @see ITypedInput#getType
+     * @see ITypedElement#getType
      */
     @Override
     public String getType() {
