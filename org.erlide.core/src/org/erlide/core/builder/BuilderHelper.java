@@ -46,7 +46,7 @@ import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.erlang.ErlangIncludeFile;
 import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.erlang.ModuleKind;
+import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ResourceUtil;
@@ -150,7 +150,7 @@ public final class BuilderHelper {
                 final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
                 for (final ErlangIncludeFile ifile : incs) {
                     if (ResourceUtil.samePath(ifile.getFilename(), resource.getName())) {
-                        if (m.getModuleKind() == ModuleKind.ERL) {
+                        if (m.getSourceKind() == SourceKind.ERL) {
                             final BuildResource bres = new BuildResource(m.getResource());
                             result.add(bres);
                         }

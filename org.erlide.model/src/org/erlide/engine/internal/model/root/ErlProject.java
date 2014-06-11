@@ -46,7 +46,7 @@ import org.erlide.engine.model.IOpenable;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.erlang.ModuleKind;
+import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlElement;
@@ -339,8 +339,8 @@ public class ErlProject extends Openable implements IErlProject,
                         .getChildrenOfKind(ErlElementKind.MODULE)) {
                     if (e instanceof IErlModule) {
                         final IErlModule m = (IErlModule) e;
-                        final boolean isModule = ModuleKind.nameToModuleKind(m
-                                .getName()) != ModuleKind.HRL;
+                        final boolean isModule = SourceKind.nameToModuleKind(m
+                                .getName()) != SourceKind.HRL;
                         if (isModule == getModules) {
                             result.add(m);
                         }
@@ -635,7 +635,7 @@ public class ErlProject extends Openable implements IErlProject,
                         || element.getKind() == ErlElementKind.PROJECT;
                 if (element instanceof IErlModule) {
                     final IErlModule module = (IErlModule) element;
-                    if (module.getModuleKind() == ModuleKind.HRL) {
+                    if (module.getSourceKind() == SourceKind.HRL) {
                         result.add(module);
                     }
                     return false;

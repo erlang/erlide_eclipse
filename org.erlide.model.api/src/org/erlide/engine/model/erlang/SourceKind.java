@@ -3,10 +3,10 @@ package org.erlide.engine.model.erlang;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
-public enum ModuleKind {
+public enum SourceKind {
     BAD, HRL, ERL, YRL;
 
-    public static ModuleKind extensionToModuleKind(final String ext) {
+    public static SourceKind extensionToModuleKind(final String ext) {
         if (ext == null) {
             return BAD;
         }
@@ -22,9 +22,9 @@ public enum ModuleKind {
         return BAD;
     }
 
-    public static ModuleKind nameToModuleKind(final String name) {
+    public static SourceKind nameToModuleKind(final String name) {
         final IPath p = new Path(name);
-        return ModuleKind.extensionToModuleKind(p.getFileExtension());
+        return SourceKind.extensionToModuleKind(p.getFileExtension());
     }
 
     public static boolean hasModuleExtension(final String name) {

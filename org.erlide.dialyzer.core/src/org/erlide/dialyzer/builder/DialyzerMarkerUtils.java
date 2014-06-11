@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.erlang.ModuleKind;
+import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.util.ResourceUtil;
 import org.erlide.runtime.api.IRpcSite;
@@ -67,7 +67,7 @@ public class DialyzerMarkerUtils {
         IResource resource = null;
         IErlModule module = null;
         try {
-            if (ModuleKind.hasHrlExtension(path)) {
+            if (SourceKind.hasHrlExtension(path)) {
                 module = model.findInclude(null, path);
             } else {
                 module = model.findModule(null, path);

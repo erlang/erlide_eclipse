@@ -34,7 +34,7 @@ import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.backend.debug.ErlDebugConstants;
 import org.erlide.backend.launch.IErlangLaunchDelegateConstants;
 import org.erlide.engine.model.IBeamLocator;
-import org.erlide.engine.model.erlang.ModuleKind;
+import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.runtime.api.ErlDebugFlags;
 import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.runtime.api.InitialCall;
@@ -136,7 +136,7 @@ public final class BackendData extends RuntimeData {
             final IMarker m = bp.getMarker();
             final IResource r = m.getResource();
             final String name = r.getName();
-            if (ModuleKind.hasErlExtension(name)) {
+            if (SourceKind.hasErlExtension(name)) {
                 final IProject p = r.getProject();
                 if (projects == null || projects.contains(p)) {
                     final String s = p.getName() + ":" + name;

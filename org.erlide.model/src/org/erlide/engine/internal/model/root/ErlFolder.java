@@ -19,7 +19,7 @@ import org.erlide.engine.model.ErlModelStatusConstants;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.erlang.ModuleKind;
+import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlFolder;
@@ -166,7 +166,7 @@ public class ErlFolder extends Openable implements IErlFolder {
                 final String moduleName = hasExtension ? name2 : module
                         .getModuleName();
                 if (name.equals(moduleName)
-                        && (hasExtension || isInclude == ModuleKind
+                        && (hasExtension || isInclude == SourceKind
                                 .hasHrlExtension(name2))) {
                     return module;
                 }

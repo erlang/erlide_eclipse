@@ -48,7 +48,7 @@ import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.erlang.ModuleKind;
+import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.rpc.IRpcFuture;
@@ -329,7 +329,7 @@ public class InternalBuilder extends ErlangBuilder {
 
     private boolean ignoreModule(final IErlProject erlangProject, final IErlModule m) {
         boolean result = false;
-        result |= m.getModuleKind() != ModuleKind.ERL;
+        result |= m.getSourceKind() != SourceKind.ERL;
         result |= !isModuleOnDirectSourcePath(erlangProject, m);
         result |= m.getResource().getProjectRelativePath().segment(0).equals("deps");
         if (result) {

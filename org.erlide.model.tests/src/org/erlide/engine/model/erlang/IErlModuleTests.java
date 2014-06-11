@@ -66,7 +66,7 @@ public class IErlModuleTests extends ErlModelTestBase {
     @Test
     public void getModuleKind() throws Exception {
         // TODO more tests
-        assertEquals(ModuleKind.ERL, module.getModuleKind());
+        assertEquals(SourceKind.ERL, module.getSourceKind());
     }
 
     // Collection<IErlComment> getComments();

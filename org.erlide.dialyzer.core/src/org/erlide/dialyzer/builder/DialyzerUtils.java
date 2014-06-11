@@ -19,7 +19,7 @@ import org.erlide.core.builder.BuilderHelper;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.erlang.ModuleKind;
+import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlFolder;
@@ -169,7 +169,7 @@ public class DialyzerUtils {
             final IProject project = erlProject.getWorkspaceProject();
             final IFolder ebin = project.getFolder(erlProject.getProperties()
                     .getOutputDir());
-            if (ModuleKind.hasErlExtension(name)) {
+            if (SourceKind.hasErlExtension(name)) {
                 if (fromSource) {
                     final IResource resource = m.getResource();
                     files.add(resource.getLocation().toPortableString());

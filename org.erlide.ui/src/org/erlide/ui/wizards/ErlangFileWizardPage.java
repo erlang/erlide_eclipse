@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.model.erlang.ModuleKind;
+import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
@@ -336,7 +336,7 @@ public class ErlangFileWizardPage extends WizardPage {
 
     private String parse(final Template template, final TemplateContextType contextType) {
         String s = getFileName();
-        if (ModuleKind.hasModuleExtension(s)) {
+        if (SourceKind.hasModuleExtension(s)) {
             s = SystemConfiguration.withoutExtension(s);
         }
         ModuleVariableResolver.getDefault().setModule(moduleName(s));
