@@ -7,8 +7,7 @@ Bundle-ClassPath: .
 Bundle-Activator: org.erlide.ui.internal.ErlideUIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: com.bdaum.overlayPages;x-internal:=true,
- org.eclipse.wb.swt;x-internal:=true,
+Export-Package: org.eclipse.wb.swt;x-internal:=true,
  org.erlide.debug.ui.actions;x-internal:=true,
  org.erlide.debug.ui.model;x-internal:=true,
  org.erlide.debug.ui.properties;x-internal:=true,
