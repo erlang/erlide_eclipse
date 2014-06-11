@@ -68,7 +68,6 @@ public class ErlModule extends Openable implements IErlModule {
     private static final OtpErlangAtom EXPORT_ALL = new OtpErlangAtom(
             "export_all");
     private static final boolean logging = false;
-    private long timestamp = IResource.NULL_STAMP;
     private IFile file;
     private final SourceKind moduleKind;
     protected String path;
@@ -164,12 +163,6 @@ public class ErlModule extends Openable implements IErlModule {
             final IErlModel model = ErlangEngine.getInstance().getModel();
             if (model != null) {
                 model.notifyChange(this);
-            }
-            final IResource r = getResource();
-            if (r instanceof IFile) {
-                timestamp = ((IFile) r).getLocalTimeStamp();
-            } else {
-                timestamp = IResource.NULL_STAMP;
             }
             return true;
         }
@@ -268,11 +261,6 @@ public class ErlModule extends Openable implements IErlModule {
         synchronized (getModelLock()) {
             return Collections.unmodifiableCollection(comments);
         }
-    }
-
-    @Override
-    public synchronized long getTimestamp() {
-        return timestamp;
     }
 
     @Override

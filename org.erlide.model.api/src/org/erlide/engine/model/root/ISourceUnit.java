@@ -64,8 +64,6 @@ public interface ISourceUnit {
 
     Collection<IErlComment> getComments();
 
-    long getTimestamp();
-
     IErlImport findImport(ErlangFunction function);
 
     Collection<IErlImport> getImports();
