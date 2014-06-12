@@ -802,7 +802,7 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     private boolean validateBuilderTool(final BuilderTool tool) {
-        return getConfigType().matchTool(builderProperties.getBuilderTool());
+        return getConfigType().matchesTool(builderProperties.getBuilderTool());
     }
 
     @Override

@@ -53,7 +53,7 @@ public enum ProjectConfigType {
         return Collections.unmodifiableCollection(configToolsMap.get(this));
     }
 
-    public boolean matchTool(final BuilderTool tool) {
+    public boolean matchesTool(final BuilderTool tool) {
         return configToolsMap.get(this).contains(tool);
     }
 

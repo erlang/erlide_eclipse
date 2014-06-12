@@ -49,7 +49,7 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
     private boolean validateBuildConfiguration(final IErlProject erlProject) {
         final ProjectConfigType config = erlProject.getConfigType();
         final BuilderTool tool = erlProject.getBuilderProperties().getBuilderTool();
-        if (!config.matchTool(tool)) {
+        if (!config.matchesTool(tool)) {
             final String msg = String.format(
                     "Project's builder tool %s and configuration %s don't match", tool,
                     config);

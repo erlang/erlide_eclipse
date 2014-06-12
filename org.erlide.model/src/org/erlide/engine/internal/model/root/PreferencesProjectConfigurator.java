@@ -1,10 +1,11 @@
 package org.erlide.engine.internal.model.root;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IProjectConfigurator;
-import org.erlide.engine.model.root.OTPProjectConfigurator;
 import org.erlide.engine.model.root.PathSerializer;
 import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -12,26 +13,17 @@ import org.erlide.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class PreferencesProjectConfigurator implements IProjectConfigurator {
-
+    @NonNull
     private final IEclipsePreferences node;
 
     public PreferencesProjectConfigurator(final IEclipsePreferences node) {
+        Assert.isNotNull(node);
         this.node = node;
-    }
-
-    public PreferencesProjectConfigurator() {
-        this(null);
-        // TODO this(BuilderConfigType.INTERNAL.getConfigName());
     }
 
     @Override
     public ErlangProjectProperties getConfiguration() {
         final ErlangProjectProperties result = new ErlangProjectProperties();
-        if (node == null) {
-            ErlLogger
-                    .warn("Could not load project preferences from 'null', returning default values. ");
-            return new OTPProjectConfigurator().getConfiguration();
-        }
 
         // TODO node.addListener(project);
 
@@ -64,11 +56,6 @@ public class PreferencesProjectConfigurator implements IProjectConfigurator {
 
     @Override
     public void setConfiguration(final ErlangProjectProperties info) {
-        if (node == null) {
-            ErlLogger.warn("Could not store project preferences to 'null'");
-            return;
-        }
-
         node.put(ProjectPreferencesConstants.SOURCE_DIRS,
                 PathSerializer.packList(info.getSourceDirs()));
         node.put(ProjectPreferencesConstants.INCLUDE_DIRS,
