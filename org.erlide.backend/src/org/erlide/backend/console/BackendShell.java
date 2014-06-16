@@ -222,9 +222,11 @@ public class BackendShell implements IBackendShell {
 
     private void sendEarlierRequests(final BackendShellListener listener) {
         int alength = 0;
-        for (final IoRequest request : requests) {
-            listener.changed(makeEvent(alength, request));
-            alength += request.getLength();
+        synchronized (requests) {
+            for (final IoRequest request : requests) {
+                listener.changed(makeEvent(alength, request));
+                alength += request.getLength();
+            }
         }
     }
 
