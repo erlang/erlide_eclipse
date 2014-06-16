@@ -35,9 +35,9 @@ public class ProblemData0 {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((_tag== null) ? 0 : _tag.hashCode());
-    result = prime * result + ((_message== null) ? 0 : _message.hashCode());
-    result = prime * result + _arity;
+    result = prime * result + ((this._tag== null) ? 0 : this._tag.hashCode());
+    result = prime * result + ((this._message== null) ? 0 : this._message.hashCode());
+    result = prime * result + this._arity;
     return result;
   }
   
@@ -50,17 +50,17 @@ public class ProblemData0 {
     if (getClass() != obj.getClass())
       return false;
     ProblemData0 other = (ProblemData0) obj;
-    if (_tag == null) {
+    if (this._tag == null) {
       if (other._tag != null)
         return false;
-    } else if (!_tag.equals(other._tag))
+    } else if (!this._tag.equals(other._tag))
       return false;
-    if (_message == null) {
+    if (this._message == null) {
       if (other._message != null)
         return false;
-    } else if (!_message.equals(other._message))
+    } else if (!this._message.equals(other._message))
       return false;
-    if (other._arity != _arity)
+    if (other._arity != this._arity)
       return false;
     return true;
   }

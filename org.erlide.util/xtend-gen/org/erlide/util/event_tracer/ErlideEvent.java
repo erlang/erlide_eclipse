@@ -32,7 +32,7 @@ public abstract class ErlideEvent {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + (int) (_timestamp ^ (_timestamp >>> 32));
+    result = prime * result + (int) (this._timestamp ^ (this._timestamp >>> 32));
     return result;
   }
   
@@ -45,7 +45,7 @@ public abstract class ErlideEvent {
     if (getClass() != obj.getClass())
       return false;
     ErlideEvent other = (ErlideEvent) obj;
-    if (other._timestamp != _timestamp)
+    if (other._timestamp != this._timestamp)
       return false;
     return true;
   }
