@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.erlide.ui.console.actions;
 
+import java.util.Collection;
+
+import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugTarget;
@@ -21,9 +24,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
+import org.erlide.backend.api.IBackendManager;
 import org.erlide.ui.console.ConsoleMessages;
 import org.erlide.ui.console.ErlangConsole;
 import org.erlide.util.ErlLogger;
+
+import com.google.common.collect.Lists;
 
 /**
  * ConsoleTerminateAction
@@ -56,7 +62,7 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
     @Override
     public void update() {
         final IBackend backend = fConsole.getBackend();
-        setEnabled(backend.getData().isManaged() && backend.isRunning()
+        setEnabled(backend.isRunning()
                 && backend != BackendCore.getBackendManager().getIdeBackend());
     }
 
@@ -67,6 +73,13 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
             final ILaunch launch = backend.getData().getLaunch();
             if (launch != null) {
                 terminate(launch);
+
+                final Collection<IProject> projects = Lists.newArrayList(backend
+                        .getData().getProjects());
+                final IBackendManager backendManager = BackendCore.getBackendManager();
+                for (final IProject project : projects) {
+                    backendManager.removeExecutionBackend(project, backend);
+                }
 
                 setEnabled(false);
                 fConsole.stop();
