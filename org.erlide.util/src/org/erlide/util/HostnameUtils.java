@@ -3,6 +3,7 @@ package org.erlide.util;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 
 public class HostnameUtils {
@@ -18,8 +19,8 @@ public class HostnameUtils {
     }
 
     public static boolean isThisHost(final String host) {
-        return getErlangHostName(true).equals(host)
-                || getErlangHostName(false).equals(host);
+        return Objects.equal(host, getErlangHostName(true))
+                || Objects.equal(host, getErlangHostName(false));
     }
 
     public static String getJavaLongHostName() {
