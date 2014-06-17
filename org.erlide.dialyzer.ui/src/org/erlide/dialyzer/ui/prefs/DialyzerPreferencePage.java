@@ -536,7 +536,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         try {
             prefs = DialyzerPreferences.get(fProject);
         } catch (final Exception e) {
-            // FIXME apply to status line or setErrorMessage
+            setErrorMessage("Error loading preferences: " + e.getMessage());
             ErlLogger.error(e);
         }
     }

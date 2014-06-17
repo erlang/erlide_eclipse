@@ -15,7 +15,6 @@ public class ConvertMultiStringQuickFix extends QuickFixExecutor {
 
     @Override
     public void run() throws Exception {
-        // TODO Auto-generated method stub
         super.run();
     }
 

@@ -20,7 +20,6 @@ class ErlangProjectProperties {
 
   @Property RuntimeVersion requiredRuntimeVersion
 
-  // TODO these have to be handled better! Assembla #1311
   @Property String externalIncludesFile
   @Property String externalModulesFile
 

@@ -277,11 +277,6 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 
     public void setSortOrder(final int sortOrder) {
         fCurrentSortOrder = sortOrder;
-        // final DecoratingLabelProvider lpWrapper = (DecoratingLabelProvider)
-        // getViewer()
-        // .getLabelProvider();
-        // FIXME ((LabelProvider)
-        // lpWrapper.getLabelProvider()).setOrder(sortOrder);
         getViewer().refresh();
         getSettings().put(KEY_SORTING, fCurrentSortOrder);
     }

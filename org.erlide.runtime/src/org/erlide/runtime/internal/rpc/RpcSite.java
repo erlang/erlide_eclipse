@@ -129,7 +129,6 @@ public class RpcSite implements IRpcSite {
                         result = future.checkedGet(timeout, TimeUnit.MILLISECONDS);
                         cb.onSuccess(result);
                     } catch (final Exception e) {
-                        // TODO do we want to treat a timeout differently?
                         ErlLogger.error("Could not execute RPC " + module + ":" + fun
                                 + " : " + e.getMessage());
                         cb.onFailure(e);
@@ -350,7 +349,7 @@ public class RpcSite implements IRpcSite {
 
     /**
      * Retrieve the result of a RPC.
-     *
+     * 
      * @param mbox
      * @param timeout
      * @param env
