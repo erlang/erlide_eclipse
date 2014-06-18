@@ -5,8 +5,8 @@ Bundle-SymbolicName: org.erlide.runtime;singleton:=true
 Bundle-Version: 0.24.7.qualifier
 Bundle-Vendor: erlide.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.erlide.libs;bundle-version="1.12.0",
- org.erlide.util;bundle-version="0.19.0"
+Require-Bundle: org.erlide.libs,
+ org.erlide.util
 Export-Package: org.erlide.runtime,
  org.erlide.runtime.api,
  org.erlide.runtime.epmd,

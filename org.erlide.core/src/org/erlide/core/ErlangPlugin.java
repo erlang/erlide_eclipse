@@ -16,13 +16,14 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.backend.debug.ErlangDebugOptionsManager;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.event_tracer.ErlideEventTracer;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
- *
- *
+ * 
+ * 
  * @author Eric Merritt [cyberlync at gmail dot com]
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  * @author jakob
@@ -68,6 +69,7 @@ public class ErlangPlugin extends Plugin {
     @Override
     public void start(final BundleContext context) throws Exception {
         super.start(context);
+        ErlLogger.debug("Core starting");
 
         ErlideEventTracer.getInstance()
                 .traceSession(
@@ -82,6 +84,8 @@ public class ErlangPlugin extends Plugin {
         core = new ErlangCore(this, workspace, extensionRegistry, logDir,
                 erlangDebugOptionsManager);
         core.start();
+
+        ErlLogger.debug("Core started");
     }
 
     public ErlangCore getCore() {

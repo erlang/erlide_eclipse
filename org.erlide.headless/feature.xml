@@ -85,11 +85,6 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.erlide.core.api"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.erlide.dialyzer.core"
          version="0.0.0"
          unpack="false"/>
