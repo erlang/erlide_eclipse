@@ -15,8 +15,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.debug.ErlangDebugOptionsManager;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.event_tracer.ErlideEventTracer;
@@ -72,8 +70,6 @@ public class ErlangPlugin extends Plugin {
     public void start(final BundleContext context) throws Exception {
         super.start(context);
         ErlLogger.debug("Core starting");
-        final IBackendManager foo = BackendCore.getBackendManager();
-        ErlLogger.debug("Core starting " + foo);
 
         ErlideEventTracer.getInstance()
                 .traceSession(

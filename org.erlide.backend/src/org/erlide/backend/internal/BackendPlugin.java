@@ -23,7 +23,7 @@ public class BackendPlugin extends Plugin {
         final IBackendFactory backendFactory = new BackendFactory(catalog);
         final IBackendManager backendManager = new BackendManager(backendFactory);
         BackendCore.init(backendManager);
-        ErlLogger.debug("Backend plugin started " + backendManager);
+        ErlLogger.debug("Backend plugin started");
     }
 
     @Override
