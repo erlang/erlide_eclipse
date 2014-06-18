@@ -67,6 +67,8 @@ public enum BuilderTool {
     }
 
     public String getId() {
+        // FIXME this is kind of an indirect dep on core plugin (needs to be
+        // started)
         // ErlangCore.PLUGIN_ID
         return "org.erlide.core" + id;
     }

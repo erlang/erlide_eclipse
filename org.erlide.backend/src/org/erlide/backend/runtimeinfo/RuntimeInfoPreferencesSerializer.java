@@ -16,6 +16,8 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
 
     private static final String ERLIDE_KEY = "erlide";
     private static final String DEFAULT_KEY = "default";
+    // FIXME this is kind of an indirect dep on core plugin (needs to be
+    // started) and this may get called before that
     private static String rootKey = "org.erlide.core" + "/runtimes";
 
     public static IEclipsePreferences getInstanceRootNode() {

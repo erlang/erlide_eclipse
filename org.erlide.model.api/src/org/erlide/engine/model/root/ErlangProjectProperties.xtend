@@ -150,6 +150,7 @@ class ErlangProjectProperties {
     val String key = if (external == ExternalKind.EXTERNAL_INCLUDES) "default_external_includes" else "default_external_modules"
     var String result = getExternal(external, service, key, "org.erlide.ui")
     if (Strings.isNullOrEmpty(result)) {
+        // FIXME this is kind of an indirect dep on core plugin (needs to be started)
       result = getExternal(external, service, key, "org.erlide.core")
     }
     return result

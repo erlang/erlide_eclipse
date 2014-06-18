@@ -15,7 +15,8 @@ package org.erlide.runtime.api;
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface ErlRuntimeAttributes {
-
+    // FIXME this is kind of an indirect dep on core plugin (needs to be
+    // started)
     String PREFIX = "org.erlide.core";
 
     String PROJECTS = PREFIX + ".projects";
