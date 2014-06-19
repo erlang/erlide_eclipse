@@ -23,10 +23,8 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.erlide.runtime,
  org.erlide.model.api,
  org.erlide.backend,
- org.erlide.model,
  org.erlide.util,
  org.erlide.util_eclipse
-X-Comment: dependency on model is needed for the tests
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .

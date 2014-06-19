@@ -8,13 +8,13 @@ Bundle-Vendor: Erlang Solutions
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.debug.core;bundle-version="3.5.1",
  org.eclipse.osgi.services;bundle-version="3.2.100",
- org.erlide.core;bundle-version="0.10.2",
- org.erlide.backend;bundle-version="0.19.0",
- org.erlide.cover.api;bundle-version="0.2.0",
+ org.erlide.core,
+ org.erlide.backend,
+ org.erlide.cover.api,
  org.erlide.runtime,
- org.erlide.libs;bundle-version="1.12.0",
- org.erlide.model.api;bundle-version="0.20.3",
- org.erlide.util;bundle-version="0.20.5"
+ org.erlide.libs,
+ org.erlide.model.api,
+ org.erlide.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.cover.constants,
