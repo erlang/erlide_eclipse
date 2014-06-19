@@ -68,7 +68,8 @@ public class OpenUtils {
         if (openResult.isExternalCall()) {
             found = findExternalCallOrType(module, openResult, project, element, scope);
         } else if (openResult.isInclude()) {
-            found = modelFindService.findInclude(module, project, openResult, model);
+            found = modelFindService.findInclude(module, project, openResult.getName(),
+                    openResult.getPath(), model);
         } else if (openResult.isLocalCall()) {
             found = findLocalCall(module, project, openResult, element, scope);
         } else if (openResult.isVariable() && element instanceof ISourceReference) {

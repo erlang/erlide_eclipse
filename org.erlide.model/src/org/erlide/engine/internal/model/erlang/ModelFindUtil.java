@@ -19,7 +19,6 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelFindService;
-import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.StringUtils;
@@ -52,19 +51,20 @@ public class ModelFindUtil implements ModelFindService {
     }
 
     @Override
-    public IErlElement findInclude(final IErlModule module,
-            final IErlProject project, final OpenResult res,
-            final IErlElementLocator model) throws CoreException {
+    public IErlModule findInclude(final IErlModule module,
+            final IErlProject project, final String moduleName,
+            final String modulePath, final IErlElementLocator model)
+            throws CoreException {
         if (module != null) {
             final IErlModule include = model.findIncludeFromModule(module,
-                    res.getName(), res.getPath(),
+                    moduleName, modulePath,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
             if (include != null) {
                 return include;
             }
         } else if (project != null) {
             final IErlModule include = model.findIncludeFromProject(project,
-                    res.getName(), res.getPath(),
+                    moduleName, modulePath,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
             if (include != null) {
                 return include;

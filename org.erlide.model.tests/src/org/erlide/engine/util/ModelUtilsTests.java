@@ -343,6 +343,44 @@ public class ModelUtilsTests {
     }
 
     @Test
+    public void findExternalIncludeFromPath() throws Exception {
+        File externalFile = null;
+        IErlProject project = null;
+        try {
+            // given
+            // an erlang project and an external file not in any project
+            final String projectName = "testproject";
+            project = ErlideTestUtils.createTmpErlProject(projectName);
+            final String externalFileName = "external.hrl";
+            externalFile = ErlideTestUtils.createTmpFile(externalFileName,
+                    "-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
+            final String absolutePath = externalFile.getAbsolutePath();
+            final String externalsFileName = "x.erlidex";
+            final File externalsFile = ErlideTestUtils.createTmpFile(externalsFileName,
+                    absolutePath);
+            ((ErlProject) project).setExternalIncludesFile(externalsFile
+                    .getAbsolutePath());
+            project.open(null);
+            // when
+            // looking for it
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlModule module = modelFindService.findInclude(null, project,
+                    externalFileName, absolutePath, model);
+            // then
+            // we should find it
+            assertNotNull(module);
+            assertEquals(externalFileName, module.getName());
+        } finally {
+            if (externalFile != null && externalFile.exists()) {
+                externalFile.delete();
+            }
+            if (project != null) {
+                ErlideTestUtils.deleteProject(project);
+            }
+        }
+    }
+
+    @Test
     public void getModulesWithReferencedProjectsWithPrefix() throws Exception {
         // given
         // two erlang projects, the first references the second, second has

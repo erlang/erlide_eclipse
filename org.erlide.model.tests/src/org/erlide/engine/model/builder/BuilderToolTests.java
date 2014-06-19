@@ -1,4 +1,4 @@
-package org.erlide.engine.model.erlang;
+package org.erlide.engine.model.builder;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.erlide.engine.model.builder.BuilderTool;
+import org.erlide.engine.model.erlang.MapUtils;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.junit.Test;
 

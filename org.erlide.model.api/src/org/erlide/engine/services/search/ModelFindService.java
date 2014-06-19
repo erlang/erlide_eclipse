@@ -21,8 +21,9 @@ public interface ModelFindService {
     ISourceRange findVariable(ISourceRange range, String variableName, String elementText)
             throws OtpErlangRangeException;
 
-    IErlElement findInclude(IErlModule module, IErlProject project, OpenResult res,
-            IErlElementLocator model) throws CoreException;
+    IErlModule findInclude(IErlModule module, IErlProject project,
+            final String moduleName, final String modulePath, IErlElementLocator model)
+            throws CoreException;
 
     IErlTypespec findTypespec(IErlModule module, String name) throws CoreException;
 
