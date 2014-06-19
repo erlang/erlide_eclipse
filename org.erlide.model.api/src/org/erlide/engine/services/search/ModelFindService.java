@@ -21,8 +21,8 @@ public interface ModelFindService {
     ISourceRange findVariable(ISourceRange range, String variableName, String elementText)
             throws OtpErlangRangeException;
 
-    IErlModule findInclude(IErlModule module, IErlProject project,
-            final String moduleName, final String modulePath, IErlElementLocator model)
+    IErlModule findInclude(IErlElementLocator model, IErlProject project,
+            IErlModule module, final String includeName, final String includePath)
             throws CoreException;
 
     IErlTypespec findTypespec(IErlModule module, String name) throws CoreException;
@@ -34,19 +34,19 @@ public interface ModelFindService {
             final String moduleName, final String definedName, final ErlElementKind kind)
             throws CoreException;
 
-    IErlElement findTypeDef(final IErlElementLocator model, final IErlModule module,
-            String moduleName, final String typeName, final String modulePath,
-            final IErlProject project, final IErlElementLocator.Scope scope)
+    IErlElement findTypeDef(final IErlElementLocator model, final IErlProject project,
+            final IErlModule module, String moduleName, final String typeName,
+            final String modulePath, final IErlElementLocator.Scope scope)
             throws CoreException;
 
     IErlModule findModule(final IErlElementLocator model, final IErlProject project,
             final String moduleName, final String modulePath,
             final IErlElementLocator.Scope scope) throws ErlModelException;
 
-    IErlFunction findFunction(final IErlElementLocator model, String moduleName,
-            final ErlangFunction erlangFunction, final String modulePath,
-            final IErlProject project, final IErlElementLocator.Scope scope,
-            final IErlModule module) throws CoreException;
+    IErlFunction findFunction(final IErlElementLocator model, final IErlProject project,
+            final IErlModule module, String moduleName,
+            final String modulePath, final ErlangFunction erlangFunction,
+            final IErlElementLocator.Scope scope) throws CoreException;
 
     String resolveMacroValue(final String definedName, final IErlModule module);
 
