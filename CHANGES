@@ -1,3 +1,15 @@
+List of user visible changes between 0.28.2 and 0.29.0 (20140623)
+
+25e504f gh189 - stop an erlang shell connected to an external erlang node
+ebe85da fix synchronization issue when starting shell
+8058d81 handle crashing ide runtimes better
+62eb047 fix in jinterface: better exception messages
+12ef932 console: copy/paste works now in both fields
+e0fdb06 improve multiline handling; still some things depend on scanner fix
+a4362ef adjust indentation for concatenated strings
+37698cd gh184 gh185 - indentation issues with record/map as first parameter
+252c4a3 gh183 - Named fun indentation broken
+
 List of user visible changes between 0.28.1 and 0.28.2 (20140512)
 
 0ac33c7 convert all xtend files to utf-8
