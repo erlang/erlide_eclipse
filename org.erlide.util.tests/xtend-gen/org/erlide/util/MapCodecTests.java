@@ -13,16 +13,16 @@ import org.junit.Test;
 public class MapCodecTests {
   @Test
   public void mapShouldRestore() {
-    Map<String,String> _xsetliteral = null;
-    Map<String,String> _tempMap = Maps.<String, String>newHashMap();
+    Map<String, String> _xsetliteral = null;
+    Map<String, String> _tempMap = Maps.<String, String>newHashMap();
     _tempMap.put("a", "b");
     _tempMap.put(" c ", " d ");
     _tempMap.put("e", "f");
     _xsetliteral = Collections.<String, String>unmodifiableMap(_tempMap);
-    final Map<String,String> expected = _xsetliteral;
+    final Map<String, String> expected = _xsetliteral;
     final String str = MapCodec.encode(expected);
-    final Map<String,String> actual = MapCodec.decode(str);
-    Matcher<Map<String,String>> _is = Matchers.<Map<String,String>>is(expected);
-    MatcherAssert.<Map<String,String>>assertThat(actual, _is);
+    final Map<String, String> actual = MapCodec.decode(str);
+    Matcher<Map<String, String>> _is = Matchers.<Map<String, String>>is(expected);
+    MatcherAssert.<Map<String, String>>assertThat(actual, _is);
   }
 }

@@ -195,20 +195,31 @@ newline_char_simple_test_() ->
                    erlide_scan:string("[$\\n]"))
      ].
 
+%% TODO when scanner can handle multiline strings
+%% multiline_string_test_() ->
+%%     [?_assertEqual([#token{kind = string, line = 0, offset = 0,length = 3, value = "b",text = "\"b\""},
+%%                     #token{kind = string, line = 1, offset = 4,length = 3, value = "b",text = "\"b\""},
+%%                     #token{kind = dot, line = 1, offset = 7, length = 1, text = "."}],
+%%                    test_scan("\"b\"\n\"b\".")),
+%%      ?_assertEqual([#token{kind = string, line = 0, offset = 0,length = 5, value = "b\nb",text = "\"b\nb\""},
+%%                     #token{kind = dot, line = 1, offset = 5, length = 1, text = "."}],
+%%                    test_scan("\"b\nb\"."))
+%%     ].
+
 %%
 %% Local Functions
 %%
 
 test_scan(S) ->
     erlide_scanner:create(testing),
-    erlide_scanner:initial_scan(testing, "", S, "/tmp", false, off),
+    erlide_scanner:initial_scan(testing, "", S, "/tmp", false),
     R = erlide_scanner:get_tokens(testing),
     erlide_scanner:dispose(testing),
     R.
 
 test_replace(S, Pos, RemoveLength, NewText) ->
     erlide_scanner:create(testing),
-    erlide_scanner:initial_scan(testing, "", S, "/tmp", false, off),
+    erlide_scanner:initial_scan(testing, "", S, "/tmp", false),
     R1 = erlide_scanner:get_tokens(testing),
     erlide_scanner:replace_text(testing, Pos, RemoveLength, NewText),
     R2 = erlide_scanner:get_tokens(testing),

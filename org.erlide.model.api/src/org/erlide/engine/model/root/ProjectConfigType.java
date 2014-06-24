@@ -12,7 +12,14 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public enum ProjectConfigType {
-    INTERNAL("org.erlide.core"), EMAKE("Emakefile"), REBAR("rebar.config");
+    // FIXME this is kind of an indirect dep on core plugin (needs to be
+    // started)
+
+    // @formatter:off
+    INTERNAL("org.erlide.core"),
+    EMAKE("Emakefile"),
+    REBAR("rebar.config");
+    // @formatter:on
 
     private final String configName;
 
@@ -49,7 +56,7 @@ public enum ProjectConfigType {
         return Collections.unmodifiableCollection(configToolsMap.get(this));
     }
 
-    public boolean matchTool(final BuilderTool tool) {
+    public boolean matchesTool(final BuilderTool tool) {
         return configToolsMap.get(this).contains(tool);
     }
 

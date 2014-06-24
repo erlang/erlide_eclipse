@@ -1,10 +1,5 @@
 package org.erlide.engine.services.parsing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.ParserException;
 import org.erlide.runtime.rpc.RpcException;
@@ -15,13 +10,14 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Preconditions;
 
 public class RuntimeHelper {
 
     private final IRpcSite target;
 
     public RuntimeHelper(final IRpcSite target) {
-        assertThat(target, is(not(nullValue())));
+        Preconditions.checkNotNull(target);
         this.target = target;
     }
 

@@ -127,23 +127,23 @@ public class ModelUtilsTests {
             // within project
             final IErlElementLocator model = ErlangEngine.getInstance().getModel();
 
-            final IErlElement element1 = modelFindService.findTypeDef(model, moduleB,
-                    "bx", "concat_thing", moduleB.getResource().getLocation()
-                            .toPortableString(), projects[0],
+            final IErlElement element1 = modelFindService.findTypeDef(model, projects[0],
+                    moduleB, "bx", "concat_thing", moduleB.getResource().getLocation()
+                                    .toPortableString(),
                     IErlElementLocator.Scope.PROJECT_ONLY);
             // in other project but path given
-            final IErlElement element2 = modelFindService.findTypeDef(model, moduleB,
-                    "bx", "concat_thing", moduleB.getResource().getLocation()
-                            .toPortableString(), projects[1],
+            final IErlElement element2 = modelFindService.findTypeDef(model, projects[1],
+                    moduleB, "bx", "concat_thing", moduleB.getResource().getLocation()
+                                    .toPortableString(),
                     IErlElementLocator.Scope.PROJECT_ONLY);
             // in other project no path given, search all projects true
-            final IErlElement element3 = modelFindService.findTypeDef(model, moduleB,
-                    "bx", "concat_thing", null, projects[1],
+            final IErlElement element3 = modelFindService.findTypeDef(model, projects[1],
+                    moduleB, "bx", "concat_thing", null,
                     IErlElementLocator.Scope.ALL_PROJECTS);
             // in other project no path given, search all projects false, ->
             // null
-            final IErlElement element4 = modelFindService.findTypeDef(model, moduleB,
-                    "bx", "concat_thing", null, projects[1],
+            final IErlElement element4 = modelFindService.findTypeDef(model, projects[1],
+                    moduleB, "bx", "concat_thing", null,
                     IErlElementLocator.Scope.PROJECT_ONLY);
 
             // then
@@ -168,9 +168,9 @@ public class ModelUtilsTests {
         // when
         // looking for it with ?MODULE
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlElement element1 = modelFindService.findFunction(model, "?MODULE",
-                new ErlangFunction("f", 0), null, projects[0],
-                IErlElementLocator.Scope.PROJECT_ONLY, moduleD);
+        final IErlElement element1 = modelFindService.findFunction(model, projects[0],
+                moduleD, "?MODULE", null,
+                new ErlangFunction("f", 0), IErlElementLocator.Scope.PROJECT_ONLY);
         // then
         // it should be found
         assertTrue(element1 instanceof IErlFunction);
@@ -328,6 +328,44 @@ public class ModelUtilsTests {
             final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             final IErlModule module = modelFindService.findModule(model, null, null,
                     absolutePath, IErlElementLocator.Scope.ALL_PROJECTS);
+            // then
+            // we should find it
+            assertNotNull(module);
+            assertEquals(externalFileName, module.getName());
+        } finally {
+            if (externalFile != null && externalFile.exists()) {
+                externalFile.delete();
+            }
+            if (project != null) {
+                ErlideTestUtils.deleteProject(project);
+            }
+        }
+    }
+
+    @Test
+    public void findExternalIncludeFromPath() throws Exception {
+        File externalFile = null;
+        IErlProject project = null;
+        try {
+            // given
+            // an erlang project and an external file not in any project
+            final String projectName = "testproject";
+            project = ErlideTestUtils.createTmpErlProject(projectName);
+            final String externalFileName = "external.hrl";
+            externalFile = ErlideTestUtils.createTmpFile(externalFileName,
+                    "-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
+            final String absolutePath = externalFile.getAbsolutePath();
+            final String externalsFileName = "x.erlidex";
+            final File externalsFile = ErlideTestUtils.createTmpFile(externalsFileName,
+                    absolutePath);
+            ((ErlProject) project).setExternalIncludesFile(externalsFile
+                    .getAbsolutePath());
+            project.open(null);
+            // when
+            // looking for it
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
+            final IErlModule module = modelFindService.findInclude(model, project,
+                    null, externalFileName, absolutePath);
             // then
             // we should find it
             assertNotNull(module);

@@ -33,3 +33,7 @@ deps
 erl_crash.dump
 org.erlide.ui.tests/projects/Erlide_tests (1).launch
 buildroot/
+coverage.data
+coverage.info
+coverage.xml
+junit.xml

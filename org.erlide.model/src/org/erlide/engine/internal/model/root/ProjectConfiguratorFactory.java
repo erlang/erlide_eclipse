@@ -6,10 +6,10 @@ import java.io.FilenameFilter;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.IProjectConfigurator;
 import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.model.root.OTPProjectConfigurator;
 import org.erlide.engine.model.root.ProjectConfigType;
-import org.erlide.engine.model.root.IProjectConfigurator;
 
 public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
     private static IProjectConfiguratorFactory instance;
@@ -28,11 +28,11 @@ public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
     public IProjectConfigurator getConfig(final ProjectConfigType configType,
             final IErlProject project) {
         IProjectConfigurator result = null;
-        final String qualifier = configType.getConfigName();
         switch (configType) {
         case INTERNAL:
+            final String configName = configType.getConfigName();
             final IEclipsePreferences node = new ProjectScope(
-                    project.getWorkspaceProject()).getNode(qualifier);
+                    project.getWorkspaceProject()).getNode(configName);
             result = new PreferencesProjectConfigurator(node);
             break;
         case REBAR:
@@ -40,7 +40,6 @@ public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
             result = getConfig(configType, new File(project
                     .getWorkspaceProject().getLocation().toPortableString()));
         }
-
         return result;
     }
 
@@ -48,17 +47,17 @@ public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
     public IProjectConfigurator getConfig(final ProjectConfigType configType,
             final File directory) {
         IProjectConfigurator result = null;
-        final String qualifier = configType.getConfigName();
         switch (configType) {
         case INTERNAL:
             result = new PreferencesProjectConfigurator(null);
             break;
         case REBAR:
         case EMAKE:
+            final String configName = configType.getConfigName();
             final String[] resources = directory.list(new FilenameFilter() {
                 @Override
                 public boolean accept(final File dir, final String name) {
-                    return dir.equals(directory) && name.equals(qualifier);
+                    return dir.equals(directory) && name.equals(configName);
                 }
             });
             if (resources.length == 0) {
@@ -73,7 +72,6 @@ public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
                         new RebarConfigurationSerializer(), path);
                 break;
             case EMAKE:
-
                 result = new FileProjectConfigurator(
                         new EmakeConfigurationSerializer(), path);
                 break;

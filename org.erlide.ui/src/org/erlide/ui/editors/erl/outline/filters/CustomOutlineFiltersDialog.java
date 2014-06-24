@@ -61,7 +61,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
 
     /**
      * Creates a dialog to customize Erlang element filters.
-     *
+     * 
      * @param shell
      *            the parent shell
      * @param viewId
@@ -96,13 +96,11 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
         setTitle("Erlang Element Filters");
         setMessage("S&elect the elements to exclude from the view:");
         super.configureShell(shell);
-        // TODO help id
-        // PlatformUI.getWorkbench().getHelpSystem().setHelp(shell, -1);
     }
 
     /**
      * Overrides method in Dialog
-     *
+     * 
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(Composite)
      */
     @Override

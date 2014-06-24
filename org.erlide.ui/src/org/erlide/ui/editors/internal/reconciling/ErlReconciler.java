@@ -1,10 +1,5 @@
 package org.erlide.ui.editors.internal.reconciling;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
@@ -25,8 +20,6 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.util.ErlLogger;
-
-import com.google.common.collect.Lists;
 
 public class ErlReconciler implements IReconciler {
 
@@ -55,8 +48,6 @@ public class ErlReconciler implements IReconciler {
     /** True if it should reconcile all regions without delay between them */
     final boolean fChunkReconciler;
 
-    List<ErlDirtyRegion> log = Lists.newLinkedList();
-    boolean logging;
     private Object fMutex;
 
     public ErlReconciler(final IErlReconcilingStrategy strategy,
@@ -65,7 +56,6 @@ public class ErlReconciler implements IReconciler {
             final ITextEditor editor) {
 
         super();
-        this.logging = logging;
         Assert.isNotNull(strategy);
 
         setIsIncrementalReconciler(isIncremental);
@@ -99,7 +89,7 @@ public class ErlReconciler implements IReconciler {
         /**
          * Creates a new background thread. The thread runs with minimal
          * priority.
-         *
+         * 
          * @param name
          *            the thread's name
          */
@@ -111,7 +101,7 @@ public class ErlReconciler implements IReconciler {
 
         /**
          * Returns whether a reconciling strategy is active right now.
-         *
+         * 
          * @return <code>true</code> if a activity is active
          */
         public boolean isActive() {
@@ -120,7 +110,7 @@ public class ErlReconciler implements IReconciler {
 
         /**
          * Returns whether some changes need to be processed.
-         *
+         * 
          * @return <code>true</code> if changes wait to be processed
          * @since 3.0
          */
@@ -375,7 +365,7 @@ public class ErlReconciler implements IReconciler {
     /**
      * Tells the reconciler how long it should wait for further text changes
      * before activating the appropriate reconciling strategies.
-     *
+     * 
      * @param delay
      *            the duration in milliseconds of a change collection period.
      */
@@ -388,11 +378,11 @@ public class ErlReconciler implements IReconciler {
      * is interested in getting detailed dirty region information or just in the
      * fact that the document has been changed. In the second case, the
      * reconciling can not incrementally be pursued.
-     *
+     * 
      * @param isIncremental
      *            indicates whether this reconciler will be configured with
      *            incremental reconciling strategies
-     *
+     * 
      * @see DirtyRegion
      * @see IReconcilingStrategy
      */
@@ -408,7 +398,7 @@ public class ErlReconciler implements IReconciler {
      * {@link UnsupportedOperationException} will be thrown when this
      * restriction will be violated.
      * </p>
-     *
+     * 
      * @param isAllowedToModify
      *            indicates whether this reconciler is allowed to modify the
      *            document
@@ -421,9 +411,9 @@ public class ErlReconciler implements IReconciler {
     /**
      * Returns whether any of the reconciling strategies is interested in
      * detailed dirty region information.
-     *
+     * 
      * @return whether this reconciler is incremental
-     *
+     * 
      * @see IReconcilingStrategy
      */
     protected boolean isIncrementalReconciler() {
@@ -433,7 +423,7 @@ public class ErlReconciler implements IReconciler {
     /**
      * Returns the input document of the text viewer this reconciler is
      * installed on.
-     *
+     * 
      * @return the reconciler document
      */
     protected IDocument getDocument() {
@@ -442,7 +432,7 @@ public class ErlReconciler implements IReconciler {
 
     /**
      * Returns the text viewer this reconciler is installed on.
-     *
+     * 
      * @return the text viewer this reconciler is installed on
      */
     protected ITextViewer getTextViewer() {
@@ -451,7 +441,7 @@ public class ErlReconciler implements IReconciler {
 
     /**
      * Returns the progress monitor of this reconciler.
-     *
+     * 
      * @return the progress monitor of this reconciler
      */
     protected IProgressMonitor getProgressMonitor() {
@@ -524,7 +514,7 @@ public class ErlReconciler implements IReconciler {
 
     /**
      * Creates a dirty region for a document event and adds it to the queue.
-     *
+     * 
      * @param e
      *            the document event for which to create a dirty region
      */
@@ -536,14 +526,8 @@ public class ErlReconciler implements IReconciler {
             }
             final ErlDirtyRegion erlDirtyRegion = new ErlDirtyRegion(e.getOffset(),
                     e.getLength(), text);
-            final boolean addDirtyRegion = fDirtyRegionQueue
-                    .addDirtyRegion(erlDirtyRegion);
+            fDirtyRegionQueue.addDirtyRegion(erlDirtyRegion);
             fDirtyRegionQueue.notifyAll();
-            if (logging) {
-                if (addDirtyRegion) {
-                    log.add(erlDirtyRegion);
-                }
-            }
         }
     }
 
@@ -553,7 +537,7 @@ public class ErlReconciler implements IReconciler {
      * <p>
      * Default implementation is to do nothing.
      * </p>
-     *
+     * 
      * @since 3.0
      */
     protected void aboutToBeReconciled() {
@@ -641,31 +625,6 @@ public class ErlReconciler implements IReconciler {
         fStrategy.chunkReconciled();
     }
 
-    /*
-     * @see AbstractReconciler#reconcilerDocumentChanged(IDocument)
-     */
-    private class InitialScan extends ErlDirtyRegion {
-
-        private final String scannerName;
-        private final String erlFilename;
-
-        public InitialScan(final String text, final String scannerName,
-                final String erlFilename) {
-            super(0, 0, text);
-            this.scannerName = scannerName;
-            this.erlFilename = erlFilename;
-        }
-
-        public String getScannerName() {
-            return scannerName;
-        }
-
-        public String getErlFilename() {
-            return erlFilename;
-        }
-
-    }
-
     protected void reconcilerDocumentChanged(final IDocument document) {
         fStrategy.setDocument(document);
     }
@@ -690,16 +649,6 @@ public class ErlReconciler implements IReconciler {
             if (fStrategy instanceof IReconcilingStrategyExtension) {
                 final IReconcilingStrategyExtension extension = (IReconcilingStrategyExtension) fStrategy;
                 extension.initialReconcile();
-                if (logging) {
-                    log.clear();
-                    final ErlReconcilingStrategy erlReconcilerStrategy = (ErlReconcilingStrategy) fStrategy;
-                    final IErlModule module = erlReconcilerStrategy.getModule();
-                    final String scannerName = module.getScannerName();
-                    final String erlFilename = module.getFilePath();
-                    final ErlDirtyRegion erlDirtyRegion = new InitialScan(getDocument()
-                            .get(), scannerName, erlFilename);
-                    log.add(erlDirtyRegion);
-                }
             }
         }
     }
@@ -721,39 +670,6 @@ public class ErlReconciler implements IReconciler {
             fThread.reset();
             initialProcess();
         }
-    }
-
-    public void dumpLog(final String filename) {
-        try {
-            final OutputStream out = new BufferedOutputStream(new FileOutputStream(
-                    new File(filename)));
-            for (final ErlDirtyRegion erlDirtyRegion : log) {
-                final String text = erlFixText(erlDirtyRegion.getText());
-                String s;
-                if (erlDirtyRegion instanceof InitialScan) {
-                    final InitialScan initialScan = (InitialScan) erlDirtyRegion;
-                    final String spaces = "              ";
-                    s = "{initial_scan,'" + initialScan.getScannerName() + "',\n"
-                            + spaces + "\"" + initialScan.getErlFilename() + "\",[],\n"
-                            + spaces + text + "}.\n";
-                } else {
-                    s = "{replace_text," + erlDirtyRegion.getOffset() + ","
-                            + erlDirtyRegion.getLength() + "," + text + "}.\n";
-                }
-                out.write(s.getBytes());
-            }
-            out.close();
-            log.clear();
-        } catch (final IOException e) {
-            ErlLogger.error(e);
-        }
-    }
-
-    private String erlFixText(final String text) {
-        if (text.isEmpty()) {
-            return "[]";
-        }
-        return "\"" + text.replace("\t", "\\t").replace("\n", "\\n") + "\"";
     }
 
 }

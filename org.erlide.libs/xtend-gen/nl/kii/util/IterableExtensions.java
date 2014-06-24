@@ -102,7 +102,7 @@ public class IterableExtensions {
   public static <T extends Object> Iterable<? extends Opt<T>> onNone(final Iterable<? extends Opt<T>> iterable, final Procedure1<? super None<T>> noneHandler) {
     Iterable<? extends Opt<T>> _xblockexpression = null;
     {
-      final Function1<Opt<T>,Boolean> _function = new Function1<Opt<T>,Boolean>() {
+      final Function1<Opt<T>, Boolean> _function = new Function1<Opt<T>, Boolean>() {
         public Boolean apply(final Opt<T> it) {
           return Boolean.valueOf(it.hasNone());
         }
@@ -127,7 +127,7 @@ public class IterableExtensions {
   public static <T extends Object> Iterable<? extends Opt<T>> onError(final Iterable<? extends Opt<T>> iterable, final Procedure1<? super Err<T>> errorHandler) {
     Iterable<? extends Opt<T>> _xblockexpression = null;
     {
-      final Function1<Opt<T>,Boolean> _function = new Function1<Opt<T>,Boolean>() {
+      final Function1<Opt<T>, Boolean> _function = new Function1<Opt<T>, Boolean>() {
         public Boolean apply(final Opt<T> it) {
           return Boolean.valueOf(it.hasError());
         }
@@ -149,7 +149,7 @@ public class IterableExtensions {
    * Like filterNull, but then for a list of Options
    */
   public static <T extends Object> Iterable<T> filterEmpty(final Iterable<? extends Opt<T>> iterable) {
-    final Function1<Opt<T>,T> _function = new Function1<Opt<T>,T>() {
+    final Function1<Opt<T>, T> _function = new Function1<Opt<T>, T>() {
       public T apply(final Opt<T> it) {
         return OptExtensions.<T>orNull(it);
       }
@@ -159,7 +159,7 @@ public class IterableExtensions {
   }
   
   public static <T extends Object> Iterable<? extends Opt<T>> filterError(final Iterable<? extends Opt<T>> iterable) {
-    final Function1<Opt<T>,Boolean> _function = new Function1<Opt<T>,Boolean>() {
+    final Function1<Opt<T>, Boolean> _function = new Function1<Opt<T>, Boolean>() {
       public Boolean apply(final Opt<T> it) {
         boolean _hasError = it.hasError();
         return Boolean.valueOf((!_hasError));
@@ -172,24 +172,24 @@ public class IterableExtensions {
    * Remove all double values in a list, turning it into a list of unique values
    */
   public static <T extends Object> Iterable<T> distinct(final Iterable<T> values) {
-    final Function1<T,T> _function = new Function1<T,T>() {
+    final Function1<T, T> _function = new Function1<T, T>() {
       public T apply(final T it) {
         return it;
       }
     };
-    Map<T,List<T>> _groupBy = IterableExtensions.<T, T>groupBy(values, _function);
-    Iterable<Pair<T,List<T>>> _pairs = IterableExtensions.<T, List<T>>toPairs(_groupBy);
-    final Function1<Pair<T,List<T>>,T> _function_1 = new Function1<Pair<T,List<T>>,T>() {
-      public T apply(final Pair<T,List<T>> it) {
+    Map<T, List<T>> _groupBy = IterableExtensions.<T, T>groupBy(values, _function);
+    Iterable<Pair<T, List<T>>> _pairs = IterableExtensions.<T, List<T>>toPairs(_groupBy);
+    final Function1<Pair<T, List<T>>, T> _function_1 = new Function1<Pair<T, List<T>>, T>() {
+      public T apply(final Pair<T, List<T>> it) {
         List<T> _value = it.getValue();
         return org.eclipse.xtext.xbase.lib.IterableExtensions.<T>head(_value);
       }
     };
-    return org.eclipse.xtext.xbase.lib.IterableExtensions.<Pair<T,List<T>>, T>map(_pairs, _function_1);
+    return org.eclipse.xtext.xbase.lib.IterableExtensions.<Pair<T, List<T>>, T>map(_pairs, _function_1);
   }
   
-  public static <T extends Object, R extends Object> Iterable<Opt<R>> mapOpt(final Iterable<Opt<T>> iterable, final Function1<? super T,? extends R> fn) {
-    final Function1<Opt<T>,Opt<R>> _function = new Function1<Opt<T>,Opt<R>>() {
+  public static <T extends Object, R extends Object> Iterable<Opt<R>> mapOpt(final Iterable<Opt<T>> iterable, final Function1<? super T, ? extends R> fn) {
+    final Function1<Opt<T>, Opt<R>> _function = new Function1<Opt<T>, Opt<R>>() {
       public Opt<R> apply(final Opt<T> it) {
         return OptExtensions.<R, T>mapOpt(it, fn);
       }
@@ -197,13 +197,13 @@ public class IterableExtensions {
     return org.eclipse.xtext.xbase.lib.IterableExtensions.<Opt<T>, Opt<R>>map(iterable, _function);
   }
   
-  public static <T extends Object, R extends Object> Iterable<Opt<R>> attemptMap(final Iterable<T> iterable, final Function1<? super T,? extends R> fn) {
-    final Function1<T,Opt<R>> _function = new Function1<T,Opt<R>>() {
+  public static <T extends Object, R extends Object> Iterable<Opt<R>> attemptMap(final Iterable<T> iterable, final Function1<? super T, ? extends R> fn) {
+    final Function1<T, Opt<R>> _function = new Function1<T, Opt<R>>() {
       public Opt<R> apply(final T it) {
         Opt<R> _xblockexpression = null;
         {
           final T o = it;
-          final Function1<Object,R> _function = new Function1<Object,R>() {
+          final Function1<Object, R> _function = new Function1<Object, R>() {
             public R apply(final Object it) {
               return fn.apply(o);
             }
@@ -216,42 +216,42 @@ public class IterableExtensions {
     return org.eclipse.xtext.xbase.lib.IterableExtensions.<T, Opt<R>>map(iterable, _function);
   }
   
-  public static <K extends Object, V extends Object> Iterable<Pair<K,V>> toPairs(final Map<K,V> map) {
-    Set<Map.Entry<K,V>> _entrySet = map.entrySet();
-    final Function1<Map.Entry<K,V>,Pair<K,V>> _function = new Function1<Map.Entry<K,V>,Pair<K,V>>() {
-      public Pair<K,V> apply(final Map.Entry<K,V> it) {
+  public static <K extends Object, V extends Object> Iterable<Pair<K, V>> toPairs(final Map<K, V> map) {
+    Set<Map.Entry<K, V>> _entrySet = map.entrySet();
+    final Function1<Map.Entry<K, V>, Pair<K, V>> _function = new Function1<Map.Entry<K, V>, Pair<K, V>>() {
+      public Pair<K, V> apply(final Map.Entry<K, V> it) {
         K _key = it.getKey();
         V _value = it.getValue();
         return Pair.<K, V>of(_key, _value);
       }
     };
-    return org.eclipse.xtext.xbase.lib.IterableExtensions.<Map.Entry<K,V>, Pair<K,V>>map(_entrySet, _function);
+    return org.eclipse.xtext.xbase.lib.IterableExtensions.<Map.Entry<K, V>, Pair<K, V>>map(_entrySet, _function);
   }
   
-  public static <K extends Object, V extends Object> Map<K,V> toMap(final Iterable<Pair<K,V>> pairs) {
-    HashMap<K,V> _xblockexpression = null;
+  public static <K extends Object, V extends Object> Map<K, V> toMap(final Iterable<Pair<K, V>> pairs) {
+    HashMap<K, V> _xblockexpression = null;
     {
-      final HashMap<K,V> map = CollectionLiterals.<K, V>newHashMap();
+      final HashMap<K, V> map = CollectionLiterals.<K, V>newHashMap();
       boolean _defined = OptExtensions.<Object>defined(pairs);
       if (_defined) {
-        final Procedure1<Pair<K,V>> _function = new Procedure1<Pair<K,V>>() {
-          public void apply(final Pair<K,V> it) {
+        final Procedure1<Pair<K, V>> _function = new Procedure1<Pair<K, V>>() {
+          public void apply(final Pair<K, V> it) {
             K _key = it.getKey();
             V _value = it.getValue();
             map.put(_key, _value);
           }
         };
-        org.eclipse.xtext.xbase.lib.IterableExtensions.<Pair<K,V>>forEach(pairs, _function);
+        org.eclipse.xtext.xbase.lib.IterableExtensions.<Pair<K, V>>forEach(pairs, _function);
       }
       _xblockexpression = map;
     }
     return _xblockexpression;
   }
   
-  public static <K extends Object, V extends Object> Map<K,List<V>> groupBy(final Iterable<V> list, final Function1<? super V,? extends K> indexFn) {
-    HashMap<K,List<V>> _xblockexpression = null;
+  public static <K extends Object, V extends Object> Map<K, List<V>> groupBy(final Iterable<V> list, final Function1<? super V, ? extends K> indexFn) {
+    HashMap<K, List<V>> _xblockexpression = null;
     {
-      final HashMap<K,List<V>> map = new HashMap<K, List<V>>();
+      final HashMap<K, List<V>> map = new HashMap<K, List<V>>();
       final Procedure1<V> _function = new Procedure1<V>() {
         public void apply(final V it) {
           final K index = indexFn.apply(it);
@@ -271,8 +271,8 @@ public class IterableExtensions {
     return _xblockexpression;
   }
   
-  public static <V extends Object> Map<V,Integer> count(final Iterable<V> values) {
-    final Function1<V,V> _function = new Function1<V,V>() {
+  public static <V extends Object> Map<V, Integer> count(final Iterable<V> values) {
+    final Function1<V, V> _function = new Function1<V, V>() {
       public V apply(final V it) {
         return it;
       }
@@ -280,11 +280,11 @@ public class IterableExtensions {
     return IterableExtensions.<V, V>countBy(values, _function);
   }
   
-  public static <K extends Object, V extends Object> Map<V,Integer> countBy(final Iterable<V> values, final Function1<? super V,? extends K> indexFn) {
-    Map<K,List<V>> _groupBy = IterableExtensions.<K, V>groupBy(values, indexFn);
-    Iterable<Pair<K,List<V>>> _pairs = IterableExtensions.<K, List<V>>toPairs(_groupBy);
-    final Function1<Pair<K,List<V>>,Pair<V,Integer>> _function = new Function1<Pair<K,List<V>>,Pair<V,Integer>>() {
-      public Pair<V,Integer> apply(final Pair<K,List<V>> it) {
+  public static <K extends Object, V extends Object> Map<V, Integer> countBy(final Iterable<V> values, final Function1<? super V, ? extends K> indexFn) {
+    Map<K, List<V>> _groupBy = IterableExtensions.<K, V>groupBy(values, indexFn);
+    Iterable<Pair<K, List<V>>> _pairs = IterableExtensions.<K, List<V>>toPairs(_groupBy);
+    final Function1<Pair<K, List<V>>, Pair<V, Integer>> _function = new Function1<Pair<K, List<V>>, Pair<V, Integer>>() {
+      public Pair<V, Integer> apply(final Pair<K, List<V>> it) {
         List<V> _value = it.getValue();
         V _head = org.eclipse.xtext.xbase.lib.IterableExtensions.<V>head(_value);
         List<V> _value_1 = it.getValue();
@@ -292,12 +292,12 @@ public class IterableExtensions {
         return Pair.<V, Integer>of(_head, Integer.valueOf(_size));
       }
     };
-    Iterable<Pair<V,Integer>> _map = org.eclipse.xtext.xbase.lib.IterableExtensions.<Pair<K,List<V>>, Pair<V,Integer>>map(_pairs, _function);
+    Iterable<Pair<V, Integer>> _map = org.eclipse.xtext.xbase.lib.IterableExtensions.<Pair<K, List<V>>, Pair<V, Integer>>map(_pairs, _function);
     return IterableExtensions.<V, Integer>toMap(_map);
   }
   
-  public static <K extends Object, V extends Object> Map<K,V> index(final Iterable<V> iterable, final Function1<? super V,? extends K> indexFn) {
-    final Function1<V,K> _function = new Function1<V,K>() {
+  public static <K extends Object, V extends Object> Map<K, V> index(final Iterable<V> iterable, final Function1<? super V, ? extends K> indexFn) {
+    final Function1<V, K> _function = new Function1<V, K>() {
       public K apply(final V it) {
         return indexFn.apply(it);
       }

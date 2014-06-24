@@ -20,7 +20,6 @@ class ErlangProjectProperties {
 
   @Property RuntimeVersion requiredRuntimeVersion
 
-  // TODO these have to be handled better! Assembla #1311
   @Property String externalIncludesFile
   @Property String externalModulesFile
 
@@ -146,6 +145,17 @@ class ErlangProjectProperties {
 
   }
 
+  def private String getExternal(ExternalKind external) {
+    val IPreferencesService service = Platform.getPreferencesService()
+    val String key = if (external == ExternalKind.EXTERNAL_INCLUDES) "default_external_includes" else "default_external_modules"
+    var String result = getExternal(external, service, key, "org.erlide.ui")
+    if (Strings.isNullOrEmpty(result)) {
+        // FIXME this is kind of an indirect dep on core plugin (needs to be started)
+      result = getExternal(external, service, key, "org.erlide.core")
+    }
+    return result
+  }
+
   def private String getExternal(ExternalKind external, IPreferencesService service, String key, String pluginId) {
     val String global = service.getString(pluginId, key, "", null)
     val String projprefs = if (external == ExternalKind.EXTERNAL_INCLUDES)
@@ -153,16 +163,6 @@ class ErlangProjectProperties {
       else
         getExternalModulesFile()
     return PreferencesUtils.packArray(#[projprefs, global])
-  }
-
-  def private String getExternal(ExternalKind external) {
-    val IPreferencesService service = Platform.getPreferencesService()
-    val String key = if (external == ExternalKind.EXTERNAL_INCLUDES) "default_external_includes" else "default_external_modules"
-    var String result = getExternal(external, service, key, "org.erlide.ui")
-    if (Strings.isNullOrEmpty(result)) {
-      result = getExternal(external, service, key, "org.erlide.core")
-    }
-    return result
   }
 
 }

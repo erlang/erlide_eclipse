@@ -45,7 +45,7 @@ import org.erlide.engine.model.erlang.IErlPreprocessorDef;
 import org.erlide.engine.model.erlang.IErlTypespec;
 import org.erlide.engine.model.erlang.ISourceRange;
 import org.erlide.engine.model.erlang.ISourceReference;
-import org.erlide.engine.model.erlang.ModuleKind;
+import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlFolder;
@@ -68,9 +68,8 @@ public class ErlModule extends Openable implements IErlModule {
     private static final OtpErlangAtom EXPORT_ALL = new OtpErlangAtom(
             "export_all");
     private static final boolean logging = false;
-    private long timestamp = IResource.NULL_STAMP;
     private IFile file;
-    private final ModuleKind moduleKind;
+    private final SourceKind moduleKind;
     protected String path;
     private String initialText;
     private boolean parsed;
@@ -99,7 +98,7 @@ public class ErlModule extends Openable implements IErlModule {
         this.path = path;
         this.encoding = encoding;
         this.initialText = initialText;
-        moduleKind = ModuleKind.nameToModuleKind(name);
+        moduleKind = SourceKind.nameToModuleKind(name);
         parsed = false;
         scannerName = createScannerName();
         comments = Lists.newArrayList();
@@ -165,12 +164,6 @@ public class ErlModule extends Openable implements IErlModule {
             if (model != null) {
                 model.notifyChange(this);
             }
-            final IResource r = getResource();
-            if (r instanceof IFile) {
-                timestamp = ((IFile) r).getLocalTimeStamp();
-            } else {
-                timestamp = IResource.NULL_STAMP;
-            }
             return true;
         }
         return false;
@@ -226,7 +219,7 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     @Override
-    public ModuleKind getModuleKind() {
+    public SourceKind getSourceKind() {
         return moduleKind;
     }
 
@@ -268,11 +261,6 @@ public class ErlModule extends Openable implements IErlModule {
         synchronized (getModelLock()) {
             return Collections.unmodifiableCollection(comments);
         }
-    }
-
-    @Override
-    public synchronized long getTimestamp() {
-        return timestamp;
     }
 
     @Override

@@ -19,7 +19,6 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelFindService;
-import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.StringUtils;
@@ -52,19 +51,20 @@ public class ModelFindUtil implements ModelFindService {
     }
 
     @Override
-    public IErlElement findInclude(final IErlModule module,
-            final IErlProject project, final OpenResult res,
-            final IErlElementLocator model) throws CoreException {
+    public IErlModule findInclude(final IErlElementLocator model,
+            final IErlProject project, final IErlModule module,
+            final String includeName, final String includePath)
+            throws CoreException {
         if (module != null) {
             final IErlModule include = model.findIncludeFromModule(module,
-                    res.getName(), res.getPath(),
+                    includeName, includePath,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
             if (include != null) {
                 return include;
             }
         } else if (project != null) {
             final IErlModule include = model.findIncludeFromProject(project,
-                    res.getName(), res.getPath(),
+                    includeName, includePath,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
             if (include != null) {
                 return include;
@@ -93,9 +93,9 @@ public class ModelFindUtil implements ModelFindService {
 
     @Override
     public IErlFunction findFunction(final IErlElementLocator model,
-            final String moduleName0, final ErlangFunction erlangFunction,
-            final String modulePath, final IErlProject project,
-            final IErlElementLocator.Scope scope, final IErlModule module)
+            final IErlProject project, final IErlModule module,
+            final String moduleName0, final String modulePath,
+            final ErlangFunction erlangFunction, final IErlElementLocator.Scope scope)
             throws CoreException {
         if (moduleName0 != null) {
             final String moduleName = resolveMacroValue(moduleName0, module);
@@ -131,9 +131,9 @@ public class ModelFindUtil implements ModelFindService {
 
     @Override
     public IErlElement findTypeDef(final IErlElementLocator model,
-            final IErlModule module, final String moduleName0,
-            final String typeName, final String modulePath,
-            final IErlProject project, final IErlElementLocator.Scope scope)
+            final IErlProject project, final IErlModule module,
+            final String moduleName0, final String typeName,
+            final String modulePath, final IErlElementLocator.Scope scope)
             throws CoreException {
         final String moduleName = resolveMacroValue(moduleName0, module);
         final IErlModule module2 = findModule(model, project, moduleName,

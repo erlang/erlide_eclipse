@@ -53,7 +53,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
   private Iterable<MethodDeclaration> getAcceptMethods(final TypeDeclaration it) {
     Iterable<? extends MemberDeclaration> _declaredMembers = it.getDeclaredMembers();
     Iterable<MethodDeclaration> _filter = Iterables.<MethodDeclaration>filter(_declaredMembers, MethodDeclaration.class);
-    final Function1<MethodDeclaration,Boolean> _function = new Function1<MethodDeclaration,Boolean>() {
+    final Function1<MethodDeclaration, Boolean> _function = new Function1<MethodDeclaration, Boolean>() {
       public Boolean apply(final MethodDeclaration it) {
         boolean _and = false;
         String _simpleName = it.getSimpleName();
@@ -92,7 +92,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
             String _visitorName = VisitableProcessor.this.getVisitorName(method);
             final MutableClassDeclaration visitor = context.findClass(_visitorName);
             VisitableProcessor.this.addVisitMethods(visitor, allInheritors, method, context);
-            final Function1<ClassDeclaration,MutableClassDeclaration> _function = new Function1<ClassDeclaration,MutableClassDeclaration>() {
+            final Function1<ClassDeclaration, MutableClassDeclaration> _function = new Function1<ClassDeclaration, MutableClassDeclaration>() {
               public MutableClassDeclaration apply(final ClassDeclaration it) {
                 MutableNamedElement _primaryGeneratedJavaElement = context.getPrimaryGeneratedJavaElement(it);
                 return ((MutableClassDeclaration) _primaryGeneratedJavaElement);
@@ -103,7 +103,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
               public void apply(final MutableClassDeclaration it) {
                 String _simpleName = method.getSimpleName();
                 Iterable<? extends ParameterDeclaration> _parameters = method.getParameters();
-                final Function1<ParameterDeclaration,TypeReference> _function = new Function1<ParameterDeclaration,TypeReference>() {
+                final Function1<ParameterDeclaration, TypeReference> _function = new Function1<ParameterDeclaration, TypeReference>() {
                   public TypeReference apply(final ParameterDeclaration it) {
                     return it.getType();
                   }
@@ -188,7 +188,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
     Iterable<? extends MutableParameterDeclaration> _parameters_2 = it.getParameters();
     int _size = IterableExtensions.size(_parameters_2);
     List<? extends MutableParameterDeclaration> _subList = _list.subList(1, _size);
-    final Function1<MutableParameterDeclaration,String> _function = new Function1<MutableParameterDeclaration,String>() {
+    final Function1<MutableParameterDeclaration, String> _function = new Function1<MutableParameterDeclaration, String>() {
       public String apply(final MutableParameterDeclaration it) {
         return it.getSimpleName();
       }
@@ -265,7 +265,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
                   _builder.append(_simpleName, "");
                   _builder.append("(");
                   Iterable<? extends MutableParameterDeclaration> _parameters = method.getParameters();
-                  final Function1<MutableParameterDeclaration,String> _function = new Function1<MutableParameterDeclaration,String>() {
+                  final Function1<MutableParameterDeclaration, String> _function = new Function1<MutableParameterDeclaration, String>() {
                     public String apply(final MutableParameterDeclaration it) {
                       return it.getSimpleName();
                     }
@@ -289,7 +289,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
   
   private Set<ClassDeclaration> getInheritorsDeclaredIn(final TypeReference typeReference, final CompilationUnit it, @Extension final TransformationContext context) {
     Iterable<? extends TypeDeclaration> _sourceTypeDeclarations = it.getSourceTypeDeclarations();
-    final Function1<TypeDeclaration,Boolean> _function = new Function1<TypeDeclaration,Boolean>() {
+    final Function1<TypeDeclaration, Boolean> _function = new Function1<TypeDeclaration, Boolean>() {
       public Boolean apply(final TypeDeclaration it) {
         TypeReference _newTypeReference = context.newTypeReference(it);
         return Boolean.valueOf(typeReference.isAssignableFrom(_newTypeReference));

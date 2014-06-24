@@ -284,19 +284,6 @@ public class ErlangProjectProperties {
     return externalModulesString;
   }
   
-  private String getExternal(final ExternalKind external, final IPreferencesService service, final String key, final String pluginId) {
-    final String global = service.getString(pluginId, key, "", null);
-    String _xifexpression = null;
-    boolean _equals = Objects.equal(external, ExternalKind.EXTERNAL_INCLUDES);
-    if (_equals) {
-      _xifexpression = this.getExternalIncludesFile();
-    } else {
-      _xifexpression = this.getExternalModulesFile();
-    }
-    final String projprefs = _xifexpression;
-    return PreferencesUtils.packArray(new String[] { projprefs, global });
-  }
-  
   private String getExternal(final ExternalKind external) {
     final IPreferencesService service = Platform.getPreferencesService();
     String _xifexpression = null;
@@ -314,5 +301,18 @@ public class ErlangProjectProperties {
       result = _external;
     }
     return result;
+  }
+  
+  private String getExternal(final ExternalKind external, final IPreferencesService service, final String key, final String pluginId) {
+    final String global = service.getString(pluginId, key, "", null);
+    String _xifexpression = null;
+    boolean _equals = Objects.equal(external, ExternalKind.EXTERNAL_INCLUDES);
+    if (_equals) {
+      _xifexpression = this.getExternalIncludesFile();
+    } else {
+      _xifexpression = this.getExternalModulesFile();
+    }
+    final String projprefs = _xifexpression;
+    return PreferencesUtils.packArray(new String[] { projprefs, global });
   }
 }

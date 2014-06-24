@@ -21,6 +21,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -36,11 +37,13 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.text.templates.ContextTypeRegistry;
 import org.eclipse.jface.text.templates.persistence.TemplateStore;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -51,6 +54,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -60,6 +64,9 @@ import org.erlide.backend.BackendCore;
 import org.erlide.core.ConsoleMessageReporter;
 import org.erlide.core.ErlangStatus;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
+import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.IErlangEngine;
+import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.UIMessageReporter;
@@ -89,8 +96,8 @@ import com.google.common.collect.Lists;
 
 /**
  * The main plugin class to be used in the desktop.
- *
- *
+ * 
+ * 
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class ErlideUIPlugin extends AbstractUIPlugin {
@@ -116,7 +123,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
      * The extension point registry for the
      * <code>org.eclipse.jdt.ui.javaFoldingStructureProvider</code> extension
      * point.
-     *
+     * 
      * @since 3.0
      */
     private ErlangFoldingStructureProviderRegistry fFoldingStructureProviderRegistry;
@@ -145,7 +152,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     /**
      * This method is called upon plug-in activation
-     *
+     * 
      * @param context
      *            The context
      * @throws Exception
@@ -156,7 +163,43 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         ErlLogger.info("Starting UI " + Thread.currentThread());
         super.start(context);
 
-        if (HostnameUtils.getErlangHostName(true) == null
+        IRpcSite backend;
+        try {
+            final IErlangEngine engine = ErlangEngine.getInstance();
+            backend = engine.getBackend();
+        } catch (final Throwable e) {
+            e.printStackTrace();
+            backend = null;
+        }
+        final String workspace = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+                .toPortableString();
+        if (backend == null) {
+            PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+                @Override
+                public void run() {
+                    final Shell activeShell = PlatformUI.getWorkbench()
+                            .getActiveWorkbenchWindow().getShell();
+                    final String message = "We are sorry, but the configured Erlang runtime could not be started "
+                            + "and erlide can't work. Please check and fix the configuration.";
+                    final String description = "The log in " + workspace
+                            + "/erlide.log may contain more information.";
+                    ErrorDialog.openError(activeShell, "Erlide can't work properly",
+                            message, new Status(IStatus.ERROR, PLUGIN_ID, description));
+
+                    final PreferenceDialog pref = PreferencesUtil
+                            .createPreferenceDialogOn(PlatformUI.getWorkbench()
+                                    .getActiveWorkbenchWindow().getShell(),
+                                    "org.erlide.ui.preferences.runtimes", null, null);
+                    if (pref != null) {
+                        if (pref.open() == Window.OK) {
+                            ErlLogger
+                                    .info("Restarting workbench after initial runtime configuration...");
+                            PlatformUI.getWorkbench().restart();
+                        }
+                    }
+                }
+            });
+        } else if (HostnameUtils.getErlangHostName(true) == null
                 && HostnameUtils.getErlangHostName(false) == null) {
             PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
                 @Override
@@ -164,16 +207,15 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                     final Shell activeShell = PlatformUI.getWorkbench()
                             .getActiveWorkbenchWindow().getShell();
                     final String message = "We are sorry, but your machine's host name is not configured properly "
-                            + "and erlide can't work. You need to fix your .hosts file and restart.\n"
-                            + "\n" + "This instance will close now.";
-                    final String description = "Java and Erlang can't agree on hostnames. Please check the log "
-                            + "in <workspace>/erlide.log for details on which names were tried.\n\n"
+                            + "and erlide can't work. You need to fix your .hosts file and restart.\n\n";
+                    final String description = "Java and Erlang can't agree on hostnames. Please check the log in "
+                            + workspace
+                            + "/erlide.log for details on which names were tried.\n\n"
                             + "Hostnames with dots in them can't be used as short names.\n"
                             + "Hostnames with dashes in them might not always work.\n\n"
                             + "Try to conect two Erlang nodes manually first. Add the working hostname to .hosts.";
                     ErrorDialog.openError(activeShell, "Erlide can't work properly",
                             message, new Status(IStatus.ERROR, PLUGIN_ID, description));
-                    PlatformUI.getWorkbench().close();
                 }
             });
         }
@@ -271,7 +313,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     /**
      * This method is called when the plug-in is stopped
-     *
+     * 
      * @param context
      *            the context
      * @throws Exception
@@ -294,7 +336,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     /**
      * Returns the shared instance.
-     *
+     * 
      * @return The plugin
      */
     public static ErlideUIPlugin getDefault() {
@@ -307,7 +349,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     /**
      * Returns the string from the plugin's resource bundle, or 'key' if not
      * found.
-     *
+     * 
      * @param key
      *            The resource
      * @return The identified string
@@ -325,7 +367,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     /**
      * Returns the plugin's resource bundle,
-     *
+     * 
      * @return The requested bundle
      */
     public ResourceBundle getResourceBundle() {
@@ -336,7 +378,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
      * Returns the standard display to be used. The method first checks, if the
      * thread calling this method has an associated display. If so, this display
      * is returned. Otherwise the method returns the default display.
-     *
+     * 
      * @return the standard display
      */
     public static Display getStandardDisplay() {
@@ -350,7 +392,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     /**
      * Creates an image and places it in the image registry.
-     *
+     * 
      * @param id
      *            The image id
      * @param baseURL
@@ -370,10 +412,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     /**
      * Returns the image descriptor for the given image PLUGIN_ID. Returns null
      * if there is no such image.
-     *
+     * 
      * @param id
      *            The image id
-     *
+     * 
      * @return The image descriptor
      */
     public ImageDescriptor getImageDescriptor(final String id) {
@@ -385,10 +427,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     /**
      * Returns the image for the given image PLUGIN_ID. Returns null if there is
      * no such image.
-     *
+     * 
      * @param id
      *            The image id
-     *
+     * 
      * @return The image
      */
     public Image getImage(final String id) {
@@ -441,7 +483,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     /**
      * Returns the active workbench shell or <code>null</code> if none
-     *
+     * 
      * @return the active workbench shell or <code>null</code> if none
      */
     public static Shell getActiveWorkbenchShell() {
@@ -497,7 +539,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
      * Returns the registry of the extensions to the
      * <code>org.erlide.ui.erlangFoldingStructureProvider</code> extension
      * point.
-     *
+     * 
      * @return the registry of contributed
      *         <code>IErlangFoldingStructureProvider</code>
      */
@@ -522,7 +564,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     /**
      * Returns a section in the Erlang plugin's dialog settings. If the section
      * doesn't exist yet, it is created.
-     *
+     * 
      * @param name
      *            the name of the section
      * @return the section of the given name

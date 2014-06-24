@@ -176,7 +176,8 @@ type_test_() ->
                   "    ok.\n",
     ?Test_indent(SIndent, S).
 
-%% http://www.assembla.com/spaces/erlide/tickets/936-indent--macros-in-list-comprehensions
+
+%% https://www.assembla.com/spaces/erlide/tickets/936-indent--macros-in-list-comprehensions
 macro_in_lc_test_() ->
     S = "" ++
             "b() ->\n"++
@@ -187,6 +188,36 @@ macro_in_lc_test_() ->
             "    [?X(A) || X <-L],\n"++
             "    a.\n",
     ?Test_indent(I, S).
+
+
+%% for multi-line strings
+%% TODO when scanner can handle multiline strings
+%% multiline_string_test_() ->
+%%     S = "a() -> \"aaa\n"
+%%         "b,b,b\n"
+%%         " ddd,\n"
+%%         "ccc\",\n"
+%%         "ok.",
+%%     SIndent = "a() -> \"aaa\n"
+%%               "b,b,b\n"
+%%               " ddd,\n"
+%%               "ccc\",\n"
+%%               "       ok.",
+%%     ?Test_indent(SIndent, S).
+
+%% for adjacent strings on different lines
+adjacent_string_test_() ->
+    S = "a() -> \"aaa\"\n"
+        "\"b,b,b,\"\n"
+        " \"ddd\"\n"
+        "\"ccc\",\n"
+        "ok.",
+    SIndent = "a() -> \"aaa\"\n"
+              "       \"b,b,b,\"\n"
+              "       \"ddd\"\n"
+              "       \"ccc\",\n"
+              "       ok.",
+    ?Test_indent(SIndent, S).
 
 %% http://www.assembla.com/spaces/erlide/tickets/776
 %% indentation: receive..after is wrong
@@ -271,6 +302,38 @@ indent_newline_char_test_() ->
             "    ok.\n",
     ?Test_indent(I, S).
 
+indent_newline_char_2_test_() ->
+    S = "" ++
+            "a()->\n"++
+            "foo(x, $\\n, y),\n"++
+            "boo(),\n" ++
+            "ok.\n",
+    I = "" ++
+            "a()->\n"++
+            "    foo(x, $\\n, y),\n"++
+            "    boo(),\n" ++
+            "    ok.\n",
+    ?Test_indent(I, S).
+
+%% indent_newline_char_3_test_() ->
+%%     S = "" ++
+%%             "a()->\n"++
+%%             "foo($\n),\n"++
+%%             "receive\n" ++
+%%             "a->a;\n" ++
+%%             "a->a\n" ++
+%%             "end,\n" ++
+%%             "ok.\n",
+%%     I = "" ++
+%%             "a()->\n"++
+%%             "    foo($\n),\n"++
+%%             "    receive\n" ++
+%%             "        a->a;\n" ++
+%%             "        a->a\n" ++
+%%             "    end,\n" ++
+%%             "    ok.\n",
+%%     ?Test_indent(I, S).
+
 indent_maps_test_() ->
     S = "" ++
             "a()->\n"++
@@ -286,6 +349,127 @@ indent_maps_test_() ->
             "      a=>b\n" ++
             "     ],\n" ++
             "    ok.\n",
+    ?Test_indent(I, S).
+
+indent_fun_test_() ->
+    S = "" ++
+            "test() ->\n" ++
+            "fun(0) ->\n" ++
+            "ok;\n" ++
+            "(_) ->\n" ++
+            "ok\n" ++
+            "end.",
+    I = "" ++
+            "test() ->\n" ++
+            "    fun(0) ->\n" ++
+            "            ok;\n" ++
+            "       (_) ->\n" ++
+            "            ok\n" ++
+            "    end.",
+    ?Test_indent(I, S).
+
+indent_named_fun_test_() ->
+    S = "" ++
+            "testNamed() ->\n" ++
+            "fun Name(0) ->\n" ++
+            "ok;\n" ++
+            "Name(_) ->\n" ++
+            "ok\n" ++
+            "end.",
+    I = "" ++
+            "testNamed() ->\n" ++
+            "    fun Name(0) ->\n" ++
+            "             ok;\n" ++
+            "        Name(_) ->\n" ++
+            "             ok\n" ++
+            "    end.",
+    ?Test_indent(I, S).
+
+indent_record_arg_test_() ->
+    S = "" ++
+            "-record(rec, {f1, f2}).\n" ++
+            "recordTest(R) ->\n" ++
+            "test(R#rec{f=y,\n" ++
+            "g=z},\n" ++
+            "arg2,\n" ++
+            "arg3\n" ++
+            ").",
+    I = "" ++
+            "-record(rec, {f1, f2}).\n" ++
+            "recordTest(R) ->\n" ++
+            "    test(R#rec{f=y,\n" ++
+            "               g=z},\n" ++
+            "         arg2,\n" ++
+            "         arg3\n" ++
+            "        ).",
+    ?Test_indent(I, S).
+
+indent_record_arg1_test_() ->
+    S = "" ++
+            "-record(rec, {f1, f2}).\n" ++
+            "recordTest(R) ->\n" ++
+            "test(arg0,\n" ++
+            "R#rec{},\n" ++
+            "arg2,\n" ++
+            "arg3\n" ++
+            ").",
+    I = "" ++
+            "-record(rec, {f1, f2}).\n" ++
+            "recordTest(R) ->\n" ++
+            "    test(arg0,\n"++
+            "         R#rec{},\n" ++
+            "         arg2,\n" ++
+            "         arg3\n" ++
+            "        ).",
+    ?Test_indent(I, S).
+
+indent_record_list_test_() ->
+    S = "" ++
+            "recordTest(R) ->\n" ++
+            "[arg0,\n"++
+            "R#rec{},\n" ++
+            "arg2,\n" ++
+            "arg3\n" ++
+            "].",
+    I = "" ++
+            "recordTest(R) ->\n" ++
+            "    [arg0,\n"++
+            "     R#rec{},\n" ++
+            "     arg2,\n" ++
+            "     arg3\n" ++
+            "    ].",
+    ?Test_indent(I, S).
+
+indent_record_list1_test_() ->
+    S = "" ++
+            "recordTest(R) ->\n" ++
+            "[R#rec{f=y,\n" ++
+            "g=z},\n" ++
+            "arg2,\n" ++
+            "arg3\n" ++
+            "].",
+    I = "" ++
+            "recordTest(R) ->\n" ++
+            "    [R#rec{f=y,\n" ++
+            "           g=z},\n" ++
+            "     arg2,\n" ++
+            "     arg3\n" ++
+            "    ].",
+    ?Test_indent(I, S).
+
+indent_map_arg_test_() ->
+    S = "" ++
+            "mapTest(Map) ->\n" ++
+            "test(Map#{},\n" ++
+            "arg2,\n" ++
+            "arg3\n" ++
+            ")",
+    I = "" ++
+            "mapTest(Map) ->\n" ++
+            "    test(Map#{},\n" ++
+            "         arg2,\n" ++
+            "         arg3\n" ++
+            "        )",
     ?Test_indent(I, S).
 
 %%

@@ -3,7 +3,7 @@
 # ubuntu: PROFILE=~/.profile
 
 export PROFILE=~/.profile
-export RBVER=jruby-1.7.4
+export RBVER=jruby-1.7.9
 
 test -d ~/.rbenv || git clone git@github.com:sstephenson/rbenv.git ~/.rbenv
 # modify $PATH and autoload rbenv
@@ -32,6 +32,6 @@ cat ~/.gemrc
 echo '=== end of .gemrc ==='
  
 # install gems
-gem install bundler rake vlad vlad-git
+gem install bundler rake 
 rbenv rehash
 

@@ -8,10 +8,9 @@ import com.ericsson.otp.erlang.OtpErlangObject
 import com.ericsson.otp.erlang.OtpErlangPid
 import com.ericsson.otp.erlang.OtpErlangTuple
 import java.util.List
+import org.erlide.util.ErlLogger
 import org.erlide.util.erlang.ErlUtils
 import org.erlide.util.erlang.TermParserException
-import org.erlide.util.ErlLogger
-import static java.lang.String.*;
 
 class ErlSystemStatus {
 
@@ -98,17 +97,17 @@ class MemoryStatus {
   }
 
   def String prettyPrint() '''
-             total: «format("%,10d", total)»
-         processes: «format("%,10d", processes)»
-    processes_used: «format("%,10d", processes_used)»
-            system: «format("%,10d", system)»
-              atom: «format("%,10d", atom)»
-         atom_used: «format("%,10d", atom_used)»
-       binary: «format("%,10d", binary)»
-         code: «format("%,10d", code)»
-          ets: «format("%,10d", ets)»
-          low: «format("%,10d", low)»
-           maximum: «format("%,10d", maximum)»
+             total: «String.format("%,10d", total)»
+         processes: «String.format("%,10d", processes)»
+    processes_used: «String.format("%,10d", processes_used)»
+            system: «String.format("%,10d", system)»
+              atom: «String.format("%,10d", atom)»
+         atom_used: «String.format("%,10d", atom_used)»
+       binary: «String.format("%,10d", binary)»
+         code: «String.format("%,10d", code)»
+          ets: «String.format("%,10d", ets)»
+          low: «String.format("%,10d", low)»
+           maximum: «String.format("%,10d", maximum)»
   '''
 
 }
@@ -159,10 +158,10 @@ class ProcessStatus {
 
   def String prettyPrint() '''
     Process «pid» («registered_name»)
-         memory: «format("%,10d", memory)»
-      heap_size: «format("%,10d", heap_size)»
-     stack_size: «format("%,10d", stack_size)»
-     total_heap: «format("%,10d", total_heap_size)»
+         memory: «String.format("%,10d", memory)»
+      heap_size: «String.format("%,10d", heap_size)»
+     stack_size: «String.format("%,10d", stack_size)»
+     total_heap: «String.format("%,10d", total_heap_size)»
          binary: «binary»
      stacktrace: «stacktrace»
   '''

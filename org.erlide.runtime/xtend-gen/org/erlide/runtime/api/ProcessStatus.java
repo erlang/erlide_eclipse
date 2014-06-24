@@ -39,41 +39,41 @@ public class ProcessStatus {
         final OtpErlangObject value = bind.get("V");
         boolean _matched = false;
         if (!_matched) {
-          if (Objects.equal(key,"memory")) {
+          if (Objects.equal(key, "memory")) {
             _matched=true;
             long _longValue = ((OtpErlangLong) value).longValue();
             this.memory = _longValue;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"heap_size")) {
+          if (Objects.equal(key, "heap_size")) {
             _matched=true;
             long _longValue_1 = ((OtpErlangLong) value).longValue();
             this.heap_size = _longValue_1;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"stack_size")) {
+          if (Objects.equal(key, "stack_size")) {
             _matched=true;
             long _longValue_2 = ((OtpErlangLong) value).longValue();
             this.stack_size = _longValue_2;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"total_heap_size")) {
+          if (Objects.equal(key, "total_heap_size")) {
             _matched=true;
             long _longValue_3 = ((OtpErlangLong) value).longValue();
             this.total_heap_size = _longValue_3;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"binary")) {
+          if (Objects.equal(key, "binary")) {
             _matched=true;
             this.binary = value;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"name")) {
+          if (Objects.equal(key, "name")) {
             _matched=true;
             if ((value instanceof OtpErlangAtom)) {
               String _atomValue = ((OtpErlangAtom)value).atomValue();
@@ -84,13 +84,13 @@ public class ProcessStatus {
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"current_stacktrace")) {
+          if (Objects.equal(key, "current_stacktrace")) {
             _matched=true;
             this.stacktrace = value;
           }
         }
         if (!_matched) {
-          if (Objects.equal(key,"pid")) {
+          if (Objects.equal(key, "pid")) {
             _matched=true;
             this.pid = ((OtpErlangPid) value);
           }

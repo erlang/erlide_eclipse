@@ -3,7 +3,6 @@ package org.erlide.engine.model.erlang;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -66,7 +65,7 @@ public class IErlModuleTests extends ErlModelTestBase {
     @Test
     public void getModuleKind() throws Exception {
         // TODO more tests
-        assertEquals(ModuleKind.ERL, module.getModuleKind());
+        assertEquals(SourceKind.ERL, module.getSourceKind());
     }
 
     // Collection<IErlComment> getComments();
@@ -82,18 +81,6 @@ public class IErlModuleTests extends ErlModelTestBase {
         final Iterator<IErlComment> iterator = comments.iterator();
         assertEquals(c1, iterator.next().getName());
         assertEquals(c2, iterator.next().getName());
-    }
-
-    // long getTimestamp();
-    @Test
-    public void getTimestamp() throws Exception {
-        module.open(null);
-        final long timestamp = module.getTimestamp();
-        final IErlModule module2 = ErlideTestUtils.createModule(project, "yy.erl",
-                "-module(yy).\n");
-        module2.open(null);
-        assertNotSame(IResource.NULL_STAMP, timestamp);
-        assertTrue(timestamp <= module2.getTimestamp());
     }
 
     // IErlImport findImport(ErlangFunction function);
@@ -401,14 +388,15 @@ public class IErlModuleTests extends ErlModelTestBase {
 
     @Test
     public void resetCachesWorks() throws Exception {
-        module.open(null);
-        assertTrue(module.getChildCount() > 0);
-        final ScannerService scanner = module.getScanner();
-        try {
-            module.resetAndCacheScannerAndParser(scanner.getText());
-        } finally {
-            scanner.dispose();
-        }
-        assertTrue(module.getChildCount() > 0);
+        // TODO reimplement
+        // module.open(null);
+        // assertTrue(module.getChildCount() > 0);
+        // final ScannerService scanner = module.getScanner();
+        // try {
+        // module.resetAndCacheScannerAndParser(scanner.getText());
+        // } finally {
+        // scanner.dispose();
+        // }
+        // assertTrue(module.getChildCount() > 0);
     }
 }

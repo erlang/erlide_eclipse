@@ -17,9 +17,10 @@
 %% Exported Functions
 %%
 
--export([light_scan_string/2, scan_string/1, initial_scan/5, get_token_at/2,
-         initial_scan/6, create/1, addref/1, dispose/1, get_text/1,
-         get_text_line/2, get_tokens/1, get_token_window/4, dump_log/2,
+-export([light_scan_string/2, scan_string/1, initial_scan_0/5, initial_scan/5,
+         get_token_at/2,
+         create/1, addref/1, dispose/1, get_text/1,
+         get_tokens/1, get_token_window/4,
          dump_module/1, replace_text/4, check_all/3]).
 
 %%
@@ -41,27 +42,18 @@ scan_string(L) when is_list(L) ->
     M = erlide_scan_model:do_scan('', L),
     erlide_scan_model:get_all_tokens(M).
 
-initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache) ->
-    %%     Text = case InitialText of
-    %%                "" ->
-    %%                    {ok, B} = file:read_file(ModuleFileName),
-    %%                    binary_to_list(B);
-    %%                _ ->
-    %%                    InitialText
-    %%            end,
-    Text = InitialText,
+initial_scan_0(ScannerName, ModuleFileName, Text, StateDir, UseCache) ->
     CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
     RenewFun = fun(_F) -> erlide_scan_model:do_scan(ScannerName, Text) end,
-    Result = erlide_cache:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UseCache),
-    {Result, Text}.
+    erlide_cache:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UseCache).
 
 get_token_at(ScannerName, Offset) when is_atom(ScannerName), is_integer(Offset) ->
     erlide_scanner_server:server_cmd(ScannerName, get_token_at, Offset).
 
-initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache, Logging)
+initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache)
   when is_atom(ScannerName), is_list(ModuleFileName), is_list(InitialText), is_list(StateDir) ->
     erlide_scanner_server:server_cmd(ScannerName, initial_scan,
-                                     {ScannerName, ModuleFileName, InitialText, StateDir, UseCache, Logging}).
+                                     {ScannerName, ModuleFileName, InitialText, StateDir, UseCache}).
 
 create(ScannerName) when is_atom(ScannerName) ->
     erlide_scanner_server:spawn_server(ScannerName).
@@ -76,9 +68,6 @@ dispose(ScannerName) when is_atom(ScannerName) ->
 get_text(ScannerName) when is_atom(ScannerName) ->
     erlide_scanner_server:server_cmd(ScannerName, get_text).
 
-get_text_line(ScannerName, Line) when is_atom(ScannerName), is_integer(Line) ->
-    erlide_scanner_server:server_cmd(ScannerName, get_text_line, Line).
-
 get_tokens(ScannerName) when is_atom(ScannerName) ->
     erlide_scanner_server:server_cmd(ScannerName, get_tokens).
 
@@ -88,9 +77,6 @@ get_token_window(ScannerName, Offset, Before, After)
 
 dump_module(ScannerName) when is_atom(ScannerName) ->
     erlide_scanner_server:server_cmd(ScannerName, dump_module).
-
-dump_log(ScannerName, Filename) when is_atom(ScannerName) ->
-    erlide_scanner_server:server_cmd(ScannerName, dump_log, Filename).
 
 replace_text(ScannerName, Offset, RemoveLength, NewText)
   when is_atom(ScannerName), is_integer(Offset), is_integer(RemoveLength), is_list(NewText) ->

@@ -819,18 +819,6 @@
              label="Interpret"
              style="push">
        </command>
-    </menuContribution>
-    <menuContribution
-          locationURI="toolbar:org.erlide.ui.debug.interpretedModulesView">
-       <command
-             commandId="org.erlide.ui.deinterpret"
-             icon="icons/full/elcl16/deinterpret_co.gif"
-             label="Deinterpret"
-             style="push">
-       </command>
-    </menuContribution>
-    <menuContribution
-          locationURI="popup:org.erlide.ui.debug.interpretedModulesView">
        <command
              commandId="org.erlide.ui.deinterpret"
              icon="icons/full/elcl16/deinterpret_co.gif"
@@ -844,6 +832,12 @@
              commandId="org.erlide.ui.interpret"
              icon="icons/full/elcl16/interpret_co.gif"
              label="Interpret"
+             style="push">
+       </command>
+       <command
+             commandId="org.erlide.ui.deinterpret"
+             icon="icons/full/elcl16/deinterpret_co.gif"
+             label="Deinterpret"
              style="push">
        </command>
     </menuContribution>
@@ -889,7 +883,8 @@
        </menu>
        <menu
              id="org.erlide.ui.menus.refactor"
-             label="Refactor">
+             label="Refactor"
+             mnemonic="R">
        </menu>
        <separator
              name="org.erlide.ui.separator2">
@@ -2045,12 +2040,12 @@
   <extension point="org.eclipse.ui.ide.markerResolution">
       <markerResolutionGenerator
          markerType="org.erlide.core.problemmarker"
-         class="org.erlide.ui.editors.erl.correction.QuickFixResolutionGenerator"/>
+         class="org.erlide.ui.editors.erl.correction.ErlangQuickAssistProcessor"/>
    </extension>
   <extension
         point="org.erlide.ui.quickfix">
      <quickfix
-           class="org.erlide.ui.editors.erl.correction.RenameModuleQuickFix"
+           class="org.erlide.ui.editors.erl.correction.fixes.RenameModuleQuickFix"
            image="icons/full/obj16/change.gif"
            label="Change module name to &apos;{1}&apos;">
         <tag
@@ -2061,7 +2056,7 @@
         </tag>
      </quickfix>
      <quickfix
-           class="org.erlide.ui.editors.erl.correction.RenameFileQuickFix"
+           class="org.erlide.ui.editors.erl.correction.fixes.RenameFileQuickFix"
            image="icons/full/obj16/change.gif"
            label="Change file name to &quot;{0}.erl&quot;">
         <tag
@@ -2072,12 +2067,18 @@
         </tag>
      </quickfix>
      <quickfix
-           class="org.erlide.ui.editors.erl.correction.CreateHeaderQuickFix"
+           class="org.erlide.ui.editors.erl.correction.fixes.CreateHeaderQuickFix"
            image="icons/full/obj16/change.gif"
            label="Create include file &quot;{1}&quot;">
         <tag
               name="epp_include">
         </tag>
+     </quickfix>
+     <quickfix
+           class="org.erlide.ui.editors.erl.correction.assists.ConvertMultiStringQuickFix"
+           image="icons/full/obj16/change.gif"
+           description="Convert multi-line string to a concatenation of strings. This is just as efficient, but easier to read."
+           label="Convert multi-line string to concatenation">
      </quickfix>
   </extension>
 </plugin>

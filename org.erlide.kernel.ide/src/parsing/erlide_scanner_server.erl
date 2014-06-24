@@ -134,42 +134,19 @@ cmd(Cmd, From, Args, Module) ->
 reply(Cmd, From, R) ->
     From ! {Cmd, self(), R}.
 
-log(#module{log=none}=Module, _Event) ->
-    Module;
-log(#module{log=Log}=Module, Event) ->
-    NewLog = [Event | Log],
-    Module#module{log=NewLog}.
-
-logging(Module, on) ->
-    Module#module{log=[]};
-logging(Module, off) ->
-    Module#module{log=none}.
-
-do_cmd(initial_scan, {ScannerName, ModuleFileName, InitialText, StateDir, UseCache, Logging}, _Module) ->
+do_cmd(initial_scan, {ScannerName, ModuleFileName, InitialText, StateDir, UseCache}, _Module) ->
     ?D({initial_scan, ScannerName, length(InitialText)}),
-    {{Cached, Module1}, Text} = erlide_scanner:initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache),
-    Module2 = logging(Module1, Logging),
-    Module3 = log(Module2, {initial_scan, ScannerName, ModuleFileName, InitialText, Text}),
-    {{ok, Cached}, Module3};
+    {Cached, Module1} = erlide_scanner:initial_scan_0(ScannerName, ModuleFileName, InitialText, StateDir, UseCache),
+    {{ok, Cached}, Module1};
 do_cmd(dump_module, [], Module) ->
     {Module, Module};
-do_cmd(dump_log, Filename, Module) ->
-    Log = lists:reverse(Module#module.log),
-    {ok, File} = file:open(Filename, [write]),
-    [io:format(File, "~p.\n", [L]) || L <- Log],
-    file:close(File),
-    {{ok, Filename}, Module};
 do_cmd(get_token_at, Offset, Module) ->
     {erlide_scan_model:get_token_at(Module, Offset), Module};
 do_cmd(replace_text, {Offset, RemoveLength, NewText}, Module) ->
     ?D({replace_text, Offset, RemoveLength, length(NewText)}),
-    NewModule = log(Module, {replace_text, Offset, RemoveLength, NewText}),
-    erlide_scan_model:replace_text(NewModule, Offset, RemoveLength, NewText);
+    erlide_scan_model:replace_text(Module, Offset, RemoveLength, NewText);
 do_cmd(get_text, [], Module) ->
     {erlide_scan_model:get_text(Module), Module};
-do_cmd(get_text_line, Line, Module) ->
-    L = lists:nth(Line+1, Module#module.lines),
-    {L, Module};
 do_cmd(get_tokens, [], Module) ->
     {erlide_scan_model:get_all_tokens(Module), Module};
 do_cmd(get_token_window, {Offset, Before, After}, Module) ->

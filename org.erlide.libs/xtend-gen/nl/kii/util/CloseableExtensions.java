@@ -27,7 +27,7 @@ public class CloseableExtensions {
   /**
    * Perform an operation on a closable, and close it when finished
    */
-  public static <I extends Closeable, T extends Object> T using(final I closable, final Function1<? super I,? extends T> fn) {
+  public static <I extends Closeable, T extends Object> T using(final I closable, final Function1<? super I, ? extends T> fn) {
     try {
       T _xtrycatchfinallyexpression = null;
       try {
@@ -41,7 +41,7 @@ public class CloseableExtensions {
     }
   }
   
-  public static <I extends Closeable, T extends Object> Opt<T> attemptUsing(final I closable, final Function1<? super I,? extends T> fn) {
+  public static <I extends Closeable, T extends Object> Opt<T> attemptUsing(final I closable, final Function1<? super I, ? extends T> fn) {
     Opt<T> _xtrycatchfinallyexpression = null;
     try {
       T _using = CloseableExtensions.<I, T>using(closable, fn);

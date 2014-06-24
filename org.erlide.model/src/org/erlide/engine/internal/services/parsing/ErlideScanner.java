@@ -27,6 +27,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
     private static final String ERLIDE_SCANNER = "erlide_scanner";
     private static final Object ENCODING = System.getProperty(
             "erlide.encoding.__test__", "latin1");
+    private static final boolean USE_CACHE = true;
 
     private final IRpcSite backend;
 
@@ -35,13 +36,11 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
     }
 
     public void initialScan(final String module, final String path,
-            final String initialText, final boolean logging) {
+            final String initialText) {
         final String stateDir = ErlangEngine.getInstance().getStateDir();
         try {
-            final String loggingOnOff = logging ? "on" : "off";
-            backend.call(ERLIDE_SCANNER, "initial_scan", "asssoa", module,
-                    path, initialText == null ? "" : initialText, stateDir,
-                    true, loggingOnOff);
+            backend.call(ERLIDE_SCANNER, "initial_scan", "assso", module, path,
+                    initialText == null ? "" : initialText, stateDir, USE_CACHE);
         } catch (final RpcTimeoutException e) {
             ErlLogger.debug(e);
         } catch (final Exception e) {
@@ -176,29 +175,6 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
         }
         return null;
 
-    }
-
-    public String getText(final String scannerName) {
-        try {
-            final OtpErlangObject o = backend.call(ERLIDE_SCANNER, "get_text",
-                    "a", scannerName);
-            return Util.stringValue(o);
-        } catch (final RpcException e) {
-            return "";
-        }
-    }
-
-    @Override
-    public boolean dumpLog(final String scannerName,
-            final String dumpLocationFilename) {
-        try {
-            final OtpErlangObject object = backend.call(ERLIDE_SCANNER,
-                    "dump_log", "as", scannerName, dumpLocationFilename);
-            return Util.isOk(object);
-        } catch (final RpcException e) {
-            ErlLogger.warn(e);
-        }
-        return false;
     }
 
 }

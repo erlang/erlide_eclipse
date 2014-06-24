@@ -25,11 +25,11 @@ import org.erlide.ui.editors.erl.AbstractErlangEditor;
  * <p>
  * The action is applicable to selections and Search view entries representing a
  * Erlang element.
- *
+ * 
  * <p>
  * Note: This class is for internal use only. Clients should not use this class.
  * </p>
- *
+ * 
  * @since 2.0
  */
 public class WorkingSetFindAction extends FindAction {
@@ -67,8 +67,6 @@ public class WorkingSetFindAction extends FindAction {
         setText(workingSetName);
         setImageDescriptor(action.getImageDescriptor());
         setToolTipText(action.getToolTipText());
-        // FIXME PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-        // IErlangHelpContextIds.WORKING_SET_FIND_ACTION);
     }
 
     @Override

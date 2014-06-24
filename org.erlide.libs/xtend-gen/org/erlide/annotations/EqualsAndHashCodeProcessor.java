@@ -31,7 +31,7 @@ public class EqualsAndHashCodeProcessor extends AbstractClassProcessor {
             _builder.newLine();
             {
               Iterable<? extends MutableFieldDeclaration> _declaredFields = annotatedClass.getDeclaredFields();
-              final Function1<MutableFieldDeclaration,Boolean> _function = new Function1<MutableFieldDeclaration,Boolean>() {
+              final Function1<MutableFieldDeclaration, Boolean> _function = new Function1<MutableFieldDeclaration, Boolean>() {
                 public Boolean apply(final MutableFieldDeclaration it) {
                   boolean _isStatic = it.isStatic();
                   return Boolean.valueOf((!_isStatic));

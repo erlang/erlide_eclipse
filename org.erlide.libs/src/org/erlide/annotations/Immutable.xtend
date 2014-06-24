@@ -85,7 +85,7 @@ class ImmutableProcessor extends AbstractClassProcessor {
     ]
     cls.dataFields.forEach [ field |
       val fieldType = field.type
-      val prefix = if(fieldType == primitiveBoolean || fieldType.type == typeof(Boolean)) "is" else "get"
+      val prefix = if(fieldType == primitiveBoolean || fieldType.type.simpleName == "Boolean") "is" else "get"
       cls.addMethod(prefix + field.simpleName.toFirstUpper) [
         returnType = field.type
         body = [
@@ -97,11 +97,12 @@ class ImmutableProcessor extends AbstractClassProcessor {
     cls.addMethod("equals") [
       returnType = primitiveBoolean
       addParameter("o", object)
+      val result = cls.dataFields.join("\n&& ")['''«objects».equal(«simpleName», other.«simpleName»)''']
       body = [
         '''
           if (o instanceof «cls.simpleName») {
             «cls.simpleName» other = («cls.simpleName») o;
-            return «cls.dataFields.join("\n&& ")['''«objects».equal(«simpleName», other.«simpleName»)''']»;
+            return «result»;
           }
           return false;
         ''']

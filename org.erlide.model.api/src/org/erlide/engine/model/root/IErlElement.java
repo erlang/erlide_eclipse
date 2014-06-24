@@ -34,10 +34,9 @@ import org.erlide.util.IDisposable;
  * <code>ErlModelException.isDoesNotExist</code> can be used to recognize this
  * common special case.
  * </p>
- * <p>
- * This interface is not intended to be implemented by clients.
- * </p>
- *
+ * 
+ * @noimplement This interface is not intended to be implemented by clients.
+ * 
  * @author jakob
  */
 public interface IErlElement extends IAdaptable, IDisposable {
@@ -53,7 +52,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
      * is therefore possible to navigate to any existing Erlang element from the
      * root of the Erlang model along a chain of existing Erlang elements.
      * </p>
-     *
+     * 
      * @return <code>true</code> if this element exists in the Erlang model, and
      *         <code>false</code> if this element does not exist
      */
@@ -63,7 +62,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
      * Returns the first ancestor of this Erlang element that has the given
      * type. Returns <code>null</code> if no such an ancestor can be found. This
      * is a handle-only method.
-     *
+     * 
      * @param kind
      *            the given kind
      * @return the first ancestor of this Erlang element that has the given
@@ -82,24 +81,23 @@ public interface IErlElement extends IAdaptable, IDisposable {
      * <p>
      * This differs from getResource, which returns the parents resource, if the
      * element doesn't correspond directly to a resource.
-     *
+     * 
      * @return the corresponding resource, or <code>null</code> if none
      */
     IResource getCorrespondingResource();
 
     /**
      * Returns the name of this element. This is a handle-only method.
-     *
+     * 
      * @return the element name
      */
     String getName();
 
     /**
-     * Returns this element's kind encoded as an integer. This is a handle-only
+     * Returns this element's kind encoded as an enum. This is a handle-only
      * method.
-     *
-     * @return the kind of element; one of the constants declared in
-     *         <code>IErlElement</code>
+     * 
+     * @return the kind of element
      * @see IErlElement
      */
     ErlElementKind getKind();
@@ -108,7 +106,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
      * Returns the element directly containing this element, or
      * <code>null</code> if this element has no parent. This is a handle-only
      * method.
-     *
+     * 
      * @return the parent element, or <code>null</code> if this element has no
      *         parent
      */
@@ -117,19 +115,19 @@ public interface IErlElement extends IAdaptable, IDisposable {
     /**
      * Returns the innermost resource enclosing this element. This is a
      * handle-only method.
-     *
+     * 
      * @return the innermost resource enclosing this element, or
      *         <code>null</code>
-     *
+     * 
      */
     IResource getResource();
 
     /**
      * Returns the scheduling rule associated with this Erlang element. This is
      * a handle-only method.
-     *
+     * 
      * @return the scheduling rule associated with this Erlang element
-     *
+     * 
      */
     ISchedulingRule getSchedulingRule();
 
@@ -151,7 +149,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
      * Note this is different from IResource.isReadOnly().
      * <p>
      * This is a handle-only method.
-     *
+     * 
      * @return <code>true</code> if this element is read-only
      */
     boolean isReadOnly();
@@ -166,7 +164,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
      * Note: This does not imply anything about consistency with the underlying
      * resource/buffer contents.
      * </p>
-     *
+     * 
      * @return <code>true</code> if the structure of this element is known
      * @throws ErlModelException
      *             if this element does not exist or if an exception occurs
@@ -184,7 +182,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
 
     /**
      * The good old visitor pattern
-     *
+     * 
      * @param visitor
      * @param flags
      * @param leafKind
@@ -196,7 +194,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
     /**
      * Return the file path of the underlying element, i.e. if it's a module,
      * the file path to the element being edited
-     *
+     * 
      * @return path or null if not a file-based element
      */
     String getFilePath();

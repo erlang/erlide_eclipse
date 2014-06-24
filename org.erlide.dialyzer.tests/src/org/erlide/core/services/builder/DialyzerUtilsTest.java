@@ -1,5 +1,8 @@
 package org.erlide.core.services.builder;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -88,7 +91,7 @@ public class DialyzerUtilsTest {
     }
 
     @Test
-    public void dialyzeMarkerOnfile() throws Exception {
+    public void dialyzeMarkerOnFile() throws Exception {
         IErlProject erlProject = null;
         try {
             // given
@@ -133,7 +136,7 @@ public class DialyzerUtilsTest {
         // http://www.assembla.com/spaces/erlide/tickets/608-dialyzer---navigate-to-external-includes-from-markers
         File externalFile = null;
         IErlProject erlProject = null;
-        File externalInclude = null;
+        File externalIncludesFile = null;
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         try {
             // given
@@ -142,8 +145,8 @@ public class DialyzerUtilsTest {
             erlProject = ErlideTestUtils.createTmpErlProject(projectName);
             final String externalFileName = "external.hrl";
             externalFile = ErlideTestUtils.createTmpFile(externalFileName,
-                    "f([_ | _]=L ->\n    atom_to_list(L).\n");
-            externalInclude = ErlideTestUtils.createTmpFile("external_includes",
+                    "f([_ | _]=L) ->\n    atom_to_list(L).\n");
+            externalIncludesFile = ErlideTestUtils.createTmpFile("external_includes",
                     externalFile.getAbsolutePath());
             DialyzerMarkerUtils.removeDialyzerMarkersFor(root);
             // when
@@ -159,7 +162,7 @@ public class DialyzerUtilsTest {
             final IMarker[] markers = root.findMarkers(
                     DialyzerMarkerUtils.DIALYZE_WARNING_MARKER, true,
                     IResource.DEPTH_INFINITE);
-            assertTrue(markers.length > 0);
+            assertThat(markers.length, is(greaterThan(0)));
             for (final IMarker marker : markers) {
                 // for some reason, when running on Hudson, we get two identical
                 // markers...
@@ -172,8 +175,8 @@ public class DialyzerUtilsTest {
             }
         } finally {
             DialyzerMarkerUtils.removeDialyzerMarkersFor(root);
-            if (externalInclude != null && externalInclude.exists()) {
-                externalInclude.delete();
+            if (externalIncludesFile != null && externalIncludesFile.exists()) {
+                externalIncludesFile.delete();
             }
             if (externalFile != null && externalFile.exists()) {
                 externalFile.delete();

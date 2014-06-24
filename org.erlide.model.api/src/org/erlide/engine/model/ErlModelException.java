@@ -95,12 +95,12 @@ public class ErlModelException extends CoreException {
      *
      * @return <code>true</code> if this exception indicates that a Erlang model
      *         element does not exist
-     * @see IErlModelStatus#isDoesNotExist()
+     * @see IErlModelStatus#elementDoesNotExist()
      * @see ErlModelStatusConstants#ELEMENT_DOES_NOT_EXIST
      */
     public boolean isDoesNotExist() {
         final IErlModelStatus erlangModelStatus = getErlangModelStatus();
-        return erlangModelStatus != null && erlangModelStatus.isDoesNotExist();
+        return erlangModelStatus != null && erlangModelStatus.elementDoesNotExist();
     }
 
     /**

@@ -46,7 +46,7 @@ import org.erlide.engine.model.IOpenable;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.erlang.ModuleKind;
+import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlElement;
@@ -55,9 +55,9 @@ import org.erlide.engine.model.root.IErlElementVisitor;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.IProjectConfigurator;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
-import org.erlide.engine.model.root.IProjectConfigurator;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.NatureUtil;
@@ -72,7 +72,7 @@ import com.google.common.collect.Lists;
 
 /**
  * Handle for an Erlang project.
- *
+ * 
  * <p>
  * A Erlang Project internally maintains a devpath that corresponds to the
  * project's classpath. The classpath may include source folders from the
@@ -82,11 +82,11 @@ import com.google.common.collect.Lists;
  * in other projects, and thus uses the devpath rather than the classpath (which
  * is really a compilation path). The devpath mimics the classpath, except has
  * source folder entries in place of output locations in external projects.
- *
+ * 
  * <p>
  * Each ErlProject has a NameLookup facility that locates elements on by name,
  * based on the devpath.
- *
+ * 
  * @see IErlProject
  */
 public class ErlProject extends Openable implements IErlProject,
@@ -221,7 +221,7 @@ public class ErlProject extends Openable implements IErlProject,
      * given handle. Two handles represent the same project if they are
      * identical or if they represent a project with the same underlying
      * resource and occurrence counts.
-     *
+     * 
      * @see ErlElement#equals(Object)
      */
     @Override
@@ -297,7 +297,7 @@ public class ErlProject extends Openable implements IErlProject,
     /**
      * Answers an PLUGIN_ID which is used to distinguish project/entries during
      * package fragment root computations
-     *
+     * 
      * @return String
      */
     public String rootID() {
@@ -339,8 +339,8 @@ public class ErlProject extends Openable implements IErlProject,
                         .getChildrenOfKind(ErlElementKind.MODULE)) {
                     if (e instanceof IErlModule) {
                         final IErlModule m = (IErlModule) e;
-                        final boolean isModule = ModuleKind.nameToModuleKind(m
-                                .getName()) != ModuleKind.HRL;
+                        final boolean isModule = SourceKind.nameToModuleKind(m
+                                .getName()) != SourceKind.HRL;
                         if (isModule == getModules) {
                             result.add(m);
                         }
@@ -400,7 +400,7 @@ public class ErlProject extends Openable implements IErlProject,
      * Returns a canonicalized path from the given external path. Note that the
      * return path contains the same number of segments and it contains a device
      * only if the given path contained one.
-     *
+     * 
      * @param externalPath
      *            IPath
      * @see java.io.File for the definition of a canonicalized path
@@ -635,7 +635,7 @@ public class ErlProject extends Openable implements IErlProject,
                         || element.getKind() == ErlElementKind.PROJECT;
                 if (element instanceof IErlModule) {
                     final IErlModule module = (IErlModule) element;
-                    if (module.getModuleKind() == ModuleKind.HRL) {
+                    if (module.getSourceKind() == SourceKind.HRL) {
                         result.add(module);
                     }
                     return false;
@@ -738,8 +738,8 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     private IProjectConfigurator getConfig() {
-        return ProjectConfiguratorFactory.getDefault().getConfig(
-                getConfigType(), this);
+        return ErlangEngine.getInstance().getProjectConfiguratorFactory()
+                .getConfig(getConfigType(), this);
     }
 
     private void storeProperties() {
@@ -802,7 +802,7 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     private boolean validateBuilderTool(final BuilderTool tool) {
-        return getConfigType().matchTool(builderProperties.getBuilderTool());
+        return getConfigType().matchesTool(builderProperties.getBuilderTool());
     }
 
     @Override

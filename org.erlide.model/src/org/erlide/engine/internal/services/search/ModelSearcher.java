@@ -10,7 +10,7 @@ import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.ErlangIncludeFile;
 import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.erlang.ModuleKind;
+import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlExternal;
@@ -109,7 +109,7 @@ public class ModelSearcher implements ModelSearcherService {
         for (final IErlElement child : parent
                 .getChildrenOfKind(ErlElementKind.MODULE)) {
             if (child instanceof IErlModule
-                    && ModuleKind.nameToModuleKind(child.getName()) == ModuleKind.HRL) {
+                    && SourceKind.nameToModuleKind(child.getName()) == SourceKind.HRL) {
                 result.add((IErlModule) child);
             }
         }

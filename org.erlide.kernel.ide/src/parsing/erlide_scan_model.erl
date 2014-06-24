@@ -28,6 +28,7 @@
 
 do_scan(ScannerName, InitialText) ->
     ?D(do_scan),
+    %% TODO FIXME splitting by line messes up multiline strings
     Lines = erlide_scan_util:split_lines_w_lengths(InitialText),
     LineTokens = [scan_line(L) || L <- Lines],
     ?D([ScannerName]), % , InitialText, LineTokens]),

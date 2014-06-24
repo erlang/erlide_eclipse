@@ -11,8 +11,8 @@ import org.eclipse.xtext.xbase.lib.StringExtensions;
 
 @SuppressWarnings("all")
 public class MapCodec {
-  public static Map<String,String> decode(final String string) {
-    final HashMap<String,String> result = CollectionLiterals.<String, String>newHashMap();
+  public static Map<String, String> decode(final String string) {
+    final HashMap<String, String> result = CollectionLiterals.<String, String>newHashMap();
     Splitter _on = Splitter.on("!,");
     final Iterable<String> entries = _on.split(string);
     for (final String entry : entries) {
@@ -30,10 +30,10 @@ public class MapCodec {
     return result;
   }
   
-  public static String encode(final Map<String,String> map) {
+  public static String encode(final Map<String, String> map) {
     StringConcatenation _builder = new StringConcatenation();
     {
-      Set<Map.Entry<String,String>> _entrySet = map.entrySet();
+      Set<Map.Entry<String, String>> _entrySet = map.entrySet();
       for(final Map.Entry<String, String> e : _entrySet) {
         String _key = e.getKey();
         _builder.append(_key, "");

@@ -32,6 +32,9 @@ public class ManagedErlRuntime extends ErlRuntime {
     protected void startUp() throws Exception {
         exitCode = -1;
         process = startRuntimeProcess(data);
+        if (process == null) {
+            throw new Exception("no runtime");
+        }
         super.startUp();
     }
 

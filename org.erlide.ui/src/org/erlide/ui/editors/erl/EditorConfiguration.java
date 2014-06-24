@@ -41,7 +41,7 @@ import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 
 /**
  * The editor configurator
- *
+ * 
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class EditorConfiguration extends ErlangSourceViewerConfiguration {
@@ -51,11 +51,11 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 
     /**
      * Default configuration constructor
-     *
+     * 
      * @param store
-     *
+     * 
      * @param editor
-     *
+     * 
      * @param lcolorManager
      *            the color manager
      */
@@ -82,7 +82,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 
     /**
      * Returns the editor in which the configured viewer(s) will reside.
-     *
+     * 
      * @return the enclosing editor
      */
     protected ITextEditor getEditor() {
@@ -167,11 +167,4 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
             reconciler.reconcileNow();
         }
     }
-
-    public void dumpReconcilerLog(final String filename) {
-        if (reconciler != null) {
-            reconciler.dumpLog(filename);
-        }
-    }
-
 }

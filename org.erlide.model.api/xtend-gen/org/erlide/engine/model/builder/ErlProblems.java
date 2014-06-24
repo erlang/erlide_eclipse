@@ -23,7 +23,7 @@ import org.erlide.util.erlang.ErlUtils;
 public class ErlProblems {
   private final List<ProblemData> data = CollectionLiterals.<ProblemData>newArrayList();
   
-  private final Map<String,ProblemData> tagMap = CollectionLiterals.<String, ProblemData>newHashMap();
+  private final Map<String, ProblemData> tagMap = CollectionLiterals.<String, ProblemData>newHashMap();
   
   private ErlProblems() {
     this.load();

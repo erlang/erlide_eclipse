@@ -18,7 +18,7 @@ import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlModule;
-import org.erlide.engine.model.erlang.ModuleKind;
+import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElement.AcceptFlags;
@@ -78,7 +78,7 @@ public class SearchCoreUtil {
     }
 
     static void addFileToScope(final IFile file, final ErlSearchScope result) {
-        if (ModuleKind.hasModuleExtension(file.getName())) {
+        if (SourceKind.hasModuleExtension(file.getName())) {
             final IErlModule module = ErlangEngine.getInstance().getModel()
                     .findModule(file);
             result.addModule(module);

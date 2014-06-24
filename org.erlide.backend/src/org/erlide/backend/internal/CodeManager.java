@@ -111,8 +111,8 @@ public class CodeManager {
             final String beamModuleName = BackendUtils.getBeamModuleName(ebinDir);
             if (beamModuleName != null) {
                 // ErlLogger.debug(" load " + beamModuleName);
-                final boolean ok = loadBeam(beamModuleName,
-                        bundle.getBundle().getEntry(ebinDir));
+                final URL entry = bundle.getBundle().getEntry(ebinDir);
+                final boolean ok = entry != null && loadBeam(beamModuleName, entry);
                 if (!ok) {
                     ErlLogger.error("Could not load %s", beamModuleName);
                 }

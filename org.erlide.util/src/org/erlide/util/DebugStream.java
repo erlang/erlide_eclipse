@@ -13,8 +13,9 @@ public final class DebugStream extends PrintStream {
     public static void activate() {
         if (INSTANCE == null) {
             try {
-                INSTANCE = new DebugStream();
-                System.setOut(INSTANCE);
+                final DebugStream stream = new DebugStream();
+                System.setOut(stream);
+                INSTANCE = stream;
             } catch (final UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

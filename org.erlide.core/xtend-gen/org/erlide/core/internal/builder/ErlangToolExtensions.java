@@ -29,7 +29,7 @@ public class ErlangToolExtensions {
   public static IResource getTopFile(final IContainer container, final String filename) {
     try {
       IResource[] _members = container.members();
-      final Function1<IResource,Boolean> _function = new Function1<IResource,Boolean>() {
+      final Function1<IResource, Boolean> _function = new Function1<IResource, Boolean>() {
         public Boolean apply(final IResource it) {
           String _name = it.getName();
           return Boolean.valueOf(Objects.equal(_name, filename));
@@ -80,7 +80,7 @@ public class ErlangToolExtensions {
       {
         File _realFile = ErlangToolExtensions.getRealFile(makefile);
         final List<String> lines = Files.readLines(_realFile, Charsets.ISO_8859_1);
-        final Function1<String,String> _function = new Function1<String,String>() {
+        final Function1<String, String> _function = new Function1<String, String>() {
           public String apply(final String it) {
             String _xifexpression = null;
             boolean _hasTarget = ErlangToolExtensions.hasTarget(it);

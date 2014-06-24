@@ -1,7 +1,6 @@
 package org.erlide.ui.editors.erl.completion;
 
 import java.util.EnumSet;
-import java.util.Set;
 
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
@@ -48,7 +47,7 @@ public class ErlStringContentAssistProcessor extends AbstractErlContentAssistPro
     }
 
     @Override
-    protected Set<Kinds> filterFlags(final Set<Kinds> flags) {
+    protected EnumSet<Kinds> filterFlags(final EnumSet<Kinds> flags) {
         flags.retainAll(EnumSet.of(Kinds.INCLUDE_LIBS, Kinds.INCLUDES));
         return flags;
     }

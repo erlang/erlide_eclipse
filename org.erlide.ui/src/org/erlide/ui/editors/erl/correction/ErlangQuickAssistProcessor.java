@@ -22,37 +22,51 @@ import org.eclipse.jface.text.quickassist.IQuickAssistProcessor;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IMarkerResolution;
+import org.eclipse.ui.IMarkerResolutionGenerator;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
 
-public class ErlangQuickAssistProcessor implements IQuickAssistProcessor {
-    ISourceViewer sourceViewer;
+public class ErlangQuickAssistProcessor implements IQuickAssistProcessor,
+        IMarkerResolutionGenerator {
 
-    public ErlangQuickAssistProcessor(final ISourceViewer sourceViewer) {
-        this.sourceViewer = sourceViewer;
-    }
+    private final ErlangQuickFixCollector collector = new ErlangQuickFixCollector();
 
     @Override
     public boolean canAssist(final IQuickAssistInvocationContext invocationContext) {
-        return false;
+        return collector.hasAssists(invocationContext);
     }
 
     @Override
     public boolean canFix(final Annotation annotation) {
-        return true; // annotation instanceof ErlangAnnotation;
+        return annotation instanceof MarkerAnnotation && !annotation.isMarkedDeleted();
     }
 
     @Override
     public ICompletionProposal[] computeQuickAssistProposals(
             final IQuickAssistInvocationContext invocationContext) {
-        final List<ICompletionProposal> result = Lists.newArrayList();
+        final List<ICompletionProposal> result = computeProposals(invocationContext);
+        return result.toArray(new ICompletionProposal[result.size()]);
+    }
 
-        final QuickFixResolutionGenerator gen = new QuickFixResolutionGenerator();
+    @Override
+    public String getErrorMessage() {
+        return null;
+    }
+
+    @Override
+    public IMarkerResolution[] getResolutions(final IMarker marker) {
+        return collector.getResolutions(marker);
+    }
+
+    private List<ICompletionProposal> computeProposals(
+            final IQuickAssistInvocationContext invocationContext) {
+        final ISourceViewer sourceViewer = invocationContext.getSourceViewer();
         final Iterator<Annotation> iter = sourceViewer.getAnnotationModel()
                 .getAnnotationIterator();
+        final List<ICompletionProposal> result = Lists.newArrayList();
         while (iter.hasNext()) {
             final Annotation annotation = iter.next();
             if (annotation instanceof MarkerAnnotation) {
@@ -62,14 +76,12 @@ public class ErlangQuickAssistProcessor implements IQuickAssistProcessor {
                     if (!marker.getType().equals(MarkerUtils.PROBLEM_MARKER)) {
                         continue;
                     }
-                    final int line = marker.getAttribute(IMarker.LINE_NUMBER, -1) - 1;
-                    final int lineOffset = sourceViewer.getDocument().getLineOffset(line);
-                    final int lineEnd = lineOffset
-                            + sourceViewer.getDocument().getLineLength(line);
-                    final int invocationOffset = invocationContext.getOffset();
+                    final int invocationLine = sourceViewer.getDocument()
+                            .getLineOfOffset(invocationContext.getOffset());
+                    final int markerLine = marker.getAttribute(IMarker.LINE_NUMBER, -1) - 1;
 
-                    if (lineOffset <= invocationOffset && invocationOffset < lineEnd) {
-                        final IMarkerResolution[] qfixes = gen.getResolutions(marker);
+                    if (invocationLine == markerLine) {
+                        final IMarkerResolution[] qfixes = getResolutions(marker);
                         for (final IMarkerResolution qfix : qfixes) {
                             result.add(new MarkerResolutionProposal(qfix, marker));
                         }
@@ -81,13 +93,8 @@ public class ErlangQuickAssistProcessor implements IQuickAssistProcessor {
                 }
             }
         }
-
-        return result.toArray(new ICompletionProposal[result.size()]);
-    }
-
-    @Override
-    public String getErrorMessage() {
-        return null;
+        result.addAll(collector.getAssists(invocationContext));
+        return result;
     }
 
 }

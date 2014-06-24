@@ -31,7 +31,7 @@ public class ErlScanner implements ScannerService {
     public void initialScan(final String initialText, final String path,
             final boolean logging) {
         final String pathNotNull = path == null ? "" : path;
-        scanner.initialScan(name, pathNotNull, initialText, logging);
+        scanner.initialScan(name, pathNotNull, initialText);
     }
 
     @Override
@@ -48,11 +48,6 @@ public class ErlScanner implements ScannerService {
     @Override
     public ErlToken getTokenAt(final int offset) {
         return scanner.getTokenAt(name, offset);
-    }
-
-    @Override
-    public String getText() {
-        return scanner.getText(name);
     }
 
     @Override
