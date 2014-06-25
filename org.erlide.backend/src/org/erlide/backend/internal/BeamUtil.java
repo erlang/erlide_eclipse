@@ -7,16 +7,15 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 
 import org.eclipse.core.internal.runtime.Activator;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.erlide.backend.BackendUtils;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
@@ -103,19 +102,15 @@ public class BeamUtil {
     }
 
     public static String getPathFromUrl(final URL entry) {
-        URLConnection connection;
         try {
-            connection = entry.openConnection();
-            if (connection instanceof BundleURLConnection) {
-                final URL fileURL = ((BundleURLConnection) connection).getFileURL();
-                final URI uri = new URI(fileURL.toString().replace(" ", "%20"));
-                final String path = new File(uri).getAbsolutePath();
-                return path;
-            }
+            final URL fileURL = FileLocator.toFileURL(entry);
+            final URI uri = new URI(fileURL.toString().replace(" ", "%20"));
+            final String path = new File(uri).getAbsolutePath();
+            return path;
         } catch (final IOException e) {
-            ErlLogger.warn(e.getMessage());
+            ErlLogger.error(e);
         } catch (final URISyntaxException e) {
-            ErlLogger.warn(e.getMessage());
+            ErlLogger.error(e);
         }
         return null;
     }
