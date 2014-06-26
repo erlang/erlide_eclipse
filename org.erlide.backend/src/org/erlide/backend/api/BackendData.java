@@ -83,8 +83,9 @@ public final class BackendData extends RuntimeData {
             internal = config.getAttribute(ErlRuntimeAttributes.INTERNAL, internal);
 
             projects = getProjects(config);
+            final List<String> defList = Lists.newArrayList();
             final List<String> intMods = config.getAttribute(
-                    ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, Lists.newArrayList());
+                    ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, defList);
             initialInterpretedModules = addBreakpointProjectsAndModules(getProjects(),
                     intMods);
         } catch (final CoreException e1) {
