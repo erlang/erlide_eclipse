@@ -970,26 +970,6 @@
     </handler>
  </extension>
  <extension
-       point="org.eclipse.ui.editorActions">
-    <editorContribution
-          id="org.erlide.ui.ErlangEditor.BreakpointRulerActions"
-          targetID="org.erlide.ui.editors.erl.ErlangEditor">
-       <action
-             actionID="RulerDoubleClick"
-             class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
-             id="org.eclipse.jdt.debug.ui.actions.ManageBreakpointRulerAction"
-             label="%AddBreakpoint.label">
-       </action>
-       <action
-             class="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesRulerActionDelegate"
-             helpContextId="breakpoint_properties_action_context"
-             id="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesRulerActionDelegate"
-             label="%ErlangBreakpointProperties.label"
-             style="push">
-       </action>
-    </editorContribution>
- </extension>
- <extension
        point="org.eclipse.ui.actionSets">
     <actionSet
           id="org.erlide.ui.actions.openActionSet"
@@ -1159,6 +1139,15 @@
              menubarPath="additions">
        </action>
     </objectContribution>
+    <objectContribution
+          adaptable="true"
+          id="org.erlide.ui.popupMenu"
+          objectClass="org.eclipse.core.resources.IResource">
+       <filter
+             name="projectNature"
+             value="erlidenature">
+       </filter>
+    </objectContribution>
     <viewerContribution
           id="org.erlide.debug.ui.ErlangFileRulerPopupActions"
           targetID="org.erlide.ui.editors.erl.ErlangEditor.RulerContext">
@@ -1187,16 +1176,17 @@
     </viewerContribution>
  </extension>
  <extension
-       point="org.eclipse.ui.popupMenus">
-    <objectContribution
-          adaptable="true"
-          id="org.erlide.ui.popupMenu"
-          objectClass="org.eclipse.core.resources.IResource">
-       <filter
-             name="projectNature"
-             value="erlidenature">
-       </filter>
-    </objectContribution>
+       point="org.eclipse.ui.editorActions">
+    <editorContribution
+          id="org.erlide.ui.ErlangEditor.BreakpointRulerActions"
+          targetID="org.erlide.ui.editors.erl.ErlangEditor">
+       <action
+             actionID="RulerDoubleClick"
+             class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+             id="org.eclipse.jdt.debug.ui.actions.ManageBreakpointRulerAction"
+             label="%AddBreakpoint.label">
+       </action>
+    </editorContribution>
  </extension>
  <extension
        point="org.eclipse.ui.actionSetPartAssociations">
