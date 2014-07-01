@@ -19,7 +19,7 @@ public class DependenciesTest {
         jdep = new JDepend();
         jdep.setComponents("org.erlide.runtime,java,org.eclipse,com.ericsson,com,org.osgi");
         // jdep.addDirectory(getPathToPlugin("org.erlide.runtime"));
-        jdep.addDirectory(getPathToPlugin("org.erlide.core"));
+        jdep.addDirectory(getPathToPlugin(ErlangCore.PLUGIN_ID));
 
         analyzed = Lists.newArrayList(jdep.analyze());
         removeUninterestingPackages(analyzed);

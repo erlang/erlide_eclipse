@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.executor.ProgressCallback;
 import org.erlide.core.executor.ToolExecutor;
@@ -99,7 +100,7 @@ public abstract class ExternalBuilder extends ErlangBuilder {
 
         } catch (final Error e) {
             e.printStackTrace();
-            throw new CoreException(new Status(IStatus.ERROR, "org.erlide.core",
+            throw new CoreException(new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
                     "builder error", e));
         }
         monitor.done();
