@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.root.Openable;
-import org.erlide.engine.internal.util.BackendUtil;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlModule;
@@ -17,6 +16,7 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenService;
+import org.erlide.engine.util.RpcSiteFactory;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.erlang.ErlUtils;
 
@@ -44,7 +44,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
             throws ErlModelException {
         final IErlProject erlProject = ErlangEngine.getInstance()
                 .getModelUtilService().getProject(this);
-        final IRpcSite backend = new BackendUtil().getBackend(erlProject
+        final IRpcSite backend = RpcSiteFactory.getRpcSite(erlProject
                 .getWorkspaceProject());
         if (backend != null) {
             addExternalEntries(pm, backend);

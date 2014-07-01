@@ -12,11 +12,10 @@ package org.erlide.wrangler.refactoring;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.erlide.engine.util.RpcSiteFactory;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.IRpcSiteProvider;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.services.ExtensionUtils;
 import org.osgi.framework.BundleContext;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -40,7 +39,7 @@ public class Activator extends AbstractUIPlugin {
 
     /**
      * Returns the shared instance
-     * 
+     *
      * @return the shared instance
      */
     public static Activator getDefault() {
@@ -54,14 +53,12 @@ public class Activator extends AbstractUIPlugin {
     }
 
     public IRpcSite getBackend() {
-        final IRpcSiteProvider provider = ExtensionUtils.getSingletonExtension(
-                "org.erlide.backend.backend", IRpcSiteProvider.class);
-        return provider.get();
+        return RpcSiteFactory.getRpcSite();
     }
 
     /**
      * Loads the necessary *.ebin files to the Erlang node for the plug-in.
-     * 
+     *
      * @throws CoreException
      *             detailed exception about the loading process errors
      */
