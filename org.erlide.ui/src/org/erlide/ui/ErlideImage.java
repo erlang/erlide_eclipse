@@ -86,12 +86,10 @@ public enum ErlideImage {
         return getRegistry().getDescriptor(name());
     }
 
-    public static boolean isInstalled() {
-        return registry != null;
-    }
-
     public static synchronized void dispose() {
-        registry.dispose();
+        if (registry != null) {
+            registry.dispose();
+        }
         registry = null;
     }
 
