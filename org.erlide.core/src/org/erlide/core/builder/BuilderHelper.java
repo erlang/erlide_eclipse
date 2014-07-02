@@ -39,8 +39,6 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.internal.builder.BuildQueueProcessor;
-import org.erlide.core.internal.builder.BuildWorkerInfo;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.builder.MarkerUtils;
