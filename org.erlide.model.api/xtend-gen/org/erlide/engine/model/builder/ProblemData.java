@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
-import org.erlide.engine.model.builder.ErlProblems;
 import org.erlide.engine.model.builder.ProblemData0;
 
 @SuppressWarnings("all")
@@ -26,7 +25,7 @@ public class ProblemData extends ProblemData0 {
     boolean _tripleEquals = (this._pattern == null);
     if (_tripleEquals) {
       String _message = this.getMessage();
-      final String str = ErlProblems.quoteRegex(_message);
+      final String str = ProblemData.quoteRegex(_message);
       final String key = "@@@";
       String _replaceAll = str.replaceAll("\\\\~", key);
       String _replaceAll_1 = _replaceAll.replaceAll("~", "(.+?)");
@@ -67,5 +66,19 @@ public class ProblemData extends ProblemData0 {
       return result;
     }
     return null;
+  }
+  
+  public static String quoteRegex(final String string) {
+    final byte[] esc = "([{^$|)?*+.".getBytes();
+    String result = string;
+    for (final byte c : esc) {
+      {
+        final String r = ("\\" + Character.valueOf(((char) c)));
+        final String v = ("\\\\" + Character.valueOf(((char) c)));
+        String _replaceAll = result.replaceAll(r, v);
+        result = _replaceAll;
+      }
+    }
+    return result;
   }
 }
