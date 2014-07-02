@@ -96,48 +96,24 @@ import com.google.common.collect.Lists;
 
 /**
  * The main plugin class to be used in the desktop.
- * 
- * 
+ *
+ *
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class ErlideUIPlugin extends AbstractUIPlugin {
 
-    /**
-     * The plugin id
-     */
     public static final String PLUGIN_ID = "org.erlide.ui";
 
-    /**
-     * The shared instance.
-     */
     private static volatile ErlideUIPlugin plugin;
 
-    /**
-     * Resource bundle.
-     */
     private ResourceBundle resourceBundle;
-
     private ImageDescriptorRegistry fImageDescriptorRegistry;
-
-    /**
-     * The extension point registry for the
-     * <code>org.eclipse.jdt.ui.javaFoldingStructureProvider</code> extension
-     * point.
-     * 
-     * @since 3.0
-     */
     private ErlangFoldingStructureProviderRegistry fFoldingStructureProviderRegistry;
-
     private ProblemMarkerManager fProblemMarkerManager = null;
-
     private ErlConsoleManager erlConsoleManager;
 
-    /** Key to store custom templates. */
     private static final String CUSTOM_TEMPLATES_KEY = "org.erlide.ui.editor.customtemplates"; //$NON-NLS-1$
 
-    /**
-     * The constructor.
-     */
     public ErlideUIPlugin() {
         super();
         plugin = this;
@@ -150,14 +126,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         }
     }
 
-    /**
-     * This method is called upon plug-in activation
-     * 
-     * @param context
-     *            The context
-     * @throws Exception
-     *             if a problem occurs
-     */
     @Override
     public void start(final BundleContext context) throws Exception {
         ErlLogger.info("Starting UI " + Thread.currentThread());
@@ -174,50 +142,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         final String workspace = ResourcesPlugin.getWorkspace().getRoot().getLocation()
                 .toPortableString();
         if (backend == null) {
-            PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    final Shell activeShell = PlatformUI.getWorkbench()
-                            .getActiveWorkbenchWindow().getShell();
-                    final String message = "We are sorry, but the configured Erlang runtime could not be started "
-                            + "and erlide can't work. Please check and fix the configuration.";
-                    final String description = "The log in " + workspace
-                            + "/erlide.log may contain more information.";
-                    ErrorDialog.openError(activeShell, "Erlide can't work properly",
-                            message, new Status(IStatus.ERROR, PLUGIN_ID, description));
-
-                    final PreferenceDialog pref = PreferencesUtil
-                            .createPreferenceDialogOn(PlatformUI.getWorkbench()
-                                    .getActiveWorkbenchWindow().getShell(),
-                                    "org.erlide.ui.preferences.runtimes", null, null);
-                    if (pref != null) {
-                        if (pref.open() == Window.OK) {
-                            ErlLogger
-                                    .info("Restarting workbench after initial runtime configuration...");
-                            PlatformUI.getWorkbench().restart();
-                        }
-                    }
-                }
-            });
+            notifyNoRuntimeAndRestart(workspace);
         } else if (HostnameUtils.getErlangHostName(true) == null
                 && HostnameUtils.getErlangHostName(false) == null) {
-            PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    final Shell activeShell = PlatformUI.getWorkbench()
-                            .getActiveWorkbenchWindow().getShell();
-                    final String message = "We are sorry, but your machine's host name is not configured properly "
-                            + "and erlide can't work. You need to fix your .hosts file and restart.\n\n";
-                    final String description = "Java and Erlang can't agree on hostnames. Please check the log in "
-                            + workspace
-                            + "/erlide.log for details on which names were tried.\n\n"
-                            + "Hostnames with dots in them can't be used as short names.\n"
-                            + "Hostnames with dashes in them might not always work.\n\n"
-                            + "Try to conect two Erlang nodes manually first. Add the working hostname to .hosts.";
-                    ErrorDialog.openError(activeShell, "Erlide can't work properly",
-                            message, new Status(IStatus.ERROR, PLUGIN_ID, description));
-                }
-            });
+            notifyBadHostname(workspace);
         }
 
         ErlideEventBus.register(new NoRuntimeHandler());
@@ -238,6 +166,68 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         BackendCore.getBackendManager().addBackendListener(erlangDebuggerBackendListener);
 
         startPeriodicCacheCleaner();
+    }
+
+    @Override
+    public void stop(final BundleContext context) throws Exception {
+        erlConsoleManager.dispose();
+        super.stop(context);
+        BackendCore.getBackendManager().removeBackendListener(
+                erlangDebuggerBackendListener);
+        BackendCore.getBackendManager().dispose();
+
+        if (ErlideImage.isInstalled()) {
+            ErlideImage.dispose();
+        }
+        SWTResourceManager.dispose();
+        plugin = null;
+    }
+
+    private void notifyBadHostname(final String workspace) {
+        PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                final Shell activeShell = PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow().getShell();
+                final String message = "We are sorry, but your machine's host name is not configured properly "
+                        + "and erlide can't work. You need to fix your .hosts file and restart.\n\n";
+                final String description = "Java and Erlang can't agree on hostnames. Please check the log in "
+                        + workspace
+                        + "/erlide.log for details on which names were tried.\n\n"
+                        + "Hostnames with dots in them can't be used as short names.\n"
+                        + "Hostnames with dashes in them might not always work.\n\n"
+                        + "Try to conect two Erlang nodes manually first. Add the working hostname to .hosts.";
+                ErrorDialog.openError(activeShell, "Erlide can't work properly", message,
+                        new Status(IStatus.ERROR, PLUGIN_ID, description));
+            }
+        });
+    }
+
+    private void notifyNoRuntimeAndRestart(final String workspace) {
+        PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                final Shell activeShell = PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow().getShell();
+                final String message = "We are sorry, but the configured Erlang runtime could not be started "
+                        + "and erlide can't work. Please check and fix the configuration.";
+                final String description = "The log in " + workspace
+                        + "/erlide.log may contain more information.";
+                ErrorDialog.openError(activeShell, "Erlide can't work properly", message,
+                        new Status(IStatus.ERROR, PLUGIN_ID, description));
+
+                final PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "org.erlide.ui.preferences.runtimes", null, null);
+                if (pref != null) {
+                    if (pref.open() == Window.OK) {
+                        ErlLogger
+                                .info("Restarting workbench after initial runtime configuration...");
+                        PlatformUI.getWorkbench().restart();
+                    }
+                }
+            }
+        });
     }
 
     private void loadDefaultEditorColors() {
@@ -311,34 +301,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         return restOfDayInMilliseconds;
     }
 
-    /**
-     * This method is called when the plug-in is stopped
-     * 
-     * @param context
-     *            the context
-     * @throws Exception
-     *             if a problem occurs
-     */
-    @Override
-    public void stop(final BundleContext context) throws Exception {
-        erlConsoleManager.dispose();
-        super.stop(context);
-        BackendCore.getBackendManager().removeBackendListener(
-                erlangDebuggerBackendListener);
-        BackendCore.getBackendManager().dispose();
-
-        if (ErlideImage.isInstalled()) {
-            ErlideImage.dispose();
-        }
-        SWTResourceManager.dispose();
-        plugin = null;
-    }
-
-    /**
-     * Returns the shared instance.
-     * 
-     * @return The plugin
-     */
     public static ErlideUIPlugin getDefault() {
         if (plugin == null) {
             plugin = new ErlideUIPlugin();
@@ -349,7 +311,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     /**
      * Returns the string from the plugin's resource bundle, or 'key' if not
      * found.
-     * 
+     *
      * @param key
      *            The resource
      * @return The identified string
@@ -365,11 +327,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         }
     }
 
-    /**
-     * Returns the plugin's resource bundle,
-     * 
-     * @return The requested bundle
-     */
     public ResourceBundle getResourceBundle() {
         return resourceBundle;
     }
@@ -378,7 +335,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
      * Returns the standard display to be used. The method first checks, if the
      * thread calling this method has an associated display. If so, this display
      * is returned. Otherwise the method returns the default display.
-     * 
+     *
      * @return the standard display
      */
     public static Display getStandardDisplay() {
@@ -392,7 +349,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     /**
      * Creates an image and places it in the image registry.
-     * 
+     *
      * @param id
      *            The image id
      * @param baseURL
@@ -412,10 +369,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     /**
      * Returns the image descriptor for the given image PLUGIN_ID. Returns null
      * if there is no such image.
-     * 
+     *
      * @param id
      *            The image id
-     * 
+     *
      * @return The image descriptor
      */
     public ImageDescriptor getImageDescriptor(final String id) {
@@ -427,10 +384,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     /**
      * Returns the image for the given image PLUGIN_ID. Returns null if there is
      * no such image.
-     * 
+     *
      * @param id
      *            The image id
-     * 
+     *
      * @return The image
      */
     public Image getImage(final String id) {
@@ -466,9 +423,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         createImageDescriptor(ErlideUIConstants.IMG_ERLANG_LOGO, baseURL);
     }
 
-    /**
-     * @return
-     */
     public static IWorkbenchPage getActivePage() {
         final IWorkbenchWindow w = getActiveWorkbenchWindow();
         if (w != null) {
@@ -481,11 +435,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         return getDefault().getWorkbench().getActiveWorkbenchWindow();
     }
 
-    /**
-     * Returns the active workbench shell or <code>null</code> if none
-     * 
-     * @return the active workbench shell or <code>null</code> if none
-     */
     public static Shell getActiveWorkbenchShell() {
         final IWorkbenchWindow window = getActiveWorkbenchWindow();
         if (window != null) {
@@ -535,14 +484,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         return fImageDescriptorRegistry;
     }
 
-    /**
-     * Returns the registry of the extensions to the
-     * <code>org.erlide.ui.erlangFoldingStructureProvider</code> extension
-     * point.
-     * 
-     * @return the registry of contributed
-     *         <code>IErlangFoldingStructureProvider</code>
-     */
     public synchronized ErlangFoldingStructureProviderRegistry getFoldingStructureProviderRegistry() {
         if (fFoldingStructureProviderRegistry == null) {
             fFoldingStructureProviderRegistry = new ErlangFoldingStructureProviderRegistry();
@@ -564,7 +505,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     /**
      * Returns a section in the Erlang plugin's dialog settings. If the section
      * doesn't exist yet, it is created.
-     * 
+     *
      * @param name
      *            the name of the section
      * @return the section of the given name
@@ -628,9 +569,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         return fContextTypeRegistry;
     }
 
-    /**
-     * Utility method with conventions
-     */
     public static void errorDialog(final Shell shell, final String title,
             final String message0, final Throwable t) {
         IStatus status;
