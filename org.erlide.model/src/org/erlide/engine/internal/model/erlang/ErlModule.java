@@ -50,6 +50,7 @@ import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.engine.model.root.ISourceUnit;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.services.search.ModelUtilService;
@@ -441,8 +442,9 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     @Override
-    public Set<IErlModule> getDirectDependentModules() throws ErlModelException {
-        final Set<IErlModule> result = new HashSet<IErlModule>();
+    public Set<ISourceUnit> getDirectDependentModules()
+            throws ErlModelException {
+        final Set<ISourceUnit> result = new HashSet<ISourceUnit>();
         final IErlProject project = modelUtilService.getProject(this);
         for (final IErlModule module : project.getModules()) {
             final boolean wasOpen = module.isOpen();
@@ -464,8 +466,8 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     @Override
-    public Set<IErlModule> getAllDependentModules() throws CoreException {
-        final Set<IErlModule> result = new HashSet<IErlModule>();
+    public Set<ISourceUnit> getAllDependentModules() throws CoreException {
+        final Set<ISourceUnit> result = new HashSet<ISourceUnit>();
         final IErlProject project = modelUtilService.getProject(this);
         for (final IErlModule module : project.getModules()) {
             final Collection<IErlModule> allIncludedFiles = ErlangEngine
