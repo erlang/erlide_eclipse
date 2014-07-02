@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
+import org.erlide.backend.api.ErlRuntimeAttributes;
 import org.erlide.backend.debug.IErlangDebugNode;
 import org.erlide.backend.debug.model.ErlangDebugElement;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
@@ -34,7 +35,6 @@ import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.runtime.api.ErlDebugFlags;
-import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.util.ErlLogger;
 

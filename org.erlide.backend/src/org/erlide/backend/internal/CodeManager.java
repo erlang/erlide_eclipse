@@ -21,7 +21,6 @@ import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.RuntimeUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 
@@ -75,7 +74,7 @@ public class CodeManager {
         }
         for (final String ebinDir : ebinDirs) {
             final String localDir = ebinDir.replaceAll("\\\\", "/");
-            final boolean accessible = RuntimeUtils.isAccessibleDir(site, localDir);
+            final boolean accessible = BackendUtils.isAccessibleDir(site, localDir);
             final boolean embedded = ErlangCode.isEmbedded(site);
             if (accessible && !embedded) {
                 ErlangCode.addPathA(site, localDir);
