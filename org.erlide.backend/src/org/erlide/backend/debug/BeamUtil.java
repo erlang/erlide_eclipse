@@ -1,4 +1,4 @@
-package org.erlide.backend.internal;
+package org.erlide.backend.debug;
 
 import java.io.File;
 import java.io.FileInputStream;

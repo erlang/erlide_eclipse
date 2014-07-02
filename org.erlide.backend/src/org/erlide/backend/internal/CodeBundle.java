@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.backend.api.ICodeBundle;
+import org.erlide.backend.debug.BeamUtil;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;

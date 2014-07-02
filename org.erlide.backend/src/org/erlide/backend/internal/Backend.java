@@ -37,6 +37,7 @@ import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.backend.console.BackendShellManager;
+import org.erlide.backend.debug.BeamUtil;
 import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.engine.model.root.IErlProject;
