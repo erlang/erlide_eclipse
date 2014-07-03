@@ -27,7 +27,7 @@ import org.eclipse.debug.core.model.IThread;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.debug.ErlangLineBreakpoint;
 import org.erlide.backend.debug.ErlideDebug;
-import org.erlide.backend.internal.BackendPlugin;
+import org.erlide.backend.internal.BackendActivator;
 import org.erlide.engine.model.erlang.ErlangFunction;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlangFunctionCall;
@@ -514,7 +514,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
     public void dropToFrame(final int stackFrameNo) throws DebugException {
         if (!ErlideDebug.dropToFrame(fBackend.getRpcSite(), getMeta(), stackFrameNo)) {
-            final IStatus s = new Status(IStatus.ERROR, BackendPlugin.PLUGIN_ID,
+            final IStatus s = new Status(IStatus.ERROR, BackendActivator.PLUGIN_ID,
                     DebugException.REQUEST_FAILED, "frame not found", null);
             throw new DebugException(s);
         }

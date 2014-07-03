@@ -17,7 +17,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.erlide.backend.debug.ErlideDebug;
-import org.erlide.backend.internal.BackendPlugin;
+import org.erlide.backend.internal.BackendActivator;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -80,8 +80,8 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
     @Override
     public void setValue(final String expression) throws DebugException {
         if (subVariable) {
-            throw new DebugException(new Status(IStatus.ERROR, BackendPlugin.PLUGIN_ID,
-                    DebugException.NOT_SUPPORTED,
+            throw new DebugException(new Status(IStatus.ERROR,
+                    BackendActivator.PLUGIN_ID, DebugException.NOT_SUPPORTED,
                     "Can't set value of part of expression", null));
         }
         final ErlangDebugTarget edt = getErlangDebugTarget();
@@ -91,8 +91,9 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
             // restore old value
             ErlideDebug.setVariableValue(edt.getBackend().getRpcSite(), name,
                     value.toString(), stackFrameNo - 1, process.getMeta());
-            throw new DebugException(new Status(IStatus.ERROR, BackendPlugin.PLUGIN_ID,
-                    DebugException.TARGET_REQUEST_FAILED, "Bad expression", null));
+            throw new DebugException(new Status(IStatus.ERROR,
+                    BackendActivator.PLUGIN_ID, DebugException.TARGET_REQUEST_FAILED,
+                    "Bad expression", null));
         }
 
     }

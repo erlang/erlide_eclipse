@@ -1,21 +1,20 @@
 package org.erlide.backend.internal;
 
-import org.eclipse.core.runtime.Plugin;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.util.DebugStream;
 import org.erlide.util.ErlLogger;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class BackendPlugin extends Plugin {
+public class BackendActivator implements BundleActivator {
 
     public static final String PLUGIN_ID = "org.erlide.backend";
 
     @Override
     public void start(final BundleContext context) throws Exception {
-        super.start(context);
         DebugStream.activate();
         ErlLogger.debug("Backend plugin starting");
 
@@ -29,7 +28,5 @@ public class BackendPlugin extends Plugin {
     @Override
     public void stop(final BundleContext context) throws Exception {
         BackendCore.stop();
-        super.stop(context);
     }
-
 }

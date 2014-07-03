@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.erlide.backend.internal.BackendPlugin;
+import org.erlide.backend.internal.BackendActivator;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
@@ -58,18 +58,18 @@ public class BackendUtils {
 
     public static IConfigurationElement[] getSourcepathConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(BackendPlugin.PLUGIN_ID,
+        return reg.getConfigurationElementsFor(BackendActivator.PLUGIN_ID,
                 "sourcePathProvider");
     }
 
     public static IConfigurationElement[] getCodepathConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(BackendPlugin.PLUGIN_ID, "codepath");
+        return reg.getConfigurationElementsFor(BackendActivator.PLUGIN_ID, "codepath");
     }
 
     public static IExtensionPoint getCodepathExtension() {
         final IExtensionRegistry reg = Platform.getExtensionRegistry();
-        return reg.getExtensionPoint(BackendPlugin.PLUGIN_ID, "codepath");
+        return reg.getExtensionPoint(BackendActivator.PLUGIN_ID, "codepath");
     }
 
     @SuppressWarnings("boxing")
