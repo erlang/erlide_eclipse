@@ -11,6 +11,7 @@
 package org.erlide.core;
 
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
@@ -22,8 +23,8 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
- * 
- * 
+ *
+ *
  * @author Eric Merritt [cyberlync at gmail dot com]
  * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
  * @author jakob
@@ -71,14 +72,13 @@ public class ErlangPlugin extends Plugin {
         super.start(context);
         ErlLogger.debug("Core starting");
 
-        ErlideEventTracer.getInstance()
-                .traceSession(
-                        ResourcesPlugin.getWorkspace().getRoot().getLocation()
-                                .toPortableString());
-
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        final IWorkspaceRoot workspaceRoot = workspace.getRoot();
+        ErlideEventTracer.getInstance().traceSession(
+                workspaceRoot.getLocation().toPortableString());
+
         final IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-        final String logDir = workspace.getRoot().getLocation().toPortableString();
+        final String logDir = workspaceRoot.getLocation().toPortableString();
         final ErlangDebugOptionsManager erlangDebugOptionsManager = new ErlangDebugOptionsManager();
 
         core = new ErlangCore(this, workspace, extensionRegistry, logDir,
