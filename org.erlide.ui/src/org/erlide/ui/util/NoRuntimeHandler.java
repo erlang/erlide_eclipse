@@ -8,7 +8,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.progress.UIJob;
-import org.erlide.runtime.api.NoRuntimeEvent;
+import org.erlide.runtime.events.NoRuntimeEvent;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.MessageReporter;
 

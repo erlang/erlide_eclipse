@@ -4,8 +4,8 @@ import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.IShutdownCallback;
-import org.erlide.runtime.api.NoRuntimeEvent;
 import org.erlide.runtime.api.RuntimeData;
+import org.erlide.runtime.events.NoRuntimeEvent;
 import org.erlide.util.ErlideEventBus;
 
 import com.ericsson.otp.erlang.OtpMbox;
