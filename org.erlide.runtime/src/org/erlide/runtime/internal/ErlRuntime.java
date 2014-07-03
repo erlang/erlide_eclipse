@@ -63,7 +63,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
 
     static final boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.event.daemon"));
-    public static final long POLL_INTERVAL = 200;
+    public static final long POLL_INTERVAL = 100;
 
     public ErlRuntime(final RuntimeData data) {
         this.data = data;
@@ -277,7 +277,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         try {
             pingPeer();
             int i = 0;
-            while (state() == State.NEW && i++ < 20) {
+            while (state() == State.NEW && i++ < 50) {
                 try {
                     Thread.sleep(POLL_INTERVAL);
                 } catch (final InterruptedException e) {
@@ -338,7 +338,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
             } while (gotIt && i > 0);
             if (gotIt) {
                 ErlLogger
-                .error("code server did not start in time for %s", getNodeName());
+                        .error("code server did not start in time for %s", getNodeName());
                 return false;
             }
             return true;
