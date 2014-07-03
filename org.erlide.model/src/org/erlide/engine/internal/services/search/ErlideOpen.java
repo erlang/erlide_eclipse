@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.runtime.IPath;
+import org.erlide.engine.model.SourcePathUtils;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OpenService;
-import org.erlide.engine.util.SourcePathUtils;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;

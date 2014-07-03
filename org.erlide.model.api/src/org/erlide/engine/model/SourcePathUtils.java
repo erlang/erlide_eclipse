@@ -1,4 +1,4 @@
-package org.erlide.engine.util;
+package org.erlide.engine.model;
 
 import java.util.Collection;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.engine.model.SourcePathProvider;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.services.ExtensionUtils;
 

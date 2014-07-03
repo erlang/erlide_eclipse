@@ -23,18 +23,17 @@ import org.erlide.engine.model.erlang.IErlComment;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlImport;
 import org.erlide.engine.model.erlang.IErlMember;
-import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.IErlPreprocessorDef;
 import org.erlide.engine.model.erlang.IErlTypespec;
 import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.services.parsing.ScannerService;
 
 /**
- * 
+ *
  * @author Vlad
- * 
+ *
  * @noimplement This interface is not intended to be implemented by clients.
- * 
+ *
  */
 public interface ISourceUnit {
 
@@ -49,7 +48,7 @@ public interface ISourceUnit {
      * <code>null</code> if there is no element other than the compilation unit
      * itself at the given position, or if the given position is not within the
      * source range of this compilation unit.
-     * 
+     *
      * @param position
      *            a source position inside the compilation unit
      * @return the innermost Erlang element enclosing a given source position or
@@ -89,19 +88,19 @@ public interface ISourceUnit {
     /**
      * Returns a collection of modules that include this one.
      **/
-    Set<IErlModule> getDirectDependentModules() throws ErlModelException;
+    Set<ISourceUnit> getDirectDependentModules() throws ErlModelException;
 
     /**
      * Returns the transitive closure of modules that include this one.
-     * 
+     *
      * @throws CoreException
      **/
-    Set<IErlModule> getAllDependentModules() throws CoreException;
+    Set<ISourceUnit> getAllDependentModules() throws CoreException;
 
     /**
      * Resets parser so that the next parse will be a full parse, possibly
      * updating the parser cache
-     * 
+     *
      * @param newText
      * @throws ErlModelException
      */
@@ -109,7 +108,7 @@ public interface ISourceUnit {
 
     /**
      * Get the module name without extension
-     * 
+     *
      * @return name as string
      */
     String getModuleName();

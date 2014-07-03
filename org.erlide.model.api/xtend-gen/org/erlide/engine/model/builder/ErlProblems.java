@@ -108,20 +108,6 @@ public class ErlProblems {
     return result;
   }
   
-  public static String quoteRegex(final String string) {
-    final byte[] esc = "([{^$|)?*+.".getBytes();
-    String result = string;
-    for (final byte c : esc) {
-      {
-        final String r = ("\\" + Character.valueOf(((char) c)));
-        final String v = ("\\\\" + Character.valueOf(((char) c)));
-        String _replaceAll = result.replaceAll(r, v);
-        result = _replaceAll;
-      }
-    }
-    return result;
-  }
-  
   public void check() {
     final List<String> names = CollectionLiterals.<String>newArrayList();
     for (final ProblemData p : this.data) {

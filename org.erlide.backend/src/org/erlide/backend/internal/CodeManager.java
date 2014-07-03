@@ -19,6 +19,7 @@ import java.util.List;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
+import org.erlide.backend.debug.BeamUtil;
 import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;

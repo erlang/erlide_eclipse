@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IResource;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
+import org.erlide.engine.model.root.ISourceUnit;
 import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.engine.util.ErlideTestUtils;
@@ -220,13 +221,13 @@ public class IErlModuleTests extends ErlModelTestBase {
         final IErlModule include2 = ErlideTestUtils.createInclude(project, "zz.hrl",
                 "-define(B(X), lists:reverse(X)).\n");
         module.open(null);
-        final Set<IErlModule> directDependents = module.getDirectDependentModules();
-        final Set<IErlModule> allDependents = module.getAllDependentModules();
-        final Set<IErlModule> directDependents2 = include.getDirectDependentModules();
-        final Set<IErlModule> allDependents2 = include.getAllDependentModules();
-        final Set<IErlModule> directDependents3 = include2.getDirectDependentModules();
-        final Set<IErlModule> allDependents3 = include2.getAllDependentModules();
-        final Set<IErlModule> dependentModules = module.getDirectDependentModules();
+        final Set<ISourceUnit> directDependents = module.getDirectDependentModules();
+        final Set<ISourceUnit> allDependents = module.getAllDependentModules();
+        final Set<ISourceUnit> directDependents2 = include.getDirectDependentModules();
+        final Set<ISourceUnit> allDependents2 = include.getAllDependentModules();
+        final Set<ISourceUnit> directDependents3 = include2.getDirectDependentModules();
+        final Set<ISourceUnit> allDependents3 = include2.getAllDependentModules();
+        final Set<ISourceUnit> dependentModules = module.getDirectDependentModules();
         assertEquals(0, directDependents.size());
         assertEquals(0, allDependents.size());
         assertEquals(1, directDependents2.size());
