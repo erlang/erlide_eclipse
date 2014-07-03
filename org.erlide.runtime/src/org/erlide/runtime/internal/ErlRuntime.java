@@ -39,7 +39,6 @@ import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
-import com.google.common.util.concurrent.Service;
 
 public class ErlRuntime extends AbstractExecutionThreadService implements IErlRuntime {
     private static final String COULD_NOT_CONNECT = "Could not connect to %s! Please check runtime settings.";
@@ -189,9 +188,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         triggerShutdown();
     }
 
-    /**
-     * @throws ErlRuntimeException
-     */
+    @SuppressWarnings("unused")
     protected void waitForExit() throws ErlRuntimeException {
     }
 
@@ -341,7 +338,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
             } while (gotIt && i > 0);
             if (gotIt) {
                 ErlLogger
-                        .error("code server did not start in time for %s", getNodeName());
+                .error("code server did not start in time for %s", getNodeName());
                 return false;
             }
             return true;
@@ -430,10 +427,9 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     }
 
     @Override
-    public State startAndWait() {
-        final Service service = startAsync();
+    public void startAndWait() {
+        startAsync();
         awaitRunning();
-        return service.state();
     }
 
 }

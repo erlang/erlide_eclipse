@@ -9,7 +9,6 @@ import org.erlide.runtime.events.NoRuntimeEvent;
 import org.erlide.util.ErlideEventBus;
 
 import com.ericsson.otp.erlang.OtpMbox;
-import com.google.common.util.concurrent.Service.State;
 
 public class NullErlRuntime implements IErlRuntime {
 
@@ -91,8 +90,7 @@ public class NullErlRuntime implements IErlRuntime {
     }
 
     @Override
-    public State startAndWait() {
+    public void startAndWait() {
         reportNoBackend();
-        return State.RUNNING;
     }
 }

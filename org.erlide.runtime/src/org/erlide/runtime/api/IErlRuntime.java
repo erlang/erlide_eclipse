@@ -13,11 +13,10 @@ package org.erlide.runtime.api;
 import org.erlide.util.IDisposable;
 
 import com.ericsson.otp.erlang.OtpMbox;
-import com.google.common.util.concurrent.Service;
 
 public interface IErlRuntime extends IDisposable {
 
-    Service.State startAndWait();
+    void startAndWait();
 
     boolean isRunning();
 
