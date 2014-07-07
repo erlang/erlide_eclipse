@@ -11,11 +11,9 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.backend.BackendUtils;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangStatus;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.handlers.ErlangAbstractHandler;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
@@ -80,11 +78,10 @@ public class ToggleCommentHandler extends ErlangAbstractHandler {
 
     private OtpErlangObject callErlang(final int offset, final int length,
             final String aText) {
-        final IRpcSite b = ErlangEngine.getInstance().getBackend();
         final String fErlModule = "erlide_comment";
         final String fErlFunction = "toggle_comment";
-        final OtpErlangObject r1 = BackendUtils.call(b, fErlModule, fErlFunction, offset,
-                length, aText);
+        final OtpErlangObject r1 = ErlangEngine.getInstance().getGenericService()
+                .call(fErlModule, fErlFunction, offset, length, aText);
         return r1;
     }
 }

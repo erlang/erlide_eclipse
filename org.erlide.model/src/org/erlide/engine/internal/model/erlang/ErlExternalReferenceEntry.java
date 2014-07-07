@@ -15,8 +15,8 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.services.search.OpenService;
-import org.erlide.engine.util.RpcSiteFactory;
 import org.erlide.engine.util.CommonUtils;
+import org.erlide.engine.util.RpcSiteFactory;
 import org.erlide.runtime.api.IRpcSite;
 
 import com.google.common.collect.Lists;

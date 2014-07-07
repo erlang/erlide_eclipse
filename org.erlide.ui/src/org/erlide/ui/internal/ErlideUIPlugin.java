@@ -65,8 +65,6 @@ import org.erlide.core.ConsoleMessageReporter;
 import org.erlide.core.ErlangStatus;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.IErlangEngine;
-import org.erlide.runtime.api.IRpcSite;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.UIMessageReporter;
@@ -131,17 +129,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         ErlLogger.info("Starting UI " + Thread.currentThread());
         super.start(context);
 
-        IRpcSite backend;
-        try {
-            final IErlangEngine engine = ErlangEngine.getInstance();
-            backend = engine.getBackend();
-        } catch (final Throwable e) {
-            e.printStackTrace();
-            backend = null;
-        }
         final String workspace = ResourcesPlugin.getWorkspace().getRoot().getLocation()
                 .toPortableString();
-        if (backend == null) {
+        if (!ErlangEngine.getInstance().isAvailable()) {
             notifyNoRuntimeAndRestart(workspace);
         } else if (HostnameUtils.getErlangHostName(true) == null
                 && HostnameUtils.getErlangHostName(false) == null) {
@@ -219,7 +209,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                 if (pref != null) {
                     if (pref.open() == Window.OK) {
                         ErlLogger
-                                .info("Restarting workbench after initial runtime configuration...");
+                        .info("Restarting workbench after initial runtime configuration...");
                         PlatformUI.getWorkbench().restart();
                     }
                 }
@@ -557,11 +547,11 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             // create an configure the contexts available in the template editor
             fContextTypeRegistry = new ContributionContextTypeRegistry();
             fContextTypeRegistry
-                    .addContextType(ErlangTemplateContextType.ERLANG_CONTEXT_TYPE_ID);
+            .addContextType(ErlangTemplateContextType.ERLANG_CONTEXT_TYPE_ID);
             fContextTypeRegistry
-                    .addContextType(ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
+            .addContextType(ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
             fContextTypeRegistry
-                    .addContextType(ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
+            .addContextType(ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
         }
         return fContextTypeRegistry;
     }

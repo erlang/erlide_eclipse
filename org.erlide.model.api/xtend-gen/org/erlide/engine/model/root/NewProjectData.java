@@ -1,23 +1,20 @@
 package org.erlide.engine.model.root;
 
-import com.google.common.base.Objects;
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.builder.BuilderTool;
-import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.IProjectConfigurator;
-import org.erlide.engine.model.root.IProjectConfiguratorFactory;
-import org.erlide.engine.model.root.ProjectConfigType;
-import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+
+import com.google.common.base.Objects;
 
 @SuppressWarnings("all")
 public class NewProjectData extends ErlangProjectProperties {

@@ -27,7 +27,6 @@ public class ErlideOpen implements OpenService {
     private static final String ERLIDE_OPEN = "erlide_open";
 
     private final IRpcSite ideBackend;
-
     private final String stateDir;
 
     public ErlideOpen(final IRpcSite backend, final String stateDir) {
