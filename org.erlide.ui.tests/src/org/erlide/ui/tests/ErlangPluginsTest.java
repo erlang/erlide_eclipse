@@ -2,6 +2,8 @@ package org.erlide.ui.tests;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Enumeration;
 
@@ -29,6 +31,7 @@ public class ErlangPluginsTest {
     private void checkBundleForTwoEbinElements(final String bundleId) {
         final Bundle b = Platform.getBundle(bundleId);
         final Enumeration<String> paths = b.getEntryPaths("/ebin/");
+        assertThat(paths, is(not(nullValue())));
         // we check for two elements, one is '.marker'
         assertThat(paths.hasMoreElements(), is(true));
         paths.nextElement();
