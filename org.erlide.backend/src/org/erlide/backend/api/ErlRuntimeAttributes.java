@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.api;
+package org.erlide.backend.api;
 
 /**
  * @noextend This interface is not intended to be extended by clients.

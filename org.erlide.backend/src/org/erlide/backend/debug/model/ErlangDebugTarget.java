@@ -49,7 +49,7 @@ import org.erlide.backend.debug.DebuggerEventDaemon;
 import org.erlide.backend.debug.ErlangLineBreakpoint;
 import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.IErlangDebugNode;
-import org.erlide.backend.internal.BackendPlugin;
+import org.erlide.backend.internal.BackendActivator;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.ErlangProjectProperties;
@@ -529,7 +529,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
 
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] els = reg.getConfigurationElementsFor(
-                BackendPlugin.PLUGIN_ID, "codepath");
+                BackendActivator.PLUGIN_ID, "codepath");
 
         // TODO: this code assumes that the debugged debugTarget and the
         // erlide-plugin uses the same Erlang version, how can we escape this?

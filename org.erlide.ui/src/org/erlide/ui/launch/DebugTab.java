@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.backend.api.BackendData;
+import org.erlide.backend.api.ErlRuntimeAttributes;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
 import org.erlide.debug.ui.views.InterpretedModuleListContentProvider;
 import org.erlide.engine.ErlangEngine;
@@ -48,7 +49,6 @@ import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.runtime.api.ErlDebugFlags;
-import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.ui.dialogs.AddInterpretedModulesSelectionDialog;
 import org.erlide.ui.util.SWTUtil;
 

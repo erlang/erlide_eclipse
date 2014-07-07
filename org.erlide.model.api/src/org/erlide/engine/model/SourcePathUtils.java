@@ -73,7 +73,6 @@ public class SourcePathUtils {
         if (sourcePathProviders != null) {
             return sourcePathProviders;
         }
-        // TODO should be listening to plugin changes
         sourcePathProviders = ExtensionUtils.getExtensions(
                 "org.erlide.model.sourcePathProvider", SourcePathProvider.class);
         return sourcePathProviders;

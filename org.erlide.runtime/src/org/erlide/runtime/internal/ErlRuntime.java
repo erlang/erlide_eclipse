@@ -39,7 +39,6 @@ import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
-import com.google.common.util.concurrent.Service;
 
 public class ErlRuntime extends AbstractExecutionThreadService implements IErlRuntime {
     private static final String COULD_NOT_CONNECT = "Could not connect to %s! Please check runtime settings.";
@@ -64,7 +63,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
 
     static final boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.event.daemon"));
-    public static final long POLL_INTERVAL = 200;
+    public static final long POLL_INTERVAL = 100;
 
     public ErlRuntime(final RuntimeData data) {
         this.data = data;
@@ -189,9 +188,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         triggerShutdown();
     }
 
-    /**
-     * @throws ErlRuntimeException
-     */
+    @SuppressWarnings("unused")
     protected void waitForExit() throws ErlRuntimeException {
     }
 
@@ -280,7 +277,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         try {
             pingPeer();
             int i = 0;
-            while (state() == State.NEW && i++ < 20) {
+            while (state() == State.NEW && i++ < 50) {
                 try {
                     Thread.sleep(POLL_INTERVAL);
                 } catch (final InterruptedException e) {
@@ -430,10 +427,9 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     }
 
     @Override
-    public State startAndWait() {
-        final Service service = startAsync();
+    public void startAndWait() {
+        startAsync();
         awaitRunning();
-        return service.state();
     }
 
 }

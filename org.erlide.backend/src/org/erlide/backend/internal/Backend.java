@@ -31,6 +31,7 @@ import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendUtils;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
@@ -45,7 +46,6 @@ import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.InitialCall;
-import org.erlide.runtime.api.RuntimeUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
@@ -221,7 +221,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         final String outDir = project.getLocation()
                 .append(eproject.getProperties().getOutputDir()).toOSString();
         if (outDir.length() > 0) {
-            final boolean accessible = RuntimeUtils.isAccessibleDir(getRpcSite(), outDir);
+            final boolean accessible = BackendUtils.isAccessibleDir(getRpcSite(), outDir);
             if (accessible) {
                 addPath(false/* prefs.getUsePathZ() */, outDir);
             } else {

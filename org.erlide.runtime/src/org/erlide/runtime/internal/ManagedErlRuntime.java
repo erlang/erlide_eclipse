@@ -24,6 +24,8 @@ public class ManagedErlRuntime extends ErlRuntime {
     private Process process;
     private volatile int exitCode;
 
+    private static final long EXIT_POLL_INTERVAL = 500;
+
     public ManagedErlRuntime(final RuntimeData data) {
         super(data);
     }
@@ -94,7 +96,7 @@ public class ManagedErlRuntime extends ErlRuntime {
             while (i-- > 0 && exitCode < 0) {
                 exitCode = -1;
                 try {
-                    Thread.sleep(POLL_INTERVAL * 2);
+                    Thread.sleep(EXIT_POLL_INTERVAL);
                     exitCode = process.exitValue();
                 } catch (final IllegalThreadStateException e) {
                 } catch (final InterruptedException e) {

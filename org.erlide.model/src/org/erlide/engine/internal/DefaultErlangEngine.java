@@ -48,10 +48,9 @@ import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.engine.services.search.SearchServerService;
 import org.erlide.engine.services.search.XrefService;
 import org.erlide.engine.services.text.IndentService;
+import org.erlide.engine.util.RpcSiteFactory;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.IRpcSiteProvider;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.services.ExtensionUtils;
 import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Maps;
@@ -105,9 +104,7 @@ public class DefaultErlangEngine implements IErlangEngine {
     public DefaultErlangEngine() {
         // TODO how to inject runtime and other start params?
 
-        final IRpcSiteProvider provider = ExtensionUtils.getSingletonExtension(
-                "org.erlide.backend.backend", IRpcSiteProvider.class);
-        backend = provider.get();
+        backend = RpcSiteFactory.getRpcSite();
 
         // TODO use exension points?
 

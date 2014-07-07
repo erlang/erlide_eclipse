@@ -12,27 +12,22 @@ import com.ericsson.otp.erlang.OtpMbox;
 
 public interface IRpcSite {
 
-    /**
-     * typed RPC
-     *
-     */
+    // y
     RpcResult call_noexception(final String m, final String f, final String signature,
             final Object... a);
 
-    /**
-     * typed RPC with timeout
-     *
-     * @throws ConversionException
-     */
+    // y (wrangler)
     RpcResult call_noexception(final long timeout, final String m, final String f,
             final String signature, final Object... args);
 
+    // y
     IRpcFuture async_call(final String m, final String f, final String signature,
             final Object... args) throws RpcException;
 
     IRpcFuture async_call(final OtpErlangObject gleader, final String m, final String f,
             final String signature, final Object... args) throws RpcException;
 
+    // n
     void async_call_cb(final IRpcCallback cb, final String m, final String f,
             final String signature, final Object... args) throws RpcException;
 
@@ -47,6 +42,7 @@ public interface IRpcSite {
     /**
      * Make a RPC but don't wait for any result.
      */
+    // y
     void cast(final String m, final String f, final String signature,
             final Object... args) throws RpcException;
 
@@ -59,12 +55,14 @@ public interface IRpcSite {
     /**
      * Make a regular RPC to the given node, with the given arguments.
      */
+    // y
     OtpErlangObject call(final String m, final String f, final String signature,
             final Object... a) throws RpcException;
 
     /**
      * Make a regular RPC to the given node, with the given arguments.
      */
+    // y
     OtpErlangObject call(final long timeout, final String m, final String f,
             final String signature, final Object... a) throws RpcException;
 
@@ -79,27 +77,33 @@ public interface IRpcSite {
      * Calls a function that supports sending progress reports back. The first
      * argument is implicit and is the pid where the reports are to be sent.
      */
+    // y
     void async_call_result(final IRpcResultCallback cb, final String m, final String f,
             final String signature, final Object... args) throws RpcException;
 
     /**
      * Convenience method to send a remote message.
      */
+    // y
     void send(final OtpErlangPid pid, final Object msg);
 
     /**
      * Convenience method to send a remote message.
      */
+    // y
     void send(final String name, final Object msg);
 
     /**
      * Convenience method to send a remote message.
      */
+    // n
     void send(final String fullNodeName, final String name, final Object msg);
 
+    // y (RpcFuture)
     OtpErlangObject getRpcResult(OtpMbox mbox, long timeout, String env)
             throws RpcException;
 
+    // y (ErlRuntime)
     void setConnected(boolean b);
 
 }

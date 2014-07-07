@@ -7,12 +7,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.erlide.engine.util.RpcSiteFactory;
 import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.api.IRpcSiteProvider;
 import org.erlide.tracing.core.Constants;
 import org.erlide.tracing.core.mvc.model.MatchSpec;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.services.ExtensionUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -21,9 +20,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Cell editor for specifying match specifications.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class MatchSpecCellEditor extends DialogCellEditor {
 
@@ -57,9 +56,7 @@ public class MatchSpecCellEditor extends DialogCellEditor {
     private class MatchSpecValidator implements IInputValidator {
 
         public IRpcSite getBackend() {
-            final IRpcSiteProvider provider = ExtensionUtils.getSingletonExtension(
-                    "org.erlide.backend.backend", IRpcSiteProvider.class);
-            return provider.get();
+            return RpcSiteFactory.getRpcSite();
         }
 
         @Override
