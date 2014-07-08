@@ -203,7 +203,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average latency in milliseconds of a successful request, as
      * measured over the last minute.
-     * 
+     *
      * @return double
      */
     public double getAverageSuccessLatencyLastMinute() {
@@ -213,7 +213,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average latency in milliseconds of a successful request, as
      * measured over the last hour.
-     * 
+     *
      * @return double
      */
     public double getAverageSuccessLatencyLastHour() {
@@ -223,7 +223,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average latency in milliseconds of a successful request, as
      * measured over the last day.
-     * 
+     *
      * @return double
      */
     public double getAverageSuccessLatencyLastDay() {
@@ -233,7 +233,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average latency in milliseconds of a failed request, as
      * measured over the last minute.
-     * 
+     *
      * @return double
      */
     public double getAverageFailureLatencyLastMinute() {
@@ -243,7 +243,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average latency in milliseconds of a failed request, as
      * measured over the last hour.
-     * 
+     *
      * @return double
      */
     public double getAverageFailureLatencyLastHour() {
@@ -253,7 +253,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average latency in milliseconds of a failed request, as
      * measured over the last day.
-     * 
+     *
      * @return double
      */
     public double getAverageFailureLatencyLastDay() {
@@ -263,7 +263,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average request rate in requests per second of all requests,
      * as measured over the last minute.
-     * 
+     *
      * @return double
      */
     public double getTotalRequestsPerSecondLastMinute() {
@@ -273,7 +273,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average request rate in requests per second of successful
      * requests, as measured over the last minute.
-     * 
+     *
      * @return double
      */
     public double getSuccessRequestsPerSecondLastMinute() {
@@ -283,7 +283,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average request rate in requests per second of failed
      * requests, as measured over the last minute.
-     * 
+     *
      * @return double
      */
     public double getFailureRequestsPerSecondLastMinute() {
@@ -293,7 +293,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average request rate in requests per second of all requests,
      * as measured over the last hour.
-     * 
+     *
      * @return double
      */
     public double getTotalRequestsPerSecondLastHour() {
@@ -303,7 +303,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average request rate in requests per second of successful
      * requests, as measured over the last hour.
-     * 
+     *
      * @return double
      */
     public double getSuccessRequestsPerSecondLastHour() {
@@ -313,7 +313,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average request rate in requests per second of failed
      * requests, as measured over the last hour.
-     * 
+     *
      * @return double
      */
     public double getFailureRequestsPerSecondLastHour() {
@@ -323,7 +323,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average request rate in requests per second of all requests,
      * as measured over the last day.
-     * 
+     *
      * @return double
      */
     public double getTotalRequestsPerSecondLastDay() {
@@ -333,7 +333,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average request rate in requests per second of successful
      * requests, as measured over the last day.
-     * 
+     *
      * @return double
      */
     public double getSuccessRequestsPerSecondLastDay() {
@@ -343,7 +343,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average request rate in requests per second of failed
      * requests, as measured over the last day.
-     * 
+     *
      * @return double
      */
     public double getFailureRequestsPerSecondLastDay() {
@@ -353,7 +353,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average request rate in requests per second of all requests,
      * as measured since this object was initialized.
-     * 
+     *
      * @return double
      */
     public double getTotalRequestsPerSecondLifetime() {
@@ -364,7 +364,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average request rate in requests per second of successful
      * requests, as measured since this object was initialized.
-     * 
+     *
      * @return double
      */
     public double getSuccessRequestsPerSecondLifetime() {
@@ -375,7 +375,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the average request rate in requests per second of failed
      * requests, as measured since this object was initialized.
-     * 
+     *
      * @return double
      */
     public double getFailureRequestsPerSecondLifetime() {
@@ -397,7 +397,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the total number of requests seen by this
      * {@link PerformanceMonitor}.
-     * 
+     *
      * @return long
      */
     public long getRequestCount() {
@@ -407,7 +407,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the number of successful requests seen by this
      * {@link PerformanceMonitor}.
-     * 
+     *
      * @return long
      */
     public long getSuccessCount() {
@@ -417,7 +417,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the number of failed requests seen by this
      * {@link PerformanceMonitor}.
-     * 
+     *
      * @return long
      */
     public long getFailureCount() {
@@ -427,7 +427,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the median latency seen by this {@link PerformanceMonitor} for
      * successful requests.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long getMedianPercentileSuccessLatencyLifetime() {
@@ -437,7 +437,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 95th-percentile latency seen by this
      * {@link PerformanceMonitor} for successful requests.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get95thPercentileSuccessLatencyLifetime() {
@@ -447,7 +447,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 99th-percentile latency seen by this
      * {@link PerformanceMonitor} for successful requests.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get99thPercentileSuccessLatencyLifetime() {
@@ -457,7 +457,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the maximum latency seen by this {@link PerformanceMonitor} for
      * successful requests.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long getMaxSuccessLatencyLifetime() {
@@ -467,7 +467,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the median latency seen by this {@link PerformanceMonitor} for
      * successful requests over the last minute.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long getMedianPercentileSuccessLatencyLastMinute() {
@@ -477,7 +477,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 95th-percentile latency seen by this
      * {@link PerformanceMonitor} for successful requests over the last minute.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get95thPercentileSuccessLatencyLastMinute() {
@@ -487,7 +487,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 99th-percentile latency seen by this
      * {@link PerformanceMonitor} for successful requests over the last minute.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get99thPercentileSuccessLatencyLastMinute() {
@@ -497,7 +497,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the median latency seen by this {@link PerformanceMonitor} for
      * successful requests over the last hour.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long getMedianPercentileSuccessfulLatencyLastHour() {
@@ -507,7 +507,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 95th-percentile latency seen by this
      * {@link PerformanceMonitor} for successful requests over the last hour.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get95thPercentileSuccessLatencyLastHour() {
@@ -517,7 +517,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 99th-percentile latency seen by this
      * {@link PerformanceMonitor} for successful requests over the last hour.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get99thPercentileSuccessLatencyLastHour() {
@@ -527,7 +527,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the median latency seen by this {@link PerformanceMonitor} for
      * successful requests over the last day.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long getMedianPercentileSuccessLatencyLastDay() {
@@ -537,7 +537,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 95th-percentile latency seen by this
      * {@link PerformanceMonitor} for successful requests over the last day.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get95thPercentileSuccessLatencyLastDay() {
@@ -547,7 +547,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 99th-percentile latency seen by this
      * {@link PerformanceMonitor} for successful requests over the last hour.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get99thPercentileSuccessLatencyLastDay() {
@@ -557,7 +557,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the median latency seen by this {@link PerformanceMonitor} for
      * failed requests.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long getMedianPercentileFailureLatencyLifetime() {
@@ -567,7 +567,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 95th-percentile latency seen by this
      * {@link PerformanceMonitor} for failed requests.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get95thPercentileFailureLatencyLifetime() {
@@ -577,7 +577,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 99th-percentile latency seen by this
      * {@link PerformanceMonitor} for failed requests.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get99thPercentileFailureLatencyLifetime() {
@@ -587,7 +587,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the maximum latency seen by this {@link PerformanceMonitor} for
      * failed requests.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long getMaxFailureLatencyLifetime() {
@@ -597,7 +597,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the median latency seen by this {@link PerformanceMonitor} for
      * failed requests over the last minute.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long getMedianPercentileFailureLatencyLastMinute() {
@@ -607,7 +607,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 95th-percentile latency seen by this
      * {@link PerformanceMonitor} for failed requests over the last minute.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get95thPercentileFailureLatencyLastMinute() {
@@ -617,7 +617,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 99th-percentile latency seen by this
      * {@link PerformanceMonitor} for failed requests over the last minute.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get99thPercentileFailureLatencyLastMinute() {
@@ -627,7 +627,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the median latency seen by this {@link PerformanceMonitor} for
      * failed requests over the last hour.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long getMedianPercentileFailureLatencyLastHour() {
@@ -637,7 +637,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 95th-percentile latency seen by this
      * {@link PerformanceMonitor} for failed requests over the last hour.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get95thPercentileFailureLatencyLastHour() {
@@ -647,7 +647,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 99th-percentile latency seen by this
      * {@link PerformanceMonitor} for failed requests over the last hour.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get99thPercentileFailureLatencyLastHour() {
@@ -657,7 +657,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the median latency seen by this {@link PerformanceMonitor} for
      * failed requests over the last day.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long getMedianPercentileFailureLatencyLastDay() {
@@ -667,7 +667,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 95th-percentile latency seen by this
      * {@link PerformanceMonitor} for failed requests over the last day.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get95thPercentileFailureLatencyLastDay() {
@@ -677,7 +677,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     /**
      * Returns the 99th-percentile latency seen by this
      * {@link PerformanceMonitor} for failed requests over the last hour.
-     * 
+     *
      * @return latency in milliseconds
      */
     public long get99thPercentileFailureLatencyLastDay() {

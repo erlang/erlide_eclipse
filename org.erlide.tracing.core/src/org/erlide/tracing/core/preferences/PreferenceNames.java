@@ -2,9 +2,9 @@ package org.erlide.tracing.core.preferences;
 
 /**
  * Class containing names of preferences used by this plugin.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public final class PreferenceNames {
 

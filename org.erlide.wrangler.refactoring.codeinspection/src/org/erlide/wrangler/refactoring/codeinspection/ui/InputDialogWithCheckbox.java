@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -23,9 +23,9 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Simple input dialog with a checkbox
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class InputDialogWithCheckbox extends InputDialog {
     protected String checkBoxText;
@@ -34,7 +34,7 @@ public class InputDialogWithCheckbox extends InputDialog {
 
     /**
      * Constructor
-     * 
+     *
      * @param parentShell
      *            parent shell
      * @param dialogTitle
@@ -84,7 +84,7 @@ public class InputDialogWithCheckbox extends InputDialog {
 
     /**
      * Returns the checkbox last value.
-     * 
+     *
      * @return true if the checkbox was selected
      */
     public boolean isCheckBoxChecked() {

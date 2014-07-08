@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -28,9 +28,9 @@ import org.erlide.wrangler.refactoring.ui.AbstractInputDialog;
 /**
  * Input dialog for getting necessary input for duplicated code detection
  * refactoring
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
 
@@ -48,7 +48,7 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
 
     /**
      * Constructor
-     * 
+     *
      * @param parentShell
      *            SWT shell
      * @param dialogTitle
@@ -61,7 +61,7 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
 
     /**
      * Gets the value of minimal tokens
-     * 
+     *
      * @return number of minimal tokens
      */
     public int getMinToks() {
@@ -70,7 +70,7 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
 
     /**
      * Gets the value of minimal clone numbers
-     * 
+     *
      * @return minimal clones number
      */
     public int getMinClones() {
@@ -79,7 +79,7 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
 
     /**
      * Gets the value of the 'run only in the current module' checkbox
-     * 
+     *
      * @return true, if the refactoring will be run in only the current module
      */
     public boolean onlyInFile() {
@@ -130,7 +130,7 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
         final Label minClonesLabel = new Label(composite, SWT.WRAP);
         minClonesLabel.setText("Minimum number of appearance times:");
         final GridData minClonesData = new GridData( // GridData.GRAB_HORIZONTAL
-                                                     // |
+                // |
                 GridData.GRAB_VERTICAL // | GridData.HORIZONTAL_ALIGN_FILL
                         | GridData.VERTICAL_ALIGN_CENTER);
         minClonesData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);

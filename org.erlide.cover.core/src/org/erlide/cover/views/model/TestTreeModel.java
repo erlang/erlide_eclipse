@@ -5,9 +5,9 @@ import java.util.List;
 
 /**
  * A simple model for collecting EUnit tests results
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class TestTreeModel {
 
@@ -33,7 +33,7 @@ public class TestTreeModel {
 
     /**
      * The basic level of eunit tree
-     * 
+     *
      * @return root level
      */
     public List<TestTreeObject> getRootLevel() {
@@ -42,7 +42,7 @@ public class TestTreeModel {
 
     /**
      * Add a new node to the basic level
-     * 
+     *
      * @param obj
      *            new node
      */
@@ -63,7 +63,7 @@ public class TestTreeModel {
 
     /**
      * Search for the right parent for a new node
-     * 
+     *
      * @param name
      * @return
      */

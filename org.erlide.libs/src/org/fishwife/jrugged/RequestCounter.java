@@ -45,7 +45,7 @@ public class RequestCounter implements ServiceWrapper {
     /**
      * Wrap the given service call with the {@link RequestCounter} to count the
      * number of calls made.
-     * 
+     *
      * @param c
      *            the {@link Callable} to attempt
      *
@@ -69,7 +69,7 @@ public class RequestCounter implements ServiceWrapper {
     /**
      * Wrap the given service call with the {@link RequestCounter} to count the
      * number of calls made.
-     * 
+     *
      * @param r
      *            the {@link Runnable} to attempt
      *
@@ -90,7 +90,7 @@ public class RequestCounter implements ServiceWrapper {
     /**
      * Wrap the given service call with the {@link RequestCounter} to count the
      * number of calls made.
-     * 
+     *
      * @param r
      *            the {@link Runnable} to attempt
      * @param result

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -35,9 +35,9 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 /**
  * Idenctical code detection refactoring runner
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
 

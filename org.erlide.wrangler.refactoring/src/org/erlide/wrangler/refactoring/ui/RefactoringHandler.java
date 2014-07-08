@@ -93,7 +93,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Handles refactoring commands
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -506,7 +506,7 @@ public class RefactoringHandler extends AbstractHandler {
 
     /**
      * Run the generalise function refactoring
-     * 
+     *
      * @param pages
      * @param activeShell
      * @return

@@ -6,9 +6,9 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
  * Match specification for tracing pattern.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class MatchSpec implements Serializable {
 

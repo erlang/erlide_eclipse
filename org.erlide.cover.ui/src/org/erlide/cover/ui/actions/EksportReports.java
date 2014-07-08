@@ -20,9 +20,9 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Exports HTML reports
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class EksportReports extends Action {
 

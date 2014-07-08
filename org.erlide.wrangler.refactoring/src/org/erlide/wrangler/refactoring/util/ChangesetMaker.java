@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -27,7 +27,7 @@ import org.incava.util.diff.Difference;
 
 /**
  * Tool for comparing the refactor tool's output with the original file.
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -43,7 +43,7 @@ public final class ChangesetMaker {
 
     /**
      * Converts the given char array to list.
-     * 
+     *
      * @param charArray
      * @return list of chars
      */
@@ -58,7 +58,7 @@ public final class ChangesetMaker {
 
     /**
      * Creates <code>Edit</code> object from a <code>Difference</code> object
-     * 
+     *
      * @param diff
      * @return
      */
@@ -110,7 +110,7 @@ public final class ChangesetMaker {
     /**
      * Reads the input file, compares with the given new string, then creates
      * Eclipse's <code>TextEdit</code>-s.
-     * 
+     *
      * @param in
      *            original file
      * @param out
@@ -144,7 +144,7 @@ public final class ChangesetMaker {
     /**
      * Creates a <code>ReplaceEdit</code> object from the given parameters and
      * the stored input/output strings.
-     * 
+     *
      * @param addedStart
      * @param addedEnd
      * @param deletedStart
@@ -178,7 +178,7 @@ public final class ChangesetMaker {
     /**
      * Gets the string from the new source file, according to the given
      * parameters.
-     * 
+     *
      * @param from
      *            string's starting position
      * @param to
@@ -196,7 +196,7 @@ public final class ChangesetMaker {
 
     /**
      * Read the given files into a list of <code>Character</code>-s.
-     * 
+     *
      * @param file
      *            the file which is read
      * @return

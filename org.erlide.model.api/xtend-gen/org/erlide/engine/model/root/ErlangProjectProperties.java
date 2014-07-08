@@ -1,8 +1,10 @@
 package org.erlide.engine.model.root;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -10,12 +12,11 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
+import org.erlide.engine.model.root.ExternalKind;
+import org.erlide.engine.model.root.PathSerializer;
+import org.erlide.engine.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.PreferencesUtils;
-
-import com.google.common.base.Objects;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 
 @SuppressWarnings("all")
 public class ErlangProjectProperties {

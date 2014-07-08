@@ -24,10 +24,10 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Abstract class for user-defined refactoring handlers
- * 
+ *
  * This class should be extended by classes dedicated to composite and
  * elementary refactorings
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */
@@ -37,9 +37,9 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
     private final List<String> parPrompts = new LinkedList<String>(); // parameter
     // prompts
     private List<String> parValues = new ArrayList<String>(0); // parameter
-                                                               // values
-                                                               // submited by
-                                                               // user
+    // values
+    // submited by
+    // user
     protected boolean fetched; // if parameter prompts are already fetched
     protected RefactoringStatus status; // refactoring status
 
@@ -55,7 +55,7 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
 
     /**
      * Ad hoc refactoring needs name of the callback module to be called
-     * 
+     *
      * @param module
      */
     public void setCallbackModuleName(final String module) {
@@ -65,7 +65,7 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
 
     /**
      * Fetch parameter prompts from the right callback module
-     * 
+     *
      * @param module
      */
     public boolean fetchParPrompts() {
@@ -89,7 +89,7 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
 
     /**
      * Getter for parameter prompts
-     * 
+     *
      * @return
      */
     public List<String> getParPrompts() {
@@ -105,7 +105,7 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
 
     /**
      * Add a new prompt
-     * 
+     *
      * @param prompt
      */
     protected void addParPrompts(final String prompt) {
@@ -114,7 +114,7 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
 
     /**
      * Getter for parameter values
-     * 
+     *
      * @return
      */
     public List<String> getParValues() {
@@ -123,7 +123,7 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
 
     /**
      * Appends new parameter value
-     * 
+     *
      * @param value
      */
     public void setParValue(final List<String> params) {
@@ -142,7 +142,7 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
 
     /**
      * Defines workflow of the refactoring, sets changed files and status
-     * 
+     *
      * @param shell
      * @return
      */

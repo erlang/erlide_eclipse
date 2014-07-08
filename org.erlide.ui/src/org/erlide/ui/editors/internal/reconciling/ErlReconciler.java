@@ -89,7 +89,7 @@ public class ErlReconciler implements IReconciler {
         /**
          * Creates a new background thread. The thread runs with minimal
          * priority.
-         * 
+         *
          * @param name
          *            the thread's name
          */
@@ -101,7 +101,7 @@ public class ErlReconciler implements IReconciler {
 
         /**
          * Returns whether a reconciling strategy is active right now.
-         * 
+         *
          * @return <code>true</code> if a activity is active
          */
         public boolean isActive() {
@@ -110,7 +110,7 @@ public class ErlReconciler implements IReconciler {
 
         /**
          * Returns whether some changes need to be processed.
-         * 
+         *
          * @return <code>true</code> if changes wait to be processed
          * @since 3.0
          */
@@ -365,7 +365,7 @@ public class ErlReconciler implements IReconciler {
     /**
      * Tells the reconciler how long it should wait for further text changes
      * before activating the appropriate reconciling strategies.
-     * 
+     *
      * @param delay
      *            the duration in milliseconds of a change collection period.
      */
@@ -378,11 +378,11 @@ public class ErlReconciler implements IReconciler {
      * is interested in getting detailed dirty region information or just in the
      * fact that the document has been changed. In the second case, the
      * reconciling can not incrementally be pursued.
-     * 
+     *
      * @param isIncremental
      *            indicates whether this reconciler will be configured with
      *            incremental reconciling strategies
-     * 
+     *
      * @see DirtyRegion
      * @see IReconcilingStrategy
      */
@@ -398,7 +398,7 @@ public class ErlReconciler implements IReconciler {
      * {@link UnsupportedOperationException} will be thrown when this
      * restriction will be violated.
      * </p>
-     * 
+     *
      * @param isAllowedToModify
      *            indicates whether this reconciler is allowed to modify the
      *            document
@@ -411,9 +411,9 @@ public class ErlReconciler implements IReconciler {
     /**
      * Returns whether any of the reconciling strategies is interested in
      * detailed dirty region information.
-     * 
+     *
      * @return whether this reconciler is incremental
-     * 
+     *
      * @see IReconcilingStrategy
      */
     protected boolean isIncrementalReconciler() {
@@ -423,7 +423,7 @@ public class ErlReconciler implements IReconciler {
     /**
      * Returns the input document of the text viewer this reconciler is
      * installed on.
-     * 
+     *
      * @return the reconciler document
      */
     protected IDocument getDocument() {
@@ -432,7 +432,7 @@ public class ErlReconciler implements IReconciler {
 
     /**
      * Returns the text viewer this reconciler is installed on.
-     * 
+     *
      * @return the text viewer this reconciler is installed on
      */
     protected ITextViewer getTextViewer() {
@@ -441,7 +441,7 @@ public class ErlReconciler implements IReconciler {
 
     /**
      * Returns the progress monitor of this reconciler.
-     * 
+     *
      * @return the progress monitor of this reconciler
      */
     protected IProgressMonitor getProgressMonitor() {
@@ -514,7 +514,7 @@ public class ErlReconciler implements IReconciler {
 
     /**
      * Creates a dirty region for a document event and adds it to the queue.
-     * 
+     *
      * @param e
      *            the document event for which to create a dirty region
      */
@@ -537,7 +537,7 @@ public class ErlReconciler implements IReconciler {
      * <p>
      * Default implementation is to do nothing.
      * </p>
-     * 
+     *
      * @since 3.0
      */
     protected void aboutToBeReconciled() {

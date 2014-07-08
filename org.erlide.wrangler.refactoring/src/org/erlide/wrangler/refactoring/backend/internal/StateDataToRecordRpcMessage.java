@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -20,7 +20,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * RPC message parser class for * State data to record refactorings
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -56,7 +56,7 @@ public class StateDataToRecordRpcMessage extends AbstractRefactoringRpcMessage {
 
     /**
      * Returns the number of fields, which the refactoring will need
-     * 
+     *
      * @return number of fields
      */
     public int getFieldCount() {
@@ -65,7 +65,7 @@ public class StateDataToRecordRpcMessage extends AbstractRefactoringRpcMessage {
 
     /**
      * Returns StateFun Erlang object
-     * 
+     *
      * @return statefun
      */
     public OtpErlangObject getStateFuns() {

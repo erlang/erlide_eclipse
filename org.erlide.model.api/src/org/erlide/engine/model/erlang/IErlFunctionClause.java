@@ -13,11 +13,11 @@ package org.erlide.engine.model.erlang;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Vlad
- * 
+ *
  * @noimplement This interface is not intended to be implemented by clients.
- * 
+ *
  */
 public interface IErlFunctionClause extends IErlMember {
 

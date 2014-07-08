@@ -6,9 +6,9 @@ import org.erlide.tracing.core.TraceBackend;
 
 /**
  * Content provider for nodes table.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class NodeContentProvider implements IStructuredContentProvider {
 

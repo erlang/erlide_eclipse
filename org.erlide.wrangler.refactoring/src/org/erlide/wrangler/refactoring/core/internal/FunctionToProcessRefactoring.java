@@ -24,7 +24,7 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
 /**
  * Function to process refactoring integration
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */

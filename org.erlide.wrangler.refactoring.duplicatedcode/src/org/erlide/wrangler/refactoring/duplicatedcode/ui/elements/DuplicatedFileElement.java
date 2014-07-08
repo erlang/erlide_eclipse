@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -14,9 +14,9 @@ import org.eclipse.core.resources.IFile;
 
 /**
  * Element, which represents a module in the TreeView
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class DuplicatedFileElement extends AbstractResultTreeParent {
     IFile containingFile;
@@ -25,7 +25,7 @@ public class DuplicatedFileElement extends AbstractResultTreeParent {
 
     /**
      * Constructor
-     * 
+     *
      * @param containFile
      *            file which is represented
      */
@@ -45,7 +45,7 @@ public class DuplicatedFileElement extends AbstractResultTreeParent {
 
     /**
      * Returns the represented file
-     * 
+     *
      * @return represented file
      */
     public IFile getContainingFile() {

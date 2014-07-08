@@ -52,7 +52,7 @@ public class Activator extends AbstractUIPlugin {
 
     /**
      * Returns image stored in registry.
-     * 
+     *
      * @param image
      * @return image
      */

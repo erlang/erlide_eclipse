@@ -74,9 +74,9 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Control panel for tracing settings.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
@@ -243,7 +243,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     /**
      * Creates either checkboxes for setting global flags or table for setting
      * flags individually for each process.
-     * 
+     *
      * @param newMode
      * @param oldMode
      * @param parent

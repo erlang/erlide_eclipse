@@ -349,7 +349,7 @@ public class RpcSite implements IRpcSite {
 
     /**
      * Retrieve the result of a RPC.
-     * 
+     *
      * @param mbox
      * @param timeout
      * @param env

@@ -55,7 +55,7 @@ public class ConstantFlowRegulator implements ServiceWrapper {
     /**
      * Wrap the given service call with the {@link ConstantFlowRegulator}
      * protection logic.
-     * 
+     *
      * @param c
      *            the {@link Callable} to attempt
      *
@@ -79,7 +79,7 @@ public class ConstantFlowRegulator implements ServiceWrapper {
     /**
      * Wrap the given service call with the {@link ConstantFlowRegulator}
      * protection logic.
-     * 
+     *
      * @param r
      *            the {@link Runnable} to attempt
      *
@@ -101,7 +101,7 @@ public class ConstantFlowRegulator implements ServiceWrapper {
     /**
      * Wrap the given service call with the {@link ConstantFlowRegulator}
      * protection logic.
-     * 
+     *
      * @param r
      *            the {@link Runnable} to attempt
      * @param result

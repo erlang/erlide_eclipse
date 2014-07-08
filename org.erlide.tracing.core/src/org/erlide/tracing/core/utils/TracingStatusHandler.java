@@ -9,10 +9,10 @@ import org.erlide.tracing.core.TracingStatus;
 
 /**
  * Class that contains helper methods for handling tracing status
- * 
+ *
  * @author Piotr Dorobisz
  * @see TracingStatus
- * 
+ *
  */
 public final class TracingStatusHandler {
 
@@ -21,7 +21,7 @@ public final class TracingStatusHandler {
 
     /**
      * Displays dialog with further details about status (e.g. reason of error).
-     * 
+     *
      * @param status
      *            status
      */

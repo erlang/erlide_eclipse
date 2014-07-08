@@ -7,9 +7,9 @@ import java.util.Set;
 
 /**
  * Stores information of covered modules
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class ModuleSet {
 
@@ -29,7 +29,7 @@ public class ModuleSet {
 
     /**
      * All analysed module names
-     * 
+     *
      * @return
      */
     public static Set<String> getNames() {

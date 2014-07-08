@@ -32,8 +32,8 @@ public class RpcSiteFactory {
     }
 
     private static IRpcSiteProvider getRpcSiteProvider() {
-        return ExtensionUtils.getSingletonExtension(
-                "org.erlide.backend.backend", IRpcSiteProvider.class);
+        return ExtensionUtils.getSingletonExtension("org.erlide.backend.backend",
+                IRpcSiteProvider.class);
     }
 
 }

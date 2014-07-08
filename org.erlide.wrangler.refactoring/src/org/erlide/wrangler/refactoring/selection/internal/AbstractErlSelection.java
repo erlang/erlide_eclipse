@@ -25,7 +25,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 /**
  * Abstract class which represents an Erlang selection.
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */

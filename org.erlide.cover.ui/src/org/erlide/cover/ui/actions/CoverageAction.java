@@ -14,9 +14,9 @@ import org.erlide.cover.views.model.StatsTreeObject;
 
 /**
  * Abstract class for the action of showing and hiding annotations
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public abstract class CoverageAction extends Action {
 

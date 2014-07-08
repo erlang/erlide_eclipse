@@ -39,7 +39,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 /**
  * Class which point to singleton objects, like the actual editor, and has
  * functions which are 'global'.
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -54,7 +54,7 @@ public class GlobalParameters {
 
     /**
      * Checks if QuickCheck is installed in the current machine.
-     * 
+     *
      * @return true if QC is installed, else false
      */
     public static boolean hasQuickCheck() {
@@ -78,7 +78,7 @@ public class GlobalParameters {
 
     /**
      * Get the Eclipse default tab width
-     * 
+     *
      * @return default tab width
      */
     public static int getTabWidth() {
@@ -87,7 +87,7 @@ public class GlobalParameters {
 
     /**
      * Stores the editor marked as 'current'
-     * 
+     *
      * @param _editor
      *            stored editor
      */
@@ -98,7 +98,7 @@ public class GlobalParameters {
 
     /**
      * Get the actual Erlang selection in the workbench
-     * 
+     *
      * @return selection in the workbench
      */
     public static IErlSelection getWranglerSelection() {
@@ -107,7 +107,7 @@ public class GlobalParameters {
 
     /**
      * Stores a selection marked 'current'
-     * 
+     *
      * @param selection
      *            Erlang selection
      */
@@ -165,7 +165,7 @@ public class GlobalParameters {
 
     /**
      * Shows a yes or no question in a dialog.
-     * 
+     *
      * @param s
      *            shell
      * @param question
@@ -196,7 +196,7 @@ public class GlobalParameters {
 
     /**
      * Get the 'current' editor
-     * 
+     *
      * @return actual editor
      */
     public static IEditorPart getEditor() {

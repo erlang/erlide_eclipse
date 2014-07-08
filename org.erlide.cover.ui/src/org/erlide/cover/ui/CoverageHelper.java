@@ -5,15 +5,15 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.statushandlers.StatusManager;
 
 /**
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class CoverageHelper {
 
     /**
      * Report when error occured
-     * 
+     *
      * @param info
      */
     public static void reportError(final String info) {
@@ -24,7 +24,7 @@ public class CoverageHelper {
 
     /**
      * Report for user information
-     * 
+     *
      * @param info
      */
     public static void reportInfo(final String info) {

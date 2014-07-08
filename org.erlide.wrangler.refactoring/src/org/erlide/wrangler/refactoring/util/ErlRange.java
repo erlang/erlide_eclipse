@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -16,7 +16,7 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Specified Range, which has offset attributes.
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -25,7 +25,7 @@ public class ErlRange extends Range implements IErlRange {
 
     /**
      * Constructor
-     * 
+     *
      * @param startLine
      *            start line
      * @param startCol
@@ -48,7 +48,7 @@ public class ErlRange extends Range implements IErlRange {
 
     /**
      * Constructor with a range and a document
-     * 
+     *
      * @param range
      *            selection range
      * @param doc

@@ -46,9 +46,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Handles commands, which needs only a listing UI, and inspects the code.
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class SimpleCodeInspectionHandler extends AbstractHandler {
     protected final class IntegerInputValidator implements IInputValidator {

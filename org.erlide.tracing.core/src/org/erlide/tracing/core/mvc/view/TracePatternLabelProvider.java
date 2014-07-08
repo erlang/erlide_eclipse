@@ -9,9 +9,9 @@ import org.erlide.tracing.core.mvc.model.TracePattern;
 
 /**
  * Provider responsible for displaying trace patterns in table.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TracePatternLabelProvider extends LabelProvider implements
         ITableLabelProvider {

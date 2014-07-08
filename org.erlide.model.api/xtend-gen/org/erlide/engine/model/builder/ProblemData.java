@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
+import org.erlide.engine.model.builder.ProblemData0;
 
 @SuppressWarnings("all")
 public class ProblemData extends ProblemData0 {

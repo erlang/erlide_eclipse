@@ -8,9 +8,9 @@ import org.erlide.cover.views.model.TestTreeObject;
 
 /**
  * Content provider for the EUnit test view
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class TestViewContentProvider implements ITreeContentProvider {
 

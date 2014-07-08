@@ -65,7 +65,7 @@ public class RpcMonitor {
             module = data.module;
             fun = data.fun;
             args = data.args;
-            Collection<OtpErlangObject> collection = args.get();
+            final Collection<OtpErlangObject> collection = args.get();
             argsSize = collection == null ? 0 : collection.size();
             this.result = new SoftReference<OtpErlangObject>(result);
             callTime = data.startTime;

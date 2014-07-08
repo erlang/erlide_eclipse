@@ -8,9 +8,9 @@ import org.erlide.engine.model.root.IErlProject;
 
 /**
  * Content provider for projects
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class ProjectTreeContentProvider implements ITreeContentProvider {
 

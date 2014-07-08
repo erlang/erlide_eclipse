@@ -9,9 +9,9 @@ import org.erlide.tracing.core.mvc.view.TracePatternColumn;
 
 /**
  * Cell modifier for trace patterns table.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TracePatternCellModifier implements ICellModifier {
 
@@ -19,7 +19,7 @@ public class TracePatternCellModifier implements ICellModifier {
 
     /**
      * Creates cell modifier for trace patterns table.
-     * 
+     *
      * @param tableViewer
      *            table viewer with which this cell modifier is used
      */

@@ -32,7 +32,7 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
 /**
  * Input page which displays text snippet positions and offers to user tp select
  * one or more of them
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -49,7 +49,7 @@ public class SelectionInputPage extends InputPage {
 
     /**
      * Constructor
-     * 
+     *
      * @param name
      *            dialog title
      * @param description

@@ -4,9 +4,9 @@ import org.erlide.core.ErlangCore;
 
 /**
  * Names of attributes in launch configuration
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public interface ICoverAttributes {
 

@@ -129,13 +129,11 @@ public class ModelUtilsTests {
 
             final IErlElement element1 = modelFindService.findTypeDef(model, projects[0],
                     moduleB, "bx", "concat_thing", moduleB.getResource().getLocation()
-                                    .toPortableString(),
-                    IErlElementLocator.Scope.PROJECT_ONLY);
+                            .toPortableString(), IErlElementLocator.Scope.PROJECT_ONLY);
             // in other project but path given
             final IErlElement element2 = modelFindService.findTypeDef(model, projects[1],
                     moduleB, "bx", "concat_thing", moduleB.getResource().getLocation()
-                                    .toPortableString(),
-                    IErlElementLocator.Scope.PROJECT_ONLY);
+                            .toPortableString(), IErlElementLocator.Scope.PROJECT_ONLY);
             // in other project no path given, search all projects true
             final IErlElement element3 = modelFindService.findTypeDef(model, projects[1],
                     moduleB, "bx", "concat_thing", null,
@@ -169,8 +167,8 @@ public class ModelUtilsTests {
         // looking for it with ?MODULE
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         final IErlElement element1 = modelFindService.findFunction(model, projects[0],
-                moduleD, "?MODULE", null,
-                new ErlangFunction("f", 0), IErlElementLocator.Scope.PROJECT_ONLY);
+                moduleD, "?MODULE", null, new ErlangFunction("f", 0),
+                IErlElementLocator.Scope.PROJECT_ONLY);
         // then
         // it should be found
         assertTrue(element1 instanceof IErlFunction);
@@ -364,8 +362,8 @@ public class ModelUtilsTests {
             // when
             // looking for it
             final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-            final IErlModule module = modelFindService.findInclude(model, project,
-                    null, externalFileName, absolutePath);
+            final IErlModule module = modelFindService.findInclude(model, project, null,
+                    externalFileName, absolutePath);
             // then
             // we should find it
             assertNotNull(module);

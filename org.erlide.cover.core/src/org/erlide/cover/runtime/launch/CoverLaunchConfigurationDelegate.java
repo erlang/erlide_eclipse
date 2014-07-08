@@ -13,9 +13,9 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Cover launch configuration
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
 

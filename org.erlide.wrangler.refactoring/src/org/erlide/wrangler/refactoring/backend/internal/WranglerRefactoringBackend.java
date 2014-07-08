@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -21,7 +21,7 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 /**
  * This class handles the Erlide backends, and holds special ones for Wrangler
  * operations
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -41,7 +41,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 
     /**
      * Default constructor
-     * 
+     *
      * @param backend
      *            Erlide backend
      */
@@ -51,7 +51,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 
     /**
      * Send an RPC, and allow to define a costum parser
-     * 
+     *
      * @param parser
      *            parser object
      * @param functionName
@@ -71,7 +71,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 
     /**
      * Send an RPC and parses it with the default parser
-     * 
+     *
      * @param functionName
      *            function name in wrangler.erl
      * @param signature
@@ -91,7 +91,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 
     /**
      * Call an RPC without a parser
-     * 
+     *
      * @param functionName
      *            function name in wrangler_refacs.erl
      * @param signature
@@ -112,7 +112,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 
     /**
      * Send an RPC without using any RpcResultImpl parser
-     * 
+     *
      * @param timeout
      *            timeout for the RPC
      * @param functionName
@@ -140,7 +140,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 
     /**
      * Call inspection function which returns with boolean values
-     * 
+     *
      * @param functionName
      *            function to call
      * @param signature
@@ -170,7 +170,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 
     /**
      * Call an inspection function
-     * 
+     *
      * @param functionName
      *            function name
      * @param signature
@@ -192,7 +192,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
 
     /**
      * Gets logged info (warnings, errors) from Wrangler
-     * 
+     *
      * @return log list
      */
     public RpcResult getLoggedInfo() {

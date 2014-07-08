@@ -2,9 +2,9 @@ package org.erlide.tracing.core;
 
 /**
  * Enum representing trace types (e.g. <i>send</i>, <i>receive</i>).
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public enum TraceType {
     //@formatter:off

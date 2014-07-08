@@ -6,9 +6,9 @@ import org.erlide.tracing.core.TraceBackend;
 
 /**
  * Content provider for trace patterns table.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TracePatternContentProvider implements IStructuredContentProvider {
 

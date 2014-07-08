@@ -2,9 +2,9 @@ package org.erlide.cover.constants;
 
 /**
  * Constants used for communitation with Erlang backend for cover
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class CoverConstants {
 

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2004 Chengdong Li : cdli@ccs.uky.edu
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/cpl-v10.html
@@ -17,9 +17,9 @@ import org.eclipse.ui.IViewPart;
 /**
  * Action delegate for all toolbar push-buttons.
  * <p>
- * 
+ *
  * @author Chengdong Li: cli4@uky.edu
- * 
+ *
  */
 public class PushActionDelegate implements IViewActionDelegate {
     /** pointer to image view */

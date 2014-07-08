@@ -57,7 +57,7 @@ public final class PercentErrPerTimeFailureInterpreter implements FailureInterpr
     /**
      * Constructor that allows a tolerance for a certain number of failures
      * within a given window of time without tripping.
-     * 
+     *
      * @param rc
      *            A {@link RequestCounter} wrapped around the same thing that
      *            this {@link org.fishwife.jrugged.CircuitBreaker} is
@@ -86,7 +86,7 @@ public final class PercentErrPerTimeFailureInterpreter implements FailureInterpr
     /**
      * Constructor that allows a tolerance for a certain number of failures
      * within a given window of time without tripping.
-     * 
+     *
      * @param p
      *            A {@link PerformanceMonitor} from which we can get an
      *            underlying {@link RequestCounter} that is wrapped around the
@@ -117,7 +117,7 @@ public final class PercentErrPerTimeFailureInterpreter implements FailureInterpr
      * Constructor where we specify certain {@link Throwable} classes that will
      * be ignored by the breaker and not be treated as failures (they will be
      * passed through transparently without causing the breaker to trip).
-     * 
+     *
      * @param ignore
      *            an array of {@link Throwable} classes that will be ignored.
      *            Any given <code>Throwable</code> that is a subclass of one of
@@ -238,7 +238,7 @@ public final class PercentErrPerTimeFailureInterpreter implements FailureInterpr
 
     /**
      * Returns the set of currently ignored {@link Throwable} classes.
-     * 
+     *
      * @return {@link Set}
      */
     public Set<Class<? extends Throwable>> getIgnore() {
@@ -248,7 +248,7 @@ public final class PercentErrPerTimeFailureInterpreter implements FailureInterpr
     /**
      * Specifies an array of {@link Throwable} classes to ignore. These will not
      * be considered failures.
-     * 
+     *
      * @param ignore
      *            array of {@link Class} objects
      */
@@ -259,7 +259,7 @@ public final class PercentErrPerTimeFailureInterpreter implements FailureInterpr
     /**
      * Returns the current percentage of failures within the window that will be
      * tolerated without tripping the breaker.
-     * 
+     *
      * @return int
      */
     public int getPercent() {
@@ -270,7 +270,7 @@ public final class PercentErrPerTimeFailureInterpreter implements FailureInterpr
      * Specifies the percentage of tolerated failures within the configured time
      * window. If percentage is set to <em>n</em> then the
      * <em>(n.000000000000001)</em>th failure will trip the breaker.
-     * 
+     *
      * @param percent
      *            <code>int</code>
      */
@@ -281,7 +281,7 @@ public final class PercentErrPerTimeFailureInterpreter implements FailureInterpr
     /**
      * Returns the length of the currently configured tolerance window in
      * milliseconds.
-     * 
+     *
      * @return <code>long</code>
      */
     public long getWindowMillis() {
@@ -290,7 +290,7 @@ public final class PercentErrPerTimeFailureInterpreter implements FailureInterpr
 
     /**
      * Specifies the length of the tolerance window in milliseconds.
-     * 
+     *
      * @param windowMillis
      *            <code>long</code>
      */
@@ -301,7 +301,7 @@ public final class PercentErrPerTimeFailureInterpreter implements FailureInterpr
     /**
      * Specifies the {@link RequestCounter} that will be supplying the "total"
      * requests made information for this interpreter.
-     * 
+     *
      * @param rc
      *            A {@link RequestCounter}
      */

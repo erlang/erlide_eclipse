@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 /**
  * Traced nodes.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TracedNode implements Serializable {
 

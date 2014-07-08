@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -31,7 +31,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 /**
  * RpcResultImpl parser which parses object which got from Fold expression
  * refactorings
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -83,7 +83,7 @@ public class ExpressionPosRpcMessage extends AbstractRpcMessage {
 
     /**
      * Returns a syntax tree object which is got from Wrangler
-     * 
+     *
      * @return syntax tree wrapped in an Erlang object
      */
     public OtpErlangObject getSyntaxTree() {
@@ -92,7 +92,7 @@ public class ExpressionPosRpcMessage extends AbstractRpcMessage {
 
     /**
      * Returns pairs which represents a selection in a module.
-     * 
+     *
      * @param doc
      *            the document which containing the module
      * @return selections

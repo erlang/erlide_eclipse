@@ -95,8 +95,8 @@ public class ModelFindUtil implements ModelFindService {
     public IErlFunction findFunction(final IErlElementLocator model,
             final IErlProject project, final IErlModule module,
             final String moduleName0, final String modulePath,
-            final ErlangFunction erlangFunction, final IErlElementLocator.Scope scope)
-            throws CoreException {
+            final ErlangFunction erlangFunction,
+            final IErlElementLocator.Scope scope) throws CoreException {
         if (moduleName0 != null) {
             final String moduleName = resolveMacroValue(moduleName0, module);
             final IErlModule module2 = findModule(model, project, moduleName,

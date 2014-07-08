@@ -25,7 +25,7 @@ import java.util.Arrays;
 
 /**
  * Provides a stream for decoding Erlang terms from external format.
- * 
+ *
  * <p>
  * Note that this class is not synchronized, if you need synchronization you
  * must provide it yourself.
@@ -45,7 +45,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Create a stream from a buffer containing encoded Erlang terms.
-     * 
+     *
      * @param flags
      */
     public OtpInputStream(final byte[] buf, final int flags) {
@@ -56,7 +56,7 @@ public class OtpInputStream extends ByteArrayInputStream {
     /**
      * Create a stream from a buffer containing encoded Erlang terms at the
      * given offset and length.
-     * 
+     *
      * @param flags
      */
     public OtpInputStream(final byte[] buf, final int offset, final int length,
@@ -67,7 +67,7 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Get the current position in the stream.
-     * 
+     *
      * @return the current position in the stream.
      */
     public int getPos() {
@@ -76,13 +76,13 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Set the current position in the stream.
-     * 
+     *
      * @param pos
      *            the position to move to in the stream. If pos indicates a
      *            position beyond the end of the stream, the position is move to
      *            the end of the stream instead. If pos is negative, the
      *            position is moved to the beginning of the stream instead.
-     * 
+     *
      * @return the previous position in the stream.
      */
     public int setPos(int pos) {
@@ -102,9 +102,9 @@ public class OtpInputStream extends ByteArrayInputStream {
     /**
      * Read an array of bytes from the stream. The method reads at most
      * buf.length bytes from the input stream.
-     * 
+     *
      * @return the number of bytes read.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next byte cannot be read.
      */
@@ -115,9 +115,9 @@ public class OtpInputStream extends ByteArrayInputStream {
     /**
      * Read an array of bytes from the stream. The method reads at most len
      * bytes from the input stream into offset off of the buffer.
-     * 
+     *
      * @return the number of bytes read.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next byte cannot be read.
      */
@@ -143,9 +143,9 @@ public class OtpInputStream extends ByteArrayInputStream {
     /**
      * Look ahead one position in the stream without consuming the byte found
      * there.
-     * 
+     *
      * @return the next byte in the stream, as an integer.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next byte cannot be read.
      */
@@ -174,9 +174,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read a one byte integer from the stream.
-     * 
+     *
      * @return the byte read, as an integer.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next byte cannot be read.
      */
@@ -201,9 +201,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read a two byte big endian integer from the stream.
-     * 
+     *
      * @return the bytes read, converted from big endian to an integer.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next byte cannot be read.
      */
@@ -220,9 +220,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read a four byte big endian integer from the stream.
-     * 
+     *
      * @return the bytes read, converted from big endian to an integer.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next byte cannot be read.
      */
@@ -240,9 +240,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read a two byte little endian integer from the stream.
-     * 
+     *
      * @return the bytes read, converted from little endian to an integer.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next byte cannot be read.
      */
@@ -259,9 +259,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read a four byte little endian integer from the stream.
-     * 
+     *
      * @return the bytes read, converted from little endian to an integer.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next byte cannot be read.
      */
@@ -279,12 +279,12 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read a little endian integer from the stream.
-     * 
+     *
      * @param n
      *            the number of bytes to read
-     * 
+     *
      * @return the bytes read, converted from little endian to an integer.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next byte cannot be read.
      */
@@ -305,12 +305,12 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read a bigendian integer from the stream.
-     * 
+     *
      * @param n
      *            the number of bytes to read
-     * 
+     *
      * @return the bytes read, converted from big endian to an integer.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next byte cannot be read.
      */
@@ -331,10 +331,10 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an Erlang atom from the stream and interpret the value as a boolean.
-     * 
+     *
      * @return true if the atom at the current position in the stream contains
      *         the value 'true' (ignoring case), false otherwise.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not an atom.
      */
@@ -344,9 +344,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an Erlang atom from the stream.
-     * 
+     *
      * @return a String containing the value of the atom.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not an atom.
      */
@@ -413,9 +413,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an Erlang binary from the stream.
-     * 
+     *
      * @return a byte array containing the value of the binary.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not a binary.
      */
@@ -441,13 +441,13 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an Erlang bitstr from the stream.
-     * 
+     *
      * @param pad_bits
      *            an int array whose first element will be set to the number of
      *            pad bits in the last byte.
-     * 
+     *
      * @return a byte array containing the value of the bitstr.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not a bitstr.
      */
@@ -482,9 +482,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an Erlang float from the stream.
-     * 
+     *
      * @return the float value.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not a float.
      */
@@ -495,9 +495,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an Erlang float from the stream.
-     * 
+     *
      * @return the float value, as a double.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not a float.
      */
@@ -550,9 +550,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read one byte from the stream.
-     * 
+     *
      * @return the byte read.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next byte cannot be read.
      */
@@ -569,9 +569,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read a character from the stream.
-     * 
+     *
      * @return the character value.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not an integer that can
      *                be represented as a char.
@@ -589,9 +589,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an unsigned integer from the stream.
-     * 
+     *
      * @return the integer value.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream can not be represented as a
      *                positive integer.
@@ -609,9 +609,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an integer from the stream.
-     * 
+     *
      * @return the integer value.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream can not be represented as
      *                an integer.
@@ -629,9 +629,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an unsigned short from the stream.
-     * 
+     *
      * @return the short value.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream can not be represented as a
      *                positive short.
@@ -649,9 +649,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read a short from the stream.
-     * 
+     *
      * @return the short value.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream can not be represented as a
      *                short.
@@ -669,9 +669,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an unsigned long from the stream.
-     * 
+     *
      * @return the long value.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream can not be represented as a
      *                positive long.
@@ -682,9 +682,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read a long from the stream.
-     * 
+     *
      * @return the long value.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream can not be represented as a
      *                long.
@@ -700,9 +700,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an integer from the stream.
-     * 
+     *
      * @return the value as a big endian 2's complement byte array.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not an integer.
      */
@@ -839,9 +839,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read a list header from the stream.
-     * 
+     *
      * @return the arity of the list.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not a list.
      */
@@ -871,9 +871,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read a tuple header from the stream.
-     * 
+     *
      * @return the arity of the tuple.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not a tuple.
      */
@@ -900,9 +900,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an empty list from the stream.
-     * 
+     *
      * @return zero (the arity of the list).
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not an empty list.
      */
@@ -924,9 +924,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an Erlang PID from the stream.
-     * 
+     *
      * @return the value of the PID.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not an Erlang PID.
      */
@@ -954,9 +954,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an Erlang port from the stream.
-     * 
+     *
      * @return the value of the port.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not an Erlang port.
      */
@@ -982,9 +982,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an Erlang reference from the stream.
-     * 
+     *
      * @return the value of the reference
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not an Erlang reference.
      */
@@ -1071,9 +1071,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read a string from the stream.
-     * 
+     *
      * @return the value of the string.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not a string.
      */
@@ -1111,9 +1111,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read a compressed term from the stream
-     * 
+     *
      * @return the resulting uncompressed term.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the next term in the stream is not a compressed term.
      */
@@ -1149,9 +1149,9 @@ public class OtpInputStream extends ByteArrayInputStream {
 
     /**
      * Read an arbitrary Erlang term from the stream.
-     * 
+     *
      * @return the Erlang term.
-     * 
+     *
      * @exception OtpErlangDecodeException
      *                if the stream does not contain a known Erlang type at the
      *                next position.

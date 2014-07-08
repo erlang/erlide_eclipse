@@ -820,7 +820,7 @@ public abstract class AbstractErlContentAssistProcessor implements
 
     /**
      * Check if the string looks like an erlang parameter
-     * 
+     *
      * @param parameter
      *            String the parameter to check
      * @return true iff parameter is like Par, _Par or _par

@@ -1,15 +1,13 @@
 package org.erlide.engine.model.root;
 
+import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-
-import com.google.common.collect.Lists;
 
 @SuppressWarnings("all")
 public class PathResolver {

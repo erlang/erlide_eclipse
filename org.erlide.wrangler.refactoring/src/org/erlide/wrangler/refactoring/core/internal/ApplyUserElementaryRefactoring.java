@@ -2,7 +2,7 @@ package org.erlide.wrangler.refactoring.core.internal;
 
 /**
  * Logic for running user-defined, commited elementary refactrings
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */

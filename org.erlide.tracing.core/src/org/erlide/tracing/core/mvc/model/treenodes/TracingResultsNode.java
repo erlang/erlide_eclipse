@@ -8,9 +8,9 @@ import org.erlide.tracing.core.Images;
 
 /**
  * Node representing tracing results.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TracingResultsNode extends TreeNode implements
         Comparable<TracingResultsNode> {

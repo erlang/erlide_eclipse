@@ -34,7 +34,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
  * Fold expression against remote function refactoring integration
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -49,7 +49,7 @@ public class FoldRemoteExpressionRefactoring extends
 
     /**
      * Constructor
-     * 
+     *
      * @param functionClause
      *            selected function clause, which against should be folded
      * @param selection

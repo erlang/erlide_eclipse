@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2000, 2003 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/cpl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -31,7 +31,7 @@ import org.eclipse.ui.part.ViewPart;
  * To facilitate the usage, you should setFocus to the canvas at the beginning,
  * and call the dispose at the end.
  * <p>
- * 
+ *
  * @author Chengdong Li: cli4@uky.edu
  * @see uky.article.imageviewer.SWTImageCanvas
  * @author György Orosz
@@ -67,7 +67,7 @@ public class GraphImageView extends ViewPart {
 
     /**
      * Save image action class
-     * 
+     *
      * @author Gyorgy Orosz
      */
     public class SaveImageAction extends Action {
@@ -91,7 +91,7 @@ public class GraphImageView extends ViewPart {
 
     /**
      * Save file action class
-     * 
+     *
      * @author Gyorgy Orosz
      */
     public class SaveDOTAction extends Action {
@@ -241,7 +241,7 @@ public class GraphImageView extends ViewPart {
 
     /**
      * Create the GUI.
-     * 
+     *
      * @param frame
      *            The Composite handle of parent
      */
@@ -255,7 +255,7 @@ public class GraphImageView extends ViewPart {
 
     /**
      * Called when we must grab focus.
-     * 
+     *
      * @see org.eclipse.ui.part.ViewPart#setFocus
      */
     @Override
@@ -274,7 +274,7 @@ public class GraphImageView extends ViewPart {
 
     /**
      * Set view title
-     * 
+     *
      * @param title
      *            title string
      */
@@ -284,7 +284,7 @@ public class GraphImageView extends ViewPart {
 
     /**
      * Stores the given file
-     * 
+     *
      * @param f
      *            dot file
      */
@@ -294,7 +294,7 @@ public class GraphImageView extends ViewPart {
 
     /**
      * Loads the given image to the canvas
-     * 
+     *
      * @param imgpath
      *            image path
      */

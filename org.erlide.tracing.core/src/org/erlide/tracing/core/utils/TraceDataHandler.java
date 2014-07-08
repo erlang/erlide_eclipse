@@ -26,9 +26,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Handler which reads trace data.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TraceDataHandler {
 
@@ -82,7 +82,7 @@ public class TraceDataHandler {
 
     /**
      * Checks if given message is last one.
-     * 
+     *
      * @param message
      *            message
      * @return <code>true</code> if it is last message, <code>false</code>
@@ -100,7 +100,7 @@ public class TraceDataHandler {
 
     /**
      * Reads error reason from message.
-     * 
+     *
      * @param message
      *            message
      * @return error reason or <code>null</code> or if it is not an error
@@ -122,10 +122,10 @@ public class TraceDataHandler {
     /**
      * Reads data described by given object. It can be trace event or
      * information about file containing tracing results.
-     * 
+     *
      * @param otpErlangObject
      *            input object
-     * 
+     *
      * @return tree node that describes data
      */
     public ITreeNode getData(final OtpErlangObject otpErlangObject) {
@@ -205,7 +205,7 @@ public class TraceDataHandler {
     /**
      * Converts tuple representing date and time (<code>{date(), time()}</code>)
      * to java {@link Date} object.
-     * 
+     *
      * @param tuple
      *            date tuple
      * @return java date

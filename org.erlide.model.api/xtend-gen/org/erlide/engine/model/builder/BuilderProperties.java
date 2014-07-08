@@ -1,9 +1,9 @@
 package org.erlide.engine.model.builder;
 
 import java.util.regex.Pattern;
-
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.erlide.engine.model.builder.BuilderTool;
 
 /**
  * TODO there should be specific properties for each builder tool

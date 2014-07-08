@@ -94,8 +94,9 @@ import org.eclipse.core.resources.IResourceDelta;
  * of the notification.
  * </p>
  * <p>
+ * 
  * @noimplement This interface is not intended to be implemented by clients.
- * </p>
+ *              </p>
  */
 public interface IErlElementDelta {
 

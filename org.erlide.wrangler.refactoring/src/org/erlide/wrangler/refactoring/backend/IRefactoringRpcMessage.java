@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Interface for handling RpcMessages which contains information about a
  * Wrangler refactoring
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -23,7 +23,7 @@ public interface IRefactoringRpcMessage extends IRpcMessage {
     /**
      * Successful refactorings contains source file modification, which are
      * represented with filename-source code pairs
-     * 
+     *
      * @return changed files list
      */
     public List<ChangedFile> getRefactoringChangeset();

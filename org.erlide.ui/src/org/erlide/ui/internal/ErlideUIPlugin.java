@@ -209,7 +209,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                 if (pref != null) {
                     if (pref.open() == Window.OK) {
                         ErlLogger
-                        .info("Restarting workbench after initial runtime configuration...");
+                                .info("Restarting workbench after initial runtime configuration...");
                         PlatformUI.getWorkbench().restart();
                     }
                 }
@@ -547,11 +547,11 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             // create an configure the contexts available in the template editor
             fContextTypeRegistry = new ContributionContextTypeRegistry();
             fContextTypeRegistry
-            .addContextType(ErlangTemplateContextType.ERLANG_CONTEXT_TYPE_ID);
+                    .addContextType(ErlangTemplateContextType.ERLANG_CONTEXT_TYPE_ID);
             fContextTypeRegistry
-            .addContextType(ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
+                    .addContextType(ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
             fContextTypeRegistry
-            .addContextType(ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
+                    .addContextType(ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
         }
         return fContextTypeRegistry;
     }

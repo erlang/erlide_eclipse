@@ -1,6 +1,5 @@
 package org.erlide.engine.internal;
 
-
 public class ModelPlugin {
 
     public static final String PLUGIN_ID = "org.erlide.model";

@@ -5,9 +5,9 @@ import org.erlide.tracing.core.Images;
 
 /**
  * Node representing function in treeviewer.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class FunctionNode extends TreeNode {
     private final String moduleName;
@@ -16,7 +16,7 @@ public class FunctionNode extends TreeNode {
 
     /**
      * Creates new node.
-     * 
+     *
      * @param moduleName
      *            module name
      * @param functionName

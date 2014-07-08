@@ -7,9 +7,9 @@ import org.eclipse.core.runtime.IAdaptable;
 
 /**
  * Abstract element of the duplicates view Treeview
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public abstract class AbstractResultTreeObject implements IAdaptable {
     // private String name;
@@ -21,7 +21,7 @@ public abstract class AbstractResultTreeObject implements IAdaptable {
 
     /**
      * Returns the name of the element.
-     * 
+     *
      * @return name of the element
      */
     public abstract String getName(); /*
@@ -30,10 +30,10 @@ public abstract class AbstractResultTreeObject implements IAdaptable {
 
     /**
      * Sets the parent of the current element.
-     * 
+     *
      * @param parent
      *            parent of the current item
-     * 
+     *
      */
     public void setParent(final AbstractResultTreeParent parent) {
         this.parent = parent;
@@ -41,7 +41,7 @@ public abstract class AbstractResultTreeObject implements IAdaptable {
 
     /**
      * Get the parent item of the current
-     * 
+     *
      * @return parent item
      */
     public AbstractResultTreeParent getParent() {
@@ -62,7 +62,7 @@ public abstract class AbstractResultTreeObject implements IAdaptable {
 
     /**
      * Get the codepart suggested by Wrangler
-     * 
+     *
      * @return suggested codepart stringss
      */
     public String getSuggestedCode() {
@@ -71,7 +71,7 @@ public abstract class AbstractResultTreeObject implements IAdaptable {
 
     /**
      * Set the suggested code part fromWrangler
-     * 
+     *
      * @param str
      *            suggested code part string
      */

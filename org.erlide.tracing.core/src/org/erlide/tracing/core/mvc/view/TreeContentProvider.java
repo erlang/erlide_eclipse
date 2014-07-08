@@ -9,9 +9,9 @@ import org.erlide.tracing.core.mvc.model.treenodes.ITreeNode;
 
 /**
  * Content provider for tree.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TreeContentProvider implements
 /* ILazyTreeContentProvider */ITreeContentProvider {
@@ -21,7 +21,7 @@ public class TreeContentProvider implements
 
     /**
      * Creates content provider.
-     * 
+     *
      * @param treeViewer
      *            tree viewer that will be using this content provider
      * @param hasChildrenValue

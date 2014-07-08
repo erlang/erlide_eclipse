@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -26,7 +26,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Wranglers syntax backend, which is for determining about a selection its type
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -97,7 +97,7 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
 
     /**
      * Returns syntax information about a selection
-     * 
+     *
      * @param f
      *            selected file
      * @param line

@@ -17,7 +17,7 @@ import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 
 /**
  * Page for providing arguments to user defined refactorings
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */
@@ -42,7 +42,7 @@ public class UserRefacInputPage extends InputPage {
 
     /**
      * Constructor
-     * 
+     *
      * @param name
      *            Refactoring name (title)
      * @param description

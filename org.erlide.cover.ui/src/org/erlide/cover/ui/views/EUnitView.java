@@ -19,9 +19,9 @@ import org.erlide.ui.util.DisplayUtils;
 
 /**
  * Simple view to show EUnit test results
- * 
+ *
  * @author Aleksandra Lipiec
- * 
+ *
  */
 public class EUnitView extends ViewPart implements IEUnitObserver {
 

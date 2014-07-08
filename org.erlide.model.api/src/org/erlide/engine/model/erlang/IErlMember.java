@@ -13,11 +13,11 @@ package org.erlide.engine.model.erlang;
 import org.erlide.engine.model.root.IErlElement;
 
 /**
- * 
+ *
  * @author Vlad
- * 
+ *
  * @noimplement This interface is not intended to be implemented by clients.
- * 
+ *
  */
 public interface IErlMember extends IErlElement, ISourceReference {
 
@@ -25,7 +25,7 @@ public interface IErlMember extends IErlElement, ISourceReference {
      * Returns the compilation unit in which this member is declared, or
      * <code>null</code> if this member is not declared in a compilation unit
      * (for example, a binary type). This is a handle-only method.
-     * 
+     *
      * @return the compilation unit in which this member is declared, or
      *         <code>null</code> if this member is not declared in a compilation
      *         unit (for example, a binary type)

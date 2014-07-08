@@ -5,9 +5,9 @@ import org.erlide.engine.model.ErlModelException;
 
 /**
  * Validator for module names
- * 
+ *
  * Check if module exists
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */

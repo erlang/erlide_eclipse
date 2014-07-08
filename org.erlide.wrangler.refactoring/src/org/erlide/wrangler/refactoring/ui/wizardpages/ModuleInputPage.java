@@ -7,7 +7,7 @@ import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 /**
  * Input page for ad hoc custom refactorings, enables to pass the name for the
  * callback module
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */

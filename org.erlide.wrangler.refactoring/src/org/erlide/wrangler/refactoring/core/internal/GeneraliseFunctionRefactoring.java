@@ -39,7 +39,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Integration class of the generalise function refactoring
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -49,7 +49,7 @@ public class GeneraliseFunctionRefactoring extends
     /**
      * The state of the generalise function refactoring, after calling the first
      * RPC
-     * 
+     *
      * @author Gyorgy Orosz
      * @version %I%, %G%
      */
@@ -66,7 +66,7 @@ public class GeneraliseFunctionRefactoring extends
 
     /**
      * Constructor
-     * 
+     *
      * @param state
      *            state of the refactoring
      * @param text
@@ -80,7 +80,7 @@ public class GeneraliseFunctionRefactoring extends
 
     /**
      * Constructor
-     * 
+     *
      * @param state
      *            state of the refactoring
      * @param message
@@ -94,7 +94,7 @@ public class GeneraliseFunctionRefactoring extends
 
     /**
      * Constructor
-     * 
+     *
      * @param state
      *            state of the refactoring
      * @param message
@@ -110,7 +110,7 @@ public class GeneraliseFunctionRefactoring extends
 
     /**
      * Constructor
-     * 
+     *
      * @param state
      *            state of the refactoring
      * @param message
@@ -163,7 +163,7 @@ public class GeneraliseFunctionRefactoring extends
     /**
      * Returns IErlRange, OtpErlangTuple pairs, which are represents the same
      * position in a module
-     * 
+     *
      * @param thePositions
      * @return
      */

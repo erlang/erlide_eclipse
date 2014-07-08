@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.erlide.wrangler.refactoring.duplicatedcode.ui.elements;
 
@@ -7,9 +7,9 @@ import java.util.ArrayList;
 
 /**
  * A tree element which can contain other elements
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public abstract class AbstractResultTreeParent extends AbstractResultTreeObject {
     protected ArrayList<AbstractResultTreeObject> children = null;
@@ -21,7 +21,7 @@ public abstract class AbstractResultTreeParent extends AbstractResultTreeObject 
 
     /**
      * Adds a child element
-     * 
+     *
      * @param child
      *            child element
      */
@@ -35,7 +35,7 @@ public abstract class AbstractResultTreeParent extends AbstractResultTreeObject 
 
     /**
      * Removes a child element
-     * 
+     *
      * @param child
      *            child element
      */
@@ -48,7 +48,7 @@ public abstract class AbstractResultTreeParent extends AbstractResultTreeObject 
 
     /**
      * Return the children of the the current element
-     * 
+     *
      * @return children elmements
      */
     public AbstractResultTreeObject[] getChildren() {
@@ -60,7 +60,7 @@ public abstract class AbstractResultTreeParent extends AbstractResultTreeObject 
 
     /**
      * Return true if the element has children
-     * 
+     *
      * @return true, if has any child element
      */
     public boolean hasChildren() {

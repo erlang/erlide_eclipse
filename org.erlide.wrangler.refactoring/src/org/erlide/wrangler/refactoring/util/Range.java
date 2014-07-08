@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -19,7 +19,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Selection range in text documents.
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -28,7 +28,7 @@ public class Range implements IRange {
 
     /**
      * Constructor with range starting and ending positions
-     * 
+     *
      * @param startLine
      *            start line
      * @param startCol
@@ -48,7 +48,7 @@ public class Range implements IRange {
 
     /**
      * Constructor with position in an Erlang tuple
-     * 
+     *
      * @param position
      *            {{StartingLine, StartingColumn},{EndingLine, EndingColumn}}
      * @throws OtpErlangRangeException
@@ -61,7 +61,7 @@ public class Range implements IRange {
 
     /**
      * Constructor with positions in Erlang tuples
-     * 
+     *
      * @param startPos
      *            {StartingLine, StartingColumn}
      * @param endPos

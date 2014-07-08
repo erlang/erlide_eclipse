@@ -9,9 +9,9 @@ import org.erlide.cover.views.model.StatsTreeObject;
 
 /**
  * Hiding annotations for specific objects
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class HideCoverageAction extends CoverageAction {
 

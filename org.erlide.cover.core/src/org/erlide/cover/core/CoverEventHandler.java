@@ -25,9 +25,9 @@ import com.google.common.eventbus.Subscribe;
 
 /**
  * Handler for coverage events
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class CoverEventHandler extends ErlangEventHandler {
 
@@ -75,7 +75,7 @@ public class CoverEventHandler extends ErlangEventHandler {
 
     /**
      * When coverage results came
-     * 
+     *
      * @param msg
      * @return
      */

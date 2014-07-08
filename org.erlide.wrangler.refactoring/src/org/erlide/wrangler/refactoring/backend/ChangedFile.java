@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -28,7 +28,7 @@ import org.erlide.wrangler.refactoring.util.ChangesetMaker;
 
 /**
  * Represents an Erlang file, and a string which contains the modified source.
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -51,7 +51,7 @@ public class ChangedFile {
 
     /**
      * Constructs a new object.
-     * 
+     *
      * @param oldPath
      *            Old path of the file.
      * @param newPath
@@ -69,7 +69,7 @@ public class ChangedFile {
     /**
      * Creates <code>Change</code> objects from the original and the modified
      * source.
-     * 
+     *
      * @return the created <code>Change</code> object which typically instance
      *         of <code>TextFileChange</code>
      * @throws IOException
@@ -105,7 +105,7 @@ public class ChangedFile {
 
     /**
      * Finds the Eclipse representation of the given path.
-     * 
+     *
      * @param anOldPath
      *            OS dependent path of the refactored file
      * @return an <code>IFile</code> object of the given path
@@ -128,7 +128,7 @@ public class ChangedFile {
 
     /**
      * True if the file name is changed during the refactoring.
-     * 
+     *
      * @return true if the file name has changed
      */
     public boolean isNameChanged() {
@@ -137,7 +137,7 @@ public class ChangedFile {
 
     /**
      * Returns the IPath object of the old path.
-     * 
+     *
      * @return IPath object
      */
     public IPath getPath() {
@@ -152,7 +152,7 @@ public class ChangedFile {
 
     /**
      * Returns the IPath object of the new paths
-     * 
+     *
      * @return IPath object
      */
     public IPath getNewPath() {
@@ -167,7 +167,7 @@ public class ChangedFile {
 
     /**
      * If the refactoring changes the file name, it returns back the new one.
-     * 
+     *
      * @return new file name
      */
     public String getNewName() {

@@ -36,9 +36,9 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Sequence diagram which shows tracing results.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
 
@@ -178,7 +178,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
 
     /**
      * Action performed when user clicks on tree element.
-     * 
+     *
      * @param event
      */
     private void doSelection(final SelectionChangedEvent event) {

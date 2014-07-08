@@ -17,7 +17,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 /**
  * Abstract class for elementary user-defined refactorings
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */

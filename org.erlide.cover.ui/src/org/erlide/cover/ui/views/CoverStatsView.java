@@ -52,7 +52,7 @@ import org.erlide.ui.util.DisplayUtils;
 
 /**
  * View for coverage statistics
- * 
+ *
  * Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  */
 public class CoverStatsView extends ViewPart implements ICoverObserver {

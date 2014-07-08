@@ -2,7 +2,7 @@ package org.erlide.wrangler.refactoring.ui.validator;
 
 /**
  * Validates a string which is a double values and is between 0.1 and 1.0
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */

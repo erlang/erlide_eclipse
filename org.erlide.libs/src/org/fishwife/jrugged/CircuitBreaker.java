@@ -45,7 +45,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * cooldown period.
  * <p>
  * Sample usage:
- * 
+ *
  * <pre>
  * public class Service implements Monitorable {
  *     private CircuitBreaker cb = new CircuitBreaker();
@@ -175,7 +175,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
      * Creates a {@link CircuitBreaker} with a {@link DefaultFailureInterpreter}
      * and the default "tripped" exception behavior (throwing a
      * {@link CircuitBreakerException}).
-     * 
+     *
      * @param name
      *            the name for the {@link CircuitBreaker}.
      */
@@ -187,7 +187,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
      * Creates a {@link CircuitBreaker} with the specified
      * {@link FailureInterpreter} and the default "tripped" exception behavior
      * (throwing a {@link CircuitBreakerException}).
-     * 
+     *
      * @param fi
      *            the <code>FailureInterpreter</code> to use when determining
      *            whether a specific failure ought to cause the breaker to trip
@@ -200,7 +200,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
      * Creates a {@link CircuitBreaker} with the specified
      * {@link FailureInterpreter} and the default "tripped" exception behavior
      * (throwing a {@link CircuitBreakerException}).
-     * 
+     *
      * @param name
      *            the name for the {@link CircuitBreaker}.
      * @param fi
@@ -216,7 +216,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
      * Creates a {@link CircuitBreaker} with a {@link DefaultFailureInterpreter}
      * and using the supplied {@link CircuitBreakerExceptionMapper} when client
      * calls are made while the breaker is tripped.
-     * 
+     *
      * @param name
      *            the name for the {@link CircuitBreaker}.
      * @param mapper
@@ -234,7 +234,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
      * {@link FailureInterpreter} and using the provided
      * {@link CircuitBreakerExceptionMapper} when client calls are made while
      * the breaker is tripped.
-     * 
+     *
      * @param name
      *            the name for the {@link CircuitBreaker}.
      * @param fi
@@ -254,7 +254,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     /**
      * Wrap the given service call with the {@link CircuitBreaker} protection
      * logic.
-     * 
+     *
      * @param c
      *            the {@link Callable} to attempt
      * @return whatever c would return on success
@@ -287,7 +287,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     /**
      * Wrap the given service call with the {@link CircuitBreaker} protection
      * logic.
-     * 
+     *
      * @param r
      *            the {@link Runnable} to attempt
      * @throws CircuitBreakerException
@@ -319,7 +319,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     /**
      * Wrap the given service call with the {@link CircuitBreaker} protection
      * logic.
-     * 
+     *
      * @param r
      *            the {@link Runnable} to attempt
      * @param result
@@ -399,7 +399,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     /**
      * Returns the last time the breaker tripped OPEN, measured in milliseconds
      * since the Epoch.
-     * 
+     *
      * @return long the last failure time
      */
     public long getLastTripTime() {
@@ -409,7 +409,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     /**
      * Returns the number of times the breaker has tripped OPEN during its
      * lifetime.
-     * 
+     *
      * @return long the number of times the circuit breaker tripped
      */
     public long getTripCount() {
@@ -448,7 +448,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
      * Get the current {@link org.fishwife.jrugged.ServiceStatus} of the
      * {@link CircuitBreaker}, including the name,
      * {@link org.fishwife.jrugged.Status}, and reason.
-     * 
+     *
      * @return the {@link org.fishwife.jrugged.ServiceStatus}.
      */
     @Override
@@ -456,11 +456,11 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
         final boolean canSendProbeRequest = !isHardTrip && lastFailure.get() > 0
                 && System.currentTimeMillis() - lastFailure.get() >= resetMillis.get();
 
-                if (byPass) {
-                    return new ServiceStatus(name, Status.DEGRADED, "Bypassed");
-                }
+        if (byPass) {
+            return new ServiceStatus(name, Status.DEGRADED, "Bypassed");
+        }
 
-                switch (state) {
+        switch (state) {
         case OPEN:
             return canSendProbeRequest ? new ServiceStatus(name, Status.DEGRADED,
                     "Send Probe Request") : new ServiceStatus(name, Status.DOWN, "Open");
@@ -469,12 +469,12 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
         case CLOSED:
         default:
             return new ServiceStatus(name, Status.UP);
-                }
+        }
     }
 
     /**
      * Returns the cooldown period in milliseconds.
-     * 
+     *
      * @return long
      */
     public long getResetMillis() {
@@ -496,7 +496,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     /**
      * Returns a {@link String} representation of the breaker's status;
      * potentially useful for exposing to monitoring software.
-     * 
+     *
      * @return <code>String</code> which is <code>"GREEN"</code> if the breaker
      *         is CLOSED; <code>"YELLOW"</code> if the breaker is HALF_CLOSED;
      *         and <code>"RED"</code> if the breaker is OPEN (tripped).
@@ -509,7 +509,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
      * Specifies the failure tolerance limit for the
      * {@link DefaultFailureInterpreter} that comes with a
      * {@link CircuitBreaker} by default.
-     * 
+     *
      * @see DefaultFailureInterpreter
      * @param limit
      *            the number of tolerated failures in a window
@@ -526,7 +526,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     /**
      * Specifies a set of {@link Throwable} classes that should not be
      * considered failures by the {@link CircuitBreaker}.
-     * 
+     *
      * @see DefaultFailureInterpreter
      * @param ignore
      *            a {@link java.util.Collection} of {@link Throwable} classes
@@ -552,7 +552,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
      * Specifies the tolerance window in milliseconds for the
      * {@link DefaultFailureInterpreter} that comes with a
      * {@link CircuitBreaker} by default.
-     * 
+     *
      * @see DefaultFailureInterpreter
      * @param windowMillis
      *            length of the window in milliseconds
@@ -627,7 +627,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     /**
      * Get the helper that converts {@link CircuitBreakerException}s into
      * application-specific exceptions.
-     * 
+     *
      * @return {@link CircuitBreakerExceptionMapper} my converter object, or
      *         <code>null</code> if one is not currently set.
      */

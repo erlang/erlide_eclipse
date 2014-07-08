@@ -9,9 +9,9 @@ import org.erlide.tracing.core.mvc.view.ProcessColumn;
 
 /**
  * Cell modifier for processes table.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class ProcessCellModifier implements ICellModifier {
 

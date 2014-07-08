@@ -37,9 +37,9 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
 /**
  * View which handles textual data referencing to an Erlang element, got from
  * code inspection functions
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class CodeInspectionResultsView extends ViewPart {
     public static final String VIEW_ID = "org.erlide.wrangler.refactoring.codeinspection.codeinspectionresultview";
@@ -149,7 +149,7 @@ public class CodeInspectionResultsView extends ViewPart {
 
     /**
      * Adds Erlang elements to the view
-     * 
+     *
      * @param e
      *            Erlang elements' list
      */
@@ -159,7 +159,7 @@ public class CodeInspectionResultsView extends ViewPart {
 
     /**
      * Sets the view title
-     * 
+     *
      * @param title
      *            title
      */

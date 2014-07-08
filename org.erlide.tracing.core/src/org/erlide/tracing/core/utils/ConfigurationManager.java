@@ -21,9 +21,9 @@ import org.erlide.util.ErlLogger;
  * Class containing helper methods for managing nodes and trace patterns
  * configurations. It loads loads and saves data in plugins directory (path to
  * this directory is obtained using {@link Plugin#getStateLocation()}).
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public final class ConfigurationManager {
 
@@ -35,7 +35,7 @@ public final class ConfigurationManager {
 
     /**
      * Loads trace patterns configuration.
-     * 
+     *
      * @param configName
      *            configuration name
      * @return loaded trace patterns
@@ -54,7 +54,7 @@ public final class ConfigurationManager {
 
     /**
      * Loads nodes configuration.
-     * 
+     *
      * @param configName
      *            configuration name
      * @return loaded nodes
@@ -75,7 +75,7 @@ public final class ConfigurationManager {
      * Saves trace patterns configuration under given name. If configuration
      * with this name does not exist it will be created. Otherwise it will be
      * overwritten.
-     * 
+     *
      * @param configName
      * @return <code>true</code> if configuration was saved, <code>false</code>
      *         otherwise
@@ -88,7 +88,7 @@ public final class ConfigurationManager {
     /**
      * Saves nodes configuration under given name. If configuration with this
      * name does not exist it will be created. Otherwise it will be overwritten.
-     * 
+     *
      * @param configName
      * @return <code>true</code> if configuration was saved, <code>false</code>
      *         otherwise
@@ -100,7 +100,7 @@ public final class ConfigurationManager {
 
     /**
      * Deletes trace pattern configuration.
-     * 
+     *
      * @param configName
      *            configuration name
      * @return <code>true</code> if configuration was deleted,
@@ -112,7 +112,7 @@ public final class ConfigurationManager {
 
     /**
      * Deletes nodes configuration.
-     * 
+     *
      * @param configName
      *            configuration name
      * @return <code>true</code> if configuration was deleted,
@@ -124,7 +124,7 @@ public final class ConfigurationManager {
 
     /**
      * Returns list of all available trace patterns configurations.
-     * 
+     *
      * @return list of trace pattern configuration names
      */
     public static String[] getTPConfigs() {
@@ -133,7 +133,7 @@ public final class ConfigurationManager {
 
     /**
      * Returns list of all available nodes configurations.
-     * 
+     *
      * @return list of trace pattern configuration names
      */
     public static String[] getNodesConfig() {

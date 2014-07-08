@@ -30,7 +30,7 @@ import java.util.concurrent.Callable;
 public interface ServiceWrapper {
     /**
      * Wraps a {@link Callable} in some fashion.
-     * 
+     *
      * @param c
      *            the service call to wrap
      * @return whatever <code>c</code> would normally return
@@ -41,7 +41,7 @@ public interface ServiceWrapper {
 
     /**
      * Wraps a {@link Runnable} in some fashion.
-     * 
+     *
      * @param r
      *            the service call/task to wrap
      * @throws Exception
@@ -52,7 +52,7 @@ public interface ServiceWrapper {
     /**
      * Wraps a {@link Runnable} task in some fashion, and returns a
      * predetermined result on success.
-     * 
+     *
      * @param r
      *            the service call/task to wrap
      * @param result

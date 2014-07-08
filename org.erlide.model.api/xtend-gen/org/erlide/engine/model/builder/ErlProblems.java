@@ -1,24 +1,23 @@
 package org.erlide.engine.model.builder;
 
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.eclipse.xtext.xbase.lib.CollectionLiterals;
-import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.eclipse.xtext.xbase.lib.InputOutput;
-import org.erlide.util.ErlLogger;
-import org.erlide.util.erlang.ErlUtils;
-
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.ImmutableList;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
+import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.eclipse.xtext.xbase.lib.InputOutput;
+import org.erlide.engine.model.builder.ProblemData;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.erlang.ErlUtils;
 
 @SuppressWarnings("all")
 public class ErlProblems {

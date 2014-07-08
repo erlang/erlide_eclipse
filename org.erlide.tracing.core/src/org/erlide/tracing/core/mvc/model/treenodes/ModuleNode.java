@@ -5,9 +5,9 @@ import org.erlide.tracing.core.Images;
 
 /**
  * Node representing module in treeviewer.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class ModuleNode extends TreeNode {
 
@@ -15,7 +15,7 @@ public class ModuleNode extends TreeNode {
 
     /**
      * Creates new node.
-     * 
+     *
      * @param moduleName
      *            module name
      */

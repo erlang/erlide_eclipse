@@ -6,9 +6,9 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
 /**
  * Dialog for selecting configuration for loading.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class SelectConfigurationDialog extends ElementListSelectionDialog {
 

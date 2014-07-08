@@ -10,9 +10,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Traced process.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TracedProcess {
 
@@ -32,7 +32,7 @@ public class TracedProcess {
     /**
      * Creates process from tuple. List of tuples describing all processes is
      * returned as a result of <code>erlide_proclist:process_list/0</code> call.
-     * 
+     *
      * @param tuple
      *            tuple describing process
      */

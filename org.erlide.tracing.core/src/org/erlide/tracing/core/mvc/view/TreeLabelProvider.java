@@ -6,9 +6,9 @@ import org.erlide.tracing.core.mvc.model.treenodes.ITreeNode;
 
 /**
  * Label provider for tree.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TreeLabelProvider extends LabelProvider {
 

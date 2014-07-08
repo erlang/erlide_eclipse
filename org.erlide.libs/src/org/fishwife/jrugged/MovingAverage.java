@@ -32,7 +32,7 @@ public class MovingAverage {
      * Construct a {@link MovingAverage}, providing the time window we want the
      * average over. For example, providing a value of 3,600,000 provides a
      * moving average over the last hour.
-     * 
+     *
      * @param windowMillis
      *            the length of the sliding window in milliseconds
      */
@@ -42,7 +42,7 @@ public class MovingAverage {
 
     /**
      * Updates the average with the latest measurement.
-     * 
+     *
      * @param sample
      *            the latest measurement in the rolling average
      */

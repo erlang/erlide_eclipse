@@ -35,7 +35,7 @@ import org.osgi.framework.Bundle;
 
 /**
  * Handler for adding user-defined refactorings to Wrangler
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */
@@ -235,7 +235,7 @@ public class AddRefacHandler extends AbstractHandler {
 
     /**
      * enum for refactoring types - defining refactoring folders
-     * 
+     *
      * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
      * @version %I%, %G%
      */

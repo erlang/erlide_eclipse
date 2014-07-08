@@ -6,9 +6,9 @@ import java.security.MessageDigest;
 
 /**
  * Provides a way to calculate md5 checksum to a file
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class MD5Checksum {
 

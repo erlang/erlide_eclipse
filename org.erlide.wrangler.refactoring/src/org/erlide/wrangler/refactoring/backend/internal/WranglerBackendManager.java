@@ -15,7 +15,7 @@ import org.erlide.wrangler.refactoring.backend.WranglerSyntaxBackend;
 
 /**
  * Stores Erlide backends for wrangler , and has interface to access them
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -25,7 +25,7 @@ public class WranglerBackendManager {
 
     /**
      * Returns an Erlide backend which is used to run Wrangler refactorings
-     * 
+     *
      * @return Erlide backend
      */
     public static WranglerRefactoringBackend getRefactoringBackend() {
@@ -38,7 +38,7 @@ public class WranglerBackendManager {
 
     /**
      * Returns an Erlide backend which is used for sending syntax RPCs
-     * 
+     *
      * @return Erlide backend
      */
     public static WranglerSyntaxBackend getSyntaxBackend() {

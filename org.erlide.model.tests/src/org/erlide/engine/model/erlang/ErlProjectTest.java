@@ -203,8 +203,8 @@ public class ErlProjectTest {
             final IErlFunction function = ErlangEngine
                     .getInstance()
                     .getModelFindService()
-                    .findFunction(model, project, moduleE, res.getName(),
-                            res.getPath(), res.getFunction(), IErlElementLocator.Scope.PROJECT_ONLY);
+                    .findFunction(model, project, moduleE, res.getName(), res.getPath(),
+                            res.getFunction(), IErlElementLocator.Scope.PROJECT_ONLY);
             assertNotNull(function);
 
             final IErlElement module = model.findModuleFromProject(project,

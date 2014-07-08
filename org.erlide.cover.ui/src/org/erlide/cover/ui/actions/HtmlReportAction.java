@@ -29,9 +29,9 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Action for showing html reports
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class HtmlReportAction extends Action {
 
@@ -98,7 +98,7 @@ public class HtmlReportAction extends Action {
 
     /**
      * Generates html reports
-     * 
+     *
      * @param obj
      * @param path
      */

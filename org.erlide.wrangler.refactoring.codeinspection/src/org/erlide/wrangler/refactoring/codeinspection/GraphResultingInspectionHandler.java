@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -34,9 +34,9 @@ import com.ericsson.otp.erlang.OtpErlangBoolean;
 /**
  * This class is for handling commands which are from wrangler code inspection
  * functionality, and result a graph.
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class GraphResultingInspectionHandler extends AbstractHandler {
     protected static final String CYCLYC_VIEW_ID = "cyclic";
@@ -109,7 +109,7 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
 
     /**
      * Run code inspection function, and shows the result in the workbench
-     * 
+     *
      * @param viewtTitle
      *            title of the view
      * @param noResultMessage
@@ -122,7 +122,7 @@ public class GraphResultingInspectionHandler extends AbstractHandler {
      *            parameters signature
      * @param parameters
      *            function parameters
-     * 
+     *
      */
     protected void runInspection(final String viewtTitle, final String secondaryID,
             final String noResultMessage, final File tmpFile, final String functionName,

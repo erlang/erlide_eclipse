@@ -5,9 +5,9 @@ import java.util.List;
 
 /**
  * Basic element of the EUnit result tree
- * 
+ *
  * @author Aleksandra Lipiec
- * 
+ *
  */
 public class TestTreeObject {
 
@@ -39,7 +39,7 @@ public class TestTreeObject {
 
     /**
      * Adds time to the description
-     * 
+     *
      * @param time
      */
     public void setTime(final int time) {

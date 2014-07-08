@@ -19,7 +19,7 @@ import org.erlide.engine.model.root.IErlElement;
 
 /**
  * Common protocol for Erlang elements that contain other Erlang elements.
- * 
+ *
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IParent {
@@ -28,7 +28,7 @@ public interface IParent {
      * Returns the immediate children of this element. Unless otherwise
      * specified by the implementing element, the children are in no particular
      * order.
-     * 
+     *
      * @exception ErlModelException
      *                if this element does not exist or if an exception occurs
      *                while accessing its corresponding resource
@@ -42,7 +42,7 @@ public interface IParent {
      * Returns whether this element has one or more immediate children. This is
      * a convenience method, and may be more efficient than testing whether
      * <code>getChildren</code> is an empty array.
-     * 
+     *
      * @exception ErlModelException
      *                if this element does not exist or if an exception occurs
      *                while accessing its corresponding resource

@@ -21,9 +21,9 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
  * Implementation of coverage analysis operations
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class CoveragePerformer implements ICoveragePerformer {
 

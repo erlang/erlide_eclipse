@@ -4,20 +4,20 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 
 /**
  * Enum containing flags which may be set on process under tracing.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public enum ProcessFlag {
 
     //@formatter:off
-    CALL("call", new OtpErlangAtom("c")), 
-    PROCS("procs", new OtpErlangAtom("p")), 
-    RECEIVE("receive", new OtpErlangAtom("r")), 
-    SEND("send", new OtpErlangAtom("s")), 
-    SOFS("set on first spawn", new OtpErlangAtom("sofs")), 
-    SOFL("set on first link", new OtpErlangAtom("sofl")), 
-    SOL("set on link", new OtpErlangAtom("sol")), 
+    CALL("call", new OtpErlangAtom("c")),
+    PROCS("procs", new OtpErlangAtom("p")),
+    RECEIVE("receive", new OtpErlangAtom("r")),
+    SEND("send", new OtpErlangAtom("s")),
+    SOFS("set on first spawn", new OtpErlangAtom("sofs")),
+    SOFL("set on first link", new OtpErlangAtom("sofl")),
+    SOL("set on link", new OtpErlangAtom("sol")),
     SOS("set on spawn", new OtpErlangAtom("sos"));
     //@formatter:on
 
@@ -32,7 +32,7 @@ public enum ProcessFlag {
     /**
      * Returns enum value for given ordinal. If there is no enum with given
      * ordinal it will return <code>null</code>.
-     * 
+     *
      * @param index
      * @return enum value
      */

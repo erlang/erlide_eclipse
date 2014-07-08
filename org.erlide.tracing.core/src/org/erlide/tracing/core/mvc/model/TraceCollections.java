@@ -9,9 +9,9 @@ import org.erlide.tracing.core.mvc.model.treenodes.ITreeNode;
 
 /**
  * Class that contains collections used as models.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public final class TraceCollections {
 
@@ -25,7 +25,7 @@ public final class TraceCollections {
 
     /**
      * Returns collection of nodes that represents files with tracing results.
-     * 
+     *
      * @return list
      */
     public static Collection<ITreeNode> getFilesList() {
@@ -34,7 +34,7 @@ public final class TraceCollections {
 
     /**
      * Returns collection of nodes that represents trace events.
-     * 
+     *
      * @return list
      */
     public static Collection<ITreeNode> getTracesList() {

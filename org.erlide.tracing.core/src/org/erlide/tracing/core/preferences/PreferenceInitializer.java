@@ -6,9 +6,9 @@ import org.erlide.tracing.core.Activator;
 
 /**
  * Preferences initializer.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
