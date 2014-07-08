@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.engine.IErlangEngine;
 import org.erlide.engine.InjectionException;
@@ -60,7 +62,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.google.common.collect.Maps;
 
-public class DefaultErlangEngine implements IErlangEngine {
+public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension {
 
     private final Map<Class<? extends ErlangService>, Class<? extends ErlangService>> implementations = Maps
             .newHashMap();
@@ -109,9 +111,7 @@ public class DefaultErlangEngine implements IErlangEngine {
     public DefaultErlangEngine() {
         // TODO how to inject runtime and other start params?
 
-        backend = RpcSiteFactory.getRpcSite();
-
-        // TODO use exension points?
+        // TODO use extension points?
 
         implementations.put(XrefService.class, ErlangXref.class);
         implementations.put(IndentService.class, ErlideIndent.class);
@@ -121,7 +121,7 @@ public class DefaultErlangEngine implements IErlangEngine {
         implementations.put(SystemInfoService.class, SystemInfo.class);
     }
 
-    private final IRpcSite backend;
+    private IRpcSite backend;
     private volatile ErlModel erlangModel;
 
     @Override
@@ -249,6 +249,12 @@ public class DefaultErlangEngine implements IErlangEngine {
                 }
             }
         };
+    }
+
+    @Override
+    public void setInitializationData(final IConfigurationElement config,
+            final String propertyName, final Object data) throws CoreException {
+        this.backend = RpcSiteFactory.getRpcSite();
     }
 
 }
