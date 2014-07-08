@@ -22,8 +22,6 @@ import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.runtime.ErlRuntimeFactory;
 import org.erlide.runtime.api.IErlRuntime;
-import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
@@ -43,31 +41,13 @@ public class BackendFactory implements IBackendFactory {
         final BackendData data = getIdeBackendData();
         ErlLogger.debug("Create ide backend " + data.getRuntimeInfo().getVersion());
         final IBackend backend = createBackend(data);
-        setWorkDirForCoreDumps(backend.getRpcSite());
         return backend;
-    }
-
-    private void setWorkDirForCoreDumps(final IRpcSite backend) {
-        if (backend == null) {
-            return;
-        }
-        // set work dir to gather core dumps
-        final String dir = "/proj/uz/erlide/dumps";
-        if (new File(dir).exists()) {
-            try {
-                backend.call("c", "cd", "s", dir);
-            } catch (final RpcException e) {
-                ErlLogger.warn("Can't change erlang working dir, "
-                        + "core dumps will not be available");
-            }
-        }
     }
 
     @Override
     public synchronized IBackend createBuildBackend(final RuntimeInfo info) {
         ErlLogger.debug("Create build backend " + info.getVersion().asMajor().toString());
         final IBackend backend = createBackend(getBuildBackendData(info));
-        setWorkDirForCoreDumps(backend.getRpcSite());
         return backend;
     }
 
