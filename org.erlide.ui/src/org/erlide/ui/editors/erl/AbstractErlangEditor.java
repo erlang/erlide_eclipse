@@ -52,7 +52,7 @@ public abstract class AbstractErlangEditor extends TextEditor {
     /** Preference key for matching brackets color */
     protected final static String MATCHING_BRACKETS_COLOR = PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR;
     /** The bracket inserter. */
-    private ErlangViewerBracketInserter fBracketInserter = null;
+    private ErlangBracketInserter fBracketInserter = null;
     private SendToConsoleAction sendToConsole;
     private SendToConsoleAction sendToConsoleWithResult;
     private OpenAction openAction;
@@ -89,9 +89,9 @@ public abstract class AbstractErlangEditor extends TextEditor {
                 .getBracketMatcher();
     }
 
-    protected ErlangViewerBracketInserter getBracketInserter() {
+    protected ErlangBracketInserter getBracketInserter() {
         if (fBracketInserter == null) {
-            fBracketInserter = new ErlangViewerBracketInserter(getSourceViewer());
+            fBracketInserter = new ErlangBracketInserter(getSourceViewer());
         }
         return fBracketInserter;
     }

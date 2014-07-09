@@ -29,7 +29,7 @@ public class ErlReconciler implements IReconciler {
     /** Queue to manage the changes applied to the text viewer. */
     ErlDirtyRegionQueue fDirtyRegionQueue;
     /** The background thread. */
-    BackgroundThread fThread;
+    ReconcilerThread fThread;
     /** Internal document and text input listener. */
     private Listener fListener;
     /** The background thread delay. */
@@ -76,7 +76,7 @@ public class ErlReconciler implements IReconciler {
     /**
      * Background thread for the reconciling activity.
      */
-    class BackgroundThread extends Thread {
+    class ReconcilerThread extends Thread {
 
         private static final int RECONCILER_SUSPEND_LOOP_MAX = 10;
         /** Has the reconciler been canceled. */
@@ -93,7 +93,7 @@ public class ErlReconciler implements IReconciler {
          * @param name
          *            the thread's name
          */
-        public BackgroundThread(final String name) {
+        public ReconcilerThread(final String name) {
             super(name);
             setPriority(Thread.MIN_PRIORITY);
             setDaemon(true);
@@ -461,7 +461,7 @@ public class ErlReconciler implements IReconciler {
             if (fThread != null) {
                 return;
             }
-            fThread = new BackgroundThread(getClass().getName());
+            fThread = new ReconcilerThread(getClass().getName());
         }
 
         fDirtyRegionQueue = new ErlDirtyRegionQueue();
@@ -499,7 +499,7 @@ public class ErlReconciler implements IReconciler {
 
             synchronized (this) {
                 // http://dev.eclipse.org/bugs/show_bug.cgi?id=19135
-                final BackgroundThread bt = fThread;
+                final ReconcilerThread bt = fThread;
                 fThread = null;
                 bt.cancel();
             }

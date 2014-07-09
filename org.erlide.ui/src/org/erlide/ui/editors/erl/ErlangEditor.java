@@ -636,16 +636,6 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
                     .addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error"); //$NON-NLS-1$
             fProjectionSupport
                     .addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning"); //$NON-NLS-1$
-            // TODO fProjectionSupport.setHoverControlCreator(new
-            // IInformationControlCreator()
-            // {
-            // public IInformationControl createInformationControl(Shell shell)
-            // {
-            // return new CustomSourceInformationControl(shell,
-            // IDocument.DEFAULT_CONTENT_TYPE);
-            // }
-            // });
-
             fProjectionSupport.install();
 
             fProjectionModelUpdater = ErlideUIPlugin.getDefault()
@@ -689,10 +679,6 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
         }
         return null;
     }
-
-    // private void fullReconcileModule(IErlModule module, IDocument document) {
-    // module.insertText(0, document.get());
-    // }
 
     protected abstract class AbstractSelectionChangedListener implements
             ISelectionChangedListener {
@@ -794,10 +780,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
     }
 
     private boolean isLinkedToOutlinePage() {
-        final IEclipsePreferences prefsNode = ErlangOutlinePage.getPrefsNode();
-        final boolean isLinkingEnabled = prefsNode.getBoolean(
-                PreferenceConstants.ERLANG_OUTLINE_LINK_WITH_EDITOR, true);
-        return isLinkingEnabled;
+        return myOutlinePage.isLinkedWithEditor();
     }
 
     /**

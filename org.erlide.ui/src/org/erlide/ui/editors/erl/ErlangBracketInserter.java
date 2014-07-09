@@ -36,7 +36,7 @@ import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.ErlLogger;
 
-class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListener {
+class ErlangBracketInserter implements VerifyKeyListener, ILinkedModeListener {
 
     private final ISourceViewer sourceViewer;
     IBracketInserterValidator validator;
@@ -479,7 +479,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener, ILinkedModeListe
         }
     }
 
-    public ErlangViewerBracketInserter(final ISourceViewer sourceViewer) {
+    public ErlangBracketInserter(final ISourceViewer sourceViewer) {
         this.sourceViewer = sourceViewer;
         validator = new IBracketInserterValidator() {
             @Override
