@@ -49,16 +49,6 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     final AbstractErlangEditor editor;
     private ErlReconciler reconciler;
 
-    /**
-     * Default configuration constructor
-     *
-     * @param store
-     *
-     * @param editor
-     *
-     * @param lcolorManager
-     *            the color manager
-     */
     public EditorConfiguration(final IPreferenceStore store,
             final AbstractErlangEditor editor, final IColorManager colorManager) {
         super(store, colorManager);
@@ -80,11 +70,6 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         return new ErlTextHover(editor);
     }
 
-    /**
-     * Returns the editor in which the configured viewer(s) will reside.
-     *
-     * @return the enclosing editor
-     */
     protected ITextEditor getEditor() {
         return editor;
     }
@@ -114,12 +99,6 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         return editor.getModule();
     }
 
-    /*
-     * @see
-     * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
-     * 
-     * @since 2.0
-     */
     @Override
     public IInformationControlCreator getInformationControlCreator(
             final ISourceViewer sourceViewer) {

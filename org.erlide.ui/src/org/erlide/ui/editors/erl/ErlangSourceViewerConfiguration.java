@@ -165,12 +165,6 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
         }
     }
 
-    /**
-     * The double click strategy
-     *
-     * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getDoubleClickStrategy(org.eclipse.jface.text.source.ISourceViewer,
-     *      java.lang.String)
-     */
     @Override
     public ITextDoubleClickStrategy getDoubleClickStrategy(
             final ISourceViewer sourceViewer, final String contentType) {
@@ -182,12 +176,6 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
         return doubleClickStrategy;
     }
 
-    /*
-     * @see
-     * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
-     * 
-     * @since 2.0
-     */
     @Override
     public IInformationControlCreator getInformationControlCreator(
             final ISourceViewer sourceViewer) {
@@ -211,12 +199,6 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
         return assistant;
     }
 
-    /**
-     * Returns the information control creator for the quick assist assistant.
-     *
-     * @return the information control creator
-     * @since 3.3
-     */
     private IInformationControlCreator getQuickAssistAssistantInformationControlCreator() {
         return new IInformationControlCreator() {
             @Override
