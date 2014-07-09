@@ -23,27 +23,17 @@ import org.erlide.util.ErlLogger;
 
 public class ErlReconciler implements IReconciler {
 
-    /** The reconciling strategy. */
     private final IErlReconcilingStrategy fStrategy;
     private final String path;
-    /** Queue to manage the changes applied to the text viewer. */
     ErlDirtyRegionQueue fDirtyRegionQueue;
-    /** The background thread. */
     ReconcilerThread fThread;
-    /** Internal document and text input listener. */
     private Listener fListener;
-    /** The background thread delay. */
     int fDelay = 500;
-    /** Are there incremental reconciling strategies? */
     boolean fIsIncrementalReconciler = true;
-    /** The progress monitor used by this reconciler. */
     IProgressMonitor fProgressMonitor;
-    /** Tells whether this reconciler is allowed to modify the document. */
     boolean fIsAllowedToModifyDocument = true;
 
-    /** The text viewer's document. */
     IDocument fDocument;
-    /** The text viewer */
     private ITextViewer fViewer;
     /** True if it should reconcile all regions without delay between them */
     final boolean fChunkReconciler;
@@ -78,50 +68,26 @@ public class ErlReconciler implements IReconciler {
     class ReconcilerThread extends Thread {
 
         private static final int RECONCILER_SUSPEND_LOOP_MAX = 10;
-        /** Has the reconciler been canceled. */
         private boolean fCanceled = false;
-        /** Has the reconciler been reset. */
         private boolean fReset = false;
-        /** Is a reconciling strategy active. */
         private boolean fIsActive = false;
 
-        /**
-         * Creates a new background thread. The thread runs with minimal
-         * priority.
-         *
-         * @param name
-         *            the thread's name
-         */
         public ReconcilerThread(final String name) {
             super(name);
             setPriority(Thread.MIN_PRIORITY);
             setDaemon(true);
         }
 
-        /**
-         * Returns whether a reconciling strategy is active right now.
-         *
-         * @return <code>true</code> if a activity is active
-         */
         public boolean isActive() {
             return fIsActive;
         }
 
-        /**
-         * Returns whether some changes need to be processed.
-         *
-         * @return <code>true</code> if changes wait to be processed
-         * @since 3.0
-         */
         public boolean isDirty() {
             synchronized (fDirtyRegionQueue) {
                 return !fDirtyRegionQueue.isEmpty();
             }
         }
 
-        /**
-         * Cancels the background thread.
-         */
         public void cancel() {
             fCanceled = true;
             final IProgressMonitor pm = fProgressMonitor;
@@ -133,10 +99,6 @@ public class ErlReconciler implements IReconciler {
             }
         }
 
-        /**
-         * Suspends the caller of this method until this background thread has
-         * emptied the dirty region queue.
-         */
         public void suspendCallerWhileDirty() {
             boolean isDirty = true;
             int i = RECONCILER_SUSPEND_LOOP_MAX;
@@ -157,9 +119,6 @@ public class ErlReconciler implements IReconciler {
             }
         }
 
-        /**
-         * Reset the background thread as the text viewer has been changed,
-         */
         public synchronized void reset() {
             if (fDelay > 0) {
                 fReset = true;
@@ -171,10 +130,6 @@ public class ErlReconciler implements IReconciler {
             reconcilerReset();
         }
 
-        /**
-         * Set reset flag to false, so that it will reconcile, only to be used
-         * by {@link ErlReconciler#reconcileNow()}
-         */
         public synchronized void unreset() {
             fReset = false;
         }
@@ -255,21 +210,12 @@ public class ErlReconciler implements IReconciler {
         }
     }
 
-    /**
-     * Internal document listener and text input listener.
-     */
     class Listener implements IDocumentListener, ITextInputListener {
 
-        /*
-         * @see IDocumentListener#documentAboutToBeChanged(DocumentEvent)
-         */
         @Override
         public void documentAboutToBeChanged(final DocumentEvent e) {
         }
 
-        /*
-         * @see IDocumentListener#documentChanged(DocumentEvent)
-         */
         @Override
         public void documentChanged(final DocumentEvent e) {
             // ErlLogger.debug("documentChanged %d %d %d", e.getOffset(),
@@ -299,10 +245,6 @@ public class ErlReconciler implements IReconciler {
 
         }
 
-        /*
-         * @see ITextInputListener#inputDocumentAboutToBeChanged(IDocument,
-         * IDocument)
-         */
         @Override
         public void inputDocumentAboutToBeChanged(final IDocument oldInput,
                 final IDocument newInput) {
@@ -331,9 +273,6 @@ public class ErlReconciler implements IReconciler {
             }
         }
 
-        /*
-         * @see ITextInputListener#inputDocumentChanged(IDocument, IDocument)
-         */
         @Override
         public void inputDocumentChanged(final IDocument oldInput,
                 final IDocument newInput) {
@@ -407,49 +346,22 @@ public class ErlReconciler implements IReconciler {
         fIsAllowedToModifyDocument = isAllowedToModify;
     }
 
-    /**
-     * Returns whether any of the reconciling strategies is interested in
-     * detailed dirty region information.
-     *
-     * @return whether this reconciler is incremental
-     *
-     * @see IReconcilingStrategy
-     */
     protected boolean isIncrementalReconciler() {
         return fIsIncrementalReconciler;
     }
 
-    /**
-     * Returns the input document of the text viewer this reconciler is
-     * installed on.
-     *
-     * @return the reconciler document
-     */
     protected IDocument getDocument() {
         return fDocument;
     }
 
-    /**
-     * Returns the text viewer this reconciler is installed on.
-     *
-     * @return the text viewer this reconciler is installed on
-     */
     protected ITextViewer getTextViewer() {
         return fViewer;
     }
 
-    /**
-     * Returns the progress monitor of this reconciler.
-     *
-     * @return the progress monitor of this reconciler
-     */
     protected IProgressMonitor getProgressMonitor() {
         return fProgressMonitor;
     }
 
-    /*
-     * @see IReconciler#install(ITextViewer)
-     */
     @Override
     public void install(final ITextViewer textViewer) {
 
@@ -482,9 +394,6 @@ public class ErlReconciler implements IReconciler {
         }
     }
 
-    /*
-     * @see IReconciler#uninstall()
-     */
     @Override
     public void uninstall() {
         if (fListener != null) {
@@ -511,12 +420,6 @@ public class ErlReconciler implements IReconciler {
         }
     }
 
-    /**
-     * Creates a dirty region for a document event and adds it to the queue.
-     *
-     * @param e
-     *            the document event for which to create a dirty region
-     */
     protected void createDirtyRegion(final DocumentEvent e) {
         synchronized (fDirtyRegionQueue) {
             String text = e.getText();
@@ -597,18 +500,12 @@ public class ErlReconciler implements IReconciler {
     protected void reconcilerReset() {
     }
 
-    /*
-     * @see IReconciler#getReconcilingStrategy(String)
-     */
     @Override
     public IReconcilingStrategy getReconcilingStrategy(final String contentType) {
         Assert.isNotNull(contentType);
         return fStrategy;
     }
 
-    /*
-     * @see AbstractReconciler#process(DirtyRegion)
-     */
     protected void process(final ErlDirtyRegion dirtyRegion) {
         if (dirtyRegion != null) {
             fStrategy.reconcile(dirtyRegion);
@@ -628,9 +525,6 @@ public class ErlReconciler implements IReconciler {
         fStrategy.setDocument(document);
     }
 
-    /*
-     * @see AbstractReconciler#setProgressMonitor(IProgressMonitor)
-     */
     public void setProgressMonitor(final IProgressMonitor monitor) {
         fProgressMonitor = monitor;
         if (fStrategy instanceof IReconcilingStrategyExtension) {

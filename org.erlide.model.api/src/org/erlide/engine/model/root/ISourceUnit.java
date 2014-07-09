@@ -38,7 +38,7 @@ import org.erlide.engine.services.parsing.ScannerService;
 public interface ISourceUnit {
 
     /**
-     * Is this module a real one, or an include file?
+     * Is this unit a module or an include file?
      */
     SourceKind getSourceKind();
 
@@ -72,10 +72,6 @@ public interface ISourceUnit {
     public Collection<IErlPreprocessorDef> getPreprocessorDefs(final ErlElementKind kind);
 
     Collection<ErlangIncludeFile> getIncludeFiles() throws ErlModelException;
-
-    // void getScanner();
-    //
-    // void disposeScanner();
 
     void initialReconcile();
 
