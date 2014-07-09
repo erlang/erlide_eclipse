@@ -19,30 +19,25 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.ui.IWorkbenchPage;
+import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
  * Helper for opening editors on the viewer's selection and link the selection
  * with the editor.
- *
- * @since 3.5
  */
-public abstract class OpenAndLinkWithEditorHelper {
+public class OpenAndLinkWithEditorHelper {
 
     private final StructuredViewer viewer;
-
     private boolean isLinkingEnabled;
-
     private ISelection lastOpenSelection;
-
     private InternalListener listener;
+    private final ErlangEditor fEditor;
+    private final IWorkbenchPage page;
 
     private final class InternalListener implements IOpenListener,
             ISelectionChangedListener, IDoubleClickListener {
-        /*
-         * @see
-         * org.eclipse.jface.viewers.IOpenListener#open(org.eclipse.jface.viewers
-         * .OpenEvent)
-         */
+
         @Override
         public final void open(final OpenEvent event) {
             lastOpenSelection = event.getSelection();
@@ -50,11 +45,6 @@ public abstract class OpenAndLinkWithEditorHelper {
                     OpenStrategy.activateOnOpen());
         }
 
-        /*
-         * @see
-         * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
-         * (org.eclipse.jface.viewers.SelectionChangedEvent)
-         */
         @Override
         public void selectionChanged(final SelectionChangedEvent event) {
             final ISelection selection = event.getSelection();
@@ -65,11 +55,6 @@ public abstract class OpenAndLinkWithEditorHelper {
             lastOpenSelection = null;
         }
 
-        /*
-         * @see
-         * org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse
-         * .jface.viewers.DoubleClickEvent)
-         */
         @Override
         public void doubleClick(final DoubleClickEvent event) {
             if (!OpenStrategy.activateOnOpen()) {
@@ -84,13 +69,17 @@ public abstract class OpenAndLinkWithEditorHelper {
      *
      * @param viewer
      *            the viewer
+     * @param iWorkbenchPage
      */
-    public OpenAndLinkWithEditorHelper(final StructuredViewer viewer) {
+    public OpenAndLinkWithEditorHelper(final StructuredViewer viewer,
+            final ErlangEditor fEditor, final IWorkbenchPage page) {
         if (viewer == null) {
             throw new IllegalArgumentException(
                     "viewer can't be null in OpenAndLinkWithEditorHelper");
         }
         this.viewer = viewer;
+        this.fEditor = fEditor;
+        this.page = page;
         listener = new InternalListener();
         viewer.addPostSelectionChangedListener(listener);
         viewer.addOpenListener(listener);
@@ -122,45 +111,24 @@ public abstract class OpenAndLinkWithEditorHelper {
         listener = null;
     }
 
-    /**
-     * Tells to activate the editor that is open on the given selection.
-     * <p>
-     * <strong>Note:</strong> The implementation must not open a new editor.
-     * </p>
-     *
-     * @param selection
-     *            the viewer's selection
-     * @since 3.5
-     */
-    protected abstract void activate(ISelection selection);
+    private void activate(final ISelection selection) {
+        fEditor.doSelectionChanged(selection);
+        page.activate(fEditor);
+    }
 
-    /**
-     * Tells to open an editor for the given selection.
-     *
-     * @param selection
-     *            the viewer's selection
-     * @param activate
-     *            <code>true</code> if the editor should be activated,
-     *            <code>false</code> otherwise
-     * @since 3.5
-     */
-    protected abstract void open(ISelection selection, boolean activate);
+    private void linkToEditor(final ISelection selection) {
+        fEditor.doSelectionChanged(selection);
+    }
 
-    /**
-     * Tells to link the given selection to the editor that is open on the given
-     * selection but does nothing if no matching editor can be found.
-     * <p>
-     * The common implementation brings that editor to front but more advanced
-     * implementations may also select the given selection inside the editor.
-     * </p>
-     * <p>
-     * <strong>Note:</strong> The implementation must not open a new editor.
-     * </p>
-     *
-     * @param selection
-     *            the viewer's selection
-     * @since 3.5
-     */
-    protected abstract void linkToEditor(ISelection selection);
+    private void open(final ISelection selection, final boolean activate) {
+        fEditor.doSelectionChanged(selection);
+        if (activate) {
+            page.activate(fEditor);
+        }
+    }
+
+    public boolean isLinkedWithEditor() {
+        return isLinkingEnabled;
+    }
 
 }

@@ -228,7 +228,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements ISaveableP
 
     @Override
     protected void addFoldingSupport(final ISourceViewer viewer) {
-        // TODO Not yet
     }
 
 }

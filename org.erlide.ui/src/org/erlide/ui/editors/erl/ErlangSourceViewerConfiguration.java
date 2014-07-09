@@ -46,8 +46,10 @@ import org.erlide.ui.internal.information.ErlInformationPresenter;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 import org.erlide.ui.util.IColorManager;
+import org.erlide.util.IDisposable;
 
-public class ErlangSourceViewerConfiguration extends TextSourceViewerConfiguration {
+public class ErlangSourceViewerConfiguration extends TextSourceViewerConfiguration
+        implements IDisposable {
 
     protected final IColorManager colorManager;
     protected ErlTokenScanner charScanner;
@@ -277,14 +279,6 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
         return contentAssistant;
     }
 
-    public void disposeContentAssistProcessors() {
-        if (contentAssistProcessor != null) {
-            contentAssistProcessor.dispose();
-            contentAssistProcessor = null;
-            contentAssistProcessorForStrings = null;
-        }
-    }
-
     @Override
     public ITextHover getTextHover(final ISourceViewer sourceViewer,
             final String contentType) {
@@ -304,9 +298,8 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
         final ErlReconcilingStrategy strategy = new ErlReconcilingStrategy(null);
         final IErlModule module = null;
         final String path = null;
-        final boolean logging = false;
         final ErlReconciler reconciler = new ErlReconciler(strategy, true, true, path,
-                module, logging, null);
+                module, null);
         reconciler.setProgressMonitor(new NullProgressMonitor());
         reconciler.setIsAllowedToModifyDocument(false);
         reconciler.setDelay(500);
@@ -317,5 +310,14 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
     public String[] getDefaultPrefixes(final ISourceViewer sourceViewer,
             final String contentType) {
         return new String[] { "%%", "" };
+    }
+
+    @Override
+    public void dispose() {
+        if (contentAssistProcessor != null) {
+            contentAssistProcessor.dispose();
+            contentAssistProcessor = null;
+            contentAssistProcessorForStrings = null;
+        }
     }
 }
