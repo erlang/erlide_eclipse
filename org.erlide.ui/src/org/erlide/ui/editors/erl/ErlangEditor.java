@@ -53,7 +53,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IPathEditorInput;
-import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -146,9 +145,8 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 
     XrefService xrefService;
 
-    final MarkOccurencesHandler markOccurencesHandler = new MarkOccurencesHandler(this,
-            null, IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP,
-            new MarkOccurencesActivationListener());
+    final MarkOccurencesSupport markOccurencesHandler = new MarkOccurencesSupport(this,
+            null, IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP);
 
     public ErlangEditor(final XrefService xrefService) {
         super();
@@ -189,18 +187,12 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
         disposeModule();
 
         // cancel possible running computation
-        markOccurencesHandler.fMarkOccurrenceAnnotations = false;
-        markOccurencesHandler.uninstallOccurrencesFinder();
+        markOccurencesHandler.dispose();
         if (getSourceViewerConfiguration() instanceof EditorConfiguration) {
             final EditorConfiguration ec = (EditorConfiguration) getSourceViewerConfiguration();
             if (ec != null) {
                 ec.disposeContentAssistProcessors();
             }
-        }
-        if (markOccurencesHandler.fActivationListener != null) {
-            PlatformUI.getWorkbench().removeWindowListener(
-                    markOccurencesHandler.fActivationListener);
-            markOccurencesHandler.fActivationListener = null;
         }
 
         super.dispose();
@@ -243,14 +235,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
             final String key = event.getKey();
             if ("markingOccurences".equals(key)) {
                 final boolean newBooleanValue = event.getNewValue().equals("true");
-                if (newBooleanValue != markOccurencesHandler.fMarkOccurrenceAnnotations) {
-                    markOccurencesHandler.fMarkOccurrenceAnnotations = newBooleanValue;
-                    if (!markOccurencesHandler.fMarkOccurrenceAnnotations) {
-                        markOccurencesHandler.uninstallOccurrencesFinder();
-                    } else {
-                        markOccurencesHandler.installOccurrencesFinder(true);
-                    }
-                }
+                markOccurencesHandler.setEnabled(newBooleanValue);
             }
         }
     }
@@ -1281,43 +1266,6 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
             } else {
                 ext.expandAll();
             }
-        }
-    }
-
-    /**
-     * Internal activation listener.
-     *
-     * @since 3.0
-     */
-    class MarkOccurencesActivationListener implements IWindowListener {
-
-        @Override
-        public void windowActivated(final IWorkbenchWindow window) {
-            if (window == getEditorSite().getWorkbenchWindow()
-                    && markOccurencesHandler.fMarkOccurrenceAnnotations && isActivePart()) {
-                markOccurencesHandler.fForcedMarkOccurrencesSelection = getSelectionProvider()
-                        .getSelection();
-                markOccurencesHandler
-                        .updateOccurrenceAnnotations(
-                                (ITextSelection) markOccurencesHandler.fForcedMarkOccurrencesSelection,
-                                getModule());
-            }
-        }
-
-        @Override
-        public void windowDeactivated(final IWorkbenchWindow window) {
-            if (window == getEditorSite().getWorkbenchWindow()
-                    && markOccurencesHandler.fMarkOccurrenceAnnotations && isActivePart()) {
-                markOccurencesHandler.removeOccurrenceAnnotations();
-            }
-        }
-
-        @Override
-        public void windowClosed(final IWorkbenchWindow window) {
-        }
-
-        @Override
-        public void windowOpened(final IWorkbenchWindow window) {
         }
     }
 
