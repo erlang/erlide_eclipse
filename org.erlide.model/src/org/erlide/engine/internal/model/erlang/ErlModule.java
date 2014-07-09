@@ -626,9 +626,4 @@ public class ErlModule extends Openable implements IErlModule {
         return scannerName;
     }
 
-    @Override
-    public boolean getLogging() {
-        return logging;
-    }
-
 }

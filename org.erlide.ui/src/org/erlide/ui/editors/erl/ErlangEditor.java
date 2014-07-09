@@ -1029,8 +1029,8 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 
     /**
      * Returns the annotation closest to the given range respecting the given
-     * direction. If an annotation is found, the annotations current position is
-     * copied into the provided annotation position.
+     * direction. If an annotation is found, the annotation's current position
+     * is copied into the provided position.
      *
      * @param offset
      *            the region offset
@@ -1143,9 +1143,6 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
         final IPreferenceStore preferences = EditorsUI.getPreferenceStore();
         final AnnotationPreference preference = getAnnotationPreferenceLookup()
                 .getAnnotationPreference(annotation);
-        // See bug 41689
-        // String key= forward ? preference.getIsGoToNextNavigationTargetKey() :
-        // preference.getIsGoToPreviousNavigationTargetKey();
         final String key = preference == null ? null : preference
                 .getIsGoToNextNavigationTargetKey();
         return key != null && preferences.getBoolean(key);

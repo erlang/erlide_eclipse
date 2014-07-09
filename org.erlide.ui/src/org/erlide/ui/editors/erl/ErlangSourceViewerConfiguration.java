@@ -304,9 +304,8 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
         final ErlReconcilingStrategy strategy = new ErlReconcilingStrategy(null);
         final IErlModule module = null;
         final String path = null;
-        final boolean logging = false;
         final ErlReconciler reconciler = new ErlReconciler(strategy, true, true, path,
-                module, logging, null);
+                module, null);
         reconciler.setProgressMonitor(new NullProgressMonitor());
         reconciler.setIsAllowedToModifyDocument(false);
         reconciler.setDelay(500);

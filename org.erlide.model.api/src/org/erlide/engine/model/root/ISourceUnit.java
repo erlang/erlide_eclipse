@@ -133,6 +133,4 @@ public interface ISourceUnit {
 
     void createScanner();
 
-    boolean getLogging();
-
 }

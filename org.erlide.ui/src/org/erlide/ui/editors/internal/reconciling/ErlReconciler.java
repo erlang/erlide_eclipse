@@ -52,8 +52,7 @@ public class ErlReconciler implements IReconciler {
 
     public ErlReconciler(final IErlReconcilingStrategy strategy,
             final boolean isIncremental, final boolean chunkReconciler,
-            final String path, final IErlModule module, final boolean logging,
-            final ITextEditor editor) {
+            final String path, final IErlModule module, final ITextEditor editor) {
 
         super();
         Assert.isNotNull(strategy);
