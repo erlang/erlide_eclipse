@@ -43,7 +43,7 @@ import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
-import org.erlide.ui.editors.erl.ErlangEditor.ActivationListener;
+import org.erlide.ui.editors.erl.ErlangEditor.MarkOccurencesActivationListener;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.search.ErlangSearchElement;
 import org.erlide.ui.internal.search.SearchUtil;
@@ -426,7 +426,7 @@ public class MarkOccurencesHandler {
      *
      * @since 3.0
      */
-    public ActivationListener fActivationListener;
+    public MarkOccurencesActivationListener fActivationListener;
     public ISelectionChangedListener fPostSelectionListener;
     public OccurrencesFinderJob fOccurrencesFinderJob;
     /** The occurrences finder job canceler */
@@ -435,7 +435,7 @@ public class MarkOccurencesHandler {
     public MarkOccurencesHandler(final ErlangEditor erlangEditor,
             final Annotation[] fOccurrenceAnnotations,
             final long fMarkOccurrenceModificationStamp,
-            final ActivationListener fActivationListener) {
+            final MarkOccurencesActivationListener fActivationListener) {
         this.erlangEditor = erlangEditor;
         this.fOccurrenceAnnotations = fOccurrenceAnnotations;
         this.fMarkOccurrenceModificationStamp = fMarkOccurrenceModificationStamp;
