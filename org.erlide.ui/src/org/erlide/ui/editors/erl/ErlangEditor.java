@@ -98,6 +98,7 @@ import org.erlide.ui.editors.erl.outline.IOutlineContentCreator;
 import org.erlide.ui.editors.erl.outline.IOutlineSelectionHandler;
 import org.erlide.ui.editors.erl.outline.ISortableContentOutlinePage;
 import org.erlide.ui.editors.erl.test.TestAction;
+import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
@@ -119,27 +120,28 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
     public static final String ERLANG_EDITOR_ID = "org.erlide.ui.editors.erl.ErlangEditor";
     public static final String EDITOR_INDENT_WIDTH = "indentWidth";
 
+    private IErlModule fModule = null;
     private ColorManager colorManager;
     private ErlangOutlinePage myOutlinePage;
     private IPropertySource myPropertySource;
     private ProjectionSupport fProjectionSupport;
     private IErlangFoldingStructureProvider fProjectionModelUpdater;
-    private TestAction testAction;
-    /** The selection changed listeners */
-    private EditorSelectionChangedListener fEditorSelectionChangedListener;
-    private ShowOutlineAction fShowOutline;
-    private Object fSelection;
-    private final IPreferenceChangeListener fPreferenceChangeListener = new PreferenceChangeListener();
-    private final IPropertyChangeListener propertyChangeListener = new PropertyChangeListener();
-    private ActionGroup fActionGroups;
-    private ActionGroup fContextMenuGroup;
     private final ErlangEditorErrorTickUpdater fErlangEditorErrorTickUpdater;
     private ToggleFoldingRunner fFoldingRunner;
+
+    private EditorSelectionChangedListener fEditorSelectionChangedListener;
+    private final IPreferenceChangeListener fPreferenceChangeListener = new PreferenceChangeListener();
+    private final IPropertyChangeListener propertyChangeListener = new PropertyChangeListener();
+
+    private Object fSelection;
+    private ActionGroup fActionGroups;
+    private ActionGroup fContextMenuGroup;
+    private ShowOutlineAction fShowOutline;
     private CompileAction compileAction;
     private CleanUpAction cleanUpAction;
     private ClearCacheAction clearCacheAction;
     private CallHierarchyAction callhierarchy;
-    private IErlModule fModule = null;
+    private TestAction testAction;
 
     private final AnnotationSupport annotationSupport;
 
@@ -188,11 +190,8 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 
         // cancel possible running computation
         markOccurencesHandler.dispose();
-        if (getSourceViewerConfiguration() instanceof EditorConfiguration) {
-            final EditorConfiguration ec = (EditorConfiguration) getSourceViewerConfiguration();
-            if (ec != null) {
-                ec.disposeContentAssistProcessors();
-            }
+        if (getSourceViewerConfiguration() instanceof IDisposable) {
+            ((IDisposable) getSourceViewerConfiguration()).dispose();
         }
 
         super.dispose();
@@ -211,7 +210,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
         setSourceViewerConfiguration(cfg);
     }
 
-    public static ChainedPreferenceStore getErlangEditorPreferenceStore() {
+    public static IPreferenceStore getErlangEditorPreferenceStore() {
         final IPreferenceStore generalTextStore = EditorsUI.getPreferenceStore();
         return new ChainedPreferenceStore(new IPreferenceStore[] {
                 ErlideUIPlugin.getDefault().getPreferenceStore(), generalTextStore });
@@ -611,7 +610,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
 
     @Override
     protected void addFoldingSupport(final ISourceViewer viewer) {
-        if (isFoldingEnabled()) {
+        if (EditorUtility.isFoldingEnabled()) {
             final ProjectionViewer projectionViewer = (ProjectionViewer) viewer;
             fProjectionSupport = new ProjectionSupport(projectionViewer,
                     getAnnotationAccess(), getSharedColors());
@@ -1106,11 +1105,6 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
         return fActionGroups;
     }
 
-    public static boolean isFoldingEnabled() {
-        return ErlideUIPlugin.getDefault().getPreferenceStore()
-                .getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
-    }
-
     /**
      * Runner that will toggle folding either instantly (if the editor is
      * visible) or the next time it becomes visible. If a runner is started when
@@ -1138,7 +1132,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
             final ISourceViewer sourceViewer = getSourceViewer();
             if (sourceViewer instanceof ProjectionViewer) {
                 final ProjectionViewer pv = (ProjectionViewer) sourceViewer;
-                if (pv.isProjectionMode() != isFoldingEnabled()) {
+                if (pv.isProjectionMode() != EditorUtility.isFoldingEnabled()) {
                     if (pv.canDoOperation(ProjectionViewer.TOGGLE)) {
                         pv.doOperation(ProjectionViewer.TOGGLE);
                     }

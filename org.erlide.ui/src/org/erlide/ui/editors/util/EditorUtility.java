@@ -47,6 +47,7 @@ import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;
@@ -370,6 +371,11 @@ public class EditorUtility {
             }
         }
         return result;
+    }
+
+    public static boolean isFoldingEnabled() {
+        return ErlideUIPlugin.getDefault().getPreferenceStore()
+                .getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
     }
 
 }
