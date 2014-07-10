@@ -18,10 +18,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 public final class RuntimeInfo {
@@ -31,7 +32,7 @@ public final class RuntimeInfo {
     private final String args;
     private final Collection<String> codePath;
 
-    private RuntimeVersion version_cached = null;
+    private RuntimeVersion version = null;
 
     public static final RuntimeInfo NO_RUNTIME_INFO = new RuntimeInfo("");
 
@@ -90,7 +91,7 @@ public final class RuntimeInfo {
         this.name = name;
         this.homeDir = homeDir;
         this.args = args;
-        this.codePath = Collections.unmodifiableCollection(codePath);
+        this.codePath = ImmutableList.copyOf(codePath);
     }
 
     public RuntimeInfo(@NonNull final RuntimeInfo o) {
@@ -117,6 +118,21 @@ public final class RuntimeInfo {
 
     public Collection<String> getCodePath() {
         return codePath;
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (!(other instanceof RuntimeInfo)) {
+            return false;
+        }
+        final RuntimeInfo other1 = (RuntimeInfo) other;
+        return Objects.equal(homeDir + "|" + args + "|" + codePath.toString(),
+                other1.homeDir + "|" + other1.args + "|" + other1.codePath.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(homeDir, args, codePath);
     }
 
     public static boolean validateLocation(final String path) {
@@ -182,10 +198,10 @@ public final class RuntimeInfo {
     }
 
     public RuntimeVersion getVersion() {
-        if (version_cached == null) {
-            version_cached = getVersion(homeDir);
+        if (version == null) {
+            version = getVersion(homeDir);
         }
-        return version_cached;
+        return version;
     }
 
     public static RuntimeVersion getVersion(final String homeDir) {
