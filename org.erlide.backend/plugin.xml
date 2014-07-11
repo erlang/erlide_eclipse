@@ -6,7 +6,7 @@
    <extension
          point="org.erlide.backend.backend">
       <provider
-            class="org.erlide.backend.internal.BackendProvider">
+            class="org.erlide.backend.internal.RpcSiteProvider">
       </provider>
    </extension>
    <extension

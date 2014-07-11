@@ -7,7 +7,7 @@ import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.IRpcSiteProvider;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 
-public class BackendProvider implements IRpcSiteProvider {
+public class RpcSiteProvider implements IRpcSiteProvider {
 
     @Override
     public IRpcSite get() {
