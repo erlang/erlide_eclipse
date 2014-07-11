@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
@@ -45,7 +46,7 @@ public class CodeManager {
         pathZ = new ArrayList<PathItem>();
     }
 
-    public void addPath(final boolean usePathZ, final String path) {
+    public void addPath(final boolean usePathZ, final @NonNull String path) {
         if (usePathZ) {
             if (addPath(pathZ, path)) {
                 ErlangCode.addPathZ(site, path);
@@ -57,7 +58,7 @@ public class CodeManager {
         }
     }
 
-    public void removePath(final String path) {
+    public void removePath(final @NonNull String path) {
         if (removePath(pathA, path)) {
             ErlangCode.removePath(site, path);
         }
@@ -134,11 +135,7 @@ public class CodeManager {
         }
     }
 
-    private boolean addPath(final List<PathItem> l, final String path) {
-        if (path == null) {
-            return false;
-        }
-
+    private boolean addPath(final List<PathItem> l, final @NonNull String path) {
         final PathItem it = findItem(l, path);
         if (it == null) {
             l.add(new PathItem(path));
@@ -148,10 +145,7 @@ public class CodeManager {
         return false;
     }
 
-    private boolean removePath(final List<PathItem> l, final String path) {
-        if (path == null) {
-            return false;
-        }
+    private boolean removePath(final List<PathItem> l, final @NonNull String path) {
         final PathItem it = findItem(l, path);
         if (it != null) {
             it.decRef();

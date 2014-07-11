@@ -127,11 +127,11 @@ public abstract class Backend implements IStreamListener, IBackend {
         return runtime.isRunning();
     }
 
-    public void removePath(final String path) {
+    public void removePath(final @NonNull String path) {
         codeManager.removePath(path);
     }
 
-    public void addPath(final boolean usePathZ, final String path) {
+    public void addPath(final boolean usePathZ, final @NonNull String path) {
         codeManager.addPath(usePathZ, path);
     }
 

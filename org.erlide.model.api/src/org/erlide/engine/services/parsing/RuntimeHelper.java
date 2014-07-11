@@ -17,7 +17,7 @@ public class RuntimeHelper {
     private final IRpcSite target;
 
     public RuntimeHelper(final IRpcSite target) {
-        Preconditions.checkNotNull(target);
+        Preconditions.checkArgument(target != null);
         this.target = target;
     }
 

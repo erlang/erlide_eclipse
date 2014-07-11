@@ -27,7 +27,7 @@ public class OtpPatternVariable extends OtpErlangObject {
     private Signature sign;
 
     public OtpPatternVariable(final String n) {
-        Preconditions.checkNotNull(n);
+        Preconditions.checkArgument(n != null);
         Preconditions.checkArgument(!n.isEmpty());
         final String[] v = n.split(":");
         name = v[0];

@@ -104,7 +104,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
 
     private void startErtsProcess(final ILaunch launch, final BackendData data,
             final Process process) {
-        Preconditions.checkNotNull(process);
+        Preconditions.checkArgument(process != null);
         data.setLaunch(launch);
         final Map<String, String> map = Maps.newHashMap();
         map.put("NodeName", data.getNodeName());

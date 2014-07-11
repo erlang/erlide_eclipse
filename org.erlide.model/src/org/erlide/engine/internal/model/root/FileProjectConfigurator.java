@@ -36,8 +36,8 @@ public class FileProjectConfigurator implements IProjectConfigurator,
     public FileProjectConfigurator(
             final ProjectConfigurationSerializer serializer,
             final String filePath) {
-        Preconditions.checkNotNull(filePath);
-        Preconditions.checkNotNull(serializer);
+        Preconditions.checkArgument(filePath != null);
+        Preconditions.checkArgument(serializer != null);
         this.serializer = serializer;
         this.filePath = filePath;
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this,

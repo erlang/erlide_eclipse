@@ -105,9 +105,6 @@ public final class BackendManager implements IBackendManager {
 
     @Override
     public IBackend getBuildBackend(@NonNull final IProject project) {
-        // if (project == null) {
-        // throw new IllegalArgumentException("project can't be null");
-        // }
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
         if (erlProject == null) {
