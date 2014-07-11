@@ -45,7 +45,6 @@ import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.IOpenable;
 import org.erlide.engine.model.SourcePathUtils;
 import org.erlide.engine.model.builder.BuilderProperties;
-import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.ErlElementKind;
@@ -799,10 +798,6 @@ public class ErlProject extends Openable implements IErlProject,
         } catch (final BackingStoreException e) {
             // ignore?
         }
-    }
-
-    private boolean validateBuilderTool(final BuilderTool tool) {
-        return getConfigType().matchesTool(builderProperties.getBuilderTool());
     }
 
     @Override

@@ -230,10 +230,6 @@ i_with(W, I) ->
 i_with(W, A, I) ->
     I#i{current=indent_by(W, I#i.prefs), anchor=head(A)}.
 
-i_with(W1, W2, A, I) ->
-    I#i{current=indent_by(W1, I#i.prefs)+indent_by(W2, I#i.prefs),
-        anchor=head(A)}.
-
 i_with_old_or_new_anchor(none, ANew, I) ->
     i_with(none, ANew, I);
 i_with_old_or_new_anchor(AOld, _ANew, I) ->

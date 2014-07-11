@@ -58,21 +58,6 @@ open(Mod, Offset, #open_context{imports=Imports0}=Context) ->
             {error, E}
     end.
 
-open_info(S, #open_context{}=Context) when is_list(S); is_binary(S) ->
-    try
-        TokensWComments = erlide_scanner:scan_string(S),
-        ?D({open_info, S, TokensWComments}),
-        try_open(0, TokensWComments, [], Context),
-        error
-    catch
-        throw:{open, Res} ->
-            Res;
-        throw:T ->
-            {error, T};
-        error:E ->
-            {error, E}
-    end.
-
 get_external_include(FilePath, #open_context{externalIncludes=ExternalIncludes,
                                              pathVars=PathVars}) ->
     ?D(FilePath),

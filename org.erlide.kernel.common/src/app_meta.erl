@@ -181,10 +181,10 @@ clean1({compiler_options, _}, _) ->
 clean1(X, _) ->
     [X].
 
-get_all_modules(Ms) ->
-    Files = lists:append(lists:map(fun(X) -> {ok,Y}=file:list_dir(X), Y end, Ms)),
-    Mods = lists:filter(fun(X) -> filename:extension(X) == ".erl" end, Files),
-    [list_to_atom(filename:basename(X, ".erl")) || X<-Mods].
+%% get_all_modules(Ms) ->
+%%     Files = lists:append(lists:map(fun(X) -> {ok,Y}=file:list_dir(X), Y end, Ms)),
+%%     Mods = lists:filter(fun(X) -> filename:extension(X) == ".erl" end, Files),
+%%     [list_to_atom(filename:basename(X, ".erl")) || X<-Mods].
 
 get_name({X, _}) ->
     [X];
