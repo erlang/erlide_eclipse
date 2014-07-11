@@ -337,7 +337,7 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public synchronized Set<IBackend> getExecutionBackends(final IProject project) {
+    public synchronized Set<IBackend> getExecutionBackends(final @NonNull IProject project) {
         final Set<IBackend> bs = executionBackends.get(project);
         if (bs == null) {
             return Collections.emptySet();

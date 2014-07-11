@@ -4,6 +4,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -71,8 +72,12 @@ public class SendToConsoleAction extends SelectionDispatchAction {
     public void run(final ITextSelection selection0) {
         ITextSelection selection = selection0;
         final IBackendManager backendManager = BackendCore.getBackendManager();
+        final IProject workspaceProject = project.getWorkspaceProject();
+        if (workspaceProject == null) {
+            return;
+        }
         final Set<IBackend> executionBackends = backendManager
-                .getExecutionBackends(project.getWorkspaceProject());
+                .getExecutionBackends(workspaceProject);
         IErlangConsole console = null;
         final ErlConsoleManager erlConsoleManager = ErlideUIPlugin.getDefault()
                 .getErlConsoleManager();

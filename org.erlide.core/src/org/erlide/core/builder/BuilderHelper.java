@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
@@ -298,7 +299,7 @@ public final class BuilderHelper {
         }
     }
 
-    public void completeCompile(final IProject project, final IResource source,
+    public void completeCompile(final @NonNull IProject project, final IResource source,
             final OtpErlangObject compilationResult, final IRpcSite backend,
             final OtpErlangList compilerOptions) {
         if (compilationResult == null) {
@@ -510,7 +511,7 @@ public final class BuilderHelper {
         return erl;
     }
 
-    public void compileErl(final IProject project, final BuildResource resource,
+    public void compileErl(final @NonNull IProject project, final BuildResource resource,
             final String outputDir, final IRpcSite b, final OtpErlangList compilerOptions) {
         final IRpcFuture res = startCompileErl(project, resource, outputDir, b,
                 compilerOptions, true);
@@ -527,7 +528,7 @@ public final class BuilderHelper {
         }
     }
 
-    public void compileYrl(final IProject project, final BuildResource resource,
+    public void compileYrl(final @NonNull IProject project, final BuildResource resource,
             final IRpcSite b, final OtpErlangList compilerOptions) {
         final IRpcFuture res = startCompileYrl(project, resource.getResource(), b,
                 compilerOptions);
@@ -570,7 +571,7 @@ public final class BuilderHelper {
         }
     }
 
-    public static void loadModule(final IProject project, final String module) {
+    public static void loadModule(final @NonNull IProject project, final String module) {
         try {
             final IBackendManager backendManager = BackendCore.getBackendManager();
             for (final IBackend b : backendManager.getExecutionBackends(project)) {
