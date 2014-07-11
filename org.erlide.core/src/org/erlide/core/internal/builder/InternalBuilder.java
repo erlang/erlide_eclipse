@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendException;
@@ -191,9 +192,10 @@ public class InternalBuilder extends ErlangBuilder {
         }
     }
 
-    private void handleErlangFiles(final IErlProject erlProject, final IProject project,
-            final Map<String, String> args, final int kind,
-            final IResourceDelta resourceDelta) throws CoreException, BackendException {
+    private void handleErlangFiles(final IErlProject erlProject,
+            final @NonNull IProject project, final Map<String, String> args,
+            final int kind, final IResourceDelta resourceDelta) throws CoreException,
+            BackendException {
         final OtpErlangList compilerOptions = CompilerOptions.get(project);
 
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(kind, args,
@@ -355,8 +357,12 @@ public class InternalBuilder extends ErlangBuilder {
     private void fillAppFileDetails(final String appSrc, final String destPath,
             final Collection<String> modules) {
         try {
+            final IProject project = getProject();
+            if (project == null) {
+                return;
+            }
             final IBackend backend = BackendCore.getBackendManager().getBuildBackend(
-                    getProject());
+                    project);
             backend.getRpcSite().call("erlide_builder", "compile_app_src", "ssla",
                     appSrc, destPath, modules);
         } catch (final Exception e) {

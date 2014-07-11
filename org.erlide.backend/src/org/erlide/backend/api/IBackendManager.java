@@ -6,7 +6,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.epmd.IEpmdListener;
@@ -16,7 +16,7 @@ public interface IBackendManager extends IEpmdListener {
 
     IBackend getIdeBackend();
 
-    IBackend getBuildBackend(@Nullable final IProject project);
+    IBackend getBuildBackend(@NonNull final IProject project);
 
     void removeBackend(IBackend backend);
 

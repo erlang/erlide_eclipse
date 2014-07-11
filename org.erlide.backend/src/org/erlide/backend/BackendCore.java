@@ -1,7 +1,7 @@
 package org.erlide.backend;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.runtime.api.IRpcSite;
@@ -27,7 +27,7 @@ public class BackendCore {
         return RuntimeCore.getRuntimeInfoCatalog(new RuntimeInfoPreferencesSerializer());
     }
 
-    public static IRpcSite getBuildBackend(@Nullable final IProject project) {
+    public static IRpcSite getBuildBackend(@NonNull final IProject project) {
         final IBackendManager manager = getBackendManager();
         return manager.getBuildBackend(project).getRpcSite();
     }

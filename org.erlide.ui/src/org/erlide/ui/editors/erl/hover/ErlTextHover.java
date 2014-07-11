@@ -282,6 +282,9 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getWorkspaceProject();
+            if (project == null) {
+                return null;
+            }
             final IRpcSite backend = backendManager.getBuildBackend(project).getRpcSite();
             if (backend == null) {
                 return null;

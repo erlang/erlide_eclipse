@@ -35,6 +35,10 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
             @SuppressWarnings("rawtypes") final Map args, final IProgressMonitor monitor)
             throws CoreException {
         final IProject project = getProject();
+        if (project == null) {
+            monitor.done();
+            return null;
+        }
         DialyzerPreferences prefs = null;
         prefs = DialyzerPreferences.get(project);
         if (prefs == null || !prefs.getDialyzeOnCompile()) {

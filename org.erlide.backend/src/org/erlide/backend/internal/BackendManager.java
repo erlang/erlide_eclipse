@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
@@ -104,11 +104,10 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public IBackend getBuildBackend(@Nullable final IProject project) {
-        if (project == null) {
-            // TODO not sure if this is what we really want to do in this case
-            return getIdeBackend();
-        }
+    public IBackend getBuildBackend(@NonNull final IProject project) {
+        // if (project == null) {
+        // throw new IllegalArgumentException("project can't be null");
+        // }
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
         if (erlProject == null) {
@@ -323,6 +322,9 @@ public final class BackendManager implements IBackendManager {
     public IRpcSite getByProject(final String projectName) {
         final IProject project = ResourcesPlugin.getWorkspace().getRoot()
                 .getProject(projectName);
+        if (project == null) {
+            return null;
+        }
         final IBackend backend = getBuildBackend(project);
         if (backend == null) {
             ErlLogger.warn("Could not find backend for project %S", project);

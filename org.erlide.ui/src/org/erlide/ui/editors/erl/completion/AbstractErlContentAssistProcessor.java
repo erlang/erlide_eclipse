@@ -265,11 +265,14 @@ public abstract class AbstractErlContentAssistProcessor implements
                 if (hashMarkPos >= 0) {
                     final IProject workspaceProject = project != null ? project
                             .getWorkspaceProject() : null;
-                    rc = ErlangEngine
-                            .getInstance()
-                            .getContextAssistService()
-                            .checkRecordCompletion(
-                                    BackendCore.getBuildBackend(workspaceProject), before);
+                    if (workspaceProject != null) {
+                        rc = ErlangEngine
+                                .getInstance()
+                                .getContextAssistService()
+                                .checkRecordCompletion(
+                                        BackendCore.getBuildBackend(workspaceProject),
+                                        before);
+                    }
                 }
                 if (rc != null && rc.isNameWanted()) {
                     flags = EnumSet.of(Kinds.RECORD_DEFS);
@@ -383,10 +386,13 @@ public abstract class AbstractErlContentAssistProcessor implements
             final int offset, final String prefix, final String moduleOrRecord,
             final int pos, final List<String> fieldsSoFar) throws CoreException,
             BadLocationException {
+        final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         final IProject workspaceProject = project == null ? null : project
                 .getWorkspaceProject();
+        if (workspaceProject == null) {
+            return result;
+        }
         final IRpcSite backend = BackendCore.getBuildBackend(workspaceProject);
-        final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(
                     prefix,

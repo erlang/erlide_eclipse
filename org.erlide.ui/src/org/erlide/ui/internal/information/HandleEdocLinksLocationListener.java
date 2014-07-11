@@ -61,6 +61,9 @@ public class HandleEdocLinksLocationListener implements LocationListener {
             if (functionCall != null) {
                 final IProject project = ErlangEngine.getInstance().getModelUtilService()
                         .getProject(editor.getModule()).getWorkspaceProject();
+                if (project == null) {
+                    return;
+                }
                 final IBackendManager backendManager = BackendCore.getBackendManager();
                 final IRpcSite backend = backendManager.getBuildBackend(project)
                         .getRpcSite();
