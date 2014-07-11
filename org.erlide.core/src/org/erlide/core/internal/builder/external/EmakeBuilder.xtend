@@ -36,7 +36,6 @@ class EmakeBuilder extends ExternalBuilder {
     }
 
     override clean(IProgressMonitor monitor) {
-        val project = project
         MarkerUtils.removeProblemMarkersFor(project)
         val erlProject = ErlangEngine.instance.model.getErlangProject(project)
         val bf = project.getFolder(erlProject.properties.outputDir)

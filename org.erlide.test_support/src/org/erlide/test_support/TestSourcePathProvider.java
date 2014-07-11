@@ -103,7 +103,6 @@ public class TestSourcePathProvider implements SourcePathProvider,
                         return false;
                     }
                     final IContainer container = (IContainer) resource;
-                    // TODO isintestpath is slow...
                     final IPath location = container.getLocation();
                     final Set<IPath> paths = getProjectPaths(resource.getProject());
                     if (theDelta.getKind() == IResourceDelta.ADDED

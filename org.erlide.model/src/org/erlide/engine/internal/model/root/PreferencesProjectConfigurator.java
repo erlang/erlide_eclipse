@@ -25,8 +25,6 @@ public class PreferencesProjectConfigurator implements IProjectConfigurator {
     public ErlangProjectProperties getConfiguration() {
         final ErlangProjectProperties result = new ErlangProjectProperties();
 
-        // TODO node.addListener(project);
-
         final String sourceDirsStr = node.get(
                 ProjectPreferencesConstants.SOURCE_DIRS,
                 ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);

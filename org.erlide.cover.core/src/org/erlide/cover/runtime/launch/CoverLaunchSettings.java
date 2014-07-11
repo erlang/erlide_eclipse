@@ -71,7 +71,7 @@ public class CoverLaunchSettings {
                         .getModules();
                 for (final IErlModule m : allModules) {
                     log.info(m.getFilePath());
-                    if (!m.getFilePath().contains("/test/")) { // TODO !
+                    if (!m.getFilePath().contains("/test/")) {
                         config.addModule(m);
                     }
                 }

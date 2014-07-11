@@ -70,14 +70,16 @@ public class EmakeBuilder extends ExternalBuilder {
   }
   
   public void clean(final IProgressMonitor monitor) {
-    final IProject project = this.getProject();
-    MarkerUtils.removeProblemMarkersFor(project);
+    IProject _project = this.getProject();
+    MarkerUtils.removeProblemMarkersFor(_project);
     IErlangEngine _instance = ErlangEngine.getInstance();
     IErlModel _model = _instance.getModel();
-    final IErlProject erlProject = _model.getErlangProject(project);
+    IProject _project_1 = this.getProject();
+    final IErlProject erlProject = _model.getErlangProject(_project_1);
+    IProject _project_2 = this.getProject();
     ErlangProjectProperties _properties = erlProject.getProperties();
     IPath _outputDir = _properties.getOutputDir();
-    final IFolder bf = project.getFolder(_outputDir);
+    final IFolder bf = _project_2.getFolder(_outputDir);
     final Procedure1<IFolder> _function = new Procedure1<IFolder>() {
       public void apply(final IFolder it) {
         try {

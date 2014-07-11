@@ -148,7 +148,7 @@ public class CoverEventHandler extends ErlangEventHandler {
         log.info(ppath);
         log.info(mpath);
 
-        final String[] parts = mpath.split("/"); // TODO ! platform independent?
+        final String[] parts = mpath.split("/");
 
         root.setLiniesCount(root.getLinesCount() + moduleStats.getLinesCount());
         root.setCoverCount(root.getCoverCount() + moduleStats.getCoverCount());
