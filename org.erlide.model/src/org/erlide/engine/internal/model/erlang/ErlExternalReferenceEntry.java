@@ -2,7 +2,6 @@ package org.erlide.engine.internal.model.erlang;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -14,6 +13,7 @@ import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlExternal;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
 import org.erlide.engine.util.RpcSiteFactory;
@@ -53,9 +53,9 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
             // already done
             return true;
         }
-        final IProject workspaceProject = ErlangEngine.getInstance()
-                .getModelUtilService().getProject(this).getWorkspaceProject();
-        final IRpcSite backend = RpcSiteFactory.getRpcSite(workspaceProject);
+        final IErlProject project = ErlangEngine.getInstance()
+                .getModelUtilService().getProject(this);
+        final IRpcSite backend = RpcSiteFactory.getRpcSiteForProject(project);
         if (backend != null) {
             final List<String> files = ErlangEngine.getInstance()
                     .getService(OpenService.class).getLibFiles(entry);

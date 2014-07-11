@@ -44,8 +44,8 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
             throws ErlModelException {
         final IErlProject erlProject = ErlangEngine.getInstance()
                 .getModelUtilService().getProject(this);
-        final IRpcSite backend = RpcSiteFactory.getRpcSite(erlProject
-                .getWorkspaceProject());
+        final IRpcSite backend = RpcSiteFactory
+                .getRpcSiteForProject(erlProject);
         if (backend != null) {
             addExternalEntries(pm, backend);
         }

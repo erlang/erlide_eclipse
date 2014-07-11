@@ -1,6 +1,6 @@
 package org.erlide.engine.util;
 
-import org.eclipse.core.resources.IProject;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.IRpcSiteProvider;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -17,7 +17,7 @@ public class RpcSiteFactory {
         return provider.get(version);
     }
 
-    public static IRpcSite getRpcSite(final IProject project) {
+    public static IRpcSite getRpcSiteForProject(final IErlProject project) {
         if (provider == null) {
             provider = getRpcSiteProvider();
         }
