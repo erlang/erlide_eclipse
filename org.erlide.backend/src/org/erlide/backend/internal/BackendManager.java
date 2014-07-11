@@ -62,7 +62,6 @@ public final class BackendManager implements IBackendManager {
     }
 
     private volatile IBackend ideBackend;
-    private final Object ideBackendLock = new Object();
     private final Map<IProject, Set<IBackend>> executionBackends;
     private final Map<String, IBackend> buildBackends;
     final List<IBackendListener> listeners;
@@ -115,7 +114,7 @@ public final class BackendManager implements IBackendManager {
         if (info == null) {
             ErlLogger
                     .info("Project %s has no runtime info, using ide", project.getName());
-            return ideBackend;
+            return getIdeBackend();
         }
         final String version = info.getVersion().asMajor().toString();
         IBackend b = buildBackends.get(version);
@@ -129,20 +128,14 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public IBackend getIdeBackend() {
-        IBackend result = ideBackend;
-        if (result == null) {
-            synchronized (ideBackendLock) {
-                result = ideBackend;
-                if (result == null) {
-                    result = factory.createIdeBackend();
-                    addBackend(result);
-                    notifyBackendChange(result, BackendEvent.ADDED, null, null);
-                    ideBackend = result;
-                }
-            }
+    public synchronized IBackend getIdeBackend() {
+        if (ideBackend == null) {
+            final IBackend result = factory.createIdeBackend();
+            addBackend(result);
+            notifyBackendChange(result, BackendEvent.ADDED, null, null);
+            ideBackend = result;
         }
-        return result;
+        return ideBackend;
     }
 
     void notifyBackendChange(final IBackend b, final BackendEvent type,
@@ -384,6 +377,7 @@ public final class BackendManager implements IBackendManager {
             }
             if (ideBackend != null) {
                 ideBackend.dispose();
+                ideBackend = null;
             }
             final ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager()
                     .getLaunches();

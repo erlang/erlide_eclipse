@@ -22,6 +22,7 @@ import java.util.Collection;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -89,6 +90,10 @@ public final class RuntimeInfo {
 
     public RuntimeInfo(final String name, final String otpHomeDir, final String args,
             final Collection<String> codePath) {
+        Preconditions.checkArgument(name != null);
+        Preconditions.checkArgument(otpHomeDir != null);
+        Preconditions.checkArgument(args != null);
+        Preconditions.checkArgument(codePath != null);
         this.name = name;
         this.otpHomeDir = otpHomeDir;
         this.args = args;
