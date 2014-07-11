@@ -66,7 +66,7 @@ public class ErlRuntimeReporter {
     };
 
     public void createFileReport(final String nodeName, final int exitCode,
-            final String workingDir, final ErlSystemStatus status) {
+            final ErlSystemStatus status) {
         final String msg = String.format("Backend '%s' crashed with exit code %d.",
                 nodeName, exitCode);
 
@@ -78,7 +78,7 @@ public class ErlRuntimeReporter {
             ErlLogger.error("Last system status was:\n %s",
                     status != null ? status.prettyPrint() : "null");
 
-            report = createReport(nodeName, workingDir, exitCode, msg);
+            report = createReport(nodeName, exitCode, msg);
             final String reportMsg = report != null ? "\n\n"
                     + "An error log has been created at "
                     + report
@@ -105,12 +105,9 @@ public class ErlRuntimeReporter {
         return v > 0 && v != 143 && v != 129 && v != 137;
     }
 
-    private String createReport(final String nodeName, final String workingDir,
-            final int v, final String msg) {
+    private String createReport(final String nodeName, final int v, final String msg) {
         final String plog = LogUtil.fetchPlatformLog();
         final String elog = LogUtil.fetchErlideLog();
-        final String slog = LogUtil.fetchStraceLog(workingDir + "/" + nodeName
-                + ".strace");
         final String delim = "\n==================================\n";
         final String reportFile = LogUtil.getReportFile();
         final File report = new File(reportFile);
@@ -125,10 +122,6 @@ public class ErlRuntimeReporter {
                 pw.println(plog);
                 pw.println(delim);
                 pw.println(elog);
-                if (slog.length() > 0) {
-                    pw.println(delim);
-                    pw.println(elog);
-                }
             } finally {
                 pw.flush();
                 pw.close();

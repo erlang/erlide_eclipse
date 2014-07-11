@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.erlide.backend.internal;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -69,7 +64,6 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public Backend(final BackendData data, @NonNull final IErlRuntime runtime,
             final IBackendManager backendManager) {
-        assertThat(runtime, is(not(nullValue())));
         this.runtime = runtime;
         this.data = data;
         this.backendManager = backendManager;

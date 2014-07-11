@@ -392,8 +392,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
             reportDown();
             try {
                 if (data.isReportErrors()) {
-                    reporter.createFileReport(nodeName, exitCode, getRuntimeData()
-                            .getWorkingDir(), getSystemStatus());
+                    reporter.createFileReport(nodeName, exitCode, getSystemStatus());
                 }
             } catch (final Exception t) {
                 ErlLogger.warn(t);
