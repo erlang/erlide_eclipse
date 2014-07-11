@@ -51,8 +51,12 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
         projects.add(model.findProject(project));
         if (!modules.isEmpty()) {
             try {
+                final IErlProject eproject = model.findProject(project);
+                if (eproject == null) {
+                    return null;
+                }
                 final IBackend backend = BackendCore.getBackendManager().getBuildBackend(
-                        project);
+                        eproject);
                 DialyzerUtils.doDialyze(monitor, modules, projects, backend);
             } catch (final InvocationTargetException e) {
                 ErlLogger.error(e);

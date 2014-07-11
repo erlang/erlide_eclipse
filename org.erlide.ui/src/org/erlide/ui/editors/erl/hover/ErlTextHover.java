@@ -13,7 +13,6 @@ package org.erlide.ui.editors.erl.hover;
 import java.net.URL;
 import java.util.Collection;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
@@ -39,7 +38,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.api.IBackendManager;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlFunction;
@@ -276,23 +274,20 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
 
         final IErlProject erlProject = editor.getProject();
 
-        final IBackendManager backendManager = BackendCore.getBackendManager();
         String docPath = "";
         String anchor = "";
         try {
-            final IProject project = erlProject == null ? null : erlProject
-                    .getWorkspaceProject();
-            if (project == null) {
+            if (erlProject == null) {
                 return null;
             }
-            final IRpcSite backend = backendManager.getBuildBackend(project).getRpcSite();
+            final IRpcSite backend = BackendCore.getBuildBackend(erlProject);
             if (backend == null) {
                 return null;
             }
 
             final IErlModel model = ErlangEngine.getInstance().getModel();
-            final String externalModulesString = erlProject != null ? erlProject
-                    .getProperties().getExternalModules() : null;
+            final String externalModulesString = erlProject.getProperties()
+                    .getExternalModules();
             final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine
                     .getInstance()
                     .getService(OtpDocService.class)

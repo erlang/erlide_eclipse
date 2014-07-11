@@ -51,8 +51,12 @@ public class CompileAction extends Action {
         if (project == null) {
             return;
         }
-        final IRpcSite b = BackendCore.getBackendManager().getBuildBackend(project)
-                .getRpcSite();
+        final IErlProject eproject = ErlangEngine.getInstance().getModelUtilService()
+                .getProject(module);
+        if (eproject == null) {
+            return;
+        }
+        final IRpcSite b = BackendCore.getBuildBackend(eproject);
 
         final BuildResource bres = new BuildResource(resource);
         final CompilerOptions prefs = new CompilerOptions(project);

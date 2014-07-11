@@ -8,6 +8,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -16,7 +17,7 @@ public interface IBackendManager extends IEpmdListener {
 
     IBackend getIdeBackend();
 
-    IBackend getBuildBackend(@NonNull final IProject project);
+    IBackend getBuildBackend(@NonNull final IErlProject project);
 
     void removeBackend(IBackend backend);
 

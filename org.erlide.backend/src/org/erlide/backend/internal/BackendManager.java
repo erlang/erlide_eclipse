@@ -103,14 +103,8 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public IBackend getBuildBackend(@NonNull final IProject project) {
-        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
-                .getErlangProject(project);
-        if (erlProject == null) {
-            ErlLogger.warn("Project %s is not an erlang project", project.getName());
-            return null;
-        }
-        final RuntimeInfo info = erlProject.getRuntimeInfo();
+    public IBackend getBuildBackend(@NonNull final IErlProject project) {
+        final RuntimeInfo info = project.getRuntimeInfo();
         if (info == null) {
             ErlLogger
                     .info("Project %s has no runtime info, using ide", project.getName());
@@ -312,10 +306,13 @@ public final class BackendManager implements IBackendManager {
     public IRpcSite getByProject(final String projectName) {
         final IProject project = ResourcesPlugin.getWorkspace().getRoot()
                 .getProject(projectName);
-        if (project == null) {
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                .getErlangProject(project);
+        if (erlProject == null) {
             return null;
         }
-        final IBackend backend = getBuildBackend(project);
+
+        final IBackend backend = getBuildBackend(erlProject);
         if (backend == null) {
             ErlLogger.warn("Could not find backend for project %S", project);
             return null;

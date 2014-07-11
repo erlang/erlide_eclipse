@@ -13,12 +13,13 @@ import org.erlide.util.SystemConfiguration
 
 class EmakeBuilder extends ExternalBuilder {
 
-  new() {
-    super(BuilderTool.EMAKE)
-  }
+    new() {
+        super(BuilderTool.EMAKE)
+    }
 
-  override getOsCommand() {
-        val backend = BackendCore.backendManager.getBuildBackend(project)
+    override getOsCommand() {
+        val eproject = ErlangEngine.getInstance.model.findProject(project)
+        val backend = BackendCore.backendManager.getBuildBackend(eproject)
         val path = new Path(backend.runtimeInfo.otpHome).append('bin/erl')
         if (SystemConfiguration.instance.onWindows)
             path.toPortableString + ".exe"

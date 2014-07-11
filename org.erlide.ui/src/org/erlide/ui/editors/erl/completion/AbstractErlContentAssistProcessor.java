@@ -9,7 +9,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -263,15 +262,13 @@ public abstract class AbstractErlContentAssistProcessor implements
                 }
                 RecordCompletion rc = null;
                 if (hashMarkPos >= 0) {
-                    final IProject workspaceProject = project != null ? project
-                            .getWorkspaceProject() : null;
-                    if (workspaceProject != null) {
+                    final IErlProject aproject = project;
+                    if (aproject != null) {
                         rc = ErlangEngine
                                 .getInstance()
                                 .getContextAssistService()
                                 .checkRecordCompletion(
-                                        BackendCore.getBuildBackend(workspaceProject),
-                                        before);
+                                        BackendCore.getBuildBackend(aproject), before);
                     }
                 }
                 if (rc != null && rc.isNameWanted()) {
@@ -387,12 +384,11 @@ public abstract class AbstractErlContentAssistProcessor implements
             final int pos, final List<String> fieldsSoFar) throws CoreException,
             BadLocationException {
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-        final IProject workspaceProject = project == null ? null : project
-                .getWorkspaceProject();
-        if (workspaceProject == null) {
+        final IErlProject aProject = project;
+        if (aProject == null) {
             return result;
         }
-        final IRpcSite backend = BackendCore.getBuildBackend(workspaceProject);
+        final IRpcSite backend = BackendCore.getBuildBackend(aProject);
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(
                     prefix,

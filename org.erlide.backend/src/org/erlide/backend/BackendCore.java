@@ -1,9 +1,9 @@
 package org.erlide.backend;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.epmd.EpmdWatcher;
@@ -27,7 +27,7 @@ public class BackendCore {
         return RuntimeCore.getRuntimeInfoCatalog(new RuntimeInfoPreferencesSerializer());
     }
 
-    public static IRpcSite getBuildBackend(@NonNull final IProject project) {
+    public static IRpcSite getBuildBackend(@NonNull final IErlProject project) {
         final IBackendManager manager = getBackendManager();
         return manager.getBuildBackend(project).getRpcSite();
     }

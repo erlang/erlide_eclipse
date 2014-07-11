@@ -37,16 +37,19 @@ public class EmakeBuilder extends ExternalBuilder {
   public String getOsCommand() {
     String _xblockexpression = null;
     {
-      IBackendManager _backendManager = BackendCore.getBackendManager();
+      IErlangEngine _instance = ErlangEngine.getInstance();
+      IErlModel _model = _instance.getModel();
       IProject _project = this.getProject();
-      final IBackend backend = _backendManager.getBuildBackend(_project);
+      final IErlProject eproject = _model.findProject(_project);
+      IBackendManager _backendManager = BackendCore.getBackendManager();
+      final IBackend backend = _backendManager.getBuildBackend(eproject);
       RuntimeInfo _runtimeInfo = backend.getRuntimeInfo();
       String _otpHome = _runtimeInfo.getOtpHome();
       Path _path = new Path(_otpHome);
       final IPath path = _path.append("bin/erl");
       String _xifexpression = null;
-      SystemConfiguration _instance = SystemConfiguration.getInstance();
-      boolean _isOnWindows = _instance.isOnWindows();
+      SystemConfiguration _instance_1 = SystemConfiguration.getInstance();
+      boolean _isOnWindows = _instance_1.isOnWindows();
       if (_isOnWindows) {
         String _portableString = path.toPortableString();
         _xifexpression = (_portableString + ".exe");

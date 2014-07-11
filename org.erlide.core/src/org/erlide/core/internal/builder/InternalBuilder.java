@@ -207,7 +207,11 @@ public class InternalBuilder extends ErlangBuilder {
         if (n == 0) {
             return;
         }
-        final IBackend backend = BackendCore.getBackendManager().getBuildBackend(project);
+        if (erlProject == null) {
+            return;
+        }
+        final IBackend backend = BackendCore.getBackendManager().getBuildBackend(
+                erlProject);
         if (backend == null) {
             final String message = "No backend with the required "
                     + "version could be found. Can't build.";
@@ -358,11 +362,13 @@ public class InternalBuilder extends ErlangBuilder {
             final Collection<String> modules) {
         try {
             final IProject project = getProject();
-            if (project == null) {
+            final IErlProject eproject = ErlangEngine.getInstance().getModel()
+                    .findProject(project);
+            if (eproject == null) {
                 return;
             }
             final IBackend backend = BackendCore.getBackendManager().getBuildBackend(
-                    project);
+                    eproject);
             backend.getRpcSite().call("erlide_builder", "compile_app_src", "ssla",
                     appSrc, destPath, modules);
         } catch (final Exception e) {

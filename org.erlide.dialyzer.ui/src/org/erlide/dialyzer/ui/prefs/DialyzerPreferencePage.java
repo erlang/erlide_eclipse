@@ -651,9 +651,13 @@ public class DialyzerPreferencePage extends PropertyPage implements
                     final String alternatePltFileDirectory = DialyzerPreferences
                             .getAlternatePLTFileDirectoryFromPreferences();
                     checkIfPltFilesShouldBeCopied(alternatePltFileDirectory);
-                    final IRpcSite backend = BackendCore.getBuildBackend(project);
-                    for (final String pltPath : selectedPLTPaths) {
-                        checkPlt(pltPath, alternatePltFileDirectory, monitor, backend);
+                    final IErlProject eproject = ErlangEngine.getInstance().getModel()
+                            .findProject(project);
+                    if (eproject != null) {
+                        final IRpcSite backend = BackendCore.getBuildBackend(eproject);
+                        for (final String pltPath : selectedPLTPaths) {
+                            checkPlt(pltPath, alternatePltFileDirectory, monitor, backend);
+                        }
                     }
                 } catch (final Exception e) {
                     return newErrorStatus(e);
