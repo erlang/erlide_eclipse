@@ -645,12 +645,13 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
         @Override
         protected IStatus run(final IProgressMonitor monitor) {
-            if (fProject != null) {
+            final IProject project = fProject;
+            if (project != null) {
                 try {
                     final String alternatePltFileDirectory = DialyzerPreferences
                             .getAlternatePLTFileDirectoryFromPreferences();
                     checkIfPltFilesShouldBeCopied(alternatePltFileDirectory);
-                    final IRpcSite backend = BackendCore.getBuildBackend(fProject);
+                    final IRpcSite backend = BackendCore.getBuildBackend(project);
                     for (final String pltPath : selectedPLTPaths) {
                         checkPlt(pltPath, alternatePltFileDirectory, monitor, backend);
                     }

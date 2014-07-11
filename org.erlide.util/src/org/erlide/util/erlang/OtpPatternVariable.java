@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.erlide.util.erlang;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpOutputStream;
 import com.google.common.base.Preconditions;
@@ -26,8 +28,7 @@ public class OtpPatternVariable extends OtpErlangObject {
     private final String name;
     private Signature sign;
 
-    public OtpPatternVariable(final String n) {
-        Preconditions.checkArgument(n != null);
+    public OtpPatternVariable(final @NonNull String n) {
         Preconditions.checkArgument(!n.isEmpty());
         final String[] v = n.split(":");
         name = v[0];

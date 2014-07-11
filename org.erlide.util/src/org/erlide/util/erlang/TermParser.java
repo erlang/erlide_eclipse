@@ -70,21 +70,25 @@ public class TermParser {
         }
         OtpErlangObject result = null;
         final Token t = tokens.remove(0);
+        final String text = t.text;
+        if (text == null) {
+            throw new TermParserException("null token" + t.toString());
+        }
         switch (t.kind) {
         case ATOM:
-            result = new OtpErlangAtom(t.text);
+            result = new OtpErlangAtom(text);
             break;
         case VARIABLE:
-            result = new OtpPatternVariable(t.text);
+            result = new OtpPatternVariable(text);
             break;
         case STRING:
-            result = new OtpErlangString(t.text);
+            result = new OtpErlangString(text);
             break;
         case INTEGER:
-            result = new OtpErlangLong(Long.parseLong(t.text));
+            result = new OtpErlangLong(Long.parseLong(text));
             break;
         case PLACEHOLDER:
-            result = new OtpFormatPlaceholder(t.text);
+            result = new OtpFormatPlaceholder(text);
             break;
         case TUPLESTART:
             result = parseTuple(tokens, new Stack<OtpErlangObject>());
