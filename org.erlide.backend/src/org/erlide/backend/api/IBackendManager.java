@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.root.IErlProject;
@@ -57,7 +56,5 @@ public interface IBackendManager extends IEpmdListener {
 
     void moduleLoaded(final IBackend backend, final IProject project,
             final String moduleName);
-
-    IPluginCodeLoader getByProcess(IProcess ertsProcess);
 
 }
