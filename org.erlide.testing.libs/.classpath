@@ -5,7 +5,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/org.erlide.testing.libs/commons-io-2.4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="jdepend-2.9.1.jar" sourcepath="jdepend.zip"/>
 	<classpathentry exported="true" kind="lib" path="mockito-all-1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="commons-collections-3.2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="commons-lang-2.5.jar"/>
