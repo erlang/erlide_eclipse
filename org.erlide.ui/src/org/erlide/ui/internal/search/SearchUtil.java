@@ -20,7 +20,6 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
-import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.widgets.Shell;
@@ -107,15 +106,6 @@ public class SearchUtil {
             }
         }
         return result;
-    }
-
-    public static void runQueryInBackground(final Object query) {
-        NewSearchUI.runQueryInBackground((ISearchQuery) query);
-    }
-
-    public static IStatus runQueryInForeground(final IProgressService progressService,
-            final Object query) {
-        return NewSearchUI.runQueryInForeground(progressService, (ISearchQuery) query);
     }
 
     public static Match createMatch(final ModuleLineFunctionArityRef ref,
