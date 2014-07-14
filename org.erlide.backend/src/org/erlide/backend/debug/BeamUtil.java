@@ -2,21 +2,16 @@ package org.erlide.backend.debug;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.List;
 
 import org.eclipse.core.internal.runtime.Activator;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.backend.BackendUtils;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
@@ -116,69 +111,6 @@ public class BeamUtil {
     }
 
     private BeamUtil() {
-    }
-
-    /**
-     * @noreference This method is not intended to be referenced by clients.
-     */
-    public static void unpackBeamFiles(final Bundle b, final String location) {
-        if (location == null) {
-            ErlLogger.warn("Could not find 'ebin' in bundle %s.", b.getSymbolicName());
-            return;
-        }
-        final File ebinDir = new File(location + "/ebin");
-        ebinDir.mkdirs();
-        for (final String fn : ebinDir.list()) {
-            if (fn.charAt(0) == '.') {
-                continue;
-            }
-            final File f = new File(fn);
-            f.delete();
-        }
-
-        // TODO Do we have to also check any fragments?
-        // see FindSupport.findInFragments
-
-        final IConfigurationElement[] els = BackendUtils
-                .getCodepathConfigurationElements();
-        for (final IConfigurationElement el : els) {
-            final IContributor c = el.getContributor();
-            if (c.getName().equals(b.getSymbolicName())) {
-                final String dirPath = el.getAttribute("path");
-                final Enumeration<?> e = b.getEntryPaths(dirPath);
-                if (e == null) {
-                    ErlLogger.debug("* !!! error loading plugin " + b.getSymbolicName());
-                    return;
-                }
-                while (e.hasMoreElements()) {
-                    final String s = (String) e.nextElement();
-                    final String beamModuleName = BackendUtils.getBeamModuleName(s);
-                    if (beamModuleName != null) {
-                        ErlLogger.debug(" unpack: " + beamModuleName);
-                        final File beam = new File(ebinDir, beamModuleName + ".beam");
-                        try {
-                            beam.createNewFile();
-                            final FileOutputStream fs = new FileOutputStream(beam);
-                            try {
-                                final URL url = b.getEntry(s);
-                                if (url != null) {
-                                    final OtpErlangBinary bin = getBeamBinary(
-                                            beamModuleName, url);
-                                    if (bin != null) {
-                                        fs.write(bin.binaryValue());
-                                    }
-                                }
-                            } finally {
-                                fs.close();
-                            }
-                        } catch (final IOException e1) {
-                            ErlLogger.warn(e1);
-                        }
-                    }
-                }
-            }
-        }
-
     }
 
 }
