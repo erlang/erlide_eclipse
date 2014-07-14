@@ -59,7 +59,7 @@ public final class BackendManager implements IBackendManager {
         ADDED, REMOVED, MODULE_LOADED
     }
 
-    private volatile IBackend ideBackend;
+    private IBackend ideBackend;
     private final Map<IProject, Set<IBackend>> executionBackends;
     private final Map<String, IBackend> buildBackends;
     final List<IBackendListener> listeners;
