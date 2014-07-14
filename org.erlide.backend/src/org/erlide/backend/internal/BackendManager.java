@@ -134,10 +134,6 @@ public final class BackendManager implements IBackendManager {
 
     void notifyBackendChange(final IBackend b, final BackendEvent type,
             final IProject project, final String moduleName) {
-        if (listeners == null) {
-            return;
-        }
-
         final Object[] copiedListeners = listeners.toArray();
         for (final Object element : copiedListeners) {
             final IBackendListener listener = (IBackendListener) element;
@@ -204,8 +200,6 @@ public final class BackendManager implements IBackendManager {
     @Override
     public void loadCodepathExtensions() {
         final IExtensionPoint exPnt = BackendUtils.getCodepathExtension();
-        // TODO listen to changes to the registry!
-
         final IExtension[] extensions = exPnt.getExtensions();
         for (int e = 0; e < extensions.length; e++) {
             final IExtension extension = extensions[e];
