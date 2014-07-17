@@ -19,8 +19,12 @@
             <topic href="html/concepts.html#backends" label="Runtimes and backends"></topic>
         </topic>
     </topic>
-    <topic href="html/Accessing-the-code.html" label="TEST">
+
+    <topic href="html/Accessing-the-code.html" label="Accessing">
     </topic>
+    <topic href="html/Branches.html" label="Branches">
+    </topic>
+
     <topic href="html/reference.html" label="2. Reference">
         <topic href="html/create_project.html" label="Creating a project"></topic>
         <topic href="html/import_project.html" label="Importing an Erlang Project"></topic>

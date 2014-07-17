@@ -1,0 +1,14 @@
+set +x
+
+cd org.erlide.help
+echo "Generate help"
+
+rm -rf wiki
+git clone git://github.com/erlide/erlide.wiki.git wiki
+cd wiki
+
+bundle install
+bundle exec gollum-site generate
+cd ..
+cp -R wiki/_site/* html
+

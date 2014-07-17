@@ -47,3 +47,11 @@ task :tag_release do
   puts "Creating release"
 
 end
+
+desc "generate help contents from wiki"
+task :generate_help, [:tools_dir] do |t, args|
+  args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
+  puts "Generating help contents"
+
+  system "cd org.erlide.releng && chmod +x gen_help && ./gen_help ../org.erlide.help"
+end
