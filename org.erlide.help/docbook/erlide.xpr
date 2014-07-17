@@ -859,7 +859,7 @@
                                     <String xml:space="preserve">html.stylesheet</String>
                                     </field>
                                     <field name="value">
-                                    <String xml:space="preserve">../css/eclipse.css</String>
+                                    <String xml:space="preserve">../css/book.css</String>
                                     </field>
                                     </transformationParameter>
                                     <transformationParameter>
