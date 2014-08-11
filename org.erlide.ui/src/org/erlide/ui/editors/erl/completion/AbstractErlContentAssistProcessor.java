@@ -28,10 +28,10 @@ import org.erlide.backend.BackendCore;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.ErlangFunction;
+import org.erlide.engine.model.erlang.IErlComment;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.engine.model.erlang.IErlImport;
-import org.erlide.engine.model.erlang.IErlMember;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.IErlPreprocessorDef;
 import org.erlide.engine.model.erlang.IErlRecordDef;
@@ -838,7 +838,7 @@ public abstract class AbstractErlContentAssistProcessor implements
     }
 
     void addFunctionCompletion(final int offset, final String prefix,
-            final ErlangFunction function, final Collection<IErlMember> comments,
+            final ErlangFunction function, final Collection<IErlComment> comments,
             final boolean arityOnly, final List<String> parameterNames,
             final List<ICompletionProposal> result) {
         if (function.name.regionMatches(0, prefix, 0, prefix.length())) {
@@ -853,7 +853,7 @@ public abstract class AbstractErlContentAssistProcessor implements
                     function.name, parameterNames);
             funWithParameters = funWithParameters.substring(prefix.length());
             final String htmlComment = comments == null ? "" : HTMLPrinter
-                    .asHtml(HoverUtil.getDocumentationString(comments));
+                    .asHtml(HoverUtil.getDocumentationString(comments, null));
             addFunctionCompletion(offset, result, funWithArity, htmlComment,
                     funWithParameters, offsetsAndLengths);
         }

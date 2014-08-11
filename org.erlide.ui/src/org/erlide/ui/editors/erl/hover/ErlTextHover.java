@@ -310,12 +310,12 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
                         editor.getElementAt(offset, false));
                 if (found instanceof IErlFunction) {
                     final IErlFunction function = (IErlFunction) found;
-                    final String comment = HoverUtil.getDocumentationString(function
-                            .getComments());
+                    final String comment = HoverUtil.getDocumentationString(
+                            function.getComments(), function.getTypespec());
                     if (comment.length() == 0) {
                         return null;
                     }
-                    result.append(HTMLPrinter.asHtml("<pre>" + comment + "</pre>"));
+                    result.append(HTMLPrinter.asHtml(comment));
                 } else if (found instanceof IErlPreprocessorDef) {
                     final IErlPreprocessorDef preprocessorDef = (IErlPreprocessorDef) found;
                     result.append(preprocessorDef.getExtra());

@@ -16,9 +16,9 @@ import java.util.List;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.ErlangFunction;
+import org.erlide.engine.model.erlang.IErlComment;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
-import org.erlide.engine.model.erlang.IErlMember;
 import org.erlide.engine.model.erlang.IErlTypespec;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
@@ -32,14 +32,14 @@ import com.google.common.collect.Lists;
  */
 public class ErlFunction extends ErlMember implements IErlFunction {
 
-    private static final Collection<IErlMember> NO_COMMENTS = Lists
+    private static final Collection<IErlComment> NO_COMMENTS = Lists
             .newArrayList();
 
     private final boolean fExported;
     private int arity;
     private final String head;
     private final List<String> parameters;
-    private Collection<IErlMember> fComments = NO_COMMENTS;
+    private Collection<IErlComment> fComments = NO_COMMENTS;
     private IErlTypespec typespec;
 
     /**
@@ -156,7 +156,7 @@ public class ErlFunction extends ErlMember implements IErlFunction {
     }
 
     @Override
-    public Collection<IErlMember> getComments() {
+    public Collection<IErlComment> getComments() {
         return fComments;
     }
 
@@ -171,7 +171,7 @@ public class ErlFunction extends ErlMember implements IErlFunction {
     }
 
     @Override
-    public void setComments(final Collection<IErlMember> comments) {
+    public void setComments(final Collection<IErlComment> comments) {
         fComments = comments;
     }
 

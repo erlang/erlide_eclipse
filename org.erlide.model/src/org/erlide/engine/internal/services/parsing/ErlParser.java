@@ -208,7 +208,7 @@ public final class ErlParser implements ParserService {
         final IErlMember m = all.get(i);
         if (m instanceof IErlFunction) {
             final IErlFunction function = (IErlFunction) m;
-            final LinkedList<IErlMember> comments = Lists.newLinkedList();
+            final LinkedList<IErlComment> comments = Lists.newLinkedList();
             int j = considerPrevious(i, all, comments, function);
             j = considerPrevious(j, all, comments, function);
             j = considerPrevious(j, all, comments, function);
@@ -219,7 +219,7 @@ public final class ErlParser implements ParserService {
     }
 
     private int considerPrevious(final int i, final List<IErlMember> all,
-            final LinkedList<IErlMember> comments, final IErlFunction function) {
+            final LinkedList<IErlComment> comments, final IErlFunction function) {
         final int j = i - 1;
         if (j > 0) {
             final IErlMember member = all.get(i);
@@ -227,7 +227,7 @@ public final class ErlParser implements ParserService {
             if (prevMember instanceof IErlComment) {
                 if (prevMember.getLineEnd() + FUNCTION_COMMENT_THRESHOLD >= member
                         .getLineStart()) {
-                    comments.addFirst(prevMember);
+                    comments.addFirst((IErlComment) prevMember);
                 }
             } else if (prevMember instanceof IErlTypespec) {
                 final IErlTypespec spec = (IErlTypespec) prevMember;

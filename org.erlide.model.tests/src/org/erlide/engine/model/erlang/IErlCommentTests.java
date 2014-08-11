@@ -73,7 +73,7 @@ public class IErlCommentTests extends ErlModelTestBase {
         final List<IErlElement> functions = module4
                 .getChildrenOfKind(ErlElementKind.FUNCTION);
         final IErlFunction fn = (IErlFunction) functions.get(0);
-        final Iterator<IErlMember> iterator = fn.getComments().iterator();
+        final Iterator<IErlComment> iterator = fn.getComments().iterator();
         final IErlMember comment1 = iterator.next();
         assertNotNull(comment1);
         assertFalse(iterator.hasNext());
@@ -84,7 +84,7 @@ public class IErlCommentTests extends ErlModelTestBase {
         final List<IErlElement> functions = module5
                 .getChildrenOfKind(ErlElementKind.FUNCTION);
         IErlFunction fn = (IErlFunction) functions.get(0);
-        Iterator<IErlMember> iterator = fn.getComments().iterator();
+        Iterator<IErlComment> iterator = fn.getComments().iterator();
         IErlMember comment1 = iterator.next();
         assertNotNull(comment1);
         assertFalse(iterator.hasNext());
