@@ -133,7 +133,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
     @Override
     public void run(final IStructuredSelection selection) {
         if (input != null) {
-            final URL url = HoverUtil.getDocumentationURL(input);
+            final URL url = input.getDocumentationURL();
             if (url != null) {
                 open(url);
             }

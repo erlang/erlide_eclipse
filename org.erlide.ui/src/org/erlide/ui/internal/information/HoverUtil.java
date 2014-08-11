@@ -10,7 +10,6 @@ import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.erlang.IErlComment;
 import org.erlide.engine.model.erlang.IErlTypespec;
 import org.erlide.engine.model.root.IErlElement;
-import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlangFunctionCall;
@@ -72,9 +71,7 @@ public class HoverUtil {
         return null;
     }
 
-    public static URL getDocumentationURL(final ErlBrowserInformationControlInput input) {
-        final String docPath = input.getDocPath();
-        final String anchor = input.getAnchor();
+    public static URL getDocumentationURL(final String docPath, final String anchor) {
         if (docPath != null) {
             try {
                 // return new URL("file:" + docPath + "#" + anchor);

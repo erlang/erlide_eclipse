@@ -327,6 +327,6 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
         }
         final String strResult = HoverUtil.getHTMLAndReplaceJSLinks(result);
         return new ErlBrowserInformationControlInput(null, editor, element, strResult,
-                20, docPath, anchor);
+                20, HoverUtil.getDocumentationURL(docPath, anchor));
     }
 }

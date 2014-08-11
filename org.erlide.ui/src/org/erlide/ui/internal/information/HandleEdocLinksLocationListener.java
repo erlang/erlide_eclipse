@@ -83,7 +83,8 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                         final String html = HoverUtil.getHTMLAndReplaceJSLinks(result);
                         final Object element = new OpenResult(otpDoc.elementAt(2));
                         input = new ErlBrowserInformationControlInput(input, editor,
-                                element, html, 20, docPath, anchor);
+                                element, html, 20, HoverUtil.getDocumentationURL(docPath,
+                                        anchor));
                     }
                 }
             }
