@@ -258,7 +258,7 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
             return null;
         }
         final StringBuffer result = new StringBuffer();
-        Object element = null;
+        OpenResult element = null;
         // TODO our model is too coarse, here we need access to expressions
         final Collection<OtpErlangObject> fImports = ErlangEngine.getInstance()
                 .getModelUtilService().getImportsAsList(editor.getModule());
@@ -293,7 +293,7 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
                     .getService(OtpDocService.class)
                     .getOtpDoc(backend, offset, stateDir, editor.getScannerName(),
                             fImports, externalModulesString, model.getPathVars());
-            // ErlLogger.debug("otp doc %s", t);
+            ErlLogger.debug("otp doc %s", t);
             if (Util.isOk(t)) {
                 element = new OpenResult(t.elementAt(2));
                 final String docStr = Util.stringValue(t.elementAt(1));
@@ -303,10 +303,9 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
                     anchor = Util.stringValue(t.elementAt(4));
                 }
             } else {
-                final OpenResult or = new OpenResult(t);
-                element = or;
+                element = new OpenResult(t);
                 final Object found = new OpenUtils().findOpenResult(editor,
-                        editor.getModule(), erlProject, or,
+                        editor.getModule(), erlProject, element,
                         editor.getElementAt(offset, false));
                 if (found instanceof IErlFunction) {
                     final IErlFunction function = (IErlFunction) found;
