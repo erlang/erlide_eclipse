@@ -16,69 +16,76 @@
                             Default: http://download.eclipse.org
 -->
 <project name="Buckminster Headless" default="run.tests">
-	<import file="common.ant" as="common" />
+    <import file="common.ant" as="common" />
 
-	<property name="tool.jdk" value="${user.home}/erlide_tools/jdk" />
-	<property name="tool.otp" value="${user.home}/erlide_tools/otp" />
+    <property name="tool.jdk" value="${user.home}/erlide_tools/jdk" />
+    <property name="tool.otp" value="${user.home}/erlide_tools/otp" />
 
-	<property name="build.properties" location="${projects.location}/org.erlide.releng/build.properties" />
+    <property name="build.properties" location="${projects.location}/org.erlide.releng/build.properties" />
 
-	<target name="run.tests" depends="common.cleanup,install.buckminster.headless" description="build and run tests">
-		<echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
-		<echo message="build.properties: ${build.properties}" />
+    <target name="run.tests" depends="common.cleanup,install.buckminster.headless,build.releng.tools" description="build and run tests">
+        <echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
+        <echo message="build.properties: ${build.properties}" />
 
-		<antcall target="import.junit.workspace" />
-		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-tests.txt" propertiesfile="${build.properties}" />
-		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/run-tests.txt" propertiesfile="${build.properties}" />
-		<antcall target="eunit.tests" />
+        <antcall target="import.junit.workspace" />
+        <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-tests.txt" propertiesfile="${build.properties}" />
+        <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/run-tests.txt" propertiesfile="${build.properties}" />
+        <antcall target="eunit.tests" />
 
-		<echo message=" " />
-		<echo message="Finished" />
-	</target>
+        <echo message=" " />
+        <echo message="Finished" />
+    </target>
 
-	<target name="build.p2" depends="common.cleanup,install.buckminster.headless" description="build p2 update site">
-		<echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
-		<echo message="build.properties: ${build.properties}" />
+    <target name="build.p2" depends="common.cleanup,install.buckminster.headless,build.releng.tools" description="build p2 update site">
+        <echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
+        <echo message="build.properties: ${build.properties}" />
 
-		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-code.txt" propertiesfile="${build.properties}" />
-		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/build-p2.txt" propertiesfile="${build.properties}" />
+        <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-code.txt" propertiesfile="${build.properties}" />
+        <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/build-p2.txt" propertiesfile="${build.properties}" />
 
-		<echo message=" " />
-		<echo message="Finished" />
-	</target>
+        <echo message=" " />
+        <echo message="Finished" />
+    </target>
 
-	<target name="build.product" depends="common.cleanup,install.buckminster.headless" description="build product">
-		<echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
-		<echo message="build.properties: ${build.properties}" />
+    <target name="build.product" depends="common.cleanup,install.buckminster.headless,build.releng.tools" description="build product">
+        <echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
+        <echo message="build.properties: ${build.properties}" />
 
-		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-product.txt" propertiesfile="${build.properties}" />
-		<run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/build-product.txt" propertiesfile="${build.properties}" />
+        <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-product.txt" propertiesfile="${build.properties}" />
+        <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/build-product.txt" propertiesfile="${build.properties}" />
 
-		<echo message=" " />
-		<echo message="Finished" />
-	</target>
+        <echo message=" " />
+        <echo message="Finished" />
+    </target>
 
-	<target name="import.junit.workspace">
-		<copy todir="${build.root}/buckminster.workspace/junit-workspace">
-			<fileset dir="${projects.location}/org.erlide.ui.tests/projects" />
-		</copy>
-		<run_buckminster workspace="${build.root}/buckminster.workspace/junit-workspace" commandsfile="${projects.location}/org.erlide.releng/commands/import-tests-workspace.txt" propertiesfile="${build.properties}" />
-	</target>
+    <target name="import.junit.workspace">
+        <copy todir="${build.root}/buckminster.workspace/junit-workspace">
+            <fileset dir="${projects.location}/org.erlide.ui.tests/projects" />
+        </copy>
+        <run_buckminster workspace="${build.root}/buckminster.workspace/junit-workspace" commandsfile="${projects.location}/org.erlide.releng/commands/import-tests-workspace.txt" propertiesfile="${build.properties}" />
+    </target>
 
-	<target name="eunit.tests">
-		<echo message="Running EUnit..." />
+    <target name="eunit.tests">
+        <echo message="Running EUnit..." />
 
-		<exec executable="chmod">
-			<arg value="u+x" />
-			<arg value="${projects.location}/org.erlide.releng/run_eunit" />
-		</exec>
-		<exec executable="${projects.location}/org.erlide.releng/run_eunit" failonerror="true">
-			<arg value="${projects.location}" />
-			<arg value="${tool.otp}" />
-			<arg value="${projects.location}/buildroot/output/junit" />
-		</exec>
+        <exec executable="chmod">
+            <arg value="u+x" />
+            <arg value="${projects.location}/org.erlide.releng/run_eunit" />
+        </exec>
+        <exec executable="${projects.location}/org.erlide.releng/run_eunit" failonerror="true">
+            <arg value="${projects.location}" />
+        </exec>
 
-		<echo message="EUnit done" />
-	</target>
+        <echo message="EUnit done" />
+    </target>
+
+    <target name="build.releng.tools">
+        <echo message="Building releng tools..."/>
+
+        <exec executable="${user.home}/erlide_tools/rebar/rebar" failonerror="true" dir="${projects.location}/releng.tools">
+            <arg value="compile"/>
+            <arg value="eunit"/>
+        </exec>
+    </target>
 
 </project>

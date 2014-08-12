@@ -78,15 +78,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.erlide.kernel.builder"
-         version="0.0.0"/>
-
-   <plugin
          id="org.erlide.kernel.common"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.kernel.debugger"
          version="0.0.0"/>
 
    <plugin

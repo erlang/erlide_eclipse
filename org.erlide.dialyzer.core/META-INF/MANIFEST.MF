@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.core,
  org.erlide.backend,
  org.erlide.model.api,
- org.erlide.kernel.ide,
+ org.erlide.kernel.common,
  org.erlide.runtime,
  org.erlide.util,
  org.erlide.libs
