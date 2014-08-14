@@ -15,7 +15,7 @@ ErlOpts = [].
 {plugins, [rebar_covertool]},
 
 {covertool_eunit, {".eunit/cover.coverdata", "eunit.coverage.xml"}},
-{covertool_prefix_len, 1}
+{covertool_prefix_len, 0}
 
 ].
 
