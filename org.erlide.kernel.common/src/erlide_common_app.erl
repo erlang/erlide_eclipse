@@ -25,23 +25,15 @@ watch_eclipse(JavaNode, Kill) ->
                   monitor_node(JavaNode, true),
                   erlide_log:log({"Monitoring java node", JavaNode}),
                   write_message({"start monitoring", JavaNode, Kill}),
-                  receive
-                      {nodedown, JavaNode}=_Msg ->
-                          write_message(_Msg),
-                          case Kill of
-                              true ->
-                                  erlang:halt();
-                              false ->
-                                  shutdown()
-                          end,
-                          ok
-                  end
+                  wait_nodedown(JavaNode, Kill)
           end).
 
 shutdown() ->
+    write_message("SHUTTING DOWN"),
     erlide_monitor:stop(),
     L = [V  || V = "erlide_" ++ _  <- [atom_to_list(X) || X <- registered()]],
     [exit(whereis(list_to_atom(X)), kill) || X <- L],
+    write_message("FINISHED"),
     ok.
 
 write_message(Msg) ->
@@ -51,3 +43,20 @@ write_message(Msg) ->
     file:sync(F),
     file:close(F),
     ok.
+
+wait_nodedown(JavaNode, Kill) ->
+    receive
+        {nodedown, JavaNode}=_Msg ->
+            write_message(_Msg),
+            case Kill of
+                true ->
+                    erlang:halt(abort, [{flush, false}]),
+                    ok;
+                false ->
+                    shutdown(),
+                    ok
+            end,
+            ok
+        after 5000 ->
+            wait_nodedown(JavaNode, Kill)
+    end.
