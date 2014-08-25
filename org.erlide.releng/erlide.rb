@@ -24,6 +24,9 @@ module Erlide
     "&& ant -f org.erlide.releng/build.ant #{definedOpts(opts)} #{task}"
     puts cmds
     system cmds
+    if $?.exitstatus > 0 then
+      raise "build failed"
+    end
   end
 
   def Erlide.run_eclipse(target="#{ENV['HOME']}/erlide_tools/buckminster", opts={})

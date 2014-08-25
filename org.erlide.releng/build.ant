@@ -30,11 +30,8 @@
 
         <antcall target="import.junit.workspace" />
         <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-tests.txt" propertiesfile="${build.properties}" />
-        <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/run-tests.txt" propertiesfile="${build.properties}" />
         <antcall target="eunit.tests" />
-
-        <echo message=" " />
-        <echo message="Finished" />
+        <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/run-tests.txt" propertiesfile="${build.properties}" />
     </target>
 
     <target name="build.p2" depends="common.cleanup,install.buckminster.headless,build.releng.tools" description="build p2 update site">
@@ -43,9 +40,6 @@
 
         <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-code.txt" propertiesfile="${build.properties}" />
         <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/build-p2.txt" propertiesfile="${build.properties}" />
-
-        <echo message=" " />
-        <echo message="Finished" />
     </target>
 
     <target name="build.product" depends="common.cleanup,install.buckminster.headless,build.releng.tools" description="build product">
@@ -54,9 +48,6 @@
 
         <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-product.txt" propertiesfile="${build.properties}" />
         <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/build-product.txt" propertiesfile="${build.properties}" />
-
-        <echo message=" " />
-        <echo message="Finished" />
     </target>
 
     <target name="import.junit.workspace">
@@ -81,8 +72,6 @@
 
             <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}"/>
         </exec>
-
-        <echo message="EUnit done" />
     </target>
 
     <target name="build.releng.tools">
