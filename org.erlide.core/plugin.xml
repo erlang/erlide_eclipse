@@ -18,37 +18,7 @@
          point="org.eclipse.core.resources.builders">
       <builder >
          <run
-               class="org.erlide.core.internal.builder.InternalBuilder">
-         </run>
-      </builder>
-   </extension>
-   <extension
-         id="rebar.builder"
-         name="Erlang builder"
-         point="org.eclipse.core.resources.builders">
-      <builder >
-         <run
-               class="org.erlide.core.internal.builder.external.RebarBuilder">
-         </run>
-      </builder>
-   </extension>
-   <extension
-         id="make.builder"
-         name="Erlang builder"
-         point="org.eclipse.core.resources.builders">
-      <builder >
-         <run
-               class="org.erlide.core.internal.builder.external.MakeBuilder">
-         </run>
-      </builder>
-   </extension>
-   <extension
-         id="emake.builder"
-         name="Erlang builder"
-         point="org.eclipse.core.resources.builders">
-      <builder >
-         <run
-               class="org.erlide.core.internal.builder.external.EmakeBuilder">
+               class="org.erlide.core.internal.builder.ErlangEclipseBuilder">
          </run>
       </builder>
    </extension>

@@ -1,23 +1,19 @@
 package org.erlide.core.internal.builder;
 
-import java.util.Map;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubMonitor;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.executor.ProgressCallback;
 import org.erlide.core.executor.ToolExecutor;
 import org.erlide.core.executor.ToolExecutor.ToolResults;
 import org.erlide.engine.model.builder.BuilderTool;
-import org.erlide.engine.model.builder.ErlangBuilder;
 import org.erlide.engine.model.builder.MarkerUtils;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.util.ErlLogger;
 
 public abstract class ExternalBuilder extends ErlangBuilder {
@@ -33,25 +29,21 @@ public abstract class ExternalBuilder extends ErlangBuilder {
         ex = new ToolExecutor();
     }
 
-    public String getOsCommand() {
+    public String getOsCommand(final IErlProject erlProject) {
         return info.getOsCommand();
     }
 
     @Override
-    public IProject[] build(final int kind, final Map<String, String> args,
-            final IProgressMonitor monitor) throws CoreException {
-        super.build(kind, args, monitor);
+    public IProject[] build(final BuildKind kind, final IErlProject erlProject,
+            final BuildNotifier notifier) throws CoreException {
+        final IProject project = erlProject.getWorkspaceProject();
 
-        final SubMonitor m = SubMonitor.convert(monitor, 10);
-        final IProject project = getProject();
-
-        ErlLogger.trace("build",
-                "Start " + helper.buildKind(kind) + " for " + project.getName() + ": "
-                        + getOsCommand());
+        ErlLogger.trace("build", "Start " + kind + " for " + project.getName() + ": "
+                + getOsCommand(erlProject));
 
         try {
             MarkerUtils.removeProblemMarkersFor(project);
-            m.worked(1);
+            notifier.worked(1);
 
             // TODO use project config!
             // XXX how do we know what make uses?
@@ -67,7 +59,7 @@ public abstract class ExternalBuilder extends ErlangBuilder {
                     if (DEBUG) {
                         System.out.println("!!! " + line);
                     }
-                    final IMessageParser parser = getMessageParser();
+                    final IMessageParser parser = getMessageParser(erlProject);
                     parser.createMarkers(line);
                 }
 
@@ -78,23 +70,24 @@ public abstract class ExternalBuilder extends ErlangBuilder {
                     }
                 }
             };
-            final ToolResults result = ex.run(getOsCommand(), getCompileTarget(), project
-                    .getLocation().toPortableString(), callback, m);
+            final ToolResults result = ex.run(getOsCommand(erlProject),
+                    getCompileTarget(), project.getLocation().toPortableString(),
+                    callback, notifier);
 
             if (result == null || result.isCommandNotFound()) {
                 MarkerUtils.createProblemMarker(project, null,
-                        "Builder command not found: " + getOsCommand(), 0,
+                        "Builder command not found: " + getOsCommand(erlProject), 0,
                         IMarker.SEVERITY_ERROR);
             } else {
                 final boolean noMarkersOnProject = project.findMarkers(IMarker.PROBLEM,
                         true, IResource.DEPTH_INFINITE).length == 0;
                 if (noMarkersOnProject && result.exit > 0) {
                     MarkerUtils.createProblemMarker(project, null, "Builder error: "
-                            + getOsCommand(), 0, IMarker.SEVERITY_ERROR);
+                            + getOsCommand(erlProject), 0, IMarker.SEVERITY_ERROR);
                 }
             }
 
-            m.worked(9);
+            notifier.worked(9);
 
             ErlLogger.trace("build", "Done " + project.getName());
 
@@ -103,17 +96,16 @@ public abstract class ExternalBuilder extends ErlangBuilder {
             throw new CoreException(new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
                     "builder error", e));
         }
-        monitor.done();
+        notifier.done();
         return null;
     }
 
     @Override
-    public void clean(final IProgressMonitor monitor) {
-        final SubMonitor m = SubMonitor.convert(monitor, 10);
-        final IProject project = getProject();
+    public void clean(final IErlProject erlProject, final BuildNotifier notifier) {
+        final IProject project = erlProject.getWorkspaceProject();
 
         MarkerUtils.removeProblemMarkersFor(project);
-        m.worked(1);
+        notifier.worked(1);
 
         if (getCleanTarget() == null) {
             return;
@@ -122,7 +114,7 @@ public abstract class ExternalBuilder extends ErlangBuilder {
 
             @Override
             public void stdout(final String line) {
-                final IMessageParser parser = getMessageParser();
+                final IMessageParser parser = getMessageParser(erlProject);
                 parser.createMarkers(line);
             }
 
@@ -130,13 +122,13 @@ public abstract class ExternalBuilder extends ErlangBuilder {
             public void stderr(final String line) {
             }
         };
-        ex.run(getOsCommand(), getCleanTarget(),
-                project.getLocation().toPortableString(), callback, m);
-        m.worked(9);
+        ex.run(getOsCommand(erlProject), getCleanTarget(), project.getLocation()
+                .toPortableString(), callback, notifier);
+        notifier.worked(9);
     }
 
-    protected IMessageParser getMessageParser() {
-        return new ErlcMessageParser(getProject());
+    protected IMessageParser getMessageParser(final IErlProject erlProject) {
+        return new ErlcMessageParser(erlProject.getWorkspaceProject());
     }
 
     protected String getCompileTarget() {

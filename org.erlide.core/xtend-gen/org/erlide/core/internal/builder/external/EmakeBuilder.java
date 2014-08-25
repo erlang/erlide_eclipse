@@ -5,7 +5,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Exceptions;
@@ -15,10 +14,8 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
+import org.erlide.core.internal.builder.BuildNotifier;
 import org.erlide.core.internal.builder.ExternalBuilder;
-import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.IErlangEngine;
-import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.MarkerUtils;
@@ -34,22 +31,18 @@ public class EmakeBuilder extends ExternalBuilder {
     super(BuilderTool.EMAKE);
   }
   
-  public String getOsCommand() {
+  public String getOsCommand(final IErlProject erlProject) {
     String _xblockexpression = null;
     {
-      IErlangEngine _instance = ErlangEngine.getInstance();
-      IErlModel _model = _instance.getModel();
-      IProject _project = this.getProject();
-      final IErlProject eproject = _model.findProject(_project);
       IBackendManager _backendManager = BackendCore.getBackendManager();
-      final IBackend backend = _backendManager.getBuildBackend(eproject);
+      final IBackend backend = _backendManager.getBuildBackend(erlProject);
       RuntimeInfo _runtimeInfo = backend.getRuntimeInfo();
       String _otpHome = _runtimeInfo.getOtpHome();
       Path _path = new Path(_otpHome);
       final IPath path = _path.append("bin/erl");
       String _xifexpression = null;
-      SystemConfiguration _instance_1 = SystemConfiguration.getInstance();
-      boolean _isOnWindows = _instance_1.isOnWindows();
+      SystemConfiguration _instance = SystemConfiguration.getInstance();
+      boolean _isOnWindows = _instance.isOnWindows();
       if (_isOnWindows) {
         String _portableString = path.toPortableString();
         _xifexpression = (_portableString + ".exe");
@@ -69,17 +62,12 @@ public class EmakeBuilder extends ExternalBuilder {
     return null;
   }
   
-  public void clean(final IProgressMonitor monitor) {
-    IProject _project = this.getProject();
-    MarkerUtils.removeProblemMarkersFor(_project);
-    IErlangEngine _instance = ErlangEngine.getInstance();
-    IErlModel _model = _instance.getModel();
-    IProject _project_1 = this.getProject();
-    final IErlProject erlProject = _model.getErlangProject(_project_1);
-    IProject _project_2 = this.getProject();
+  public void clean(final IErlProject erlProject, final BuildNotifier notifier) {
+    final IProject project = erlProject.getWorkspaceProject();
+    MarkerUtils.removeProblemMarkersFor(project);
     ErlangProjectProperties _properties = erlProject.getProperties();
     IPath _outputDir = _properties.getOutputDir();
-    final IFolder bf = _project_2.getFolder(_outputDir);
+    final IFolder bf = project.getFolder(_outputDir);
     final Procedure1<IFolder> _function = new Procedure1<IFolder>() {
       public void apply(final IFolder it) {
         try {

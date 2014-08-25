@@ -1,14 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Vlad Dumitrescu
- *******************************************************************************/
-package org.erlide.engine.model.builder;
+package org.erlide.core.internal.builder;
 
 import java.util.Map;
 
@@ -18,11 +8,13 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.builder.BuilderTool;
+import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.util.ErlLogger;
 
-public abstract class ErlangBuilder extends IncrementalProjectBuilder {
+public class ErlangEclipseBuilder extends IncrementalProjectBuilder {
 
     @Override
     public IProject[] build(final int kind, final Map<String, String> args,
@@ -34,13 +26,23 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
         }
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
                 .getErlangProject(project);
+        final ProjectConfigType config = erlProject.getConfigType();
+        final BuilderTool tool = erlProject.getBuilderProperties().getBuilderTool();
 
         if (!validateBuildConfiguration(erlProject)) {
-            final ProjectConfigType config = erlProject.getConfigType();
-            final BuilderTool tool = erlProject.getBuilderProperties().getBuilderTool();
             ErlLogger.warn("Builder tool and config mismatch: " + tool + " " + config);
-
             monitor.setCanceled(true);
+        }
+
+        final ErlangBuilder builder = ErlangBuilderFactory.get(tool);
+        if (builder != null) {
+            final BuildNotifier notifier = new BuildNotifier(monitor, project);
+
+            if (builder instanceof InternalBuilder) {
+                // temporary hack; rebar builder will not need this
+                ((InternalBuilder) builder).setDelta(getDelta(project));
+            }
+            builder.build(ErlangBuilder.BuildKind.get(kind), erlProject, notifier);
         }
 
         return null;
@@ -59,7 +61,5 @@ public abstract class ErlangBuilder extends IncrementalProjectBuilder {
         }
         return true;
     }
-
-    public abstract BuilderProperties getProperties();
 
 }

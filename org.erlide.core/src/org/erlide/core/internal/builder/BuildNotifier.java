@@ -21,19 +21,19 @@ import org.erlide.util.ErlLogger;
 
 public class BuildNotifier {
 
-    protected IProgressMonitor fMonitor;
-    protected boolean fCancelling;
+    protected IProgressMonitor monitor;
+    protected boolean cancelling;
     protected float percentComplete;
     protected float progressPerCompilationUnit;
-    protected int fWorkDone;
-    protected int fTotalWork;
+    protected int workDone;
+    protected int totalWork;
     protected String previousSubtask;
 
     public BuildNotifier(final IProgressMonitor monitor, final IProject project) {
-        fMonitor = monitor;
-        fCancelling = false;
-        fWorkDone = 0;
-        fTotalWork = 1000000;
+        this.monitor = monitor;
+        cancelling = false;
+        workDone = 0;
+        totalWork = 1000000;
     }
 
     /**
@@ -50,8 +50,8 @@ public class BuildNotifier {
     }
 
     public void begin() {
-        if (fMonitor != null) {
-            fMonitor.beginTask("building", fTotalWork); //$NON-NLS-1$
+        if (monitor != null) {
+            monitor.beginTask("building", totalWork); //$NON-NLS-1$
         }
         previousSubtask = null;
     }
@@ -60,7 +60,7 @@ public class BuildNotifier {
      * Check whether the build has been canceled.
      */
     public void checkCancel() {
-        if (fMonitor != null && fMonitor.isCanceled()) {
+        if (monitor != null && monitor.isCanceled()) {
             throw new OperationCanceledException();
         }
     }
@@ -70,7 +70,7 @@ public class BuildNotifier {
      * checkCancel() when within the compiler.
      */
     public void checkCancelWithinCompiler() {
-        if (fMonitor != null && fMonitor.isCanceled() && !fCancelling) {
+        if (monitor != null && monitor.isCanceled() && !cancelling) {
             // Once the compiler has been canceled, don't check again.
             setCancelling(true);
             //
@@ -96,8 +96,8 @@ public class BuildNotifier {
     public void done() {
         updateProgress(1.0f);
         subTask(BuilderMessages.build_done);
-        if (fMonitor != null) {
-            fMonitor.done();
+        if (monitor != null) {
+            monitor.done();
         }
         previousSubtask = null;
     }
@@ -107,7 +107,7 @@ public class BuildNotifier {
      * cancelled.
      */
     public void setCancelling(final boolean cancelling) {
-        fCancelling = cancelling;
+        this.cancelling = cancelling;
     }
 
     /**
@@ -122,8 +122,8 @@ public class BuildNotifier {
         if (message.equals(previousSubtask)) {
             return; // avoid refreshing with same one
         }
-        if (fMonitor != null) {
-            fMonitor.subTask(message);
+        if (monitor != null) {
+            monitor.subTask(message);
         }
         previousSubtask = message;
     }
@@ -131,21 +131,46 @@ public class BuildNotifier {
     public void updateProgress(final float newPercentComplete) {
         if (newPercentComplete > percentComplete) {
             percentComplete = Math.min(newPercentComplete, 1.0f);
-            final int work = Math.round(percentComplete * fTotalWork);
-            if (work > fWorkDone) {
-                if (fMonitor != null) {
-                    fMonitor.worked(work - fWorkDone);
+            final int work = Math.round(percentComplete * totalWork);
+            if (work > workDone) {
+                if (monitor != null) {
+                    monitor.worked(work - workDone);
                 }
                 if (BuilderHelper.isDebugging()) {
                     ErlLogger.debug(java.text.NumberFormat.getPercentInstance().format(
                             percentComplete));
                 }
-                fWorkDone = work;
+                workDone = work;
             }
         }
     }
 
     public void updateProgressDelta(final float percentWorked) {
         updateProgress(percentComplete + percentWorked);
+    }
+
+    public boolean isCanceled() {
+        if (monitor != null) {
+            monitor.isCanceled();
+        }
+        return false;
+    }
+
+    public void worked(final int i) {
+        if (monitor != null) {
+            monitor.worked(i);
+        }
+    }
+
+    public void beginTask(final String name, final int length) {
+        if (monitor != null) {
+            monitor.beginTask(name, length);
+        }
+    }
+
+    public void doneTask() {
+        if (monitor != null) {
+            monitor.done();
+        }
     }
 }
