@@ -12,7 +12,6 @@ public class MakeBuilder extends ExternalBuilder {
 
     @Override
     public BuilderProperties getProperties() {
-        // TODO Auto-generated method stub
         return null;
     }
 

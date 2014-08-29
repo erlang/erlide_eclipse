@@ -182,7 +182,6 @@ public class CallHierarchyView extends ViewPart {
                         final boolean activateOnOpen = getSite() != null ? true
                                 : OpenStrategy.activateOnOpen();
                         try {
-                            // TODO we want to find the exact place in the code
                             EditorUtility.openElementInEditor(el, activateOnOpen);
                         } catch (final PartInitException e1) {
                             ErlLogger.error(e1);

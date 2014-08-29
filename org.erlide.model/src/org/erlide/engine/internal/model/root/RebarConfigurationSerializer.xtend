@@ -55,12 +55,13 @@ class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
         result
     }
 
-    // TODO this is not efficient, a new list is created for every "i" tag
     def void parseOption(ErlangProjectProperties result, Bindings b) {
         switch b.getAtom("Tag") {
             case "i": {
                 val inc = new Path(b.getString("Arg"))
                 if (!result.getIncludeDirs.contains(inc)) {
+
+                    // this is not efficient, a new list is created for every "i" tag
                     val List<IPath> incs = newArrayList(result.getIncludeDirs)
                     incs.add(inc)
                     result.setIncludeDirs(incs)

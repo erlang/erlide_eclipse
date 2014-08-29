@@ -331,8 +331,7 @@ public class MarkOccurencesSupport implements IDisposable {
                     scope.addModule(theModule);
                     final List<ModuleLineFunctionArityRef> findRefs = Lists
                             .newArrayList();
-                    // TODO: run in background? for large files, this can take
-                    // seconds
+                    // TODO: should run in background
                     final OtpErlangObject refs = ErlangEngine
                             .getInstance()
                             .getSearchServerService()

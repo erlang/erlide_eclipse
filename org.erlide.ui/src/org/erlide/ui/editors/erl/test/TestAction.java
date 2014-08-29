@@ -51,7 +51,7 @@ public class TestAction extends TextEditorAction {
                     textEditor.getEditorInput());
             final String text = document.get();
             final String scannerName = module.getScannerName();
-            // XXX implementation detail - how to do it better?
+
             final InternalScanner internalScanner = (InternalScanner) ErlangEngine
                     .getInstance().getSimpleScannerService();
             final OtpErlangObject checkAll = internalScanner.checkAll(scannerName, text,

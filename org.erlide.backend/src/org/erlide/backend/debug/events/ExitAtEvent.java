@@ -65,14 +65,11 @@ public class ExitAtEvent extends MetaEvent {
         if (module == null || line == -1) {
             erlangProcess.removeStackFrames();
             erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
-            // TODO redundant? we have this in int, status too
         }
         if (stackFrames != null) {
             erlangProcess.setStackFrames(module, line, stackFrames, bindings);
         }
         erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
-        // TODO redundant? we have this in int, status too
-
     }
 
     @Override

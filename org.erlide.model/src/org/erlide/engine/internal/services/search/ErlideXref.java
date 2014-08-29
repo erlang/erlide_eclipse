@@ -42,7 +42,7 @@ public class ErlideXref {
                 }
             }
         } catch (final RpcException e) {
-            ErlLogger.error(e); // TODO report error
+            ErlLogger.error(e);
         }
         return result;
     }
@@ -58,7 +58,7 @@ public class ErlideXref {
         try {
             backend.call(ERLIDE_XREF, "remove_modules", "ls", mods);
         } catch (final RpcException e) {
-            ErlLogger.error(e); // TODO report error
+            ErlLogger.error(e);
         }
     }
 

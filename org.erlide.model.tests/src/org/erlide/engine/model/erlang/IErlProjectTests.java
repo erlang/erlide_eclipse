@@ -62,7 +62,6 @@ public class IErlProjectTests extends ErlModelTestBase {
         ErlideTestUtils.createModule(projects[0], "cc.hrl", "-define(A, hej).\n");
         final IErlModule includeD = ErlideTestUtils.createInclude(projects[0], "dd.hrl",
                 "-define(B, du).\n");
-        // FIXME should all of them be returned?
         final List<IErlModule> expected = Lists.newArrayList(module, includeD);
         final Collection<IErlModule> includes = projects[0].getModulesAndIncludes();
         assertEquals(expected, includes);

@@ -595,7 +595,6 @@ public class ErlModel extends Openable implements IErlModel {
         }
         final IErlElement e = findElement(resource);
         if (e != null) {
-            // TODO or should this give an exception?
             return e;
         }
         final int type = resource.getType();
