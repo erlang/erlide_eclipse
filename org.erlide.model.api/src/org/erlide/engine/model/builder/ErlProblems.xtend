@@ -9,6 +9,7 @@ import java.util.List
 import java.util.Map
 import java.util.Scanner
 import java.util.regex.Pattern
+import org.eclipse.xtend.lib.annotations.Data
 import org.erlide.util.ErlLogger
 import org.erlide.util.erlang.ErlUtils
 

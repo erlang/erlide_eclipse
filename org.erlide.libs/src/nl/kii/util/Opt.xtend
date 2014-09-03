@@ -1,6 +1,5 @@
 package nl.kii.util
 
-
 abstract class Opt<T> implements Iterable<T> {
     def T value() throws NoneException
     def boolean hasSome()

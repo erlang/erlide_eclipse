@@ -5,12 +5,14 @@ import org.eclipse.core.runtime.ISafeRunnable
 import org.eclipse.core.runtime.SafeRunner
 import org.eclipse.jface.dialogs.MessageDialog
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.erlide.util.ErlLogger
 
+@Accessors
 abstract class QuickFixExecutor implements ISafeRunnable {
 
-    @Property IMarker marker;
-    @Property QuickFix quickFix;
+    IMarker marker;
+    QuickFix quickFix;
 
     override void handleException(Throwable exception) {
         ErlLogger.error(exception);

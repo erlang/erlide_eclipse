@@ -5,84 +5,39 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IMarkerResolution2;
+import org.eclipse.xtend.lib.annotations.Accessors;
+import org.eclipse.xtext.xbase.lib.Pure;
 import org.erlide.ui.editors.erl.correction.QuickFixExecutor;
 
+@Accessors
 @SuppressWarnings("all")
 public class QuickFix implements IMarkerResolution2 {
-  private String _label;
+  private String label;
   
-  public String getLabel() {
-    return this._label;
-  }
+  private String description;
   
-  public void setLabel(final String label) {
-    this._label = label;
-  }
+  private Image image;
   
-  private String _description;
+  private List<String> tags;
   
-  public String getDescription() {
-    return this._description;
-  }
+  private QuickFixExecutor executor;
   
-  public void setDescription(final String description) {
-    this._description = description;
-  }
-  
-  private Image _image;
-  
-  public Image getImage() {
-    return this._image;
-  }
-  
-  public void setImage(final Image image) {
-    this._image = image;
-  }
-  
-  private List<String> _tags;
-  
-  public List<String> getTags() {
-    return this._tags;
-  }
-  
-  public void setTags(final List<String> tags) {
-    this._tags = tags;
-  }
-  
-  private QuickFixExecutor _executor;
-  
-  public QuickFixExecutor getExecutor() {
-    return this._executor;
-  }
-  
-  public void setExecutor(final QuickFixExecutor executor) {
-    this._executor = executor;
-  }
-  
-  private List<String> _args;
-  
-  public List<String> getArgs() {
-    return this._args;
-  }
-  
-  public void setArgs(final List<String> args) {
-    this._args = args;
-  }
+  private List<String> args;
   
   public QuickFix() {
   }
   
   public QuickFix(final QuickFix other) {
     String _label = other.getLabel();
-    this.setLabel(_label);
+    this.label = _label;
     String _description = other.getDescription();
-    this.setDescription(_description);
+    this.description = _description;
     Image _image = other.getImage();
-    this.setImage(_image);
+    this.image = _image;
     List<String> _tags = other.getTags();
-    this.setTags(_tags);
+    this.tags = _tags;
     QuickFixExecutor _executor = other.getExecutor();
-    this.setExecutor(_executor);
+    this.executor = _executor;
   }
   
   public void run(final IMarker marker) {
@@ -98,12 +53,64 @@ public class QuickFix implements IMarkerResolution2 {
     if (_and) {
       return;
     }
-    QuickFixExecutor _executor = this.getExecutor();
-    _executor.run(marker, this);
+    this.executor.run(marker, this);
   }
   
   public boolean appliesAt(final IQuickAssistInvocationContext invocationContext) {
-    QuickFixExecutor _executor = this.getExecutor();
-    return _executor.appliesAt(invocationContext);
+    return this.executor.appliesAt(invocationContext);
+  }
+  
+  @Pure
+  public String getLabel() {
+    return this.label;
+  }
+  
+  public void setLabel(final String label) {
+    this.label = label;
+  }
+  
+  @Pure
+  public String getDescription() {
+    return this.description;
+  }
+  
+  public void setDescription(final String description) {
+    this.description = description;
+  }
+  
+  @Pure
+  public Image getImage() {
+    return this.image;
+  }
+  
+  public void setImage(final Image image) {
+    this.image = image;
+  }
+  
+  @Pure
+  public List<String> getTags() {
+    return this.tags;
+  }
+  
+  public void setTags(final List<String> tags) {
+    this.tags = tags;
+  }
+  
+  @Pure
+  public QuickFixExecutor getExecutor() {
+    return this.executor;
+  }
+  
+  public void setExecutor(final QuickFixExecutor executor) {
+    this.executor = executor;
+  }
+  
+  @Pure
+  public List<String> getArgs() {
+    return this.args;
+  }
+  
+  public void setArgs(final List<String> args) {
+    this.args = args;
   }
 }

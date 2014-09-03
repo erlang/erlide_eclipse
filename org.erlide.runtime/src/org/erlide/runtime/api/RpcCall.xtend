@@ -1,42 +1,38 @@
 package org.erlide.runtime.api
 
 import com.ericsson.otp.erlang.OtpErlangObject
-import org.erlide.runtime.rpc.IRpcCallback
 import java.util.concurrent.Callable
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.erlide.runtime.rpc.IRpcCallback
+import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 
+@Accessors
+@FinalFieldsConstructor
 class RpcCall implements Callable<OtpErlangObject> {
-    @Property val String module
-    @Property val String function
-    @Property val String signature
-    @Property val Object[] args
-    @Property var long timeout
-    @Property var OtpErlangObject groupLeader = null
-    @Property var IRpcCallback callback = null
-
-    new(String module, String function, String signature, Object[] args) {
-        this._module = module;
-        this._function = function;
-        this._signature = signature;
-        this._args = args;
-    }
+    val String module
+    val String function
+    val String signature
+    val Object[] args
+    var long timeout
+    var OtpErlangObject groupLeader = null
+    var IRpcCallback callback = null
 
     def RpcCall setTimeout(long timeout) {
-        this._timeout = timeout;
+        this.timeout = timeout;
         return this;
     }
 
     def RpcCall setGroupLeader(OtpErlangObject groupLeader) {
-        this._groupLeader = groupLeader;
+        this.groupLeader = groupLeader;
         return this;
     }
 
     def RpcCall setCallback(IRpcCallback callback) {
-        this._callback = callback;
+        this.callback = callback;
         return this;
     }
 
     override call() throws Exception {
-
     }
 
 }

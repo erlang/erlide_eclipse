@@ -54,14 +54,12 @@ public class ProblemData extends ProblemData0 {
       final int num = matcher.groupCount();
       final ArrayList<String> result = CollectionLiterals.<String>newArrayList();
       int i = 1;
-      boolean _while = (i <= num);
-      while (_while) {
+      while ((i <= num)) {
         {
           String _group = matcher.group(i);
           result.add(_group);
           i = (i + 1);
         }
-        _while = (i <= num);
       }
       return result;
     }

@@ -11,11 +11,11 @@ import org.eclipse.xtend.lib.macro.TransformationParticipant;
 import org.eclipse.xtend.lib.macro.declaration.ClassDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.CompilationStrategy;
 import org.eclipse.xtend.lib.macro.declaration.CompilationUnit;
+import org.eclipse.xtend.lib.macro.declaration.Element;
 import org.eclipse.xtend.lib.macro.declaration.MemberDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MethodDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableClassDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableMethodDeclaration;
-import org.eclipse.xtend.lib.macro.declaration.MutableNamedElement;
 import org.eclipse.xtend.lib.macro.declaration.MutableParameterDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.MutableTypeDeclaration;
 import org.eclipse.xtend.lib.macro.declaration.ParameterDeclaration;
@@ -94,7 +94,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
             VisitableProcessor.this.addVisitMethods(visitor, allInheritors, method, context);
             final Function1<ClassDeclaration, MutableClassDeclaration> _function = new Function1<ClassDeclaration, MutableClassDeclaration>() {
               public MutableClassDeclaration apply(final ClassDeclaration it) {
-                MutableNamedElement _primaryGeneratedJavaElement = context.getPrimaryGeneratedJavaElement(it);
+                Element _primaryGeneratedJavaElement = context.getPrimaryGeneratedJavaElement(it);
                 return ((MutableClassDeclaration) _primaryGeneratedJavaElement);
               }
             };

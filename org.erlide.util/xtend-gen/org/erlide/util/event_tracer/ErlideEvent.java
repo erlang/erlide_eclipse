@@ -1,17 +1,14 @@
 package org.erlide.util.event_tracer;
 
 import java.io.PrintWriter;
-import org.eclipse.xtend.lib.Data;
-import org.eclipse.xtext.xbase.lib.util.ToStringHelper;
+import org.eclipse.xtend.lib.annotations.Data;
+import org.eclipse.xtext.xbase.lib.Pure;
+import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 
 @Data
 @SuppressWarnings("all")
 public abstract class ErlideEvent {
-  private final long _timestamp;
-  
-  public long getTimestamp() {
-    return this._timestamp;
-  }
+  private final long timestamp;
   
   public void print(final PrintWriter file) {
     boolean _tripleNotEquals = (file != null);
@@ -25,18 +22,20 @@ public abstract class ErlideEvent {
   
   public ErlideEvent(final long timestamp) {
     super();
-    this._timestamp = timestamp;
+    this.timestamp = timestamp;
   }
   
   @Override
+  @Pure
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + (int) (this._timestamp ^ (this._timestamp >>> 32));
+    result = prime * result + (int) (this.timestamp ^ (this.timestamp >>> 32));
     return result;
   }
   
   @Override
+  @Pure
   public boolean equals(final Object obj) {
     if (this == obj)
       return true;
@@ -45,14 +44,21 @@ public abstract class ErlideEvent {
     if (getClass() != obj.getClass())
       return false;
     ErlideEvent other = (ErlideEvent) obj;
-    if (other._timestamp != this._timestamp)
+    if (other.timestamp != this.timestamp)
       return false;
     return true;
   }
   
   @Override
+  @Pure
   public String toString() {
-    String result = new ToStringHelper().toString(this);
-    return result;
+    ToStringBuilder b = new ToStringBuilder(this);
+    b.add("timestamp", this.timestamp);
+    return b.toString();
+  }
+  
+  @Pure
+  public long getTimestamp() {
+    return this.timestamp;
   }
 }

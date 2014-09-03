@@ -2,6 +2,7 @@ package org.erlide.annotations
 
 import java.lang.annotation.ElementType
 import java.lang.annotation.Target
+import org.eclipse.xtend.lib.annotations.Data
 import org.eclipse.xtend.lib.macro.AbstractClassProcessor
 import org.eclipse.xtend.lib.macro.Active
 import org.eclipse.xtend.lib.macro.TransformationContext

@@ -1,15 +1,14 @@
 package org.erlide.annotations
 
-import org.eclipse.xtend.lib.macro.AbstractClassProcessor
-import org.eclipse.xtend.lib.macro.declaration.ClassDeclaration
-import org.eclipse.xtend.lib.macro.RegisterGlobalsContext
-import org.eclipse.xtend.lib.macro.declaration.MutableClassDeclaration
-import org.eclipse.xtend.lib.macro.TransformationContext
-import org.eclipse.xtend.lib.macro.Active
 import java.lang.annotation.Documented
-import java.lang.annotation.Target
 import java.lang.annotation.ElementType
-import org.eclipse.xtend.lib.macro.declaration.TypeReference
+import java.lang.annotation.Target
+import org.eclipse.xtend.lib.macro.AbstractClassProcessor
+import org.eclipse.xtend.lib.macro.Active
+import org.eclipse.xtend.lib.macro.RegisterGlobalsContext
+import org.eclipse.xtend.lib.macro.TransformationContext
+import org.eclipse.xtend.lib.macro.declaration.ClassDeclaration
+import org.eclipse.xtend.lib.macro.declaration.MutableClassDeclaration
 
 @Active(typeof(ImmutableProcessor))
 @Documented
@@ -55,7 +54,7 @@ class ImmutableProcessor extends AbstractClassProcessor {
     cls.addMethod("build") [
       static = true
       returnType = cls.newTypeReference
-      addParameter("init", typeof(Procedures$Procedure1).newTypeReference(builder.newTypeReference))
+      addParameter("init", typeof(Procedures.Procedure1).newTypeReference(builder.newTypeReference))
       body = [
         '''
           «cls.builderClassName» builder = builder();

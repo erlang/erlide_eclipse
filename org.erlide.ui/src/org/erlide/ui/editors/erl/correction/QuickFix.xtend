@@ -5,14 +5,16 @@ import org.eclipse.core.resources.IMarker
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext
 import org.eclipse.swt.graphics.Image
 import org.eclipse.ui.IMarkerResolution2
+import org.eclipse.xtend.lib.annotations.Accessors
 
+@Accessors
 class QuickFix implements IMarkerResolution2 {
-    @Property String label;
-    @Property String description;
-    @Property Image image;
-    @Property List<String> tags;
-    @Property QuickFixExecutor executor;
-    @Property List<String> args;
+    String label;
+    String description;
+    Image image;
+    List<String> tags;
+    QuickFixExecutor executor;
+    List<String> args;
 
     new() {
     }
