@@ -15,8 +15,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import org.erlide.util.ErlLogger;
 
@@ -29,38 +27,18 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.base.Strings;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 public class TermParser {
 
-    public static TermParser getParser() {
-        return new TermParser();
-    }
-
-    private final LoadingCache<String, OtpErlangObject> cache;
-
-    private TermParser() {
-        cache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.HOURS)
-                .maximumSize(250).build(new CacheLoader<String, OtpErlangObject>() {
-                    @Override
-                    public OtpErlangObject load(final String key)
-                            throws TermParserException {
-                        return parse(scan(key));
-                    }
-                });
-    }
-
     public OtpErlangObject parse(final String s) throws TermParserException {
+        return doParse(s);
+    }
+
+    protected static OtpErlangObject doParse(final String s) throws TermParserException {
         if (Strings.isNullOrEmpty(s)) {
             return null;
         }
-        try {
-            return cache.get(s);
-        } catch (final ExecutionException e) {
-            throw (TermParserException) e.getCause();
-        }
+        return parse(scan(s));
     }
 
     private static OtpErlangObject parse(final List<Token> tokens)

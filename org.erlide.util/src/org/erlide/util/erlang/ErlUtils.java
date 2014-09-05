@@ -26,7 +26,7 @@ public final class ErlUtils {
     private ErlUtils() {
     }
 
-    final private static TermParser TERM_PARSER = TermParser.getParser();
+    final private static TermParser TERM_PARSER = OtpErlang.getTermParser();
 
     public static OtpErlangObject parse(final String string) throws TermParserException {
         return TERM_PARSER.parse(string);

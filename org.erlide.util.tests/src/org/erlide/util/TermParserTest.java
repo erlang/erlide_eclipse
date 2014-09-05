@@ -2,6 +2,7 @@ package org.erlide.util;
 
 import java.io.IOException;
 
+import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.OtpFormatPlaceholder;
 import org.erlide.util.erlang.OtpPatternVariable;
 import org.erlide.util.erlang.TermParser;
@@ -19,7 +20,7 @@ import com.ericsson.otp.erlang.OtpOutputStream;
 
 public class TermParserTest {
 
-    private final TermParser termParser = TermParser.getParser();
+    private final TermParser termParser = OtpErlang.getTermParser();
 
     @Test
     public void atom_1() throws TermParserException {

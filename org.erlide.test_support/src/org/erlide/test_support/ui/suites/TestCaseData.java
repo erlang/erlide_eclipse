@@ -7,7 +7,7 @@ import java.util.List;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.ErlUtils;
-import org.erlide.util.erlang.TermParser;
+import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -89,7 +89,7 @@ public class TestCaseData {
         public FailStackItem getFirstStackItem() {
             if (items.isEmpty()) {
                 try {
-                    return new FailStackItem(TermParser.getParser().parse(
+                    return new FailStackItem(OtpErlang.getTermParser().parse(
                             "{unknown,unknown,0}"));
                 } catch (final TermParserException e) {
                     // ignored

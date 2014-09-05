@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import org.erlide.util.erlang.OtpErlang;
-import org.erlide.util.erlang.TermParser;
 import org.erlide.util.erlang.TermParserException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -86,43 +85,43 @@ public class UtilTest {
 
     @Test
     public void testIsTag_number() throws TermParserException {
-        final OtpErlangObject input = TermParser.getParser().parse("3");
+        final OtpErlangObject input = OtpErlang.getTermParser().parse("3");
         Assert.assertEquals(false, Util.isTag(input, "ok"));
     }
 
     @Test
     public void testIsTag_good_atom() throws TermParserException {
-        final OtpErlangObject input = TermParser.getParser().parse("ok");
+        final OtpErlangObject input = OtpErlang.getTermParser().parse("ok");
         Assert.assertEquals(true, Util.isTag(input, "ok"));
     }
 
     @Test
     public void testIsTag_wrong_atom() throws TermParserException {
-        final OtpErlangObject input = TermParser.getParser().parse("okx");
+        final OtpErlangObject input = OtpErlang.getTermParser().parse("okx");
         Assert.assertEquals(false, Util.isTag(input, "ok"));
     }
 
     @Test
     public void testIsTag_tuple_int() throws TermParserException {
-        final OtpErlangObject input = TermParser.getParser().parse("{3,9}");
+        final OtpErlangObject input = OtpErlang.getTermParser().parse("{3,9}");
         Assert.assertEquals(false, Util.isTag(input, "ok"));
     }
 
     @Test
     public void testIsTag_tuple_good_atom() throws TermParserException {
-        final OtpErlangObject input = TermParser.getParser().parse("{ok, 9}");
+        final OtpErlangObject input = OtpErlang.getTermParser().parse("{ok, 9}");
         Assert.assertEquals(true, Util.isTag(input, "ok"));
     }
 
     @Test
     public void testIsTag_tuple_wrong_atom() throws TermParserException {
-        final OtpErlangObject input = TermParser.getParser().parse("{okx, 9}");
+        final OtpErlangObject input = OtpErlang.getTermParser().parse("{okx, 9}");
         Assert.assertEquals(false, Util.isTag(input, "ok"));
     }
 
     @Test
     public void stringValue_1() throws TermParserException {
-        final OtpErlangObject input = TermParser.getParser().parse("\"a string\"");
+        final OtpErlangObject input = OtpErlang.getTermParser().parse("\"a string\"");
         final String expected = "a string";
         final String actual = Util.stringValue(input);
         Assert.assertEquals(expected, actual);
@@ -130,7 +129,7 @@ public class UtilTest {
 
     @Test
     public void stringValue_2() throws TermParserException {
-        final OtpErlangObject input = TermParser.getParser().parse("[]");
+        final OtpErlangObject input = OtpErlang.getTermParser().parse("[]");
         final String expected = "";
         final String actual = Util.stringValue(input);
         Assert.assertEquals(expected, actual);
@@ -138,7 +137,7 @@ public class UtilTest {
 
     @Test
     public void stringValue_3() throws TermParserException {
-        final OtpErlangObject input = TermParser.getParser().parse("[51,52,53]");
+        final OtpErlangObject input = OtpErlang.getTermParser().parse("[51,52,53]");
         final String expected = "345";
         final String actual = Util.stringValue(input);
         Assert.assertEquals(expected, actual);

@@ -122,7 +122,7 @@ public abstract class CompilerOption {
         }
 
         public OtpErlangObject toTerm(final String value) {
-            final TermParser parser = TermParser.getParser();
+            final TermParser parser = OtpErlang.getTermParser();
             OtpErlangObject result;
             try {
                 String val;
@@ -213,7 +213,7 @@ public abstract class CompilerOption {
                 if (Strings.isNullOrEmpty(val)) {
                     defines[i] = OtpErlang.mkTuple(tag, okey);
                 } else {
-                    final OtpErlangObject ovalue = TermParser.getParser().parse(val);
+                    final OtpErlangObject ovalue = OtpErlang.getTermParser().parse(val);
                     defines[i] = OtpErlang.mkTuple(tag, okey, ovalue);
                 }
             }
