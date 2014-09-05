@@ -23,6 +23,18 @@ public class TermParserTest {
     private final TermParser termParser = OtpErlang.getTermParser();
 
     @Test
+    public void int_1() throws TermParserException {
+        final OtpErlangLong r = (OtpErlangLong) termParser.parse("34");
+        Assert.assertEquals(r.longValue(), 34);
+    }
+
+    @Test
+    public void int_2() throws TermParserException {
+        final OtpErlangLong r = (OtpErlangLong) termParser.parse("-34");
+        Assert.assertEquals(r.longValue(), -34);
+    }
+
+    @Test
     public void atom_1() throws TermParserException {
         final OtpErlangAtom r = (OtpErlangAtom) termParser.parse("hello");
         Assert.assertEquals(r.atomValue(), "hello");

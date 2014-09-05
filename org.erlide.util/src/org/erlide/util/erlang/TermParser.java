@@ -211,7 +211,7 @@ public class TermParser {
                 scanString(s, result);
             } else if (c >= 'A' && c <= 'Z' || c == '_') {
                 scanVariable(s, result);
-            } else if (c <= '9' && c >= '0') {
+            } else if (c <= '9' && c >= '0' || c == '-') {
                 scanInteger(s, result);
             } else if (c == '~') {
                 scanPlaceholder(s, result);
@@ -271,7 +271,7 @@ public class TermParser {
             char c;
             c = s.charAt(result.end);
             result.kind = TokenKind.INTEGER;
-            while (result.end < s.length() && c >= '0' && c <= '9') {
+            while (result.end < s.length() && (c >= '0' && c <= '9' || c == '-')) {
                 c = s.charAt(result.end++);
             }
             result.end--;
