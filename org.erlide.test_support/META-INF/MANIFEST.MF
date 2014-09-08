@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test frameworks support plug-in
 Bundle-SymbolicName: org.erlide.test_support;singleton:=true
-Bundle-Version: 0.24.8.qualifier
+Bundle-Version: 0.24.9.qualifier
 Bundle-Activator: org.erlide.test_support.Activator
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.ui,

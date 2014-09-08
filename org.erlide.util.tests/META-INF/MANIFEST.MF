@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Util Tests
 Bundle-SymbolicName: org.erlide.util.tests
-Bundle-Version: 0.24.6.qualifier
+Bundle-Version: 0.24.7.qualifier
 Bundle-Vendor: erlide.org
 Fragment-Host: org.erlide.util;bundle-version="0.19.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

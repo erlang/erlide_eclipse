@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dialyzer Core
 Bundle-SymbolicName: org.erlide.dialyzer.core;singleton:=true
-Bundle-Version: 0.24.6.qualifier
+Bundle-Version: 0.24.7.qualifier
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.6.1",

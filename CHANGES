@@ -1,3 +1,14 @@
+List of user visible changes between 0.29.1 and 0.29.2 (20140908)
+
+f77558f update erl_scan from latest OTP (column fixes)
+a870e3e updated Xtend to 2.7.0
+d39f98b extract erlang builder that doesn't depend on eclipse framework
+47dc151 better shutdown logging
+8fabc46 gh193: -spec did not work
+ee8b145 console refactoring
+305d362 1363: save runtime preferences under a different key
+f9c3aa6 eclipse 4 adjustments
+
 List of user visible changes between 0.29.0 and 0.29.1 (20140625)
 
 2e0e0a6 fix problem with internal BundleURLConnection
