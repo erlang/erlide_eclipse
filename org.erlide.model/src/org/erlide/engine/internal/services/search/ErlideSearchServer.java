@@ -31,18 +31,15 @@ public class ErlideSearchServer implements SearchServerService {
         final OtpErlangObject[] result = new OtpErlangObject[scope.size()];
         int i = 0;
         for (final IErlModule module : scope.getModules()) {
-            result[i] = make2Tuple(module.getScannerName(),
-                    module.getFilePath());
+            result[i] = make2Tuple(module.getScannerName(), module.getFilePath());
             i++;
         }
         return new OtpErlangList(result);
     }
 
-    private OtpErlangTuple make2Tuple(final String scannerModuleName,
-            final String path) {
-        return new OtpErlangTuple(
-                new OtpErlangObject[] { new OtpErlangAtom(scannerModuleName),
-                        new OtpErlangString(path) });
+    private OtpErlangTuple make2Tuple(final String scannerModuleName, final String path) {
+        return new OtpErlangTuple(new OtpErlangObject[] {
+                new OtpErlangAtom(scannerModuleName), new OtpErlangString(path) });
     }
 
     @Override
@@ -51,9 +48,8 @@ public class ErlideSearchServer implements SearchServerService {
             final IRpcResultCallback callback, final boolean updateSearchServer)
             throws RpcException {
         final OtpErlangList modules = getModulesFromScope(scope);
-        backend.async_call_result(callback, "erlide_search_server",
-                "start_find_refs", "xxxso", pattern.getSearchObject(), modules,
-                stateDir, updateSearchServer);
+        backend.async_call_result(callback, "erlide_search_server", "start_find_refs",
+                "xxxso", pattern.getSearchObject(), modules, stateDir, updateSearchServer);
     }
 
     @Override
@@ -64,8 +60,8 @@ public class ErlideSearchServer implements SearchServerService {
         final OtpErlangObject searchObject = pattern.getSearchObject();
         ErlLogger.debug("searchObject %s", searchObject);
         final OtpErlangObject r = backend.call(SEARCH_LONG_TIMEOUT,
-                "erlide_search_server", "find_refs", "xxso", searchObject,
-                modules, stateDir, updateSearchServer);
+                "erlide_search_server", "find_refs", "xxso", searchObject, modules,
+                stateDir, updateSearchServer);
         if (Util.isOk(r)) {
             return r;
         }
@@ -73,10 +69,8 @@ public class ErlideSearchServer implements SearchServerService {
     }
 
     @Override
-    public void cancelSearch(final OtpErlangPid searchDeamonPid)
-            throws RpcException {
-        backend.call("erlide_search_server", "cancel_find_refs", "x",
-                searchDeamonPid);
+    public void cancelSearch(final OtpErlangPid searchDeamonPid) throws RpcException {
+        backend.call("erlide_search_server", "cancel_find_refs", "x", searchDeamonPid);
     }
 
 }

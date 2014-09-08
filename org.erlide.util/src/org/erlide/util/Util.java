@@ -1016,10 +1016,10 @@ public final class Util {
      * NIO support to get input stream as byte array. Not used as with JDK 1.4.2
      * this support is slower than standard IO one... Keep it as comment for
      * future in case of next JDK versions improve performance in this area...
-     * 
+     *
      * public static byte[] getInputStreamAsByteArray(FileInputStream stream,
      * int length) throws IOException {
-     * 
+     *
      * FileChannel channel = stream.getChannel(); int size =
      * (int)channel.size(); if (length >= 0 && length < size) size = length;
      * byte[] contents = new byte[size]; ByteBuffer buffer =
@@ -1090,7 +1090,7 @@ public final class Util {
      * future in case of next JDK versions improve performance in this area...
      * public static char[] getInputStreamAsCharArray(FileInputStream stream,
      * int length, String encoding) throws IOException {
-     * 
+     *
      * FileChannel channel = stream.getChannel(); int size =
      * (int)channel.size(); if (length >= 0 && length < size) size = length;
      * Charset charset = encoding==null?systemCharset:Charset.forName(encoding);

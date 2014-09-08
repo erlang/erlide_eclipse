@@ -11,8 +11,7 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
     String macro;
     String extra;
 
-    public ErlMacroDef(final IParent parent, final String name,
-            final String extra) {
+    public ErlMacroDef(final IParent parent, final String name, final String extra) {
         super(parent, "macro_definition");
         this.extra = extra;
         macro = name != null ? name : uptoEndOfToken(extra);

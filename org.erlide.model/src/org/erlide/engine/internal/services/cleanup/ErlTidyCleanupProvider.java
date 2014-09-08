@@ -55,10 +55,9 @@ public class ErlTidyCleanupProvider implements CleanupProvider {
     @Override
     public void cleanUp(final IResource resource) throws Exception {
         // invoke erl_tidy in the background
-        final String absolutePathToErlangModule = resource.getLocation()
-                .toString();
-        final IRpcFuture erlTidyFuture = backend.async_call("erl_tidy", "file",
-                "s", absolutePathToErlangModule);
+        final String absolutePathToErlangModule = resource.getLocation().toString();
+        final IRpcFuture erlTidyFuture = backend.async_call("erl_tidy", "file", "s",
+                absolutePathToErlangModule);
 
         // wait as long as reasonable for erl_tidy to finish
         erlTidyFuture.get(PATIENCE_LIMIT, TimeUnit.MILLISECONDS);

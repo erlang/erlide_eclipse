@@ -37,8 +37,8 @@ public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
             break;
         case REBAR:
         case EMAKE:
-            result = getConfig(configType, new File(project
-                    .getWorkspaceProject().getLocation().toPortableString()));
+            result = getConfig(configType, new File(project.getWorkspaceProject()
+                    .getLocation().toPortableString()));
         }
         return result;
     }
@@ -64,16 +64,15 @@ public class ProjectConfiguratorFactory implements IProjectConfiguratorFactory {
                 // TODO is this ok?
                 return new OTPProjectConfigurator();
             }
-            final String path = directory.getAbsolutePath() + "/"
-                    + resources[0];
+            final String path = directory.getAbsolutePath() + "/" + resources[0];
             switch (configType) {
             case REBAR:
-                result = new FileProjectConfigurator(
-                        new RebarConfigurationSerializer(), path);
+                result = new FileProjectConfigurator(new RebarConfigurationSerializer(),
+                        path);
                 break;
             case EMAKE:
-                result = new FileProjectConfigurator(
-                        new EmakeConfigurationSerializer(), path);
+                result = new FileProjectConfigurator(new EmakeConfigurationSerializer(),
+                        path);
                 break;
             default:
                 break;

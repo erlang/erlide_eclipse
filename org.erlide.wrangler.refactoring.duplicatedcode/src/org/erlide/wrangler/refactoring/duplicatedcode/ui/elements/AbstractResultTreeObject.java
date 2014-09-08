@@ -25,8 +25,8 @@ public abstract class AbstractResultTreeObject implements IAdaptable {
      * @return name of the element
      */
     public abstract String getName(); /*
-                                       * { return name; }
-                                       */
+     * { return name; }
+     */
 
     /**
      * Sets the parent of the current element.

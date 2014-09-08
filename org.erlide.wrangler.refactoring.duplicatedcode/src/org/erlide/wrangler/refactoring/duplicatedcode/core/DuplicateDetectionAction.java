@@ -48,7 +48,7 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
     @SuppressWarnings("boxing")
     @Override
     protected IResultParser callRefactoring() throws WranglerRpcParsingException,
-            CoreException, IOException, WranglerWarningException {
+    CoreException, IOException, WranglerWarningException {
         String functionName;
         RpcResult result;
 

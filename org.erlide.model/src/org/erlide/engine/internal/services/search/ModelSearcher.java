@@ -31,7 +31,7 @@ public class ModelSearcher implements ModelSearcherService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.erlide.engine.model.ModelSearcherService#findAllIncludedFiles(org
      * .erlide.engine.model.erlang.IErlModule)
@@ -52,13 +52,12 @@ public class ModelSearcher implements ModelSearcherService {
         }
         checked.add(module);
 
-        final List<IErlModule> includedFilesForModule = ErlModelCache
-                .getDefault().getIncludedFilesForModule(module);
+        final List<IErlModule> includedFilesForModule = ErlModelCache.getDefault()
+                .getIncludedFilesForModule(module);
         if (includedFilesForModule != null && !includedFilesForModule.isEmpty()) {
             return includedFilesForModule;
         }
-        final Collection<ErlangIncludeFile> includedFiles = module
-                .getIncludeFiles();
+        final Collection<ErlangIncludeFile> includedFiles = module.getIncludeFiles();
         final IErlProject project = modelUtilService.getProject(module);
         if (project == null) {
             return result;
@@ -70,8 +69,7 @@ public class ModelSearcher implements ModelSearcherService {
         Collection<IErlModule> modules = null;
         for (final ErlangIncludeFile includeFile : includedFiles) {
             final String includeFileName = includeFile.getFilenameLastPart();
-            if (findAllIncludedFilesAux(checked, result, includes,
-                    includeFileName)) {
+            if (findAllIncludedFilesAux(checked, result, includes, includeFileName)) {
                 continue;
             }
             if (referencedIncludes == null) {
@@ -106,8 +104,7 @@ public class ModelSearcher implements ModelSearcherService {
             throws ErlModelException {
         final List<IErlModule> result = Lists.newArrayList();
         final IParent parent = module.getParent();
-        for (final IErlElement child : parent
-                .getChildrenOfKind(ErlElementKind.MODULE)) {
+        for (final IErlElement child : parent.getChildrenOfKind(ErlElementKind.MODULE)) {
             if (child instanceof IErlModule
                     && SourceKind.nameToModuleKind(child.getName()) == SourceKind.HRL) {
                 result.add((IErlModule) child);
@@ -117,9 +114,8 @@ public class ModelSearcher implements ModelSearcherService {
     }
 
     private boolean findAllIncludedFilesAux(final List<IErlModule> checked,
-            final Collection<IErlModule> result,
-            final Collection<IErlModule> includes, final String includeFileName)
-            throws CoreException {
+            final Collection<IErlModule> result, final Collection<IErlModule> includes,
+            final String includeFileName) throws CoreException {
         for (final IErlModule include : includes) {
             if (include.getName().equals(includeFileName)) {
                 if (include.getParent() instanceof IErlExternal) {
@@ -137,8 +133,8 @@ public class ModelSearcher implements ModelSearcherService {
     public static IErlModule findExternalIncludeInOpenProjects(
             final IErlModule externalInclude) throws CoreException {
         final String filePath = externalInclude.getFilePath();
-        final Collection<IErlProject> projects = ErlangEngine.getInstance()
-                .getModel().getErlangProjects();
+        final Collection<IErlProject> projects = ErlangEngine.getInstance().getModel()
+                .getErlangProjects();
         for (final IErlProject project : projects) {
             final Collection<IErlModule> includes = project.getIncludes();
             for (final IErlModule include : includes) {

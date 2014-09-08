@@ -44,7 +44,7 @@ public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
 
     @Override
     protected IResultParser callRefactoring() throws WranglerRpcParsingException,
-            CoreException, IOException, WranglerWarningException {
+    CoreException, IOException, WranglerWarningException {
         final WranglerRefactoringBackend backend = WranglerBackendManager
                 .getRefactoringBackend();
         final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters

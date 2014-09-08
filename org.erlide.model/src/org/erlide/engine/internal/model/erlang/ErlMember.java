@@ -35,8 +35,8 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 
     @Override
     public String getModuleName() {
-        final IErlModule module = ErlangEngine.getInstance()
-                .getModelUtilService().getModule(this);
+        final IErlModule module = ErlangEngine.getInstance().getModelUtilService()
+                .getModule(this);
         if (module != null) {
             return module.getName();
         }

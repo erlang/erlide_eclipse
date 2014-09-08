@@ -40,7 +40,7 @@ public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
 
     @Override
     protected IResultParser callRefactoring() throws WranglerRpcParsingException,
-            CoreException, IOException, WranglerWarningException {
+    CoreException, IOException, WranglerWarningException {
 
         final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
                 .getWranglerSelection();
@@ -55,9 +55,9 @@ public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
         }
         result = backend.callWithoutParser(WranglerRefactoringBackend.UNLIMITED_TIMEOUT,
                 functionName, "sxxxxi", sel.getFilePath(), sel.getSelectionRange()
-                        .getStartPos(), sel.getSelectionRange().getEndPos(),
+                .getStartPos(), sel.getSelectionRange().getEndPos(),
                 new OtpErlangFloat(simScore), sel.getSearchPath(), GlobalParameters
-                        .getTabWidth());
+                .getTabWidth());
 
         if (result.isOk()) {
             return new SimilarExpressionSearchParser(result.getValue());

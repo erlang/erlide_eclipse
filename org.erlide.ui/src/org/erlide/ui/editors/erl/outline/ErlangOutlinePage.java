@@ -281,7 +281,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     public static class NoModuleElement extends WorkbenchAdapter implements IAdaptable {
 
         /*
-         * 
+         *
          * @see java.lang.Object#toString()
          */
         @Override
@@ -290,7 +290,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         }
 
         /*
-         * 
+         *
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
          */
         @Override

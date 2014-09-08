@@ -154,8 +154,7 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
         super();
         fErlangEditorErrorTickUpdater = new ErlangEditorErrorTickUpdater(this);
 
-        this.annotationSupport = new AnnotationSupport(this,
-                getAnnotationPreferenceLookup());
+        annotationSupport = new AnnotationSupport(this, getAnnotationPreferenceLookup());
         this.xrefService = xrefService;
 
         setRulerContextMenuId("#ErlangEditorRulerContext");

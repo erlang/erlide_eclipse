@@ -26,8 +26,7 @@ public class ErlParserProblem extends ErlMember implements IParserProblem {
     private final String message;
     private final ProblemKind fKind;
 
-    ErlParserProblem(final IParent parent, final ProblemKind kind,
-            final String name) {
+    ErlParserProblem(final IParent parent, final ProblemKind kind, final String name) {
         super(parent, name);
         fKind = kind;
         message = name;
@@ -67,18 +66,15 @@ public class ErlParserProblem extends ErlMember implements IParserProblem {
         return "ERR: " + getMessage();
     }
 
-    public static ErlParserProblem newError(final IErlModule module,
-            final String msg) {
+    public static ErlParserProblem newError(final IErlModule module, final String msg) {
         return new ErlParserProblem(module, ProblemKind.ERROR, msg);
     }
 
-    public static ErlParserProblem newWarning(final IErlModule module,
-            final String msg) {
+    public static ErlParserProblem newWarning(final IErlModule module, final String msg) {
         return new ErlParserProblem(module, ProblemKind.WARNING, msg);
     }
 
-    public static ErlParserProblem newInfo(final IErlModule module,
-            final String msg) {
+    public static ErlParserProblem newInfo(final IErlModule module, final String msg) {
         return new ErlParserProblem(module, ProblemKind.INFO, msg);
     }
 }

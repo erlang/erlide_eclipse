@@ -47,14 +47,13 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
     }
 
     @Override
-    public boolean buildStructure(final IProgressMonitor pm)
-            throws ErlModelException {
+    public boolean buildStructure(final IProgressMonitor pm) throws ErlModelException {
         if (prebuilt) {
             // already done
             return true;
         }
-        final IErlProject project = ErlangEngine.getInstance()
-                .getModelUtilService().getProject(this);
+        final IErlProject project = ErlangEngine.getInstance().getModelUtilService()
+                .getProject(this);
         final IRpcSite backend = RpcSiteFactory.getRpcSiteForProject(project);
         if (backend != null) {
             final List<String> files = ErlangEngine.getInstance()
@@ -63,8 +62,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
                     .newArrayListWithCapacity(files.size());
             for (final String file : files) {
                 if (CommonUtils.isErlangFileContentFileName(getName(file))) {
-                    children.add(new ErlModule(this, getName(file), file, null,
-                            null));
+                    children.add(new ErlModule(this, getName(file), file, null, null));
                 }
             }
             setChildren(children);

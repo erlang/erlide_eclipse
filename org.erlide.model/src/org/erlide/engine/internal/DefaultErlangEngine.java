@@ -71,12 +71,10 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
     @Override
     public <T extends ErlangService> T getService(final Class<T> type) {
         try {
-            final Class<? extends ErlangService> clazz = implementations
-                    .get(type);
+            final Class<? extends ErlangService> clazz = implementations.get(type);
             if (clazz == null) {
                 throw new InjectionException(
-                        "ErlangService implementation not found for "
-                                + type.getName());
+                        "ErlangService implementation not found for " + type.getName());
             }
 
             final Constructor<?> constructor = clazz.getConstructors()[0];
@@ -144,10 +142,8 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
     @Override
     public String getStateDir() {
         if (stateDir == null) {
-            final Bundle modelPlugin = Platform
-                    .getBundle(ModelPlugin.PLUGIN_ID);
-            stateDir = Platform.getStateLocation(modelPlugin)
-                    .toPortableString();
+            final Bundle modelPlugin = Platform.getBundle(ModelPlugin.PLUGIN_ID);
+            stateDir = Platform.getStateLocation(modelPlugin).toPortableString();
         }
         return stateDir;
     }
@@ -241,8 +237,8 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
             public OtpErlangObject call(final String module, final String fun,
                     final int offset, final int length, final String text) {
                 try {
-                    final OtpErlangObject r1 = backend.call(module, fun, "sii",
-                            text, offset, length);
+                    final OtpErlangObject r1 = backend.call(module, fun, "sii", text,
+                            offset, length);
                     return r1;
                 } catch (final RpcException e) {
                     return new OtpErlangString("");
@@ -254,7 +250,7 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
     @Override
     public void setInitializationData(final IConfigurationElement config,
             final String propertyName, final Object data) throws CoreException {
-        this.backend = RpcSiteFactory.getRpcSite();
+        backend = RpcSiteFactory.getRpcSite();
     }
 
 }

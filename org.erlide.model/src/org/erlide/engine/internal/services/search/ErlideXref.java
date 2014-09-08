@@ -17,8 +17,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlideXref {
     private static final String ERLIDE_XREF = "erlide_xref";
 
-    public static void addDirs(final IRpcSite backend,
-            final Collection<String> dirs) {
+    public static void addDirs(final IRpcSite backend, final Collection<String> dirs) {
         try {
             backend.call(ERLIDE_XREF, "add_dirs", "ls", dirs);
         } catch (final RpcException e) {
@@ -29,8 +28,7 @@ public class ErlideXref {
     public static List<String> modules(final IRpcSite backend) {
         final ArrayList<String> result = new ArrayList<String>();
         try {
-            final OtpErlangObject res = backend
-                    .call(ERLIDE_XREF, "modules", "");
+            final OtpErlangObject res = backend.call(ERLIDE_XREF, "modules", "");
             if (Util.isOk(res)) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangList l = (OtpErlangList) t.elementAt(1);
@@ -53,8 +51,7 @@ public class ErlideXref {
         addDirs(backend, scope);
     }
 
-    private static void removeModules(final IRpcSite backend,
-            final List<String> mods) {
+    private static void removeModules(final IRpcSite backend, final List<String> mods) {
         try {
             backend.call(ERLIDE_XREF, "remove_modules", "ls", mods);
         } catch (final RpcException e) {

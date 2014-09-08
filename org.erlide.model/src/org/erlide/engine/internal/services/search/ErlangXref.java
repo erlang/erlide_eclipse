@@ -49,8 +49,7 @@ public class ErlangXref implements XrefService {
     public IRpcFuture addProject(final IErlProject project) {
         try {
             final IPath outputLocation = project.getWorkspaceProject()
-                    .getFolder(project.getProperties().getOutputDir())
-                    .getLocation();
+                    .getFolder(project.getProperties().getOutputDir()).getLocation();
             final String loc = outputLocation.toString();
             return backend.async_call(ERLIDE_XREF, "add_project", "s", loc);
         } catch (final Exception e) {
@@ -70,11 +69,10 @@ public class ErlangXref implements XrefService {
 
     @Override
     @SuppressWarnings("boxing")
-    public FunctionRef[] functionUse(final String mod, final String fun,
-            final int arity) {
+    public FunctionRef[] functionUse(final String mod, final String fun, final int arity) {
         try {
-            final OtpErlangObject r = backend.call(ERLIDE_XREF, "function_use",
-                    "aai", mod, fun, arity);
+            final OtpErlangObject r = backend.call(ERLIDE_XREF, "function_use", "aai",
+                    mod, fun, arity);
             final Bindings bind = ErlUtils.match("{ok, L}", r);
             if (bind == null) {
                 return new FunctionRef[0];

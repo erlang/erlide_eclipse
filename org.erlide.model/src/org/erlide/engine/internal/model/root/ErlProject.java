@@ -111,13 +111,11 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     @Override
-    public boolean buildStructure(final IProgressMonitor pm)
-            throws ErlModelException {
+    public boolean buildStructure(final IProgressMonitor pm) throws ErlModelException {
         final IResource r = getCorrespondingResource();
         // check whether the Erlang project can be opened
         if (!(r instanceof IContainer) || !r.isAccessible()) {
-            ErlLogger.warn(
-                    "Project %s has no resources: res:%s acc:%s cont:%s",
+            ErlLogger.warn("Project %s has no resources: res:%s acc:%s cont:%s",
                     getName(), r, r == null ? "?" : r.isAccessible(),
                     r instanceof IContainer);
             throw new ErlModelException(new ErlModelStatus(
@@ -141,8 +139,7 @@ public class ErlProject extends Openable implements IErlProject,
             for (final IResource element : elems) {
                 if (element instanceof IFolder) {
                     final IFolder folder = (IFolder) element;
-                    final IErlFolder erlFolder = (IErlFolder) model
-                            .create(folder);
+                    final IErlFolder erlFolder = (IErlFolder) model.create(folder);
                     children.add(erlFolder);
                 } else if (element instanceof IFile) {
                     final IFile file = (IFile) element;
@@ -185,17 +182,15 @@ public class ErlProject extends Openable implements IErlProject,
                         .getIncludesInDir(path.toPortableString());
                 if (includes != null) {
                     for (final String include : includes) {
-                        projectIncludes.add(path.append(include)
-                                .toPortableString());
+                        projectIncludes.add(path.append(include).toPortableString());
                     }
                 }
             }
         }
         if (externalIncludes.length() != 0 || externalModules.length() != 0
                 || !projectIncludes.isEmpty()) {
-            final IErlExternalRoot external = new ErlExternalReferenceEntryList(
-                    this, "Externals", externalIncludes, projectIncludes,
-                    externalModules);
+            final IErlExternalRoot external = new ErlExternalReferenceEntryList(this,
+                    "Externals", externalIncludes, projectIncludes, externalModules);
             children.add(external);
         }
     }
@@ -275,8 +270,7 @@ public class ErlProject extends Openable implements IErlProject,
     /**
      * Removes the given builder from the build spec for the given project.
      */
-    protected void removeFromBuildSpec(final String builderID)
-            throws CoreException {
+    protected void removeFromBuildSpec(final String builderID) throws CoreException {
 
         final IProjectDescription description = fProject.getDescription();
         final ICommand[] commands = description.getBuildSpec();
@@ -284,8 +278,7 @@ public class ErlProject extends Openable implements IErlProject,
             if (commands[i].getBuilderName().equals(builderID)) {
                 final ICommand[] newCommands = new ICommand[commands.length - 1];
                 System.arraycopy(commands, 0, newCommands, 0, i);
-                System.arraycopy(commands, i + 1, newCommands, i,
-                        commands.length - i - 1);
+                System.arraycopy(commands, i + 1, newCommands, i, commands.length - i - 1);
                 description.setBuildSpec(newCommands);
                 fProject.setDescription(description, null);
                 return;
@@ -311,10 +304,9 @@ public class ErlProject extends Openable implements IErlProject,
             return modulesForProject;
         }
         final List<IErlModule> result = new ArrayList<IErlModule>();
-        final List<IPath> sourceDirs = Lists.newArrayList(getProperties()
-                .getSourceDirs());
-        for (final IPath s : SourcePathUtils
-                .getExtraSourcePathsForModel(fProject)) {
+        final List<IPath> sourceDirs = Lists
+                .newArrayList(getProperties().getSourceDirs());
+        for (final IPath s : SourcePathUtils.getExtraSourcePathsForModel(fProject)) {
             sourceDirs.add(s);
         }
         result.addAll(getModulesOrIncludes(fProject, ErlangEngine.getInstance()
@@ -323,10 +315,9 @@ public class ErlProject extends Openable implements IErlProject,
         return result;
     }
 
-    private static List<IErlModule> getModulesOrIncludes(
-            final IProject project, final IErlElementLocator model,
-            final Collection<IPath> dirs, final boolean getModules)
-            throws ErlModelException {
+    private static List<IErlModule> getModulesOrIncludes(final IProject project,
+            final IErlElementLocator model, final Collection<IPath> dirs,
+            final boolean getModules) throws ErlModelException {
         final List<IErlModule> result = Lists.newArrayList();
         for (final IPath dir : dirs) {
             final IFolder folder = project.getFolder(dir);
@@ -338,8 +329,7 @@ public class ErlProject extends Openable implements IErlProject,
                         .getChildrenOfKind(ErlElementKind.MODULE)) {
                     if (e instanceof IErlModule) {
                         final IErlModule m = (IErlModule) e;
-                        final boolean isModule = SourceKind.nameToModuleKind(m
-                                .getName()) != SourceKind.HRL;
+                        final boolean isModule = SourceKind.nameToModuleKind(m.getName()) != SourceKind.HRL;
                         if (isModule == getModules) {
                             result.add(m);
                         }
@@ -351,8 +341,7 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     @Override
-    public Collection<IErlModule> getModulesAndIncludes()
-            throws ErlModelException {
+    public Collection<IErlModule> getModulesAndIncludes() throws ErlModelException {
         final List<IErlModule> result = new ArrayList<IErlModule>();
         final ErlModelCache erlModelCache = ErlModelCache.getDefault();
         final List<IErlModule> modulesForProject = erlModelCache
@@ -363,13 +352,11 @@ public class ErlProject extends Openable implements IErlProject,
             result.addAll(modulesForProject);
             result.addAll(includesForProject);
         } else {
-            final List<IErlModule> cached = erlModelCache
-                    .getModulesForProject(this);
-            final IErlElementLocator model = ErlangEngine.getInstance()
-                    .getModel();
+            final List<IErlModule> cached = erlModelCache.getModulesForProject(this);
+            final IErlElementLocator model = ErlangEngine.getInstance().getModel();
             if (cached == null) {
-                final List<IErlModule> modules = getModulesOrIncludes(fProject,
-                        model, getProperties().getSourceDirs(), true);
+                final List<IErlModule> modules = getModulesOrIncludes(fProject, model,
+                        getProperties().getSourceDirs(), true);
                 result.addAll(modules);
             } else {
                 result.addAll(cached);
@@ -383,14 +370,12 @@ public class ErlProject extends Openable implements IErlProject,
     @Override
     public Collection<IErlModule> getIncludes() throws ErlModelException {
         final ErlModelCache erlModelCache = ErlModelCache.getDefault();
-        final List<IErlModule> cached = erlModelCache
-                .getIncludesForProject(this);
+        final List<IErlModule> cached = erlModelCache.getIncludesForProject(this);
         if (cached != null) {
             return cached;
         }
-        final List<IErlModule> includes = getModulesOrIncludes(fProject,
-                ErlangEngine.getInstance().getModel(), getProperties()
-                        .getIncludeDirs(), false);
+        final List<IErlModule> includes = getModulesOrIncludes(fProject, ErlangEngine
+                .getInstance().getModel(), getProperties().getIncludeDirs(), false);
         erlModelCache.putIncludesForProject(this, includes);
         return includes;
     }
@@ -495,8 +480,7 @@ public class ErlProject extends Openable implements IErlProject,
         accept(new IErlElementVisitor() {
 
             @Override
-            public boolean visit(final IErlElement element)
-                    throws ErlModelException {
+            public boolean visit(final IErlElement element) throws ErlModelException {
                 final boolean isExternalOrProject = element.getKind() == ErlElementKind.EXTERNAL_ROOT
                         || element.getKind() == ErlElementKind.EXTERNAL_APP
                         || element.getKind() == ErlElementKind.EXTERNAL_FOLDER
@@ -602,8 +586,7 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     @Override
-    public Collection<IErlProject> getReferencedProjects()
-            throws ErlModelException {
+    public Collection<IErlProject> getReferencedProjects() throws ErlModelException {
         final List<IErlProject> result = Lists.newArrayList();
         try {
             for (final IProject project : fProject.getReferencedProjects()) {
@@ -620,14 +603,12 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     @Override
-    public Collection<IErlModule> getExternalIncludes()
-            throws ErlModelException {
+    public Collection<IErlModule> getExternalIncludes() throws ErlModelException {
         final List<IErlModule> result = Lists.newArrayList();
         accept(new IErlElementVisitor() {
 
             @Override
-            public boolean visit(final IErlElement element)
-                    throws ErlModelException {
+            public boolean visit(final IErlElement element) throws ErlModelException {
                 final boolean isExternalOrProject = element.getKind() == ErlElementKind.EXTERNAL_ROOT
                         || element.getKind() == ErlElementKind.EXTERNAL_APP
                         || element.getKind() == ErlElementKind.EXTERNAL_FOLDER
@@ -653,8 +634,8 @@ public class ErlProject extends Openable implements IErlProject,
     }
 
     public boolean moduleInProject(final IErlModule module) {
-        final IErlProject project = ErlangEngine.getInstance()
-                .getModelUtilService().getProject(module);
+        final IErlProject project = ErlangEngine.getInstance().getModelUtilService()
+                .getProject(module);
         if (project == null) {
             return false;
         }
@@ -669,8 +650,7 @@ public class ErlProject extends Openable implements IErlProject,
             accept(new IErlElementVisitor() {
 
                 @Override
-                public boolean visit(final IErlElement element)
-                        throws ErlModelException {
+                public boolean visit(final IErlElement element) throws ErlModelException {
                     element.dispose();
                     return false;
                 }
@@ -702,8 +682,7 @@ public class ErlProject extends Openable implements IErlProject,
 
     private void loadCoreProperties() {
         final IEclipsePreferences node = getCorePropertiesNode();
-        final String name = node.get(CONFIG_TYPE_TAG,
-                ProjectConfigType.INTERNAL.name());
+        final String name = node.get(CONFIG_TYPE_TAG, ProjectConfigType.INTERNAL.name());
         setConfigType(ProjectConfigType.valueOf(name));
     }
 

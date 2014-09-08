@@ -106,7 +106,7 @@ class ShowEDocAction extends TextEditorAction {
              * @see
              * org.eclipse.jface.text.information.IInformationProviderExtension2
              * #getInformationPresenterControlCreator()
-             * 
+             *
              * @since 3.0
              */
             @Override

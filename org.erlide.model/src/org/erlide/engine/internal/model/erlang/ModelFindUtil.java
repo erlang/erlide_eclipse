@@ -34,15 +34,12 @@ public class ModelFindUtil implements ModelFindService {
     }
 
     @Override
-    public ISourceRange findVariable(final ISourceRange range,
-            final String variableName, final String elementText)
-            throws OtpErlangRangeException {
+    public ISourceRange findVariable(final ISourceRange range, final String variableName,
+            final String elementText) throws OtpErlangRangeException {
         final OtpErlangTuple res2 = ErlangEngine.getInstance()
-                .getService(OpenService.class)
-                .findFirstVar(variableName, elementText);
+                .getService(OpenService.class).findFirstVar(variableName, elementText);
         if (res2 != null) {
-            final int relativePos = ((OtpErlangLong) res2.elementAt(0))
-                    .intValue() - 1;
+            final int relativePos = ((OtpErlangLong) res2.elementAt(0)).intValue() - 1;
             final int length = ((OtpErlangLong) res2.elementAt(1)).intValue();
             final int start = relativePos + range.getOffset();
             return new SourceRange(start, length);
@@ -52,20 +49,17 @@ public class ModelFindUtil implements ModelFindService {
 
     @Override
     public IErlModule findInclude(final IErlElementLocator model,
-            final IErlProject project, final IErlModule module,
-            final String includeName, final String includePath)
-            throws CoreException {
+            final IErlProject project, final IErlModule module, final String includeName,
+            final String includePath) throws CoreException {
         if (module != null) {
-            final IErlModule include = model.findIncludeFromModule(module,
-                    includeName, includePath,
-                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IErlModule include = model.findIncludeFromModule(module, includeName,
+                    includePath, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             if (include != null) {
                 return include;
             }
         } else if (project != null) {
-            final IErlModule include = model.findIncludeFromProject(project,
-                    includeName, includePath,
-                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
+            final IErlModule include = model.findIncludeFromProject(project, includeName,
+                    includePath, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             if (include != null) {
                 return include;
             }
@@ -93,18 +87,16 @@ public class ModelFindUtil implements ModelFindService {
 
     @Override
     public IErlFunction findFunction(final IErlElementLocator model,
-            final IErlProject project, final IErlModule module,
-            final String moduleName0, final String modulePath,
-            final ErlangFunction erlangFunction,
+            final IErlProject project, final IErlModule module, final String moduleName0,
+            final String modulePath, final ErlangFunction erlangFunction,
             final IErlElementLocator.Scope scope) throws CoreException {
         if (moduleName0 != null) {
             final String moduleName = resolveMacroValue(moduleName0, module);
-            final IErlModule module2 = findModule(model, project, moduleName,
-                    modulePath, scope);
+            final IErlModule module2 = findModule(model, project, moduleName, modulePath,
+                    scope);
             if (module2 != null) {
                 module2.open(null);
-                final IErlFunction function = module2
-                        .findFunction(erlangFunction);
+                final IErlFunction function = module2.findFunction(erlangFunction);
                 if (function != null) {
                     return function;
                 }
@@ -116,12 +108,10 @@ public class ModelFindUtil implements ModelFindService {
 
     @Override
     public IErlModule findModule(final IErlElementLocator model,
-            final IErlProject project, final String moduleName,
-            final String modulePath, final IErlElementLocator.Scope scope)
-            throws ErlModelException {
+            final IErlProject project, final String moduleName, final String modulePath,
+            final IErlElementLocator.Scope scope) throws ErlModelException {
         if (project != null) {
-            return model.findModuleFromProject(project, moduleName, modulePath,
-                    scope);
+            return model.findModuleFromProject(project, moduleName, modulePath, scope);
         }
         if (scope == IErlElementLocator.Scope.ALL_PROJECTS) {
             return model.findModule(moduleName, modulePath);
@@ -131,13 +121,12 @@ public class ModelFindUtil implements ModelFindService {
 
     @Override
     public IErlElement findTypeDef(final IErlElementLocator model,
-            final IErlProject project, final IErlModule module,
-            final String moduleName0, final String typeName,
-            final String modulePath, final IErlElementLocator.Scope scope)
-            throws CoreException {
+            final IErlProject project, final IErlModule module, final String moduleName0,
+            final String typeName, final String modulePath,
+            final IErlElementLocator.Scope scope) throws CoreException {
         final String moduleName = resolveMacroValue(moduleName0, module);
-        final IErlModule module2 = findModule(model, project, moduleName,
-                modulePath, scope);
+        final IErlModule module2 = findModule(model, project, moduleName, modulePath,
+                scope);
         if (module2 != null) {
             module2.open(null);
             return module2.findTypespec(typeName);
@@ -148,8 +137,7 @@ public class ModelFindUtil implements ModelFindService {
     @Override
     public IErlPreprocessorDef findPreprocessorDef(
             final Collection<IErlProject> projects, final String moduleName,
-            final String definedName, final ErlElementKind kind)
-            throws CoreException {
+            final String definedName, final ErlElementKind kind) throws CoreException {
         for (final IErlProject project : projects) {
             if (project != null) {
                 final IErlModule module = project.getModule(moduleName);
@@ -167,8 +155,7 @@ public class ModelFindUtil implements ModelFindService {
 
     @Override
     public IErlPreprocessorDef findPreprocessorDef(final IErlModule module,
-            final String definedName, final ErlElementKind kind)
-            throws CoreException {
+            final String definedName, final ErlElementKind kind) throws CoreException {
         String unquoted = StringUtils.unquote(definedName);
         final String quoted = StringUtils.quote(definedName);
         final Set<String> names = new HashSet<String>(3);
@@ -181,9 +168,8 @@ public class ModelFindUtil implements ModelFindService {
         }
         names.add(quoted);
         names.add(definedName);
-        final List<IErlModule> allIncludedFiles = Lists
-                .newArrayList(ErlangEngine.getInstance()
-                        .getModelSearcherService().findAllIncludedFiles(module));
+        final List<IErlModule> allIncludedFiles = Lists.newArrayList(ErlangEngine
+                .getInstance().getModelSearcherService().findAllIncludedFiles(module));
         allIncludedFiles.add(0, module);
         for (final IErlModule includedFile : allIncludedFiles) {
             for (final String name : names) {
@@ -199,8 +185,7 @@ public class ModelFindUtil implements ModelFindService {
     }
 
     @Override
-    public String resolveMacroValue(final String definedName,
-            final IErlModule module) {
+    public String resolveMacroValue(final String definedName, final IErlModule module) {
         if (module != null) {
             if ("?MODULE".equals(definedName)) {
                 return module.getModuleName();

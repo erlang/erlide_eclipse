@@ -27,7 +27,7 @@ public class PushActionDelegate implements IViewActionDelegate {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IViewActionDelegate#init(org.eclipse.ui.IViewPart)
      */
     @Override
@@ -39,7 +39,7 @@ public class PushActionDelegate implements IViewActionDelegate {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
      */
     @Override
@@ -96,7 +96,7 @@ public class PushActionDelegate implements IViewActionDelegate {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action
      * .IAction, org.eclipse.jface.viewers.ISelection)

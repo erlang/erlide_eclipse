@@ -20,7 +20,7 @@ import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.ResultTreeRoot
  *
  */
 public class DuplicatesViewContentProvider implements ITreeContentProvider,
-        IDuplicatedCodeResultDisplayer {
+IDuplicatedCodeResultDisplayer {
 
     private final DuplicatesView duplicatedCodeView;
 

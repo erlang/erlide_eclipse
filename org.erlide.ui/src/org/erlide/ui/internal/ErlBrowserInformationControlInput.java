@@ -60,7 +60,7 @@ public class ErlBrowserInformationControlInput extends BrowserInformationControl
     /*
      * @see org.eclipse.jface.internal.text.html.BrowserInformationControlInput#
      * getLeadingImageWidth()
-     * 
+     *
      * @since 3.4
      */
     @Override

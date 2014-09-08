@@ -33,8 +33,7 @@ public class FileProjectConfigurator implements IProjectConfigurator,
     @NonNull
     private final ProjectConfigurationSerializer serializer;
 
-    public FileProjectConfigurator(
-            final ProjectConfigurationSerializer serializer,
+    public FileProjectConfigurator(final ProjectConfigurationSerializer serializer,
             final String filePath) {
         Preconditions.checkArgument(filePath != null);
         Preconditions.checkArgument(serializer != null);
@@ -56,8 +55,7 @@ public class FileProjectConfigurator implements IProjectConfigurator,
     private ErlangProjectProperties getRawConfig(final File confFile) {
         ErlangProjectProperties result = null;
         try {
-            final Charset coding = ErlangContentDescriber
-                    .detectCodingForFile(confFile);
+            final Charset coding = ErlangContentDescriber.detectCodingForFile(confFile);
             final List<String> confString = Files.readLines(confFile, coding);
             if (confString != null) {
                 final String content = Joiner.on("\n").join(confString);
@@ -97,12 +95,10 @@ public class FileProjectConfigurator implements IProjectConfigurator,
             delta.accept(new IResourceDeltaVisitor() {
 
                 @Override
-                public boolean visit(final IResourceDelta aDelta)
-                        throws CoreException {
+                public boolean visit(final IResourceDelta aDelta) throws CoreException {
                     final IResource res = aDelta.getResource();
                     if (res.getLocation().equals(new Path(filePath))) {
-                        System.out.println("DETECTED " + aDelta.getKind() + " "
-                                + res);
+                        System.out.println("DETECTED " + aDelta.getKind() + " " + res);
                     }
                     return false;
 

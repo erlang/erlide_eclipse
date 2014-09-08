@@ -33,8 +33,7 @@ public class ErlElementDelta implements IErlElementDelta {
      * @param flags
      * @param element
      */
-    public ErlElementDelta(final int kind, final int flags,
-            final IErlElement element) {
+    public ErlElementDelta(final int kind, final int flags, final IErlElement element) {
         this(kind, flags, element, new ArrayList<ErlElementDelta>(0),
                 new ArrayList<IResourceDelta>(0));
     }
@@ -45,8 +44,8 @@ public class ErlElementDelta implements IErlElementDelta {
      * @param element
      * @param children
      */
-    public ErlElementDelta(final int kind, final int flags,
-            final IErlElement element, final List<ErlElementDelta> children) {
+    public ErlElementDelta(final int kind, final int flags, final IErlElement element,
+            final List<ErlElementDelta> children) {
         this(kind, flags, element, children, new ArrayList<IResourceDelta>(0));
     }
 
@@ -57,8 +56,8 @@ public class ErlElementDelta implements IErlElementDelta {
      * @param children
      * @param resourceDeltas
      */
-    public ErlElementDelta(final int kind, final int flags,
-            final IErlElement element, final List<ErlElementDelta> children,
+    public ErlElementDelta(final int kind, final int flags, final IErlElement element,
+            final List<ErlElementDelta> children,
             final List<IResourceDelta> resourceDeltas) {
         super();
         fKind = kind;
@@ -70,8 +69,7 @@ public class ErlElementDelta implements IErlElementDelta {
 
     @Override
     public IErlElementDelta[] getChildren(final int kind) {
-        final ArrayList<IErlElementDelta> children = new ArrayList<IErlElementDelta>(
-                0);
+        final ArrayList<IErlElementDelta> children = new ArrayList<IErlElementDelta>(0);
         for (int i = 0; i < fChildren.size(); ++i) {
             final IErlElementDelta c = fChildren.get(i);
             if (c.getKind() == kind || kind == ALL) {
@@ -98,16 +96,14 @@ public class ErlElementDelta implements IErlElementDelta {
 
     @Override
     public IResourceDelta[] getResourceDeltas() {
-        return fResourceDeltas.toArray(new IResourceDelta[fResourceDeltas
-                .size()]);
+        return fResourceDeltas.toArray(new IResourceDelta[fResourceDeltas.size()]);
     }
 
     /**
      * Creates the delta tree for the given element and delta, and then inserts
      * the tree as an affected child of this node.
      */
-    public void insertDeltaTree(final IErlElement element,
-            final ErlElementDelta delta) {
+    public void insertDeltaTree(final IErlElement element, final ErlElementDelta delta) {
         final ErlElementDelta childDelta = createDeltaTree(element, delta);
         if (!equalsAndSameParent(element, getElement())) {
             addAffectedChild(childDelta);
@@ -139,8 +135,7 @@ public class ErlElementDelta implements IErlElementDelta {
         } else {
             for (final IParent ancestor : ancestors) {
                 final IErlElement element2 = (IErlElement) ancestor;
-                final ErlElementDelta ancestorDelta = new ErlElementDelta(0, 0,
-                        element2);
+                final ErlElementDelta ancestorDelta = new ErlElementDelta(0, 0, element2);
                 ancestorDelta.addAffectedChild(childDelta);
                 childDelta = ancestorDelta;
             }
@@ -186,8 +181,7 @@ public class ErlElementDelta implements IErlElementDelta {
         for (int i = 0; i < fChildren.size(); i++) {
             // handle case of two jars that can be equals but not in the same
             // project
-            if (equalsAndSameParent(fChildren.get(i).getElement(),
-                    child.getElement())) {
+            if (equalsAndSameParent(fChildren.get(i).getElement(), child.getElement())) {
                 existingChild = fChildren.get(i);
                 existingChildIndex = i;
                 break;
@@ -241,8 +235,7 @@ public class ErlElementDelta implements IErlElementDelta {
                     final IErlElementDelta[] children = child.getChildren(ALL);
                     for (final IErlElementDelta element : children) {
                         final ErlElementDelta childsChild = (ErlElementDelta) element;
-                        ((ErlElementDelta) existingChild)
-                                .addAffectedChild(childsChild);
+                        ((ErlElementDelta) existingChild).addAffectedChild(childsChild);
                     }
                     // add the non-erlang resource deltas if needed
                     // note that the child delta always takes
@@ -290,11 +283,9 @@ public class ErlElementDelta implements IErlElementDelta {
     /**
      * Returns whether the two elements are equals and have the same parent.
      */
-    protected boolean equalsAndSameParent(final IErlElement e1,
-            final IErlElement e2) {
+    protected boolean equalsAndSameParent(final IErlElement e1, final IErlElement e2) {
         final IErlElement parent1 = (IErlElement) e1.getParent();
-        return e1.equals(e2) && parent1 != null
-                && parent1.equals(e2.getParent());
+        return e1.equals(e2) && parent1 != null && parent1.equals(e2.getParent());
     }
 
     /**

@@ -93,7 +93,7 @@ public class MarkOccurencesSupport implements IDisposable {
         this.editor = editor;
         this.fOccurrenceAnnotations = fOccurrenceAnnotations;
         this.fMarkOccurrenceModificationStamp = fMarkOccurrenceModificationStamp;
-        this.fActivationListener = new ActivationListener();
+        fActivationListener = new ActivationListener();
     }
 
     protected void installOccurrencesFinder(final boolean forceUpdate) {

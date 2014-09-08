@@ -14,7 +14,7 @@ package org.erlide.engine.model.erlang;
  * A source range defines an element's source coordinates relative to its source
  * buffer.
  * <p>
- * 
+ *
  * @noimplement This interface is not intended to be implemented by clients.
  *              </p>
  */

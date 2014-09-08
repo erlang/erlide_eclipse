@@ -132,7 +132,7 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
         final GridData minClonesData = new GridData( // GridData.GRAB_HORIZONTAL
                 // |
                 GridData.GRAB_VERTICAL // | GridData.HORIZONTAL_ALIGN_FILL
-                        | GridData.VERTICAL_ALIGN_CENTER);
+                | GridData.VERTICAL_ALIGN_CENTER);
         minClonesData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
         minClonesLabel.setLayoutData(minClonesData);
         minClonesLabel.setFont(parent.getFont());

@@ -25,21 +25,18 @@ public class PreferencesProjectConfigurator implements IProjectConfigurator {
     public ErlangProjectProperties getConfiguration() {
         final ErlangProjectProperties result = new ErlangProjectProperties();
 
-        final String sourceDirsStr = node.get(
-                ProjectPreferencesConstants.SOURCE_DIRS,
+        final String sourceDirsStr = node.get(ProjectPreferencesConstants.SOURCE_DIRS,
                 ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
         result.setSourceDirs(PathSerializer.unpackList(sourceDirsStr));
-        final String includeDirsStr = node.get(
-                ProjectPreferencesConstants.INCLUDE_DIRS,
+        final String includeDirsStr = node.get(ProjectPreferencesConstants.INCLUDE_DIRS,
                 ProjectPreferencesConstants.DEFAULT_INCLUDE_DIRS);
         result.setIncludeDirs(PathSerializer.unpackList(includeDirsStr));
-        final String outputDirStr = node.get(
-                ProjectPreferencesConstants.OUTPUT_DIR,
+        final String outputDirStr = node.get(ProjectPreferencesConstants.OUTPUT_DIR,
                 ProjectPreferencesConstants.DEFAULT_OUTPUT_DIR);
         final String outputStr = outputDirStr.replaceAll(";", "");
         result.setOutputDir(new Path(outputStr));
-        result.setRequiredRuntimeVersion(RuntimeVersion.Serializer.parse(node
-                .get(ProjectPreferencesConstants.RUNTIME_VERSION, null)));
+        result.setRequiredRuntimeVersion(RuntimeVersion.Serializer.parse(node.get(
+                ProjectPreferencesConstants.RUNTIME_VERSION, null)));
         if (!result.getRequiredRuntimeVersion().isDefined()) {
             result.setRequiredRuntimeVersion(ProjectPreferencesConstants.FALLBACK_RUNTIME_VERSION);
         }

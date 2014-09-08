@@ -19,13 +19,12 @@ public class ErlideNoparse {
 
     public static OtpErlangTuple initialParse(final IRpcSite b,
             final String scannerModuleName, final String moduleFileName,
-            final String initialText, final String stateDir,
-            final boolean updateRefs) {
+            final String initialText, final String stateDir, final boolean updateRefs) {
         OtpErlangTuple res = null;
         try {
-            res = (OtpErlangTuple) b.call(200000, ERLIDE_NOPARSE,
-                    "initial_parse", "asssoo", scannerModuleName,
-                    moduleFileName, initialText, stateDir, true, updateRefs);
+            res = (OtpErlangTuple) b.call(200000, ERLIDE_NOPARSE, "initial_parse",
+                    "asssoo", scannerModuleName, moduleFileName, initialText, stateDir,
+                    true, updateRefs);
         } catch (final RpcTimeoutException e) {
             ErlLogger.warn(e);
         } catch (final RpcException e) {
@@ -38,8 +37,8 @@ public class ErlideNoparse {
             final String scannerModuleName, final boolean updateSearchServer) {
         OtpErlangTuple res = null;
         try {
-            res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE, "reparse",
-                    "ao", scannerModuleName, updateSearchServer);
+            res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE, "reparse", "ao",
+                    scannerModuleName, updateSearchServer);
         } catch (final RpcTimeoutException e) {
             ErlLogger.warn(e);
         } catch (final RpcException e) {
@@ -48,14 +47,13 @@ public class ErlideNoparse {
         return res;
     }
 
-    public static IErlFunction getFunction(final IErlModule module,
-            final String name, final int arity) {
+    public static IErlFunction getFunction(final IErlModule module, final String name,
+            final int arity) {
         try {
             for (final IErlElement e : module.getChildren()) {
                 if (e instanceof IErlFunction) {
                     final IErlFunction function = (IErlFunction) e;
-                    if (function.getName().equals(name)
-                            && function.getArity() == arity) {
+                    if (function.getName().equals(name) && function.getArity() == arity) {
                         return function;
                     }
                 }

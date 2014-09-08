@@ -20,8 +20,7 @@ public class ErlideParser implements SimpleParserService {
 
     @Override
     public List<OtpErlangObject> parse(final String s) {
-        final RpcResult res = backend.call_noexception("erlide_parse",
-                "consult", "b", s);
+        final RpcResult res = backend.call_noexception("erlide_parse", "consult", "b", s);
         if (res.isOk()) {
             final OtpErlangObject val = res.getValue();
             if (val instanceof OtpErlangList) {

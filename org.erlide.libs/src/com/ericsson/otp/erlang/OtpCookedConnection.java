@@ -70,10 +70,10 @@ public class OtpCookedConnection extends AbstractConnection {
      * OtpSelf#accept() OtpSelf.accept()} to create a connection based on data
      * received when handshaking with the peer node, when the remote node is the
      * connection intitiator.
-     * 
+     *
      * @exception java.io.IOException if it was not possible to connect to the
      * peer.
-     * 
+     *
      * @exception OtpAuthException if handshake resulted in an authentication
      * error
      */
@@ -88,10 +88,10 @@ public class OtpCookedConnection extends AbstractConnection {
 
     /*
      * Intiate and open a connection to a remote node.
-     * 
+     *
      * @exception java.io.IOException if it was not possible to connect to the
      * peer.
-     * 
+     *
      * @exception OtpAuthException if handshake resulted in an authentication
      * error.
      */

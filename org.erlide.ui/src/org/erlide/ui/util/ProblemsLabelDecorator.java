@@ -71,7 +71,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
 
     /*
      * Creates decorator with a shared image registry.
-     * 
+     *
      * @param registry The registry to use or <code>null</code> to use the
      * erlide plugin's image registry.
      */

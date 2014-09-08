@@ -51,8 +51,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
      *
      * @param dirtyRegion
      */
-    public abstract boolean buildStructure(IProgressMonitor pm)
-            throws ErlModelException;
+    public abstract boolean buildStructure(IProgressMonitor pm) throws ErlModelException;
 
     @Override
     public boolean exists() {
@@ -93,8 +92,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 
         @Override
         public boolean visit(final IResource resource) {
-            if (resource.getType() == IResource.FILE
-                    && resource.getName().equals(aname)) {
+            if (resource.getType() == IResource.FILE && resource.getName().equals(aname)) {
                 findResult = resource;
                 return false;
             }
@@ -124,8 +122,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
         // for packages and projects must check open buffers
         // to see if they have an child with unsaved changes
         final ErlElementKind elementType = getKind();
-        if (elementType == ErlElementKind.PROJECT
-                || elementType == ErlElementKind.MODEL) {
+        if (elementType == ErlElementKind.PROJECT || elementType == ErlElementKind.MODEL) {
             // final Enumeration openBuffers =
             // getBufferManager().getOpenBuffers();
             // while (openBuffers.hasMoreElements()) {
@@ -157,15 +154,13 @@ public abstract class Openable extends ErlElement implements IOpenable {
     }
 
     @Override
-    public void makeConsistent(final IProgressMonitor monitor)
-            throws ErlModelException {
+    public void makeConsistent(final IProgressMonitor monitor) throws ErlModelException {
         if (isConsistent()) {
             return;
         }
     }
 
-    protected void openParent(final IProgressMonitor pm)
-            throws ErlModelException {
+    protected void openParent(final IProgressMonitor pm) throws ErlModelException {
 
         final Openable openableParent = (Openable) getOpenableParent();
         if (openableParent != null && !openableParent.isOpen()) {

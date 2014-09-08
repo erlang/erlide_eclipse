@@ -179,7 +179,7 @@ public class ErlInformationPresenter implements
     /*
      * @see IHoverInformationPresenterExtension#updatePresentation(Drawable
      * drawable, String, TextPresentation, int, int)
-     * 
+     *
      * @since 3.2
      */
     @Override

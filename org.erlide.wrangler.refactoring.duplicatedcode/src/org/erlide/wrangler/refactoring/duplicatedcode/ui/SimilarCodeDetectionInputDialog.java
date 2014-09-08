@@ -144,7 +144,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 
         final Label maxNewVarsLabel = new Label(composite, SWT.WRAP);
         maxNewVarsLabel
-                .setText("Maximum number of new parameters of the least-general abstraction:");
+        .setText("Maximum number of new parameters of the least-general abstraction:");
         final GridData maxNewVarsData = new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_CENTER);
@@ -225,11 +225,11 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
      * int digits, int value) { Spinner ret = new Spinner(parent, SWT.BORDER);
      * ret.setMinimum(min); ret.setMaximum(max); ret.setDigits(digits);
      * ret.setSelection(value);
-     * 
+     *
      * GridData gd = new GridData(); gd.verticalIndent = 2;
      * gd.horizontalAlignment = SWT.RIGHT; gd.grabExcessHorizontalSpace = true;
      * ret.setLayoutData(gd);
-     * 
+     *
      * return ret; }
      */
 

@@ -680,7 +680,7 @@ public class OtpMbox {
 
     /*
      * called by OtpNode to deliver message to this mailbox.
-     * 
+     *
      * About exit and exit2: both cause exception to be raised upon receive().
      * However exit (not 2) causes any link to be removed as well, while exit2
      * leaves any links intact.

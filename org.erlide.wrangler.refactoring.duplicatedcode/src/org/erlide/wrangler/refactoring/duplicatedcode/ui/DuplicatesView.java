@@ -172,7 +172,7 @@ public class DuplicatesView extends ViewPart {
         copyGeneralisedToClipboard = new ClipboardAction(PlatformUI.getWorkbench()
                 .getDisplay());
         copyGeneralisedToClipboard
-                .setToolTipText("Copy generalised function to the clipboard");
+        .setToolTipText("Copy generalised function to the clipboard");
         copyGeneralisedToClipboard.setImageDescriptor(PlatformUI.getWorkbench()
                 .getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
         copyFunCallToClipboard.setToolTipText("Copy FunCall to the clipboard");

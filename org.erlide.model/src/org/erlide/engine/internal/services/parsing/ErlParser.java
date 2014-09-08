@@ -91,8 +91,8 @@ public final class ErlParser implements ParserService {
 
     @Override
     public boolean parse(final IErlModule module, final String scannerName,
-            final boolean initialParse, final String path,
-            final String initialText, final boolean updateSearchServer) {
+            final boolean initialParse, final String path, final String initialText,
+            final boolean updateSearchServer) {
         if (module == null) {
             return false;
         }
@@ -105,8 +105,7 @@ public final class ErlParser implements ParserService {
             res = ErlideNoparse.initialParse(backend, scannerName, pathNotNull,
                     initialText, stateDir, updateSearchServer);
         } else {
-            res = ErlideNoparse.reparse(backend, scannerName,
-                    updateSearchServer);
+            res = ErlideNoparse.reparse(backend, scannerName, updateSearchServer);
         }
         if (Util.isOk(res)) {
             final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(1);
@@ -124,8 +123,7 @@ public final class ErlParser implements ParserService {
         if (comments == null) {
             module.setComments(null);
         } else {
-            final List<IErlComment> moduleComments = createComments(module,
-                    comments);
+            final List<IErlComment> moduleComments = createComments(module, comments);
             module.setComments(moduleComments);
         }
         attachFunctionComments(module);
@@ -147,11 +145,10 @@ public final class ErlParser implements ParserService {
 
     private List<IErlComment> createComments(final IErlModule module,
             final OtpErlangList comments) {
-        final List<IErlComment> moduleComments = Lists
-                .newArrayListWithCapacity(comments.arity());
+        final List<IErlComment> moduleComments = Lists.newArrayListWithCapacity(comments
+                .arity());
         for (final OtpErlangObject comment : comments) {
-            final IErlComment c = createComment(module,
-                    (OtpErlangTuple) comment);
+            final IErlComment c = createComment(module, (OtpErlangTuple) comment);
             if (c != null) {
                 moduleComments.add(c);
             }
@@ -161,8 +158,7 @@ public final class ErlParser implements ParserService {
 
     private List<IErlElement> createForms(final IErlModule module,
             final OtpErlangList forms) {
-        final List<IErlElement> children = Lists.newArrayListWithCapacity(forms
-                .arity());
+        final List<IErlElement> children = Lists.newArrayListWithCapacity(forms.arity());
         for (final OtpErlangObject form : forms) {
             final IErlMember elem = create(module, (OtpErlangTuple) form);
             if (elem != null) {
@@ -187,8 +183,8 @@ public final class ErlParser implements ParserService {
         try {
             final Collection<IErlComment> comments = module.getComments();
             final List<IErlElement> children = module.getChildren();
-            final List<IErlMember> all = Lists
-                    .newArrayListWithCapacity(children.size() + comments.size());
+            final List<IErlMember> all = Lists.newArrayListWithCapacity(children.size()
+                    + comments.size());
             all.addAll(comments);
             for (final IErlElement element : children) {
                 if (element instanceof IErlMember) {
@@ -266,8 +262,7 @@ public final class ErlParser implements ParserService {
      *            token record from noparse
      * @return IErlComment
      */
-    private IErlComment createComment(final IErlModule module,
-            final OtpErlangTuple c) {
+    private IErlComment createComment(final IErlModule module, final OtpErlangTuple c) {
         final OtpErlangLong lineL = (OtpErlangLong) c.elementAt(LINE);
         final OtpErlangObject s = c.elementAt(TEXT);
 
@@ -281,8 +276,7 @@ public final class ErlParser implements ParserService {
         lastLine = line;
         try {
             if (c.elementAt(LAST_LINE) instanceof OtpErlangLong) {
-                final OtpErlangLong lastLineL = (OtpErlangLong) c
-                        .elementAt(LAST_LINE);
+                final OtpErlangLong lastLineL = (OtpErlangLong) c.elementAt(LAST_LINE);
                 lastLine = lastLineL.intValue();
             }
         } catch (final OtpErlangRangeException e1) {
@@ -318,31 +312,26 @@ public final class ErlParser implements ParserService {
             return e;
         } else if ("tree".equals(typeS)) {
             final OtpErlangTuple atr = (OtpErlangTuple) el.elementAt(3);
-            final OtpErlangObject pos = ((OtpErlangTuple) el.elementAt(2))
-                    .elementAt(1);
+            final OtpErlangObject pos = ((OtpErlangTuple) el.elementAt(2)).elementAt(1);
             final OtpErlangTuple name = (OtpErlangTuple) atr.elementAt(1);
             final OtpErlangAtom n = (OtpErlangAtom) concreteTerm(name);
             final OtpErlangObject val = atr.elementAt(2);
-            final OtpErlangObject extra = el.arity() > 4 ? el.elementAt(4)
-                    : null;
+            final OtpErlangObject extra = el.arity() > 4 ? el.elementAt(4) : null;
             return addAttribute(module, pos, n, val, extra, null);
         } else if ("attribute".equals(typeS)) {
             final OtpErlangObject pos = el.elementAt(1);
             final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
             final OtpErlangObject val = el.elementAt(3);
-            final OtpErlangObject extra = el.arity() > 4 ? el.elementAt(4)
-                    : null;
-            final OtpErlangObject arity = el.arity() > 5 ? el.elementAt(5)
-                    : null;
+            final OtpErlangObject extra = el.arity() > 4 ? el.elementAt(4) : null;
+            final OtpErlangObject arity = el.arity() > 5 ? el.elementAt(5) : null;
             return addAttribute(module, pos, name, val, extra, arity);
         } else if ("function".equals(typeS)) {
             final ErlFunction f = makeErlFunction(module, el);
             final OtpErlangList clauses = (OtpErlangList) el.elementAt(6);
-            final List<ErlFunctionClause> cls = Lists
-                    .newArrayListWithCapacity(clauses.arity());
+            final List<ErlFunctionClause> cls = Lists.newArrayListWithCapacity(clauses
+                    .arity());
             for (int i = 0; i < clauses.arity(); i++) {
-                final OtpErlangTuple clause = (OtpErlangTuple) clauses
-                        .elementAt(i);
+                final OtpErlangTuple clause = (OtpErlangTuple) clauses.elementAt(i);
                 final ErlFunctionClause cl = makeErlFunctionClause(f, i, clause);
                 cls.add(cl);
             }
@@ -362,8 +351,7 @@ public final class ErlParser implements ParserService {
      *            name_pos, comment, exported}).
      * @return ErlFunction
      */
-    private ErlFunction makeErlFunction(final IErlModule module,
-            final OtpErlangTuple el) {
+    private ErlFunction makeErlFunction(final IErlModule module, final OtpErlangTuple el) {
         final OtpErlangTuple pos = (OtpErlangTuple) el.elementAt(1);
         final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
         final OtpErlangLong arity = (OtpErlangLong) el.elementAt(3);
@@ -399,8 +387,8 @@ public final class ErlParser implements ParserService {
      *
      *
      */
-    private ErlFunctionClause makeErlFunctionClause(final ErlFunction f,
-            final int i, final OtpErlangTuple clause) {
+    private ErlFunctionClause makeErlFunctionClause(final ErlFunction f, final int i,
+            final OtpErlangTuple clause) {
         final OtpErlangTuple cpos = (OtpErlangTuple) clause.elementAt(1);
         final OtpErlangList parameters = (OtpErlangList) clause.elementAt(3);
         final OtpErlangObject head = clause.elementAt(4);
@@ -424,14 +412,12 @@ public final class ErlParser implements ParserService {
         f.setNameRange(ofs, len);
     }
 
-    private IErlMember addAttribute(final IErlModule module,
-            final OtpErlangObject pos, final OtpErlangAtom name,
-            final OtpErlangObject val, final OtpErlangObject extra,
-            final OtpErlangObject arity) {
+    private IErlMember addAttribute(final IErlModule module, final OtpErlangObject pos,
+            final OtpErlangAtom name, final OtpErlangObject val,
+            final OtpErlangObject extra, final OtpErlangObject arity) {
         final String nameS = name.atomValue();
         if ("module".equals(nameS) && val instanceof OtpErlangAtom) {
-            return addModuleAttribute(module, pos, (OtpErlangAtom) val, extra,
-                    nameS);
+            return addModuleAttribute(module, pos, (OtpErlangAtom) val, extra, nameS);
         } else if ("import".equals(nameS)) {
             if (val instanceof OtpErlangTuple) {
                 return addImportAttribute(module, pos, val);
@@ -440,8 +426,7 @@ public final class ErlParser implements ParserService {
             return addExportAttribute(module, pos, val, extra);
         } else if ("record".equals(nameS)) {
             return addRecordDef(module, pos, val, extra);
-        } else if ("type".equals(nameS) || "spec".equals(nameS)
-                || "opaque".equals(nameS)) {
+        } else if ("type".equals(nameS) || "spec".equals(nameS) || "opaque".equals(nameS)) {
             return addTypespec(module, pos, extra);
         } else if ("define".equals(nameS)) {
             return addMacroDef(module, pos, val, extra, nameS);
@@ -453,15 +438,13 @@ public final class ErlParser implements ParserService {
             final OtpErlangObject pos, final OtpErlangObject val,
             final OtpErlangObject extra) {
         final OtpErlangList functionList = (OtpErlangList) val;
-        final ErlExport ex = new ErlExport(module, functionList,
-                Util.stringValue(extra));
+        final ErlExport ex = new ErlExport(module, functionList, Util.stringValue(extra));
         setPos(ex, pos);
         return ex;
     }
 
-    private IErlMember addMacroDef(final IErlModule module,
-            final OtpErlangObject pos, final OtpErlangObject val,
-            final OtpErlangObject extra, final String nameS) {
+    private IErlMember addMacroDef(final IErlModule module, final OtpErlangObject pos,
+            final OtpErlangObject val, final OtpErlangObject extra, final String nameS) {
         if (val instanceof OtpErlangAtom) {
             final String s = Util.stringValue(extra);
             final ErlMember r = new ErlMacroDef(module,
@@ -517,8 +500,7 @@ public final class ErlParser implements ParserService {
                 o = null;
             }
         }
-        final ErlAttribute a = new ErlAttribute(module, nameS, o,
-                Util.stringValue(extra));
+        final ErlAttribute a = new ErlAttribute(module, nameS, o, Util.stringValue(extra));
         setPos(a, pos);
         // a.setParseTree(val);
         return a;
@@ -532,8 +514,7 @@ public final class ErlParser implements ParserService {
             if (recordTuple.elementAt(0) instanceof OtpErlangAtom) {
                 final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
                         .stringValue() : null;
-                final OtpErlangList fields = (OtpErlangList) recordTuple
-                        .elementAt(1);
+                final OtpErlangList fields = (OtpErlangList) recordTuple.elementAt(1);
                 final ErlRecordDef r = new ErlRecordDef(module, null, s);
                 setPos(r, pos);
                 if (fields != null) {
@@ -545,8 +526,7 @@ public final class ErlParser implements ParserService {
                             final OtpErlangAtom fieldNameAtom = (OtpErlangAtom) fieldTuple
                                     .elementAt(0);
                             final String fieldName = fieldNameAtom.atomValue();
-                            final ErlRecordField field = new ErlRecordField(r,
-                                    fieldName);
+                            final ErlRecordField field = new ErlRecordField(r, fieldName);
                             final OtpErlangTuple posTuple = (OtpErlangTuple) fieldTuple
                                     .elementAt(1);
                             if (fieldTuple.arity() > 2) {
@@ -577,8 +557,8 @@ public final class ErlParser implements ParserService {
         return null;
     }
 
-    private IErlMember addTypespec(final IErlModule module,
-            final OtpErlangObject pos, final OtpErlangObject extra) {
+    private IErlMember addTypespec(final IErlModule module, final OtpErlangObject pos,
+            final OtpErlangObject extra) {
         final String s = Util.stringValue(extra);
         final int p = s.indexOf('(');
         final String ref = p < 0 ? s : s.substring(0, p);
@@ -593,8 +573,7 @@ public final class ErlParser implements ParserService {
             moduleName = refs[0];
             typeName = refs[1];
         }
-        final ErlTypespec a = new ErlTypespec(module, moduleName, typeName,
-                arity, s);
+        final ErlTypespec a = new ErlTypespec(module, moduleName, typeName, arity, s);
         setPos(a, pos);
         return a;
     }
@@ -631,8 +610,8 @@ public final class ErlParser implements ParserService {
                 && t.elementAt(1) instanceof OtpErlangList) {
             final OtpErlangAtom importModule = (OtpErlangAtom) t.elementAt(0);
             final OtpErlangList functionList = (OtpErlangList) t.elementAt(1);
-            final ErlImport imp = new ErlImport(module,
-                    importModule.atomValue(), functionList);
+            final ErlImport imp = new ErlImport(module, importModule.atomValue(),
+                    functionList);
             setPos(imp, pos);
             return imp;
         }
@@ -689,8 +668,8 @@ public final class ErlParser implements ParserService {
 
     }
 
-    private void setPos(final SourceRefElement e, final int line,
-            final int lastLine, final int ofs, final int len) {
+    private void setPos(final SourceRefElement e, final int line, final int lastLine,
+            final int ofs, final int len) {
         e.setSourceRangeOffset(ofs);
         e.setSourceRangeLength(len);
         e.setLineStart(line);

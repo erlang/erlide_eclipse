@@ -28,12 +28,11 @@ public class ErlideDoc implements OtpDocService {
     }
 
     @Override
-    public OtpErlangObject getProposalsWithDoc(final IRpcSite b,
-            final String mod, final String prefix, final String stateDir) {
+    public OtpErlangObject getProposalsWithDoc(final IRpcSite b, final String mod,
+            final String prefix, final String stateDir) {
         OtpErlangObject res = null;
         try {
-            res = b.call(ERLIDE_OTP_DOC, "get_proposals", "ass", mod, prefix,
-                    stateDir);
+            res = b.call(ERLIDE_OTP_DOC, "get_proposals", "ass", mod, prefix, stateDir);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
@@ -46,8 +45,8 @@ public class ErlideDoc implements OtpDocService {
         OtpErlangObject res = null;
         try {
             final String what = includes ? "includes" : "modules";
-            res = b.call(ERLIDE_OTP_DOC, "get_modules", "slsa", prefix,
-                    projectModules, what);
+            res = b.call(ERLIDE_OTP_DOC, "get_modules", "slsa", prefix, projectModules,
+                    what);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
@@ -62,11 +61,10 @@ public class ErlideDoc implements OtpDocService {
                 new OtpErlangAtom("external"),
                 new OtpErlangAtom(functionCall.getModule()),
                 new OtpErlangAtom(functionCall.getName()),
-                new OtpErlangInt(functionCall.getArity()),
-                new OtpErlangString("") });
+                new OtpErlangInt(functionCall.getArity()), new OtpErlangString("") });
         try {
-            res = b.call(ERLIDE_OTP_DOC, "get_doc", "sxs",
-                    functionCall.getModule(), input, stateDir);
+            res = b.call(ERLIDE_OTP_DOC, "get_doc", "sxs", functionCall.getModule(),
+                    input, stateDir);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
@@ -77,8 +75,8 @@ public class ErlideDoc implements OtpDocService {
     @SuppressWarnings("boxing")
     public OtpErlangObject getOtpDoc(final IRpcSite b, final int offset,
             final String stateDir, final String module,
-            final Collection<OtpErlangObject> imports,
-            final String externalModules, final OtpErlangList pathVars) {
+            final Collection<OtpErlangObject> imports, final String externalModules,
+            final OtpErlangList pathVars) {
         OtpErlangObject res = null;
         try {
             final OtpErlangObject input = backend.call(
@@ -87,13 +85,9 @@ public class ErlideDoc implements OtpDocService {
                     "aix",
                     module,
                     offset,
-                    ErlangEngine
-                            .getInstance()
-                            .getService(OpenService.class)
-                            .mkContext(externalModules, null, pathVars, null,
-                                    imports));
-            res = b.call(ERLIDE_OTP_DOC, "get_doc", "sxs", module, input,
-                    stateDir);
+                    ErlangEngine.getInstance().getService(OpenService.class)
+                            .mkContext(externalModules, null, pathVars, null, imports));
+            res = b.call(ERLIDE_OTP_DOC, "get_doc", "sxs", module, input, stateDir);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }

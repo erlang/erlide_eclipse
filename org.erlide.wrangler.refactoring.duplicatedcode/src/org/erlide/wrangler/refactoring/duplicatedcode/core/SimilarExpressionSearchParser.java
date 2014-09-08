@@ -51,7 +51,7 @@ public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
      * Parse Wrangler messages which are in the following format: {ok,
      * {[{{filename, startLine, startCol},{filePath, endLine, endCol}}],
      * generalisation}
-     * 
+     *
      * @see
      * org.erlide.wrangler.refactoring.duplicatedcode.core.IResultParser#parse
      * (com.ericsson.otp.erlang.OtpErlangObject)

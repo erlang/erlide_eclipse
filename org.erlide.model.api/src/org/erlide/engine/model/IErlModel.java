@@ -31,7 +31,7 @@ import com.google.common.base.Predicate;
  * is the root of the Erlang element hierarchy). Its children are
  * <code>IErlProject</code>s.
  * <p>
- * 
+ *
  * @noimplement This interface is not intended to be implemented by clients. An
  *              instance of one of these handles can be created via
  *              <code>ErlangCore.create(workspace.getRoot())</code>.
