@@ -41,3 +41,7 @@ coverage.data
 coverage.info
 coverage.xml
 junit.xml
+
+.rebar
+.eunit
+
