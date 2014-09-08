@@ -645,18 +645,25 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
         @Override
         protected IStatus run(final IProgressMonitor monitor) {
-            try {
-                final String alternatePltFileDirectory = DialyzerPreferences
-                        .getAlternatePLTFileDirectoryFromPreferences();
-                checkIfPltFilesShouldBeCopied(alternatePltFileDirectory);
-                final IRpcSite backend = BackendCore.getBuildBackend(fProject);
-                for (final String pltPath : selectedPLTPaths) {
-                    checkPlt(pltPath, alternatePltFileDirectory, monitor, backend);
+            final IProject project = fProject;
+            if (project != null) {
+                try {
+                    final String alternatePltFileDirectory = DialyzerPreferences
+                            .getAlternatePLTFileDirectoryFromPreferences();
+                    checkIfPltFilesShouldBeCopied(alternatePltFileDirectory);
+                    final IErlProject eproject = ErlangEngine.getInstance().getModel()
+                            .findProject(project);
+                    if (eproject != null) {
+                        final IRpcSite backend = BackendCore.getBuildBackend(eproject);
+                        for (final String pltPath : selectedPLTPaths) {
+                            checkPlt(pltPath, alternatePltFileDirectory, monitor, backend);
+                        }
+                    }
+                } catch (final Exception e) {
+                    return newErrorStatus(e);
+                } finally {
+                    monitor.done();
                 }
-            } catch (final Exception e) {
-                return newErrorStatus(e);
-            } finally {
-                monitor.done();
             }
             return Status.OK_STATUS;
         }

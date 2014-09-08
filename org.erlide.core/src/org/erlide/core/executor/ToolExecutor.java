@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
@@ -16,6 +15,7 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
+import org.erlide.core.internal.builder.BuildNotifier;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 
@@ -44,7 +44,7 @@ public class ToolExecutor {
     }
 
     public ToolResults run(final String cmd0, final String args, final String wdir,
-            final ProgressCallback progressCallback, final IProgressMonitor monitor) {
+            final ProgressCallback progressCallback, final BuildNotifier notifier) {
         final String cmd = new Path(cmd0).isAbsolute() ? cmd0 : getToolLocation(cmd0);
 
         if (cmd == null) {
@@ -105,7 +105,8 @@ public class ToolExecutor {
                         }
                     });
             boolean done = false;
-            while (!done && !(monitor != null && monitor.isCanceled())) {
+            final boolean canceled = notifier != null && notifier.isCanceled();
+            while (!done && !canceled) {
                 try {
                     result.exit = process.getExitValue();
                     done = true;
@@ -116,7 +117,7 @@ public class ToolExecutor {
                     }
                 }
             }
-            if (monitor != null && monitor.isCanceled()) {
+            if (canceled) {
                 process.terminate();
             }
             return result;
@@ -127,8 +128,8 @@ public class ToolExecutor {
     }
 
     public ToolResults run(final String cmd0, final String args, final String wdir,
-            final IProgressMonitor m) {
-        return run(cmd0, args, wdir, null, m);
+            final BuildNotifier notifier) {
+        return run(cmd0, args, wdir, null, notifier);
     }
 
     public static String getToolLocation(final String cmd) {

@@ -42,7 +42,7 @@ import java.net.UnknownHostException;
  * <pre>
  * OtpSelf self = new OtpSelf(&quot;client&quot;, &quot;authcookie&quot;); // identify self
  * OtpPeer other = new OtpPeer(&quot;server&quot;); // identify peer
- * 
+ *
  * OtpConnection conn = self.connect(other); // connect to peer
  * </pre>
  *

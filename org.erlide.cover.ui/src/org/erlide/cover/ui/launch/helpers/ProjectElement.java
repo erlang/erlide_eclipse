@@ -4,9 +4,9 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * Represents project to show it in a browser
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class ProjectElement {
 

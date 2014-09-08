@@ -49,17 +49,17 @@ a:visited      { color: blue; text-decoration: none }
   margin-left: 240px; /* set left value to WidthOfFrameDiv */
 }
 
-.frontpage 
+.frontpage
 {
   padding-top: 50px; /* Magins for inner DIV inside each DIV (to provide padding) */
 }
 
-.innertube 
+.innertube
 {
   margin: 15px; /* Magins for inner DIV inside each DIV (to provide padding) */
 }
 
-.footer 
+.footer
 {
   margin: 15px; /* Magins for inner DIV inside each DIV (to provide padding) */
 }
@@ -102,10 +102,17 @@ span.code        { font-family: Courier, monospace; font-weight: normal }
   padding: 0px 10px;
 }
 
-pre          { font-family: Courier, monospace; font-weight: normal }
+pre          { font-family: Courier, monospace; }
 
 .REFBODY     { margin-left: 13mm }
 
 .REFTYPES    { margin-left: 8mm }
 
 footer       { }
+
+.edoc {
+}
+
+.typespec {
+    font-weight: bold;
+}

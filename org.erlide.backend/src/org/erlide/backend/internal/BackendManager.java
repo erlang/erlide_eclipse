@@ -25,8 +25,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
@@ -38,7 +37,6 @@ import org.erlide.backend.api.IBackendListener;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
-import org.erlide.backend.api.IPluginCodeLoader;
 import org.erlide.backend.api.IProjectCodeLoader;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
@@ -61,8 +59,7 @@ public final class BackendManager implements IBackendManager {
         ADDED, REMOVED, MODULE_LOADED
     }
 
-    private volatile IBackend ideBackend;
-    private final Object ideBackendLock = new Object();
+    private IBackend ideBackend;
     private final Map<IProject, Set<IBackend>> executionBackends;
     private final Map<String, IBackend> buildBackends;
     final List<IBackendListener> listeners;
@@ -104,22 +101,12 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public IBackend getBuildBackend(@Nullable final IProject project) {
-        if (project == null) {
-            // TODO not sure if this is what we really want to do in this case
-            return getIdeBackend();
-        }
-        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
-                .getErlangProject(project);
-        if (erlProject == null) {
-            ErlLogger.warn("Project %s is not an erlang project", project.getName());
-            return null;
-        }
-        final RuntimeInfo info = erlProject.getRuntimeInfo();
+    public IBackend getBuildBackend(@NonNull final IErlProject project) {
+        final RuntimeInfo info = project.getRuntimeInfo();
         if (info == null) {
             ErlLogger
                     .info("Project %s has no runtime info, using ide", project.getName());
-            return ideBackend;
+            return getIdeBackend();
         }
         final String version = info.getVersion().asMajor().toString();
         IBackend b = buildBackends.get(version);
@@ -133,28 +120,18 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public IBackend getIdeBackend() {
-        IBackend result = ideBackend;
-        if (result == null) {
-            synchronized (ideBackendLock) {
-                result = ideBackend;
-                if (result == null) {
-                    result = factory.createIdeBackend();
-                    addBackend(result);
-                    notifyBackendChange(result, BackendEvent.ADDED, null, null);
-                    ideBackend = result;
-                }
-            }
+    public synchronized IBackend getIdeBackend() {
+        if (ideBackend == null) {
+            final IBackend result = factory.createIdeBackend();
+            addBackend(result);
+            notifyBackendChange(result, BackendEvent.ADDED, null, null);
+            ideBackend = result;
         }
-        return result;
+        return ideBackend;
     }
 
     void notifyBackendChange(final IBackend b, final BackendEvent type,
             final IProject project, final String moduleName) {
-        if (listeners == null) {
-            return;
-        }
-
         final Object[] copiedListeners = listeners.toArray();
         for (final Object element : copiedListeners) {
             final IBackendListener listener = (IBackendListener) element;
@@ -194,8 +171,6 @@ public final class BackendManager implements IBackendManager {
             for (final Entry<IProject, Set<IBackend>> e : executionBackends.entrySet()) {
                 for (final IBackend be : e.getValue()) {
                     final String bnode = be.getData().getQualifiedNodeName();
-                    // TODO this is not very reliable
-                    // we have to get the real node name... how?
                     if (bnode.startsWith(node)) {
                         removeExecutionBackend(e.getKey(), be);
                         break;
@@ -221,8 +196,6 @@ public final class BackendManager implements IBackendManager {
     @Override
     public void loadCodepathExtensions() {
         final IExtensionPoint exPnt = BackendUtils.getCodepathExtension();
-        // TODO listen to changes to the registry!
-
         final IExtension[] extensions = exPnt.getExtensions();
         for (int e = 0; e < extensions.length; e++) {
             final IExtension extension = extensions[e];
@@ -323,9 +296,15 @@ public final class BackendManager implements IBackendManager {
     public IRpcSite getByProject(final String projectName) {
         final IProject project = ResourcesPlugin.getWorkspace().getRoot()
                 .getProject(projectName);
-        final IBackend backend = getBuildBackend(project);
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                .getErlangProject(project);
+        if (erlProject == null) {
+            return null;
+        }
+
+        final IBackend backend = getBuildBackend(erlProject);
         if (backend == null) {
-            ErlLogger.warn("Could not find backend for project %S", project);
+            ErlLogger.warn("Could not find backend for project %s", project);
             return null;
         }
         return backend.getRpcSite();
@@ -345,7 +324,7 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public synchronized Set<IBackend> getExecutionBackends(final IProject project) {
+    public synchronized Set<IBackend> getExecutionBackends(final @NonNull IProject project) {
         final Set<IBackend> bs = executionBackends.get(project);
         if (bs == null) {
             return Collections.emptySet();
@@ -385,6 +364,7 @@ public final class BackendManager implements IBackendManager {
             }
             if (ideBackend != null) {
                 ideBackend.dispose();
+                ideBackend = null;
             }
             final ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager()
                     .getLaunches();
@@ -413,23 +393,6 @@ public final class BackendManager implements IBackendManager {
 
     @Override
     public void removeBackendsForLaunch(final ILaunch launch) {
-    }
-
-    @Override
-    public IPluginCodeLoader getByProcess(final IProcess process) {
-        synchronized (allBackends) {
-            for (final IBackend backend : allBackends) {
-                final ILaunch launch = backend.getData().getLaunch();
-                if (launch == null) {
-                    continue;
-                }
-                final IProcess[] processes = launch.getProcesses();
-                if (processes.length > 0 && processes[0].equals(process)) {
-                    return backend;
-                }
-            }
-            return null;
-        }
     }
 
     @Override

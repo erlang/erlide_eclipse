@@ -9,9 +9,9 @@ import org.erlide.ui.ErlideUIConstants;
 
 /**
  * Perspective for tracing Erlang applications.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class ErlangTracingPerspective implements IPerspectiveFactory {
 

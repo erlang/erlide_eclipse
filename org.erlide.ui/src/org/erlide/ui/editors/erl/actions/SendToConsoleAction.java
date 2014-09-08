@@ -4,8 +4,10 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -18,7 +20,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.backend.api.IPluginCodeLoader;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.shell.BackendShellEvent;
 import org.erlide.runtime.shell.BackendShellListener;
@@ -70,29 +71,19 @@ public class SendToConsoleAction extends SelectionDispatchAction {
     @Override
     public void run(final ITextSelection selection0) {
         ITextSelection selection = selection0;
-        final IBackendManager backendManager = BackendCore.getBackendManager();
-        final Set<IBackend> executionBackends = backendManager
-                .getExecutionBackends(project.getWorkspaceProject());
         IErlangConsole console = null;
-        final ErlConsoleManager erlConsoleManager = ErlideUIPlugin.getDefault()
-                .getErlConsoleManager();
-        for (final IPluginCodeLoader backend : executionBackends) {
-            console = erlConsoleManager.getConsole(backend);
-            if (console != null) {
-                break;
-            }
+        final IProject workspaceProject = project.getWorkspaceProject();
+        if (workspaceProject == null) {
+            return;
         }
+        console = getConsole(workspaceProject);
         if (console == null) {
             final String message = "There is no runtime launched for this backend. Please start a runtime to send commands to.";
             final Exception x = new Exception("No runtime started");
             ErrorDialog.openError(getShell(), "No runtime", message, new Status(
                     IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID, 0, x.getMessage(), x));
-
             return;
         }
-        // make sure we have a console page to send it to
-        final IErlangConsolePage consolePage = ErlideUIPlugin.getDefault()
-                .getErlConsoleManager().getPage(console);
         console.getShell().removeListener(consoleBackendShellListener);
         // if selection is empty, grab the whole line
         selection = getLineSelection(selection, false);
@@ -111,8 +102,27 @@ public class SendToConsoleAction extends SelectionDispatchAction {
                     console.getShell(), getLineSelection(selection, true).getOffset());
             console.getShell().addListener(consoleBackendShellListener);
         }
+
+        final IErlangConsolePage consolePage = ErlideUIPlugin.getDefault()
+                .getErlConsoleManager().getPage(console);
         consolePage.input(text);
         super.run(selection);
+    }
+
+    private IErlangConsole getConsole(final @NonNull IProject aproject) {
+        final IBackendManager backendManager = BackendCore.getBackendManager();
+        final Set<IBackend> executionBackends = backendManager
+                .getExecutionBackends(aproject);
+        final ErlConsoleManager erlConsoleManager = ErlideUIPlugin.getDefault()
+                .getErlConsoleManager();
+        IErlangConsole result = null;
+        for (final IBackend backend : executionBackends) {
+            result = erlConsoleManager.getConsole(backend);
+            if (result != null) {
+                break;
+            }
+        }
+        return result;
     }
 
     public void addMessage(final int offset, final String message) {

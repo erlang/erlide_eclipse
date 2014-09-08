@@ -5,9 +5,9 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
@@ -16,11 +16,11 @@ public interface IBackendManager extends IEpmdListener {
 
     IBackend getIdeBackend();
 
-    IBackend getBuildBackend(@Nullable final IProject project);
+    IBackend getBuildBackend(@NonNull final IErlProject project);
 
     void removeBackend(IBackend backend);
 
-    Set<IBackend> getExecutionBackends(final IProject project);
+    Set<IBackend> getExecutionBackends(@NonNull final IProject project);
 
     Collection<IBackend> getAllBackends();
 
@@ -56,7 +56,5 @@ public interface IBackendManager extends IEpmdListener {
 
     void moduleLoaded(final IBackend backend, final IProject project,
             final String moduleName);
-
-    IPluginCodeLoader getByProcess(IProcess ertsProcess);
 
 }

@@ -2,9 +2,9 @@ package org.erlide.cover.ui.annotations;
 
 /**
  * Types of coverage annotations;
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public interface CoverageTypes {
 

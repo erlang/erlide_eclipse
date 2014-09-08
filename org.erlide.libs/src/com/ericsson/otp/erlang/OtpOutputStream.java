@@ -79,12 +79,12 @@ public class OtpOutputStream extends ByteArrayOutputStream {
     /*
      * Get the contents of the output stream as an input stream instead. This is
      * used internally in {@link OtpCconnection} for tracing outgoing packages.
-     * 
+     *
      * @param offset where in the output stream to read data from when creating
      * the input stream. The offset is necessary because header contents start 5
      * bytes into the header buffer, whereas payload contents start at the
      * beginning
-     * 
+     *
      * @return an input stream containing the same raw data.
      */
     OtpInputStream getOtpInputStream(final int offset) {
@@ -162,7 +162,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.io.ByteArrayOutputStream#write(byte[])
      */
     @Override
@@ -173,7 +173,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.io.ByteArrayOutputStream#write(int)
      */
     @Override
@@ -185,7 +185,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.io.ByteArrayOutputStream#write(byte[], int, int)
      */
     @Override

@@ -31,9 +31,9 @@ import org.erlide.engine.model.root.IErlElement;
  * failure</li>
  * <li>string - optional string associated with the failure</li>
  * </ul>
- * 
+ *
  * @noimplement This interface is not intended to be implemented by clients.
- * 
+ *
  * @see org.eclipse.core.runtime.IStatus
  * @see ErlModelStatusConstants
  */
@@ -43,7 +43,7 @@ public interface IErlModelStatus extends IStatus {
      * Returns any Erlang elements associated with the failure (see
      * specification of the status code), or an empty array if no elements are
      * related to this particular status code.
-     * 
+     *
      * @return the list of Erlang element culprits
      * @see ErlModelStatusConstants
      */
@@ -54,7 +54,7 @@ public interface IErlModelStatus extends IStatus {
      * status code), or <code>null</code> if the failure is not one of
      * <code>DEVICE_PATH</code>, <code>INVALID_PATH</code>,
      * <code>PATH_OUTSIDE_PROJECT</code>, or <code>RELATIVE_PATH</code>.
-     * 
+     *
      * @return the path that caused the failure, or <code>null</code> if none
      * @see ErlModelStatusConstants#DEVICE_PATH
      * @see ErlModelStatusConstants#INVALID_PATH
@@ -68,7 +68,7 @@ public interface IErlModelStatus extends IStatus {
      * not exist. This convenience method is equivalent to
      * <code>getCode() == ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST</code>
      * .
-     * 
+     *
      * @return <code>true</code> if the status code indicates that an Erlang
      *         model element does not exist
      * @see ErlModelStatusConstants#ELEMENT_DOES_NOT_EXIST

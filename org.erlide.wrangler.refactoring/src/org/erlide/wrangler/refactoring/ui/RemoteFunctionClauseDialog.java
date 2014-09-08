@@ -39,7 +39,7 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
 /**
  * Input dialog which shows up all the function clauses in all modules in the
  * project
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -59,7 +59,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 
     /**
      * Constructor
-     * 
+     *
      * @param parentShell
      *            shell
      * @param title
@@ -192,7 +192,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 
     /**
      * Returns the selected functionClause if there is.
-     * 
+     *
      * @return selected function clause
      */
     public IErlFunctionClause getFunctionClause() {

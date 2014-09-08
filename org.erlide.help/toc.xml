@@ -1,1 +1,58 @@
-<toc topic="html/index.html" label="Erlide, the Erlang IDE"><topic href="html/gettingStarted.html" label="1. Getting started"><topic href="html/instalation_guide.html" label="Installation guide"></topic><topic href="html/tutorials.html" label="Tutorials"><topic href="html/tutorials.html#quickstart" label="Quick start"></topic><topic href="html/tutorials.html#N101FD" label="Hello World"><topic href="html/tutorials.html#N1020D" label="Install Erlang/OTP (if you have not already)"></topic><topic href="html/tutorials.html#N10233" label="Install Eclipse and ErlIDE"></topic><topic href="html/tutorials.html#N1025B" label="Add Primary Erlang Runtime"></topic><topic href="html/tutorials.html#N10270" label="Create Hello World Project"></topic><topic href="html/tutorials.html#N10286" label="Start Erlang Node To Run Code"></topic><topic href="html/tutorials.html#N102B4" label="Write Hello World Live!"></topic></topic></topic><topic href="html/features.html" label="Features"><topic href="html/features.html#N1041E" label="A few Eclipse tips"></topic></topic><topic href="html/concepts.html" label="Concepts"><topic href="html/concepts.html#backends" label="Runtimes and backends"></topic></topic></topic><topic href="html/reference.html" label="2. Reference"><topic href="html/create_project.html" label="Creating a project"></topic><topic href="html/import_project.html" label="Importing an Erlang Project"></topic><topic href="html/configure_project.html" label="Configuring a project"></topic><topic href="html/editor_view.html" label="Editor view"></topic><topic href="html/running_project.html" label="Running and debugging Erlang code"><topic href="html/running_project.html#N10587" label="Debugging"></topic></topic><topic href="html/navigator.html" label="Erlang navigator view"></topic><topic href="html/search.html" label="Erlang search"></topic></topic><topic href="html/developer_reference.html" label="3. Developer reference"><topic href="html/install_dev.html" label="Installation"></topic><topic href="html/repository_dev.html" label="Retrieve the code from repository"></topic><topic href="html/build_dev.html" label="Build"><topic href="html/build_dev.html#N106A2" label="Manual build"></topic><topic href="html/build_dev.html#N106AB" label="Automated build"></topic><topic href="html/build_dev.html#N106B3" label="Building the documentation"></topic><topic href="html/build_dev.html#N106BC" label="Starting the newly built Erlide"></topic></topic><topic href="html/plugins_dev.html" label="Plugin description"></topic><topic href="html/process_dev.html" label="Development process"><topic href="html/process_dev.html#N10727" label="Source code management"><topic href="html/process_dev.html#N1072B" label="Repository structure"></topic><topic href="html/process_dev.html#N10737" label="Branches"></topic></topic><topic href="html/process_dev.html#N10749" label="Commit policies"></topic><topic href="html/process_dev.html#N1074F" label="Testing"></topic></topic></topic></toc>
+<toc topic="html/index.html" label="Erlide, the Erlang IDE">
+    <topic href="html/gettingStarted.html" label="1. Getting started">
+        <topic href="html/instalation_guide.html" label="Installation guide"></topic>
+        <topic href="html/tutorials.html" label="Tutorials">
+            <topic href="html/tutorials.html#quickstart" label="Quick start"></topic>
+            <topic href="html/tutorials.html#N101FD" label="Hello World">
+                <topic href="html/tutorials.html#N1020D" label="Install Erlang/OTP (if you have not already)"></topic>
+                <topic href="html/tutorials.html#N10233" label="Install Eclipse and ErlIDE"></topic>
+                <topic href="html/tutorials.html#N1025B" label="Add Primary Erlang Runtime"></topic>
+                <topic href="html/tutorials.html#N10270" label="Create Hello World Project"></topic>
+                <topic href="html/tutorials.html#N10286" label="Start Erlang Node To Run Code"></topic>
+                <topic href="html/tutorials.html#N102B4" label="Write Hello World Live!"></topic>
+            </topic>
+        </topic>
+        <topic href="html/features.html" label="Features">
+            <topic href="html/features.html#N1041E" label="A few Eclipse tips"></topic>
+        </topic>
+        <topic href="html/concepts.html" label="Concepts">
+            <topic href="html/concepts.html#backends" label="Runtimes and backends"></topic>
+        </topic>
+    </topic>
+
+    <topic href="html/Accessing-the-code.html" label="Accessing">
+    </topic>
+    <topic href="html/Branches.html" label="Branches">
+    </topic>
+
+    <topic href="html/reference.html" label="2. Reference">
+        <topic href="html/create_project.html" label="Creating a project"></topic>
+        <topic href="html/import_project.html" label="Importing an Erlang Project"></topic>
+        <topic href="html/configure_project.html" label="Configuring a project"></topic>
+        <topic href="html/editor_view.html" label="Editor view"></topic>
+        <topic href="html/running_project.html" label="Running and debugging Erlang code">
+            <topic href="html/running_project.html#N10587" label="Debugging"></topic>
+        </topic>
+        <topic href="html/navigator.html" label="Erlang navigator view"></topic>
+        <topic href="html/search.html" label="Erlang search"></topic>
+    </topic>
+    <topic href="html/developer_reference.html" label="3. Developer reference">
+        <topic href="html/install_dev.html" label="Installation"></topic>
+        <topic href="html/repository_dev.html" label="Retrieve the code from repository"></topic>
+        <topic href="html/build_dev.html" label="Build">
+            <topic href="html/build_dev.html#N106A2" label="Manual build"></topic>
+            <topic href="html/build_dev.html#N106AB" label="Automated build"></topic>
+            <topic href="html/build_dev.html#N106B3" label="Building the documentation"></topic>
+            <topic href="html/build_dev.html#N106BC" label="Starting the newly built Erlide"></topic>
+        </topic>
+        <topic href="html/plugins_dev.html" label="Plugin description"></topic>
+        <topic href="html/process_dev.html" label="Development process">
+            <topic href="html/process_dev.html#N10727" label="Source code management">
+                <topic href="html/process_dev.html#N1072B" label="Repository structure"></topic>
+                <topic href="html/process_dev.html#N10737" label="Branches"></topic>
+            </topic>
+            <topic href="html/process_dev.html#N10749" label="Commit policies"></topic>
+            <topic href="html/process_dev.html#N1074F" label="Testing"></topic>
+        </topic>
+    </topic>
+</toc>

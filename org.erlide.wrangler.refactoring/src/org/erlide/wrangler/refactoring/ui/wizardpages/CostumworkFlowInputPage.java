@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -18,7 +18,7 @@ import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 /**
  * An Input page which hacks the standard workflow and allows to run costum
  * commands after pressing next or finish.
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -29,7 +29,7 @@ public class CostumworkFlowInputPage extends SimpleInputPage {
 
     /**
      * Default constructor
-     * 
+     *
      * @param name
      *            Input page title
      * @param description

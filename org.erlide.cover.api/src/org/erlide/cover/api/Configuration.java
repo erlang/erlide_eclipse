@@ -14,9 +14,9 @@ import org.erlide.engine.model.root.IErlProject;
 /**
  * Basic implementation for IConfiguration. Used to tell which modules at which
  * project should be analysed
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class Configuration implements IConfiguration {
 
@@ -29,7 +29,7 @@ public class Configuration implements IConfiguration {
 
     /**
      * Set Erlang project
-     * 
+     *
      * @param name
      *            name of an Erlang project
      */
@@ -48,7 +48,7 @@ public class Configuration implements IConfiguration {
     /**
      * Add new module to cover configuration. The coverage of added module is
      * going to be analized.
-     * 
+     *
      * @param name
      *            Erlang module name
      * @throws ErlModelException
@@ -69,7 +69,7 @@ public class Configuration implements IConfiguration {
     /**
      * Add new module to cover configuration. The coverage of added module is
      * going to be analized.
-     * 
+     *
      * @param module
      *            Erlang module
      */

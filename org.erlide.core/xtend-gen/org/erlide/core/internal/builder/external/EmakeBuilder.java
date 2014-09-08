@@ -5,7 +5,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Exceptions;
@@ -15,10 +14,8 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
+import org.erlide.core.internal.builder.BuildNotifier;
 import org.erlide.core.internal.builder.ExternalBuilder;
-import org.erlide.engine.ErlangEngine;
-import org.erlide.engine.IErlangEngine;
-import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.builder.BuilderProperties;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.MarkerUtils;
@@ -34,12 +31,11 @@ public class EmakeBuilder extends ExternalBuilder {
     super(BuilderTool.EMAKE);
   }
   
-  public String getOsCommand() {
+  public String getOsCommand(final IErlProject erlProject) {
     String _xblockexpression = null;
     {
       IBackendManager _backendManager = BackendCore.getBackendManager();
-      IProject _project = this.getProject();
-      final IBackend backend = _backendManager.getBuildBackend(_project);
+      final IBackend backend = _backendManager.getBuildBackend(erlProject);
       RuntimeInfo _runtimeInfo = backend.getRuntimeInfo();
       String _otpHome = _runtimeInfo.getOtpHome();
       Path _path = new Path(_otpHome);
@@ -66,12 +62,9 @@ public class EmakeBuilder extends ExternalBuilder {
     return null;
   }
   
-  public void clean(final IProgressMonitor monitor) {
-    final IProject project = this.getProject();
+  public void clean(final IErlProject erlProject, final BuildNotifier notifier) {
+    final IProject project = erlProject.getWorkspaceProject();
     MarkerUtils.removeProblemMarkersFor(project);
-    IErlangEngine _instance = ErlangEngine.getInstance();
-    IErlModel _model = _instance.getModel();
-    final IErlProject erlProject = _model.getErlangProject(project);
     ErlangProjectProperties _properties = erlProject.getProperties();
     IPath _outputDir = _properties.getOutputDir();
     final IFolder bf = project.getFolder(_outputDir);

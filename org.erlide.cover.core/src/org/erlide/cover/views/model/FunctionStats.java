@@ -13,9 +13,9 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Coverage statistics per function.
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class FunctionStats extends StatsTreeObject {
 
@@ -39,7 +39,7 @@ public class FunctionStats extends StatsTreeObject {
 
     /**
      * First line of the function
-     * 
+     *
      * @return
      */
     public int getLineStart() {
@@ -65,7 +65,7 @@ public class FunctionStats extends StatsTreeObject {
 
     /**
      * Last line of the function
-     * 
+     *
      * @return
      */
     public int getLineEnd() {

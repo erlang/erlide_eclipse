@@ -22,9 +22,9 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Label provider for statistics view
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class StatsViewLabelProvider extends LabelProvider implements ITableLabelProvider {
 

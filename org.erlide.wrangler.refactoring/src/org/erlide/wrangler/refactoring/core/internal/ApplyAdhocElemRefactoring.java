@@ -2,7 +2,7 @@ package org.erlide.wrangler.refactoring.core.internal;
 
 /**
  * Logic for running ad hoc user-defined elementary refactorings
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */

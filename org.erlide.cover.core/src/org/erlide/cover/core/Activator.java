@@ -9,23 +9,17 @@ public class Activator extends Plugin implements Logger {
     // The plug-in ID
     public static final String PLUGIN_ID = "org.erlide.cover.core"; //$NON-NLS-1$
 
-    private static BundleContext context;
-
     private static Activator plugin;
-
-    static BundleContext getContext() {
-        return context;
-    }
 
     @Override
     public void start(final BundleContext bundleContext) throws Exception {
-        Activator.context = bundleContext;
+        super.start(bundleContext);
         plugin = this;
     }
 
     @Override
     public void stop(final BundleContext bundleContext) throws Exception {
-        Activator.context = null;
+        super.stop(bundleContext);
     }
 
     @Override

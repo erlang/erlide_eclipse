@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -17,9 +17,9 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * Handles the 'copy to clipboard' action.
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class ClipboardAction extends Action {
     private final Display display;
@@ -27,7 +27,7 @@ public class ClipboardAction extends Action {
 
     /**
      * Constructor
-     * 
+     *
      * @param display
      *            actual SWT display
      */

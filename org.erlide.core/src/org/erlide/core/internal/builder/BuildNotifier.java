@@ -21,27 +21,19 @@ import org.erlide.util.ErlLogger;
 
 public class BuildNotifier {
 
-    protected IProgressMonitor fMonitor;
-    protected boolean fCancelling;
+    protected IProgressMonitor monitor;
+    protected boolean cancelling;
     protected float percentComplete;
     protected float progressPerCompilationUnit;
-    protected int fNewErrorCount;
-    protected int fFixedErrorCount;
-    protected int fNewWarningCount;
-    protected int fFixedWarningCount;
-    protected int fWorkDone;
-    protected int fTotalWork;
+    protected int workDone;
+    protected int totalWork;
     protected String previousSubtask;
 
     public BuildNotifier(final IProgressMonitor monitor, final IProject project) {
-        fMonitor = monitor;
-        fCancelling = false;
-        fNewErrorCount = 0;
-        fFixedErrorCount = 0;
-        fNewWarningCount = 0;
-        fFixedWarningCount = 0;
-        fWorkDone = 0;
-        fTotalWork = 1000000;
+        this.monitor = monitor;
+        cancelling = false;
+        workDone = 0;
+        totalWork = 1000000;
     }
 
     /**
@@ -58,8 +50,8 @@ public class BuildNotifier {
     }
 
     public void begin() {
-        if (fMonitor != null) {
-            fMonitor.beginTask("building", fTotalWork); //$NON-NLS-1$
+        if (monitor != null) {
+            monitor.beginTask("building", totalWork); //$NON-NLS-1$
         }
         previousSubtask = null;
     }
@@ -68,7 +60,7 @@ public class BuildNotifier {
      * Check whether the build has been canceled.
      */
     public void checkCancel() {
-        if (fMonitor != null && fMonitor.isCanceled()) {
+        if (monitor != null && monitor.isCanceled()) {
             throw new OperationCanceledException();
         }
     }
@@ -78,7 +70,7 @@ public class BuildNotifier {
      * checkCancel() when within the compiler.
      */
     public void checkCancelWithinCompiler() {
-        if (fMonitor != null && fMonitor.isCanceled() && !fCancelling) {
+        if (monitor != null && monitor.isCanceled() && !cancelling) {
             // Once the compiler has been canceled, don't check again.
             setCancelling(true);
             //
@@ -104,85 +96,10 @@ public class BuildNotifier {
     public void done() {
         updateProgress(1.0f);
         subTask(BuilderMessages.build_done);
-        if (fMonitor != null) {
-            fMonitor.done();
+        if (monitor != null) {
+            monitor.done();
         }
         previousSubtask = null;
-    }
-
-    /**
-     * Returns a string describing the problems.
-     */
-    protected String problemsMessage() {
-        final int numNew = fNewErrorCount + fNewWarningCount;
-        final int numFixed = fFixedErrorCount + fFixedWarningCount;
-        if (numNew == 0 && numFixed == 0) {
-            return ""; //$NON-NLS-1$
-        }
-
-        final boolean displayBoth = numNew > 0 && numFixed > 0;
-        final StringBuilder buffer = new StringBuilder();
-        buffer.append('(');
-        if (numNew > 0) {
-            // (Found x errors + y warnings)
-            buffer.append(BuilderMessages.build_foundHeader);
-            buffer.append(' ');
-            if (displayBoth || fNewErrorCount > 0) {
-                if (fNewErrorCount == 1) {
-                    buffer.append(BuilderMessages.build_oneError);
-                } else {
-                    buffer.append(NLS.bind(BuilderMessages.build_multipleErrors,
-                            String.valueOf(fNewErrorCount)));
-                }
-                if (displayBoth || fNewWarningCount > 0) {
-                    buffer.append(" + "); //$NON-NLS-1$
-                }
-            }
-            if (displayBoth || fNewWarningCount > 0) {
-                if (fNewWarningCount == 1) {
-                    buffer.append(BuilderMessages.build_oneWarning);
-                } else {
-                    buffer.append(NLS.bind(BuilderMessages.build_multipleWarnings,
-                            String.valueOf(fNewWarningCount)));
-                }
-            }
-            if (numFixed > 0) {
-                buffer.append(", "); //$NON-NLS-1$
-            }
-        }
-        if (numFixed > 0) {
-            // (Fixed x errors + y warnings) or (Found x errors + y warnings,
-            // Fixed x + y)
-            buffer.append(BuilderMessages.build_fixedHeader);
-            buffer.append(' ');
-            if (displayBoth) {
-                buffer.append(String.valueOf(fFixedErrorCount));
-                buffer.append(" + "); //$NON-NLS-1$
-                buffer.append(String.valueOf(fFixedWarningCount));
-            } else {
-                if (fFixedErrorCount > 0) {
-                    if (fFixedErrorCount == 1) {
-                        buffer.append(BuilderMessages.build_oneError);
-                    } else {
-                        buffer.append(NLS.bind(BuilderMessages.build_multipleErrors,
-                                String.valueOf(fFixedErrorCount)));
-                    }
-                    if (fFixedWarningCount > 0) {
-                        buffer.append(" + "); //$NON-NLS-1$
-                    }
-                }
-                if (fFixedWarningCount > 0) {
-                    if (fFixedWarningCount == 1) {
-                        buffer.append(BuilderMessages.build_oneWarning);
-                    } else {
-                        buffer.append(NLS.bind(BuilderMessages.build_multipleWarnings,
-                                String.valueOf(fFixedWarningCount)));
-                    }
-                }
-            }
-        }
-        buffer.append(')');
-        return buffer.toString();
     }
 
     /**
@@ -190,7 +107,7 @@ public class BuildNotifier {
      * cancelled.
      */
     public void setCancelling(final boolean cancelling) {
-        fCancelling = cancelling;
+        this.cancelling = cancelling;
     }
 
     /**
@@ -202,113 +119,58 @@ public class BuildNotifier {
     }
 
     public void subTask(final String message) {
-        final String pm = problemsMessage();
-        final String msg = pm.length() == 0 ? message : pm + " " + message; //$NON-NLS-1$
-
-        if (msg.equals(previousSubtask)) {
+        if (message.equals(previousSubtask)) {
             return; // avoid refreshing with same one
         }
-        if (fMonitor != null) {
-            fMonitor.subTask(msg);
+        if (monitor != null) {
+            monitor.subTask(message);
         }
-
-        previousSubtask = msg;
+        previousSubtask = message;
     }
-
-    // protected void updateProblemCounts(final IProblem[] newProblems) {
-    // for (final IProblem element : newProblems) {
-    // if (element.isError()) {
-    // fNewErrorCount++;
-    // } else {
-    // fNewWarningCount++;
-    // }
-    // }
-    // }
-
-    // /**
-    // * Update the problem counts from one compilation result given the old and
-    // * new problems, either of which may be null.
-    // */
-    // protected void updateProblemCounts(final IMarker[] oldProblems,
-    // final IProblem[] newProblems) {
-    // if (newProblems != null) {
-    // next:
-    // for (final IProblem newProblem : newProblems) {
-    // if (newProblem.getID() == IProblem.Task) {
-    // continue; // skip task
-    // }
-    // final boolean isError = newProblem.isError();
-    // final String message = newProblem.getMessage();
-    //
-    // if (oldProblems != null) {
-    // for (int j = 0, m = oldProblems.length; j < m; j++) {
-    // final IMarker pb = oldProblems[j];
-    // if (pb == null) {
-    // continue; // already matched up with a new problem
-    // }
-    // final boolean wasError = IMarker.SEVERITY_ERROR == pb
-    // .getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-    // if (isError == wasError
-    //                                && message.equals(pb.getAttribute(IMarker.MESSAGE, ""))) { //$NON-NLS-1$
-    // oldProblems[j] = null;
-    // continue next;
-    // }
-    // }
-    // }
-    // if (isError) {
-    // fNewErrorCount++;
-    // } else {
-    // fNewWarningCount++;
-    // }
-    // }
-    // }
-    // if (oldProblems != null) {
-    // next:
-    // for (final IMarker oldProblem : oldProblems) {
-    // if (oldProblem == null) {
-    // continue next; // already matched up with a new problem
-    // }
-    // final boolean wasError = IMarker.SEVERITY_ERROR == oldProblem
-    // .getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-    //                final String message = oldProblem.getAttribute(IMarker.MESSAGE, ""); //$NON-NLS-1$
-    //
-    // if (newProblems != null) {
-    // for (final IProblem pb : newProblems) {
-    // if (pb.getID() == IProblem.Task) {
-    // continue; // skip task
-    // }
-    // if (wasError == pb.isError() && message.equals(pb.getMessage())) {
-    // continue next;
-    // }
-    // }
-    // }
-    // if (wasError) {
-    // fFixedErrorCount++;
-    // } else {
-    // fFixedWarningCount++;
-    // }
-    // }
-    // }
-    // }
 
     public void updateProgress(final float newPercentComplete) {
         if (newPercentComplete > percentComplete) {
             percentComplete = Math.min(newPercentComplete, 1.0f);
-            final int work = Math.round(percentComplete * fTotalWork);
-            if (work > fWorkDone) {
-                if (fMonitor != null) {
-                    fMonitor.worked(work - fWorkDone);
+            final int work = Math.round(percentComplete * totalWork);
+            if (work > workDone) {
+                if (monitor != null) {
+                    monitor.worked(work - workDone);
                 }
                 if (BuilderHelper.isDebugging()) {
                     ErlLogger.debug(java.text.NumberFormat.getPercentInstance().format(
                             percentComplete));
                 }
-                fWorkDone = work;
+                workDone = work;
             }
         }
     }
 
     public void updateProgressDelta(final float percentWorked) {
         updateProgress(percentComplete + percentWorked);
+    }
+
+    public boolean isCanceled() {
+        if (monitor != null) {
+            monitor.isCanceled();
+        }
+        return false;
+    }
+
+    public void worked(final int i) {
+        if (monitor != null) {
+            monitor.worked(i);
+        }
+    }
+
+    public void beginTask(final String name, final int length) {
+        if (monitor != null) {
+            monitor.beginTask(name, length);
+        }
+    }
+
+    public void doneTask() {
+        if (monitor != null) {
+            monitor.done();
+        }
     }
 }

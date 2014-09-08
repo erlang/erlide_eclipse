@@ -46,4 +46,7 @@ public class OtpErlang {
         }
     }
 
+    public static TermParser getTermParser() {
+        return new TermParser();
+    }
 }

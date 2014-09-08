@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -18,9 +18,9 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
  * Abstract class for common functions used by duplicates parsers
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public abstract class AbstractDuplicatesParser implements IResultParser {
 
@@ -30,7 +30,7 @@ public abstract class AbstractDuplicatesParser implements IResultParser {
 
     /**
      * Constructor
-     * 
+     *
      * @param obj
      *            object to be parsed
      */

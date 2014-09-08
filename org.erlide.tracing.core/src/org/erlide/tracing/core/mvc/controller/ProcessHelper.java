@@ -16,9 +16,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * Helper class for dealing with process lists.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class ProcessHelper {
 
@@ -30,7 +30,7 @@ public class ProcessHelper {
 
     /**
      * Returns list of processes on all traced nodes.
-     * 
+     *
      * @return list of processes
      */
     public static TracedProcess[] getProcsOnTracedNodes() {

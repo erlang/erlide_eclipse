@@ -1,0 +1,11 @@
+Vsn = erlide_pde:get_plugin_version("META-INF/MANIFEST.MF").
+
+{application, erlide_common,
+  [
+   {vsn, Vsn},
+   {registered,   []},
+   {applications, [kernel, stdlib]},
+   {env,          []},
+   {mod, {erlide_common_app, []}}
+   ]}
+.

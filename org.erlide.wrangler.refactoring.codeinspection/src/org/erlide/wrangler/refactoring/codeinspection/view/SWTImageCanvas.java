@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2004 Chengdong Li : cdli@ccs.uky.edu
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Common Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/cpl-v10.html
@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.ScrollBar;
  * This implementation using the pure SWT, no UI AWT package is used. For
  * convenience, I put everything into one class. However, the best way to
  * implement this is to use inheritance to create multiple hierarchies.
- * 
+ *
  * @author Chengdong Li: cli4@uky.edu
  */
 public class SWTImageCanvas extends Canvas {
@@ -55,7 +55,7 @@ public class SWTImageCanvas extends Canvas {
 
     /**
      * Constructor for ScrollableCanvas.
-     * 
+     *
      * @param parent
      *            the parent of this control.
      * @param style
@@ -176,7 +176,7 @@ public class SWTImageCanvas extends Canvas {
 
     /**
      * Source image getter.
-     * 
+     *
      * @return sourceImage.
      */
     public Image getSourceImage() {
@@ -248,7 +248,7 @@ public class SWTImageCanvas extends Canvas {
 
     /**
      * Reload image from a file
-     * 
+     *
      * @param filename
      *            image file
      * @return swt image created from image file
@@ -265,7 +265,7 @@ public class SWTImageCanvas extends Canvas {
 
     /**
      * Load image
-     * 
+     *
      * @param img
      *            image object
      */
@@ -319,7 +319,7 @@ public class SWTImageCanvas extends Canvas {
 
     /**
      * Get the image data. (for future use only)
-     * 
+     *
      * @return image data of canvas
      */
     public ImageData getImageData() {
@@ -328,7 +328,7 @@ public class SWTImageCanvas extends Canvas {
 
     /**
      * Reset the image data and update the image
-     * 
+     *
      * @param data
      *            image data to be set
      */
@@ -374,7 +374,7 @@ public class SWTImageCanvas extends Canvas {
      * Perform a zooming operation centered on the given point (dx, dy) and
      * using the given scale factor. The given AffineTransform instance is
      * preconcatenated.
-     * 
+     *
      * @param dx
      *            center x
      * @param dy

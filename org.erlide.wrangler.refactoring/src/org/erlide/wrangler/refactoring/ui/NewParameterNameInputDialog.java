@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -25,7 +25,7 @@ import org.erlide.wrangler.refactoring.ui.validator.VariableNameValidator;
 
 /**
  * Input dialog which accpets a single input data.
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -36,7 +36,7 @@ public class NewParameterNameInputDialog extends AbstractInputDialog {
 
     /**
      * Constructor
-     * 
+     *
      * @param parentShell
      *            shell
      * @param title
@@ -48,7 +48,7 @@ public class NewParameterNameInputDialog extends AbstractInputDialog {
 
     /**
      * Get input data
-     * 
+     *
      * @return input string
      */
     public String getData() {

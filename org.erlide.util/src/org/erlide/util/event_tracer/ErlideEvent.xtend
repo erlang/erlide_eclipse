@@ -3,6 +3,7 @@ package org.erlide.util.event_tracer
 import java.io.PrintWriter
 import java.text.SimpleDateFormat
 import java.util.Date
+import org.eclipse.xtend.lib.annotations.Data
 
 @Data
 abstract class ErlideEvent {

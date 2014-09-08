@@ -6,9 +6,9 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * Interface implemented by every element displayed in treeviewer.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public interface ITreeNode {
 

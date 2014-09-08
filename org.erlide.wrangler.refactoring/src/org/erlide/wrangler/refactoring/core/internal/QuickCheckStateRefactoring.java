@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -28,7 +28,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 /**
  * Abstract refactoring for QuickCheck state data to record refactorings
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -61,7 +61,7 @@ public abstract class QuickCheckStateRefactoring extends SimpleOneStepWranglerRe
 
     /**
      * Returns the count of fields which a new record may need
-     * 
+     *
      * @return coutn of fields
      */
     public int getRecordFieldCount() {
@@ -70,7 +70,7 @@ public abstract class QuickCheckStateRefactoring extends SimpleOneStepWranglerRe
 
     /**
      * Record data setter
-     * 
+     *
      * @param name
      *            record name
      * @param fieldNames

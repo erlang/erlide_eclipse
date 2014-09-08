@@ -10,9 +10,9 @@ import org.erlide.tracing.core.mvc.model.TracedNode;
 
 /**
  * Provider responsible for displaying nodes in table.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class NodeLabelProvider extends LabelProvider implements ITableLabelProvider {
 

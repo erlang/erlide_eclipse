@@ -10,12 +10,16 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
+import org.erlide.core.internal.builder.BuildNotifier;
+import org.erlide.core.internal.builder.ErlangBuilder;
+import org.erlide.core.internal.builder.ErlangBuilder.BuildKind;
+import org.erlide.core.internal.builder.ErlangBuilderFactory;
 import org.erlide.core.internal.builder.ErlangNature;
+import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ErlideTestUtils;
@@ -99,24 +103,26 @@ public class BuildersTest {
         testBuilder(BuilderTool.REBAR);
     }
 
-    private void testBuilder(final BuilderTool builder) throws CoreException {
-        ErlangNature.setErlangProjectBuilder(prj, builder);
-        final String builderId = builder.getId();
+    private void testBuilder(final BuilderTool builderTool) throws CoreException {
+        ErlangNature.setErlangProjectBuilder(prj, builderTool);
         final String targetBeamPath = "ebin/mod.beam";
 
         final IResource beam0 = prj.findMember(targetBeamPath);
         assertThat("beam existed before test", beam0, nullValue());
 
-        prj.build(IncrementalProjectBuilder.FULL_BUILD, builderId, null, null);
-        waitJobsToFinish(ResourcesPlugin.FAMILY_MANUAL_BUILD);
+        final ErlangBuilder builder = ErlangBuilderFactory.get(builderTool);
+        final BuildNotifier notifier = new BuildNotifier(null, prj);
+        final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                .getErlangProject(prj);
+
+        builder.build(BuildKind.FULL, erlProject, notifier);
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
         waitJobsToFinish(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 
         final IResource beam = prj.findMember(targetBeamPath);
         assertThat("beam was not created", beam, notNullValue());
 
-        prj.build(IncrementalProjectBuilder.CLEAN_BUILD, builderId, null, null);
-        waitJobsToFinish(ResourcesPlugin.FAMILY_MANUAL_BUILD);
+        builder.clean(erlProject, notifier);
         prj.refreshLocal(IResource.DEPTH_INFINITE, null);
         waitJobsToFinish(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 

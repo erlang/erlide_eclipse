@@ -28,8 +28,8 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
     final String head;
     final List<String> parameters;
 
-    public ErlFunctionClause(final IParent parent, final String name,
-            final String head, final OtpErlangList parameters) {
+    public ErlFunctionClause(final IParent parent, final String name, final String head,
+            final OtpErlangList parameters) {
         super(parent, name);
         this.head = head;
         this.parameters = getParameters(parameters);

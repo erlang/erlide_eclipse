@@ -1,0 +1,33 @@
+#! /bin/bash
+
+set -x
+
+cd org.erlide.help
+echo "Generate help"
+
+rm -rf wiki
+git clone git://github.com/erlide/erlide.wiki.git wiki
+
+cd wiki
+
+cp ../Gemfile* .
+
+bundle install
+#bundle exec gollum-site generate
+gollum-site generate
+
+cd ..
+
+if [ ! -d wiki/_site ]; then
+    echo "Error: No _site was generated..."
+    exit 1
+fi
+ERROR=$(grep "Failed to render page" wiki/_site/*.html)
+if [ -n "$ERROR" ]; then
+    printf "Errors generating site: \n$ERROR\n------\n"
+    exit 1
+fi
+
+cp -R wiki/_site/* html
+
+cd ..

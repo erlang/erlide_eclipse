@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -18,9 +18,9 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 /**
  * Treeview element, which represents a single code part string
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 
@@ -35,7 +35,7 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 
     /**
      * Constructor
-     * 
+     *
      * @param containingFile
      *            file which contains the code part string
      * @param startLine
@@ -67,7 +67,7 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 
     /**
      * Return the starting offset of the represented selection
-     * 
+     *
      * @return starting offset of the selection
      */
     public int getStartOffset() {
@@ -76,7 +76,7 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 
     /**
      * Return the ending offset of the represented selection
-     * 
+     *
      * @return ending offset of the selection
      */
     public int getEndOffset() {
@@ -89,7 +89,7 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 
     /**
      * Returns the file which contains the selection
-     * 
+     *
      * @return file which contains the selection
      */
     public IFile getContainingFile() {
@@ -98,7 +98,7 @@ public class DuplicatedCodeInstanceElement extends AbstractResultTreeObject {
 
     /**
      * Returns the string which is represented
-     * 
+     *
      * @return code part string
      */
     public String getCodePartString() {

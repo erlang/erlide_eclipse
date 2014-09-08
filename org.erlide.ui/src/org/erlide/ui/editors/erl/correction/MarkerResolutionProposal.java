@@ -27,7 +27,7 @@ public class MarkerResolutionProposal extends ResolutionProposal {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.text.contentassist.ICompletionProposal#
      * getAdditionalProposalInfo()
      */
@@ -51,7 +51,7 @@ public class MarkerResolutionProposal extends ResolutionProposal {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.text.contentassist.ICompletionProposal#
      * getContextInformation()
      */
@@ -62,7 +62,7 @@ public class MarkerResolutionProposal extends ResolutionProposal {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.text.contentassist.ICompletionProposal#getDisplayString
      * ()
@@ -74,7 +74,7 @@ public class MarkerResolutionProposal extends ResolutionProposal {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.text.contentassist.ICompletionProposal#getImage()
      */
     @Override
@@ -90,7 +90,7 @@ public class MarkerResolutionProposal extends ResolutionProposal {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.text.contentassist.ICompletionProposal#getSelection
      * (org.eclipse.jface.text.IDocument)

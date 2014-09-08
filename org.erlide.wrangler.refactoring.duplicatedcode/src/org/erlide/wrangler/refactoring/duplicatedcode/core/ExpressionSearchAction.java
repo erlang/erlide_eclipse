@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -19,9 +19,9 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
 /**
  * Expression search refactoring runner
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class ExpressionSearchAction extends AbstractDuplicatesSearcherAction {
 
@@ -34,7 +34,7 @@ public class ExpressionSearchAction extends AbstractDuplicatesSearcherAction {
         final RpcResult result = backend.callWithoutParser(
                 WranglerRefactoringBackend.UNLIMITED_TIMEOUT, "expr_search_eclipse",
                 "sxxi", sel.getFilePath(), sel.getSelectionRange().getStartPos(), sel
-                        .getSelectionRange().getEndPos(), GlobalParameters.getTabWidth());
+                .getSelectionRange().getEndPos(), GlobalParameters.getTabWidth());
         if (result.isOk()) {
             return new ExpressionSearchParser(result.getValue());
         }

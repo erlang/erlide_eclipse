@@ -206,30 +206,10 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         fOutlineViewer.setLabelProvider(fEditor.createOutlineLabelProvider());
         fOutlineViewer.addPostSelectionChangedListener(this);
         fOutlineViewer.setInput(fModule);
-        fOpenAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(fOutlineViewer) {
-
-            @Override
-            protected void activate(final ISelection selection) {
-                fEditor.doSelectionChanged(selection);
-                getSite().getPage().activate(fEditor);
-            }
-
-            @Override
-            protected void linkToEditor(final ISelection selection) {
-                fEditor.doSelectionChanged(selection);
-            }
-
-            @Override
-            protected void open(final ISelection selection, final boolean activate) {
-                fEditor.doSelectionChanged(selection);
-                if (activate) {
-                    getSite().getPage().activate(fEditor);
-                }
-            }
-
-        };
-
         final IPageSite site = getSite();
+        fOpenAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(fOutlineViewer,
+                fEditor, site.getPage());
+
         final IContextService service = (IContextService) site
                 .getService(IContextService.class);
         service.activateContext("org.erlide.ui.erlangOutlineAndNavigatorScope");
@@ -301,7 +281,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     public static class NoModuleElement extends WorkbenchAdapter implements IAdaptable {
 
         /*
-         * 
+         *
          * @see java.lang.Object#toString()
          */
         @Override
@@ -310,7 +290,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         }
 
         /*
-         * 
+         *
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
          */
         @Override
@@ -430,6 +410,10 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
     public PatternFilter getPatternFilter() {
         return fPatternFilter;
+    }
+
+    public boolean isLinkedWithEditor() {
+        return fOpenAndLinkWithEditorHelper.isLinkedWithEditor();
     }
 
 }

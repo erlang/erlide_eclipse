@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -12,9 +12,9 @@ package org.erlide.wrangler.refactoring.duplicatedcode.ui.elements;
 
 /**
  * TreeView element, which represents a set of duplicates
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class DuplicatedCodeElement extends AbstractResultTreeParent {
 
@@ -23,7 +23,7 @@ public class DuplicatedCodeElement extends AbstractResultTreeParent {
 
     /**
      * Constructor
-     * 
+     *
      * @param defaultInstance
      *            a particular element, which will be used to show the
      *            corresponding code part
@@ -39,7 +39,7 @@ public class DuplicatedCodeElement extends AbstractResultTreeParent {
 
     /**
      * Returns the default code part
-     * 
+     *
      * @return default code part
      */
     public DuplicatedCodeInstanceElement getCodePart() {

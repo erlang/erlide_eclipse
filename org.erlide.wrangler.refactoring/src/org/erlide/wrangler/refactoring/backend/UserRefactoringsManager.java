@@ -20,9 +20,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 /**
  * Class for handling logic of installed user refactorings installed means:
  * currently in repository or added by a user
- * 
+ *
  * Singleton
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */
@@ -32,11 +32,12 @@ public class UserRefactoringsManager {
 
     private List<UserRefactoringInfo> elementaryRefacs; // gen_refac refacs
     private List<UserRefactoringInfo> compositeRefacs; // gen_composite_refac
-                                                       // refacs
+    // refacs
     private List<UserRefactoringInfo> myElementaryRefacs; // gen_refac refacs
-                                                          // - user's
+    // - user's
     private List<UserRefactoringInfo> myCompositeRefacs; // gen_composite_refac
-                                                         // refacs - user's
+
+    // refacs - user's
 
     private UserRefactoringsManager() {
 

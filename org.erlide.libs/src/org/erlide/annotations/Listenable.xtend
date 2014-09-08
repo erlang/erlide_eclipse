@@ -8,8 +8,8 @@ import org.eclipse.xtend.lib.macro.Active
 import org.eclipse.xtend.lib.macro.TransformationContext
 import org.eclipse.xtend.lib.macro.declaration.MutableFieldDeclaration
 import org.eclipse.xtend.lib.macro.declaration.Visibility
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 import org.eclipse.xtext.xbase.lib.Functions.Function0
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 
 /**
  * Transforms the field to a listenerList. Also two methods will be added: 

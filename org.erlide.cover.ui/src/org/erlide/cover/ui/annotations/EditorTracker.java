@@ -31,7 +31,7 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Attaches coverage annotation models.
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  */
 public class EditorTracker implements ICoverAnnotationMarker {
@@ -119,7 +119,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
     /**
      * Marks coverage for a specified file.
-     * 
+     *
      * @param fileName
      */
     public void addAnnotationsToFile(final String fileName) {
@@ -160,7 +160,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
     /**
      * Makrs coverage of fragment of a file, e.g. of a single function.
-     * 
+     *
      * @param fileName
      * @param start
      * @param end
@@ -205,7 +205,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
     /**
      * Removes coverage annotations from a fragment of file
-     * 
+     *
      * @param fileName
      * @param start
      * @param end

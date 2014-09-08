@@ -2,9 +2,9 @@ package org.erlide.cover.core;
 
 /**
  * Interface for all eunit event listeners
- * 
+ *
  * @author Aleksandra Lipiec
- * 
+ *
  */
 public interface IEUnitObserver {
 

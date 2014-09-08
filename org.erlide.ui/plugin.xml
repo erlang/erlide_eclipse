@@ -33,26 +33,6 @@
       </editor>
    </extension>
    <extension
-         point="org.eclipse.ui.editorActions">
-      <editorContribution
-            id="org.erlide.ui.ErlangEditor.BreakpointRulerActions"
-            targetID="org.erlide.ui.editors.erl.ErlangEditor">
-         <action
-               actionID="RulerDoubleClick"
-               class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
-               id="org.eclipse.jdt.debug.ui.actions.ManageBreakpointRulerAction"
-               label="%AddBreakpoint.label">
-         </action>
-         <action
-               class="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesRulerActionDelegate"
-               helpContextId="breakpoint_properties_action_context"
-               id="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesRulerActionDelegate"
-               label="%ErlangBreakpointProperties.label"
-               style="push">
-         </action>
-      </editorContribution>
-   </extension>
-   <extension
          point="org.eclipse.ui.newWizards">
       <category
             name="Erlang"
@@ -85,18 +65,6 @@
             id="org.erlide.ui.wizards.ErlangScratchpad"
             name="Erlang Scratchpad">
       </wizard>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IResource"
-            adaptable="true"
-            id="org.erlide.ui.popupMenu">
-         <filter
-               name="projectNature"
-               value="erlidenature">
-         </filter>
-      </objectContribution>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -363,73 +331,6 @@
                </and>
           </enabledWhen>
       </page>
-   </extension>
- <extension point="org.eclipse.ui.popupMenus">
-      <objectContribution adaptable="true"
-            id="org.erlide.ui.addNature"
-            objectClass="org.eclipse.core.resources.IProject">
-         <action
-               class="org.erlide.ui.actions.ToggleNatureAction"
-               id="org.erlide.ui.AddNatureAction"
-               label="Mark as Erlang project"
-               menubarPath="org.eclipse.ui.projectConfigure/additions">
-         </action>
-         <visibility>
-            <not><objectState name="nature" value="org.erlide.core.erlnature" /></not>
-         </visibility>
-      </objectContribution>
-      <objectContribution adaptable="true"
-            id="org.erlide.ui.removeNature"
-            objectClass="org.eclipse.core.resources.IProject">
-         <action
-               class="org.erlide.ui.actions.ToggleNatureAction"
-               id="org.erlide.ui.AddNatureAction"
-               label="Unmark as Erlang project"
-               menubarPath="org.eclipse.ui.projectConfigure/additions">
-         </action>
-         <visibility>
-            <objectState name="nature" value="org.erlide.core.erlnature" />
-         </visibility>
-      </objectContribution>
-      <objectContribution
-            adaptable="false"
-            id="org.erlide.runtime.debug.ErlangBreakpointActions"
-            objectClass="org.erlide.backend.debug.ErlangLineBreakpoint">
-         <action
-               class="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesAction"
-               enablesFor="1"
-               helpContextId="breakpoint_properties_action_context"
-               id="org.eclipse.jdt.debug.ui.actions.ErlangBreakpointProperties"
-               label="%ErlangBreakpointProperties.label"
-               menubarPath="additions">
-         </action>
-      </objectContribution>
-      <viewerContribution
-            id="org.erlide.debug.ui.ErlangFileRulerPopupActions"
-            targetID="org.erlide.ui.editors.erl.ErlangEditor.RulerContext">
-         <action
-               class="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesRulerActionDelegate"
-               helpContextId="breakpoint_properties_action_context"
-               id="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesRulerActionDelegate"
-               label="%ErlangBreakpointProperties.label"
-               menubarPath="group.properties">
-         </action>
-         <action
-               class="org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
-               helpContextId="enable_disable_breakpoint_action_context"
-               id="org.erlide.debug.ui.actions.EnableDisableBreakpointRulerActionDelegate"
-               label="%EnableBreakpoint.label"
-               menubarPath="debug">
-         </action>
-         <action
-               class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
-               helpContextId="manage_breakpoint_action_context"
-               icon="icons/full/obj16/brkp_obj.gif"
-               id="org.erlide.debug.ui.actions.BreakpointRulerActionDelegate"
-               label="%AddBreakpoint.label"
-               menubarPath="debug">
-         </action>
-      </viewerContribution>
    </extension>
  <extension
        point="org.eclipse.ui.contexts">
@@ -1186,54 +1087,106 @@
              style="push">
        </action>
     </actionSet>
-    <actionSet
-          id="org.erlide.debug.ui.ErlangDebugActionSet"
-          label="%ErlangDebugActionSet.label"
-          visible="true">
-       <menu
-             id="org.eclipse.ui.run"
-             label="%RunMenu.label"
-             path="additions">
-          <separator
-                name="erlideGroup">
-          </separator>
-       </menu>
-<!--       <action
-             class="org.erlide.debug.ui.actions.ToggleDebugTracingAction"
-             definitionId="org.erlide.debug.ui.commands.ToggleDebugTracing"
-             helpContextId="toggle_debug_tracing_action_context"
-             icon="icons/full/etool16/debuggerTrace.gif"
-             id="org.erlide.debug.ui.actions.ToggleDebugTracing"
-             label="%toggleDebugTracing.label"
-             menubarPath="org.eclipse.ui.run/erlideGroup">
+ </extension>
+ <extension
+       point="org.eclipse.ui.popupMenus">
+    <objectContribution
+          adaptable="true"
+          id="org.erlide.ui.addNature"
+          objectClass="org.eclipse.core.resources.IProject">
+       <action
+             class="org.erlide.ui.actions.ToggleNatureAction"
+             id="org.erlide.ui.AddNatureAction"
+             label="Mark as Erlang project"
+             menubarPath="org.eclipse.ui.projectConfigure/additions">
+       </action>
+       <visibility>
+          <not>
+             <objectState
+                   name="nature"
+                   value="org.erlide.core.erlnature">
+             </objectState>
+          </not>
+       </visibility>
+    </objectContribution>
+    <objectContribution
+          adaptable="true"
+          id="org.erlide.ui.removeNature"
+          objectClass="org.eclipse.core.resources.IProject">
+       <action
+             class="org.erlide.ui.actions.ToggleNatureAction"
+             id="org.erlide.ui.AddNatureAction"
+             label="Unmark as Erlang project"
+             menubarPath="org.eclipse.ui.projectConfigure/additions">
+       </action>
+       <visibility>
+          <objectState
+                name="nature"
+                value="org.erlide.core.erlnature">
+          </objectState>
+       </visibility>
+    </objectContribution>
+    <objectContribution
+          adaptable="false"
+          id="org.erlide.runtime.debug.ErlangBreakpointActions"
+          objectClass="org.erlide.backend.debug.ErlangLineBreakpoint">
+       <action
+             class="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesAction"
+             enablesFor="1"
+             helpContextId="breakpoint_properties_action_context"
+             id="org.eclipse.jdt.debug.ui.actions.ErlangBreakpointProperties"
+             label="%ErlangBreakpointProperties.label"
+             menubarPath="additions">
+       </action>
+    </objectContribution>
+    <objectContribution
+          adaptable="true"
+          id="org.erlide.ui.popupMenu"
+          objectClass="org.eclipse.core.resources.IResource">
+       <filter
+             name="projectNature"
+             value="erlidenature">
+       </filter>
+    </objectContribution>
+    <viewerContribution
+          id="org.erlide.debug.ui.ErlangFileRulerPopupActions"
+          targetID="org.erlide.ui.editors.erl.ErlangEditor.RulerContext">
+       <action
+             class="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesRulerActionDelegate"
+             helpContextId="breakpoint_properties_action_context"
+             id="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesRulerActionDelegate"
+             label="%ErlangBreakpointProperties.label"
+             menubarPath="group.properties">
        </action>
        <action
-             class="org.erlide.debug.ui.actions.ErlangTracingAction"
-             definitionId="org.erlide.debug.ui.commands.ToggleDebugTracing"
-             helpContextId="erlang_tracing_action_context"
-             icon="icons/full/etool16/debuggerTrace.gif"
-             id="org.erlide.debug.ui.actions.ErlangTracing"
-             label="%erlangTracing.label"
-             menubarPath="org.eclipse.ui.run/erlideGroup">
+             class="org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
+             helpContextId="enable_disable_breakpoint_action_context"
+             id="org.erlide.debug.ui.actions.EnableDisableBreakpointRulerActionDelegate"
+             label="%EnableBreakpoint.label"
+             menubarPath="debug">
        </action>
--->
-    </actionSet>
-<!--
-    <actionSet
-          id="org.erlide.ui.actions.console"
-          label="Erlang console"
-          visible="true">
        <action
-             class="org.erlide.ui.actions.ConsoleInputAction"
-             definitionId="org.erlide.ui.actions.console.input"
-             icon="icons/full/obj16/console.gif"
-             id="org.erlide.ui.actions.console.input"
-             label="Console input"
-             retarget="false"
-             style="push"
-             toolbarPath="erlang/console"/>
-    </actionSet>
--->
+             class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+             helpContextId="manage_breakpoint_action_context"
+             icon="icons/full/obj16/brkp_obj.gif"
+             id="org.erlide.debug.ui.actions.BreakpointRulerActionDelegate"
+             label="%AddBreakpoint.label"
+             menubarPath="debug">
+       </action>
+    </viewerContribution>
+ </extension>
+ <extension
+       point="org.eclipse.ui.editorActions">
+    <editorContribution
+          id="org.erlide.ui.ErlangEditor.BreakpointRulerActions"
+          targetID="org.erlide.ui.editors.erl.ErlangEditor">
+       <action
+             actionID="RulerDoubleClick"
+             class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+             id="org.eclipse.jdt.debug.ui.actions.ManageBreakpointRulerAction"
+             label="%AddBreakpoint.label">
+       </action>
+    </editorContribution>
  </extension>
  <extension
        point="org.eclipse.ui.actionSetPartAssociations">

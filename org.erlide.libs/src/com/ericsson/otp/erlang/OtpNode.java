@@ -355,10 +355,10 @@ public class OtpNode extends OtpLocalNode {
      */
     /*
      * internal info about the message formats...
-     * 
+     *
      * the request: -> REG_SEND {6,#Pid<bingo@aule.1.0>,'',net_kernel}
      * {'$gen_call',{#Pid<bingo@aule.1.0>,#Ref<bingo@aule.2>},{is_auth,bingo@aule}}
-     * 
+     *
      * the reply: <- SEND {2,'',#Pid<bingo@aule.1.0>} {#Ref<bingo@aule.2>,yes}
      */
     public boolean ping(final String node, final long timeout) {

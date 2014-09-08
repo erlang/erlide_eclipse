@@ -14,8 +14,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
-public abstract class ErlImportExport extends ErlMember implements
-        IErlImportExport {
+public abstract class ErlImportExport extends ErlMember implements IErlImportExport {
 
     protected List<ErlangFunction> fFunctions;
 
@@ -35,8 +34,7 @@ public abstract class ErlImportExport extends ErlMember implements
 
     @Override
     public Collection<ErlangFunction> getFunctions() {
-        return Collections.unmodifiableCollection(Lists
-                .newArrayList(fFunctions));
+        return Collections.unmodifiableCollection(Lists.newArrayList(fFunctions));
     }
 
 }

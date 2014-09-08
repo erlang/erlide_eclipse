@@ -42,8 +42,7 @@ public class ErlModelCache implements IDisposable {
 
     public static ErlModelCache getDefault() {
         if (fgInstance == null) {
-            fgInstance = disabled ? new DisabledErlModelCache()
-                    : new ErlModelCache();
+            fgInstance = disabled ? new DisabledErlModelCache() : new ErlModelCache();
         }
         return fgInstance;
     }
@@ -62,8 +61,7 @@ public class ErlModelCache implements IDisposable {
     }
 
     private static <K, V> Cache<K, V> newCache() {
-        final Cache<K, V> cache = CacheBuilder.newBuilder()
-                .maximumSize(CACHE_SIZE)
+        final Cache<K, V> cache = CacheBuilder.newBuilder().maximumSize(CACHE_SIZE)
                 .expireAfterAccess(CACHE_TIME_MINUTES, TimeUnit.MINUTES)
                 .initialCapacity(16).build();
         return cache;
@@ -79,8 +77,7 @@ public class ErlModelCache implements IDisposable {
         projectIncludeCache = newCache();
 
         modelChangeListener = new ModelChangeListener();
-        ErlangEngine.getInstance().getModel()
-                .addModelChangeListener(modelChangeListener);
+        ErlangEngine.getInstance().getModel().addModelChangeListener(modelChangeListener);
     }
 
     public void putModule(final IErlModule module) {
@@ -145,8 +142,7 @@ public class ErlModelCache implements IDisposable {
     }
 
     public List<IErlModule> getIncludedFilesForModule(final IErlModule module) {
-        final List<IErlModule> modules = moduleIncludeCache
-                .getIfPresent(module);
+        final List<IErlModule> modules = moduleIncludeCache.getIfPresent(module);
         if (modules == null) {
             return Lists.newArrayList();
         }
@@ -159,15 +155,15 @@ public class ErlModelCache implements IDisposable {
                 .removeModelChangeListener(modelChangeListener);
     }
 
-    public void putExternalTree(final String externalPath,
-            final IErlProject project,
+    public void putExternalTree(final String externalPath, final IErlProject project,
             final List<ExternalTreeEntry> externalTree) {
         if (externalTree == null) {
             externalTreeCache.invalidate(externalPath);
         } else {
-            externalTreeCache.put(externalPath,
-                    new Pair<IErlProject, List<ExternalTreeEntry>>(project,
-                            Lists.newArrayList(externalTree)));
+            externalTreeCache.put(
+                    externalPath,
+                    new Pair<IErlProject, List<ExternalTreeEntry>>(project, Lists
+                            .newArrayList(externalTree)));
         }
     }
 
@@ -185,8 +181,7 @@ public class ErlModelCache implements IDisposable {
     }
 
     public List<IErlModule> getModulesForProject(final IErlProject project) {
-        final List<IErlModule> modules = projectModuleCache
-                .getIfPresent(project);
+        final List<IErlModule> modules = projectModuleCache.getIfPresent(project);
         if (modules == null) {
             return null;
         }
@@ -194,8 +189,7 @@ public class ErlModelCache implements IDisposable {
     }
 
     public List<IErlModule> getIncludesForProject(final IErlProject project) {
-        final List<IErlModule> includes = projectIncludeCache
-                .getIfPresent(project);
+        final List<IErlModule> includes = projectIncludeCache.getIfPresent(project);
         if (includes == null) {
             return null;
         }
@@ -226,15 +220,13 @@ public class ErlModelCache implements IDisposable {
 
     public void removeProject(final IErlProject project) {
         // ErlLogger.debug("removeForProject %s", project.getName());
-        final List<IErlModule> includes = projectIncludeCache
-                .getIfPresent(project);
+        final List<IErlModule> includes = projectIncludeCache.getIfPresent(project);
         if (includes != null) {
             for (final IErlModule module : includes) {
                 moduleIncludeCache.invalidate(module);
             }
         }
-        final List<IErlModule> modules = projectModuleCache
-                .getIfPresent(project);
+        final List<IErlModule> modules = projectModuleCache.getIfPresent(project);
         if (modules != null) {
             for (final IErlModule module : modules) {
                 moduleIncludeCache.invalidate(module);
@@ -286,8 +278,7 @@ public class ErlModelCache implements IDisposable {
         }
 
         @Override
-        public void putExternalTree(final String externalPath,
-                final IErlProject project,
+        public void putExternalTree(final String externalPath, final IErlProject project,
                 final List<ExternalTreeEntry> externalTree) {
         }
 

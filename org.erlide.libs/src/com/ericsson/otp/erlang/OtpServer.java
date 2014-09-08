@@ -41,7 +41,7 @@ import java.io.IOException;
  * <pre>
  * OtpServer self = new OtpServer(&quot;server&quot;, &quot;cookie&quot;); // identify self
  * self.publishPort(); // make port information available
- * 
+ *
  * OtpConnection conn = self.accept(); // get incoming connection
  * </pre>
  *

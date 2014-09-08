@@ -10,9 +10,9 @@ import org.erlide.cover.views.model.LineResult;
 
 /**
  * Stores information about which lines are marked with coverage annotations
- * 
+ *
  * @author Aleksnadra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class CoverageMap {
 
@@ -24,7 +24,7 @@ public class CoverageMap {
 
     /**
      * Adds annotation for specified file at specified line.
-     * 
+     *
      * @param name
      * @param lr
      * @param ann
@@ -39,7 +39,7 @@ public class CoverageMap {
 
     /**
      * Gets annotation from specified file in specified line
-     * 
+     *
      * @param name
      * @param lr
      * @return
@@ -53,7 +53,7 @@ public class CoverageMap {
 
     /**
      * Check if an there is any coverage annotation at specified line
-     * 
+     *
      * @param name
      * @param lr
      * @return
@@ -69,7 +69,7 @@ public class CoverageMap {
 
     /**
      * Check the type of specified cverage annotation
-     * 
+     *
      * @param name
      * @param lr
      * @param type
@@ -82,7 +82,7 @@ public class CoverageMap {
 
     /**
      * Remove coverage annotations.
-     * 
+     *
      * @param name
      * @param lr
      */
@@ -94,7 +94,7 @@ public class CoverageMap {
 
     /**
      * Remove all annotations for specified file
-     * 
+     *
      * @param name
      */
     public void removeAll(final String name) {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -31,15 +31,15 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 /**
  * Parser for RPc messages which is sent by similar expresiion search
  * refactoring
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
 
     /**
      * Constructor
-     * 
+     *
      * @param obj
      *            object to be parsed
      */
@@ -51,7 +51,7 @@ public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
      * Parse Wrangler messages which are in the following format: {ok,
      * {[{{filename, startLine, startCol},{filePath, endLine, endCol}}],
      * generalisation}
-     * 
+     *
      * @see
      * org.erlide.wrangler.refactoring.duplicatedcode.core.IResultParser#parse
      * (com.ericsson.otp.erlang.OtpErlangObject)

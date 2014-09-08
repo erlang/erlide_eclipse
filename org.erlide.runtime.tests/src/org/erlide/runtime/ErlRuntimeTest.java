@@ -29,9 +29,10 @@ public class ErlRuntimeTest {
     public void prepareRuntime() {
         final RuntimeInfoCatalog cat = new RuntimeInfoCatalog();
         cat.initializeRuntimesList();
-        assertThat("not empty", !cat.getRuntimes().isEmpty());
+        System.out.println(cat.getRuntimes());
+        assertThat("empty runtime list", !cat.getRuntimes().isEmpty());
         final RuntimeInfo info = cat.getRuntimes().iterator().next();
-        assertThat("default info", info != RuntimeInfo.NO_RUNTIME_INFO);
+        assertThat("no default info", info != RuntimeInfo.NO_RUNTIME_INFO);
 
         final RuntimeData data = new RuntimeData(info, "run");
         data.setNodeName("etest" + System.currentTimeMillis());
@@ -47,8 +48,11 @@ public class ErlRuntimeTest {
 
     @After
     public void cleanupRuntime() {
-        process.destroy();
+        if (process != null) {
+            process.destroy();
+        }
         process = null;
+        runtime = null;
     }
 
     @Test
@@ -59,8 +63,8 @@ public class ErlRuntimeTest {
         } catch (final IllegalThreadStateException e) {
             val = -1;
         }
-        assertThat("exit value", val, is(-1));
-        assertThat("running", runtime.isRunning(), is(true));
+        assertThat("bad exit value", val, is(-1));
+        assertThat("not running", runtime.isRunning(), is(true));
         final IRpcSite site = runtime.getRpcSite();
         OtpErlangObject r;
         try {

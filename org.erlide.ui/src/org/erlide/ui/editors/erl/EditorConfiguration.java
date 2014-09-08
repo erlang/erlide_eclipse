@@ -41,7 +41,7 @@ import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 
 /**
  * The editor configurator
- * 
+ *
  * @author Eric Merritt [cyberlync at gmail dot com]
  */
 public class EditorConfiguration extends ErlangSourceViewerConfiguration {
@@ -49,16 +49,6 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     final AbstractErlangEditor editor;
     private ErlReconciler reconciler;
 
-    /**
-     * Default configuration constructor
-     * 
-     * @param store
-     * 
-     * @param editor
-     * 
-     * @param lcolorManager
-     *            the color manager
-     */
     public EditorConfiguration(final IPreferenceStore store,
             final AbstractErlangEditor editor, final IColorManager colorManager) {
         super(store, colorManager);
@@ -80,11 +70,6 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         return new ErlTextHover(editor);
     }
 
-    /**
-     * Returns the editor in which the configured viewer(s) will reside.
-     * 
-     * @return the enclosing editor
-     */
     protected ITextEditor getEditor() {
         return editor;
     }
@@ -94,9 +79,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         final ErlReconcilingStrategy strategy = new ErlReconcilingStrategy(editor);
         final IErlModule module = editor != null ? editor.getModule() : null;
         final String path = module != null ? module.getFilePath() : null;
-        final boolean logging = module != null ? module.getLogging() : false;
-        reconciler = new ErlReconciler(strategy, true, true, path, module, logging,
-                getEditor());
+        reconciler = new ErlReconciler(strategy, true, true, path, module, getEditor());
         reconciler.setProgressMonitor(new NullProgressMonitor());
         reconciler.setIsAllowedToModifyDocument(false);
         reconciler.setDelay(500);
@@ -116,12 +99,6 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         return editor.getModule();
     }
 
-    /*
-     * @see
-     * SourceViewerConfiguration#getInformationControlCreator(ISourceViewer)
-     * 
-     * @since 2.0
-     */
     @Override
     public IInformationControlCreator getInformationControlCreator(
             final ISourceViewer sourceViewer) {

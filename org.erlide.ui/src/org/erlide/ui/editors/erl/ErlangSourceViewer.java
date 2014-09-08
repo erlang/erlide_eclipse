@@ -26,13 +26,13 @@ import org.erlide.util.IDisposable;
 
 public class ErlangSourceViewer extends ProjectionViewer implements IDisposable {
 
-    private ErlangViewerBracketInserter fBracketInserter = null;
+    private ErlangBracketInserter fBracketInserter = null;
 
     public ErlangSourceViewer(final Composite parent, final IVerticalRuler ruler,
             final IOverviewRuler overviewRuler, final boolean showsAnnotationOverview,
             final int styles, final IBracketInserterValidator validator) {
         super(parent, ruler, overviewRuler, showsAnnotationOverview, styles);
-        fBracketInserter = new ErlangViewerBracketInserter(this);
+        fBracketInserter = new ErlangBracketInserter(this);
         if (validator != null) {
             fBracketInserter.setValidator(validator);
         }

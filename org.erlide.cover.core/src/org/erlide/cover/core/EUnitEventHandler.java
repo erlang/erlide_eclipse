@@ -12,9 +12,9 @@ import com.google.common.eventbus.Subscribe;
 
 /**
  * Handler for eunit events
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class EUnitEventHandler extends ErlangEventHandler {
 

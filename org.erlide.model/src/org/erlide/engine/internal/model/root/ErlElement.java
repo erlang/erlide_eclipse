@@ -43,8 +43,8 @@ import com.google.common.collect.Lists;
  *
  * @see IErlElement
  */
-public abstract class ErlElement extends PlatformObject implements IErlElement,
-        IParent, Cloneable {
+public abstract class ErlElement extends PlatformObject implements IErlElement, IParent,
+        Cloneable {
 
     /**
      * This element's parent, or <code>null</code> if this element does not have
@@ -197,8 +197,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         @Override
         public boolean contains(final ISchedulingRule rule) {
             if (rule instanceof NoResourceSchedulingRule) {
-                return fPath
-                        .isPrefixOf(((NoResourceSchedulingRule) rule).fPath);
+                return fPath.isPrefixOf(((NoResourceSchedulingRule) rule).fPath);
             }
             return false;
         }
@@ -207,8 +206,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         public boolean isConflicting(final ISchedulingRule rule) {
             if (rule instanceof NoResourceSchedulingRule) {
                 final IPath otherPath = ((NoResourceSchedulingRule) rule).fPath;
-                return fPath.isPrefixOf(otherPath)
-                        || otherPath.isPrefixOf(fPath);
+                return fPath.isPrefixOf(otherPath) || otherPath.isPrefixOf(fPath);
             }
             return false;
         }
@@ -403,8 +401,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     @Override
     public List<IErlElement> getChildren() throws ErlModelException {
         synchronized (getModelLock()) {
-            return Collections.unmodifiableList(Lists
-                    .newArrayList(internalGetChildren()));
+            return Collections
+                    .unmodifiableList(Lists.newArrayList(internalGetChildren()));
         }
     }
 
@@ -505,8 +503,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         setStructureKnown(false);
     }
 
-    private static IErlElement getChildNamed(final ErlElement parent,
-            final String name) {
+    private static IErlElement getChildNamed(final ErlElement parent, final String name) {
         synchronized (parent.getModelLock()) {
             for (final IErlElement child : parent.internalGetChildren()) {
                 if (child.getName().equals(name)) {

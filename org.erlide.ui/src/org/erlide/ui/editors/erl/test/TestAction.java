@@ -17,6 +17,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.IErlModule;
+import org.erlide.engine.model.root.ISourceUnit;
 import org.erlide.engine.services.parsing.InternalScanner;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
@@ -26,7 +27,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * @author jakob
- * 
+ *
  */
 public class TestAction extends TextEditorAction {
 
@@ -50,7 +51,7 @@ public class TestAction extends TextEditorAction {
                     textEditor.getEditorInput());
             final String text = document.get();
             final String scannerName = module.getScannerName();
-            // XXX implementation detail - how to do it better?
+
             final InternalScanner internalScanner = (InternalScanner) ErlangEngine
                     .getInstance().getSimpleScannerService();
             final OtpErlangObject checkAll = internalScanner.checkAll(scannerName, text,
@@ -72,7 +73,7 @@ public class TestAction extends TextEditorAction {
             }
         }
 
-        Set<IErlModule> deps;
+        Set<ISourceUnit> deps;
         try {
             deps = module.getDirectDependentModules();
             ErlLogger.debug(deps.toString());

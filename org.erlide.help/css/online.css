@@ -1,170 +1,168 @@
-@import url(http://yui.yahooapis.com/2.5.2/build/reset/reset-min.css);
-@import url(http://yui.yahooapis.com/2.5.2/build/fonts/fonts-min.css);
-@import url(http://yui.yahooapis.com/2.5.2/build/base/base-min.css);
+
 .informaltable
 {
-	margin-left: 5em;
-	margin-right: 5em;
+    margin-left: 5em;
+    margin-right: 5em;
 }
 .sect1, .sect2, .sect3, .sect4
 {
-	padding-left: 1em;
+    padding-left: 1em;
 }
 DIV.mediaobject
 {
-	margin-left: 5em;
+    margin-left: 5em;
 }
 SPAN.guilabel
 {
-	outline: thin solid #E0E5AE;
+    outline: thin solid #E0E5AE;
 }
 .command
 {
-	font-family: monospace;
+    font-family: monospace;
 }
 .screen
 {
-	border: 1px dotted #0000DD;
+    border: 1px dotted #0000DD;
 }
 .toc DL
 {
-	margin-top: 0;
-	margin-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 .toc
 {
-	border: 1px dotted;
-	background-color: #EFF3F5;
-	margin-left: 2em;
-	margin-right: 2em;
-	padding-left: 1em;
-	padding-right: 1em;
+    border: 1px dotted;
+    background-color: #EFF3F5;
+    margin-left: 2em;
+    margin-right: 2em;
+    padding-left: 1em;
+    padding-right: 1em;
 }
 .term
 {
-	font-weight: bold;
+    font-weight: bold;
 }
 DIV.ABSTRACT
 {
-	/*[disabled]border:2px solid;*/
-	/*[disabled]padding-left:10pt;*/
-	/*[disabled]padding-right:10pt;*/
+    /*[disabled]border:2px solid;*/
+    /*[disabled]padding-left:10pt;*/
+    /*[disabled]padding-right:10pt;*/
 }
 PRE.SCREEN
 {
-	/*[disabled]font-family:monospace;*/
-	/*[disabled]white-space:pre;*/
-	/*[disabled]width:100%;*/
-	/*[disabled]background-color:#FFFFCC;*/
-	/*[disabled]border:1px dotted #009999;*/
-	/*[disabled]padding-left:15pt;*/
+    /*[disabled]font-family:monospace;*/
+    /*[disabled]white-space:pre;*/
+    /*[disabled]width:100%;*/
+    /*[disabled]background-color:#FFFFCC;*/
+    /*[disabled]border:1px dotted #009999;*/
+    /*[disabled]padding-left:15pt;*/
 }
 PRE.PROGRAMLISTING
 {
-	/*[disabled]font-family:monospace;*/
-	/*[disabled]white-space:pre;*/
-	/*[disabled]width:100%;*/
-	/*[disabled]color:black;*/
-	/*[disabled]background-color:#F9F9F9;*/
-	/*[disabled]border:1px dashed #2F6FAB;*/
-	/*[disabled]padding-left:15pt;*/
+    /*[disabled]font-family:monospace;*/
+    /*[disabled]white-space:pre;*/
+    /*[disabled]width:100%;*/
+    /*[disabled]color:black;*/
+    /*[disabled]background-color:#F9F9F9;*/
+    /*[disabled]border:1px dashed #2F6FAB;*/
+    /*[disabled]padding-left:15pt;*/
 }
 .note, .warning, .important
 {
-	border: 1px dashed #000000;
+    border: 1px dashed #000000;
 }
 .important TABLE, .important TH, .important TD
 {
-	border-style: none;
-	vertical-align: middle;
+    border-style: none;
+    vertical-align: middle;
 }
 .note TABLE, .note TD, .note TH
 {
-	border-style: none;
-	vertical-align: middle;
+    border-style: none;
+    vertical-align: middle;
 }
 .warning TABLE, .warning TD, .warning TH
 {
-	border-style: none;
-	vertical-align: middle;
+    border-style: none;
+    vertical-align: middle;
 }
 .bold
 {
-	font-weight: bold;
+    font-weight: bold;
 }
 TABLE.TIP
 {
-	/*[disabled]font-style:italic;*/
-	/*[disabled]border:1px solid #000000;*/
-	/*[disabled]width:70%;*/
-	/*[disabled]margin-left:15%;*/
+    /*[disabled]font-style:italic;*/
+    /*[disabled]border:1px solid #000000;*/
+    /*[disabled]width:70%;*/
+    /*[disabled]margin-left:15%;*/
 }
 TABLE.WARNING
 {
-	/*[disabled]font-style:italic;*/
-	/*[disabled]font-weight:bold;*/
-	/*[disabled]border:4px ridge #FF0000;*/
-	/*[disabled]width:70%;*/
-	/*[disabled]margin-left:15%;*/
+    /*[disabled]font-style:italic;*/
+    /*[disabled]font-weight:bold;*/
+    /*[disabled]border:4px ridge #FF0000;*/
+    /*[disabled]width:70%;*/
+    /*[disabled]margin-left:15%;*/
 }
 DIV.VARIABLELIST
 {
-	/*[disabled]font-style:normal;*/
-	/*[disabled]font-weight:normal;*/
-	/*[disabled]padding-left:20px;*/
+    /*[disabled]font-style:normal;*/
+    /*[disabled]font-weight:normal;*/
+    /*[disabled]padding-left:20px;*/
 }
 .VARLISTENTRY
 {
-	/*[disabled]font-weight:bold;*/
-	/*[disabled]margin-top:10px;*/
-	/*[disabled]color:#FFFFFF;*/
-	/*[disabled]background-color:#A0A0D0;*/
-	/*[disabled]border:1px solid #606090;*/
-	/*[disabled]padding:1px;*/
+    /*[disabled]font-weight:bold;*/
+    /*[disabled]margin-top:10px;*/
+    /*[disabled]color:#FFFFFF;*/
+    /*[disabled]background-color:#A0A0D0;*/
+    /*[disabled]border:1px solid #606090;*/
+    /*[disabled]padding:1px;*/
 }
 A.link
 {
-	background: transparent url(../images/external.png) no-repeat right center;
-	padding-right: 12px;
+    background: transparent url(../images/external.png) no-repeat right center;
+    padding-right: 12px;
 }
 DIV.imagelink A.link
 {
-	background: transparent;
-	padding-right: 0px;
+    background: transparent;
+    padding-right: 0px;
 }
 CODE
 {
-	background-color: #E3E3BE;
+    background-color: #E3E3BE;
 }
 CODE.prompt
 {
-	font-weight: bolder;
-	color: #2F0FCB;
+    font-weight: bolder;
+    color: #2F0FCB;
 }
 CODE.filename
 {
-	background-color: white;
+    background-color: white;
 }
 .screen
 {
-	background-color: #F3F3DE;
-	padding-left: 1em;
-	padding-top: 0.5em;
-	white-space: pre;
-	margin-left: 1em;
-	margin-right: 1em;
+    background-color: #F3F3DE;
+    padding-left: 1em;
+    padding-top: 0.5em;
+    white-space: pre;
+    margin-left: 1em;
+    margin-right: 1em;
 }
 .userinput
 {
-	color: #0D0DA9;
+    color: #0D0DA9;
 }
 .guimenu, .guisubmenu, .guimenuitem
 {
-	font-family: monospace;
-	outline: thin dashed #BDBD90;
+    font-family: monospace;
+    outline: thin dashed #BDBD90;
 }
 DIV.author
 {
-	margin-left: 27px;
-	font-size: small;
+    margin-left: 27px;
+    font-size: small;
 }

@@ -36,7 +36,6 @@ import org.erlide.backend.launch.IErlangLaunchDelegateConstants;
 import org.erlide.engine.model.IBeamLocator;
 import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.runtime.api.ErlDebugFlags;
-import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.runtime.api.InitialCall;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -83,8 +82,9 @@ public final class BackendData extends RuntimeData {
             internal = config.getAttribute(ErlRuntimeAttributes.INTERNAL, internal);
 
             projects = getProjects(config);
+            final List<String> defList = Lists.newArrayList();
             final List<String> intMods = config.getAttribute(
-                    ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, Lists.newArrayList());
+                    ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, defList);
             initialInterpretedModules = addBreakpointProjectsAndModules(getProjects(),
                     intMods);
         } catch (final CoreException e1) {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -16,7 +16,7 @@ import org.erlide.engine.model.root.IErlElement;
 
 /**
  * Represents an Erlang module which is selected by the user
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -25,7 +25,7 @@ public class ErlModuleSelection extends AbstractErlSelection {
 
     /**
      * Constructor
-     * 
+     *
      * @param module
      *            Erlang module - Erlide representation
      * @param file

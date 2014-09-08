@@ -23,9 +23,9 @@ import org.erlide.cover.views.model.StatsTreeModel;
 
 /**
  * Dialog for HTML browser
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class BrowserDialog extends Dialog {
 
@@ -67,7 +67,7 @@ public class BrowserDialog extends Dialog {
 
     /**
      * Sets object connected with current path
-     * 
+     *
      * @param path
      */
     public void setObject(final ICoverageObject obj) {

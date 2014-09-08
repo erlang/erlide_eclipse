@@ -5,9 +5,9 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  * Content provider for processes table.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class ProcessContentProvider implements IStructuredContentProvider {
 

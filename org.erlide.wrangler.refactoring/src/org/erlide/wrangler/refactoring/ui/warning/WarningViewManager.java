@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -31,7 +31,7 @@ public class WarningViewManager {
 
     /**
      * Sets the warning view
-     * 
+     *
      * @param _view
      *            Warning message view
      */
@@ -41,7 +41,7 @@ public class WarningViewManager {
 
     /**
      * Adds a warning message to the view
-     * 
+     *
      * @param message
      *            warning message
      */
@@ -61,7 +61,7 @@ public class WarningViewManager {
 
     /**
      * Shows the warning view.
-     * 
+     *
      * @return view which is shown
      */
     public static IViewPart showWarningView() {

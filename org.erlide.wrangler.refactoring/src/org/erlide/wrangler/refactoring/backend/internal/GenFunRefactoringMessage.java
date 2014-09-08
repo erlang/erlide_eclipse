@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -24,7 +24,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 /**
  * RpcResultImpl parser class for parsing results of a n generalise function
  * refactoring
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -32,8 +32,8 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
 
     /**
      * Generalise function's possible parameters names
-     * 
-     * 
+     *
+     *
      * @author Gyorgy Orosz
      * @version %I%, %G%
      */
@@ -120,7 +120,7 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
 
     /**
      * Get parameters in a map
-     * 
+     *
      * @return parameter name. value pairs
      */
     public HashMap<GenFunReturnParameterName, OtpErlangObject> getParameters() {

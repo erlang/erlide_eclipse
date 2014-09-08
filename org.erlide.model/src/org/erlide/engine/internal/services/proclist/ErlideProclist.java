@@ -30,8 +30,7 @@ public class ErlideProclist implements ProclistService {
             return new OtpErlangList();
         }
         try {
-            final OtpErlangObject result = b.call(MODULE_NAME, "process_list",
-                    "");
+            final OtpErlangObject result = b.call(MODULE_NAME, "process_list", "");
             return (OtpErlangList) result;
         } catch (final Exception e) {
             ErlLogger.warn(e);
@@ -40,8 +39,7 @@ public class ErlideProclist implements ProclistService {
     }
 
     @Override
-    public OtpErlangObject getProcessInfo(final IRpcSite b,
-            final OtpErlangPid pid) {
+    public OtpErlangObject getProcessInfo(final IRpcSite b, final OtpErlangPid pid) {
         if (b == null) {
             return new OtpErlangAtom("error");
         }

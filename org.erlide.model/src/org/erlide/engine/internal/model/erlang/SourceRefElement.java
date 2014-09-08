@@ -26,8 +26,7 @@ import com.google.common.base.Objects;
 /**
  * Abstract class for Erlang elements which implement ISourceReference.
  */
-public abstract class SourceRefElement extends ErlElement implements
-        ISourceReference {
+public abstract class SourceRefElement extends ErlElement implements ISourceReference {
 
     protected int fSourceRangeOffset;
     protected int fSourceRangeLength;
@@ -179,8 +178,7 @@ public abstract class SourceRefElement extends ErlElement implements
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), fSourceRangeOffset,
-                fSourceRangeLength);
+        return Objects.hashCode(super.hashCode(), fSourceRangeOffset, fSourceRangeLength);
     }
 
     @Override

@@ -35,12 +35,12 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.internal.builder.BuildQueueProcessor;
-import org.erlide.core.internal.builder.BuildWorkerInfo;
+import org.erlide.core.internal.builder.BuildNotifier;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.builder.MarkerUtils;
@@ -161,20 +161,18 @@ public final class BuilderHelper {
         }
     }
 
-    public Set<BuildResource> getAffectedResources(
-            @SuppressWarnings("rawtypes") final Map args, final IProject project,
-            final IProgressMonitor monitor) throws CoreException {
+    public Set<BuildResource> getAffectedResources(final IProject project,
+            final BuildNotifier notifier) throws CoreException {
         final Set<BuildResource> result = Sets.newHashSet();
-        project.accept(new BuilderVisitor(result, monitor, this));
+        project.accept(new BuilderVisitor(result, notifier, this));
         return result;
     }
 
-    public Set<BuildResource> getAffectedResources(
-            @SuppressWarnings("rawtypes") final Map args, final IResourceDelta delta,
-            final IProgressMonitor monitor) throws CoreException {
+    public Set<BuildResource> getAffectedResources(final IResourceDelta delta,
+            final BuildNotifier notifier) throws CoreException {
         final Set<BuildResource> result = Sets.newHashSet();
         if (delta != null) {
-            delta.accept(new BuilderVisitor(result, monitor, this));
+            delta.accept(new BuilderVisitor(result, notifier, this));
         }
         return result;
     }
@@ -300,7 +298,7 @@ public final class BuilderHelper {
         }
     }
 
-    public void completeCompile(final IProject project, final IResource source,
+    public void completeCompile(final @NonNull IProject project, final IResource source,
             final OtpErlangObject compilationResult, final IRpcSite backend,
             final OtpErlangList compilerOptions) {
         if (compilationResult == null) {
@@ -512,7 +510,7 @@ public final class BuilderHelper {
         return erl;
     }
 
-    public void compileErl(final IProject project, final BuildResource resource,
+    public void compileErl(final @NonNull IProject project, final BuildResource resource,
             final String outputDir, final IRpcSite b, final OtpErlangList compilerOptions) {
         final IRpcFuture res = startCompileErl(project, resource, outputDir, b,
                 compilerOptions, true);
@@ -529,7 +527,7 @@ public final class BuilderHelper {
         }
     }
 
-    public void compileYrl(final IProject project, final BuildResource resource,
+    public void compileYrl(final @NonNull IProject project, final BuildResource resource,
             final IRpcSite b, final OtpErlangList compilerOptions) {
         final IRpcFuture res = startCompileYrl(project, resource.getResource(), b,
                 compilerOptions);
@@ -572,7 +570,7 @@ public final class BuilderHelper {
         }
     }
 
-    public static void loadModule(final IProject project, final String module) {
+    public static void loadModule(final @NonNull IProject project, final String module) {
         try {
             final IBackendManager backendManager = BackendCore.getBackendManager();
             for (final IBackend b : backendManager.getExecutionBackends(project)) {
@@ -648,14 +646,14 @@ public final class BuilderHelper {
             IResourceVisitor {
 
         private final Set<BuildResource> result;
-        private final IProgressMonitor monitor;
+        private final BuildNotifier notifier;
         private IErlProject erlProject = null;
         private final BuilderHelper helper;
 
         public BuilderVisitor(final Set<BuildResource> result,
-                final IProgressMonitor monitor, final BuilderHelper helper) {
+                final BuildNotifier notifier, final BuilderHelper helper) {
             this.result = result;
-            this.monitor = monitor;
+            this.notifier = notifier;
             this.helper = helper;
         }
 
@@ -727,7 +725,7 @@ public final class BuilderHelper {
                 if (source != null) {
                     final BuildResource bres = new BuildResource(source);
                     result.add(bres);
-                    monitor.worked(1);
+                    notifier.worked(1);
                 }
                 break;
             }
@@ -748,7 +746,7 @@ public final class BuilderHelper {
             case IResourceDelta.CHANGED:
                 final BuildResource bres = new BuildResource(resource);
                 result.add(bres);
-                monitor.worked(1);
+                notifier.worked(1);
                 break;
 
             case IResourceDelta.REMOVED:
@@ -762,7 +760,7 @@ public final class BuilderHelper {
                     } catch (final Exception e) {
                         ErlLogger.warn(e);
                     }
-                    monitor.worked(1);
+                    notifier.worked(1);
                 }
                 break;
             }
@@ -778,7 +776,7 @@ public final class BuilderHelper {
                 if (!fullBuild) {
                     helper.addDependents(resource, resource.getProject(), result);
                 }
-                monitor.worked(result.size() - n);
+                notifier.worked(result.size() - n);
                 break;
             }
         }
@@ -789,7 +787,7 @@ public final class BuilderHelper {
             case IResourceDelta.CHANGED:
                 final BuildResource bres = new BuildResource(resource);
                 result.add(bres);
-                monitor.worked(1);
+                notifier.worked(1);
                 break;
             case IResourceDelta.REMOVED:
                 MarkerUtils.deleteMarkers(resource);
@@ -813,7 +811,7 @@ public final class BuilderHelper {
                 if (yrl != null) {
                     final BuildResource bres2 = new BuildResource(yrl);
                     result.add(bres2);
-                    monitor.worked(1);
+                    notifier.worked(1);
                 }
 
                 break;

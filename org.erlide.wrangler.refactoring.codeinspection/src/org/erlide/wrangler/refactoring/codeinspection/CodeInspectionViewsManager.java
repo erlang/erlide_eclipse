@@ -28,9 +28,9 @@ import org.erlide.wrangler.refactoring.codeinspection.view.GraphImageView;
 
 /**
  * Manages the displaying of the Graph View
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class CodeInspectionViewsManager {
     public static final String GRAPH_VIEW = org.erlide.wrangler.refactoring.codeinspection.view.GraphImageView.VIEW_ID;
@@ -38,7 +38,7 @@ public class CodeInspectionViewsManager {
 
     /**
      * Shows the image in the graph view with the given title.
-     * 
+     *
      * @param img
      *            image
      * @param title
@@ -58,7 +58,7 @@ public class CodeInspectionViewsManager {
 
     /**
      * Shows Erlang elements in a list view
-     * 
+     *
      * @param title
      *            view title
      * @param e
@@ -79,10 +79,10 @@ public class CodeInspectionViewsManager {
 
     /**
      * Shows a view.
-     * 
+     *
      * @param viewId
      *            view id, which is shown
-     * 
+     *
      * @return view which is shown
      */
     static public IViewPart showView(final String viewId) {
@@ -101,7 +101,7 @@ public class CodeInspectionViewsManager {
 
     /**
      * Shows a an instance of a view
-     * 
+     *
      * @param viewId
      *            view id
      * @param secondaryID
@@ -124,7 +124,7 @@ public class CodeInspectionViewsManager {
 
     /**
      * Hides a view.
-     * 
+     *
      * @param viewId
      *            view, which will be hidden
      */
@@ -134,7 +134,7 @@ public class CodeInspectionViewsManager {
 
     /**
      * Hides an instance of a view
-     * 
+     *
      * @param viewId
      *            view id
      * @param secondaryId

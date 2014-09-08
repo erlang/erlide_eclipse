@@ -2,7 +2,7 @@ package org.erlide.wrangler.refactoring.backend;
 
 /**
  * Simple class that contains user refactoring's informations
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */

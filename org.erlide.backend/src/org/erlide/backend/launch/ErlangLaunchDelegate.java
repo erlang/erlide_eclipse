@@ -28,18 +28,19 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.BackendData;
+import org.erlide.backend.api.ErlRuntimeAttributes;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IBeamLocator;
 import org.erlide.runtime.ErlRuntimeFactory;
-import org.erlide.runtime.api.ErlRuntimeAttributes;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
@@ -83,7 +84,9 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
             runtime = ErlRuntimeFactory.createRuntime(data);
             runtime.startAndWait();
         }
-        startErtsProcess(launch, data, runtime);
+        if (data.isManaged()) {
+            startErtsProcess(launch, data, runtime.getProcess());
+        }
     }
 
     /*
@@ -100,12 +103,8 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
     }
 
     private void startErtsProcess(final ILaunch launch, final BackendData data,
-            final IErlRuntime runtime) {
-        final Process process = runtime.getProcess();
-        if (process == null) {
-            data.setManaged(false);
-            return;
-        }
+            final Process process) {
+        Preconditions.checkArgument(process != null);
         data.setLaunch(launch);
         final Map<String, String> map = Maps.newHashMap();
         map.put("NodeName", data.getNodeName());

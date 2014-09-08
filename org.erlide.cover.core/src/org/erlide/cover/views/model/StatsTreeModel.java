@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 /**
- * 
+ *
  * Data model for statatistics view
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class StatsTreeModel implements Serializable {
 
@@ -35,7 +35,7 @@ public class StatsTreeModel implements Serializable {
 
     /**
      * Change model if results are restored
-     * 
+     *
      * @param mod
      */
     public static void changeInstance(final StatsTreeModel mod) {
@@ -76,7 +76,7 @@ public class StatsTreeModel implements Serializable {
 
     /**
      * add lines for project
-     * 
+     *
      * @param allLines
      * @param coveredLines
      */
@@ -101,7 +101,7 @@ public class StatsTreeModel implements Serializable {
 
     /**
      * Searching for specified element in a model
-     * 
+     *
      * @param name
      * @return
      */

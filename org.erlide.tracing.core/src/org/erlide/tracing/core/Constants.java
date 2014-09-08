@@ -2,9 +2,9 @@ package org.erlide.tracing.core;
 
 /**
  * Abstract class containing constants.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public abstract class Constants {
 

@@ -44,9 +44,9 @@ public interface ModelFindService {
             final IErlElementLocator.Scope scope) throws ErlModelException;
 
     IErlFunction findFunction(final IErlElementLocator model, final IErlProject project,
-            final IErlModule module, String moduleName,
-            final String modulePath, final ErlangFunction erlangFunction,
-            final IErlElementLocator.Scope scope) throws CoreException;
+            final IErlModule module, String moduleName, final String modulePath,
+            final ErlangFunction erlangFunction, final IErlElementLocator.Scope scope)
+            throws CoreException;
 
     String resolveMacroValue(final String definedName, final IErlModule module);
 

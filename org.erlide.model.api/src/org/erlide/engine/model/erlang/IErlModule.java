@@ -26,7 +26,7 @@ import org.erlide.engine.model.root.ISourceUnit;
  * cannot be parsed, its structure remains unknown. Use
  * <code>IErlElement.isStructureKnown</code> to determine whether this is the
  * case.
- * 
+ *
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IErlModule extends IErlElement, IParent, IOpenable, ISourceUnit {

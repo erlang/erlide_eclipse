@@ -2,15 +2,15 @@ package org.erlide.cover.runtime.launch;
 
 /**
  * Supported frameworks
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public enum FrameworkType {
 
     //@formatter:off
-    EUNIT("EUnit"), 
-    CT("Common Test"), 
+    EUNIT("EUnit"),
+    CT("Common Test"),
     QC("QuickCheck");
     //@formatter:on
 

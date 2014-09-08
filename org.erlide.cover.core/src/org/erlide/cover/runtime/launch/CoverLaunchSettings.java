@@ -13,9 +13,9 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Settings for performing coverage.
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class CoverLaunchSettings {
 
@@ -27,7 +27,7 @@ public class CoverLaunchSettings {
 
     /**
      * Create coverage settings, depend mainly on launch type
-     * 
+     *
      * @param t
      * @param data
      */
@@ -71,7 +71,7 @@ public class CoverLaunchSettings {
                         .getModules();
                 for (final IErlModule m : allModules) {
                     log.info(m.getFilePath());
-                    if (!m.getFilePath().contains("/test/")) { // TODO !
+                    if (!m.getFilePath().contains("/test/")) {
                         config.addModule(m);
                     }
                 }

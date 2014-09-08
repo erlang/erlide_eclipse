@@ -5,21 +5,22 @@ import java.util.List;
 
 /**
  * Module statistics
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class ModuleStats extends StatsTreeObject {
 
     private static final long serialVersionUID = 1L;
 
     private String md5; // file hash (in order to check if
-                        // marking annotations in editor makes sense)
+    // marking annotations in editor makes sense)
     private final List<LineResult> lineResults = new LinkedList<LineResult>(); // results
-                                                                               // per
-                                                                               // line
+    // per
+    // line
     public boolean couldBeMarked = true; // if annotation could be marked for
-                                         // that file (if it has not changed)
+
+    // that file (if it has not changed)
 
     public ModuleStats() {
         super(ObjectType.MODULE);
@@ -27,7 +28,7 @@ public class ModuleStats extends StatsTreeObject {
 
     /**
      * Coverage per line
-     * 
+     *
      * @return
      */
     public List<LineResult> getLineResults() {

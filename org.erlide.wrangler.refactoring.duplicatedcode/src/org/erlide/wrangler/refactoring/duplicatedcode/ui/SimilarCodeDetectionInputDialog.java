@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -27,9 +27,9 @@ import org.erlide.wrangler.refactoring.ui.AbstractInputDialog;
 
 /**
  * Input dialog for getting input for the similar code detection refactorings
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 
@@ -50,7 +50,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 
     /**
      * Constructor
-     * 
+     *
      * @param parentShell
      *            SWT shell
      * @param title
@@ -144,7 +144,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 
         final Label maxNewVarsLabel = new Label(composite, SWT.WRAP);
         maxNewVarsLabel
-                .setText("Maximum number of new parameters of the least-general abstraction:");
+        .setText("Maximum number of new parameters of the least-general abstraction:");
         final GridData maxNewVarsData = new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_CENTER);
@@ -225,17 +225,17 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
      * int digits, int value) { Spinner ret = new Spinner(parent, SWT.BORDER);
      * ret.setMinimum(min); ret.setMaximum(max); ret.setDigits(digits);
      * ret.setSelection(value);
-     * 
+     *
      * GridData gd = new GridData(); gd.verticalIndent = 2;
      * gd.horizontalAlignment = SWT.RIGHT; gd.grabExcessHorizontalSpace = true;
      * ret.setLayoutData(gd);
-     * 
+     *
      * return ret; }
      */
 
     /**
      * Returns the user typed similarity score.
-     * 
+     *
      * @return similarity scores
      */
     public double getSimScore() {
@@ -244,7 +244,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 
     /**
      * Returns the user typed minimal length
-     * 
+     *
      * @return minimal length
      */
     public int getMinLen() {
@@ -252,7 +252,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
     }
 
     /**
-     * 
+     *
      * @return minimal number of tokens
      */
     public int getMinToks() {
@@ -260,7 +260,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
     }
 
     /**
-     * 
+     *
      * @return maximal number of new variables
      */
     public int getMaxNewVars() {
@@ -269,7 +269,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
 
     /**
      * Returns the user types minimal frequency value
-     * 
+     *
      * @return minimal frequency value
      */
     public int getMinFreq() {
@@ -279,7 +279,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
     /**
      * Returns the value of the checkbox 'run refactoring in only current
      * module'
-     * 
+     *
      * @return true if the refactoring should run only in the current module
      */
     public boolean onlyinFile() {

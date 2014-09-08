@@ -41,8 +41,7 @@ public class ErlModelDeltaManager {
         this.model = model;
         fFire = true;
         reconcileDeltas = new HashMap<IErlModule, IErlElementDelta>();
-        erlModelDeltas = Collections
-                .synchronizedList(new ArrayList<IErlElementDelta>());
+        erlModelDeltas = Collections.synchronizedList(new ArrayList<IErlElementDelta>());
     }
 
     /**
@@ -74,8 +73,7 @@ public class ErlModelDeltaManager {
             case DEFAULT_CHANGE_EVENT:
                 // firePreAutoBuildDelta(deltaToNotify, listeners, listenerMask,
                 // listenerCount);
-                firePostChangeDelta(deltaToNotify, listeners, listenerMask,
-                        listenerCount);
+                firePostChangeDelta(deltaToNotify, listeners, listenerMask, listenerCount);
                 fireReconcileDelta(listeners, listenerMask, listenerCount);
                 break;
             // case ElementChangedEvent.PRE_AUTO_BUILD :
@@ -83,24 +81,22 @@ public class ErlModelDeltaManager {
             // listenerCount);
             // break;
             case ElementChangedEvent.POST_CHANGE:
-                firePostChangeDelta(deltaToNotify, listeners, listenerMask,
-                        listenerCount);
+                firePostChangeDelta(deltaToNotify, listeners, listenerMask, listenerCount);
                 fireReconcileDelta(listeners, listenerMask, listenerCount);
                 break;
             case ElementChangedEvent.POST_RECONCILE:
                 fireReconcileDelta(listeners, listenerMask, listenerCount);
                 break;
             case ElementChangedEvent.POST_SHIFT:
-                fireShiftEvent(deltaToNotify, listeners, listenerMask,
-                        listenerCount);
+                fireShiftEvent(deltaToNotify, listeners, listenerMask, listenerCount);
                 return;
             }
         }
     }
 
     private void firePostChangeDelta(final IErlElementDelta deltaToNotify,
-            final IElementChangedListener[] listeners,
-            final int[] listenerMask, final int listenerCount) {
+            final IElementChangedListener[] listeners, final int[] listenerMask,
+            final int listenerCount) {
 
         // post change deltas
         if (verbose) {
@@ -114,16 +110,14 @@ public class ErlModelDeltaManager {
             // deltas for
             // subsequent iteration
             flushDeltas();
-            model.notifyListeners(deltaToNotify,
-                    ElementChangedEvent.POST_CHANGE, listeners, listenerMask,
-                    listenerCount);
+            model.notifyListeners(deltaToNotify, ElementChangedEvent.POST_CHANGE,
+                    listeners, listenerMask, listenerCount);
         }
     }
 
     private void fireReconcileDelta(final IElementChangedListener[] listeners,
             final int[] listenerMask, final int listenerCount) {
-        final IErlElementDelta deltaToNotify = mergeDeltas(reconcileDeltas
-                .values());
+        final IErlElementDelta deltaToNotify = mergeDeltas(reconcileDeltas.values());
         if (verbose) {
             System.out
                     .println("FIRING POST_RECONCILE Delta [" + Thread.currentThread() + "]:"); //$NON-NLS-1$//$NON-NLS-2$
@@ -135,15 +129,14 @@ public class ErlModelDeltaManager {
             // deltas for
             // subsequent iteration
             reconcileDeltas.clear();
-            model.notifyListeners(deltaToNotify,
-                    ElementChangedEvent.POST_RECONCILE, listeners,
-                    listenerMask, listenerCount);
+            model.notifyListeners(deltaToNotify, ElementChangedEvent.POST_RECONCILE,
+                    listeners, listenerMask, listenerCount);
         }
     }
 
     private void fireShiftEvent(final IErlElementDelta deltaToNotify,
-            final IElementChangedListener[] listeners,
-            final int[] listenerMask, final int listenerCount) {
+            final IElementChangedListener[] listeners, final int[] listenerMask,
+            final int listenerCount) {
 
         // post change deltas
         if (verbose) {
@@ -154,9 +147,8 @@ public class ErlModelDeltaManager {
         }
         if (deltaToNotify != null) {
             flushDeltas();
-            model.notifyListeners(deltaToNotify,
-                    ElementChangedEvent.POST_SHIFT, listeners, listenerMask,
-                    listenerCount);
+            model.notifyListeners(deltaToNotify, ElementChangedEvent.POST_SHIFT,
+                    listeners, listenerMask, listenerCount);
         }
     }
 
@@ -189,12 +181,11 @@ public class ErlModelDeltaManager {
                             .getChildren(IErlElementDelta.ALL);
                     for (final IErlElementDelta element0 : children) {
                         final ErlElementDelta projectDelta = (ErlElementDelta) element0;
-                        rootDelta.insertDeltaTree(projectDelta.getElement(),
-                                projectDelta);
+                        rootDelta
+                                .insertDeltaTree(projectDelta.getElement(), projectDelta);
                         insertedTree = true;
                     }
-                    final IResourceDelta[] resourceDeltas = delta
-                            .getResourceDeltas();
+                    final IResourceDelta[] resourceDeltas = delta.getResourceDeltas();
                     if (resourceDeltas != null) {
                         for (final IResourceDelta element0 : resourceDeltas) {
                             rootDelta.addResourceDelta(element0);

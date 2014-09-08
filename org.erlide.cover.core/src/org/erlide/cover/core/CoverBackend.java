@@ -13,9 +13,9 @@ import org.erlide.cover.views.model.TestTreeModel;
 
 /**
  * Core backend for Cover-plugin
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class CoverBackend implements ICoverBackend {
 
@@ -62,7 +62,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Initializes cover backend from launch configuration
-     * 
+     *
      * @param coverData
      * @param backend2
      * @throws CoverException
@@ -93,7 +93,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Get event handler that handles Erlang events
-     * 
+     *
      * @return
      */
     public CoverEventHandler getHandler() {
@@ -102,7 +102,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Get access to cover node
-     * 
+     *
      * @return
      */
     public IBackend getBackend() {
@@ -111,7 +111,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Add listener for coverage events
-     * 
+     *
      * @param listener
      */
     public void addListener(final ICoverObserver listener) {
@@ -121,7 +121,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Get all listeners
-     * 
+     *
      * @return
      */
     public List<ICoverObserver> getListeners() {
@@ -130,7 +130,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Add listener for coverage events
-     * 
+     *
      * @param listener
      */
     public void addEUnitListener(final IEUnitObserver listener) {
@@ -140,7 +140,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Get all eunit listeners
-     * 
+     *
      * @return
      */
     public List<IEUnitObserver> getEUnitListeners() {
@@ -149,7 +149,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Set annotation marker for marking coverage in the editor
-     * 
+     *
      * @param am
      */
     public void addAnnotationMaker(final ICoverAnnotationMarker am) {
@@ -158,7 +158,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Get annotation marker
-     * 
+     *
      * @return
      */
     public ICoverAnnotationMarker getAnnotationMaker() {
@@ -167,7 +167,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Handle all errors, provides graphical representation for final user.
-     * 
+     *
      * @param msg
      */
     public void handleError(final String msg) {
@@ -178,7 +178,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Check coverage settings
-     * 
+     *
      * @return
      */
     public CoverLaunchSettings getSettings() {

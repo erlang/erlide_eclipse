@@ -2,16 +2,16 @@ package org.erlide.tracing.core.mvc.view;
 
 /**
  * Enum describing columns in nodes table.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public enum NodeColumn {
 
     //@formatter:off
-    ENABLED("Enabled", 60), 
-    NODE_NAME("Name", 150), 
-    TYPE("Type", 70), 
+    ENABLED("Enabled", 60),
+    NODE_NAME("Name", 150),
+    TYPE("Type", 70),
     COOKIE("Cookie", 150);
     //@formatter:on
 

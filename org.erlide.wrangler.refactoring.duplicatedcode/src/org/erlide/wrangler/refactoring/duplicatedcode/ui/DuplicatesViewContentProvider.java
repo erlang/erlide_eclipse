@@ -15,12 +15,12 @@ import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.ResultTreeRoot
 
 /**
  * Content provider for the duplicates view.
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class DuplicatesViewContentProvider implements ITreeContentProvider,
-        IDuplicatedCodeResultDisplayer {
+IDuplicatedCodeResultDisplayer {
 
     private final DuplicatesView duplicatedCodeView;
 
@@ -80,7 +80,7 @@ public class DuplicatesViewContentProvider implements ITreeContentProvider,
 
     /**
      * Add a child to the view.
-     * 
+     *
      * @param child
      *            child to be added.
      */

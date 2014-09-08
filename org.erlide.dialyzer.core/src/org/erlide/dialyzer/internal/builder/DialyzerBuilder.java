@@ -35,6 +35,10 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
             @SuppressWarnings("rawtypes") final Map args, final IProgressMonitor monitor)
             throws CoreException {
         final IProject project = getProject();
+        if (project == null) {
+            monitor.done();
+            return null;
+        }
         DialyzerPreferences prefs = null;
         prefs = DialyzerPreferences.get(project);
         if (prefs == null || !prefs.getDialyzeOnCompile()) {
@@ -47,8 +51,12 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
         projects.add(model.findProject(project));
         if (!modules.isEmpty()) {
             try {
+                final IErlProject eproject = model.findProject(project);
+                if (eproject == null) {
+                    return null;
+                }
                 final IBackend backend = BackendCore.getBackendManager().getBuildBackend(
-                        project);
+                        eproject);
                 DialyzerUtils.doDialyze(monitor, modules, projects, backend);
             } catch (final InvocationTargetException e) {
                 ErlLogger.error(e);

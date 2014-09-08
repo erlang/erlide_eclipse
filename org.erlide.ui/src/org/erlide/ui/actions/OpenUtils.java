@@ -125,8 +125,8 @@ public class OpenUtils {
             final OtpErlangString otpErlangString = (OtpErlangString) res2;
             final String modulePath = otpErlangString.stringValue();
             final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-            return modelFindService.findFunction(model, erlProject, module,
-                    moduleName, modulePath, res.getFunction(), scope);
+            return modelFindService.findFunction(model, erlProject, module, moduleName,
+                    modulePath, res.getFunction(), scope);
         }
         // functions defined in include files
         final Collection<IErlModule> allIncludedFiles = ErlangEngine.getInstance()
@@ -159,17 +159,17 @@ public class OpenUtils {
             final IErlElementLocator.Scope scope) throws CoreException {
         final IErlElementLocator model = ErlangEngine.getInstance().getModel();
         if (isTypeDefOrRecordDef(element, res)) {
-            return modelFindService.findTypeDef(model, project, module,
-                    res.getName(), res.getFun(), res.getPath(), scope);
+            return modelFindService.findTypeDef(model, project, module, res.getName(),
+                    res.getFun(), res.getPath(), scope);
         }
-        final IErlFunction result = modelFindService.findFunction(model, project,
-                module, res.getName(), res.getPath(), res.getFunction(), scope);
+        final IErlFunction result = modelFindService.findFunction(model, project, module,
+                res.getName(), res.getPath(), res.getFunction(), scope);
         if (result != null) {
             return result;
         }
-        return modelFindService.findFunction(model, project,
-                module,
-                res.getName(), res.getPath(), new ErlangFunction(res.getFun(), ErlangFunction.ANY_ARITY), scope);
+        return modelFindService.findFunction(model, project, module, res.getName(),
+                res.getPath(),
+                new ErlangFunction(res.getFun(), ErlangFunction.ANY_ARITY), scope);
     }
 
 }

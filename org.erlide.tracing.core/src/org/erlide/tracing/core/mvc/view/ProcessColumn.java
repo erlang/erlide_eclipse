@@ -2,15 +2,15 @@ package org.erlide.tracing.core.mvc.view;
 
 /**
  * Enum describing columns in processes table.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public enum ProcessColumn {
     //@formatter:off
-    SELECTED("Selected", 60), 
-    INITIAL_CALL("Initial call", 130), 
-    NAME("Process name", 150), 
+    SELECTED("Selected", 60),
+    INITIAL_CALL("Initial call", 130),
+    NAME("Process name", 150),
     NODE("Process node", 150);
     //@formatter:on
 
@@ -25,7 +25,7 @@ public enum ProcessColumn {
     /**
      * Returns enum value for given ordinal. If there is no enum with given
      * ordinal it will return <code>null</code>.
-     * 
+     *
      * @param index
      * @return enum value
      */

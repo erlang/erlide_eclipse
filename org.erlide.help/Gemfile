@@ -1,0 +1,6 @@
+# A sample Gemfile
+source "https://rubygems.org"
+
+gem "gollum-site", :git => 'git://github.com/dreverri/gollum-site.git'
+gem "gollum"
+

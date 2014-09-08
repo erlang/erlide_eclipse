@@ -2,9 +2,9 @@ package org.erlide.tracing.core;
 
 /**
  * Enum describing images used by plugin.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public enum Images {
 
@@ -56,7 +56,7 @@ public enum Images {
 
     /**
      * Returns file name represented by this enum value.
-     * 
+     *
      * @return file name
      */
     public String getFileName() {

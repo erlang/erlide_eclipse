@@ -25,8 +25,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideScanner implements SimpleScannerService, InternalScanner {
     private static final String ERLIDE_SCANNER = "erlide_scanner";
-    private static final Object ENCODING = System.getProperty(
-            "erlide.encoding.__test__", "latin1");
+    private static final Object ENCODING = System.getProperty("erlide.encoding.__test__",
+            "latin1");
     private static final boolean USE_CACHE = true;
 
     private final IRpcSite backend;
@@ -83,8 +83,7 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
     public ErlToken getTokenAt(final String module, final int offset) {
         OtpErlangObject r1 = null;
         try {
-            r1 = backend.call(ERLIDE_SCANNER, "get_token_at", "ai", module,
-                    offset);
+            r1 = backend.call(ERLIDE_SCANNER, "get_token_at", "ai", module, offset);
         } catch (final Exception e) {
             return null;
         }
@@ -107,12 +106,11 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
             final int removeLength, final String newText) {
         assertThat(newText, is(not(nullValue())));
         try {
-            final OtpErlangObject r = backend.call(ERLIDE_SCANNER,
-                    "replace_text", "aiis", module, offset, removeLength,
-                    newText);
+            final OtpErlangObject r = backend.call(ERLIDE_SCANNER, "replace_text",
+                    "aiis", module, offset, removeLength, newText);
             if (r instanceof OtpErlangTuple) {
-                ErlLogger.error("replace_text %s @ %d GOT:: %s", module,
-                        offset, r.toString());
+                ErlLogger.error("replace_text %s @ %d GOT:: %s", module, offset,
+                        r.toString());
             }
         } catch (final RpcTimeoutException e) {
             ErlLogger.debug(e);
@@ -126,11 +124,11 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
             throws ScannerException {
         OtpErlangObject r1 = null;
         try {
-            r1 = backend.call("erlide_scanner", "light_scan_string", "ba",
-                    string, ENCODING);
+            r1 = backend.call("erlide_scanner", "light_scan_string", "ba", string,
+                    ENCODING);
         } catch (final Exception e) {
-            throw new ScannerException("Could not parse string \"" + string
-                    + "\": " + e.getMessage());
+            throw new ScannerException("Could not parse string \"" + string + "\": "
+                    + e.getMessage());
         }
         if (r1 == null) {
             return null;
@@ -156,8 +154,8 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
             }
             throw new ScannerException("unexpected token format");
         }
-        throw new ScannerException("Could not parse string \"" + string
-                + "\": " + t1.toString());
+        throw new ScannerException("Could not parse string \"" + string + "\": "
+                + t1.toString());
     }
 
     @Override
@@ -167,8 +165,8 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
             return null;
         }
         try {
-            final OtpErlangObject o = backend.call(ERLIDE_SCANNER, "check_all",
-                    "aso", module, text, getTokens);
+            final OtpErlangObject o = backend.call(ERLIDE_SCANNER, "check_all", "aso",
+                    module, text, getTokens);
             return o;
         } catch (final RpcException e) {
             ErlLogger.warn(e);

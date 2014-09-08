@@ -1,11 +1,10 @@
 package org.erlide.ui.internal.information;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.api.IBackendManager;
 import org.erlide.engine.ErlangEngine;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.runtime.api.IRpcSite;
@@ -59,11 +58,12 @@ public class HandleEdocLinksLocationListener implements LocationListener {
             final ErlangFunctionCall functionCall = HoverUtil.eventToErlangFunctionCall(
                     moduleName, event);
             if (functionCall != null) {
-                final IProject project = ErlangEngine.getInstance().getModelUtilService()
-                        .getProject(editor.getModule()).getWorkspaceProject();
-                final IBackendManager backendManager = BackendCore.getBackendManager();
-                final IRpcSite backend = backendManager.getBuildBackend(project)
-                        .getRpcSite();
+                final IErlProject project = ErlangEngine.getInstance()
+                        .getModelUtilService().getProject(editor.getModule());
+                if (project == null) {
+                    return;
+                }
+                final IRpcSite backend = BackendCore.getBuildBackend(project);
 
                 final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                         .toString();
@@ -83,7 +83,8 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                         final String html = HoverUtil.getHTMLAndReplaceJSLinks(result);
                         final Object element = new OpenResult(otpDoc.elementAt(2));
                         input = new ErlBrowserInformationControlInput(input, editor,
-                                element, html, 20, docPath, anchor);
+                                element, html, 20, HoverUtil.getDocumentationURL(docPath,
+                                        anchor));
                     }
                 }
             }

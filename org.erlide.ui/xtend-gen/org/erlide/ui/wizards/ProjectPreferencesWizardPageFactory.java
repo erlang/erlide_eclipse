@@ -1,11 +1,11 @@
 package org.erlide.ui.wizards;
 
-import com.google.common.collect.Maps;
 import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Map;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.eclipse.xtext.xbase.lib.Functions.Function0;
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.engine.model.root.NewProjectData;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.ui.wizards.EmakeProjectPreferencesWizardPage;
@@ -15,17 +15,7 @@ import org.erlide.ui.wizards.RebarProjectPreferencesWizardPage;
 
 @SuppressWarnings("all")
 public class ProjectPreferencesWizardPageFactory {
-  private final static Map<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>> PAGES = new Function0<Map<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>>>() {
-    public Map<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>> apply() {
-      Map<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>> _xsetliteral = null;
-      Map<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>> _tempMap = Maps.<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>>newHashMap();
-      _tempMap.put(ProjectConfigType.INTERNAL, InternalProjectPreferencesWizardPage.class);
-      _tempMap.put(ProjectConfigType.EMAKE, EmakeProjectPreferencesWizardPage.class);
-      _tempMap.put(ProjectConfigType.REBAR, RebarProjectPreferencesWizardPage.class);
-      _xsetliteral = Collections.<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>>unmodifiableMap(_tempMap);
-      return _xsetliteral;
-    }
-  }.apply();
+  private final static Map<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>> PAGES = Collections.<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>>unmodifiableMap(CollectionLiterals.<ProjectConfigType, Class<? extends ProjectPreferencesWizardPage>>newHashMap(Pair.<ProjectConfigType, Class<InternalProjectPreferencesWizardPage>>of(ProjectConfigType.INTERNAL, InternalProjectPreferencesWizardPage.class), Pair.<ProjectConfigType, Class<EmakeProjectPreferencesWizardPage>>of(ProjectConfigType.EMAKE, EmakeProjectPreferencesWizardPage.class), Pair.<ProjectConfigType, Class<RebarProjectPreferencesWizardPage>>of(ProjectConfigType.REBAR, RebarProjectPreferencesWizardPage.class)));
   
   public static ProjectPreferencesWizardPage create(final ProjectConfigType builder, final NewProjectData info) {
     try {

@@ -64,9 +64,9 @@ public class IErlFunctionTests extends ErlModelTestBase2 {
     // String getComment();
     @Test
     public void getComments() throws Exception {
-        final Collection<IErlMember> comments = functionA.getComments();
-        final Collection<IErlMember> comments2 = functionB.getComments();
-        final Collection<IErlMember> comments3 = functionC.getComments();
+        final Collection<IErlComment> comments = functionA.getComments();
+        final Collection<IErlComment> comments2 = functionB.getComments();
+        final Collection<IErlComment> comments3 = functionC.getComments();
         assertTrue(comments.isEmpty());
         assertTrue(comments2.isEmpty());
         assertFalse(comments3.isEmpty());

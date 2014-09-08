@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Testing Support Libraries
 Bundle-SymbolicName: org.erlide.testing.libs;singleton:=true
-Bundle-Version: 1.1.6
+Bundle-Version: 1.1.7
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: commons-collections-3.2.1.jar,
  commons-lang-2.5.jar,
@@ -10,11 +10,7 @@ Bundle-ClassPath: commons-collections-3.2.1.jar,
  mockito-all-1.6.jar,
  jdepend-2.9.1.jar,
  commons-io-2.4.jar
-Export-Package: jdepend.framework,
- jdepend.swingui,
- jdepend.textui,
- jdepend.xmlui,
- org.apache.commons.collections,
+Export-Package: org.apache.commons.collections,
  org.apache.commons.collections.bag,
  org.apache.commons.collections.bidimap,
  org.apache.commons.collections.buffer,

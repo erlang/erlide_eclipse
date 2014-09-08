@@ -20,9 +20,9 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Generates HTML collective reports
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class ReportGenerator {
 

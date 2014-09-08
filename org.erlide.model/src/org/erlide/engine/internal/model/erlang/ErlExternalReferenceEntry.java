@@ -2,21 +2,21 @@ package org.erlide.engine.internal.model.erlang;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.root.Openable;
-import org.erlide.engine.internal.util.BackendUtil;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlExternal;
+import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.util.CommonUtils;
+import org.erlide.engine.util.RpcSiteFactory;
 import org.erlide.runtime.api.IRpcSite;
 
 import com.google.common.collect.Lists;
@@ -47,15 +47,14 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
     }
 
     @Override
-    public boolean buildStructure(final IProgressMonitor pm)
-            throws ErlModelException {
+    public boolean buildStructure(final IProgressMonitor pm) throws ErlModelException {
         if (prebuilt) {
             // already done
             return true;
         }
-        final IProject workspaceProject = ErlangEngine.getInstance()
-                .getModelUtilService().getProject(this).getWorkspaceProject();
-        final IRpcSite backend = new BackendUtil().getBackend(workspaceProject);
+        final IErlProject project = ErlangEngine.getInstance().getModelUtilService()
+                .getProject(this);
+        final IRpcSite backend = RpcSiteFactory.getRpcSiteForProject(project);
         if (backend != null) {
             final List<String> files = ErlangEngine.getInstance()
                     .getService(OpenService.class).getLibFiles(entry);
@@ -63,8 +62,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
                     .newArrayListWithCapacity(files.size());
             for (final String file : files) {
                 if (CommonUtils.isErlangFileContentFileName(getName(file))) {
-                    children.add(new ErlModule(this, getName(file), file, null,
-                            null));
+                    children.add(new ErlModule(this, getName(file), file, null, null));
                 }
             }
             setChildren(children);

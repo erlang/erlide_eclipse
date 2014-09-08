@@ -9,7 +9,7 @@ import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 /**
  * Class for common functionalities of adhoc refactorings ad hoc specific
  * methods should delegate to if
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */
@@ -23,7 +23,7 @@ public class UserAdhocRefactoring {
 
     /**
      * Loading user's callback module
-     * 
+     *
      * @return
      */
     public boolean load() {

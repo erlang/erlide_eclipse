@@ -17,9 +17,9 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 
 /**
  * Class for launching cover
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class CoverRunner extends AbstractCoverRunner {
 

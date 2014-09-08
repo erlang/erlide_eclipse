@@ -22,8 +22,9 @@ import org.erlide.engine.model.ErlModelException;
  * compilation unit that is a working copy.
  * </p>
  * <p>
+ *
  * @noimplement This interface is not intended to be implemented by clients.
- * </p>
+ *              </p>
  *
  */
 public interface ISourceReference {

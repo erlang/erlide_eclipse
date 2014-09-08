@@ -5,9 +5,9 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 
 /**
  * Stores launch configuration data
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class CoverLaunchData {
 

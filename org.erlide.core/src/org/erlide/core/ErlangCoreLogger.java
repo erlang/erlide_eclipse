@@ -76,7 +76,7 @@ public class ErlangCoreLogger {
     public static String getLogDir(final String logDir) {
         final IPreferencesService service = Platform.getPreferencesService();
         final String key = "erlide_log_directory";
-        final String pluginId = "org.erlide.core";
+        final String pluginId = ErlangCore.PLUGIN_ID;
         final String s = service.getString(pluginId, key, logDir, null);
         String dir;
         if (s != null) {

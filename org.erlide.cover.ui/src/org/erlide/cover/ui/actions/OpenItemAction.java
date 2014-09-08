@@ -31,9 +31,9 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Action for opening items in the editor.
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class OpenItemAction extends Action {
 

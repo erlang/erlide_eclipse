@@ -44,8 +44,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     }
 
     @Override
-    public boolean buildStructure(final IProgressMonitor pm)
-            throws ErlModelException {
+    public boolean buildStructure(final IProgressMonitor pm) throws ErlModelException {
         final IErlModel model = ErlangEngine.getInstance().getModel();
         final IContainer c = (IContainer) getResource();
         try {
@@ -86,23 +85,22 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public boolean isOnSourcePath() {
         final IErlProject project = modelUtilService.getProject(this);
-        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
-                project.getProperties().getSourceDirs());
+        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(), project
+                .getProperties().getSourceDirs());
     }
 
     @Override
     public boolean isOnIncludePath() {
         final IErlProject project = modelUtilService.getProject(this);
-        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
-                project.getProperties().getIncludeDirs());
+        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(), project
+                .getProperties().getIncludeDirs());
     }
 
     @Override
     public boolean isSourcePathParent() {
         final IProject project = folder.getProject();
         final IErlProject erlProject = modelUtilService.getProject(this);
-        final Collection<IPath> sourcePaths = erlProject.getProperties()
-                .getSourceDirs();
+        final Collection<IPath> sourcePaths = erlProject.getProperties().getSourceDirs();
         final IPath path = folder.getFullPath();
         for (final IPath i : sourcePaths) {
             if (path.isPrefixOf(project.getFolder(i).getFullPath())) {
@@ -112,16 +110,15 @@ public class ErlFolder extends Openable implements IErlFolder {
         return false;
     }
 
-    public static boolean isOnPaths(final IContainer container,
-            final IContainer project, final Collection<IPath> paths) {
+    public static boolean isOnPaths(final IContainer container, final IContainer project,
+            final Collection<IPath> paths) {
         final IPath containerPath = container.getFullPath();
         for (final IPath path : paths) {
             if (path.toString().equals(".")) {
                 if (project.getFullPath().equals(containerPath)) {
                     return true;
                 }
-            } else if (project.getFolder(path).getFullPath()
-                    .equals(containerPath)) {
+            } else if (project.getFolder(path).getFullPath().equals(containerPath)) {
                 return true;
             }
         }
@@ -131,8 +128,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public void setChildren(final Collection<? extends IErlElement> c) {
         if (isOnIncludePath() || isOnSourcePath()) {
-            ErlModelCache.getDefault().removeProject(
-                    modelUtilService.getProject(this));
+            ErlModelCache.getDefault().removeProject(modelUtilService.getProject(this));
         }
         super.setChildren(c);
     }
@@ -140,15 +136,13 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public void clearCaches() {
         if (isOnIncludePath() || isOnSourcePath()) {
-            ErlModelCache.getDefault().removeProject(
-                    modelUtilService.getProject(this));
+            ErlModelCache.getDefault().removeProject(modelUtilService.getProject(this));
         }
         super.clearCaches();
     }
 
-    private IErlModule findModuleOrInclude(final String name,
-            final String path, final boolean isInclude)
-            throws ErlModelException {
+    private IErlModule findModuleOrInclude(final String name, final String path,
+            final boolean isInclude) throws ErlModelException {
         final Collection<IErlModule> modules = getModules();
         if (path != null) {
             for (final IErlModule module : modules) {
@@ -163,8 +157,7 @@ public class ErlFolder extends Openable implements IErlFolder {
             hasExtension = SystemConfiguration.hasExtension(name);
             for (final IErlModule module : modules) {
                 final String name2 = module.getName();
-                final String moduleName = hasExtension ? name2 : module
-                        .getModuleName();
+                final String moduleName = hasExtension ? name2 : module.getModuleName();
                 if (name.equals(moduleName)
                         && (hasExtension || isInclude == SourceKind
                                 .hasHrlExtension(name2))) {
@@ -176,19 +169,18 @@ public class ErlFolder extends Openable implements IErlFolder {
     }
 
     @Override
-    public IErlModule findModule(final String moduleName,
-            final String modulePath) throws ErlModelException {
+    public IErlModule findModule(final String moduleName, final String modulePath)
+            throws ErlModelException {
         return findModuleOrInclude(moduleName, modulePath, false);
     }
 
     @Override
-    public IErlModule findInclude(final String includeName,
-            final String includePath) throws ErlModelException {
+    public IErlModule findInclude(final String includeName, final String includePath)
+            throws ErlModelException {
         return findModuleOrInclude(includeName, includePath, true);
     }
 
-    private void addModules(final List<IErlModule> modules)
-            throws ErlModelException {
+    private void addModules(final List<IErlModule> modules) throws ErlModelException {
         for (final IErlElement e : getChildren()) {
             if (e instanceof IErlModule) {
                 modules.add((IErlModule) e);

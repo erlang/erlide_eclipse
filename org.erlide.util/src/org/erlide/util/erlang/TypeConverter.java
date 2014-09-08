@@ -216,9 +216,6 @@ public final class TypeConverter {
             }
             if (Map.class.isAssignableFrom(cls)) {
                 if (obj instanceof OtpErlangMap) {
-
-                    // TODO we need right classes for keys and values
-
                     final Map<Object, Object> result = Maps.newHashMap();
                     final OtpErlangMap map = (OtpErlangMap) obj;
                     for (final OtpErlangObject key : map.keys()) {
@@ -233,9 +230,6 @@ public final class TypeConverter {
             }
             if (Collection.class.isAssignableFrom(cls)) {
                 if (obj instanceof OtpErlangList) {
-
-                    // TODO we need right class for elements
-
                     final OtpErlangObject[] list = ((OtpErlangList) obj).elements();
                     final Object[] olist = new Object[list.length];
                     for (int i = 0; i < list.length; i++) {

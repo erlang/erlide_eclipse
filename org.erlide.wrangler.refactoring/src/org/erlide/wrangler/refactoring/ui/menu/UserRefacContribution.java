@@ -14,7 +14,7 @@ import org.erlide.wrangler.refactoring.backend.UserRefactoringsManager;
 /**
  * Menu contribution - committed refactoring menu items (those from the
  * repository)
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */

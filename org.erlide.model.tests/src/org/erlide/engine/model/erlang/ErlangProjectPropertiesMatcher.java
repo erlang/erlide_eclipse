@@ -16,7 +16,7 @@ public class ErlangProjectPropertiesMatcher extends BaseMatcher<ErlangProjectPro
 
     @Override
     public boolean matches(final Object other) {
-        return item.sameAs(other);
+        return item.equals(other);
     }
 
     @Override

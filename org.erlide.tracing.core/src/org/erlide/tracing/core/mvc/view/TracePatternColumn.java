@@ -2,9 +2,9 @@ package org.erlide.tracing.core.mvc.view;
 
 /**
  * Enum describing columns in trace pattern table.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public enum TracePatternColumn {
     //@formatter:off

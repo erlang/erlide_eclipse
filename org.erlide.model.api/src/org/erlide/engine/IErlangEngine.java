@@ -3,6 +3,7 @@ package org.erlide.engine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.IProjectConfiguratorFactory;
 import org.erlide.engine.services.ErlangService;
+import org.erlide.engine.services.GenericService;
 import org.erlide.engine.services.cleanup.CleanupProvider;
 import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.edoc.EdocExportService;
@@ -16,14 +17,12 @@ import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.ModelSearcherService;
 import org.erlide.engine.services.search.ModelUtilService;
 import org.erlide.engine.services.search.SearchServerService;
-import org.erlide.runtime.api.IRpcSite;
 
 public interface IErlangEngine {
 
-    <T extends ErlangService> T getService(Class<T> type);
+    boolean isAvailable();
 
-    @Deprecated
-    IRpcSite getBackend();
+    <T extends ErlangService> T getService(Class<T> type);
 
     IErlModel getModel();
 
@@ -58,5 +57,8 @@ public interface IErlangEngine {
     ModelSearcherService getModelSearcherService();
 
     IProjectConfiguratorFactory getProjectConfiguratorFactory();
+
+    // TODO
+    GenericService getGenericService();
 
 }

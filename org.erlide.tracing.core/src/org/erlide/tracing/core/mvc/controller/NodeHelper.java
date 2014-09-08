@@ -13,9 +13,9 @@ import org.erlide.tracing.core.TraceBackend;
 
 /**
  * Helper class containing methods for dealing with traced nodes.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class NodeHelper {
 
@@ -25,7 +25,7 @@ public class NodeHelper {
     /**
      * Checks if node with given name was started from erlide or was started
      * outside it (in this case it is considered as <i>external</i>).
-     * 
+     *
      * @param nodeName
      *            node name
      * @return <code>true</code> if node was started outside erlide,
@@ -44,7 +44,7 @@ public class NodeHelper {
      * Returns backends managed by erlide. Depending on argument nodes
      * irrelevant from user's point of view (tracing and ide backends) can be
      * omitted in resulting list.
-     * 
+     *
      * @param ignore
      *            if nodes should be omitted
      * @return list of backends

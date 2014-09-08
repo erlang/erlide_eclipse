@@ -33,9 +33,9 @@ public interface IErlFunction extends IErlFunctionClause, IParent {
      */
     String getNameWithParameters();
 
-    Collection<IErlMember> getComments();
+    Collection<IErlComment> getComments();
 
-    void setComments(Collection<IErlMember> comments);
+    void setComments(Collection<IErlComment> comments);
 
     void setTypespec(IErlTypespec spec);
 

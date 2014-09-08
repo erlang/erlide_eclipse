@@ -21,6 +21,7 @@ public class RuntimeFinder {
                 "c:/programs", "c:/", "c:/apps", "/usr", "/usr/lib", "/usr/lib64",
                 "/usr/local", "/usr/local/lib", "/Library/Frameworks/erlang/Versions",
                 "/proj/uz/erlide", SystemConfiguration.getInstance().getHomeDir(),
+                SystemConfiguration.getInstance().getHomeDir() + "/erlide_tools",
                 System.getProperty("erlide.runtime") };
         final Set<String> locs = Sets.newHashSet(Arrays.asList(locations));
         for (final String loc : locs) {

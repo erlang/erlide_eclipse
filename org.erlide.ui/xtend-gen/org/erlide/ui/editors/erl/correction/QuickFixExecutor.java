@@ -5,30 +5,17 @@ import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext;
+import org.eclipse.xtend.lib.annotations.Accessors;
+import org.eclipse.xtext.xbase.lib.Pure;
 import org.erlide.ui.editors.erl.correction.QuickFix;
 import org.erlide.util.ErlLogger;
 
+@Accessors
 @SuppressWarnings("all")
 public abstract class QuickFixExecutor implements ISafeRunnable {
-  private IMarker _marker;
+  private IMarker marker;
   
-  public IMarker getMarker() {
-    return this._marker;
-  }
-  
-  public void setMarker(final IMarker marker) {
-    this._marker = marker;
-  }
-  
-  private QuickFix _quickFix;
-  
-  public QuickFix getQuickFix() {
-    return this._quickFix;
-  }
-  
-  public void setQuickFix(final QuickFix quickFix) {
-    this._quickFix = quickFix;
-  }
+  private QuickFix quickFix;
   
   public void handleException(final Throwable exception) {
     ErlLogger.error(exception);
@@ -45,4 +32,22 @@ public abstract class QuickFixExecutor implements ISafeRunnable {
   }
   
   public abstract boolean appliesAt(final IQuickAssistInvocationContext invocationContext);
+  
+  @Pure
+  public IMarker getMarker() {
+    return this.marker;
+  }
+  
+  public void setMarker(final IMarker marker) {
+    this.marker = marker;
+  }
+  
+  @Pure
+  public QuickFix getQuickFix() {
+    return this.quickFix;
+  }
+  
+  public void setQuickFix(final QuickFix quickFix) {
+    this.quickFix = quickFix;
+  }
 }

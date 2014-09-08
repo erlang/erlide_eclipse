@@ -9,6 +9,7 @@ import java.util.List
 import java.util.Map
 import java.util.Scanner
 import java.util.regex.Pattern
+import org.eclipse.xtend.lib.annotations.Data
 import org.erlide.util.ErlLogger
 import org.erlide.util.erlang.ErlUtils
 
@@ -69,17 +70,6 @@ class ErlProblems {
         return result;
     }
 
-    def static String quoteRegex(String string) {
-        val esc = "([{^$|)?*+.".bytes
-        var result = string
-        for (c : esc) {
-            val String r = "\\" + c as char
-            val String v = "\\\\" + c as char
-            result = result.replaceAll(r, v)
-        }
-        return result
-    }
-
     def check() {
         val List<String> names = newArrayList
         for (ProblemData p : data) {
@@ -137,7 +127,7 @@ class ProblemData extends ProblemData0 {
 
     def getPattern() {
         if (_pattern === null) {
-            val str = ErlProblems.quoteRegex(message)
+            val str = quoteRegex(message)
             val key = "@@@"
             _pattern = Pattern.compile(str.replaceAll("\\\\~", key).replaceAll("~", "(.+?)").replaceAll(key, "~"))
         }
@@ -165,6 +155,17 @@ class ProblemData extends ProblemData0 {
             return result
         }
         return null
+    }
+
+    def static String quoteRegex(String string) {
+        val esc = "([{^$|)?*+.".bytes
+        var result = string
+        for (c : esc) {
+            val String r = "\\" + c as char
+            val String v = "\\\\" + c as char
+            result = result.replaceAll(r, v)
+        }
+        return result
     }
 
 }

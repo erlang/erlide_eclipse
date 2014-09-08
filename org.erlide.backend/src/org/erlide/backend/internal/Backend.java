@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.erlide.backend.internal;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -31,12 +26,14 @@ import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendUtils;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.backend.console.BackendShellManager;
+import org.erlide.backend.debug.BeamUtil;
 import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.engine.model.root.IErlProject;
@@ -44,7 +41,6 @@ import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.InitialCall;
-import org.erlide.runtime.api.RuntimeUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
@@ -68,7 +64,6 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public Backend(final BackendData data, @NonNull final IErlRuntime runtime,
             final IBackendManager backendManager) {
-        assertThat(runtime, is(not(nullValue())));
         this.runtime = runtime;
         this.data = data;
         this.backendManager = backendManager;
@@ -126,11 +121,11 @@ public abstract class Backend implements IStreamListener, IBackend {
         return runtime.isRunning();
     }
 
-    public void removePath(final String path) {
+    public void removePath(final @NonNull String path) {
         codeManager.removePath(path);
     }
 
-    public void addPath(final boolean usePathZ, final String path) {
+    public void addPath(final boolean usePathZ, final @NonNull String path) {
         codeManager.addPath(usePathZ, path);
     }
 
@@ -220,7 +215,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         final String outDir = project.getLocation()
                 .append(eproject.getProperties().getOutputDir()).toOSString();
         if (outDir.length() > 0) {
-            final boolean accessible = RuntimeUtils.isAccessibleDir(getRpcSite(), outDir);
+            final boolean accessible = BackendUtils.isAccessibleDir(getRpcSite(), outDir);
             if (accessible) {
                 addPath(false/* prefs.getUsePathZ() */, outDir);
             } else {

@@ -5,10 +5,12 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
+import org.eclipse.xtext.xbase.lib.Pure;
 import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IProjectConfigurator;
@@ -19,67 +21,20 @@ import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
+@Accessors
 @SuppressWarnings("all")
 public class NewProjectData extends ErlangProjectProperties {
-  private String _name = null;
+  private String name = null;
   
-  public String getName() {
-    return this._name;
-  }
+  private IPath location = null;
   
-  public void setName(final String name) {
-    this._name = name;
-  }
+  private boolean existingProject = false;
   
-  private IPath _location = null;
+  private BuilderTool builder = BuilderTool.INTERNAL;
   
-  public IPath getLocation() {
-    return this._location;
-  }
+  private ProjectConfigType configType = ProjectConfigType.INTERNAL;
   
-  public void setLocation(final IPath location) {
-    this._location = location;
-  }
-  
-  private boolean _existingProject = false;
-  
-  public boolean isExistingProject() {
-    return this._existingProject;
-  }
-  
-  public void setExistingProject(final boolean existingProject) {
-    this._existingProject = existingProject;
-  }
-  
-  private BuilderTool _builder = BuilderTool.INTERNAL;
-  
-  public BuilderTool getBuilder() {
-    return this._builder;
-  }
-  
-  public void setBuilder(final BuilderTool builder) {
-    this._builder = builder;
-  }
-  
-  private ProjectConfigType _configType = ProjectConfigType.INTERNAL;
-  
-  public ProjectConfigType getConfigType() {
-    return this._configType;
-  }
-  
-  public void setConfigType(final ProjectConfigType configType) {
-    this._configType = configType;
-  }
-  
-  private Map<String, String> _builderData = CollectionLiterals.<String, String>newHashMap();
-  
-  public Map<String, String> getBuilderData() {
-    return this._builderData;
-  }
-  
-  public void setBuilderData(final Map<String, String> builderData) {
-    this._builderData = builderData;
-  }
+  private Map<String, String> builderData = CollectionLiterals.<String, String>newHashMap();
   
   private final IProjectConfiguratorFactory factory;
   
@@ -93,12 +48,12 @@ public class NewProjectData extends ErlangProjectProperties {
       Objects.ToStringHelper _stringHelper = Objects.toStringHelper(this);
       final Procedure1<Objects.ToStringHelper> _function = new Procedure1<Objects.ToStringHelper>() {
         public void apply(final Objects.ToStringHelper it) {
-          it.add("name", NewProjectData.this._name);
-          it.add("location", NewProjectData.this._location);
-          it.add("existingProject", NewProjectData.this._existingProject);
-          it.add("configType", NewProjectData.this._configType);
-          it.add("builder", NewProjectData.this._builder);
-          it.add("builderData", NewProjectData.this._builderData);
+          it.add("name", NewProjectData.this.name);
+          it.add("location", NewProjectData.this.location);
+          it.add("existingProject", NewProjectData.this.existingProject);
+          it.add("configType", NewProjectData.this.configType);
+          it.add("builder", NewProjectData.this.builder);
+          it.add("builderData", NewProjectData.this.builderData);
           String _string = NewProjectData.super.toString();
           it.add("super", _string);
         }
@@ -143,14 +98,12 @@ public class NewProjectData extends ErlangProjectProperties {
     {
       InputOutput.<String>println("» DETECT builder config");
       String _xifexpression = null;
-      IPath _location = this.getLocation();
-      boolean _tripleNotEquals = (_location != null);
+      boolean _tripleNotEquals = (this.location != null);
       if (_tripleNotEquals) {
         String _xblockexpression_1 = null;
         {
           InputOutput.<String>println("DETECT builder config");
-          IPath _location_1 = this.getLocation();
-          String _portableString = _location_1.toPortableString();
+          String _portableString = this.location.toPortableString();
           final File directory = new File(_portableString);
           String _xifexpression_1 = null;
           boolean _and = false;
@@ -164,8 +117,7 @@ public class NewProjectData extends ErlangProjectProperties {
           if (_and) {
             String _xblockexpression_2 = null;
             {
-              ProjectConfigType _configType = this.getConfigType();
-              final IProjectConfigurator persister = this.factory.getConfig(_configType, directory);
+              final IProjectConfigurator persister = this.factory.getConfig(this.configType, directory);
               InputOutput.<String>println(("PERSISTER " + persister));
               String _xifexpression_2 = null;
               boolean _tripleNotEquals_1 = (persister != null);
@@ -193,5 +145,64 @@ public class NewProjectData extends ErlangProjectProperties {
   public RuntimeInfo bestRuntime() {
     IRuntimeInfoCatalog _runtimeInfoCatalog = RuntimeCore.getRuntimeInfoCatalog();
     return _runtimeInfoCatalog.getRuntime(ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION, null);
+  }
+  
+  @Pure
+  public String getName() {
+    return this.name;
+  }
+  
+  public void setName(final String name) {
+    this.name = name;
+  }
+  
+  @Pure
+  public IPath getLocation() {
+    return this.location;
+  }
+  
+  public void setLocation(final IPath location) {
+    this.location = location;
+  }
+  
+  @Pure
+  public boolean isExistingProject() {
+    return this.existingProject;
+  }
+  
+  public void setExistingProject(final boolean existingProject) {
+    this.existingProject = existingProject;
+  }
+  
+  @Pure
+  public BuilderTool getBuilder() {
+    return this.builder;
+  }
+  
+  public void setBuilder(final BuilderTool builder) {
+    this.builder = builder;
+  }
+  
+  @Pure
+  public ProjectConfigType getConfigType() {
+    return this.configType;
+  }
+  
+  public void setConfigType(final ProjectConfigType configType) {
+    this.configType = configType;
+  }
+  
+  @Pure
+  public Map<String, String> getBuilderData() {
+    return this.builderData;
+  }
+  
+  public void setBuilderData(final Map<String, String> builderData) {
+    this.builderData = builderData;
+  }
+  
+  @Pure
+  public IProjectConfiguratorFactory getFactory() {
+    return this.factory;
   }
 }

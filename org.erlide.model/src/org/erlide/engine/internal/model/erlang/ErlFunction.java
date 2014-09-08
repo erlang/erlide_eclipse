@@ -16,9 +16,9 @@ import java.util.List;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.ErlangFunction;
+import org.erlide.engine.model.erlang.IErlComment;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlFunctionClause;
-import org.erlide.engine.model.erlang.IErlMember;
 import org.erlide.engine.model.erlang.IErlTypespec;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
@@ -32,14 +32,13 @@ import com.google.common.collect.Lists;
  */
 public class ErlFunction extends ErlMember implements IErlFunction {
 
-    private static final Collection<IErlMember> NO_COMMENTS = Lists
-            .newArrayList();
+    private static final Collection<IErlComment> NO_COMMENTS = Lists.newArrayList();
 
     private final boolean fExported;
     private int arity;
     private final String head;
     private final List<String> parameters;
-    private Collection<IErlMember> fComments = NO_COMMENTS;
+    private Collection<IErlComment> fComments = NO_COMMENTS;
     private IErlTypespec typespec;
 
     /**
@@ -49,9 +48,8 @@ public class ErlFunction extends ErlMember implements IErlFunction {
      * @param head
      * @param comment
      */
-    public ErlFunction(final IParent parent, final String name,
-            final int arity, final String head, final boolean exported,
-            final OtpErlangList parameters) {
+    public ErlFunction(final IParent parent, final String name, final int arity,
+            final String head, final boolean exported, final OtpErlangList parameters) {
         super(parent, name);
         this.arity = arity;
         this.head = head;
@@ -85,8 +83,8 @@ public class ErlFunction extends ErlMember implements IErlFunction {
     @Override
     public boolean isExported() {
         return fExported
-                || ErlangEngine.getInstance().getModelUtilService()
-                        .getModule(this).exportsAllFunctions();
+                || ErlangEngine.getInstance().getModelUtilService().getModule(this)
+                        .exportsAllFunctions();
     }
 
     public void setArity(final int i) {
@@ -156,7 +154,7 @@ public class ErlFunction extends ErlMember implements IErlFunction {
     }
 
     @Override
-    public Collection<IErlMember> getComments() {
+    public Collection<IErlComment> getComments() {
         return fComments;
     }
 
@@ -171,7 +169,7 @@ public class ErlFunction extends ErlMember implements IErlFunction {
     }
 
     @Override
-    public void setComments(final Collection<IErlMember> comments) {
+    public void setComments(final Collection<IErlComment> comments) {
         fComments = comments;
     }
 
@@ -183,8 +181,7 @@ public class ErlFunction extends ErlMember implements IErlFunction {
     }
 
     private boolean isValidSpec(final IErlTypespec spec) {
-        return spec.getName().equals(getName())
-                && spec.getArity() == getArity();
+        return spec.getName().equals(getName()) && spec.getArity() == getArity();
     }
 
     @Override

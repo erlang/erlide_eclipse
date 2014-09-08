@@ -8,15 +8,15 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Dialog window for saving configurations.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class ConfigurationSaveAsDialog extends InputDialog {
 
     /**
      * Creates dialog window (@see InputDialog).
-     * 
+     *
      * @param parentShell
      * @param dialogTitle
      * @param dialogMessage

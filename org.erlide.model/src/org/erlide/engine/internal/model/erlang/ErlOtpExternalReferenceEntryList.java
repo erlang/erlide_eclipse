@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.root.Openable;
-import org.erlide.engine.internal.util.BackendUtil;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IParent;
 import org.erlide.engine.model.erlang.IErlModule;
@@ -17,6 +16,7 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenService;
+import org.erlide.engine.util.RpcSiteFactory;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.util.erlang.ErlUtils;
 
@@ -29,8 +29,7 @@ import com.google.common.base.Charsets;
 public class ErlOtpExternalReferenceEntryList extends Openable implements
         IErlExternalRoot {
 
-    public ErlOtpExternalReferenceEntryList(final IParent parent,
-            final String name) {
+    public ErlOtpExternalReferenceEntryList(final IParent parent, final String name) {
         super(parent, name);
     }
 
@@ -40,20 +39,17 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     }
 
     @Override
-    public boolean buildStructure(final IProgressMonitor pm)
-            throws ErlModelException {
-        final IErlProject erlProject = ErlangEngine.getInstance()
-                .getModelUtilService().getProject(this);
-        final IRpcSite backend = new BackendUtil().getBackend(erlProject
-                .getWorkspaceProject());
+    public boolean buildStructure(final IProgressMonitor pm) throws ErlModelException {
+        final IErlProject erlProject = ErlangEngine.getInstance().getModelUtilService()
+                .getProject(this);
+        final IRpcSite backend = RpcSiteFactory.getRpcSiteForProject(erlProject);
         if (backend != null) {
             addExternalEntries(pm, backend);
         }
         return true;
     }
 
-    private void addExternalEntries(final IProgressMonitor pm,
-            final IRpcSite backend) {
+    private void addExternalEntries(final IProgressMonitor pm, final IRpcSite backend) {
         final OtpErlangList structure = ErlangEngine.getInstance()
                 .getService(OpenService.class).getOtpLibStructure(backend);
         mkOtpStructureMap(structure);
@@ -95,26 +91,23 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
             final OtpErlangList dirs = (OtpErlangList) t.elementAt(1);
             final String group = ErlUtils.asString(t.elementAt(2));
 
-            final ErlExternalReferenceEntry extLib = new ErlExternalReferenceEntry(
-                    this, getLibName(lib), lib, true, false);
+            final ErlExternalReferenceEntry extLib = new ErlExternalReferenceEntry(this,
+                    getLibName(lib), lib, true, false);
             extLib.setGroup(group);
             addChild(extLib);
 
             for (final OtpErlangObject dir : dirs.elements()) {
                 final OtpErlangTuple tdir = (OtpErlangTuple) dir;
-                final String dname = ((OtpErlangString) tdir.elementAt(0))
-                        .stringValue();
+                final String dname = ((OtpErlangString) tdir.elementAt(0)).stringValue();
                 final OtpErlangList files = (OtpErlangList) tdir.elementAt(1);
 
                 final ErlExternalReferenceEntry subdir = new ErlExternalReferenceEntry(
-                        extLib, getLibName(dname), dname, true,
-                        includePath(dname));
+                        extLib, getLibName(dname), dname, true, includePath(dname));
                 extLib.addChild(subdir);
 
                 for (final OtpErlangObject fn : files.elements()) {
                     final String sfn = ((OtpErlangString) fn).stringValue();
-                    final IErlModule ext = new ErlModule(subdir,
-                            getModuleName(sfn), sfn,
+                    final IErlModule ext = new ErlModule(subdir, getModuleName(sfn), sfn,
                             Charsets.ISO_8859_1.toString(), null);
                     subdir.addChild(ext);
                 }

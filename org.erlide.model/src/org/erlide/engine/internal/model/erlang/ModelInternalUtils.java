@@ -77,9 +77,8 @@ public class ModelInternalUtils implements ModelUtilService {
 
     private IErlExternal getElementWithExternalName(final IParent parent,
             final String segment) throws ErlModelException {
-        for (final IErlElement i : parent.getChildrenOfKind(
-                ErlElementKind.EXTERNAL_ROOT, ErlElementKind.EXTERNAL_APP,
-                ErlElementKind.EXTERNAL_FOLDER)) {
+        for (final IErlElement i : parent.getChildrenOfKind(ErlElementKind.EXTERNAL_ROOT,
+                ErlElementKind.EXTERNAL_APP, ErlElementKind.EXTERNAL_FOLDER)) {
             final IErlExternal external = (IErlExternal) i;
             final String externalName = external.getName();
             if (externalName.equals(segment)) {
@@ -92,8 +91,8 @@ public class ModelInternalUtils implements ModelUtilService {
     @Override
     public IErlModule getModuleFromExternalModulePath(final IErlModel model,
             final String modulePath) throws ErlModelException {
-        final List<String> path = Lists.newArrayList(Splitter.on(DELIMITER)
-                .split(modulePath));
+        final List<String> path = Lists.newArrayList(Splitter.on(DELIMITER).split(
+                modulePath));
         model.open(null);
         final IErlElement childNamed = model.getChildNamed(path.get(0));
         if (childNamed instanceof IParent) {
@@ -127,23 +126,20 @@ public class ModelInternalUtils implements ModelUtilService {
             final IErlProject project, final boolean checkExternals,
             final boolean includes) throws ErlModelException {
         final List<String> result = Lists.newArrayList();
-        final Collection<IErlModule> units = getUnits(project, checkExternals,
-                includes);
+        final Collection<IErlModule> units = getUnits(project, checkExternals, includes);
         addUnitNamesWithPrefix(prefix, result, units, false, includes);
         if (project != null) {
             for (final IErlProject p : project.getReferencedProjects()) {
                 if (p != null) {
                     p.open(null);
                     addUnitNamesWithPrefix(prefix, result,
-                            getUnits(p, checkExternals, includes), false,
-                            includes);
+                            getUnits(p, checkExternals, includes), false, includes);
                 }
             }
             if (checkExternals) {
                 final Collection<IErlModule> externalUnits = includes ? project
                         .getExternalIncludes() : project.getExternalModules();
-                addUnitNamesWithPrefix(prefix, result, externalUnits, true,
-                        includes);
+                addUnitNamesWithPrefix(prefix, result, externalUnits, true, includes);
             }
         }
         return result;
@@ -176,30 +172,25 @@ public class ModelInternalUtils implements ModelUtilService {
                 imports.size());
         for (final IErlImport i : imports) {
             final Collection<ErlangFunction> functions = i.getFunctions();
-            final OtpErlangObject funsT[] = new OtpErlangObject[functions
-                    .size()];
+            final OtpErlangObject funsT[] = new OtpErlangObject[functions.size()];
             int j = 0;
             for (final ErlangFunction f : functions) {
                 funsT[j] = f.getNameArityTuple();
                 j++;
             }
-            final OtpErlangTuple modFunsT = new OtpErlangTuple(
-                    new OtpErlangObject[] {
-                            new OtpErlangAtom(i.getImportModule()),
-                            new OtpErlangList(funsT) });
+            final OtpErlangTuple modFunsT = new OtpErlangTuple(new OtpErlangObject[] {
+                    new OtpErlangAtom(i.getImportModule()), new OtpErlangList(funsT) });
             result.add(modFunsT);
         }
         return result;
     }
 
     @Override
-    public List<IErlPreprocessorDef> getAllPreprocessorDefs(
-            final IErlModule module, final ErlElementKind kind)
-            throws CoreException {
+    public List<IErlPreprocessorDef> getAllPreprocessorDefs(final IErlModule module,
+            final ErlElementKind kind) throws CoreException {
         final List<IErlPreprocessorDef> result = Lists.newArrayList();
-        final List<IErlModule> modulesWithIncludes = Lists
-                .newArrayList(ErlangEngine.getInstance()
-                        .getModelSearcherService().findAllIncludedFiles(module));
+        final List<IErlModule> modulesWithIncludes = Lists.newArrayList(ErlangEngine
+                .getInstance().getModelSearcherService().findAllIncludedFiles(module));
         modulesWithIncludes.add(module);
         for (final IErlModule m : modulesWithIncludes) {
             result.addAll(m.getPreprocessorDefs(kind));
@@ -210,12 +201,11 @@ public class ModelInternalUtils implements ModelUtilService {
     public static final List<OtpErlangObject> NO_IMPORTS = new ArrayList<OtpErlangObject>(
             0);
 
-    private void addUnitNamesWithPrefix(final String prefix,
-            final List<String> result, final Collection<IErlModule> modules,
-            final boolean external, final boolean includes) {
+    private void addUnitNamesWithPrefix(final String prefix, final List<String> result,
+            final Collection<IErlModule> modules, final boolean external,
+            final boolean includes) {
         for (final IErlModule module : modules) {
-            String moduleName = includes ? module.getName() : module
-                    .getModuleName();
+            String moduleName = includes ? module.getName() : module.getModuleName();
             if (external && includes) {
                 moduleName = getIncludeLibPath(module);
             }
@@ -225,8 +215,7 @@ public class ModelInternalUtils implements ModelUtilService {
             }
             if (nameMatches && (includes || !module.getName().endsWith(".hrl"))) {
                 if (!result.contains(moduleName)) {
-                    final String name = new OtpErlangAtom(moduleName)
-                            .toString();
+                    final String name = new OtpErlangAtom(moduleName).toString();
                     result.add(name);
                 }
             }
@@ -280,8 +269,7 @@ public class ModelInternalUtils implements ModelUtilService {
         if (element == null) {
             return null;
         }
-        final IErlElement ancestor = element
-                .getAncestorOfKind(ErlElementKind.PROJECT);
+        final IErlElement ancestor = element.getAncestorOfKind(ErlElementKind.PROJECT);
         if (ancestor instanceof IErlProject) {
             return (IErlProject) ancestor;
         }
@@ -346,8 +334,7 @@ public class ModelInternalUtils implements ModelUtilService {
 
         try {
             final OtpErlangObject info = backend.call("erlide_backend",
-                    "get_module_info", "s", beam.getLocation()
-                            .toPortableString());
+                    "get_module_info", "s", beam.getLocation().toPortableString());
             return (String) TypeConverter.erlang2java(info, String.class);
         } catch (final Exception e) {
             ErlLogger.warn(e);

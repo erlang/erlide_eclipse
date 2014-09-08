@@ -282,7 +282,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 
     /**
      * Action performed when user double-clicks on tree element.
-     * 
+     *
      * @param event
      */
     private void doDoubleClick(final DoubleClickEvent event) {

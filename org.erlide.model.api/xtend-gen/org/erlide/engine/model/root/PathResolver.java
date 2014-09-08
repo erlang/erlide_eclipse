@@ -1,9 +1,11 @@
 package org.erlide.engine.model.root;
 
 import com.google.common.collect.Lists;
+import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -18,7 +20,9 @@ public class PathResolver {
     final List<IPath> result = Lists.<IPath>newArrayListWithCapacity(_size);
     for (final IPath path : paths) {
       {
-        final IPath resolvedPath = pathVariableManager.resolvePath(path);
+        URI _uRI = URIUtil.toURI(path);
+        URI _resolveURI = pathVariableManager.resolveURI(_uRI);
+        final IPath resolvedPath = URIUtil.toPath(_resolveURI);
         result.add(resolvedPath);
       }
     }
@@ -28,6 +32,8 @@ public class PathResolver {
   public IPath resolvePath(final IPath path) {
     IWorkspace _workspace = ResourcesPlugin.getWorkspace();
     final IPathVariableManager pathVariableManager = _workspace.getPathVariableManager();
-    return pathVariableManager.resolvePath(path);
+    URI _uRI = URIUtil.toURI(path);
+    URI _resolveURI = pathVariableManager.resolveURI(_uRI);
+    return URIUtil.toPath(_resolveURI);
   }
 }

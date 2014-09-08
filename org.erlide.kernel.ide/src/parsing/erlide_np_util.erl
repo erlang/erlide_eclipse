@@ -74,8 +74,8 @@ extract_comments([#token{kind=comment, offset=ONext, length=LNext, line=NNext,
                          text=VNext}
                             | Rest], NNext, TAcc,
                  [#token{kind=comment, offset=O, text=V}=C | CAcc]) ->
-    NewComment = C#token{offset=O, length=ONext-O+LNext, text = <<V/binary,<<"\n">>/binary,VNext/binary>>,
-                         last_line=NNext},
+    NewComment = C#token{offset=O, length=ONext-O+LNext, text = <<V/binary,$\n,VNext/binary>>,
+                         last_line=NNext-1},
     extract_comments(Rest, NNext+1, TAcc, [NewComment | CAcc]);
 extract_comments([C = #token{kind=comment, line=N} | Rest], _, TAcc, CAcc) ->
     extract_comments(Rest, N+1, TAcc, [C | CAcc]);

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Class is for controlling costum behaviour of a Wrangler refactoring
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -24,7 +24,7 @@ public abstract class RefactoringWorkflowController {
 
     /**
      * Constructor
-     * 
+     *
      * @param shell
      *            shell
      */
@@ -46,7 +46,7 @@ public abstract class RefactoringWorkflowController {
 
     /**
      * Ask a question from the user in an input dialog.
-     * 
+     *
      * @param title
      *            dialog title
      * @param message

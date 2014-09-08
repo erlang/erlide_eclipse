@@ -39,8 +39,7 @@ public class ErlideImport implements ImportService {
             final List<String> importSources) {
         OtpErlangObject res = null;
         try {
-            res = backend.call("erlide_import", "import", "sls", prefix,
-                    importSources);
+            res = backend.call("erlide_import", "import", "sls", prefix, importSources);
             return new ErlProjectImport(res);
         } catch (final RpcException e) {
             ErlLogger.warn(e);

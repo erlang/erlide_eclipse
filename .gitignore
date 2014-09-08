@@ -1,6 +1,14 @@
-.vagrant
+.eunit
+deps
+*.o
 *.beam
+*.plt
+erl_crash.dump
+
+.vagrant
 *.class
+hs_err_pid*
+
 workspaces
 **/bin/
 **/ebin/*.app
@@ -24,16 +32,16 @@ ttb_last_config
 .recommenders
 *._trace
 .sonar
+
 Rerun\ *.launch
-.eunit
-deps
-*.o
-*.beam
-*.plt
-erl_crash.dump
 org.erlide.ui.tests/projects/Erlide_tests (1).launch
+
 buildroot/
 coverage.data
 coverage.info
 coverage.xml
 junit.xml
+
+.rebar
+.eunit
+

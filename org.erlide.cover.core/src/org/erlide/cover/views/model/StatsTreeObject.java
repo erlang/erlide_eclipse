@@ -13,7 +13,7 @@ import java.util.Map;
  * It can wrap existing objects in adapters or simply return objects as-is.
  * These objects may be sensitive to the current input of the view, or ignore it
  * and always show the same content (like Task List, for example).
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  */
 public class StatsTreeObject implements ICoverageObject {

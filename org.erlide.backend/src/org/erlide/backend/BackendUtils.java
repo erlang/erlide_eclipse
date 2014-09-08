@@ -9,13 +9,15 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.erlide.backend.internal.BackendPlugin;
+import org.erlide.backend.internal.BackendActivator;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class BackendUtils {
@@ -55,29 +57,38 @@ public class BackendUtils {
 
     public static IConfigurationElement[] getSourcepathConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(BackendPlugin.PLUGIN_ID,
+        return reg.getConfigurationElementsFor(BackendActivator.PLUGIN_ID,
                 "sourcePathProvider");
     }
 
     public static IConfigurationElement[] getCodepathConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(BackendPlugin.PLUGIN_ID, "codepath");
+        return reg.getConfigurationElementsFor(BackendActivator.PLUGIN_ID, "codepath");
     }
 
     public static IExtensionPoint getCodepathExtension() {
         final IExtensionRegistry reg = Platform.getExtensionRegistry();
-        return reg.getExtensionPoint(BackendPlugin.PLUGIN_ID, "codepath");
+        return reg.getExtensionPoint(BackendActivator.PLUGIN_ID, "codepath");
     }
 
-    @SuppressWarnings("boxing")
-    public static OtpErlangObject call(final IRpcSite b, final String module,
-            final String fun, final int offset, final int length, final String text) {
+    public static boolean isAccessibleDir(final IRpcSite backend, final String localDir) {
         try {
-            final OtpErlangObject r1 = b.call(module, fun, "sii", text, offset, length);
-            return r1;
+            final OtpErlangObject r = backend.call("file", "read_file_info", "s",
+                    localDir);
+            if (Util.isOk(r)) {
+                final OtpErlangTuple result = (OtpErlangTuple) r;
+                final OtpErlangTuple info = (OtpErlangTuple) result.elementAt(1);
+                final String access = info.elementAt(3).toString();
+                final int mode = ((OtpErlangLong) info.elementAt(7)).intValue();
+                return ("read".equals(access) || "read_write".equals(access))
+                        && (mode & 4) == 4;
+            }
+        } catch (final OtpErlangRangeException e) {
+            ErlLogger.error(e);
         } catch (final RpcException e) {
-            return new OtpErlangString("");
+            ErlLogger.error(e);
         }
+        return false;
     }
 
 }

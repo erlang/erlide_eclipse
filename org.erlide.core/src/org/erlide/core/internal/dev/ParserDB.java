@@ -12,6 +12,7 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.SourcePathProvider;
+import org.erlide.engine.model.SourcePathUtils;
 import org.erlide.engine.model.erlang.IErlAttribute;
 import org.erlide.engine.model.erlang.IErlFunction;
 import org.erlide.engine.model.erlang.IErlImportExport;
@@ -20,7 +21,6 @@ import org.erlide.engine.model.erlang.IErlPreprocessorDef;
 import org.erlide.engine.model.erlang.IErlTypespec;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.engine.util.SourcePathUtils;
 import org.erlide.util.ErlLogger;
 
 import com.google.common.collect.Lists;

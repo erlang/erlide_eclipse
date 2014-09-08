@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -29,9 +29,9 @@ import com.ericsson.otp.erlang.OtpErlangFloat;
 /**
  * Parses the result of an rpc between Wrangler and erlide, which about finding
  * similar expressions.
- * 
+ *
  * @author György Orosz
- * 
+ *
  */
 public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
 
@@ -40,7 +40,7 @@ public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
 
     @Override
     protected IResultParser callRefactoring() throws WranglerRpcParsingException,
-            CoreException, IOException, WranglerWarningException {
+    CoreException, IOException, WranglerWarningException {
 
         final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
                 .getWranglerSelection();
@@ -55,9 +55,9 @@ public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
         }
         result = backend.callWithoutParser(WranglerRefactoringBackend.UNLIMITED_TIMEOUT,
                 functionName, "sxxxxi", sel.getFilePath(), sel.getSelectionRange()
-                        .getStartPos(), sel.getSelectionRange().getEndPos(),
+                .getStartPos(), sel.getSelectionRange().getEndPos(),
                 new OtpErlangFloat(simScore), sel.getSearchPath(), GlobalParameters
-                        .getTabWidth());
+                .getTabWidth());
 
         if (result.isOk()) {
             return new SimilarExpressionSearchParser(result.getValue());

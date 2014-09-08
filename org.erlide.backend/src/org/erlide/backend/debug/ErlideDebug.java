@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.api.IBackend;
-import org.erlide.backend.internal.BackendPlugin;
+import org.erlide.backend.internal.BackendActivator;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
@@ -53,7 +53,7 @@ public class ErlideDebug {
         if (res instanceof OtpErlangTuple) {
             final OtpErlangTuple t = (OtpErlangTuple) res;
             final OtpErlangObject o = t.elementAt(1);
-            final IStatus s = new Status(IStatus.ERROR, BackendPlugin.PLUGIN_ID,
+            final IStatus s = new Status(IStatus.ERROR, BackendActivator.PLUGIN_ID,
                     DebugException.REQUEST_FAILED, o.toString(), null);
             throw new DebugException(s);
         }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -15,7 +15,7 @@ import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 
 /**
  * Abstract wizard which should be used for integrating wrangler refactoringss
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -23,7 +23,7 @@ public abstract class AbstractWranglerRefactoringWizard extends RefactoringWizar
 
     /**
      * Default constructor
-     * 
+     *
      * @param refactoring
      *            refactoring
      * @param flags

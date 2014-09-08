@@ -83,16 +83,17 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
       if (!_matched) {
         if (Objects.equal(_atom, "i")) {
           _matched=true;
-          Collection<IPath> _includeDirs = result.getIncludeDirs();
-          final List<IPath> incs = CollectionLiterals.<IPath>newArrayList(((IPath[])Conversions.unwrapArray(_includeDirs, IPath.class)));
           String _string = b.getString("Arg");
           final Path inc = new Path(_string);
-          boolean _contains = incs.contains(inc);
+          Collection<IPath> _includeDirs = result.getIncludeDirs();
+          boolean _contains = _includeDirs.contains(inc);
           boolean _not = (!_contains);
           if (_not) {
+            Collection<IPath> _includeDirs_1 = result.getIncludeDirs();
+            final List<IPath> incs = CollectionLiterals.<IPath>newArrayList(((IPath[])Conversions.unwrapArray(_includeDirs_1, IPath.class)));
             incs.add(inc);
+            result.setIncludeDirs(incs);
           }
-          result.setIncludeDirs(incs);
         }
       }
       if (!_matched) {

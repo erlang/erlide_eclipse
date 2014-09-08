@@ -6,9 +6,9 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 
 /**
  * Trace pattern.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class TracePattern implements Serializable {
 
@@ -31,7 +31,7 @@ public class TracePattern implements Serializable {
     /**
      * Creates trace pattern object. If specified match spec is set to "x"
      * (shortcut for match spec that matches exceptions and return values).
-     * 
+     *
      * @param setXMatchSpec
      *            if match spec should be set to "x"
      */
@@ -100,7 +100,7 @@ public class TracePattern implements Serializable {
     /**
      * Sets arity. If given value is less than 0 it means that arity should not
      * be specified while setting trace pattern (<code>ttb:tp</code> function).
-     * 
+     *
      * @param arity
      *            arity value
      */

@@ -74,10 +74,10 @@ public class OtpPeer extends AbstractNode {
     // package
     /*
      * Get the port number used by the remote node.
-     * 
+     *
      * @return the port number used by the remote node, or 0 if the node was not
      * registered with the port mapper.
-     * 
+     *
      * @exception java.io.IOException if the port mapper could not be contacted.
      */
     int port() throws IOException {

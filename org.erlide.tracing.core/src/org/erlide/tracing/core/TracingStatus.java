@@ -3,9 +3,9 @@ package org.erlide.tracing.core;
 /**
  * Elements of this enum describe possible results of starting/stopping tracing
  * and loading traces from disk.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public enum TracingStatus {
 

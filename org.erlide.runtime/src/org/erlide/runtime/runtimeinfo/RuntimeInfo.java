@@ -18,20 +18,23 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 public final class RuntimeInfo {
 
     private final String name;
-    private final String homeDir;
+    private final String otpHomeDir;
     private final String args;
     private final Collection<String> codePath;
+    private final boolean valid;
 
-    private RuntimeVersion version_cached = null;
+    private RuntimeVersion version = null;
 
     public static final RuntimeInfo NO_RUNTIME_INFO = new RuntimeInfo("");
 
@@ -85,16 +88,21 @@ public final class RuntimeInfo {
         this(name, ".", "", new ArrayList<String>());
     }
 
-    public RuntimeInfo(final String name, final String homeDir, final String args,
+    public RuntimeInfo(final String name, final String otpHomeDir, final String args,
             final Collection<String> codePath) {
+        Preconditions.checkArgument(name != null);
+        Preconditions.checkArgument(otpHomeDir != null);
+        Preconditions.checkArgument(args != null);
+        Preconditions.checkArgument(codePath != null);
         this.name = name;
-        this.homeDir = homeDir;
+        this.otpHomeDir = otpHomeDir;
         this.args = args;
-        this.codePath = Collections.unmodifiableCollection(codePath);
+        this.codePath = ImmutableList.copyOf(codePath);
+        valid = isValidOtpHome(otpHomeDir);
     }
 
     public RuntimeInfo(@NonNull final RuntimeInfo o) {
-        this(o.name, o.homeDir, o.args, o.codePath);
+        this(o.name, o.otpHomeDir, o.args, o.codePath);
     }
 
     public String getArgs() {
@@ -108,7 +116,7 @@ public final class RuntimeInfo {
     }
 
     public String getOtpHome() {
-        return homeDir;
+        return otpHomeDir;
     }
 
     public String getName() {
@@ -117,6 +125,25 @@ public final class RuntimeInfo {
 
     public Collection<String> getCodePath() {
         return codePath;
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (!(other instanceof RuntimeInfo)) {
+            return false;
+        }
+        final RuntimeInfo other1 = (RuntimeInfo) other;
+        return Objects.equal(otpHomeDir + "|" + args + "|" + codePath.toString(),
+                other1.otpHomeDir + "|" + other1.args + "|" + other1.codePath.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(otpHomeDir, args, codePath);
+    }
+
+    public boolean isValid() {
+        return valid;
     }
 
     public static boolean validateLocation(final String path) {
@@ -182,10 +209,10 @@ public final class RuntimeInfo {
     }
 
     public RuntimeVersion getVersion() {
-        if (version_cached == null) {
-            version_cached = getVersion(homeDir);
+        if (version == null) {
+            version = getVersion(otpHomeDir);
         }
-        return version_cached;
+        return version;
     }
 
     public static RuntimeVersion getVersion(final String homeDir) {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Abstract class for creating input dialogs outside from a Wizard.
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -37,7 +37,7 @@ public abstract class AbstractInputDialog extends Dialog {
 
     /**
      * Constructor
-     * 
+     *
      * @param parentShell
      *            shell
      * @param title
@@ -52,7 +52,7 @@ public abstract class AbstractInputDialog extends Dialog {
 
     /**
      * Returns true if the dialog is finsihed normally
-     * 
+     *
      * @return false if closed unexpectedly
      */
     public boolean isFinished() {
@@ -61,7 +61,7 @@ public abstract class AbstractInputDialog extends Dialog {
 
     /**
      * Set error message on the dialog
-     * 
+     *
      * @param errorMessage
      *            error message
      */

@@ -43,10 +43,11 @@ import org.erlide.runtime.runtimeinfo.RuntimeVersion;
  * that are defined by the classpath and contained in this project (in other
  * words, it does not include package fragment roots for other projects). </p>
  * <p>
- * @noimplement This interface is not intended to be implemented by clients. An instance of
- * one of these handles can be created via
- * <code>ErlangCore.create(project)</code>.
- * </p>
+ *
+ * @noimplement This interface is not intended to be implemented by clients. An
+ *              instance of one of these handles can be created via
+ *              <code>ErlangCore.create(project)</code>.
+ *              </p>
  *
  * @see ErlangCore#createRoot(org.eclipse.core.resources.IProject)
  */

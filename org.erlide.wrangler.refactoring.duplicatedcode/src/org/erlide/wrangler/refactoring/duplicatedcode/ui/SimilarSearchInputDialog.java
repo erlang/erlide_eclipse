@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -27,9 +27,9 @@ import org.erlide.wrangler.refactoring.ui.AbstractInputDialog;
 
 /**
  * Input dialog for getting input for Similar expression search refactoring
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class SimilarSearchInputDialog extends AbstractInputDialog {
 
@@ -40,7 +40,7 @@ public class SimilarSearchInputDialog extends AbstractInputDialog {
 
     /**
      * Constructor
-     * 
+     *
      * @param parentShell
      *            SWT shell
      * @param title
@@ -127,7 +127,7 @@ public class SimilarSearchInputDialog extends AbstractInputDialog {
 
     /**
      * Gets the user typed similarity score value
-     * 
+     *
      * @return similarity score value
      */
     public double getSimScore() {
@@ -137,7 +137,7 @@ public class SimilarSearchInputDialog extends AbstractInputDialog {
     /**
      * Returns the value of the checkbox 'run refactoring in only current
      * module'
-     * 
+     *
      * @return true if the refactoring should run only in the current module
      */
     public boolean onlyinFile() {

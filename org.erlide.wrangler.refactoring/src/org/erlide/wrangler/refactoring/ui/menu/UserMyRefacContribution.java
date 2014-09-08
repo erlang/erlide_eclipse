@@ -13,7 +13,7 @@ import org.erlide.wrangler.refactoring.backend.UserRefactoringsManager;
 
 /**
  * Menu contribution for generating menu items for user's own refactorings
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */

@@ -15,8 +15,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import org.erlide.util.ErlLogger;
 
@@ -29,38 +27,18 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.base.Strings;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 public class TermParser {
 
-    public static TermParser getParser() {
-        return new TermParser();
-    }
-
-    private final LoadingCache<String, OtpErlangObject> cache;
-
-    private TermParser() {
-        cache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.HOURS)
-                .maximumSize(250).build(new CacheLoader<String, OtpErlangObject>() {
-                    @Override
-                    public OtpErlangObject load(final String key)
-                            throws TermParserException {
-                        return parse(scan(key));
-                    }
-                });
-    }
-
     public OtpErlangObject parse(final String s) throws TermParserException {
+        return doParse(s);
+    }
+
+    protected static OtpErlangObject doParse(final String s) throws TermParserException {
         if (Strings.isNullOrEmpty(s)) {
             return null;
         }
-        try {
-            return cache.get(s);
-        } catch (final ExecutionException e) {
-            throw (TermParserException) e.getCause();
-        }
+        return parse(scan(s));
     }
 
     private static OtpErlangObject parse(final List<Token> tokens)
@@ -70,21 +48,25 @@ public class TermParser {
         }
         OtpErlangObject result = null;
         final Token t = tokens.remove(0);
+        final String text = t.text;
+        if (text == null) {
+            throw new TermParserException("null token" + t.toString());
+        }
         switch (t.kind) {
         case ATOM:
-            result = new OtpErlangAtom(t.text);
+            result = new OtpErlangAtom(text);
             break;
         case VARIABLE:
-            result = new OtpPatternVariable(t.text);
+            result = new OtpPatternVariable(text);
             break;
         case STRING:
-            result = new OtpErlangString(t.text);
+            result = new OtpErlangString(text);
             break;
         case INTEGER:
-            result = new OtpErlangLong(Long.parseLong(t.text));
+            result = new OtpErlangLong(Long.parseLong(text));
             break;
         case PLACEHOLDER:
-            result = new OtpFormatPlaceholder(t.text);
+            result = new OtpFormatPlaceholder(text);
             break;
         case TUPLESTART:
             result = parseTuple(tokens, new Stack<OtpErlangObject>());
@@ -229,7 +211,7 @@ public class TermParser {
                 scanString(s, result);
             } else if (c >= 'A' && c <= 'Z' || c == '_') {
                 scanVariable(s, result);
-            } else if (c <= '9' && c >= '0') {
+            } else if (c <= '9' && c >= '0' || c == '-') {
                 scanInteger(s, result);
             } else if (c == '~') {
                 scanPlaceholder(s, result);
@@ -289,7 +271,7 @@ public class TermParser {
             char c;
             c = s.charAt(result.end);
             result.kind = TokenKind.INTEGER;
-            while (result.end < s.length() && c >= '0' && c <= '9') {
+            while (result.end < s.length() && (c >= '0' && c <= '9' || c == '-')) {
                 c = s.charAt(result.end++);
             }
             result.end--;

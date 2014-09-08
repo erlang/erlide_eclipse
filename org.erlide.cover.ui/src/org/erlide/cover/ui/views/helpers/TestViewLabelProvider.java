@@ -10,9 +10,9 @@ import org.erlide.cover.views.model.TestTreeObject;
 
 /**
  * Label provider for EUnit test view
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class TestViewLabelProvider extends LabelProvider {
 

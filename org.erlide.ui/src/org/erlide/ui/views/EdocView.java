@@ -372,7 +372,7 @@ public class EdocView extends AbstractInfoView {
     /*
      * @see
      * org.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#getHelpContextId()
-     * 
+     *
      * @since 3.1
      */
     @Override

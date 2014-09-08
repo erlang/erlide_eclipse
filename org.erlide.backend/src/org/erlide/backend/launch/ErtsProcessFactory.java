@@ -11,9 +11,11 @@ public class ErtsProcessFactory implements IProcessFactory {
 
     @Override
     public IProcess newProcess(final ILaunch launch, final Process process,
-            final String label, final Map attributes) {
-        final String nodeName = (String) attributes.get("NodeName");
-        final String workingDir = (String) attributes.get("WorkingDir");
+            final String label, @SuppressWarnings("rawtypes") final Map attributes0) {
+        @SuppressWarnings("unchecked")
+        final Map<String, String> attributes = attributes0;
+        final String nodeName = attributes.get("NodeName");
+        final String workingDir = attributes.get("WorkingDir");
         return new ErtsProcess(launch, process, nodeName, workingDir);
     }
 

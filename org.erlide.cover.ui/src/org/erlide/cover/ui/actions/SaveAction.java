@@ -20,9 +20,9 @@ import org.erlide.util.ErlLogger;
 
 /**
  * An action for saving coverage results
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class SaveAction extends Action {
 

@@ -6,9 +6,9 @@ import org.eclipse.core.runtime.Status;
 
 /**
  * Log class
- * 
+ *
  * @author Krzysztof Goj
- * 
+ *
  */
 public class LogUtils {
 

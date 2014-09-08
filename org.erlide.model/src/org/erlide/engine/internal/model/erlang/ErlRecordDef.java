@@ -20,8 +20,7 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
      * @param imports
      * @param module
      */
-    public ErlRecordDef(final IParent parent, final String name,
-            final String extra) {
+    public ErlRecordDef(final IParent parent, final String name, final String extra) {
         super(parent, "record_definition");
         record = name != null ? name : uptoEndOfToken(extra);
         this.extra = extra;

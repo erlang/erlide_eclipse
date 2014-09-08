@@ -15,8 +15,8 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.engine.internal.model.root.ProjectConfiguratorFactory;
 import org.erlide.engine.model.erlang.ErlangProjectPropertiesMatcher;
 import org.erlide.engine.model.root.ErlangProjectProperties;
-import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.IProjectConfigurator;
+import org.erlide.engine.model.root.ProjectConfigType;
 import org.junit.Test;
 
 public class EmakeProjectConfigurationTests extends AbstractProjectConfigurationTests {

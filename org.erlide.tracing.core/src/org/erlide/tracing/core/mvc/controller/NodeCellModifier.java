@@ -8,9 +8,9 @@ import org.erlide.tracing.core.mvc.view.NodeColumn;
 
 /**
  * Cell modifier for nodes table.
- * 
+ *
  * @author Piotr Dorobisz
- * 
+ *
  */
 public class NodeCellModifier implements ICellModifier {
 
@@ -18,7 +18,7 @@ public class NodeCellModifier implements ICellModifier {
 
     /**
      * Creates cell modifier for trace patterns table.
-     * 
+     *
      * @param tableViewer
      *            table viewer with which this cell modifier is used
      */

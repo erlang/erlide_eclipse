@@ -40,25 +40,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
         super(parent, name);
     }
 
-    // /**
-    // * The buffer associated with this element has changed. Registers this
-    // * element as being out of synch with its buffer's contents. If the buffer
-    // * has been closed, this element is set as NOT out of synch with the
-    // * contents.
-    // *
-    // * @see IBufferChangedListener
-    // */
-    // public void bufferChanged(BufferChangedEvent event) {
-    // if (event.getBuffer().isClosed()) {
-    // ErlangCore.getModelManager().getElementsOutOfSynchWithBuffers()
-    // .remove(this);
-    // getBufferManager().removeBuffer(event.getBuffer());
-    // } else {
-    // ErlangCore.getModelManager().getElementsOutOfSynchWithBuffers()
-    // .put(this, this);
-    // }
-    // }
-
     /**
      * Builds this element's structure and properties in the given info object,
      * based on this element's current contents (reuse buffer contents if this
@@ -70,55 +51,8 @@ public abstract class Openable extends ErlElement implements IOpenable {
      *
      * @param dirtyRegion
      */
-    public abstract boolean buildStructure(IProgressMonitor pm)
-            throws ErlModelException;
+    public abstract boolean buildStructure(IProgressMonitor pm) throws ErlModelException;
 
-    /*
-     * Returns whether this element can be removed from the Erlang model cache
-     * to make space.
-     */
-    public boolean canBeRemovedFromCache() {
-        try {
-            return !hasUnsavedChanges();
-        } catch (final ErlModelException e) {
-            return false;
-        }
-    }
-
-    // /*
-    // * Returns whether the buffer of this element can be removed from the
-    // Erlang
-    // * model cache to make space.
-    // */
-    // public boolean canBufferBeRemovedFromCache(IBuffer buffer) {
-    // return !buffer.hasUnsavedChanges();
-    // }
-
-    // /**
-    // * Close the buffer associated with this element, if any.
-    // */
-    // protected void closeBuffer() {
-    // if (!hasBuffer()) {
-    // return; // nothing to do
-    // }
-    // final IBuffer buffer = getBufferManager().getBuffer(this);
-    // if (buffer != null) {
-    // buffer.close();
-    // buffer.removeBufferChangedListener(this);
-    // }
-    // }
-
-    // /**
-    // * This element is being closed. Do any necessary cleanup.
-    // */
-    // @Override
-    // protected void closing(Object info) {
-    // closeBuffer();
-    // }
-
-    /**
-     * @see IErlElement
-     */
     @Override
     public boolean exists() {
         final IResource resource = getResource();
@@ -158,8 +92,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
 
         @Override
         public boolean visit(final IResource resource) {
-            if (resource.getType() == IResource.FILE
-                    && resource.getName().equals(aname)) {
+            if (resource.getType() == IResource.FILE && resource.getName().equals(aname)) {
                 findResult = resource;
                 return false;
             }
@@ -176,9 +109,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
         return false;
     }
 
-    /**
-     * @see IOpenable
-     */
     @Override
     public boolean hasUnsavedChanges() throws ErlModelException {
 
@@ -192,8 +122,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
         // for packages and projects must check open buffers
         // to see if they have an child with unsaved changes
         final ErlElementKind elementType = getKind();
-        if (elementType == ErlElementKind.PROJECT
-                || elementType == ErlElementKind.MODEL) {
+        if (elementType == ErlElementKind.PROJECT || elementType == ErlElementKind.MODEL) {
             // final Enumeration openBuffers =
             // getBufferManager().getOpenBuffers();
             // while (openBuffers.hasMoreElements()) {
@@ -210,58 +139,28 @@ public abstract class Openable extends ErlElement implements IOpenable {
         return false;
     }
 
-    /**
-     * Subclasses must override as required.
-     *
-     * @see IOpenable
-     */
     @Override
     public boolean isConsistent() {
         return true;
     }
 
-    /**
-     *
-     * @see IOpenable
-     */
     @Override
     public boolean isOpen() {
         return true;
     }
 
-    /**
-     * Returns true if this represents a source element. Openable source
-     * elements have an associated buffer created when they are opened.
-     */
     protected boolean isSourceElement() {
         return false;
     }
 
-    /**
-     * @see IOpenable
-     */
     @Override
-    public void makeConsistent(final IProgressMonitor monitor)
-            throws ErlModelException {
+    public void makeConsistent(final IProgressMonitor monitor) throws ErlModelException {
         if (isConsistent()) {
             return;
         }
     }
 
-    // /**
-    // * Opens a buffer on the contents of this element, and returns the buffer,
-    // * or returns <code>null</code> if opening fails. By default, do nothing -
-    // * subclasses that have buffers must override as required.
-    // */
-    // protected IBuffer openBuffer(IProgressMonitor pm, Object info) {
-    // return null;
-    // }
-
-    /**
-     * Open the parent element if necessary.
-     */
-    protected void openParent(final IProgressMonitor pm)
-            throws ErlModelException {
+    protected void openParent(final IProgressMonitor pm) throws ErlModelException {
 
         final Openable openableParent = (Openable) getOpenableParent();
         if (openableParent != null && !openableParent.isOpen()) {
@@ -269,10 +168,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
         }
     }
 
-    /**
-     * Answers true if the parent exists (null parent is answering true)
-     *
-     */
     protected boolean parentExists() {
         final IParent parent = getParent();
         if (parent == null) {
@@ -285,9 +180,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
         return false;
     }
 
-    /**
-     * Returns whether the corresponding resource or associated file exists
-     */
     protected boolean resourceExists() {
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         if (workspace == null) {
@@ -300,9 +192,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
                         getResource().getFullPath().makeRelative(), true) != null;
     }
 
-    /**
-     * @see IOpenable
-     */
     @Override
     public void save(final IProgressMonitor pm, final boolean force)
             throws ErlModelException {

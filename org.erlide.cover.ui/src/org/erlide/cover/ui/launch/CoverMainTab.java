@@ -40,9 +40,9 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Main panel of EUnit run configuration
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class CoverMainTab extends AbstractLaunchConfigurationTab {
 

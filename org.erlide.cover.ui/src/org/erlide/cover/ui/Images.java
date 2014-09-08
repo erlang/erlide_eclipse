@@ -2,9 +2,9 @@ package org.erlide.cover.ui;
 
 /**
  * Image constants
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- * 
+ *
  */
 public class Images {
 

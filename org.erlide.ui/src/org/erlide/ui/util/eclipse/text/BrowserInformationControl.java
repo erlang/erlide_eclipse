@@ -462,7 +462,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
 
     /*
      * @see org.eclipse.jface.text.AbstractInformationControl#handleDispose()
-     * 
+     *
      * @since 3.6
      */
     @Override
@@ -642,7 +642,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
      * @see org.eclipse.jface.text.IDelayedInputChangeProvider#
      * setDelayedInputChangeListener
      * (org.eclipse.jface.text.IInputChangedListener)
-     * 
+     *
      * @since 3.4
      */
     @Override
@@ -677,7 +677,7 @@ public class BrowserInformationControl extends AbstractInformationControl implem
 
     /*
      * @see java.lang.Object#toString()
-     * 
+     *
      * @since 3.4
      */
     @Override

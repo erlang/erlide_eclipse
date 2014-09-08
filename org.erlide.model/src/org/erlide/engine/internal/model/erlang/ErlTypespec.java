@@ -29,8 +29,8 @@ public class ErlTypespec extends ErlMember implements IErlTypespec {
      * @param parent
      * @param name
      */
-    public ErlTypespec(final IParent parent, final String module,
-            final String name, final int arity, final String source) {
+    public ErlTypespec(final IParent parent, final String module, final String name,
+            final int arity, final String source) {
         super(parent, name);
         this.module = module;
         this.arity = arity;

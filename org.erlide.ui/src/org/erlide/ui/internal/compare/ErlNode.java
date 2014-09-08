@@ -66,7 +66,7 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
      * Extends the range to include ranges of children, this is needed since the
      * range of a function in the erlang model only covers the first clause
      * (which is good in the outline and the navigator, but not optimal here).
-     * 
+     *
      * @see org.eclipse.compare.structuremergeviewer.DocumentRangeNode#addChild(org.eclipse.compare.structuremergeviewer.DocumentRangeNode)
      */
     @Override

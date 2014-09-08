@@ -10,11 +10,11 @@ import org.erlide.util.ErlLogger;
 
 /**
  * Public API for Cover plug-in
- * 
+ *
  * Notes: - user should make sure that only one set of tests performs coverage
  * at time, that is: no calls to prepareAnalysis are made between
  * prepareAnalysis() - performAnalysis() call pair.
- * 
+ *
  * @author Krzysztof Goj
  */
 public class CoverageAnalysis {
@@ -33,7 +33,7 @@ public class CoverageAnalysis {
 
     /**
      * Intended to be run before running the tests.
-     * 
+     *
      * @throws UnsupportedOperationException
      *             when Cover plug-in is not installed
      * @throws CoverException
@@ -46,11 +46,11 @@ public class CoverageAnalysis {
 
     /**
      * Intended to be run before running the tests.
-     * 
+     *
      * @param additionalNodes
      *            - other nodes (besides Cover's node) that are used to gather
      *            the coverage info
-     * 
+     *
      * @throws UnsupportedOperationException
      *             when Cover plug-in is not installed
      * @throws CoverException
@@ -70,7 +70,7 @@ public class CoverageAnalysis {
     /**
      * Intended to be run after running the tests. Performs the actual analysis
      * and displays the results to the user.
-     * 
+     *
      * @throws UnsupportedOperationException
      *             when Cover plug-in is not installed
      * @throws CoverException
@@ -87,7 +87,7 @@ public class CoverageAnalysis {
     /**
      * Intended to obtain access to Cover node, that coverage analysis could be
      * performed on.
-     * 
+     *
      * @return Cover node
      * @throws CoverException
      *             on Cover-specific failures

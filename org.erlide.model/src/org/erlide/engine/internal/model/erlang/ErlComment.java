@@ -17,8 +17,7 @@ public class ErlComment extends ErlMember implements IErlComment {
 
     private final boolean fIsHeader;
 
-    public ErlComment(final IParent parent, final String name,
-            final boolean isHeader) {
+    public ErlComment(final IParent parent, final String name, final boolean isHeader) {
         super(parent, name);
         fIsHeader = isHeader;
     }

@@ -23,21 +23,18 @@ public class BeamLocator implements IBeamLocator {
             ErlLogger.warn("Erlang engine was not created!");
             return null;
         }
-        final IErlProject erlProject = engine.getModel().getErlangProject(
-                project);
+        final IErlProject erlProject = engine.getModel().getErlangProject(project);
         if (erlProject == null) {
             ErlLogger.warn("Project " + project + " is not in erlang model...");
             return null;
         }
-        final IFolder r = project.getFolder(erlProject.getProperties()
-                .getOutputDir());
+        final IFolder r = project.getFolder(erlProject.getProperties().getOutputDir());
         try {
             r.refreshLocal(IResource.DEPTH_ONE, null);
         } catch (final CoreException e) {
             // ignore
         }
-        final String beam = SystemConfiguration.withoutExtension(module)
-                + ".beam";
+        final String beam = SystemConfiguration.withoutExtension(module) + ".beam";
         return r.getFile(beam);
     }
 

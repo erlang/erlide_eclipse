@@ -8,9 +8,9 @@ import org.erlide.cover.views.model.StatsTreeModel;
 
 /**
  * Content provider for statistics view
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class StatsViewContentProvider implements ITreeContentProvider {
 

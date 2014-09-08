@@ -12,6 +12,7 @@ package org.erlide.util;
 import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.BindingsImpl;
 import org.erlide.util.erlang.ErlUtils;
+import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.TermParser;
 import org.erlide.util.erlang.TermParserException;
 import org.junit.Assert;
@@ -29,7 +30,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
  */
 public class PatternMatchTest {
 
-    private final TermParser termParser = TermParser.getParser();
+    private final TermParser termParser = OtpErlang.getTermParser();
 
     @Test
     public void testFormatParser_simple_1() throws Exception {

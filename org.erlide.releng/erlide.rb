@@ -24,6 +24,9 @@ module Erlide
     "&& ant -f org.erlide.releng/build.ant #{definedOpts(opts)} #{task}"
     puts cmds
     system cmds
+    if $?.exitstatus > 0 then
+      raise "build failed"
+    end
   end
 
   def Erlide.run_eclipse(target="#{ENV['HOME']}/erlide_tools/buckminster", opts={})
@@ -47,6 +50,8 @@ module Erlide
     ts = PDE.getBuildTimestamp(source_dir)
     puts "  source_dir=#{source_dir}"
 
+    system "umask 002"
+
     kind = p2_kind(branch)
     puts "  kind=#{kind}"
     if kind == "R"
@@ -55,7 +60,9 @@ module Erlide
       dest = "#{version}_#{kind}#{ts}"
     end
 
+    puts "zip -r #{source_dir}/../erlide_#{dest}.zip #{source_dir}"
     system "zip -r #{source_dir}/../erlide_#{dest}.zip #{source_dir}"
+    puts "move #{source_dir}/../erlide_#{dest}.zip => #{source_dir}/erlide_#{dest}.zip"
     FileUtils.mv("#{source_dir}/../erlide_#{dest}.zip", "#{source_dir}/erlide_#{dest}.zip")
     
     repo = p2_repo_name(branch)

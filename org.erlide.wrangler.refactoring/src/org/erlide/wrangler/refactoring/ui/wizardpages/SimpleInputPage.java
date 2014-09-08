@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -23,7 +23,7 @@ import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 
 /**
  * Input page for wrangler integration which accepts only one parameter
- * 
+ *
  * @author Gyorgy Orosz
  * @version %I%, %G%
  */
@@ -43,7 +43,7 @@ public class SimpleInputPage extends InputPage {
 
     /**
      * Constructor
-     * 
+     *
      * @param name
      *            Refactoring name (title)
      * @param description
@@ -121,7 +121,7 @@ public class SimpleInputPage extends InputPage {
 
     /**
      * Sets the input text for the page
-     * 
+     *
      * @param input
      *            default input text
      */

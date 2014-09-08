@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -23,9 +23,9 @@ import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCode
 
 /**
  * Manages the duplicates views visibility through static methods
- * 
+ *
  * @author Gyorgy Orosz
- * 
+ *
  */
 public class DuplicatesUIManager {
     /**
@@ -37,7 +37,7 @@ public class DuplicatesUIManager {
 
     /**
      * Stores the view object
-     * 
+     *
      * @param displayer
      *            duplicates view
      */
@@ -48,7 +48,7 @@ public class DuplicatesUIManager {
 
     /**
      * Sets the duplicates in the view.
-     * 
+     *
      * @param root
      *            list of the duplicates
      */
