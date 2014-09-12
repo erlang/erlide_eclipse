@@ -19,11 +19,11 @@ package org.fishwife.jrugged;
 /**
  * Clients who use the {@link Initializer} should implement this interface. This
  * lets them do, for example:
- *
+ * 
  * <pre>
  * new Initializer(this).initialize();
  * </pre>
- *
+ * 
  * and the Initializer will take care of retrying an initialization.
  *
  * This pattern is good for subsystems that need to talk to something that is

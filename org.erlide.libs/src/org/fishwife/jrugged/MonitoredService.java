@@ -16,7 +16,7 @@ package org.fishwife.jrugged;
 
 /**
  * The MonitoredService interface allows a Service to report it's
- *
+ * 
  * @link {ServiceStatus}.
  */
 public interface MonitoredService {

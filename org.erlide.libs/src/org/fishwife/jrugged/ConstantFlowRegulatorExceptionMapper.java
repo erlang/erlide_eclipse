@@ -35,6 +35,7 @@ public interface ConstantFlowRegulatorExceptionMapper<T extends Exception> {
      *            the <code>FlowRateExceededException</code> I get
      * @return the {@link Exception} I want thrown instead
      */
-    public T map(ConstantFlowRegulator flowRegulator, FlowRateExceededException e);
+    public T map(ConstantFlowRegulator flowRegulator,
+            FlowRateExceededException e);
 
 }

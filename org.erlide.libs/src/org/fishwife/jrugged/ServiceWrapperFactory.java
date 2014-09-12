@@ -26,7 +26,7 @@ public interface ServiceWrapperFactory {
     /**
      * Create a new <code>ServiceWrapper</code> using the given (presumed
      * unique) identifier.
-     *
+     * 
      * @param name
      *            to apply to the new <code>ServiceWrapper</code>
      * @return <code>ServiceWrapper</code>

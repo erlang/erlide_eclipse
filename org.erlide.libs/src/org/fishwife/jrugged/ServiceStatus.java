@@ -31,7 +31,7 @@ public class ServiceStatus {
 
     /**
      * Constructor with name and {@link Status}.
-     *
+     * 
      * @param name
      *            the name of the service.
      * @param status
@@ -45,7 +45,7 @@ public class ServiceStatus {
 
     /**
      * Constructor with name, {@link Status}, and reason.
-     *
+     * 
      * @param name
      *            the name of the service.
      * @param status
@@ -53,7 +53,8 @@ public class ServiceStatus {
      * @param reason
      *            the reason for the status.
      */
-    public ServiceStatus(final String name, final Status status, final String reason) {
+    public ServiceStatus(final String name, final Status status,
+            final String reason) {
         this.name = name;
         this.status = status;
         reasons = new ArrayList<String>();
@@ -64,7 +65,7 @@ public class ServiceStatus {
 
     /**
      * Constructor with name, {@link Status}, and a {@link List} of reasons.
-     *
+     * 
      * @param name
      *            the name of the service.
      * @param status
@@ -84,7 +85,7 @@ public class ServiceStatus {
 
     /**
      * Get the name of the service.
-     *
+     * 
      * @return the name.
      */
     public String getName() {
@@ -93,7 +94,7 @@ public class ServiceStatus {
 
     /**
      * Get the {@link Status} of the service.
-     *
+     * 
      * @return the {@link Status}.
      */
     public Status getStatus() {
@@ -102,7 +103,7 @@ public class ServiceStatus {
 
     /**
      * Get the {@link List} of reasons for the status.
-     *
+     * 
      * @return the {@link List} of reasons.
      */
     public List<String> getReasons() {

@@ -32,7 +32,7 @@ public class FlowMeter {
 
     /**
      * Constructs a {@link FlowMeter}.
-     *
+     * 
      * @param counter
      *            the {@link RequestCounter} to calculate request rates from
      */
@@ -57,7 +57,7 @@ public class FlowMeter {
      * Takes a sample of the request rates. Calculations are based on
      * differences in request counts since the last call to
      * <code>sample()</code>.
-     *
+     * 
      * @return an array of three <code>doubles</code>: total requests per
      *         second, successful requests per second, failed requests per
      *         second. If this is the first sample, all three rates will be
