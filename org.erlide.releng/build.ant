@@ -61,15 +61,17 @@
         <echo message="Running EUnit..." />
 
         <exec executable="${tool.rebar}" failonerror="true" dir="${projects.location}/org.erlide.kernel.common">
-            <arg value="compile"/>
             <arg value="eunit"/>
-
             <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}"/>
         </exec>
-        <exec executable="${tool.rebar}" failonerror="true" dir="${projects.location}/org.erlide.kernel.ide">
-            <arg value="compile"/>
-            <arg value="eunit"/>
 
+        <exec executable="${tool.rebar}" failonerror="true" dir="${projects.location}/org.erlide.kernel.ide">
+            <arg value="eunit"/>
+            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}"/>
+        </exec>
+
+        <exec executable="${tool.rebar}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger">
+            <arg value="eunit"/>
             <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}"/>
         </exec>
     </target>

@@ -3,70 +3,20 @@
 %% Description: TODO: Add description to erlide_np_util
 -module(erlide_np_util).
 
-%%
-%% Include files
-%%
-
 %% -define(DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_noparse.hrl").
 -include("erlide_token.hrl").
 
-%%
-%% Exported Functions
-%%
 -export([extract_comments/1, split_after_dots/1, skip_to/2,
          get_between_outer_pars/3, compact_model/1, get_top_level_comments/2]).
 
+%% @doc extract comments from tokens, and concatenate multiline comments to one token
+-spec extract_comments([token()]) -> {[token()],[token()]}.
 %%
-%% API Functions
-%%
-
-
-
--spec extract_comments([#token{}]) -> {[#token{}],[#token{}]}.
-%% extract comments from tokens, and concatenate multiline comments to one token
 extract_comments(Tokens) ->
     extract_comments(Tokens, -1, [], []).
-
--spec split_after_dots([#token{}]) -> [[#token{}]].
-split_after_dots(D) ->
-    split_after_dots(D, [], []).
-
--spec skip_to([#token{}], atom()) -> [#token{}].
-skip_to([], _Delim) ->
-    [];
-skip_to([#token{kind=Delim} | _] = L, Delim) ->
-    L;
-skip_to([_ | Rest], Delim) ->
-    skip_to(Rest, Delim).
-
--spec get_between_outer_pars([#token{}], atom(), atom()) -> [#token{}].
-get_between_outer_pars(T, L, R) ->
-    case skip_to(T, L) of
-        [] ->
-            [];
-        [_ | S] ->
-            {RL, _Rest} = gbop(S, L, R),
-            lists:reverse(tl(lists:reverse(RL)))
-    end.
-
-%% change model to more compact to miminize terms from erlang to java
--spec compact_model(#model{}) -> #model{}.
-compact_model(#model{forms=Forms, comments=Comments}) ->
-    FixedComments = compact_tokens(Comments),
-    FixedForms = compact_forms(Forms),
-    #model{forms=FixedForms, comments=FixedComments}.
-
--spec get_top_level_comments([tuple()], [#token{}]) -> [#token{}].
-get_top_level_comments(Forms, Comments) ->
-    get_top_level_comments(Forms, Comments, []).
-
-%%
-%% Local Functions
-%%
-
 
 extract_comments([], _, TAcc, CAcc) ->
     {lists:reverse(TAcc), lists:reverse(CAcc)};
@@ -82,6 +32,12 @@ extract_comments([C = #token{kind=comment, line=N} | Rest], _, TAcc, CAcc) ->
 extract_comments([T | Rest], _, TAcc, CAcc) ->
     extract_comments(Rest, -1, [T | TAcc], CAcc).
 
+%% @doc split tokens list at 'dot' tokens
+-spec split_after_dots([token()]) -> [[token()]].
+%%
+split_after_dots(D) ->
+    split_after_dots(D, [], []).
+
 split_after_dots([], Acc, []) ->
     erlide_util:reverse2(Acc);
 split_after_dots([], Acc, FunAcc) ->
@@ -92,6 +48,28 @@ split_after_dots([T = #token{kind = dot} | TRest], Acc, FunAcc) ->
     split_after_dots(TRest, [[T | FunAcc] | Acc], []);
 split_after_dots([T | TRest], Acc, FunAcc) ->
     split_after_dots(TRest, Acc, [T | FunAcc]).
+
+%% @doc drop tokens until delimiter
+-spec skip_to([token()], atom()) -> [token()].
+%%
+skip_to([], _Delim) ->
+    [];
+skip_to([#token{kind=Delim} | _] = L, Delim) ->
+    L;
+skip_to([_ | Rest], Delim) ->
+    skip_to(Rest, Delim).
+
+%%
+-spec get_between_outer_pars([token()], atom(), atom()) -> [token()].
+%%
+get_between_outer_pars(T, L, R) ->
+    case skip_to(T, L) of
+        [] ->
+            [];
+        [_ | S] ->
+            {RL, _Rest} = gbop(S, L, R),
+            lists:reverse(tl(lists:reverse(RL)))
+    end.
 
 gbop([], _L, _R) ->
     {[], []};
@@ -106,6 +84,14 @@ gbop([#token{kind=L}=T | Rest], L, R) ->
 gbop([T | Rest], L, R) ->
     {LR, Rest1} = gbop(Rest, L, R),
     {[T] ++ LR, Rest1}.
+
+%% change model to more compact to miminize terms from erlang to java
+-spec compact_model(model()) -> model().
+%%
+compact_model(#model{forms=Forms, comments=Comments}) ->
+    FixedComments = compact_tokens(Comments),
+    FixedForms = compact_forms(Forms),
+    #model{forms=FixedForms, comments=FixedComments}.
 
 compact_forms(Forms) ->
     [compact_form(Form) || Form <- Forms].
@@ -136,6 +122,12 @@ to_binary_with_unicode(Comment) when is_list(Comment) ->
     unicode:characters_to_binary(Comment);
 to_binary_with_unicode(Other) ->
     Other.
+
+%% @doc retrieve top level comments
+-spec get_top_level_comments([tuple()], [token()]) -> [token()].
+%%
+get_top_level_comments(Forms, Comments) ->
+    get_top_level_comments(Forms, Comments, []).
 
 get_top_level_comments(_Forms, [], Acc) ->
     lists:reverse(Acc);

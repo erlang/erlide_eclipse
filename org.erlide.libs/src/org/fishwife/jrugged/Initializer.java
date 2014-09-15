@@ -26,7 +26,7 @@ package org.fishwife.jrugged;
  * normal operation.
  * <p/>
  * Sample usage:
- *
+ * 
  * <pre>
  * public class Service implements Initializable, Monitorable {
  * 
@@ -67,9 +67,6 @@ package org.fishwife.jrugged;
  *    }
  * }
  * 
- *
- *
- *
  * </pre>
  */
 public class Initializer implements Runnable {

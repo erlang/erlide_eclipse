@@ -2,8 +2,8 @@ package org.erlide.engine.model.root;
 
 public enum ErlElementKind {
     //@formatter:off
-    PROBLEM,
     MODEL,
+    LIBRARY,
     PROJECT,
     MODULE,
     ATTRIBUTE,
@@ -21,6 +21,7 @@ public enum ErlElementKind {
     EXTERNAL_ROOT,
     EXTERNAL_APP,
     EXTERNAL_FOLDER,
-    RECORD_FIELD
+    RECORD_FIELD,
+    PROBLEM
     //@formatter:on
 }

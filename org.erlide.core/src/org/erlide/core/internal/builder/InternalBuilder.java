@@ -77,9 +77,9 @@ public class InternalBuilder extends ErlangBuilder {
             return null;
         }
 
-        // if (BuilderHelper.isDebugging()) {
-        ErlLogger.trace("build", "Start " + project.getName() + ": " + kind);
-        // }
+        if (BuilderHelper.isDebugging()) {
+            ErlLogger.trace("build", "Start " + project.getName() + ": " + kind);
+        }
         try {
             initializeBuilder(notifier);
 
@@ -113,12 +113,12 @@ public class InternalBuilder extends ErlangBuilder {
                     .createProblemMarker(project, null, msg, 0, IMarker.SEVERITY_ERROR);
         } finally {
             cleanup(notifier);
-            // if (BuilderHelper.isDebugging()) {
-            ErlLogger.trace(
-                    "build",
-                    " Done " + project.getName() + " took "
-                            + Long.toString(System.currentTimeMillis() - time));
-            // }
+            if (BuilderHelper.isDebugging()) {
+                ErlLogger.trace(
+                        "build",
+                        " Done " + project.getName() + " took "
+                                + Long.toString(System.currentTimeMillis() - time));
+            }
         }
         return null;
     }
@@ -192,15 +192,15 @@ public class InternalBuilder extends ErlangBuilder {
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(kind, project,
                 resourceDelta, notifier);
         final int n = resourcesToBuild.size();
-        // if (BuilderHelper.isDebugging()) {
-        ErlLogger.debug("Will compile %d resource(s)", Integer.valueOf(n));
-        // }
         if (n == 0) {
             return;
         }
         if (erlProject == null) {
             return;
         }
+        // if (BuilderHelper.isDebugging()) {
+        ErlLogger.debug("Will compile %d resource(s)", Integer.valueOf(n));
+        // }
         final IBackend backend = BackendCore.getBackendManager().getBuildBackend(
                 erlProject);
         if (backend == null) {

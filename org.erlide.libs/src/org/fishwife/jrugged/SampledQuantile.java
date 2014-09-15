@@ -98,8 +98,8 @@ public class SampledQuantile {
         this(maxSamples, windowLength, units, System.currentTimeMillis());
     }
 
-    SampledQuantile(final int maxSamples, final long windowLength, final TimeUnit units,
-            final long now) {
+    SampledQuantile(final int maxSamples, final long windowLength,
+            final TimeUnit units, final long now) {
         this.maxSamples = maxSamples;
         setWindowMillis(windowLength, units);
         windowSegments = new LinkedList<Sample>();
@@ -225,12 +225,14 @@ public class SampledQuantile {
         }
         final long deadline = now - windowMillis;
         final long segmentSize = windowMillis / NUM_WINDOW_SEGMENTS;
-        while (windowSegments.size() > 0 && windowSegments.peek().timestamp < deadline) {
+        while (windowSegments.size() > 0
+                && windowSegments.peek().timestamp < deadline) {
             windowSegments.remove();
         }
         final long mostRecentSegmentTimestamp = windowSegments.size() > 0 ? windowSegments
                 .getLast().timestamp : 0L;
-        if (windowSegments.size() == 0 || now - mostRecentSegmentTimestamp > segmentSize) {
+        if (windowSegments.size() == 0
+                || now - mostRecentSegmentTimestamp > segmentSize) {
             windowSegments.offer(new Sample(samplesSeen.get(), now));
         }
     }

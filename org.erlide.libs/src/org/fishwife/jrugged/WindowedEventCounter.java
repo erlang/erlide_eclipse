@@ -48,7 +48,7 @@ public class WindowedEventCounter {
 
     /**
      * Sole constructor.
-     *
+     * 
      * @param capacity
      *            maximum count this WindowedEventCounter can hold.
      * @param windowMillis
@@ -58,10 +58,12 @@ public class WindowedEventCounter {
      */
     public WindowedEventCounter(final int capacity, final long windowMillis) {
         if (capacity <= 0) {
-            throw new IllegalArgumentException("capacity must be greater than 0");
+            throw new IllegalArgumentException(
+                    "capacity must be greater than 0");
         }
         if (windowMillis <= 0) {
-            throw new IllegalArgumentException("windowMillis must be greater than 0");
+            throw new IllegalArgumentException(
+                    "windowMillis must be greater than 0");
         }
         this.windowMillis = windowMillis;
         this.capacity = capacity;
@@ -87,7 +89,7 @@ public class WindowedEventCounter {
 
     /**
      * Returns a count of in-window events.
-     *
+     * 
      * @return the the count of in-window events.
      */
     public int tally() {
@@ -108,7 +110,7 @@ public class WindowedEventCounter {
     /**
      * Returns the length of the currently configured event window in
      * milliseconds.
-     *
+     * 
      * @return <code>long</code>
      */
     public long getWindowMillis() {
@@ -117,7 +119,7 @@ public class WindowedEventCounter {
 
     /**
      * Specifies the maximum capacity of the counter.
-     *
+     * 
      * @param capacity
      *            <code>long</code>
      * @throws IllegalArgumentException
@@ -125,7 +127,8 @@ public class WindowedEventCounter {
      */
     public void setCapacity(final int capacity) {
         if (capacity <= 0) {
-            throw new IllegalArgumentException("capacity must be greater than 0");
+            throw new IllegalArgumentException(
+                    "capacity must be greater than 0");
         }
 
         synchronized (queue) {
@@ -143,7 +146,7 @@ public class WindowedEventCounter {
 
     /**
      * Returns the maximum capacity this counter can hold.
-     *
+     * 
      * @return <code>int</code>
      */
     public int getCapacity() {
@@ -152,7 +155,7 @@ public class WindowedEventCounter {
 
     /**
      * Specifies the length of the interest window in milliseconds.
-     *
+     * 
      * @param windowMillis
      *            <code>long</code>
      * @throws IllegalArgumentException
@@ -160,7 +163,8 @@ public class WindowedEventCounter {
      */
     public void setWindowMillis(final long windowMillis) {
         if (windowMillis <= 0) {
-            throw new IllegalArgumentException("windowMillis must be greater than 0");
+            throw new IllegalArgumentException(
+                    "windowMillis must be greater than 0");
         }
 
         // changing windowMillis while tally() is draining expired events could
@@ -173,7 +177,7 @@ public class WindowedEventCounter {
     /**
      * Allow the internal {@link Clock} that is used for current time to be
      * overridden (for testing).
-     *
+     * 
      * @param clock
      *            <code>Clock</code>
      */

@@ -33,7 +33,8 @@ public class ServiceWrapperChain implements ServiceWrapper {
         this.wrappers = rev;
     }
 
-    private <T> Callable<T> wrap(final Callable<T> c, final ServiceWrapper wrapper) {
+    private <T> Callable<T> wrap(final Callable<T> c,
+            final ServiceWrapper wrapper) {
         return new Callable<T>() {
             @Override
             public T call() throws Exception {

@@ -1,4 +1,4 @@
-backend_version=R16B
+backend_version=R15
 compiler/warn_deprecated_function=true
 compiler/warn_export_all=true
 compiler/warn_export_vars=true
@@ -11,7 +11,7 @@ compiler/warn_unused_vars=true
 eclipse.preferences.version=1
 external_includes=
 external_modules=
-include_dirs=include
+include_dirs=include;
 output_dir=ebin
-source_dirs=src;src/builder
+source_dirs=src;src/builder;
 use_pathz=false

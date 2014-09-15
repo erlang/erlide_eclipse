@@ -17,6 +17,8 @@ package org.fishwife.jrugged;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Factory to create new {@link CircuitBreaker} instances and keep track of
@@ -32,6 +34,9 @@ public class CircuitBreakerFactory {
     private final ConcurrentHashMap<String, CircuitBreaker> circuitBreakerMap = new ConcurrentHashMap<String, CircuitBreaker>();
 
     private Properties properties;
+
+    private final Logger logger = java.util.logging.Logger.getLogger(getClass()
+            .getName());
 
     /**
      * Create a new {@link CircuitBreaker} and map it to the provided name. If
@@ -113,9 +118,9 @@ public class CircuitBreakerFactory {
         if (fi instanceof DefaultFailureInterpreter) {
             configureDefaultFailureInterpreter(name, resetMillis, circuit);
         } else {
-            // logger.info("Created CircuitBreaker '{}', resetMillis={}", new
-            // Object[] {
-            // name, resetMillis });
+            logger.log(Level.INFO,
+                    "Created CircuitBreaker '{}', resetMillis={}",
+                    new Object[] { name, resetMillis });
         }
     }
 
@@ -124,7 +129,8 @@ public class CircuitBreakerFactory {
         final DefaultFailureInterpreter fi = (DefaultFailureInterpreter) circuit
                 .getFailureInterpreter();
 
-        final Integer limitOverride = getIntegerPropertyOverrideValue(name, LIMIT_KEY);
+        final Integer limitOverride = getIntegerPropertyOverrideValue(name,
+                LIMIT_KEY);
 
         if (limitOverride != null) {
             fi.setLimit(limitOverride);
@@ -137,10 +143,11 @@ public class CircuitBreakerFactory {
             fi.setWindowMillis(windowMillisOverride);
         }
 
-        // logger.info(
-        // "Created CircuitBreaker '{}', limit={}, windowMillis={}, resetMillis={}",
-        // new Object[] { name, fi.getLimit(), fi.getWindowMillis(), resetMillis
-        // });
+        logger.log(
+                Level.INFO,
+                "Created CircuitBreaker '{}', limit={}, windowMillis={}, resetMillis={}",
+                new Object[] { name, fi.getLimit(), fi.getWindowMillis(),
+                        resetMillis });
     }
 
     /**
@@ -178,18 +185,22 @@ public class CircuitBreakerFactory {
      *            the property override key.
      * @return the property override value, or null if it is not found.
      */
-    private Integer getIntegerPropertyOverrideValue(final String name, final String key) {
+    private Integer getIntegerPropertyOverrideValue(final String name,
+            final String key) {
         if (properties != null) {
             final String propertyName = getPropertyName(name, key);
 
-            final String propertyOverrideValue = properties.getProperty(propertyName);
+            final String propertyOverrideValue = properties
+                    .getProperty(propertyName);
 
             if (propertyOverrideValue != null) {
                 try {
                     return Integer.parseInt(propertyOverrideValue);
                 } catch (final NumberFormatException e) {
-                    // logger.error("Could not parse property override key={}, value={}",
-                    // key, propertyOverrideValue);
+                    logger.log(
+                            Level.SEVERE,
+                            "Could not parse property override key={}, value={}",
+                            new Object[] { key, propertyOverrideValue });
                 }
             }
         }
@@ -205,18 +216,22 @@ public class CircuitBreakerFactory {
      *            the property override key.
      * @return the property override value, or null if it is not found.
      */
-    private Long getLongPropertyOverrideValue(final String name, final String key) {
+    private Long getLongPropertyOverrideValue(final String name,
+            final String key) {
         if (properties != null) {
             final String propertyName = getPropertyName(name, key);
 
-            final String propertyOverrideValue = properties.getProperty(propertyName);
+            final String propertyOverrideValue = properties
+                    .getProperty(propertyName);
 
             if (propertyOverrideValue != null) {
                 try {
                     return Long.parseLong(propertyOverrideValue);
                 } catch (final NumberFormatException e) {
-                    // logger.error("Could not parse property override key={}, value={}",
-                    // key, propertyOverrideValue);
+                    logger.log(
+                            Level.SEVERE,
+                            "Could not parse property override key={}, value={}",
+                            new Object[] { key, propertyOverrideValue });
                 }
             }
         }

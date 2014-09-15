@@ -20,7 +20,7 @@ import java.util.concurrent.Callable;
 
 /**
  * Adapter to expose a Runnable as a Callable, with an optional result.
- *
+ * 
  * @param <R>
  */
 
