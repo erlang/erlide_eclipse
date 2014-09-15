@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests
 Bundle-SymbolicName: org.erlide.ui.tests;singleton:=true
-Bundle-Version: 0.24.10.qualifier
+Bundle-Version: 0.24.11.qualifier
 Bundle-Vendor: Erilde.org project
 Fragment-Host: org.erlide.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

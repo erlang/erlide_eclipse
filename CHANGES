@@ -1,3 +1,9 @@
+List of user visible changes between 0.29.2 and 0.29.3 (20140915)
+
+497372d (1370,1371) extract generic debugger code in separate plugin
+edab3f6 update jinterface from OTP
+3bef9c6 model: add libraries as elements
+
 List of user visible changes between 0.29.1 and 0.29.2 (20140908)
 
 f77558f update erl_scan from latest OTP (column fixes)
@@ -1102,4 +1108,4 @@ Handles 'after' in 'try'. (Part of http://erlide.assembla.com/spaces/erlide/tick
 	258-outline-disappearing-again
 	86-Stopping-Erlang-launches
 	266: make backend restart after crash
-	267-indentation-error
+267-indentation-error
