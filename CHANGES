@@ -1,3 +1,7 @@
+List of user visible changes between 0.29.3 and 0.29.4 (20140916)
+
+9748ce9 move erlide_util to kernel.common: fix code execution problem
+
 List of user visible changes between 0.29.2 and 0.29.3 (20140915)
 
 497372d (1370,1371) extract generic debugger code in separate plugin
