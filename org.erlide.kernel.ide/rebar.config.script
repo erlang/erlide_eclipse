@@ -3,7 +3,7 @@ ErlOpts = [{i, "../org.erlide.kernel.common/include"}].
 
 [
 
-{lib_dirs, ["../org.erlide.kernel.common/ebin"]},
+{lib_dirs, [".."]},
 
 {erl_opts, ErlOpts},
 {edoc_opts,[{todo,true}]},
