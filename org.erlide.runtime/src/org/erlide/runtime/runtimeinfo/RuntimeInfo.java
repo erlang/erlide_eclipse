@@ -21,10 +21,12 @@ import java.util.Collection;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 
 public final class RuntimeInfo {
 
@@ -88,8 +90,8 @@ public final class RuntimeInfo {
         this(name, ".", "", new ArrayList<String>());
     }
 
-    public RuntimeInfo(final String name, final String otpHomeDir, final String args,
-            final Collection<String> codePath) {
+    public RuntimeInfo(final String name, final String otpHomeDir,
+            final String args, final Collection<String> codePath) {
         Preconditions.checkArgument(name != null);
         Preconditions.checkArgument(otpHomeDir != null);
         Preconditions.checkArgument(args != null);
@@ -111,8 +113,8 @@ public final class RuntimeInfo {
 
     @Override
     public String toString() {
-        return String.format("Runtime<%s (%s) %s [%s]>", getName(), getOtpHome(),
-                getVersion(), getArgs());
+        return String.format("Runtime<%s (%s) %s [%s]>", getName(),
+                getOtpHome(), getVersion(), getArgs());
     }
 
     public String getOtpHome() {
@@ -133,8 +135,10 @@ public final class RuntimeInfo {
             return false;
         }
         final RuntimeInfo other1 = (RuntimeInfo) other;
-        return Objects.equal(otpHomeDir + "|" + args + "|" + codePath.toString(),
-                other1.otpHomeDir + "|" + other1.args + "|" + other1.codePath.toString());
+        return Objects.equal(
+                otpHomeDir + "|" + args + "|" + codePath.toString(),
+                other1.otpHomeDir + "|" + other1.args + "|"
+                        + other1.codePath.toString());
     }
 
     @Override
@@ -225,10 +229,48 @@ public final class RuntimeInfo {
         if (path == null) {
             return null;
         }
-        String result = null;
-        final File boot = new File(path + "/bin/start.boot");
+        String result = readOtpVersion(path);
+        if (result != null) {
+            return result;
+        }
+        result = readReleaseOtpVersion(path + "/releases/");
+        if (result != null) {
+            return result;
+        }
+        result = readStartBoot(path);
+        return result;
+    }
+
+    private static String readOtpVersion(final String path) {
+        final File file = new File(path + "/OTP_VERSION");
         try {
-            final FileInputStream is = new FileInputStream(boot);
+            return Files.toString(file, Charsets.US_ASCII).trim();
+        } catch (final IOException e) {
+        }
+        return null;
+    }
+
+    private static String readReleaseOtpVersion(final String path) {
+        final File dir = new File(path);
+        final String[] rels = dir.list();
+        if (rels == null) {
+            return null;
+        }
+        // sort!
+        for (final String rel : rels) {
+            final String result = readOtpVersion(path + rel);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
+    private static String readStartBoot(final String path) {
+        String result = null;
+        final File file = new File(path + "/bin/start.boot");
+        try {
+            final FileInputStream is = new FileInputStream(file);
             try {
                 is.skip(14);
                 readstring(is);
@@ -257,7 +299,8 @@ public final class RuntimeInfo {
                     r &= pathname.getName().startsWith("kernel-");
                     final String canonicalPath = pathname.getCanonicalPath()
                             .toLowerCase();
-                    final String absolutePath = pathname.getAbsolutePath().toLowerCase();
+                    final String absolutePath = pathname.getAbsolutePath()
+                            .toLowerCase();
                     r &= canonicalPath.equals(absolutePath);
                     return r;
                 } catch (final IOException e) {
