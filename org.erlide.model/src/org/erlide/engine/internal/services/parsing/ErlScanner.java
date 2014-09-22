@@ -50,11 +50,6 @@ public class ErlScanner implements ScannerService {
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
     public void addref() {
         scanner.addref(name);
     }
