@@ -61,10 +61,12 @@ module Erlide
     end
 
     puts "zip -r #{source_dir}/../erlide_#{dest}.zip #{source_dir}"
-    system "zip -r #{source_dir}/../erlide_#{dest}.zip #{source_dir}"
+    Dir.chdir(source_dir) do
+      system "zip -r #{source_dir}/../erlide_#{dest}.zip ."
+    end
     puts "move #{source_dir}/../erlide_#{dest}.zip => #{source_dir}/erlide_#{dest}.zip"
     FileUtils.mv("#{source_dir}/../erlide_#{dest}.zip", "#{source_dir}/erlide_#{dest}.zip")
-    
+
     repo = p2_repo_name(branch)
     full_dest = "#{output_base}/archive/#{repo}/#{dest}"
     puts "  output_dir=#{full_dest}"
