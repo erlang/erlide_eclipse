@@ -19,7 +19,7 @@ class EmakeBuilder extends ExternalBuilder {
 
     override getOsCommand(IErlProject erlProject) {
         val backend = BackendCore.backendManager.getBuildBackend(erlProject)
-        val path = new Path(backend.runtimeInfo.otpHome).append('bin/erl')
+        val path = new Path(backend.runtime.otpHome).append('bin/erl')
         if (SystemConfiguration.instance.onWindows)
             path.toPortableString + ".exe"
         else

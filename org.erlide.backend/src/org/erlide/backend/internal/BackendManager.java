@@ -280,12 +280,12 @@ public final class BackendManager implements IBackendManager {
         }
         final Collection<IBackend> list = getAllBackends();
         for (final IBackend b : list) {
-            if (b.getRuntimeInfo().getVersion().equals(version)) {
+            if (b.getRuntime().getVersion().equals(version)) {
                 return b.getRpcSite();
             }
         }
         for (final IBackend b : list) {
-            if (b.getRuntimeInfo().getVersion().isCompatible(version)) {
+            if (b.getRuntime().getVersion().isCompatible(version)) {
                 return b.getRpcSite();
             }
         }
@@ -399,9 +399,7 @@ public final class BackendManager implements IBackendManager {
     public synchronized void removeBackend(final IBackend backend) {
         allBackends.remove(backend);
         if (buildBackends.values().contains(backend)) {
-            final String version = backend.getRuntimeInfo().getVersion().asMajor()
-                    .toString();
-            buildBackends.remove(version);
+            buildBackends.values().remove(backend);
         }
     }
 

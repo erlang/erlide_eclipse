@@ -41,7 +41,6 @@ import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.InitialCall;
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.util.ErlLogger;
@@ -336,11 +335,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public IRpcSite getRpcSite() {
         return runtime.getRpcSite();
-    }
-
-    @Override
-    public RuntimeInfo getRuntimeInfo() {
-        return runtime.getRuntimeData().getRuntimeInfo();
     }
 
     @Override

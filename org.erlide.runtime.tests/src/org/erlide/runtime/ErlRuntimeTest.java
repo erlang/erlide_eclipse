@@ -24,6 +24,7 @@ public class ErlRuntimeTest {
 
     private Process process;
     private ManagedErlRuntime runtime;
+    private RuntimeInfo info;
 
     @Before
     public void prepareRuntime() {
@@ -31,7 +32,7 @@ public class ErlRuntimeTest {
         cat.initializeRuntimesList();
         System.out.println(cat.getRuntimes());
         assertThat("empty runtime list", !cat.getRuntimes().isEmpty());
-        final RuntimeInfo info = cat.getRuntimes().iterator().next();
+        info = cat.getRuntimes().iterator().next();
         assertThat("no default info", info != RuntimeInfo.NO_RUNTIME_INFO);
 
         final RuntimeData data = new RuntimeData(info, "run");
@@ -134,7 +135,6 @@ public class ErlRuntimeTest {
 
     @Test
     public void nonManagedRuntimeWorks() {
-        final RuntimeInfo info = runtime.getRuntimeData().getRuntimeInfo();
         final RuntimeData data = new RuntimeData(info, "run");
         data.setNodeName(runtime.getNodeName());
         data.setLongName(false);

@@ -3,8 +3,8 @@ package org.erlide.runtime.internal;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.IShutdownCallback;
-import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.events.NoRuntimeEvent;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlideEventBus;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
@@ -14,12 +14,6 @@ public class NullErlRuntime implements IErlRuntime {
 
     private void reportNoBackend() {
         ErlideEventBus.post(new NoRuntimeEvent());
-    }
-
-    @Override
-    public RuntimeData getRuntimeData() {
-        reportNoBackend();
-        return null;
     }
 
     @Override
@@ -81,5 +75,17 @@ public class NullErlRuntime implements IErlRuntime {
     @Override
     public void startAndWait() {
         reportNoBackend();
+    }
+
+    @Override
+    public RuntimeVersion getVersion() {
+        reportNoBackend();
+        return RuntimeVersion.NO_VERSION;
+    }
+
+    @Override
+    public String getOtpHome() {
+        reportNoBackend();
+        return null;
     }
 }

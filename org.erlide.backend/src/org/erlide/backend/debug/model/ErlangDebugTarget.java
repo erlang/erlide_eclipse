@@ -583,7 +583,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
         final Bundle debugger = Platform.getBundle("org.erlide.kernel.debugger");
         final List<String> dbg_modules = getModulesFromBundle(debugger);
 
-        final String ver = backend.getRuntimeInfo().getVersion().asMajor().toString()
+        final String ver = backend.getRuntime().getVersion().asMajor().toString()
                 .toLowerCase();
         final Bundle debugger_otp = Platform.getBundle("org.erlide.kernel.debugger.otp."
                 + ver);

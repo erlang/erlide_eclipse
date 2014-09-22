@@ -23,6 +23,7 @@ import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangLogEventHandler;
 import org.erlide.runtime.events.LogEventHandler;
 import org.erlide.runtime.internal.rpc.RpcSite;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 
@@ -161,8 +162,13 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     }
 
     @Override
-    public RuntimeData getRuntimeData() {
-        return data;
+    public RuntimeVersion getVersion() {
+        return data.getRuntimeInfo().getVersion();
+    }
+
+    @Override
+    public String getOtpHome() {
+        return data.getRuntimeInfo().getOtpHome();
     }
 
     @Override
