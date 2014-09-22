@@ -131,7 +131,6 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public synchronized void initErlang(final boolean watch) {
         startErlideApps(getRuntime().getEventPid(), watch);
-        getRuntime().registerEventListener(new SystemMonitorHandler(getName()));
     }
 
     @Override

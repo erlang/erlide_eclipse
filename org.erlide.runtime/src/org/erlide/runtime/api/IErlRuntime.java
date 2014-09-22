@@ -31,10 +31,6 @@ public interface IErlRuntime extends IDisposable {
 
     Process getProcess();
 
-    ErlSystemStatus getSystemStatus();
-
-    void setSystemStatus(ErlSystemStatus msg);
-
     OtpMbox createMbox(String string);
 
     OtpMbox createMbox();

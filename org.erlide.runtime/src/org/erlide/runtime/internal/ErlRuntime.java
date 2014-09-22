@@ -15,7 +15,6 @@ import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.IShutdownCallback;
@@ -54,7 +53,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     final ErlRuntimeReporter reporter;
     private OtpMbox eventMBox;
     private IShutdownCallback callback;
-    private ErlSystemStatus lastSystemMessage;
     private IRpcSite rpcSite;
     private final EventBus eventBus;
     protected volatile boolean stopped;
@@ -170,17 +168,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     @Override
     public void addShutdownCallback(final IShutdownCallback aCallback) {
         callback = aCallback;
-    }
-
-    @Override
-    public ErlSystemStatus getSystemStatus() {
-        return lastSystemMessage;
-    }
-
-    @Override
-    public void setSystemStatus(final ErlSystemStatus msg) {
-        // System.out.println(msg.prettyPrint());
-        lastSystemMessage = msg;
     }
 
     @Override
@@ -392,7 +379,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
             reportDown();
             try {
                 if (data.isReportErrors()) {
-                    reporter.createFileReport(nodeName, exitCode, getSystemStatus());
+                    reporter.createFileReport(nodeName, exitCode);
                 }
             } catch (final Exception t) {
                 ErlLogger.warn(t);
@@ -401,7 +388,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
 
         private void reportDown() {
             if (data.isReportErrors() && getExitCode() > 0) {
-                reporter.reportRuntimeDown(getNodeName(), getSystemStatus());
+                reporter.reportRuntimeDown(getNodeName());
             }
         }
 

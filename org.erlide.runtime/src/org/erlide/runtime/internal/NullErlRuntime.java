@@ -1,6 +1,5 @@
 package org.erlide.runtime.internal;
 
-import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.IShutdownCallback;
@@ -55,17 +54,6 @@ public class NullErlRuntime implements IErlRuntime {
 
     @Override
     public void addShutdownCallback(final IShutdownCallback callback) {
-        reportNoBackend();
-    }
-
-    @Override
-    public ErlSystemStatus getSystemStatus() {
-        reportNoBackend();
-        return null;
-    }
-
-    @Override
-    public void setSystemStatus(final ErlSystemStatus msg) {
         reportNoBackend();
     }
 
