@@ -43,7 +43,10 @@ public class BackendShell implements IBackendShell {
         this.server = server;
         requests = new ArrayList<IoRequest>(1000);
         listeners = new ArrayList<BackendShellListener>();
+    }
 
+    @Override
+    public void open() {
         final ErlangEventHandler handler = new ConsoleEventHandler(backend.getName(),
                 this);
         backend.getRuntime().registerEventListener(handler);
