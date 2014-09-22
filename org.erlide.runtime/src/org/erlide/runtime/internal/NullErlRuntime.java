@@ -8,6 +8,7 @@ import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.events.NoRuntimeEvent;
 import org.erlide.util.ErlideEventBus;
 
+import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
 public class NullErlRuntime implements IErlRuntime {
@@ -47,7 +48,7 @@ public class NullErlRuntime implements IErlRuntime {
     }
 
     @Override
-    public OtpMbox getEventMbox() {
+    public OtpErlangPid getEventPid() {
         reportNoBackend();
         return null;
     }

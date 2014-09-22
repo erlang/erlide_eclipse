@@ -112,7 +112,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
 
     @Override
     protected void run() throws Exception {
-        final OtpMbox eventBox = getEventMbox();
+        final OtpMbox eventBox = eventMBox;
         do {
             receiveEventMessage(eventBox);
         } while (!stopped && !crashed);
@@ -158,8 +158,8 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     }
 
     @Override
-    public OtpMbox getEventMbox() {
-        return eventMBox;
+    public OtpErlangPid getEventPid() {
+        return eventMBox.self();
     }
 
     @Override
