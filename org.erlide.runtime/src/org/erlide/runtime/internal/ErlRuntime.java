@@ -195,7 +195,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     @Override
     public IRpcSite getRpcSite() {
         try {
-            awaitTerminated(100, TimeUnit.MILLISECONDS);
+            awaitTerminated(20, TimeUnit.MILLISECONDS);
             return null;
         } catch (final TimeoutException e) {
             awaitRunning();
