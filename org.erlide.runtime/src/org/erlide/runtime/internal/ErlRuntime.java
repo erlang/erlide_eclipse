@@ -50,7 +50,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     private IRpcSite rpcSite;
     private final EventBus eventBus;
     protected volatile boolean stopped;
-    private EventParser eventHelper;
+    private final EventParser eventHelper;
     boolean crashed;
 
     static final boolean DEBUG = Boolean.parseBoolean(System
@@ -61,6 +61,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         this.data = data;
         reporter = new ErlRuntimeReporter(data.isInternal());
 
+        eventHelper = new EventParser();
         final String nodeName = getNodeName();
         eventBus = new EventBus(nodeName);
         eventBus.register(this);
@@ -116,7 +117,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
 
     private void receiveEventMessage(final OtpMbox eventBox) throws OtpErlangExit {
         OtpErlangObject msg = null;
-        eventHelper = new EventParser();
         try {
             msg = eventBox.receive(POLL_INTERVAL);
             final ErlEvent busEvent = eventHelper.parse(msg, this);
@@ -219,6 +219,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     private void connect() throws Exception {
         final String label = getNodeName();
         ErlLogger.debug(label + ": waiting connection to peer...");
+
         try {
             pingPeer();
             int i = 0;
@@ -228,6 +229,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
                 } catch (final InterruptedException e) {
                 }
             }
+            System.out.println("!!!!!!!!! " + state());
         } catch (final Exception e) {
             ErlLogger.error(COULD_NOT_CONNECT, getNodeName());
             throw e;
