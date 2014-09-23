@@ -47,7 +47,7 @@ public class NullErlRuntime implements IErlRuntime {
     }
 
     @Override
-    public void addShutdownCallback(final IShutdownCallback callback) {
+    public void setShutdownCallback(final IShutdownCallback callback) {
         reportNoBackend();
     }
 

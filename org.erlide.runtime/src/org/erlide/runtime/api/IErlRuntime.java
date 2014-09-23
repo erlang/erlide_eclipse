@@ -36,7 +36,7 @@ public interface IErlRuntime extends IDisposable {
 
     OtpMbox createMbox();
 
-    void addShutdownCallback(IShutdownCallback callback);
+    void setShutdownCallback(IShutdownCallback callback);
 
     OtpErlangPid getEventPid();
 

@@ -316,7 +316,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public void initialize(final CodeContext context,
             final Collection<ICodeBundle> bundles) {
-        runtime.addShutdownCallback(this);
+        runtime.setShutdownCallback(this);
         shellManager = new BackendShellManager(this);
         for (final ICodeBundle bb : bundles) {
             registerCodeBundle(context, bb);

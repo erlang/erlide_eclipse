@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.runtime.internal;
 
-import java.io.IOException;
-import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -25,7 +23,6 @@ import org.erlide.runtime.events.LogEventHandler;
 import org.erlide.runtime.internal.rpc.RpcSite;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.HostnameUtils;
 
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -33,8 +30,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
-import com.ericsson.otp.erlang.OtpNodeStatus;
-import com.google.common.base.Strings;
 import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -42,8 +37,6 @@ import com.google.common.util.concurrent.AbstractExecutionThreadService;
 
 public class ErlRuntime extends AbstractExecutionThreadService implements IErlRuntime {
     private static final String COULD_NOT_CONNECT = "Could not connect to %s! Please check runtime settings.";
-    private static final int EPMD_PORT = Integer.parseInt(System.getProperty(
-            "erlide.epmd.port", "4369"));
 
     private static final int MAX_RETRIES = 15;
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
@@ -79,7 +72,8 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
 
     @Override
     protected void startUp() throws Exception {
-        localNode = startLocalNode();
+        localNode = LocalNodeCreator.startLocalNode(this, data.getCookie(),
+                data.hasLongName());
         eventMBox = createMbox("rex");
         rpcSite = new RpcSite(this, localNode, getNodeName());
         connect();
@@ -172,7 +166,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     }
 
     @Override
-    public void addShutdownCallback(final IShutdownCallback aCallback) {
+    public void setShutdownCallback(final IShutdownCallback aCallback) {
         callback = aCallback;
     }
 
@@ -211,14 +205,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         return getClass().getSimpleName() + " " + getNodeName();
     }
 
-    private OtpNode startLocalNode() throws IOException {
-        wait_for_epmd();
-        final OtpNode lNode = createOtpNode(data.getCookie(), data.hasLongName());
-        final OtpNodeStatus statusWatcher = new ErlideNodeStatus();
-        lNode.registerStatusHandler(statusWatcher);
-        return lNode;
-    }
-
     private boolean pingPeer() {
         int tries = MAX_RETRIES;
         boolean ok = false;
@@ -228,40 +214,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
             tries--;
         }
         return ok;
-    }
-
-    private String createJavaNodeName() {
-        final String fUniqueId = getTimeSuffix();
-        return "jerlide_" + fUniqueId;
-    }
-
-    private String createJavaNodeName(final String hostName) {
-        return createJavaNodeName() + "@" + hostName;
-    }
-
-    private String getTimeSuffix() {
-        String fUniqueId;
-        fUniqueId = Long.toHexString(System.currentTimeMillis() & 0xFFFFFFF);
-        return fUniqueId;
-    }
-
-    private OtpNode createOtpNode(final String cookie, final boolean longName)
-            throws IOException {
-        OtpNode node;
-        final String hostName = HostnameUtils.getErlangHostName(longName);
-        if (Strings.isNullOrEmpty(cookie)) {
-            node = new OtpNode(createJavaNodeName(hostName));
-        } else {
-            node = new OtpNode(createJavaNodeName(hostName), cookie);
-        }
-        debugPrintCookie(node.cookie());
-        return node;
-    }
-
-    private static void debugPrintCookie(final String cookie) {
-        final int len = cookie.length();
-        final String trimmed = len > 7 ? cookie.substring(0, 7) : cookie;
-        ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed, len, cookie);
     }
 
     private void connect() throws Exception {
@@ -279,37 +231,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         } catch (final Exception e) {
             ErlLogger.error(COULD_NOT_CONNECT, getNodeName());
             throw e;
-        }
-    }
-
-    private void wait_for_epmd() {
-        wait_for_epmd(null);
-    }
-
-    private void wait_for_epmd(final String host) {
-        // If anyone has a better solution for waiting for epmd to be up, please
-        // let me know
-        int tries = 30;
-        boolean ok = false;
-        do {
-            Socket s;
-            try {
-                s = new Socket(host, EPMD_PORT);
-                s.close();
-                ok = true;
-            } catch (final IOException e) {
-            }
-            try {
-                Thread.sleep(POLL_INTERVAL);
-            } catch (final InterruptedException e1) {
-            }
-            tries--;
-        } while (!ok && tries > 0);
-        if (!ok) {
-            final String msg = "Couldn't contact epmd - erlang backend is probably not working\n"
-                    + "Your host's entry in /etc/hosts is probably wrong (" + host + ").";
-            ErlLogger.error(msg);
-            throw new RuntimeException(msg);
         }
     }
 
@@ -339,18 +260,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
             ErlLogger.error("error starting code server for %s: %s", getNodeName(),
                     e.getMessage());
             return false;
-        }
-    }
-
-    private class ErlideNodeStatus extends OtpNodeStatus {
-        public ErlideNodeStatus() {
-        }
-
-        @Override
-        public void remoteStatus(final String node, final boolean up, final Object info) {
-            if (node.equals(getNodeName()) && !up) {
-                triggerCrashed();
-            }
         }
     }
 
