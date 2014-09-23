@@ -229,7 +229,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
                 } catch (final InterruptedException e) {
                 }
             }
-            System.out.println("!!!!!!!!! " + state());
         } catch (final Exception e) {
             ErlLogger.error(COULD_NOT_CONNECT, getNodeName());
             throw e;

@@ -66,7 +66,8 @@ class LocalNodeCreator {
         val initializer = new Initializer(client)
         initializer.maxRetries = 30
         initializer.retryMillis = POLL_INTERVAL
-        initializer.initialize
+        // run synchronously
+        initializer.run
     }
 
 }

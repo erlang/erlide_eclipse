@@ -88,6 +88,6 @@ public class LocalNodeCreator {
     final Initializer initializer = new Initializer(client);
     initializer.setMaxRetries(30);
     initializer.setRetryMillis(LocalNodeCreator.POLL_INTERVAL);
-    initializer.initialize();
+    initializer.run();
   }
 }
