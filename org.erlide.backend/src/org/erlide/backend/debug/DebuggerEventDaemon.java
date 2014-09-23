@@ -8,6 +8,7 @@ import org.erlide.backend.api.IBackendListener;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.util.ErlLogger;
 
+import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
@@ -38,24 +39,9 @@ public class DebuggerEventDaemon implements IBackendListener {
 
         @Override
         public void run() {
-            OtpErlangObject msg = null;
-            final List<OtpErlangObject> messages = Lists.newArrayList();
             do {
                 try {
-                    msg = mbox.receive(200);
-                    if (msg != null) {
-                        messages.add(msg);
-                        // if there are more queued events, retrieve not
-                        // more than 10 of them
-                        int count = 0;
-                        do {
-                            msg = mbox.receive(0);
-                            if (msg != null) {
-                                messages.add(msg);
-                                count++;
-                            }
-                        } while (count < 10 && msg != null && !stopped);
-                    }
+                    final List<OtpErlangObject> messages = receiveSomeMessages(mbox);
                     if (messages.size() != 0) {
                         if (DEBUG) {
                             for (final OtpErlangObject message : messages) {
@@ -63,8 +49,6 @@ public class DebuggerEventDaemon implements IBackendListener {
                             }
                         }
                         handler.handleMessages(messages);
-
-                        messages.clear();
                     }
                 } catch (final OtpErlangExit e) {
                     if (myBackend.isRunning()) {
@@ -76,6 +60,26 @@ public class DebuggerEventDaemon implements IBackendListener {
                     ErlLogger.warn(e);
                 }
             } while (!stopped);
+        }
+
+        private List<OtpErlangObject> receiveSomeMessages(final OtpMbox box)
+                throws OtpErlangExit, OtpErlangDecodeException {
+            final List<OtpErlangObject> messages = Lists.newArrayList();
+            OtpErlangObject msg = box.receive(200);
+            if (msg != null) {
+                messages.add(msg);
+                // if there are more queued events, retrieve not
+                // more than 10 of them
+                int count = 0;
+                do {
+                    msg = box.receive(0);
+                    if (msg != null) {
+                        messages.add(msg);
+                        count++;
+                    }
+                } while (count < 10 && msg != null && !stopped);
+            }
+            return messages;
         }
     }
 
