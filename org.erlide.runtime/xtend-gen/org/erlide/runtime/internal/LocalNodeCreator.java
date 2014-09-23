@@ -11,6 +11,8 @@ import org.erlide.runtime.internal.ErlideNodeStatus;
 import org.erlide.runtime.internal.NodeNameCreator;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
+import org.fishwife.jrugged.Initializable;
+import org.fishwife.jrugged.Initializer;
 
 @SuppressWarnings("all")
 public class LocalNodeCreator {
@@ -51,16 +53,23 @@ public class LocalNodeCreator {
   public final static long POLL_INTERVAL = 100;
   
   public static void wait_for_epmd(final String host) {
-    int tries = 30;
-    boolean ok = false;
-    do {
-      {
+    final Initializable client = new Initializable() {
+      public void afterInit() {
+      }
+      
+      public void configuredRetriesMetOrExceededWithoutSuccess() {
+        final String msg = ((("Couldn\'t contact epmd - erlang backend is probably not working\n" + 
+          "Your host\'s entry in /etc/hosts is probably wrong (") + host) + ").");
+        ErlLogger.error(msg);
+        throw new RuntimeException(msg);
+      }
+      
+      public void tryInit() throws Exception {
         Socket s = null;
         try {
           Socket _socket = new Socket(host, LocalNodeCreator.EPMD_PORT);
           s = _socket;
           s.close();
-          ok = true;
         } catch (final Throwable _t) {
           if (_t instanceof IOException) {
             final IOException e = (IOException)_t;
@@ -68,23 +77,11 @@ public class LocalNodeCreator {
             throw Exceptions.sneakyThrow(_t);
           }
         }
-        try {
-          Thread.sleep(LocalNodeCreator.POLL_INTERVAL);
-        } catch (final Throwable _t_1) {
-          if (_t_1 instanceof InterruptedException) {
-            final InterruptedException e1 = (InterruptedException)_t_1;
-          } else {
-            throw Exceptions.sneakyThrow(_t_1);
-          }
-        }
-        tries--;
       }
-    } while(((!ok) && (tries > 0)));
-    if ((!ok)) {
-      final String msg = ((("Couldn\'t contact epmd - erlang backend is probably not working\n" + 
-        "Your host\'s entry in /etc/hosts is probably wrong (") + host) + ").");
-      ErlLogger.error(msg);
-      throw new RuntimeException(msg);
-    }
+    };
+    final Initializer initializer = new Initializer(client);
+    initializer.setMaxRetries(30);
+    initializer.setRetryMillis(LocalNodeCreator.POLL_INTERVAL);
+    initializer.initialize();
   }
 }

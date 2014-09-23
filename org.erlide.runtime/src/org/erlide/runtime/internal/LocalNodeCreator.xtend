@@ -8,6 +8,8 @@ import java.net.Socket
 import org.erlide.runtime.api.IErlRuntime
 import org.erlide.util.ErlLogger
 import org.erlide.util.HostnameUtils
+import org.fishwife.jrugged.Initializable
+import org.fishwife.jrugged.Initializer
 
 class LocalNodeCreator {
 
@@ -39,30 +41,32 @@ class LocalNodeCreator {
 
     static def void wait_for_epmd(String host) {
 
-        // If anyone has a better solution for waiting for epmd to be up, please
-        // let me know
-        var int tries = 30;
-        var boolean ok = false;
-        do {
-            var Socket s;
-            try {
-                s = new Socket(host, EPMD_PORT);
-                s.close();
-                ok = true;
-            } catch (IOException e) {
+        val client = new Initializable() {
+
+            override afterInit() {
             }
-            try {
-                Thread.sleep(POLL_INTERVAL);
-            } catch (InterruptedException e1) {
+
+            override configuredRetriesMetOrExceededWithoutSuccess() {
+                val String msg = "Couldn't contact epmd - erlang backend is probably not working\n" +
+                    "Your host's entry in /etc/hosts is probably wrong (" + host + ")."
+                ErlLogger.error(msg)
+                throw new RuntimeException(msg)
             }
-            tries--;
-        } while (!ok && tries > 0);
-        if (!ok) {
-            val String msg = "Couldn't contact epmd - erlang backend is probably not working\n" +
-                "Your host's entry in /etc/hosts is probably wrong (" + host + ").";
-            ErlLogger.error(msg);
-            throw new RuntimeException(msg);
+
+            override tryInit() throws Exception {
+                var Socket s;
+                try {
+                    s = new Socket(host, EPMD_PORT)
+                    s.close()
+                } catch (IOException e) {
+                }
+            }
+
         }
+        val initializer = new Initializer(client)
+        initializer.maxRetries = 30
+        initializer.retryMillis = POLL_INTERVAL
+        initializer.initialize
     }
 
 }
