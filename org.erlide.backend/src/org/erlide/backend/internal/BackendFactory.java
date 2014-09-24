@@ -20,7 +20,8 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
-import org.erlide.runtime.ErlRuntimeFactory;
+import org.erlide.runtime.ErlRuntime;
+import org.erlide.runtime.ManagedErlRuntime;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -56,7 +57,13 @@ public class BackendFactory implements IBackendFactory {
         ErlLogger.debug("Create backend " + data.getNodeName());
 
         final IBackend b;
-        final IErlRuntime runtime = ErlRuntimeFactory.createRuntime(data);
+        IErlRuntime result;
+        if (data.isManaged()) {
+            result = new ManagedErlRuntime(data);
+        } else {
+            result = new ErlRuntime(data);
+        }
+        final IErlRuntime runtime = result;
         runtime.startAndWait();
 
         final IBackendManager backendManager = BackendCore.getBackendManager();

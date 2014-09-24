@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.Socket;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.erlide.runtime.internal.ErlRuntime;
+import org.erlide.runtime.ErlRuntime;
 import org.erlide.runtime.internal.ErlideNodeStatus;
 import org.erlide.runtime.internal.NodeNameCreator;
 import org.erlide.util.ErlLogger;

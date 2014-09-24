@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.internal;
+package org.erlide.runtime;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -20,6 +20,10 @@ import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangLogEventHandler;
 import org.erlide.runtime.events.LogEventHandler;
+import org.erlide.runtime.internal.ErlRuntimeException;
+import org.erlide.runtime.internal.ErlRuntimeReporter;
+import org.erlide.runtime.internal.EventParser;
+import org.erlide.runtime.internal.LocalNodeCreator;
 import org.erlide.runtime.internal.rpc.RpcSite;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
@@ -269,7 +273,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         ErlLogger.warn("Dead event: " + dead + " in runtime " + getNodeName());
     }
 
-    protected void triggerCrashed() {
+    public void triggerCrashed() {
         rpcSite.setConnected(false);
         crashed = true;
     }

@@ -28,7 +28,8 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IBeamLocator;
-import org.erlide.runtime.ErlRuntimeFactory;
+import org.erlide.runtime.ErlRuntime;
+import org.erlide.runtime.ManagedErlRuntime;
 import org.erlide.runtime.api.IErlRuntime;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -58,7 +59,13 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
             backend = BackendCore.getBackendManager().createExecutionBackend(data);
             runtime = backend.getRuntime();
         } else {
-            runtime = ErlRuntimeFactory.createRuntime(data);
+            IErlRuntime result;
+            if (data.isManaged()) {
+                result = new ManagedErlRuntime(data);
+            } else {
+                result = new ErlRuntime(data);
+            }
+            runtime = result;
             runtime.startAndWait();
         }
         if (data.isManaged()) {

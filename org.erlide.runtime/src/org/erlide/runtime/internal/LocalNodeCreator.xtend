@@ -5,6 +5,7 @@ import com.ericsson.otp.erlang.OtpNodeStatus
 import com.google.common.base.Strings
 import java.io.IOException
 import java.net.Socket
+import org.erlide.runtime.ErlRuntime
 import org.erlide.util.ErlLogger
 import org.erlide.util.HostnameUtils
 import org.fishwife.jrugged.Initializable

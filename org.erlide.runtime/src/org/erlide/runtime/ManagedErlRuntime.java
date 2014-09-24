@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.internal;
+package org.erlide.runtime;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.erlide.runtime.api.RuntimeData;
+import org.erlide.runtime.internal.ErlRuntimeException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 

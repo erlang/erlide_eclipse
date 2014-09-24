@@ -2,7 +2,7 @@ package org.erlide.runtime.internal;
 
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.google.common.base.Objects;
-import org.erlide.runtime.internal.ErlRuntime;
+import org.erlide.runtime.ErlRuntime;
 
 @SuppressWarnings("all")
 public class ErlideNodeStatus extends OtpNodeStatus {

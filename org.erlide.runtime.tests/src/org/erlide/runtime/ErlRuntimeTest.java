@@ -7,8 +7,6 @@ import static org.hamcrest.Matchers.nullValue;
 
 import org.erlide.runtime.api.IRpcSite;
 import org.erlide.runtime.api.RuntimeData;
-import org.erlide.runtime.internal.ErlRuntime;
-import org.erlide.runtime.internal.ManagedErlRuntime;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
