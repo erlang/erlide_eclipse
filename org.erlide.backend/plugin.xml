@@ -10,13 +10,6 @@
       </provider>
    </extension>
    <extension
-         point="org.eclipse.debug.core.processFactories">
-      <processFactory
-            class="org.erlide.backend.launch.ErtsProcessFactory"
-            id="org.erlide.backend.ertsProcessFactory">
-      </processFactory>
-   </extension>
-   <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
             delegate="org.erlide.backend.launch.ErlangLaunchDelegate"

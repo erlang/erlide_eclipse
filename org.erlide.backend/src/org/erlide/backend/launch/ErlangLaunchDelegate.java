@@ -105,8 +105,6 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
 
         data.setLaunch(launch);
         final Map<String, String> map = Maps.newHashMap();
-        map.put("NodeName", data.getNodeName());
-        map.put("workingDir", data.getWorkingDir());
         final IProcess erts = DebugPlugin.newProcess(launch, process, data.getNodeName(),
                 map);
 
