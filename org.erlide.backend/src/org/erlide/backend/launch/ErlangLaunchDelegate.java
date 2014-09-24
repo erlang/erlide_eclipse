@@ -11,11 +11,6 @@
  *******************************************************************************/
 package org.erlide.backend.launch;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
@@ -50,28 +45,10 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
     @Override
     public void launch(final ILaunchConfiguration config, final String mode,
             final ILaunch launch, final IProgressMonitor monitor) throws CoreException {
-        assertThat(config, is(not(nullValue())));
-
-        RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoCatalog().getRuntime(
-                config.getAttribute(ErlRuntimeAttributes.RUNTIME_NAME, ""));
-        if (runtimeInfo == null) {
-            runtimeInfo = BackendCore.getRuntimeInfoCatalog().getDefaultRuntime();
-        }
-        if (runtimeInfo == null) {
-            ErlLogger.error("Can't create backend without a runtime defined!");
+        final BackendData data = getBackendData(config, mode, launch);
+        if (data == null) {
             return;
         }
-        final String nodeName = config.getAttribute(ErlRuntimeAttributes.NODE_NAME, "");
-        BackendData data = new BackendData(runtimeInfo, config, mode, shouldManageNode(
-                nodeName, BackendCore.getEpmdWatcher()));
-        final RuntimeInfo info = data.getRuntimeInfo();
-        if (info == null) {
-            ErlLogger.error("Could not find runtime '%s'", data.getRuntimeInfo()
-                    .getName());
-            return;
-        }
-
-        data = configureBackend(data, config, mode, launch);
 
         if (data.isManaged()) {
             setCaptureOutput(launch);
@@ -89,11 +66,31 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
         }
     }
 
+    private BackendData getBackendData(final ILaunchConfiguration config,
+            final String mode, final ILaunch launch) throws CoreException {
+        Preconditions.checkArgument(config != null);
+
+        RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoCatalog().getRuntime(
+                config.getAttribute(ErlRuntimeAttributes.RUNTIME_NAME, ""));
+        if (runtimeInfo == null) {
+            runtimeInfo = BackendCore.getRuntimeInfoCatalog().getDefaultRuntime();
+        }
+        if (runtimeInfo == null) {
+            ErlLogger.error("Can't create backend without a runtime defined!");
+            return null;
+        }
+        final String nodeName = config.getAttribute(ErlRuntimeAttributes.NODE_NAME, "");
+        final boolean managed = shouldManageNode(nodeName, BackendCore.getEpmdWatcher());
+        BackendData data = new BackendData(runtimeInfo, config, mode, managed);
+        data = configureBackend(data, mode, launch);
+        return data;
+    }
+
     /*
      * Child classes override this to set specific information
      */
-    protected BackendData configureBackend(final BackendData data,
-            final ILaunchConfiguration config, final String mode, final ILaunch launch) {
+    protected BackendData configureBackend(final BackendData data, final String mode,
+            final ILaunch launch) {
         data.setLaunch(launch);
         data.setBeamLocator(ErlangEngine.getInstance().getService(IBeamLocator.class));
         if (mode.equals("debug")) {
@@ -105,6 +102,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
     private void startErtsProcess(final ILaunch launch, final BackendData data,
             final Process process) {
         Preconditions.checkArgument(process != null);
+
         data.setLaunch(launch);
         final Map<String, String> map = Maps.newHashMap();
         map.put("NodeName", data.getNodeName());
@@ -147,7 +145,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
         }
     }
 
-    public static boolean shouldManageNode(final String name,
+    private static boolean shouldManageNode(final String name,
             final EpmdWatcher epmdWatcher) {
         final int atSignIndex = name.indexOf('@');
         String shortName = name;
