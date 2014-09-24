@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.xtext.xbase.lib.Functions;
+import org.eclipse.xtext.xbase.lib.ListExtensions;
+
 public final class PreferencesUtils {
 
     private static final String SEP = ";";
@@ -15,14 +18,21 @@ public final class PreferencesUtils {
     }
 
     public static List<String> unpackList(final String string) {
-        return ListsUtils.unpackList(string, SEP);
+        List<String> result = ListsUtils.unpackList(string, SEP);
+        result = ListExtensions.map(result, new Functions.Function1<String, String>() {
+            @Override
+            public String apply(final String p) {
+                return p.trim();
+            }
+        });
+        return result;
     }
 
     public static String packArray(final String[] strs) {
         final StringBuilder result = new StringBuilder();
         for (final String s : strs) {
             if (s.length() > 0) {
-                result.append(s).append(SEP);
+                result.append(s.trim()).append(SEP);
             }
         }
         final String r = result.length() == 0 ? "" : result.substring(0, result.length()
