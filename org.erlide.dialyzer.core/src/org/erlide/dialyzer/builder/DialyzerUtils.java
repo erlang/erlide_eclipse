@@ -25,7 +25,7 @@ import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.IOtpRpc;
-import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;
@@ -90,7 +90,7 @@ public class DialyzerUtils {
             ErlLogger.trace("dialyzer", "run %s", fileNames);
 
             final IOtpRpc b = backend.getOtpRpc();
-            final IRpcFuture future = ErlideDialyze.dialyze(b, files, pltPaths,
+            final RpcFuture future = ErlideDialyze.dialyze(b, files, pltPaths,
                     includeDirs, fromSource, noCheckPLT);
 
             while (!future.isDone()) {

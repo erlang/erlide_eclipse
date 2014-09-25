@@ -49,7 +49,7 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 
@@ -214,7 +214,7 @@ public class InternalBuilder extends ErlangBuilder {
         backend.addProjectPath(model.findProject(project));
 
         notifier.setProgressPerCompilationUnit(1.0f / n);
-        final Map<IRpcFuture, IResource> results = new HashMap<IRpcFuture, IResource>();
+        final Map<RpcFuture, IResource> results = new HashMap<RpcFuture, IResource>();
         for (final BuildResource bres : resourcesToBuild) {
             notifier.checkCancel();
             final IResource resource = bres.getResource();
@@ -223,13 +223,13 @@ public class InternalBuilder extends ErlangBuilder {
             if ("erl".equals(resource.getFileExtension())) {
                 final String outputDir = erlProject.getProperties().getOutputDir()
                         .toString();
-                final IRpcFuture f = helper.startCompileErl(project, bres, outputDir,
+                final RpcFuture f = helper.startCompileErl(project, bres, outputDir,
                         backend.getOtpRpc(), compilerOptions, kind == BuildKind.FULL);
                 if (f != null) {
                     results.put(f, resource);
                 }
             } else if ("yrl".equals(resource.getFileExtension())) {
-                final IRpcFuture f = helper.startCompileYrl(project, resource,
+                final RpcFuture f = helper.startCompileYrl(project, resource,
                         backend.getOtpRpc(), compilerOptions);
                 if (f != null) {
                     results.put(f, resource);
@@ -239,13 +239,13 @@ public class InternalBuilder extends ErlangBuilder {
             }
         }
 
-        final List<Entry<IRpcFuture, IResource>> done = Lists.newArrayList();
-        final List<Entry<IRpcFuture, IResource>> waiting = Lists.newArrayList(results
+        final List<Entry<RpcFuture, IResource>> done = Lists.newArrayList();
+        final List<Entry<RpcFuture, IResource>> waiting = Lists.newArrayList(results
                 .entrySet());
 
         // TODO should use some kind of notification!
         while (!waiting.isEmpty()) {
-            for (final Entry<IRpcFuture, IResource> result : waiting) {
+            for (final Entry<RpcFuture, IResource> result : waiting) {
                 notifier.checkCancel();
                 OtpErlangObject r;
                 try {

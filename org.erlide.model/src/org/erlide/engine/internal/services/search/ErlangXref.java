@@ -8,7 +8,7 @@ import org.erlide.engine.model.erlang.FunctionRef;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.XrefService;
 import org.erlide.runtime.api.IOtpRpc;
-import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.ErlUtils;
@@ -46,7 +46,7 @@ public class ErlangXref implements XrefService {
     }
 
     @Override
-    public IRpcFuture addProject(final IErlProject project) {
+    public RpcFuture addProject(final IErlProject project) {
         try {
             final IPath outputLocation = project.getWorkspaceProject()
                     .getFolder(project.getProperties().getOutputDir()).getLocation();

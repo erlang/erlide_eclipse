@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.runtime.api.IOtpRpc;
-import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
@@ -23,7 +23,7 @@ public class ErlideDialyze {
     // private static final int INCLUDE_TIMEOUT = 40000;
     private static final int UPDATE_TIMEOUT = LONG_TIMEOUT * 10;
 
-    public static IRpcFuture dialyze(final IOtpRpc backend,
+    public static RpcFuture dialyze(final IOtpRpc backend,
             final Collection<String> files, final Collection<String> pltPaths,
             final Collection<IPath> includeDirs, final boolean fromSource,
             final Object noCheckPLT) throws RpcException {

@@ -51,7 +51,7 @@ import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ResourceUtil;
 import org.erlide.runtime.api.IOtpRpc;
-import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 
@@ -387,7 +387,7 @@ public final class BuilderHelper {
         }
     }
 
-    public IRpcFuture startCompileErl(final IProject project, final BuildResource bres,
+    public RpcFuture startCompileErl(final IProject project, final BuildResource bres,
             final String outputDir0, final IOtpRpc backend,
             final OtpErlangList compilerOptions, final boolean force) {
         final IPath projectPath = project.getLocation();
@@ -466,7 +466,7 @@ public final class BuilderHelper {
         return beamPath;
     }
 
-    public IRpcFuture startCompileYrl(final IProject project, final IResource resource,
+    public RpcFuture startCompileYrl(final IProject project, final IResource resource,
             final IOtpRpc backend, final OtpErlangList compilerOptions) {
         MarkerUtils.deleteMarkers(resource);
         // try {
@@ -512,7 +512,7 @@ public final class BuilderHelper {
 
     public void compileErl(final @NonNull IProject project, final BuildResource resource,
             final String outputDir, final IOtpRpc b, final OtpErlangList compilerOptions) {
-        final IRpcFuture res = startCompileErl(project, resource, outputDir, b,
+        final RpcFuture res = startCompileErl(project, resource, outputDir, b,
                 compilerOptions, true);
         if (res == null) {
             ErlLogger.warn("error compiling erl file: "
@@ -529,7 +529,7 @@ public final class BuilderHelper {
 
     public void compileYrl(final @NonNull IProject project, final BuildResource resource,
             final IOtpRpc b, final OtpErlangList compilerOptions) {
-        final IRpcFuture res = startCompileYrl(project, resource.getResource(), b,
+        final RpcFuture res = startCompileYrl(project, resource.getResource(), b,
                 compilerOptions);
         if (res == null) {
             ErlLogger.warn("error compiling yrl file: "
@@ -544,7 +544,7 @@ public final class BuilderHelper {
         }
     }
 
-    public static IRpcFuture compileErl(final IOtpRpc backend, final IPath fn,
+    public static RpcFuture compileErl(final IOtpRpc backend, final IPath fn,
             final String outputdir, final Collection<IPath> includedirs,
             final OtpErlangList compilerOptions) {
         final List<String> incs = Lists.newArrayList();
@@ -560,7 +560,7 @@ public final class BuilderHelper {
         }
     }
 
-    public static IRpcFuture compileYrl(final IOtpRpc backend, final String fn,
+    public static RpcFuture compileYrl(final IOtpRpc backend, final String fn,
             final String output) {
         try {
             return backend.async_call(ERLIDE_BUILDER, "compile_yrl", "ss", fn, output);
