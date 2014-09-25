@@ -1,6 +1,6 @@
 package org.erlide.engine.services.parsing;
 
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.api.ParserException;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
@@ -14,9 +14,9 @@ import com.google.common.base.Preconditions;
 
 public class RuntimeHelper {
 
-    private final IRpcSite target;
+    private final IOtpRpc target;
 
-    public RuntimeHelper(final IRpcSite target) {
+    public RuntimeHelper(final IOtpRpc target) {
         Preconditions.checkArgument(target != null);
         this.target = target;
     }

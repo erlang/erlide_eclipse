@@ -21,7 +21,7 @@ import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.core.ErlangCore;
 import org.erlide.runtime.api.ErlDebugFlags;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.util.ErlLogger;
 
@@ -41,10 +41,10 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
             final String moduleName) {
         try {
             final ErlangDebugTarget erlangDebugTarget = debugTargetOfBackend(backend
-                    .getRpcSite());
+                    .getOtpRpc());
             if (erlangDebugTarget != null
                     && erlangDebugTarget.getInterpretedModules().contains(moduleName)) {
-                if (isModuleRunningInInterpreter(erlangDebugTarget, backend.getRpcSite(),
+                if (isModuleRunningInInterpreter(erlangDebugTarget, backend.getOtpRpc(),
                         moduleName)) {
                     abortContinueDialog(erlangDebugTarget);
                 } else {
@@ -64,13 +64,13 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
         }
     }
 
-    private ErlangDebugTarget debugTargetOfBackend(final IRpcSite backend) {
+    private ErlangDebugTarget debugTargetOfBackend(final IOtpRpc backend) {
         final IDebugTarget[] debugTargets = DebugPlugin.getDefault().getLaunchManager()
                 .getDebugTargets();
         for (final IDebugTarget debugTarget : debugTargets) {
             if (debugTarget instanceof ErlangDebugTarget) {
                 final ErlangDebugTarget erlangDebugTarget = (ErlangDebugTarget) debugTarget;
-                if (erlangDebugTarget.getBackend().getRpcSite().equals(backend)) {
+                if (erlangDebugTarget.getBackend().getOtpRpc().equals(backend)) {
                     return erlangDebugTarget;
                 }
             }
@@ -125,7 +125,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
     }
 
     private boolean isModuleRunningInInterpreter(
-            final ErlangDebugTarget erlangDebugTarget, final IRpcSite backend,
+            final ErlangDebugTarget erlangDebugTarget, final IOtpRpc backend,
             final String moduleName) {
         for (final OtpErlangPid metaPid : erlangDebugTarget.getAllMetaPids()) {
             final List<String> allModulesOnStack = ErlideDebug.getAllModulesOnStack(

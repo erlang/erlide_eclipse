@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.erlide.runtime.api.IErlRuntime;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;
@@ -33,7 +33,7 @@ import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
-public class RpcSite implements IRpcSite {
+public class OtpRpc implements IOtpRpc {
 
     private static final OtpErlangAtom USER_ATOM = new OtpErlangAtom("user");
 
@@ -57,7 +57,7 @@ public class RpcSite implements IRpcSite {
     private final OtpNode localNode;
     private volatile boolean connected;
 
-    public RpcSite(final IErlRuntime runtime, final OtpNode localNode,
+    public OtpRpc(final IErlRuntime runtime, final OtpNode localNode,
             final String nodeName) {
         this.runtime = runtime;
         this.localNode = localNode;

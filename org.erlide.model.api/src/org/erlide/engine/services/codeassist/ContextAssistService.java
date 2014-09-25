@@ -2,7 +2,7 @@ package org.erlide.engine.services.codeassist;
 
 import java.util.Collection;
 
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 
@@ -16,7 +16,7 @@ public interface ContextAssistService {
 
     Collection<String> getVariables(String src, String prefix);
 
-    RecordCompletion checkRecordCompletion(IRpcSite buildBackend, String substring);
+    RecordCompletion checkRecordCompletion(IOtpRpc buildBackend, String substring);
 
     OtpErlangList getFunctionHead(String name, int arity);
 

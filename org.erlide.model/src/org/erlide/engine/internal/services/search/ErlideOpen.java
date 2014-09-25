@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.model.SourcePathUtils;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OpenService;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
@@ -26,10 +26,10 @@ public class ErlideOpen implements OpenService {
 
     private static final String ERLIDE_OPEN = "erlide_open";
 
-    private final IRpcSite ideBackend;
+    private final IOtpRpc ideBackend;
     private final String stateDir;
 
-    public ErlideOpen(final IRpcSite backend, final String stateDir) {
+    public ErlideOpen(final IOtpRpc backend, final String stateDir) {
         ideBackend = backend;
         this.stateDir = stateDir;
     }
@@ -102,7 +102,7 @@ public class ErlideOpen implements OpenService {
     }
 
     @Override
-    public List<ExternalTreeEntry> getExternalModuleTree(final IRpcSite backend,
+    public List<ExternalTreeEntry> getExternalModuleTree(final IOtpRpc backend,
             final String externalModules, final OtpErlangList pathVars) {
         ErlLogger.debug("open:external_module_tree -> " + externalModules);
         final Stopwatch stopwatch = Stopwatch.createStarted();
@@ -159,7 +159,7 @@ public class ErlideOpen implements OpenService {
     }
 
     @Override
-    public OtpErlangList getOtpLibStructure(final IRpcSite backend) {
+    public OtpErlangList getOtpLibStructure(final IOtpRpc backend) {
         try {
             final OtpErlangObject res = backend.call(ERLIDE_OPEN,
                     "get_otp_lib_structure", "s", stateDir);

@@ -46,7 +46,7 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OtpDocService;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.ui.actions.OpenUtils;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -280,7 +280,7 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
             if (erlProject == null) {
                 return null;
             }
-            final IRpcSite backend = BackendCore.getBuildBackend(erlProject);
+            final IOtpRpc backend = BackendCore.getBuildBackend(erlProject);
             if (backend == null) {
                 return null;
             }

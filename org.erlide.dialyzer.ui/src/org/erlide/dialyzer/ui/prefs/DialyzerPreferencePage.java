@@ -68,7 +68,7 @@ import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.ErlElementKind;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.prefs.ProjectSelectionDialog;
 import org.erlide.util.ErlLogger;
@@ -654,7 +654,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
                     final IErlProject eproject = ErlangEngine.getInstance().getModel()
                             .findProject(project);
                     if (eproject != null) {
-                        final IRpcSite backend = BackendCore.getBuildBackend(eproject);
+                        final IOtpRpc backend = BackendCore.getBuildBackend(eproject);
                         for (final String pltPath : selectedPLTPaths) {
                             checkPlt(pltPath, alternatePltFileDirectory, monitor, backend);
                         }
@@ -717,7 +717,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
         private void checkPlt(final String pltPath,
                 final String alternatePltFileDirectory, final IProgressMonitor monitor,
-                final IRpcSite backend) throws DialyzerErrorException, ErlModelException,
+                final IOtpRpc backend) throws DialyzerErrorException, ErlModelException,
                 RpcException {
             try {
                 monitor.subTask("Checking PLT file " + pltPath);

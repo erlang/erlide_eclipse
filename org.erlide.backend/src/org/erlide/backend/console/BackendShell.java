@@ -54,8 +54,8 @@ public class BackendShell implements IBackendShell {
 
     @Override
     public void close() {
-        if (server != null && backend.getRpcSite() != null) {
-            backend.getRpcSite().send(server, new OtpErlangAtom("stop"));
+        if (server != null && backend.getOtpRpc() != null) {
+            backend.getOtpRpc().send(server, new OtpErlangAtom("stop"));
         }
         server = null;
     }
@@ -63,7 +63,7 @@ public class BackendShell implements IBackendShell {
     @Override
     public void send(final String string) {
         if (server != null) {
-            backend.getRpcSite().send(
+            backend.getOtpRpc().send(
                     server,
                     OtpErlang.mkTuple(new OtpErlangAtom("input"), new OtpErlangString(
                             string)));

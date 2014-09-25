@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
@@ -17,7 +17,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlideXref {
     private static final String ERLIDE_XREF = "erlide_xref";
 
-    public static void addDirs(final IRpcSite backend, final Collection<String> dirs) {
+    public static void addDirs(final IOtpRpc backend, final Collection<String> dirs) {
         try {
             backend.call(ERLIDE_XREF, "add_dirs", "ls", dirs);
         } catch (final RpcException e) {
@@ -25,7 +25,7 @@ public class ErlideXref {
         }
     }
 
-    public static List<String> modules(final IRpcSite backend) {
+    public static List<String> modules(final IOtpRpc backend) {
         final ArrayList<String> result = new ArrayList<String>();
         try {
             final OtpErlangObject res = backend.call(ERLIDE_XREF, "modules", "");
@@ -45,13 +45,13 @@ public class ErlideXref {
         return result;
     }
 
-    public static void setScope(final IRpcSite backend, final List<String> scope) {
+    public static void setScope(final IOtpRpc backend, final List<String> scope) {
         final List<String> mods = modules(backend);
         removeModules(backend, mods);
         addDirs(backend, scope);
     }
 
-    private static void removeModules(final IRpcSite backend, final List<String> mods) {
+    private static void removeModules(final IOtpRpc backend, final List<String> mods) {
         try {
             backend.call(ERLIDE_XREF, "remove_modules", "ls", mods);
         } catch (final RpcException e) {

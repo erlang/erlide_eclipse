@@ -45,7 +45,7 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.engine.ErlangEngine;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangEventHandler;
 import org.erlide.ui.util.DisplayUtils;
@@ -100,7 +100,7 @@ public class ProcessListView extends ViewPart {
 
         @Override
         public Object[] getElements(final Object parent) {
-            final IRpcSite backend = getBackend().getRpcSite();
+            final IOtpRpc backend = getBackend().getOtpRpc();
             if (backend == null) {
                 return new OtpErlangObject[] {};
             }
@@ -246,7 +246,7 @@ public class ProcessListView extends ViewPart {
             @Override
             public void apply(final IBackend b) {
                 ErlangEngine.getInstance().getProclistService()
-                        .processListInit(b.getRpcSite());
+                        .processListInit(b.getOtpRpc());
             }
         });
     }
@@ -315,7 +315,7 @@ public class ProcessListView extends ViewPart {
                         .elementAt(0);
 
                 final OtpErlangObject r = ErlangEngine.getInstance().getProclistService()
-                        .getProcessInfo(getBackend().getRpcSite(), pid);
+                        .getProcessInfo(getBackend().getOtpRpc(), pid);
                 if (r instanceof OtpErlangList) {
                     final OtpErlangList l = (OtpErlangList) r;
                     final StringBuilder s = new StringBuilder();

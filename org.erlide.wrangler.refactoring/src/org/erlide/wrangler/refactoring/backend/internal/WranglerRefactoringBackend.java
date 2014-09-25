@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend.internal;
 
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.IRpcMessage;
@@ -36,7 +36,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
     final static public String INSPECTION_MODULE = "inspec_lib";
     final static protected String RENAME_FUNCTION = "rename_fun_eclipse";
 
-    protected IRpcSite backend;
+    protected IOtpRpc backend;
     public static final int UNLIMITED_TIMEOUT = Integer.MAX_VALUE;
 
     /**
@@ -45,7 +45,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      * @param backend
      *            Erlide backend
      */
-    public WranglerRefactoringBackend(final IRpcSite backend) {
+    public WranglerRefactoringBackend(final IOtpRpc backend) {
         this.backend = backend;
     }
 

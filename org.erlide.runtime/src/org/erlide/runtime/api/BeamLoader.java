@@ -13,7 +13,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class BeamLoader {
 
-    public static boolean loadBeam(final IRpcSite backend, final String moduleName,
+    public static boolean loadBeam(final IOtpRpc backend, final String moduleName,
             final OtpErlangBinary bin) {
         OtpErlangObject r = null;
         try {
@@ -42,7 +42,7 @@ public class BeamLoader {
         return false;
     }
 
-    public static void reloadAllCode(final IRpcSite backend) {
+    public static void reloadAllCode(final IOtpRpc backend) {
         try {
             final OtpErlangList loaded = (OtpErlangList) backend.call("code",
                     "all_loaded", "");

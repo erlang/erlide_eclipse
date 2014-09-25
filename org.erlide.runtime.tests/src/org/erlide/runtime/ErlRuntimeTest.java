@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -64,7 +64,7 @@ public class ErlRuntimeTest {
         }
         assertThat("bad exit value", val, is(-1));
         assertThat("not running", runtime.isRunning(), is(true));
-        final IRpcSite site = runtime.getRpcSite();
+        final IOtpRpc site = runtime.getOtpRpc();
         OtpErlangObject r;
         try {
             r = site.call("erlang", "now", "");
@@ -81,7 +81,7 @@ public class ErlRuntimeTest {
 
     @Test
     public void shutdownIsDetected() {
-        final IRpcSite site = runtime.getRpcSite();
+        final IOtpRpc site = runtime.getOtpRpc();
         try {
             site.cast("erlang", "halt", "i", 0);
         } catch (final RpcException e1) {
@@ -91,7 +91,7 @@ public class ErlRuntimeTest {
 
     @Test
     public void exitCodeIsDetected() {
-        final IRpcSite site = runtime.getRpcSite();
+        final IOtpRpc site = runtime.getOtpRpc();
         try {
             site.cast("erlang", "halt", "i", 3);
         } catch (final RpcException e1) {
@@ -107,7 +107,7 @@ public class ErlRuntimeTest {
 
     @Test
     public void haltIsDetected() throws RpcException {
-        runtime.getRpcSite().cast("erlang", "halt", "i", 136);
+        runtime.getOtpRpc().cast("erlang", "halt", "i", 136);
         expect(runtime, process, 136, State.FAILED);
     }
 
@@ -147,7 +147,7 @@ public class ErlRuntimeTest {
         assertThat("running", runtime2.isRunning(), is(true));
         assertThat("beam process", process2, is(nullValue()));
 
-        final IRpcSite site = runtime2.getRpcSite();
+        final IOtpRpc site = runtime2.getOtpRpc();
         OtpErlangObject r;
         try {
             r = site.call("erlang", "now", "");

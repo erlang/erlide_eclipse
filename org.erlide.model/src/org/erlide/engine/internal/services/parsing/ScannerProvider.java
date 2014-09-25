@@ -2,13 +2,13 @@ package org.erlide.engine.internal.services.parsing;
 
 import org.erlide.engine.services.parsing.ScannerProviderService;
 import org.erlide.engine.services.parsing.ScannerService;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 
 public class ScannerProvider implements ScannerProviderService {
 
-    private final IRpcSite backend;
+    private final IOtpRpc backend;
 
-    public ScannerProvider(final IRpcSite backend) {
+    public ScannerProvider(final IOtpRpc backend) {
         this.backend = backend;
     }
 

@@ -10,7 +10,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
-public interface IRpcSite {
+public interface IOtpRpc {
 
     // y
     RpcResult call_noexception(final String m, final String f, final String signature,

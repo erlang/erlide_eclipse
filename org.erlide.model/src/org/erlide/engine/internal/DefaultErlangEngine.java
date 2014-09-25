@@ -53,8 +53,8 @@ import org.erlide.engine.services.search.OtpDocService;
 import org.erlide.engine.services.search.SearchServerService;
 import org.erlide.engine.services.search.XrefService;
 import org.erlide.engine.services.text.IndentService;
-import org.erlide.engine.util.RpcSiteFactory;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.engine.util.OtpRpcFactory;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.Bundle;
@@ -93,7 +93,7 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
     }
 
     private Object injectParameter(final Class<?> paramType) {
-        if (IRpcSite.class == paramType) {
+        if (IOtpRpc.class == paramType) {
             return backend;
         }
         if (IErlModel.class == paramType) {
@@ -120,7 +120,7 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
         implementations.put(SystemInfoService.class, SystemInfo.class);
     }
 
-    private IRpcSite backend;
+    private IOtpRpc backend;
     private volatile ErlModel erlangModel;
 
     @Override
@@ -254,7 +254,7 @@ public class DefaultErlangEngine implements IErlangEngine, IExecutableExtension 
     @Override
     public void setInitializationData(final IConfigurationElement config,
             final String propertyName, final Object data) throws CoreException {
-        backend = RpcSiteFactory.getRpcSite();
+        backend = OtpRpcFactory.getOtpRpc();
     }
 
 }

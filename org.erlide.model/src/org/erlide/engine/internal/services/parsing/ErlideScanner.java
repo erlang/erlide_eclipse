@@ -13,7 +13,7 @@ import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.parsing.InternalScanner;
 import org.erlide.engine.services.parsing.ScannerException;
 import org.erlide.engine.services.parsing.SimpleScannerService;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;
@@ -29,9 +29,9 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
             "latin1");
     private static final boolean USE_CACHE = true;
 
-    private final IRpcSite backend;
+    private final IOtpRpc backend;
 
-    public ErlideScanner(final IRpcSite backend) {
+    public ErlideScanner(final IOtpRpc backend) {
         this.backend = backend;
     }
 

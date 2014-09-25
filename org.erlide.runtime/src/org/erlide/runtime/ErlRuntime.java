@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.erlide.runtime.api.IErlRuntime;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.api.IShutdownCallback;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.events.ErlEvent;
@@ -24,7 +24,7 @@ import org.erlide.runtime.internal.ErlRuntimeException;
 import org.erlide.runtime.internal.ErlRuntimeReporter;
 import org.erlide.runtime.internal.EventParser;
 import org.erlide.runtime.internal.LocalNodeCreator;
-import org.erlide.runtime.internal.rpc.RpcSite;
+import org.erlide.runtime.internal.rpc.OtpRpc;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 
@@ -51,7 +51,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     final ErlRuntimeReporter reporter;
     private OtpMbox eventMBox;
     private IShutdownCallback callback;
-    private IRpcSite rpcSite;
+    private IOtpRpc OtpRpc;
     private final EventBus eventBus;
     protected volatile boolean stopped;
     private final EventParser eventHelper;
@@ -80,9 +80,9 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         localNode = LocalNodeCreator.startLocalNode(this, data.getCookie(),
                 data.hasLongName());
         eventMBox = createMbox("rex");
-        rpcSite = new RpcSite(this, localNode, getNodeName());
+        OtpRpc = new OtpRpc(this, localNode, getNodeName());
         connect();
-        rpcSite.setConnected(true);
+        OtpRpc.setConnected(true);
 
         if (!waitForCodeServer()) {
             triggerShutdown();
@@ -100,7 +100,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
             callback.onShutdown();
         }
         callback = null;
-        rpcSite.setConnected(false);
+        OtpRpc.setConnected(false);
     }
 
     @Override
@@ -184,13 +184,13 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     }
 
     @Override
-    public IRpcSite getRpcSite() {
+    public IOtpRpc getOtpRpc() {
         try {
             awaitTerminated(20, TimeUnit.MILLISECONDS);
             return null;
         } catch (final TimeoutException e) {
             awaitRunning();
-            return rpcSite;
+            return OtpRpc;
         }
     }
 
@@ -237,7 +237,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
             int i = 30;
             boolean gotIt = false;
             do {
-                r = rpcSite.call("erlang", "whereis", "a", "code_server");
+                r = OtpRpc.call("erlang", "whereis", "a", "code_server");
                 gotIt = !(r instanceof OtpErlangPid);
                 if (!gotIt) {
                     try {
@@ -266,7 +266,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     }
 
     public void triggerCrashed() {
-        rpcSite.setConnected(false);
+        OtpRpc.setConnected(false);
         crashed = true;
     }
 

@@ -224,13 +224,13 @@ public class InternalBuilder extends ErlangBuilder {
                 final String outputDir = erlProject.getProperties().getOutputDir()
                         .toString();
                 final IRpcFuture f = helper.startCompileErl(project, bres, outputDir,
-                        backend.getRpcSite(), compilerOptions, kind == BuildKind.FULL);
+                        backend.getOtpRpc(), compilerOptions, kind == BuildKind.FULL);
                 if (f != null) {
                     results.put(f, resource);
                 }
             } else if ("yrl".equals(resource.getFileExtension())) {
                 final IRpcFuture f = helper.startCompileYrl(project, resource,
-                        backend.getRpcSite(), compilerOptions);
+                        backend.getOtpRpc(), compilerOptions);
                 if (f != null) {
                     results.put(f, resource);
                 }
@@ -256,7 +256,7 @@ public class InternalBuilder extends ErlangBuilder {
                 if (r != null) {
                     final IResource resource = result.getValue();
 
-                    helper.completeCompile(project, resource, r, backend.getRpcSite(),
+                    helper.completeCompile(project, resource, r, backend.getOtpRpc(),
                             compilerOptions);
                     notifier.compiled(resource);
 
@@ -269,7 +269,7 @@ public class InternalBuilder extends ErlangBuilder {
         helper.refreshOutputDir(project);
 
         try {
-            helper.checkForClashes(backend.getRpcSite(), project);
+            helper.checkForClashes(backend.getOtpRpc(), project);
         } catch (final Exception e) {
         }
         backend.removeProjectPath(model.findProject(project));
@@ -360,7 +360,7 @@ public class InternalBuilder extends ErlangBuilder {
             }
             final IBackend backend = BackendCore.getBackendManager().getBuildBackend(
                     eproject);
-            backend.getRpcSite().call("erlide_builder", "compile_app_src", "ssla",
+            backend.getOtpRpc().call("erlide_builder", "compile_app_src", "ssla",
                     appSrc, destPath, modules);
         } catch (final Exception e) {
             ErlLogger.error(e);

@@ -84,7 +84,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public String getRegisteredName() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "registered_name");
         if (res != null) {
             return res.toString();
@@ -93,7 +93,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public OtpErlangTuple getCurrentFunction() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "current_function");
         return (OtpErlangTuple) res;
     }
@@ -106,7 +106,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public long getReductions() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "reductions");
         if (res != null) {
             return ((OtpErlangLong) res).longValue();
@@ -115,25 +115,25 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public OtpErlangObject getDictionary() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "dictionary");
         return res;
     }
 
     public OtpErlangObject getErrorHandler() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "error_handler");
         return res;
     }
 
     public OtpErlangObject getGroupLeader() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "group_leader");
         return res;
     }
 
     public OtpErlangObject getHeapSize() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "heap_size");
         return res;
     }
@@ -147,31 +147,31 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public OtpErlangObject getLinks() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "links");
         return res;
     }
 
     public OtpErlangObject getMessageQueueLen() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "message_queue_len");
         return res;
     }
 
     public OtpErlangObject getMessages() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "messages");
         return res;
     }
 
     public OtpErlangObject getErlPriority() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "priority");
         return res;
     }
 
     public OtpErlangObject getStackSize() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "stack_size");
         return res;
     }
@@ -195,13 +195,13 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
     public boolean getTrapExit() {
         final OtpErlangAtom res = (OtpErlangAtom) ErlideDebug.getProcessInfo(
-                fBackend.getRpcSite(), fPid, "trap_exit");
+                fBackend.getOtpRpc(), fPid, "trap_exit");
         return Boolean.parseBoolean(res.atomValue());
     }
 
     public void getStackAndBindings(final String module, final int line) {
         final OtpErlangTuple stackAndBindings = ErlideDebug.getAllStackframes(
-                fBackend.getRpcSite(), getMeta());
+                fBackend.getOtpRpc(), getMeta());
         if (stackAndBindings == null) {
             ErlLogger.warn("could not retrieve stack -"
                     + "- are there more than one debug sessions started?");
@@ -301,25 +301,25 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public OtpErlangObject getLastCalls() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "last_calls");
         return res;
     }
 
     public OtpErlangObject getMemory() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "memory");
         return res;
     }
 
     public OtpErlangObject getMonitoredBy() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "monitored_by");
         return res;
     }
 
     public OtpErlangObject getMonitors() {
-        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getRpcSite(),
+        final OtpErlangObject res = ErlideDebug.getProcessInfo(fBackend.getOtpRpc(),
                 fPid, "monitors");
         return res;
     }
@@ -479,11 +479,11 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public boolean isSystemProcess() {
-        return ErlideDebug.isSystemProcess(fBackend.getRpcSite(), fPid);
+        return ErlideDebug.isSystemProcess(fBackend.getOtpRpc(), fPid);
     }
 
     public boolean isErlideProcess() {
-        return ErlideDebug.isErlideProcess(fBackend.getRpcSite(), fPid);
+        return ErlideDebug.isErlideProcess(fBackend.getOtpRpc(), fPid);
     }
 
     /**
@@ -504,7 +504,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     public void setTracing(final boolean tracing) {
         if (fTracing != tracing) {
             fTracing = tracing;
-            ErlideDebug.tracing(fBackend.getRpcSite(), tracing, getMeta());
+            ErlideDebug.tracing(fBackend.getOtpRpc(), tracing, getMeta());
         }
     }
 
@@ -513,7 +513,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public void dropToFrame(final int stackFrameNo) throws DebugException {
-        if (!ErlideDebug.dropToFrame(fBackend.getRpcSite(), getMeta(), stackFrameNo)) {
+        if (!ErlideDebug.dropToFrame(fBackend.getOtpRpc(), getMeta(), stackFrameNo)) {
             final IStatus s = new Status(IStatus.ERROR, BackendActivator.PLUGIN_ID,
                     DebugException.REQUEST_FAILED, "frame not found", null);
             throw new DebugException(s);

@@ -1,7 +1,7 @@
 package org.erlide.engine.internal.services.proclist;
 
 import org.erlide.engine.services.proclist.ProclistService;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -13,7 +13,7 @@ public class ErlideProclist implements ProclistService {
     public static final String MODULE_NAME = "erlide_proclist";
 
     @Override
-    public void processListInit(final IRpcSite b) {
+    public void processListInit(final IOtpRpc b) {
         if (b == null) {
             return;
         }
@@ -25,7 +25,7 @@ public class ErlideProclist implements ProclistService {
     }
 
     @Override
-    public OtpErlangList getProcessList(final IRpcSite b) {
+    public OtpErlangList getProcessList(final IOtpRpc b) {
         if (b == null) {
             return new OtpErlangList();
         }
@@ -39,7 +39,7 @@ public class ErlideProclist implements ProclistService {
     }
 
     @Override
-    public OtpErlangObject getProcessInfo(final IRpcSite b, final OtpErlangPid pid) {
+    public OtpErlangObject getProcessInfo(final IOtpRpc b, final OtpErlangPid pid) {
         if (b == null) {
             return new OtpErlangAtom("error");
         }

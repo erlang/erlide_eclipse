@@ -12,7 +12,7 @@ public class ErlideReshd implements ShellService {
     @Override
     public OtpErlangPid start(final IErlRuntime runtime) {
         try {
-            final OtpErlangObject r = runtime.getRpcSite().call("erlide_shell", "start",
+            final OtpErlangObject r = runtime.getOtpRpc().call("erlide_shell", "start",
                     "p", runtime.getEventPid());
             final OtpErlangPid server = (OtpErlangPid) BackendUtils.ok(r);
             return server;

@@ -12,7 +12,7 @@ package org.erlide.engine.internal.services.parsing;
 
 import org.erlide.engine.services.parsing.ErlToken;
 import org.erlide.engine.services.parsing.ScannerService;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 
 /**
  * Erlang syntax scanner
@@ -21,7 +21,7 @@ public class ErlScanner implements ScannerService {
     private final String name;
     private final ErlideScanner scanner;
 
-    public ErlScanner(final IRpcSite backend, final String name) {
+    public ErlScanner(final IOtpRpc backend, final String name) {
         this.name = name;
         scanner = new ErlideScanner(backend);
         scanner.create(name);

@@ -3,7 +3,7 @@ package org.erlide.engine.internal.services.parsing;
 import java.util.List;
 
 import org.erlide.engine.services.parsing.SimpleParserService;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcResult;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -12,9 +12,9 @@ import com.google.common.collect.Lists;
 
 public class ErlideParser implements SimpleParserService {
 
-    private final IRpcSite backend;
+    private final IOtpRpc backend;
 
-    public ErlideParser(final IRpcSite backend) {
+    public ErlideParser(final IOtpRpc backend) {
         this.backend = backend;
     }
 

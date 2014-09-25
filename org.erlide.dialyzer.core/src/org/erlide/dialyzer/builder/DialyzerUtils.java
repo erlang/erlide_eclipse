@@ -24,7 +24,7 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
@@ -89,7 +89,7 @@ public class DialyzerUtils {
             monitor.subTask(fileNames);
             ErlLogger.trace("dialyzer", "run %s", fileNames);
 
-            final IRpcSite b = backend.getRpcSite();
+            final IOtpRpc b = backend.getOtpRpc();
             final IRpcFuture future = ErlideDialyze.dialyze(b, files, pltPaths,
                     includeDirs, fromSource, noCheckPLT);
 
@@ -121,7 +121,7 @@ public class DialyzerUtils {
         }
     }
 
-    private static void processResult(final IRpcSite backend, final OtpErlangObject o)
+    private static void processResult(final IOtpRpc backend, final OtpErlangObject o)
             throws DialyzerErrorException {
         if (o instanceof OtpErlangTuple) {
             final OtpErlangTuple t = (OtpErlangTuple) o;

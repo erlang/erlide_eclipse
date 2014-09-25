@@ -30,7 +30,7 @@ public interface IErlRuntime extends IDisposable {
 
     String getOtpHome();
 
-    IRpcSite getRpcSite();
+    IOtpRpc getOtpRpc();
 
     OtpMbox createMbox(String string);
 

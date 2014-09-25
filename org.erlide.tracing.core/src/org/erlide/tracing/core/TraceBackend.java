@@ -180,7 +180,7 @@ public class TraceBackend {
                                 .getPreferenceStore().getInt(PreferenceNames.TICK_TIME);
                         final OtpErlangInt netTickTime = new OtpErlangInt(tickTimeValue);
 
-                        final OtpErlangObject callResult = tracerBackend.getRpcSite()
+                        final OtpErlangObject callResult = tracerBackend.getOtpRpc()
                                 .call(Constants.ERLANG_HELPER_MODULE, FUN_START, "xsi",
                                         nodes, Constants.OUTPUT_FILE, netTickTime);
                         status = processResult(callResult);
@@ -245,11 +245,11 @@ public class TraceBackend {
                         matchSpec = new OtpErlangList();
                     }
                     if (tracePattern.getArity() < 0) {
-                        tracerBackend.getRpcSite().call(Constants.TTB_MODULE, function,
+                        tracerBackend.getOtpRpc().call(Constants.TTB_MODULE, function,
                                 "aax", tracePattern.getModuleName(),
                                 tracePattern.getFunctionName(), matchSpec);
                     } else {
-                        tracerBackend.getRpcSite().call(Constants.TTB_MODULE, function,
+                        tracerBackend.getOtpRpc().call(Constants.TTB_MODULE, function,
                                 "aaxx", tracePattern.getModuleName(),
                                 tracePattern.getFunctionName(),
                                 new OtpErlangInt(tracePattern.getArity()), matchSpec);
@@ -267,7 +267,7 @@ public class TraceBackend {
             if (processes != null) {
                 for (final TracedProcess process : processes) {
                     if (process.isSelected()) {
-                        tracerBackend.getRpcSite().call(Constants.TTB_MODULE, FUN_P,
+                        tracerBackend.getOtpRpc().call(Constants.TTB_MODULE, FUN_P,
                                 "xx", process.getPid(),
                                 createProcessFlagsArray(process.getFlags()));
                     }
@@ -275,7 +275,7 @@ public class TraceBackend {
             }
         } else {
             // setting global flags
-            tracerBackend.getRpcSite().call(Constants.TTB_MODULE, FUN_P, "ax",
+            tracerBackend.getOtpRpc().call(Constants.TTB_MODULE, FUN_P, "ax",
                     processMode.toAtom(), createProcessFlagsArray(processFlags));
         }
     }
@@ -289,7 +289,7 @@ public class TraceBackend {
                 if (tracing && !loading) {
                     try {
                         loading = true;
-                        tracerBackend.getRpcSite().call(Constants.ERLANG_HELPER_MODULE,
+                        tracerBackend.getOtpRpc().call(Constants.ERLANG_HELPER_MODULE,
                                 FUN_STOP, "");
                     } catch (final RpcException e) {
                         ErlLogger.error("Could not stop tracing tool: " + e.getMessage());
@@ -317,7 +317,7 @@ public class TraceBackend {
                         handler = new TraceEventHandler(tracerBackend.getName());
                         getBackend(true);
                         tracerBackend.getRuntime().registerEventListener(handler);
-                        tracerBackend.getRpcSite().call(Constants.ERLANG_HELPER_MODULE,
+                        tracerBackend.getOtpRpc().call(Constants.ERLANG_HELPER_MODULE,
                                 FUN_FILE_INFO, "s", new OtpErlangString(path));
                     } catch (final RpcException e) {
                         ErlLogger.error(e);
@@ -353,7 +353,7 @@ public class TraceBackend {
                         tracerBackend.getRuntime().registerEventListener(handler);
                         final OtpErlangLong start = new OtpErlangLong(theStartIndex);
                         final OtpErlangLong stop = new OtpErlangLong(endIndex);
-                        tracerBackend.getRpcSite().call(Constants.ERLANG_HELPER_MODULE,
+                        tracerBackend.getOtpRpc().call(Constants.ERLANG_HELPER_MODULE,
                                 FUN_LOAD, "sii",
                                 new OtpErlangString(activeResultSet.getFileName()),
                                 start, stop);
