@@ -152,6 +152,9 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     }
 
     boolean isInputComplete() {
+        if (!backend.getRuntime().isRunning()) {
+            return false;
+        }
         try {
             final String str = consoleInputText.getText() + " ";
             final RuntimeHelper helper = new RuntimeHelper(backend.getRpcSite());
