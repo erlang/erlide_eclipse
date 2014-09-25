@@ -209,6 +209,17 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         return getClass().getSimpleName() + " " + getNodeName();
     }
 
+    private void connect() throws Exception {
+        final String label = getNodeName();
+        ErlLogger.debug(label + ": waiting connection to peer... ");
+
+        final boolean connected = pingPeer();
+        if (!connected) {
+            ErlLogger.error(COULD_NOT_CONNECT, getNodeName());
+            throw new Exception(COULD_NOT_CONNECT);
+        }
+    }
+
     private boolean pingPeer() {
         int tries = MAX_RETRIES;
         boolean ok = false;
@@ -218,25 +229,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
             tries--;
         }
         return ok;
-    }
-
-    private void connect() throws Exception {
-        final String label = getNodeName();
-        ErlLogger.debug(label + ": waiting connection to peer...");
-
-        try {
-            pingPeer();
-            int i = 0;
-            while (state() == State.NEW && i++ < 50) {
-                try {
-                    Thread.sleep(POLL_INTERVAL);
-                } catch (final InterruptedException e) {
-                }
-            }
-        } catch (final Exception e) {
-            ErlLogger.error(COULD_NOT_CONNECT, getNodeName());
-            throw e;
-        }
     }
 
     private boolean waitForCodeServer() {
