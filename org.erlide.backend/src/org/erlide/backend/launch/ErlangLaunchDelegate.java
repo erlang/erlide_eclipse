@@ -75,7 +75,9 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
 
     private BackendData getBackendData(final ILaunchConfiguration config,
             final String mode, final ILaunch launch) throws CoreException {
-        Preconditions.checkArgument(config != null);
+        if (config == null) {
+            throw new IllegalArgumentException();
+        }
 
         RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoCatalog().getRuntime(
                 config.getAttribute(ErlRuntimeAttributes.RUNTIME_NAME, ""));
