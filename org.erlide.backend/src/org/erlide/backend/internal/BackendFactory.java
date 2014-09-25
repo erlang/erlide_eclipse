@@ -20,9 +20,9 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
-import org.erlide.runtime.ErlRuntime;
-import org.erlide.runtime.ManagedErlRuntime;
-import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.ManagedOtpNodeProxy;
+import org.erlide.runtime.OtpNodeProxy;
+import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
@@ -57,13 +57,13 @@ public class BackendFactory implements IBackendFactory {
         ErlLogger.debug("Create backend " + data.getNodeName());
 
         final IBackend b;
-        IErlRuntime result;
+        IOtpNodeProxy result;
         if (data.isManaged()) {
-            result = new ManagedErlRuntime(data);
+            result = new ManagedOtpNodeProxy(data);
         } else {
-            result = new ErlRuntime(data);
+            result = new OtpNodeProxy(data);
         }
-        final IErlRuntime runtime = result;
+        final IOtpNodeProxy runtime = result;
         runtime.startAndWait();
 
         final IBackendManager backendManager = BackendCore.getBackendManager();

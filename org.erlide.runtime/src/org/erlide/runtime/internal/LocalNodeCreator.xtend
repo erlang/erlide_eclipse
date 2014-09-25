@@ -5,7 +5,7 @@ import com.ericsson.otp.erlang.OtpNodeStatus
 import com.google.common.base.Strings
 import java.io.IOException
 import java.net.Socket
-import org.erlide.runtime.ErlRuntime
+import org.erlide.runtime.OtpNodeProxy
 import org.erlide.util.ErlLogger
 import org.erlide.util.HostnameUtils
 import org.fishwife.jrugged.Initializable
@@ -24,7 +24,7 @@ class LocalNodeCreator {
         }
     }
 
-    static def OtpNode startLocalNode(ErlRuntime runtime, String cookie, boolean hasLongName) {
+    static def OtpNode startLocalNode(OtpNodeProxy runtime, String cookie, boolean hasLongName) {
         wait_for_epmd()
         val lNode = createOtpNode(cookie, hasLongName)
         val statusWatcher = new ErlideNodeStatus(runtime)
@@ -74,9 +74,9 @@ class LocalNodeCreator {
 }
 
 class ErlideNodeStatus extends OtpNodeStatus {
-    val ErlRuntime runtime
+    val OtpNodeProxy runtime
 
-    new(ErlRuntime runtime) {
+    new(OtpNodeProxy runtime) {
         this.runtime = runtime
     }
 

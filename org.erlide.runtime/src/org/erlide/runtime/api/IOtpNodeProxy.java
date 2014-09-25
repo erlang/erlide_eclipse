@@ -16,7 +16,7 @@ import org.erlide.util.IDisposable;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
-public interface IErlRuntime extends IDisposable {
+public interface IOtpNodeProxy extends IDisposable {
 
     void startAndWait();
 

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.erlide.backend.api.ICodeBundle.CodeContext;
-import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.api.IShutdownCallback;
 import org.erlide.runtime.shell.IBackendShell;
@@ -19,7 +19,7 @@ public interface IBackend extends IShutdownCallback, IDisposable, IPluginCodeLoa
 
     IOtpRpc getOtpRpc();
 
-    IErlRuntime getRuntime();
+    IOtpNodeProxy getRuntime();
 
     boolean isRunning();
 

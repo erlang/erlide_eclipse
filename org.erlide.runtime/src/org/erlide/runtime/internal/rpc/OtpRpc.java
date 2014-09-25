@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcResultCallback;
@@ -52,12 +52,12 @@ public class OtpRpc implements IOtpRpc {
     private static final ExecutorService threadPool = Executors
             .newCachedThreadPool(threadFactory);
 
-    private final IErlRuntime runtime;
+    private final IOtpNodeProxy runtime;
     private final String nodeName;
     private final OtpNode localNode;
     private volatile boolean connected;
 
-    public OtpRpc(final IErlRuntime runtime, final OtpNode localNode,
+    public OtpRpc(final IOtpNodeProxy runtime, final OtpNode localNode,
             final String nodeName) {
         this.runtime = runtime;
         this.localNode = localNode;

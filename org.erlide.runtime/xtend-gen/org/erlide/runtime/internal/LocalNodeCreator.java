@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.Socket;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Exceptions;
-import org.erlide.runtime.ErlRuntime;
+import org.erlide.runtime.OtpNodeProxy;
 import org.erlide.runtime.internal.ErlideNodeStatus;
 import org.erlide.runtime.internal.NodeNameCreator;
 import org.erlide.util.ErlLogger;
@@ -38,7 +38,7 @@ public class LocalNodeCreator {
     }
   }
   
-  public static OtpNode startLocalNode(final ErlRuntime runtime, final String cookie, final boolean hasLongName) {
+  public static OtpNode startLocalNode(final OtpNodeProxy runtime, final String cookie, final boolean hasLongName) {
     LocalNodeCreator.wait_for_epmd();
     final OtpNode lNode = LocalNodeCreator.createOtpNode(cookie, hasLongName);
     final ErlideNodeStatus statusWatcher = new ErlideNodeStatus(runtime);

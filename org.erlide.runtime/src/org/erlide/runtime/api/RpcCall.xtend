@@ -9,6 +9,7 @@ import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 @Accessors
 @FinalFieldsConstructor
 class RpcCall implements Callable<OtpErlangObject> {
+    val IOtpRpc rpc
     val String module
     val String function
     val String signature
@@ -33,6 +34,8 @@ class RpcCall implements Callable<OtpErlangObject> {
     }
 
     override call() throws Exception {
+        // TODO
+        rpc.call(module, function, signature, args)
     }
 
 }

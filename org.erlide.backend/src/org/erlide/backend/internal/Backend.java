@@ -38,7 +38,7 @@ import org.erlide.backend.debug.ErlideDebug;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.BeamLoader;
-import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.api.InitialCall;
 import org.erlide.runtime.shell.IBackendShell;
@@ -52,7 +52,7 @@ import com.google.common.collect.Lists;
 
 public abstract class Backend implements IStreamListener, IBackend {
 
-    private final IErlRuntime runtime;
+    private final IOtpNodeProxy runtime;
     private BackendShellManager shellManager;
     private final CodeManager codeManager;
 
@@ -61,7 +61,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     protected final IBackendManager backendManager;
     private boolean disposed = false;
 
-    public Backend(final BackendData data, @NonNull final IErlRuntime runtime,
+    public Backend(final BackendData data, @NonNull final IOtpNodeProxy runtime,
             final IBackendManager backendManager) {
         this.runtime = runtime;
         this.data = data;
@@ -338,7 +338,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public IErlRuntime getRuntime() {
+    public IOtpNodeProxy getRuntime() {
         return runtime;
     }
 

@@ -13,7 +13,7 @@ package org.erlide.runtime;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.api.IShutdownCallback;
 import org.erlide.runtime.api.RuntimeData;
@@ -39,7 +39,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
 
-public class ErlRuntime extends AbstractExecutionThreadService implements IErlRuntime {
+public class OtpNodeProxy extends AbstractExecutionThreadService implements IOtpNodeProxy {
     private static final String COULD_NOT_CONNECT = "Could not connect to %s! Please check runtime settings.";
 
     private static final int MAX_RETRIES = 15;
@@ -61,7 +61,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
             .getProperty("erlide.event.daemon"));
     public static final long POLL_INTERVAL = 100;
 
-    public ErlRuntime(final RuntimeData data) {
+    public OtpNodeProxy(final RuntimeData data) {
         this.data = data;
         reporter = new ErlRuntimeReporter(data.isInternal());
 

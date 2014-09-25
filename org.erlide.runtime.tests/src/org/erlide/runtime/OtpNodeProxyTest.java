@@ -18,10 +18,10 @@ import org.junit.Test;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.util.concurrent.Service.State;
 
-public class ErlRuntimeTest {
+public class OtpNodeProxyTest {
 
     private Process process;
-    private ManagedErlRuntime runtime;
+    private ManagedOtpNodeProxy runtime;
     private RuntimeInfo info;
 
     @Before
@@ -38,7 +38,7 @@ public class ErlRuntimeTest {
         data.setLongName(false);
         data.setCookie("c");
 
-        runtime = new ManagedErlRuntime(data);
+        runtime = new ManagedOtpNodeProxy(data);
         runtime.startAsync();
         runtime.awaitRunning();
         process = runtime.getProcess();
@@ -111,11 +111,11 @@ public class ErlRuntimeTest {
         expect(runtime, process, 136, State.FAILED);
     }
 
-    private void expect(final ErlRuntime aRuntime, final Process aProcess,
+    private void expect(final OtpNodeProxy aRuntime, final Process aProcess,
             final int code, final State state) {
         while (aRuntime.isRunning()) {
             try {
-                Thread.sleep(ErlRuntime.POLL_INTERVAL);
+                Thread.sleep(OtpNodeProxy.POLL_INTERVAL);
             } catch (final InterruptedException e) {
             }
         }
@@ -139,7 +139,7 @@ public class ErlRuntimeTest {
         data.setCookie("c");
         data.setManaged(false);
 
-        final ErlRuntime runtime2 = new ErlRuntime(data);
+        final OtpNodeProxy runtime2 = new OtpNodeProxy(data);
         runtime2.startAsync();
         runtime2.awaitRunning();
 
