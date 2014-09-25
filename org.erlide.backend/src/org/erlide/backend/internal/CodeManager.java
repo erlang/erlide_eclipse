@@ -22,7 +22,7 @@ import org.erlide.backend.api.ICodeBundle;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.backend.debug.BeamUtil;
 import org.erlide.runtime.api.BeamLoader;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 
@@ -30,14 +30,14 @@ import com.ericsson.otp.erlang.OtpErlangBinary;
 
 public class CodeManager {
 
-    private final IRpcSite site;
+    private final IOtpRpc site;
     private final String backendName;
     private final List<PathItem> pathA;
     private final List<PathItem> pathZ;
     private final RuntimeVersion version;
 
     // only to be called by Backend
-    CodeManager(final IRpcSite site, final String backendName,
+    CodeManager(final IOtpRpc site, final String backendName,
             final RuntimeVersion version) {
         this.site = site;
         this.backendName = backendName;

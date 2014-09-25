@@ -4,7 +4,7 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.services.search.ErlSearchScope;
 import org.erlide.engine.services.search.ErlangSearchPattern;
 import org.erlide.engine.services.search.SearchServerService;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
@@ -21,9 +21,9 @@ public class ErlideSearchServer implements SearchServerService {
 
     private static final int SEARCH_LONG_TIMEOUT = 50000;
 
-    private final IRpcSite backend;
+    private final IOtpRpc backend;
 
-    public ErlideSearchServer(final IRpcSite backend) {
+    public ErlideSearchServer(final IOtpRpc backend) {
         this.backend = backend;
     }
 

@@ -147,6 +147,10 @@ public final class ErlToken {
         this.kind = kind;
     }
 
+    public ErlToken(final int kind, final int offset, final int length) {
+        this.kind = kind;
+    }
+
     public int getKind() {
         return kind;
     }

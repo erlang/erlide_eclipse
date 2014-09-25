@@ -45,7 +45,7 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.codeassist.RecordCompletion;
 import org.erlide.engine.services.search.ModelFindService;
 import org.erlide.engine.services.search.OtpDocService;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.HoverUtil;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
@@ -184,7 +184,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         }
     }
 
-    protected List<ICompletionProposal> getModules(final IRpcSite backend,
+    protected List<ICompletionProposal> getModules(final IOtpRpc backend,
             final int offset, final String prefix, final Kinds kind)
             throws ErlModelException {
         final List<ICompletionProposal> result = Lists.newArrayList();
@@ -388,7 +388,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         if (aProject == null) {
             return result;
         }
-        final IRpcSite backend = BackendCore.getBuildBackend(aProject);
+        final IOtpRpc backend = BackendCore.getBuildBackend(aProject);
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(
                     prefix,
@@ -524,7 +524,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         return result;
     }
 
-    List<ICompletionProposal> getVariables(final IRpcSite b, final int offset,
+    List<ICompletionProposal> getVariables(final IOtpRpc b, final int offset,
             final String prefix) throws BadLocationException {
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         // get variables
@@ -571,7 +571,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         return result;
     }
 
-    List<ICompletionProposal> getExternalCallCompletions(final IRpcSite b,
+    List<ICompletionProposal> getExternalCallCompletions(final IOtpRpc b,
             final String moduleName0, final int offset, final String prefix,
             final boolean arityOnly) throws CoreException {
         final ModelFindService modelFindService = ErlangEngine.getInstance()
@@ -639,7 +639,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         }
     }
 
-    List<ICompletionProposal> getAutoImportedFunctions(final IRpcSite backend,
+    List<ICompletionProposal> getAutoImportedFunctions(final IOtpRpc backend,
             final int offset, final String prefix) {
         final String stateDir = ErlangEngine.getInstance().getStateDir();
         final OtpErlangObject res = ErlangEngine.getInstance()
@@ -650,7 +650,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         return result;
     }
 
-    List<ICompletionProposal> getImportedFunctions(final IRpcSite backend,
+    List<ICompletionProposal> getImportedFunctions(final IOtpRpc backend,
             final int offset, final String prefix) {
         final String stateDir = ErlangEngine.getInstance().getStateDir();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
@@ -664,7 +664,7 @@ public abstract class AbstractErlContentAssistProcessor implements
         return result;
     }
 
-    List<ICompletionProposal> getTypeCompletions(final IRpcSite backend,
+    List<ICompletionProposal> getTypeCompletions(final IOtpRpc backend,
             final String moduleOrRecord, final int offset, final String prefix) {
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         for (final String builtin : getBuiltinTypeCompletions()) {

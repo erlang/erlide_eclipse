@@ -21,7 +21,7 @@ import org.erlide.core.builder.CompilerOptions;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlEditorActionBarContributor;
 
@@ -56,7 +56,7 @@ public class CompileAction extends Action {
         if (eproject == null) {
             return;
         }
-        final IRpcSite b = BackendCore.getBuildBackend(eproject);
+        final IOtpRpc b = BackendCore.getBuildBackend(eproject);
 
         final BuildResource bres = new BuildResource(resource);
         final CompilerOptions prefs = new CompilerOptions(project);

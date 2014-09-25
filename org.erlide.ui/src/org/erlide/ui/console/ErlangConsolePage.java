@@ -157,7 +157,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         }
         try {
             final String str = consoleInputText.getText() + " ";
-            final RuntimeHelper helper = new RuntimeHelper(backend.getRpcSite());
+            final RuntimeHelper helper = new RuntimeHelper(backend.getOtpRpc());
             final OtpErlangObject o = helper.parseConsoleInput(str);
             if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
                 return false;

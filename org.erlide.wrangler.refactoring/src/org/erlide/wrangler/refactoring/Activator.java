@@ -12,8 +12,8 @@ package org.erlide.wrangler.refactoring;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.erlide.engine.util.RpcSiteFactory;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.engine.util.OtpRpcFactory;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.util.ErlLogger;
 import org.osgi.framework.BundleContext;
@@ -52,8 +52,8 @@ public class Activator extends AbstractUIPlugin {
     public Activator() {
     }
 
-    public IRpcSite getBackend() {
-        return RpcSiteFactory.getRpcSite();
+    public IOtpRpc getBackend() {
+        return OtpRpcFactory.getOtpRpc();
     }
 
     /**
@@ -63,7 +63,7 @@ public class Activator extends AbstractUIPlugin {
      *             detailed exception about the loading process errors
      */
     private void initWrangler() throws CoreException {
-        final IRpcSite mb = getBackend();
+        final IOtpRpc mb = getBackend();
         RpcResult res = mb.call_noexception("wrangler_refacs", "init_eclipse", "",
                 new Object[0]);
         ErlLogger.debug("Wrangler app started:\n" + res);

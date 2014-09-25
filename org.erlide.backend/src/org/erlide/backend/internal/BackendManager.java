@@ -41,7 +41,7 @@ import org.erlide.backend.api.IProjectCodeLoader;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
@@ -261,18 +261,18 @@ public final class BackendManager implements IBackendManager {
     }
 
     @Override
-    public IRpcSite getByName(final String nodeName) {
+    public IOtpRpc getByName(final String nodeName) {
         final Collection<IBackend> list = getAllBackends();
         for (final IBackend b : list) {
             if (b.getName().equals(nodeName)) {
-                return b.getRpcSite();
+                return b.getOtpRpc();
             }
         }
         return null;
     }
 
     @Override
-    public IRpcSite getByVersion(final RuntimeVersion version) {
+    public IOtpRpc getByVersion(final RuntimeVersion version) {
         final RuntimeInfo info = BackendCore.getRuntimeInfoCatalog().getRuntime(version,
                 null);
         if (info == null) {
@@ -280,20 +280,20 @@ public final class BackendManager implements IBackendManager {
         }
         final Collection<IBackend> list = getAllBackends();
         for (final IBackend b : list) {
-            if (b.getRuntimeInfo().getVersion().equals(version)) {
-                return b.getRpcSite();
+            if (b.getRuntime().getVersion().equals(version)) {
+                return b.getOtpRpc();
             }
         }
         for (final IBackend b : list) {
-            if (b.getRuntimeInfo().getVersion().isCompatible(version)) {
-                return b.getRpcSite();
+            if (b.getRuntime().getVersion().isCompatible(version)) {
+                return b.getOtpRpc();
             }
         }
         return null;
     }
 
     @Override
-    public IRpcSite getByProject(final String projectName) {
+    public IOtpRpc getByProject(final String projectName) {
         final IProject project = ResourcesPlugin.getWorkspace().getRoot()
                 .getProject(projectName);
         final IErlProject erlProject = ErlangEngine.getInstance().getModel()
@@ -307,7 +307,7 @@ public final class BackendManager implements IBackendManager {
             ErlLogger.warn("Could not find backend for project %s", project);
             return null;
         }
-        return backend.getRpcSite();
+        return backend.getOtpRpc();
     }
 
     @Override
@@ -399,10 +399,12 @@ public final class BackendManager implements IBackendManager {
     public synchronized void removeBackend(final IBackend backend) {
         allBackends.remove(backend);
         if (buildBackends.values().contains(backend)) {
-            final String version = backend.getRuntimeInfo().getVersion().asMajor()
-                    .toString();
-            buildBackends.remove(version);
+            buildBackends.values().remove(backend);
         }
     }
 
+    @Override
+    public IBackendFactory getFactory() {
+        return this.factory;
+    }
 }

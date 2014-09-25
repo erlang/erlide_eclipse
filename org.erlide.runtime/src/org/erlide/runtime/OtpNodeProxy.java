@@ -8,24 +8,25 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.internal;
+package org.erlide.runtime;
 
-import java.io.IOException;
-import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.erlide.runtime.api.ErlSystemStatus;
-import org.erlide.runtime.api.IErlRuntime;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpNodeProxy;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.api.IShutdownCallback;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangLogEventHandler;
 import org.erlide.runtime.events.LogEventHandler;
-import org.erlide.runtime.internal.rpc.RpcSite;
+import org.erlide.runtime.internal.ErlRuntimeException;
+import org.erlide.runtime.internal.ErlRuntimeReporter;
+import org.erlide.runtime.internal.EventParser;
+import org.erlide.runtime.internal.LocalNodeCreator;
+import org.erlide.runtime.internal.rpc.OtpRpc;
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.HostnameUtils;
 
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -33,17 +34,13 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
-import com.ericsson.otp.erlang.OtpNodeStatus;
-import com.google.common.base.Strings;
 import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.AbstractExecutionThreadService;
 
-public class ErlRuntime extends AbstractExecutionThreadService implements IErlRuntime {
+public class OtpNodeProxy extends AbstractExecutionThreadService implements IOtpNodeProxy {
     private static final String COULD_NOT_CONNECT = "Could not connect to %s! Please check runtime settings.";
-    private static final int EPMD_PORT = Integer.parseInt(System.getProperty(
-            "erlide.epmd.port", "4369"));
 
     private static final int MAX_RETRIES = 15;
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
@@ -54,21 +51,21 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     final ErlRuntimeReporter reporter;
     private OtpMbox eventMBox;
     private IShutdownCallback callback;
-    private ErlSystemStatus lastSystemMessage;
-    private IRpcSite rpcSite;
+    private IOtpRpc OtpRpc;
     private final EventBus eventBus;
     protected volatile boolean stopped;
-    private EventParser eventHelper;
+    private final EventParser eventHelper;
     boolean crashed;
 
     static final boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.event.daemon"));
     public static final long POLL_INTERVAL = 100;
 
-    public ErlRuntime(final RuntimeData data) {
+    public OtpNodeProxy(final RuntimeData data) {
         this.data = data;
         reporter = new ErlRuntimeReporter(data.isInternal());
 
+        eventHelper = new EventParser();
         final String nodeName = getNodeName();
         eventBus = new EventBus(nodeName);
         eventBus.register(this);
@@ -80,11 +77,12 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
 
     @Override
     protected void startUp() throws Exception {
-        localNode = startLocalNode();
+        localNode = LocalNodeCreator.startLocalNode(this, data.getCookie(),
+                data.hasLongName());
         eventMBox = createMbox("rex");
-        rpcSite = new RpcSite(this, localNode, getNodeName());
+        OtpRpc = new OtpRpc(this, localNode, getNodeName());
         connect();
-        rpcSite.setConnected(true);
+        OtpRpc.setConnected(true);
 
         if (!waitForCodeServer()) {
             triggerShutdown();
@@ -102,7 +100,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
             callback.onShutdown();
         }
         callback = null;
-        rpcSite.setConnected(false);
+        OtpRpc.setConnected(false);
     }
 
     @Override
@@ -112,7 +110,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
 
     @Override
     protected void run() throws Exception {
-        final OtpMbox eventBox = getEventMbox();
+        final OtpMbox eventBox = eventMBox;
         do {
             receiveEventMessage(eventBox);
         } while (!stopped && !crashed);
@@ -123,7 +121,6 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
 
     private void receiveEventMessage(final OtpMbox eventBox) throws OtpErlangExit {
         OtpErlangObject msg = null;
-        eventHelper = new EventParser();
         try {
             msg = eventBox.receive(POLL_INTERVAL);
             final ErlEvent busEvent = eventHelper.parse(msg, this);
@@ -158,29 +155,23 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     }
 
     @Override
-    public OtpMbox getEventMbox() {
-        return eventMBox;
+    public OtpErlangPid getEventPid() {
+        return eventMBox.self();
     }
 
     @Override
-    public RuntimeData getRuntimeData() {
-        return data;
+    public RuntimeVersion getVersion() {
+        return data.getRuntimeInfo().getVersion();
     }
 
     @Override
-    public void addShutdownCallback(final IShutdownCallback aCallback) {
+    public String getOtpHome() {
+        return data.getRuntimeInfo().getOtpHome();
+    }
+
+    @Override
+    public void setShutdownCallback(final IShutdownCallback aCallback) {
         callback = aCallback;
-    }
-
-    @Override
-    public ErlSystemStatus getSystemStatus() {
-        return lastSystemMessage;
-    }
-
-    @Override
-    public void setSystemStatus(final ErlSystemStatus msg) {
-        // System.out.println(msg.prettyPrint());
-        lastSystemMessage = msg;
     }
 
     @Override
@@ -193,13 +184,13 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
     }
 
     @Override
-    public IRpcSite getRpcSite() {
+    public IOtpRpc getOtpRpc() {
         try {
-            awaitTerminated(100, TimeUnit.MILLISECONDS);
+            awaitTerminated(20, TimeUnit.MILLISECONDS);
             return null;
         } catch (final TimeoutException e) {
             awaitRunning();
-            return rpcSite;
+            return OtpRpc;
         }
     }
 
@@ -218,12 +209,15 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         return getClass().getSimpleName() + " " + getNodeName();
     }
 
-    private OtpNode startLocalNode() throws IOException {
-        wait_for_epmd();
-        final OtpNode lNode = createOtpNode(data.getCookie(), data.hasLongName());
-        final OtpNodeStatus statusWatcher = new ErlideNodeStatus();
-        lNode.registerStatusHandler(statusWatcher);
-        return lNode;
+    private void connect() throws Exception {
+        final String label = getNodeName();
+        ErlLogger.debug(label + ": waiting connection to peer... ");
+
+        final boolean connected = pingPeer();
+        if (!connected) {
+            ErlLogger.error(COULD_NOT_CONNECT, getNodeName());
+            throw new Exception(COULD_NOT_CONNECT);
+        }
     }
 
     private boolean pingPeer() {
@@ -237,96 +231,13 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         return ok;
     }
 
-    private String createJavaNodeName() {
-        final String fUniqueId = getTimeSuffix();
-        return "jerlide_" + fUniqueId;
-    }
-
-    private String createJavaNodeName(final String hostName) {
-        return createJavaNodeName() + "@" + hostName;
-    }
-
-    private String getTimeSuffix() {
-        String fUniqueId;
-        fUniqueId = Long.toHexString(System.currentTimeMillis() & 0xFFFFFFF);
-        return fUniqueId;
-    }
-
-    private OtpNode createOtpNode(final String cookie, final boolean longName)
-            throws IOException {
-        OtpNode node;
-        final String hostName = HostnameUtils.getErlangHostName(longName);
-        if (Strings.isNullOrEmpty(cookie)) {
-            node = new OtpNode(createJavaNodeName(hostName));
-        } else {
-            node = new OtpNode(createJavaNodeName(hostName), cookie);
-        }
-        debugPrintCookie(node.cookie());
-        return node;
-    }
-
-    private static void debugPrintCookie(final String cookie) {
-        final int len = cookie.length();
-        final String trimmed = len > 7 ? cookie.substring(0, 7) : cookie;
-        ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed, len, cookie);
-    }
-
-    private void connect() throws Exception {
-        final String label = getNodeName();
-        ErlLogger.debug(label + ": waiting connection to peer...");
-        try {
-            pingPeer();
-            int i = 0;
-            while (state() == State.NEW && i++ < 50) {
-                try {
-                    Thread.sleep(POLL_INTERVAL);
-                } catch (final InterruptedException e) {
-                }
-            }
-        } catch (final Exception e) {
-            ErlLogger.error(COULD_NOT_CONNECT, getNodeName());
-            throw e;
-        }
-    }
-
-    private void wait_for_epmd() {
-        wait_for_epmd(null);
-    }
-
-    private void wait_for_epmd(final String host) {
-        // If anyone has a better solution for waiting for epmd to be up, please
-        // let me know
-        int tries = 30;
-        boolean ok = false;
-        do {
-            Socket s;
-            try {
-                s = new Socket(host, EPMD_PORT);
-                s.close();
-                ok = true;
-            } catch (final IOException e) {
-            }
-            try {
-                Thread.sleep(POLL_INTERVAL);
-            } catch (final InterruptedException e1) {
-            }
-            tries--;
-        } while (!ok && tries > 0);
-        if (!ok) {
-            final String msg = "Couldn't contact epmd - erlang backend is probably not working\n"
-                    + "Your host's entry in /etc/hosts is probably wrong (" + host + ").";
-            ErlLogger.error(msg);
-            throw new RuntimeException(msg);
-        }
-    }
-
     private boolean waitForCodeServer() {
         try {
             OtpErlangObject r;
             int i = 30;
             boolean gotIt = false;
             do {
-                r = rpcSite.call("erlang", "whereis", "a", "code_server");
+                r = OtpRpc.call("erlang", "whereis", "a", "code_server");
                 gotIt = !(r instanceof OtpErlangPid);
                 if (!gotIt) {
                     try {
@@ -349,25 +260,13 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
         }
     }
 
-    private class ErlideNodeStatus extends OtpNodeStatus {
-        public ErlideNodeStatus() {
-        }
-
-        @Override
-        public void remoteStatus(final String node, final boolean up, final Object info) {
-            if (node.equals(getNodeName()) && !up) {
-                triggerCrashed();
-            }
-        }
-    }
-
     @Subscribe
     public void deadEventHandler(final DeadEvent dead) {
         ErlLogger.warn("Dead event: " + dead + " in runtime " + getNodeName());
     }
 
-    protected void triggerCrashed() {
-        rpcSite.setConnected(false);
+    public void triggerCrashed() {
+        OtpRpc.setConnected(false);
         crashed = true;
     }
 
@@ -392,7 +291,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
             reportDown();
             try {
                 if (data.isReportErrors()) {
-                    reporter.createFileReport(nodeName, exitCode, getSystemStatus());
+                    reporter.createFileReport(nodeName, exitCode);
                 }
             } catch (final Exception t) {
                 ErlLogger.warn(t);
@@ -401,7 +300,7 @@ public class ErlRuntime extends AbstractExecutionThreadService implements IErlRu
 
         private void reportDown() {
             if (data.isReportErrors() && getExitCode() > 0) {
-                reporter.reportRuntimeDown(getNodeName(), getSystemStatus());
+                reporter.reportRuntimeDown(getNodeName());
             }
         }
 

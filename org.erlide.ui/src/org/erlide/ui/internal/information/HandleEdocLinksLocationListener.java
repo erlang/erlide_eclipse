@@ -7,7 +7,7 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenResult;
 import org.erlide.engine.services.search.OtpDocService;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -63,7 +63,7 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                 if (project == null) {
                     return;
                 }
-                final IRpcSite backend = BackendCore.getBuildBackend(project);
+                final IOtpRpc backend = BackendCore.getBuildBackend(project);
 
                 final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                         .toString();

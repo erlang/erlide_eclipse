@@ -4,7 +4,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.api.RuntimeCore;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
@@ -27,9 +27,9 @@ public class BackendCore {
         return RuntimeCore.getRuntimeInfoCatalog(new RuntimeInfoPreferencesSerializer());
     }
 
-    public static IRpcSite getBuildBackend(@NonNull final IErlProject project) {
+    public static IOtpRpc getBuildBackend(@NonNull final IErlProject project) {
         final IBackendManager manager = getBackendManager();
-        return manager.getBuildBackend(project).getRpcSite();
+        return manager.getBuildBackend(project).getOtpRpc();
     }
 
     public static EpmdWatcher getEpmdWatcher() {

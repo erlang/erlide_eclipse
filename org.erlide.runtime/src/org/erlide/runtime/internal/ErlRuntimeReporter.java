@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.erlide.runtime.api.ErlSystemStatus;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.LogUtil;
 import org.erlide.util.MessageReporter;
@@ -22,7 +21,7 @@ public class ErlRuntimeReporter {
         this.internal = internal;
     }
 
-    public String reportRuntimeDown(final String peer, final ErlSystemStatus status) {
+    public String reportRuntimeDown(final String peer) {
         final String fmt = "Backend '%s' is down";
         String msg = String.format(fmt, peer);
         // TODO when to report errors?
@@ -51,9 +50,6 @@ public class ErlRuntimeReporter {
                     + (SystemConfiguration.hasFeatureEnabled("erlide.ericsson.user") ? ""
                             : "http://www.assembla.com/spaces/erlide/support/tickets");
             MessageReporter.showError(msg, msg1 + "\n\n" + details);
-
-            ErlLogger.error("Last system status was:\n %s",
-                    status != null ? status.prettyPrint() : "null");
         }
         return msg;
     }
@@ -65,8 +61,7 @@ public class ErlRuntimeReporter {
         }
     };
 
-    public void createFileReport(final String nodeName, final int exitCode,
-            final ErlSystemStatus status) {
+    public void createFileReport(final String nodeName, final int exitCode) {
         final String msg = String.format("Backend '%s' crashed with exit code %d.",
                 nodeName, exitCode);
 
@@ -74,9 +69,6 @@ public class ErlRuntimeReporter {
         if (shouldCreateReport(exitCode)) {
             ErlLogger.error(msg);
             ErlideEventTracer.getInstance().traceCrash(nodeName);
-
-            ErlLogger.error("Last system status was:\n %s",
-                    status != null ? status.prettyPrint() : "null");
 
             report = createReport(nodeName, exitCode, msg);
             final String reportMsg = report != null ? "\n\n"

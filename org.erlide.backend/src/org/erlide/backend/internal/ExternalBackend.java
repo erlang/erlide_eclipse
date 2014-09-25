@@ -17,12 +17,12 @@ import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.util.ErlLogger;
 
 public class ExternalBackend extends Backend {
 
-    public ExternalBackend(final BackendData data, final @NonNull IErlRuntime runtime,
+    public ExternalBackend(final BackendData data, final @NonNull IOtpNodeProxy runtime,
             final IBackendManager backendManager) {
         super(data, runtime, backendManager);
         assignStreamProxyListeners();

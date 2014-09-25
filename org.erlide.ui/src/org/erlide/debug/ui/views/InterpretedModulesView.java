@@ -11,6 +11,7 @@ import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.eclipse.debug.core.model.RuntimeProcess;
 import org.eclipse.debug.ui.AbstractDebugView;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.contexts.DebugContextEvent;
@@ -30,7 +31,6 @@ import org.erlide.backend.api.ErlRuntimeAttributes;
 import org.erlide.backend.debug.IErlangDebugNode;
 import org.erlide.backend.debug.model.ErlangDebugElement;
 import org.erlide.backend.debug.model.ErlangDebugTarget;
-import org.erlide.backend.debug.model.ErtsProcess;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.erlang.IErlModule;
@@ -77,8 +77,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
                     final IErlangDebugNode edn = (IErlangDebugNode) target;
                     erlangDebugTarget = edn.getErlangDebugTarget();
                 }
-            } else if (o instanceof ErtsProcess) {
-                final ErtsProcess ep = (ErtsProcess) o;
+            } else if (o instanceof RuntimeProcess) {
+                final RuntimeProcess ep = (RuntimeProcess) o;
                 final ILaunch launch = ep.getLaunch();
                 final IDebugTarget target = launch.getDebugTarget();
                 if (target instanceof IErlangDebugNode) {

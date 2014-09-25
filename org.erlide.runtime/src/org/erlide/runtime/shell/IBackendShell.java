@@ -19,6 +19,8 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 public interface IBackendShell {
 
+    void open();
+
     void close();
 
     void send(final String string);

@@ -12,7 +12,7 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.util.ResourceUtil;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
@@ -29,7 +29,7 @@ public class DialyzerMarkerUtils {
     public static final String PROBLEM_MARKER = "org.erlide.dialyzer.core"
             + ".problemmarker";
 
-    public static void addDialyzerWarningMarkersFromResultList(final IRpcSite backend,
+    public static void addDialyzerWarningMarkersFromResultList(final IOtpRpc backend,
             final OtpErlangList result) {
         if (result == null) {
             return;

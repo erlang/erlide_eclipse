@@ -20,8 +20,8 @@ import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenService;
 import org.erlide.engine.services.search.OpenService.ExternalTreeEntry;
-import org.erlide.engine.util.RpcSiteFactory;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.engine.util.OtpRpcFactory;
+import org.erlide.runtime.api.IOtpRpc;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Maps;
@@ -61,7 +61,7 @@ public class ErlExternalReferenceEntryList extends Openable implements IErlExter
         if (externalModuleTree == null || externalIncludeTree == null) {
             final OtpErlangList pathVars = ErlangEngine.getInstance().getModel()
                     .getPathVars();
-            final IRpcSite backend = RpcSiteFactory.getRpcSiteForProject(project);
+            final IOtpRpc backend = OtpRpcFactory.getOtpRpcForProject(project);
             if (externalModuleTree == null && externalModules.length() > 0) {
                 if (pm != null) {
                     pm.worked(1);
@@ -161,7 +161,7 @@ public class ErlExternalReferenceEntryList extends Openable implements IErlExter
         return null;
     }
 
-    public IRpcSite getBackend() {
+    public IOtpRpc getBackend() {
         return null;
     }
 

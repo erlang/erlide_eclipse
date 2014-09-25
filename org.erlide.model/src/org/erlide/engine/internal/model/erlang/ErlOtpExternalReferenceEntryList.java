@@ -16,8 +16,8 @@ import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.OpenService;
-import org.erlide.engine.util.RpcSiteFactory;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.engine.util.OtpRpcFactory;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.util.erlang.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -42,14 +42,14 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     public boolean buildStructure(final IProgressMonitor pm) throws ErlModelException {
         final IErlProject erlProject = ErlangEngine.getInstance().getModelUtilService()
                 .getProject(this);
-        final IRpcSite backend = RpcSiteFactory.getRpcSiteForProject(erlProject);
+        final IOtpRpc backend = OtpRpcFactory.getOtpRpcForProject(erlProject);
         if (backend != null) {
             addExternalEntries(pm, backend);
         }
         return true;
     }
 
-    private void addExternalEntries(final IProgressMonitor pm, final IRpcSite backend) {
+    private void addExternalEntries(final IProgressMonitor pm, final IOtpRpc backend) {
         final OtpErlangList structure = ErlangEngine.getInstance()
                 .getService(OpenService.class).getOtpLibStructure(backend);
         mkOtpStructureMap(structure);

@@ -7,8 +7,8 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.engine.model.erlang.FunctionRef;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.XrefService;
-import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.ErlUtils;
@@ -19,9 +19,9 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 public class ErlangXref implements XrefService {
 
     private static final String ERLIDE_XREF = "erlide_xref";
-    private final IRpcSite backend;
+    private final IOtpRpc backend;
 
-    public ErlangXref(final IRpcSite backend) {
+    public ErlangXref(final IOtpRpc backend) {
         this.backend = backend;
     }
 
@@ -46,7 +46,7 @@ public class ErlangXref implements XrefService {
     }
 
     @Override
-    public IRpcFuture addProject(final IErlProject project) {
+    public RpcFuture addProject(final IErlProject project) {
         try {
             final IPath outputLocation = project.getWorkspaceProject()
                     .getFolder(project.getProperties().getOutputDir()).getLocation();

@@ -14,8 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.resources.IResource;
 import org.erlide.engine.services.cleanup.CleanupProvider;
-import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.RpcFuture;
 
 /**
  * <p>
@@ -35,7 +35,7 @@ public class ErlTidyCleanupProvider implements CleanupProvider {
      */
     private static final long PATIENCE_LIMIT = 10000;
 
-    private final IRpcSite backend;
+    private final IOtpRpc backend;
 
     /**
      * <p>
@@ -48,7 +48,7 @@ public class ErlTidyCleanupProvider implements CleanupProvider {
      * @param resource
      *            {@link IResource} for an Erlang module
      */
-    public ErlTidyCleanupProvider(final IRpcSite backend) {
+    public ErlTidyCleanupProvider(final IOtpRpc backend) {
         this.backend = backend;
     }
 
@@ -56,7 +56,7 @@ public class ErlTidyCleanupProvider implements CleanupProvider {
     public void cleanUp(final IResource resource) throws Exception {
         // invoke erl_tidy in the background
         final String absolutePathToErlangModule = resource.getLocation().toString();
-        final IRpcFuture erlTidyFuture = backend.async_call("erl_tidy", "file", "s",
+        final RpcFuture erlTidyFuture = backend.async_call("erl_tidy", "file", "s",
                 absolutePathToErlangModule);
 
         // wait as long as reasonable for erl_tidy to finish

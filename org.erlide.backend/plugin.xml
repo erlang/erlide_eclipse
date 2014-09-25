@@ -6,15 +6,8 @@
    <extension
          point="org.erlide.backend.backend">
       <provider
-            class="org.erlide.backend.internal.RpcSiteProvider">
+            class="org.erlide.backend.internal.OtpRpcProvider">
       </provider>
-   </extension>
-   <extension
-         point="org.eclipse.debug.core.processFactories">
-      <processFactory
-            class="org.erlide.backend.launch.ErtsProcessFactory"
-            id="org.erlide.backend.ertsProcessFactory">
-      </processFactory>
    </extension>
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">

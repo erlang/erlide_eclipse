@@ -6,12 +6,12 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.erlide.runtime.api.IErlRuntime;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpNodeProxy;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.IRpcCallback;
-import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.runtime.rpc.RpcMonitor;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.runtime.rpc.RpcTimeoutException;
@@ -33,7 +33,7 @@ import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
-public class RpcSite implements IRpcSite {
+public class OtpRpc implements IOtpRpc {
 
     private static final OtpErlangAtom USER_ATOM = new OtpErlangAtom("user");
 
@@ -52,12 +52,12 @@ public class RpcSite implements IRpcSite {
     private static final ExecutorService threadPool = Executors
             .newCachedThreadPool(threadFactory);
 
-    private final IErlRuntime runtime;
+    private final IOtpNodeProxy runtime;
     private final String nodeName;
     private final OtpNode localNode;
     private volatile boolean connected;
 
-    public RpcSite(final IErlRuntime runtime, final OtpNode localNode,
+    public OtpRpc(final IOtpNodeProxy runtime, final OtpNode localNode,
             final String nodeName) {
         this.runtime = runtime;
         this.localNode = localNode;
@@ -88,7 +88,7 @@ public class RpcSite implements IRpcSite {
     }
 
     @Override
-    public IRpcFuture async_call(final OtpErlangObject gleader, final String module,
+    public RpcFuture async_call(final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
             throws RpcException {
         checkConnected();
@@ -101,7 +101,7 @@ public class RpcSite implements IRpcSite {
     }
 
     @Override
-    public IRpcFuture async_call(final String module, final String fun,
+    public RpcFuture async_call(final String module, final String fun,
             final String signature, final Object... args0) throws RpcException {
         return async_call(USER_ATOM, module, fun, signature, args0);
     }
@@ -119,7 +119,7 @@ public class RpcSite implements IRpcSite {
             final String signature, final Object... args) throws RpcException {
         checkConnected();
         try {
-            final IRpcFuture future = sendRpcCall(localNode, nodeName, false, gleader,
+            final RpcFuture future = sendRpcCall(localNode, nodeName, false, gleader,
                     module, fun, signature, args);
             final Runnable target = new Runnable() {
                 @Override
@@ -149,7 +149,7 @@ public class RpcSite implements IRpcSite {
         checkConnected();
         OtpErlangObject result;
         try {
-            final IRpcFuture future = sendRpcCall(localNode, nodeName, false, gleader,
+            final RpcFuture future = sendRpcCall(localNode, nodeName, false, gleader,
                     module, fun, signature, args0);
             OtpErlangObject result1;
             result1 = future.checkedGet(timeout, TimeUnit.MILLISECONDS);
@@ -309,7 +309,7 @@ public class RpcSite implements IRpcSite {
         return false;
     }
 
-    private synchronized IRpcFuture sendRpcCall(final OtpNode node, final String peer,
+    private synchronized RpcFuture sendRpcCall(final OtpNode node, final String peer,
             final boolean logCalls, final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
             throws SignatureException {
@@ -330,7 +330,7 @@ public class RpcSite implements IRpcSite {
         if (CHECK_RPC) {
             ErlLogger.debug("RPC " + mbox.hashCode() + "=> " + res);
         }
-        return new RpcFutureImpl(ref, mbox, module + ":" + fun + "/" + args0.length,
+        return new RpcFuture(ref, mbox, module + ":" + fun + "/" + args0.length,
                 logCalls, this);
     }
 

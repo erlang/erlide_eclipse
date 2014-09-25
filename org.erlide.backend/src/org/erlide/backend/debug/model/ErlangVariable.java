@@ -85,11 +85,11 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
                     "Can't set value of part of expression", null));
         }
         final ErlangDebugTarget edt = getErlangDebugTarget();
-        final String err = ErlideDebug.setVariableValue(edt.getBackend().getRpcSite(),
+        final String err = ErlideDebug.setVariableValue(edt.getBackend().getOtpRpc(),
                 name, expression, stackFrameNo - 1, process.getMeta());
         if (err != null) {
             // restore old value
-            ErlideDebug.setVariableValue(edt.getBackend().getRpcSite(), name,
+            ErlideDebug.setVariableValue(edt.getBackend().getOtpRpc(), name,
                     value.toString(), stackFrameNo - 1, process.getMeta());
             throw new DebugException(new Status(IStatus.ERROR,
                     BackendActivator.PLUGIN_ID, DebugException.TARGET_REQUEST_FAILED,
