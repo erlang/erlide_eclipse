@@ -57,4 +57,6 @@ public interface IBackendManager extends IEpmdListener {
     void moduleLoaded(final IBackend backend, final IProject project,
             final String moduleName);
 
+    IBackendFactory getFactory();
+
 }

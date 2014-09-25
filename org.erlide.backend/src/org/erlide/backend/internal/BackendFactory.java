@@ -57,6 +57,19 @@ public class BackendFactory implements IBackendFactory {
         ErlLogger.debug("Create backend " + data.getNodeName());
 
         final IBackend b;
+        final IOtpNodeProxy runtime = createNodeProxy(data);
+
+        final IBackendManager backendManager = BackendCore.getBackendManager();
+        b = data.isInternal() ? new InternalBackend(data, runtime, backendManager)
+                : new ExternalBackend(data, runtime, backendManager);
+
+        b.initialize(data.getContext(), backendManager.getCodeBundles());
+        return b;
+    }
+
+    @Override
+    @NonNull
+    public IOtpNodeProxy createNodeProxy(final BackendData data) {
         IOtpNodeProxy result;
         if (data.isManaged()) {
             result = new ManagedOtpNodeProxy(data);
@@ -65,13 +78,7 @@ public class BackendFactory implements IBackendFactory {
         }
         final IOtpNodeProxy runtime = result;
         runtime.startAndWait();
-
-        final IBackendManager backendManager = BackendCore.getBackendManager();
-        b = data.isInternal() ? new InternalBackend(data, runtime, backendManager)
-                : new ExternalBackend(data, runtime, backendManager);
-
-        b.initialize(data.getContext(), backendManager.getCodeBundles());
-        return b;
+        return runtime;
     }
 
     private BackendData getIdeBackendData() {

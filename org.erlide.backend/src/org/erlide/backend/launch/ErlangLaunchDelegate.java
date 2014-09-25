@@ -28,8 +28,6 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IBeamLocator;
-import org.erlide.runtime.ManagedOtpNodeProxy;
-import org.erlide.runtime.OtpNodeProxy;
 import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -59,14 +57,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
             backend = BackendCore.getBackendManager().createExecutionBackend(data);
             runtime = backend.getRuntime();
         } else {
-            IOtpNodeProxy result;
-            if (data.isManaged()) {
-                result = new ManagedOtpNodeProxy(data);
-            } else {
-                result = new OtpNodeProxy(data);
-            }
-            runtime = result;
-            runtime.startAndWait();
+            runtime = BackendCore.getBackendManager().getFactory().createNodeProxy(data);
         }
         if (data.isManaged()) {
             startErtsProcess(launch, data, runtime.getProcess());
