@@ -980,28 +980,23 @@ public final class Util {
      * @throws IOException
      *             if a problem occured reading the file.
      */
+    @SuppressWarnings("resource")
     public static char[] getFileCharContent(final File file, final Charset encoding)
             throws IOException {
-        InputStream stream = null;
-        try {
-            stream = new BufferedInputStream(new FileInputStream(file));
-            return getInputStreamAsCharArray(stream, (int) file.length(), encoding);
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (final IOException e) {
-                    // ignore
-                }
-            }
-        }
+        return getFileCharContent(new FileInputStream(file), encoding);
     }
 
+    @SuppressWarnings("resource")
     public static char[] getFileCharContent(final String path, final Charset encoding)
             throws IOException {
-        InputStream stream = null;
+        return getFileCharContent(new FileInputStream(path), encoding);
+    }
+
+    public static char[] getFileCharContent(final InputStream istream,
+            final Charset encoding) throws IOException {
+        BufferedInputStream stream = null;
         try {
-            stream = new BufferedInputStream(new FileInputStream(path));
+            stream = new BufferedInputStream(istream);
             return getInputStreamAsCharArray(stream, -1, encoding);
         } finally {
             if (stream != null) {
@@ -1010,6 +1005,7 @@ public final class Util {
                 } catch (final IOException e) {
                 }
             }
+            istream.close();
         }
     }
 
