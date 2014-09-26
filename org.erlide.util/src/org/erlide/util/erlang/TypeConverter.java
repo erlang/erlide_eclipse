@@ -449,26 +449,24 @@ public final class TypeConverter {
         boolean found = false;
         for (final StackTraceElement ste : st) {
             if (found) {
-                if (!((ste.getMethodName().equals("send")
-                        || ste.getMethodName().equals("sendRpc")
-                        || ste.getMethodName().equals("rpc")
-                        || ste.getMethodName().equals("rpct")
-                        || ste.getMethodName().equals("rpcx") || ste.getMethodName()
-                        .equals("rpcxt")) && ste.getClassName().endsWith("Backend"))) {
+                if (!isRelevantMethod(ste)) {
                     return ste;
                 }
             }
-            if ((ste.getMethodName().equals("send")
-                    || ste.getMethodName().equals("sendRpc")
-                    || ste.getMethodName().equals("rpc")
-                    || ste.getMethodName().equals("rpct")
-                    || ste.getMethodName().equals("rpcx") || ste.getMethodName().equals(
-                    "rpcxt"))
-                    && ste.getClassName().endsWith("Backend")) {
+            if (isRelevantMethod(ste)) {
                 found = true;
             }
         }
         return null;
+    }
+
+    private static boolean isRelevantMethod(final StackTraceElement ste) {
+        return (ste.getMethodName().equals("send")
+                || ste.getMethodName().equals("sendRpc")
+                || ste.getMethodName().equals("rpc")
+                || ste.getMethodName().equals("rpct")
+                || ste.getMethodName().equals("rpcx") || ste.getMethodName()
+                .equals("rpcxt")) && ste.getClassName().endsWith("Backend");
     }
 
     private static OtpErlangObject cvtNumber(final Object obj, final Signature type)

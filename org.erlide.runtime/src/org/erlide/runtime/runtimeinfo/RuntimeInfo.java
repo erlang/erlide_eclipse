@@ -90,8 +90,8 @@ public final class RuntimeInfo {
         this(name, ".", "", new ArrayList<String>());
     }
 
-    public RuntimeInfo(final String name, final String otpHomeDir,
-            final String args, final Collection<String> codePath) {
+    public RuntimeInfo(final String name, final String otpHomeDir, final String args,
+            final Collection<String> codePath) {
         Preconditions.checkArgument(name != null);
         Preconditions.checkArgument(otpHomeDir != null);
         Preconditions.checkArgument(args != null);
@@ -113,8 +113,8 @@ public final class RuntimeInfo {
 
     @Override
     public String toString() {
-        return String.format("Runtime<%s (%s) %s [%s]>", getName(),
-                getOtpHome(), getVersion(), getArgs());
+        return String.format("Runtime<%s (%s) %s [%s]>", getName(), getOtpHome(),
+                getVersion(), getArgs());
     }
 
     public String getOtpHome() {
@@ -135,10 +135,8 @@ public final class RuntimeInfo {
             return false;
         }
         final RuntimeInfo other1 = (RuntimeInfo) other;
-        return Objects.equal(
-                otpHomeDir + "|" + args + "|" + codePath.toString(),
-                other1.otpHomeDir + "|" + other1.args + "|"
-                        + other1.codePath.toString());
+        return Objects.equal(otpHomeDir + "|" + args + "|" + codePath.toString(),
+                other1.otpHomeDir + "|" + other1.args + "|" + other1.codePath.toString());
     }
 
     @Override
@@ -183,18 +181,9 @@ public final class RuntimeInfo {
     }
 
     public static boolean hasCompiler(final String otpHome) {
-        // Check if it looks like a ERL_TOP location:
-        if (otpHome == null) {
+        if (!isValidOtpHome(otpHome)) {
             return false;
         }
-        if (otpHome.length() == 0) {
-            return false;
-        }
-        final File d = new File(otpHome);
-        if (!d.isDirectory()) {
-            return false;
-        }
-
         final boolean hasErlc = hasExecutableFile(otpHome + "/bin/erlc");
         return hasErlc;
     }
@@ -299,8 +288,7 @@ public final class RuntimeInfo {
                     r &= pathname.getName().startsWith("kernel-");
                     final String canonicalPath = pathname.getCanonicalPath()
                             .toLowerCase();
-                    final String absolutePath = pathname.getAbsolutePath()
-                            .toLowerCase();
+                    final String absolutePath = pathname.getAbsolutePath().toLowerCase();
                     r &= canonicalPath.equals(absolutePath);
                     return r;
                 } catch (final IOException e) {
