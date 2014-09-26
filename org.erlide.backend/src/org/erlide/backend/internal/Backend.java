@@ -40,10 +40,10 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.api.IOtpRpc;
-import org.erlide.runtime.api.InitialCall;
 import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.ErlangFunctionCall;
 import org.erlide.util.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -259,7 +259,7 @@ public abstract class Backend implements IStreamListener, IBackend {
             }
         } else if (data.isManaged()) {
             // don't run this if the node is already running
-            final InitialCall initCall = data.getInitialCall();
+            final ErlangFunctionCall initCall = data.getInitialCall();
             if (initCall != null) {
                 runInitial(initCall.getModule(), initCall.getName(),
                         initCall.getParameters());
@@ -281,7 +281,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         DebugPlugin.getDefault().addDebugEventListener(new IDebugEventSetListener() {
             @Override
             public void handleDebugEvents(final DebugEvent[] events) {
-                final InitialCall initCall = myData.getInitialCall();
+                final ErlangFunctionCall initCall = myData.getInitialCall();
                 if (initCall != null) {
                     runInitial(initCall.getModule(), initCall.getName(),
                             initCall.getParameters());
