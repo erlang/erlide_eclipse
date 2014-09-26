@@ -5,12 +5,13 @@ import com.ericsson.otp.erlang.OtpErlangList
 import com.ericsson.otp.erlang.OtpErlangObject
 import com.ericsson.otp.erlang.OtpErlangString
 import com.ericsson.otp.erlang.OtpErlangTuple
+import com.google.common.base.Charsets
 import java.util.List
 import java.util.Map
-import java.util.Scanner
 import java.util.regex.Pattern
 import org.eclipse.xtend.lib.annotations.Data
 import org.erlide.util.ErlLogger
+import org.erlide.util.Util
 import org.erlide.util.erlang.ErlUtils
 
 class ErlProblems {
@@ -27,8 +28,7 @@ class ErlProblems {
         val input = loader.getResourceAsStream("org/erlide/engine/model/builder/errors.data")
 
         try {
-            val s = new Scanner(input).useDelimiter("\\A")
-            val src = if (s.hasNext()) s.next() else ""
+            val src = Util.getInputStreamAsString(input, Charsets.ISO_8859_1.name)
             try {
                 val source0 = ErlUtils.parse(src)
                 val source = source0 as OtpErlangList

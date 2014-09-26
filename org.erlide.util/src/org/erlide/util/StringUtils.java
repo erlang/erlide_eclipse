@@ -11,8 +11,6 @@ package org.erlide.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 import org.eclipse.xtext.xbase.lib.Pair;
 
@@ -347,18 +345,6 @@ public final class StringUtils {
             result.add(s.substring(prefixLength));
         }
         return result;
-    }
-
-    public static String convertStreamToString(final java.io.InputStream is) {
-        try {
-            final Scanner scanner = new Scanner(is).useDelimiter("\\A");
-            if (scanner.hasNext()) {
-                return scanner.next();
-            }
-            return "";
-        } catch (final NoSuchElementException e) {
-            return "";
-        }
     }
 
     public static boolean startsWithUpperCase(final String s) {

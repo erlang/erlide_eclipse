@@ -7,6 +7,7 @@ import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ErlideTestUtils;
 import org.erlide.util.FileUtils;
+import org.erlide.util.Util;
 import org.junit.After;
 import org.junit.Before;
 
@@ -42,7 +43,7 @@ public abstract class AbstractProjectConfigurationTests {
         if (!res.exists()) {
             return "";
         }
-        return FileUtils.convertStreamToString(res.getContents(), Charsets.ISO_8859_1);
+        return Util.getInputStreamAsString(res.getContents(), Charsets.ISO_8859_1.name());
     }
 
     public abstract void configCanBeParsed() throws CoreException;

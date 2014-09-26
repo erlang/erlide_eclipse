@@ -30,6 +30,7 @@ import java.nio.charset.CharsetEncoder;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 import java.util.StringTokenizer;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -1016,10 +1017,10 @@ public final class Util {
      * NIO support to get input stream as byte array. Not used as with JDK 1.4.2
      * this support is slower than standard IO one... Keep it as comment for
      * future in case of next JDK versions improve performance in this area...
-     *
+     * 
      * public static byte[] getInputStreamAsByteArray(FileInputStream stream,
      * int length) throws IOException {
-     *
+     * 
      * FileChannel channel = stream.getChannel(); int size =
      * (int)channel.size(); if (length >= 0 && length < size) size = length;
      * byte[] contents = new byte[size]; ByteBuffer buffer =
@@ -1090,7 +1091,7 @@ public final class Util {
      * future in case of next JDK versions improve performance in this area...
      * public static char[] getInputStreamAsCharArray(FileInputStream stream,
      * int length, String encoding) throws IOException {
-     *
+     * 
      * FileChannel channel = stream.getChannel(); int size =
      * (int)channel.size(); if (length >= 0 && length < size) size = length;
      * Charset charset = encoding==null?systemCharset:Charset.forName(encoding);
@@ -1350,19 +1351,8 @@ public final class Util {
 
     public static String getInputStreamAsString(final InputStream is,
             final String encoding) {
-        final StringBuilder out = new StringBuilder();
-        final byte[] b = new byte[4096];
-        try {
-            for (int n; (n = is.read(b)) != -1;) {
-                out.append(new String(b, 0, n, encoding));
-            }
-        } catch (final IOException e) {
-        }
-        try {
-            is.close();
-        } catch (final IOException e) {
-        }
-        return out.toString();
+        final Scanner s = new Scanner(is, encoding).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
     }
 
     private static StringBuilder ioListToStringBuilder(final OtpErlangObject o,

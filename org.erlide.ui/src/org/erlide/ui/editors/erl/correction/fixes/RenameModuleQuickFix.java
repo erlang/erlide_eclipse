@@ -1,7 +1,6 @@
 package org.erlide.ui.editors.erl.correction.fixes;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -12,6 +11,7 @@ import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.model.IErlModel;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.correction.MarkerQuickFixExecutor;
+import org.erlide.util.Util;
 
 public class RenameModuleQuickFix extends MarkerQuickFixExecutor {
 
@@ -38,13 +38,9 @@ public class RenameModuleQuickFix extends MarkerQuickFixExecutor {
             return;
         }
 
-        String in = convertStreamToString(file.getContents());
+        String in = Util.getInputStreamAsString(file.getContents(), file.getCharset());
         in = in.replaceFirst("-module\\([^)]+\\)\\.", "-module(" + moduleName + ").");
         file.setContents(new ByteArrayInputStream(in.getBytes()), IResource.FORCE, null);
     }
 
-    private static String convertStreamToString(final InputStream is) {
-        final java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
-    }
 }
