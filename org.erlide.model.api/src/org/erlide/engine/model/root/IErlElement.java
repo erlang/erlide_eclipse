@@ -16,7 +16,6 @@ import java.util.Set;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.engine.model.ErlModelException;
 import org.erlide.engine.model.IParent;
 import org.erlide.util.IDisposable;
@@ -121,15 +120,6 @@ public interface IErlElement extends IAdaptable, IDisposable {
      *
      */
     IResource getResource();
-
-    /**
-     * Returns the scheduling rule associated with this Erlang element. This is
-     * a handle-only method.
-     *
-     * @return the scheduling rule associated with this Erlang element
-     *
-     */
-    ISchedulingRule getSchedulingRule();
 
     // /**
     // * Returns the smallest underlying resource that contains this element, or
