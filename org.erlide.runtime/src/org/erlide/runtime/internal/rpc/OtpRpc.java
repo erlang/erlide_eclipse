@@ -147,19 +147,17 @@ public class OtpRpc implements IOtpRpc {
             final String module, final String fun, final String signature,
             final Object... args0) throws RpcException {
         checkConnected();
-        OtpErlangObject result;
+        OtpErlangObject result = null;
         try {
             final RpcFuture future = sendRpcCall(localNode, nodeName, false, gleader,
                     module, fun, signature, args0);
-            OtpErlangObject result1;
-            result1 = future.checkedGet(timeout, TimeUnit.MILLISECONDS);
+            result = future.checkedGet(timeout, TimeUnit.MILLISECONDS);
             if (CHECK_RPC) {
-                ErlLogger.debug("RPC result:: " + result1);
+                ErlLogger.debug("RPC result:: " + result);
             }
-            if (isBadRpc(result1)) {
-                throw new RpcException(result1.toString());
+            if (isBadRpc(result)) {
+                throw new RpcException("Bad RPC: " + result);
             }
-            result = result1;
         } catch (final SignatureException e) {
             throw new RpcException(e);
         } catch (final TimeoutException e) {
