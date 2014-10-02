@@ -6,14 +6,20 @@ import org.erlide.backend.api.IBackendManager;
 import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.api.IOtpRpcProvider;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
+import org.erlide.util.ErlLogger;
 
 public class OtpRpcProvider implements IOtpRpcProvider {
 
     @Override
     public IOtpRpc get() {
-        final IBackendManager backendManager = BackendCore.getBackendManager();
-        final IBackend ideBackend = backendManager.getIdeBackend();
-        return ideBackend.getOtpRpc();
+        try {
+            final IBackendManager backendManager = BackendCore.getBackendManager();
+            final IBackend ideBackend = backendManager.getIdeBackend();
+            return ideBackend.getOtpRpc();
+        } catch (final Exception e) {
+            ErlLogger.error("No Erlang runtime is installed!");
+            return null;
+        }
     }
 
     @Override
