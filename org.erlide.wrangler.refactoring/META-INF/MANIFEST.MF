@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Wrangler Refactor plug-in
 Bundle-SymbolicName: org.erlide.wrangler.refactoring;singleton:=true
-Bundle-Version: 0.10.39.qualifier
+Bundle-Version: 0.10.40.qualifier
 Bundle-ClassPath: wrangler.jar
 Bundle-Activator: org.erlide.wrangler.refactoring.Activator
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.3.0",

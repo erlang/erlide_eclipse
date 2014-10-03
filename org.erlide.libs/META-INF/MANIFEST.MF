@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
 Bundle-SymbolicName: org.erlide.libs;singleton:=true
 Bundle-ActivationPolicy: lazy
-Bundle-Version: 1.14.2.qualifier
+Bundle-Version: 1.14.3.qualifier
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: jinterface.jar,

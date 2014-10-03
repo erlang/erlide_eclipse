@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Common code, dependent on Eclipse
 Bundle-SymbolicName: org.erlide.util;singleton:=true
-Bundle-Version: 0.24.9.qualifier
+Bundle-Version: 0.24.10.qualifier
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.core.runtime,
  org.erlide.libs;bundle-version="1.12.0",

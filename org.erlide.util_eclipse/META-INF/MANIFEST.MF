@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Utilities that depend on eclipse
 Bundle-SymbolicName: org.erlide.util_eclipse;singleton:=true
-Bundle-Version: 0.24.4.qualifier
+Bundle-Version: 0.24.5.qualifier
 Bundle-Vendor: erlide.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
