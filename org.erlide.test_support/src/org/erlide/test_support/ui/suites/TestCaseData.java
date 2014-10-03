@@ -128,7 +128,6 @@ public class TestCaseData {
                 }
                 return m + " : " + f + args;
             } catch (final Exception e) {
-                System.out.println(">>> " + item);
                 ErlLogger.warn(e);
             }
             return item.toString();

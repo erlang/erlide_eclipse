@@ -52,7 +52,6 @@ public class IoRequest {
             encoding = getEncoding(b.getAtom("Encoding"));
 
             final OtpErlangObject o = b.get("Payload");
-            System.out.println("! " + o);
             if (o instanceof OtpErlangString) {
                 message = ((OtpErlangString) o).stringValue();
             } else if (o instanceof OtpErlangList) {
