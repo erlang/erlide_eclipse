@@ -48,7 +48,7 @@
             name="Erlang Project"
             project="true">
          <description>
-            Create an Erlang project.
+            New Erlang project
          </description>
       </wizard>
       <wizard
@@ -57,6 +57,9 @@
             icon="icons/full/obj16/erlang_NewModule.png"
             id="org.erlide.ui.wizards.ErlangSourceFile"
             name="Module">
+         <description>
+            New Erlang module
+         </description>
       </wizard>
       <wizard
             category="org.erlide.ui.wizards.newWizards"
@@ -64,6 +67,9 @@
             icon="icons/full/obj16/newproject.png"
             id="org.erlide.ui.wizards.ErlangScratchpad"
             name="Erlang Scratchpad">
+         <description>
+            New Erlang scratchpad
+         </description>
       </wizard>
    </extension>
    <extension
