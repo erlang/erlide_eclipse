@@ -53,6 +53,13 @@ public class RuntimeVersionTest {
     }
 
     @Test
+    public void toString_7() {
+        final String expect = "17.4.0-rc1";
+        final RuntimeVersion test = RuntimeVersion.Serializer.parse("17.4-rc1");
+        assertThat(test.toString(), is(expect));
+    }
+
+    @Test
     public void compare_2() {
         final RuntimeVersion test1 = RuntimeVersion.Serializer.parse("R12");
         final RuntimeVersion test2 = RuntimeVersion.Serializer.parse("R12A");
