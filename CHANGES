@@ -1,3 +1,13 @@
+List of user visible changes between 0.29.4 and 0.29.5 (20141003)
+
+885212a show console after launching Erlang app
+6bb740c add tooltips to wizard buttons in toolbar
+6e02d9c handle partial versions, like 17.4-rc1
+9e0eb5e don't crash if no runtime can be found at startup
+6e429ff console: specify and recognize encoding for printed-out values
+76617d5 1372: "Source directories" in project properties is whitespace sensitive
+e959379 gh198: OTP version is not properly detected
+
 List of user visible changes between 0.29.3 and 0.29.4 (20140916)
 
 9748ce9 move erlide_util to kernel.common: fix code execution problem

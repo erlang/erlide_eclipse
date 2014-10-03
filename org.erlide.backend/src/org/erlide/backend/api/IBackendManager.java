@@ -8,7 +8,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 
@@ -46,15 +46,17 @@ public interface IBackendManager extends IEpmdListener {
 
     Collection<ICodeBundle> getCodeBundles();
 
-    IRpcSite getByName(final String nodeName);
+    IOtpRpc getByName(final String nodeName);
 
-    IRpcSite getByVersion(RuntimeVersion version);
+    IOtpRpc getByVersion(RuntimeVersion version);
 
-    IRpcSite getByProject(String projectName);
+    IOtpRpc getByProject(String projectName);
 
     void loadCodepathExtensions();
 
     void moduleLoaded(final IBackend backend, final IProject project,
             final String moduleName);
+
+    IBackendFactory getFactory();
 
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.erlide.engine.services.importer.ErlProjectImport;
 import org.erlide.engine.services.importer.ImportService;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 
@@ -19,9 +19,9 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  */
 public class ErlideImport implements ImportService {
 
-    private final IRpcSite backend;
+    private final IOtpRpc backend;
 
-    public ErlideImport(final IRpcSite backend) {
+    public ErlideImport(final IOtpRpc backend) {
         this.backend = backend;
     }
 

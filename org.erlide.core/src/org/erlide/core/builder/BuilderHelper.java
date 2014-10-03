@@ -50,8 +50,8 @@ import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ResourceUtil;
-import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 
@@ -177,12 +177,12 @@ public final class BuilderHelper {
         return result;
     }
 
-    public void checkForClashes(final IRpcSite backend, final IProject project) {
+    public void checkForClashes(final IOtpRpc backend, final IProject project) {
         createMarkersForCodeClashes(backend, project);
         createMarkersForDuplicateModuleNames(backend, project);
     }
 
-    private void createMarkersForDuplicateModuleNames(final IRpcSite backend,
+    private void createMarkersForDuplicateModuleNames(final IOtpRpc backend,
             final IProject project) {
         try {
             final IErlProject erlProject = ErlangEngine.getInstance().getModel()
@@ -207,7 +207,7 @@ public final class BuilderHelper {
         }
     }
 
-    private void createMarkersForCodeClashes(final IRpcSite backend,
+    private void createMarkersForCodeClashes(final IOtpRpc backend,
             final IProject project) {
         try {
             final OtpErlangList res = BuilderHelper.getCodeClashes(backend);
@@ -299,7 +299,7 @@ public final class BuilderHelper {
     }
 
     public void completeCompile(final @NonNull IProject project, final IResource source,
-            final OtpErlangObject compilationResult, final IRpcSite backend,
+            final OtpErlangObject compilationResult, final IOtpRpc backend,
             final OtpErlangList compilerOptions) {
         if (compilationResult == null) {
             MarkerUtils.createProblemMarker(source, null, "Could not compile file", 0,
@@ -366,7 +366,7 @@ public final class BuilderHelper {
     }
 
     private void completeCompileForYrl(final IProject project, final IResource source,
-            final IRpcSite backend, final OtpErlangList compilerOptions) {
+            final IOtpRpc backend, final OtpErlangList compilerOptions) {
         final IPath erl = getErlForYrl(source);
         if (erl != null) {
             try {
@@ -387,8 +387,8 @@ public final class BuilderHelper {
         }
     }
 
-    public IRpcFuture startCompileErl(final IProject project, final BuildResource bres,
-            final String outputDir0, final IRpcSite backend,
+    public RpcFuture startCompileErl(final IProject project, final BuildResource bres,
+            final String outputDir0, final IOtpRpc backend,
             final OtpErlangList compilerOptions, final boolean force) {
         final IPath projectPath = project.getLocation();
         final IResource res = bres.getResource();
@@ -466,8 +466,8 @@ public final class BuilderHelper {
         return beamPath;
     }
 
-    public IRpcFuture startCompileYrl(final IProject project, final IResource resource,
-            final IRpcSite backend, final OtpErlangList compilerOptions) {
+    public RpcFuture startCompileYrl(final IProject project, final IResource resource,
+            final IOtpRpc backend, final OtpErlangList compilerOptions) {
         MarkerUtils.deleteMarkers(resource);
         // try {
         // resource.deleteMarkers(PROBLEM_MARKER, true,
@@ -511,8 +511,8 @@ public final class BuilderHelper {
     }
 
     public void compileErl(final @NonNull IProject project, final BuildResource resource,
-            final String outputDir, final IRpcSite b, final OtpErlangList compilerOptions) {
-        final IRpcFuture res = startCompileErl(project, resource, outputDir, b,
+            final String outputDir, final IOtpRpc b, final OtpErlangList compilerOptions) {
+        final RpcFuture res = startCompileErl(project, resource, outputDir, b,
                 compilerOptions, true);
         if (res == null) {
             ErlLogger.warn("error compiling erl file: "
@@ -528,8 +528,8 @@ public final class BuilderHelper {
     }
 
     public void compileYrl(final @NonNull IProject project, final BuildResource resource,
-            final IRpcSite b, final OtpErlangList compilerOptions) {
-        final IRpcFuture res = startCompileYrl(project, resource.getResource(), b,
+            final IOtpRpc b, final OtpErlangList compilerOptions) {
+        final RpcFuture res = startCompileYrl(project, resource.getResource(), b,
                 compilerOptions);
         if (res == null) {
             ErlLogger.warn("error compiling yrl file: "
@@ -544,7 +544,7 @@ public final class BuilderHelper {
         }
     }
 
-    public static IRpcFuture compileErl(final IRpcSite backend, final IPath fn,
+    public static RpcFuture compileErl(final IOtpRpc backend, final IPath fn,
             final String outputdir, final Collection<IPath> includedirs,
             final OtpErlangList compilerOptions) {
         final List<String> incs = Lists.newArrayList();
@@ -560,7 +560,7 @@ public final class BuilderHelper {
         }
     }
 
-    public static IRpcFuture compileYrl(final IRpcSite backend, final String fn,
+    public static RpcFuture compileYrl(final IOtpRpc backend, final String fn,
             final String output) {
         try {
             return backend.async_call(ERLIDE_BUILDER, "compile_yrl", "ss", fn, output);
@@ -575,7 +575,7 @@ public final class BuilderHelper {
             final IBackendManager backendManager = BackendCore.getBackendManager();
             for (final IBackend b : backendManager.getExecutionBackends(project)) {
                 ErlLogger.debug(":: loading %s in %s", module, b.getName());
-                b.getRpcSite().call("erlide_util", "load", "ao", module,
+                b.getOtpRpc().call("erlide_util", "load", "ao", module,
                         b.getData().shouldLoadOnAllNodes());
                 backendManager.moduleLoaded(b, project, module);
             }
@@ -584,7 +584,7 @@ public final class BuilderHelper {
         }
     }
 
-    public static OtpErlangList getSourceClashes(final IRpcSite backend,
+    public static OtpErlangList getSourceClashes(final IOtpRpc backend,
             final String[] dirList) throws RpcException {
         final OtpErlangObject res = backend.call(ERLIDE_BUILDER, "source_clash", "ls",
                 (Object) dirList);
@@ -594,7 +594,7 @@ public final class BuilderHelper {
         throw new RpcException("bad result from erlide_builder:source_clash: " + res);
     }
 
-    public static OtpErlangList getCodeClashes(final IRpcSite b) throws RpcException {
+    public static OtpErlangList getCodeClashes(final IOtpRpc b) throws RpcException {
         final OtpErlangList res = (OtpErlangList) b.call(ERLIDE_BUILDER, "code_clash",
                 null);
         return res;

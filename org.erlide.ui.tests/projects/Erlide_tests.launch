@@ -55,7 +55,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}&#13;&#10;-consoleLog -verbose -debug&#13;&#10;--launcher.XXMaxPermSize&#13;&#10;256m"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dfile.encoding=UTF-8&#13;&#10;-D_erlide.backend.detached=true&#13;&#10;-Derlide.clearCacheAvailable=true &#13;&#10;&#13;-Xms196m&#13;&#10; &#13;-Xmx684m&#13;&#13;&#10;-Derlide.console.stdout=true&#13;&#10;&#13;-Declipse.p2.profile=SDKProfile&#13;-Derlide.devel=true&#13;&#10;&#13;-D_erlide.rpcmonitor&#13;&#10;&#13;-D_erlide.rpcmonitor.full&#13;&#10;-Derlide.newbuilders=true"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dfile.encoding=UTF-8&#13;&#10;-D_erlide.backend.detached=true&#13;&#10;-Derlide.clearCacheAvailable=true &#13;&#10;&#13;-Xms196m&#13;&#10; &#13;-Xmx684m&#13;&#13;&#10;-D_erlide.console.stdout=true&#13;&#10;&#13;-Declipse.p2.profile=SDKProfile&#13;&#10;&#13;-Derlide.devel=true&#13;&#10;&#13;-D_erlide.rpcmonitor&#13;&#10;&#13;-D_erlide.rpcmonitor.full&#13;&#10;-Derlide.newbuilders=true"/>
 <booleanAttribute key="org.eclipse.tptp.platform.jvmti.client.ATTR_EXEC_AUTO_POLLING" value="true"/>
 <booleanAttribute key="org.eclipse.tptp.platform.jvmti.client.ATTR_EXEC_CPU_TIME" value="true"/>
 <booleanAttribute key="org.eclipse.tptp.platform.jvmti.client.ATTR_EXEC_FLOW" value="true"/>

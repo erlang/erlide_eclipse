@@ -54,6 +54,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
@@ -151,6 +152,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         ErlLogger.info("Started UI");
 
         erlConsoleManager = new ErlConsoleManager();
+        ConsolePlugin.getDefault().getConsoleManager()
+                .addConsoleListener(erlConsoleManager);
 
         erlangDebuggerBackendListener = new ErlangDebuggerBackendListener();
         BackendCore.getBackendManager().addBackendListener(erlangDebuggerBackendListener);

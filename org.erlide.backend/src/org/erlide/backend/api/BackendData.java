@@ -36,11 +36,11 @@ import org.erlide.backend.launch.IErlangLaunchDelegateConstants;
 import org.erlide.engine.model.IBeamLocator;
 import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.runtime.api.ErlDebugFlags;
-import org.erlide.runtime.api.InitialCall;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.ErlangFunctionCall;
 import org.erlide.util.HostnameUtils;
 
 import com.google.common.base.Charsets;
@@ -219,12 +219,12 @@ public final class BackendData extends RuntimeData {
         return hasHost ? name : name + "@" + erlangHostName;
     }
 
-    private InitialCall createInitialCall(final ILaunchConfiguration config)
+    private ErlangFunctionCall createInitialCall(final ILaunchConfiguration config)
             throws CoreException {
         final String module = config.getAttribute(ErlRuntimeAttributes.MODULE, "");
         final String function = config.getAttribute(ErlRuntimeAttributes.FUNCTION, "");
         final String args = config.getAttribute(ErlRuntimeAttributes.ARGUMENTS, "");
-        return new InitialCall(module, function, args);
+        return new ErlangFunctionCall(module, function, args);
     }
 
     public CodeContext getContext() {

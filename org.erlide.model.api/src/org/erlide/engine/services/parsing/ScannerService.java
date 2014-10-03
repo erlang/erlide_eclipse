@@ -4,8 +4,6 @@ import org.erlide.util.IDisposable;
 
 public interface ScannerService extends IDisposable {
 
-    String getName();
-
     void initialScan(final String initialText, final String path, final boolean logging);
 
     void replaceText(final int offset, final int removeLength, final String newText);

@@ -121,10 +121,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
             addNodesAsDebugTargets(launch);
         }
 
-        final OtpErlangPid pid = ErlideDebug.startDebug(backend.getRpcSite(),
+        final OtpErlangPid pid = ErlideDebug.startDebug(backend.getOtpRpc(),
                 ErlDebugFlags.getFlag(debugFlags));
         ErlLogger.debug("debug started " + pid);
-        backend.getRpcSite().send(pid,
+        backend.getOtpRpc().send(pid,
                 OtpErlang.mkTuple(PARENT_ATOM, debuggerDaemon.getMBox()));
 
         DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
@@ -198,8 +198,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
         terminated = true;
 
         if (backend != null) {
-            if (backend.getRpcSite() != null) {
-                backend.getRpcSite().send("dbg_mon", new OtpErlangAtom("stop"));
+            if (backend.getOtpRpc() != null) {
+                backend.getOtpRpc().send("dbg_mon", new OtpErlangAtom("stop"));
             }
             final DebugPlugin dbgPlugin = DebugPlugin.getDefault();
             if (dbgPlugin != null) {
@@ -475,7 +475,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
             final boolean distributed, final boolean interpret) {
         ErlLogger.debug((interpret ? "" : "de") + "interpret " + moduleName);
         final OtpErlangList options = getProjectDirs(project);
-        ErlideDebug.interpret(backend.getRpcSite(), moduleName, options, distributed,
+        ErlideDebug.interpret(backend.getOtpRpc(), moduleName, options, distributed,
                 interpret);
     }
 
@@ -512,12 +512,12 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
                 ErlLogger.warn("Could not find debugger module %s", module);
             }
         }
-        ErlideDebug.distributeDebuggerCode(backend.getRpcSite(), modules);
+        ErlideDebug.distributeDebuggerCode(backend.getOtpRpc(), modules);
     }
 
     private void unloadDebuggerCode() {
         final List<String> debuggerModules = getDebuggerModules();
-        ErlideDebug.unloadDebuggerCode(backend.getRpcSite(), debuggerModules);
+        ErlideDebug.unloadDebuggerCode(backend.getOtpRpc(), debuggerModules);
     }
 
     /**
@@ -569,7 +569,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
     }
 
     private void addNodesAsDebugTargets(final ILaunch aLaunch) {
-        final OtpErlangList nodes = ErlideDebug.nodes(backend.getRpcSite());
+        final OtpErlangList nodes = ErlideDebug.nodes(backend.getOtpRpc());
         if (nodes != null) {
             for (int i = 1, n = nodes.arity(); i < n; ++i) {
                 final OtpErlangAtom a = (OtpErlangAtom) nodes.elementAt(i);
@@ -583,7 +583,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
         final Bundle debugger = Platform.getBundle("org.erlide.kernel.debugger");
         final List<String> dbg_modules = getModulesFromBundle(debugger);
 
-        final String ver = backend.getRuntimeInfo().getVersion().asMajor().toString()
+        final String ver = backend.getRuntime().getVersion().asMajor().toString()
                 .toLowerCase();
         final Bundle debugger_otp = Platform.getBundle("org.erlide.kernel.debugger.otp."
                 + ver);

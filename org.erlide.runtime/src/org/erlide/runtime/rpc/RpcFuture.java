@@ -8,40 +8,39 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.internal.rpc;
+package org.erlide.runtime.rpc;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.rpc.IRpcFuture;
-import org.erlide.runtime.rpc.RpcException;
-import org.erlide.runtime.rpc.RpcMonitor;
+import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.internal.rpc.OtpRpc;
 import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpMbox;
+import com.google.common.util.concurrent.CheckedFuture;
 
-public class RpcFutureImpl implements IRpcFuture {
+public class RpcFuture implements CheckedFuture<OtpErlangObject, RpcException> {
 
     private final OtpMbox mbox;
     private OtpErlangObject result = null;
     private final String env;
     private final boolean logCalls;
 
-    private final IRpcSite rpcSite;
+    private final IOtpRpc rpc;
     private final OtpErlangRef ref;
 
-    public RpcFutureImpl(final OtpErlangRef ref, final OtpMbox mbox, final String env,
-            final boolean logCalls, final IRpcSite rpcSite) {
+    public RpcFuture(final OtpErlangRef ref, final OtpMbox mbox, final String env,
+            final boolean logCalls, final IOtpRpc rpc) {
         this.ref = ref;
 
         this.mbox = mbox;
         this.env = env;
         this.logCalls = logCalls;
-        this.rpcSite = rpcSite;
+        this.rpc = rpc;
     }
 
     @Override
@@ -86,7 +85,7 @@ public class RpcFutureImpl implements IRpcFuture {
     @Override
     public OtpErlangObject checkedGet() throws RpcException {
         try {
-            return checkedGet(RpcSite.INFINITY, TimeUnit.MILLISECONDS);
+            return checkedGet(OtpRpc.INFINITY, TimeUnit.MILLISECONDS);
         } catch (final TimeoutException e) {
             return null;
         }
@@ -95,8 +94,8 @@ public class RpcFutureImpl implements IRpcFuture {
     @Override
     public OtpErlangObject checkedGet(final long timeout, final TimeUnit unit)
             throws TimeoutException, RpcException {
-        result = rpcSite.getRpcResult(mbox, TimeUnit.MILLISECONDS.convert(timeout, unit),
-                env);
+        result = rpc
+                .getRpcResult(mbox, TimeUnit.MILLISECONDS.convert(timeout, unit), env);
         if (isDone()) {
             RpcMonitor.recordResponse(ref, result);
             if (logCalls) {

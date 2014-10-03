@@ -13,11 +13,11 @@ package org.erlide.backend.internal;
 import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.api.BackendData;
 import org.erlide.backend.api.IBackendManager;
-import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.IOtpNodeProxy;
 
 public class InternalBackend extends Backend {
 
-    public InternalBackend(final BackendData data, final @NonNull IErlRuntime runtime,
+    public InternalBackend(final BackendData data, final @NonNull IOtpNodeProxy runtime,
             final IBackendManager backendManager) {
         super(data, runtime, backendManager);
     }

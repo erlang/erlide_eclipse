@@ -60,8 +60,8 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.backend.debug.BackendEvalResult;
 import org.erlide.backend.debug.EvalHelper;
-import org.erlide.engine.util.RpcSiteFactory;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.engine.util.OtpRpcFactory;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
@@ -83,7 +83,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
     private Action fAddAction;
     Action fRemoveAction;
 
-    private final IRpcSite backend;
+    private final IOtpRpc backend;
 
     private final class ListenerImplementation implements Listener {
         private final Table t;
@@ -147,9 +147,9 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
         String fExpr;
         private String cachedValue = "";
         boolean doEval = false;
-        private final IRpcSite b;
+        private final IOtpRpc b;
 
-        public LiveExpr(final IRpcSite b, final String s) {
+        public LiveExpr(final IOtpRpc b, final String s) {
             fExpr = s;
             this.b = b;
         }
@@ -252,7 +252,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
                 IResourceChangeEvent.POST_BUILD);
 
-        backend = RpcSiteFactory.getRpcSite();
+        backend = OtpRpcFactory.getOtpRpc();
         // TODO make the backend configurable (as for console)
     }
 

@@ -24,8 +24,8 @@ import java.util.logging.Logger;
 
 public class ErlLogger {
 
-    private static final ErlSimpleFormatter erlSimpleFormatter = new ErlSimpleFormatter();
-    private static final ErlLogger instance = new ErlLogger();
+    private static final ErlSimpleFormatter SIMPLE_FORMATTER = new ErlSimpleFormatter();
+    private static final ErlLogger INSTANCE = new ErlLogger();
 
     private Logger logger;
     private String logDir;
@@ -33,7 +33,7 @@ public class ErlLogger {
     private FileHandler fileHandler = null;
 
     public static ErlLogger getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     public void dispose() {
@@ -43,7 +43,7 @@ public class ErlLogger {
     public final void setLogDir(final String dir) {
         logger.removeHandler(fileHandler);
         logDir = dir == null ? "./" : dir;
-        addFileHandler(erlSimpleFormatter);
+        addFileHandler(SIMPLE_FORMATTER);
     }
 
     public String getLogLocation() {
@@ -51,10 +51,8 @@ public class ErlLogger {
     }
 
     public void log(final Level kind, final String fmt, final Object... o) {
-        final StackTraceElement el = getCaller();
         final String str = o.length == 0 ? fmt : String.format(fmt, o);
-        final String msg = "(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
-                + str;
+        final String msg = getCallerMsg(str);
         if (logger != null) {
             logger.log(kind, msg);
             if (logger.getHandlers().length == 0) {
@@ -64,16 +62,21 @@ public class ErlLogger {
     }
 
     public void log(final Level kind, final Throwable exception) {
-        final StackTraceElement el = getCaller();
         final String str = exception.getMessage();
-        final String msg = "(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
-                + str;
+        final String msg = getCallerMsg(str);
         if (logger != null) {
             logger.log(kind, msg, exception);
             if (logger.getHandlers().length == 0) {
                 System.out.println(msg);
             }
         }
+    }
+
+    private String getCallerMsg(final String str) {
+        final StackTraceElement el = getCaller();
+        final String msg = "(" + el.getFileName() + ":" + el.getLineNumber() + ") : "
+                + str;
+        return msg;
     }
 
     public void erlangLog(final String module, final int line, final String skind,
@@ -129,7 +132,7 @@ public class ErlLogger {
         logger = Logger.getLogger("org.erlide");
         logger.setUseParentHandlers(false);
         logger.setLevel(java.util.logging.Level.FINEST);
-        addConsoleHandler(erlSimpleFormatter);
+        addConsoleHandler(SIMPLE_FORMATTER);
     }
 
     private void addConsoleHandler(final ErlSimpleFormatter formatter) {

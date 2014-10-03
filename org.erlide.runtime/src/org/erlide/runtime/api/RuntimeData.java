@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.ErlangFunctionCall;
 import org.erlide.util.HostnameUtils;
 import org.erlide.util.SystemConfiguration;
 
@@ -33,7 +34,7 @@ public class RuntimeData {
     protected String workingDir;
     protected Map<String, String> env;
 
-    protected InitialCall initialCall;
+    protected ErlangFunctionCall initialCall;
 
     protected boolean loadOnAllNodes;
     protected boolean debug;
@@ -180,7 +181,7 @@ public class RuntimeData {
     }
 
     @Nullable
-    public InitialCall getInitialCall() {
+    public ErlangFunctionCall getInitialCall() {
         return initialCall;
     }
 

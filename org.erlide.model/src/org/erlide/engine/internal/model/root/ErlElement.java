@@ -23,7 +23,6 @@ import java.util.Set;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.engine.ErlangEngine;
@@ -210,15 +209,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement, 
             }
             return false;
         }
-    }
-
-    @Override
-    public ISchedulingRule getSchedulingRule() {
-        final IResource resource = getResource();
-        if (resource == null) {
-            return new NoResourceSchedulingRule(new Path(getName()));
-        }
-        return resource;
     }
 
     /**

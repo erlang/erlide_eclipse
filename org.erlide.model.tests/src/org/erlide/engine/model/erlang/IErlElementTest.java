@@ -12,7 +12,6 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.engine.ErlangEngine;
 import org.erlide.engine.internal.model.root.ErlProject;
 import org.erlide.engine.model.ErlModelException;
@@ -163,24 +162,6 @@ public class IErlElementTest extends ErlModelTestBase {
         assertEquals(file, module.getResource());
         assertNull(otpFile.getResource());
         assertEquals(module.getResource(), element.getResource());
-    }
-
-    // ISchedulingRule getSchedulingRule();
-    @Test
-    public void getSchedulingRule() throws Exception {
-        project.open(null);
-        final IErlElementLocator model = ErlangEngine.getInstance().getModel();
-        final IErlModule otpFile = model.findModuleFromProject(project, "file.erl", null,
-                IErlElementLocator.Scope.PROJECT_ONLY);
-        module.open(null);
-        final IErlElement element = module.getElementAtLine(3);
-        // TODO more testing here
-        final ISchedulingRule schedulingRule = module.getSchedulingRule();
-        assertNotNull(schedulingRule);
-        assertNotNull(otpFile);
-        assertEquals(schedulingRule, element.getSchedulingRule());
-        assertNotNull(otpFile.getSchedulingRule());
-        assertNotNull(otpFile.getSchedulingRule());
     }
 
     // boolean isReadOnly();

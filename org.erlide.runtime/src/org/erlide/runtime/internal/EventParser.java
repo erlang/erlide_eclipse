@@ -1,6 +1,6 @@
 package org.erlide.runtime.internal;
 
-import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.events.ErlEvent;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -10,7 +10,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class EventParser {
 
-    public ErlEvent parse(final OtpErlangObject msg, final IErlRuntime runtime) {
+    public ErlEvent parse(final OtpErlangObject msg, final IOtpNodeProxy runtime) {
         if (msg == null) {
             return null;
         }

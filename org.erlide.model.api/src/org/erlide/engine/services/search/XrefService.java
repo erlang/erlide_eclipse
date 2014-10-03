@@ -3,7 +3,7 @@ package org.erlide.engine.services.search;
 import org.erlide.engine.model.erlang.FunctionRef;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.ErlangService;
-import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.RpcFuture;
 
 public interface XrefService extends ErlangService {
 
@@ -11,7 +11,7 @@ public interface XrefService extends ErlangService {
 
     void stop();
 
-    IRpcFuture addProject(IErlProject project);
+    RpcFuture addProject(IErlProject project);
 
     void update();
 

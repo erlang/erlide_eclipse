@@ -44,9 +44,9 @@ public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
     }
 
     @Override
-    protected BackendData configureBackend(final BackendData data,
-            final ILaunchConfiguration config, final String mode, final ILaunch launch) {
-        final BackendData myData = super.configureBackend(data, config, mode, launch);
+    protected BackendData configureBackend(final BackendData data, final String mode,
+            final ILaunch launch) {
+        final BackendData myData = super.configureBackend(data, mode, launch);
         myData.setConsole(true);
         myData.setLongName(false);
         myData.setReportErrors(true);

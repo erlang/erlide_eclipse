@@ -21,10 +21,12 @@ import java.util.Collection;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 
 public final class RuntimeInfo {
 
@@ -179,18 +181,9 @@ public final class RuntimeInfo {
     }
 
     public static boolean hasCompiler(final String otpHome) {
-        // Check if it looks like a ERL_TOP location:
-        if (otpHome == null) {
+        if (!isValidOtpHome(otpHome)) {
             return false;
         }
-        if (otpHome.length() == 0) {
-            return false;
-        }
-        final File d = new File(otpHome);
-        if (!d.isDirectory()) {
-            return false;
-        }
-
         final boolean hasErlc = hasExecutableFile(otpHome + "/bin/erlc");
         return hasErlc;
     }
@@ -225,10 +218,48 @@ public final class RuntimeInfo {
         if (path == null) {
             return null;
         }
-        String result = null;
-        final File boot = new File(path + "/bin/start.boot");
+        String result = readOtpVersion(path);
+        if (result != null) {
+            return result;
+        }
+        result = readReleaseOtpVersion(path + "/releases/");
+        if (result != null) {
+            return result;
+        }
+        result = readStartBoot(path);
+        return result;
+    }
+
+    private static String readOtpVersion(final String path) {
+        final File file = new File(path + "/OTP_VERSION");
         try {
-            final FileInputStream is = new FileInputStream(boot);
+            return Files.toString(file, Charsets.US_ASCII).trim();
+        } catch (final IOException e) {
+        }
+        return null;
+    }
+
+    private static String readReleaseOtpVersion(final String path) {
+        final File dir = new File(path);
+        final String[] rels = dir.list();
+        if (rels == null) {
+            return null;
+        }
+        // sort!
+        for (final String rel : rels) {
+            final String result = readOtpVersion(path + rel);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
+    private static String readStartBoot(final String path) {
+        String result = null;
+        final File file = new File(path + "/bin/start.boot");
+        try {
+            final FileInputStream is = new FileInputStream(file);
             try {
                 is.skip(14);
                 readstring(is);

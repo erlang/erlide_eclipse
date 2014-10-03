@@ -14,13 +14,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
+import java.nio.charset.Charset;
 import java.util.regex.Pattern;
+
+import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Charsets;
 
 public class IoRequest {
 
@@ -38,10 +43,15 @@ public class IoRequest {
     private String message;
     private int start;
     private final IoRequestKind kind;
+    private Charset encoding;
 
     public IoRequest(final OtpErlangTuple obj) {
         try {
-            final OtpErlangObject o = obj.elementAt(0);
+            final Bindings b = ErlUtils.match(
+                    "{Payload, Encoding, Leader, From, Tstamp}", obj);
+            encoding = getEncoding(b.getAtom("Encoding"));
+
+            final OtpErlangObject o = b.get("Payload");
             if (o instanceof OtpErlangString) {
                 message = ((OtpErlangString) o).stringValue();
             } else if (o instanceof OtpErlangList) {
@@ -58,9 +68,10 @@ public class IoRequest {
             } else {
                 message = o.toString();
             }
+            message = convertEncoding(message, encoding);
 
-            leader = (OtpErlangPid) obj.elementAt(1);
-            final OtpErlangObject s = obj.elementAt(2);
+            leader = b.getPid("Leader");
+            final OtpErlangObject s = b.get("From");
             if (s instanceof OtpErlangPid) {
                 sender = (OtpErlangPid) s;
             } else {
@@ -78,10 +89,22 @@ public class IoRequest {
         }
     }
 
+    private String convertEncoding(final String message2, final Charset encoding2) {
+        return new String(message2.getBytes(Charsets.ISO_8859_1), encoding2);
+    }
+
+    private Charset getEncoding(final String atom) {
+        if ("unicode".equals(atom)) {
+            return Charsets.UTF_8;
+        }
+        return Charsets.ISO_8859_1;
+    }
+
     public IoRequest(final String msg, final IoRequestKind kind) {
         assertThat(kind, is(not(IoRequestKind.OUTPUT)));
         assertThat(kind, is(not(IoRequestKind.PROMPT)));
         message = msg;
+        encoding = Charsets.ISO_8859_1;
         leader = new OtpErlangPid("s", 0, 0, 0);
         sender = new OtpErlangPid("s", 0, 0, 0);
         this.kind = kind;
@@ -89,8 +112,8 @@ public class IoRequest {
 
     @Override
     public String toString() {
-        return "{" + kind.toString() + ":: '" + message + "', " + start + "/"
-                + message.length() + ", " + leader + ", " + sender + "}";
+        return "{" + kind.toString() + ":: '" + message + "'@" + encoding + ", " + start
+                + "/" + message.length() + ", " + leader + ", " + sender + "}";
     }
 
     public OtpErlangPid getLeader() {

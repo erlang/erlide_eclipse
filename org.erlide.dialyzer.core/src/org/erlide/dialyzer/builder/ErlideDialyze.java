@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.runtime.api.IRpcSite;
-import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.api.IOtpRpc;
+import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
@@ -23,7 +23,7 @@ public class ErlideDialyze {
     // private static final int INCLUDE_TIMEOUT = 40000;
     private static final int UPDATE_TIMEOUT = LONG_TIMEOUT * 10;
 
-    public static IRpcFuture dialyze(final IRpcSite backend,
+    public static RpcFuture dialyze(final IOtpRpc backend,
             final Collection<String> files, final Collection<String> pltPaths,
             final Collection<IPath> includeDirs, final boolean fromSource,
             final Object noCheckPLT) throws RpcException {
@@ -35,7 +35,7 @@ public class ErlideDialyze {
                 incs, fromSource, noCheckPLT);
     }
 
-    public static void startDialyzer(final IRpcSite backend,
+    public static void startDialyzer(final IOtpRpc backend,
             final Collection<String> files, final Collection<String> pltPaths,
             final Collection<IPath> includeDirs, final boolean fromSource,
             final Object noCheckPLT, final IRpcResultCallback callback)
@@ -49,7 +49,7 @@ public class ErlideDialyze {
         // ErlLogger.debug("result %s", result.toString());
     }
 
-    public static List<String> formatWarnings(final IRpcSite backend,
+    public static List<String> formatWarnings(final IOtpRpc backend,
             final OtpErlangList warnings) {
         final List<String> result = Lists.newArrayList();
         try {
@@ -64,7 +64,7 @@ public class ErlideDialyze {
         return result;
     }
 
-    public static OtpErlangObject checkPlt(final IRpcSite backend, final String plt,
+    public static OtpErlangObject checkPlt(final IOtpRpc backend, final String plt,
             final List<String> ebinDirs) throws RpcException {
         if (ebinDirs == null) {
             return backend.call(UPDATE_TIMEOUT, ERLIDE_DIALYZE, "check_plt", "s", plt);
@@ -73,7 +73,7 @@ public class ErlideDialyze {
                 "update_plt_with_additional_paths", "sls", plt, ebinDirs);
     }
 
-    public static void startCheckPlt(final IRpcSite backend, final String plt,
+    public static void startCheckPlt(final IOtpRpc backend, final String plt,
             final List<String> ebinDirs, final IRpcResultCallback callback)
             throws RpcException {
         backend.async_call_result(callback, ERLIDE_DIALYZE,

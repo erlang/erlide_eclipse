@@ -3,7 +3,7 @@ package org.erlide.tracing.core.mvc.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.tracing.core.TraceBackend;
 import org.erlide.tracing.core.mvc.model.TracedNode;
@@ -35,8 +35,8 @@ public class ProcessHelper {
      */
     public static TracedProcess[] getProcsOnTracedNodes() {
         try {
-            final IRpcSite backend = TraceBackend.getInstance().getBackend(true)
-                    .getRpcSite();
+            final IOtpRpc backend = TraceBackend.getInstance().getBackend(true)
+                    .getOtpRpc();
             final List<OtpErlangAtom> nodeAtoms = new ArrayList<OtpErlangAtom>();
 
             for (final Object o : TraceBackend.getInstance().getTracedNodesArray()) {

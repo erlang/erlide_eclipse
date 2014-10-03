@@ -25,7 +25,7 @@ import org.erlide.engine.model.erlang.IErlFunctionClause;
 import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.services.search.XrefService;
-import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.jinterface.AsyncCaller;
 import org.erlide.ui.views.CallHierarchyView;
@@ -92,15 +92,15 @@ public class CallHierarchyAction extends Action {
             }
 
             @Override
-            protected IRpcFuture call() throws BackendException {
-                final IRpcFuture result = xrefService.addProject(ErlangEngine
+            protected RpcFuture call() throws BackendException {
+                final RpcFuture result = xrefService.addProject(ErlangEngine
                         .getInstance().getModelUtilService().getProject(module));
                 return result;
             }
 
             @Override
             protected void handleResult(final CallHierarchyView context,
-                    final IRpcFuture result) {
+                    final RpcFuture result) {
                 page.activate(context);
                 try {
                     context.setRoot(ErlangEngine.getInstance().getModel()

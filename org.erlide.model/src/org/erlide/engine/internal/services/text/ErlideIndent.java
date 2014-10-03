@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.erlide.engine.services.text.IndentResult;
 import org.erlide.engine.services.text.IndentService;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -17,9 +17,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideIndent implements IndentService {
 
-    private final IRpcSite backend;
+    private final IOtpRpc backend;
 
-    public ErlideIndent(final IRpcSite backend) {
+    public ErlideIndent(final IOtpRpc backend) {
         this.backend = backend;
     }
 

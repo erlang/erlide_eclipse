@@ -5,12 +5,15 @@ import java.util.concurrent.Callable;
 import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor;
 import org.eclipse.xtext.xbase.lib.Pure;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.IRpcCallback;
 
 @Accessors
 @FinalFieldsConstructor
 @SuppressWarnings("all")
 public class RpcCall implements Callable<OtpErlangObject> {
+  private final IOtpRpc rpc;
+  
   private final String module;
   
   private final String function;
@@ -41,15 +44,21 @@ public class RpcCall implements Callable<OtpErlangObject> {
   }
   
   public OtpErlangObject call() throws Exception {
-    return null;
+    return this.rpc.call(this.module, this.function, this.signature, this.args);
   }
   
-  public RpcCall(final String module, final String function, final String signature, final Object[] args) {
+  public RpcCall(final IOtpRpc rpc, final String module, final String function, final String signature, final Object[] args) {
     super();
+    this.rpc = rpc;
     this.module = module;
     this.function = function;
     this.signature = signature;
     this.args = args;
+  }
+  
+  @Pure
+  public IOtpRpc getRpc() {
+    return this.rpc;
   }
   
   @Pure

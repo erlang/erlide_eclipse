@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.backend.api.ErlRuntimeAttributes;
 
-public class LaunchUtils {
+public final class LaunchUtils {
 
     public static IProject[] getErlangLaunchConfigurationProjects(
             final ILaunchConfiguration configuration) throws CoreException {

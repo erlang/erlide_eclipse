@@ -12,6 +12,7 @@ package org.erlide.backend.console;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.erlide.backend.api.IBackend;
 import org.erlide.runtime.shell.IBackendShell;
@@ -23,7 +24,7 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 public class BackendShellManager implements IDisposable {
 
     private final IBackend backend;
-    private final HashMap<String, BackendShell> fShells;
+    private final Map<String, BackendShell> fShells;
 
     public BackendShellManager(final IBackend backend) {
         this.backend = backend;
@@ -45,6 +46,7 @@ public class BackendShellManager implements IDisposable {
                 ErlLogger.warn(e);
             }
             shell = new BackendShell(backend, id, server);
+            shell.open();
             fShells.put(id, shell);
         }
         return shell;

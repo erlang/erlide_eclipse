@@ -45,3 +45,4 @@ junit.xml
 .rebar
 .eunit
 
+*.pmd

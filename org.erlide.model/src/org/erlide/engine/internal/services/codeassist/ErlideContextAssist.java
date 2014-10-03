@@ -6,7 +6,7 @@ import java.util.TreeSet;
 
 import org.erlide.engine.services.codeassist.ContextAssistService;
 import org.erlide.engine.services.codeassist.RecordCompletion;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
@@ -18,9 +18,9 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideContextAssist implements ContextAssistService {
 
-    private final IRpcSite backend;
+    private final IOtpRpc backend;
 
-    public ErlideContextAssist(final IRpcSite backend) {
+    public ErlideContextAssist(final IOtpRpc backend) {
         this.backend = backend;
     }
 
@@ -44,7 +44,7 @@ public class ErlideContextAssist implements ContextAssistService {
     }
 
     @Override
-    public RecordCompletion checkRecordCompletion(final IRpcSite buildBackend,
+    public RecordCompletion checkRecordCompletion(final IOtpRpc buildBackend,
             final String prefix) {
         try {
             final OtpErlangObject res = buildBackend.call("erlide_content_assist",

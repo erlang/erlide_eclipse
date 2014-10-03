@@ -1,9 +1,9 @@
 package org.erlide.engine;
 
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 
 public interface IErlangEngineFactory {
 
-    IErlangEngine get(IRpcSite backend);
+    IErlangEngine get(IOtpRpc backend);
 
 }

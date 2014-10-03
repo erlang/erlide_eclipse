@@ -14,7 +14,7 @@ import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;
 
-public class RuntimeInfoLoader {
+public final class RuntimeInfoLoader {
     static final String CODE_PATH = "codePath";
     static final String HOME_DIR = "homeDir";
     static final String ARGS = "args";

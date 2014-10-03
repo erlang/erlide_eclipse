@@ -1,16 +1,16 @@
 package org.erlide.engine.internal;
 
 import org.erlide.engine.services.SystemInfoService;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.util.erlang.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class SystemInfo implements SystemInfoService {
 
-    private final IRpcSite ideBackend;
+    private final IOtpRpc ideBackend;
 
-    public SystemInfo(final IRpcSite backend) {
+    public SystemInfo(final IOtpRpc backend) {
         ideBackend = backend;
     }
 

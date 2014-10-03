@@ -36,7 +36,11 @@ public class ProjectPathEditor extends PathEditor {
 
     @Override
     protected String[] parseString(final String stringList) {
-        return PreferencesUtils.unpackArray(stringList);
+        final String[] result = PreferencesUtils.unpackArray(stringList);
+        for (int i = 0; i < result.length; i++) {
+            result[i] = result[i].trim();
+        }
+        return result;
     }
 
     @Override

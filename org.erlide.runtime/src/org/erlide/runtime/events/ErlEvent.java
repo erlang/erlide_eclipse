@@ -1,6 +1,6 @@
 package org.erlide.runtime.events;
 
-import org.erlide.runtime.api.IErlRuntime;
+import org.erlide.runtime.api.IOtpNodeProxy;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
@@ -8,11 +8,11 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 public class ErlEvent {
 
     private final String topic;
-    private final IErlRuntime runtime;
+    private final IOtpNodeProxy runtime;
     private final OtpErlangObject event;
     private final OtpErlangPid sender;
 
-    public ErlEvent(final String topic, final IErlRuntime runtime,
+    public ErlEvent(final String topic, final IOtpNodeProxy runtime,
             final OtpErlangObject event, final OtpErlangPid sender) {
         this.topic = topic;
         this.runtime = runtime;
@@ -28,7 +28,7 @@ public class ErlEvent {
         return topic;
     }
 
-    public IErlRuntime getRuntime() {
+    public IOtpNodeProxy getRuntime() {
         return runtime;
     }
 

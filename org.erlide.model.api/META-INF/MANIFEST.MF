@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: erlide Model_api
 Bundle-SymbolicName: org.erlide.model.api;singleton:=true
-Bundle-Version: 0.24.10.qualifier
+Bundle-Version: 0.24.11.qualifier
 Bundle-Vendor: erlide.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.erlide.engine,

@@ -5,11 +5,11 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
@@ -17,6 +17,7 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.erlide.engine.model.builder.ProblemData;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.Util;
 import org.erlide.util.erlang.ErlUtils;
 
 @SuppressWarnings("all")
@@ -35,16 +36,8 @@ public class ErlProblems {
       final ClassLoader loader = _class.getClassLoader();
       final InputStream input = loader.getResourceAsStream("org/erlide/engine/model/builder/errors.data");
       try {
-        Scanner _scanner = new Scanner(input);
-        final Scanner s = _scanner.useDelimiter("\\A");
-        String _xifexpression = null;
-        boolean _hasNext = s.hasNext();
-        if (_hasNext) {
-          _xifexpression = s.next();
-        } else {
-          _xifexpression = "";
-        }
-        final String src = _xifexpression;
+        String _name = Charsets.ISO_8859_1.name();
+        final String src = Util.getInputStreamAsString(input, _name);
         try {
           final OtpErlangObject source0 = ErlUtils.parse(src);
           final OtpErlangList source = ((OtpErlangList) source0);

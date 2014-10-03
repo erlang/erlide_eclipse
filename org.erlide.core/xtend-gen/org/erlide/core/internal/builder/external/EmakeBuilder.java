@@ -21,7 +21,7 @@ import org.erlide.engine.model.builder.BuilderTool;
 import org.erlide.engine.model.builder.MarkerUtils;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 
@@ -36,8 +36,8 @@ public class EmakeBuilder extends ExternalBuilder {
     {
       IBackendManager _backendManager = BackendCore.getBackendManager();
       final IBackend backend = _backendManager.getBuildBackend(erlProject);
-      RuntimeInfo _runtimeInfo = backend.getRuntimeInfo();
-      String _otpHome = _runtimeInfo.getOtpHome();
+      IOtpNodeProxy _runtime = backend.getRuntime();
+      String _otpHome = _runtime.getOtpHome();
       Path _path = new Path(_otpHome);
       final IPath path = _path.append("bin/erl");
       String _xifexpression = null;

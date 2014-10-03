@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.backend.internal.BackendActivator;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
@@ -71,7 +71,7 @@ public class BackendUtils {
         return reg.getExtensionPoint(BackendActivator.PLUGIN_ID, "codepath");
     }
 
-    public static boolean isAccessibleDir(final IRpcSite backend, final String localDir) {
+    public static boolean isAccessibleDir(final IOtpRpc backend, final String localDir) {
         try {
             final OtpErlangObject r = backend.call("file", "read_file_info", "s",
                     localDir);

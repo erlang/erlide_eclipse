@@ -70,7 +70,7 @@ public final class PathSerializer {
         final List<String> sresult = new ArrayList<String>(Arrays.asList(v));
         final List<IPath> result = new ArrayList<IPath>();
         for (final String s : sresult) {
-            final Path path = new Path(s);
+            final Path path = new Path(s.trim());
             if (!path.isEmpty()) {
                 result.add(path);
             }

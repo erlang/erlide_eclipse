@@ -10,35 +10,35 @@
  *******************************************************************************/
 package org.erlide.runtime.api;
 
+import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.IDisposable;
 
+import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
-public interface IErlRuntime extends IDisposable {
+public interface IOtpNodeProxy extends IDisposable {
 
     void startAndWait();
 
     boolean isRunning();
 
-    String getNodeName();
-
-    IRpcSite getRpcSite();
-
-    RuntimeData getRuntimeData();
-
-    OtpMbox getEventMbox();
-
     Process getProcess();
 
-    ErlSystemStatus getSystemStatus();
+    String getNodeName();
 
-    void setSystemStatus(ErlSystemStatus msg);
+    RuntimeVersion getVersion();
+
+    String getOtpHome();
+
+    IOtpRpc getOtpRpc();
 
     OtpMbox createMbox(String string);
 
     OtpMbox createMbox();
 
-    void addShutdownCallback(IShutdownCallback callback);
+    void setShutdownCallback(IShutdownCallback callback);
+
+    OtpErlangPid getEventPid();
 
     void registerEventListener(Object handler);
 

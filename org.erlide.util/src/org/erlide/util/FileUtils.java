@@ -1,9 +1,7 @@
 package org.erlide.util;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.Scanner;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -18,10 +16,4 @@ public class FileUtils {
         res.create(new ByteArrayInputStream(content.getBytes(encoding)), false, null);
     }
 
-    public static String convertStreamToString(final InputStream contents,
-            final Charset encoding) {
-        final java.util.Scanner s = new Scanner(contents, encoding.name())
-                .useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
-    }
 }

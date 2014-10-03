@@ -145,13 +145,13 @@ handle_input(Client, State, Input) ->
     end.
 
 
-put_chars(From, ReplyAs, State, _Encoding, Mod, Fun, Args) ->
+put_chars(From, ReplyAs, State, Encoding, Mod, Fun, Args) ->
     Text = case catch apply(Mod, Fun, Args) of
                {'EXIT', _Reason} -> "";
                Txt -> Txt
            end,
     FlatText = string_flatten(Text),
-    send_event(FlatText, From),
+    send_event(FlatText, From, Encoding),
     io_reply(From, ReplyAs, ok),
     {ok, State}.
 
@@ -180,9 +180,9 @@ get_until(From, ReplyAs, Client, State, _Encoding, Prompt, Mod, Fun, Args) ->
             handle_input(Client, TmpState, Input)
     end.
 
-put_chars(From, ReplyAs, State, _Encoding, Text) ->
+put_chars(From, ReplyAs, State, Encoding, Text) ->
     FlatText = string_flatten(Text),
-    send_event(FlatText, From),
+    send_event(FlatText, From, Encoding),
     io_reply(From, ReplyAs, ok),
     {ok, State}.
 
@@ -225,9 +225,9 @@ handle_io_request(Client, State, From, ReplyAs, IoRequest) ->
             {ok, State}
     end.
 
-send_event(String, From) ->
+send_event(String, From, Encoding) ->
     %%Client ! {String, group_leader(), From, erlang:now()},
-    erlide_jrpc:event(io_server, {String, group_leader(), From, erlang:now()}).
+    erlide_jrpc:event(io_server, {String, Encoding, group_leader(), From, erlang:now()}).
 
 
 handle_io_requests(ClientSocket, State0, From, ReplyAs, [LastIoReq]) ->
@@ -273,7 +273,7 @@ print_prompt(_Client, Prompt, From) ->
                          io_lib:write(Term)
                  end,
     FlatText = string_flatten(PromptText),
-    send_event(FlatText, From),
+    send_event(FlatText, From, latin1),
     ok.
 
 loginfo(FmtStr, Args) ->

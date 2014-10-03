@@ -43,7 +43,7 @@ import org.erlide.engine.model.erlang.ISourceReference;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.services.parsing.ParserService;
 import org.erlide.engine.services.parsing.RuntimeHelper;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
@@ -82,9 +82,9 @@ public final class ErlParser implements ParserService {
     private static final boolean TRACE = false;
 
     private final RuntimeHelper helper;
-    private final IRpcSite backend;
+    private final IOtpRpc backend;
 
-    public ErlParser(final IRpcSite backend) {
+    public ErlParser(final IOtpRpc backend) {
         this.backend = backend;
         helper = new RuntimeHelper(backend);
     }

@@ -35,7 +35,7 @@ import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlExternal;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.services.search.ModelUtilService;
-import org.erlide.runtime.api.IRpcSite;
+import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.TypeConverter;
 
@@ -50,9 +50,9 @@ import com.google.common.collect.Sets;
 
 public class ModelInternalUtils implements ModelUtilService {
 
-    private final IRpcSite backend;
+    private final IOtpRpc backend;
 
-    public ModelInternalUtils(final IRpcSite backend) {
+    public ModelInternalUtils(final IOtpRpc backend) {
         this.backend = backend;
     }
 

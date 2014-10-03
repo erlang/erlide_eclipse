@@ -1,7 +1,7 @@
 package org.erlide.runtime.api;
 
 import org.erlide.runtime.rpc.IRpcCallback;
-import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcResult;
@@ -10,7 +10,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
-public interface IRpcSite {
+public interface IOtpRpc {
 
     // y
     RpcResult call_noexception(final String m, final String f, final String signature,
@@ -21,10 +21,10 @@ public interface IRpcSite {
             final String signature, final Object... args);
 
     // y
-    IRpcFuture async_call(final String m, final String f, final String signature,
+    RpcFuture async_call(final String m, final String f, final String signature,
             final Object... args) throws RpcException;
 
-    IRpcFuture async_call(final OtpErlangObject gleader, final String m, final String f,
+    RpcFuture async_call(final OtpErlangObject gleader, final String m, final String f,
             final String signature, final Object... args) throws RpcException;
 
     // n
