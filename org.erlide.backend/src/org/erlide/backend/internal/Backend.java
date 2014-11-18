@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available
- * at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.backend.internal;
 
@@ -103,7 +101,9 @@ public abstract class Backend implements IStreamListener, IBackend {
             switch (data.getContext()) {
             case IDE:
                 site.call("erlide_builder_app", "init", "");
-                site.call("erlide_ide_app", "init", "");
+                if (!SystemConfiguration.isHeadless()) {
+                    site.call("erlide_ide_app", "init", "");
+                }
                 break;
             default:
             }

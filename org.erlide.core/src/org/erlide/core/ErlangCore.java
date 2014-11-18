@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2004 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     IBM Corporation
+ * Contributors: IBM Corporation
  *******************************************************************************/
 package org.erlide.core;
 
@@ -64,13 +62,19 @@ public final class ErlangCore {
         final String version = retrieveFeatureVersion();
 
         ErlLogger.info("Starting CORE " + Thread.currentThread());
-        String dev = "(" + EncodingUtils.getEncoding() + ") ";
+        String dev = "(" + EncodingUtils.getEncoding() + ")";
         if (SystemConfiguration.getInstance().isDeveloper()) {
             dev += " developer version ***";
         }
         if (SystemConfiguration.getInstance().isTest()) {
             dev += " test ***";
         }
+        if (SystemConfiguration.isHeadless()) {
+            dev += " headless";
+        } else {
+            dev += " ui";
+        }
+
         final String versionBanner = "*** starting Erlide v" + version + " *** " + dev;
         logger.log(Level.INFO, versionBanner);
         featureVersion = version;
