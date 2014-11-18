@@ -7,7 +7,7 @@ task :run_tests, [:tools_dir] do |t, args|
   args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
   puts "Compile and run tests"
 
-  Erlide.run_ant "run.tests"
+  PDE.run_ant("org.erlide.releng/build.ant", "run.tests")
 end
 
 desc "create update site"
@@ -15,7 +15,7 @@ task :build_p2, [:tools_dir] do |t, args|
   args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
   puts "Building p2"
 
-  Erlide.run_ant "build.p2"
+  PDE.run_ant("org.erlide.releng/build.ant", "build.p2")
 end
 
 desc "create product"
@@ -23,7 +23,7 @@ task :build_product, [:tools_dir] do |t, args|
   args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools")
   puts "Building product"
 
-  Erlide.run_ant "build.product"
+  PDE.run_ant("org.erlide.releng/build.ant", "build.product")
 end
 
 desc "upload update site to servers"

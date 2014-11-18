@@ -37,6 +37,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <url>
       <update label="Erlide main update site" url="http://download.erlide.org/update/"/>
+      <discovery label="Handly" url="https://hudson.eclipse.org/handly/job/0.3.x/lastSuccessfulBuild/artifact/build/repository/"/>
    </url>
 
    <plugin

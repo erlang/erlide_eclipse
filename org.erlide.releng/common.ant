@@ -130,9 +130,7 @@
                 </fileset>
             </classpath>
             <arg line='-data "${director.dir}/workspace"' />
-            <arg line="-r ${eclipse-download}/tools/buckminster/headless-4.2,http://download.cloudsmith.com/buckminster/external-4.2,${eclipse-download}/releases/juno/,http://download.erlide.org/update" />
-            <!--arg line="-r ${eclipse-download}/tools/buckminster/headless-4.3,http://download.cloudsmith.com/buckminster/external-4.3,${eclipse-download}/releases/kepler/,http://download.erlide.org/update" /-->
-            <!--arg line="-r ${eclipse-download}/tools/buckminster/headless-3.7,http://download.cloudsmith.com/buckminster/external-3.7,${eclipse-download}/releases/indigo/,http://download.erlide.org/update" /-->
+            <arg line="-r ${eclipse-download}/tools/buckminster/headless-4.4,http://download.cloudsmith.com/buckminster/external-4.4,${eclipse-download}/releases/luna/" />
             <arg line='-d "${buckminster.home}"' />
             <arg line="-p Buckminster" />
             <arg line="-i org.eclipse.buckminster.cmdline.product" />
@@ -140,7 +138,6 @@
             <arg line="-i org.eclipse.buckminster.pde.headless.feature.feature.group" />
             <arg line="-i org.eclipse.buckminster.git.headless.feature.feature.group" />
             <arg line="-i org.eclipse.buckminster.emma.headless.feature.feature.group" />
-            <arg line="-i org.erlide.headless.feature.group" />
         </java>
     </target>
 

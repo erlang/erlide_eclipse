@@ -19,8 +19,7 @@
     <import file="common.ant" as="common" />
 
     <property name="tool.jdk" value="${user.home}/erlide_tools/jdk" />
-    <property name="tool.otp" value="${user.home}/erlide_tools/otp" />
-    <property name="tool.rebar" value="${user.home}/erlide_tools/rebar/rebar" />
+    <property name="tool.rebar_k" value="${user.home}/erlide_tools/rebar_k" />
 
     <property name="build.properties" location="${projects.location}/org.erlide.releng/build.properties" />
 
@@ -60,33 +59,54 @@
     <target name="eunit.tests">
         <echo message="Running EUnit..." />
 
-        <exec executable="${tool.rebar}" failonerror="true" dir="${projects.location}/org.erlide.kernel.common">
-            <arg value="compile"/>
-            <arg value="eunit"/>
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}"/>
+        <exec executable="${tool.rebar_k}" dir="${projects.location}/org.erlide.kernel.common" failifexecutionfails="true" failonerror="true">
+            <arg value="otp15" />
+            <arg value="compile" />
+            <arg value="eunit" />
+            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
+        </exec>
+        <exec executable="${tool.rebar_k}" dir="${projects.location}/org.erlide.kernel.ide" failifexecutionfails="true" failonerror="true">
+            <arg value="otp16" />
+            <arg value="compile" />
+            <arg value="eunit" />
+            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
         </exec>
 
-        <exec executable="${tool.rebar}" failonerror="true" dir="${projects.location}/org.erlide.kernel.ide">
-            <arg value="compile"/>
-            <arg value="eunit"/>
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}"/>
+        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger">
+            <arg value="otp15" />
+            <arg value="compile" />
+            <arg value="eunit" />
+            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
         </exec>
-
-        <exec executable="${tool.rebar}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger">
-            <arg value="compile"/>
-            <arg value="eunit"/>
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}"/>
+        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger.otp.r15">
+            <arg value="otp15" />
+            <arg value="compile" />
+            <arg value="eunit" />
+            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
+        </exec>
+        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger.otp.r16">
+            <arg value="otp16" />
+            <arg value="compile" />
+            <arg value="eunit" />
+            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
+        </exec>
+        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger.otp.17">
+            <arg value="otp17" />
+            <arg value="compile" />
+            <arg value="eunit" />
+            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
         </exec>
     </target>
 
     <target name="build.releng.tools">
-        <echo message="Building releng tools..."/>
+        <echo message="Building releng tools..." />
 
-        <exec executable="${tool.rebar}" failonerror="true" dir="${projects.location}/releng.tools">
-            <arg value="compile"/>
-            <arg value="eunit"/>
+        <exec executable="${tool.rebar_k}" dir="${projects.location}/releng.tools" failonerror="true">
+            <arg value="otp16" />
+            <arg value="compile" />
+            <arg value="eunit" />
 
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}"/>
+            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
         </exec>
     </target>
 

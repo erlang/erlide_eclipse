@@ -18,27 +18,6 @@ module Erlide
     fputs "#{PDE.unqualifiedVersion(version).strip}", "#{where}/version.txt"
   end
 
-  def Erlide.run_ant(task, opts={}, tools_dir="#{ENV['HOME']}/erlide_tools")
-    cmds = "export PATH=#{tools_dir}/bin:$PATH "+
-    "&& export ANT_HOME=#{tools_dir}/ant "+
-    "&& ant -f org.erlide.releng/build.ant #{definedOpts(opts)} #{task}"
-    puts cmds
-    system cmds
-    if $?.exitstatus > 0 then
-      raise "build failed"
-    end
-  end
-
-  def Erlide.run_eclipse(target="#{ENV['HOME']}/erlide_tools/buckminster", opts={})
-    launcher = File.glob("#{target}/plugins/org.eclipse.equinox.launcher_*.jar")[0]
-
-    cmds = "export PATH=#{tools_dir}/bin:$PATH "+
-    "&& export JAVA_HOME=#{tools_dir}/jdk "+
-    "&& $JAVA_HOME/bin/java -jar #{launcher} #{spacedOpts(opts)} -verbose"
-    puts cmds
-    #system cmds
-  end
-
   def Erlide.workspace_dir
     File.dirname(__FILE__)+"/../"
   end
@@ -75,6 +54,7 @@ module Erlide
     FileUtils.cp_r("#{source_dir}/.", "#{full_dest}")
     FileUtils.chown_R(nil, "www-data", "#{full_dest}")
 
+    #PDE.mirror_p2("https://hudson.eclipse.org/handly/job/0.3.x/lastSuccessfulBuild/artifact/build/repository/","#{full_dest}")
     if kind == "R"
       PDE.p2_add_composite("#{full_dest}", "#{output_base}")
       generate_version_info(output_base)
@@ -83,6 +63,7 @@ module Erlide
         FileUtils.ln_s("#{full_dest}", "#{output_base}/#{repo}")
       end
     end
+    #PDE.p2_categorize("#{full_dest}", "#{workspace_dir}/org.erlide.site/category.xml")
 
   end
 
@@ -92,14 +73,6 @@ module Erlide
     File.open(f,'w') do |s|
       s.puts str
     end
-  end
-
-  def Erlide.definedOpts(map)
-    map.reduce('') {|s, (k, v)| s << "-D#{k}=#{v} "}
-  end
-
-  def Erlide.spacedOpts(map)
-    map.reduce('') {|s, (k, v)| s << "-#{k} #{v} "}
   end
 
   def Erlide.p2_repo_name(branch)

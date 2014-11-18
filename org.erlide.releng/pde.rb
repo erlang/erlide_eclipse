@@ -52,7 +52,7 @@ module PDE
     }
   end
 
-  def PDE.mirror_p2(source, destination)
+  def PDE.mirror_p2(source, destination, tools_dir="#{ENV['HOME']}/erlide_tools")
     puts "Mirroring: #{source} => #{destination}"
 
     run_eclipse("#{tools_dir}/buckminster/", {
@@ -77,6 +77,49 @@ module PDE
     puts "p2_remove_composite? #{child} -- #{container}"
     relpath = Pathname(child).relative_path_from(Pathname(container)).to_s
     system "bash org.erlide.releng/comp-repo.sh #{container} --eclipse #{tools_dir}/buckminster/ remove #{relpath}"
+  end
+
+  def PDE.p2_categorize(repo, category, tools_dir="#{ENV['HOME']}/erlide_tools")
+    run_eclipse("#{tools_dir}/buckminster/", {
+      "application"=>"org.eclipse.equinox.p2.publisher.CategoryPublisher",
+      "metadataRepository"=>"#{repo}",
+      "categoryDefinition"=>"#{category}", # path to category.xml
+      "compress" => ""
+    })
+  end
+
+  def PDE.run_ant(file, task, opts={}, tools_dir="#{ENV['HOME']}/erlide_tools")
+    cmds = "export PATH=#{tools_dir}/bin:$PATH "+
+    "&& export ANT_HOME=#{tools_dir}/ant "+
+    "&& ant -f #{file} #{definedOpts(opts)} #{task}"
+    puts cmds
+    system cmds
+    if $?.exitstatus > 0 then
+      raise "build failed"
+    end
+  end
+
+  def PDE.run_eclipse(target="#{ENV['HOME']}/erlide_tools/buckminster", opts={}, tools_dir="#{ENV['HOME']}/erlide_tools")
+    launcher = Dir.glob("#{target}/plugins/org.eclipse.equinox.launcher_*.jar")[0]
+
+    cmds = "export PATH=#{tools_dir}/bin:$PATH "+
+    "&& export JAVA_HOME=#{tools_dir}/jdk "+
+    "&& $JAVA_HOME/bin/java -jar #{launcher} #{spacedOpts(opts)} -verbose"
+    puts cmds
+    system cmds
+    if $?.exitstatus > 0 then
+      raise "build failed"
+    end
+  end
+
+  private
+
+  def PDE.definedOpts(map)
+    map.reduce('') {|s, (k, v)| s << "-D#{k}=#{v} "}
+  end
+
+  def PDE.spacedOpts(map)
+    map.reduce('') {|s, (k, v)| s << "-#{k} #{v} "}
   end
 
 end
