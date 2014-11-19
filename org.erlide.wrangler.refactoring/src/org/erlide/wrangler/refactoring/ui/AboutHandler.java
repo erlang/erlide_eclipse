@@ -63,17 +63,10 @@ public class AboutHandler extends AbstractHandler {
         final MyMessageDialog m = new MyMessageDialog(
                 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                 "Missing Graphviz library",
-                "For using Wrangler code inspection functionalities you must first install the Eclipse GraphViz plugin (and also the original graphviz binaries).\nUpdate site: <a src=\"http://oroszgy.github.com/eclipsegraphviz/update/\">http://oroszgy.github.com/eclipsegraphviz/update/</a>");
+                "For using Wrangler code inspection functionalities you must first install the Eclipse GraphViz plugin (and also the original graphviz binaries).\n"
+                        + "Update site: <a src=\"http://download.erlide.org/update/graphviz/\">http://download.erlide.org/update/graphviz/</a>");
 
         m.open();
-
-        // MyMessageDialog
-        // .openMessage(
-        // PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-        // .getShell(),
-        // "Missing Graphviz plugin",
-        // "For using Wrangler code inspection functionalities you must first install the Eclipse GraphViz plugin (and also the original graphviz binaries).");
-
         return null;
     }
 }
