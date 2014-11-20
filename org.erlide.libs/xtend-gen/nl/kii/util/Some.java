@@ -6,9 +6,10 @@ import java.util.LinkedList;
 import nl.kii.util.Opt;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
+import org.eclipse.xtext.xbase.lib.Functions.Function0;
 
 @SuppressWarnings("all")
-public class Some<T extends Object> extends Opt<T> {
+public class Some<T extends Object> extends Opt<T> implements Function0<T> {
   private T value;
   
   public Some(final T value) {
@@ -20,6 +21,10 @@ public class Some<T extends Object> extends Opt<T> {
   }
   
   public T value() {
+    return this.value;
+  }
+  
+  public T apply() {
     return this.value;
   }
   

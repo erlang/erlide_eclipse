@@ -49,7 +49,7 @@ public class CloseableExtensions {
     } catch (final Throwable _t) {
       if (_t instanceof Throwable) {
         final Throwable e = (Throwable)_t;
-        _xtrycatchfinallyexpression = OptExtensions.<T>error(e);
+        _xtrycatchfinallyexpression = OptExtensions.<T>err(e);
       } else {
         throw Exceptions.sneakyThrow(_t);
       }

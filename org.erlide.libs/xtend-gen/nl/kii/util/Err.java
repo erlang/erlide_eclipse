@@ -7,22 +7,15 @@ import nl.kii.util.Opt;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.eclipse.xtext.xbase.lib.Functions.Function0;
 
 @SuppressWarnings("all")
-public class Err<T extends Object> extends Opt<T> {
+public class Err<T extends Object> extends Opt<T> implements Function0<Throwable> {
   private final Throwable exception;
   
   public Err() {
-    try {
-      throw new Exception();
-    } catch (final Throwable _t) {
-      if (_t instanceof Exception) {
-        final Exception e = (Exception)_t;
-        this.exception = e;
-      } else {
-        throw Exceptions.sneakyThrow(_t);
-      }
-    }
+    Exception _exception = new Exception();
+    this.exception = _exception;
   }
   
   public Err(final Throwable exception) {
@@ -39,6 +32,10 @@ public class Err<T extends Object> extends Opt<T> {
   
   public StackTraceElement[] getStackTrace() {
     return this.exception.getStackTrace();
+  }
+  
+  public Throwable apply() {
+    return this.exception;
   }
   
   public T value() {

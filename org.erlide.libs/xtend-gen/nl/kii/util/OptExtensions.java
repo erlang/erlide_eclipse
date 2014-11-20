@@ -79,6 +79,62 @@ public class OptExtensions {
   }
   
   /**
+   * Only perform the function if something was set. Returns the result of the function for chaining
+   */
+  public static <T extends Object, I extends Object> Opt<I> ifSome(final Opt<I> o, final Procedure1<? super I> fn) {
+    try {
+      Opt<I> _xblockexpression = null;
+      {
+        boolean _defined = OptExtensions.<Object>defined(o);
+        if (_defined) {
+          I _value = o.value();
+          fn.apply(_value);
+        }
+        _xblockexpression = o;
+      }
+      return _xblockexpression;
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  /**
+   * Only perform the function if o is a None. Returns an optional result.
+   * <pre>val Opt<User> user = ifSome(userId) [ getUser(it) ]</pre>
+   */
+  public static <T extends Object, I extends Object> Opt<T> ifNone(final Opt<I> o, final Function1<? super I, ? extends T> fn) {
+    try {
+      Opt<T> _xifexpression = null;
+      boolean _hasNone = o.hasNone();
+      if (_hasNone) {
+        I _value = o.value();
+        T _apply = fn.apply(_value);
+        _xifexpression = OptExtensions.<T>option(_apply);
+      } else {
+        _xifexpression = OptExtensions.<T>none();
+      }
+      return _xifexpression;
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  /**
+   * Only perform the function if o is a None. Returns the result of the function for chaining
+   */
+  public static <T extends Object, I extends Object> Opt<I> ifNone(final Opt<I> o, final Procedure1<? super Object> fn) {
+    Opt<I> _xblockexpression = null;
+    {
+      boolean _hasNone = o.hasNone();
+      if (_hasNone) {
+        fn.apply(null);
+      }
+      _xblockexpression = o;
+    }
+    return _xblockexpression;
+  }
+  
+  /**
    * Only perform the function if the passed argument was empty,
    * meaning null or empty or an error. Returns an optional result.
    * <pre>val Opt<User> user = ifEmpty(userId) [ getDefaultUser ]</pre>
@@ -109,7 +165,7 @@ public class OptExtensions {
    * val Opt<String> warning = ifError(user) [ 'something went wrong!' ]
    * </pre>
    */
-  public static <T extends Object, I extends Object> Opt<T> ifError(final Opt<I> o, final Function1<? super I, ? extends T> fn) {
+  public static <T extends Object, I extends Object> Opt<T> ifErr(final Opt<I> o, final Function1<? super I, ? extends T> fn) {
     try {
       Opt<T> _xifexpression = null;
       boolean _hasError = o.hasError();
@@ -127,6 +183,55 @@ public class OptExtensions {
   }
   
   /**
+   * Only perform the function if o is an Err. Returns the result of the function for chaining
+   */
+  public static <T extends Object, I extends Object> Opt<I> ifErr(final Opt<I> o, final Procedure1<? super Throwable> fn) {
+    Opt<I> _xblockexpression = null;
+    {
+      boolean _matched = false;
+      if (!_matched) {
+        if (o instanceof Err) {
+          _matched=true;
+          Throwable _exception = ((Err<I>)o).getException();
+          fn.apply(_exception);
+        }
+      }
+      _xblockexpression = o;
+    }
+    return _xblockexpression;
+  }
+  
+  public static <T extends Object> T operator_elvis(final Opt<T> option, final T fallback) {
+    try {
+      T _xifexpression = null;
+      boolean _hasSome = option.hasSome();
+      if (_hasSome) {
+        _xifexpression = option.value();
+      } else {
+        _xifexpression = fallback;
+      }
+      return _xifexpression;
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  public static <T extends Object> T operator_elvis(final Opt<T> option, final Function1<? super Void, ? extends T> fallback) {
+    try {
+      T _xifexpression = null;
+      boolean _hasSome = option.hasSome();
+      if (_hasSome) {
+        _xifexpression = option.value();
+      } else {
+        _xifexpression = fallback.apply(null);
+      }
+      return _xifexpression;
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  /**
    * Create an option from an object. It detect if it is a None or a Some.
    * <pre>api.getUser(userId).option // if getUser returns null, it will be None, otherwise Some<User></pre>
    */
@@ -136,7 +241,14 @@ public class OptExtensions {
     if (_defined) {
       _xifexpression = OptExtensions.<T>some(value);
     } else {
-      _xifexpression = OptExtensions.<T>none();
+      Opt<T> _xifexpression_1 = null;
+      if ((value instanceof Err<?>)) {
+        Throwable _exception = ((Err<?>)value).getException();
+        _xifexpression_1 = OptExtensions.<T>err(_exception);
+      } else {
+        _xifexpression_1 = OptExtensions.<T>none();
+      }
+      _xifexpression = _xifexpression_1;
     }
     return _xifexpression;
   }
@@ -149,11 +261,11 @@ public class OptExtensions {
     return new None<T>();
   }
   
-  public static <T extends Object> Err<T> error(final Throwable t) {
+  public static <T extends Object> Err<T> err(final Throwable t) {
     return new Err<T>(t);
   }
   
-  public static <T extends Object> Err<T> error() {
+  public static <T extends Object> Err<T> err() {
     return new Err<T>();
   }
   
@@ -169,7 +281,27 @@ public class OptExtensions {
     } catch (final Throwable _t) {
       if (_t instanceof Exception) {
         final Exception e = (Exception)_t;
-        _xtrycatchfinallyexpression = OptExtensions.<T>error(e);
+        _xtrycatchfinallyexpression = OptExtensions.<T>err(e);
+      } else {
+        throw Exceptions.sneakyThrow(_t);
+      }
+    }
+    return _xtrycatchfinallyexpression;
+  }
+  
+  /**
+   * wrap a call as an option (exception or null generates none)<p>
+   * example: val userOption = attempt [ api.getUser(userId) ] // if API throws exception, return None
+   */
+  public static <P extends Object, T extends Object> Opt<T> attempt(final P parm, final Function1<? super P, ? extends T> fn) {
+    Opt<T> _xtrycatchfinallyexpression = null;
+    try {
+      T _apply = fn.apply(parm);
+      _xtrycatchfinallyexpression = OptExtensions.<T>option(_apply);
+    } catch (final Throwable _t) {
+      if (_t instanceof Exception) {
+        final Exception e = (Exception)_t;
+        _xtrycatchfinallyexpression = OptExtensions.<T>err(e);
       } else {
         throw Exceptions.sneakyThrow(_t);
       }
@@ -227,21 +359,12 @@ public class OptExtensions {
     }
   }
   
-  public static <I extends Object, T extends Object> I apply(final I input, final Procedure1<? super I> fn) {
-    I _xblockexpression = null;
-    {
-      fn.apply(input);
-      _xblockexpression = input;
-    }
-    return _xblockexpression;
-  }
-  
   /**
    * Transform an option into a new option using a function.
    * The function allows you to transform the value of the passed option,
    * saving you the need to unwrap it yourself
    */
-  public static <T extends Object, I extends Object> Opt<T> mapOpt(final Opt<I> o, final Function1<? super I, ? extends T> fn) {
+  public static <T extends Object, I extends Object> Opt<T> map(final Opt<I> o, final Function1<? super I, ? extends T> fn) {
     try {
       Opt<T> _xifexpression = null;
       boolean _defined = OptExtensions.<Object>defined(o);
@@ -256,6 +379,34 @@ public class OptExtensions {
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
+  }
+  
+  /**
+   * Flatten a double wrapped optional back to a single optional
+   */
+  public static <T extends Object> Opt<T> flatten(final Opt<Opt<T>> option) {
+    Opt<T> _switchResult = null;
+    boolean _matched = false;
+    if (!_matched) {
+      if (option instanceof Some) {
+        _matched=true;
+        _switchResult = ((Some<Opt<T>>)option).value();
+      }
+    }
+    if (!_matched) {
+      if (option instanceof None) {
+        _matched=true;
+        _switchResult = OptExtensions.<T>none();
+      }
+    }
+    if (!_matched) {
+      if (option instanceof Err) {
+        _matched=true;
+        Throwable _exception = ((Err<Opt<T>>)option).getException();
+        _switchResult = OptExtensions.<T>err(_exception);
+      }
+    }
+    return _switchResult;
   }
   
   /**
@@ -372,14 +523,14 @@ public class OptExtensions {
     }
   }
   
-  public static <T extends Object> T orThrow(final T o, final Function1<? super Object, ? extends Throwable> exceptionFn) {
+  public static <T extends Object> T orThrow(final Opt<T> o, final String s) {
     try {
       T _xifexpression = null;
       boolean _defined = OptExtensions.<Object>defined(o);
       if (_defined) {
-        _xifexpression = o;
+        _xifexpression = o.value();
       } else {
-        throw exceptionFn.apply(null);
+        throw new NoneException(s);
       }
       return _xifexpression;
     } catch (Throwable _e) {
