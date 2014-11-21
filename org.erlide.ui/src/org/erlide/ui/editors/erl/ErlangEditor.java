@@ -761,6 +761,9 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
     }
 
     private boolean isLinkedToOutlinePage() {
+        if (myOutlinePage == null) {
+            return false;
+        }
         return myOutlinePage.isLinkedWithEditor();
     }
 
