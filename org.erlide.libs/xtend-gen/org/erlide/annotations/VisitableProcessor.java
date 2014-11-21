@@ -188,8 +188,8 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
     Iterable<? extends MutableParameterDeclaration> _parameters_2 = it.getParameters();
     int _size = IterableExtensions.size(_parameters_2);
     List<? extends MutableParameterDeclaration> _subList = _list.subList(1, _size);
-    final Function1<MutableParameterDeclaration, String> _function = new Function1<MutableParameterDeclaration, String>() {
-      public String apply(final MutableParameterDeclaration it) {
+    final Function1<MutableParameterDeclaration, CharSequence> _function = new Function1<MutableParameterDeclaration, CharSequence>() {
+      public CharSequence apply(final MutableParameterDeclaration it) {
         return it.getSimpleName();
       }
     };

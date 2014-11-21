@@ -21,8 +21,8 @@ public class MultipleParameterMethodMemoizer extends ParametrizedMethodMemoizer 
   
   protected CharSequence cacheKeyToParameters(@Extension final CompilationStrategy.CompilationContext context) {
     Iterable<? extends MutableParameterDeclaration> _parameters = this.method.getParameters();
-    final Function1<MutableParameterDeclaration, String> _function = new Function1<MutableParameterDeclaration, String>() {
-      public String apply(final MutableParameterDeclaration it) {
+    final Function1<MutableParameterDeclaration, CharSequence> _function = new Function1<MutableParameterDeclaration, CharSequence>() {
+      public CharSequence apply(final MutableParameterDeclaration it) {
         StringConcatenation _builder = new StringConcatenation();
         _builder.append("(");
         TypeReference _type = it.getType();
@@ -49,8 +49,8 @@ public class MultipleParameterMethodMemoizer extends ParametrizedMethodMemoizer 
     _builder.append(_javaCode, "");
     _builder.append("(");
     Iterable<? extends MutableParameterDeclaration> _parameters = this.method.getParameters();
-    final Function1<MutableParameterDeclaration, String> _function = new Function1<MutableParameterDeclaration, String>() {
-      public String apply(final MutableParameterDeclaration it) {
+    final Function1<MutableParameterDeclaration, CharSequence> _function = new Function1<MutableParameterDeclaration, CharSequence>() {
+      public CharSequence apply(final MutableParameterDeclaration it) {
         return it.getSimpleName();
       }
     };

@@ -52,8 +52,8 @@ public class ImmutableProcessor extends AbstractClassProcessor {
                 _builder.append(_simpleName, "");
                 _builder.append("(");
                 Iterable<? extends MutableFieldDeclaration> _dataFields = ImmutableProcessor.this.dataFields(cls);
-                final Function1<MutableFieldDeclaration, String> _function = new Function1<MutableFieldDeclaration, String>() {
-                  public String apply(final MutableFieldDeclaration it) {
+                final Function1<MutableFieldDeclaration, CharSequence> _function = new Function1<MutableFieldDeclaration, CharSequence>() {
+                  public CharSequence apply(final MutableFieldDeclaration it) {
                     return it.getSimpleName();
                   }
                 };
@@ -249,8 +249,8 @@ public class ImmutableProcessor extends AbstractClassProcessor {
         TypeReference _object = context.getObject();
         it.addParameter("o", _object);
         Iterable<? extends MutableFieldDeclaration> _dataFields = ImmutableProcessor.this.dataFields(cls);
-        final Function1<MutableFieldDeclaration, String> _function = new Function1<MutableFieldDeclaration, String>() {
-          public String apply(final MutableFieldDeclaration it) {
+        final Function1<MutableFieldDeclaration, CharSequence> _function = new Function1<MutableFieldDeclaration, CharSequence>() {
+          public CharSequence apply(final MutableFieldDeclaration it) {
             StringConcatenation _builder = new StringConcatenation();
             String _objects = ImmutableProcessor.this.objects();
             _builder.append(_objects, "");
@@ -309,8 +309,8 @@ public class ImmutableProcessor extends AbstractClassProcessor {
             _builder.append(_objects, "");
             _builder.append(".hashCode(");
             Iterable<? extends MutableFieldDeclaration> _dataFields = ImmutableProcessor.this.dataFields(cls);
-            final Function1<MutableFieldDeclaration, String> _function = new Function1<MutableFieldDeclaration, String>() {
-              public String apply(final MutableFieldDeclaration it) {
+            final Function1<MutableFieldDeclaration, CharSequence> _function = new Function1<MutableFieldDeclaration, CharSequence>() {
+              public CharSequence apply(final MutableFieldDeclaration it) {
                 return it.getSimpleName();
               }
             };
