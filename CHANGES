@@ -1,3 +1,10 @@
+List of user visible changes between 0.29.5 and 0.29.6 (20141121)
+
+64ca778 [releng] update buckminster and build erlang only with rebar
+3b5e361 update graphviz reference
+08c2d42 hotfix NPE in editor
+6dff42e don't call kernel.ide stuff from headless code
+
 List of user visible changes between 0.29.4 and 0.29.5 (20141003)
 
 885212a show console after launching Erlang app
