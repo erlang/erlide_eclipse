@@ -1,3 +1,8 @@
+List of user visible changes between 0.29.6 and 0.29.7 (20141214)
+
+49a367c #207 - Code reloading on remote nodes
+9baaa98 #208 - Problem loading on remote nodes
+
 List of user visible changes between 0.29.5 and 0.29.6 (20141121)
 
 64ca778 [releng] update buckminster and build erlang only with rebar
