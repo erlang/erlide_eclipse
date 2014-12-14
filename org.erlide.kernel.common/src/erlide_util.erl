@@ -25,14 +25,14 @@
 
 load(Mod, All) ->
     case code:is_sticky(Mod) of
-  true ->
-      ok;
-  false ->
-      if All ->
-       c:nl(Mod);
-         true ->
-       c:l(Mod)
-      end
+        true ->
+            ok;
+        false ->
+            if All ->
+                   c:nl(Mod);
+               true ->
+                   c:l(Mod)
+            end
     end.
 
 -define(SEP, ";").
@@ -48,10 +48,10 @@ reverse2(L) when is_list(L) ->
 
 get_from_str(Text, Start) ->
     case string:str(Text, Start) of
-  0 ->
-      Text;
-  N ->
-      string:substr(Text, N + length(Start))
+        0 ->
+            Text;
+        N ->
+            string:substr(Text, N + length(Start))
     end.
 
 get_between_strs(Text, Start, End) ->
@@ -60,26 +60,26 @@ get_between_strs(Text, Start, End) ->
 get_all_between_strs(Text, Start, End) ->
     {One, Next} = split_at(get_from_str(Text, Start), End),
     case Next of
-  "" ->
-      [One];
-  _ ->
-      [One | get_all_between_strs(Next, Start, End)]
+        "" ->
+            [One];
+        _ ->
+            [One | get_all_between_strs(Next, Start, End)]
     end.
 
 get_upto_str(Text, End) ->
     case string:rstr(Text, End) of
-  0 ->
-      Text;
-  N ->
-      string:substr(Text, 1, N-1)
+        0 ->
+            Text;
+        N ->
+            string:substr(Text, 1, N-1)
     end.
 
 split_at(Text, End) ->
     case string:str(Text, End) of
-  0 ->
-      {Text, ""};
-  N ->
-      {string:substr(Text, 1, N-1), string:substr(Text, N+length(End))}
+        0 ->
+            {Text, ""};
+        N ->
+            {string:substr(Text, 1, N-1), string:substr(Text, N+length(End))}
     end.
 
 split_lines(<<B/binary>>) ->
@@ -92,13 +92,13 @@ split_lines([], [], Acc) ->
 split_lines([], LineAcc, Acc) ->
     split_lines([], [], [lists:reverse(LineAcc) | Acc]);
 split_lines([$\n, $\r | Rest], LineAcc, Acc) ->
-  split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
+    split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
 split_lines([$\n | Rest], LineAcc, Acc) ->
-  split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
+    split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
 split_lines([$\r | Rest], LineAcc, Acc) ->
-  split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
+    split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
 split_lines([C | Rest], LineAcc, Acc) ->
-  split_lines(Rest, [C | LineAcc], Acc).
+    split_lines(Rest, [C | LineAcc], Acc).
 
 join([], Sep) when is_list(Sep) ->
     [];

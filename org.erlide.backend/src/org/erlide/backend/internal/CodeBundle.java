@@ -1,19 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2009 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available
- * at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.backend.internal;
 
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.Enumeration;
 import java.util.Set;
 
 import org.eclipse.xtext.xbase.lib.Pair;
@@ -52,24 +50,11 @@ public class CodeBundle implements ICodeBundle {
 
     @Override
     public Collection<String> getEbinDirs(final CodeContext context) {
-        final Set<String> result = Sets.newHashSet();
-        result.addAll(doGetEbinDirs(context));
-        if (context != CodeContext.COMMON) {
-            result.addAll(doGetEbinDirs(CodeContext.COMMON));
-        }
-        return result;
-    }
-
-    private List<String> doGetEbinDirs(final CodeContext context) {
-        final List<String> result = Lists.newArrayList();
-        for (final String path : paths.get(context)) {
-            final String entryName = path.replace(" ", "%20");
-            final URL entry = bundle.getEntry(entryName);
-            if (entry != null) {
-                final String aPath = BeamUtil.getPathFromUrl(entry);
-                if (aPath != null) {
-                    result.add(aPath);
-                }
+        final Collection<String> result = Lists.newArrayList();
+        for (final String path : getEbinPaths(context)) {
+            final String aPath = bundlePathToDir(path);
+            if (aPath != null) {
+                result.add(aPath);
             } else {
                 ErlLogger.warn("Can't access path %s, "
                         + "plugin %s may be incorrectly built (%s)", path,
@@ -77,6 +62,15 @@ public class CodeBundle implements ICodeBundle {
             }
         }
         return result;
+    }
+
+    private String bundlePathToDir(final String path) {
+        final String entryName = path.replace(" ", "%20");
+        final URL entry = bundle.getEntry(entryName);
+        if (entry != null) {
+            return BeamUtil.getPathFromUrl(entry);
+        }
+        return null;
     }
 
     @Override
@@ -88,4 +82,27 @@ public class CodeBundle implements ICodeBundle {
     public RuntimeVersion getVersion() {
         return version;
     }
+
+    @Override
+    public Collection<String> getEbinPaths(final CodeContext context) {
+        final Set<String> result = Sets.newHashSet();
+        result.addAll(paths.get(context));
+        result.addAll(paths.get(CodeContext.COMMON));
+        return result;
+    }
+
+    @Override
+    public Collection<URL> getEbinBeamURLs(final CodeContext context) {
+        // TODO test with spaces in path too
+        final Collection<URL> result = Lists.newArrayList();
+        for (final String path : getEbinPaths(context)) {
+            final Enumeration<String> beams = bundle.getEntryPaths(path);
+            while (beams.hasMoreElements()) {
+                final String beam = beams.nextElement();
+                result.add(bundle.getEntry(beam));
+            }
+        }
+        return result;
+    }
+
 }

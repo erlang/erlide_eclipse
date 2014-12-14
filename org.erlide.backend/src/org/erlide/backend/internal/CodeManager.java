@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available
- * at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.backend.internal;
 
@@ -37,8 +35,7 @@ public class CodeManager {
     private final RuntimeVersion version;
 
     // only to be called by Backend
-    CodeManager(final IOtpRpc site, final String backendName,
-            final RuntimeVersion version) {
+    CodeManager(final IOtpRpc site, final String backendName, final RuntimeVersion version) {
         this.site = site;
         this.backendName = backendName;
         this.version = version;
@@ -82,7 +79,7 @@ public class CodeManager {
                 ErlangCode.addPathA(site, localDir);
             } else {
                 ErlLogger.debug("loading %s for %s", bundle.getBundle(), backendName);
-                loadCodeForBundle(context, bundle);
+                loadCodeForBundle(context, bundle, ebinDir);
             }
         }
     }
@@ -103,18 +100,17 @@ public class CodeManager {
         return BeamLoader.loadBeam(site, moduleName, bin);
     }
 
-    private void loadCodeForBundle(final CodeContext context, final ICodeBundle bundle) {
-        final Collection<String> ebinDirs = bundle.getEbinDirs(context);
-        if (ebinDirs == null) {
+    private void loadCodeForBundle(final CodeContext context, final ICodeBundle bundle,
+            final String ebinDir2) {
+        final Collection<URL> beams = bundle.getEbinBeamURLs(context);
+        if (beams == null) {
             return;
         }
-        for (final String ebinDir : ebinDirs) {
-            final String beamModuleName = BackendUtils.getBeamModuleName(ebinDir);
+        for (final URL beam : beams) {
+            final String beamModuleName = BackendUtils.getBeamModuleName(beam.getPath());
             if (beamModuleName != null) {
-                // ErlLogger.debug(" load " + beamModuleName);
-                final URL entry = bundle.getBundle().getEntry(ebinDir);
-                final boolean ok = entry != null && loadBeam(beamModuleName, entry);
-                if (!ok) {
+                ErlLogger.debug(" load " + beamModuleName);
+                if (!loadBeam(beamModuleName, beam)) {
                     ErlLogger.error("Could not load %s", beamModuleName);
                 }
             }
@@ -122,14 +118,14 @@ public class CodeManager {
     }
 
     private void unloadCodeForBundle(final CodeContext context, final ICodeBundle bundle) {
-        final Collection<String> ebinDirs = bundle.getEbinDirs(context);
-        if (ebinDirs == null) {
+        final Collection<URL> beams = bundle.getEbinBeamURLs(context);
+        if (beams == null) {
             return;
         }
-        for (final String ebinDir : ebinDirs) {
-            final String beamModuleName = BackendUtils.getBeamModuleName(ebinDir);
+        for (final URL beam : beams) {
+            final String beamModuleName = BackendUtils.getBeamModuleName(beam.getPath());
             if (beamModuleName != null) {
-                // ErlLogger.debug(" unload " + beamModuleName);
+                ErlLogger.debug(" unload " + beamModuleName);
                 unloadBeam(beamModuleName);
             }
         }

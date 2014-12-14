@@ -102,11 +102,13 @@ public class ErlConsoleManager implements IDisposable, IBackendListener, IConsol
             final IWorkbench workbench = PlatformUI.getWorkbench();
             final IWorkbenchWindow activeWorkbenchWindow = workbench
                     .getActiveWorkbenchWindow();
-            final IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
-            try {
-                activePage.showView(CONSOLE_VIEW_ID);
-            } catch (final PartInitException e) {
-                // ignore
+            if (activeWorkbenchWindow != null) {
+                final IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+                try {
+                    activePage.showView(CONSOLE_VIEW_ID);
+                } catch (final PartInitException e) {
+                    // ignore
+                }
             }
         }
     }
