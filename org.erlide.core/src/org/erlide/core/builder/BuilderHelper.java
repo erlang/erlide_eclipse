@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2000, 2007 IBM Corporation and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.core.builder;
 
@@ -39,6 +37,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendManager;
+import org.erlide.backend.debug.BeamUtil;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.internal.builder.BuildNotifier;
 import org.erlide.engine.ErlangEngine;
@@ -50,12 +49,14 @@ import org.erlide.engine.model.erlang.SourceKind;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.util.ResourceUtil;
+import org.erlide.runtime.api.BeamLoader;
 import org.erlide.runtime.api.IOtpRpc;
-import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
@@ -207,8 +208,7 @@ public final class BuilderHelper {
         }
     }
 
-    private void createMarkersForCodeClashes(final IOtpRpc backend,
-            final IProject project) {
+    private void createMarkersForCodeClashes(final IOtpRpc backend, final IProject project) {
         try {
             final OtpErlangList res = BuilderHelper.getCodeClashes(backend);
             for (final OtpErlangObject elem : res) {
@@ -575,8 +575,22 @@ public final class BuilderHelper {
             final IBackendManager backendManager = BackendCore.getBackendManager();
             for (final IBackend b : backendManager.getExecutionBackends(project)) {
                 ErlLogger.debug(":: loading %s in %s", module, b.getName());
-                b.getOtpRpc().call("erlide_util", "load", "ao", module,
-                        b.getData().shouldLoadOnAllNodes());
+
+                final IErlProject erlProject = ErlangEngine.getInstance().getModel()
+                        .findProject(project);
+                final IPath path = project.getLocation()
+                        .append(erlProject.getProperties().getOutputDir())
+                        .append(module + ".beam");
+
+                boolean ok = false;
+                final OtpErlangBinary bin = BeamUtil.getBeamBinary(module, path);
+                if (bin != null) {
+                    ok = BeamLoader.loadBeam(b.getOtpRpc(), module, bin);
+                }
+                if (!ok) {
+                    ErlLogger.error("Could not load %s", module);
+                }
+
                 backendManager.moduleLoaded(b, project, module);
             }
         } catch (final Exception e) {
