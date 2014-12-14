@@ -131,6 +131,9 @@ get_dist(true) -> distributed;
 get_dist(false) -> local.
 
 interpret(Module, Options, Dist, Interpret) ->
+
+    %% TODO for remote nodes, we need to use {Module, Src, Beam, BeamBin} instead of Module
+
     dbg_mon:interpret(Module, Options, get_dist(Dist), Interpret).
 
 line_breakpoint(File, Line, Action) ->

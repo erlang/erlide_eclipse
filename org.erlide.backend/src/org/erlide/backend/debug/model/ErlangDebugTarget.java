@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2004 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.backend.debug.model;
 
@@ -218,8 +216,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
     }
 
     /**
-     * Notification we have connected to the VM and it has started. Resume the
-     * VM.
+     * Notification we have connected to the VM and it has started. Resume the VM.
      */
     public void started() {
         fireCreationEvent();
@@ -232,8 +229,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
     }
 
     /**
-     * Install breakpoints that are already registered with the breakpoint
-     * manager.
+     * Install breakpoints that are already registered with the breakpoint manager.
      */
     public void installDeferredBreakpoints() {
         final IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager()
@@ -502,7 +498,13 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
         final List<OtpErlangTuple> modules = new ArrayList<OtpErlangTuple>(
                 debuggerModules.size());
         for (final String module : debuggerModules) {
-            final OtpErlangBinary b = getDebuggerBeam(module);
+            final String ver = backend.getRuntime().getVersion().asMajor().toString()
+                    .toLowerCase();
+            final String bundleName = "org.erlide.kernel.debugger.otp." + ver;
+            OtpErlangBinary b = getDebuggerBeam(module, bundleName);
+            if (b == null) {
+                b = getDebuggerBeam(module, "org.erlide.kernel.debugger");
+            }
             if (b != null) {
                 final OtpErlangString filename = new OtpErlangString(module + ".erl");
                 final OtpErlangTuple t = OtpErlang.mkTuple(new OtpErlangAtom(module),
@@ -523,30 +525,27 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
     /**
      * Get a named beam-file as a binary from the debugger plug-in bundle
      */
-    private OtpErlangBinary getDebuggerBeam(final String module) {
+    private OtpErlangBinary getDebuggerBeam(final String module, final String bundleName) {
         final String beamname = module + ".beam";
-        final Bundle bundle = Platform.getBundle("org.erlide.kernel.debugger");
+        final Bundle bundle = Platform.getBundle(bundleName);
 
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] els = reg.getConfigurationElementsFor(
                 BackendActivator.PLUGIN_ID, "codepath");
 
-        // TODO: this code assumes that the debugged debugTarget and the
-        // erlide-plugin uses the same Erlang version, how can we escape this?
-
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();
             final String name = c.getName();
-            if (name.equals(bundle.getSymbolicName())) {
+            if (name.equals(bundle.getSymbolicName()) && "beam_dir".equals(el.getName())) {
                 final String dirPath = el.getAttribute("path");
-                final Enumeration<?> e = bundle.getEntryPaths(dirPath);
+                final Enumeration<String> e = bundle.getEntryPaths(dirPath);
                 if (e == null) {
                     ErlLogger.error("* !!! error loading plugin "
                             + bundle.getSymbolicName());
                     return null;
                 }
                 while (e.hasMoreElements()) {
-                    final String s = (String) e.nextElement();
+                    final String s = e.nextElement();
                     final Path path = new Path(s);
                     if (path.lastSegment().equals(beamname)) {
                         return getBeamFromBundlePath(bundle, s, path);
