@@ -10,6 +10,8 @@ Require-Bundle: org.eclipse.core.filesystem;bundle-version="1.3.1",
  org.junit,
  org.erlide.testing.libs
 Eclipse-ExtensibleAPI: true 
-Export-Package: org.erlide.engine.model.erlang,
+Export-Package: org.erlide.engine.model.builder,
+ org.erlide.engine.model.erlang,
+ org.erlide.engine.model.erlang.configuration,
  org.erlide.engine.services.codeassist,
  org.erlide.engine.util

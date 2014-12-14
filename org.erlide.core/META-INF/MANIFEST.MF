@@ -10,6 +10,7 @@ Export-Package: org.erlide.core,
  org.erlide.core.builder,
  org.erlide.core.executor,
  org.erlide.core.internal.builder;x-friends:="org.erlide.ui.tests,org.erlide.ui",
+ org.erlide.core.internal.builder.external;x-internal:=true,
  org.erlide.core.internal.dev;x-internal:=true,
  org.erlide.core.services.search
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
