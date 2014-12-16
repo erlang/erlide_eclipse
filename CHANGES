@@ -1,3 +1,8 @@
+List of user visible changes between 0.29.7 and 0.29.8 (20141216)
+
+286b443 load all debugger code on remote nodes
+fb02228 hotfix external includes
+
 List of user visible changes between 0.29.6 and 0.29.7 (20141214)
 
 49a367c #207 - Code reloading on remote nodes
