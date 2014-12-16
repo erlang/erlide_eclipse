@@ -57,6 +57,7 @@ import org.erlide.engine.model.root.IErlExternalRoot;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.engine.model.root.IProjectConfigurator;
+import org.erlide.engine.model.root.PathResolver;
 import org.erlide.engine.model.root.ProjectConfigType;
 import org.erlide.engine.model.root.ProjectConfigurationChangeListener;
 import org.erlide.engine.services.search.OpenService;
@@ -176,7 +177,7 @@ public class ErlProject extends Openable implements IErlProject,
         final String externalModules = myProperties.getExternalModules();
         final Collection<IPath> includeDirs = myProperties.getIncludeDirs();
         final List<String> projectIncludes = Lists.newArrayList();
-        for (final IPath path : includeDirs) {
+        for (final IPath path : new PathResolver().resolvePaths(includeDirs)) {
             if (path.isAbsolute() && !fProject.getLocation().isPrefixOf(path)) {
                 final Collection<String> includes = ErlangEngine.getInstance()
                         .getService(OpenService.class)
