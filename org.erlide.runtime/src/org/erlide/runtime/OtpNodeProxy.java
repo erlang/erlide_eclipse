@@ -213,8 +213,8 @@ public class OtpNodeProxy implements IOtpNodeProxy {
 
         final boolean connected = pingPeer();
         if (!connected) {
-            ErlLogger.error(COULD_NOT_CONNECT, getNodeName());
-            throw new Exception(COULD_NOT_CONNECT);
+            ErlLogger.error(COULD_NOT_CONNECT, label);
+            throw new Exception(String.format(COULD_NOT_CONNECT, label));
         }
         ErlLogger.debug("connected!");
     }
