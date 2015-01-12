@@ -1,0 +1,23 @@
+% from eclipse project settings
+ErlOpts = [{i, "../org.erlide.kernel.common/include"}].
+
+[
+
+{lib_dirs, [".."]},
+
+{erl_opts, ErlOpts},
+{edoc_opts,[{todo,true}]},
+
+{eunit_opts, [verbose, {report,{eunit_surefire,[{dir,"."}]}}]},
+
+{cover_export_enabled, true},
+{cover_enabled, true},
+{cover_print_enable, true},
+
+{plugins, [rebar_covertool]},
+
+{covertool_eunit, {".eunit/cover.coverdata", "eunit.coverage.xml"}},
+{covertool_prefix_len, 0}
+
+].
+

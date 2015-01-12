@@ -25,8 +25,8 @@ import org.erlide.engine.model.root.IErlElementLocator;
 import org.erlide.engine.model.root.IErlFolder;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.api.IOtpRpc;
-import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
@@ -132,7 +132,7 @@ public class DialyzerUtils {
             if ("warnings".equals(what)) {
                 DialyzerMarkerUtils.addDialyzerWarningMarkersFromResultList(backend,
                         (OtpErlangList) result);
-            } else if ("dialyzer_error".equals(what)) {
+            } else if ("dialyzer_error".equals(what) || "badrpc".equals(what)) {
                 final String s = Util.ioListToString(result, MAX_MSG_LEN);
                 throw new DialyzerErrorException(s);
             }

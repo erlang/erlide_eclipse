@@ -67,6 +67,7 @@ public class RunDialyzerHandler extends AbstractHandler {
                     ErlLogger.debug("Dialyzer operation was canceled");
                     return Status.CANCEL_STATUS;
                 } catch (final DialyzerErrorException e) {
+                    ErlLogger.debug(e.getMessage());
                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage());
                 } catch (final InvocationTargetException e) {
                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getCause()

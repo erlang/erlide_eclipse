@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Erlang kernel Tools
+Bundle-SymbolicName: org.erlide.kernel.tools;singleton:=true
+Bundle-Version: 0.29.8.qualifier
+Bundle-Vendor: erlide.org

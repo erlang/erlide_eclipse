@@ -67,6 +67,11 @@
             <arg value="compile" />
             <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
         </exec>
+        <exec executable="${tool.rebar_k}" dir="${projects.location}/org.erlide.kernel.tools" failifexecutionfails="true" failonerror="true">
+            <arg value="otp16" />
+            <arg value="compile" />
+            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
+        </exec>
         <exec executable="${tool.rebar_k}" dir="${projects.location}/org.erlide.kernel.ide" failifexecutionfails="true" failonerror="true">
             <arg value="otp16" />
             <arg value="compile" />
@@ -100,6 +105,11 @@
 
         <exec executable="${tool.rebar_k}" dir="${projects.location}/org.erlide.kernel.common" failifexecutionfails="true" failonerror="true">
             <arg value="otp15" />
+            <arg value="eunit" />
+            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
+        </exec>
+        <exec executable="${tool.rebar_k}" dir="${projects.location}/org.erlide.kernel.tools" failifexecutionfails="true" failonerror="true">
+            <arg value="otp16" />
             <arg value="eunit" />
             <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
         </exec>

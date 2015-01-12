@@ -39,29 +39,41 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.erlide.core"
+         download-size="0"
+         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.runtime"
+         download-size="0"
+         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.kernel.common"
+         download-size="0"
+         install-size="0"
          version="0.0.0"/>
 
    <plugin
          id="org.erlide.libs"
+         download-size="0"
+         install-size="0"
          version="0.0.0"/>
 
    <plugin
          id="org.erlide.backend"
+         download-size="0"
+         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.model"
+         download-size="0"
+         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
@@ -73,27 +85,43 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.erlide.util"
+         download-size="0"
+         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.util_eclipse"
+         download-size="0"
+         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.model.api"
+         download-size="0"
+         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.dialyzer.core"
+         download-size="0"
+         install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.erlide.branding"
+         download-size="0"
+         install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.erlide.kernel.tools"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>
