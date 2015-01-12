@@ -1,3 +1,7 @@
+List of user visible changes between 0.29.8 and 0.29.9 (20150112)
+
+87e28fc create kernel.tools plugin, for dialyzer and other tools
+
 List of user visible changes between 0.29.7 and 0.29.8 (20141216)
 
 286b443 load all debugger code on remote nodes
