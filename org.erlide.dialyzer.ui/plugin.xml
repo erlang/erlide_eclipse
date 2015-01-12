@@ -45,70 +45,78 @@
        point="org.eclipse.ui.menus">
     <menuContribution
           locationURI="popup:org.erlide.ui.views.navigator.view#PopupMenu?after=additions">
-       <command
-             commandId="org.erlide.ui.commands.runDialyzer"
-             style="push">
-             <visibleWhen checkEnabled="false">
-	          <iterate
-                 ifEmpty="false"
-                 operator="or">
-	              <test
-	                    property="org.eclipse.core.resources.projectNature"
-	                    value="org.erlide.core.erlnature">
-	              </test>
-	          </iterate>
-          	</visibleWhen>
-       </command>
-       <command
-             commandId="org.erlide.ui.command.removeDialyzerWarnings"
-             style="push">
-             <visibleWhen checkEnabled="false">
-	          <iterate
-                 ifEmpty="false"
-                 operator="or">
-	             	<test
-	                    property="org.eclipse.core.resources.projectNature"
-	                    value="org.erlide.core.erlnature">
-	              	</test>
-	          </iterate>
-         	 </visibleWhen>
-       </command>
+       <menu
+             label="Erlang tools">
+          <command
+                commandId="org.erlide.ui.commands.runDialyzer"
+                style="push">
+             <visibleWhen
+                   checkEnabled="false">
+                <iterate
+                      ifEmpty="false"
+                      operator="or">
+                   <test
+                         property="org.eclipse.core.resources.projectNature"
+                         value="org.erlide.core.erlnature">
+                   </test>
+                </iterate>
+             </visibleWhen>
+          </command>
+          <command
+                commandId="org.erlide.ui.command.removeDialyzerWarnings"
+                style="push">
+             <visibleWhen
+                   checkEnabled="false">
+                <iterate
+                      ifEmpty="false"
+                      operator="or">
+                   <test
+                         property="org.eclipse.core.resources.projectNature"
+                         value="org.erlide.core.erlnature">
+                   </test>
+                </iterate>
+             </visibleWhen>
+          </command>
+       </menu>
     </menuContribution>
     <menuContribution
           locationURI="menu:project?after=additions">
        <separator
              name="org.erlide.ui.separator1">
        </separator>
-       <command
-             commandId="org.erlide.ui.commands.runDialyzer"
-             style="push">
-          <visibleWhen
-                checkEnabled="false">
-             <iterate
-                   ifEmpty="false"
-                   operator="or">
-                	<test
-	                    property="org.eclipse.core.resources.projectNature"
-	                    value="org.erlide.core.erlnature">
-	              	</test>
-             </iterate>
-          </visibleWhen>
-       </command>
-       <command
-             commandId="org.erlide.ui.command.removeDialyzerWarnings"
-             style="push">
-          <visibleWhen
-                checkEnabled="false">
-             <iterate
-                   ifEmpty="false"
-                   operator="or">
-                	<test
-	                    property="org.eclipse.core.resources.projectNature"
-	                    value="org.erlide.core.erlnature">
-	              	</test>
-             </iterate>
-          </visibleWhen>
-       </command>
+       <menu
+             label="Erlang tools">
+          <command
+                commandId="org.erlide.ui.commands.runDialyzer"
+                style="push">
+             <visibleWhen
+                   checkEnabled="false">
+                <iterate
+                      ifEmpty="false"
+                      operator="or">
+                   <test
+                         property="org.eclipse.core.resources.projectNature"
+                         value="org.erlide.core.erlnature">
+                   </test>
+                </iterate>
+             </visibleWhen>
+          </command>
+          <command
+                commandId="org.erlide.ui.command.removeDialyzerWarnings"
+                style="push">
+             <visibleWhen
+                   checkEnabled="false">
+                <iterate
+                      ifEmpty="false"
+                      operator="or">
+                   <test
+                         property="org.eclipse.core.resources.projectNature"
+                         value="org.erlide.core.erlnature">
+                   </test>
+                </iterate>
+             </visibleWhen>
+          </command>
+       </menu>
     </menuContribution>
 </extension>
 <extension
