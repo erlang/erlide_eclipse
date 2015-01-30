@@ -47,12 +47,16 @@ import org.erlide.util.SystemConfiguration;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.Service;
+import com.google.common.util.concurrent.Service.Listener;
+import com.google.common.util.concurrent.Service.State;
 
-public abstract class Backend implements IStreamListener, IBackend {
+public class Backend implements IStreamListener, IBackend {
 
     private final IOtpNodeProxy runtime;
     private BackendShellManager shellManager;
-    private final CodeManager codeManager;
+    private CodeManager codeManager;
 
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
@@ -64,8 +68,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         this.runtime = runtime;
         this.data = data;
         this.backendManager = backendManager;
-        codeManager = new CodeManager(getOtpRpc(), data.getRuntimeInfo().getName(), data
-                .getRuntimeInfo().getVersion());
     }
 
     @Override
@@ -316,18 +318,39 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public void initialize(final CodeContext context,
             final Collection<ICodeBundle> bundles) {
-        runtime.setShutdownCallback(this);
         shellManager = new BackendShellManager(this);
-        for (final ICodeBundle bb : bundles) {
-            registerCodeBundle(context, bb);
-        }
-        initErlang(data.isManaged());
+        runtime.addRuntimeListener(new Listener() {
+            @Override
+            public void terminated(final Service.State from) {
+                dispose();
+                getData().setLaunch(null);
+            }
 
-        try {
-            postLaunch();
-        } catch (final DebugException e) {
-            ErlLogger.error(e);
-        }
+            @Override
+            public void failed(final State from, final Throwable failure) {
+                dispose();
+                getData().setLaunch(null);
+            }
+
+            @Override
+            public void running() {
+                codeManager = new CodeManager(getOtpRpc(), data.getRuntimeInfo()
+                        .getName(), data.getRuntimeInfo().getVersion());
+
+                for (final ICodeBundle bb : bundles) {
+                    registerCodeBundle(context, bb);
+                }
+                initErlang(data.isManaged());
+
+                try {
+                    postLaunch();
+                } catch (final DebugException e) {
+                    ErlLogger.error(e);
+                }
+            }
+
+        }, MoreExecutors.sameThreadExecutor());
+
     }
 
     // /////
@@ -340,11 +363,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public IOtpNodeProxy getRuntime() {
         return runtime;
-    }
-
-    @Override
-    public void onShutdown() {
-        dispose();
     }
 
     private void loadBeamsFromDir(final String outDir) {

@@ -17,7 +17,7 @@ public class OtpRpcProvider implements IOtpRpcProvider {
             final IBackend ideBackend = backendManager.getIdeBackend();
             return ideBackend.getOtpRpc();
         } catch (final Exception e) {
-            ErlLogger.error("No Erlang runtime is installed!");
+            ErlLogger.error("No Erlang runtime is installed! (" + e.getMessage() + ")");
             return null;
         }
     }

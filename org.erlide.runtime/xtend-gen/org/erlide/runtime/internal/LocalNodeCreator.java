@@ -2,7 +2,6 @@ package org.erlide.runtime.internal;
 
 import com.ericsson.otp.erlang.OtpNode;
 import com.google.common.base.Strings;
-import java.io.IOException;
 import java.net.Socket;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Exceptions;
@@ -73,16 +72,8 @@ public class LocalNodeCreator {
       }
       
       public void tryInit() throws Exception {
-        try {
-          final Socket s = new Socket(host, LocalNodeCreator.EPMD_PORT);
-          s.close();
-        } catch (final Throwable _t) {
-          if (_t instanceof IOException) {
-            final IOException e = (IOException)_t;
-          } else {
-            throw Exceptions.sneakyThrow(_t);
-          }
-        }
+        final Socket s = new Socket(host, LocalNodeCreator.EPMD_PORT);
+        s.close();
       }
     };
     final Initializer initializer = new Initializer(client);

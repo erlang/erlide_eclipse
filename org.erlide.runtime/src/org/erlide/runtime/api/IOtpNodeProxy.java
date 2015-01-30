@@ -10,15 +10,18 @@
  *******************************************************************************/
 package org.erlide.runtime.api;
 
+import java.util.concurrent.Executor;
+
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.IDisposable;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
+import com.google.common.util.concurrent.Service.Listener;
 
 public interface IOtpNodeProxy extends IDisposable {
 
-    void startAndWait();
+    void ensureRunning();
 
     boolean isRunning();
 
@@ -36,10 +39,10 @@ public interface IOtpNodeProxy extends IDisposable {
 
     OtpMbox createMbox();
 
-    void setShutdownCallback(IShutdownCallback callback);
-
     OtpErlangPid getEventPid();
 
     void registerEventListener(Object handler);
+
+    void addRuntimeListener(Listener listener, Executor executor);
 
 }

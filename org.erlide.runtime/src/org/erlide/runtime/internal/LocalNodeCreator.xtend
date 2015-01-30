@@ -3,13 +3,14 @@ package org.erlide.runtime.internal
 import com.ericsson.otp.erlang.OtpNode
 import com.ericsson.otp.erlang.OtpNodeStatus
 import com.google.common.base.Strings
-import java.io.IOException
 import java.net.Socket
 import org.erlide.runtime.OtpNodeProxy
 import org.erlide.util.ErlLogger
 import org.erlide.util.HostnameUtils
 import org.fishwife.jrugged.Initializable
 import org.fishwife.jrugged.Initializer
+
+import static org.erlide.runtime.internal.LocalNodeCreator.*
 
 class LocalNodeCreator {
 
@@ -48,23 +49,21 @@ class LocalNodeCreator {
                 val msg = '''
                     Couldn't contact epmd - erlang backend is probably not working.
                     Your host's entry in /etc/hosts is probably wrong («host»).
-                    '''
+                '''
                 ErlLogger.error(msg)
                 throw new RuntimeException(msg)
             }
 
             override tryInit() throws Exception {
-                try {
-                    val s = new Socket(host, EPMD_PORT)
-                    s.close()
-                } catch (IOException e) {
-                }
+                val s = new Socket(host, EPMD_PORT)
+                s.close()
             }
 
         }
         val initializer = new Initializer(client)
         initializer.maxRetries = 30
         initializer.retryMillis = POLL_INTERVAL
+
         // run synchronously
         initializer.run
     }
@@ -80,7 +79,7 @@ class ErlideNodeStatus extends OtpNodeStatus {
 
     override void remoteStatus(String node, boolean up, Object info) {
         if (node == runtime.getNodeName() && !up) {
-            runtime.triggerCrashed()
+            //runtime.triggerCrashed()
         }
     }
 }

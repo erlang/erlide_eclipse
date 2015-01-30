@@ -20,7 +20,6 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.backend.api.IBackendFactory;
 import org.erlide.backend.api.IBackendManager;
 import org.erlide.backend.api.ICodeBundle.CodeContext;
-import org.erlide.runtime.ManagedOtpNodeProxy;
 import org.erlide.runtime.OtpNodeProxy;
 import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
@@ -60,25 +59,19 @@ public class BackendFactory implements IBackendFactory {
         final IOtpNodeProxy runtime = createNodeProxy(data);
 
         final IBackendManager backendManager = BackendCore.getBackendManager();
-        b = data.isInternal() ? new InternalBackend(data, runtime, backendManager)
+        b = data.isInternal() ? new Backend(data, runtime, backendManager)
                 : new ExternalBackend(data, runtime, backendManager);
 
         b.initialize(data.getContext(), backendManager.getCodeBundles());
+        runtime.ensureRunning();
         return b;
     }
 
     @Override
     @NonNull
     public IOtpNodeProxy createNodeProxy(final BackendData data) {
-        IOtpNodeProxy result;
-        if (data.isManaged()) {
-            result = new ManagedOtpNodeProxy(data);
-        } else {
-            result = new OtpNodeProxy(data);
-        }
-        final IOtpNodeProxy runtime = result;
-        runtime.startAndWait();
-        return runtime;
+        final OtpNodeProxy result = new OtpNodeProxy(data);
+        return result;
     }
 
     private BackendData getIdeBackendData() {

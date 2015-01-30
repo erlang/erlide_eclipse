@@ -11,6 +11,7 @@ import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.SystemConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,14 +22,13 @@ import com.google.common.util.concurrent.Service.State;
 public class OtpNodeProxyTest {
 
     private Process process;
-    private ManagedOtpNodeProxy runtime;
+    private OtpNodeProxy runtime;
     private RuntimeInfo info;
 
     @Before
     public void prepareRuntime() {
         final RuntimeInfoCatalog cat = new RuntimeInfoCatalog();
         cat.initializeRuntimesList();
-        System.out.println(cat.getRuntimes());
         assertThat("empty runtime list", !cat.getRuntimes().isEmpty());
         info = cat.getRuntimes().iterator().next();
         assertThat("no default info", info != RuntimeInfo.NO_RUNTIME_INFO);
@@ -37,10 +37,11 @@ public class OtpNodeProxyTest {
         data.setNodeName("etest" + System.currentTimeMillis());
         data.setLongName(false);
         data.setCookie("c");
+        data.setManaged(true);
+        data.setRestartable(false);
 
-        runtime = new ManagedOtpNodeProxy(data);
-        runtime.startAsync();
-        runtime.awaitRunning();
+        runtime = new OtpNodeProxy(data);
+        runtime.ensureRunning();
         process = runtime.getProcess();
         assertThat("beam process", process, is(not(nullValue())));
     }
@@ -100,9 +101,16 @@ public class OtpNodeProxyTest {
     }
 
     @Test
-    public void crashIsDetected() {
+    public void crashIsDetected() throws InterruptedException {
         process.destroy();
-        expect(runtime, process, 143, State.FAILED);
+        Thread.sleep(200);
+        int code;
+        if (SystemConfiguration.getInstance().isOnWindows()) {
+            code = 1;
+        } else {
+            code = 143;
+        }
+        expect(runtime, process, code, State.FAILED);
     }
 
     @Test
@@ -140,8 +148,7 @@ public class OtpNodeProxyTest {
         data.setManaged(false);
 
         final OtpNodeProxy runtime2 = new OtpNodeProxy(data);
-        runtime2.startAsync();
-        runtime2.awaitRunning();
+        runtime2.ensureRunning();
 
         final Process process2 = runtime2.getProcess();
         assertThat("running", runtime2.isRunning(), is(true));
@@ -156,10 +163,13 @@ public class OtpNodeProxyTest {
         }
         assertThat("rpc", r, is(not(nullValue())));
         try {
-            runtime2.stopAsync();
-            runtime2.awaitTerminated();
+            runtime2.dispose();
         } catch (final Throwable t) {
             ErlLogger.error(t);
+        }
+        try {
+            Thread.sleep(100);
+        } catch (final InterruptedException e) {
         }
         expect(runtime2, process2, -1, State.TERMINATED);
         assertThat("state", runtime.state(), is(State.RUNNING));

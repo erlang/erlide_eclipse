@@ -22,7 +22,6 @@ public class ErlideNodeStatus extends OtpNodeStatus {
       _and = (!up);
     }
     if (_and) {
-      this.runtime.triggerCrashed();
     }
   }
 }

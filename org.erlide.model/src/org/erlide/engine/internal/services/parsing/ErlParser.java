@@ -85,6 +85,7 @@ public final class ErlParser implements ParserService {
     private final IOtpRpc backend;
 
     public ErlParser(final IOtpRpc backend) {
+        // XXX XXX don't keep ref to otprpc!
         this.backend = backend;
         helper = new RuntimeHelper(backend);
     }

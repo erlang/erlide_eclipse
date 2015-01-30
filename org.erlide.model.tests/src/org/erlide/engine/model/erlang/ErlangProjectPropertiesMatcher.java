@@ -24,6 +24,9 @@ public class ErlangProjectPropertiesMatcher extends BaseMatcher<ErlangProjectPro
         description.appendText("is same as ").appendText(item.toString());
     }
 
+    /**
+     * @param <T>
+     */
     @Factory
     public static <T> Matcher<ErlangProjectProperties> sameAs(
             final ErlangProjectProperties item) {
