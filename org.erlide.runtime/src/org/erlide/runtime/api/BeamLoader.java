@@ -35,10 +35,12 @@ public class BeamLoader {
                 return true;
             }
             // code couldn't be loaded
-            // maybe here we should throw exception?
+            // TODO throw exception?
+            ErlLogger.error("Could not load " + moduleName + ": " + r);
             return false;
         }
         // binary couldn't be extracted
+        ErlLogger.error("Could not load " + moduleName + ": " + r);
         return false;
     }
 
