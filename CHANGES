@@ -1,3 +1,8 @@
+List of user visible changes between 0.29.9 and 0.29.10 (20150206)
+
+3d97dc6 1376,1044 - make node proxy service restartable
+bef8650 print error when loading beams fails
+
 List of user visible changes between 0.29.8 and 0.29.9 (20150112)
 
 87e28fc create kernel.tools plugin, for dialyzer and other tools
