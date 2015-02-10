@@ -100,6 +100,12 @@ public class TermParserTest {
         Assert.assertEquals("[a,2,b,4]", r.toString());
     }
 
+    @Test(expected = TermParserException.class)
+    public void list_2a() throws TermParserException {
+        final OtpErlangList r = (OtpErlangList) termParser.parse("[a b]");
+        Assert.assertEquals("[a,b]", r.toString());
+    }
+
     @Test
     public void list_3() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[a,2,b|4]");
@@ -222,6 +228,14 @@ public class TermParserTest {
     public void map_2() throws TermParserException {
         @SuppressWarnings("unused")
         final OtpErlangMap r = (OtpErlangMap) termParser.parse("#{a=>2,\"b\"=>[4]}");
+        Assert.assertEquals("#{a => 2,\"b\" => [4]}", r.toString());
+    }
+
+    @Test(expected = TermParserException.class)
+    public void map_2a() throws TermParserException {
+        @SuppressWarnings("unused")
+        final OtpErlangMap r = (OtpErlangMap) termParser.parse("#{a=>2 \"b\"=>[4]}");
+        Assert.assertEquals("#{a => 2,\"b\" => [4]}", r.toString());
     }
 
     @Test(expected = TermParserException.class)

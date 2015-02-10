@@ -115,6 +115,9 @@ public class TermParser {
             stack.push(parse(tokens));
             if (tokens.get(0).kind == TokenKind.COMMA) {
                 tokens.remove(0);
+            } else if (tokens.get(0).kind != TokenKind.LISTEND
+                    && tokens.get(0).kind != TokenKind.CONS) {
+                throw new TermParserException("missing comma in list");
             }
         }
         return parseList(tokens, stack, atail);
@@ -136,6 +139,8 @@ public class TermParser {
         stack.push(parse(tokens));
         if (tokens.get(0).kind == TokenKind.COMMA) {
             tokens.remove(0);
+        } else if (tokens.get(0).kind != TokenKind.TUPLEEND) {
+            throw new TermParserException("missing comma in tuple");
         }
         return parseTuple(tokens, stack);
     }
@@ -166,7 +171,10 @@ public class TermParser {
         stack.push(parse(tokens));
         if (tokens.get(0).kind == TokenKind.COMMA) {
             tokens.remove(0);
+        } else if (tokens.get(0).kind != TokenKind.TUPLEEND) {
+            throw new TermParserException("missing comma in map");
         }
+
         return parseMap(tokens, stack);
     }
 
