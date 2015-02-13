@@ -24,7 +24,6 @@ import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.events.ErlEvent;
 import org.erlide.runtime.events.ErlangLogEventHandler;
 import org.erlide.runtime.events.LogEventHandler;
-import org.erlide.runtime.internal.ErlRuntimeException;
 import org.erlide.runtime.internal.ErlRuntimeReporter;
 import org.erlide.runtime.internal.EventParser;
 import org.erlide.runtime.internal.LocalNodeCreator;
@@ -158,7 +157,7 @@ public class OtpNodeProxy implements IOtpNodeProxy {
         service.stopAsync();
     }
 
-    protected void waitForExit() throws ErlRuntimeException {
+    protected void waitForExit() {
         if (process != null) {
             int i = 500;
             // may have to wait for crash dump to be written
