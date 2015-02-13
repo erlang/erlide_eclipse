@@ -32,7 +32,7 @@ public class ExternalBackend extends Backend {
     public synchronized void dispose() {
         try {
             final ILaunch launch = getData().getLaunch();
-            if (!launch.isTerminated()) {
+            if (launch != null && !launch.isTerminated()) {
                 launch.terminate();
             }
         } catch (final DebugException e) {
