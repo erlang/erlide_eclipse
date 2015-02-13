@@ -37,9 +37,8 @@ public class EUnitEventHandler extends ErlangEventHandler {
     private final CoverBackend coverBackend; // cover backend (if needed)
     private final TestTreeModel model;
 
-    public EUnitEventHandler(final String backendName, final TestTreeModel model,
-            final CoverBackend coverBackend) {
-        super(EVENT_NAME, backendName);
+    public EUnitEventHandler(final TestTreeModel model, final CoverBackend coverBackend) {
+        super(EVENT_NAME);
         this.coverBackend = coverBackend;
         this.model = model;
         log = Activator.getDefault();

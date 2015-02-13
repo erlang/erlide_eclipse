@@ -84,8 +84,8 @@ public class TraceBackend {
 
     private class TraceEventHandler extends ErlangEventHandler {
 
-        public TraceEventHandler(final String backendName) {
-            super(EVENT_NAME, backendName);
+        public TraceEventHandler() {
+            super(EVENT_NAME);
         }
 
         private final TraceDataHandler dataHandler = new TraceDataHandler();
@@ -153,7 +153,7 @@ public class TraceBackend {
                         tracing = true;
                         getBackend(true);
                         loadingFileInfo = true;
-                        handler = new TraceEventHandler(tracerBackend.getName());
+                        handler = new TraceEventHandler();
                         tracerBackend.getRuntime().registerEventListener(handler);
 
                         // list of nodes being traced
@@ -267,8 +267,8 @@ public class TraceBackend {
             if (processes != null) {
                 for (final TracedProcess process : processes) {
                     if (process.isSelected()) {
-                        tracerBackend.getOtpRpc().call(Constants.TTB_MODULE, FUN_P,
-                                "xx", process.getPid(),
+                        tracerBackend.getOtpRpc().call(Constants.TTB_MODULE, FUN_P, "xx",
+                                process.getPid(),
                                 createProcessFlagsArray(process.getFlags()));
                     }
                 }
@@ -314,7 +314,7 @@ public class TraceBackend {
                     try {
                         loading = true;
                         loadingFileInfo = true;
-                        handler = new TraceEventHandler(tracerBackend.getName());
+                        handler = new TraceEventHandler();
                         getBackend(true);
                         tracerBackend.getRuntime().registerEventListener(handler);
                         tracerBackend.getOtpRpc().call(Constants.ERLANG_HELPER_MODULE,
@@ -347,7 +347,7 @@ public class TraceBackend {
                         loading = true;
                         loadingFileInfo = false;
                         startIndex = theStartIndex;
-                        handler = new TraceEventHandler(tracerBackend.getName());
+                        handler = new TraceEventHandler();
                         getBackend(true);
                         TraceCollections.getTracesList().clear();
                         tracerBackend.getRuntime().registerEventListener(handler);

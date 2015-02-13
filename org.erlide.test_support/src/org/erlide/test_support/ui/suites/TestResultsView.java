@@ -46,7 +46,7 @@ public class TestResultsView extends ViewPart {
 
     public TestResultsView() {
         // FIXME which backend?
-        eventHandler = new TestEventHandler(null, this);
+        eventHandler = new TestEventHandler(this);
         events = Lists.newArrayList();
     }
 

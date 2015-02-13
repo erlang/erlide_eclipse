@@ -20,8 +20,8 @@ public class ConsoleEventHandler extends ErlangEventHandler {
 
     private final IBackendShell shell;
 
-    public ConsoleEventHandler(final String backendName, final IBackendShell backendShell) {
-        super("io_server", backendName);
+    public ConsoleEventHandler(final IBackendShell backendShell) {
+        super("io_server");
         shell = backendShell;
     }
 

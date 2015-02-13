@@ -79,8 +79,8 @@ public class OtpNodeProxy implements IOtpNodeProxy {
         final String nodeName = getNodeName();
         eventBus = new EventBus(nodeName);
         eventBus.register(this);
-        registerEventListener(new LogEventHandler(nodeName));
-        registerEventListener(new ErlangLogEventHandler(nodeName));
+        registerEventListener(new LogEventHandler());
+        registerEventListener(new ErlangLogEventHandler());
 
         final Provider<Service> factory = new Provider<Service>() {
             @Override
