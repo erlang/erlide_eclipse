@@ -293,7 +293,9 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
                     .getService(OtpDocService.class)
                     .getOtpDoc(backend, offset, stateDir, editor.getScannerName(),
                             fImports, externalModulesString, model.getPathVars());
-            ErlLogger.debug("otp doc %s", t.toString().substring(0, 50) + "...");
+            final String ts = t.toString();
+            ErlLogger.debug("otp doc %s", ts.substring(0, Math.min(ts.length(), 50))
+                    + "...");
             if (Util.isOk(t)) {
                 element = new OpenResult(t.elementAt(2));
                 final String docStr = Util.stringValue(t.elementAt(1));
