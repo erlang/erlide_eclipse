@@ -45,7 +45,7 @@ public class TestViewLabelProvider extends LabelProvider {
         case TestTreeObject.SUCCESS:
             color = new Color(Display.getCurrent(), 60, 140, 10);
             break;
-        case TestTreeObject.FAILOURE:
+        case TestTreeObject.FAILURE:
             color = new Color(Display.getCurrent(), 180, 20, 20);
             break;
         default:
