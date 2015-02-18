@@ -797,6 +797,14 @@
              name="org.erlide.ui.separator2">
        </separator>
     </menuContribution>
+    <menuContribution
+          locationURI="popup:org.erlide.ui.views.navigator.view#PopupMenu?after=additions">
+       <menu
+             icon="icons/full/obj16/erlang020.gif"
+             id="org.erlide.ui.menu.erlang.tools"
+             label="Erlang tools">
+       </menu>
+    </menuContribution>
  </extension>
  <extension
        point="org.eclipse.ui.bindings">
