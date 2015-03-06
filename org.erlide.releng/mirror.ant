@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Mirror Eclipse" default="create-mirror" basedir=".">
+<target name="create-mirror">
+    <p2.mirror source="http://download.eclipse.org/releases/juno">
+      <destination location="${target.dir}/releases/juno"  />
+    </p2.mirror>
+    <p2.mirror source="http://download.eclipse.org/tools/orbit/downloads/drops/R20130517111416/repository">
+      <destination location="${target.dir}/tools/orbit/downloads/drops/R20130517111416/repository"  />
+    </p2.mirror>
+  <p2.mirror source="http://download.eclipse.org/eclipse/updates/4.2">
+      <destination location="${target.dir}/eclipse/updates/4.2"  />
+    </p2.mirror>
+  </target>
+</project>

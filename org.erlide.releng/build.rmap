@@ -3,7 +3,8 @@
     xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0">
  
     <rm:property key="projects.location" value="${workspace.root}" />
-    <rm:property key="eclipse.download" value="http://download.eclipse.org" />
+    <!--rm:property key="eclipse.download" value="http://download.eclipse.org" /-->
+    <rm:property key="eclipse.download" value="file:///home/jenkins/erlide_tools/mirrors" />
     <rm:property key="eclipse.target.platform" value="${eclipse.download}/releases/${eclipse.release}" />
     <rm:property key="eclipse.orbit" value="${eclipse.download}/tools/orbit/downloads/drops/R20130517111416/repository" />
     <rm:property key="graphviz" value="http://download.erlide.org/update/graphviz" />
