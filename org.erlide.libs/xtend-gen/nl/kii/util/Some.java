@@ -13,42 +13,49 @@ public class Some<T extends Object> extends Opt<T> implements Function0<T> {
   private T value;
   
   public Some(final T value) {
-    boolean _tripleEquals = (value == null);
-    if (_tripleEquals) {
+    if ((value == null)) {
       throw new NullPointerException("cannot create new Some(null)");
     }
     this.value = value;
   }
   
+  @Override
   public T value() {
     return this.value;
   }
   
+  @Override
   public T apply() {
     return this.value;
   }
   
+  @Override
   public boolean hasSome() {
     return true;
   }
   
+  @Override
   public boolean hasNone() {
     return false;
   }
   
+  @Override
   public boolean hasError() {
     return false;
   }
   
+  @Override
   public Iterator<T> iterator() {
     LinkedList<T> _newLinkedList = CollectionLiterals.<T>newLinkedList(this.value);
     return _newLinkedList.iterator();
   }
   
+  @Override
   public int hashCode() {
     return this.value.hashCode();
   }
   
+  @Override
   public boolean equals(final Object obj) {
     boolean _or = false;
     boolean _equals = Objects.equal(obj, this.value);
@@ -67,6 +74,7 @@ public class Some<T extends Object> extends Opt<T> implements Function0<T> {
     return _or;
   }
   
+  @Override
   public String toString() {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("Some(");

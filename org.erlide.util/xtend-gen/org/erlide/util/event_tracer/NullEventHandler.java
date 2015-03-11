@@ -9,9 +9,11 @@ public class NullEventHandler extends ErlideEventTracerHandler {
     super(null);
   }
   
+  @Override
   public void handle(final ErlideEvent event) {
   }
   
+  @Override
   public void dispose() {
   }
 }

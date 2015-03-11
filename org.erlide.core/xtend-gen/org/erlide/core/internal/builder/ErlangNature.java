@@ -31,18 +31,22 @@ import org.erlide.engine.model.root.ProjectConfigType;
 public class ErlangNature implements IProjectNature {
   private IProject project;
   
+  @Override
   public void configure() throws CoreException {
     ErlangNature.setErlangProjectBuilder(this.project, BuilderTool.INTERNAL);
   }
   
+  @Override
   public void deconfigure() throws CoreException {
     ErlangNature.unsetAllErlangBuilders(this.project);
   }
   
+  @Override
   public IProject getProject() {
     return this.project;
   }
   
+  @Override
   public void setProject(final IProject lproject) {
     this.project = lproject;
   }
@@ -71,6 +75,7 @@ public class ErlangNature implements IProjectNature {
     final ICommand[] old = description.getBuildSpec();
     BuilderTool[] _values = BuilderTool.values();
     final Function1<BuilderTool, String> _function = new Function1<BuilderTool, String>() {
+      @Override
       public String apply(final BuilderTool it) {
         return it.getId();
       }

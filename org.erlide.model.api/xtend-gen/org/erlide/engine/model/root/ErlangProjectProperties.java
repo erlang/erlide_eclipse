@@ -43,6 +43,7 @@ public class ErlangProjectProperties {
   private String externalModulesFile;
   
   public final static ErlangProjectProperties DEFAULT = ObjectExtensions.<ErlangProjectProperties>operator_doubleArrow(new ErlangProjectProperties(), new Procedure1<ErlangProjectProperties>() {
+    @Override
     public void apply(final ErlangProjectProperties it) {
       Collection<IPath> _unpackList = PathSerializer.unpackList(ProjectPreferencesConstants.DEFAULT_SOURCE_DIRS);
       it.sourceDirs = _unpackList;

@@ -11,8 +11,7 @@ public abstract class ErlideEvent {
   private final long timestamp;
   
   public void print(final PrintWriter file) {
-    boolean _tripleNotEquals = (file != null);
-    if (_tripleNotEquals) {
+    if ((file != null)) {
       String _print = this.print();
       file.print(_print);
     }

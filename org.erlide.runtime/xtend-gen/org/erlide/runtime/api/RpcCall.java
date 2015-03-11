@@ -43,6 +43,7 @@ public class RpcCall implements Callable<OtpErlangObject> {
     return this;
   }
   
+  @Override
   public OtpErlangObject call() throws Exception {
     return this.rpc.call(this.module, this.function, this.signature, this.args);
   }

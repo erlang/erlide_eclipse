@@ -34,11 +34,14 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 
 @SuppressWarnings("all")
 public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclaration>, TransformationParticipant<MutableTypeDeclaration> {
+  @Override
   public void doRegisterGlobals(final List<? extends TypeDeclaration> types, final RegisterGlobalsContext context) {
     final Procedure1<TypeDeclaration> _function = new Procedure1<TypeDeclaration>() {
+      @Override
       public void apply(final TypeDeclaration it) {
         Iterable<MethodDeclaration> _acceptMethods = VisitableProcessor.this.getAcceptMethods(it);
         final Procedure1<MethodDeclaration> _function = new Procedure1<MethodDeclaration>() {
+          @Override
           public void apply(final MethodDeclaration it) {
             String _visitorName = VisitableProcessor.this.getVisitorName(it);
             context.registerClass(_visitorName);
@@ -54,6 +57,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
     Iterable<? extends MemberDeclaration> _declaredMembers = it.getDeclaredMembers();
     Iterable<MethodDeclaration> _filter = Iterables.<MethodDeclaration>filter(_declaredMembers, MethodDeclaration.class);
     final Function1<MethodDeclaration, Boolean> _function = new Function1<MethodDeclaration, Boolean>() {
+      @Override
       public Boolean apply(final MethodDeclaration it) {
         boolean _and = false;
         String _simpleName = it.getSimpleName();
@@ -80,19 +84,23 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
     return _type_1.getQualifiedName();
   }
   
+  @Override
   public void doTransform(final List<? extends MutableTypeDeclaration> types, @Extension final TransformationContext context) {
     final Procedure1<MutableTypeDeclaration> _function = new Procedure1<MutableTypeDeclaration>() {
+      @Override
       public void apply(final MutableTypeDeclaration root) {
         TypeReference _newTypeReference = context.newTypeReference(root);
         CompilationUnit _compilationUnit = root.getCompilationUnit();
         final Set<ClassDeclaration> allInheritors = VisitableProcessor.this.getInheritorsDeclaredIn(_newTypeReference, _compilationUnit, context);
         Iterable<MethodDeclaration> _acceptMethods = VisitableProcessor.this.getAcceptMethods(root);
         final Procedure1<MethodDeclaration> _function = new Procedure1<MethodDeclaration>() {
+          @Override
           public void apply(final MethodDeclaration method) {
             String _visitorName = VisitableProcessor.this.getVisitorName(method);
             final MutableClassDeclaration visitor = context.findClass(_visitorName);
             VisitableProcessor.this.addVisitMethods(visitor, allInheritors, method, context);
             final Function1<ClassDeclaration, MutableClassDeclaration> _function = new Function1<ClassDeclaration, MutableClassDeclaration>() {
+              @Override
               public MutableClassDeclaration apply(final ClassDeclaration it) {
                 Element _primaryGeneratedJavaElement = context.getPrimaryGeneratedJavaElement(it);
                 return ((MutableClassDeclaration) _primaryGeneratedJavaElement);
@@ -100,25 +108,28 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
             };
             Iterable<MutableClassDeclaration> _map = IterableExtensions.<ClassDeclaration, MutableClassDeclaration>map(allInheritors, _function);
             final Procedure1<MutableClassDeclaration> _function_1 = new Procedure1<MutableClassDeclaration>() {
+              @Override
               public void apply(final MutableClassDeclaration it) {
                 String _simpleName = method.getSimpleName();
                 Iterable<? extends ParameterDeclaration> _parameters = method.getParameters();
                 final Function1<ParameterDeclaration, TypeReference> _function = new Function1<ParameterDeclaration, TypeReference>() {
+                  @Override
                   public TypeReference apply(final ParameterDeclaration it) {
                     return it.getType();
                   }
                 };
                 Iterable<TypeReference> _map = IterableExtensions.map(_parameters, _function);
                 final MutableMethodDeclaration existingMethod = it.findDeclaredMethod(_simpleName, ((TypeReference[])Conversions.unwrapArray(_map, TypeReference.class)));
-                boolean _tripleEquals = (existingMethod == null);
-                if (_tripleEquals) {
+                if ((existingMethod == null)) {
                   String _simpleName_1 = method.getSimpleName();
                   final Procedure1<MutableMethodDeclaration> _function_1 = new Procedure1<MutableMethodDeclaration>() {
+                    @Override
                     public void apply(final MutableMethodDeclaration newMethod) {
                       TypeReference _returnType = method.getReturnType();
                       newMethod.setReturnType(_returnType);
                       Iterable<? extends ParameterDeclaration> _parameters = method.getParameters();
                       final Procedure1<ParameterDeclaration> _function = new Procedure1<ParameterDeclaration>() {
+                        @Override
                         public void apply(final ParameterDeclaration it) {
                           String _simpleName = it.getSimpleName();
                           TypeReference _type = it.getType();
@@ -127,6 +138,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
                       };
                       IterableExtensions.forEach(_parameters, _function);
                       final CompilationStrategy _function_1 = new CompilationStrategy() {
+                        @Override
                         public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                           return VisitableProcessor.this.getAcceptMethodBody(newMethod);
                         }
@@ -137,12 +149,14 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
                   it.addMethod(_simpleName_1, _function_1);
                 } else {
                   final Procedure1<MutableMethodDeclaration> _function_2 = new Procedure1<MutableMethodDeclaration>() {
+                    @Override
                     public void apply(final MutableMethodDeclaration it) {
                       MutableTypeDeclaration _declaringType = it.getDeclaringType();
                       boolean _equals = Objects.equal(root, _declaringType);
                       if (_equals) {
                         it.setAbstract(false);
                         final CompilationStrategy _function = new CompilationStrategy() {
+                          @Override
                           public CharSequence compile(final CompilationStrategy.CompilationContext cu) {
                             return VisitableProcessor.this.getAcceptMethodBody(it);
                           }
@@ -189,6 +203,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
     int _size = IterableExtensions.size(_parameters_2);
     List<? extends MutableParameterDeclaration> _subList = _list.subList(1, _size);
     final Function1<MutableParameterDeclaration, CharSequence> _function = new Function1<MutableParameterDeclaration, CharSequence>() {
+      @Override
       public CharSequence apply(final MutableParameterDeclaration it) {
         return it.getSimpleName();
       }
@@ -202,10 +217,12 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
   private void addVisitMethods(final MutableClassDeclaration clazz, final Set<? extends ClassDeclaration> inheritors, final MethodDeclaration original, @Extension final TransformationContext context) {
     clazz.setVisibility(Visibility.PUBLIC);
     final Procedure1<ClassDeclaration> _function = new Procedure1<ClassDeclaration>() {
+      @Override
       public void apply(final ClassDeclaration inheritor) {
         String _simpleName = inheritor.getSimpleName();
         String _plus = ("visit" + _simpleName);
         final Procedure1<MutableMethodDeclaration> _function = new Procedure1<MutableMethodDeclaration>() {
+          @Override
           public void apply(final MutableMethodDeclaration method) {
             TypeReference _returnType = original.getReturnType();
             method.setReturnType(_returnType);
@@ -214,6 +231,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
             Iterable<? extends ParameterDeclaration> _parameters = original.getParameters();
             Iterable<? extends ParameterDeclaration> _drop = IterableExtensions.drop(_parameters, 1);
             final Procedure1<ParameterDeclaration> _function = new Procedure1<ParameterDeclaration>() {
+              @Override
               public void apply(final ParameterDeclaration it) {
                 String _simpleName = it.getSimpleName();
                 TypeReference _type = it.getType();
@@ -238,6 +256,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
                 method.setBody(_body_1);
               } else {
                 final CompilationStrategy _function_1 = new CompilationStrategy() {
+                  @Override
                   public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                     StringConcatenation _builder = new StringConcatenation();
                     _builder.append("throw new IllegalStateException();");
@@ -248,6 +267,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
               }
             } else {
               final CompilationStrategy _function_2 = new CompilationStrategy() {
+                @Override
                 public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                   StringConcatenation _builder = new StringConcatenation();
                   {
@@ -266,6 +286,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
                   _builder.append("(");
                   Iterable<? extends MutableParameterDeclaration> _parameters = method.getParameters();
                   final Function1<MutableParameterDeclaration, String> _function = new Function1<MutableParameterDeclaration, String>() {
+                    @Override
                     public String apply(final MutableParameterDeclaration it) {
                       return it.getSimpleName();
                     }
@@ -290,6 +311,7 @@ public class VisitableProcessor implements RegisterGlobalsParticipant<TypeDeclar
   private Set<ClassDeclaration> getInheritorsDeclaredIn(final TypeReference typeReference, final CompilationUnit it, @Extension final TransformationContext context) {
     Iterable<? extends TypeDeclaration> _sourceTypeDeclarations = it.getSourceTypeDeclarations();
     final Function1<TypeDeclaration, Boolean> _function = new Function1<TypeDeclaration, Boolean>() {
+      @Override
       public Boolean apply(final TypeDeclaration it) {
         TypeReference _newTypeReference = context.newTypeReference(it);
         return Boolean.valueOf(typeReference.isAssignableFrom(_newTypeReference));

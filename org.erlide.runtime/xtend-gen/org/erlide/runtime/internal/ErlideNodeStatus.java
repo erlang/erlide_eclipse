@@ -12,6 +12,7 @@ public class ErlideNodeStatus extends OtpNodeStatus {
     this.runtime = runtime;
   }
   
+  @Override
   public void remoteStatus(final String node, final boolean up, final Object info) {
     boolean _and = false;
     String _nodeName = this.runtime.getNodeName();

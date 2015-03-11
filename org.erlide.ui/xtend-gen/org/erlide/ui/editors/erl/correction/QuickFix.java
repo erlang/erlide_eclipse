@@ -40,10 +40,10 @@ public class QuickFix implements IMarkerResolution2 {
     this.executor = _executor;
   }
   
+  @Override
   public void run(final IMarker marker) {
     boolean _and = false;
-    boolean _tripleNotEquals = (marker != null);
-    if (!_tripleNotEquals) {
+    if (!(marker != null)) {
       _and = false;
     } else {
       boolean _exists = marker.exists();

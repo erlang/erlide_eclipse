@@ -24,9 +24,11 @@ public class BuilderSelectionListener implements SelectionListener {
     this.page = page;
   }
   
+  @Override
   public void widgetDefaultSelected(final SelectionEvent e) {
   }
   
+  @Override
   public void widgetSelected(final SelectionEvent e) {
     Object _data = e.widget.getData();
     this.info.setBuilder(((BuilderTool) _data));

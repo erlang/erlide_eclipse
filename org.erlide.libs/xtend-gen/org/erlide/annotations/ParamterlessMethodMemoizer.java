@@ -15,6 +15,7 @@ public class ParamterlessMethodMemoizer extends MethodMemoizer {
     super(method, context, index);
   }
   
+  @Override
   protected CharSequence cacheCall(@Extension final CompilationStrategy.CompilationContext context) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("if (");
@@ -58,10 +59,12 @@ public class ParamterlessMethodMemoizer extends MethodMemoizer {
     return _builder;
   }
   
+  @Override
   protected TypeReference cacheFieldType() {
     return this.wrappedReturnType();
   }
   
+  @Override
   protected CharSequence cacheFieldInit(final CompilationStrategy.CompilationContext context) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("null");

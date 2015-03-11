@@ -16,6 +16,7 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
     this.info = info;
   }
   
+  @Override
   public void setVisible(final boolean visible) {
     super.setVisible(visible);
     if (visible) {
@@ -42,8 +43,7 @@ public class ErlangNewProjectCreationPage extends WizardNewProjectCreationPage {
   private boolean projectExists() {
     final IPath loc = this.info.getLocation();
     boolean _or = false;
-    boolean _tripleEquals = (loc == null);
-    if (_tripleEquals) {
+    if ((loc == null)) {
       _or = true;
     } else {
       String _name = this.info.getName();

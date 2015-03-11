@@ -14,9 +14,11 @@ public class ConfigSelectionListener implements SelectionListener {
     this.info = info;
   }
   
+  @Override
   public void widgetDefaultSelected(final SelectionEvent e) {
   }
   
+  @Override
   public void widgetSelected(final SelectionEvent e) {
     Object _data = e.widget.getData();
     this.info.setConfigType(((ProjectConfigType) _data));

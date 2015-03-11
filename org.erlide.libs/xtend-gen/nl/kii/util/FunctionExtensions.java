@@ -12,6 +12,7 @@ public class FunctionExtensions {
    */
   public static Function0<Boolean> operator_not(final Function0<Boolean> fn) {
     final Function0<Boolean> _function = new Function0<Boolean>() {
+      @Override
       public Boolean apply() {
         Boolean _apply = fn.apply();
         return Boolean.valueOf((!(_apply).booleanValue()));
@@ -25,6 +26,7 @@ public class FunctionExtensions {
    */
   public static <P1 extends Object> Function1<? super P1, Boolean> operator_not(final Function1<? super P1, Boolean> fn) {
     final Function1<P1, Boolean> _function = new Function1<P1, Boolean>() {
+      @Override
       public Boolean apply(final P1 it) {
         Boolean _apply = fn.apply(it);
         return Boolean.valueOf((!(_apply).booleanValue()));
@@ -38,6 +40,7 @@ public class FunctionExtensions {
    */
   public static <P1 extends Object, P2 extends Object> Function2<? super P1, ? super P2, Boolean> operator_not(final Function2<? super P1, ? super P2, Boolean> fn) {
     final Function2<P1, P2, Boolean> _function = new Function2<P1, P2, Boolean>() {
+      @Override
       public Boolean apply(final P1 a, final P2 b) {
         Boolean _apply = fn.apply(a, b);
         return Boolean.valueOf((!(_apply).booleanValue()));

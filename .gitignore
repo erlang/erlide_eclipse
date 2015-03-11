@@ -46,3 +46,4 @@ junit.xml
 .eunit
 
 *.pmd
+*.xtendbin

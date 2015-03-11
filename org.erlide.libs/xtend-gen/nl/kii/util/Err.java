@@ -34,10 +34,12 @@ public class Err<T extends Object> extends Opt<T> implements Function0<Throwable
     return this.exception.getStackTrace();
   }
   
+  @Override
   public Throwable apply() {
     return this.exception;
   }
   
+  @Override
   public T value() {
     try {
       throw new NoneException();
@@ -46,31 +48,38 @@ public class Err<T extends Object> extends Opt<T> implements Function0<Throwable
     }
   }
   
+  @Override
   public boolean hasSome() {
     return false;
   }
   
+  @Override
   public boolean hasNone() {
     return false;
   }
   
+  @Override
   public boolean hasError() {
     return true;
   }
   
+  @Override
   public Iterator<T> iterator() {
     LinkedList<T> _newLinkedList = CollectionLiterals.<T>newLinkedList();
     return _newLinkedList.iterator();
   }
   
+  @Override
   public boolean equals(final Object obj) {
     return (obj instanceof Err<?>);
   }
   
+  @Override
   public int hashCode() {
     return (-1);
   }
   
+  @Override
   public String toString() {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("Error (");

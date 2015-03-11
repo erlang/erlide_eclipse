@@ -18,6 +18,7 @@ public abstract class ParametrizedMethodMemoizer extends MethodMemoizer {
     super(method, context, index);
   }
   
+  @Override
   protected final CharSequence cacheFieldInit(@Extension final CompilationStrategy.CompilationContext context) {
     CharSequence _xblockexpression = null;
     {
@@ -84,6 +85,7 @@ public abstract class ParametrizedMethodMemoizer extends MethodMemoizer {
     return _xblockexpression;
   }
   
+  @Override
   protected final TypeReference cacheFieldType() {
     TypeReference _cacheKeyType = this.cacheKeyType();
     TypeReference _wrappedReturnType = this.wrappedReturnType();
@@ -91,6 +93,7 @@ public abstract class ParametrizedMethodMemoizer extends MethodMemoizer {
       "com.google.common.cache.LoadingCache", _cacheKeyType, _wrappedReturnType);
   }
   
+  @Override
   protected final CharSequence cacheCall(@Extension final CompilationStrategy.CompilationContext context) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("try {");

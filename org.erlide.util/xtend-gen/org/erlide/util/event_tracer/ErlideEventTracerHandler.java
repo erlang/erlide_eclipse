@@ -42,8 +42,7 @@ public class ErlideEventTracerHandler implements IDisposable {
   private final SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss-SSS");
   
   public ErlideEventTracerHandler(final String path) {
-    boolean _tripleEquals = (path == null);
-    if (_tripleEquals) {
+    if ((path == null)) {
       this.storagePath = null;
       return;
     }
@@ -57,8 +56,7 @@ public class ErlideEventTracerHandler implements IDisposable {
   }
   
   protected void _handle(final ErlideSessionEvent event) {
-    boolean _tripleEquals = (this.storagePath == null);
-    if (_tripleEquals) {
+    if ((this.storagePath == null)) {
       return;
     }
     long _timestamp = event.getTimestamp();
@@ -89,9 +87,9 @@ public class ErlideEventTracerHandler implements IDisposable {
     event.print(this.file);
   }
   
+  @Override
   public void dispose() {
-    boolean _tripleNotEquals = (this.file != null);
-    if (_tripleNotEquals) {
+    if ((this.file != null)) {
       this.file.flush();
       try {
         this.file.close();

@@ -23,10 +23,12 @@ import org.erlide.util.erlang.ErlUtils;
 
 @SuppressWarnings("all")
 public class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
+  @Override
   public String encodeConfig(final ErlangProjectProperties info) {
     return null;
   }
   
+  @Override
   public ErlangProjectProperties decodeConfig(final String config) {
     ErlangProjectProperties _xblockexpression = null;
     {
@@ -41,20 +43,19 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
         return result;
       }
       final Procedure1<OtpErlangObject> _function = new Procedure1<OtpErlangObject>() {
+        @Override
         public void apply(final OtpErlangObject erl_opts) {
           try {
             final Bindings bindings = ErlUtils.match("{erl_opts,Opts}", erl_opts);
-            boolean _tripleNotEquals = (bindings != null);
-            if (_tripleNotEquals) {
+            if ((bindings != null)) {
               final Collection<OtpErlangObject> opts = bindings.getList("Opts");
-              boolean _tripleNotEquals_1 = (opts != null);
-              if (_tripleNotEquals_1) {
+              if ((opts != null)) {
                 final Procedure1<OtpErlangObject> _function = new Procedure1<OtpErlangObject>() {
+                  @Override
                   public void apply(final OtpErlangObject opt) {
                     try {
                       final Bindings b = ErlUtils.match("{Tag,Arg}", opt);
-                      boolean _tripleNotEquals = (b != null);
-                      if (_tripleNotEquals) {
+                      if ((b != null)) {
                         RebarConfigurationSerializer.this.parseOption(result, b);
                       }
                     } catch (Throwable _e) {
@@ -101,6 +102,7 @@ public class RebarConfigurationSerializer implements ProjectConfigurationSeriali
           _matched=true;
           Collection<OtpErlangObject> _list = b.getList("Arg");
           final Function1<OtpErlangObject, Path> _function = new Function1<OtpErlangObject, Path>() {
+            @Override
             public Path apply(final OtpErlangObject it) {
               Path _xblockexpression = null;
               {

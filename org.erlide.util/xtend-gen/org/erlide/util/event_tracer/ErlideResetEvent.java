@@ -9,6 +9,7 @@ public class ErlideResetEvent extends ErlideEvent {
     super(System.currentTimeMillis());
   }
   
+  @Override
   public String print() {
     StringConcatenation _builder = new StringConcatenation();
     long _timestamp = this.getTimestamp();

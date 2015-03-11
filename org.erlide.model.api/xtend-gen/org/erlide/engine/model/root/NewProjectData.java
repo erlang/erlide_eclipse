@@ -42,11 +42,13 @@ public class NewProjectData extends ErlangProjectProperties {
     this.factory = factory;
   }
   
+  @Override
   public String toString() {
     String _xblockexpression = null;
     {
       Objects.ToStringHelper _stringHelper = Objects.toStringHelper(this);
       final Procedure1<Objects.ToStringHelper> _function = new Procedure1<Objects.ToStringHelper>() {
+        @Override
         public void apply(final Objects.ToStringHelper it) {
           it.add("name", NewProjectData.this.name);
           it.add("location", NewProjectData.this.location);
@@ -98,8 +100,7 @@ public class NewProjectData extends ErlangProjectProperties {
     {
       InputOutput.<String>println("» DETECT builder config");
       String _xifexpression = null;
-      boolean _tripleNotEquals = (this.location != null);
-      if (_tripleNotEquals) {
+      if ((this.location != null)) {
         String _xblockexpression_1 = null;
         {
           InputOutput.<String>println("DETECT builder config");
@@ -120,8 +121,7 @@ public class NewProjectData extends ErlangProjectProperties {
               final IProjectConfigurator persister = this.factory.getConfig(this.configType, directory);
               InputOutput.<String>println(("PERSISTER " + persister));
               String _xifexpression_2 = null;
-              boolean _tripleNotEquals_1 = (persister != null);
-              if (_tripleNotEquals_1) {
+              if ((persister != null)) {
                 String _xblockexpression_3 = null;
                 {
                   final ErlangProjectProperties props = persister.getConfiguration();
