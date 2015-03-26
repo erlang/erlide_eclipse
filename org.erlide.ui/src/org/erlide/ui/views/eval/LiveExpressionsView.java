@@ -323,7 +323,7 @@ public class LiveExpressionsView extends ViewPart implements IResourceChangeList
         if (!restoreState()) {
             /* Fill LiveExpressions for first time */
             exprs = new ArrayList<LiveExpr>(10);
-            addExpr(new LiveExpr(backend, "erlang:now()"));
+            addExpr(new LiveExpr(backend, "erlide_time_compat:timestamp()"));
         }
         viewer.setInput(exprs);
 

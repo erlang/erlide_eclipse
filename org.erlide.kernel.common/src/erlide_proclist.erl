@@ -89,7 +89,7 @@ process_list_updater() ->
     stop -> ok;
     _ -> process_list_updater()
     after 5000 ->
-      erlide_jrpc:event(processlist, {erlang:now(), self()}),
+      erlide_jrpc:event(processlist, {erlide_time_compat:timestamp(), self()}),
       process_list_updater()
   end.
 
