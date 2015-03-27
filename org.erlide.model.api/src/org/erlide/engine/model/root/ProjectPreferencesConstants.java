@@ -36,9 +36,9 @@ public final class ProjectPreferencesConstants {
     public static final String DEFAULT_EXTERNAL_INCLUDES = "";
 
     public static final String RUNTIME_VERSION = "backend_version";
-    public static final RuntimeVersion DEFAULT_RUNTIME_VERSION = new RuntimeVersion(16);
+    public static final RuntimeVersion DEFAULT_RUNTIME_VERSION = new RuntimeVersion(17);
     public static final RuntimeVersion[] SUPPORTED_VERSIONS = { new RuntimeVersion(15),
-            new RuntimeVersion(16), new RuntimeVersion(17) };
+            new RuntimeVersion(16), new RuntimeVersion(17), new RuntimeVersion(18) };
     public static final RuntimeVersion FALLBACK_RUNTIME_VERSION = SUPPORTED_VERSIONS[0];
 
     public static final String PROJECT_EXTERNAL_MODULES = "external_modules";
