@@ -54,6 +54,7 @@ import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.PerformanceTuning;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.SystemConfiguration;
 
 public class DefaultErlangFoldingStructureProvider implements IProjectionListener,
         IErlangFoldingStructureProvider, IErlangFoldingStructureProviderExtension {
@@ -698,26 +699,33 @@ public class DefaultErlangFoldingStructureProvider implements IProjectionListene
         }
 
         try {
-
-            final int start = fCachedDocument.getLineOfOffset(region.getOffset());
-            final int end = fCachedDocument.getLineOfOffset(region.getOffset()
-                    + region.getLength());
-            if (start != end) {
-                final int offset = fCachedDocument.getLineOffset(start);
+            final int roffset = region.getOffset();
+            int rlength = region.getLength();
+            if (element instanceof IErlComment
+                    && SystemConfiguration.getInstance().isOnWindows()) {
+                // Erlang has CR included in comment
+                rlength -= 1;
+            }
+            final int startLine = fCachedDocument.getLineOfOffset(roffset);
+            final int endLine = fCachedDocument
+                    .getLineOfOffset(roffset + rlength);
+            if (startLine != endLine) {
+                final int offset = fCachedDocument.getLineOffset(startLine);
                 int endOffset;
-                if (fCachedDocument.getNumberOfLines() > end + 1) {
-                    endOffset = fCachedDocument.getLineOffset(end + 1);
-                } else if (end > start) {
-                    endOffset = fCachedDocument.getLineOffset(end)
-                            + fCachedDocument.getLineLength(end);
+                if (fCachedDocument.getNumberOfLines() > endLine + 1) {
+                    endOffset = fCachedDocument.getLineOffset(endLine + 1);
+                } else if (endLine > startLine) {
+                    endOffset = fCachedDocument.getLineOffset(endLine)
+                            + fCachedDocument.getLineLength(endLine);
                 } else {
                     return null;
                 }
+                final int length = endOffset - offset;
                 if (element instanceof IErlComment) {
-                    return new CommentPosition(offset, endOffset - offset);
+                    return new CommentPosition(offset, length);
                 }
                 if (element instanceof IErlMember) {
-                    return new ErlangElementPosition(offset, endOffset - offset,
+                    return new ErlangElementPosition(offset, length,
                             (IErlMember) element);
                 }
             }
