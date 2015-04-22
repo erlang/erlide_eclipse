@@ -27,10 +27,10 @@
     jpid,		% pid() the eclipse process
     pid,           % pid() Debugged process
     meta,          % pid() Meta process
-    status,        % {Status,Mod,Line} ¦ {exit,Where,Reason}
-                   %   Status = init ¦ idle | break
-                   %      | wait_break ¦ wait_running
-                   %      ¦ running
+    status,        % {Status,Mod,Line} | {exit,Where,Reason}
+                   %   Status = init | idle | break
+                   %      | wait_break | wait_running
+                   %      | running
                                % Where={Mod,Line} | null
 
     cm,            % atom() | undefined Current module
