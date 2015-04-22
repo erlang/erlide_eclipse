@@ -67,9 +67,11 @@ public final class MarkerUtils {
     public static void addErrorMarkers(final IResource resource,
             final OtpErlangList errorList) {
         final OtpErlangObject[] messages = errorList.elements();
-        final Map<String, List<OtpErlangTuple>> groupedMessages = groupMessagesByFile(messages);
+        final Map<String, List<OtpErlangTuple>> groupedMessages = groupMessagesByFile(
+                messages);
 
-        for (final Entry<String, List<OtpErlangTuple>> entry : groupedMessages.entrySet()) {
+        for (final Entry<String, List<OtpErlangTuple>> entry : groupedMessages
+                .entrySet()) {
             final String fileName = entry.getKey();
             final IResource res = findResourceForFileName(resource, entry, fileName);
 
@@ -97,7 +99,7 @@ public final class MarkerUtils {
                         // ErlLogger.debug("inc::" + fileName + " "
                         // + resource.getName() + " "
                         // + erlProject.getName());
-                        // ErlLogger.debug("    " + entry.getValue());
+                        // ErlLogger.debug(" " + entry.getValue());
 
                         if (includeFile == null) {
                             res = resource;
@@ -140,8 +142,9 @@ public final class MarkerUtils {
         } catch (final OtpErlangRangeException e) {
         }
 
-        final String msg = ErlUtils.asString(data.elementAt(2));
-        final IMarker marker = createMarker(res, fileName, msg, line, sev, PROBLEM_MARKER);
+        final String msg = ErlUtils.asString(data.elementAt(2)).replaceAll("[\n\r]", " ");
+        final IMarker marker = createMarker(res, fileName, msg, line, sev,
+                PROBLEM_MARKER);
         if (marker != null) {
             try {
                 marker.setAttribute(IMarker.SOURCE_ID, resource.getLocation().toString());
@@ -171,10 +174,10 @@ public final class MarkerUtils {
         list.add(tuple);
     }
 
-    public static IMarker createProblemMarker(final IResource resource,
-            final String path, final String message, final int lineNumber,
-            final int severity) {
-        return createMarker(resource, path, message, lineNumber, severity, PROBLEM_MARKER);
+    public static IMarker createProblemMarker(final IResource resource, final String path,
+            final String message, final int lineNumber, final int severity) {
+        return createMarker(resource, path, message, lineNumber, severity,
+                PROBLEM_MARKER);
     }
 
     public static IMarker[] getProblemsFor(final IResource resource) {
@@ -246,8 +249,8 @@ public final class MarkerUtils {
     }
 
     public void createProblemMarkerFor(final IResource resource,
-            final IErlFunction erlElement, final String message, final int problemSeverity)
-            throws CoreException {
+            final IErlFunction erlElement, final String message,
+            final int problemSeverity) throws CoreException {
         final ISourceRange range = erlElement == null ? null : erlElement.getNameRange();
 
         final IMarker marker = createProblemMarker(resource, null, message, 0,
@@ -317,8 +320,8 @@ public final class MarkerUtils {
 
     public static void getScanMarkersFor(final IResource resource) {
         try {
-            final BufferedReader reader = new BufferedReader(new FileReader(resource
-                    .getLocation().toPortableString()));
+            final BufferedReader reader = new BufferedReader(
+                    new FileReader(resource.getLocation().toPortableString()));
             try {
                 String line = reader.readLine();
                 final List<Pair<String, Integer>> cl = new ArrayList<Pair<String, Integer>>();
