@@ -80,7 +80,7 @@ public abstract class ErlTokenScanner extends BufferedRuleBasedScanner {
     }
 
     public IToken convert(final ErlToken tk) {
-        if (tk == ErlToken.EOF) {
+        if (tk == ErlToken.EOF || tk == null) {
             return Token.EOF;
         }
 
@@ -146,8 +146,8 @@ public abstract class ErlTokenScanner extends BufferedRuleBasedScanner {
     private void fixTokenData(final Token token, final RGB color, final int style) {
         final TextAttribute attr = (TextAttribute) token.getData();
         final int newStyle = style == -1 ? attr.getStyle() : style;
-        final Color newColor = color == null ? attr.getForeground() : fColorManager
-                .getColor(color);
+        final Color newColor = color == null ? attr.getForeground()
+                : fColorManager.getColor(color);
         token.setData(new TextAttribute(newColor, attr.getBackground(), newStyle));
     }
 
