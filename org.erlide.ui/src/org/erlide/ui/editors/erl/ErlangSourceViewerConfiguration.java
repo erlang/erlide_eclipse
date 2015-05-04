@@ -93,21 +93,21 @@ public class ErlangSourceViewerConfiguration extends TextSourceViewerConfigurati
         reconciler
                 .setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
         DefaultDamagerRepairer dr = new ErlDamagerRepairer(codeScanner);
-
-        final ITokenScanner scan2 = new ErlCodeScanner(colorManager);
-        dr = new ErlDamagerRepairer(scan2);
         reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
         reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
         dr = new ErlDamagerRepairer(commentScanner);
         reconciler.setDamager(dr, IErlangPartitions.ERLANG_COMMENT);
         reconciler.setRepairer(dr, IErlangPartitions.ERLANG_COMMENT);
+
         dr = new ErlDamagerRepairer(stringScanner);
         reconciler.setDamager(dr, IErlangPartitions.ERLANG_STRING);
         reconciler.setRepairer(dr, IErlangPartitions.ERLANG_STRING);
+
         dr = new ErlDamagerRepairer(qatomScanner);
         reconciler.setDamager(dr, IErlangPartitions.ERLANG_QATOM);
         reconciler.setRepairer(dr, IErlangPartitions.ERLANG_QATOM);
+
         dr = new ErlDamagerRepairer(charScanner);
         reconciler.setDamager(dr, IErlangPartitions.ERLANG_CHARACTER);
         reconciler.setRepairer(dr, IErlangPartitions.ERLANG_CHARACTER);
