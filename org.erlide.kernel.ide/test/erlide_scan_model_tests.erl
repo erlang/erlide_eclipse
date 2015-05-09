@@ -1,9 +1,6 @@
 %% @author jakob
-%% @doc @todo Add description to erlide_scan_model_tests.
-
 
 -module(erlide_scan_model_tests).
-
 
 %%
 %% Include files

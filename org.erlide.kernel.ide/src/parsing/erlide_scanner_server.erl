@@ -17,7 +17,7 @@
 %%
 
 -export([server_cmd/2, server_cmd/3,
-         spawn_server/1, scan_test/2, match_test/2]).
+         spawn_server/1]).
 
 %% stop/0
 
@@ -26,38 +26,6 @@
 
 %%
 %% API Functions
-%%
-
-match_test(Module, Text) ->
-    case erlide_scanner:get_text(Module) of
-        Text ->
-            "match\n";
-        ModText ->
-            "text mismatch!"++
-                "\n(Scanner text)----------------\n\"" ++ ModText ++
-                "\"\n(Eclipse text)----------------\n\""++Text++"\"\n"
-    end.
-
-scan_test(Module, GetTokens) ->
-    ModText = erlide_scanner:get_text(Module),
-    M = erlide_scan_model:do_scan(dont_care, ModText),
-    T = erlide_scan_model:get_all_tokens(M),
-    Tokens = erlide_scanner:get_tokens(Module),
-    R = case Tokens of
-            T ->
-                "scan match\n";
-            _ ->
-                "scan mismatch!\n"
-        end,
-    case GetTokens of
-        true ->
-            {R, Tokens, T};
-        false ->
-            R
-    end.
-
-%%
-%% Local Functions
 %%
 
 server_cmd(ScannerName, Command) ->
@@ -88,6 +56,10 @@ spawn_server(ScannerName) ->
     end,
     server_cmd(ScannerName, addref, []),
     ok.
+
+%%
+%% Local Functions
+%%
 
 loop(Module, Refs) ->
     receive
@@ -151,5 +123,3 @@ do_cmd(get_tokens, [], Module) ->
     {erlide_scan_model:get_all_tokens(Module), Module};
 do_cmd(get_token_window, {Offset, Before, After}, Module) ->
     {erlide_scan_model:get_token_window(Module, Offset, Before, After), Module}.
-
-

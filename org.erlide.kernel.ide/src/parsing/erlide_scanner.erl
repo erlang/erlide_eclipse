@@ -21,7 +21,7 @@
          get_token_at/2,
          create/1, addref/1, dispose/1, get_text/1,
          get_tokens/1, get_token_window/4,
-         dump_module/1, replace_text/4, check_all/3]).
+         dump_module/1, replace_text/4]).
 
 %%
 %% API Functions
@@ -81,19 +81,6 @@ dump_module(ScannerName) when is_atom(ScannerName) ->
 replace_text(ScannerName, Offset, RemoveLength, NewText)
   when is_atom(ScannerName), is_integer(Offset), is_integer(RemoveLength), is_list(NewText) ->
     erlide_scanner_server:server_cmd(ScannerName, replace_text, {Offset, RemoveLength, NewText}).
-
-check_all(ScannerName, Text, GetTokens)
-  when is_atom(ScannerName), is_list(Text), is_boolean(GetTokens) ->
-    MatchTest = erlide_scanner_server:match_test(ScannerName, Text),
-    ScanTest = erlide_scanner_server:scan_test(ScannerName, GetTokens),
-    case ScanTest of
-        {R, Tokens, T} ->
-            {MatchTest ++ R, Tokens, T};
-        _ ->
-            MatchTest ++ ScanTest
-    end.
-
-
 
 %%
 %% Local Functions

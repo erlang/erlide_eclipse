@@ -97,7 +97,6 @@ import org.erlide.ui.editors.erl.outline.ErlangOutlinePage;
 import org.erlide.ui.editors.erl.outline.IOutlineContentCreator;
 import org.erlide.ui.editors.erl.outline.IOutlineSelectionHandler;
 import org.erlide.ui.editors.erl.outline.ISortableContentOutlinePage;
-import org.erlide.ui.editors.erl.test.TestAction;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
@@ -141,7 +140,6 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
     private CleanUpAction cleanUpAction;
     private ClearCacheAction clearCacheAction;
     private CallHierarchyAction callhierarchy;
-    private TestAction testAction;
 
     private final AnnotationSupport annotationSupport;
 
@@ -283,12 +281,6 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
             setAction("cleanUp", cleanUpAction);
         }
 
-        if (SystemConfiguration.getInstance().isTest()) {
-            setupTestAction();
-            // PlatformUI.getWorkbench().getHelpSystem().setHelp(indentAction,
-            // IErlangHelpContextIds.INDENT_ACTION);
-        }
-
         callhierarchy = new CallHierarchyAction(this, getModule(), xrefService);
         callhierarchy
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.CALLHIERARCHY);
@@ -327,26 +319,10 @@ public class ErlangEditor extends AbstractErlangEditor implements IOutlineConten
         markAsSelectionDependentAction("ClearCache", true);
     }
 
-    private void setupTestAction() {
-        if (testAction != null) {
-            return;
-        }
-        testAction = new TestAction(ErlangEditorMessages.getBundleForConstructedKeys(),
-                "Test.", this, getModule());
-        testAction.setActionDefinitionId(IErlangEditorActionDefinitionIds.TEST);
-        setAction("Test", testAction);
-        markAsStateDependentAction("Test", true);
-        markAsSelectionDependentAction("Test", true);
-    }
-
     @Override
     protected void editorContextMenuAboutToShow(final IMenuManager menu) {
         super.editorContextMenuAboutToShow(menu);
 
-        if (SystemConfiguration.getInstance().isTest()) {
-            setupTestAction();
-            menu.prependToGroup(ITextEditorActionConstants.GROUP_OPEN, testAction);
-        }
         if (SystemConfiguration.getInstance().isClearCacheAvailable()) {
             setupClearCacheAction();
             menu.prependToGroup(ITextEditorActionConstants.GROUP_SETTINGS,
