@@ -624,22 +624,39 @@ check_application2("debugger-"++_) -> throw({error,{app,debugger}});
 check_application2(_) -> ok.
 
 find_src(Beam, Options) ->
-    Src0 = filename:rootname(Beam) ++ ".erl",
-    case is_file(Src0) of
-	true -> Src0;
-	false ->
-	    EbinDir = filename:dirname(Beam),
-        SrcDirs = proplists:get_value(src_dirs, Options, ["src"]),
-            Fun = fun(Dir, Acc) ->
-                          Src = filename:join([filename:dirname(EbinDir), Dir,
-				 filename:basename(Src0)]),
-	    case is_file(Src) of
-		true -> Src;
-                              false -> Acc
-	    end
-                  end,
-            lists:foldl(Fun, error, SrcDirs)
-    end.
+	Src0 = filename:rootname(Beam) ++ ".erl",
+	case is_file(Src0) of
+		true -> Src0;
+		false ->
+			EbinDir = filename:dirname(Beam),
+			SrcDirs = proplists:get_value(src_dirs, Options, ["src"]),
+			Fun = fun(Dir, Acc) ->
+						  Src = filename:join([filename:dirname(EbinDir), Dir,
+											   filename:basename(Src0)]),
+						  case is_file(Src) of
+							  true -> Src;
+							  false -> Acc
+						  end
+				  end,
+			case lists:foldl(Fun, error, SrcDirs) of
+				error ->
+					Base = list_to_atom(filename:basename(filename:rootname(Beam))),
+					case proplists:get_value(source,Base:module_info(compile)) of
+						undefined ->
+							error;
+						FoundSrc ->
+							case is_file(FoundSrc) of
+								true ->
+									FoundSrc;
+								false ->
+									error
+							end
+					end;
+				FoundSrc ->
+					FoundSrc
+			end
+	end
+.
 
 find_beam(Mod, Src, Options) ->
     SrcDir = filename:dirname(Src),
