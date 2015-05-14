@@ -66,6 +66,7 @@ public final class ErlConsoleDocument extends Document implements BackendShellLi
             @Override
             public void run() {
                 try {
+                    ErlLogger.debug("%d, %d, %s",event.getOffset(), event.getRemovedLength(), event.getText());
                     replace(event.getOffset(), event.getRemovedLength(), event.getText());
                 } catch (final BadLocationException e) {
                     ErlLogger.error(e);
