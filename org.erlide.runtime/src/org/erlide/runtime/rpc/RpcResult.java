@@ -14,6 +14,7 @@ import org.erlide.util.erlang.OtpErlang;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class RpcResult {
@@ -59,7 +60,8 @@ public class RpcResult {
 
     public static RpcResult error(final String msg) {
         final RpcResult r = new RpcResult(false);
-        r.fValue = OtpErlang.mkTuple(new OtpErlangAtom("error"), new OtpErlangAtom(msg));
+        r.fValue = OtpErlang.mkTuple(new OtpErlangAtom("error"),
+                new OtpErlangString(msg));
         return r;
     }
 }
