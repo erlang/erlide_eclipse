@@ -72,7 +72,7 @@ ${local_functions}
 ${exported_functions}
 
 %% ====================================================================
-%% Behavioural functions 
+%% Behavioural functions
 %% ====================================================================
 -record(state, {}).
 
@@ -350,7 +350,7 @@ ${local_functions}
 ${exported_functions}
 
 %% ====================================================================
-%% Behavioural functions 
+%% Behavioural functions
 %% ====================================================================
 -record(state, {}).
 
@@ -452,7 +452,7 @@ code_change(OldVsn, State, Extra) -&gt;
 %% ====================================================================
 
 ${local_functions}
-</template><template autoinsert="true" context="org.erlide.ui.erlangsource.template.context.module" deleted="false" description="A module" enabled="true" id="org.erlide.ui.erlangsource.modulelayout" name="module">${file_comment}
+</template><template autoinsert="true" context="org.erlide.ui.erlangsource.template.context.module" deleted="false" description="A module" enabled="true" id="org.erlide.ui.erlangsource.modulelayout" name="simple module">${file_comment}
 
 -module(${module}).
 
@@ -482,16 +482,16 @@ ${local_functions}
 ${exported_functions}
 
 %% ====================================================================
-%% Behavioural functions 
+%% Behavioural functions
 %% ====================================================================
 -record(state, {}).
 
-%% init/1 
+%% init/1
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/supervisor_bridge.html#Module:init-1&quot;&gt;supervisor_bridge:init/1&lt;/a&gt;
 -spec init(Args :: term()) -&gt; Result :: {ok, Pid :: pid(), State :: term()}
 										| ignore
-										| {error, Error :: term()}. 
+										| {error, Error :: term()}.
 %% ====================================================================
 init([]) -&gt;
     case &apos;AModule&apos;:start_link() of
@@ -529,7 +529,7 @@ ${local_functions}
 ${exported_functions}
 
 %% ====================================================================
-%% Behavioural functions 
+%% Behavioural functions
 %% ====================================================================
 
 %% init/1
