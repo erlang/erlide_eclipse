@@ -49,8 +49,6 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
 import org.erlide.ui.templates.ModuleVariableResolver;
-import org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver;
-import org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 
@@ -153,7 +151,7 @@ public class ErlangFileWizardPage extends WizardPage {
         lblskeleton.setText("&Skeleton:");
 
         skeleton = new Combo(filePanel, SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY);
-        GridData gd_skeleton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        final GridData gd_skeleton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
         gd_skeleton.widthHint = 139;
         skeleton.setLayoutData(gd_skeleton);
         // skeleton.add("None");
