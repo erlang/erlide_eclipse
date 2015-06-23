@@ -14,8 +14,8 @@ mkdir -p $OUT
 
 # mirror job output to OUT
 bash -ex org.erlide.releng/mirror_p2 ${JAVA_HOME} ${ECLIPSE} file://${IN} file://${OUT}
-if [ $? != 0 ]; then 
-	exit $?
+if [ $? != 0 ]; then
+    exit $?
 fi
 
 pushd $IN
@@ -24,25 +24,18 @@ popd
 
 # if DEST=path, copy OUT to DEST
 if [ -d "${DESTINATION}" ]; then
-	# rm -rf ${DESTINATION}/*  # TODO option to clean?
-	cp -r ${OUT}/* ${DESTINATION}
-
-# else if DEST=name, scp OUT to sourceforge
-elif [ -n "${DESTINATION}" ]; then
-	bash -ex ${WORKSPACE}/org.erlide.site/upload ${OUT} ${DESTINATION} ${USER}
-
-# else do nothing
-
+    # rm -rf ${DESTINATION}/*  # TODO option to clean?
+    cp -r ${OUT}/* ${DESTINATION}
 fi
 
-if [ $? != 0 ]; then 
-	exit $?
+if [ $? != 0 ]; then
+    exit $?
 fi
 
 if [ -n "$SITE_TYPE" ]; then
-	cd ${ERLIDE}/update_sites
-	rm $SITE_TYPE
-	ln -s $OUT $SITE_TYPE
+    cd ${ERLIDE}/update_sites
+    rm $SITE_TYPE
+    ln -s $OUT $SITE_TYPE
 fi
 
 
