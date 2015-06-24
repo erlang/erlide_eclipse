@@ -1,4 +1,5 @@
 require File.join(File.dirname(__FILE__), 'erlide')
+require 'pathname'
 
 task :default => [:'run-tests']
 
@@ -47,3 +48,32 @@ task :tag_release do
   puts "Creating release"
 
 end
+
+desc "create github release and upload zipped update site"
+task :make_github_release, [:file, :description, :tools_dir] do |t, args|
+  args.with_defaults(:tools_dir => "#{ENV['HOME']}/erlide_tools", :description => nil)
+
+  filename = Pathname(file).basename.to_s
+  version = /^erlide_([^_]+)(_([^\.]+))?.zip$/.match(filename)[1]
+  tag = "v#{version}"
+  description = tag unless description.nil?
+  draft = "--draft"
+
+  puts "Creating Github release"
+    cmds = "#{tools_dir}/github_rel release -u erlide -r erlide -t #{tag} -d #{description} #{draft}"
+    puts cmds
+    system cmds
+    if $?.exitstatus > 0 then
+      raise "build failed"
+    end
+
+  puts "Uploading update site"
+    cmds = "#{tools_dir}/github_rel upload -u erlide -r erlide -t #{tag} -n erlide.zip -f #{file} "
+    puts cmds
+    system cmds
+    if $?.exitstatus > 0 then
+      raise "build failed"
+    end
+
+end
+
