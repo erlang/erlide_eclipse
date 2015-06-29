@@ -1,3 +1,4 @@
+%% coding: latin-1
 %% Author: jakob
 %% Created: 7 may 2013
 -module(erlide_open_tests).
