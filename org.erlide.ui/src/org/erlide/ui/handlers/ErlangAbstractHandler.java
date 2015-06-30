@@ -43,26 +43,6 @@ public abstract class ErlangAbstractHandler extends AbstractHandler {
     }
 
     /**
-     * Selects the given range on the editor.
-     *
-     * @param newOffset
-     *            the selection offset
-     * @param newLength
-     *            the selection range
-     */
-    protected void selectAndReveal(final int newOffset, final int newLength,
-            final ITextEditor editor) {
-        if (editor instanceof ErlangEditor) {
-            final AbstractErlangEditor erlEditor = (AbstractErlangEditor) editor;
-            erlEditor.selectAndReveal(newOffset, newLength);
-        } else {
-            // this is too intrusive, but will never get called anyway
-            editor.selectAndReveal(newOffset, newLength);
-        }
-
-    }
-
-    /**
      * Provide the text selection that is needed to execute the command. Default
      * implementation, extend to Erlang elements selected.
      *

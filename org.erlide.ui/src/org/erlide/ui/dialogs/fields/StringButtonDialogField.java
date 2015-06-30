@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.dialogfields;
+package org.erlide.ui.dialogs.fields;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;

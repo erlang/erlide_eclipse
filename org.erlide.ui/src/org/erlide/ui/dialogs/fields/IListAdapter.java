@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.ui.dialogfields;
+package org.erlide.ui.dialogs.fields;
 
 /**
  * Change listener used by <code>ListDialogField</code> and

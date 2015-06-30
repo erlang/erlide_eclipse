@@ -26,13 +26,13 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.ui.dialogfields.DialogField;
-import org.erlide.ui.dialogfields.IDialogFieldListener;
-import org.erlide.ui.dialogfields.IListAdapter;
-import org.erlide.ui.dialogfields.IStringButtonAdapter;
-import org.erlide.ui.dialogfields.ListDialogField;
-import org.erlide.ui.dialogfields.StringButtonDialogField;
-import org.erlide.ui.dialogfields.StringDialogField;
+import org.erlide.ui.dialogs.fields.DialogField;
+import org.erlide.ui.dialogs.fields.IDialogFieldListener;
+import org.erlide.ui.dialogs.fields.IListAdapter;
+import org.erlide.ui.dialogs.fields.IStringButtonAdapter;
+import org.erlide.ui.dialogs.fields.ListDialogField;
+import org.erlide.ui.dialogs.fields.StringButtonDialogField;
+import org.erlide.ui.dialogs.fields.StringDialogField;
 import org.erlide.ui.util.StatusInfo;
 
 public class AddRuntimeDialog extends StatusDialog implements IListAdapter<String> {
