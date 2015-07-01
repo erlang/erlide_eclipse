@@ -19,14 +19,14 @@ public interface ICodeBundle {
 
     // common context is always included in the others
     public static enum CodeContext {
-        COMMON, IDE, DEBUGGER
+        COMMON, IDE, DEBUGGER, BUILDER
     }
 
     Bundle getBundle();
 
     /**
      * List of bundle-relative paths of ebin entries.
-     * 
+     *
      * @param context
      * @return
      */
@@ -42,7 +42,7 @@ public interface ICodeBundle {
 
     /**
      * List of URLs for all beam files within ebin entries.
-     * 
+     *
      * @param context
      * @return
      */

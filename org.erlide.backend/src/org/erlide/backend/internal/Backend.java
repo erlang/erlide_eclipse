@@ -101,6 +101,9 @@ public class Backend implements IStreamListener, IBackend {
                     SystemConfiguration.getInstance().getMaxParallelBuilds());
             // TODO should use extension point!
             switch (data.getContext()) {
+            case BUILDER:
+                site.call("erlide_builder_app", "init", "");
+                break;
             case IDE:
                 site.call("erlide_builder_app", "init", "");
                 if (!SystemConfiguration.isHeadless()) {
