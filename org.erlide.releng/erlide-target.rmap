@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rm:rmap xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
     xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0">
- 
+
     <rm:property key="projects.location" value="${workspace.root}" />
     <!--rm:property key="eclipse.download" value="http://download.eclipse.org" /-->
     <rm:property key="eclipse.download" value="file:///home/jenkins/erlide_tools/mirrors" />
     <rm:property key="eclipse.target.platform" value="${eclipse.download}/releases/${eclipse.release}" />
     <rm:property key="eclipse.orbit" value="${eclipse.download}/tools/orbit/downloads/drops/R20130517111416/repository" />
     <rm:property key="graphviz" value="http://download.erlide.org/update/graphviz" />
- 
+
     <rm:locator pattern="^org\.erlide(?:\..+)?$"
         searchPathRef="localsources" />
     <rm:locator pattern="^com\.abstratt(?:\..+)?$" searchPathRef="graphviz" />
- 
+
     <rm:locator searchPathRef="eclipse" />
- 
+
     <rm:searchPath name="eclipse">
         <rm:provider componentTypes="eclipse.feature,osgi.bundle"
             readerType="p2" source="false" mutable="false">
@@ -52,5 +52,5 @@
             </rm:uri>
         </rm:provider>
     </rm:searchPath>
- 
+
 </rm:rmap>

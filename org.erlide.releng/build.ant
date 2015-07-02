@@ -21,7 +21,7 @@
     <property name="tool.jdk" value="${user.home}/erlide_tools/jdk" />
     <property name="tool.rebar_k" value="${user.home}/erlide_tools/rebar_k" />
 
-    <property name="build.properties" location="${projects.location}/org.erlide.releng/build.properties" />
+    <property name="build.properties" location="${projects.location}/org.erlide.releng/erlide-target.properties" />
 
     <target name="run.tests" depends="common.cleanup,install.buckminster.headless,build.releng.tools" description="build and run tests">
         <echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
