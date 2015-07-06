@@ -1,10 +1,10 @@
 P.Code {
 	display: block;
 	text-align: left;
-	text-indent: 0pt;
-	margin-top: 0pt;
-	margin-bottom: 0pt;
-	margin-right: 0pt;
+	text-indent: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-right: 0;
 	margin-left: 15pt;
 	font-weight: normal;
 	font-style: normal;
@@ -17,11 +17,11 @@ P.Code {
 H6.CaptionFigColumn {
 	display: block;
 	text-align: left;
-	text-indent: 0pt;
+	text-indent: 0;
 	margin-top: 3pt;
 	margin-bottom: 11pt;
-	margin-right: 0pt;
-	margin-left: 0pt;
+	margin-right: 0;
+	margin-left: 0;
 	font-size: 75%;
 	font-weight: bold;
 	font-style: Italic;
@@ -33,11 +33,11 @@ H6.CaptionFigColumn {
 P.Note {
 	display: block;
 	text-align: left;
-	text-indent: 0pt;
+	text-indent: 0;
 	margin-top: 19.5pt;
 	margin-bottom: 19.5pt;
-	margin-right: 0pt;
-	margin-left: 30pt;
+	margin-right: 0;
+	margin-left: 30;
 	font-size: 110%;
 	font-weight: normal;
 	font-style: Italic;

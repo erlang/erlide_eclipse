@@ -77,3 +77,14 @@ task :make_github_release, [:file, :description, :tools_dir] do |t, args|
 
 end
 
+desc "build help from erlide.github.io"
+task :build_help do
+    if File.exist?('org.erlide.help/gen_eclipse_help.xml') then
+        system "rm -rf buildroot/erlide.github.io"
+        system "git clone http://github.com/erlide/erlide.github.io.git buildroot/erlide.github.io"
+        system "cd buildroot/erlide.github.io && git checkout master"
+        system "cd org.erlide.help && bundle install && ant -file gen_eclipse_help.xml -Dwebsite=../buildroot/erlide.github.io"
+    else
+        puts "Help not generated."
+    end
+end

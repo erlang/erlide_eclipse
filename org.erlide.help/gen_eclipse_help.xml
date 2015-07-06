@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ======================================================================
+	 This ant script uses Jekyll to build a specialized version of the
+	 website for use as Eclipse help content.
+     ====================================================================== -->
+<project name="project" default="gen_eclipse_help">
+
+	<!-- website property should be set on the command line to the right location -->
+	<property name="website.dir" location="../.."/>
+	<property name="destination" location="contents"/>
+	<property name="gen_toc" location="gen_toc.jar"/>
+
+	<property name="website" location="${website.dir}/erlide.github.io"/>
+
+	<target name="gen_eclipse_help">
+		<!-- Prepare -->
+		<copy file="${website}/_layouts/article.html" tofile="${website}/_layouts/website.html" overwrite="true"/>
+		<copy file="${website}/_layouts/eclipse.html" tofile="${website}/_layouts/article.html" overwrite="true"/>
+
+		<!-- Generate -->
+		<exec executable="bash" dir="${website}" searchpath="true" failonerror="true">
+			<arg value="-l"/>
+			<arg value="-c"/>
+			<arg value="bundle exec jekyll build"/>
+		</exec>
+		<!--java jar="${gen_toc}" fork="true" failonerror="true">
+			<arg value="${website}/articles"/>
+		</java-->
+
+		<!-- Copy results to destination -->
+		<copy todir="${destination}" overwrite="true">
+			<fileset dir="${website}/_site/articles">
+				<include name="**/*.html"/>
+				<include name="**/*.png"/>
+				<include name="**/*.gif"/>
+				<include name="**/*.jpg"/>
+			</fileset>
+		</copy>
+
+		<!-- Clean up -->
+		<move file="${website}/_layouts/website.html" tofile="${website}/_layouts/article.html" overwrite="true"/>
+	</target>
+
+</project>
