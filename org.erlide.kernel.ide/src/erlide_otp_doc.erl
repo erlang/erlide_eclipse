@@ -542,7 +542,7 @@ extract_pars(FunctionName, Arity, Offset, Doc) ->
 try_make_pars([], _, Arity, Offset) ->
     {make_parameters(Arity), make_par_offs_length(0, Arity, Offset)};
 try_make_pars([Sub | Rest], FunctionName, Arity, Offset) ->
-    case erl_scan:string(Sub) of
+    case erl_scan_local:string(Sub) of
         {ok, Tokens, _} ->
             ?D(Tokens),
             case make_pars_from_tokens(Tokens, FunctionName, Arity, Offset) of

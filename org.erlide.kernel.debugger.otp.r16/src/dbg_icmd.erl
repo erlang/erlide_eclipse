@@ -474,7 +474,7 @@ mark_break(Cm, LineNo, Le) ->
     dbg_iserver:cast(get(int), {set_status,self(),break,{Cm,LineNo}}).
 
 parse_cmd(Cmd, LineNo) ->
-    {ok,Tokens,_} = erl_scan:string(Cmd, LineNo),
+    {ok,Tokens,_} = erl_scan_local:string(Cmd, LineNo),
     {ok,Forms} = erl_parse:parse_exprs(Tokens),
     Forms.
 
