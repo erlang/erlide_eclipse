@@ -44,7 +44,8 @@ parse_term(Str) ->
 
 parse_term_raw(Str) ->
     %% erlide_log:logp(Str),
-    {ok, Tokens, _} = erl_scan_local:string(Str),
+    %% use the OTP erl_scan here! 
+    {ok, Tokens, _} = erl_scan:string(Str),
     %% erlide_log:logp(Tokens),
     R=erl_parse:parse_term(Tokens),
     %% erlide_log:logp(R),
@@ -62,7 +63,7 @@ eval(Str, Bindings) ->
     end.
 
 eval_raw(Str, Bindings) ->
-    {ok, Tokens, _} = erl_scan_local:string(Str),
+    {ok, Tokens, _} = erl_scan:string(Str),
     {ok, Result} = erl_parse:parse_exprs(Tokens),
     erl_eval:exprs(Result, Bindings).
 
@@ -70,7 +71,7 @@ format(Fmt, Args) ->
     lists:flatten(io_lib:format(Fmt, Args)).
 
 pretty_print(Str) ->
-    {ok, L, _} = erl_scan_local:string(Str),
+    {ok, L, _} = erl_scan:string(Str),
     case erl_parse:parse_term(L) of
         {ok, Term} ->
             lists:flatten(io_lib:format("~p", [Term]));
@@ -86,7 +87,7 @@ scan_string(S) ->
 scan_string([], Res, _) ->
     {ok, lists:reverse(Res)};
 scan_string(S, Res, N) ->
-    case erl_scan_local:tokens([], S, N) of
+    case erl_scan:tokens([], S, N) of
         {done, Result, Rest} ->
             case Result of
                 {ok, Toks, End} ->
@@ -160,7 +161,7 @@ split_dot([H|T], R, V) ->
     split_dot(T, R, [H|V]).
 
 compile_string(Str) ->
-    {ok, T, _} = erl_scan_local:string(Str),
+    {ok, T, _} = erl_scan:string(Str),
     {ok, Code} = parse(T),
     case compile:forms(Code, [return]) of
         {ok, Mod, Bin} ->
