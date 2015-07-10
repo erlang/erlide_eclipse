@@ -1,3 +1,19 @@
+List of user visible changes between 0.29.11 and 0.29.12 (20150710)
+
+dca59f3 #229 - epp error, unable to build automatically
+05289aa #228 - create github release and upload zip from cli
+c731619 add debugger plugin för OTP 18
+40b2878 #222: simplify "new module" dialog
+17d5a63 treat "test" dir as source if in test mode
+7e81dab Merge pull request #220 from zsoci/debug-int
+983bdf8 Have the source found where it is defined in the beam when default search fails.
+556c7a6 add navigator filter for beam files
+fa93600 fix display of multiline compiler error messages
+9144595 update default backend version to R17
+a56a5c2 replace usages of erlang:now as per OTP 18 recommendations
+a57c7cc move "erlang tools" menu to ui plugin
+092a8d8 fix NPE when terminating backend
+
 List of user visible changes between 0.29.10 and 0.29.11 (20150216)
 
 6bfa566 fix stupid mistake
