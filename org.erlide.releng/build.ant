@@ -21,7 +21,7 @@
     <property name="tool.jdk" value="${user.home}/erlide_tools/jdk" />
     <property name="tool.rebar_k" value="${user.home}/erlide_tools/rebar_k" />
 
-    <property name="build.properties" location="${projects.location}/org.erlide.releng/build.properties" />
+    <property name="build.properties" location="${projects.location}/org.erlide.releng/erlide-target.properties" />
 
     <target name="run.tests" depends="common.cleanup,install.buckminster.headless,build.releng.tools" description="build and run tests">
         <echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
@@ -98,6 +98,11 @@
             <arg value="compile" />
             <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
         </exec>
+        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger.otp.18">
+            <arg value="otp18" />
+            <arg value="compile" />
+            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
+        </exec>
     </target>
 
     <target name="eunit.tests">
@@ -136,6 +141,11 @@
         </exec>
         <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger.otp.17">
             <arg value="otp17" />
+            <arg value="eunit" />
+            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
+        </exec>
+        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger.otp.18">
+            <arg value="otp18" />
             <arg value="eunit" />
             <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
         </exec>

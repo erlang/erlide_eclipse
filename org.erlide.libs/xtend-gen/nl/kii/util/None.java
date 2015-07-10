@@ -10,6 +10,7 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
 
 @SuppressWarnings("all")
 public class None<T extends Object> extends Opt<T> {
+  @Override
   public T value() {
     try {
       throw new NoneException();
@@ -18,31 +19,38 @@ public class None<T extends Object> extends Opt<T> {
     }
   }
   
+  @Override
   public boolean hasSome() {
     return false;
   }
   
+  @Override
   public boolean hasNone() {
     return true;
   }
   
+  @Override
   public boolean hasError() {
     return false;
   }
   
+  @Override
   public Iterator<T> iterator() {
     LinkedList<T> _newLinkedList = CollectionLiterals.<T>newLinkedList();
     return _newLinkedList.iterator();
   }
   
+  @Override
   public boolean equals(final Object obj) {
     return (obj instanceof None<?>);
   }
   
+  @Override
   public int hashCode() {
     return 0;
   }
   
+  @Override
   public String toString() {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("None");

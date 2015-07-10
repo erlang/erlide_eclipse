@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.headless"
       label="Erlang headless support"
-      version="0.29.11.qualifier"
+      version="0.29.12.qualifier"
       provider-name="erlide.org"
       license-feature="org.erlide.licenses"
       license-feature-version="1.0.0.qualifier">
@@ -16,7 +16,6 @@ at
 https://www.assembla.com/spaces/erlide/support/tickets
 or at
 https://github.com/erlide/erlide/issues.
-You can also mail to erlide-devel@lists.sourceforge.net.
    </description>
 
    <copyright>

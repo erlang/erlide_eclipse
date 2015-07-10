@@ -21,10 +21,12 @@ import org.erlide.util.erlang.ErlUtils;
 
 @SuppressWarnings("all")
 public class EmakeConfigurationSerializer implements ProjectConfigurationSerializer {
+  @Override
   public String encodeConfig(final ErlangProjectProperties info) {
     return null;
   }
   
+  @Override
   public ErlangProjectProperties decodeConfig(final String config) {
     ErlangProjectProperties _xblockexpression = null;
     {
@@ -40,11 +42,11 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
         return result;
       }
       final Procedure1<OtpErlangObject> _function = new Procedure1<OtpErlangObject>() {
+        @Override
         public void apply(final OtpErlangObject erl_opts) {
           try {
             final Bindings bindings = ErlUtils.match("{Src,Opts}", erl_opts);
-            boolean _tripleNotEquals = (bindings != null);
-            if (_tripleNotEquals) {
+            if ((bindings != null)) {
               final String src = bindings.getAtom("Src");
               String _xifexpression = null;
               boolean _contains = src.contains("/");
@@ -61,14 +63,13 @@ public class EmakeConfigurationSerializer implements ProjectConfigurationSeriali
               sd.add(_path);
               result.setSourceDirs(sd);
               final Collection<OtpErlangObject> opts = bindings.getList("Opts");
-              boolean _tripleNotEquals_1 = (opts != null);
-              if (_tripleNotEquals_1) {
+              if ((opts != null)) {
                 final Procedure1<OtpErlangObject> _function = new Procedure1<OtpErlangObject>() {
+                  @Override
                   public void apply(final OtpErlangObject opt) {
                     try {
                       final Bindings b = ErlUtils.match("{Tag,Arg}", opt);
-                      boolean _tripleNotEquals = (b != null);
-                      if (_tripleNotEquals) {
+                      if ((b != null)) {
                         EmakeConfigurationSerializer.this.parseOption(b, result);
                       }
                     } catch (Throwable _e) {

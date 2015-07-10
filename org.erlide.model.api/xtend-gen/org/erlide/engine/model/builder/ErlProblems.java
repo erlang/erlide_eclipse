@@ -130,8 +130,7 @@ public class ErlProblems {
   private static ErlProblems instance = null;
   
   public static ErlProblems getInstance() {
-    boolean _tripleEquals = (ErlProblems.instance == null);
-    if (_tripleEquals) {
+    if ((ErlProblems.instance == null)) {
       ErlProblems _erlProblems = new ErlProblems();
       ErlProblems.instance = _erlProblems;
     }
@@ -155,8 +154,7 @@ public class ErlProblems {
     for (final ProblemData d : this.data) {
       {
         final List<String> args = d.getMessageArgs(message);
-        boolean _tripleNotEquals = (args != null);
-        if (_tripleNotEquals) {
+        if ((args != null)) {
           return d;
         }
       }

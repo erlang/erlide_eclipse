@@ -16,7 +16,8 @@
 -export([pack/1, unpack/1, join/2]).
 -export([load/2]).
 -export([reverse2/1]).
--export([get_between_strs/3, get_all_between_strs/3, get_from_str/2, get_upto_str/2 ,split_lines/1]).
+-export([get_between_strs/3, get_all_between_strs/3, get_from_str/2,
+		 get_upto_str/2 ,split_lines/1]).
 -export([get_auto_imported/1, add_auto_imported/1]).
 
 %%
@@ -91,7 +92,7 @@ split_lines([], [], Acc) ->
     lists:reverse(Acc);
 split_lines([], LineAcc, Acc) ->
     split_lines([], [], [lists:reverse(LineAcc) | Acc]);
-split_lines([$\n, $\r | Rest], LineAcc, Acc) ->
+split_lines([$\r, $\n | Rest], LineAcc, Acc) ->
     split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);
 split_lines([$\n | Rest], LineAcc, Acc) ->
     split_lines(Rest, [], [lists:reverse(LineAcc) | Acc]);

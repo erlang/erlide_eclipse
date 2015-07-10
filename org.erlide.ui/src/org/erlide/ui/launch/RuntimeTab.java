@@ -38,7 +38,6 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.api.ErlRuntimeAttributes;
 import org.erlide.runtime.api.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.util.ErlLogger;
 import org.erlide.util.HostnameUtils;
 import org.erlide.util.NodeHostClassifier;
 import org.erlide.util.NodeHostClassifier.HostnameType;
@@ -368,7 +367,6 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                 && state.host == HostnameType.NONE && HostnameUtils.canUseLongNames());
         shortNameButton.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE)
                 && state.host == HostnameType.NONE && HostnameUtils.canUseShortNames());
-        ErlLogger.debug("state.mode=%s, state.host=%s", state.mode, state.host);
 
         switch (state.host) {
         case LONG:

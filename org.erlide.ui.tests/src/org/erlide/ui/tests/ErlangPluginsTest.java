@@ -28,6 +28,11 @@ public class ErlangPluginsTest {
         checkBundleForTwoEbinElements("org.erlide.kernel.debugger.otp.17");
     }
 
+    @Test
+    public void debugger18isAvailable() {
+        checkBundleForTwoEbinElements("org.erlide.kernel.debugger.otp.18");
+    }
+
     private void checkBundleForTwoEbinElements(final String bundleId) {
         final Bundle b = Platform.getBundle(bundleId);
         final Enumeration<String> paths = b.getEntryPaths("/ebin/");

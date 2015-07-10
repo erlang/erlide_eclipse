@@ -82,8 +82,7 @@ public class ProcessListView extends ViewPart {
      */
     class ViewContentProvider implements IStructuredContentProvider {
 
-        private final ProcessEventHandler handler = new ProcessEventHandler(getBackend()
-                .getName());
+        private final ProcessEventHandler handler = new ProcessEventHandler();
 
         public ViewContentProvider() {
             getBackend().getRuntime().registerEventListener(handler);
@@ -122,8 +121,8 @@ public class ProcessListView extends ViewPart {
 
         class ProcessEventHandler extends ErlangEventHandler {
 
-            public ProcessEventHandler(final String backendName) {
-                super("processlist", backendName);
+            public ProcessEventHandler() {
+                super("processlist");
             }
 
             @Subscribe

@@ -797,6 +797,14 @@
              name="org.erlide.ui.separator2">
        </separator>
     </menuContribution>
+    <menuContribution
+          locationURI="popup:org.erlide.ui.views.navigator.view#PopupMenu?after=additions">
+       <menu
+             icon="icons/full/obj16/erlang020.gif"
+             id="org.erlide.ui.menu.erlang.tools"
+             label="Erlang tools">
+       </menu>
+    </menuContribution>
  </extension>
  <extension
        point="org.eclipse.ui.bindings">
@@ -2040,4 +2048,27 @@
            label="Convert multi-line string to concatenation">
      </quickfix>
   </extension>
+    <extension point="org.eclipse.ui.navigator.navigatorContent">
+        <commonFilter
+            description="Hides *.beam resources"
+            id="org.erlide.ui.commonFilter.hideBeam"
+            name="*.beam resources"
+            activeByDefault="false">
+            <filterExpression>
+                <and>
+                    <adapt type="org.eclipse.core.resources.IResource">
+                        <test property="org.eclipse.core.resources.name" value="*.beam"/>
+                    </adapt>
+                </and>
+            </filterExpression>
+        </commonFilter>
+    </extension>
+    <extension point="org.eclipse.ui.navigator.viewer">
+        <viewerContentBinding
+              viewerId="org.erlide.ui.views.navigator.view">
+              <includes>
+                <contentExtension pattern="org.erlide.ui.commonFilter.hideBeam"/>
+              </includes>
+        </viewerContentBinding>
+    </extension>
 </plugin>

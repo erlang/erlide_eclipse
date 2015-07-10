@@ -49,8 +49,6 @@ import org.erlide.engine.model.root.IErlProject;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
 import org.erlide.ui.templates.ModuleVariableResolver;
-import org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver;
-import org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.SystemConfiguration;
 
@@ -67,13 +65,14 @@ public class ErlangFileWizardPage extends WizardPage {
     public boolean gettingInput = false;
     private Text containerText;
     private Text fileText;
-    private Combo applications;
     private Combo skeleton;
-    private FunctionGroup functionGroup;
     private final ISelection fSelection;
     private final Template[] moduleTemplates;
     private final ModifyListener fModifyListener;
     private TemplateContextType fContextType = null;
+    private Label lblfolder;
+    private Label lblskeleton;
+    private GridData gd_lblskeleton;
 
     /**
      * Constructor for SampleNewWizardPage.
@@ -128,8 +127,9 @@ public class ErlangFileWizardPage extends WizardPage {
 
         label = new Label(filePanel, SWT.NULL);
 
-        label = new Label(filePanel, SWT.NULL);
-        label.setText("&Container:");
+        lblfolder = new Label(filePanel, SWT.NULL);
+        lblfolder.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        lblfolder.setText("&Folder:");
 
         containerText = new Text(filePanel, SWT.BORDER | SWT.SINGLE);
         gd = new GridData(SWT.FILL, SWT.CENTER, true, true);
@@ -145,37 +145,27 @@ public class ErlangFileWizardPage extends WizardPage {
             }
         });
 
-        label = new Label(filePanel, SWT.NULL);
-        label.setText("&Application name:");
-
-        applications = new Combo(filePanel, SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY);
-        applications.add("None");
-        gd = new GridData(SWT.FILL, SWT.CENTER, true, true);
-        applications.setLayoutData(gd);
-        applications.select(0);
-        applications.addModifyListener(fModifyListener);
-
-        new Label(filePanel, SWT.NULL);
-
-        label = new Label(filePanel, SWT.NULL);
-        gd = new GridData(SWT.CENTER, SWT.CENTER, false, false);
-        label.setLayoutData(gd);
-        label.setText("&Skeleton");
+        lblskeleton = new Label(filePanel, SWT.NULL);
+        gd_lblskeleton = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
+        lblskeleton.setLayoutData(gd_lblskeleton);
+        lblskeleton.setText("&Skeleton:");
 
         skeleton = new Combo(filePanel, SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY);
+        final GridData gd_skeleton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+        gd_skeleton.widthHint = 139;
+        skeleton.setLayoutData(gd_skeleton);
         // skeleton.add("None");
         int i = 0, defaultSkeleton = 0;
         for (final Template element : moduleTemplates) {
             final String name = element.getName();
             skeleton.add(name);
-            if ("module".equals(name)) {
+            if ("simple module".equals(name)) {
                 defaultSkeleton = i;
             }
             ++i;
         }
         skeleton.select(defaultSkeleton);
-
-        functionGroup = new FunctionGroup(container, this);
+        new Label(filePanel, SWT.NONE);
 
         initialize();
         dialogChanged();
@@ -341,22 +331,7 @@ public class ErlangFileWizardPage extends WizardPage {
         }
         ModuleVariableResolver.getDefault().setModule(moduleName(s));
 
-        ExportedFunctionsVariableResolver.getDefault().clearFunctions();
-        LocalFunctionsVariableResolver.getDefault().clearFunctions();
-
-        for (int i = 0; i < functionGroup.getFunctionData().length; i++) {
-            final Function fun = functionGroup.getFunctionData()[i];
-            if (fun.isExported) {
-                ExportedFunctionsVariableResolver.getDefault().addFunction(fun.name,
-                        fun.arity);
-            } else {
-                LocalFunctionsVariableResolver.getDefault().addFunction(fun.name,
-                        fun.arity);
-            }
-        }
-
         TemplateBuffer tb = null;
-
         try {
             final DocumentTemplateContext context = new DocumentTemplateContext(
                     contextType, new Document(template.getPattern()), 0, template

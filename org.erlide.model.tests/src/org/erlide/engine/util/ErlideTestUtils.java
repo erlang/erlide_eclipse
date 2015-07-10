@@ -33,6 +33,7 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.ErlangProjectProperties;
 import org.erlide.engine.model.root.IErlElement;
 import org.erlide.engine.model.root.IErlProject;
+import org.erlide.util.SystemConfiguration;
 
 import com.google.common.collect.Lists;
 
@@ -164,8 +165,8 @@ public class ErlideTestUtils {
         IErlModule module = model.findModule(file);
         if (module == null) {
             final String path = file.getLocation().toPortableString();
-            module = model.getModuleFromFile(model, file.getName(), path, Charset
-                    .defaultCharset().name(), path);
+            module = model.getModuleFromFile(model, file.getName(), path,
+                    Charset.defaultCharset().name(), path);
         }
         return module;
     }
@@ -175,13 +176,18 @@ public class ErlideTestUtils {
         final IFile file = folder.getFile(name);
         final File f = new File(file.getLocation().toOSString());
         f.delete();
-        file.create(
-                new ByteArrayInputStream(contents.getBytes(Charset.defaultCharset())),
+        file.create(new ByteArrayInputStream(contents.getBytes(Charset.defaultCharset())),
                 true, null);
         return file;
     }
 
     public static void deleteModule(final IErlModule module) throws CoreException {
+        if (SystemConfiguration.getInstance().isOnWindows()) {
+            // FIXME seems needed on windows to release the file handle -- find out who is
+            // holding it
+            System.gc();
+        }
+
         final String scannerName = module.getScannerName();
         final IFile file = (IFile) module.getResource();
         if (file != null) {
@@ -282,7 +288,8 @@ public class ErlideTestUtils {
         if (modulesAndIncludes != null) {
             final List<IErlModule> list = Lists.newArrayList(modulesAndIncludes);
             for (final IErlModule module : list) {
-                if (ErlangEngine.getInstance().getModelUtilService().getProject(module) == erlProject) {
+                if (ErlangEngine.getInstance().getModelUtilService()
+                        .getProject(module) == erlProject) {
                     deleteModule(module);
                 }
             }
@@ -296,7 +303,8 @@ public class ErlideTestUtils {
         model.open(null);
     }
 
-    public static void invokeBuilderOn(final IErlProject erlProject) throws CoreException {
+    public static void invokeBuilderOn(final IErlProject erlProject)
+            throws CoreException {
         final IProject project = erlProject.getWorkspaceProject();
         project.build(IncrementalProjectBuilder.FULL_BUILD, null);
     }

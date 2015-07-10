@@ -15,8 +15,7 @@ public class ThrowableExtensions {
   public static String format(final Throwable it, final String message) {
     StringConcatenation _builder = new StringConcatenation();
     {
-      boolean _tripleNotEquals = (message != null);
-      if (_tripleNotEquals) {
+      if ((message != null)) {
         _builder.append("Thrown: ");
         _builder.append(message, "");
       }
@@ -37,6 +36,7 @@ public class ThrowableExtensions {
     {
       StackTraceElement[] _stackTrace = it.getStackTrace();
       final Function1<StackTraceElement, String> _function = new Function1<StackTraceElement, String>() {
+        @Override
         public String apply(final StackTraceElement it) {
           return it.toString();
         }
@@ -51,8 +51,8 @@ public class ThrowableExtensions {
     }
     {
       Throwable _cause = it.getCause();
-      boolean _tripleNotEquals_1 = (_cause != null);
-      if (_tripleNotEquals_1) {
+      boolean _tripleNotEquals = (_cause != null);
+      if (_tripleNotEquals) {
         _builder.append("Caused by ");
         Throwable _cause_1 = it.getCause();
         Class<? extends Throwable> _class_1 = _cause_1.getClass();
@@ -69,6 +69,7 @@ public class ThrowableExtensions {
           Throwable _cause_3 = it.getCause();
           StackTraceElement[] _stackTrace_1 = _cause_3.getStackTrace();
           final Function1<StackTraceElement, String> _function_1 = new Function1<StackTraceElement, String>() {
+            @Override
             public String apply(final StackTraceElement it) {
               return it.toString();
             }

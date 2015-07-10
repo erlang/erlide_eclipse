@@ -36,7 +36,7 @@ string(String, {L, C, O}, Opts) ->
     end.
 
 string2(String, {L, C, O}, Opts) ->
-    case erl_scan:string(String, {L, C}, [text, return |Opts]) of
+    case erl_scan_local:string(String, {L, C}, [text, return |Opts]) of
         {ok, Tokens, {L1, C1}} ->
             {ok, NewTokens, O1} = convert_tokens(Tokens, O),
             {ok, filter_tokens(NewTokens, Opts), {L1, C1, O1}};
@@ -45,7 +45,7 @@ string2(String, {L, C, O}, Opts) ->
     end.
 
 reserved_word(Word) ->
-    erl_scan:reserved_word(Word).
+    erl_scan_local:reserved_word(Word).
 
 filter_ws(L) ->
     lists:filter(fun(#token{kind=Kind}) -> Kind =/= white_space end, L).

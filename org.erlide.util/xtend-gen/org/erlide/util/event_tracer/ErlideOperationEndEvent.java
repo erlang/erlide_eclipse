@@ -9,6 +9,7 @@ public class ErlideOperationEndEvent extends ErlideOperationEvent {
     super(myOperation, myId);
   }
   
+  @Override
   public String print() {
     StringConcatenation _builder = new StringConcatenation();
     long _timestamp = this.getTimestamp();

@@ -76,11 +76,11 @@ manager(State) ->
     end.
 
 add_service(Service, Pid) when is_atom(Service), is_pid(Pid) ->
-    ?MANAGER ! {add, Service, Pid}.
+    catch (?MANAGER ! {add, Service, Pid}).
 
 get_service_listeners(Service) when is_atom(Service) ->
     Ref = make_ref(),
-    ?MANAGER ! {get, Service, self(), Ref},
+    catch (?MANAGER ! {get, Service, self(), Ref}),
     receive {Ref, X} -> X end.
 
 notify(Service, Message) when is_atom(Service) ->

@@ -17,10 +17,12 @@ public abstract class QuickFixExecutor implements ISafeRunnable {
   
   private QuickFix quickFix;
   
+  @Override
   public void handleException(final Throwable exception) {
     ErlLogger.error(exception);
   }
   
+  @Override
   public void run() throws Exception {
     MessageDialog.openInformation(null, "Erlang quick fix", "This quick-fix is not yet implemented");
   }

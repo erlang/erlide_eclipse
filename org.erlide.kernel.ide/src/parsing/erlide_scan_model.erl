@@ -269,7 +269,6 @@ get_tokens_at_aux([T | Rest], Offset, M, N, Acc) ->
             get_tokens_at_aux(Rest, Offset, M, N, Acc)
     end.
 
-
 get_all_tokens([], _, _, Acc) ->
     lists:flatten(Acc); % instead of append(reverse())
 get_all_tokens([{Length, Tokens} | Rest], Line, Pos, Acc) ->

@@ -9,8 +9,8 @@ public class TestEventHandler extends ErlangEventHandler {
 
     private final TestResultsView view;
 
-    public TestEventHandler(final String backendName, final TestResultsView view) {
-        super("bterl", backendName);
+    public TestEventHandler(final TestResultsView view) {
+        super("bterl");
         this.view = view;
     }
 

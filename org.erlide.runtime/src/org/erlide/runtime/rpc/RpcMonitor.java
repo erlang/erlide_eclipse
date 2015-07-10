@@ -22,10 +22,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class RpcMonitor {
-    private static final boolean DISABLED = System.getProperty("erlide.rpcmonitor") == null;
-    private static final int COUNT = Integer.parseInt(System.getProperty(
-            "erlide.rpcmonitor.count", "50"));
-    private static final boolean FULL = System.getProperty("erlide.rpcmonitor.full") != null;
+    private static final boolean DISABLED = System
+            .getProperty("erlide.rpcmonitor") == null;
+    private static final int COUNT = Integer
+            .parseInt(System.getProperty("erlide.rpcmonitor.count", "50"));
+    private static final boolean FULL = System
+            .getProperty("erlide.rpcmonitor.full") != null;
 
     private static class RpcData {
         public final long startTime;
@@ -168,7 +170,12 @@ public class RpcMonitor {
 
     public static void dump(final String fileName, final int n, final boolean full) {
         try {
-            dump(new PrintStream(fileName), n, full);
+            final PrintStream os = new PrintStream(fileName);
+            try {
+                dump(os, n, full);
+            } finally {
+                os.close();
+            }
         } catch (final FileNotFoundException e) {
             ErlLogger.error(e);
         }
@@ -178,7 +185,8 @@ public class RpcMonitor {
             final boolean full) {
         out.format("*** RpcMonitor statistics%n - %d calls%n", callCount);
         if (DISABLED) {
-            out.println("\nRpcMonitor was not enabled.\n\nUse -Derlide.rpcmonitor to enable it.");
+            out.println(
+                    "\nRpcMonitor was not enabled.\n\nUse -Derlide.rpcmonitor to enable it.");
             return;
         }
         final String delim = "----------------------------------------------------------------------------------------";

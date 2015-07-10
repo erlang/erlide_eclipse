@@ -54,6 +54,7 @@ import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -77,9 +78,8 @@ public final class BuilderHelper {
     }
 
     public static boolean isDebugging() {
-        return ErlangPlugin.getDefault().isDebugging()
-                && "true".equalsIgnoreCase(Platform
-                        .getDebugOption("org.erlide.core/debug/builder"));
+        return ErlangPlugin.getDefault().isDebugging() && "true".equalsIgnoreCase(
+                Platform.getDebugOption("org.erlide.core/debug/builder"));
     }
 
     public Collection<IPath> getAllIncludeDirs(final IProject project) {
@@ -699,7 +699,9 @@ public final class BuilderHelper {
             final IPath path = resource.getParent().getProjectRelativePath();
             final String ext = resource.getFileExtension();
             final ErlangProjectProperties properties = erlProject.getProperties();
-            if (properties.getSourceDirs().contains(path)) {
+            final boolean isTestFile = SystemConfiguration.getInstance().isTest()
+                    && path.equals(new Path("test"));
+            if (properties.getSourceDirs().contains(path) || isTestFile) {
                 if (ERL.equals(ext)) {
                     handleErlFile(kind, resource);
                     return false;

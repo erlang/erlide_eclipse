@@ -44,6 +44,7 @@ parse_term(Str) ->
 
 parse_term_raw(Str) ->
     %% erlide_log:logp(Str),
+    %% use the OTP erl_scan here! 
     {ok, Tokens, _} = erl_scan:string(Str),
     %% erlide_log:logp(Tokens),
     R=erl_parse:parse_term(Tokens),

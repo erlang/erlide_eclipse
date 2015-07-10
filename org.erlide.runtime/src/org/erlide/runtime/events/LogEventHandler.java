@@ -10,8 +10,8 @@ import com.google.common.eventbus.Subscribe;
 
 public class LogEventHandler extends ErlangEventHandler {
 
-    public LogEventHandler(final String backendName) {
-        super("log", backendName);
+    public LogEventHandler() {
+        super("log");
     }
 
     @Subscribe

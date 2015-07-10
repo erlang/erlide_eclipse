@@ -1,18 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2005 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2005 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.engine.internal.model.erlang;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -104,8 +103,8 @@ public class ErlModule extends Openable implements IErlModule {
         if (ModelConfig.verbose) {
             final IErlElement element = (IErlElement) parent;
             final String parentName = element.getName();
-            ErlLogger.debug("...creating " + parentName + "/" + getName() + " "
-                    + moduleKind);
+            ErlLogger.debug(
+                    "...creating " + parentName + "/" + getName() + " " + moduleKind);
         }
     }
 
@@ -141,8 +140,16 @@ public class ErlModule extends Openable implements IErlModule {
                         charset = modelUtilService.getProject(this).getWorkspaceProject()
                                 .getDefaultCharset();
                     }
-                    initialText = Util.getInputStreamAsString(new FileInputStream(
-                            new File(path)), charset);
+                    final FileInputStream is = new FileInputStream(new File(path));
+                    try {
+                        initialText = Util.getInputStreamAsString(is, charset);
+                    } finally {
+                        try {
+                            is.close();
+                        } catch (final IOException e) {
+                            // ignore
+                        }
+                    }
                 } catch (final CoreException e) {
                     ErlLogger.warn(e);
                 } catch (final FileNotFoundException e) {
@@ -179,8 +186,8 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public IErlElement getElementAt(final int position) throws ErlModelException {
-        return ErlangEngine.getInstance().getModel()
-                .innermostThat(this, new Predicate<IErlElement>() {
+        return ErlangEngine.getInstance().getModel().innermostThat(this,
+                new Predicate<IErlElement>() {
                     @Override
                     public boolean apply(final IErlElement e) {
                         if (e instanceof ISourceReference) {
@@ -198,8 +205,8 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public IErlMember getElementAtLine(final int lineNumber) {
-        return (IErlMember) ErlangEngine.getInstance().getModel()
-                .innermostThat(this, new Predicate<IErlElement>() {
+        return (IErlMember) ErlangEngine.getInstance().getModel().innermostThat(this,
+                new Predicate<IErlElement>() {
                     @Override
                     public boolean apply(final IErlElement e) {
                         if (e instanceof ISourceReference) {
@@ -513,7 +520,8 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     @Override
-    public Collection<IErlPreprocessorDef> getPreprocessorDefs(final ErlElementKind kind) {
+    public Collection<IErlPreprocessorDef> getPreprocessorDefs(
+            final ErlElementKind kind) {
         final List<IErlPreprocessorDef> result = Lists.newArrayList();
         synchronized (getModelLock()) {
             for (final IErlElement e : internalGetChildren()) {
@@ -535,7 +543,8 @@ public class ErlModule extends Openable implements IErlModule {
             final IErlFolder folder = (IErlFolder) parent;
             return folder.isOnSourcePath();
         }
-        if (checkPath(modelUtilService.getProject(this).getProperties().getSourceDirs())) {
+        if (checkPath(
+                modelUtilService.getProject(this).getProperties().getSourceDirs())) {
             return true;
         }
         return false;
@@ -548,7 +557,8 @@ public class ErlModule extends Openable implements IErlModule {
             final IErlFolder folder = (IErlFolder) parent;
             return folder.isOnIncludePath();
         }
-        if (checkPath(modelUtilService.getProject(this).getProperties().getIncludeDirs())) {
+        if (checkPath(
+                modelUtilService.getProject(this).getProperties().getIncludeDirs())) {
             return true;
         }
         return false;

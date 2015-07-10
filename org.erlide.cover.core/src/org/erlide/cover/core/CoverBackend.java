@@ -53,10 +53,9 @@ public class CoverBackend implements ICoverBackend {
             return;
         }
 
-        handler = new CoverEventHandler(getBackend().getName(), this);
+        handler = new CoverEventHandler(this);
         getBackend().getRuntime().registerEventListener(handler);
-        testHandler = new EUnitEventHandler(getBackend().getName(),
-                TestTreeModel.getInstance(), this);
+        testHandler = new EUnitEventHandler(TestTreeModel.getInstance(), this);
         getBackend().getRuntime().registerEventListener(testHandler);
     }
 

@@ -31,6 +31,7 @@ public class EmakeBuilder extends ExternalBuilder {
     super(BuilderTool.EMAKE);
   }
   
+  @Override
   public String getOsCommand(final IErlProject erlProject) {
     String _xblockexpression = null;
     {
@@ -54,14 +55,17 @@ public class EmakeBuilder extends ExternalBuilder {
     return _xblockexpression;
   }
   
+  @Override
   protected String getCompileTarget() {
     return "-make";
   }
   
+  @Override
   protected String getCleanTarget() {
     return null;
   }
   
+  @Override
   public void clean(final IErlProject erlProject, final BuildNotifier notifier) {
     final IProject project = erlProject.getWorkspaceProject();
     MarkerUtils.removeProblemMarkersFor(project);
@@ -69,12 +73,14 @@ public class EmakeBuilder extends ExternalBuilder {
     IPath _outputDir = _properties.getOutputDir();
     final IFolder bf = project.getFolder(_outputDir);
     final Procedure1<IFolder> _function = new Procedure1<IFolder>() {
+      @Override
       public void apply(final IFolder it) {
         try {
           boolean _exists = it.exists();
           if (_exists) {
             IResource[] _members = it.members();
             final Procedure1<IResource> _function = new Procedure1<IResource>() {
+              @Override
               public void apply(final IResource it) {
                 try {
                   it.delete(true, null);
@@ -100,6 +106,7 @@ public class EmakeBuilder extends ExternalBuilder {
     ObjectExtensions.<IFolder>operator_doubleArrow(bf, _function);
   }
   
+  @Override
   public BuilderProperties getProperties() {
     return null;
   }

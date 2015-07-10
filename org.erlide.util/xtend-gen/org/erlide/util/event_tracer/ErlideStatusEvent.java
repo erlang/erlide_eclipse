@@ -12,6 +12,7 @@ public class ErlideStatusEvent extends ErlideEvent {
     this.status = myStatus;
   }
   
+  @Override
   public String print() {
     StringConcatenation _builder = new StringConcatenation();
     long _timestamp = this.getTimestamp();

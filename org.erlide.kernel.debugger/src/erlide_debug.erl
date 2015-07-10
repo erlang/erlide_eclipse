@@ -194,6 +194,7 @@ unload_my_debugger_code(Modules) ->
                           code:purge(Module)
                   end,
                   Modules--[?MODULE]),
+    code:purge(?MODULE),
     code:delete(?MODULE).
 
 nodes() ->

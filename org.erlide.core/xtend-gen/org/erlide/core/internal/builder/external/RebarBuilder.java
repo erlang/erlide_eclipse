@@ -15,6 +15,7 @@ public class RebarBuilder extends ExternalBuilder {
     super(BuilderTool.REBAR);
   }
   
+  @Override
   public IProject[] build(final ErlangBuilder.BuildKind kind, final IErlProject erlProject, final BuildNotifier notifier) throws CoreException {
     IProject[] _xblockexpression = null;
     {
@@ -24,10 +25,12 @@ public class RebarBuilder extends ExternalBuilder {
     return _xblockexpression;
   }
   
+  @Override
   public void clean(final IErlProject erlProject, final BuildNotifier notifier) {
     super.clean(erlProject, notifier);
   }
   
+  @Override
   public BuilderProperties getProperties() {
     return null;
   }

@@ -14,8 +14,10 @@ import org.erlide.annotations.SingleParameterMethodMemoizer;
 
 @SuppressWarnings("all")
 public class MemoizeProcessor implements TransformationParticipant<MutableMethodDeclaration> {
+  @Override
   public void doTransform(final List<? extends MutableMethodDeclaration> methods, @Extension final TransformationContext context) {
     final Procedure1<MutableMethodDeclaration> _function = new Procedure1<MutableMethodDeclaration>() {
+      @Override
       public void apply(final MutableMethodDeclaration it) {
         Iterable<? extends MutableParameterDeclaration> _parameters = it.getParameters();
         int _size = IterableExtensions.size(_parameters);

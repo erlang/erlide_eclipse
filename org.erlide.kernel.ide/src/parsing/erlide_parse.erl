@@ -9,7 +9,7 @@
 consult(B) when is_binary(B) ->
     consult(binary_to_list(B));
 consult(L) when is_list(L) ->
-    {ok, Toks, _} = erl_scan:string(L),
+    {ok, Toks, _} = erl_scan_local:string(L),
     FormToks = split(Toks),
     lists:map(fun parse1/1, FormToks).
 

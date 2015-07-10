@@ -39,8 +39,8 @@ public class CoverEventHandler extends ErlangEventHandler {
     private final Logger log; // log
     private final CoverBackend coverBackend; // cover backend
 
-    public CoverEventHandler(final String backendName, final CoverBackend coverBackend) {
-        super(EVENT_NAME, backendName);
+    public CoverEventHandler(final CoverBackend coverBackend) {
+        super(EVENT_NAME);
         this.coverBackend = coverBackend;
         log = Activator.getDefault();
     }

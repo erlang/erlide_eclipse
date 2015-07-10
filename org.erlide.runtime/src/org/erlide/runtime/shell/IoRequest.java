@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2004 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.runtime.shell;
 
@@ -17,6 +15,7 @@ import static org.hamcrest.Matchers.not;
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
+import org.erlide.util.ErlLogger;
 import org.erlide.util.erlang.Bindings;
 import org.erlide.util.erlang.ErlUtils;
 
@@ -47,9 +46,13 @@ public class IoRequest {
 
     public IoRequest(final OtpErlangTuple obj) {
         try {
-            final Bindings b = ErlUtils.match(
-                    "{Payload, Encoding, Leader, From, Tstamp}", obj);
-            encoding = getEncoding(b.getAtom("Encoding"));
+            Bindings b = ErlUtils.match("{Payload, Leader, From, Tstamp}", obj);
+            if (b == null) {
+                b = ErlUtils.match("{Payload, Encoding, Leader, From, Tstamp}", obj);
+                encoding = getEncoding(b.getAtom("Encoding"));
+            } else {
+                encoding = Charsets.ISO_8859_1;
+            }
 
             final OtpErlangObject o = b.get("Payload");
             if (o instanceof OtpErlangString) {
@@ -78,7 +81,8 @@ public class IoRequest {
                 sender = new OtpErlangPid("s", 0, 0, 0);
             }
         } catch (final Exception e) {
-            message = null;
+            ErlLogger.warn(e);
+            message = "";
         }
         if (RE_PROMPT.matcher(message).matches()) {
             kind = IoRequestKind.PROMPT;

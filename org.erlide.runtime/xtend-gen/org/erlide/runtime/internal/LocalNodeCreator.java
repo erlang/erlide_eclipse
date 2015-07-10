@@ -55,9 +55,11 @@ public class LocalNodeCreator {
   
   public static void wait_for_epmd(final String host) {
     final Initializable client = new Initializable() {
+      @Override
       public void afterInit() {
       }
       
+      @Override
       public void configuredRetriesMetOrExceededWithoutSuccess() {
         StringConcatenation _builder = new StringConcatenation();
         _builder.append("Couldn\'t contact epmd - erlang backend is probably not working.");
@@ -71,6 +73,7 @@ public class LocalNodeCreator {
         throw new RuntimeException(msg);
       }
       
+      @Override
       public void tryInit() throws Exception {
         final Socket s = new Socket(host, LocalNodeCreator.EPMD_PORT);
         s.close();

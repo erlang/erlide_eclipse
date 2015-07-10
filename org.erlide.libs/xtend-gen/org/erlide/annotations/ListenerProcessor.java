@@ -18,6 +18,7 @@ import org.eclipse.xtext.xbase.lib.StringExtensions;
 
 @SuppressWarnings("all")
 public class ListenerProcessor extends AbstractFieldProcessor {
+  @Override
   public void doTransform(final MutableFieldDeclaration field, @Extension final TransformationContext context) {
     TypeReference _type = field.getType();
     boolean _isPrimitive = _type.isPrimitive();
@@ -41,6 +42,7 @@ public class ListenerProcessor extends AbstractFieldProcessor {
     final TypeReference initFieldType = context.newTypeReference(Function0.class, _list);
     final TypeReference initListType = context.newTypeReference(ArrayList.class, lamdaType);
     final CompilationStrategy _function = new CompilationStrategy() {
+      @Override
       public CharSequence compile(final CompilationStrategy.CompilationContext it) {
         StringConcatenation _builder = new StringConcatenation();
         _builder.append("new ");
@@ -79,10 +81,12 @@ public class ListenerProcessor extends AbstractFieldProcessor {
     String _firstUpper = StringExtensions.toFirstUpper(_simpleName_1);
     String _plus_1 = ("add" + _firstUpper);
     final Procedure1<MutableMethodDeclaration> _function_1 = new Procedure1<MutableMethodDeclaration>() {
+      @Override
       public void apply(final MutableMethodDeclaration it) {
         it.setVisibility(Visibility.PUBLIC);
         it.addParameter("listener", lamdaType);
         final CompilationStrategy _function = new CompilationStrategy() {
+          @Override
           public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("this.");
@@ -101,10 +105,12 @@ public class ListenerProcessor extends AbstractFieldProcessor {
     String _firstUpper_1 = StringExtensions.toFirstUpper(_simpleName_2);
     String _plus_2 = ("notifyAll" + _firstUpper_1);
     final Procedure1<MutableMethodDeclaration> _function_2 = new Procedure1<MutableMethodDeclaration>() {
+      @Override
       public void apply(final MutableMethodDeclaration it) {
         it.setVisibility(Visibility.PUBLIC);
         it.addParameter("event", eventType);
         final CompilationStrategy _function = new CompilationStrategy() {
+          @Override
           public CharSequence compile(final CompilationStrategy.CompilationContext it) {
             StringConcatenation _builder = new StringConcatenation();
             _builder.append("for (");

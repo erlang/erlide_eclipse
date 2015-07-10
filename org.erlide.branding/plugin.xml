@@ -6,6 +6,7 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.eclipse.ui.ide.workbench"
+            description="Erlang development tools"
             name="erlide">
          <property
                name="aboutText"
@@ -43,9 +44,9 @@
                name="featureImage"
                value="images/erlide-32.gif">
          </property>
-      <property name="introBrandingImage" value="product:images/erlide-48.gif" />
-      <property name="introBrandingImageText" value="Erlide.org project" />
-      <property name="introTitle" value="Welcome to Erlide" />
+      <property name="introBrandingImage" value="product:erlide-48.gif" />
+      <property name="introBrandingImageText" value="Erlide.org project111" />
+      <property name="introTitle" value="Welcome to Erlide111" />
       </product>
    </extension>
 	<extension point="org.eclipse.ui.splashHandlers">
@@ -71,9 +72,16 @@
      <extension
         point="org.eclipse.ui.intro.configExtension">
      <configExtension
-           content="intro/introData.xml"
+           content="/intro/introData.xml"
            configId="org.eclipse.ui.intro.universalConfig">
      </configExtension>
+     </extension>
+     <extension
+           point="org.eclipse.ui.intro">
+        <introProductBinding
+              introId="org.eclipse.ui.intro.universal"
+              productId="org.erlide.branding.product">
+        </introProductBinding>
      </extension>
     </plugin>
 	

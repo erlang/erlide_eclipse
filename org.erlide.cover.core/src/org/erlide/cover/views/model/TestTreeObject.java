@@ -13,7 +13,7 @@ public class TestTreeObject {
 
     public static final int WARN = 0;
     public static final int SUCCESS = 1;
-    public static final int FAILOURE = 2;
+    public static final int FAILURE = 2;
     public static final int DESCR = 3;
 
     private final String name;

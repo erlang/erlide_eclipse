@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
-Bundle-Version: 0.24.15.qualifier
+Bundle-Version: 0.24.16.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.erlide.ui.internal.ErlideUIPlugin
 Bundle-Vendor: %providerName
@@ -18,8 +18,8 @@ Export-Package: org.eclipse.wb.swt;x-internal:=true,
  org.erlide.ui.actions;x-internal:=true,
  org.erlide.ui.console;x-internal:=true,
  org.erlide.ui.console.actions;x-internal:=true,
- org.erlide.ui.dialogfields;x-internal:=true,
  org.erlide.ui.dialogs,
+ org.erlide.ui.dialogs.fields;x-internal:=true,
  org.erlide.ui.editors.erl,
  org.erlide.ui.editors.erl.actions;x-internal:=true,
  org.erlide.ui.editors.erl.autoedit;x-internal:=true,
@@ -34,7 +34,6 @@ Export-Package: org.eclipse.wb.swt;x-internal:=true,
  org.erlide.ui.editors.erl.outline;x-friends:="org.erlide.cover.ui",
  org.erlide.ui.editors.erl.outline.filters;x-internal:=true,
  org.erlide.ui.editors.erl.scanner;x-internal:=true,
- org.erlide.ui.editors.erl.test;x-internal:=true,
  org.erlide.ui.editors.internal.reconciling;x-internal:=true,
  org.erlide.ui.editors.scratchpad;x-internal:=true,
  org.erlide.ui.editors.util;x-friends:="org.erlide.test_support",

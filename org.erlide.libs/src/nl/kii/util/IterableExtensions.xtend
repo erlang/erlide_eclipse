@@ -94,11 +94,11 @@ class IterableExtensions {
     // REMOVING (immutable) ///////////////////////////////////////////////////
 
     def static <T> uncat(List<? extends T> list, T value) {
-        ImmutableList.builder.addAll(list.filter[it != value]).build
+        ImmutableList.<T>builder.addAll(list.filter[it != value]).build
     }
 
     def static <T> uncat(List<? extends T> list, List<? extends T> list2) {
-        ImmutableList.builder.addAll(list.filter[!list2.contains(it)]).build
+        ImmutableList.<T>builder.addAll(list.filter[!list2.contains(it)]).build
     }
 
     // SIDEEFFECTS ////////////////////////////////////////////////////////////

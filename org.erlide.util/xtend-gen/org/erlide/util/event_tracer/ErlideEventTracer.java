@@ -19,8 +19,7 @@ public class ErlideEventTracer implements IDisposable {
   
   public ErlideEventTracer() {
     final String tracerPath = System.getProperty("erlide.event_tracer");
-    boolean _tripleEquals = (tracerPath == null);
-    if (_tripleEquals) {
+    if ((tracerPath == null)) {
       NullEventHandler _nullEventHandler = new NullEventHandler();
       this.handler = _nullEventHandler;
     } else {
@@ -83,6 +82,7 @@ public class ErlideEventTracer implements IDisposable {
     return ErlideEventTracer.instance;
   }
   
+  @Override
   public void dispose() {
     this.handler.dispose();
   }

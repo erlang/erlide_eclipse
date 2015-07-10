@@ -22,8 +22,7 @@ public class ProblemData extends ProblemData0 {
   }
   
   public Pattern getPattern() {
-    boolean _tripleEquals = (this._pattern == null);
-    if (_tripleEquals) {
+    if ((this._pattern == null)) {
       String _message = this.getMessage();
       final String str = ProblemData.quoteRegex(_message);
       final String key = "@@@";

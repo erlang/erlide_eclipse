@@ -36,9 +36,11 @@ public abstract class MethodMemoizer {
     {
       MutableTypeDeclaration _declaringType = this.method.getDeclaringType();
       final Procedure1<MutableTypeDeclaration> _function = new Procedure1<MutableTypeDeclaration>() {
+        @Override
         public void apply(final MutableTypeDeclaration it) {
           String _initMethodName = MethodMemoizer.this.initMethodName();
           final Procedure1<MutableMethodDeclaration> _function = new Procedure1<MutableMethodDeclaration>() {
+            @Override
             public void apply(final MutableMethodDeclaration init) {
               boolean _isStatic = MethodMemoizer.this.method.isStatic();
               init.setStatic(_isStatic);
@@ -47,6 +49,7 @@ public abstract class MethodMemoizer {
               init.setReturnType(_wrappedReturnType);
               Iterable<? extends MutableParameterDeclaration> _parameters = MethodMemoizer.this.method.getParameters();
               final Procedure1<MutableParameterDeclaration> _function = new Procedure1<MutableParameterDeclaration>() {
+                @Override
                 public void apply(final MutableParameterDeclaration it) {
                   String _simpleName = it.getSimpleName();
                   TypeReference _type = it.getType();
@@ -63,12 +66,14 @@ public abstract class MethodMemoizer {
           it.addMethod(_initMethodName, _function);
           String _cacheFieldName = MethodMemoizer.this.cacheFieldName();
           final Procedure1<MutableFieldDeclaration> _function_1 = new Procedure1<MutableFieldDeclaration>() {
+            @Override
             public void apply(final MutableFieldDeclaration it) {
               boolean _isStatic = MethodMemoizer.this.method.isStatic();
               it.setStatic(_isStatic);
               TypeReference _cacheFieldType = MethodMemoizer.this.cacheFieldType();
               it.setType(_cacheFieldType);
               final CompilationStrategy _function = new CompilationStrategy() {
+                @Override
                 public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                   return MethodMemoizer.this.cacheFieldInit(it);
                 }
@@ -81,8 +86,10 @@ public abstract class MethodMemoizer {
       };
       ObjectExtensions.<MutableTypeDeclaration>operator_doubleArrow(_declaringType, _function);
       final Procedure1<MutableMethodDeclaration> _function_1 = new Procedure1<MutableMethodDeclaration>() {
+        @Override
         public void apply(final MutableMethodDeclaration it) {
           final CompilationStrategy _function = new CompilationStrategy() {
+            @Override
             public CharSequence compile(final CompilationStrategy.CompilationContext it) {
               return MethodMemoizer.this.cacheCall(it);
             }

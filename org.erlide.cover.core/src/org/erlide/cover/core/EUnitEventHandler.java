@@ -37,9 +37,8 @@ public class EUnitEventHandler extends ErlangEventHandler {
     private final CoverBackend coverBackend; // cover backend (if needed)
     private final TestTreeModel model;
 
-    public EUnitEventHandler(final String backendName, final TestTreeModel model,
-            final CoverBackend coverBackend) {
-        super(EVENT_NAME, backendName);
+    public EUnitEventHandler(final TestTreeModel model, final CoverBackend coverBackend) {
+        super(EVENT_NAME);
         this.coverBackend = coverBackend;
         this.model = model;
         log = Activator.getDefault();
@@ -129,7 +128,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
                     node.getDescription(), reason));
         } else {
             model.addChildren(new TestTreeObject(String.format("canceled: %s", reason),
-                    TestTreeObject.FAILOURE));
+                    TestTreeObject.FAILURE));
         }
 
     }
@@ -148,7 +147,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final int arity = Integer.parseInt(source.elementAt(2).toString());
 
         final TestTreeObject node = new TestTreeObject(makeTestShortDescription(module,
-                function, arity), TestTreeObject.FAILOURE);
+                function, arity), TestTreeObject.FAILURE);
 
         node.setDescription(makeTestFullDescription(module, function, arity, description,
                 line, String.format("canceled: %s", reason)));
@@ -185,7 +184,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
         }
 
         final TestTreeObject node = new TestTreeObject(makeTestShortDescription(module,
-                function, arity), TestTreeObject.FAILOURE);
+                function, arity), TestTreeObject.FAILURE);
 
         node.setDescription(makeTestFullDescription(module, function, arity, description,
                 line, String.format("skipped: %s", reason)));
@@ -209,7 +208,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final String exception = msg.elementAt(5).toString();
 
         final TestTreeObject node = new TestTreeObject(makeTestShortDescription(module,
-                function, arity), TestTreeObject.FAILOURE);
+                function, arity), TestTreeObject.FAILURE);
 
         node.setDescription(makeTestFullDescription(module, function, arity, description,
                 line, "error"));

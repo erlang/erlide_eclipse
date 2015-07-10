@@ -20,9 +20,11 @@ import org.eclipse.xtext.xbase.lib.StringExtensions;
 
 @SuppressWarnings("all")
 public class WitherParticipant extends AbstractClassProcessor {
+  @Override
   public void doTransform(final MutableClassDeclaration annotatedClass, @Extension final TransformationContext context) {
     Iterable<? extends AnnotationReference> _annotations = annotatedClass.getAnnotations();
     final Function1<AnnotationReference, Boolean> _function = new Function1<AnnotationReference, Boolean>() {
+      @Override
       public Boolean apply(final AnnotationReference it) {
         String _canonicalName = Data.class.getCanonicalName();
         AnnotationTypeDeclaration _annotationTypeDeclaration = it.getAnnotationTypeDeclaration();
@@ -37,6 +39,7 @@ public class WitherParticipant extends AbstractClassProcessor {
     }
     Iterable<? extends MutableFieldDeclaration> _declaredFields = annotatedClass.getDeclaredFields();
     final Function1<MutableFieldDeclaration, Boolean> _function_1 = new Function1<MutableFieldDeclaration, Boolean>() {
+      @Override
       public Boolean apply(final MutableFieldDeclaration it) {
         boolean _isStatic = it.isStatic();
         return Boolean.valueOf((!_isStatic));
@@ -44,6 +47,7 @@ public class WitherParticipant extends AbstractClassProcessor {
     };
     final Iterable<? extends MutableFieldDeclaration> fields = IterableExtensions.filter(_declaredFields, _function_1);
     final Procedure1<MutableFieldDeclaration> _function_2 = new Procedure1<MutableFieldDeclaration>() {
+      @Override
       public void apply(final MutableFieldDeclaration field) {
         String _simpleName = field.getSimpleName();
         final String properName = _simpleName.substring(1);
@@ -51,6 +55,7 @@ public class WitherParticipant extends AbstractClassProcessor {
         final String methodName = ("with" + capitalizedName);
         Iterable<? extends MutableMethodDeclaration> _declaredMethods = annotatedClass.getDeclaredMethods();
         final Function1<MutableMethodDeclaration, Boolean> _function = new Function1<MutableMethodDeclaration, Boolean>() {
+          @Override
           public Boolean apply(final MutableMethodDeclaration it) {
             String _simpleName = it.getSimpleName();
             return Boolean.valueOf(Objects.equal(_simpleName, methodName));
@@ -60,12 +65,14 @@ public class WitherParticipant extends AbstractClassProcessor {
         boolean _not = (!_exists);
         if (_not) {
           final Procedure1<MutableMethodDeclaration> _function_1 = new Procedure1<MutableMethodDeclaration>() {
+            @Override
             public void apply(final MutableMethodDeclaration it) {
               TypeReference _type = field.getType();
               it.addParameter(properName, _type);
               TypeReference _newTypeReference = context.newTypeReference(annotatedClass);
               it.setReturnType(_newTypeReference);
               final CompilationStrategy _function = new CompilationStrategy() {
+                @Override
                 public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                   StringConcatenation _builder = new StringConcatenation();
                   _builder.append("return new ");

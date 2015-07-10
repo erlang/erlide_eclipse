@@ -30,6 +30,7 @@ public class ErlangToolExtensions {
     try {
       IResource[] _members = container.members();
       final Function1<IResource, Boolean> _function = new Function1<IResource, Boolean>() {
+        @Override
         public Boolean apply(final IResource it) {
           String _name = it.getName();
           return Boolean.valueOf(Objects.equal(_name, filename));
@@ -44,8 +45,7 @@ public class ErlangToolExtensions {
   public static boolean isUniversalMake(final IFile makefile) {
     try {
       final File file = ErlangToolExtensions.getRealFile(makefile);
-      boolean _tripleEquals = (file == null);
-      if (_tripleEquals) {
+      if ((file == null)) {
         return false;
       }
       final String top = Files.readFirstLine(file, Charsets.ISO_8859_1);
@@ -60,8 +60,7 @@ public class ErlangToolExtensions {
       File _xblockexpression = null;
       {
         final URI uri = ifile.getRawLocationURI();
-        boolean _tripleEquals = (uri == null);
-        if (_tripleEquals) {
+        if ((uri == null)) {
           return null;
         }
         IFileStore _store = EFS.getStore(uri);
@@ -81,6 +80,7 @@ public class ErlangToolExtensions {
         File _realFile = ErlangToolExtensions.getRealFile(makefile);
         final List<String> lines = Files.readLines(_realFile, Charsets.ISO_8859_1);
         final Function1<String, String> _function = new Function1<String, String>() {
+          @Override
           public String apply(final String it) {
             String _xifexpression = null;
             boolean _hasTarget = ErlangToolExtensions.hasTarget(it);

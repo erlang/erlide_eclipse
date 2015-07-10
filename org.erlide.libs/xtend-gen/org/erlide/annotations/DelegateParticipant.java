@@ -30,9 +30,11 @@ import org.erlide.annotations.Delegate;
 
 @SuppressWarnings("all")
 public class DelegateParticipant extends AbstractClassProcessor {
+  @Override
   public void doTransform(final MutableClassDeclaration annotatedClass, @Extension final TransformationContext context) {
     Iterable<? extends AnnotationReference> _annotations = annotatedClass.getAnnotations();
     final Function1<AnnotationReference, Boolean> _function = new Function1<AnnotationReference, Boolean>() {
+      @Override
       public Boolean apply(final AnnotationReference it) {
         AnnotationTypeDeclaration _annotationTypeDeclaration = it.getAnnotationTypeDeclaration();
         String _simpleName = _annotationTypeDeclaration.getSimpleName();
@@ -52,6 +54,7 @@ public class DelegateParticipant extends AbstractClassProcessor {
   public void process(final TypeDeclaration to, final String field, final MutableClassDeclaration annotatedClass, @Extension final TransformationContext context) {
     Iterable<? extends MethodDeclaration> _declaredMethods = to.getDeclaredMethods();
     final Function1<MethodDeclaration, Boolean> _function = new Function1<MethodDeclaration, Boolean>() {
+      @Override
       public Boolean apply(final MethodDeclaration it) {
         Visibility _visibility = it.getVisibility();
         return Boolean.valueOf(Objects.equal(_visibility, Visibility.PUBLIC));
@@ -59,9 +62,11 @@ public class DelegateParticipant extends AbstractClassProcessor {
     };
     final Iterable<? extends MethodDeclaration> methods = IterableExtensions.filter(_declaredMethods, _function);
     final Procedure1<MethodDeclaration> _function_1 = new Procedure1<MethodDeclaration>() {
+      @Override
       public void apply(final MethodDeclaration m) {
         Iterable<? extends MutableMethodDeclaration> _declaredMethods = annotatedClass.getDeclaredMethods();
         final Function1<MutableMethodDeclaration, Boolean> _function = new Function1<MutableMethodDeclaration, Boolean>() {
+          @Override
           public Boolean apply(final MutableMethodDeclaration it) {
             String _simpleName = it.getSimpleName();
             String _simpleName_1 = m.getSimpleName();
@@ -69,13 +74,14 @@ public class DelegateParticipant extends AbstractClassProcessor {
           }
         };
         final MutableMethodDeclaration exists = IterableExtensions.findFirst(_declaredMethods, _function);
-        boolean _tripleEquals = (exists == null);
-        if (_tripleEquals) {
+        if ((exists == null)) {
           String _simpleName = m.getSimpleName();
           final Procedure1<MutableMethodDeclaration> _function_1 = new Procedure1<MutableMethodDeclaration>() {
+            @Override
             public void apply(final MutableMethodDeclaration injected) {
               Iterable<? extends TypeParameterDeclaration> _typeParameters = m.getTypeParameters();
               final Procedure1<TypeParameterDeclaration> _function = new Procedure1<TypeParameterDeclaration>() {
+                @Override
                 public void apply(final TypeParameterDeclaration it) {
                   String _simpleName = it.getSimpleName();
                   Iterable<? extends TypeReference> _upperBounds = it.getUpperBounds();
@@ -86,11 +92,13 @@ public class DelegateParticipant extends AbstractClassProcessor {
               IterableExtensions.forEach(_typeParameters, _function);
               Iterable<? extends ParameterDeclaration> _parameters = m.getParameters();
               final Procedure1<ParameterDeclaration> _function_1 = new Procedure1<ParameterDeclaration>() {
+                @Override
                 public void apply(final ParameterDeclaration it) {
                   TypeReference _type = it.getType();
                   Type _type_1 = _type.getType();
                   Iterable<? extends MutableTypeParameterDeclaration> _typeParameters = injected.getTypeParameters();
                   final Function1<MutableTypeParameterDeclaration, TypeReference> _function = new Function1<MutableTypeParameterDeclaration, TypeReference>() {
+                    @Override
                     public TypeReference apply(final MutableTypeParameterDeclaration it) {
                       return context.newTypeReference(it);
                     }
@@ -107,6 +115,7 @@ public class DelegateParticipant extends AbstractClassProcessor {
               Type _type = _returnType.getType();
               Iterable<? extends MutableTypeParameterDeclaration> _typeParameters_1 = injected.getTypeParameters();
               final Function1<MutableTypeParameterDeclaration, TypeReference> _function_2 = new Function1<MutableTypeParameterDeclaration, TypeReference>() {
+                @Override
                 public TypeReference apply(final MutableTypeParameterDeclaration it) {
                   return context.newTypeReference(it);
                 }
@@ -118,6 +127,7 @@ public class DelegateParticipant extends AbstractClassProcessor {
               Iterable<? extends TypeReference> _exceptions = m.getExceptions();
               injected.setExceptions(((TypeReference[])Conversions.unwrapArray(_exceptions, TypeReference.class)));
               final CompilationStrategy _function_3 = new CompilationStrategy() {
+                @Override
                 public CharSequence compile(final CompilationStrategy.CompilationContext it) {
                   StringConcatenation _builder = new StringConcatenation();
                   {

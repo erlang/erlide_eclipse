@@ -15,17 +15,20 @@ public class SingleParameterMethodMemoizer extends ParametrizedMethodMemoizer {
     super(method, context, index);
   }
   
+  @Override
   protected CharSequence cacheKeyToParameters(final CompilationStrategy.CompilationContext context) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("key");
     return _builder;
   }
   
+  @Override
   protected CharSequence parametersToCacheKey(final CompilationStrategy.CompilationContext context) {
     MutableParameterDeclaration _parameter = this.parameter();
     return _parameter.getSimpleName();
   }
   
+  @Override
   protected TypeReference cacheKeyType() {
     MutableParameterDeclaration _parameter = this.parameter();
     TypeReference _type = _parameter.getType();

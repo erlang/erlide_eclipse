@@ -50,23 +50,28 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
     this.info = info;
   }
   
+  @Override
   public void createControl(final Composite parent) {
     try {
       final Procedure1<Composite> _function = new Procedure1<Composite>() {
+        @Override
         public void apply(final Composite it) {
           try {
             GridLayout _gridLayout = new GridLayout(3, false);
             it.setLayout(_gridLayout);
             final Procedure1<Label> _function = new Procedure1<Label>() {
+              @Override
               public void apply(final Label it) {
                 it.setText("Minimum Erlang version:");
               }
             };
             XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function);
             final Procedure1<Combo> _function_1 = new Procedure1<Combo>() {
+              @Override
               public void apply(final Combo it) {
                 final RuntimeVersion[] runtimeVersions = ProjectPreferencesConstants.SUPPORTED_VERSIONS;
                 final Function1<RuntimeVersion, String> _function = new Function1<RuntimeVersion, String>() {
+                  @Override
                   public String apply(final RuntimeVersion it) {
                     return it.toString();
                   }
@@ -86,26 +91,31 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
             Combo _newControl = XtendSWTLib.<Combo>newControl(it, Combo.class, SWT.READ_ONLY, _function_1);
             ErlangProjectBuilderPage.this.runtimeCombo = _newControl;
             final Procedure1<Label> _function_2 = new Procedure1<Label>() {
+              @Override
               public void apply(final Label it) {
               }
             };
             XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_2);
             final Procedure1<Label> _function_3 = new Procedure1<Label>() {
+              @Override
               public void apply(final Label it) {
               }
             };
             XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_3);
             final Procedure1<Label> _function_4 = new Procedure1<Label>() {
+              @Override
               public void apply(final Label it) {
               }
             };
             XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_4);
             final Procedure1<Label> _function_5 = new Procedure1<Label>() {
+              @Override
               public void apply(final Label it) {
               }
             };
             XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_5);
             final Procedure1<Label> _function_6 = new Procedure1<Label>() {
+              @Override
               public void apply(final Label it) {
                 GridData _gridData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
                 it.setLayoutData(_gridData);
@@ -114,6 +124,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
             };
             XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_6);
             final Procedure1<Composite> _function_7 = new Procedure1<Composite>() {
+              @Override
               public void apply(final Composite it) {
                 GridData _gridData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
                 it.setLayoutData(_gridData);
@@ -122,31 +133,32 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                 final BuilderSelectionListener builderListener = new BuilderSelectionListener(ErlangProjectBuilderPage.this.info, ErlangProjectBuilderPage.this);
                 final BuilderTool[] builders = BuilderTool.values();
                 final Procedure1<BuilderTool> _function = new Procedure1<BuilderTool>() {
+                  @Override
                   public void apply(final BuilderTool builder) {
                     try {
                       final Procedure1<Label> _function = new Procedure1<Label>() {
+                        @Override
                         public void apply(final Label it) {
                           it.setText("        ");
                         }
                       };
                       XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function);
                       final Procedure1<Button> _function_1 = new Procedure1<Button>() {
+                        @Override
                         public void apply(final Button it) {
                           String _string = builder.toString();
                           String _lowerCase = _string.toLowerCase();
                           it.setText(_lowerCase);
                           it.setData(builder);
                           it.addSelectionListener(builderListener);
-                          boolean _tripleEquals = (builder == BuilderTool.INTERNAL);
-                          it.setSelection(_tripleEquals);
+                          it.setSelection((builder == BuilderTool.INTERNAL));
                           boolean _and = false;
                           boolean _hasFeatureEnabled = SystemConfiguration.hasFeatureEnabled("erlide.newbuilders");
                           boolean _not = (!_hasFeatureEnabled);
                           if (!_not) {
                             _and = false;
                           } else {
-                            boolean _tripleNotEquals = (builder != BuilderTool.INTERNAL);
-                            _and = _tripleNotEquals;
+                            _and = (builder != BuilderTool.INTERNAL);
                           }
                           if (_and) {
                             it.setEnabled(false);
@@ -155,6 +167,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                       };
                       XtendSWTLib.<Button>newControl(it, Button.class, SWT.RADIO, _function_1);
                       final Procedure1<Label> _function_2 = new Procedure1<Label>() {
+                        @Override
                         public void apply(final Label it) {
                           String _description = ErlangProjectBuilderPage.this.getDescription(builder);
                           it.setText(_description);
@@ -164,8 +177,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                           if (!_not) {
                             _and = false;
                           } else {
-                            boolean _tripleNotEquals = (builder != BuilderTool.INTERNAL);
-                            _and = _tripleNotEquals;
+                            _and = (builder != BuilderTool.INTERNAL);
                           }
                           if (_and) {
                             it.setEnabled(false);
@@ -184,6 +196,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
             Composite _newControl_1 = XtendSWTLib.<Composite>newControl(it, Composite.class, SWT.NONE, _function_7);
             ErlangProjectBuilderPage.this.builderComposite = _newControl_1;
             final Procedure1<Label> _function_8 = new Procedure1<Label>() {
+              @Override
               public void apply(final Label it) {
                 GridData _gridData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
                 it.setLayoutData(_gridData);
@@ -193,6 +206,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
             XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_8);
             ErlangProjectBuilderPage.this.info.setBuilder(BuilderTool.INTERNAL);
             final Procedure1<Composite> _function_9 = new Procedure1<Composite>() {
+              @Override
               public void apply(final Composite it) {
                 GridData _gridData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
                 it.setLayoutData(_gridData);
@@ -201,30 +215,31 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                 final ConfigSelectionListener configListener = new ConfigSelectionListener(ErlangProjectBuilderPage.this.info);
                 final ProjectConfigType[] configs = ProjectConfigType.values();
                 final Procedure1<ProjectConfigType> _function = new Procedure1<ProjectConfigType>() {
+                  @Override
                   public void apply(final ProjectConfigType config) {
                     try {
                       final Procedure1<Label> _function = new Procedure1<Label>() {
+                        @Override
                         public void apply(final Label it) {
                           it.setText("        ");
                         }
                       };
                       XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function);
                       final Procedure1<Button> _function_1 = new Procedure1<Button>() {
+                        @Override
                         public void apply(final Button it) {
                           String _description = ErlangProjectBuilderPage.this.getDescription(config);
                           it.setText(_description);
                           it.setData(config);
                           it.addSelectionListener(configListener);
-                          boolean _tripleEquals = (config == ProjectConfigType.INTERNAL);
-                          it.setSelection(_tripleEquals);
+                          it.setSelection((config == ProjectConfigType.INTERNAL));
                           boolean _and = false;
                           boolean _hasFeatureEnabled = SystemConfiguration.hasFeatureEnabled("erlide.newbuilders");
                           boolean _not = (!_hasFeatureEnabled);
                           if (!_not) {
                             _and = false;
                           } else {
-                            boolean _tripleNotEquals = (config != ProjectConfigType.INTERNAL);
-                            _and = _tripleNotEquals;
+                            _and = (config != ProjectConfigType.INTERNAL);
                           }
                           if (_and) {
                             it.setEnabled(false);
@@ -233,6 +248,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                       };
                       XtendSWTLib.<Button>newControl(it, Button.class, SWT.RADIO, _function_1);
                       final Procedure1<Label> _function_2 = new Procedure1<Label>() {
+                        @Override
                         public void apply(final Label it) {
                         }
                       };
@@ -249,6 +265,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
             ErlangProjectBuilderPage.this.configComposite = _newControl_2;
             ErlangProjectBuilderPage.this.info.setConfigType(ProjectConfigType.INTERNAL);
             final Procedure1<Composite> _function_10 = new Procedure1<Composite>() {
+              @Override
               public void apply(final Composite it) {
                 try {
                   GridData _gridData = new GridData(SWT.NONE, SWT.NONE, false, false, 3, 1);
@@ -257,6 +274,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                   it.setLayout(_gridLayout);
                   it.setVisible(false);
                   final Procedure1<Label> _function = new Procedure1<Label>() {
+                    @Override
                     public void apply(final Label it) {
                       final GridData gd = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
                       gd.widthHint = 163;
@@ -266,27 +284,32 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                   };
                   XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function);
                   final Procedure1<Label> _function_1 = new Procedure1<Label>() {
+                    @Override
                     public void apply(final Label it) {
                     }
                   };
                   XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_1);
                   final Procedure1<Label> _function_2 = new Procedure1<Label>() {
+                    @Override
                     public void apply(final Label it) {
                     }
                   };
                   XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_2);
                   final Procedure1<Label> _function_3 = new Procedure1<Label>() {
+                    @Override
                     public void apply(final Label it) {
                       it.setText("- to compile project:");
                     }
                   };
                   XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_3);
                   final Procedure1<Text> _function_4 = new Procedure1<Text>() {
+                    @Override
                     public void apply(final Text it) {
                       GridData _gridData = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
                       it.setLayoutData(_gridData);
                       it.setEnabled(false);
                       final ModifyListener _function = new ModifyListener() {
+                        @Override
                         public void modifyText(final ModifyEvent l) {
                           Map<String, String> _builderData = ErlangProjectBuilderPage.this.info.getBuilderData();
                           String _text = it.getText();
@@ -299,23 +322,27 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
                   };
                   XtendSWTLib.<Text>newControl(it, Text.class, SWT.BORDER, _function_4);
                   final Procedure1<Label> _function_5 = new Procedure1<Label>() {
+                    @Override
                     public void apply(final Label it) {
                     }
                   };
                   XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_5);
                   final Procedure1<Label> _function_6 = new Procedure1<Label>() {
+                    @Override
                     public void apply(final Label it) {
                       it.setText("- to clean project:");
                     }
                   };
                   XtendSWTLib.<Label>newControl(it, Label.class, SWT.NONE, _function_6);
                   final Procedure1<Text> _function_7 = new Procedure1<Text>() {
+                    @Override
                     public void apply(final Text it) {
                       final GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
                       gd.widthHint = 250;
                       it.setLayoutData(gd);
                       it.setEnabled(false);
                       final ModifyListener _function = new ModifyListener() {
+                        @Override
                         public void modifyText(final ModifyEvent l) {
                           Map<String, String> _builderData = ErlangProjectBuilderPage.this.info.getBuilderData();
                           String _text = it.getText();
@@ -403,6 +430,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
     return _switchResult;
   }
   
+  @Override
   protected void onEntry() {
     boolean _isExistingProject = this.info.isExistingProject();
     if (_isExistingProject) {
@@ -410,6 +438,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
     }
   }
   
+  @Override
   protected void onExit() {
     String _text = this.runtimeCombo.getText();
     RuntimeVersion _parse = RuntimeVersion.Serializer.parse(_text);
@@ -419,6 +448,7 @@ public class ErlangProjectBuilderPage extends ErlangWizardPage {
   public void selectConfig(final ProjectConfigType type) {
     Control[] _children = this.configComposite.getChildren();
     final Procedure1<Control> _function = new Procedure1<Control>() {
+      @Override
       public void apply(final Control it) {
         if ((it instanceof Button)) {
           Object _data = ((Button)it).getData();

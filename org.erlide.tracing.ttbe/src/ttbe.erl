@@ -528,7 +528,7 @@ ensure_no_overloaded_nodes() ->
     
 -spec string2ms(string()) -> {ok, list()} | {error, fun_format}.
 string2ms(FunStr) ->
-    case erl_scan:string(fix_dot(FunStr)) of
+    case erl_scan_local:string(fix_dot(FunStr)) of
 	{ok, Tokens, _} ->
 	    case erl_parse:parse_exprs(Tokens) of
 		{ok, [Expression]} ->
