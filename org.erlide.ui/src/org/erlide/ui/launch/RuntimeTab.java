@@ -42,6 +42,7 @@ import org.erlide.util.HostnameUtils;
 import org.erlide.util.NodeHostClassifier;
 import org.erlide.util.NodeHostClassifier.HostnameType;
 import org.erlide.util.NodeHostClassifier.NodeType;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
@@ -57,6 +58,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
     private Collection<RuntimeInfo> runtimes;
     private Label nodeHostLabel;
+    private Label lblHoverMouseOver;
 
     /**
      * @wbp.parser.entryPoint
@@ -72,7 +74,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         comp.setLayout(topLayout);
 
         final Label runtimeLabel = new Label(comp, SWT.NONE);
-        runtimeLabel.setText("Name");
+        runtimeLabel.setText("Runtime");
 
         final List<String> rtl = new ArrayList<String>();
         for (final RuntimeInfo r : runtimes) {
@@ -99,13 +101,19 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         runtimesCombo.select(db);
         new Label(comp, SWT.NONE);
         new Label(comp, SWT.NONE);
-        new Label(comp, SWT.NONE);
+        
+        lblHoverMouseOver = new Label(comp, SWT.NONE);
+        lblHoverMouseOver.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+        lblHoverMouseOver.setAlignment(SWT.RIGHT);
+        lblHoverMouseOver.setFont(SWTResourceManager.getFont("Segoe UI", 7, SWT.NORMAL));
+        lblHoverMouseOver.setText("hover mouse over fields for more info");
         new Label(comp, SWT.NONE);
 
         final Label nodeNameLabel = new Label(comp, SWT.NONE);
         nodeNameLabel.setText("Node name");
 
         nameText = new Text(comp, SWT.BORDER);
+        nameText.setToolTipText("Enter a node name without host for a local node.\r\n\r\nEnter a node name with host to override the local names or to connect to a remote node.\r\n");
         final GridData gd_nameText = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1,
                 1);
         gd_nameText.widthHint = 241;
@@ -324,7 +332,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
     @Override
     public String getName() {
-        return "Runtimes";
+        return "Runtime";
     }
 
     @Override

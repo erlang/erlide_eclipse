@@ -58,6 +58,8 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
+import org.eclipse.ui.forms.FormColors;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.wb.swt.SWTResourceManager;
@@ -586,5 +588,17 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         } catch (final WorkbenchException we) {
             // ignore
         }
+    }
+
+    private FormToolkit fDialogsFormToolkit;
+
+    public FormToolkit getDialogsFormToolkit() {
+        if (fDialogsFormToolkit == null) {
+            FormColors colors = new FormColors(Display.getCurrent());
+            colors.setBackground(null);
+            colors.setForeground(null);
+            fDialogsFormToolkit = new FormToolkit(colors);
+        }
+        return fDialogsFormToolkit;
     }
 }
