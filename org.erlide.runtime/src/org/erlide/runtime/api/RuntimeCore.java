@@ -19,9 +19,11 @@ public class RuntimeCore {
             runtimeInfoCatalog = new RuntimeInfoCatalog();
             runtimeInfoCatalog.setRuntimes(data.runtimes, data.defaultRuntimeName,
                     data.erlideRuntimeName);
-            final RuntimeInfo erlideRuntime = runtimeInfoCatalog.erlideRuntime;
-            if (erlideRuntime != null) {
-                HostnameUtils.detectHostNames(erlideRuntime.getOtpHome());
+            for (final RuntimeInfo info : runtimeInfoCatalog.getRuntimes()) {
+                // TODO detect only when necessary? this can block UI for a long time
+                if (HostnameUtils.detectHostNames(info.getOtpHome())) {
+                    break;
+                }
             }
         }
         return runtimeInfoCatalog;
