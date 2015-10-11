@@ -6,7 +6,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.15.0.qualifier
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ClassPath: jinterface.jar,
+Bundle-ClassPath: erlide.libs.jar,
  hamcrest-all-1.3.jar,
  javax.inject-1.jar,
  guava-17.0.jar,
