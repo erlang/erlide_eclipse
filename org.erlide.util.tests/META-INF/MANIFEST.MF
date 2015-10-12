@@ -6,6 +6,6 @@ Bundle-Version: 0.24.8.qualifier
 Bundle-Vendor: erlide.org
 Fragment-Host: org.erlide.util;bundle-version="0.19.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit;bundle-version="4.8.1",
+Require-Bundle: org.junit;bundle-version="4.10.0",
  org.erlide.testing.libs;bundle-version="1.1.1"
 Export-Package: org.erlide.util
