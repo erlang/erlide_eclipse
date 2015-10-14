@@ -9,7 +9,7 @@ import org.erlide.runtime.OtpNodeProxy;
 import org.erlide.runtime.internal.ErlideNodeStatus;
 import org.erlide.runtime.internal.NodeNameCreator;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.HostnameUtils;
+import org.erlide.util.HostnameChecker;
 import org.fishwife.jrugged.Initializable;
 import org.fishwife.jrugged.Initializer;
 
@@ -19,7 +19,8 @@ public class LocalNodeCreator {
     try {
       OtpNode _xblockexpression = null;
       {
-        final String hostName = HostnameUtils.getErlangHostName(longName);
+        HostnameChecker _instance = HostnameChecker.getInstance();
+        final String hostName = _instance.getErlangHostName(longName);
         OtpNode _xifexpression = null;
         boolean _isNullOrEmpty = Strings.isNullOrEmpty(cookie);
         if (_isNullOrEmpty) {

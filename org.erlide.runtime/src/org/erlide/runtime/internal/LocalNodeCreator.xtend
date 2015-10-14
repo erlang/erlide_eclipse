@@ -6,7 +6,7 @@ import com.google.common.base.Strings
 import java.net.Socket
 import org.erlide.runtime.OtpNodeProxy
 import org.erlide.util.ErlLogger
-import org.erlide.util.HostnameUtils
+import org.erlide.util.HostnameChecker
 import org.fishwife.jrugged.Initializable
 import org.fishwife.jrugged.Initializer
 
@@ -15,7 +15,7 @@ import static org.erlide.runtime.internal.LocalNodeCreator.*
 class LocalNodeCreator {
 
     static def OtpNode createOtpNode(String cookie, boolean longName) {
-        val hostName = HostnameUtils.getErlangHostName(longName)
+        val hostName = HostnameChecker.instance.getErlangHostName(longName)
         if (Strings.isNullOrEmpty(cookie)) {
             new OtpNode(NodeNameCreator.create(hostName))
         } else {

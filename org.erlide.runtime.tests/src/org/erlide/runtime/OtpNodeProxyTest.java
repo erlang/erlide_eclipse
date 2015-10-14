@@ -11,6 +11,7 @@ import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.HostnameChecker;
 import org.erlide.util.SystemConfiguration;
 import org.junit.After;
 import org.junit.Before;
@@ -32,6 +33,8 @@ public class OtpNodeProxyTest {
         assertThat("empty runtime list", !cat.getRuntimes().isEmpty());
         info = cat.getRuntimes().iterator().next();
         assertThat("no default info", info != RuntimeInfo.NO_RUNTIME_INFO);
+
+        HostnameChecker.getInstance().detectHostNames(info.getOtpHome());
 
         final RuntimeData data = new RuntimeData(info, "run");
         data.setNodeName("etest" + System.currentTimeMillis());

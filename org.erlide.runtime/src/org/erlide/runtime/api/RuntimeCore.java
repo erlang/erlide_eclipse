@@ -5,7 +5,8 @@ import org.erlide.runtime.runtimeinfo.IRuntimeInfoSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalogData;
-import org.erlide.util.HostnameUtils;
+import org.erlide.util.ErlLogger;
+import org.erlide.util.HostnameChecker;
 
 public class RuntimeCore {
 
@@ -19,11 +20,10 @@ public class RuntimeCore {
             runtimeInfoCatalog = new RuntimeInfoCatalog();
             runtimeInfoCatalog.setRuntimes(data.runtimes, data.defaultRuntimeName,
                     data.erlideRuntimeName);
-            for (final RuntimeInfo info : runtimeInfoCatalog.getRuntimes()) {
-                // TODO detect only when necessary? this can block UI for a long time
-                if (HostnameUtils.detectHostNames(info.getOtpHome())) {
-                    break;
-                }
+            final RuntimeInfo runtime = runtimeInfoCatalog.getErlideRuntime();
+            if (!HostnameChecker.getInstance().detectHostNames(runtime.getOtpHome())) {
+                // XXX show troubleshooting page and re-detect
+                ErlLogger.error("no matching hostnames found!! Edit ~/.erlide.hosts");
             }
         }
         return runtimeInfoCatalog;

@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.annotation.NonNull;
 
 import com.google.common.collect.Lists;
@@ -56,7 +57,10 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
         }
         erlideRuntime = runtimes
                 .get(ideRuntime != null ? ideRuntime : defaultRuntimeName);
-        // Asserts.isNotNull(erlideRuntime);
+        if (erlideRuntime == null) {
+            erlideRuntime = getDefaultRuntime();
+        }
+        Assert.isNotNull(erlideRuntime);
     }
 
     @Override

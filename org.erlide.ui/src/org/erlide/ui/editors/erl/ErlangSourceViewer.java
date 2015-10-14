@@ -21,6 +21,7 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.internal.ErlangSourceViewerUpdater;
+import org.erlide.ui.util.ColorManager;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.util.IDisposable;
 

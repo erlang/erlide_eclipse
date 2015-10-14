@@ -8,7 +8,7 @@
  *     IBM Corporation
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.ui.editors.erl;
+package org.erlide.ui.util;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,7 +17,6 @@ import java.util.Map;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.erlide.ui.util.IColorManager;
 
 /**
  * The color manager for the system (very simple implementation)

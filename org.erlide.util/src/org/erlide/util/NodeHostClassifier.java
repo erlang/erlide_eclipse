@@ -13,8 +13,8 @@ public final class NodeHostClassifier {
     }
 
     public NodeHostClassifier(final String name) {
-        this(name, HostnameUtils.getErlangHostName(false), HostnameUtils
-                .getErlangHostName(true));
+        this(name, HostnameChecker.getInstance().getErlangHostName(false),
+                HostnameChecker.getInstance().getErlangHostName(true));
     }
 
     public NodeHostClassifier(final String name, final String shortThis,

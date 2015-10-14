@@ -17,3 +17,4 @@ Export-Package: org.erlide.runtime,
  org.erlide.runtime.runtimeinfo,
  org.erlide.runtime.shell
 Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.core.runtime

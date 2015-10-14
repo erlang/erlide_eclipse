@@ -2,30 +2,33 @@ package org.erlide.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.ericsson.otp.erlang.OtpNode;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 public class ErlangHostnameRetriever {
 
     final String otpHome;
-    private String nodeName;
+    AtomicInteger id = new AtomicInteger();
 
     private final static boolean verbose = !SystemConfiguration
-            .hasFeatureEnabled("erlide.ericsson.user");
+            .hasFeatureEnabled("erlide.ericsson.user")
+            && !SystemConfiguration.hasFeatureEnabled("erlide.quiet");
 
     public ErlangHostnameRetriever(final String otpHome) {
         this.otpHome = otpHome;
     }
 
-    public String checkHostName(final boolean longHost, final String hostName0) {
-        nodeName = "foo" + System.currentTimeMillis();
+    public String getErlangHostName(final boolean longHost) {
+        final String nodeName = "foo" + System.currentTimeMillis();
         final ProcessBuilder builder = new ProcessBuilder(
                 Lists.newArrayList(otpHome + "/bin/erl", longHost ? "-name" : "-sname",
                         nodeName, "-setcookie", "erlide"));
-        String result = null;
+        String hostName = null;
         try {
             final Process process = builder.start();
             try {
@@ -34,17 +37,10 @@ public class ErlangHostnameRetriever {
                 while (listener.isAlive()) {
                     try {
                         listener.join();
-                        final String hostName = hostName0 != null ? hostName0
-                                : listener.getResult();
+                        hostName = listener.getResult();
                         if (verbose) {
-                            ErlLogger.debug("Test %s hostname: %s",
+                            ErlLogger.debug("Erlang %s hostname: %s",
                                     longHost ? "long" : "short", hostName);
-                        }
-                        if (canConnect(hostName)) {
-                            result = hostName;
-                        } else {
-                            ErlLogger.warn("Can't use %s as %s name", hostName,
-                                    longHost ? "long" : "short");
                         }
                     } catch (final InterruptedException e) {
                     }
@@ -55,23 +51,39 @@ public class ErlangHostnameRetriever {
         } catch (final IOException e) {
             ErlLogger.error(e);
         }
-        return result;
+        return hostName;
     }
 
-    public String checkHostName(final boolean longHost) {
-        return checkHostName(longHost, null);
-    }
-
-    private boolean canConnect(final String hostName) {
-        if (hostName == null) {
+    public boolean canConnect(final String hostName, final boolean longHost) {
+        if (Strings.isNullOrEmpty(hostName)) {
             return false;
         }
+        final String nodeName = "foo" + id.incrementAndGet();
+        final String fullName = nodeName + "@" + hostName;
+        final ProcessBuilder builder = new ProcessBuilder(
+                Lists.newArrayList(otpHome + "/bin/erl", longHost ? "-name" : "-sname",
+                        fullName, "-setcookie", "erlide"));
         try {
-            final OtpNode node = new OtpNode("jtest", "erlide");
-            final boolean result = node.ping(nodeName + "@" + hostName, 1000);
-            node.close();
-            return result;
-        } catch (final IOException e) {
+            final Process process = builder.start();
+            try {
+                final StreamListener listener = new StreamListener(
+                        process.getInputStream());
+                while (listener.getResult() == null) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (final InterruptedException e) {
+                        // ignore
+                    }
+                }
+
+                final OtpNode node = new OtpNode("jtest", "erlide");
+                final boolean result = node.ping(fullName, 2000);
+                node.close();
+                return result;
+            } finally {
+                process.destroy();
+            }
+        } catch (final Exception e) {
             ErlLogger.error(e);
         }
         return false;

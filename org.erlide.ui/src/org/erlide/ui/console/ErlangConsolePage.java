@@ -73,8 +73,8 @@ import org.erlide.backend.api.IBackend;
 import org.erlide.engine.services.parsing.RuntimeHelper;
 import org.erlide.runtime.api.ParserException;
 import org.erlide.runtime.shell.IBackendShell;
-import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.ui.util.ColorManager;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.util.StringUtils;
 
