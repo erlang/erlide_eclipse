@@ -10,8 +10,6 @@ import org.erlide.util.HostnameChecker
 import org.fishwife.jrugged.Initializable
 import org.fishwife.jrugged.Initializer
 
-import static org.erlide.runtime.internal.LocalNodeCreator.*
-
 class LocalNodeCreator {
 
     static def OtpNode createOtpNode(String cookie, boolean longName) {
