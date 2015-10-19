@@ -98,7 +98,7 @@ create_info_handler(Path) ->
 	end.
 
 str2fun(S) ->
-	case erl_scan_local:string(S) of
+	case erl_scan:string(S) of
 		{error, ErrorInfo, _} ->
 			{error, ErrorInfo};
 		{ok, Tokens, _} ->
