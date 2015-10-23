@@ -103,8 +103,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
             int micro = 0;
             String update_level = null;
 
-            final Pattern p = Pattern
-                    .compile("(\\d+)(\\.\\d+)?(\\.\\d+)?(-[0-9A-Za-z-]+)?");
+            final Pattern p = Pattern.compile("(\\d+)(\\.\\d+)?(\\.\\d+)?([\\.-].+)?");
             final Matcher m = p.matcher(version);
             if (!m.matches()) {
                 return null; // throw?
