@@ -580,12 +580,20 @@ public class ErlangDebugTarget extends ErlangDebugElement implements IDebugTarge
 
     private List<String> getDebuggerModules() {
         final Bundle debugger = Platform.getBundle("org.erlide.kernel.debugger");
+        if (debugger == null) {
+            ErlLogger.warn("debugger bundle was not found...");
+            return new ArrayList<String>();
+        }
         final List<String> dbg_modules = getModulesFromBundle(debugger);
 
         final String ver = backend.getRuntime().getVersion().asMajor().toString()
                 .toLowerCase();
-        final Bundle debugger_otp = Platform.getBundle("org.erlide.kernel.debugger.otp."
-                + ver);
+        final Bundle debugger_otp = Platform
+                .getBundle("org.erlide.kernel.debugger.otp." + ver);
+        if (debugger_otp == null) {
+            ErlLogger.warn("debugger %s bundle was not found...", ver);
+            return dbg_modules;
+        }
         final List<String> dbg_otp_modules = getModulesFromBundle(debugger_otp);
 
         dbg_modules.addAll(dbg_otp_modules);

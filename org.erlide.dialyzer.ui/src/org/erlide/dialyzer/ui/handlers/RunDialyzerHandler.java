@@ -37,7 +37,7 @@ import org.erlide.engine.model.erlang.IErlModule;
 import org.erlide.engine.model.root.IErlProject;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.HostnameUtils;
+import org.erlide.util.HostnameChecker;
 
 import com.google.common.collect.Sets;
 
@@ -70,8 +70,8 @@ public class RunDialyzerHandler extends AbstractHandler {
                     ErlLogger.debug(e.getMessage());
                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage());
                 } catch (final InvocationTargetException e) {
-                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getCause()
-                            .getMessage());
+                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                            e.getCause().getMessage());
                 } finally {
                     if (backend != null) {
                         backend.dispose();
@@ -97,7 +97,7 @@ public class RunDialyzerHandler extends AbstractHandler {
             data.setDebug(false);
             data.setConsole(false);
             data.setInternal(true);
-            data.setLongName(HostnameUtils.canUseLongNames());
+            data.setLongName(HostnameChecker.getInstance().canUseLongNames());
             return BackendCore.getBackendManager().createExecutionBackend(data);
         }
     }
@@ -169,7 +169,8 @@ public class RunDialyzerHandler extends AbstractHandler {
                 for (final Object i : structuredSelection.toList()) {
                     if (i instanceof IResource) {
                         final IResource r = (IResource) i;
-                        modules.addAll(DialyzerUtils.collectModulesFromResource(model, r));
+                        modules.addAll(
+                                DialyzerUtils.collectModulesFromResource(model, r));
                     }
                 }
             } catch (final ErlModelException e) {

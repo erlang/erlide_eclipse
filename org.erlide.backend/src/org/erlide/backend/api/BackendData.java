@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2008 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.backend.api;
 
@@ -41,7 +39,7 @@ import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeVersion;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlangFunctionCall;
-import org.erlide.util.HostnameUtils;
+import org.erlide.util.HostnameChecker;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
@@ -71,8 +69,8 @@ public final class BackendData extends RuntimeData {
             nodeName = config.getAttribute(ErlRuntimeAttributes.NODE_NAME, nodeName);
             longName = config.getAttribute(ErlRuntimeAttributes.USE_LONG_NAME, longName);
             extraArgs = config.getAttribute(ErlRuntimeAttributes.EXTRA_ARGS, extraArgs);
-            workingDir = config
-                    .getAttribute(ErlRuntimeAttributes.WORKING_DIR, workingDir);
+            workingDir = config.getAttribute(ErlRuntimeAttributes.WORKING_DIR,
+                    workingDir);
             env = config.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, env);
             initialCall = createInitialCall(config);
             debugFlags = ErlDebugFlags.makeSet(config.getAttribute(
@@ -83,8 +81,8 @@ public final class BackendData extends RuntimeData {
 
             projects = getProjects(config);
             final List<String> defList = Lists.newArrayList();
-            final List<String> intMods = config.getAttribute(
-                    ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, defList);
+            final List<String> intMods = config
+                    .getAttribute(ErlRuntimeAttributes.DEBUG_INTERPRET_MODULES, defList);
             initialInterpretedModules = addBreakpointProjectsAndModules(getProjects(),
                     intMods);
         } catch (final CoreException e1) {
@@ -157,8 +155,8 @@ public final class BackendData extends RuntimeData {
 
     public ILaunchConfiguration asLaunchConfiguration() {
         final ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-        final ILaunchConfigurationType type = manager
-                .getLaunchConfigurationType(IErlangLaunchDelegateConstants.CONFIGURATION_TYPE_INTERNAL);
+        final ILaunchConfigurationType type = manager.getLaunchConfigurationType(
+                IErlangLaunchDelegateConstants.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
         try {
             final RuntimeInfo info = getRuntimeInfo();
@@ -198,8 +196,8 @@ public final class BackendData extends RuntimeData {
             throws CoreException {
         String prjs;
         prjs = config.getAttribute(ErlRuntimeAttributes.PROJECTS, "");
-        final String[] projectNames = prjs.length() == 0 ? new String[] {} : prjs
-                .split(PROJECT_NAME_SEPARATOR);
+        final String[] projectNames = prjs.length() == 0 ? new String[] {}
+                : prjs.split(PROJECT_NAME_SEPARATOR);
         return gatherProjects(projectNames);
     }
 
@@ -213,7 +211,8 @@ public final class BackendData extends RuntimeData {
 
     @Override
     public String getQualifiedNodeName() {
-        final String erlangHostName = HostnameUtils.getErlangHostName(hasLongName());
+        final String erlangHostName = HostnameChecker.getInstance()
+                .getErlangHostName(hasLongName());
         final String name = getNodeName();
         final boolean hasHost = name.contains("@");
         return hasHost ? name : name + "@" + erlangHostName;

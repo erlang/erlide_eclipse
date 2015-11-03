@@ -24,13 +24,13 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
-import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.EditorConfiguration;
 import org.erlide.ui.editors.erl.ErlangDocumentSetupParticipant;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.ui.util.ColorManager;
 
 public class ErlMergeViewer extends TextMergeViewer {
 

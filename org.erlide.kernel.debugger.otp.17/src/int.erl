@@ -730,7 +730,7 @@ scan_module_name_1(Cont0, B0, Bin0, Enc) ->
     scan_module_name_2(Cont0, Chars, B1, Bin, Enc).
 
 scan_module_name_2(Cont0, Chars, B1, Bin, Enc) ->
-    case erl_scan_local:tokens(Cont0, Chars, _AnyLine = 1) of
+    case erl_scan:tokens(Cont0, Chars, _AnyLine = 1) of
         {done, {ok, Ts, _}, Rest} ->
             scan_module_name_3(Ts, Rest, B1, Bin, Enc);
         {more, Cont} ->

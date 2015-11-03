@@ -12,9 +12,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.ui.util.ColorManager;
 import org.erlide.util.ErlLogger;
 
 public class ErlContentViewer extends Viewer {

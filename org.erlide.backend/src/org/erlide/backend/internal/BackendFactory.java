@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005-2011 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2005-2011 Vlad Dumitrescu and others. All rights reserved. This program
+ * and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.backend.internal;
 
@@ -25,7 +23,7 @@ import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.HostnameUtils;
+import org.erlide.util.HostnameChecker;
 import org.erlide.util.SystemConfiguration;
 
 public class BackendFactory implements IBackendFactory {
@@ -82,8 +80,8 @@ public class BackendFactory implements IBackendFactory {
         result.setConsole(SystemConfiguration.getInstance().isDeveloper());
         result.setManaged(true);
         result.setRestartable(true);
-        result.setLongName(SystemConfiguration.hasFeatureEnabled("erlide.shortname") ? false
-                : HostnameUtils.canUseLongNames());
+        result.setLongName(SystemConfiguration.hasFeatureEnabled("erlide.shortname")
+                ? false : HostnameChecker.getInstance().canUseLongNames());
         result.setInternal(true);
         result.setReportErrors(true);
         result.setContext(CodeContext.IDE);
@@ -101,7 +99,7 @@ public class BackendFactory implements IBackendFactory {
         result.setDebug(false);
         result.setManaged(true);
         result.setConsole(false);
-        result.setLongName(HostnameUtils.canUseLongNames());
+        result.setLongName(HostnameChecker.getInstance().canUseLongNames());
         result.setInternal(true);
         result.setReportErrors(true);
         result.setContext(CodeContext.IDE);

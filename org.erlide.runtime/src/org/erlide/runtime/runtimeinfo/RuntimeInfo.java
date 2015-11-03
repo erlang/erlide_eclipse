@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2008 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Vlad Dumitrescu
+ * Contributors: Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.runtime.runtimeinfo;
 
@@ -215,18 +213,22 @@ public final class RuntimeInfo {
     }
 
     public static String getRuntimeVersion(final String path) {
+        // System.out.println("> get version for " + path);
         if (path == null) {
             return null;
         }
         String result = readOtpVersion(path);
+        // System.out.println("> root: " + result);
         if (result != null) {
             return result;
         }
         result = readReleaseOtpVersion(path + "/releases/");
+        // System.out.println("> releases: " + result);
         if (result != null) {
             return result;
         }
         result = readStartBoot(path);
+        // System.out.println("> boot: " + result);
         return result;
     }
 
@@ -248,6 +250,7 @@ public final class RuntimeInfo {
         // sort!
         for (final String rel : rels) {
             final String result = readOtpVersion(path + rel);
+            // System.out.println("> check: '" + path + rel + "'");
             if (result != null) {
                 return result;
             }

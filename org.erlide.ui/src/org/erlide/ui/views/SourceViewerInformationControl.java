@@ -34,9 +34,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
+import org.erlide.ui.util.ColorManager;
 
 /**
  * Source viewer based implementation of

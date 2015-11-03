@@ -43,12 +43,11 @@ public class ErlRuntimeReporter {
                         + "unrecoverable error, please restart Eclipse. ";
             }
 
-            final String details = "If an error report named '"
-                    + user
+            final String details = "If an error report named '" + user
                     + "_<timestamp>.txt' has been created in your home directory, "
                     + "please consider reporting the problem. \n"
                     + (SystemConfiguration.hasFeatureEnabled("erlide.ericsson.user") ? ""
-                            : "http://www.assembla.com/spaces/erlide/support/tickets");
+                            : "http://github.com/erlide/erlide/issues");
             MessageReporter.showError(msg, msg1 + "\n\n" + details);
         }
         return msg;
@@ -71,19 +70,17 @@ public class ErlRuntimeReporter {
             ErlideEventTracer.getInstance().traceCrash(nodeName);
 
             report = createReport(nodeName, exitCode, msg);
-            final String reportMsg = report != null ? "\n\n"
-                    + "An error log has been created at "
-                    + report
-                    + ". Please report the problem so that we can fix it.\n"
-                    + (SystemConfiguration.hasFeatureEnabled("erlide.ericsson.user") ? ""
-                            : "http://www.assembla.com/spaces/erlide/support/tickets")
+            final String reportMsg = report != null
+                    ? "\n\n" + "An error log has been created at " + report
+                            + ". Please report the problem so that we can fix it.\n"
+                            + (SystemConfiguration
+                                    .hasFeatureEnabled("erlide.ericsson.user") ? ""
+                                            : "http://www.assembla.com/spaces/erlide/support/tickets")
                     : "";
-            MessageReporter
-                    .showError(
-                            msg
-                                    + "\n\n"
-                                    + "This error is not recoverable, please restart your Eclipse instance.",
-                            reportMsg);
+            MessageReporter.showError(
+                    msg + "\n\n"
+                            + "This error is not recoverable, please restart your Eclipse instance.",
+                    reportMsg);
 
         } else {
             ErlLogger.info(msg);

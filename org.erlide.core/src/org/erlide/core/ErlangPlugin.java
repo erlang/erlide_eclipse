@@ -1,12 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2004 Eric Merritt and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Eric Merritt
- *     Vlad Dumitrescu
+ * Contributors: Eric Merritt Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.core;
 
@@ -18,6 +16,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.backend.debug.ErlangDebugOptionsManager;
 import org.erlide.util.ErlLogger;
+import org.erlide.util.ErlideEventBus;
 import org.erlide.util.event_tracer.ErlideEventTracer;
 import org.osgi.framework.BundleContext;
 
@@ -74,12 +73,14 @@ public class ErlangPlugin extends Plugin {
 
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IWorkspaceRoot workspaceRoot = workspace.getRoot();
-        ErlideEventTracer.getInstance().traceSession(
-                workspaceRoot.getLocation().toPortableString());
+        ErlideEventTracer.getInstance()
+                .traceSession(workspaceRoot.getLocation().toPortableString());
 
         final IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
         final String logDir = workspaceRoot.getLocation().toPortableString();
         final ErlangDebugOptionsManager erlangDebugOptionsManager = new ErlangDebugOptionsManager();
+
+        ErlideEventBus.register(new ConsoleMessageReporter());
 
         core = new ErlangCore(this, workspace, extensionRegistry, logDir,
                 erlangDebugOptionsManager);

@@ -1,3 +1,12 @@
+List of user visible changes between 0.29.13 and 0.30.0 (20151103)
+
+806d2a3 #235 - recognize more types of version numbers
+7c2402f #241 - remove headless feature
+cc94717 #238 - cache hostname values to speed up startup
+2e401bf debugger: catch missing bundles
+40f0552 #233 - improve launch "runtime" tab to make it clearer
+75c8fb8 #230 - detect kerl and its installations
+
 List of user visible changes between 0.29.11 and 0.29.12 (20150710)
 
 dca59f3 #229 - epp error, unable to build automatically

@@ -25,10 +25,10 @@ import org.erlide.engine.services.parsing.ScannerService;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
-import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.ui.util.ColorManager;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 

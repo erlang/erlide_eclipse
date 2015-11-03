@@ -137,7 +137,7 @@
                 repository. To do so, do this:</para>
             <screen>
                 cd erlide
-                git remote add upstream git://github.com/erliders/erlide.git 
+                git remote add upstream git://github.com/erliders/erlide.git
                 git fetch upstream
             </screen>
             <para>Anytime you want to merge in the latest changes from the upstream repository, just
@@ -189,9 +189,9 @@
         <title xml:id="bugfix.title">Contributing a Bug Fix</title>
         <para>This is a simple exercise for those interested in contributing to erlide. Say that you
             find a bug in erlide, or decide to fix an existing bug reported in our <link
-                xlink:href="http://erlide.assembla.com/spaces/erlide/tickets">ticket tracker</link>.
+                xlink:href="http://github.com/erlide/erlide/issues">ticket tracker</link>.
             I'm assuming that the bug is in the main branch of the project, <link
-                xlink:href="http://github.com/erliders/erlide/tree/master">master</link>. Assuming
+                xlink:href="http://github.com/erlide/erlide/tree/master">master</link>. Assuming
             that you have read <link
                 xlink:href="http://wiki.github.com/vladdu/erlide_test/working-with-git">Working with
                 Git</link> and are ready to start hacking on your forked repository, let's get
@@ -467,7 +467,7 @@
             git push origin rev_0_6
             git checkout master
             git pull origin master
-            git pull upstream master            
+            git pull upstream master
             </screen>
 
             <para>We issue to calls to <code>git pull</code> for each branch in order to ensure that

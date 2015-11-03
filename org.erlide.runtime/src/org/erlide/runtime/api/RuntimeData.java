@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.Nullable;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlangFunctionCall;
-import org.erlide.util.HostnameUtils;
+import org.erlide.util.HostnameChecker;
 import org.erlide.util.SystemConfiguration;
 
 import com.google.common.base.Strings;
@@ -244,7 +244,8 @@ public class RuntimeData {
             final String nameTag = hasLongName() ? "-name" : "-sname";
             String nameOption = getNodeName();
             if (!nameOption.contains("@")) {
-                nameOption += "@" + HostnameUtils.getErlangHostName(hasLongName());
+                nameOption += "@"
+                        + HostnameChecker.getInstance().getErlangHostName(hasLongName());
             }
             result.add(nameTag);
             result.add(nameOption);
@@ -283,7 +284,8 @@ public class RuntimeData {
     }
 
     public String getQualifiedNodeName() {
-        final String erlangHostName = HostnameUtils.getErlangHostName(hasLongName());
+        final String erlangHostName = HostnameChecker.getInstance()
+                .getErlangHostName(hasLongName());
         final String name = getNodeName();
         final boolean hasHost = name.contains("@");
         return hasHost ? name : name + "@" + erlangHostName;

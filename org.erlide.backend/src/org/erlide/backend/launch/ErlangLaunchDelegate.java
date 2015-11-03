@@ -1,13 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2005 Vlad Dumitrescu and others. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- * Vlad Dumitrescu
- * Jakob Cederlund
+ * Contributors: Vlad Dumitrescu Jakob Cederlund
  *******************************************************************************/
 package org.erlide.backend.launch;
 
@@ -32,7 +29,7 @@ import org.erlide.runtime.api.IOtpNodeProxy;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.HostnameUtils;
+import org.erlide.util.HostnameChecker;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -70,8 +67,8 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
             throw new IllegalArgumentException();
         }
 
-        RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoCatalog().getRuntime(
-                config.getAttribute(ErlRuntimeAttributes.RUNTIME_NAME, ""));
+        RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoCatalog()
+                .getRuntime(config.getAttribute(ErlRuntimeAttributes.RUNTIME_NAME, ""));
         if (runtimeInfo == null) {
             runtimeInfo = BackendCore.getRuntimeInfoCatalog().getDefaultRuntime();
         }
@@ -154,7 +151,7 @@ public class ErlangLaunchDelegate extends LaunchConfigurationDelegate {
         boolean isLocal = atSignIndex < 0;
         if (atSignIndex > 0) {
             final String hostname = name.substring(atSignIndex + 1);
-            if (HostnameUtils.isThisHost(hostname)) {
+            if (HostnameChecker.getInstance().isThisHost(hostname)) {
                 isLocal = true;
             }
         }

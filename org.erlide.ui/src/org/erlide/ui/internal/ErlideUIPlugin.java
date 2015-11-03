@@ -1,13 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004 Eric Merritt and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * Copyright (c) 2004 Eric Merritt and others. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the Eclipse Public License
+ * v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Eric Merritt
- *     Vlad Dumitrescu
+ * Contributors: Eric Merritt Vlad Dumitrescu
  *******************************************************************************/
 package org.erlide.ui.internal;
 
@@ -58,11 +55,12 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
+import org.eclipse.ui.forms.FormColors;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
-import org.erlide.core.ConsoleMessageReporter;
 import org.erlide.core.ErlangStatus;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.engine.ErlangEngine;
@@ -87,7 +85,7 @@ import org.erlide.ui.util.NoRuntimeHandler;
 import org.erlide.ui.util.ProblemMarkerManager;
 import org.erlide.util.ErlLogger;
 import org.erlide.util.ErlideEventBus;
-import org.erlide.util.HostnameUtils;
+import org.erlide.util.HostnameChecker;
 import org.erlide.util.SystemConfiguration;
 import org.osgi.framework.BundleContext;
 
@@ -134,13 +132,12 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                 .toPortableString();
         if (!ErlangEngine.getInstance().isAvailable()) {
             notifyNoRuntimeAndRestart(workspace);
-        } else if (HostnameUtils.getErlangHostName(true) == null
-                && HostnameUtils.getErlangHostName(false) == null) {
+        } else if (HostnameChecker.getInstance().getErlangHostName(true) == null
+                && HostnameChecker.getInstance().getErlangHostName(false) == null) {
             notifyBadHostname(workspace);
         }
 
         ErlideEventBus.register(new NoRuntimeHandler());
-        ErlideEventBus.register(new ConsoleMessageReporter());
         ErlideEventBus.register(new UIMessageReporter());
 
         if (SystemConfiguration.getInstance().isDeveloper()) {
@@ -165,8 +162,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     public void stop(final BundleContext context) throws Exception {
         erlConsoleManager.dispose();
         super.stop(context);
-        BackendCore.getBackendManager().removeBackendListener(
-                erlangDebuggerBackendListener);
+        BackendCore.getBackendManager()
+                .removeBackendListener(erlangDebuggerBackendListener);
         BackendCore.getBackendManager().dispose();
         ErlideImage.dispose();
         SWTResourceManager.dispose();
@@ -211,8 +208,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                         "org.erlide.ui.preferences.runtimes", null, null);
                 if (pref != null) {
                     if (pref.open() == Window.OK) {
-                        ErlLogger
-                                .info("Restarting workbench after initial runtime configuration...");
+                        ErlLogger.info(
+                                "Restarting workbench after initial runtime configuration...");
                         PlatformUI.getWorkbench().restart();
                     }
                 }
@@ -299,8 +296,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the string from the plugin's resource bundle, or 'key' if not
-     * found.
+     * Returns the string from the plugin's resource bundle, or 'key' if not found.
      *
      * @param key
      *            The resource
@@ -322,9 +318,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the standard display to be used. The method first checks, if the
-     * thread calling this method has an associated display. If so, this display
-     * is returned. Otherwise the method returns the default display.
+     * Returns the standard display to be used. The method first checks, if the thread
+     * calling this method has an associated display. If so, this display is returned.
+     * Otherwise the method returns the default display.
      *
      * @return the standard display
      */
@@ -357,8 +353,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the image descriptor for the given image PLUGIN_ID. Returns null
-     * if there is no such image.
+     * Returns the image descriptor for the given image PLUGIN_ID. Returns null if there
+     * is no such image.
      *
      * @param id
      *            The image id
@@ -372,8 +368,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the image for the given image PLUGIN_ID. Returns null if there is
-     * no such image.
+     * Returns the image for the given image PLUGIN_ID. Returns null if there is no such
+     * image.
      *
      * @param id
      *            The image id
@@ -493,8 +489,8 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns a section in the Erlang plugin's dialog settings. If the section
-     * doesn't exist yet, it is created.
+     * Returns a section in the Erlang plugin's dialog settings. If the section doesn't
+     * exist yet, it is created.
      *
      * @param name
      *            the name of the section
@@ -551,10 +547,10 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             fContextTypeRegistry = new ContributionContextTypeRegistry();
             fContextTypeRegistry
                     .addContextType(ErlangTemplateContextType.ERLANG_CONTEXT_TYPE_ID);
-            fContextTypeRegistry
-                    .addContextType(ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
-            fContextTypeRegistry
-                    .addContextType(ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
+            fContextTypeRegistry.addContextType(
+                    ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
+            fContextTypeRegistry.addContextType(
+                    ErlangSourceContextTypeModuleElement.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ELEMENT_ID);
         }
         return fContextTypeRegistry;
     }
@@ -586,5 +582,17 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         } catch (final WorkbenchException we) {
             // ignore
         }
+    }
+
+    private FormToolkit fDialogsFormToolkit;
+
+    public FormToolkit getDialogsFormToolkit() {
+        if (fDialogsFormToolkit == null) {
+            final FormColors colors = new FormColors(Display.getCurrent());
+            colors.setBackground(null);
+            colors.setForeground(null);
+            fDialogsFormToolkit = new FormToolkit(colors);
+        }
+        return fDialogsFormToolkit;
     }
 }
