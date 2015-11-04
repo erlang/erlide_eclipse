@@ -32,6 +32,13 @@ public class RuntimeVersionTest {
     }
 
     @Test
+    public void toString_4a() {
+        final String expect = "R16B03_aaa1";
+        final RuntimeVersion test = RuntimeVersion.Serializer.parse(expect);
+        assertThat(test.toString(), is(expect));
+    }
+
+    @Test
     public void toString_5() {
         final String expect = "17.0.0";
         final RuntimeVersion test = RuntimeVersion.Serializer.parse("17");
@@ -48,6 +55,20 @@ public class RuntimeVersionTest {
     @Test
     public void toString_6() {
         final String expect = "17.1.1-rc1";
+        final RuntimeVersion test = RuntimeVersion.Serializer.parse(expect);
+        assertThat(test.toString(), is(expect));
+    }
+
+    @Test
+    public void toString_6a() {
+        final String expect = "17.1.1_rc1";
+        final RuntimeVersion test = RuntimeVersion.Serializer.parse(expect);
+        assertThat(test.toString(), is(expect));
+    }
+
+    @Test
+    public void toString_6b() {
+        final String expect = "17.1.1_rc-1";
         final RuntimeVersion test = RuntimeVersion.Serializer.parse(expect);
         assertThat(test.toString(), is(expect));
     }
