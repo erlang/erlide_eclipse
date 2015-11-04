@@ -83,12 +83,21 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
                 minor = Arrays.binarySearch(minorMap, c);
                 i++;
                 if (i < version.length()) {
-                    final int n = version.indexOf('-');
+                    final int n1 = version.indexOf('-');
+                    final int n2 = version.indexOf('_');
+                    int n;
+                    if (n1 == -1) {
+                        n = n2;
+                    } else if (n2 == -1) {
+                        n = n1;
+                    } else {
+                        n = Math.min(n1, n2);
+                    }
                     if (n == -1) {
                         micro = Integer.parseInt(version.substring(i));
                     } else {
                         micro = Integer.parseInt(version.substring(i, n));
-                        update_level = version.substring(n + 1);
+                        update_level = version.substring(n);
                     }
                 } else {
                     micro = 0;
@@ -103,7 +112,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
             int micro = 0;
             String update_level = null;
 
-            final Pattern p = Pattern.compile("(\\d+)(\\.\\d+)?(\\.\\d+)?([\\.-].+)?");
+            final Pattern p = Pattern.compile("(\\d+)(\\.\\d+)?(\\.\\d+)?([\\._-].+)?");
             final Matcher m = p.matcher(version);
             if (!m.matches()) {
                 return null; // throw?
@@ -115,7 +124,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
             final String extra = m.group(4);
             if (extra != null) {
                 try {
-                    update_level = extra.substring(1);
+                    update_level = extra;
                 } catch (final Exception e) {
                     update_level = null;
                 }
@@ -154,7 +163,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
                         }
                         result += m;
                         if (version.update_level != null) {
-                            result += "-" + version.update_level;
+                            result += version.update_level;
                         }
                     }
                 }
@@ -171,7 +180,7 @@ public class RuntimeVersion implements Comparable<RuntimeVersion> {
                 result += "." + Integer.toString(version.micro);
             }
             if (version.update_level != null) {
-                result += "-" + version.update_level;
+                result += version.update_level;
             }
             return result;
         }
