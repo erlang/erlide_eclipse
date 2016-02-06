@@ -115,7 +115,6 @@
 <setEntry value="org.eclipse.sdk:default"/>
 <setEntry value="org.erlide.cover.site:default"/>
 <setEntry value="org.erlide.cover:default"/>
-<setEntry value="org.erlide.headless:default"/>
 <setEntry value="org.erlide.licenses:default"/>
 <setEntry value="org.erlide.product.feature:default"/>
 <setEntry value="org.erlide.product.site:default"/>

@@ -172,7 +172,6 @@ echo "final changed: $CHANGED..."
 if [ "$CHANGED" != "none" ]
 then
 	update_feature "org.erlide" $CMD
-	update_feature "org.erlide.headless" $CMD
 	update_feature "org.erlide.sdk" $CMD
 fi
 
