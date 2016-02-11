@@ -4,5 +4,4 @@ Bundle-Name: Kernel Erlang Debugger functionality
 Bundle-SymbolicName: org.erlide.kernel.debugger.otp.r15;singleton:=true
 Bundle-Version: 0.25.4.qualifier
 Bundle-Vendor: Erlide project
-Require-Bundle: org.erlide.core,
- org.erlide.kernel.common
+Require-Bundle: org.erlide.kernel.common

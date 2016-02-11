@@ -4,5 +4,4 @@ Bundle-Name: Kernel Erlang functionality
 Bundle-SymbolicName: org.erlide.kernel.ide;singleton:=true
 Bundle-Version: 0.26.10.qualifier
 Bundle-Vendor: Erlide project
-Require-Bundle: org.erlide.core,
- org.erlide.kernel.common
+Require-Bundle: org.erlide.kernel.common
