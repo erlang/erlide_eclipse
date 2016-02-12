@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.erlide.kernel.debugger.otp.r16</name>
+	<name>org.erlide.kernel.debugger.18</name>
 	<comment></comment>
 	<projects>
 		<project>org.erlide.kernel.common</project>

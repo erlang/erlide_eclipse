@@ -103,25 +103,25 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          version="0.0.0"/>
 
    <plugin
-         id="org.erlide.kernel.debugger.otp.r15"
+         id="org.erlide.kernel.debugger.r15"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
-         id="org.erlide.kernel.debugger.otp.r16"
+         id="org.erlide.kernel.debugger.r16"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
-         id="org.erlide.kernel.debugger.otp.17"
+         id="org.erlide.kernel.debugger.17"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
-         id="org.erlide.kernel.debugger.otp.18"
+         id="org.erlide.kernel.debugger.18"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
