@@ -48,3 +48,6 @@ junit.xml
 
 *.pmd
 *.xtendbin
+.gradle
+**/build/tmp/
+**/build/libs/
