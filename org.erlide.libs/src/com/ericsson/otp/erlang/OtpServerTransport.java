@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  *
- * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * Copyright Ericsson AB 2015. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,31 @@
  *
  * %CopyrightEnd%
  */
+
 package com.ericsson.otp.erlang;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+
 /**
- * Exception raised when an attempt is made to create an Erlang term with data that is out
- * of range for the term in question.
+ * Server-side connection-oriented transport interface.
  *
- * @see OtpErlangByte
- * @see OtpErlangChar
- * @see OtpErlangInt
- * @see OtpErlangUInt
- * @see OtpErlangShort
- * @see OtpErlangUShort
- * @see OtpErlangLong
+ * @author Dmitriy Kargapolov
  */
-public class OtpErlangRangeException extends OtpErlangException {
-    private static final long serialVersionUID = 1L;
+public interface OtpServerTransport {
 
     /**
-     * Provides a detailed message.
+     * @see ServerSocket#getLocalPort()
      */
-    public OtpErlangRangeException(final String msg) {
-        super(msg);
-    }
+    int getLocalPort();
+
+    /**
+     * @see ServerSocket#accept()
+     */
+    OtpTransport accept() throws IOException;
+
+    /**
+     * @see ServerSocket#close()
+     */
+    void close() throws IOException;
 }
