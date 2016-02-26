@@ -3,7 +3,6 @@
 	<name>org.erlide.kernel.debugger</name>
 	<comment></comment>
 	<projects>
-		<project>org.erlide.kernel.common</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -16,14 +15,8 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
-		<buildCommand>
-			<name>org.erlide.core.erlbuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.erlide.core.erlnature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
 	</natures>
 </projectDescription>

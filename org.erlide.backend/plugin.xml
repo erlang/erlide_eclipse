@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="codepath" name="codepath" schema="schema/codepath.exsd"/>
    <extension-point id="backend" name="backend" schema="schema/backend.exsd"/>
    <extension
          point="org.erlide.backend.backend">

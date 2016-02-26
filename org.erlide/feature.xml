@@ -91,43 +91,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.erlide.kernel.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.kernel.debugger"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.kernel.debugger.r15"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.kernel.debugger.r16"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.kernel.debugger.17"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.kernel.debugger.18"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.kernel.ide"
+         id="org.erlide.kernel"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
@@ -174,7 +138,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.erlide.kernel.tools"
+         id="org.erlide.kernel.debugger"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

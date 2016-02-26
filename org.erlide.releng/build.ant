@@ -19,32 +19,28 @@
     <import file="common.ant" as="common" />
 
     <property name="tool.jdk" value="${user.home}/erlide_tools/jdk" />
-    <property name="tool.rebar_k" value="${user.home}/erlide_tools/rebar_k" />
 
     <property name="build.properties" location="${projects.location}/org.erlide.releng/erlide-target.properties" />
 
-    <target name="run.tests" depends="common.cleanup,install.buckminster.headless,build.releng.tools" description="build and run tests">
+    <target name="run.tests" depends="common.cleanup,install.buckminster.headless" description="build and run tests">
         <echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
         <echo message="build.properties: ${build.properties}" />
 
         <antcall target="import.junit.workspace" />
-        <antcall target="erlang.compile" />
-        <antcall target="eunit.tests" />
 
         <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-tests.txt" propertiesfile="${build.properties}" />
         <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/run-tests.txt" propertiesfile="${build.properties}" />
     </target>
 
-    <target name="build.p2" depends="common.cleanup,install.buckminster.headless,build.releng.tools" description="build p2 update site">
+    <target name="build.p2" depends="common.cleanup,install.buckminster.headless" description="build p2 update site">
         <echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
         <echo message="build.properties: ${build.properties}" />
 
-        <antcall target="erlang.compile" />
         <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/import-code.txt" propertiesfile="${build.properties}" />
         <run_buckminster commandsfile="${projects.location}/org.erlide.releng/commands/build-p2.txt" propertiesfile="${build.properties}" />
     </target>
 
-    <target name="build.product" depends="common.cleanup,install.buckminster.headless,build.releng.tools" description="build product">
+    <target name="build.product" depends="common.cleanup,install.buckminster.headless" description="build product">
         <echo message="IMPORTANT: Populating an empty target platform may take over 10 minutes." />
         <echo message="build.properties: ${build.properties}" />
 
@@ -57,110 +53,6 @@
             <fileset dir="${projects.location}/org.erlide.ui.tests/projects" />
         </copy>
         <run_buckminster workspace="${build.root}/buckminster.workspace/junit-workspace" commandsfile="${projects.location}/org.erlide.releng/commands/import-tests-workspace.txt" propertiesfile="${build.properties}" />
-    </target>
-
-    <target name="erlang.compile">
-        <echo message="Running EUnit..." />
-
-        <exec executable="${tool.rebar_k}" dir="${projects.location}/org.erlide.kernel.common" failifexecutionfails="true" failonerror="true">
-            <arg value="otp15" />
-            <arg value="compile" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-        <exec executable="${tool.rebar_k}" dir="${projects.location}/org.erlide.kernel.tools" failifexecutionfails="true" failonerror="true">
-            <arg value="otp16" />
-            <arg value="compile" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-        <exec executable="${tool.rebar_k}" dir="${projects.location}/org.erlide.kernel.ide" failifexecutionfails="true" failonerror="true">
-            <arg value="otp16" />
-            <arg value="compile" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-
-        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger">
-            <arg value="otp15" />
-            <arg value="compile" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger.r15">
-            <arg value="otp15" />
-            <arg value="compile" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger.r16">
-            <arg value="otp16" />
-            <arg value="compile" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger.17">
-            <arg value="otp17" />
-            <arg value="compile" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger.18">
-            <arg value="otp18" />
-            <arg value="compile" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-    </target>
-
-    <target name="eunit.tests">
-        <echo message="Running EUnit..." />
-
-        <exec executable="${tool.rebar_k}" dir="${projects.location}/org.erlide.kernel.common" failifexecutionfails="true" failonerror="true">
-            <arg value="otp15" />
-            <arg value="eunit" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-        <exec executable="${tool.rebar_k}" dir="${projects.location}/org.erlide.kernel.tools" failifexecutionfails="true" failonerror="true">
-            <arg value="otp16" />
-            <arg value="eunit" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-        <exec executable="${tool.rebar_k}" dir="${projects.location}/org.erlide.kernel.ide" failifexecutionfails="true" failonerror="true">
-            <arg value="otp16" />
-            <arg value="eunit" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-
-        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger">
-            <arg value="otp15" />
-            <arg value="eunit" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger.r15">
-            <arg value="otp15" />
-            <arg value="eunit" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger.r16">
-            <arg value="otp16" />
-            <arg value="eunit" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger.17">
-            <arg value="otp17" />
-            <arg value="eunit" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-        <exec executable="${tool.rebar_k}" failonerror="true" dir="${projects.location}/org.erlide.kernel.debugger.18">
-            <arg value="otp18" />
-            <arg value="eunit" />
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
-    </target>
-
-    <target name="build.releng.tools">
-        <echo message="Building releng tools..." />
-
-        <exec executable="${tool.rebar_k}" dir="${projects.location}/releng.tools" failonerror="true">
-            <arg value="otp16" />
-            <arg value="compile" />
-            <arg value="eunit" />
-
-            <env key="ERL_LIBS" path="${user.home}/erlide_tools:${projects.location}" />
-        </exec>
     </target>
 
 </project>

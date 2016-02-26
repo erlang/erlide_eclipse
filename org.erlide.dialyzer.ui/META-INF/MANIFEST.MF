@@ -17,7 +17,7 @@ Require-Bundle: org.eclipse.ui,
  org.erlide.runtime,
  org.erlide.libs,
  org.erlide.util,
- org.erlide.kernel.tools;bundle-version="0.29.8"
+ org.erlide.kernel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.dialyzer.ui;x-internal:=true,
