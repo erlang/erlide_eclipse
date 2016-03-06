@@ -2,20 +2,20 @@
 -module(bt_run).
 -export([run/4]).
 
--include("erlide.hrl").
+%% -include("erlide.hrl").
 
 -define(NUM_TESTS, 7).
 
 run(Dir, Suite, Arg, Cb) ->
-  ?Info({"BT_RUN RUN", Dir, Suite, Arg, Cb}),
+%%   ?Info({"BT_RUN RUN", Dir, Suite, Arg, Cb}),
   spawn(fun()->arun(Dir, Suite, Arg, Cb) end),
   ok.
 
 arun(Dir, Suite, Arg, Cb) ->
   timer:sleep(100),
   notify(Cb, init, {"",s,c}),
-  Z=(catch blabla_SUITE:f()),
-  ?Info(Z),
+  _Z=(catch blabla_SUITE:f()),
+%%   ?Info(_Z),
   do_tests(Dir, Suite, Arg, Cb, ?NUM_TESTS).
 
 do_tests(Dir, Suite, Arg, Cb, 0) ->
@@ -42,6 +42,6 @@ stop(Dir, Suite, _Arg, Cb) ->
 
 
 notify(Cb, Event, Args) ->
-  ?Info({Cb, Event, Args}),
+%%   ?Info({Cb, Event, Args}),
   Cb:Event(Args),
   ok.
