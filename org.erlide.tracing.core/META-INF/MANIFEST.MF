@@ -4,9 +4,7 @@ Bundle-Name: Erlang tracing for Erlide (java classes)
 Bundle-SymbolicName: org.erlide.tracing.core;singleton:=true
 Bundle-Version: 0.2.35.qualifier
 Bundle-Activator: org.erlide.tracing.core.Activator
-Require-Bundle: org.erlide.tracing.erlang;bundle-version="0.2.0",
- org.erlide.tracing.ttbe;bundle-version="0.1.0",
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.expressions;bundle-version="3.4.300",
  org.eclipse.ui,
  org.eclipse.ui.console,
@@ -18,7 +16,8 @@ Require-Bundle: org.erlide.tracing.erlang;bundle-version="0.2.0",
  org.erlide.runtime,
  org.erlide.model.api,
  org.erlide.libs,
- org.erlide.util
+ org.erlide.util,
+ org.erlide.kernel;bundle-version="0.101.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Localization: plugin

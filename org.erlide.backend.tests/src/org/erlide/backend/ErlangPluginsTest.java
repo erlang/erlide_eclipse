@@ -30,17 +30,17 @@ public class ErlangPluginsTest {
 
     @Test
     public void debuggerR16isAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel.debugger", "/debugger/r16");
+        checkBundleForTwoEbinElements("org.erlide.kernel.debugger.otp", "/debugger/r16");
     }
 
     @Test
     public void debugger17isAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel.debugger", "/debugger/17");
+        checkBundleForTwoEbinElements("org.erlide.kernel.debugger.otp", "/debugger/17");
     }
 
     @Test
     public void debugger18isAvailable() {
-        checkBundleForTwoEbinElements("org.erlide.kernel.debugger", "/debugger/18");
+        checkBundleForTwoEbinElements("org.erlide.kernel.debugger.otp", "/debugger/18");
     }
 
     private void checkBundleForTwoEbinElements(final String pluginId, final String path) {

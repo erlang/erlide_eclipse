@@ -7,21 +7,6 @@
             context="debugger"
             path="/debugger">
       </beam_dir>
-      <beam_dir
-            context="debugger"
-            otp_version="R16"
-            path="/debugger/r16">
-      </beam_dir>
-      <beam_dir
-            context="debugger"
-            otp_version="17"
-            path="/debugger/17">
-      </beam_dir>
-      <beam_dir
-            context="debugger"
-            otp_version="18"
-            path="/debugger/18">
-      </beam_dir>
    </extension>
 
 </plugin>

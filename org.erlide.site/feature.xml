@@ -15,7 +15,7 @@ for erlide.
    </copyright>
 
    <license url="http://www.eclipse.org/legal/epl-v10.html">
-      Eclipse Public License - v 1.0 
+      Eclipse Public License - v 1.0
 is available from http://www.eclipse.org/legal/epl-v10.html
    </license>
 
@@ -24,15 +24,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          version="0.0.0"/>
 
    <includes
-         id="org.erlide.tracing"
-         version="0.0.0"/>
-
-   <includes
          id="org.erlide.wrangler"
-         version="0.0.0"/>
-
-   <includes
-         id="org.erlide.cover"
          version="0.0.0"/>
 
 </feature>
