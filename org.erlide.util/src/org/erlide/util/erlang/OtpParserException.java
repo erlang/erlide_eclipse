@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.erlide.util.erlang;
 
-public class TermParserException extends Exception {
+public class OtpParserException extends Exception {
 
     private static final long serialVersionUID = -6173136408234923943L;
 
-    public TermParserException(final String string) {
+    public OtpParserException(final String string) {
         super(string);
     }
 }

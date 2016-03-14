@@ -7,8 +7,8 @@ import org.eclipse.core.runtime.Path
 import org.erlide.engine.ErlangEngine
 import org.erlide.engine.model.root.ErlangProjectProperties
 import org.erlide.engine.model.root.ProjectConfigurationSerializer
-import org.erlide.util.erlang.Bindings
 import org.erlide.util.erlang.ErlUtils
+import org.erlide.util.erlang.OtpBindings
 
 class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
 
@@ -55,7 +55,7 @@ class RebarConfigurationSerializer implements ProjectConfigurationSerializer {
         result
     }
 
-    def void parseOption(ErlangProjectProperties result, Bindings b) {
+    def void parseOption(ErlangProjectProperties result, OtpBindings b) {
         switch b.getAtom("Tag") {
             case "i": {
                 val inc = new Path(b.getString("Arg"))

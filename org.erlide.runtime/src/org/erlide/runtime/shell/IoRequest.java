@@ -16,7 +16,7 @@ import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
 import org.erlide.util.ErlLogger;
-import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.OtpBindings;
 import org.erlide.util.erlang.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -46,7 +46,7 @@ public class IoRequest {
 
     public IoRequest(final OtpErlangTuple obj) {
         try {
-            Bindings b = ErlUtils.match("{Payload, Leader, From, Tstamp}", obj);
+            OtpBindings b = ErlUtils.match("{Payload, Leader, From, Tstamp}", obj);
             if (b == null) {
                 b = ErlUtils.match("{Payload, Encoding, Leader, From, Tstamp}", obj);
                 encoding = getEncoding(b.getAtom("Encoding"));

@@ -7,7 +7,7 @@ import org.erlide.core.builder.CompilerOption;
 import org.erlide.core.builder.CompilerOption.BooleanOption;
 import org.erlide.core.builder.CompilerOption.DefineOption;
 import org.erlide.core.builder.CompilerOption.WarningOption;
-import org.erlide.util.erlang.TermParserException;
+import org.erlide.util.erlang.OtpParserException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -56,7 +56,7 @@ public class CompilerOptionTest {
     }
 
     @Test
-    public void testToTerm_5() throws TermParserException {
+    public void testToTerm_5() throws OtpParserException {
         final DefineOption option = CompilerOption.DEFINE;
         @SuppressWarnings("unchecked")
         final List<Pair<String, String>> values = Lists
@@ -67,7 +67,7 @@ public class CompilerOptionTest {
     }
 
     @Test
-    public void testToTerm_5a() throws TermParserException {
+    public void testToTerm_5a() throws OtpParserException {
         final DefineOption option = CompilerOption.DEFINE;
         @SuppressWarnings("unchecked")
         final List<Pair<String, String>> values = Lists

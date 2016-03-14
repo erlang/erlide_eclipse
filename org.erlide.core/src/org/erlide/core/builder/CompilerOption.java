@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.util.erlang.OtpErlang;
-import org.erlide.util.erlang.TermParser;
-import org.erlide.util.erlang.TermParserException;
+import org.erlide.util.erlang.OtpParser;
+import org.erlide.util.erlang.OtpParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -122,7 +122,7 @@ public abstract class CompilerOption {
         }
 
         public OtpErlangObject toTerm(final String value) {
-            final TermParser parser = OtpErlang.getTermParser();
+            final OtpParser parser = OtpErlang.getTermParser();
             OtpErlangObject result;
             try {
                 String val;
@@ -201,7 +201,7 @@ public abstract class CompilerOption {
         }
 
         public OtpErlangList toTerm(final Collection<Pair<String, String>> values)
-                throws TermParserException {
+                throws OtpParserException {
             final OtpErlangObject[] defines = new OtpErlangObject[values.size()];
             final int i = 0;
             for (final Pair<String, String> value : values) {

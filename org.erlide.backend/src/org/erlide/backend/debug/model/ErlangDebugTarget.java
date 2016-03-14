@@ -57,7 +57,7 @@ import org.erlide.util.IDisposable;
 import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.OtpErlang;
 import org.erlide.util.erlang.SignatureException;
-import org.erlide.util.erlang.TermParserException;
+import org.erlide.util.erlang.OtpParserException;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -486,7 +486,7 @@ public class ErlangDebugTarget extends ErlangDebugElement
         try {
             return (OtpErlangList) ErlUtils.format("[{ebin_dir, ~s}, {src_dirs, ~ls}]",
                     ebin, srcs);
-        } catch (final TermParserException e) {
+        } catch (final OtpParserException e) {
             ErlLogger.warn(e);
         } catch (final SignatureException e) {
             ErlLogger.warn(e);

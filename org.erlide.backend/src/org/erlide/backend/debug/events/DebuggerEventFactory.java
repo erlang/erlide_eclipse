@@ -1,9 +1,9 @@
 package org.erlide.backend.debug.events;
 
 import org.erlide.util.ErlLogger;
-import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.OtpBindings;
 import org.erlide.util.erlang.ErlUtils;
-import org.erlide.util.erlang.TermParserException;
+import org.erlide.util.erlang.OtpParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -16,7 +16,7 @@ public class DebuggerEventFactory {
     public static DebuggerEvent parse(final OtpErlangObject message) {
         // TODO More events from dbg_mon...
         try {
-            Bindings b = ErlUtils.match("{started, Pid:p}", message);
+            OtpBindings b = ErlUtils.match("{started, Pid:p}", message);
             if (b != null) {
                 return buildStartedEvent(b);
             }
@@ -40,7 +40,7 @@ public class DebuggerEventFactory {
             if (b != null) {
                 return buildMetaEvent(b);
             }
-        } catch (final TermParserException e) {
+        } catch (final OtpParserException e) {
             ErlLogger.error(e);
         } catch (final OtpErlangException e) {
             ErlLogger.error(e);
@@ -48,14 +48,14 @@ public class DebuggerEventFactory {
         return new UnknownEvent(message);
     }
 
-    private static DebuggerEvent buildMetaEvent(final Bindings b)
+    private static DebuggerEvent buildMetaEvent(final OtpBindings b)
             throws OtpErlangException {
         return parseMeta(b.getPid("Meta"), b.get("Event"));
     }
 
     private static MetaEvent parseMeta(final OtpErlangPid pid, final OtpErlangObject event) {
         try {
-            Bindings b = ErlUtils.match("{break_at, Mod:a, Line:i, Crt}", event);
+            OtpBindings b = ErlUtils.match("{break_at, Mod:a, Line:i, Crt}", event);
             if (b != null) {
                 return new BreakAtEvent(pid, b.getAtom("Mod"), b.getInt("Line"),
                         b.get("Crt"));
@@ -87,12 +87,12 @@ public class DebuggerEventFactory {
         return new UnknownEvent(message);
     }
 
-    private static DebuggerEvent buildAttachedEvent(final Bindings b)
+    private static DebuggerEvent buildAttachedEvent(final OtpBindings b)
             throws OtpErlangException {
         return new AttachedEvent(b.getPid("Pid"));
     }
 
-    private static DebuggerEvent buildIntEvent(final Bindings b) {
+    private static DebuggerEvent buildIntEvent(final OtpBindings b) {
         try {
             final OtpErlangObject[] cmds = b.getTuple("Cmd");
             final String cmd = ((OtpErlangAtom) cmds[0]).atomValue();
@@ -114,12 +114,12 @@ public class DebuggerEventFactory {
         }
     }
 
-    private static DebuggerEvent buildTerminatedEvent(final Bindings b)
+    private static DebuggerEvent buildTerminatedEvent(final OtpBindings b)
             throws OtpErlangException {
         return new TerminatedEvent(b.getPid("Pid"));
     }
 
-    private static DebuggerEvent buildStartedEvent(final Bindings b)
+    private static DebuggerEvent buildStartedEvent(final OtpBindings b)
             throws OtpErlangException {
         return new StartedEvent(b.getPid("Pid"));
     }

@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -26,29 +27,23 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
-public final class BindingsImpl implements Bindings {
+public final class OtpBindings implements Map<String, OtpErlangObject> {
 
     private final Map<String, OtpErlangObject> bindings;
 
-    public BindingsImpl() {
+    public OtpBindings() {
         bindings = new HashMap<String, OtpErlangObject>();
     }
 
-    public BindingsImpl(final Bindings binds) {
+    public OtpBindings(final OtpBindings binds) {
         this();
         merge(binds);
     }
 
-    public void merge(final Bindings binds) {
+    public void merge(final OtpBindings binds) {
         bindings.putAll(binds.getAll());
     }
 
-    @Override
-    public OtpErlangObject get(final String name) {
-        return bindings.get(name);
-    }
-
-    @Override
     public int getInt(final String name) throws OtpErlangException {
         final OtpErlangObject r = get(name);
         if (r instanceof OtpErlangLong) {
@@ -57,7 +52,6 @@ public final class BindingsImpl implements Bindings {
         throw new OtpErlangException("value is not an integer");
     }
 
-    @Override
     public long getLong(final String name) throws OtpErlangException {
         final OtpErlangObject r = get(name);
         if (r instanceof OtpErlangLong) {
@@ -66,7 +60,6 @@ public final class BindingsImpl implements Bindings {
         throw new OtpErlangException("value is not an integer");
     }
 
-    @Override
     public String getAtom(final String name) throws OtpErlangException {
         final OtpErlangObject r = get(name);
         if (r instanceof OtpErlangAtom) {
@@ -75,7 +68,6 @@ public final class BindingsImpl implements Bindings {
         throw new OtpErlangException("value is not an atom");
     }
 
-    @Override
     public String getQuotedAtom(final String name) throws OtpErlangException {
         final OtpErlangObject r = get(name);
         if (r instanceof OtpErlangAtom) {
@@ -84,7 +76,6 @@ public final class BindingsImpl implements Bindings {
         throw new OtpErlangException("value is not an atom");
     }
 
-    @Override
     public String getString(final String name) throws OtpErlangException {
         final OtpErlangObject r = get(name);
         if (r instanceof OtpErlangString) {
@@ -93,7 +84,6 @@ public final class BindingsImpl implements Bindings {
         throw new OtpErlangException("value is not a string");
     }
 
-    @Override
     public Collection<OtpErlangObject> getList(final String name)
             throws OtpErlangException {
         final OtpErlangObject r = get(name);
@@ -103,7 +93,6 @@ public final class BindingsImpl implements Bindings {
         throw new OtpErlangException("value is not a list");
     }
 
-    @Override
     public OtpErlangObject[] getTuple(final String name) throws OtpErlangException {
         final OtpErlangObject r = get(name);
         if (r instanceof OtpErlangTuple) {
@@ -112,7 +101,6 @@ public final class BindingsImpl implements Bindings {
         throw new OtpErlangException("value is not a tuple");
     }
 
-    @Override
     public OtpErlangPid getPid(final String name) throws OtpErlangException {
         final OtpErlangObject r = get(name);
         if (r instanceof OtpErlangPid) {
@@ -122,18 +110,11 @@ public final class BindingsImpl implements Bindings {
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public <T> T getAs(final String name, final Class<T> cls) throws SignatureException {
         final OtpErlangObject v = get(name);
         return (T) TypeConverter.erlang2java(v, cls);
     }
 
-    @Override
-    public void put(final String name, final OtpErlangObject value) {
-        bindings.put(name, value);
-    }
-
-    @Override
     public Map<String, OtpErlangObject> getAll() {
         return Collections.unmodifiableMap(bindings);
     }
@@ -143,7 +124,6 @@ public final class BindingsImpl implements Bindings {
         return bindings.toString();
     }
 
-    @Override
     public OtpErlangBinary getBinary(final String name) throws OtpErlangException {
         final OtpErlangObject r = get(name);
         if (r instanceof OtpErlangBinary) {
@@ -152,10 +132,69 @@ public final class BindingsImpl implements Bindings {
         throw new OtpErlangException("value is not a binary");
     }
 
-    @Override
     public String getAsString(final String name) {
         final OtpErlangObject r = get(name);
         return ErlUtils.asString(r);
+    }
+
+    @Override
+    public int size() {
+        return bindings.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return bindings.isEmpty();
+    }
+
+    @Override
+    public boolean containsKey(final Object key) {
+        return bindings.containsKey(key);
+    }
+
+    @Override
+    public boolean containsValue(final Object value) {
+        return bindings.containsValue(value);
+    }
+
+    @Override
+    public OtpErlangObject get(final Object key) {
+        return bindings.get(key);
+    }
+
+    @Override
+    public OtpErlangObject put(final String key, final OtpErlangObject value) {
+        return bindings.put(key, value);
+    }
+
+    @Override
+    public OtpErlangObject remove(final Object key) {
+        return bindings.remove(key);
+    }
+
+    @Override
+    public void putAll(final Map<? extends String, ? extends OtpErlangObject> m) {
+        bindings.putAll(m);
+    }
+
+    @Override
+    public void clear() {
+        bindings.clear();
+    }
+
+    @Override
+    public Set<String> keySet() {
+        return bindings.keySet();
+    }
+
+    @Override
+    public Collection<OtpErlangObject> values() {
+        return bindings.values();
+    }
+
+    @Override
+    public Set<java.util.Map.Entry<String, OtpErlangObject>> entrySet() {
+        return bindings.entrySet();
     }
 
 }

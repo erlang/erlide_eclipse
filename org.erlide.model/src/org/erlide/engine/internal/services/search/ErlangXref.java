@@ -10,7 +10,7 @@ import org.erlide.engine.services.search.XrefService;
 import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.RpcFuture;
 import org.erlide.util.ErlLogger;
-import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.OtpBindings;
 import org.erlide.util.erlang.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -73,7 +73,7 @@ public class ErlangXref implements XrefService {
         try {
             final OtpErlangObject r = backend.call(ERLIDE_XREF, "function_use", "aai",
                     mod, fun, arity);
-            final Bindings bind = ErlUtils.match("{ok, L}", r);
+            final OtpBindings bind = ErlUtils.match("{ok, L}", r);
             if (bind == null) {
                 return new FunctionRef[0];
             }

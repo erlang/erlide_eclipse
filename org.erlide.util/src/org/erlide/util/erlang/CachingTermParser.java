@@ -9,7 +9,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-public class CachingTermParser extends TermParser {
+public class CachingTermParser extends OtpParser {
 
     private final LoadingCache<String, OtpErlangObject> cache;
 
@@ -18,21 +18,21 @@ public class CachingTermParser extends TermParser {
                 .maximumSize(250).build(new CacheLoader<String, OtpErlangObject>() {
                     @Override
                     public OtpErlangObject load(final String key)
-                            throws TermParserException {
+                            throws OtpParserException {
                         return doParse(key);
                     }
                 });
     }
 
     @Override
-    public OtpErlangObject parse(final String s) throws TermParserException {
+    public OtpErlangObject parse(final String s) throws OtpParserException {
         if (Strings.isNullOrEmpty(s)) {
             return null;
         }
         try {
             return cache.get(s);
         } catch (final ExecutionException e) {
-            throw (TermParserException) e.getCause();
+            throw (OtpParserException) e.getCause();
         }
     }
 

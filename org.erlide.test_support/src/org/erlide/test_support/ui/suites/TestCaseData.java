@@ -5,10 +5,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.erlide.util.ErlLogger;
-import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.OtpBindings;
 import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.OtpErlang;
-import org.erlide.util.erlang.TermParserException;
+import org.erlide.util.erlang.OtpParserException;
 
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -91,7 +91,7 @@ public class TestCaseData {
                 try {
                     return new FailStackItem(OtpErlang.getTermParser().parse(
                             "{unknown,unknown,0}"));
-                } catch (final TermParserException e) {
+                } catch (final OtpParserException e) {
                     // ignored
                 }
             }
@@ -113,7 +113,7 @@ public class TestCaseData {
         @Override
         public String toString() {
             try {
-                final Bindings b = ErlUtils.match("{M:a, F:a, A}", item);
+                final OtpBindings b = ErlUtils.match("{M:a, F:a, A}", item);
                 m = b.getQuotedAtom("M");
                 f = b.getQuotedAtom("F");
                 a = b.get("A");
@@ -179,7 +179,7 @@ public class TestCaseData {
     static final List<OtpErlangObject> NO_STACK = new ArrayList<OtpErlangObject>();
 
     private FailReason parseReason(final OtpErlangObject reason) {
-        Bindings b;
+        OtpBindings b;
         try {
             b = ErlUtils.match("{Cause, Stack}", reason);
             if (b == null) {
@@ -187,7 +187,7 @@ public class TestCaseData {
             }
             final Collection<OtpErlangObject> stack = b.getList("Stack");
             return new FailReason(b.get("Cause").toString(), stack);
-        } catch (final TermParserException e) {
+        } catch (final OtpParserException e) {
             ErlLogger.warn(e);
         } catch (final OtpErlangException e) {
             ErlLogger.warn(e);

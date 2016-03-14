@@ -13,10 +13,10 @@ package org.erlide.runtime.internal;
 import java.util.Collection;
 
 import org.erlide.util.ErlLogger;
-import org.erlide.util.erlang.Bindings;
+import org.erlide.util.erlang.OtpBindings;
 import org.erlide.util.erlang.ErlUtils;
 import org.erlide.util.erlang.OtpErlang;
-import org.erlide.util.erlang.TermParserException;
+import org.erlide.util.erlang.OtpParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -100,7 +100,7 @@ public class IOServer implements Runnable {
         if (callback == null) {
             return error;
         }
-        Bindings b;
+        OtpBindings b;
         try {
             if (arequest instanceof OtpErlangTuple) {
                 final OtpErlangTuple request = (OtpErlangTuple) arequest;
@@ -210,7 +210,7 @@ public class IOServer implements Runnable {
             } else {
                 return error;
             }
-        } catch (final TermParserException e) {
+        } catch (final OtpParserException e) {
             ErlLogger.error(e);
         } catch (final OtpErlangException e) {
             ErlLogger.error(e);

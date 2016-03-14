@@ -28,13 +28,13 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.base.Strings;
 
-public class TermParser {
+public class OtpParser {
 
-    public OtpErlangObject parse(final String s) throws TermParserException {
+    public OtpErlangObject parse(final String s) throws OtpParserException {
         return doParse(s);
     }
 
-    protected static OtpErlangObject doParse(final String s) throws TermParserException {
+    protected static OtpErlangObject doParse(final String s) throws OtpParserException {
         if (Strings.isNullOrEmpty(s)) {
             return null;
         }
@@ -42,7 +42,7 @@ public class TermParser {
     }
 
     private static OtpErlangObject parse(final List<Token> tokens)
-            throws TermParserException {
+            throws OtpParserException {
         if (tokens.isEmpty()) {
             return null;
         }
@@ -50,7 +50,7 @@ public class TermParser {
         final Token t = tokens.remove(0);
         final String text = t.text;
         if (text == null) {
-            throw new TermParserException("null token" + t.toString());
+            throw new OtpParserException("null token" + t.toString());
         }
         switch (t.kind) {
         case ATOM:
@@ -72,26 +72,26 @@ public class TermParser {
             result = parseTuple(tokens, new Stack<OtpErlangObject>());
             break;
         case TUPLEEND:
-            throw new TermParserException("unexpected " + t.toString());
+            throw new OtpParserException("unexpected " + t.toString());
         case LISTSTART:
             result = parseList(tokens, new Stack<OtpErlangObject>(), null);
             break;
         case LISTEND:
-            throw new TermParserException("unexpected " + t.toString());
+            throw new OtpParserException("unexpected " + t.toString());
         case MAP:
             result = parseMap(tokens, new Stack<OtpErlangObject>());
             break;
         case COMMA:
-            throw new TermParserException("unexpected " + t.toString());
+            throw new OtpParserException("unexpected " + t.toString());
         default:
-            throw new TermParserException("unknown token" + t.toString());
+            throw new OtpParserException("unknown token" + t.toString());
         }
         return result;
     }
 
     private static OtpErlangObject parseList(final List<Token> tokens,
             final Stack<OtpErlangObject> stack, final OtpErlangObject tail)
-            throws TermParserException {
+            throws OtpParserException {
         if (tokens.isEmpty()) {
             return null;
         }
@@ -117,14 +117,14 @@ public class TermParser {
                 tokens.remove(0);
             } else if (tokens.get(0).kind != TokenKind.LISTEND
                     && tokens.get(0).kind != TokenKind.CONS) {
-                throw new TermParserException("missing comma in list");
+                throw new OtpParserException("missing comma in list");
             }
         }
         return parseList(tokens, stack, atail);
     }
 
     private static OtpErlangObject parseTuple(final List<Token> tokens,
-            final Stack<OtpErlangObject> stack) throws TermParserException {
+            final Stack<OtpErlangObject> stack) throws OtpParserException {
         if (tokens.isEmpty()) {
             return null;
         }
@@ -134,19 +134,19 @@ public class TermParser {
             return new OtpErlangTuple(stack.toArray(new OtpErlangObject[stack.size()]));
         }
         if (t.kind == TokenKind.CONS) {
-            throw new TermParserException("cons is invalid in tuple");
+            throw new OtpParserException("cons is invalid in tuple");
         }
         stack.push(parse(tokens));
         if (tokens.get(0).kind == TokenKind.COMMA) {
             tokens.remove(0);
         } else if (tokens.get(0).kind != TokenKind.TUPLEEND) {
-            throw new TermParserException("missing comma in tuple");
+            throw new OtpParserException("missing comma in tuple");
         }
         return parseTuple(tokens, stack);
     }
 
     private static OtpErlangObject parseMap(final List<Token> tokens,
-            final Stack<OtpErlangObject> stack) throws TermParserException {
+            final Stack<OtpErlangObject> stack) throws OtpParserException {
         if (tokens.isEmpty()) {
             return null;
         }
@@ -165,14 +165,14 @@ public class TermParser {
         }
         stack.push(parse(tokens));
         if (tokens.get(0).kind != TokenKind.ARROW) {
-            throw new TermParserException("badly constructed map");
+            throw new OtpParserException("badly constructed map");
         }
         tokens.remove(0);
         stack.push(parse(tokens));
         if (tokens.get(0).kind == TokenKind.COMMA) {
             tokens.remove(0);
         } else if (tokens.get(0).kind != TokenKind.TUPLEEND) {
-            throw new TermParserException("missing comma in map");
+            throw new OtpParserException("missing comma in map");
         }
 
         return parseMap(tokens, stack);
