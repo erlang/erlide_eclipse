@@ -7,7 +7,6 @@ import org.erlide.engine.services.search.SearchServerService;
 import org.erlide.runtime.api.IOtpRpc;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.util.ErlLogger;
 import org.erlide.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -49,7 +48,8 @@ public class ErlideSearchServer implements SearchServerService {
             throws RpcException {
         final OtpErlangList modules = getModulesFromScope(scope);
         backend.async_call_result(callback, "erlide_search_server", "start_find_refs",
-                "xxxso", pattern.getSearchObject(), modules, stateDir, updateSearchServer);
+                "xxxso", pattern.getSearchObject(), modules, stateDir,
+                updateSearchServer);
     }
 
     @Override
@@ -58,7 +58,6 @@ public class ErlideSearchServer implements SearchServerService {
             final boolean updateSearchServer) throws RpcException {
         final OtpErlangList modules = getModulesFromScope(scope);
         final OtpErlangObject searchObject = pattern.getSearchObject();
-        ErlLogger.debug("searchObject %s", searchObject);
         final OtpErlangObject r = backend.call(SEARCH_LONG_TIMEOUT,
                 "erlide_search_server", "find_refs", "xxso", searchObject, modules,
                 stateDir, updateSearchServer);

@@ -62,8 +62,8 @@ import com.google.common.collect.Lists;
  */
 public final class ErlParser implements ParserService {
 
-    private static final class SourceOffsetComparator implements
-            Comparator<ISourceReference> {
+    private static final class SourceOffsetComparator
+            implements Comparator<ISourceReference> {
         @Override
         public int compare(final ISourceReference o1, final ISourceReference o2) {
             final int offset1 = o1.getSourceRange().getOffset();
@@ -146,8 +146,8 @@ public final class ErlParser implements ParserService {
 
     private List<IErlComment> createComments(final IErlModule module,
             final OtpErlangList comments) {
-        final List<IErlComment> moduleComments = Lists.newArrayListWithCapacity(comments
-                .arity());
+        final List<IErlComment> moduleComments = Lists
+                .newArrayListWithCapacity(comments.arity());
         for (final OtpErlangObject comment : comments) {
             final IErlComment c = createComment(module, (OtpErlangTuple) comment);
             if (c != null) {
@@ -170,12 +170,12 @@ public final class ErlParser implements ParserService {
     }
 
     /**
-     * attach local function documentation with heuristics: if a comment is
-     * within 3 lines before function, or a sequence of comment, -spec, comment,
-     * then they should be added to function documentation
+     * attach local function documentation with heuristics: if a comment is within 3 lines
+     * before function, or a sequence of comment, -spec, comment, then they should be
+     * added to function documentation
      *
-     * If any typespec is available for the function (wherever it is located),
-     * then it should be attached too.
+     * If any typespec is available for the function (wherever it is located), then it
+     * should be attached too.
      *
      * @param module
      */
@@ -184,8 +184,8 @@ public final class ErlParser implements ParserService {
         try {
             final Collection<IErlComment> comments = module.getComments();
             final List<IErlElement> children = module.getChildren();
-            final List<IErlMember> all = Lists.newArrayListWithCapacity(children.size()
-                    + comments.size());
+            final List<IErlMember> all = Lists
+                    .newArrayListWithCapacity(children.size() + comments.size());
             all.addAll(comments);
             for (final IErlElement element : children) {
                 if (element instanceof IErlMember) {
@@ -329,8 +329,8 @@ public final class ErlParser implements ParserService {
         } else if ("function".equals(typeS)) {
             final ErlFunction f = makeErlFunction(module, el);
             final OtpErlangList clauses = (OtpErlangList) el.elementAt(6);
-            final List<ErlFunctionClause> cls = Lists.newArrayListWithCapacity(clauses
-                    .arity());
+            final List<ErlFunctionClause> cls = Lists
+                    .newArrayListWithCapacity(clauses.arity());
             for (int i = 0; i < clauses.arity(); i++) {
                 final OtpErlangTuple clause = (OtpErlangTuple) clauses.elementAt(i);
                 final ErlFunctionClause cl = makeErlFunctionClause(f, i, clause);
@@ -339,7 +339,7 @@ public final class ErlParser implements ParserService {
             f.setChildren(cls);
             return f;
         } else {
-            ErlLogger.debug("unknown: " + el);
+            ErlLogger.debug("unknown: " + typeS);
         }
         return null;
     }
@@ -348,11 +348,12 @@ public final class ErlParser implements ParserService {
      * @param module
      *            module
      * @param el
-     *            -record(function, {pos, name, arity, args, head, clauses,
-     *            name_pos, comment, exported}).
+     *            -record(function, {pos, name, arity, args, head, clauses, name_pos,
+     *            comment, exported}).
      * @return ErlFunction
      */
-    private ErlFunction makeErlFunction(final IErlModule module, final OtpErlangTuple el) {
+    private ErlFunction makeErlFunction(final IErlModule module,
+            final OtpErlangTuple el) {
         final OtpErlangTuple pos = (OtpErlangTuple) el.elementAt(1);
         final OtpErlangAtom name = (OtpErlangAtom) el.elementAt(2);
         final OtpErlangLong arity = (OtpErlangLong) el.elementAt(3);
@@ -427,7 +428,8 @@ public final class ErlParser implements ParserService {
             return addExportAttribute(module, pos, val, extra);
         } else if ("record".equals(nameS)) {
             return addRecordDef(module, pos, val, extra);
-        } else if ("type".equals(nameS) || "spec".equals(nameS) || "opaque".equals(nameS)) {
+        } else if ("type".equals(nameS) || "spec".equals(nameS)
+                || "opaque".equals(nameS)) {
             return addTypespec(module, pos, extra);
         } else if ("define".equals(nameS)) {
             return addMacroDef(module, pos, val, extra, nameS);
@@ -448,8 +450,8 @@ public final class ErlParser implements ParserService {
             final OtpErlangObject val, final OtpErlangObject extra, final String nameS) {
         if (val instanceof OtpErlangAtom) {
             final String s = Util.stringValue(extra);
-            final ErlMember r = new ErlMacroDef(module,
-                    ((OtpErlangAtom) val).atomValue(), s);
+            final ErlMember r = new ErlMacroDef(module, ((OtpErlangAtom) val).atomValue(),
+                    s);
             setPos(r, pos);
             // r.setParseTree(val);
             return r;
@@ -469,8 +471,8 @@ public final class ErlParser implements ParserService {
                 } else {
                     // what do we do here? the define isn't correct
                     // Erlang...
-                    ErlLogger.warn("Strange macro definition in %s: %s",
-                            module.getName(), o.toString());
+                    ErlLogger.warn("Strange macro definition in %s: %s", module.getName(),
+                            o.toString());
                     r = new ErlMacroDef(module, o.toString(), null);
                 }
                 setPos(r, pos);
@@ -501,20 +503,20 @@ public final class ErlParser implements ParserService {
                 o = null;
             }
         }
-        final ErlAttribute a = new ErlAttribute(module, nameS, o, Util.stringValue(extra));
+        final ErlAttribute a = new ErlAttribute(module, nameS, o,
+                Util.stringValue(extra));
         setPos(a, pos);
         // a.setParseTree(val);
         return a;
     }
 
-    private IErlRecordDef addRecordDef(final IErlModule module,
-            final OtpErlangObject pos, final OtpErlangObject val,
-            final OtpErlangObject extra) {
+    private IErlRecordDef addRecordDef(final IErlModule module, final OtpErlangObject pos,
+            final OtpErlangObject val, final OtpErlangObject extra) {
         if (val instanceof OtpErlangTuple) {
             final OtpErlangTuple recordTuple = (OtpErlangTuple) val;
             if (recordTuple.elementAt(0) instanceof OtpErlangAtom) {
-                final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
-                        .stringValue() : null;
+                final String s = extra instanceof OtpErlangString
+                        ? ((OtpErlangString) extra).stringValue() : null;
                 final OtpErlangList fields = (OtpErlangList) recordTuple.elementAt(1);
                 final ErlRecordDef r = new ErlRecordDef(module, null, s);
                 setPos(r, pos);
@@ -549,8 +551,8 @@ public final class ErlParser implements ParserService {
             }
         }
         if (val instanceof OtpErlangAtom) {
-            final String s = extra instanceof OtpErlangString ? ((OtpErlangString) extra)
-                    .stringValue() : null;
+            final String s = extra instanceof OtpErlangString
+                    ? ((OtpErlangString) extra).stringValue() : null;
             final ErlRecordDef r = new ErlRecordDef(module, null, s);
             setPos(r, pos);
             return r;
