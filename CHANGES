@@ -1,3 +1,10 @@
+List of user visible changes between 0.29.13 and 0.29.14 (20160315)
+
+5aa992a #246 - runtime version numbers may use _ as delimiter
+fd07bab #235 - recognize more types of version numbers
+d0b9b20 #233 - improve launch "runtime" tab to make it clearer
+2d6a2af #259 - clean debug printouts
+
 List of user visible changes between 0.29.11 and 0.29.12 (20150710)
 
 dca59f3 #229 - epp error, unable to build automatically
