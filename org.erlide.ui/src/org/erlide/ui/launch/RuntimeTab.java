@@ -41,6 +41,7 @@ import org.erlide.util.HostnameChecker;
 import org.erlide.util.NodeHostClassifier;
 import org.erlide.util.NodeHostClassifier.HostnameType;
 import org.erlide.util.NodeHostClassifier.NodeType;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 public class RuntimeTab extends AbstractLaunchConfigurationTab {
 

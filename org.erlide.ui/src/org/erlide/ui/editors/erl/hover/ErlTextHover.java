@@ -171,8 +171,8 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
         return fHoverControlCreator;
     }
 
-    public static final class HoverControlCreator extends
-            AbstractReusableInformationControlCreator {
+    public static final class HoverControlCreator
+            extends AbstractReusableInformationControlCreator {
         IInformationControlCreator fInformationPresenterControlCreator;
 
         public HoverControlCreator(
@@ -288,14 +288,10 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
             final IErlModel model = ErlangEngine.getInstance().getModel();
             final String externalModulesString = erlProject.getProperties()
                     .getExternalModules();
-            final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine
-                    .getInstance()
-                    .getService(OtpDocService.class)
-                    .getOtpDoc(backend, offset, stateDir, editor.getScannerName(),
-                            fImports, externalModulesString, model.getPathVars());
-            final String ts = t.toString();
-            ErlLogger.debug("otp doc %s", ts.substring(0, Math.min(ts.length(), 50))
-                    + "...");
+            final OtpErlangTuple t = (OtpErlangTuple) ErlangEngine.getInstance()
+                    .getService(OtpDocService.class).getOtpDoc(backend, offset, stateDir,
+                            editor.getScannerName(), fImports, externalModulesString,
+                            model.getPathVars());
             if (Util.isOk(t)) {
                 element = new OpenResult(t.elementAt(2));
                 final String docStr = Util.stringValue(t.elementAt(1));
@@ -327,7 +323,7 @@ public class ErlTextHover implements ITextHover, IInformationProviderExtension2,
             return null;
         }
         final String strResult = HoverUtil.getHTMLAndReplaceJSLinks(result);
-        return new ErlBrowserInformationControlInput(null, editor, element, strResult,
-                20, HoverUtil.getDocumentationURL(docPath, anchor));
+        return new ErlBrowserInformationControlInput(null, editor, element, strResult, 20,
+                HoverUtil.getDocumentationURL(docPath, anchor));
     }
 }
