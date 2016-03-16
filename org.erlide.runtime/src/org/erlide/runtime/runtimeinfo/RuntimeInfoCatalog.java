@@ -85,7 +85,7 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
     @Override
     public @NonNull RuntimeInfo getRuntime(final String name) {
         final RuntimeInfo rt = runtimes.get(name);
-        if (rt != null) {
+        if (rt != null && rt.isValid()) {
             return rt;
         }
         return RuntimeInfo.NO_RUNTIME_INFO;
@@ -140,19 +140,19 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
     @Override
     public RuntimeInfo getRuntime(final RuntimeVersion runtimeVersion,
             final String runtimeName) {
-        final List<RuntimeInfo> vsns = VersionLocator.locateVersion(runtimeVersion,
+        final Collection<RuntimeInfo> vsns = VersionLocator.locateVersion(runtimeVersion,
                 runtimes.values(), false);
         if (vsns.isEmpty()) {
             return null;
         } else if (vsns.size() == 1) {
-            return vsns.get(0);
+            return vsns.iterator().next();
         } else {
             for (final RuntimeInfo ri : vsns) {
                 if (runtimeName == null || ri.getName().equals(runtimeName)) {
                     return ri;
                 }
             }
-            return vsns.get(0);
+            return vsns.iterator().next();
         }
     }
 
@@ -171,16 +171,15 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
     }
 
     /**
-     * If runtime is not set, try to locate one. The first one found as below is
-     * set as default. All "obvious" runtimes found are stored.
+     * If runtime is not set, try to locate one. The first one found as below is set as
+     * default. All "obvious" runtimes found are stored.
      * <ul>
-     * <li>A system property <code>erlide.runtime</code> can be set to point to
-     * a location.</li>
-     * <li>A preference in the default scope
-     * <code>org.erlide.core/default_runtime</code> can be set to point to a
+     * <li>A system property <code>erlide.runtime</code> can be set to point to a
      * location.</li>
-     * <li>Look for existing Erlang runtimes in a few obvious places and install
-     * them, choosing a suitable one as default.</li>
+     * <li>A preference in the default scope <code>org.erlide.core/default_runtime</code>
+     * can be set to point to a location.</li>
+     * <li>Look for existing Erlang runtimes in a few obvious places and install them,
+     * choosing a suitable one as default.</li>
      * </ul>
      *
      */

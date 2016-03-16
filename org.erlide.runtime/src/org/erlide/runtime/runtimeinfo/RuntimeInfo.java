@@ -22,6 +22,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import com.google.common.base.Charsets;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
@@ -153,10 +154,7 @@ public final class RuntimeInfo {
 
     public static boolean isValidOtpHome(final String otpHome) {
         // Check if it looks like a ERL_TOP location:
-        if (otpHome == null) {
-            return false;
-        }
-        if (otpHome.length() == 0) {
+        if (Strings.isNullOrEmpty(otpHome)) {
             return false;
         }
         final File d = new File(otpHome);
