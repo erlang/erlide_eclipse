@@ -21,6 +21,16 @@
 		<exec executable="bash" dir="${website}" searchpath="true" failonerror="true">
 			<arg value="-l"/>
 			<arg value="-c"/>
+			<arg value="gem install bundler"/>
+		</exec>
+		<exec executable="bash" dir="${website}" searchpath="true" failonerror="true">
+			<arg value="-l"/>
+			<arg value="-c"/>
+			<arg value="bundle install"/>
+		</exec>
+		<exec executable="bash" dir="${website}" searchpath="true" failonerror="true">
+			<arg value="-l"/>
+			<arg value="-c"/>
 			<arg value="bundle exec jekyll build"/>
 		</exec>
 		<!--java jar="${gen_toc}" fork="true" failonerror="true">
