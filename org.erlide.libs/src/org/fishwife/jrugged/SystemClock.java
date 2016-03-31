@@ -24,8 +24,8 @@ public class SystemClock implements Clock {
     /**
      * Returns the current system time in milliseconds.
      *
-     * @return the difference, measured in milliseconds, between the current
-     *         time and midnight, January 1, 1970 UTC.
+     * @return the difference, measured in milliseconds, between the current time and
+     *         midnight, January 1, 1970 UTC.
      * @see java.lang.System#currentTimeMillis()
      */
     @Override

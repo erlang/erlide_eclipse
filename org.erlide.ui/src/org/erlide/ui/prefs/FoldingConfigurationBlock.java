@@ -1,10 +1,5 @@
 package org.erlide.ui.prefs;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,8 +48,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
         }
 
         /*
-         * @see
-         * org.eclipse.jdt.internal.ui.text.folding.IErlangFoldingPreferences#
+         * @see org.eclipse.jdt.internal.ui.text.folding.IErlangFoldingPreferences#
          * createControl(org.eclipse.swt.widgets.Group)
          */
         @Override
@@ -108,7 +102,6 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
     private final Map<String, Control> fProviderControls;
 
     public FoldingConfigurationBlock(final OverlayPreferenceStore store) {
-        assertThat(store, is(not(nullValue())));
         fStore = store;
         fStore.addKeys(createOverlayStoreKeys());
         fProviderDescriptors = createListModel();
@@ -250,8 +243,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
             }
 
             /*
-             * @see
-             * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse
+             * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse
              * .jface.viewers.Viewer, java.lang.Object, java.lang.Object)
              */
             @Override
@@ -260,8 +252,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
             }
 
             /*
-             * @see
-             * org.eclipse.jface.viewers.IStructuredContentProvider#getElements
+             * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements
              * (java.lang.Object)
              */
             @Override
@@ -272,9 +263,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
         viewer.setLabelProvider(new LabelProvider() {
 
             /*
-             * @see
-             * org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object
-             * )
+             * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object )
              */
             @Override
             public Image getImage(final Object element) {
@@ -282,8 +271,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
             }
 
             /*
-             * @see
-             * org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
+             * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
              */
             @Override
             public String getText(final Object element) {

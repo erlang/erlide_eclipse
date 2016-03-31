@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A ServiceStatus is used by a {@link MonitoredService} to report it's status.
- * The status includes the name of the service, the {@link Status} for the
- * service, and the {@link List} of reasons for the status.
+ * A ServiceStatus is used by a {@link MonitoredService} to report it's status. The status
+ * includes the name of the service, the {@link Status} for the service, and the
+ * {@link List} of reasons for the status.
  */
 public class ServiceStatus {
     private final String name;
@@ -40,7 +40,7 @@ public class ServiceStatus {
     public ServiceStatus(final String name, final Status status) {
         this.name = name;
         this.status = status;
-        reasons = new ArrayList<String>();
+        reasons = new ArrayList<>();
     }
 
     /**
@@ -56,7 +56,7 @@ public class ServiceStatus {
     public ServiceStatus(final String name, final Status status, final String reason) {
         this.name = name;
         this.status = status;
-        reasons = new ArrayList<String>();
+        reasons = new ArrayList<>();
         if (reason != null) {
             reasons.add(reason);
         }
@@ -76,7 +76,7 @@ public class ServiceStatus {
             final List<String> reasons) {
         this.name = name;
         this.status = status;
-        this.reasons = new ArrayList<String>();
+        this.reasons = new ArrayList<>();
         if (reasons != null) {
             this.reasons.addAll(reasons);
         }
@@ -106,6 +106,6 @@ public class ServiceStatus {
      * @return the {@link List} of reasons.
      */
     public List<String> getReasons() {
-        return new ArrayList<String>(reasons);
+        return new ArrayList<>(reasons);
     }
 }

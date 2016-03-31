@@ -10,27 +10,23 @@
  *******************************************************************************/
 package org.erlide.ui.internal.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Control;
 
 /**
  * Helper class to layout a number of children if the composite uses a
- * <code>GridLayout</code>. If the numbers of widgets to be layouted into one
- * row is smaller than the number of columns defined for the grid layout the
- * helper class assigns a corresponing value to the <code>
+ * <code>GridLayout</code>. If the numbers of widgets to be layouted into one row is
+ * smaller than the number of columns defined for the grid layout the helper class assigns
+ * a corresponing value to the <code>
  * GridData.horizontalSpan</code> field.
  *
- * Additionally a row layouter manages a default <code>GridData</code> object
- * for each column. If set this grid data is used for the widget if it doesn't
- * manage its own grid data object.
+ * Additionally a row layouter manages a default <code>GridData</code> object for each
+ * column. If set this grid data is used for the widget if it doesn't manage its own grid
+ * data object.
  *
- * Call one of the <code>perform</code> methods to assign the correct grid data
- * objects to a set of widgets according to the number of columns passed to the
- * layouter's constructor.
+ * Call one of the <code>perform</code> methods to assign the correct grid data objects to
+ * a set of widgets according to the number of columns passed to the layouter's
+ * constructor.
  */
 public class RowLayouter {
 
@@ -89,7 +85,6 @@ public class RowLayouter {
 
     public void perform(final Control[] controls, final int spanColumn) {
         final int numColumns = numColumns();
-        assertThat(controls.length, is(lessThanOrEqualTo(numColumns)));
         order(controls);
         int gridIndex = 0;
         for (int i = 0; i < controls.length; i++) {

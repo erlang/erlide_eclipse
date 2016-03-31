@@ -1,5 +1,5 @@
 .eunit
-deps
+deps/
 *.o
 *.beam
 !org.erlide.kernel/**/*.beam
@@ -13,7 +13,7 @@ hs_err_pid*
 
 workspaces
 **/bin/
-**/ebin/*.app
+**/ebin/
 *.orig
 *.rej
 hs_err*.log
@@ -50,4 +50,5 @@ junit.xml
 *.pmd
 *.xtendbin
 .gradle
-build
+build/
+xtend-gen/

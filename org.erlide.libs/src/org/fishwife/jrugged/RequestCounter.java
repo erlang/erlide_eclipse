@@ -19,9 +19,9 @@ package org.fishwife.jrugged;
 import java.util.concurrent.Callable;
 
 /**
- * This is a statistics wrapper that counts total requests, as well as how many
- * succeed and how many fail. This class can be polled periodically to measure
- * request rates, success rates, and failure rates.
+ * This is a statistics wrapper that counts total requests, as well as how many succeed
+ * and how many fail. This class can be polled periodically to measure request rates,
+ * success rates, and failure rates.
  */
 public class RequestCounter implements ServiceWrapper {
     private long numRequests = 0L;
@@ -43,8 +43,8 @@ public class RequestCounter implements ServiceWrapper {
     }
 
     /**
-     * Wrap the given service call with the {@link RequestCounter} to count the
-     * number of calls made.
+     * Wrap the given service call with the {@link RequestCounter} to count the number of
+     * calls made.
      *
      * @param c
      *            the {@link Callable} to attempt
@@ -67,8 +67,8 @@ public class RequestCounter implements ServiceWrapper {
     }
 
     /**
-     * Wrap the given service call with the {@link RequestCounter} to count the
-     * number of calls made.
+     * Wrap the given service call with the {@link RequestCounter} to count the number of
+     * calls made.
      *
      * @param r
      *            the {@link Runnable} to attempt
@@ -88,8 +88,8 @@ public class RequestCounter implements ServiceWrapper {
     }
 
     /**
-     * Wrap the given service call with the {@link RequestCounter} to count the
-     * number of calls made.
+     * Wrap the given service call with the {@link RequestCounter} to count the number of
+     * calls made.
      *
      * @param r
      *            the {@link Runnable} to attempt
@@ -116,9 +116,8 @@ public class RequestCounter implements ServiceWrapper {
     /**
      * Samples the current counts.
      *
-     * @return an array of three <code>longs</code>: the total number of
-     *         requests, the number of successful requests, and the number of
-     *         failed requests.
+     * @return an array of three <code>longs</code>: the total number of requests, the
+     *         number of successful requests, and the number of failed requests.
      */
     public synchronized long[] sample() {
         return new long[] { numRequests, numSuccesses, numFailures };

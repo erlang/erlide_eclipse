@@ -3,12 +3,11 @@ package org.incava.util.diff;
 import com.google.common.base.Objects;
 
 /**
- * Represents a difference, as used in <code>Diff</code>. A difference consists
- * of two pairs of starting and ending points, each pair representing either the
- * "from" or the "to" collection passed to <code>Diff</code>. If an ending point
- * is -1, then the difference was either a deletion or an addition. For example,
- * if <code>getDeletedEnd()</code> returns -1, then the difference represents an
- * addition.
+ * Represents a difference, as used in <code>Diff</code>. A difference consists of two
+ * pairs of starting and ending points, each pair representing either the "from" or the
+ * "to" collection passed to <code>Diff</code>. If an ending point is -1, then the
+ * difference was either a deletion or an addition. For example, if
+ * <code>getDeletedEnd()</code> returns -1, then the difference represents an addition.
  */
 public class Difference {
     public static final int NONE = -1;
@@ -34,8 +33,8 @@ public class Difference {
     private int addEnd = NONE;
 
     /**
-     * Creates the difference for the given start and end points for the
-     * deletion and addition.
+     * Creates the difference for the given start and end points for the deletion and
+     * addition.
      */
     public Difference(final int delStart, final int delEnd, final int addStart,
             final int addEnd) {
@@ -46,40 +45,40 @@ public class Difference {
     }
 
     /**
-     * The point at which the deletion starts, if any. A value equal to
-     * <code>NONE</code> means this is an addition.
+     * The point at which the deletion starts, if any. A value equal to <code>NONE</code>
+     * means this is an addition.
      */
     public int getDeletedStart() {
         return delStart;
     }
 
     /**
-     * The point at which the deletion ends, if any. A value equal to
-     * <code>NONE</code> means this is an addition.
+     * The point at which the deletion ends, if any. A value equal to <code>NONE</code>
+     * means this is an addition.
      */
     public int getDeletedEnd() {
         return delEnd;
     }
 
     /**
-     * The point at which the addition starts, if any. A value equal to
-     * <code>NONE</code> means this must be an addition.
+     * The point at which the addition starts, if any. A value equal to <code>NONE</code>
+     * means this must be an addition.
      */
     public int getAddedStart() {
         return addStart;
     }
 
     /**
-     * The point at which the addition ends, if any. A value equal to
-     * <code>NONE</code> means this must be an addition.
+     * The point at which the addition ends, if any. A value equal to <code>NONE</code>
+     * means this must be an addition.
      */
     public int getAddedEnd() {
         return addEnd;
     }
 
     /**
-     * Sets the point as deleted. The start and end points will be modified to
-     * include the given line.
+     * Sets the point as deleted. The start and end points will be modified to include the
+     * given line.
      */
     public void setDeleted(final int line) {
         delStart = Math.min(line, delStart);
@@ -87,8 +86,8 @@ public class Difference {
     }
 
     /**
-     * Sets the point as added. The start and end points will be modified to
-     * include the given line.
+     * Sets the point as added. The start and end points will be modified to include the
+     * given line.
      */
     public void setAdded(final int line) {
         addStart = Math.min(line, addStart);
@@ -96,8 +95,8 @@ public class Difference {
     }
 
     /**
-     * Compares this object to the other for equality. Both objects must be of
-     * type Difference, with the same starting and ending points.
+     * Compares this object to the other for equality. Both objects must be of type
+     * Difference, with the same starting and ending points.
      */
     @Override
     public boolean equals(final Object obj) {
@@ -106,9 +105,8 @@ public class Difference {
 
             return delStart == other.delStart && delEnd == other.delEnd
                     && addStart == other.addStart && addEnd == other.addEnd;
-        } else {
-            return false;
         }
+        return false;
     }
 
     @Override

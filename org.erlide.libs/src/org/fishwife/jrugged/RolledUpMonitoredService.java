@@ -19,16 +19,15 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A {@link RolledUpMonitoredService} provides for grouping
- * {@link MonitoredService} instances together into a single system for status
- * reporting purposes. Subsystems are divided into <em>critical</em> and
- * <em>noncritical</em> groups. The system as a whole will only report UP status
- * (GREEN) if all subsystems, critical and noncritical alike, are likewise UP.
- * Critical systems are necessary for providing functionality within the system,
- * so the system as a whole reports the lowest (least functional) status of any
- * critical systems which are not UP. If all critical systems are UP, but one or
- * more noncritical systems are not UP, then the system as a whole will be in
- * the DEGRADED (YELLOW) state.
+ * A {@link RolledUpMonitoredService} provides for grouping {@link MonitoredService}
+ * instances together into a single system for status reporting purposes. Subsystems are
+ * divided into <em>critical</em> and <em>noncritical</em> groups. The system as a whole
+ * will only report UP status (GREEN) if all subsystems, critical and noncritical alike,
+ * are likewise UP. Critical systems are necessary for providing functionality within the
+ * system, so the system as a whole reports the lowest (least functional) status of any
+ * critical systems which are not UP. If all critical systems are UP, but one or more
+ * noncritical systems are not UP, then the system as a whole will be in the DEGRADED
+ * (YELLOW) state.
  */
 public class RolledUpMonitoredService implements MonitoredService {
     private final String name;
@@ -36,18 +35,17 @@ public class RolledUpMonitoredService implements MonitoredService {
     private final Collection<? extends MonitoredService> noncriticals;
 
     /**
-     * Initializes the {@link RolledUpMonitoredService} with its component
-     * subsystems.
+     * Initializes the {@link RolledUpMonitoredService} with its component subsystems.
      *
      * @param name
      *            the name for this rolled up service.
      * @param criticals
-     *            the set of {@link MonitoredService} subsystems that are
-     *            necessary for the system as a whole to be functional
+     *            the set of {@link MonitoredService} subsystems that are necessary for
+     *            the system as a whole to be functional
      * @param noncriticals
-     *            the set of <code>MonitoredService</code> subsystems that are
-     *            part of the system as a whole but which are not strictly
-     *            necessary for functionality.
+     *            the set of <code>MonitoredService</code> subsystems that are part of the
+     *            system as a whole but which are not strictly necessary for
+     *            functionality.
      */
     public RolledUpMonitoredService(final String name,
             final Collection<? extends MonitoredService> criticals,
@@ -59,17 +57,17 @@ public class RolledUpMonitoredService implements MonitoredService {
 
     /**
      * Get the {@link ServiceStatus} for the rolled up service. The name for the
-     * ServiceStatus is the name of this rolled up service. The {@link Status}
-     * is computed based on the status of the critical and non-critical
-     * subsystems. The {@link List} of reasons contains the reasons reported for
-     * each system. Each service returns the service name in addition to the
-     * reason that it has that status (which is reported by the service itself)
+     * ServiceStatus is the name of this rolled up service. The {@link Status} is computed
+     * based on the status of the critical and non-critical subsystems. The {@link List}
+     * of reasons contains the reasons reported for each system. Each service returns the
+     * service name in addition to the reason that it has that status (which is reported
+     * by the service itself)
      *
      * @return the {@link ServiceStatus}.
      */
     @Override
     public ServiceStatus getServiceStatus() {
-        final List<String> reasons = new ArrayList<String>();
+        final List<String> reasons = new ArrayList<>();
 
         Status criticalStatus = Status.UP;
 
@@ -110,8 +108,7 @@ public class RolledUpMonitoredService implements MonitoredService {
     }
 
     /**
-     * Get the {@link List} of {@link ServiceStatus} instances for all
-     * subsystems.
+     * Get the {@link List} of {@link ServiceStatus} instances for all subsystems.
      *
      * @return the {@link List} of {@link ServiceStatus} instances.
      */
@@ -128,7 +125,7 @@ public class RolledUpMonitoredService implements MonitoredService {
      * @return the {@link List} of {@link ServiceStatus} instances.
      */
     public List<ServiceStatus> getCriticalStatuses() {
-        final List<ServiceStatus> list = new ArrayList<ServiceStatus>();
+        final List<ServiceStatus> list = new ArrayList<>();
 
         for (final MonitoredService m : criticals) {
             final ServiceStatus serviceStatus = m.getServiceStatus();
@@ -138,13 +135,13 @@ public class RolledUpMonitoredService implements MonitoredService {
     }
 
     /**
-     * Get the {@link List} of {@link ServiceStatus} instances for all
-     * non-critical subsystems.
+     * Get the {@link List} of {@link ServiceStatus} instances for all non-critical
+     * subsystems.
      *
      * @return the {@link List} of {@link ServiceStatus} instances.
      */
     public List<ServiceStatus> getNonCriticalStatuses() {
-        final List<ServiceStatus> list = new ArrayList<ServiceStatus>();
+        final List<ServiceStatus> list = new ArrayList<>();
 
         for (final MonitoredService m : noncriticals) {
             final ServiceStatus serviceStatus = m.getServiceStatus();

@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.dialogs.fields;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.isOneOf;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -54,15 +51,13 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
     }
 
     /**
-     * Creates a group with border (label in border). Accepted button styles
-     * are: SWT.RADIO, SWT.CHECK, SWT.TOGGLE For border styles see
-     * <code>Group</code>
+     * Creates a group with border (label in border). Accepted button styles are:
+     * SWT.RADIO, SWT.CHECK, SWT.TOGGLE For border styles see <code>Group</code>
      */
     public SelectionButtonDialogFieldGroup(final int buttonsStyle,
             final String[] buttonNames, final int nColumns, final int borderStyle) {
         super();
 
-        assertThat(buttonsStyle, isOneOf(SWT.RADIO, SWT.CHECK, SWT.TOGGLE));
         fButtonNames = buttonNames;
 
         final int nButtons = buttonNames.length;
@@ -134,12 +129,11 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
     }
 
     /**
-     * Returns the group widget. When called the first time, the widget will be
-     * created.
+     * Returns the group widget. When called the first time, the widget will be created.
      *
      * @param parent
-     *            The parent composite when called the first time, or
-     *            <code>null</code> after.
+     *            The parent composite when called the first time, or <code>null</code>
+     *            after.
      */
     public Composite getSelectionButtonsGroup(final Composite parent) {
         if (fButtonComposite == null) {

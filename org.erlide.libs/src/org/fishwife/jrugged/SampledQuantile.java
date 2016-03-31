@@ -25,23 +25,22 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * The {@link SampledQuantile} provides a way to compute approximate quantile
- * measurements across a set of samples reported to an instance. By default,
- * these samples are taken across the instance's lifetime, but a window can be
- * configured to keep samples across just across that trailing time span (for
- * example, getting a quantile across the last minute). We use an algorithm that
- * keeps a fixed maximum number of samples that selects uniformly from all
- * reported samples so far (thus representing a statistically appropriate
- * sampling of the entire population). For the windowed version, we keep track
- * of how many samples had been seen over twentieths of the window on a rolling
- * basis to ensure that samples are chosen appropriately.
+ * The {@link SampledQuantile} provides a way to compute approximate quantile measurements
+ * across a set of samples reported to an instance. By default, these samples are taken
+ * across the instance's lifetime, but a window can be configured to keep samples across
+ * just across that trailing time span (for example, getting a quantile across the last
+ * minute). We use an algorithm that keeps a fixed maximum number of samples that selects
+ * uniformly from all reported samples so far (thus representing a statistically
+ * appropriate sampling of the entire population). For the windowed version, we keep track
+ * of how many samples had been seen over twentieths of the window on a rolling basis to
+ * ensure that samples are chosen appropriately.
  */
 public class SampledQuantile {
 
     private static final int NUM_WINDOW_SEGMENTS = 20;
     private static final int DEFAULT_MAX_SAMPLES = 200;
 
-    private final List<Sample> samples = new ArrayList<Sample>();
+    private final List<Sample> samples = new ArrayList<>();
 
     private final AtomicLong samplesSeen = new AtomicLong(0L);
     private int maxSamples = DEFAULT_MAX_SAMPLES;
@@ -51,16 +50,16 @@ public class SampledQuantile {
     Random rand = new Random();
 
     /**
-     * Creates a <code>SampleQuantile</code> that keeps a default number of
-     * samples across its lifetime.
+     * Creates a <code>SampleQuantile</code> that keeps a default number of samples across
+     * its lifetime.
      */
     public SampledQuantile() {
         this(DEFAULT_MAX_SAMPLES);
     }
 
     /**
-     * Creates a <code>SampleQuantile</code> that keeps a given maximum number
-     * of samples across its lifetime.
+     * Creates a <code>SampleQuantile</code> that keeps a given maximum number of samples
+     * across its lifetime.
      *
      * @param maxSamples
      *            the maximum number of samples to keep
@@ -70,8 +69,8 @@ public class SampledQuantile {
     }
 
     /**
-     * Creates a <code>SampleQuantile</code> that keeps a default number of
-     * samples across the specified time window.
+     * Creates a <code>SampleQuantile</code> that keeps a default number of samples across
+     * the specified time window.
      *
      * @param windowLength
      *            size of time window to hold onto samples
@@ -83,8 +82,8 @@ public class SampledQuantile {
     }
 
     /**
-     * Creates a <code>SampleQuantile</code> that keeps a given maximum number
-     * of samples across the specified time window.
+     * Creates a <code>SampleQuantile</code> that keeps a given maximum number of samples
+     * across the specified time window.
      *
      * @param maxSamples
      *            the maximum number of samples to keep inside of windowLength
@@ -102,7 +101,7 @@ public class SampledQuantile {
             final long now) {
         this.maxSamples = maxSamples;
         setWindowMillis(windowLength, units);
-        windowSegments = new LinkedList<Sample>();
+        windowSegments = new LinkedList<>();
         windowSegments.offer(new Sample(samplesSeen.get(), now));
     }
 
@@ -135,8 +134,8 @@ public class SampledQuantile {
     }
 
     /**
-     * Returns the <code>i</code>th percentile of the samples seen thus far.
-     * This is equivalent to <code>getQuantile(i,100)</code>.
+     * Returns the <code>i</code>th percentile of the samples seen thus far. This is
+     * equivalent to <code>getQuantile(i,100)</code>.
      *
      * @param i
      *            must be 0 < i < 100
@@ -153,8 +152,7 @@ public class SampledQuantile {
     }
 
     /**
-     * Returns the <code>k</code>th <code>q</code>-quantile of the samples seen
-     * thus far.
+     * Returns the <code>k</code>th <code>q</code>-quantile of the samples seen thus far.
      *
      * @param q
      *            must be >= 2
@@ -190,7 +188,7 @@ public class SampledQuantile {
             return samples;
         }
         final long deadline = now - windowMillis;
-        final List<Sample> validSamples = new ArrayList<Sample>();
+        final List<Sample> validSamples = new ArrayList<>();
         for (final Sample sample : samples) {
             if (sample.timestamp >= deadline) {
                 validSamples.add(sample);
@@ -200,8 +198,7 @@ public class SampledQuantile {
     }
 
     /**
-     * Reports the number of samples currently held by this
-     * <code>SampleQuantile</code>.
+     * Reports the number of samples currently held by this <code>SampleQuantile</code>.
      *
      * @return int
      */

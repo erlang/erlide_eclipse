@@ -55,7 +55,10 @@ public class ToolExecutor {
         final ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
         final ILaunchConfigurationType type = launchManager.getLaunchConfigurationType(
                 IExternalToolConstants.ID_PROGRAM_BUILDER_LAUNCH_CONFIGURATION_TYPE);
-
+        if (type == null) {
+            System.out.println("NULL launch type + " + cmd0 + " " + args);
+            return null;
+        }
         try {
             final ILaunchConfigurationWorkingCopy launchConfig = type.newInstance(null,
                     launchManager.generateLaunchConfigurationName("erlTool"));

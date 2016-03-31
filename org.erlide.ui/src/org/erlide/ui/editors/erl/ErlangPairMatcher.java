@@ -11,13 +11,6 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,11 +34,10 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
     private final String fPartitioning;
 
     /**
-     * Creates a new character pair matcher that matches the specified
-     * characters within the specified partitioning. The specified list of
-     * characters must have the form <blockquote>{ <i>start</i>, <i>end</i>,
-     * <i>start</i>, <i>end</i>, ..., <i>start</i>, <i>end</i> }</blockquote>
-     * For instance:
+     * Creates a new character pair matcher that matches the specified characters within
+     * the specified partitioning. The specified list of characters must have the form
+     * <blockquote>{ <i>start</i>, <i>end</i>, <i>start</i>, <i>end</i>, ...,
+     * <i>start</i>, <i>end</i> }</blockquote> For instance:
      *
      * <pre>
      * char[] chars = new char[] {'(', ')', '{', '}', '[', ']'};
@@ -58,17 +50,15 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
      *            the partitioning to match within
      */
     public ErlangPairMatcher(final String[] strings, final String partitioning) {
-        assertThat(strings.length % 2, is(0));
-        assertThat(partitioning, is(not(nullValue())));
         fPairs = new StringPairs(strings);
         fPartitioning = partitioning;
     }
 
     /**
-     * Creates a new character pair matcher that matches characters within the
-     * default partitioning. The specified list of characters must have the form
-     * <blockquote>{ <i>start</i>, <i>end</i>, <i>start</i>, <i>end</i>, ...,
-     * <i>start</i>, <i>end</i> }</blockquote> For instance:
+     * Creates a new character pair matcher that matches characters within the default
+     * partitioning. The specified list of characters must have the form <blockquote>{
+     * <i>start</i>, <i>end</i>, <i>start</i>, <i>end</i>, ..., <i>start</i>, <i>end</i>
+     * }</blockquote> For instance:
      *
      * <pre>
      * char[] chars = new char[] { '(', ')', '{', '}', '[', ']' };
@@ -194,10 +184,9 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
     }
 
     /**
-     * Utility class that wraps a document and gives access to partitioning
-     * information. A document is tied to a particular partition and, when
-     * considering whether or not a position is a valid match, only considers
-     * position within its partition.
+     * Utility class that wraps a document and gives access to partitioning information. A
+     * document is tied to a particular partition and, when considering whether or not a
+     * position is a valid match, only considers position within its partition.
      */
     private static class DocumentPartitionAccessor {
 
@@ -237,9 +226,9 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
         }
 
         /**
-         * Returns true if the character at the specified position is a valid
-         * match for the specified end character. To be a valid match, it must
-         * be in the appropriate partition and equal to the end character.
+         * Returns true if the character at the specified position is a valid match for
+         * the specified end character. To be a valid match, it must be in the appropriate
+         * partition and equal to the end character.
          *
          * @param pos
          *            an offset within this document
@@ -254,8 +243,8 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
         }
 
         /**
-         * Returns true if the specified offset is within the partition managed
-         * by this document.
+         * Returns true if the specified offset is within the partition managed by this
+         * document.
          *
          * @param pos
          *            an offset within this document
@@ -303,18 +292,15 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
         }
 
         /**
-         * Returns partition information about the region containing the
-         * specified position.
+         * Returns partition information about the region containing the specified
+         * position.
          *
          * @param pos
          *            a position within this document.
-         * @return positioning information about the region containing the
-         *         position
+         * @return positioning information about the region containing the position
          */
         private ITypedRegion getPartition(final int pos) {
             if (fCachedPartition == null || !contains(fCachedPartition, pos)) {
-                assertThat(pos, is(greaterThanOrEqualTo(0)));
-                assertThat(pos, is(lessThanOrEqualTo(fDocument.getLength())));
                 try {
                     fCachedPartition = TextUtilities.getPartition(fDocument,
                             fPartitioning, pos, false);
@@ -344,8 +330,8 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
         }
 
         /**
-         * Returns true if the specified character pair occurs in one of the
-         * character pairs.
+         * Returns true if the specified character pair occurs in one of the character
+         * pairs.
          *
          * @param c
          *            a character
@@ -372,8 +358,8 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
         }
 
         /**
-         * Returns true if the specified character opens a character pair when
-         * scanning in the specified direction.
+         * Returns true if the specified character opens a character pair when scanning in
+         * the specified direction.
          *
          * @param c
          *            a character

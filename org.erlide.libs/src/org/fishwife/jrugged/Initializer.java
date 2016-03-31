@@ -17,13 +17,12 @@
 package org.fishwife.jrugged;
 
 /**
- * An {@link Initializer} allows a client to retry failed service
- * initializations in the background. For example, the initial connection to a
- * remote service may fail; the Initializer will take responsibility for
- * continuing to retry that connection in a background thread (so that other
- * services can try to initialize in the meantime). When initialization
- * succeeds, the background thread terminates and the client service can enter
- * normal operation.
+ * An {@link Initializer} allows a client to retry failed service initializations in the
+ * background. For example, the initial connection to a remote service may fail; the
+ * Initializer will take responsibility for continuing to retry that connection in a
+ * background thread (so that other services can try to initialize in the meantime). When
+ * initialization succeeds, the background thread terminates and the client service can
+ * enter normal operation.
  * <p/>
  * Sample usage:
  *
@@ -119,10 +118,9 @@ public class Initializer implements Runnable {
     }
 
     /**
-     * Shuts down the background retry process. If you are using the Spring
-     * framework, for example, if the client implements DisposableBean you can
-     * have the destroy() method of the client call this method to cleanly
-     * shutdown.
+     * Shuts down the background retry process. If you are using the Spring framework, for
+     * example, if the client implements DisposableBean you can have the destroy() method
+     * of the client call this method to cleanly shutdown.
      */
     public void destroy() {
         cancelled = true;

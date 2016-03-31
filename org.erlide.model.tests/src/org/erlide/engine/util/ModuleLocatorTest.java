@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Collection;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -24,8 +25,10 @@ public class ModuleLocatorTest {
 
     @Before
     public void setup() throws CoreException {
-        p1 = ErlideTestUtils.getExistingProject("p1");
-        p2 = ErlideTestUtils.getExistingProject("p2");
+        p1 = ErlideTestUtils.createExistingProject(
+                ResourcesPlugin.getWorkspace().getRoot().getLocation().append("p1"));
+        p2 = ErlideTestUtils.createExistingProject(
+                ResourcesPlugin.getWorkspace().getRoot().getLocation().append("p2"));
         if (p1 != null) {
             p1.makeConsistent(null);
         }

@@ -165,8 +165,8 @@ public final class Util {
     }
 
     /**
-     * Given a qualified name, extract the last component. If the input is not
-     * qualified, the same string is answered.
+     * Given a qualified name, extract the last component. If the input is not qualified,
+     * the same string is answered.
      */
     public static String extractLastName(final String qualifiedName) {
         final int i = qualifiedName.lastIndexOf('.');
@@ -179,8 +179,8 @@ public final class Util {
     /**
      * Finds the first line separator used by the given text.
      *
-     * @return</code> "\n"</code> or</code> "\r"</code> or</code> "\r\n"
-     *                </code>, or <code>null</code> if none found
+     * @return</code> "\n"</code> or</code> "\r"</code> or</code> "\r\n" </code>, or
+     *                <code>null</code> if none found
      */
     public static String findLineSeparator(final char[] text) {
         // find the first line separator
@@ -228,8 +228,7 @@ public final class Util {
     }
 
     /**
-     * Separate all the arguments of a String made by
-     * getProblemArgumentsForMarker
+     * Separate all the arguments of a String made by getProblemArgumentsForMarker
      */
     public static String[] getProblemArgumentsFromMarker(final String argumentsString) {
         if (argumentsString == null) {
@@ -271,8 +270,8 @@ public final class Util {
     }
 
     /**
-     * Validate the given compilation unit name. A compilation unit name must
-     * obey the following rules:
+     * Validate the given compilation unit name. A compilation unit name must obey the
+     * following rules:
      * <ul>
      * <li>it must not be null
      * <li>it must include the <code>".erl"</code> suffix
@@ -401,8 +400,7 @@ public final class Util {
     }
 
     /**
-     * Converts a char[][] and a char[] to String, where segments are separated
-     * by '.'.
+     * Converts a char[][] and a char[] to String, where segments are separated by '.'.
      */
     public static String toString(final char[][] c, final char[] d) {
         if (c == null) {
@@ -422,10 +420,10 @@ public final class Util {
      * machine-independent manner.
      * <p>
      * First, two bytes are written to the output stream as if by the
-     * <code>writeShort</code> method giving the number of bytes to follow. This
-     * value is the number of bytes actually written out, not the length of the
-     * string. Following the length, each character of the string is output, in
-     * sequence, using the UTF-8 encoding for the character.
+     * <code>writeShort</code> method giving the number of bytes to follow. This value is
+     * the number of bytes actually written out, not the length of the string. Following
+     * the length, each character of the string is output, in sequence, using the UTF-8
+     * encoding for the character.
      *
      * @param str
      *            a string to be written.

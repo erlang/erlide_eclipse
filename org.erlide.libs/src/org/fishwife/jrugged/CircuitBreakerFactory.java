@@ -21,8 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Factory to create new {@link CircuitBreaker} instances and keep track of
- * them.
+ * Factory to create new {@link CircuitBreaker} instances and keep track of them.
  */
 public class CircuitBreakerFactory {
 
@@ -31,7 +30,7 @@ public class CircuitBreakerFactory {
     public static final String WINDOWMILLIS_KEY = "windowMillis";
     public static final String RESETMILLIS_KEY = "resetMillis";
 
-    private final ConcurrentHashMap<String, CircuitBreaker> circuitBreakerMap = new ConcurrentHashMap<String, CircuitBreaker>();
+    private final ConcurrentHashMap<String, CircuitBreaker> circuitBreakerMap = new ConcurrentHashMap<>();
 
     private Properties properties;
 
@@ -39,15 +38,13 @@ public class CircuitBreakerFactory {
             .getLogger(getClass().getName());
 
     /**
-     * Create a new {@link CircuitBreaker} and map it to the provided name. If
-     * the CircuitBreaker already exists, then the existing instance is
-     * returned.
+     * Create a new {@link CircuitBreaker} and map it to the provided name. If the
+     * CircuitBreaker already exists, then the existing instance is returned.
      *
      * @param name
      *            the name of the {@link CircuitBreaker}
      * @param config
-     *            the {@link CircuitBreakerConfig} with the configuration
-     *            values.
+     *            the {@link CircuitBreakerConfig} with the configuration values.
      * @return the created {@link CircuitBreaker}
      */
     public synchronized CircuitBreaker createCircuitBreaker(final String name,
@@ -65,8 +62,8 @@ public class CircuitBreakerFactory {
     }
 
     /**
-     * Set the {@link Properties} object to search for {@link CircuitBreaker}
-     * property override values. The override values can be specified as:<br>
+     * Set the {@link Properties} object to search for {@link CircuitBreaker} property
+     * override values. The override values can be specified as:<br>
      * circuit.{circuit_name}.limit<br>
      * circuit.{circuit_name}.resetmillis<br>
      * circuit.{circuit_name}.windowmillis

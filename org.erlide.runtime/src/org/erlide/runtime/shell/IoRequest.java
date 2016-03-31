@@ -8,10 +8,6 @@
  *******************************************************************************/
 package org.erlide.runtime.shell;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
@@ -105,8 +101,6 @@ public class IoRequest {
     }
 
     public IoRequest(final String msg, final IoRequestKind kind) {
-        assertThat(kind, is(not(IoRequestKind.OUTPUT)));
-        assertThat(kind, is(not(IoRequestKind.PROMPT)));
         message = msg;
         encoding = Charsets.ISO_8859_1;
         leader = new OtpErlangPid("s", 0, 0, 0);

@@ -26,7 +26,7 @@ public class ServiceWrapperChain implements ServiceWrapper {
     private final List<ServiceWrapper> wrappers;
 
     public ServiceWrapperChain(final Collection<ServiceWrapper> wrappers) {
-        final ArrayList<ServiceWrapper> rev = new ArrayList<ServiceWrapper>();
+        final ArrayList<ServiceWrapper> rev = new ArrayList<>();
         for (final ServiceWrapper wrapper : wrappers) {
             rev.add(0, wrapper);
         }
@@ -56,19 +56,21 @@ public class ServiceWrapperChain implements ServiceWrapper {
     }
 
     @Override
-    public <T> T invoke(Callable<T> c) throws Exception {
+    public <T> T invoke(final Callable<T> c) throws Exception {
+        Callable<T> c2 = c;
         for (final ServiceWrapper wrapper : wrappers) {
-            c = wrap(c, wrapper);
+            c2 = wrap(c2, wrapper);
         }
-        return c.call();
+        return c2.call();
     }
 
     @Override
-    public void invoke(Runnable r) throws Exception {
+    public void invoke(final Runnable r) throws Exception {
+        Runnable r2 = r;
         for (final ServiceWrapper wrapper : wrappers) {
-            r = wrap(r, wrapper);
+            r2 = wrap(r2, wrapper);
         }
-        r.run();
+        r2.run();
     }
 
     @Override

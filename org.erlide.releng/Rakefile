@@ -79,7 +79,7 @@ end
 
 desc "build help"
 task :build_help do
-  system "bash -c 'chmod u+x org.erlide.help/gen_eclipse_help.sh' && bash -c 'org.erlide.help/gen_eclipse_help.sh'"
+  system "bash -c 'org.erlide.help/gen_eclipse_help.sh'"
 end
 
 desc "publish help to erlide.github.io"

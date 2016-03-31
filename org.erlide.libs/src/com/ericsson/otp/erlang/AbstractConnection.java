@@ -815,6 +815,7 @@ public abstract class AbstractConnection extends Thread {
             }
 
             // group flush op in favour of possible ssh-tunneled stream
+            @SuppressWarnings("resource")
             final OutputStream out = socket.getOutputStream();
             header.writeTo(out);
             payload.writeTo(out);

@@ -901,13 +901,13 @@ public class OtpOutputStream extends ByteArrayOutputStream {
             final int destCount = startCount + oos.size();
             fixedSize = destCount;
             final Deflater def = new Deflater(level);
+            @SuppressWarnings("resource")
             final java.util.zip.DeflaterOutputStream dos = new java.util.zip.DeflaterOutputStream(
                     this, def);
             try {
                 write1(OtpExternal.compressedTag);
                 write4BE(oos.size());
                 oos.writeTo(dos);
-                dos.close(); // note: closes this, too!
             } catch (final IllegalArgumentException e) {
                 /*
                  * Discard further un-compressed data (if not called, there may be memory
@@ -942,6 +942,11 @@ public class OtpOutputStream extends ByteArrayOutputStream {
                         "Intermediate stream failed for Erlang object " + o);
             } finally {
                 fixedSize = Integer.MAX_VALUE;
+                try {
+                    dos.close(); // note: closes this, too!
+                } catch (final IOException e) {
+                    // ignore
+                }
             }
         }
     }

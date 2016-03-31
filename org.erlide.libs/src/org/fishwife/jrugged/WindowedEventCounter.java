@@ -19,14 +19,12 @@ package org.fishwife.jrugged;
 import java.util.LinkedList;
 
 /**
- * Keeps a count of the number of events that have occurred within a given time
- * window.
+ * Keeps a count of the number of events that have occurred within a given time window.
  */
 public class WindowedEventCounter {
 
     /**
-     * The {@link Clock} to used to determine current time (override for
-     * testing).
+     * The {@link Clock} to used to determine current time (override for testing).
      */
     private Clock clock = new SystemClock();
 
@@ -38,11 +36,11 @@ public class WindowedEventCounter {
     /**
      * Storage for the internal queue.
      */
-    private final LinkedList<Long> queue = new LinkedList<Long>();
+    private final LinkedList<Long> queue = new LinkedList<>();
 
     /**
-     * The maximum count this WindowedEventCounter can hold. Also, the maximum
-     * queue size. Immutable.
+     * The maximum count this WindowedEventCounter can hold. Also, the maximum queue size.
+     * Immutable.
      */
     private int capacity;
 
@@ -76,8 +74,8 @@ public class WindowedEventCounter {
         synchronized (queue) {
             if (queue.size() == capacity) {
                 /*
-                 * we're all filled up already, let's dequeue the oldest
-                 * timestamp to make room for this new one.
+                 * we're all filled up already, let's dequeue the oldest timestamp to make
+                 * room for this new one.
                  */
                 queue.removeFirst();
             }
@@ -106,8 +104,7 @@ public class WindowedEventCounter {
     }
 
     /**
-     * Returns the length of the currently configured event window in
-     * milliseconds.
+     * Returns the length of the currently configured event window in milliseconds.
      *
      * @return <code>long</code>
      */
@@ -171,8 +168,8 @@ public class WindowedEventCounter {
     }
 
     /**
-     * Allow the internal {@link Clock} that is used for current time to be
-     * overridden (for testing).
+     * Allow the internal {@link Clock} that is used for current time to be overridden
+     * (for testing).
      *
      * @param clock
      *            <code>Clock</code>

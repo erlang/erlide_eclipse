@@ -19,9 +19,9 @@ package org.fishwife.jrugged;
 import java.util.concurrent.Callable;
 
 /**
- * Calls a service multiple times until the call succeeds or the maximum number
- * of tries is exceeded. A delay can be configured between calls and that delay
- * can be constant or configured to double between each call.
+ * Calls a service multiple times until the call succeeds or the maximum number of tries
+ * is exceeded. A delay can be configured between calls and that delay can be constant or
+ * configured to double between each call.
  */
 public class ServiceRetrier implements ServiceWrapper {
 
@@ -86,9 +86,8 @@ public class ServiceRetrier implements ServiceWrapper {
 
                 if (_throwCauseException) {
                     throw cause;
-                } else {
-                    throw new Exception("Call failed " + tries + " times", cause);
                 }
+                throw new Exception("Call failed " + tries + " times", cause);
             }
         }
     }
@@ -109,14 +108,14 @@ public class ServiceRetrier implements ServiceWrapper {
     @Override
     public void invoke(final Runnable r) throws Exception {
 
-        final Callable<Void> adapter = new CallableAdapter<Void>(r);
+        final Callable<Void> adapter = new CallableAdapter<>(r);
         invoke(adapter);
     }
 
     @Override
     public <T> T invoke(final Runnable r, final T result) throws Exception {
 
-        final Callable<T> adapter = new CallableAdapter<T>(r, result);
+        final Callable<T> adapter = new CallableAdapter<>(r, result);
         return invoke(adapter);
     }
 

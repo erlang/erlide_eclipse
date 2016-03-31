@@ -26,23 +26,22 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * A {@link CircuitBreaker} can be used with a service to throttle traffic to a
- * failed subsystem (particularly one we might not be able to monitor, such as a
- * peer system which must be accessed over the network). Service calls are
- * wrapped by the <code>CircuitBreaker</code>.
+ * A {@link CircuitBreaker} can be used with a service to throttle traffic to a failed
+ * subsystem (particularly one we might not be able to monitor, such as a peer system
+ * which must be accessed over the network). Service calls are wrapped by the
+ * <code>CircuitBreaker</code>.
  * <p>
- * When everything is operating normally, the <code>CircuitBreaker</code> is
- * CLOSED and the calls are allowed through.
+ * When everything is operating normally, the <code>CircuitBreaker</code> is CLOSED and
+ * the calls are allowed through.
  * <p>
- * When a call fails, however, the <code>CircuitBreaker</code> "trips" and moves
- * to an OPEN state. Client calls are not allowed through while the
- * <code>CircuitBreaker</code> is OPEN.
+ * When a call fails, however, the <code>CircuitBreaker</code> "trips" and moves to an
+ * OPEN state. Client calls are not allowed through while the <code>CircuitBreaker</code>
+ * is OPEN.
  * <p>
- * After a certain "cooldown" period, the <code>CircuitBreaker</code> will
- * transition to a HALF_CLOSED state, where one call is allowed to go through as
- * a test. If that call succeeds, the <code>CircuitBreaker</code> moves back to
- * the CLOSED state; if it fails, it moves back to the OPEN state for another
- * cooldown period.
+ * After a certain "cooldown" period, the <code>CircuitBreaker</code> will transition to a
+ * HALF_CLOSED state, where one call is allowed to go through as a test. If that call
+ * succeeds, the <code>CircuitBreaker</code> moves back to the CLOSED state; if it fails,
+ * it moves back to the OPEN state for another cooldown period.
  * <p>
  * Sample usage:
  *
@@ -66,8 +65,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     /**
-     * Represents whether a {@link CircuitBreaker} is OPEN, HALF_CLOSED, or
-     * CLOSED.
+     * Represents whether a {@link CircuitBreaker} is OPEN, HALF_CLOSED, or CLOSED.
      */
     protected enum BreakerState {
         /**
@@ -76,8 +74,8 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
         OPEN,
 
         /**
-         * A HALF_CLOSED breaker has completed its cooldown period and will
-         * allow one request through as a "test request."
+         * A HALF_CLOSED breaker has completed its cooldown period and will allow one
+         * request through as a "test request."
          */
         HALF_CLOSED,
 
@@ -90,8 +88,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     private Throwable tripException = null;
 
     /**
-     * Returns the last exception that caused the breaker to trip, NULL if never
-     * tripped.
+     * Returns the last exception that caused the breaker to trip, NULL if never tripped.
      *
      * @return Throwable
      */
@@ -108,10 +105,8 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     public String getTripExceptionAsString() {
         if (tripException == null) {
             return "";
-        } else {
-            return getFullStackTrace(tripException);
-
         }
+        return getFullStackTrace(tripException);
     }
 
     /** Current state of the breaker. */
@@ -129,14 +124,14 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     protected AtomicLong resetMillis = new AtomicLong(15 * 1000L);
 
     /**
-     * The {@link FailureInterpreter} to use to determine whether a given
-     * failure should cause the breaker to trip.
+     * The {@link FailureInterpreter} to use to determine whether a given failure should
+     * cause the breaker to trip.
      */
     protected FailureInterpreter failureInterpreter = new DefaultFailureInterpreter();
 
     /**
-     * Helper class to allow throwing an application-specific exception rather
-     * than the default {@link CircuitBreakerException}.
+     * Helper class to allow throwing an application-specific exception rather than the
+     * default {@link CircuitBreakerException}.
      */
     protected CircuitBreakerExceptionMapper<? extends Exception> exceptionMapper;
 
@@ -146,14 +141,14 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     private boolean isHardTrip;
 
     /**
-     * Bypass this CircuitBreaker - used for testing, or other operational
-     * situations where verification of the Break might be required.
+     * Bypass this CircuitBreaker - used for testing, or other operational situations
+     * where verification of the Break might be required.
      */
     protected boolean byPass = false;
 
     /**
-     * Whether the "test" attempt permitted in the HALF_CLOSED state is
-     * currently in-flight.
+     * Whether the "test" attempt permitted in the HALF_CLOSED state is currently
+     * in-flight.
      */
     protected boolean isAttemptLive = false;
 
@@ -164,17 +159,15 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     private String name = DEFAULT_NAME;
 
     /**
-     * Creates a {@link CircuitBreaker} with a {@link DefaultFailureInterpreter}
-     * and the default "tripped" exception behavior (throwing a
-     * {@link CircuitBreakerException}).
+     * Creates a {@link CircuitBreaker} with a {@link DefaultFailureInterpreter} and the
+     * default "tripped" exception behavior (throwing a {@link CircuitBreakerException}).
      */
     public CircuitBreaker() {
     }
 
     /**
-     * Creates a {@link CircuitBreaker} with a {@link DefaultFailureInterpreter}
-     * and the default "tripped" exception behavior (throwing a
-     * {@link CircuitBreakerException}).
+     * Creates a {@link CircuitBreaker} with a {@link DefaultFailureInterpreter} and the
+     * default "tripped" exception behavior (throwing a {@link CircuitBreakerException}).
      *
      * @param name
      *            the name for the {@link CircuitBreaker}.
@@ -184,28 +177,28 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Creates a {@link CircuitBreaker} with the specified
-     * {@link FailureInterpreter} and the default "tripped" exception behavior
-     * (throwing a {@link CircuitBreakerException}).
+     * Creates a {@link CircuitBreaker} with the specified {@link FailureInterpreter} and
+     * the default "tripped" exception behavior (throwing a
+     * {@link CircuitBreakerException}).
      *
      * @param fi
-     *            the <code>FailureInterpreter</code> to use when determining
-     *            whether a specific failure ought to cause the breaker to trip
+     *            the <code>FailureInterpreter</code> to use when determining whether a
+     *            specific failure ought to cause the breaker to trip
      */
     public CircuitBreaker(final FailureInterpreter fi) {
         failureInterpreter = fi;
     }
 
     /**
-     * Creates a {@link CircuitBreaker} with the specified
-     * {@link FailureInterpreter} and the default "tripped" exception behavior
-     * (throwing a {@link CircuitBreakerException}).
+     * Creates a {@link CircuitBreaker} with the specified {@link FailureInterpreter} and
+     * the default "tripped" exception behavior (throwing a
+     * {@link CircuitBreakerException}).
      *
      * @param name
      *            the name for the {@link CircuitBreaker}.
      * @param fi
-     *            the <code>FailureInterpreter</code> to use when determining
-     *            whether a specific failure ought to cause the breaker to trip
+     *            the <code>FailureInterpreter</code> to use when determining whether a
+     *            specific failure ought to cause the breaker to trip
      */
     public CircuitBreaker(final String name, final FailureInterpreter fi) {
         this.name = name;
@@ -213,15 +206,15 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Creates a {@link CircuitBreaker} with a {@link DefaultFailureInterpreter}
-     * and using the supplied {@link CircuitBreakerExceptionMapper} when client
-     * calls are made while the breaker is tripped.
+     * Creates a {@link CircuitBreaker} with a {@link DefaultFailureInterpreter} and using
+     * the supplied {@link CircuitBreakerExceptionMapper} when client calls are made while
+     * the breaker is tripped.
      *
      * @param name
      *            the name for the {@link CircuitBreaker}.
      * @param mapper
-     *            helper used to translate a {@link CircuitBreakerException}
-     *            into an application-specific one
+     *            helper used to translate a {@link CircuitBreakerException} into an
+     *            application-specific one
      */
     public CircuitBreaker(final String name,
             final CircuitBreakerExceptionMapper<? extends Exception> mapper) {
@@ -230,19 +223,18 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Creates a {@link CircuitBreaker} with the provided
-     * {@link FailureInterpreter} and using the provided
-     * {@link CircuitBreakerExceptionMapper} when client calls are made while
-     * the breaker is tripped.
+     * Creates a {@link CircuitBreaker} with the provided {@link FailureInterpreter} and
+     * using the provided {@link CircuitBreakerExceptionMapper} when client calls are made
+     * while the breaker is tripped.
      *
      * @param name
      *            the name for the {@link CircuitBreaker}.
      * @param fi
-     *            the <code>FailureInterpreter</code> to use when determining
-     *            whether a specific failure ought to cause the breaker to trip
+     *            the <code>FailureInterpreter</code> to use when determining whether a
+     *            specific failure ought to cause the breaker to trip
      * @param mapper
-     *            helper used to translate a {@link CircuitBreakerException}
-     *            into an application-specific one
+     *            helper used to translate a {@link CircuitBreakerException} into an
+     *            application-specific one
      */
     public CircuitBreaker(final String name, final FailureInterpreter fi,
             final CircuitBreakerExceptionMapper<? extends Exception> mapper) {
@@ -252,15 +244,14 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Wrap the given service call with the {@link CircuitBreaker} protection
-     * logic.
+     * Wrap the given service call with the {@link CircuitBreaker} protection logic.
      *
      * @param c
      *            the {@link Callable} to attempt
      * @return whatever c would return on success
      * @throws CircuitBreakerException
-     *             if the breaker was OPEN or HALF_CLOSED and this attempt
-     *             wasn't the reset attempt
+     *             if the breaker was OPEN or HALF_CLOSED and this attempt wasn't the
+     *             reset attempt
      * @throws Exception
      *             if <code>c</code> throws one during execution
      */
@@ -279,20 +270,18 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
                 handleFailure(cause);
             }
             throw new IllegalStateException("not possible");
-        } else {
-            return c.call();
         }
+        return c.call();
     }
 
     /**
-     * Wrap the given service call with the {@link CircuitBreaker} protection
-     * logic.
+     * Wrap the given service call with the {@link CircuitBreaker} protection logic.
      *
      * @param r
      *            the {@link Runnable} to attempt
      * @throws CircuitBreakerException
-     *             if the breaker was OPEN or HALF_CLOSED and this attempt
-     *             wasn't the reset attempt
+     *             if the breaker was OPEN or HALF_CLOSED and this attempt wasn't the
+     *             reset attempt
      * @throws Exception
      *             if <code>c</code> throws one during execution
      */
@@ -311,14 +300,12 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
                 handleFailure(cause);
             }
             throw new IllegalStateException("not possible");
-        } else {
-            r.run();
         }
+        r.run();
     }
 
     /**
-     * Wrap the given service call with the {@link CircuitBreaker} protection
-     * logic.
+     * Wrap the given service call with the {@link CircuitBreaker} protection logic.
      *
      * @param r
      *            the {@link Runnable} to attempt
@@ -326,8 +313,8 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
      *            what to return after <code>r</code> succeeds
      * @return result
      * @throws CircuitBreakerException
-     *             if the breaker was OPEN or HALF_CLOSED and this attempt
-     *             wasn't the reset attempt
+     *             if the breaker was OPEN or HALF_CLOSED and this attempt wasn't the
+     *             reset attempt
      * @throws Exception
      *             if <code>c</code> throws one during execution
      */
@@ -346,17 +333,15 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
                 handleFailure(cause);
             }
             throw new IllegalStateException("not possible");
-        } else {
-            r.run();
-            return result;
         }
+        r.run();
+        return result;
     }
 
     /**
      * When called with true - causes the {@link CircuitBreaker} to byPass its
      * functionality allowing requests to be executed unmolested until the
-     * <code>CircuitBreaker</code> is reset or the byPass is manually set to
-     * false.
+     * <code>CircuitBreaker</code> is reset or the byPass is manually set to false.
      *
      * @param b
      *            Set this breaker into bypass mode
@@ -376,8 +361,8 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Causes the {@link CircuitBreaker} to trip and OPEN; no new requests will
-     * be allowed until the <code>CircuitBreaker</code> resets.
+     * Causes the {@link CircuitBreaker} to trip and OPEN; no new requests will be allowed
+     * until the <code>CircuitBreaker</code> resets.
      */
     public void trip() {
         if (state != BreakerState.OPEN) {
@@ -399,8 +384,8 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Returns the last time the breaker tripped OPEN, measured in milliseconds
-     * since the Epoch.
+     * Returns the last time the breaker tripped OPEN, measured in milliseconds since the
+     * Epoch.
      *
      * @return long the last failure time
      */
@@ -409,8 +394,7 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Returns the number of times the breaker has tripped OPEN during its
-     * lifetime.
+     * Returns the number of times the breaker has tripped OPEN during its lifetime.
      *
      * @return long the number of times the circuit breaker tripped
      */
@@ -419,10 +403,9 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Manually set the breaker to be reset and ready for use. This is only
-     * useful after a manual trip otherwise the breaker will trip automatically
-     * again if the service is still unavailable. Just like a real breaker.
-     * WOOT!!!
+     * Manually set the breaker to be reset and ready for use. This is only useful after a
+     * manual trip otherwise the breaker will trip automatically again if the service is
+     * still unavailable. Just like a real breaker. WOOT!!!
      */
     public void reset() {
         state = BreakerState.CLOSED;
@@ -435,10 +418,10 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
 
     /**
      * Returns the current {@link org.fishwife.jrugged.Status} of the
-     * {@link CircuitBreaker}. In this case, it really refers to the status of
-     * the client service. If the <code>CircuitBreaker</code> is CLOSED, we
-     * report that the client is UP; if it is HALF_CLOSED, we report that the
-     * client is DEGRADED; if it is OPEN, we report the client is DOWN.
+     * {@link CircuitBreaker}. In this case, it really refers to the status of the client
+     * service. If the <code>CircuitBreaker</code> is CLOSED, we report that the client is
+     * UP; if it is HALF_CLOSED, we report that the client is DEGRADED; if it is OPEN, we
+     * report the client is DOWN.
      *
      * @return Status the current status of the breaker
      */
@@ -448,8 +431,8 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
 
     /**
      * Get the current {@link org.fishwife.jrugged.ServiceStatus} of the
-     * {@link CircuitBreaker}, including the name,
-     * {@link org.fishwife.jrugged.Status}, and reason.
+     * {@link CircuitBreaker}, including the name, {@link org.fishwife.jrugged.Status},
+     * and reason.
      *
      * @return the {@link org.fishwife.jrugged.ServiceStatus}.
      */
@@ -485,33 +468,32 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Sets the reset period to the given number of milliseconds. The default is
-     * 15,000 (make one retry attempt every 15 seconds).
+     * Sets the reset period to the given number of milliseconds. The default is 15,000
+     * (make one retry attempt every 15 seconds).
      *
      * @param l
-     *            number of milliseconds to "cool down" after tripping before
-     *            allowing a "test request" through again
+     *            number of milliseconds to "cool down" after tripping before allowing a
+     *            "test request" through again
      */
     public void setResetMillis(final long l) {
         resetMillis.set(l);
     }
 
     /**
-     * Returns a {@link String} representation of the breaker's status;
-     * potentially useful for exposing to monitoring software.
+     * Returns a {@link String} representation of the breaker's status; potentially useful
+     * for exposing to monitoring software.
      *
-     * @return <code>String</code> which is <code>"GREEN"</code> if the breaker
-     *         is CLOSED; <code>"YELLOW"</code> if the breaker is HALF_CLOSED;
-     *         and <code>"RED"</code> if the breaker is OPEN (tripped).
+     * @return <code>String</code> which is <code>"GREEN"</code> if the breaker is CLOSED;
+     *         <code>"YELLOW"</code> if the breaker is HALF_CLOSED; and <code>"RED"</code>
+     *         if the breaker is OPEN (tripped).
      */
     public String getHealthCheck() {
         return getStatus().getSignal();
     }
 
     /**
-     * Specifies the failure tolerance limit for the
-     * {@link DefaultFailureInterpreter} that comes with a
-     * {@link CircuitBreaker} by default.
+     * Specifies the failure tolerance limit for the {@link DefaultFailureInterpreter}
+     * that comes with a {@link CircuitBreaker} by default.
      *
      * @see DefaultFailureInterpreter
      * @param limit
@@ -527,8 +509,8 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Specifies a set of {@link Throwable} classes that should not be
-     * considered failures by the {@link CircuitBreaker}.
+     * Specifies a set of {@link Throwable} classes that should not be considered failures
+     * by the {@link CircuitBreaker}.
      *
      * @see DefaultFailureInterpreter
      * @param ignore
@@ -553,8 +535,8 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
 
     /**
      * Specifies the tolerance window in milliseconds for the
-     * {@link DefaultFailureInterpreter} that comes with a
-     * {@link CircuitBreaker} by default.
+     * {@link DefaultFailureInterpreter} that comes with a {@link CircuitBreaker} by
+     * default.
      *
      * @see DefaultFailureInterpreter
      * @param windowMillis
@@ -570,8 +552,8 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Specifies a helper that determines whether a given failure will cause the
-     * breaker to trip or not.
+     * Specifies a helper that determines whether a given failure will cause the breaker
+     * to trip or not.
      *
      * @param failureInterpreter
      *            the {@link FailureInterpreter} to use
@@ -581,20 +563,20 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Get the failure interpreter for this instance. The failure interpreter
-     * provides the configuration for determining which exceptions trip the
-     * circuit breaker, in what time interval, etc.
+     * Get the failure interpreter for this instance. The failure interpreter provides the
+     * configuration for determining which exceptions trip the circuit breaker, in what
+     * time interval, etc.
      *
-     * @return {@link FailureInterpreter} for this instance or null if no
-     *         failure interpreter was set.
+     * @return {@link FailureInterpreter} for this instance or null if no failure
+     *         interpreter was set.
      */
     public FailureInterpreter getFailureInterpreter() {
         return failureInterpreter;
     }
 
     /**
-     * A helper that converts CircuitBreakerExceptions into a known
-     * 'application' exception.
+     * A helper that converts CircuitBreakerExceptions into a known 'application'
+     * exception.
      *
      * @param mapper
      *            my converter object
@@ -605,8 +587,8 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Add an interested party for {@link CircuitBreaker} events, like up, down,
-     * degraded status state changes.
+     * Add an interested party for {@link CircuitBreaker} events, like up, down, degraded
+     * status state changes.
      *
      * @param listener
      *            an interested party for {@link CircuitBreaker} status events.
@@ -616,12 +598,11 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Set a list of interested parties for {@link CircuitBreaker} events, like
-     * up, down, degraded status state changes.
+     * Set a list of interested parties for {@link CircuitBreaker} events, like up, down,
+     * degraded status state changes.
      *
      * @param listeners
-     *            a list of interested parties for {@link CircuitBreaker} status
-     *            events.
+     *            a list of interested parties for {@link CircuitBreaker} status events.
      */
     public void setListeners(
             final ArrayList<CircuitBreakerNotificationCallback> listeners) {
@@ -667,9 +648,8 @@ public class CircuitBreaker implements MonitoredService, ServiceWrapper {
     }
 
     /**
-     * Reports a successful service call to the {@link CircuitBreaker}, putting
-     * the <code>CircuitBreaker</code> back into the CLOSED state serving
-     * requests.
+     * Reports a successful service call to the {@link CircuitBreaker}, putting the
+     * <code>CircuitBreaker</code> back into the CLOSED state serving requests.
      */
     private void close() {
         state = BreakerState.CLOSED;

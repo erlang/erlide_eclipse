@@ -1,10 +1,5 @@
 package org.erlide.engine.internal.services.parsing;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +99,6 @@ public class ErlideScanner implements SimpleScannerService, InternalScanner {
     @SuppressWarnings("boxing")
     public void replaceText(final String module, final int offset, final int removeLength,
             final String newText) {
-        assertThat(newText, is(not(nullValue())));
         try {
             final OtpErlangObject r = backend.call(ERLIDE_SCANNER, "replace_text", "aiis",
                     module, offset, removeLength, newText);

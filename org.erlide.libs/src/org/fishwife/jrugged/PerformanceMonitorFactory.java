@@ -19,12 +19,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Factory to create new {@link PerformanceMonitor} instances and keep track of
- * them.
+ * Factory to create new {@link PerformanceMonitor} instances and keep track of them.
  */
 public class PerformanceMonitorFactory {
 
-    private final Map<String, PerformanceMonitor> performanceMonitorMap = new ConcurrentHashMap<String, PerformanceMonitor>();
+    private final Map<String, PerformanceMonitor> performanceMonitorMap = new ConcurrentHashMap<>();
 
     /**
      * Create an empty PerformanceMonitorFactory.
@@ -33,9 +32,8 @@ public class PerformanceMonitorFactory {
     }
 
     /**
-     * Create a new {@link PerformanceMonitor} and map it to the provided name.
-     * If the PerformanceMonitor already exists, then the existing instance is
-     * returned.
+     * Create a new {@link PerformanceMonitor} and map it to the provided name. If the
+     * PerformanceMonitor already exists, then the existing instance is returned.
      *
      * @param name
      *            the name for the {@link PerformanceMonitor}

@@ -8,10 +8,6 @@
  *******************************************************************************/
 package org.erlide.ui.dialogs.fields;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -173,7 +169,6 @@ public class ListDialogField<Element> extends DialogField {
      * handled internally. (enable state, button invocation behaviour)
      */
     public void setRemoveButtonIndex(final int removeButtonIndex) {
-        assertThat(removeButtonIndex, is(lessThan(fButtonLabels.length)));
         fRemoveButtonIndex = removeButtonIndex;
     }
 
@@ -183,7 +178,6 @@ public class ListDialogField<Element> extends DialogField {
      * handled internally. (enable state, button invocation behaviour)
      */
     public void setUpButtonIndex(final int upButtonIndex) {
-        assertThat(upButtonIndex, is(lessThan(fButtonLabels.length)));
         fUpButtonIndex = upButtonIndex;
     }
 
@@ -193,7 +187,6 @@ public class ListDialogField<Element> extends DialogField {
      * handled internally. (enable state, button invocation behaviour)
      */
     public void setDownButtonIndex(final int downButtonIndex) {
-        assertThat(downButtonIndex, is(lessThan(fButtonLabels.length)));
         fDownButtonIndex = downButtonIndex;
     }
 

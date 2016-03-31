@@ -53,8 +53,8 @@ public class ConstantFlowRegulator implements ServiceWrapper {
     }
 
     /**
-     * Wrap the given service call with the {@link ConstantFlowRegulator}
-     * protection logic.
+     * Wrap the given service call with the {@link ConstantFlowRegulator} protection
+     * logic.
      *
      * @param c
      *            the {@link Callable} to attempt
@@ -62,8 +62,8 @@ public class ConstantFlowRegulator implements ServiceWrapper {
      * @return whatever c would return on success
      *
      * @throws FlowRateExceededException
-     *             if the total requests per second through the flow regulator
-     *             exceeds the configured value
+     *             if the total requests per second through the flow regulator exceeds the
+     *             configured value
      * @throws Exception
      *             if <code>c</code> throws one during execution
      */
@@ -71,21 +71,20 @@ public class ConstantFlowRegulator implements ServiceWrapper {
     public <T> T invoke(final Callable<T> c) throws Exception {
         if (canProceed()) {
             return c.call();
-        } else {
-            throw mapException(new FlowRateExceededException());
         }
+        throw mapException(new FlowRateExceededException());
     }
 
     /**
-     * Wrap the given service call with the {@link ConstantFlowRegulator}
-     * protection logic.
+     * Wrap the given service call with the {@link ConstantFlowRegulator} protection
+     * logic.
      *
      * @param r
      *            the {@link Runnable} to attempt
      *
      * @throws FlowRateExceededException
-     *             if the total requests per second through the flow regulator
-     *             exceeds the configured value
+     *             if the total requests per second through the flow regulator exceeds the
+     *             configured value
      * @throws Exception
      *             if <code>c</code> throws one during execution
      */
@@ -99,8 +98,8 @@ public class ConstantFlowRegulator implements ServiceWrapper {
     }
 
     /**
-     * Wrap the given service call with the {@link ConstantFlowRegulator}
-     * protection logic.
+     * Wrap the given service call with the {@link ConstantFlowRegulator} protection
+     * logic.
      *
      * @param r
      *            the {@link Runnable} to attempt
@@ -110,8 +109,8 @@ public class ConstantFlowRegulator implements ServiceWrapper {
      * @return result
      *
      * @throws FlowRateExceededException
-     *             if the total requests per second through the flow regulator
-     *             exceeds the configured value
+     *             if the total requests per second through the flow regulator exceeds the
+     *             configured value
      * @throws Exception
      *             if <code>c</code> throws one during execution
      */
@@ -120,9 +119,8 @@ public class ConstantFlowRegulator implements ServiceWrapper {
         if (canProceed()) {
             r.run();
             return result;
-        } else {
-            throw mapException(new FlowRateExceededException());
         }
+        throw mapException(new FlowRateExceededException());
     }
 
     protected synchronized boolean canProceed() {
@@ -144,8 +142,8 @@ public class ConstantFlowRegulator implements ServiceWrapper {
     }
 
     /**
-     * Configures number of requests per second to allow through this flow
-     * regulator onto a configured back end service.
+     * Configures number of requests per second to allow through this flow regulator onto
+     * a configured back end service.
      *
      * @param i
      *            the requests per second threshold for this flow regulator
@@ -156,8 +154,8 @@ public class ConstantFlowRegulator implements ServiceWrapper {
     }
 
     /**
-     * Returns the currently configured number of requests per second to allow
-     * through this flow regulator onto a configured back end service.
+     * Returns the currently configured number of requests per second to allow through
+     * this flow regulator onto a configured back end service.
      *
      * @return int the currently configured requests per second threshold
      */
@@ -169,16 +167,16 @@ public class ConstantFlowRegulator implements ServiceWrapper {
      * Get the helper that converts {@link FlowRateExceededException}s into
      * application-specific exceptions.
      *
-     * @return {@link ConstantFlowRegulatorExceptionMapper} my converter object,
-     *         or <code>null</code> if one is not currently set.
+     * @return {@link ConstantFlowRegulatorExceptionMapper} my converter object, or
+     *         <code>null</code> if one is not currently set.
      */
     public ConstantFlowRegulatorExceptionMapper<? extends Exception> getExceptionMapper() {
         return exceptionMapper;
     }
 
     /**
-     * A helper that converts {@link FlowRateExceededException} into a known
-     * 'application' exception.
+     * A helper that converts {@link FlowRateExceededException} into a known 'application'
+     * exception.
      *
      * @param mapper
      *            my converter object

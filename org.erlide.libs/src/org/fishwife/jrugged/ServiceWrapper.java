@@ -19,13 +19,12 @@ package org.fishwife.jrugged;
 import java.util.concurrent.Callable;
 
 /**
- * Several of the "rugged" code patterns in this library can be used to wrap an
- * existing service in a "decorator" design pattern. This is the common
- * interface provided by these wrapping classes that affect normal service
- * calls.
+ * Several of the "rugged" code patterns in this library can be used to wrap an existing
+ * service in a "decorator" design pattern. This is the common interface provided by these
+ * wrapping classes that affect normal service calls.
  * <p>
- * If you are more into aspect-oriented programming (AOP), then you can also use
- * the {@link ServiceWrapper} classes in your aspects.
+ * If you are more into aspect-oriented programming (AOP), then you can also use the
+ * {@link ServiceWrapper} classes in your aspects.
  */
 public interface ServiceWrapper {
     /**
@@ -50,8 +49,8 @@ public interface ServiceWrapper {
     void invoke(Runnable r) throws Exception;
 
     /**
-     * Wraps a {@link Runnable} task in some fashion, and returns a
-     * predetermined result on success.
+     * Wraps a {@link Runnable} task in some fashion, and returns a predetermined result
+     * on success.
      *
      * @param r
      *            the service call/task to wrap

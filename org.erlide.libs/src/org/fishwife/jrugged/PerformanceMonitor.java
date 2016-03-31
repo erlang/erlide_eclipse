@@ -20,14 +20,13 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The {@link PerformanceMonitor} is a convenience wrapper for gathering a slew
- * of useful operational metrics about a service, including moving averages for
- * latency and request rate over various time windows (last minute, last hour,
- * last day).
+ * The {@link PerformanceMonitor} is a convenience wrapper for gathering a slew of useful
+ * operational metrics about a service, including moving averages for latency and request
+ * rate over various time windows (last minute, last hour, last day).
  *
- * The intended use is for a client to use the "Decorator" design pattern that
- * decorates an existing service with this wrapper. Portions of this object can
- * then be exposed via JMX, for example to allow for operational polling.
+ * The intended use is for a client to use the "Decorator" design pattern that decorates
+ * an existing service with this wrapper. Portions of this object can then be exposed via
+ * JMX, for example to allow for operational polling.
  */
 public class PerformanceMonitor implements ServiceWrapper {
 
@@ -163,9 +162,8 @@ public class PerformanceMonitor implements ServiceWrapper {
             recordFailure(latencyTracker);
             if (WRAP_MSG.equals(e.getMessage())) {
                 throw (Exception) e.getCause();
-            } else {
-                throw e;
             }
+            throw e;
         }
     }
 
@@ -188,9 +186,8 @@ public class PerformanceMonitor implements ServiceWrapper {
             recordFailure(latencyTracker);
             if (WRAP_MSG.equals(re.getMessage())) {
                 throw (Exception) re.getCause();
-            } else {
-                throw re;
             }
+            throw re;
         }
     }
 
@@ -201,8 +198,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average latency in milliseconds of a successful request, as
-     * measured over the last minute.
+     * Returns the average latency in milliseconds of a successful request, as measured
+     * over the last minute.
      *
      * @return double
      */
@@ -211,8 +208,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average latency in milliseconds of a successful request, as
-     * measured over the last hour.
+     * Returns the average latency in milliseconds of a successful request, as measured
+     * over the last hour.
      *
      * @return double
      */
@@ -221,8 +218,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average latency in milliseconds of a successful request, as
-     * measured over the last day.
+     * Returns the average latency in milliseconds of a successful request, as measured
+     * over the last day.
      *
      * @return double
      */
@@ -231,8 +228,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average latency in milliseconds of a failed request, as
-     * measured over the last minute.
+     * Returns the average latency in milliseconds of a failed request, as measured over
+     * the last minute.
      *
      * @return double
      */
@@ -241,8 +238,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average latency in milliseconds of a failed request, as
-     * measured over the last hour.
+     * Returns the average latency in milliseconds of a failed request, as measured over
+     * the last hour.
      *
      * @return double
      */
@@ -251,8 +248,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average latency in milliseconds of a failed request, as
-     * measured over the last day.
+     * Returns the average latency in milliseconds of a failed request, as measured over
+     * the last day.
      *
      * @return double
      */
@@ -261,8 +258,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average request rate in requests per second of all requests,
-     * as measured over the last minute.
+     * Returns the average request rate in requests per second of all requests, as
+     * measured over the last minute.
      *
      * @return double
      */
@@ -271,8 +268,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average request rate in requests per second of successful
-     * requests, as measured over the last minute.
+     * Returns the average request rate in requests per second of successful requests, as
+     * measured over the last minute.
      *
      * @return double
      */
@@ -281,8 +278,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average request rate in requests per second of failed
-     * requests, as measured over the last minute.
+     * Returns the average request rate in requests per second of failed requests, as
+     * measured over the last minute.
      *
      * @return double
      */
@@ -291,8 +288,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average request rate in requests per second of all requests,
-     * as measured over the last hour.
+     * Returns the average request rate in requests per second of all requests, as
+     * measured over the last hour.
      *
      * @return double
      */
@@ -301,8 +298,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average request rate in requests per second of successful
-     * requests, as measured over the last hour.
+     * Returns the average request rate in requests per second of successful requests, as
+     * measured over the last hour.
      *
      * @return double
      */
@@ -311,8 +308,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average request rate in requests per second of failed
-     * requests, as measured over the last hour.
+     * Returns the average request rate in requests per second of failed requests, as
+     * measured over the last hour.
      *
      * @return double
      */
@@ -321,8 +318,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average request rate in requests per second of all requests,
-     * as measured over the last day.
+     * Returns the average request rate in requests per second of all requests, as
+     * measured over the last day.
      *
      * @return double
      */
@@ -331,8 +328,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average request rate in requests per second of successful
-     * requests, as measured over the last day.
+     * Returns the average request rate in requests per second of successful requests, as
+     * measured over the last day.
      *
      * @return double
      */
@@ -341,8 +338,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average request rate in requests per second of failed
-     * requests, as measured over the last day.
+     * Returns the average request rate in requests per second of failed requests, as
+     * measured over the last day.
      *
      * @return double
      */
@@ -351,8 +348,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average request rate in requests per second of all requests,
-     * as measured since this object was initialized.
+     * Returns the average request rate in requests per second of all requests, as
+     * measured since this object was initialized.
      *
      * @return double
      */
@@ -362,8 +359,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average request rate in requests per second of successful
-     * requests, as measured since this object was initialized.
+     * Returns the average request rate in requests per second of successful requests, as
+     * measured since this object was initialized.
      *
      * @return double
      */
@@ -373,8 +370,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the average request rate in requests per second of failed
-     * requests, as measured since this object was initialized.
+     * Returns the average request rate in requests per second of failed requests, as
+     * measured since this object was initialized.
      *
      * @return double
      */
@@ -384,9 +381,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the underlying request counter that this performance monitor is
-     * using. This can be used in conjunction with
-     * {@link PercentErrPerTimeFailureInterpreter}.
+     * Returns the underlying request counter that this performance monitor is using. This
+     * can be used in conjunction with {@link PercentErrPerTimeFailureInterpreter}.
      *
      * @return RequestCounter the request count tracker class
      */
@@ -395,8 +391,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the total number of requests seen by this
-     * {@link PerformanceMonitor}.
+     * Returns the total number of requests seen by this {@link PerformanceMonitor}.
      *
      * @return long
      */
@@ -405,8 +400,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the number of successful requests seen by this
-     * {@link PerformanceMonitor}.
+     * Returns the number of successful requests seen by this {@link PerformanceMonitor}.
      *
      * @return long
      */
@@ -415,8 +409,7 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the number of failed requests seen by this
-     * {@link PerformanceMonitor}.
+     * Returns the number of failed requests seen by this {@link PerformanceMonitor}.
      *
      * @return long
      */
@@ -425,8 +418,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the median latency seen by this {@link PerformanceMonitor} for
-     * successful requests.
+     * Returns the median latency seen by this {@link PerformanceMonitor} for successful
+     * requests.
      *
      * @return latency in milliseconds
      */
@@ -435,8 +428,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 95th-percentile latency seen by this
-     * {@link PerformanceMonitor} for successful requests.
+     * Returns the 95th-percentile latency seen by this {@link PerformanceMonitor} for
+     * successful requests.
      *
      * @return latency in milliseconds
      */
@@ -445,8 +438,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 99th-percentile latency seen by this
-     * {@link PerformanceMonitor} for successful requests.
+     * Returns the 99th-percentile latency seen by this {@link PerformanceMonitor} for
+     * successful requests.
      *
      * @return latency in milliseconds
      */
@@ -455,8 +448,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the maximum latency seen by this {@link PerformanceMonitor} for
-     * successful requests.
+     * Returns the maximum latency seen by this {@link PerformanceMonitor} for successful
+     * requests.
      *
      * @return latency in milliseconds
      */
@@ -465,8 +458,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the median latency seen by this {@link PerformanceMonitor} for
-     * successful requests over the last minute.
+     * Returns the median latency seen by this {@link PerformanceMonitor} for successful
+     * requests over the last minute.
      *
      * @return latency in milliseconds
      */
@@ -475,8 +468,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 95th-percentile latency seen by this
-     * {@link PerformanceMonitor} for successful requests over the last minute.
+     * Returns the 95th-percentile latency seen by this {@link PerformanceMonitor} for
+     * successful requests over the last minute.
      *
      * @return latency in milliseconds
      */
@@ -485,8 +478,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 99th-percentile latency seen by this
-     * {@link PerformanceMonitor} for successful requests over the last minute.
+     * Returns the 99th-percentile latency seen by this {@link PerformanceMonitor} for
+     * successful requests over the last minute.
      *
      * @return latency in milliseconds
      */
@@ -495,8 +488,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the median latency seen by this {@link PerformanceMonitor} for
-     * successful requests over the last hour.
+     * Returns the median latency seen by this {@link PerformanceMonitor} for successful
+     * requests over the last hour.
      *
      * @return latency in milliseconds
      */
@@ -505,8 +498,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 95th-percentile latency seen by this
-     * {@link PerformanceMonitor} for successful requests over the last hour.
+     * Returns the 95th-percentile latency seen by this {@link PerformanceMonitor} for
+     * successful requests over the last hour.
      *
      * @return latency in milliseconds
      */
@@ -515,8 +508,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 99th-percentile latency seen by this
-     * {@link PerformanceMonitor} for successful requests over the last hour.
+     * Returns the 99th-percentile latency seen by this {@link PerformanceMonitor} for
+     * successful requests over the last hour.
      *
      * @return latency in milliseconds
      */
@@ -525,8 +518,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the median latency seen by this {@link PerformanceMonitor} for
-     * successful requests over the last day.
+     * Returns the median latency seen by this {@link PerformanceMonitor} for successful
+     * requests over the last day.
      *
      * @return latency in milliseconds
      */
@@ -535,8 +528,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 95th-percentile latency seen by this
-     * {@link PerformanceMonitor} for successful requests over the last day.
+     * Returns the 95th-percentile latency seen by this {@link PerformanceMonitor} for
+     * successful requests over the last day.
      *
      * @return latency in milliseconds
      */
@@ -545,8 +538,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 99th-percentile latency seen by this
-     * {@link PerformanceMonitor} for successful requests over the last hour.
+     * Returns the 99th-percentile latency seen by this {@link PerformanceMonitor} for
+     * successful requests over the last hour.
      *
      * @return latency in milliseconds
      */
@@ -555,8 +548,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the median latency seen by this {@link PerformanceMonitor} for
-     * failed requests.
+     * Returns the median latency seen by this {@link PerformanceMonitor} for failed
+     * requests.
      *
      * @return latency in milliseconds
      */
@@ -565,8 +558,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 95th-percentile latency seen by this
-     * {@link PerformanceMonitor} for failed requests.
+     * Returns the 95th-percentile latency seen by this {@link PerformanceMonitor} for
+     * failed requests.
      *
      * @return latency in milliseconds
      */
@@ -575,8 +568,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 99th-percentile latency seen by this
-     * {@link PerformanceMonitor} for failed requests.
+     * Returns the 99th-percentile latency seen by this {@link PerformanceMonitor} for
+     * failed requests.
      *
      * @return latency in milliseconds
      */
@@ -585,8 +578,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the maximum latency seen by this {@link PerformanceMonitor} for
-     * failed requests.
+     * Returns the maximum latency seen by this {@link PerformanceMonitor} for failed
+     * requests.
      *
      * @return latency in milliseconds
      */
@@ -595,8 +588,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the median latency seen by this {@link PerformanceMonitor} for
-     * failed requests over the last minute.
+     * Returns the median latency seen by this {@link PerformanceMonitor} for failed
+     * requests over the last minute.
      *
      * @return latency in milliseconds
      */
@@ -605,8 +598,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 95th-percentile latency seen by this
-     * {@link PerformanceMonitor} for failed requests over the last minute.
+     * Returns the 95th-percentile latency seen by this {@link PerformanceMonitor} for
+     * failed requests over the last minute.
      *
      * @return latency in milliseconds
      */
@@ -615,8 +608,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 99th-percentile latency seen by this
-     * {@link PerformanceMonitor} for failed requests over the last minute.
+     * Returns the 99th-percentile latency seen by this {@link PerformanceMonitor} for
+     * failed requests over the last minute.
      *
      * @return latency in milliseconds
      */
@@ -625,8 +618,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the median latency seen by this {@link PerformanceMonitor} for
-     * failed requests over the last hour.
+     * Returns the median latency seen by this {@link PerformanceMonitor} for failed
+     * requests over the last hour.
      *
      * @return latency in milliseconds
      */
@@ -635,8 +628,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 95th-percentile latency seen by this
-     * {@link PerformanceMonitor} for failed requests over the last hour.
+     * Returns the 95th-percentile latency seen by this {@link PerformanceMonitor} for
+     * failed requests over the last hour.
      *
      * @return latency in milliseconds
      */
@@ -645,8 +638,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 99th-percentile latency seen by this
-     * {@link PerformanceMonitor} for failed requests over the last hour.
+     * Returns the 99th-percentile latency seen by this {@link PerformanceMonitor} for
+     * failed requests over the last hour.
      *
      * @return latency in milliseconds
      */
@@ -655,8 +648,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the median latency seen by this {@link PerformanceMonitor} for
-     * failed requests over the last day.
+     * Returns the median latency seen by this {@link PerformanceMonitor} for failed
+     * requests over the last day.
      *
      * @return latency in milliseconds
      */
@@ -665,8 +658,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 95th-percentile latency seen by this
-     * {@link PerformanceMonitor} for failed requests over the last day.
+     * Returns the 95th-percentile latency seen by this {@link PerformanceMonitor} for
+     * failed requests over the last day.
      *
      * @return latency in milliseconds
      */
@@ -675,8 +668,8 @@ public class PerformanceMonitor implements ServiceWrapper {
     }
 
     /**
-     * Returns the 99th-percentile latency seen by this
-     * {@link PerformanceMonitor} for failed requests over the last hour.
+     * Returns the 99th-percentile latency seen by this {@link PerformanceMonitor} for
+     * failed requests over the last hour.
      *
      * @return latency in milliseconds
      */

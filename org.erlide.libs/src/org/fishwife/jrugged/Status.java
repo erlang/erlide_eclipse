@@ -17,25 +17,23 @@
 package org.fishwife.jrugged;
 
 /**
- * Various components in the system need to report their status. This
- * <code>enum</code> standardizes on a set of conventions for reporting this.
- * Each {@link Status} has an integer <code>value</code> which can be compared;
- * higher values represent higher levels of functionality. In addition, each
- * {@link Status} has a {@link String} <code>signal</code> which is either
- * GREEN, YELLOW, or RED.
+ * Various components in the system need to report their status. This <code>enum</code>
+ * standardizes on a set of conventions for reporting this. Each {@link Status} has an
+ * integer <code>value</code> which can be compared; higher values represent higher levels
+ * of functionality. In addition, each {@link Status} has a {@link String}
+ * <code>signal</code> which is either GREEN, YELLOW, or RED.
  * <p>
- * The general notion is that the whole system (or a subsystem) should only
- * report GREEN status (UP) if everything is working as designed. When
- * subsystems start to go down, or the current system stops working, status
- * should drop to either YELLOW (DEGRADED) or RED (DOWN), depending on whether
- * service was still available in some form. For example, if a cache subsystem
- * goes down, we might report a YELLOW status because we can attempt to serve
- * without a cache. However, if a required database goes down, we probably need
- * to report a RED status, unable to serve requests.
+ * The general notion is that the whole system (or a subsystem) should only report GREEN
+ * status (UP) if everything is working as designed. When subsystems start to go down, or
+ * the current system stops working, status should drop to either YELLOW (DEGRADED) or RED
+ * (DOWN), depending on whether service was still available in some form. For example, if
+ * a cache subsystem goes down, we might report a YELLOW status because we can attempt to
+ * serve without a cache. However, if a required database goes down, we probably need to
+ * report a RED status, unable to serve requests.
  * <p>
- * A "rugged" system should be able to accurately (and responsively) report on
- * its status even if it is unable to perform its main functions. This will
- * assist operators in diagnosing the problem; a hung process tells no tales.
+ * A "rugged" system should be able to accurately (and responsively) report on its status
+ * even if it is unable to perform its main functions. This will assist operators in
+ * diagnosing the problem; a hung process tells no tales.
  */
 public enum Status {
     /** Unrecoverable: we're basically dead for good. */
@@ -54,13 +52,11 @@ public enum Status {
     UP(2, "GREEN"),
 
     /**
-     * This status was introduced in a prior version of JRugged and so is
-     * retained for backwards compatibility, but is specific to
-     * {@link org.fishwife.jrugged.CircuitBreaker} states and should not be
-     * used.
+     * This status was introduced in a prior version of JRugged and so is retained for
+     * backwards compatibility, but is specific to
+     * {@link org.fishwife.jrugged.CircuitBreaker} states and should not be used.
      */
-    @Deprecated
-    BYPASS(3, "GREEN");
+    @Deprecated BYPASS(3, "GREEN");
 
     private final int value;
     private final String signal;
@@ -71,26 +67,25 @@ public enum Status {
     }
 
     /**
-     * Returns the current status as an integer. Higher values are for states of
-     * higher functionality/availability.
+     * Returns the current status as an integer. Higher values are for states of higher
+     * functionality/availability.
      */
     public int getValue() {
         return value;
     }
 
     /**
-     * Returns the current GREEN/YELLOW/RED dashboard indicator corresponding to
-     * this status.
+     * Returns the current GREEN/YELLOW/RED dashboard indicator corresponding to this
+     * status.
      */
     public String getSignal() {
         return signal;
     }
 
     /**
-     * Returns whether the status indicates a system that is able to serve
-     * requests.
+     * Returns whether the status indicates a system that is able to serve requests.
      */
     public boolean isAvailable() {
         return value > 0;
     }
-};
+}

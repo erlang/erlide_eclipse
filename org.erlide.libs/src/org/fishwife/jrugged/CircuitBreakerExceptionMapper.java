@@ -15,8 +15,8 @@
 package org.fishwife.jrugged;
 
 /**
- * Allows the user to map the standard {@link CircuitBreakerException} thrown by
- * a tripped {@link CircuitBreaker} into an application specific exception.
+ * Allows the user to map the standard {@link CircuitBreakerException} thrown by a tripped
+ * {@link CircuitBreaker} into an application specific exception.
  *
  * @param <T>
  *            is the application specific exception type.

@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>p2</name>
+	<name>org.erlide.kernel.tools</name>
 	<comment></comment>
 	<projects>
+		<project>org.erlide.kernel.common</project>
+		<project>releng.tools</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>org.erlide.core.internal.builder.DialyzerBuilder</name>
+			<name>org.eclipse.pde.ManifestBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.pde.SchemaBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -15,8 +22,15 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.m2e.core.maven2Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 		<nature>org.erlide.core.erlnature</nature>
+		<nature>org.eclipse.pde.PluginNature</nature>
 	</natures>
 </projectDescription>

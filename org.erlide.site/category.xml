@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature id="org.erlide">
+      <category name="erlide"/>
+   </feature>
+   <feature id="org.erlide.wrangler" >
+      <category name="extras"/>
+   </feature>
+   <category-def name="erlide" label="erlide"/>
+   <category-def name="extras" label="extras"/>
+</site>

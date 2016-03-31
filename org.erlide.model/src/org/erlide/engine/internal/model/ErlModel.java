@@ -358,6 +358,7 @@ public class ErlModel extends Openable implements IErlModel {
             }
             return findProject(project);
         } catch (final CoreException e) {
+            e.printStackTrace();
             throw new ErlModelException(e, new ErlModelStatus(e));
         }
     }

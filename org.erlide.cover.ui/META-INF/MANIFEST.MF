@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Cover plugin UI
 Bundle-SymbolicName: org.erlide.cover.ui;singleton:=true
-Bundle-Version: 0.32.1.qualifier
+Bundle-Version: 0.50.0.qualifier
 Bundle-Activator: org.erlide.cover.ui.Activator
 Bundle-Vendor: Erlang Solutions
 Require-Bundle: org.eclipse.ui,
@@ -18,7 +18,8 @@ Require-Bundle: org.eclipse.ui,
  org.erlide.libs,
  org.erlide.cover.core,
  org.erlide.cover.api,
- org.erlide.ui
+ org.erlide.ui,
+ org.apache.commons.io;bundle-version="2.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,

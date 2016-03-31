@@ -19,9 +19,9 @@ package org.fishwife.jrugged;
 import java.util.concurrent.Callable;
 
 /**
- * This is a statistics wrapper that records the latency of requests, both for
- * successes and failures. The most recent measurement is available for query,
- * and can be polled periodically to determine average latencies.
+ * This is a statistics wrapper that records the latency of requests, both for successes
+ * and failures. The most recent measurement is available for query, and can be polled
+ * periodically to determine average latencies.
  */
 public class LatencyTracker implements ServiceWrapper {
     private long lastSuccessMillis;

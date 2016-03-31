@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.erlide.engine.internal.model.root;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -46,24 +41,22 @@ public abstract class ErlElement extends PlatformObject
         implements IErlElement, IParent, Cloneable {
 
     /**
-     * This element's parent, or <code>null</code> if this element does not have
-     * a parent.
+     * This element's parent, or <code>null</code> if this element does not have a parent.
      */
     private final IParent fParent;
 
     private final List<IErlElement> fChildren = Lists.newArrayList();
 
     /**
-     * This element's name, or an empty <code>String</code> if this element does
-     * not have a name.
+     * This element's name, or an empty <code>String</code> if this element does not have
+     * a name.
      */
     protected String fName;
 
     protected static final Object NO_INFO = new Object();
 
     /**
-     * Constructs a handle for a Erlang element with the given parent element
-     * and name.
+     * Constructs a handle for a Erlang element with the given parent element and name.
      *
      * @param parent
      *            The parent of Erlang element
@@ -71,14 +64,12 @@ public abstract class ErlElement extends PlatformObject
      *            The name of Erlang element
      *
      * @throws IllegalArgumentException
-     *             if the type is not one of the valid Erlang element type
-     *             constants
+     *             if the type is not one of the valid Erlang element type constants
      *
      */
     protected ErlElement(final IParent parent, final String name) {
         fParent = parent;
         fName = name;
-        assertThat(fName, is(not(nullValue())));
     }
 
     /**
@@ -96,14 +87,13 @@ public abstract class ErlElement extends PlatformObject
     }
 
     /**
-     * Returns true if this handle represents the same Erlang element as the
-     * given handle. By default, two handles represent the same element if they
-     * are identical or if they represent the same type of element, have equal
-     * names, parents, and occurrence counts.
+     * Returns true if this handle represents the same Erlang element as the given handle.
+     * By default, two handles represent the same element if they are identical or if they
+     * represent the same type of element, have equal names, parents, and occurrence
+     * counts.
      *
      * <p>
-     * If a subclass has other requirements for equality, this method must be
-     * overridden.
+     * If a subclass has other requirements for equality, this method must be overridden.
      *
      * @see Object#equals
      */
@@ -167,8 +157,7 @@ public abstract class ErlElement extends PlatformObject
     }
 
     /**
-     * Return the first instance of IOpenable in the parent hierarchy of this
-     * element.
+     * Return the first instance of IOpenable in the parent hierarchy of this element.
      *
      * <p>
      * Subclasses that are not IOpenable's must override this method.
@@ -236,9 +225,9 @@ public abstract class ErlElement extends PlatformObject
     }
 
     /**
-     * Returns the hash code for this Erlang element. By default, the hash code
-     * for an element is a combination of its name and parent's hash code.
-     * Elements with other requirements must override this method.
+     * Returns the hash code for this Erlang element. By default, the hash code for an
+     * element is a combination of its name and parent's hash code. Elements with other
+     * requirements must override this method.
      */
     @Override
     public int hashCode() {
@@ -408,8 +397,7 @@ public abstract class ErlElement extends PlatformObject
     }
 
     /**
-     * Returns a collection of (immediate) children of this node of the
-     * specified type.
+     * Returns a collection of (immediate) children of this node of the specified type.
      *
      * @param type
      *            - one of the constants defined by IErlElement
@@ -523,7 +511,7 @@ public abstract class ErlElement extends PlatformObject
     @Override
     public final void accept(final IErlElementVisitor visitor,
             final Set<AcceptFlags> flags, final ErlElementKind leafKind)
-            throws ErlModelException {
+                    throws ErlModelException {
         synchronized (getModelLock()) {
             internalAccept(visitor, flags, leafKind);
         }
@@ -531,7 +519,7 @@ public abstract class ErlElement extends PlatformObject
 
     private final void internalAccept(final IErlElementVisitor visitor,
             final Set<AcceptFlags> flags, final ErlElementKind leafKind)
-            throws ErlModelException {
+                    throws ErlModelException {
         if (getKind() == leafKind) {
             visitor.visit(this);
         } else {
@@ -553,8 +541,8 @@ public abstract class ErlElement extends PlatformObject
     }
 
     /**
-     * Return my corresponding resource. Overridden in IErlModule, IErlFolder
-     * and IErlProject
+     * Return my corresponding resource. Overridden in IErlModule, IErlFolder and
+     * IErlProject
      */
     @Override
     public IResource getCorrespondingResource() {

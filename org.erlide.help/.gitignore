@@ -10,3 +10,6 @@ bin
 _cache
 .idea/
 *.pdf
+*.fo
+.idea
+contents

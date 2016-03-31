@@ -36,7 +36,10 @@ public class BuildersTest {
     @Before
     public void initialClean() throws CoreException {
         final IErlProject p2 = ErlideTestUtils.getExistingProject("builders");
-        prj = p2.getResource().getProject();
+        if (p2 == null || !p2.exists()) {
+            return;
+        }
+        prj = p2.getWorkspaceProject();
 
         final IResource ebin = prj.findMember("ebin");
         if (ebin != null) {

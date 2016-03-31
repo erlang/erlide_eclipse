@@ -223,7 +223,7 @@ public class OtpNode extends OtpLocalNode {
 
     private synchronized void init(final int aport) throws IOException {
         if (!initDone) {
-            connections = new Hashtable<String, OtpCookedConnection>(17, (float) 0.95);
+            connections = new Hashtable<>(17, (float) 0.95);
             mboxes = new Mailboxes();
             acceptor = new Acceptor(aport);
             initDone = true;
@@ -631,8 +631,8 @@ public class OtpNode extends OtpLocalNode {
         private Hashtable<String, WeakReference<OtpMbox>> byName = null;
 
         public Mailboxes() {
-            byPid = new Hashtable<OtpErlangPid, WeakReference<OtpMbox>>(17, (float) 0.95);
-            byName = new Hashtable<String, WeakReference<OtpMbox>>(17, (float) 0.95);
+            byPid = new Hashtable<>(17, (float) 0.95);
+            byName = new Hashtable<>(17, (float) 0.95);
         }
 
         public OtpMbox create(final String name) {
@@ -644,8 +644,8 @@ public class OtpNode extends OtpLocalNode {
                 }
                 final OtpErlangPid pid = createPid();
                 m = new OtpMbox(OtpNode.this, pid, name);
-                byPid.put(pid, new WeakReference<OtpMbox>(m));
-                byName.put(name, new WeakReference<OtpMbox>(m));
+                byPid.put(pid, new WeakReference<>(m));
+                byName.put(name, new WeakReference<>(m));
             }
             return m;
         }
@@ -653,7 +653,7 @@ public class OtpNode extends OtpLocalNode {
         public OtpMbox create() {
             final OtpErlangPid pid = createPid();
             final OtpMbox m = new OtpMbox(OtpNode.this, pid);
-            byPid.put(pid, new WeakReference<OtpMbox>(m));
+            byPid.put(pid, new WeakReference<>(m));
             return m;
         }
 
@@ -689,7 +689,7 @@ public class OtpNode extends OtpLocalNode {
                     if (get(name) != null) {
                         return false;
                     }
-                    byName.put(name, new WeakReference<OtpMbox>(mbox));
+                    byName.put(name, new WeakReference<>(mbox));
                     mbox.name = name;
                 }
             }
@@ -837,18 +837,10 @@ public class OtpNode extends OtpLocalNode {
                         addConnection(conn);
                     }
                 } catch (final OtpAuthException e) {
-                    if (conn != null && conn.name != null) {
-                        connAttempt(conn.name, true, e);
-                    } else {
-                        connAttempt("unknown", true, e);
-                    }
+                    connAttempt("unknown", true, e);
                     closeSock(newsock);
                 } catch (final IOException e) {
-                    if (conn != null && conn.name != null) {
-                        connAttempt(conn.name, true, e);
-                    } else {
-                        connAttempt("unknown", true, e);
-                    }
+                    connAttempt("unknown", true, e);
                     closeSock(newsock);
                 } catch (final Exception e) {
                     closeSock(newsock);

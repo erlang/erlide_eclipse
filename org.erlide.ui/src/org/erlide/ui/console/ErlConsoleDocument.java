@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.console;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocumentPartitioner;
@@ -45,7 +40,6 @@ public final class ErlConsoleDocument extends Document implements BackendShellLi
             LEGAL_CONTENT_TYPES = ss;
         }
 
-        assertThat(shell, is(not(nullValue())));
         this.shell = shell;
         shell.addListener(this);
         changed(new BackendShellEvent(0, 0, get()));

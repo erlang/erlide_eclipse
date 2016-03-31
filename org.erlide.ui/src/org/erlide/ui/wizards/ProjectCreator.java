@@ -169,7 +169,7 @@ public class ProjectCreator {
 
     private void createConfig(final IProject newProjectHandle,
             final ProjectConfigType configType, final IProgressMonitor monitor)
-            throws ExecutionException {
+                    throws ExecutionException {
 
         System.out.println("create config?? " + configType);
 
@@ -210,7 +210,7 @@ public class ProjectCreator {
     private void createBuilderConfig(final BuilderTool builderTool) {
 
         // TODO create builder config
-        System.out.println("TO DO: create builder config " + builderTool);
+        System.out.println("TODO: create builder config " + builderTool);
 
     }
 

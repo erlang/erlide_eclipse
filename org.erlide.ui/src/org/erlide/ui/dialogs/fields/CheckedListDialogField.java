@@ -10,10 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.dialogs.fields;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,9 +26,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 
 /**
- * A list with checkboxes and a button bar. Typical buttons are 'Check All' and
- * 'Uncheck All'. List model is independend of widget creation. DialogFields
- * controls are: Label, List and Composite containing buttons.
+ * A list with checkboxes and a button bar. Typical buttons are 'Check All' and 'Uncheck
+ * All'. List model is independend of widget creation. DialogFields controls are: Label,
+ * List and Composite containing buttons.
  */
 public class CheckedListDialogField<Element> extends ListDialogField<Element> {
 
@@ -52,24 +48,20 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
     }
 
     /**
-     * Sets the index of the 'check' button in the button label array passed in
-     * the constructor. The behaviour of the button marked as the check button
-     * will then be handled internally. (enable state, button invocation
-     * behaviour)
+     * Sets the index of the 'check' button in the button label array passed in the
+     * constructor. The behaviour of the button marked as the check button will then be
+     * handled internally. (enable state, button invocation behaviour)
      */
     public void setCheckAllButtonIndex(final int checkButtonIndex) {
-        assertThat(checkButtonIndex, is(lessThan(fButtonLabels.length)));
         fCheckAllButtonIndex = checkButtonIndex;
     }
 
     /**
-     * Sets the index of the 'uncheck' button in the button label array passed
-     * in the constructor. The behaviour of the button marked as the uncheck
-     * button will then be handled internally. (enable state, button invocation
-     * behaviour)
+     * Sets the index of the 'uncheck' button in the button label array passed in the
+     * constructor. The behaviour of the button marked as the uncheck button will then be
+     * handled internally. (enable state, button invocation behaviour)
      */
     public void setUncheckAllButtonIndex(final int uncheckButtonIndex) {
-        assertThat(uncheckButtonIndex, is(lessThan(fButtonLabels.length)));
         fUncheckAllButtonIndex = uncheckButtonIndex;
     }
 
@@ -103,8 +95,8 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
     }
 
     /*
-     * @see DialogField#dialogFieldChanged Hooks in to get element changes to
-     * update check model.
+     * @see DialogField#dialogFieldChanged Hooks in to get element changes to update check
+     * model.
      */
     @Override
     public void dialogFieldChanged() {
@@ -176,8 +168,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
     }
 
     /**
-     * Sets the checked state of an element. No dialog changed listener is
-     * informed.
+     * Sets the checked state of an element. No dialog changed listener is informed.
      */
     public void setCheckedWithoutUpdate(final Element object, final boolean state) {
         if (state) {

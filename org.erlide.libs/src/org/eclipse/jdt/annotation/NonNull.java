@@ -22,31 +22,31 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Qualifier for a type in a method signature or a local variable declaration:
- * The entity (return value, parameter, field, local variable) whose type has
- * this annotation can never have the value <code>null</code> at runtime.
+ * Qualifier for a type in a method signature or a local variable declaration: The entity
+ * (return value, parameter, field, local variable) whose type has this annotation can
+ * never have the value <code>null</code> at runtime.
  * <p>
  * This has two consequences:
  * <ol>
- * <li>Dereferencing the entity is safe, i.e., no
- * <code>NullPointerException</code> can occur at runtime.</li>
- * <li>An attempt to bind a <code>null</code> value to the entity is a compile
- * time error.</li>
+ * <li>Dereferencing the entity is safe, i.e., no <code>NullPointerException</code> can
+ * occur at runtime.</li>
+ * <li>An attempt to bind a <code>null</code> value to the entity is a compile time error.
+ * </li>
  * </ol>
- * For the second case, diagnostics issued by the compiler should distinguish
- * three situations:
+ * For the second case, diagnostics issued by the compiler should distinguish three
+ * situations:
  * <ol>
- * <li>Nullness of the value can be statically determined, the entity is
- * definitely bound from either of:
+ * <li>Nullness of the value can be statically determined, the entity is definitely bound
+ * from either of:
  * <ul>
  * <li>the value <code>null</code>, or</li>
  * <li>an entity with a {@link Nullable @Nullable} type.</li>
  * </ul>
  * </li>
- * <li>Nullness cannot definitely be determined, because different code branches
- * yield different results.</li>
- * <li>Nullness cannot be determined, because other program elements are
- * involved for which null annotations are lacking.</li>
+ * <li>Nullness cannot definitely be determined, because different code branches yield
+ * different results.</li>
+ * <li>Nullness cannot be determined, because other program elements are involved for
+ * which null annotations are lacking.</li>
  * </ol>
  * </p>
  *

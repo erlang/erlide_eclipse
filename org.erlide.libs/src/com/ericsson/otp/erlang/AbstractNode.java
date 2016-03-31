@@ -119,6 +119,7 @@ public class AbstractNode implements OtpTransportFactory {
 
         final String homeDir = getHomeDir();
         final String dotCookieFilename = homeDir + File.separator + ".erlang.cookie";
+        @SuppressWarnings("resource")
         BufferedReader br = null;
 
         try {

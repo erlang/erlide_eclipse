@@ -10,12 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl.outline;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
@@ -25,8 +19,8 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 
 /**
  * An ErlangImageDescriptor consists of a base image and several adornments. The
- * adornments are computed according to the flags either passed during creation
- * or set via the method <code>setAdornments</code>.
+ * adornments are computed according to the flags either passed during creation or set via
+ * the method <code>setAdornments</code>.
  *
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -64,22 +58,18 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
     public ErlangElementImageDescriptor(final ImageDescriptor baseImage, final int flags,
             final Point size) {
         fBaseImage = baseImage;
-        assertThat(fBaseImage, is(not(nullValue())));
         fFlags = flags;
-        assertThat(fFlags, is(greaterThanOrEqualTo(0)));
         fSize = size;
-        assertThat(fSize, is(not(nullValue())));
     }
 
     /**
-     * Sets the descriptors adornments. Valid values are: <code>EXPORTED</code>,
-     * or any combination of those.
+     * Sets the descriptors adornments. Valid values are: <code>EXPORTED</code>, or any
+     * combination of those.
      *
      * @param adornments
      *            the image descriptors adornments
      */
     public void setAdornments(final int adornments) {
-        assertThat(adornments, is(greaterThanOrEqualTo(0)));
         fFlags = adornments;
     }
 
@@ -96,23 +86,17 @@ public class ErlangElementImageDescriptor extends CompositeImageDescriptor {
      * Sets the size of the image created by calling <code>createImage()</code>.
      *
      * @param size
-     *            the size of the image returned from calling
-     *            <code>createImage()</code>
+     *            the size of the image returned from calling <code>createImage()</code>
      * @see ImageDescriptor#createImage()
      */
     public void setImageSize(final Point size) {
-        assertThat(size, is(not(nullValue())));
-        assertThat(size.x, is(greaterThanOrEqualTo(0)));
-        assertThat(size.y, is(greaterThanOrEqualTo(0)));
         fSize = size;
     }
 
     /**
-     * Returns the size of the image created by calling
-     * <code>createImage()</code>.
+     * Returns the size of the image created by calling <code>createImage()</code>.
      *
-     * @return the size of the image created by calling
-     *         <code>createImage()</code>
+     * @return the size of the image created by calling <code>createImage()</code>
      * @see ImageDescriptor#createImage()
      */
     public Point getImageSize() {

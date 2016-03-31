@@ -17,9 +17,8 @@
 package org.fishwife.jrugged;
 
 /**
- * This class uses a raw {@link RequestCounter} to compute request rates over
- * time for total rate of request, rate of successful requests, and rate of
- * failed requests.
+ * This class uses a raw {@link RequestCounter} to compute request rates over time for
+ * total rate of request, rate of successful requests, and rate of failed requests.
  */
 public class FlowMeter {
     private final RequestCounter counter;
@@ -54,14 +53,12 @@ public class FlowMeter {
     }
 
     /**
-     * Takes a sample of the request rates. Calculations are based on
-     * differences in request counts since the last call to
-     * <code>sample()</code>.
+     * Takes a sample of the request rates. Calculations are based on differences in
+     * request counts since the last call to <code>sample()</code>.
      *
-     * @return an array of three <code>doubles</code>: total requests per
-     *         second, successful requests per second, failed requests per
-     *         second. If this is the first sample, all three rates will be
-     *         reported as zero requests per second.
+     * @return an array of three <code>doubles</code>: total requests per second,
+     *         successful requests per second, failed requests per second. If this is the
+     *         first sample, all three rates will be reported as zero requests per second.
      */
     public synchronized double[] sample() {
         final long[] currCounts = counter.sample();

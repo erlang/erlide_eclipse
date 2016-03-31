@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.erlide</groupId>
+		<artifactId>org.erlide.parent</artifactId>
+		<version>1.0.0</version>
+		<relativePath>../org.erlide.parent</relativePath>
+	</parent>
+
+	<artifactId>org.erlide.help</artifactId>
+	<version>0.50.0-SNAPSHOT</version>
+	<packaging>eclipse-plugin</packaging>
+
+	<profiles>
+		<profile>
+			<activation>
+				<os>
+					<family>!windows</family>
+				</os>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>chmod</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>chmod</executable>
+									<arguments>
+										<argument>u+x</argument>
+										<argument>gen_eclipse_help.sh</argument>
+									</arguments>
+								</configuration>
+							</execution>
+							<execution>
+								<id>generate</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>./gen_eclipse_help.sh</executable>
+									<arguments>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>
